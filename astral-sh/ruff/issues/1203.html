@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect pylint ignore directives - astral-sh/ruff #1203</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect pylint ignore directives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1203">#1203</a>
+        opened by <a href="https://github.com/LefterisJP">@LefterisJP</a>
+        on 2022-12-11 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-11 23:49</div>
+            <div class="timeline-body"><p>It would be really cool for a codebase moving from pylint slowly to ruff to be able to understand and respect pylint directives.</p>
+<p>For example <code>ARG</code> module has flake8-unused-arguments. That is very similar to something pylint does. And as usual if somewhere you want to disable the warning you can add the proper pylint directive. For this it would be <code># pylint: disable=unused-argument</code>.</p>
+<p>It would be cool if ruff understood those directives even for other modules like flake8-unused-arguments which do the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-12-12 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2022-12-12 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2022-12-31 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> removed by @charliermarsh on 2022-12-31 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2022-12-31 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2022-12-31 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshuachapnick-bc">@joshuachapnick-bc</a> on 2023-01-02 13:55</div>
+            <div class="timeline-body"><p>+1 for this feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/689.html">astral-sh/ruff#689</a> on 2023-01-17 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 12:58</div>
+            <div class="timeline-body"><p>I think there are two pieces here:</p>
+<ol>
+<li>Supporting Pylint directives for rules that are mapped explicitly to existing Pylint rules (anything in <code>PLR</code>, <code>PLC</code>, etc.).</li>
+<li>Supporting Pylint directives for rules that aren't currently mapped, but have analogs.</li>
+</ol>
+<p>I'm open to supporting (1), but it does require a decent amount of work, since Pylint provides <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/message_control.html">a lot of flexibility</a> in where enables and disables are placed (scopes, blocks, single lines, etc.).</p>
+<p>(Unrelated to this issue, but I do eventually want to add Ruff's own system for ignores that's decoupled from Flake8 (while continuing to support Flake8's <code>noqa</code>), and that system would definitely support multi-line ignores.)</p>
+<p>I'm hesitant to support (2). It feels hard to get right, since it requires that (e.g.) we're reporting errors on the exact same lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-17 13:02</div>
+            <div class="timeline-body"><p>I guess (1) is already good enough.</p>
+<p>For (2) there is some easy wins. For example at rotki we disable the ruff &quot;BLE&quot; check due to also running pylint with that check on and ruff not respecting/seeing the ignores.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-24 23:59</div>
+            <div class="timeline-body"><p>In the case of replacing pylint entirely with ruff, there could simply be a rule RUFF9XX that detects pylint directives, and as autofix removes them. This could be simple to implement and helpful to start. When explicit mapping is available, the fix could be changed to use flake8 or ruff directives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/970.html">astral-sh/ruff#970</a> on 2023-01-30 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-30 15:10</div>
+            <div class="timeline-body"><p>A fixer which transforms the pylint-comments into ruff noqa-comments would be helpful.</p>
+<pre><code class="language-diff">-# pylint: disable-msg=R0133
++# noqa: PLR0133
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coby-soffer">@coby-soffer</a> on 2023-05-06 21:04</div>
+            <div class="timeline-body"><p>+1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StefanKX">@StefanKX</a> on 2024-01-16 06:24</div>
+            <div class="timeline-body"><p>+1 here as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10142.html">astral-sh/ruff#10142</a> on 2024-02-27 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-02-27 09:06</div>
+            <div class="timeline-body"><blockquote>
+<p>A fixer which transforms the pylint-comments into ruff noqa-comments would be helpful.</p>
+<pre><code class="language-diff">-# pylint: disable-msg=R0133
++# noqa: PLR0133
+</code></pre>
+</blockquote>
+<p>Pylint disable support rule names. Without rule names, this lowers the value of the waiver comment.</p>
+<blockquote>
+<pre><code class="language-diff">-# pylint: disable=comparison-of-constants
++# noqa: PLR0133
+</code></pre>
+</blockquote>
+<p>After this transformation the next person arriving at the code will not easily understand why the disable is there.</p>
+<p>After ruff adopts #1773 &quot;human-friendly rules names&quot;, this transformation feels more attractive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10439.html">astral-sh/ruff#10439</a> on 2024-03-17 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-11-20 17:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there are two pieces here:</p>
+<pre><code>1. Supporting Pylint directives for rules that are mapped explicitly to existing Pylint rules (anything in `PLR`, `PLC`, etc.).</code></pre>
+<p>I'm open to supporting (1), but it does require a decent amount of work, since Pylint provides <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/message_control.html">a lot of flexibility</a> in where enables and disables are placed (scopes, blocks, single lines, etc.).</p>
+</blockquote>
+<p>A possible way forward could be to only some kind of directive to start. Or is there a risk that would cause more confusion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ran-isenberg">@ran-isenberg</a> on 2025-01-02 07:00</div>
+            <div class="timeline-body"><p>is there any work done on this?
+I work in an enterprise and we want to ditch pylint in favor of Ruff but unless there's either a utility to rename or ruff accepts pylint disable lines, we wont be able to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gsemet">@gsemet</a> on 2025-01-02 09:47</div>
+            <div class="timeline-body"><p>If you really want ruff to be a must have in enterprise, you would indeed support pylint, bandit, flake8 in-code exception directly.
+But if you really want to hit a score for sensitive code, you would provide a way to support “justification comments” to describe why this rules is disabled in this place. This would need to be reported in the report file as “violation with justification”.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16630.html">astral-sh/ruff#16630</a> on 2025-03-12 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2025-10-07 21:19</div>
+            <div class="timeline-body"><p>Any update here? - Would be great to see support for ignoring the same things <code>pylint</code> ignores but in <code>ruff</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

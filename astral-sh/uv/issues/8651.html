@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error encountered when running sync in a Docker image with editable dependencies: path could not be normalized: ./../ - astral-sh/uv #8651</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error encountered when running sync in a Docker image with editable dependencies: path could not be normalized: ./../</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8651">#8651</a>
+        opened by <a href="https://github.com/haruiz">@haruiz</a>
+        on 2024-10-29 00:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/haruiz">@haruiz</a> on 2024-10-29 00:11</div>
+            <div class="timeline-body"><p>Hello, Astral team!</p>
+<p>I'm reaching out for assistance regarding an error I'm having.  Despite spending several hours reviewing the documentation and searching online, I haven't been able to find a solution.</p>
+<p>I'm trying to build a Docker image that installs some private packages from the GCP artifact registry. However, upon executing the sync command, I encounter the following error.</p>
+<p><code>error: Failed to parse </code>uv.lock<code>Caused by: TOML parse error at line 905, column 5 { name = &quot;cloudio&quot;, editable = &quot;../cloudio&quot; }, path could not be normalized: /../cloudio</code></p>
+<p>Here Is the command that I'm running within the docker image (Taken from the documentation):</p>
+<p><code>RUN --mount=type=cache,target=/root/.cache/uv \     --mount=type=bind,source=uv.lock,target=uv.lock \     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \     uv sync --frozen --no-install-project --no-sources --no-editable  \     --keyring-provider subprocess \     --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple/</code></p>
+<p>Here is the <code>pyproject.toml</code>file</p>
+<pre><code>[project]
+name = &quot;gprlibpy&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;validators&gt;=0.34.0&quot;,
+    &quot;opencv-python&gt;=4.10.0.84&quot;,
+    &quot;graphviz&gt;=0.20.3&quot;,
+    &quot;tqdm&gt;=4.66.5&quot;,
+    &quot;zarr&gt;=2.18.3&quot;,
+    &quot;cloudio&quot;,
+    &quot;gprio&quot;,
+    &quot;lgopy&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+gprio = { path = &quot;../gprio&quot;, editable = true }
+lgopy = { path = &quot;../lgopy&quot;, editable = true }
+cloudio = { path = &quot;../cloudio&quot;, editable = true }
+</code></pre>
+<p>Here is the <code>Dockerfile</code>:</p>
+<pre><code>FROM python:3.10-slim as build
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+ARG SA_KEY_BASE64
+ENV REGION=us-central1
+ENV PROJECT_ID=&lt;PROJECT_ID&gt;
+ENV REPOSITORY_ID=&lt;REPOSITORY_ID&gt;
+ENV UV_SYSTEM_PYTHON=1
+
+RUN apt-get update &amp;&amp; apt-get upgrade -y &amp;&amp; apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    ffmpeg  \
+    libsm6  \
+    libxext6
+
+RUN echo $SA_KEY_BASE64 | base64 -d&gt; /service-account.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/service-account.json
+RUN uv pip install keyring keyrings.google-artifactregistry-auth
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-sources --no-editable --no-cache \
+    --keyring-provider subprocess \
+    --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple/
+RUN rm /service-account.json
+</code></pre>
+<p>Thanks for your support,
+HR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 01:54</div>
+            <div class="timeline-body"><p>So.. a minimal example looks something like</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ uv init example-2
+Initialized project `example-2` at `/Users/zb/workspace/uv/example-2`
+❯ cd example
+❯ uv add ../example-2
+Using CPython 3.11.10
+Creating virtual environment at: .venv
+Resolved 2 packages in 1ms
+Audited in 0.00ms
+❯ cat pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;example-2&quot;,
+]
+
+[tool.uv.sources]
+example-2 = { path = &quot;../example-2&quot; }
+❯ uv lock
+Resolved 2 packages in 1ms
+❯ cat uv.lock
+version = 1
+requires-python = &quot;&gt;=3.11&quot;
+
+[[package]]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;example-2&quot; },
+]
+
+[package.metadata]
+requires-dist = [{ name = &quot;example-2&quot;, virtual = &quot;../example-2&quot; }]
+
+[[package]]
+name = &quot;example-2&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;../example-2&quot; }
+</code></pre>
+<p>In this example, <code>uv.lock</code> contains a reference to <code>../example-2</code>, a project in the parent directory. This is fine, but at runtime you're putting the <code>uv.lock</code> at <code>/</code> so when we try to go to the parent directory we fail (because you cannot go past <code>/</code>).</p>
+<p>I see you've included <code>--no-sources</code>, which would disable the <code>../example-2</code> source — however, you're also using <code>--frozen</code> so we skip checking if the lockfile is up to date and use it as-is. You're also passing various other flags to <code>uv sync</code> which will not be respected because of <code>--frozen</code>.</p>
+<p>I think what you want to do is <code>uv lock --no-sources ...</code> before copying the <code>uv.lock</code> into your image?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-29 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haruiz">@haruiz</a> on 2024-10-29 02:37</div>
+            <div class="timeline-body"><p>Thank you; that's precisely what I'm looking for. However, when I execute the command <code>uv lock --no-sources</code>, I encounter an error stating that <code>&lt;package&gt; was not found in the package registry</code>. Is there a way to make a private package  editable locally while still linking to an external repository using extra-index-url?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haruiz">@haruiz</a> on 2024-10-29 03:24</div>
+            <div class="timeline-body"><p>Thank you. I finally solved it by doing the following:</p>
+<pre><code>RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=cache,target=/root/.cache/uv \
+    uv sync --no-sources --no-install-project \
+    --keyring-provider subprocess \
+    --extra-index-url https://oauth2accesstoken@${REGION}-python.pkg.dev/${PROJECT_ID}/${REPOSITORY_ID}/simple/`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @haruiz on 2024-10-29 03:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:19 UTC
+    </footer>
+</body>
+</html>

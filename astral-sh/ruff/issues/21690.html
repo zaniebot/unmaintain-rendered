@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect `if-elif` with same condition causing unreachable branch - astral-sh/ruff #21690</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect `if-elif` with same condition causing unreachable branch</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21690">#21690</a>
+        opened by <a href="https://github.com/injust">@injust</a>
+        on 2025-11-29 10:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/injust">@injust</a> on 2025-11-29 10:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This isn't caught by type checking, so it'd be nice if Ruff could handle this.</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo == &quot;bar&quot;:
+        print(1)
+    elif foo == &quot;bar&quot;:  # Unreachable
+        print(2)
+</code></pre>
+<hr />
+<p>There's an edge case if the body of the if/elif is identical:</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo == &quot;bar&quot;:
+        pass
+    elif foo == &quot;bar&quot;:
+        pass
+</code></pre>
+<p>https://play.ruff.rs/f190be4e-f165-4dfa-9756-a7f6ce6d2ae7</p>
+<p>Currently, SIM114 auto-fixes this to:</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo == &quot;bar&quot; or foo == &quot;bar&quot;:
+        pass
+</code></pre>
+<p>And PLR1714's offered fix is:</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo in {&quot;bar&quot;, &quot;bar&quot;}:
+        pass
+</code></pre>
+<p>Then B033 auto-fixes it to:</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo in {&quot;bar&quot;}:
+        pass
+</code></pre>
+<p>Which is...okay but not great? Instead of providing fixes to merge the branches and all, it seems better to flag it as unreachable and let the user figure out what they want. It might be a typo they need to fix, or just a duplicate branch they want to delete entirely.</p>
+<hr />
+<p>Another edge case is <code>if-return-elif</code> with the same conditional:</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo:
+        return
+    elif foo:
+        pass
+</code></pre>
+<p>https://play.ruff.rs/dff0d4ea-05dd-4bdb-bba4-ece0ba703e6f</p>
+<p>Pyright detects the <code>elif</code> branch is unreachable, however RET505 provides this auto-fix:</p>
+<pre><code class="language-python">def test(foo: str) -&gt; None:
+    if foo:
+        return
+    if foo:
+        pass
+</code></pre>
+<p>Which makes it slightly harder to understand <em>why</em> it's unreachable (<code>if-elif</code> with the same conditional is much easier to grok than reading through the <code>if</code> body and understanding that it always returns).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Detect if-elif with same condition causing unreachable branch" to "Detect `if-elif` with same condition causing unreachable branch" by @injust on 2025-11-29 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21692.html">astral-sh/ruff#21692</a> on 2025-11-29 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-30 12:02</div>
+            <div class="timeline-body"><p>ty could detect this if <code>foo</code> is a union over a given set of string literals.</p>
+<p>However, it fails to detect the <code>elif</code> as unreachable because it can't narrow foo to not being bare because of subclassing (what if <code>foo</code> is a subclass of <code>str</code> with some weird <code>eq</code> implementation). But it should be able to detect this if you change the type annotation of <code>foo</code> to <code>LiteralString</code> (related discussion https://play.ty.dev/37a754f0-0971-4c91-a2e4-1047ce0077a5)</p>
+<p>We could add some very naive narrowing to Ruff that detects a very limited set of cases but I'm inclined to fold this into a more generic unreachable rule.</p>
+<p>Related to https://github.com/astral-sh/ruff/issues/18013</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-11-30 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-11-30 12:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

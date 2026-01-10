@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pdb` not useable with pytest and uv - astral-sh/uv #11621</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pdb` not useable with pytest and uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11621">#11621</a>
+        opened by <a href="https://github.com/ccurme">@ccurme</a>
+        on 2025-02-19 15:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ccurme">@ccurme</a> on 2025-02-19 15:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I insert a breakpoint into a test via <code>pdb.set_trace()</code> and run with <code>pytest</code>, we enter the debugger but I cannot run any commands.</p>
+<p>To reproduce:</p>
+<pre><code>uv init hello-world
+cd hello-world
+uv add pytest
+echo &quot;def test_debugging():\n    import pdb; pdb.set_trace()&quot; &gt; test_debugging.py
+uv run pytest .
+</code></pre>
+<pre><code>-&gt; import pdb; pdb.set_trace()
+</code></pre>
+<p>^ Cannot run any commands from there.</p>
+<h3>Platform</h3>
+<p>macOS 14 arm64 (<code>uname -orsm</code> gives Darwin 23.6.0 arm64)</p>
+<h3>Version</h3>
+<p>uv 0.5.26 (Homebrew 2025-01-30)</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ccurme on 2025-02-19 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 16:07</div>
+            <div class="timeline-body"><p>Hm, I can reproduce this with a HomeBrew Python and invoking <code>pytest</code> directly</p>
+<pre><code>❯ uv venv --python-preference only-system
+Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv sync
+Resolved 6 packages in 1ms
+Installed 4 packages in 3ms
+ + iniconfig==2.0.0
+ + packaging==24.2
+ + pluggy==1.5.0
+ + pytest==8.3.4
+❯ .venv/bin/pytest
+==================================================== test session starts ====================================================
+platform darwin -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
+rootdir: /Users/zb/workspace/hello-world
+configfile: pyproject.toml
+collected 1 item                                                                                                            
+
+test_debugging.py 
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; PDB set_trace (IO-capturing turned off) &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+&gt; /Users/zb/workspace/hello-world/test_debugging.py(2)test_debugging()
+-&gt; import pdb; pdb.set_trace()
+^C--KeyboardInterrupt--
+^D
+F                                                                                                   [100%]
+
+========================================================= FAILURES ==========================================================
+______________________________________________________ test_debugging _______________________________________________________
+
+    def test_debugging():
+&gt;       import pdb; pdb.set_trace()
+
+test_debugging.py:2: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/bdb.py:110: in trace_dispatch
+    return self.dispatch_opcode(frame, arg)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;_pytest.debugging.pytestPDB._get_pdb_wrapper_class.&lt;locals&gt;.PytestPdbWrapper object at 0x10223cad0&gt;
+frame = &lt;frame at 0x10218e980, file '/Users/zb/workspace/hello-world/test_debugging.py', line 2, code test_debugging&gt;
+arg = None
+
+    def dispatch_opcode(self, frame, arg):
+        &quot;&quot;&quot;Invoke user function and return trace function for opcode event.
+        If the debugger stops on the current opcode, invoke
+        self.user_opcode(). Raise BdbQuit if self.quitting is set.
+        Return self.trace_dispatch to continue tracing in this scope.
+        &quot;&quot;&quot;
+        if self.stop_here(frame) or self.break_here(frame):
+            self.user_opcode(frame)
+&gt;           if self.quitting: raise BdbQuit
+E           bdb.BdbQuit
+
+/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/bdb.py:210: BdbQuit
+================================================== short test summary info ==================================================
+FAILED test_debugging.py::test_debugging - bdb.BdbQuit
+===================================================== 1 failed in 1.26s =====================================================
+</code></pre>
+<p>Is there a context in which this works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 16:09</div>
+            <div class="timeline-body"><p>You need to disable capturing</p>
+<pre><code>❯ .venv/bin/pytest --capture=no
+==================================================== test session starts ====================================================
+platform darwin -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
+rootdir: /Users/zb/workspace/hello-world
+configfile: pyproject.toml
+collected 1 item                                                                                                            
+
+test_debugging.py 
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; PDB set_trace &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+&gt; /Users/zb/workspace/hello-world/test_debugging.py(2)test_debugging()
+-&gt; breakpoint()
+(Pdb) 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-02-19 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-02-19 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-02-19 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ccurme">@ccurme</a> on 2025-02-19 16:12</div>
+            <div class="timeline-body"><p>That works for me, thanks for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-19 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

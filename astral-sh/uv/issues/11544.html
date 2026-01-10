@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pyenv`-created virtualenv is not picked up - astral-sh/uv #11544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pyenv`-created virtualenv is not picked up</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11544">#11544</a>
+        opened by <a href="https://github.com/fjarri">@fjarri</a>
+        on 2025-02-15 23:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fjarri">@fjarri</a> on 2025-02-15 23:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I asked this in a comment to #2109, but perhaps it's better as a separate issue.</p>
+<p>My goal is to keep managing my virtual environments with <code>pyenv</code>, but use <code>uv</code> for project management (dependency resolution, build, etc). Steps (with <code>uv</code> 0.5.30):</p>
+<p>Make a new directory and add <code>pyproject.toml</code> with contents:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myproject&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = []
+</code></pre>
+<p>Create and set the virtual environment.</p>
+<pre><code>&gt; pyenv virtualenv 3.10.10 myenv
+&gt; pyenv local myenv
+</code></pre>
+<p><code>uv</code> picks it up when asked for <code>pip list</code>:</p>
+<pre><code>&gt; uv pip list
+Using Python 3.10.10 environment at: &lt;...&gt;/.pyenv/versions/myenv
+Package    Version
+---------- -------
+pip        22.3.1
+setuptools 65.5.0
+</code></pre>
+<p>But <code>uv tree</code> does not work</p>
+<pre><code>&gt; uv tree
+error: No interpreter found for executable name `myenv` in managed installations or search path
+</code></pre>
+<p>What am I doing wrong?</p>
+<h3>Platform</h3>
+<p>MacOS 15.2</p>
+<h3>Version</h3>
+<p>0.5.30 (Homebrew 2025-02-10)</p>
+<h3>Python version</h3>
+<p>3.10.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @fjarri on 2025-02-15 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 01:46</div>
+            <div class="timeline-body"><p>Is there a <code>.python-version</code> file in the directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 04:10</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/uv/pull/7935 (some discussion there)</p>
+<p>We don't support use of <code>pyenv local</code> with <code>pyenv-virtualenv</code> since it writes environment names to the <code>.python-version</code> file which we use for Python version pins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 04:10</div>
+            <div class="timeline-body"><p>Thank you for the clear reproduction though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fjarri">@fjarri</a> on 2025-02-16 18:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a .python-version file in the directory?</p>
+</blockquote>
+<p>Yes, created by <code>pyenv local</code>.</p>
+<blockquote>
+<p>We don't support use of pyenv local with pyenv-virtualenv since it writes environment names to the .python-version file which we use for Python version pins.</p>
+</blockquote>
+<p>Just out of curiosity, why does <code>uv pip list</code> recognize the venv then?</p>
+<p>I guess this can be closed in favor of #7935 (or #6204).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 19:09</div>
+            <div class="timeline-body"><p><code>uv pip list</code> doesn't read <code>.python-version</code> files, presumably it finds the <code>python</code> shim from <code>pyenv</code> and infers the active environment from that?</p>
+<p>We could stop supporting &quot;names&quot; in <code>.python-version</code> files (and just ignore them in that case), but that'd be a breaking. It seems okay to fallback to ignoring it if it's a name request though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fjarri">@fjarri</a> on 2025-02-16 19:16</div>
+            <div class="timeline-body"><blockquote>
+<p>uv pip list doesn't read .python-version files, presumably it finds the python shim from pyenv and infers the active environment from that?</p>
+</blockquote>
+<p>In this case, could <code>uv tree</code> do the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 19:22</div>
+            <div class="timeline-body"><p>No, that runs in the context of a &quot;project&quot; and needs to respect the same semantics as the rest of our top-level interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fjarri">@fjarri</a> on 2025-02-16 19:26</div>
+            <div class="timeline-body"><p>I guess, it all hinges on how to use <code>.python-version</code>? The way I see it, since it's not technically a part of any PIP (as far as I know), both <code>pyenv</code> and <code>uv</code> should ideally not use this name, but instead have their own prefixed versions. But it will be a breaking change for both, and I expect there would be a lot of pushback if someone proposed to change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 20:22</div>
+            <div class="timeline-body"><p>Yes the file contents are arbitrary and not enforced by a standard. I certainly think it's reasonable for it to only contain Python versions rather than the name of an environment that should be loaded from a tool-specific location though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2025-04-03 19:27</div>
+            <div class="timeline-body"><p>Would it make sense for the <code>.python-version</code> file to be ignored if the <code>--active</code> flag is passed? At that point we'd be using the loaded <code>python</code> binary in the PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../davistdaniel/PiHoleLongTermStats/pulls/1.html">davistdaniel/PiHoleLongTermStats#1</a> on 2025-04-28 21:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

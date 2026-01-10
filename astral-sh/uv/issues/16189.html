@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caching issues with hatchling's `--force-include` - astral-sh/uv #16189</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Caching issues with hatchling's `--force-include`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16189">#16189</a>
+        opened by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a>
+        on 2025-10-08 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a> on 2025-10-08 15:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Summary</strong>
+When using hatchling's <code>--force-include</code> option to map sources from one package into another in a monorepo, the uv cache needs to be cleared after each change.</p>
+<p><strong>To reproduce</strong>
+Follow the steps in: https://github.com/Mr-Pepe/uv-cache-bug</p>
+<p><strong>Use case</strong>
+The use case is to make schemas from package-a available to other packages in the monorepo without having them pull in all of package-a's dependencies. Placing the schemas in a separate package is not desirable because package-a gets shipped as a standalone source distribution to people without access to the monorepo.</p>
+<h3>Platform</h3>
+<p>Linux 6.16.10-arch1-1 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.23 (00d3aa378 2025-10-04)</p>
+<h3>Python version</h3>
+<p>Python 3.13.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Mr-Pepe on 2025-10-08 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-08 15:39</div>
+            <div class="timeline-body"><p>Does adding these files to your cache keys resolve the issue? https://docs.astral.sh/uv/reference/settings/#cache-keys</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a> on 2025-10-08 16:00</div>
+            <div class="timeline-body"><p>I added</p>
+<pre><code>[tool.uv]
+cache-keys = [{ dir = &quot;../package_a&quot; }]
+</code></pre>
+<p>to the <code>pyproject.toml</code> of <code>package_a_schemas</code> and created new files in <code>packages/package_a</code>. However, that doesn't seem to help.</p>
+<p>Verbose output shows the following:</p>
+<pre><code>DEBUG Computed cache info: None, None, None, {}, {&quot;../package_a&quot;: Some(Timestamp(Timestamp(SystemTime { tv_sec: 1759897495, tv_nsec: 245819107 })))}
+DEBUG Requirement already installed: package-a-schemas==0.1.0 (from file:///home/felipe/tmp/uv_bug/packages/package_a_schemas)
+</code></pre>
+<p>So it seems that changes in that folder don't invalidate the cache?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a> on 2025-10-21 21:09</div>
+            <div class="timeline-body"><p>We ended up symlinking <code>package_a/schemas</code> to <code>package_a_schemas</code> and using <code>uv_build</code> as the build backend. It's still not clear to me whether this is an issue with hatchling or uv.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

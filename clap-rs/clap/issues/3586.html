@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`arg!(--long-arg &quot;foo&quot;)` doesn't behave in expected way - clap-rs/clap #3586</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`arg!(--long-arg &quot;foo&quot;)` doesn't behave in expected way</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3586">#3586</a>
+        opened by <a href="https://github.com/petrochenkov">@petrochenkov</a>
+        on 2022-03-28 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/petrochenkov">@petrochenkov</a> on 2022-03-28 15:33</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0</p>
+<h3>Clap Version</h3>
+<p>3.1.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    let matches = Command::new(&quot;my_command&quot;).args(&amp;[arg!(--long-option &quot;Description&quot;)]).get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>thread 'main' panicked at 'assertion failed: `(left == right)`
+  left: `Some(&quot;long&quot;)`,
+ right: `None`: Short flags should precede long flags
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The code either builds an argument with long name <code>--long-option</code>, or errors at compile time.</p>
+<h3>Additional Context</h3>
+<p>The issue was found when migrating code from clap 2.</p>
+<p>This is a footgun affecting naively ported code that cannot be detected until runtime.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @petrochenkov on 2022-03-28 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-03-28 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-03-28 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-28 15:43</div>
+            <div class="timeline-body"><p>This seems to be a limitation of macro-rules that I couldn't find a way around.  You need to quote the long option</p>
+<pre><code>fn main() {
+    let matches = Command::new(&quot;my_command&quot;).args(&amp;[arg!(--&quot;long-option&quot; &quot;Description&quot;)]).get_matches();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petrochenkov">@petrochenkov</a> on 2022-03-28 15:52</div>
+            <div class="timeline-body"><p>I found the <code>--&quot;long-option&quot;</code> form later, but the fact that the <code>--long-option</code> form is silently accepted while being incorrect is still a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-28 16:06</div>
+            <div class="timeline-body"><blockquote>
+<p>but the fact that the --long-option form is silently accepted while being incorrect is still a problem.</p>
+</blockquote>
+<p>which is why this issue is open but I'm not aware of any good solution.</p>
+<p>Also, we have resigned ourselves in general to not being able to turn every error into a compile error but backstop with debug asserts.  We encourage people to add a test that calls <code>Command::debug_asserrt()</code> to help catch issues earlier in the development process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evgeniy-terekhin">@evgeniy-terekhin</a> on 2022-05-07 14:02</div>
+            <div class="timeline-body"><p>@epage I guess one solution could be to allow defining short and long flags only in one exact order (-f --flag)
+But I guess this might and probably will break someone's code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-08 01:17</div>
+            <div class="timeline-body"><p>@evgeniy-terekhin I think I'm missing something with your suggestion.  We do only allow one order the problem is I didn't see a way to enforce that in macro rules without blowing up the number of cases we define and I didn't see a way for that to allow <code>--foo-bar</code> without quotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evgeniy-terekhin">@evgeniy-terekhin</a> on 2022-05-08 06:54</div>
+            <div class="timeline-body"><p>@epage well I duess I made this suggestion without giving it a proper thought.
+Maybe converting this macro into a proc macro will enable better compile time errors.
+I'll have to experiment on this a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-09 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe converting this macro into a proc macro will enable better compile time errors.
+I'll have to experiment on this a bit.</p>
+</blockquote>
+<p>Yes, my guess is that will be the only way forward for improving this macro.  While that might seem counter to one of the reasons to use the builder API over the derive (macros hurt build times),. this macro could possibly have no dependencies like <a href="https://github.com/matklad/xflags/tree/master/xflags-macros">xflags</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:57 UTC
+    </footer>
+</body>
+</html>

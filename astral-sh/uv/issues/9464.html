@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Same Machine, Pytorch works for one, doesn't work for another - astral-sh/uv #9464</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Same Machine, Pytorch works for one, doesn't work for another</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9464">#9464</a>
+        opened by <a href="https://github.com/sglbl">@sglbl</a>
+        on 2024-11-27 12:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sglbl">@sglbl</a> on 2024-11-27 12:01</div>
+            <div class="timeline-body"><p>I have <code>Ubuntu 22.04</code> and <code>uv 0.5.0</code>.</p>
+<p>I added torch cpu version using;
+<code>uv add torch --index https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match</code>
+Then I used the same pyproject.toml file on another project on the same computer.
+But this time it gives:</p>
+<pre><code class="language-bash">~/digit_classification$ uv sync --index-strategy unsafe-best-match
+Resolved 169 packages in 0.87ms
+error: Distribution `torch==2.5.1 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+</code></pre>
+<p>When I check pip list on the first project:</p>
+<pre><code class="language-bash">~/sg_project_template$ uv pip list | grep torch
+torch                     2.5.1+cpu
+</code></pre>
+<p>I think it's about it should look for the version torch==2.5.1+cpu but it looks for torch==2.5.1.</p>
+<p><img src="https://github.com/user-attachments/assets/14f0bef8-d69f-4e9d-8351-3458e5266080" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-27 12:46</div>
+            <div class="timeline-body"><p>What python version(s) are you using in those projects?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2024-11-27 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>What python version(s) are you using in those projects?</p>
+</blockquote>
+<p>I only have the default Ubuntu22.04 Python which is Python 3.10.12</p>
+<pre><code class="language-txt">sglbl@DEDUCE-PC:~/deduce/sg_project_template$ lsb_release -a | grep Description:
+No LSB modules are available.
+Description:    Ubuntu 22.04.5 LTS
+sglbl@DEDUCE-PC:~/deduce/sg_project_template$ python -V
+Python 3.10.12
+sglbl@DEDUCE-PC:~/deduce/sg_project_template$ which python
+/usr/bin/python
+sglbl@DEDUCE-PC:~/deduce/sg_project_template$ source .venv/bin/activate
+(.venv) sglbl@DEDUCE-PC:~/deduce/sg_project_template$ which python
+/home/sglbl/deduce/sg_project_template/.venv/bin/python
+(.venv) sglbl@DEDUCE-PC:~/deduce/sg_project_template$ uv python list
+cpython-3.13.0+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.12.7-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.11.10-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.15-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.12-linux-x86_64-gnu                /usr/bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                /usr/bin/python3 -&gt; python3.10
+cpython-3.10.12-linux-x86_64-gnu                /usr/bin/python -&gt; python3
+cpython-3.10.12-linux-x86_64-gnu                /bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu                /bin/python3 -&gt; python3.10
+cpython-3.10.12-linux-x86_64-gnu                /bin/python -&gt; python3
+cpython-3.9.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                  &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                   &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                    &lt;download available&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-27 13:44</div>
+            <div class="timeline-body"><p>Can you try removing the lockfile and re-running?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-27 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2024-11-27 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you try removing the lockfile and re-running?</p>
+</blockquote>
+<p>Thank you @charliermarsh , even though I'm not sure why removing uv.lock file solves the issue of
+<strong><code>can't be installed because it doesn't have a source distribution or wheel for the current platform</code></strong>,
+it works now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sglbl on 2024-11-27 13:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:39 UTC
+    </footer>
+</body>
+</html>

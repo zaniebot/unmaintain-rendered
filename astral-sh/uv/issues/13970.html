@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` should indicate when the lockfile changes - astral-sh/uv #13970</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` should indicate when the lockfile changes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13970">#13970</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-11 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 15:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Notice using <code>--upgrade-package</code> with <code>uv lock</code> shows a summary depending on if there are changes</p>
+<pre><code>❯ uv add --dev &quot;ruff&gt;0.11.11&quot;
+Resolved 5 packages in 99ms
+Audited 4 packages in 0.04ms
+❯ uv lock --upgrade-package ruff==0.11.11
+Resolved 5 packages in 61ms
+Updated ruff v0.11.13 -&gt; v0.11.11
+❯ uv lock --upgrade-package ruff==0.11.11
+Resolved 5 packages in 60ms
+</code></pre>
+<p>However, for <code>uv add</code>, the version of <code>ruff</code> changes but we do not indicate it, because the version in the environment does not change (it's synced from our initial install still)</p>
+<pre><code>❯ uv add --dev ruff --upgrade-package ruff
+Resolved 5 packages in 62ms
+Audited 4 packages in 0.01ms
+❯ uv tree | grep ruff
+Resolved 5 packages in 1ms
+└── ruff v0.11.13 (group: dev)
+</code></pre>
+<p>This is a bit confusing. We should consider showing lockfile changes somehow?</p>
+<p>Note, if you sync after the lock, we will show the version change:</p>
+<pre><code>❯ uv add --dev ruff --upgrade-package ruff
+Resolved 9 packages in 60ms
+Prepared 1 package in 0.13ms
+Uninstalled 1 package in 0.54ms
+Installed 1 package in 1ms
+ - ruff==0.11.11
+ + ruff==0.11.13
+</code></pre>
+<h3>Example</h3>
+<p>Maybe we can re-use the environment change list?</p>
+<pre><code>❯ uv add --dev ruff --upgrade-package ruff
+Resolved 5 packages in 62ms
+Audited 4 packages in 0.01ms
+~ ruff==0.11.13
+</code></pre>
+<p>I think it'd be weird to use the <code>uv lock</code> style output mixed with the environment summary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-06-11 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1419.html">astral-sh/uv#1419</a> on 2025-06-11 15:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

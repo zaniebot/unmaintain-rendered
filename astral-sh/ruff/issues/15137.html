@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Help] How can I configure Ruff to ignore a rule for a specific set of lines by regex? - astral-sh/ruff #15137</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Help] How can I configure Ruff to ignore a rule for a specific set of lines by regex?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15137">#15137</a>
+        opened by <a href="https://github.com/unwize">@unwize</a>
+        on 2024-12-25 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/unwize">@unwize</a> on 2024-12-25 00:08</div>
+            <div class="timeline-body"><p>I have an expansive project that makes heavy use of non-return decorators. For example:</p>
+<pre><code>@NoReturnDecorator(arg_a, arg_b, arg_c)
+        def logic(_: any) -&gt; None:
+            self.do_some_other_logic
+</code></pre>
+<p>I <em>could</em> exclude the line manually, but there are over 150 lines the qualify, and I'd really rather not do this by hand.</p>
+<p>In one function, I may call this decorator with similar (or identical) bodies, but varying arguments. I would like to configure ruff to disable <code>F811</code> and similar warnings for the contents of this decorator. How would I accomplish this? A regex? Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-25 00:41</div>
+            <div class="timeline-body"><p>Ruff can automatically add <code># noqa</code> comments, if that's an acceptable alternative:</p>
+<pre><code class="language-shell">$ ruff check --select F811 --add-noqa path_to_your_file.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2024-12-25 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/unwize">@unwize</a> on 2024-12-25 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff can automatically add <code># noqa</code> comments, if that's an acceptable alternative:</p>
+<p>$ ruff check --select F811 --add-noqa path_to_your_file.py</p>
+</blockquote>
+<p>This would work, but is incomplete for my cases. I'll be adding more files and more calls to the decorator in the future and would like to minimize the upkeep of my solution. An rule to ignore based on regex would be ideal, but I'm unsure if its possible or how to implement it (I can write the regex on my own).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-25 22:01</div>
+            <div class="timeline-body"><p>I would recommend prefixing the function names with an underscore in cases like this. Since you're not actually defining a function that is going to be accessible by name in that scope (even for decorators that work like <code>@property</code> in conjunction with <code>@foo.setter</code>, as long as the decorator actually doesn't return anything).</p>
+<p>That's better documentation for yourself and your users and you also will not get the F811 or similar violations you're seeing this way.</p>
+<p>Type checkers like mypy or pyright will usually also complain about this pattern without the leading underscore, so it's a good idea to get into the habit of doing that.</p>
+<p>I don't think there's actually anything actionable for Ruff here. Something generic like this is rarely going to be very useful and has the potential to accidentally cover actual issues. It's better to develop robust solutions for issues like this on a rule by rule basis, if there's actually some strong motivating use-cases for exemptions/different behavior in some circumstances.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/unwize">@unwize</a> on 2025-01-07 19:53</div>
+            <div class="timeline-body"><p>@Daverball Understood. That's a strong point that I hadn't considered. Thanks for the input, that's the route I'll be going.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @unwize on 2025-01-07 19:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

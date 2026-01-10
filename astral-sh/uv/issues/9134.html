@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to properly setup a mirror for the standalone installer and updater? - astral-sh/uv #9134</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to properly setup a mirror for the standalone installer and updater?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9134">#9134</a>
+        opened by <a href="https://github.com/leodevian">@leodevian</a>
+        on 2024-11-14 23:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-14 23:52</div>
+            <div class="timeline-body"><p>Hello ! Noob here !</p>
+<p>I would like to distribute uv using an internal repository and I don't understand how to set it up as uv expects it.</p>
+<p>The base URL is <code>https://example.com/uv/</code> and it contains folders containing uv versions, such as <code>https://example.com/uv/0.5.1/</code> or <code>https://example.com/uv/0.5.2</code>. Is using <code>INSTALLER_DOWNLOAD_URL=https://example.com/uv/0.5.2</code> okay? It seems that the standalone installer works while the updater fails... Also, would you add the latest standalone installer at the root of the repository (inspired from uv docs)? Does the whole thing seem to be okay with you?</p>
+<p>Thank you for awesome work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 03:06</div>
+            <div class="timeline-body"><p>@gaborbernat -- Sorry to ping but are you able to provide any insight here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-16 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-11-16 03:52</div>
+            <div class="timeline-body"><p>That depends. Did we pull in and release the changes from cargo dist? 😂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 04:07</div>
+            <div class="timeline-body"><p>Haha yeah, I believe so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-11-16 04:18</div>
+            <div class="timeline-body"><p>Do you know when that happened because I need a week to pass to validate it 😂 once that happens I can come back here with the details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 04:32</div>
+            <div class="timeline-body"><p>I believe it was this PR: https://github.com/astral-sh/uv/pull/8873</p>
+<p>Which I believe went out in v0.5: https://github.com/astral-sh/uv/releases/tag/0.5.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-16 14:52</div>
+            <div class="timeline-body"><p>I would like to provide better insights on my issue. Internal IT policies block requests to external websites such as <code>https://github.com</code> or <code>https://api.github.com</code>.</p>
+<p>If I could, I would create a proxy repository for <code>https://github.com/astral-sh/uv/releases/download/</code>. <code>uv self update</code> would still fail, but it would enable installing uv using its standalone installer.</p>
+<pre><code class="language-bash">curl -LsSf https://example.com/uv/0.5.2/uv-installer.sh | env INSTALLER_DOWNLOAD_URL=&quot;https://example.com/uv/0.5.2&quot; sh
+</code></pre>
+<p>As it is impossible and as there is no room for discussion, I have to download your artifacts and upload them myself.</p>
+<p>I tried nesting release artifacts in <code>https://example.com/uv/astral-sh/uv/releases/download/</code> and using <code>UV_INSTALLER_GITHUB_BASE_URL=&quot;https://example.com/uv/&quot;</code> but it does not work. <code>uv self update</code> would download artifacts from <code>https://api.example.com/uv/astral-sh/uv/releases/download/</code>, which does not exist.</p>
+<p>I have no idea if what I'm doing makes any sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-01-17 21:44</div>
+            <div class="timeline-body"><p>I finally got to this today, here's my findings.</p>
+<p>To tell to <code>uv</code> to install the interpreters and itself from the internal mirrors you need to set two environment
+variables, preferably within your shells start script:</p>
+<p>| Environment variable        | Value                                       | Description                                                           |
+| --------------------------- | ------------------------------------------- | --------------------------------------------------------------------- |
+| <code>UV_INSTALLER_GHE_BASE_URL</code> | <code>https://magic.com</code>    | HTTP endpoint hosting uv, allowing easy installation and self update. |
+| <code>UV_PYTHON_INSTALL_MIRROR</code>  | <code>https://magic.com/py</code> | HTTP endpoint hosting standalone builds of the Python interpreter.    |</p>
+<p>Now when it comes to the file layout on the server you are looking at something like:</p>
+<pre><code>api/v3/repos/astral-sh/uv/releases
+astral-sh/uv/releases/download/0.5.17/uv-aarch64-apple-darwin.tar.gz
+astral-sh/uv/releases/download/0.5.17/uv-installer.ps1
+astral-sh/uv/releases/download/0.5.17/uv-installer.sh
+astral-sh/uv/releases/download/0.5.17/uv-x86_64-pc-windows-msvc.zip
+astral-sh/uv/releases/download/0.5.17/uv-x86_64-unknown-linux-gnu.tar.gz
+astral-sh/uv/releases/download/0.5.17/uv-x86_64-unknown-linux-musl.tar.gz
+</code></pre>
+<p>for the <code>uv</code> artifacts and:</p>
+<pre><code>py/20240726/cpython-3.12.4+20240726-aarch64-apple-darwin-install_only_stripped.tar.gz
+py/20240726/cpython-3.12.4+20240726-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+</code></pre>
+<p>for the standalone <code>Python</code> builds.</p>
+<p>Most of the files are straight mirror, minus one: <code>api/v3/repos/astral-sh/uv/releases</code>. This file is something you will need to rewrite, is a list of dictionaries and the following transformation is required:</p>
+<pre><code class="language-python"> for entry in content:
+      for asset in entry[&quot;assets&quot;]:  # fix the download URL to the internal link
+          asset[&quot;browser_download_url&quot;] = asset[&quot;browser_download_url&quot;].replace(
+              &quot;https://github.com&quot;,
+              &quot;https://magic.com&quot;,
+          )
+</code></pre>
+<p>Following that you should be good to go (works for me at least).</p>
+<p>And with that it should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2025-01-18 14:48</div>
+            <div class="timeline-body"><p>Thank you @gaborbernat</p>
+<p>I think that this should solve my issue! I guess that <code>api/v3/repos/astral-sh/uv/releases</code> is the same JSON that I get when I run <code>gh api repos/astral-sh/uv/releases</code>. I'm closing the issue as soon as I can try this at work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2025-01-22 20:53</div>
+            <div class="timeline-body"><p>Turns out that I cannot host the JSON on https://magic.com/api/v3/repos/astral-sh/uv/releases as I am using a Nexus repository. The URL for all repositories must start with https://magic.com/repository/... I guess that I will have to ask my users to make their updates manually from time to time. Thanks anyway, I really appreciate it!</p>
+<p>Should I close the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-01-29 20:24</div>
+            <div class="timeline-body"><p>It feels like a major oversight that we can't handle the case of hosting a nexus mirror repository.  Is there anything we can do to progress this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-01-30 18:54</div>
+            <div class="timeline-body"><p>This is provided by <code>cargo-dist</code>, so if you want some feature request to support your use case, you need to create an issue in their tracker. Make sure to link here the created issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-01-30 22:11</div>
+            <div class="timeline-body"><p>sounds good, I'll reach out to them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-01-30 22:16</div>
+            <div class="timeline-body"><p>Looks like the original feature was added here: https://github.com/axodotdev/cargo-dist/issues/1495 (adding it for reference)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/cargo-dist/issues/1738.html">axodotdev/cargo-dist#1738</a> on 2025-01-30 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2025-02-13 13:48</div>
+            <div class="timeline-body"><p>Do you think that I could bypass this issue using another domain and redirections? I think that I could do something similar that what is done for https://astral.sh but I don't know how to do it... If I could create redirections from https://wizardry.com/astral-sh/uv/releases/download to https://magic.com/repository/uv/ (which would redirect to https://github.com/astral-sh/uv/releases/download) and create https://wizardry.com/api/v3/repos/astral-sh/releases manually, would that work or is it non-sense? I have no idea how to implement this and I would love to know how it was done for https://astral.sh to try it by myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 16:16</div>
+            <div class="timeline-body"><p>We use https://developers.cloudflare.com/rules/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12808.html">astral-sh/uv#12808</a> on 2025-04-10 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/cargo-dist/issues/35.html">astral-sh/cargo-dist#35</a> on 2025-05-09 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2025-05-19 18:15</div>
+            <div class="timeline-body"><p>Due to constraints on which I have no leverage, I cannot implement the solution provided by @gaborbernat, even though I believe that it is optimal.</p>
+<p>Because of it, I developed a wrapper for the <code>uv self update</code> command. It uses an HTTP server and environment variables to redirect the requests of the updater to arbitrary URLs. I think that I'm going to distribute it as a package, so that it can be installed using <code>uv tool install uv-self-update</code> and called as a replacement for the <code>uv self update</code> command.</p>
+<p>It is a hack, I'm not proud of it, but it might help other people in similar situations. Feedback or alternatives that don't involve setting up a server would be appreciated 🙏</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.9&quot;
+# dependencies = [  ]
+# ///
+&quot;&quot;&quot;Update uv to its latest version.&quot;&quot;&quot;
+
+# ruff: noqa: D101, D102, D103
+
+from __future__ import annotations
+
+import os
+import socket
+import subprocess
+import sys
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import Any
+from urllib.parse import urlparse
+
+
+class RequestHandler(BaseHTTPRequestHandler):
+    # Redirect requests to the appropriate URLs.
+    # https://docs.python.org/3/library/http.server.html#http.server.BaseHTTPRequestHandler
+    def do_GET(self) -&gt; None:  # noqa: N802
+        parsed = urlparse(self.path)
+
+        if parsed.path == &quot;/api/v3/repos/astral-sh/uv/releases/latest&quot;:
+            latest_release_url = os.getenv(
+                &quot;LATEST_RELEASE_URL&quot;,
+                &quot;https://api.github.com/repos/astral-sh/uv/releases/latest&quot;,
+            )
+            self.send_response(301)
+            self.send_header(&quot;Location&quot;, latest_release_url)
+            self.end_headers()
+
+        elif parsed.path.startswith(&quot;/astral-sh/uv/releases/download/&quot;):
+            releases_download_url = os.getenv(
+                &quot;RELEASES_DOWNLOAD_URL&quot;,
+                &quot;https://github.com/astral-sh/uv/releases/download/&quot;,
+            )
+            path = parsed.path.partition(&quot;/download/&quot;)[2]
+            self.send_response(301)
+            self.send_header(&quot;Location&quot;, f&quot;{releases_download_url}{path}&quot;)
+            self.end_headers()
+
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    # Suppress the logging of requests.
+    # https://docs.python.org/3/library/http.server.html#http.server.BaseHTTPRequestHandler.log_message
+    def log_message(self, format: str, *args: Any) -&gt; None:  # noqa: A002
+        pass
+
+
+def main(host: str = &quot;127.0.0.1&quot;) -&gt; int:
+    # Request an unused local port from the operating system.
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((host, 0))
+        port = s.getsockname()[1]
+
+    # Start a local HTTP server to intercept requests of the updater.
+    with HTTPServer((host, port), RequestHandler) as server:
+        # Run the server in a daemon thread so that it stops with the main program.
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+
+        try:
+            # Remove environment variables that could interfere with the update.
+            # https://docs.astral.sh/uv/configuration/environment/
+            for env in os.environ:
+                if env.startswith(&quot;UV_INSTALLER_&quot;):
+                    del os.environ[env]
+
+            # Set the updater to use the local server.
+            # https://docs.astral.sh/uv/configuration/environment/#uv_installer_ghe_base_url
+            os.environ[&quot;UV_INSTALLER_GHE_BASE_URL&quot;] = f&quot;http://{host}:{port}&quot;
+
+            # Run the updater and return the exit code.
+            result = subprocess.run((&quot;uv&quot;, &quot;self&quot;, &quot;update&quot;, *sys.argv[1:]))  # noqa: PLW1510, S603
+            return result.returncode
+
+        finally:
+            server.shutdown()
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16519.html">astral-sh/uv#16519</a> on 2025-10-30 16:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:31 UTC
+    </footer>
+</body>
+</html>

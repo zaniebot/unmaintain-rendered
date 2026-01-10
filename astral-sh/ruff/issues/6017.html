@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metaclass methods incorrectly identified as classmethods - astral-sh/ruff #6017</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Metaclass methods incorrectly identified as classmethods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6017">#6017</a>
+        opened by <a href="https://github.com/jamesdow21">@jamesdow21</a>
+        on 2023-07-23 17:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesdow21">@jamesdow21</a> on 2023-07-23 17:24</div>
+            <div class="timeline-body"><p>ruff incorrectly believes that the <code>__call__</code> method in a metaclass should be a classmethod and gives error N804 that the first argument should be named &quot;cls&quot; instead of &quot;self&quot;, but only for immediate subclasses of <code>type</code> or <code>ABCMeta</code> (and possibly others, those were the only two I've tried)</p>
+<p>saving the following in a file named &quot;meta_call.py&quot; and checking with ruff gives an error only on the <code>__call__</code> definitions of <code>BaseMeta</code> and <code>ABCBaseMeta</code></p>
+<pre><code>from abc import ABCMeta
+from typing import Any
+
+
+class BaseMeta(type):
+    def __call__(self, *args: Any, **kwds: Any) -&gt; Any:
+        return super().__call__(*args, **kwds)
+
+
+class SubMeta(BaseMeta):
+    def __call__(self, *args: Any, **kwds: Any) -&gt; Any:
+        return super().__call__(*args, **kwds)
+
+
+class ABCBaseMeta(ABCMeta):
+    def __call__(self, *args: Any, **kwds: Any) -&gt; Any:
+        return super().__call__(*args, **kwds)
+
+
+class SubABCMeta(ABCBaseMeta):
+    def __call__(self, *args: Any, **kwds: Any) -&gt; Any:
+        return super().__call__(*args, **kwds)
+
+
+class AMeta(type):
+    pass
+
+
+class BMeta(AMeta):
+    def __call__(self, *args: Any, **kwds: Any) -&gt; Any:
+        return super().__call__(*args, **kwds)
+
+
+class CMeta(BMeta):
+    def __call__(self, *args: Any, **kwds: Any) -&gt; Any:
+        return super().__call__(*args, **kwds)
+
+</code></pre>
+<p>command: <code>ruff check --select N meta_call.py</code>
+version: 0.0.280
+default settings (i.e. just running from ruff freshly installed into pipx standalone environment)</p>
+<p>ruff's output</p>
+<pre><code>meta_call_err.py:6:18: N804 First argument of a class method should be named `cls`
+meta_call_err.py:16:18: N804 First argument of a class method should be named `cls`
+Found 2 errors.
+</code></pre>
+<p><a href="https://github.com/python/cpython/blob/956b3de816f4b18f6b947a11c8eec6c39f60ea88/Lib/abc.py#L92"><code>ABCMeta</code> itself</a> inherits directly from type and doesn't do anything to modify the definition of <code>__call__</code></p>
+<p><a href="https://github.com/python/typeshed/blob/7d33060e6ae3ebe54462a891f0c566c97371915b/stdlib/builtins.pyi#L195">In typeshed at least</a>, the parameter name for <code>type.__call__</code> is self</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "M" to "Metaclass `__call__` method incorrectly identified as a classmethod" by @jamesdow21 on 2023-07-23 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesdow21">@jamesdow21</a> on 2023-07-23 17:31</div>
+            <div class="timeline-body"><p>I know the choice of <code>cls</code> or <code>self</code> in a metaclass can be a touch confusing, because an instance (expected to be named &quot;self&quot; in an instance method) of a metaclass is a class (which is normally expected to be assigned to &quot;cls&quot;)</p>
+<p>I wasn't sure if this was some special casing for metaclasses in the naming rules, but if so, it doesn't seem to be accounting for the possibility of sub-metaclasses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Metaclass `__call__` method incorrectly identified as a classmethod" to "Metaclass methods incorrectly identified as classmethods" by @jamesdow21 on 2023-07-23 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesdow21">@jamesdow21</a> on 2023-07-23 17:44</div>
+            <div class="timeline-body"><p>After a bit more testing, this is actually much more general for any method on a metaclass derived directly from either <code>type</code> or <code>ABCMeta</code> (which as far as I can tell are the only two metaclasses available from the standard library)</p>
+<pre><code>from abc import ABCMeta
+
+class A(type):
+    def foo(self) -&gt; None:
+        print(&quot;I am an instance method of metaclass A&quot;)
+
+
+class B(A):
+    def bar(self) -&gt; None:
+        print(&quot;I am an instance method of metaclass B&quot;)
+
+
+class C(ABCMeta):
+    def baz(self) -&gt; None:
+        print(&quot;I am an instance method of metaclass C&quot;)
+
+</code></pre>
+<p>ruff reports N804 errors on <code>A.foo</code> and <code>C.baz</code> methods, but not <code>B.bar</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 17:46</div>
+            <div class="timeline-body"><p>I think it is special-cased somewhere, and we likely did that to follow some other tool's conventions, probably <code>pep8-naming</code> which has the same behavior as Ruff on the snippet you just shared:</p>
+<pre><code class="language-console">❯ flake8 foo.py
+foo.py:3:1: E302 expected 2 blank lines, found 1
+foo.py:4:14: N804 first argument of a classmethod should be named 'cls'
+foo.py:14:14: N804 first argument of a classmethod should be named 'cls'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesdow21">@jamesdow21</a> on 2023-07-23 17:54</div>
+            <div class="timeline-body"><p>I don't know rust in particular, but if I understand correctly I believe this snippet is where that special casing is done</p>
+<p>https://github.com/astral-sh/ruff/blob/5dbb4dd8235e389ae299d57fb23e36bcc9995c66/crates/ruff_python_semantic/src/analyze/function_type.rs#L46-L52</p>
+<p>Looks like it is indeed special casing exactly &quot;type&quot; or &quot;abc.ABCMeta&quot; as the direct parent class</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-24 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15143.html">astral-sh/ruff#15143</a> on 2024-12-26 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13698.html">astral-sh/ruff#13698</a> on 2024-12-26 09:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

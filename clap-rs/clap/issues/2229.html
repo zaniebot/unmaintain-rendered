@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`number_of_values(n)` incorrectly allows argument counts that are integer multiples of `n` - clap-rs/clap #2229</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`number_of_values(n)` incorrectly allows argument counts that are integer multiples of `n`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2229">#2229</a>
+        opened by <a href="https://github.com/elldritch">@elldritch</a>
+        on 2020-11-28 07:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/elldritch">@elldritch</a> on 2020-11-28 07:24</div>
+            <div class="timeline-body"><h2>Reproducing the bug</h2>
+<p>Okay, this one is a bit of a headscratcher. I've been digging into this with Rust <code>1.48.0</code> and Clap <code>3.0.0-beta.2</code>, although I bet <code>2.x.x</code> suffers from the same problem given its definition of <code>struct MatchedArg</code>.</p>
+<p>First, a test case:</p>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {
+    let m = App::new(&quot;multiple_values&quot;)
+        .arg(
+            Arg::new(&quot;pos&quot;)
+                .about(&quot;multiple positionals&quot;)
+                .number_of_values(3),
+        )
+        .try_get_matches_from(vec![
+            &quot;myprog&quot;, &quot;val1&quot;, &quot;val2&quot;, &quot;val3&quot;, &quot;val4&quot;, &quot;val5&quot;, &quot;val6&quot;,
+        ]);
+
+    assert!(m.is_err()); // This panics, because `m.is_err() == false`.
+    assert_eq!(m.unwrap_err().kind, ErrorKind::WrongNumberOfValues);
+}
+</code></pre>
+<p>This test case should obviously fail: specifying <code>number_of_values(3)</code> should not allow a successful parse if I pass 6 values. If you play around with this, you find a couple of other interesting symptoms. In general, if I call <code>number_of_values(x)</code> and pass <code>N</code> values:</p>
+<ul>
+<li>When <code>N == 0</code>, the parse incorrectly succeeds. (This is because <code>N % x == 0</code> - see below where I explain what's going on here).</li>
+<li>When <code>x &gt; 1</code>:<ul>
+<li>When <code>0 &lt; N &lt; x</code>, the parse correctly fails.</li>
+<li>When <code>N == x</code>, the parse correctly succeeds.</li>
+<li>When <code>N &gt; x &amp;&amp; N % x == 0</code>, the parse incorrectly succeeds.</li>
+</ul>
+</li>
+<li>When <code>x == 1 &amp;&amp; N &gt; 1</code>, the parse correctly fails, but returns an <code>UnknownArgument</code> error instead of the <code>WrongNumberOfValues</code> error, which is interesting but actually I think correct (because the parser is trying to interpret the extra value as a new, unknown argument rather than an additional value to the previous argument).</li>
+</ul>
+<p>This is also different from setting <code>max_values(3)</code> and <code>min_values(3)</code>, which does what I want (only allow exactly three argument values), but also does so incorrectly (by ignoring multiple occurrences altogether!) and renders a different error message (<code>max_values</code> returns <code>TooManyValues</code> and <code>min_values</code> returns <code>TooFewValues</code> instead of <code>WrongNumberOfValues</code>).</p>
+<h2>What's going on?</h2>
+<p>The issue is that validation of argument counts for multiple values and multiple occurrences of arguments is fundamentally broken because Clap doesn't store which argument values were matched in which occurrences.</p>
+<p>I have some failing test cases set up in my fork at https://github.com/clap-rs/clap/compare/master...liftM:bug/number-of-values-multioccurrence. I tried to put together a PR patch, but I'm not sure I understand all the implications for how multiple values and occurrences are handled.</p>
+<p>For some reason, calling <code>number_of_values</code> sends us down the path to https://github.com/clap-rs/clap/blob/08b2f4d4289eca8a9225bbc56d5a5ad1e99e38e1/src/build/arg/mod.rs#L4219-L4239 and sets <code>ArgSettings::MultipleValues</code> and <code>ArgSettings::MultipleOccurrences</code>. When the <code>number_of_values</code> validator then runs, it goes down the code path at https://github.com/clap-rs/clap/blob/08b2f4d4289eca8a9225bbc56d5a5ad1e99e38e1/src/parse/validator.rs#L445-L466 which checks that <code>((ma.vals.len() as u64) % num) != 0</code>.</p>
+<p>I <em>assume</em> this is happening as a hack in order to support multiple values and multiple occurrences. Unfortunately, this doesn't work:</p>
+<ul>
+<li>Documentation on the meaning of <code>MultipleValues</code> seems to be incorrect (see #1828), but I <em>think</em> the intention of this setting is to allow multiple values to be passed into a single occurrence of an argument.</li>
+<li>The documentation for <a href="https://docs.rs/clap/3.0.0-beta.2/clap/struct.Arg.html#method.multiple_occurrences"><code>MultipleOccurrences</code></a> says that this setting is intended to allow multiple occurrences of an argument.</li>
+<li>Therefore, I think the <em>correct, intended</em> behavior for validating argument counts should be: (1) if <code>MultipleOccurrences</code> is set, allow any number of occurrences per argument, and (2) if <code>MultipleValues</code> is set, allow a validated number of values <em>per argument occurrence.</em></li>
+</ul>
+<p>Unfortunately, the current definition of <code>MatchedArg</code> at https://github.com/clap-rs/clap/blob/08b2f4d4289eca8a9225bbc56d5a5ad1e99e38e1/src/parse/matches/matched_arg.rs#L12-L18 makes this impossible, because we cannot determine which values were passed through which occurrence. I believe the correct fix here is to refactor <code>MatchedArg</code> so that we not only <em>count</em> occurrences, but we in fact store each vector of occurrences (so that we can validate the correct <em>count of values per occurrence</em>).</p>
+<p>Alternatively, another option is to make the design call to drop support for either multiple values or multiple occurrences. I think #2031 makes a pretty compelling argument that supporting <em>both</em> of them is confusing for both developers and users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @elldritch on 2020-11-28 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`number_of_values` incorrectly allows argument counts that are integer multiples handles combinations of _multiple values_ and _multiple occurrences_ of an argument" to "`number_of_values(n)` incorrectly allows argument counts that are integer multiples of `n`" by @elldritch on 2020-11-28 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elldritch">@elldritch</a> on 2020-11-28 08:00</div>
+            <div class="timeline-body"><p>~~Oh no, I accidentally hit shift-enter. Give me a moment to fix up the issue.~~</p>
+<p>Issue is ready now. Sorry for the extra noise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-11-28 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-11-28 11:52</div>
+            <div class="timeline-body"><p>Yeah, I still need to go through all the <code>multiple</code> related issues and do a proper design for v3. Just short of time. If someone wants to pick this up and do a proper design and implement it, I would really appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2297.html">clap-rs/clap#2297</a> on 2021-01-20 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pop-os/system76-power/pulls/197.html">pop-os/system76-power#197</a> on 2021-01-26 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2350.html">clap-rs/clap#2350</a> on 2021-02-16 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-02-18 21:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add prototype implementation of wheel variant specification - astral-sh/uv #12203</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add prototype implementation of wheel variant specification</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12203">#12203</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-03-16 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-16 16:35</div>
+            <div class="timeline-body"><p>(Branch taken over by @konstin)</p>
+<p>This branch contains the prototype implementation of wheel variants proposal. It support <code>uv pip install</code> and <code>uv sync</code> for basic test cases and torch. Included are:</p>
+<ul>
+<li>Installing and running providers</li>
+<li>Variant ordering</li>
+<li>Basic lockfile support</li>
+<li>Static providers, with a custom format</li>
+<li>Variant markers markers</li>
+<li>Basic universal resolution</li>
+</ul>
+<p>It does not implement <code>abi_dependency</code> yet, nor does it consider whether features are multi-value or single value.</p>
+<p>Naturally, it is not ready for any serious usage yet. Expect that things break, please report problems.</p>
+<p><strong>release</strong> Installing the latest release, potentially a bit behind this branch:</p>
+<p>Unix:</p>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | INSTALLER_DOWNLOAD_URL=https://wheelnext.astral.sh/v0.0.2 sh
+</code></pre>
+<p>Windows:</p>
+<pre><code>powershell -c { $env:INSTALLER_DOWNLOAD_URL = 'https://wheelnext.astral.sh/v0.0.3'; irm https://astral.sh/uv/install.ps1 | iex }
+</code></pre>
+<p><strong>latest</strong> The best way to test is to clone the repo, checkout the branch (charlie/wheel-variant) and run:</p>
+<pre><code>export RUST_LOG=uv_distribution_types=debug,uv_distribution::distribution_database=debug
+cargo run pip install torch --index https://wheelnext.github.io/variants-index/v0.0.3/ --refresh
+</code></pre>
+<p>If you don’t have Rust installed, there's a bootstrapping process from current uv, though it's slow:</p>
+<pre><code>export RUST_LOG=uv_distribution_types=debug,uv_distribution::distribution_database=debug
+uvx --from &quot;uv @ git+https://github.com/astral-sh/uv@charlie/wheel-variant&quot; uv pip install torch --index https://wheelnext.github.io/variants-index/v0.0.3/ --refresh
+</code></pre>
+<p>To use a static variant declaration, i.e. not query any providers, you pass a JSON file by settings its path in <code>UV_VARIANT_LOCK</code>. It assumes that you don't want to run any additional providers with it, i.e. no third party code execution, unless you set <code>UV_VARIANT_LOCK_INCOMPLETE=1</code>. The file format has to follow the schema below:</p>
+<pre><code class="language-toml">[metadata]
+created-by = &quot;tool-that-created-the-file&quot; # Freeform string
+version = &quot;0.1&quot; # PEP 440 version
+
+[[provider]]
+resolved = [&quot;cpu_level_provider==0.1&quot;]
+plugin-api = &quot;cpu_level_provider&quot;
+namespace = &quot;cpu_level&quot;
+
+[provider.properties]
+x86_64_level = [&quot;v1&quot;, &quot;v2&quot;]
+
+[[provider]]
+resolved = [&quot;nvidia-variant-provider==0.0.1&quot;]
+plugin-api = &quot;nvidia_variant_provider.plugin:NvidiaVariantPlugin&quot;
+namespace = &quot;nvidia&quot;
+
+[provider.properties]
+cuda_version_lower_bound = [&quot;12.8&quot;]
+sm_arch = [&quot;100_real&quot;, &quot;120_real&quot;, &quot;70_real&quot;, &quot;75_real&quot;, &quot;80_real&quot;, &quot;86_real&quot;, &quot;90_real&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-03-16 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-test</span> added by @charliermarsh on 2025-03-16 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/warsawnv">@warsawnv</a> on 2025-03-17 22:30</div>
+            <div class="timeline-body"><p>The <code>build-wheels.sh</code> step gives:</p>
+<pre><code>Successfully built wheels/provider_fictional_hw-1.0.0-py3-none-any.whl
++ uv build --out-dir ./wheels --project ./vendor/variantlib
+warning: Failed to parse `pyproject.toml` during settings discovery:
+  TOML parse error at line 101, column 11
+      |
+  101 | [[tool.uv.variant]]
+      |           ^^^^^^^
+  unknown field `variant`, expected one of `required-version`, `native-tls`, `offline`, `no-cache`, `cache-dir`, `preview`, `python-preference`, `python-downloads`, `concurrent-downloads`, `concurrent-builds`, `concurrent-installs`, `index`, `index-url`, `extra-index-url`, `no-index`, `find-links`, `index-strategy`, `keyring-provider`, `allow-insecure-host`, `resolution`, `prerelease`, `fork-strategy`, `dependency-metadata`, `config-settings`, `no-build-isolation`, `no-build-isolation-package`, `exclude-newer`, `link-mode`, `compile-bytecode`, `no-sources`, `upgrade`, `upgrade-package`, `reinstall`, `reinstall-package`, `no-build`, `no-build-package`, `no-binary`, `no-binary-package`, `python-install-mirror`, `pypy-install-mirror`, `publish-url`, `trusted-publishing`, `check-url`, `pip`, `cache-keys`, `override-dependencies`, `constraint-dependencies`, `build-constraint-dependencies`, `environments`, `required-environments`, `conflicts`, `workspace`, `sources`, `managed`, `package`, `default-groups`, `dev-dependencies`, `build-backend`
+
+</code></pre>
+<p>But then it seems to succeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 22:36</div>
+            <div class="timeline-body"><p>Ah sorry. I’ll update the instructions. You can either remove that section from the pyproject.toml, then run the build script, then re-add it. Or run cargo build, then point the build script to ./target/debug/uv instead of your global uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/warsawnv">@warsawnv</a> on 2025-03-17 22:36</div>
+            <div class="timeline-body"><p>And the <code>cargo run</code> step fails with:</p>
+<pre><code>     Running `target/debug/uv pip install dummy_project --find-links ./wheels --extra-index-url 'https://mockhouse.wheelnext.dev/pep-xxx-variants/' --no-cache --reinstall`
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/warsawnv">@warsawnv</a> on 2025-03-17 22:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Or run cargo build, then point the build script to ./target/debug/uv instead of your global uv</p>
+</blockquote>
+<p>I had a feeling about that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 22:38</div>
+            <div class="timeline-body"><p>You can run uv venv prior to the cargo run command to create a virtual environment in the current working directory. cargo run will then install into that virtual environment by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/warsawnv">@warsawnv</a> on 2025-03-17 22:43</div>
+            <div class="timeline-body"><pre><code>% git diff 
+diff --git a/build-wheels.sh b/build-wheels.sh
+index 96d89524d..193eed495 100755
+--- a/build-wheels.sh
++++ b/build-wheels.sh
+@@ -13,12 +13,14 @@
+ 
+ set -euxo pipefail
+ 
++UV=./target/debug/uv
++
+ # Create the destination directory if it doesn't exist.
+ rm -rf wheels
+ mkdir wheels
+ 
+ # Build the wheels for the fictional hardware provider package.
+-uv build --out-dir ./wheels --project ./vendor/provider_fictional_hw
++$UV build --out-dir ./wheels --project ./vendor/provider_fictional_hw
+ 
+ # Build the wheels for the variant library.
+-uv build --out-dir ./wheels --project ./vendor/variantlib
++$UV build --out-dir ./wheels --project ./vendor/variantlib
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seemethere">@seemethere</a> on 2025-03-17 23:06</div>
+            <div class="timeline-body"><pre><code class="language-toml">[[tool.uv.variant]]
+backend = &quot;provider_fictional_hw.plugin:build&quot;
+requires = [&quot;provider_fictional_hw&quot;]
+</code></pre>
+<p>For this configuration I'm curious if this would be end-user facing or would this be package maintainer facing?</p>
+<p>From my POV I feel like this would be best served at the package maintainer side where a potential PyTorch packaging config might look like:</p>
+<pre><code class="language-toml">[[tool.uv.variant]]
+backend = &quot;torch.build.variants:detect_variants&quot;
+requires = [&quot;cuda_variants&quot;, &quot;rocm_variants&quot;, &quot;xpu_variants&quot;, &quot;your_fav_hardware_variants&quot;]
+</code></pre>
+<p>fwiw I don't know if requiring people to install variant plugins themselves is necessarily going to be a way to adopt this heavily since this should be something that reduces the friction towards someone installing the correct package for their machine instead of them having to remember which variant plugins they're installing vs. not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 23:11</div>
+            <div class="timeline-body"><p>I was thinking it would be declared by the package maintainer, but possibly overridable by the end user (so, like, if they don't care about <code>your_fav_hardware_variants</code>, they can &quot;skip&quot; that variant provider).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 23:15</div>
+            <div class="timeline-body"><p>(Applied your changes, thanks @warsawnv.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wheelnext/pep_xxx_wheel_variants/issues/11.html">wheelnext/pep_xxx_wheel_variants#11</a> on 2025-03-19 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-23 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-filename/src/lib.rs</code>:105 on 2025-07-23 20:18</div>
+            <div class="timeline-body"><p>Note: I'd want to resolve this prior to merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-23 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/Cargo.toml</code>:46 on 2025-07-23 20:19</div>
+            <div class="timeline-body"><p>Good to resolve prior to merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-07-23 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:681 on 2025-07-23 20:19</div>
+            <div class="timeline-body"><p>What's this mean? I see it elsewhere too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-07-23 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:681 on 2025-07-23 20:40</div>
+            <div class="timeline-body"><p>It's a notion that this kind of mutability method shouldn't exist on this type. Here it means that we should ideally refactor it in a way that doesn't edit the <code>Candidate</code>; You can think of it as marker that this should be refactored prior to merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wheelnext/variant-repack/pulls/4.html">wheelnext/variant-repack#4</a> on 2025-09-23 22:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

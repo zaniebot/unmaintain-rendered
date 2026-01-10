@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -&gt; B`, `B -&gt; A`, hinting at name shadowing - astral-sh/uv #8148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -&gt; B`, `B -&gt; A`, hinting at name shadowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8148">#8148</a>
+        opened by <a href="https://github.com/pawamoy">@pawamoy</a>
+        on 2024-10-12 17:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-12 17:17</div>
+            <div class="timeline-body"><p>It happens in several of my projects now. Proper issue as a follow-up of #7329.</p>
+<p>Example:</p>
+<ul>
+<li>CI job on tag 0.26.2: https://github.com/mkdocstrings/mkdocstrings/actions/runs/11307283146/job/31448849897 (&quot;Install dependencies&quot; step OK</li>
+<li>CI job on same commit (triggered via regular push): https://github.com/mkdocstrings/mkdocstrings/actions/runs/11307282883/job/31448849515 -&gt; <strong>&quot;Install dependencies&quot; step fails</strong></li>
+</ul>
+<pre><code>Using CPython 3.10.15 interpreter at: /opt/hostedtoolcache/Python/3.10.15/x64/bin/python
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of mkdocstrings-python-legacy are
+      available:
+          mkdocstrings-python-legacy&lt;=0.2.1
+          mkdocstrings-python-legacy==0.2.2
+          mkdocstrings-python-legacy==0.2.3
+          mkdocstrings-python-legacy==0.2.4
+      and mkdocstrings-python-legacy&gt;=0.2.1,&lt;=0.2.2 depends on your project,
+      we can conclude that mkdocstrings-python-legacy&gt;=0.2.1,&lt;0.2.3 depends on
+      your project.
+      And because mkdocstrings-python-legacy&gt;=0.2.3 depends on your project,
+      we can conclude that mkdocstrings-python-legacy&gt;=0.2.1 depends on your
+      project.
+      And because mkdocstrings[python-legacy] depends on
+      mkdocstrings-python-legacy&gt;=0.2.1 and your project requires
+      mkdocstrings[python-legacy], we can conclude that your projects's
+      requirements are unsatisfiable.
+
+      hint: The package `mkdocstrings-python-legacy` depends on the package
+      `mkdocstrings` but the name is shadowed by your project. Consider
+      changing the name of the project.
+</code></pre>
+<p>Here uv claims that since <code>mkdocstrings-python-legacy</code> depends on <code>mkdocstrings</code>, and my project is named <code>mkdocstrings</code>, it cannot resolve deps. My project <em>is</em> <code>mkdocstrings</code>, it's not shadowing it :sweat_smile:</p>
+<p>In this case, <code>mkdocstrings</code> depends on <code>mkdocstrings-python-legacy</code> as an extra (optional dependency).</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+python-legacy = [&quot;mkdocstrings-python-legacy&gt;=0.2.1&quot;]
+</code></pre>
+<p>But I get the same error when project <code>A</code> depends on <code>B</code> as a <em>development</em> dependency.</p>
+<p>I'm not sure if the non-editable mode is the issue here, as I cannot reproduce this behavior locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-12 17:24</div>
+            <div class="timeline-body"><p>Here are more verbose logs: https://github.com/mkdocstrings/griffe/actions/runs/11307459194/job/31449208076.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-12 17:27</div>
+            <div class="timeline-body"><p>Ah, maybe it's because my <code>version</code> is dynamic, and since the project is shallow (tags not fetched), my build backend (pdm-backend) ends up computing the version as <code>0.1</code>, which is clearly inferior to what the dev/extra-dependency requires.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-12 17:29</div>
+            <div class="timeline-body"><p>Yeah that's probably it. So, possible improvement for uv's error message: show what's the project computed version, and show that it's what is actually causing the resolution failure. Or maybe uv could ignore the fact that the built project has a version incompatible with what a dependency is requiring? Maybe a &quot;responsible adult&quot; move, maybe a footgun.</p>
+<p>As for the immediate solution, I guess I'll just always fetch tags in CI! Feel free to close :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-12 17:38</div>
+            <div class="timeline-body"><p>Wait, no, I actually fetch all tags in this job :weary: Lemme try again with different options on the checkout action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-12 17:41</div>
+            <div class="timeline-body"><p>OK so my previous technique for fetching tags was probably not working well:</p>
+<pre><code class="language-yaml">    - name: Fetch all tags
+      run: git fetch --depth=1 --tags
+</code></pre>
+<p>I replaced it with:</p>
+<pre><code class="language-yaml">    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+</code></pre>
+<p>...and now it works :hot_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-14 14:02</div>
+            <div class="timeline-body"><p>Thank you for following up 🙏</p>
+<p>Is there a bug in the error message hint then? Or is this resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-14 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-10-14 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-14 14:37</div>
+            <div class="timeline-body"><p>I wouldn't call it a bug, I would say it is confusing. Seeing this error message didn't help me understand what was going on, and the &quot;name shadowing&quot; hint is... incorrect? As mentioned above, I'm not shadowing a dependency name, the project and the dependency are the <em>same project</em>.</p>
+<p>So my recommendation, if this is actually what's happening, and if it's possible, is to update the error message by showing that the computed project A version (current project, built for a non-editable install), and the version of project A required by a (dev-)dependency are not compatible. Bonus point if uv detects that the <code>version</code> is dynamic and the Git repository shallow, suggesting to fetch all commits and tags to build the project with the correct version.</p>
+<pre><code>   × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of X are
+      available:
+          X&lt;=1.2.3
+          X==1.2.3
+          etc.
+      and X&gt;=1.2.3,&lt;=1.2.4 depends on your project,
+      we can conclude that X&gt;=1.2.3,&lt;=1.2.4 depends on
+      your project.
+      And because your project version is 0.1, and X depends on your project&gt;=4.5.6,
+      we can conclude that your projects' requirements are unsatisfiable.
+
+      hint: Your project version is computed dynamically, and your Git repository is shallow
+      -&gt; you might need to fetch all commits and tags to compute the up-to-date version.
+</code></pre>
+<p>(well, something like this)</p>
+<p>My alternative suggestion above is allow incompatibility between the current project version and the version required by dependencies, and install the current project anyway, always, maybe just showing a warning:</p>
+<pre><code>Your project depends on X&gt;=1.2.3, which depends on your project&gt;=7.8.9,
+but your project is currently in v4.5.6, which is incompatible.
+uv will install your project anyway, but things might break.
+
+hint: Your project version is computed dynamically, and your Git repository is shallow
+-&gt; you might need to fetch all commits and tags to compute the up-to-date version.
+</code></pre>
+<p>Let me know if anything is unclear :relaxed:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pawamoy/duty/issues/23.html">pawamoy/duty#23</a> on 2024-10-23 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-23 12:18</div>
+            <div class="timeline-body"><p>One argument in favor of allowing the current project version to be imcompatible with the version required by a dependency is that when forking a repository on GitHub, tags are not copied over. Then when triggering CI on your fork, the checkout action can't fetch tags since they don't exist, and uv fails to resolve. To fix this, authors of the fork have to explicitly fetch tags from upstream and push them back into their fork.</p>
+<p>Or that's an argument in favor of me dropping dynamic versioning and using a static, auto-bumped version for each release :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv refuses to resolve deps with --no-editable, untagged commit, and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing" to "uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing" by @pawamoy on 2024-11-01 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mkdocstrings/mkdocstrings/issues/706.html">mkdocstrings/mkdocstrings#706</a> on 2024-11-01 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-01 14:13</div>
+            <div class="timeline-body"><p>I have updated the title, and built a reproduction.</p>
+<pre><code class="language-bash">git clone git@github.com:pawamoy/repro-uv-8148-a
+cd repro-uv-8148-a
+uv sync  # works fine
+
+# Now we clone a fork of the same project,
+# meaning we don't have the Git tags.
+cd ..
+git clone git@github.com:pawamoy-forks/repro-uv-8148-a repro-uv-8148-a-fork
+cd repro-uv-8148-a-fork
+uv sync  # fails with the following output
+</code></pre>
+<pre><code class="language-console">% uv sync
+Using CPython 3.12.7 interpreter at: /home/pawamoy/.basher-packages/pyenv/pyenv/versions/3.12.7/bin/python
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only repro-uv-8148-b==0.1.1 is available and repro-uv-8148-b==0.1.1 depends on your project, we can conclude that all versions of repro-uv-8148-b depend on
+      your project.
+      And because repro-uv-8148-a:dev depends on repro-uv-8148-b and your project depends on repro-uv-8148-a:dev, we can conclude that your project's requirements are
+      unsatisfiable.
+
+      hint: The package `repro-uv-8148-b` depends on the package `repro-uv-8148-a` but the name is shadowed by your project. Consider changing the name of the project.
+</code></pre>
+<p>I'd love to have a flag (CLI flag or config option in pyproject.toml or both) to tell uv that I'm not shadowing the dependency's name, that they're the same thing, and that I want to install the current project anyway, even if its built version isn't compatible with what the dependency requires.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pdm-project/pdm-backend/issues/269.html">pdm-project/pdm-backend#269</a> on 2024-11-14 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-14 13:34</div>
+            <div class="timeline-body"><p>I thought about and tried using dependency overrides, which solves the resolution issue, but makes uv actually install the current project as a dependency instead of as an editable install.</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;mkdocstrings&gt;=0&quot;]
+</code></pre>
+<p>I also tried configuring a source for <code>mkdocstrings</code> (which, again, is the current project) like so:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+mkdocstrings = { workspace = true }
+</code></pre>
+<p>...and:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+mkdocstrings = { path = &quot;.&quot;, editable = true }
+</code></pre>
+<p>...but it is still not installed as editable. The dependency override seems to take precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-14 13:45</div>
+            <div class="timeline-body"><p>Haha, I then tried this:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;mkdocstrings @ .&quot;]
+</code></pre>
+<p>...which failed with this message:</p>
+<pre><code>warning: Failed to parse `pyproject.toml` during settings discovery:
+  TOML parse error at line 88, column 25
+     |
+  88 | override-dependencies = [&quot;mkdocstrings @ ./&quot;]
+     |                         ^^^^^^^^^^^^^^^^^^^^^
+  relative path without a working directory: ./
+  mkdocstrings @ ./
+                 ^^
+
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 88, column 25
+   |
+88 | override-dependencies = [&quot;mkdocstrings @ ./&quot;]
+   |                         ^^^^^^^^^^^^^^^^^^^^^
+relative path without a working directory: ./
+mkdocstrings @ ./
+</code></pre>
+<p>And then tried this:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;mkdocstrings @ ${PWD}&quot;]
+</code></pre>
+<p>...which worked :tada: but looks so weird haha</p>
+<p>Overriding self with self :melting_face: It makes sense in a way: &quot;yes, use self project as is, don't pay attention to what others say about it&quot;.</p>
+<p>So, in the end, I think you can close! A paragraph in the docs could be nice (but it feels super niche too, so maybe not worth it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-14 16:00</div>
+            <div class="timeline-body"><p>One issue with using <code>${PWD}</code> is that uv commands will only work in the root of the repo. Not an issue in my case though, I usually only run commands in the root. Oh, it might not work on Windows, too :thinking: Could uv provide a <code>PROJECT_ROOT</code> env var that I could use instead of <code>PWD</code> :thinking:?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-14 16:17</div>
+            <div class="timeline-body"><p>Hmm, uv already supports this env var, although it's undocumented (or at least searching for it in the docs doesn't yield anything).</p>
+<p>What I'm not sure to understand is that it seems to be equivalent to PWD: if I enter a subdirectory and run <code>uv lock</code> from there, it says &quot;can't build because subdirectory is not a Python project&quot;. Passing <code>--project ..</code> or <code>--project /abs/path/to/project</code> doesn't change anything. Is this because I'm not using workspaces/monorepos and therefore <code>PROJECT_ROOT</code> defaults to the CWD somehow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 17:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, uv already supports this env var, although it's undocumented (or at least searching for it in the docs doesn't yield anything).</p>
+</blockquote>
+<p>I think we need to support that to build projects that use Hatch (but otherwise it's not really a first-class thing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 17:07</div>
+            <div class="timeline-body"><p>I guess what you're looking for here is for us to respect sources on top of overrides? I'm sort of surprised we don't, honestly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-14 18:54</div>
+            <div class="timeline-body"><p><code>override-dependencies</code> works for me, I'm just looking for something more robust than <code>${PWD}</code> when specifying the path :slightly_smiling_face: <code>${PROJECT_ROOT}</code> is already great, even though I'm a bit confused by its behavior :smile:</p>
+<p>If you think there's some room for improvement in the way uv handles overrides and sources, I'm happy to help any way I can! Just to be clear, I'm only using overrides now, not declaring any source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-15 13:49</div>
+            <div class="timeline-body"><p>I prefer declaring this:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;mkdocstrings @ ${PROJECT_ROOT}&quot;]
+</code></pre>
+<p>Than this:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;mkdocstrings&gt;=0&quot;]
+
+[tool.uv.sources]
+mkdocstrings = { workspace = true }
+# or mkdocstrings = { path = &quot;${PROJECT_ROOT}&quot;, editable = true }
+</code></pre>
+<p>...because even if the result is the same, it <em>feels</em> like the latter will completely disregard any constraints incompatibilities in dependencies regarding <code>mkdocstrings</code> (<code>&gt;=0</code>), while the former will only &quot;force&quot; installation of the current project, while still checking that dependencies have compatible constraints about <code>mkdocstrings</code>. I don't think it's the case though, and both options completely ignore constraints regarding <code>mkdocstrings</code>. Even then, the first option is more appealing, as it requires less things to declare.</p>
+<p>(I hope it's fine that I commented so much on this issue! Not trying to get your attention, just documenting my journey and thought process :smile:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-15 14:38</div>
+            <div class="timeline-body"><p>Hmm wait, need to confirm. ~~Ah, one more issue, with such an override (<code>&quot;mkdocstrings @ ${PROJECT_ROOT}&quot;</code>), the <code>--no-editable</code> flag in <code>uv sync</code> has no effect anymore :confused:~~</p>
+<p>Yeah so it's worse than that, the override actually prevents the project to be installed in editable mode. Damn I'm going in circles :rofl:</p>
+<p>This might be an argument favor in of the second option above, if its changed to support editable installs again, thanks to sources.</p>
+<p>UPDATE: I've updated https://github.com/pawamoy/repro-uv-8148-a to document all this in the readme.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-24 17:31</div>
+            <div class="timeline-body"><p>In the end you guessed right @zanieb: I think the correct thing to declare on my end is this:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;mkdocstrings @ ${PROJECT_ROOT}&quot;]
+
+[tool.uv.sources]
+mkdocstrings = { path = &quot;${PROJECT_ROOT}&quot;, editable = true }
+</code></pre>
+<p>(or some simplification of this, if such a simplification is already possible, or deemed useful enough to become supported in the future)</p>
+<p>uv then just needs to respect the sources on top of overrides, like you said :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 23:36</div>
+            <div class="timeline-body"><p>@charliermarsh, wdyt about changing this interaction of sources and overrides?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9258.html">astral-sh/uv#9258</a> on 2024-11-26 00:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-26 02:59</div>
+            <div class="timeline-body"><p>Yeah that makes sense... It seems like sources should apply to overrides and constraints too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-26 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9446.html">astral-sh/uv#9446</a> on 2024-11-26 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9455.html">astral-sh/uv#9455</a> on 2024-11-26 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-27 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-27 17:11</div>
+            <div class="timeline-body"><p>Thank you so much! I played with main branch, here are my findings.</p>
+<p>This works:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;repro-uv-8148-a&quot;]
+
+[tool.uv.sources]
+repro-uv-8148-a = { workspace = true }
+</code></pre>
+<p>(and by &quot;this works&quot; I mean no conflicts, <code>repro-uv-8148-b</code> installed and <code>repro-uv-8148-a</code> v0.1 installed in editable mode)</p>
+<p>But none of the following work (which is fine, just had to find the right combination with trial and error):</p>
+<table><tr><td>
+
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;repro-uv-8148-a @ ${PROJECT_ROOT}&quot;]
+
+[tool.uv.sources]
+repro-uv-8148-a = { workspace = true }
+</code></pre>
+</td><td>
+
+<pre><code class="language-console">% uv sync                              
+error: Failed to parse entry: `repro-uv-8148-a`
+  Caused by: Can't combine URLs from both `project.dependencies` and `tool.uv.sources`
+</code></pre>
+</td></tr></table>
+<table><tr><td>
+
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;repro-uv-8148-a @ ${PROJECT_ROOT}&quot;]
+
+[tool.uv.sources]
+repro-uv-8148-a = { path = &quot;${PROJECT_ROOT}&quot;, editable = true }
+</code></pre>
+</td><td>
+
+<pre><code class="language-console">% uv sync
+error: Failed to parse entry: `repro-uv-8148-a`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+</td></tr></table>
+<table><tr><td>
+
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;repro-uv-8148-a&quot;]
+
+[tool.uv.sources]
+repro-uv-8148-a = { path = &quot;${PROJECT_ROOT}&quot;, editable = true }
+</code></pre>
+</td><td>
+
+<pre><code class="language-console">% uv sync
+error: Failed to parse entry: `repro-uv-8148-a`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+</td></tr></table>
+
+<p>Thank you again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-27 17:25</div>
+            <div class="timeline-body"><p>In the latter two cases, did you have <code>repro-uv-8148-a</code> listed as a workspace member?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-27 17:32</div>
+            <div class="timeline-body"><p>No I didn't, because I didn't think it made sense, since <code>repro-uv-8148-a</code> is the actual, main, current project. But if I add this anyway:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [&quot;${PROJECT_ROOT}&quot;]  # or members = [&quot;.&quot;]
+</code></pre>
+<p>...I still get the &quot;Package is not included as workspace package in <code>tool.uv.workspace</code>&quot; error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-27 17:36</div>
+            <div class="timeline-body"><p>Oh thanks. What do I need to do exactly to reproduce the latter two cases? Clone <code>repro-uv-8148-a</code>, then what?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-27 17:38</div>
+            <div class="timeline-body"><pre><code class="language-bash">git clone https://github.com/pawamoy-forks/repro-uv-8148-a
+cd repro-uv-8148-a
+</code></pre>
+<p>Apply this patch:</p>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index 40277fc..769d33c 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -20,6 +20,15 @@ version = {source = &quot;scm&quot;}
+ package-dir = &quot;src&quot;
+ 
+ [tool.uv]
+-dev-dependencies = [
++override-dependencies = [&quot;repro-uv-8148-a&quot;]
++
++[tool.uv.sources]
++repro-uv-8148-a = { path = &quot;${PROJECT_ROOT}&quot;, editable = true }
++
++[tool.uv.workspace]
++members = [&quot;${PROJECT_ROOT}&quot;]
++
++[dependency-groups]
++dev = [
+     &quot;repro-uv-8148-b&gt;=0.1&quot;,
+ ]
+</code></pre>
+<p>Run <code>uv sync</code> 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-27 17:44</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-27 18:23</div>
+            <div class="timeline-body"><p>So in this case, you're providing a source for the package itself? (Maybe I missed all the context above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-27 18:41</div>
+            <div class="timeline-body"><p>Haha yes you probably missed the important bits in the wall of comments I posted above 😄</p>
+<p>So, let say I'm working on project <code>a</code>. It dev-depends on <code>b</code>. And <code>b</code> depends back on <code>a</code>. Resolution conflicts can therefore happen since uv checks that <code>a</code>, the project I'm in, builds to a version that is compatible with <code>b</code>'s constraints on <code>a</code>.</p>
+<p>The issue here is that my version is dynamic, and based on Git tags (pdm-backend deals with this). When there are no tags (fork, CI), pdm-backend computes version 0.1.devblabla, which is <em>incompatible</em> with what <code>b</code> requires.</p>
+<p>Hence why I'm trying to tell uv to <em>ignore</em> constraints on the current project. The only current way to do this, is to use the configuration above:</p>
+<pre><code class="language-toml">[project]
+name = &quot;a&quot;
+dynamic = [&quot;version&quot;]  # dynamic version...
+
+[build-system]
+requires = [&quot;pdm-backend&quot;]
+build-backend = &quot;pdm.backend&quot;
+
+[tool.pdm]
+version = {source = &quot;scm&quot;}  # ...based on Git tags, through pdm-backend
+
+[tool.uv]
+override-dependencies = [&quot;a&quot;]  # tell uv to ignore constraints...
+
+[tool.uv.sources]
+a = { workspace = true }  # ...while still installing from current folder, in editable mode
+
+[dependency-groups]
+dev = [
+     &quot;b&gt;=0.1&quot;,  # b depend on a&gt;=1.0
+]
+</code></pre>
+<blockquote>
+<p>So in this case, you're providing a source for the package itself?</p>
+</blockquote>
+<p>Yes 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-11-27 18:57</div>
+            <div class="timeline-body"><p>We could argue it is better solved within pdm-backend itself. It has a &quot;fallback&quot; mechanism, but only triggered when the folder is <em>not</em> a Git repository. In my case, it <em>is</em> a Git repository, but without tags, so it doesn't fallback. Also, the fallback version is static, so even if it worked and I fell back to v100, this could still be incompatible with what <code>b</code> requires. It would have to support a more dynamic fallback, for example running a Python callable that greps the current version in the changelog file. <em>But even will all that</em>, uv could still prevent me from resolving and working on <code>a</code>, because some dependency doesn't like the current version.</p>
+<p>So in the end, when I'm working on <code>a</code>, I want to be able to say &quot;I know what I'm doing&quot;, and &quot;just install the current project without checking its version&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10121.html">astral-sh/uv#10121</a> on 2024-12-23 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-02-21 15:29</div>
+            <div class="timeline-body"><p>I hit this with a setuptools backend.
+I don't think I would have easily solved the problem if I hadn't found @pawamoy 's comment at https://github.com/astral-sh/uv/issues/8148#issuecomment-2408639333.</p>
+<p><code>pip</code>'s error message is clearer to me.</p>
+<p><code>uv</code>:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because vws-python-mock==2025.2.18 depends on your project and
+      vws-auth-tools[dev] depends on vws-python-mock==2025.2.18, we can
+      conclude that vws-auth-tools[dev] depends on itself at an incompatible
+      version (vws-auth-tools&gt;=2024.7.12).
+      And because your project requires vws-auth-tools[dev], we can conclude
+      that your project's requirements are unsatisfiable.
+
+      hint: The package `vws-python-mock` depends on the package
+      `vws-auth-tools` but the name is shadowed by your project. Consider
+      changing the name of the project.
+</code></pre>
+<p><code>pip</code>:</p>
+<pre><code>The conflict is caused by:
+    The user requested vws-auth-tools 0.0.post130+g2de0bcd (from /home/docs/checkouts/readthedocs.org/user_builds/vws-auth-tools/checkouts/1256)
+    vws-auth-tools[dev] 0.0.post130+g2de0bcd depends on vws-auth-tools 0.0.post130+g2de0bcd (from /home/docs/checkouts/readthedocs.org/user_builds/vws-auth-tools/checkouts/1256)
+    vws-python-mock 2025.2.18 depends on vws-auth-tools&gt;=2024.7.12
+</code></pre>
+<p>From <code>pip</code>'s error I could work out that the issue is that at this stage the <code>vws-auth-tools</code> version is calculated as <code>0.0.something</code> and that this is the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2025-02-21 15:42</div>
+            <div class="timeline-body"><p>Thanks for chiming in @adamtheturtle! I see that uv's message has been updated, it's better than before 👍 :</p>
+<blockquote>
+<p>vws-auth-tools[dev] depends on itself at an incompatible version (vws-auth-tools&gt;=2024.7.12)</p>
+</blockquote>
+<p>But yes, ideally, it would <em>especially</em> show the current version (in your case <code>0.0.post130+g2de0bcd</code>), as that would clearly indicate to the user that the build process was missing SCM tags or something.</p>
+<p>By the way @adamtheturtle, note that I found a way to fallback using the latest version in the CHANGELOG.md file when tags are not found, see https://github.com/astral-sh/uv/issues/10121#issuecomment-2560402907. It might be possible to do something similar with other backends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-02-21 15:46</div>
+            <div class="timeline-body"><p>Thank you @pawamoy !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../audeering/audformat/pulls/476.html">audeering/audformat#476</a> on 2025-10-14 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:08 UTC
+    </footer>
+</body>
+</html>

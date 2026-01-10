@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate git dependencies that resolve to the same commit are treated as conflicting - astral-sh/uv #1903</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate git dependencies that resolve to the same commit are treated as conflicting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1903">#1903</a>
+        opened by <a href="https://github.com/rossmacarthur">@rossmacarthur</a>
+        on 2024-02-23 07:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rossmacarthur">@rossmacarthur</a> on 2024-02-23 07:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>If you have two git dependencies that resolve to the same commit, they could be treated as the same.</p>
+<pre><code>uv 0.1.9
+</code></pre>
+<pre><code># requirements.in
+werkzeug @ git+https://github.com/pallets/werkzeug.git@2.0.0
+werkzeug @ git+https://github.com/pallets/werkzeug@af160e0b6b7ddd81c22f1652c728ff5ac72d5c74
+</code></pre>
+<p>When running <code>uv pip compile requirements.in</code></p>
+<pre><code>error: Requirements contain conflicting URLs for package `werkzeug`:
+- git+https://github.com/pallets/werkzeug.git@2.0.0
+- git+https://github.com/pallets/werkzeug@af160e0b6b7ddd81c22f1652c728ff5ac72d5c74
+</code></pre>
+<p>However, if you just have</p>
+<pre><code># requirements.in
+werkzeug @ git+https://github.com/pallets/werkzeug.git@2.0.0
+</code></pre>
+<p>It resolves to that url when running <code>uv pip compile requirements.in</code></p>
+<pre><code># requirements.txt
+werkzeug @ git+https://github.com/pallets/werkzeug@af160e0b6b7ddd81c22f1652c728ff5ac72d5c74
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rossmacarthur">@rossmacarthur</a> on 2024-02-23 07:16</div>
+            <div class="timeline-body"><p>To clarify the reason I encounter is this:</p>
+<ul>
+<li>I have a git dependency in my <code>pyproject.toml</code></li>
+<li>I generate <code>requirements.txt</code> from <code>pyproject.toml</code></li>
+<li>Then I generate <code>requirements.dev.txt</code> using <code>requirements.txt</code> <em>and</em> <code>pyproject.toml</code>  + extra dev as the input.</li>
+</ul>
+<p>So if don't put the commit hash as the ref in <code>pyproject.toml</code> I get this error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-02-23 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 15:19</div>
+            <div class="timeline-body"><p>Can I ask why <code>requirements.txt</code> needs to be an input to the second resolution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-23 15:24</div>
+            <div class="timeline-body"><p>It seems best if we can avoid allowing this, just to keep things tractable. I'm also curious why not just compile from the <code>pyproject.toml</code> directly the second time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 15:25</div>
+            <div class="timeline-body"><p>Alternatively you can use your <code>requirements.txt</code> as an <code>--overrides requirements.txt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rossmacarthur">@rossmacarthur</a> on 2024-02-26 11:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Can I ask why requirements.txt needs to be an input to the second resolution?</p>
+</blockquote>
+<p>Maybe the following can help explain what error I want to catch:</p>
+<p>Consider the following input</p>
+<pre><code class="language-toml"># pyproject.toml
+
+[project]
+name = &quot;example&quot;
+version = &quot;0.0.0&quot;
+dependencies = [
+    &quot;pydantic&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;pydantic &lt; 2.6.0&quot;,
+]
+</code></pre>
+<ul>
+<li><p><strong>simple case</strong></p>
+<pre><code>uv pip compile pyproject.toml -o requirements.txt
+uv pip compile --extra dev pyproject.toml -o requirements.dev.txt
+</code></pre>
+<p>Problem: prod and dev now have different versions of pydantic</p>
+</li>
+<li><p><strong>using override</strong></p>
+<pre><code>uv pip compile pyproject.toml -o requirements.txt
+uv pip compile --extra dev pyproject.toml --override requirements.txt -o requirements.dev.txt
+</code></pre>
+<p>Problem: dev dependency might be broken</p>
+</li>
+<li><p><strong>using requirements.txt</strong> as input</p>
+<pre><code>uv pip compile pyproject.toml -o requirements.txt
+uv pip compile --extra dev pyproject.toml requirements.txt -o requirements.dev.txt
+</code></pre>
+<p>Appropriately errors that the dependencies are unresolvable</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2285.html">astral-sh/uv#2285</a> on 2024-03-07 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2614.html">astral-sh/uv#2614</a> on 2024-03-22 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

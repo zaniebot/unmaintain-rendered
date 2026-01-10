@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclude failure for `tool.ruff[lint|format]` - astral-sh/ruff #8241</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclude failure for `tool.ruff[lint|format]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8241">#8241</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-10-26 05:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-26 05:27</div>
+            <div class="timeline-body"><p>Detected here: https://github.com/astral-sh/ruff/pull/8240#issuecomment-1780379180</p>
+<p>With the following directory structure:</p>
+<pre><code>.
+├── pyproject.toml [1]
+└── tests
+    └── packages
+        └── test-bad-syntax
+            └── pyproject.toml [2]
+</code></pre>
+<p>And, in <code>pyproject.toml</code> at</p>
+<p>[1]</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+exclude = [&quot;tests/packages/test-bad-syntax&quot;]
+</code></pre>
+<p>[2]</p>
+<pre><code class="language-toml">[build-system]
+requires = ['bad' 'syntax']
+</code></pre>
+<p>Running the command:</p>
+<pre><code class="language-console">$ ruff check .  
+ruff failed
+  Cause: TOML parse error at line 2, column 19
+  |
+2 | requires = ['bad' 'syntax']
+  |                   ^
+invalid array
+expected `]`
+</code></pre>
+<p>With:</p>
+<pre><code class="language-console">$ ruff version
+ruff 0.1.2 (3127c79b2 2023-10-24)
+</code></pre>
+<p>It works with <code>[tool.ruff]</code>. The <code>main</code> branch fails as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2023-10-26 05:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 07:37</div>
+            <div class="timeline-body"><p>I think the issue here is that <code>exclude</code> and <code>lint.exclude</code> are semantically different.</p>
+<ul>
+<li><code>exclude</code>: Excludes files from discovery.</li>
+<li><code>lint.exclude</code>: Excludes files from linting.</li>
+</ul>
+<p>The proper fix is to change their configuration to use <code>exclude</code> instead of <code>lint.exclude</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 08:00</div>
+            <div class="timeline-body"><p>See: https://github.com/pypa/build/pull/697 I asked if we could improve our documentation to make the distinction more clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2023-10-26 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-10-26 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-10-26 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 15:12</div>
+            <div class="timeline-body"><p>But it still feels like <code>lint.exclude</code> should respect the same semantics for exclusion, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 23:38</div>
+            <div class="timeline-body"><blockquote>
+<p>But it still feels like <code>lint.exclude</code> should respect the same semantics for exclusion, no?</p>
+</blockquote>
+<p>I wouldn't know how that would work in a unified <code>check</code> command. The way it would work there is:</p>
+<ul>
+<li>Ruff detects all files, only respecting <code>exclude</code></li>
+<li>Ruff calls <code>lint</code> for files not in <code>exclude</code> or <code>lint.exclude</code></li>
+<li>Ruff calls <code>format</code> for files not in <code>exclude</code> or <code>format.exclude</code></li>
+</ul>
+<p>Applying the same semantics in <code>lint.exclude</code> would mean that it is necessary to run file discovery twice, once for <code>exclude</code> merged with <code>lint.exclude</code> and once with <code>format</code> merged with <code>format.exclude</code>. This would remove all benefits of having a single toolchain because we need to perform file discovery, parsing, setting resolution, etc. twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 23:47</div>
+            <div class="timeline-body"><p>I don't know, but isn't it strange that setting <code>lint.exclude</code> to <code>exclude = [&quot;tests/packages/test-bad-syntax&quot;]</code> doesn't exclude files in <code>./tests/packages/test-bad-syntax</code> from linting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 23:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know, but isn't it strange that setting <code>lint.exclude</code> to <code>exclude = [&quot;tests/packages/test-bad-syntax&quot;]</code> doesn't exclude files in <code>./tests/packages/test-bad-syntax</code> from linting?</p>
+</blockquote>
+<p>It does exclude files in <code>test-bad-syntax</code> from linting. The reported problem is that <code>test-bad-syntax</code> contains a <code>pyproject.toml</code> with a syntax error and ruff tries to load it when discovering the python files of the project when using <code>lint.exclude</code> but it does not when adding the directory to <code>exclude</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 23:54</div>
+            <div class="timeline-body"><p>Hmm, are you sure? I don't believe that's the case, because we're only testing against the file itself, and not its parent directories.</p>
+<p>Given:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+exclude = [&quot;tests/packages/test-bad-syntax&quot;]
+</code></pre>
+<p>Running:</p>
+<pre><code>❯ cargo run -p ruff_cli -- check .
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `/Users/crmarsh/workspace/ruff/target/debug/ruff check .`
+warning: Detected debug build without --no-cache.
+tests/packages/test-bad-syntax/foo.py:1:8: F401 [*] `os` imported but unused
+Found 1 error.
+</code></pre>
+<p>If I change the <code>pyproject.toml</code> to:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+exclude = [&quot;tests/packages/test-bad-syntax/*.py&quot;]
+</code></pre>
+<p>Then:</p>
+<pre><code>❯ cargo run -p ruff_cli -- check .
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `/Users/crmarsh/workspace/ruff/target/debug/ruff check .`
+warning: Detected debug build without --no-cache.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 00:03</div>
+            <div class="timeline-body"><p>Hmm interesting. Let's create a new issue for this because this is unrelated to the original report.</p>
+<p>https://github.com/astral-sh/ruff/issues/8267</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-10-27 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 00:03</div>
+            <div class="timeline-body"><p>(Sorry, I think I misunderstood the root cause of the reported issue.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

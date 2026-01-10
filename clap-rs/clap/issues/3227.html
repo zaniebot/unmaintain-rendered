@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it possible to not show usage string in post validation errors? - clap-rs/clap #3227</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is it possible to not show usage string in post validation errors?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3227">#3227</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-28 00:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-28 00:40</div>
+            <div class="timeline-body"><p>Maintainer's notes:</p>
+<ul>
+<li><h2>If we move error formatting to display time, we can provide all of the information the user needs that the user can build the error as they need (see also #2628)</h2>
+</li>
+</ul>
+<h3>Discussed in https://github.com/clap-rs/clap/discussions/3226</h3>
+<div type='discussions-op-text'>
+
+<p><sup>Originally posted by <strong>ducaale</strong> December 27, 2021</sup>
+In Structopt/Clap 2.x, errors from both initial-parsing and post-processing errors didn't include the Usage string. However, in Clap 3.x, post-processing errors include the usage string. Is there a way to opt-out of this new behavior in Clap 3.x?</p>
+<h3>Structopt/Clap 2.x</h3>
+<pre><code class="language-rust">// structopt = &quot;0.3&quot;
+// anyhow = &quot;1.0&quot;
+
+use std::str::FromStr;
+use std::time::Duration;
+
+use anyhow::anyhow;
+use structopt::clap::{Error, ErrorKind};
+use structopt::StructOpt;
+
+pub struct Timeout(Duration);
+
+impl FromStr for Timeout {
+    type Err = anyhow::Error;
+
+    fn from_str(sec: &amp;str) -&gt; anyhow::Result&lt;Timeout&gt; {
+        let pos_sec: f64 = match sec.parse::&lt;f64&gt;() {
+            Ok(sec) if sec.is_sign_positive() =&gt; sec,
+            _ =&gt; return Err(anyhow!(&quot;Invalid seconds as connection timeout&quot;)),
+        };
+
+        let dur = Duration::from_secs_f64(pos_sec);
+        Ok(Timeout(dur))
+    }
+}
+
+#[derive(StructOpt)]
+struct Cli {
+    #[structopt(long, short)]
+    config: Option&lt;String&gt;,
+
+    #[structopt(long, short)]
+    timeout: Option&lt;Timeout&gt;,
+}
+
+fn main() {
+    let _ = Cli::from_args();
+    Error::with_description(
+        &quot;Can't do relative and absolute version change&quot;,
+        ErrorKind::ArgumentConflict,
+    )
+    .exit();
+}
+</code></pre>
+<pre><code>$ cargo run
+error: Can't do relative and absolute version change
+
+$ cargo run -- --timeout=-1
+error: Invalid value for '--timeout &lt;timeout&gt;': Invalid seconds as connection timeout
+</code></pre>
+<h3>Clap 3.x</h3>
+<pre><code class="language-rust">// clap = { version = &quot;3.0.0-rc.9&quot;, features = [&quot;derive&quot;] }
+// anyhow = &quot;1.0&quot;
+
+use std::str::FromStr;
+use std::time::Duration;
+
+use anyhow::anyhow;
+use clap::{ErrorKind, IntoApp, Parser};
+
+pub struct Timeout(Duration);
+
+impl FromStr for Timeout {
+    type Err = anyhow::Error;
+
+    fn from_str(sec: &amp;str) -&gt; anyhow::Result&lt;Timeout&gt; {
+        let pos_sec: f64 = match sec.parse::&lt;f64&gt;() {
+            Ok(sec) if sec.is_sign_positive() =&gt; sec,
+            _ =&gt; return Err(anyhow!(&quot;Invalid seconds as connection timeout&quot;)),
+        };
+
+        let dur = Duration::from_secs_f64(pos_sec);
+        Ok(Timeout(dur))
+    }
+}
+
+#[derive(Parser)]
+struct Cli {
+    #[clap(long, short)]
+    config: Option&lt;String&gt;,
+
+    #[structopt(long, short)]
+    timeout: Option&lt;Timeout&gt;,
+}
+
+fn main() {
+    let _ = Cli::parse();
+    let mut app = Cli::into_app();
+    app.error(
+        ErrorKind::ArgumentConflict,
+        &quot;Can't do relative and absolute version change&quot;,
+    )
+    .exit();
+}
+</code></pre>
+<pre><code>$ cargo run
+error: Can't do relative and absolute version change
+
+USAGE:
+    temp-clap [OPTIONS]
+
+For more information try --help
+
+$ cargo run -- --timeout=-1
+error: Invalid value for '--timeout &lt;TIMEOUT&gt;': Invalid seconds as connection timeout
+
+For more information try --help
+</code></pre>
+</div>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2021-12-28 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-28 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-28 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-28 00:45</div>
+            <div class="timeline-body"><p>I assume you are specifically referring to errors reported by <code>App::error</code>?</p>
+<p><code>App::error</code> was added in https://github.com/clap-rs/clap/pull/2890.  In it, I did not have any specific errors in mind to be targeting as a similar use case and saw usage being reported in errors and included it.</p>
+<p>I do not see any comments saying why some errors include usage and some do not.  It might be interesting to try to infer this by looking at what errors include usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-12-28 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-28 00:46</div>
+            <div class="timeline-body"><p>Marked this as 3.0.  I don't think we'd consider this breaking to change and doesn't seem the most critical, so we probably won't be blocking 3.0 on this but at least want to track 3.0 related items.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-28 15:44</div>
+            <div class="timeline-body"><p>With usage</p>
+<ul>
+<li>argument_conflict</li>
+<li>empty_value</li>
+<li>no_equals</li>
+<li>invalid_value (possible values)</li>
+<li>invalid_subcommand (suggestion available)</li>
+<li>missing_required_argument</li>
+<li>missing_subcommand</li>
+<li>invalid_utf8</li>
+<li>too_many_occurrences</li>
+<li>too_many_values</li>
+<li>too_few_values</li>
+<li>wrong_number_of_values</li>
+<li>unexpected_multiple_usage</li>
+<li>unknown_argument</li>
+<li>unnecessary_double_dash</li>
+</ul>
+<p>Without usage</p>
+<ul>
+<li>unrecognized_subcommand (no suggestion available)</li>
+<li>value_validation (custom validator or type conversion)<ul>
+<li>reported by <code>ArgMatches</code>, no usage available</li>
+<li>reported by validator, usage available</li>
+</ul>
+</li>
+<li>argument_not_found_auto<ul>
+<li>reported by <code>ArgMatches</code>, no usage available</li>
+</ul>
+</li>
+</ul>
+<p>Overall, I'm not seeing a pattern</p>
+<ul>
+<li>invalid utf8, invalid possible value, and custom validation fail all deal with value validation but one isn't like the other</li>
+<li>subcommand suggestion vs no suggestion is somewhat similar like possible values vs custom validation</li>
+<li>Most that report a usage will demonstrate what is correct with usage, but not all</li>
+<li>Without usage is mostly where usage isn't available.  One case where usage is available, shares a code with where usage isn't available.  That just leaves &quot;unrecognized_subcommand&quot;</li>
+</ul>
+<p>It looks like clap2 is similar, except for <code>Error::with_description</code> -&gt; <code>App::error</code>.  Note: <code>Error::raw</code> (without ever calling <code>Error::format</code>) is similar to <code>Error::with_description</code> though it will never be colored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ducaale">@ducaale</a> on 2021-12-28 19:35</div>
+            <div class="timeline-body"><blockquote>
+<p>@ducaale mind posting on #3227 what your expectations are for when usage should be shown?</p>
+</blockquote>
+<p>If I were to put myself in the user's shoes, I would find the <code>USAGE</code> string most helpful when it references a required positional argument. I also wouldn't mind if errors related to required flags/options display a usage string:</p>
+<h4>Missing positional argument</h4>
+<pre><code>error: The following required arguments were not provided:
+    &lt;URL&gt;
+
+USAGE:
+    xh [OPTIONS] &lt;METHOD&gt; &lt;URL&gt;
+
+For more information try --help
+</code></pre>
+<h4>Conflict between a positional argument and a flag</h4>
+<pre><code>error: The argument '--delete' cannot be used with '&lt;base&gt;'
+
+USAGE:
+    clap-test &lt;base|--delete&gt;
+
+For more information try --help
+</code></pre>
+<h4>Positional argument type conversion error</h4>
+<p>(I think it makes sense to print <code>USAGE</code> in this case so the user can understand what <code>&lt;NUMBER&gt;</code> refers to)</p>
+<pre><code>error: Invalid value for '&lt;NUMBER&gt;': invalid digit found in string
+
+For more information try --help
+</code></pre>
+<h4>Missing required flag/option</h4>
+<pre><code>error: The following required arguments were not provided:
+    --config &lt;CONFIG&gt;
+
+USAGE:
+    temp-clap [OPTIONS] --config &lt;CONFIG&gt; &lt;NUMBER&gt;
+
+For more information try --help
+</code></pre>
+<hr />
+<p>On the other hand, optional flags/options are often condensed in the usage string so I wouldn't find the <code>USAGE</code> string that helpful:</p>
+<pre><code>error: Found argument '--js' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    xh [OPTIONS] &lt;URL&gt;
+
+For more information try --help
+</code></pre>
+<p>As for custom errors, they might or might not need a <code>USAGE</code> string depending on whether the error references a positional argument or not. For example, <a href="https://github.com/ducaale/xh">xh</a> displays this error if the URL cannot be extracted be after some custom post-processing of positional arguments:</p>
+<pre><code>$ xh get
+error: Missing URL
+</code></pre>
+<p>But with Clap 3.x, I like how the previous error message is suddenly more helpful plus the suggestion to use <code>--help</code> :</p>
+<pre><code>$ xh get
+error: Missing &lt;URL&gt;
+
+USAGE:
+    xh [OPTIONS] &lt;[METHOD] URL&gt; [--] [REQUEST_ITEM]...
+
+For more information try --help
+</code></pre>
+<p>But in another case, I found the <code>USAGE</code> string to be a bit redundant:</p>
+<pre><code>$ xh httpbin.org/json a:=--1
+error: &quot;a:=--1&quot;: invalid number at line 1 column 2
+
+USAGE:
+    xh [OPTIONS] &lt;[METHOD] URL&gt; [--] [REQUEST_ITEM]...
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-30 19:47</div>
+            <div class="timeline-body"><p>@ducaale</p>
+<blockquote>
+<p>On the other hand, optional flags/options are often condensed in the usage string so I wouldn't find the <code>USAGE</code> string that helpful:</p>
+<pre><code>error: Found argument '--js' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    xh [OPTIONS] &lt;URL&gt;
+
+For more information try --help
+</code></pre>
+</blockquote>
+<p>We can fix that:</p>
+<ul>
+<li>We should explore an option to not collapse optional parameters</li>
+<li>For some other errors, we customize their usage based on the users current command line.  We can look into forcing the flag that failed validation to show up.</li>
+</ul>
+<blockquote>
+<p>But in another case, I found the <code>USAGE</code> string to be a bit redundant:</p>
+<pre><code>$ xh httpbin.org/json a:=--1
+error: &quot;a:=--1&quot;: invalid number at line 1 column 2
+
+USAGE:
+    xh [OPTIONS] &lt;[METHOD] URL&gt; [--] [REQUEST_ITEM]...
+
+For more information try --help
+</code></pre>
+</blockquote>
+<p>if I'm understanding this case, <code>:=</code> chooses the parser and <code>--1</code> is an invalid value, causing a failure?</p>
+<p>Part of me wonders if that is a bit specialized of a case, if <code>value_name</code> normally provides enough detail of what is expected (e.g. <code>NUM</code>, <code>PORT</code>) that it provides a little more of a hint as to what is expected.</p>
+<p>Additionally, associating a name with it helps people know where in <code>--help</code> to look for more details.</p>
+<p>With that said, this depends on how clear it is that <code>a:=--1</code> is <code>REQUEST_ITEM</code>.  For someone making the command from scratch, I think it works (though maybe the hint won't be needed as much?).  For someone copying from stackoverflow, the linkage might not be fully clear.  I wonder if we should include the <code>value_name</code> in the error itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @epage on 2021-12-30 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ducaale">@ducaale</a> on 2021-12-30 21:15</div>
+            <div class="timeline-body"><blockquote>
+<p>We should explore an option to not collapse optional parameters</p>
+</blockquote>
+<p>Sound good to me. I assume you meant the particular optional parameter that failed, correct?</p>
+<blockquote>
+<p>With that said, this depends on how clear it is that a:=--1 is REQUEST_ITEM. For someone making the command from scratch, I think it works (though maybe the hint won't be needed as much?). For someone copying from stackoverflow, the linkage might not be fully clear. I wonder if we should include the value_name in the error itself.</p>
+</blockquote>
+<p>That is actually a good idea. Here is what the same error would look like if it included the <code>value_name</code>:</p>
+<pre><code>error: Invalid value for '&lt;REQUEST_ITEM&gt;': &quot;a:=--1&quot; invalid number at line 1 column 2
+
+USAGE:
+    xh [OPTIONS] &lt;[METHOD] URL&gt; [--] [REQUEST_ITEM]...
+
+For more information try --help
+</code></pre>
+<p>Thanks for the tip!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ducaale/xh/pulls/216.html">ducaale/xh#216</a> on 2021-12-30 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> removed by @epage on 2022-02-02 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-02-02 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @epage on 2022-02-02 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3402.html">clap-rs/clap#3402</a> on 2022-02-04 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-04 18:28</div>
+            <div class="timeline-body"><p>#3402 is exposing the inputs to error formatting so people can customize it as they wish without having to rely on options to control every piece of behavior.</p>
+<p>Think this would work for your case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-07 21:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptic unwrap error when using wrong format of yaml - clap-rs/clap #2319</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cryptic unwrap error when using wrong format of yaml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2319">#2319</a>
+        opened by <a href="https://github.com/booleancoercion">@booleancoercion</a>
+        on 2021-01-30 16:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/booleancoercion">@booleancoercion</a> on 2021-01-30 16:46</div>
+            <div class="timeline-body"><p>Given <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">[package]
+name = &quot;testing_testing&quot;
+version = &quot;0.1.0&quot;
+authors = [&quot;boolean_coercion &lt;booleancoercion@gmail.com&gt;&quot;]
+edition = &quot;2018&quot;
+
+[dependencies]
+clap = { version = &quot;3.0.0-beta.2&quot;, features = [&quot;yaml&quot;] }
+</code></pre>
+<p><code>main.rs</code>:</p>
+<pre><code class="language-rust">use clap::{load_yaml, App};
+
+fn main() {
+    let yaml = load_yaml!(&quot;cli.yaml&quot;);
+    let matches = App::from(yaml).get_matches();
+}
+
+</code></pre>
+<p>And <code>cli.yaml</code>:</p>
+<pre><code class="language-yaml">name: yaml_app
+version: &quot;1.0&quot;
+about: an example for a bug
+author: boolean_coercion &lt;booleancoercion@gmail.com&gt;
+
+args:
+  - arg:
+    short: a
+</code></pre>
+<p>The program compiles, however it panics immediately with the following message:</p>
+<pre><code>thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', C:\Users\bool\.cargo\registry\src\github.com-1ecc6299db9ec823\clap-3.0.0-beta.2\src\build\arg\mod.rs:4353:64
+</code></pre>
+<p>When the yaml file is fixed to have 4 spaces of indentation, the error disappears and it works correctly.
+The problem isn't with enforcing 4 spaces per se (if that was the intention), although the default indentation style that yaml recommends is 2 spaces which would cause most editors to adopt this style when editing yaml files (for example, VS Code).</p>
+<p>Either way, an appropriate error message is necessary here, and the docs and examples don't mention the 4 spaces issue either and just use them silently.</p>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: <code>rustc 1.51.0-nightly (44e3daf5e 2020-12-31)</code></li>
+<li><strong>Clap</strong>: <code>3.0.0-beta.2</code></li>
+</ul>
+<h3>Debug output</h3>
+<p>None? I couldn't get a different output when compiling with the debug feature on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @booleancoercion on 2021-01-30 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-01-30 16:50</div>
+            <div class="timeline-body"><p>It's not about 4 spaces. You have <code>arg:</code> and <code>short:</code> starting on the same column.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/booleancoercion">@booleancoercion</a> on 2021-01-30 16:58</div>
+            <div class="timeline-body"><p>Ah, well, I still believe that's a bug... I also think Github Actions uses the same syntax</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-01-30 17:03</div>
+            <div class="timeline-body"><p>That's not a bug, because you wrote it wrong. Them starting on the same column means it's the same object. Equivalent JSON:</p>
+<pre><code class="language-json">{
+  &quot;args&quot;: [
+    {
+      &quot;arg&quot;: &quot;&quot;,
+      &quot;short&quot;: &quot;a&quot;
+    }
+  ]
+}
+</code></pre>
+<p>But what clap needs is <code>short</code> being more indented which means the following equivalent JSON:</p>
+<pre><code class="language-json">{
+  &quot;args&quot;: [
+    {
+      &quot;arg&quot;: {
+        &quot;short&quot;: &quot;a&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>I am not sure if we can provide a better error message in this case or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-01-30 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/booleancoercion">@booleancoercion</a> on 2021-01-30 17:08</div>
+            <div class="timeline-body"><p>The bug I was referring to was in fact the error message itself.
+It's difficult to understand what caused the error when it's an unwrap on a <code>None</code> value.
+(I understand the syntax was an error on my end though, whoops)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @pksunkara on 2021-01-30 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-01-30 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Cryptic unwrap error when using yaml with 2 spaces of indentation" to "Cryptic unwrap error when using wrong format of yaml" by @booleancoercion on 2021-01-30 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: yaml parser</span> added by @pksunkara on 2021-02-22 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-31 23:44</div>
+            <div class="timeline-body"><p>Taking care of <code>unwraps</code> in <code>from(&amp;Yaml)</code> methods should fix this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> added by @pksunkara on 2021-05-31 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2622.html">clap-rs/clap#2622</a> on 2021-07-25 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-07-27 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Knuckl3head">@Knuckl3head</a> on 2021-10-26 20:22</div>
+            <div class="timeline-body"><p>Sorry for necroposting, however, I encountered this error as well for formatting issues. In my case, it was forgetting the newline at the end of the yaml file.</p>
+<p>This crashed with the error:
+<img src="https://user-images.githubusercontent.com/68247991/138954874-5ca57fcb-6a4e-4c67-a730-0c4b59b6f5bc.png" alt="image" /></p>
+<p>This worked perfectly:
+<img src="https://user-images.githubusercontent.com/68247991/138954968-9bf21820-5623-4974-b730-e21305aff5cb.png" alt="image" /></p>
+<p>The more you know</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:25 UTC
+    </footer>
+</body>
+</html>

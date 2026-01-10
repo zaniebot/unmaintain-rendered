@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not respect position of comments in `pyproject.toml` - astral-sh/uv #8343</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not respect position of comments in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8343">#8343</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2024-10-18 17:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-10-18 17:48</div>
+            <div class="timeline-body"><p>uv 0.4.24</p>
+<p>Maybe this is already reported but I couldn't find it.</p>
+<p><strong>Steps to reproduce:</strong></p>
+<p>1, <code>uv init temp</code>
+2. <code>cd temp</code>
+3. <code>uv add requests</code>
+4. <code>uv add whenever~=0.6.9</code>
+5. Edit <code>project.dependencies</code> in <code>pyproject.toml</code> from:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;requests&gt;=2.32.3&quot;,
+    &quot;whenever~=0.6.9&quot;,
+]
+</code></pre>
+<p>To:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;requests&gt;=2.32.3&quot;, # Should not expect to be updated frequently
+    &quot;whenever~=0.6.9&quot;, # Pinned to 0.6 due to API not yet being stable
+]
+</code></pre>
+<ol start="6">
+<li><code>uv add uv zope</code></li>
+<li>Check <code>project.dependencies</code> in <code>pyproject.toml</code>:</li>
+</ol>
+<p><strong>Actual output:</strong></p>
+<pre><code class="language-toml">dependencies = [
+    &quot;requests&gt;=2.32.3&quot;,
+    &quot;uv&gt;=0.4.24&quot;,
+    # Should not expect to be updated frequently
+    &quot;whenever~=0.6.9&quot;,
+    &quot;zope&gt;=5.11&quot;,
+     # Pinned to 0.6 due to API not yet being stable
+]
+</code></pre>
+<p><strong>Expected output:</strong></p>
+<pre><code class="language-toml">dependencies = [
+    &quot;requests&gt;=2.32.3&quot;, # Should not expect to be updated frequently
+    &quot;uv&gt;=0.4.24&quot;,
+    &quot;whenever~=0.6.9&quot;, # Pinned to 0.6 due to API not yet being stable
+    &quot;zope&gt;=5.11&quot;, 
+]
+</code></pre>
+<p><strong>Context:</strong></p>
+<p>I often leave comments in my <code>pyproject.toml</code> to explain why a particular dependency is pinned or given an upper bound.</p>
+<p>I appreciate that comments are a hard problem when reading and writing toml, and there will always be edge cases where the user needs to manually update them (e.g. a requirement is removed), but I don't think this example is an edge case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 17:57</div>
+            <div class="timeline-body"><p>I suppose that's a legitimate bug though end-of-line comments are my mortal enemy from working on the formatter and I don't know if I can work up the courage to fix it myself :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-18 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-10-18 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flyaroundme">@flyaroundme</a> on 2024-10-20 00:24</div>
+            <div class="timeline-body"><p>Tricky one. The fun thing is that the &quot;current dependency line comment&quot; in this case is becoming a next dependency <code>prefix</code>, so in case it is the comment on the last line it is becoming part of <code>trailing</code>, that's why it is in the end of the file after adding <code>zope</code>.
+I am digging into it so feel free to assign on me, but most probably can send the fix more close to the end of the weekend, so I'm totally fine if somebody solves it beforehand</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8384.html">astral-sh/uv#8384</a> on 2024-10-20 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-20 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-20 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:12 UTC
+    </footer>
+</body>
+</html>

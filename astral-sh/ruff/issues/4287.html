@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRY301 flags try - raise - finally block - astral-sh/ruff #4287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TRY301 flags try - raise - finally block</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4287">#4287</a>
+        opened by <a href="https://github.com/jankatins">@jankatins</a>
+        on 2023-05-08 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jankatins">@jankatins</a> on 2023-05-08 17:29</div>
+            <div class="timeline-body"><p><a href="https://beta.ruff.rs/docs/rules/raise-within-try/">TRY301</a> should flag cases like the below where the same code raises and catches an exception:</p>
+<pre><code class="language-py">try:
+     raise Exception()
+except:
+    .... directly catch the exception
+</code></pre>
+<p>On the other hand, the following code is IMO a valid pattern (which would be better handled by a context manager, but in this case, my Consumer does not implement the context manager protocol):</p>
+<pre><code class="language-py">c = confluent_kafka.Consumer(...)
+c.subscribe([&quot;topic&quot;])
+try:
+    # Wait a maximum of 5s for a message: we are doing this in tests
+    msg = c.poll(5)
+    if msg is None:
+        # The next line is flagged with TRY301 Abstract `raise` to an inner function
+        raise RuntimeError(&quot;Didn't find a message after 5 seconds&quot;)
+    if msg.error():
+        # The next line is flagged with TRY301 Abstract `raise` to an inner function
+        raise RuntimeError(f&quot;Error: {msg.error()}&quot;)
+finally:
+    c.close()
+</code></pre>
+<p>So from my perspective, the rule should check if there is actually a catching except block...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-09 02:27</div>
+            <div class="timeline-body"><p>I think that's reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-09 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-09 03:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4301.html">astral-sh/ruff#4301</a> on 2023-05-09 03:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-09 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jankatins">@jankatins</a> on 2023-05-09 09:40</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

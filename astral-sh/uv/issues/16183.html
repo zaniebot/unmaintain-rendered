@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intel/ARM confusion on Rosetta systems with python.org Python installations - astral-sh/uv #16183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intel/ARM confusion on Rosetta systems with python.org Python installations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16183">#16183</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2025-10-08 11:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2025-10-08 11:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Context is, once again, my Rosetta macOS (sorry).</p>
+<p>I've always used Python 3.13 by installing it from python.org and it still works for both ARM and Intel. For some reason, uv only detects ARM for 3.14 and fails with:</p>
+<pre><code>error: No interpreter found for any-3.14-any-x86_64-any in search path
+
+hint: A managed Python download is available for any-3.14-any-x86_64-any, but the Python preference is set to 'only system'
+</code></pre>
+<p>when trying to sync in an Intel64 project (<code>export UV_PYTHON=3.14-x86_64 </code>). But it totally exists:</p>
+<pre><code>❯ type python3.14-intel64
+python3.14-intel64 is /usr/local/bin/python3.14-intel64
+</code></pre>
+<p>And setting <code>UV_PYTHON=3.14-x86_64</code> works perfectly fine, too (but comes with the problems I've reported elsewhere).</p>
+<hr />
+<p>Please note below that it seems to find 3.13.8 <em>only</em> as x84_64!? Could it be based on what it was used first? It seems to be still working regardless of the output. Something must have changed how these versions are handled?</p>
+<h1>uv python list</h1>
+<details>
+
+<pre><code>uv python list
+cpython-3.14.0-macos-aarch64-none                 /usr/local/bin/python3.14 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.14/bin/python3.14
+cpython-3.14.0-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.14.0+freethreaded-macos-aarch64-none    /usr/local/bin/python3.14t -&gt; ../../../Library/Frameworks/PythonT.framework/Versions/3.14/bin/python3.14t
+cpython-3.14.0+freethreaded-macos-aarch64-none    &lt;download available&gt;
+cpython-3.13.8-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.13.8+freethreaded-macos-aarch64-none    &lt;download available&gt;
+cpython-3.13.8-macos-x86_64-none                  /usr/local/bin/python3.13 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.8-macos-x86_64-none                  /Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.8-macos-x86_64-none                  /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -&gt; python3.13
+cpython-3.13.7-macos-aarch64-none                 /opt/homebrew/bin/python3.13 -&gt; ../Cellar/python@3.13/3.13.7/bin/python3.13
+cpython-3.13.7-macos-aarch64-none                 /opt/homebrew/bin/python3 -&gt; ../Cellar/python@3.13/3.13.7/bin/python3
+cpython-3.13.7-macos-x86_64-none                  .local/share/uv/python/cpython-3.13.7-macos-x86_64-none/bin/python3.13
+cpython-3.13.3+freethreaded-macos-aarch64-none    .local/share/uv/python/cpython-3.13.3+freethreaded-macos-aarch64-none/bin/python3.13t
+cpython-3.13.2-macos-aarch64-none                 .local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+cpython-3.13.0-macos-aarch64-none                 .local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+cpython-3.13.0+freethreaded-macos-aarch64-none    .local/share/uv/python/cpython-3.13.0+freethreaded-macos-aarch64-none/bin/python3.13t
+cpython-3.12.11-macos-aarch64-none                /opt/homebrew/bin/python3.12 -&gt; ../Cellar/python@3.12/3.12.11_1/bin/python3.12
+cpython-3.12.11-macos-aarch64-none                &lt;download available&gt;
+cpython-3.12.10-macos-x86_64-none                 /usr/local/bin/python3.12 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+cpython-3.11.13-macos-aarch64-none                /opt/homebrew/bin/python3.11 -&gt; ../Cellar/python@3.11/3.11.13_1/bin/python3.11
+cpython-3.11.13-macos-aarch64-none                &lt;download available&gt;
+cpython-3.11.9-macos-x86_64-none                  /usr/local/bin/python3.11 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+cpython-3.10.18-macos-aarch64-none                /opt/homebrew/bin/python3.10 -&gt; ../Cellar/python@3.10/3.10.18_1/bin/python3.10
+cpython-3.10.18-macos-aarch64-none                &lt;download available&gt;
+cpython-3.10.11-macos-x86_64-none                 /usr/local/bin/python3.10 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.10/bin/python3.10
+cpython-3.9.23-macos-aarch64-none                 /opt/homebrew/bin/python3.9 -&gt; ../Cellar/python@3.9/3.9.23_1/bin/python3.9
+cpython-3.9.23-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.9.13-macos-aarch64-none                 /usr/local/bin/python3.9 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.9/bin/python3.9
+cpython-3.9.6-macos-aarch64-none                  /usr/bin/python3
+cpython-3.8.20-macos-aarch64-none                 .local/share/uv/python/cpython-3.8.20-macos-aarch64-none/bin/python3.8
+cpython-3.8.10-macos-aarch64-none                 /usr/local/bin/python3.8 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.8/bin/python3.8
+cpython-3.7.9-macos-x86_64-none                   /usr/local/bin/python3.7 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.7/bin/python3.7
+pypy-3.11.13-macos-aarch64-none                   &lt;download available&gt;
+pypy-3.10.16-macos-aarch64-none                   &lt;download available&gt;
+pypy-3.10.14-macos-aarch64-none                   /opt/homebrew/bin/pypy3 -&gt; ../Cellar/pypy3.10/7.3.17_1/bin/pypy3
+pypy-3.9.19-macos-aarch64-none                    .local/share/uv/python/pypy-3.9.19-macos-aarch64-none/bin/pypy3.9
+pypy-3.8.16-macos-aarch64-none                    &lt;download available&gt;
+graalpy-3.12.0-macos-aarch64-none                 &lt;download available&gt;
+graalpy-3.11.0-macos-aarch64-none                 &lt;download available&gt;
+graalpy-3.10.0-macos-aarch64-none                 &lt;download available&gt;
+graalpy-3.8.5-macos-aarch64-none                  &lt;download available&gt;
+</code></pre>
+</details>
+
+<h3>Platform</h3>
+<p>macOS 15.7.1, ARM</p>
+<h3>Version</h3>
+<p>uv 0.9.0 (39b688653 2025-10-07)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @hynek on 2025-10-08 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 15:05</div>
+            <div class="timeline-body"><p>I don't think we find interpreters with the <code>-intel64</code> suffix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 15:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Please note below that it seems to find 3.13.8 only as x84_64!? Could it be based on what it was used first?</p>
+</blockquote>
+<p>We do cache the interpreter results by path, so if it was run emulated we probably cached it as x86-64?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-10-09 16:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we find interpreters with the <code>-intel64</code> suffix</p>
+</blockquote>
+<p>I'm not sure what that all implies, but I've 100% used (and use) the Python.org interpreters both for ARM and Intel. 😅</p>
+<p>My understanding tho, is that those builds are universal and the suffixed version is just a convenience helper that guarantees to run under Intel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-09 17:22</div>
+            <div class="timeline-body"><p>We don't find executables with arbitrary names, is my point. We search for a known subset of names on the <code>PATH</code>. We'll need to add that one.</p>
+<p>I think generally we just don't have a good way to support universal interpreters in our caching model. We'll need to think harder about that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

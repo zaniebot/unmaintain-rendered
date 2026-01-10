@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Remaining syntax errors raised by the compiler - astral-sh/ruff #17412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Remaining syntax errors raised by the compiler</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17412">#17412</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-15 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-15 18:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A number of semantic or compile-time syntax errors have already been implemented
+in #11934, but there are still many remaining ones. The purpose of this issue is
+to track progress on this remainder. The initial source for most of these is
+<a href="https://github.com/astral-sh/ruff/issues/7633#issuecomment-1740424031">this comment</a>, which reports fuzzer results comparing Python's compiler and
+ruff, but others may be included over time.</p>
+<p>The next section lists the syntax errors that still need to be implemented, and
+the sections after that include some more information on getting started with an
+implementation.</p>
+<h2>Syntax Errors</h2>
+<h3>Errors mapping to current rules</h3>
+<p>These might be the easiest to start with because the existing rules have working
+implementations and corresponding tests. However, they could possibly require
+new context methods (see below), which could complicate things.</p>
+<ul>
+<li>[x] <code>return</code> with value in async generator (B901)<ul>
+<li>https://github.com/astral-sh/ruff/pull/21200</li>
+<li>partial overlap with B901, which also applies to sync generators. This is
+only a syntax error in the async case</li>
+</ul>
+</li>
+<li>[x] no binding for nonlocal (PLE0117)<ul>
+<li>https://github.com/astral-sh/ruff/pull/21032</li>
+</ul>
+</li>
+<li>[x] <code>break</code> outside loop (F701)<ul>
+<li>https://github.com/astral-sh/ruff/pull/20556</li>
+<li>https://github.com/astral-sh/ruff/pull/20944</li>
+</ul>
+</li>
+<li>[x] <code>continue</code> not properly in loop (F702)<ul>
+<li>https://github.com/astral-sh/ruff/pull/20869</li>
+<li>https://github.com/astral-sh/ruff/pull/20944</li>
+</ul>
+</li>
+<li>[x] <code>yield from</code> in async function (PLE1700)<ul>
+<li>https://github.com/astral-sh/ruff/pull/20051</li>
+</ul>
+</li>
+<li>[x] future feature is not defined (F407)<ul>
+<li>https://github.com/astral-sh/ruff/pull/20554</li>
+</ul>
+</li>
+<li>[x] import <code>*</code> only allowed at module level (F406)<ul>
+<li>https://github.com/astral-sh/ruff/pull/20166</li>
+</ul>
+</li>
+<li>[x] multiple starred expressions in assignment (F622)<ul>
+<li>https://github.com/astral-sh/ruff/pull/20243</li>
+</ul>
+</li>
+</ul>
+<h3>Errors mapping to current parse errors</h3>
+<p>These are also straightforward and will be similar to #17131.</p>
+<ul>
+<li>duplicate keyword argument (https://github.com/astral-sh/ruff/pull/17804)<pre><code class="language-python">def foo(x): ...
+
+foo(x=1, x=2)  # SyntaxError: keyword argument repeated: x
+</code></pre>
+</li>
+</ul>
+<h3>New errors</h3>
+<ul>
+<li><p>[x] name is parameter and global (https://github.com/astral-sh/ruff/pull/20426)</p>
+<pre><code class="language-python">def f(a): global a
+</code></pre>
+</li>
+<li><p>[ ] name is parameter and nonlocal</p>
+<pre><code class="language-python">def f(a): nonlocal a
+</code></pre>
+</li>
+<li><p>[ ] annotated name can't be global (https://github.com/astral-sh/ruff/pull/20868)</p>
+<pre><code class="language-python">x: int = 1
+
+def f():
+    global x
+    x: str = &quot;foo&quot;  # SyntaxError: annotated name 'x' can't be global
+</code></pre>
+</li>
+<li><p>[x] alternative patterns bind different names (https://github.com/astral-sh/ruff/pull/20682)</p>
+<pre><code class="language-python">match 42:
+    case [x] | [y]: ...
+</code></pre>
+<p>This can probably be handled in the <code>MatchPatternVisitor</code> along with the other <code>match</code>-related errors.</p>
+</li>
+<li><p>[x] can't use starred expression here (https://github.com/astral-sh/ruff/pull/17624)</p>
+<pre><code class="language-python">x = *value
+</code></pre>
+</li>
+<li><p>[x] nonlocal declaration not allowed at module level (https://github.com/astral-sh/ruff/pull/17559)</p>
+<pre><code class="language-python">nonlocal x
+</code></pre>
+</li>
+</ul>
+<h3>Extensions to existing syntax errors</h3>
+<ul>
+<li>Assigning to and deleting attributes named <code>__debug__</code> is also a syntax error<pre><code class="language-python">__debug__ = False  # Currently caught by ruff
+x.__debug__ = False  # Not currently caught, but also a syntax error
+</code></pre>
+</li>
+</ul>
+<h3>Encoding issues</h3>
+<p>These syntax errors are all related to #6791 and should only be implemented if
+we decide to respect these alternate encodings in general.</p>
+<p>These can also be a bit tricky to put into a file, so most of these have shell
+code snippets for generating the input rather than Python code directly.</p>
+<ul>
+<li><p>ascii codec can't decode byte <code>...</code> in position <code>...</code>: ordinal not in <code>range(128)</code></p>
+<pre><code class="language-shell">printf '# -*- coding: ascii -*-\n\xc2' &gt; example.py
+</code></pre>
+</li>
+<li><p>charmap codec can't decode byte ...</p>
+<pre><code class="language-shell">printf '# -*- coding: cp1252 -*-\n\x8d' &gt; example.py
+</code></pre>
+</li>
+<li><p>utf7 codec can't decode byte 0xc3</p>
+<pre><code class="language-shell">printf '# -*- coding: utf-7 -*-\n\xc3' &gt; example.py
+</code></pre>
+<p>This one reports an <code>E902</code> error, but only if it's enabled. Otherwise we only print a warning about invalid UTF-8.</p>
+</li>
+<li><p>encoding problem: <code>...</code> with BOM</p>
+<pre><code class="language-shell">printf '\ufeff# -*- coding: ascii -*-' &gt; example.py
+</code></pre>
+<p>I think any encoding other than UTF-8 with a BOM (<code>\uFEFF</code>) will cause this issue.</p>
+</li>
+<li><p>invalid character</p>
+</li>
+<li><p>invalid non-printable character</p>
+<ul>
+<li>both this and <code>invalid character</code> mostly seem to happen with the
+<code>iso-8859-1</code> encoding and a unicode character</li>
+</ul>
+</li>
+<li><p>unknown encoding</p>
+<pre><code class="language-python"># coding: not-a-real-encoding
+</code></pre>
+</li>
+<li><p>source code string cannot contain null bytes</p>
+<pre><code class="language-shell">printf '# \x00' &gt; example.py
+</code></pre>
+<p>This mostly seems like an issue in comments. This also isn't exactly an encoding error, but it's more closely related to these. It's also raised by the CPython parser, not the compiler.</p>
+</li>
+</ul>
+<h2>Implementation</h2>
+<p>Issue #11934 contains links to each PR implementing a new semantic syntax error.
+These can be used as examples of what a new implementation looks like, but this
+section has a few more general notes.</p>
+<p>All of the semantic syntax errors currently live in <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs"><code>semantic_errors.rs</code></a> and
+correspond to a variant of the <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L891"><code>SemanticSyntaxErrorKind</code></a> enum. The
+<a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L19"><code>SemanticSyntaxChecker</code></a> is responsible for emitting these errors, but unlike
+other AST visitors, it does not generally traverse the AST on its owns[^1]. Instead,
+it relies on a parent visitor to call its <code>visit_stmt</code> and <code>visit_expr</code> methods
+in the parent visitor's <code>visit_stmt</code> or <code>visit_expr</code> methods.</p>
+<p>The <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L19"><code>SemanticSyntaxChecker</code></a> also tracks very little of its own state. Instead,
+it again defers to the parent visitor via the <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L1586C11-L1586C32"><code>SemanticSyntaxContext</code></a> trait.
+Examples of methods on this trait include:</p>
+<ul>
+<li><code>python_version</code> -- returns the target Python version for linting</li>
+<li><code>in_async_context</code> -- returns whether or not async code like <code>await</code> or <code>async for</code> loops are allowed in the current scope</li>
+</ul>
+<p>Typically the parent visitor, like the <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_linter/src/checkers/ast/mod.rs#L182"><code>Checker</code></a> from the <code>ruff_linter</code> crate,
+will implement <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L1586C11-L1586C32"><code>SemanticSyntaxContext</code></a> and pass itself to any
+<a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L19"><code>SemanticSyntaxChecker</code></a> method requiring a context.</p>
+<p>Another important context method is <code>report_semantic_error</code>, which may require
+special handling of new <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L891"><code>SemanticSyntaxErrorKind</code></a> variants. For example, some
+syntax errors emitted by CPython overlap with existing ruff rules (e.g.
+<a href="https://docs.astral.sh/ruff/rules/await-outside-async/"><code>await-outside-async</code>
+(PLE1142)</a>). These need
+to be transformed into normal ruff <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_diagnostics/src/diagnostic.rs#L22"><code>Diagnostic</code></a>s instead of being reported
+directly as syntax errors. This happens within the
+<a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_linter/src/checkers/ast/mod.rs#L572"><code>Checker::report_semantic_error</code></a> method.</p>
+<h2>Testing</h2>
+<p>There are two main ways of testing new semantic errors. The first, and easier,
+method is to write inline parser tests using <code>test_ok</code> and <code>test_err</code> comments,
+for example:</p>
+<p>https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L80-L95</p>
+<p>These are automatically extracted from the source code by the parser's
+<a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/tests/generate_inline_tests.rs#L24"><code>generate_inline_tests</code></a> function and then run like normal snapshot tests.
+These work very well for simple errors that don't require detailed information
+from the <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L1586C11-L1586C32"><code>SemanticSyntaxContext</code></a>.</p>
+<p>For errors that do require such contextual information tracked by the parent
+visitor, a better alternative is to use integration tests, such as those found
+in <code>linter.rs</code> in the <code>ruff_linter</code> crate:</p>
+<p>https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_linter/src/linter.rs#L1015-L1025</p>
+<p>https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_linter/src/linter.rs#L1064-L1066</p>
+<p>The second of these can be reused for other semantic errors that correspond to
+ruff rules, while something like the first example can be used for new
+syntax-error-specific tests. In both cases, these integration tests will take
+advantage of the existing context tracking done by the real <a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_linter/src/checkers/ast/mod.rs#L182"><code>Checker</code></a> instead
+of trying to duplicate that tracking in the parser's test
+<a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/tests/fixtures.rs#L470"><code>SemanticSyntaxCheckerVisitor</code></a>.</p>
+<h2>Comparing to the fuzzer results</h2>
+<p>Again, the initial errors in this issue were extracted from <a href="https://github.com/astral-sh/ruff/issues/7633#issuecomment-1740424031">this comment</a> in
+#7633 by following this procedure:</p>
+<ol>
+<li>Download and unzip the fuzzer results from <a href="https://github.com/qarmin/Automated-Fuzzer/releases/download/test/Cpython.no.parsable.parsable.by.ruff.zip">here</a></li>
+<li>Run the Python script below to get a partially-deduplicated list of errors</li>
+<li>Double check these errors against ruff and CPython's parser and compiler</li>
+</ol>
+<details>
+<summary>Python script for processing fuzzer results</summary>
+
+<pre><code class="language-python">import argparse
+import compileall
+import contextlib
+import dataclasses
+import io
+import os
+import re
+import subprocess
+from collections import Counter
+
+FILE = re.compile(r'File &quot;([^&quot;]+)&quot;, line (\d+)')
+MESSAGE = re.compile(r&quot;SyntaxError: (.*)&quot;)
+
+
+@dataclasses.dataclass
+class Error:
+    file: str
+    line_number: int
+    message: str
+
+
+# Ruff rules already re-implemented as semantic syntax errors, not just rules
+# that match CPython syntax errors.
+RULES = [
+    &quot;F404&quot;,
+    &quot;F704&quot;,
+    &quot;F706&quot;,
+    &quot;PLE0118&quot;,
+    &quot;PLE1142&quot;,
+]
+
+
+def run_ruff(ruff_bin, path):
+    return subprocess.run(
+        [
+            ruff_bin,
+            &quot;check&quot;,
+            &quot;--no-cache&quot;,
+            &quot;--silent&quot;,
+            &quot;--preview&quot;,
+            &quot;--config&quot;,
+            f&quot;lint.select={RULES}&quot;,
+            path,
+        ]
+    ).returncode
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&quot;--ruff-bin&quot;, default=&quot;ruff&quot;)
+
+    args = parser.parse_args()
+
+    with (
+        contextlib.redirect_stdout(io.StringIO()) as out,
+        contextlib.redirect_stderr(os.devnull),
+    ):
+        compileall.compile_dir(&quot;.&quot;, force=True, quiet=1)
+
+    seen_messages = Counter()
+    errors = list()
+
+    file, line_number = None, None
+    for line in out.getvalue().splitlines():
+        if m := FILE.search(line):
+            file, line_number = m.groups()
+        if m := MESSAGE.search(line):
+            message = m[1]
+            # combine repetitive messages into single entries
+            for prefix in [
+                &quot;unknown encoding&quot;,
+                &quot;invalid escape sequence&quot;,
+                &quot;'ascii' codec can't decode&quot;,
+                &quot;future feature&quot;,
+                &quot;invalid character&quot;,
+                &quot;invalid non-printable character&quot;,
+                &quot;no binding for nonlocal&quot;,
+            ]:
+                if message.startswith(prefix):
+                    message = prefix
+                    break
+            if (
+                message not in seen_messages
+                and run_ruff(args.ruff_bin, file) == 0
+            ):
+                errors.append(Error(file, line_number, message))
+
+            seen_messages[message] += 1
+
+    for error in sorted(errors, key=lambda e: e.message):
+        count = seen_messages[error.message]
+        print(f&quot;{error.file}:{error.line_number}: {error.message} ({count})&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+</p>
+</details>
+
+<p>[^1]: There are some local violations of this principle. For example, the
+<a href="https://github.com/astral-sh/ruff/blob/014bb526f45afd654e5f42db92310e98b5068a54/crates/ruff_python_parser/src/semantic_errors.rs#L1291"><code>ReboundComprehensionVisitor</code></a> recursively visits the expressions in a
+comprehension looking for any expressions rebinding one of the
+comprehension's iteration variables. However, this is a highly-localized AST
+traversal and won't have the same kind of performance implications as an
+additional full AST traversal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-04-15 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracking</span> added by @ntBre on 2025-04-15 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[syntax-errors] Remaining errors raised by the compiler" to "[syntax-errors] Remaining syntax errors raised by the compiler" by @ntBre on 2025-04-15 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15506.html">astral-sh/ruff#15506</a> on 2025-04-17 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17492.html">astral-sh/ruff#17492</a> on 2025-04-20 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/120.html">astral-sh/ty#120</a> on 2025-04-21 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17463.html">astral-sh/ruff#17463</a> on 2025-04-21 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7633.html">astral-sh/ruff#7633</a> on 2025-04-22 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17559.html">astral-sh/ruff#17559</a> on 2025-04-22 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17131.html">astral-sh/ruff#17131</a> on 2025-04-23 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17624.html">astral-sh/ruff#17624</a> on 2025-04-25 06:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17804.html">astral-sh/ruff#17804</a> on 2025-05-03 01:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-05-05 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>generator expression must be parenthesized</p>
+</blockquote>
+<p>Regardless of whether there is a trailing comma or not, the exact same AST is generated by ruff for the code (only the ranges are different).
+Given this, how do we detect the trailing comma during the semantic syntax error phase?
+Should this rather be detected during parsing?
+For example, the <code>ast</code> module does not give an AST at all for this:</p>
+<pre><code class="language-py">&gt;&gt;&gt; import ast; ast.parse(&quot;max(i for i in range(3),)&quot;)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.11/ast.py&quot;, line 50, in parse
+    return compile(source, filename, mode, flags,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;&lt;unknown&gt;&quot;, line 1
+    max(i for i in range(3),)
+        ^^^^^^^^^^^^^^^^^^^
+SyntaxError: Generator expression must be parenthesized
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-05 18:44</div>
+            <div class="timeline-body"><p>Oh you're exactly right, thanks! The fact that <code>ast.parse</code> fails means this is not a semantic syntax error and should instead be caught by our parser. I'll open a separate issue for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17867.html">astral-sh/ruff#17867</a> on 2025-05-05 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17637.html">astral-sh/ruff#17637</a> on 2025-05-08 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17988.html">astral-sh/ruff#17988</a> on 2025-05-09 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18671.html">astral-sh/ruff#18671</a> on 2025-06-14 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19112.html">astral-sh/ruff#19112</a> on 2025-07-08 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/823.html">astral-sh/ty#823</a> on 2025-07-14 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/1026.html">astral-sh/ty#1026</a> on 2025-08-17 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20051.html">astral-sh/ruff#20051</a> on 2025-08-22 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-08-22 19:44</div>
+            <div class="timeline-body"><p>Hii , I am new to the astral community , I have tried to implement syntax error for <code>yield from</code> in async functions.
+Looking forward to learn &amp; contribute.</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20166.html">astral-sh/ruff#20166</a> on 2025-08-30 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-08-30 12:26</div>
+            <div class="timeline-body"><p>I have also tried to implement <code>F406</code> (mport * only allowed at module leve) in PR linked above.
+Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20243.html">astral-sh/ruff#20243</a> on 2025-09-04 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-04 16:39</div>
+            <div class="timeline-body"><p>Hii @ntBre , I have tried to implement  <code>F622</code> multiple starred expression (linked above) , can you please take a look whenever you get a chance.
+Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20426.html">astral-sh/ruff#20426</a> on 2025-09-15 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-15 22:52</div>
+            <div class="timeline-body"><p>Hi @ntBre , I’ve implemented the new error case where a name is both a parameter and global. I think implementation is similar for the case where a name is both a parameter and nonlocal. Do you recommend adding that in the same PR, or should I open a separate one?
+Whenever you get a chance, I’d appreciate your review. Thanks a lot for your time and guidance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-15 23:17</div>
+            <div class="timeline-body"><p>Thank you! Let's start with <code>global</code> and save <code>nonlocal</code> for a separate PR. Both of these are a bit trickier than they look initially because <code>global</code> handling in ty is quite different from Ruff, and Ruff doesn't have much of the <code>nonlocal</code> support that ty has, so we may not even want to tackle that one immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-15 23:20</div>
+            <div class="timeline-body"><p>Sure thing : ) , I understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20554.html">astral-sh/ruff#20554</a> on 2025-09-24 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-24 16:48</div>
+            <div class="timeline-body"><p>I have tried to implement F407 , have linked the PR above.</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-09-24 16:55</div>
+            <div class="timeline-body"><p>Hii @ntBre , I am also working on this break outside loop F701 , this would require some changes to the context, I have added a new <code>in_loop_context</code> , could you please take a loop &amp; let me know if I am headed in right direction. https://github.com/astral-sh/ruff/pull/20556</p>
+<p>Thank you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20682.html">astral-sh/ruff#20682</a> on 2025-10-02 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-02 16:07</div>
+            <div class="timeline-body"><p>Hii @ntBre , I have tried to implement the semantic syntax error where alternative patterns bind different names (linked above) . Whenever you get a chance, I’d appreciate your review.</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20868.html">astral-sh/ruff#20868</a> on 2025-10-14 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-14 17:12</div>
+            <div class="timeline-body"><p>Hii @ntBre , now as we have <code>in_loop_context</code> method I have implemented(ported) <code>F702</code> as semantic syntax error linking PR (https://github.com/astral-sh/ruff/pull/20869) &amp; have also worked on a new semantic syntax error linked above where annotated name cannot be global. Would appreciate your review .</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-22 17:11</div>
+            <div class="timeline-body"><p>Linking PR for PLE0117 https://github.com/astral-sh/ruff/pull/21032</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21200.html">astral-sh/ruff#21200</a> on 2025-11-02 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-11-07 06:11</div>
+            <div class="timeline-body"><p>Linking the follow up PR for name is parameter and global for ty https://github.com/astral-sh/ruff/pull/21312</p>
+<p>Thank  you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21495.html">astral-sh/ruff#21495</a> on 2025-11-17 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-27 03:44</div>
+            <div class="timeline-body"><p>This is another one that's easy enough to do:</p>
+<pre><code class="language-python">In [7]: class Foo2[T3 = int, T4]: ...
+  Cell In[7], line 1
+    class Foo2[T3 = int, T4]: ...
+                         ^
+SyntaxError: non-default type parameter 'T4' follows default type parameter
+</code></pre>
+<p>It's interesting that this isn't raised by the parser while a similar error involving function parameters is being raised by the parser:</p>
+<pre><code class="language-shell">❯ echo &quot;class Foo[T1 = int, T2]: ...&quot; | python -m ast -                                      
+Module(
+   body=[
+      ClassDef(
+         name='Foo',
+         body=[
+            Expr(
+               value=Constant(value=Ellipsis))],
+         type_params=[
+            TypeVar(
+               name='T1',
+               default_value=Name(id='int', ctx=Load())),
+            TypeVar(name='T2')])])
+
+❯ echo &quot;def foo(t1 = int, t2): ...&quot; | python -m ast -
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1865, in &lt;module&gt;
+    main()
+    ~~~~^^
+  File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1861, in main
+    tree = parse(source, name, args.mode, type_comments=args.no_type_comments)
+  File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 50, in parse
+    return compile(source, filename, mode, flags,
+                   _feature_version=feature_version, optimize=optimize)
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    def foo(t1 = int, t2): ...
+                      ^^
+SyntaxError: parameter without a default follows parameter with a default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/1651.html">astral-sh/ty#1651</a> on 2025-11-27 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21635.html">astral-sh/ruff#21635</a> on 2025-11-27 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21657.html">astral-sh/ruff#21657</a> on 2025-11-27 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-11-27 09:41</div>
+            <div class="timeline-body"><blockquote>
+<p>This is another one that's easy enough to do:</p>
+<p>In [7]: class Foo2[T3 = int, T4]: ...
+Cell In[7], line 1
+class Foo2[T3 = int, T4]: ...
+^
+SyntaxError: non-default type parameter 'T4' follows default type parameter
+It's interesting that this isn't raised by the parser while a similar error involving function parameters is being raised by the parser:</p>
+<p>❯ echo &quot;class Foo[T1 = int, T2]: ...&quot; | python -m ast -<br />
+Module(
+body=[
+ClassDef(
+name='Foo',
+body=[
+Expr(
+value=Constant(value=Ellipsis))],
+type_params=[
+TypeVar(
+name='T1',
+default_value=Name(id='int', ctx=Load())),
+TypeVar(name='T2')])])</p>
+<p>❯ echo &quot;def foo(t1 = int, t2): ...&quot; | python -m ast -
+Traceback (most recent call last):
+File &quot;<frozen runpy>&quot;, line 198, in _run_module_as_main
+File &quot;<frozen runpy>&quot;, line 88, in _run_code
+File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1865, in <module>
+main()
+~~~~^^
+File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1861, in main
+tree = parse(source, name, args.mode, type_comments=args.no_type_comments)
+File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 50, in parse
+return compile(source, filename, mode, flags,
+_feature_version=feature_version, optimize=optimize)
+File &quot;<stdin>&quot;, line 1
+def foo(t1 = int, t2): ...
+^^
+SyntaxError: parameter without a default follows parameter with a default</p>
+</blockquote>
+<p>I have linked the PR.</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-12-04 10:20</div>
+            <div class="timeline-body"><blockquote>
+<p>This is another one that's easy enough to do:</p>
+<p>In [7]: class Foo2[T3 = int, T4]: ...
+Cell In[7], line 1
+class Foo2[T3 = int, T4]: ...
+^
+SyntaxError: non-default type parameter 'T4' follows default type parameter
+It's interesting that this isn't raised by the parser while a similar error involving function parameters is being raised by the parser:</p>
+<p>❯ echo &quot;class Foo[T1 = int, T2]: ...&quot; | python -m ast -<br />
+Module(
+body=[
+ClassDef(
+name='Foo',
+body=[
+Expr(
+value=Constant(value=Ellipsis))],
+type_params=[
+TypeVar(
+name='T1',
+default_value=Name(id='int', ctx=Load())),
+TypeVar(name='T2')])])</p>
+<p>❯ echo &quot;def foo(t1 = int, t2): ...&quot; | python -m ast -
+Traceback (most recent call last):
+File &quot;<frozen runpy>&quot;, line 198, in _run_module_as_main
+File &quot;<frozen runpy>&quot;, line 88, in _run_code
+File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1865, in <module>
+main()
+~~~~^^
+File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 1861, in main
+tree = parse(source, name, args.mode, type_comments=args.no_type_comments)
+File &quot;/Users/dhruv/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/ast.py&quot;, line 50, in parse
+return compile(source, filename, mode, flags,
+_feature_version=feature_version, optimize=optimize)
+File &quot;<stdin>&quot;, line 1
+def foo(t1 = int, t2): ...
+^^
+SyntaxError: parameter without a default follows parameter with a default</p>
+</blockquote>
+<p>I have linked the PR for ty one as well.
+Thank you : )</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

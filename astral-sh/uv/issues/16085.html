@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script to find binary of the real Python executable fails to run - astral-sh/uv #16085</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Script to find binary of the real Python executable fails to run</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16085">#16085</a>
+        opened by <a href="https://github.com/jdumas">@jdumas</a>
+        on 2025-10-01 14:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jdumas">@jdumas</a> on 2025-10-01 14:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I am trying to run the following script with uv (taken from <a href="https://github.com/wjakob/nanobind/blob/879bca4869664bdc1446ee7f160ffe3c7028cd7a/cmake/darwin-python-path.py#L10-L15">nanobind</a>):</p>
+<pre><code class="language-python">import ctypes
+dyld = ctypes.cdll.LoadLibrary('/usr/lib/system/libdyld.dylib')
+namelen = ctypes.c_ulong(1024)
+name = ctypes.create_string_buffer(b'\000', namelen.value)
+dyld._NSGetExecutablePath(ctypes.byref(name), ctypes.byref(namelen))
+print(name.value.decode('utf8').strip())
+</code></pre>
+<p>However, when running this script through <code>uv run --no-project python &lt;nanobind&gt;/cmake/darwin-python-path.py</code>, the script doesn't execute (even doing a <code>print()</code> on the first line doesn't show anything).</p>
+<p>For context we're trying to find the real Python executable in order to inject <a href="https://jonasdevlieghere.com/post/sanitizing-python-modules/">sanitizers</a> for debugging C++/Python bindings.</p>
+<p>Possibly related to #12151, although this issue is more specifically about being unable to run the script above.</p>
+<h3>Platform</h3>
+<p>macOS 14.5</p>
+<h3>Version</h3>
+<p>0.8.22</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jdumas on 2025-10-01 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wjakob/nanobind/issues/1123.html">wjakob/nanobind#1123</a> on 2025-10-01 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-01 14:48</div>
+            <div class="timeline-body"><p>I can't reproduce — this ran fine for me. Can you share logs with <code>-vv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-10-01 15:01</div>
+            <div class="timeline-body"><p>Sure, here is the log:</p>
+<pre><code>❯ uv run -vv --no-project python cmake/darwin-python-path.py
+DEBUG uv 0.8.22 (Homebrew 2025-09-23)
+TRACE Checking shared lock for `/Users/jedumas/Library/Caches/uv` at `/Users/jedumas/Library/Caches/uv/.lock`
+DEBUG Acquired shared lock for `/Users/jedumas/Library/Caches/uv`
+DEBUG Found project root: `/Users/jedumas/external/git/nanobind`
+DEBUG No workspace root found, using project root
+DEBUG Ignoring discovered project due to `--no-project`
+DEBUG No project found; searching for Python interpreter
+DEBUG No Python version file found in ancestors of working directory: /Users/jedumas/external/git/nanobind
+DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
+TRACE Found cached interpreter info for Python 3.13.2, skipping query of: .venv/bin/python3
+DEBUG Found `cpython-3.13.2-macos-aarch64-none` at `/Users/jedumas/external/git/nanobind/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.13.2 interpreter at: /Users/jedumas/external/git/nanobind/.venv/bin/python3
+DEBUG Running `python cmake/darwin-python-path.py`
+DEBUG Spawned child 51371 in process group 51370
+DEBUG Command exited with signal: Some(9)
+DEBUG Released lock at `/Users/jedumas/Library/Caches/uv/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-01 15:14</div>
+            <div class="timeline-body"><p>Hm, the process is being killed? I would presume this is some security feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-10-01 16:35</div>
+            <div class="timeline-body"><p>Yikes, you're right. Ok closing this for now. I'll investigate internally if I can do anything about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jdumas on 2025-10-01 16:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature: add --lockfile flag to allow users to customize lock file name - astral-sh/uv #6830</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature: add --lockfile flag to allow users to customize lock file name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6830">#6830</a>
+        opened by <a href="https://github.com/jensqin">@jensqin</a>
+        on 2024-08-29 19:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jensqin">@jensqin</a> on 2024-08-29 19:40</div>
+            <div class="timeline-body"><h1>Usecase</h1>
+<p>When a project needs to have multiple lock files for different users, it is convenient to be able to rename the lockfile.</p>
+<h2>API Suggestion</h2>
+<pre><code class="language-bash">uv lock --lockfile my_uv_lock_file.lock
+</code></pre>
+<h2>Context</h2>
+<p><a href="https://pdm-project.org/en/latest/usage/lockfile/#specify-another-lock-file-to-use">pdm</a> has this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-29 20:24</div>
+            <div class="timeline-body"><p>Can you share more details about &quot;different users&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-08-29 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-08-29 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jensqin">@jensqin</a> on 2024-08-30 14:11</div>
+            <div class="timeline-body"><p>I should have said &quot;different resolution&quot;. For example, one user wants to use &quot;highest&quot;, and another wants to use &quot;lowest-direct&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamyAB">@SamyAB</a> on 2024-08-30 22:49</div>
+            <div class="timeline-body"><p>I agree that the feature would be very useful in different situations. In addition to the case that @jensqin mentioned, I personally use the <code>--lockfile</code> option from <code>pdm</code> to have different locks based on different sources. Right now with <code>uv</code> that might be translated as different lockfiles based on different sets of <code>--index-url</code> and <code>--extra-index-url</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nikhilweee">@nikhilweee</a> on 2024-09-11 19:50</div>
+            <div class="timeline-body"><p>Another use case is to support conflicting dependencies if/when #6981 is implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8976.html">astral-sh/uv#8976</a> on 2024-11-09 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9546.html">astral-sh/uv#9546</a> on 2024-12-02 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10678.html">astral-sh/uv#10678</a> on 2025-01-16 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11645.html">astral-sh/uv#11645</a> on 2025-02-21 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsiverskog">@jsiverskog</a> on 2025-03-19 10:20</div>
+            <div class="timeline-body"><p>i want this for the sole purpose of keeping my repository roots clean - i prefer to have as many as possible of environment related files in a separate directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladidobro">@vladidobro</a> on 2025-08-17 10:35</div>
+            <div class="timeline-body"><p>Hi,
+I would say that support for multiple lockfiles is extremely important for scalable monorepos, and is the last missing piece for us to fully commit to a uv-based monorepo.</p>
+<p>For example in our setup of some shared libs + many domain-specific applications with data pipelines, I would like to be able to use a new feature of some library without being forced to upgrade and test it and fix it in all of the other applications (100+ mostly completely unrelated pipelines).</p>
+<p>Our current options seem to be</p>
+<ul>
+<li>use pants</li>
+<li>dont use workspaces, treat is as unrelated uv packages that just happen to be in one repo (very inconvenient)</li>
+</ul>
+<p>Or is there already a way to achieve it with uv workspaces?
+Does uv plan some &quot;environments&quot; support for these usecases?</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g0di">@g0di</a> on 2025-09-17 08:08</div>
+            <div class="timeline-body"><p>I'm using nox for running tests on my libraries against multiple versions of Python. On my nox test session I'm using the uv <code>--resolution</code> flag to run my tests against highest and lowest versions of required dependencies which is super useful. However, this cause uv to re-lock and override the <code>uv.lock</code> on each session. I would find it useful to tell uv to use separated lock files for both resolution strategies as well as using the default one in day-to-day situations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 10:27</div>
+            <div class="timeline-body"><p>@g0di Can you use <code>uv pip install --resolution lowest .</code> for your tests, or do you need a lockfile for lowest, too`</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 10:55</div>
+            <div class="timeline-body"><p>You can use <code>--isolated</code> for an isolated lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g0di">@g0di</a> on 2025-09-17 11:16</div>
+            <div class="timeline-body"><p>Those are two interesting options I did not think about. Let me give it a try to see if it fits my needs! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g0di">@g0di</a> on 2025-09-17 12:34</div>
+            <div class="timeline-body"><blockquote>
+<p>You can use <code>--isolated</code> for an isolated lockfile.</p>
+</blockquote>
+<p>I was wondering why I did not see this one but using the latest uv version gives me this:</p>
+<pre><code>warning: The `--isolated` flag is deprecated and has no effect. Instead, use `--no-config` to prevent uv from discovering configuration files.
+</code></pre>
+<p>I tried with <code>--isolated</code> and <code>--no-config</code> but it did not work (the first is ignored and the second ignore my whole configuration breaking my builds).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 12:57</div>
+            <div class="timeline-body"><p>Sorry, what command are you using? It's available on <code>uv run</code> to use an isolated environment and lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g0di">@g0di</a> on 2025-09-17 13:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry, what command are you using? It's available on <code>uv run</code> to use an isolated environment and lockfile.</p>
+</blockquote>
+<p>I was trying to use <code>uv sync</code> because it fits better in my nox file. The idea is that nox creates me a venv, then I sync my project and lowest/highest dependencies in it and finally run my tests. So I end up with one venv per combinations or python version and resolution strategy. Not having the ability to use different locks file cause this to relock everything each time.</p>
+<blockquote>
+<p>@g0di Can you use uv pip install --resolution lowest . for your tests, or do you need a lockfile for lowest, too`</p>
+</blockquote>
+<p>This is what I tried to achieve and ended up with the following nox session, leveraging compile and install. It looks like its working as expected even if its a bit verbose (considering I'll have to copy paste this in all my company projects).</p>
+<pre><code class="language-python">@nox.session(python=[&quot;3.9&quot;, &quot;3.12&quot;], reuse_venv=True, venv_backend=&quot;uv&quot;)
+@nox.parametrize(&quot;resolution&quot;, [&quot;lowest-direct&quot;, &quot;highest&quot;])
+def tests(session: nox.Session, resolution: str) -&gt; None:
+    session.run_install(
+        &quot;uv&quot;,
+        &quot;pip&quot;,
+        &quot;compile&quot;,
+        &quot;pyproject.toml&quot;,
+        &quot;--group=dev&quot;,
+        &quot;--format=pylock.toml&quot;,
+        f&quot;--resolution={resolution}&quot;,
+        f&quot;--output-file=pylock.{resolution}.toml&quot;,
+        external=True,
+        silent=True,
+    )
+    session.install(&quot;--no-deps&quot;, &quot;--exact&quot;, f&quot;-r=pylock.{resolution}.toml&quot;)
+    session.install(&quot;.&quot;, &quot;--no-deps&quot;)
+
+    session.run(&quot;coverage&quot;, &quot;run&quot;, &quot;--parallel-mode&quot;, &quot;-m&quot;, &quot;pytest&quot;)
+    session.notify(&quot;coverage&quot;)
+</code></pre>
+<p>I'm using <code>uv pip compile</code> because I can use the pylock format and include hashes automatically. Also, I suppose that when I rerun this command, uv reuse the existing lock file reducing the compile time (to be confirmed).</p>
+<p>I'm open to feedback!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NicholasPini">@NicholasPini</a> on 2025-09-18 19:59</div>
+            <div class="timeline-body"><p>Just adding my possible use case: I'm building a ci/cd pipeline which needs to build and push docker containers. These containers are used to setup a python environment for an application to eventually run inside. My idea is to use <code>uv lock --check</code> using the uv.lock of the previous commit to check if dependencies have changed: if so, rebuild the container, otherwise I skip this step entirely. Not sure if there's a way to do this right now.
+My workaround is to rename the current uv.lock to something else, get the previous uv.lock, run <code>uv lock --check</code> and then replace the old file with the file I previously renamed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gattocrucco">@Gattocrucco</a> on 2025-12-17 12:23</div>
+            <div class="timeline-body"><p>Anecdote of last time where I would have liked <code>UV_LOCKFILE=...</code> or similar: I launched a Python shell with <code>uv run --resolution lowest-direct ...</code> to debug some changes I was making with the oldest supported dependencies, after that as usual I did <code>git restore uv.lock</code> because it gets overridden when I change resolution, then forgot to do <code>uv sync</code> before committing, which broke CI because in the change I added a new dependency.</p>
+<p>Of course this can be programmed with make targets or custom scripts that backup then restore <code>uv.lock</code> for these cases, but handling all edge cases this way is error-prone and takes time, and makes it harder to just type commands when I need something different than the pre-written debug command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kludex">@Kludex</a> on 2025-12-19 15:55</div>
+            <div class="timeline-body"><p>I'm also interested in this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 16:57</div>
+            <div class="timeline-body"><p>@Kludex please share your use-case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jiridanek">@jiridanek</a> on 2025-12-19 17:03</div>
+            <div class="timeline-body"><p>My use case: we're maintaining separate Python indices per hardware profile (<a href="https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/rocm-ubi9/simple/">ROCm</a> vs <a href="https://console.redhat.com/api/pypi/public-rhai/rhoai/3.2/cuda-ubi9/simple/">CUDA</a>) and we would like to sometimes resolve one <code>pyproject.toml</code> against both, and thereby having both <code>uv.lock.rocm</code> and <code>uv.lock.cuda</code> for the repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kludex">@Kludex</a> on 2025-12-19 17:06</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/Kludex">@Kludex</a> please share your use-case</p>
+</blockquote>
+<p>I test both <code>lowest-direct</code> and current <code>uv.lock</code> in <code>pydantic-ai</code>, and by mistake we were not really testing the <code>lowest-direct</code>, so we find ourselves in a situation that the <code>lowest-direct</code> is actually not valid anymore because the transitive dependencies are not compatible with the lowest direct dependencies. If we had a lock file (we did make the mistake of installing highest instead of <code>lowest-direct</code> sometimes already because of some mistakes with uv over time) we wouldn't have this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 20:08</div>
+            <div class="timeline-body"><p>@jiridanek that makes sense. we would love to solve that problem within a single lockfile because lots of people have to deploy against different accelerators.</p>
+<p>@Kludex I'm sorry, I don't follow? If you weren't testing <code>lowest-direct</code> correctly I don't see how a separately lockfile would have saved you? It'd just also have drifted from your main <code>uv.lock</code> file. Also, you wouldn't be able to assert that your <code>lowest-directly</code> file actually represents the same content as your main <code>uv.lock</code> file which makes it sort of useless?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pouvoirdasha/rutabaga/issues/12.html">pouvoirdasha/rutabaga#12</a> on 2025-12-28 14:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:35 UTC
+    </footer>
+</body>
+</html>

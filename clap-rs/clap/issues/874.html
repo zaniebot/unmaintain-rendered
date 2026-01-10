@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Help for `possible_values` values - clap-rs/clap #874</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Help for `possible_values` values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/874">#874</a>
+        opened by <a href="https://github.com/wfraser">@wfraser</a>
+        on 2017-02-25 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wfraser">@wfraser</a> on 2017-02-25 07:08</div>
+            <div class="timeline-body"><p>I'm converting some old code of mine with hand-rolled arg parsing code to use clap (because it's awesome, thank you!), but this is one thing I really miss. We have <code>Arg::possible_values</code> to show what valid values for an option are, but no built-in way of showing help text for them, other than just putting it in the option's help text.</p>
+<p>Given the current code, the best I've managed to do is hack around it with something like:</p>
+<pre><code>clap::App::new(&quot;foo&quot;)
+    .arg(Arg::with_name(&quot;errors&quot;)
+        .long(&quot;errors&quot;)
+        .takes_value(true)
+        .value_name(&quot;error-policy&quot;)
+        .possible_values(&amp;[&quot;halt&quot;, &quot;skip&quot;, &quot;replace&quot;])
+        .default_value(&quot;halt&quot;)
+        .next_line_help(true)
+        .hide_possible_values(true)
+        .help(concat!(&quot;What to do when an error is encountered in input.\n&quot;,
+             &quot;halt: exit on errors\n&quot;,
+             &quot;skip: skip over the erroneous input\n&quot;,
+             &quot;replace: substitute with the encoding's replacement character&quot;)))
+    .get_matches();
+</code></pre>
+<p>which outputs the following help text:</p>
+<pre><code>foo
+
+USAGE:
+    foo [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --errors &lt;error-policy&gt;
+            What to do when an error is encountered in input.
+            halt: exit on errors
+            skip: skip over the erroneous data
+            replace: substitute with the encoding's replacement character
+             [default: halt]
+</code></pre>
+<p>The code is kind of ugly, I have to have the set of values listed in two places, and the output isn't as nice as the rest of what clap generates. :(</p>
+<p>I propose adding something to <code>Arg</code>, either a separate help function like <code>fn values_help(self, help_texts: &amp;[&amp;'b str]) -&gt; Self</code> where you give help text for each value in the same order you specified them in <code>possible_values</code>, or a separate function that lets you specify both as a tuple maybe: <code>fn possible_values_with_help(self, values: &amp;[(&amp;'b str, &amp;'b str)]) -&gt; Self</code>.</p>
+<p>This could produce nice tab-aligned output like this:</p>
+<pre><code>foo
+
+USAGE:
+    unicoder.exe [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --errors &lt;error-policy&gt;    What to do when an error is encountered in input.
+                halt               exit on errors [default]
+                skip               skip over the erroneous data
+                replace            substitute with the encoding's replacement character
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-27 01:24</div>
+            <div class="timeline-body"><p>Thanks for the detailed suggestion! I'm not against adding this feature, although there are a few features I need to knock out first. I'll also need to play with the implementation a bit, because what I'd really like to do is combine the two somehow so it doesn't impact the performance of those not using this feature. Granted two string slices vs one isn't that big a deal, but still. Perhaps something like:</p>
+<pre><code class="language-rust">clap::App::new(&quot;foo&quot;)
+    .arg(Arg::with_name(&quot;errors&quot;)
+        .long(&quot;errors&quot;)
+        .takes_value(true)
+        .value_name(&quot;error-policy&quot;)
+        .possible_values(&amp;[
+            &quot;halt:exit on errors&quot;, 
+            &quot;skip:skip over the erroneous data&quot;, 
+            &quot;replace:substitute with the encoding's replacement character&quot;])
+        .default_value(&quot;halt&quot;)
+        .possible_values_contain_help(true) // treats `:` as a value/help sep
+        .next_line_help(true)
+        .hide_possible_values(true)
+        .help(&quot;What to do when an error is encountered in input.&quot;))
+    .get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2017-02-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-02-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-02-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2017-02-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-02-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-05 18:27</div>
+            <div class="timeline-body"><p>I've done some thinking on this, and with the recent feature of distinguishing between <code>-h</code>/<code>--help</code> I'm going to close this.</p>
+<p>I'm still not totally opposed to adding this feature, it's just a somewhat niche case that I don't personally have the bandwidth to maintain right now. There are still questions like, should <code>:</code> be unconditionally the separator? I'm less inclined to add something like <code>Arg::possible_value_help_separator</code>, etc. In fact, I'd like to pair down <code>App</code> and <code>Arg</code>s API space, as the docs are becoming massive and I'd like to find a way to &quot;declutter&quot; the niche settings in 3x.</p>
+<p>So this is closed. But i'm willing to consider PRs on the matter if they're limited in scope.</p>
+<p>This works on clap 2.23.1, by the way.</p>
+<pre><code class="language-rust">clap::App::new(&quot;foo&quot;)
+    .arg(Arg::with_name(&quot;errors&quot;)
+        .long(&quot;errors&quot;)
+        .takes_value(true)
+        .value_name(&quot;error-policy&quot;)
+        .possible_values(&amp;[ &quot;halt&quot;,  &quot;skip&quot;,  &quot;replace&quot;])
+        .default_value(&quot;halt&quot;)
+        .hide_possible_values(true)
+        .help(&quot;What to do when an error is encountered in input.&quot;)
+        .long_help(&quot;\
+            What to do when an error is encountered in input. \n\
+                halt:          exit on errors\n\
+                skip:          skip over the erroneous input\n\
+                replace:       substitute with the encoding's replacement character&quot;)))
+    .get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-04-05 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:27 UTC
+    </footer>
+</body>
+</html>

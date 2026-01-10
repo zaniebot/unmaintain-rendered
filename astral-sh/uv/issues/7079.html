@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specifying external dependencies in pyproject.toml - astral-sh/uv #7079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specifying external dependencies in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7079">#7079</a>
+        opened by <a href="https://github.com/BlueMagma2">@BlueMagma2</a>
+        on 2024-09-05 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BlueMagma2">@BlueMagma2</a> on 2024-09-05 12:20</div>
+            <div class="timeline-body"><h1>Introduction</h1>
+<p>There currently exists a draft proposing a way to declare external dependencies in pyproject,toml: https://peps.python.org/pep-0725/</p>
+<p>For example in some of my project I specify the following section in my pyproject.toml:</p>
+<pre><code>[external]
+dependencies = [&quot;pkg:generic/ffmpeg&quot;]
+</code></pre>
+<p>What I expect this will do is add a line in the PKG-INFO file of my build packages as specified here: https://packaging.python.org/en/latest/specifications/core-metadata/#requires-external-multiple-use</p>
+<pre><code>Requires-External: pkg:generic/ffmpeg
+</code></pre>
+<p>Currently no build system properly handle this. Since I was using poetry I made a poetry plugin that takes care of detecting this section and adding the relevant line in PKG-INFO during build: https://pypi.org/project/poetry-external-dependencies/</p>
+<p>Then when deploying my package to different system I use a script that detect the external dependency and install what's required on the host system, in the example case it would automatically install <code>ffmpeg</code> using apt or apk or other package manager the system offer. Something like the following:</p>
+<pre><code>import warnings
+from importlib.metadata import metadata
+
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+
+d = {dist.project_name: metadata(dist.project_name).keys() for dist in __import__('pkg_resources').working_set}
+requires_external = [metadata(key)['Requires-External'] for key, meta in d.items() if 'Requires-External' in meta]
+included_external = [req.split('/')[-1] for req in requires_external if req.startswith('pkg:generic/')]
+
+if included_external:
+    print(f&quot;apt install -y {' '.join(included_external)}&quot;)  # noqa: T201
+else:
+    print('echo &quot;No python \'Requires-External\' found.&quot;')  # noqa: T201
+</code></pre>
+<h1>The question</h1>
+<p>I've started to transition my package to uv. How can I have the <code>Requires-External</code> line added to the PGK-INFO at build time ? Does uv support some form of plugin ? If not what can I do to have it work ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BlueMagma2">@BlueMagma2</a> on 2024-09-05 12:43</div>
+            <div class="timeline-body"><p>I just now realise that currently uv doesn't have a build backend and uses hatchling, this question might be better suited to be asked on hatchling's repository. If I find out how to solve my problem though there I'll report back here for reference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BlueMagma2">@BlueMagma2</a> on 2024-09-09 16:24</div>
+            <div class="timeline-body"><p>In case anyone is wondering how to do this, I solve my issue using a hatchling build hook, I might turn this into a plugin if I get the time:</p>
+<pre><code>from copy import deepcopy
+
+from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+from hatchling.metadata.core import ProjectMetadata
+
+class CustomBuildHook(BuildHookInterface):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def initialize(self, version: str, build_data: dict[str, any]) -&gt; None:
+        self._default_constructor = self.build_config.core_metadata_constructor
+
+        def metadata_constructor_extended(local_self, metadata: ProjectMetadata, extra_dependencies: tuple[str] | None = None) -&gt; str:
+            metadata_file = self._default_constructor(metadata, extra_dependencies)
+
+            external_dependencies = None
+            if 'external-dependencies' in metadata.core.config:
+                external_dependencies = deepcopy(metadata.core.config['external-dependencies'])
+
+            elif 'external' in metadata.config and 'dependencies' in metadata.config['external']:
+                external_dependencies = deepcopy(metadata.config['external']['dependencies'])
+
+            if external_dependencies:
+                header_section = metadata_file
+                content_section = ''
+                if 'Description-Content-Type' in metadata_file:
+                    split_file = metadata_file.split('Description-Content-Type')
+                    header_section = split_file[0]
+                    content_section = split_file[1]
+                
+                print(f&quot;  - {self.PLUGIN_NAME}&quot;)
+                for dependency in external_dependencies:
+                    print(f&quot;    - Requires-External: {dependency}&quot;)
+                    header_section += f'Requires-External: {dependency}\n'
+                metadata_file = header_section +'Description-Content-Type' + content_section
+            
+            return metadata_file
+
+        type(self.build_config).core_metadata_constructor = metadata_constructor_extended
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-09 20:56</div>
+            <div class="timeline-body"><p>Cool thanks for following up on your issue! We're interested in a build backend (#3957) so we may tackle this eventually.</p>
+<p>cc @ofek</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-09 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-09 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-09-09 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BlueMagma2">@BlueMagma2</a> on 2024-09-11 13:18</div>
+            <div class="timeline-body"><p>For reference, I've made it into a plugin for this: https://pypi.org/project/hatch-external-dependencies/</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:41 UTC
+    </footer>
+</body>
+</html>

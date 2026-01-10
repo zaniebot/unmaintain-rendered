@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE2514 fix should be marked unsafe and can modify octal escape sequences - astral-sh/ruff #16309</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLE2514 fix should be marked unsafe and can modify octal escape sequences</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16309">#16309</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-21 19:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-21 19:51</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>In Ruff 0.9.7, the fix for <a href="https://docs.astral.sh/ruff/rules/invalid-character-nul/">invalid-character-nul (PLE2514)</a> should be marked unsafe. Also, it has a bug with octal escape sequences.</p>
+<p>Before CPython 3.11, a null character in the source code discards the rest of the characters on its line. This bug (https://github.com/python/cpython/issues/96670) was fixed in CPython 3.11, so in that version and later, a null character is a syntax error. Either way, the PLE2514 fix changes behavior, so it should be marked unsafe.</p>
+<pre><code class="language-console">$ printf 'print(&quot;&quot;&quot;\x00A\nB&quot;&quot;&quot;)\n' &gt;ple2514_1.py
+
+$ python3.10 ple2514_1.py
+B
+
+$ python3.11 ple2514_1.py
+  File &quot;ple2514.py_1&quot;, line 1
+    print(&quot;&quot;&quot;
+SyntaxError: source code cannot contain null bytes
+
+$ ruff check --isolated --select PLE2514 ple2514_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ple2514_1.py
+print(&quot;&quot;&quot;\0A
+B&quot;&quot;&quot;)
+
+$ python3.10 ple2514_1.py | xxd
+00000000: 0041 0a42 0a                             .A.B.
+
+$ python3.11 ple2514_1.py | xxd
+00000000: 0041 0a42 0a                             .A.B.
+</code></pre>
+<p>The fix replaces the null character with <code>\0</code>, which can combine with one or two following octal digits to represent an unintended character. This is similar to #12936, so the solution could be similar, or the solution could be to use <code>\x00</code> as the replacement, which is not affected by following digits but might be less idiomatic than <code>\0</code>.</p>
+<pre><code class="language-console">$ printf 'print(&quot;&quot;&quot;\x0041\n?&quot;&quot;&quot;)\n' &gt;ple2514_2.py
+
+$ python3.10 ple2514_2.py
+?
+
+$ ruff check --isolated --select PLE2514 ple2514_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ple2514_2.py
+print(&quot;&quot;&quot;\041
+?&quot;&quot;&quot;)
+
+$ python3.10 ple2514_2.py
+!
+?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-21 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-21 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yahayaohinoyi">@yahayaohinoyi</a> on 2025-02-23 03:31</div>
+            <div class="timeline-body"><p>can i get assigned to this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @yahayaohinoyi by @ntBre on 2025-02-23 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-04-30 17:23</div>
+            <div class="timeline-body"><p>Probably there shouldn't be an autofix for this error at all. It's a syntax error now, and Ruff doesn't need to guess what the user meant.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

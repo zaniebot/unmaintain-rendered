@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>persisting github pat in private source dependency url in `uv.lock` - astral-sh/uv #14751</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>persisting github pat in private source dependency url in `uv.lock`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14751">#14751</a>
+        opened by <a href="https://github.com/giuliano-97">@giuliano-97</a>
+        on 2025-07-20 12:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/giuliano-97">@giuliano-97</a> on 2025-07-20 12:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Description</h3>
+<p>I have a package with a private source dependency fetched from GitHub which is included like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project-1&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;my-dep @ git+https://github_pat_&lt;GITHUB_TOKEN&gt;@github.com/my-user/my-dep.git@0.0.1&quot;,
+]
+</code></pre>
+<p>I have another package within the same repository that depends on <code>project-1</code> like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;subproject&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;project-1&quot;,
+]
+
+[tool.uv.sources]
+project-1 = { path = &quot;../&quot; }
+</code></pre>
+<p>The sub-project should be built as a docker image and one of the build steps is to resolve the project dependencies via <code>uv</code>, like this:</p>
+<pre><code class="language-Dockerfile">RUN uv venv --system-site-packages --relocatable &amp;&amp; uv sync
+</code></pre>
+<p>When I run <code>uv lock</code> for <code>subproject</code>, outside of the docker build, the resulting lock file doesn't persist the github token in the URL of <code>my-dep</code>, which is a transitive dependency through <code>project-1</code>, as stated <a href="https://docs.astral.sh/uv/concepts/authentication/#git-authentication">in the documentation</a>. Therefore, when <code>uv sync</code> is run in the docker build it fails to resolve <code>my-dep</code>.</p>
+<p>My current workaround is, well, not to create a lockfile for <code>subproject</code>, but this is not ideal.</p>
+<p>Is there a way to persist the PAT in the url of the lockfile <code>my-dep</code>? Alternatively, how would recommend achieving what I'm trying to do?</p>
+<h3>Additional info</h3>
+<p>OS: Linux - Ubuntu 22.04
+uv version: 0.7.5</p>
+<h3>Example</h3>
+<p>Steps to reproduce:</p>
+<pre><code>mkdir project-1
+cd project-1
+uv init 
+uv add --raw my-dep@git+https://github_pat_&lt;GITHUB_TOKEN&gt;@github.com/my-user/my-dep.git@0.0.1
+mkdir subproject
+cd suproject
+uv init --no-workspace
+uv add ../
+</code></pre>
+<p>Resulting directory structure:</p>
+<pre><code>.
+├── subproject
+│   ├── main.py
+│   ├── pyproject.toml
+│   ├── README.md
+│   └── uv.lock
+├── main.py
+├── pyproject.toml
+├── README.md
+└── uv.lock
+
+</code></pre>
+<p>EDIT:
+Another workaround which I've been using is to manually add the url to the tool.uv.sources section of subproject like this:</p>
+<pre><code>[tool.uv.sources]
+my-dep = { git = &quot;https://github_pat_&lt;GITHUB_TOKEN&gt;@github.com/my-user/my-dep.git&quot;, rev = &quot;0.0.1&quot; }
+</code></pre>
+<p>but this is also not ideal, as every time I change my-dep in project-1 I'll have to manually update it in subproject instead of just re-running uv lock.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @giuliano-97 on 2025-07-20 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/giuliano-97">@giuliano-97</a> on 2025-07-22 09:18</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>Hi, I saw this rather old PR that seems related to this: https://github.com/astral-sh/uv/pull/1717</p>
+<p>But I think the current behavior is to redact the credentials in the URL when creating the lock file. Do you have any input on this?
+TIA</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

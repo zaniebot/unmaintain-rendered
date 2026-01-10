@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partially parse args, capturing unknown args into a vec, rather than error - clap-rs/clap #1404</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Partially parse args, capturing unknown args into a vec, rather than error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1404">#1404</a>
+        opened by <a href="https://github.com/nkeor">@nkeor</a>
+        on 2019-01-23 23:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nkeor">@nkeor</a> on 2019-01-23 23:53</div>
+            <div class="timeline-body"><p>Maintainer's notes</p>
+<p>Workaround</p>
+<ul>
+<li>Parse with the args you care about with <code>Command::ignore_errors</code></li>
+</ul>
+<hr />
+<h3>Affected Version of clap</h3>
+<ul>
+<li>2.32.0</li>
+</ul>
+<h3>Bug or Feature Request Summary</h3>
+<p>It would be great to have a way to save unknow args into a Vec&lt;&gt; or slice. For example, an Arg::with_name() option, e.g. <code>Arg::with_name('unknow').unknow_args()</code> or something like this.
+Maybe it could be that instead of calling <code>get_matches()</code> on the arg list, add a <code>get_know_matches()</code> that returns a tuple, the first element being what would be <code>get_matches()</code> and the second a vector of the unknow args... Something like Python's <code>argparse</code>:</p>
+<pre><code class="language-python">args, unknown = parser.parse_known_args()
+</code></pre>
+<pre><code class="language-rust">let (matches, unknow_matches) = App::new(&quot;myprog&quot;)
+    .version(&quot;0.1&quot;)
+    .author(&quot;You &lt;you@example.com&gt;&quot;)
+    .about(&quot;Something about your program&quot;)
+    .arg(Arg::with_name(&quot;debug&quot;)
+        .short(&quot;d&quot;)
+        .multiple(true)
+        .help(&quot;Turn debugging information on&quot;))
+     .arg(Arg::with_name(&quot;quiet&quot;)
+         .short(&quot;q&quot;)
+         .long(&quot;shut-up&quot;)
+         .help(&quot;Shut up&quot;))
+      .get_know_matches();
+</code></pre>
+<p>And then, if you call <code>myprog -d --something</code>, you have in <code>matches</code> the normal clap behaviour, and in <code>unknow_matches</code> a vector containg <code>'--something'</code></p>
+<p>I don't know if I'm explaining it well, as English is not my primary language.
+EDIT: Save unknow in vector or slice instead of ignoring them</p>
+<p>The reason for this is that i'm building a program that has &quot;subargs&quot; (e.g. <code>myprogram -Xh</code> is the message help for <code>myprogram -X</code>, but not the same help as <code>myprogram -Yh</code> or <code>myprogram -h</code>.) I can build this by adding <code>-X</code> and <code>-Y</code> arguments, and run another function based on which arg was used, but clap needs to know all arguments, and that's why this would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ignore unknow args" to "Ignore and save in vector unknow args" by @nkeor on 2019-01-25 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkeor">@nkeor</a> on 2019-02-03 20:36</div>
+            <div class="timeline-body"><p>I found this: https://github.com/clap-rs/clap/issues/1361 It's exactly what I was looking for... maybe we should focus on that issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zkat">@zkat</a> on 2019-12-15 04:57</div>
+            <div class="timeline-body"><p>I could still quite use this: I want to be able to pass-through the args to a specific subcommand to a child process, ignoring all the direct args to the subcommand itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cecton">@cecton</a> on 2020-01-30 14:32</div>
+            <div class="timeline-body"><p>It would be useful for me too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cecton">@cecton</a> on 2020-01-30 14:58</div>
+            <div class="timeline-body"><p>I just found out how to do it! I used: <code>AppSettings::TrailingVarArg</code>, <code>AppSettings::AllowLeadingHyphen</code></p>
+<p>I did it with structopt but you can translate to the clap equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-02-01 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: options</span> added by @CreepySkeleton on 2020-02-01 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-02-01 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Urhengulas">@Urhengulas</a> on 2021-03-29 20:00</div>
+            <div class="timeline-body"><p>Hi @CreepySkeleton, @pksunkara,</p>
+<p>I'd be interested in implementing this, if there is some guidance in how to approach this best. My idea would be to do it very similar to <a href="https://docs.rs/clap/2.33.3/clap/enum.AppSettings.html#variant.TrailingVarArg"><code>AppSettings::TrailingVarArg</code></a> and put all the &quot;ignored arguments&quot; into the final trailing positional argument.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../knurling-rs/flip-link/pulls/29.html">knurling-rs/flip-link#29</a> on 2021-03-29 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-29 20:47</div>
+            <div class="timeline-body"><p>I don't think anything needs implementation here. As @cecton says, you can use those app settings to allow the end users to add extra arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Urhengulas">@Urhengulas</a> on 2021-03-30 13:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think anything needs implementation here. As @cecton says, you can use those app settings to allow the end users to add extra arguments.</p>
+</blockquote>
+<p>Hi @pksunkara, I've tried that, but this only ignores arguments &quot;at the end&quot;, not &quot;in the middle&quot;. Let me outline my situation:</p>
+<h3>What I want</h3>
+<p>Let's assume I have following app:</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+struct Opt {
+    #[structopt(short = &quot;-L&quot;, long, parse(from_os_str))]
+    library_path: Vec&lt;PathBuf&gt;,
+
+    #[structopt(short, long, parse(from_os_str))]
+    output: PathBuf,
+
+    #[structopt(short = &quot;T&quot;, long)]
+    script: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let opt: Opt = Opt::from_args();
+    dbg!(opt);
+}
+</code></pre>
+<p>Therefore my cli can be invoked like this:</p>
+<pre><code class="language-console">$ cli -T memory.x -o odir/ -L ldir/ -T memory2.x
+[src/main.rs:29] opt = Opt {
+    library_path: [
+        &quot;ldir/&quot;,
+    ],
+    output: &quot;odir/&quot;,
+    script: [
+        &quot;memory2.x&quot;,
+        &quot;memory.x&quot;,
+    ],
+}
+
+</code></pre>
+<p>But now I also want to allow the user to add arbitrary arguments at all positions, like this (which is the short form of <a href="https://github.com/knurling-rs/flip-link/runs/2218947629?check_suite_focus=true#step:5:71">this</a>):</p>
+<pre><code class="language-console">$ cli \
+    --eh-frame-hdr \
+    -flavor gnu \
+    -L ldir1/ \
+    file.o \
+    -o odir/ \
+    --gc-sections \
+    -L ldir2/ \
+    -L ldir3/ \
+    -Tmemory.x \
+    -Bdynamic
+</code></pre>
+<p>In my software I only care about <code>-L</code>, <code>-T</code>, <code>-o</code>, but all the other arguments should be accepted anyways, since I want to pass them through to another cli. Tbh, I don't necessarily need to capture them, but could also drop them,  since currently I obtain all arguments to be passed further with <code>fn std::env::args()</code>.</p>
+<p>Therfore I'd like aboves invocation to result in sth like this:</p>
+<pre><code class="language-console">[src/main.rs:29] opt = Opt {
+    library_path: [
+        &quot;ldir1/&quot;,
+        &quot;ldir2/&quot;,
+        &quot;ldir3/&quot;,
+    ],
+    output: &quot;dir/&quot;,
+    script: [
+        &quot;memory.x&quot;,
+    ],
+    # `_rest` is nice to have, but actually not needed in my case
+    _rest: [
+        &quot;--eh-frame-hdr&quot;,
+        &quot;-flavor&quot;,
+        &quot;gnu&quot;,
+        &quot;file.o&quot;,
+        &quot;--gc-sections&quot;,
+        &quot;-Bdynamic&quot;,
+    ]
+}
+</code></pre>
+<h3>Why <code>&amp;[AppSettings::TrailingVarArg, AppSettings::AllowLeadingHyphen]</code> doesn't work</h3>
+<p>I've tried the solution suggested above, but this didn't work for me for two reasons:</p>
+<ol>
+<li>It only accepts arguments added at the end, but not in the middle of the argument list<ul>
+<li>gets accept: <code>cli -T memory.x -o odir/ -L ldir/ -T memory2.x -Bdynamic</code></li>
+<li>get rejected:  <code>cli -T memory.x -Bdynamic -o odir/ -L ldir/ -T memory2.x</code></li>
+</ul>
+</li>
+<li>Needed arguments after the first unknown argument don't get captured anymore<ul>
+<li>If I invoke the cli like this: <code>cli -T memory.x -o odir/ -L ldir/ -T memory2.x -Bdynamic -T memory3.x</code>, the last <code>-T memory3.x</code> gets not added to <code>script</code>, but rather <code>_rest</code>.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<p>After having written all of this down it sounds like a <code>AppSettings::IgnoreAdditionalArgs</code>. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-30 13:43</div>
+            <div class="timeline-body"><p>You are welcome to try implementing it but I think this would need a complete parsing logic refactor since we need to design the new logic from ground up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Urhengulas">@Urhengulas</a> on 2021-03-30 15:03</div>
+            <div class="timeline-body"><blockquote>
+<p>You are welcome to try implementing it but I think this would need a complete parsing logic refactor since we need to design the new logic from ground up.</p>
+</blockquote>
+<p>@pksunkara I am not familiar with the clap parsing logic, but that is what I feared.. Do you know some workaround or other crate which could help in my case by any chance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-30 15:35</div>
+            <div class="timeline-body"><p>Implementing #1880 might help you with this. You can try researching that direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cecton">@cecton</a> on 2021-03-30 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>@pksunkara I am not familiar with the clap parsing logic, but that is what I feared.. Do you know some workaround or other crate which could help in my case by any chance?</p>
+</blockquote>
+<p>You can ssk the user to provide the parameters for the inner process separately:</p>
+<pre><code>./my_program --my-argument --my-other-argument -- --inner-process-argument1 --inner-process-argument2
+</code></pre>
+<p>That's what <code>--</code> is usually for in Unix-like command lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Urhengulas">@Urhengulas</a> on 2021-03-31 11:15</div>
+            <div class="timeline-body"><blockquote>
+<p>You can ssk the user to provide the parameters for the inner process separately:</p>
+<pre><code>./my_program --my-argument --my-other-argument -- --inner-process-argument1 --inner-process-argument2
+</code></pre>
+<p>That's what <code>--</code> is usually for in Unix-like command lines.</p>
+</blockquote>
+<p>@cecton Thank you for the tip. The problem is that I want to provide compatibility with another cli, <code>ld</code> to be precise (<a href="https://linux.die.net/man/1/ld">man page</a>), and allow the user to invoke it just like they would invoke <code>ld</code>. Therefore I can't enforce additional usage rules.</p>
+<p>But I only want to capture some of the arguments to do some preprocessing and then hand over all the arguments to <code>ld</code>.</p>
+<hr />
+<p>The approach I am trying to go for now, is to preprocess the args to only include the ones i am interested in and then parse this with <code>StructOpt::from_iter&lt;I: IntoIterator&gt;(iter: I)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Urhengulas">@Urhengulas</a> on 2021-03-31 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Implementing #1880 might help you with this. You can try researching that direction.</p>
+</blockquote>
+<p>This feature actually looks like a possible solution for me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../knurling-rs/flip-link/issues/31.html">knurling-rs/flip-link#31</a> on 2021-04-05 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/111.html">epage/clapng#111</a> on 2021-12-06 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: options</span> removed by @epage on 2021-12-08 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ignore and save in vector unknow args" to "Capture unknown args into a vec, rather than error" by @epage on 2021-12-09 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Capture unknown args into a vec, rather than error" to "Partially parse args, capturing unknown args into a vec, rather than error" by @epage on 2021-12-09 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 19:36</div>
+            <div class="timeline-body"><p>This would also cover the pre-parsing use case in #1880 by defining a subset of arguments and using that to parse</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 19:37</div>
+            <div class="timeline-body"><p>As mentioned in #1880, IgnoreErrors might help with some use cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1880.html">clap-rs/clap#1880</a> on 2021-12-09 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-09 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-09 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1910.html">clap-rs/clap#1910</a> on 2021-12-10 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2354.html">clap-rs/clap#2354</a> on 2021-12-13 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> removed by @epage on 2021-12-17 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-17 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-17 14:40</div>
+            <div class="timeline-body"><p>We need to decide</p>
+<ul>
+<li>How to opt-in</li>
+<li>How to expose this in <code>ArgMatches</code></li>
+<li>How to expose this in <code>derive</code></li>
+</ul>
+<p>Examples include</p>
+<p>We add a <code>AppSettings::PartialParse</code>.  We then store everything in <code>ArgMatches::unknown: Vec&lt;OsString&gt;</code>.  Like with <code>#[clap(external_subcommand)]</code>, the unknown are accessed via a special attribute <code>#[clap(unknown)]</code>.</p>
+<p>We add a <code>AppSettings::PartialParse</code>.  <code>debug_asserts</code> fail if <code>external_subcommand</code> is also set.  We then store everything in <code>&quot;&quot;</code> argm like external subcommands.  Like with <code>#[clap(external_subcommand)]</code>, the unknown are accessed via a special attribute <code>#[clap(unknown_args)]</code>.</p>
+<p>We add a <code>App::unknown_args(arg: Id)</code>.  When called, unknown args will be put in <code>ArgMatches[arg]</code>.  When not set, we'll error.  We then expose this in <code>derive</code> with <code>#[clap(unknown_args)]</code>.</p>
+<p>Earlier, someone brought up a <code>parse_known</code>.  In <a href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.parse_known_args">Python's argparse</a>, they use a <code>parse_known_args() -&gt; Tuple[Namespace, list[str]]</code> (contrasted with <code>parse() -&gt; Namespace</code>).  I lean away from this approach because</p>
+<ul>
+<li>We already have a proliferation of parse methods because of our lack of default parameters</li>
+<li>Our <code>ArgMatches</code> is already a bit heftier than <code>Namespace</code>, so we can augment it with other data like the unknown, in contrast to Python needing to return it via a tuple</li>
+<li>We already have a pattern of settings changing how the parse behaves</li>
+<li>We already have precedence with external subcommand for using the <code>&quot;&quot;</code> field in <code>ArgMatches</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sigp/lighthouse/pulls/2808.html">sigp/lighthouse#2808</a> on 2022-01-06 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pacak/bpaf/pulls/63.html">pacak/bpaf#63</a> on 2022-09-19 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust3ds/cargo-3ds/pulls/26.html">rust3ds/cargo-3ds#26</a> on 2022-10-16 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-06 14:46</div>
+            <div class="timeline-body"><p>Has any progress been made on this issue? In <code>cargo-apk</code> we have <a href="https://github.com/MarijnS95/android-ndk-rs/blob/780f2abb634ed635bccbe0a3c40968283f9359ac/cargo-apk/src/main.rs#L44-L53">one special <code>--</code> &quot;subcommand&quot;</a> for which we want to plainly invoke <code>cargo</code> with the environment that <code>cargo-apk</code> detects and sets up, together with (almost) all the arguments passed by the user: even those that are unrecognised by our application. The few <code>Args</code> that we do recognize here are used by us to decide how to set up the environment, and <a href="https://github.com/dvc94ch/cargo-subcommand/blob/72db8e52751e1738b47c15eac1757a5fd46e6843/src/args.rs#L67-L122">manually passed into <code>std::process::Command</code></a> when invoking <code>cargo</code>.</p>
+<p>As seen in that example and mentioned above <code>trailing_var_arg = true</code> only brings us so far as it kicks in on encountering the first unknown argument whereas we'd like the user to mix these arguments however they please, and only pick out the few bits that we need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-07 12:36</div>
+            <div class="timeline-body"><p>No, no progress at this time.  See the <a href="https://github.com/clap-rs/clap/issues?q=is%3Aopen+is%3Aissue+milestone%3A4.x">4.x milestone</a> for our current focus areas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-07 12:48</div>
+            <div class="timeline-body"><p>@epage that's unfortunate, it doesn't seem part of <code>4.x</code>. Is this anything you think an external contributor with no prior <code>clap</code>-internals experience can get started on (given this needs design first), or is there a workaround we could use? I've already committed to using <code>clap</code> since it's quite frankly completely superior to manual error-prone and help-less argument parsing, but broken some of our users by overlooking an implementation for this.</p>
+<p>One workaround I assume is to just get all arguments into a <code>Vec&lt;String&gt;</code> (use <code>trailing_var_arg = true</code> without any other args, or is there something better) and then parse that vector into a separate <code>Args</code> struct where I can hopefully ignore unrecognized flags?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-07 12:56</div>
+            <div class="timeline-body"><p>Earlier, I had posted some API design questions that first need to be resolved. Someone creating a proposal for that would be the first step.</p>
+<p>We do have <code>Command::ignore_errors</code> for doing the workaround you mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-09 19:28</div>
+            <div class="timeline-body"><p>@epage unfortunately I have a harder time than expected implementing this. Here's what I'm trying so far: https://github.com/MarijnS95/android-ndk-rs/compare/broken-trailing-args</p>
+<p>The main problem is that as soon as I add <code>#[clap(ignore_errors = true)]</code>, clap starts complaining about <a href="https://github.com/dvc94ch/cargo-subcommand/blob/72db8e52751e1738b47c15eac1757a5fd46e6843/src/args.rs#L10-L12">the first</a> argument being missing, which is just a <code>bool</code> flag:</p>
+<pre><code class="language-console">$ cargo r --release -p cargo-apk -- apk -- doc --no-deps
+    Finished release [optimized] target(s) in 0.03s
+     Running `target/release/cargo-apk apk -- doc --no-deps`
+[cargo-apk/src/main.rs:104] &amp;cargo_args = [
+    &quot;--no-deps&quot;,
+]
+error: The following required argument was not provided: quiet
+
+Usage: cargo-apk [OPTIONS]
+
+For more information try '--help'
+</code></pre>
+<p>EDIT: It seems that the error only continues to the next missing field (<code>workspace</code>) if I provide <code>-q</code> <em>before any unknown arguemnts</em>, as if <code>ignore_errors = true</code> still bails on the first unknown argument and subsequently complains about fields being left uninitialized...</p>
+<p>And there are probably more things in that implementation that I can cleanup/optimize. Suggestions welcome!</p>
+<p>EDIT2: I've <a href="https://github.com/rust-windowing/android-ndk-rs/pull/363">taken the easy route and added a <code>--</code> separator</a>, even though this may be slightly confusing if they pass <code>cargo-apk</code> supported arguments <em>after the <code>--</code></em> and then wonder why <code>cargo-apk</code> ignores certain configuration values...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-mobile/ndk/pulls/363.html">rust-mobile/ndk#363</a> on 2022-11-14 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-14 23:33</div>
+            <div class="timeline-body"><p>To answer <a href="https://github.com/clap-rs/clap/issues/1404#issuecomment-996772922">my own questions</a>, I feel like treating unknown args as positionals with a setting, like what @MarijnS95 did for cargo-apk with the former <code>allow_hyphen_values</code> would be the easest way to represent this in clap.   Once we get <a href="https://github.com/clap-rs/clap/issues/2924">grouped values</a>, the use of this will be further improved.</p>
+<p>The main question left for me is more about mapping this to the use case to make sure people are getting what they want.  If an end-user has a bug like <code>--takes-value-forwarded --flag-notforwarded positional-forwarded</code>, then a wrapper application will treat it as <code>--flag-notforwaded -- --takes-value-forwarded positional-forwarded</code> and will exhibit wrong behavior, from bad errors to actually running incorrectly.  Even if we have grouped values, there isn't a way to express that when forwarding these arguments to the command below.</p>
+<p>Is this just a given that people have to live with or is there something that can be done to improve this situation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-14 23:36</div>
+            <div class="timeline-body"><p>I guess another question is if this new setting should capture <code>--</code> or if we should treat that normally.  I lean towards treating it normally as it loses some of its meaning if we capture that in a positional and then keep parsing.  This does mean that a user might need to <code>-- --</code> to escape within the forwarded arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-14 23:39</div>
+            <div class="timeline-body"><p>Hmm, I guess another question is what to do about unknown short arguments.</p>
+<ul>
+<li>If any are unknown, do we treat the whole set as unknown and forward it?</li>
+<li>Do we ignore unknown and artificially create the unknown argument to put into the captured positional?<ul>
+<li>How do we know what of the following might be known arguments vs captured values?</li>
+</ul>
+</li>
+<li>Do we just error on unknown shorts?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-20 12:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel like treating unknown args as positionals with a setting, like what @MarijnS95 did for cargo-apk with the former <code>allow_hyphen_values</code> would be the easest way to represent this in clap.</p>
+</blockquote>
+<p>@epage For the record, as per my message above, I have not fully been able to get this workaround to work.</p>
+<p>As for the rest, all valid questions(especially whether an argument following a flag is a positional or captured value) though I am unsure how to deal with <code>--</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-21 12:46</div>
+            <div class="timeline-body"><blockquote>
+<p>@epage For the record, as per my message above, I have not fully been able to get this workaround to work.</p>
+</blockquote>
+<p>I was more referring to a new setting that would apply to a multi-value positional.  A question earlier was where to store the unknown arguments and a positional was a great alternative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-21 13:41</div>
+            <div class="timeline-body"><p>@epage Sure :slightly_smiling_face: - just curious if you can help me out with the issue in https://github.com/clap-rs/clap/issues/1404#issuecomment-1309254274 or if I should create a new issue for that as to not derail this (much) further (it does feel of similar nature though, wrt bailing out on the first unknown argument because at that point the parser has no idea if the rest should be positionals or values for flags). Though I still intend on deferring to https://github.com/rust-windowing/android-ndk-rs/pull/363 because this all seems too finicky/complex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-21 15:20</div>
+            <div class="timeline-body"><p>Sorry, I had missed that.  The challenge with <code>ignore_errors</code> is it doesn't get much use and there are a lot of corner cases where things might not be handled correctly.  For example, from your post, I'm guessing defaults aren't applied.  With the derive, you also have to make sure all non-default fields are wrapped in <code>Option</code> so the derive can construct your struct (note: all flags like <code>--verbose</code> are implicitly defaulted).</p>
+<p>So long as you are using <code>Option</code> and run into problems with <code>ignore_errors</code>, feel free to create issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4498.html">clap-rs/clap#4498</a> on 2022-11-21 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-11-22 13:53</div>
+            <div class="timeline-body"><p>For completeness I got inspired by https://github.com/sonos/dinghy/blob/87463fec2df24bc01c98817b26f8b04c4ec007fa/cargo-dinghy/src/cli.rs#L108-L154 (which more so seems like an incomplete implementation of <code>trailing_var_arg = true, allow_hyphen_values = true</code>) to build the &quot;recognized argument&quot; filtering myself based on <code>Args::command().get_arguments()</code>, see the full write-down and code in https://github.com/rust-windowing/android-ndk-rs/pull/363! @epage any feedback and improvements are appreciated, even though it succeeds the few basic but important tests I set up for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarijnS95">@MarijnS95</a> on 2022-12-08 10:38</div>
+            <div class="timeline-body"><p>Unfortunately <a href="https://github.com/rust-windowing/android-ndk-rs/pull/363/commits/e2b9db4235138ee7e24d2c57c797a6c85698e0b2">this part</a> of <a href="https://github.com/rust-windowing/android-ndk-rs/pull/363">that workaround</a> happens to <a href="https://github.com/rust-windowing/android-ndk-rs/issues/375">to not be fully solid</a>, as <code>args.update_from_arg_matches(&amp;m)</code> seems to be setting flags in <code>args</code> back to <code>false</code> if wasn't provided in <code>m</code>.</p>
+<p>Likewise when values for an array (i.e. <code>--features x</code>) appear on the left of unrecognized arguments (and end up in <code>#[clap(flatten)] args: Args</code>) <em>and on the right side</em> like <code>--features x --something-unrecognized --features y</code>, <code>args.update_from_arg_matches(&amp;m)</code> overwrites <code>args.features: [&quot;x&quot;]</code> with <code>args.features: [&quot;y&quot;]</code>.</p>
+<p>I am not sure if <code>args.update_from_arg_matches()</code> is intended to effectively discard existing parse results in <code>args</code> (as it may be hard to understand what values were intended, though I'd say values that weren't specified in <code>m</code> shouldn't be overwritten nor cleared) but is there otherwise different functionality I can use to achieve my goal, or should I <a href="https://github.com/rust-windowing/android-ndk-rs/pull/363/commits/e2b9db4235138ee7e24d2c57c797a6c85698e0b2">just discard that functionality</a> as it really only makes supported fields show up in our <code>cargo apk -- --help</code> anyway...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../spinframework/spin/pulls/1198.html">spinframework/spin#1198</a> on 2023-02-27 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bytecodealliance/wasmtime/pulls/6737.html">bytecodealliance/wasmtime#6737</a> on 2023-09-02 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../static-web-server/static-web-server/issues/465.html">static-web-server/static-web-server#465</a> on 2024-07-21 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../spinframework/spin/issues/2885.html">spinframework/spin#2885</a> on 2024-10-14 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../biomejs/gritql/pulls/597.html">biomejs/gritql#597</a> on 2025-01-03 07:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:55 UTC
+    </footer>
+</body>
+</html>

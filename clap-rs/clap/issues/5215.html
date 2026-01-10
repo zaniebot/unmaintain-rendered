@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-generated Short Flags Cause Collision When Args Start With the Same Letter - clap-rs/clap #5215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-generated Short Flags Cause Collision When Args Start With the Same Letter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5215">#5215</a>
+        opened by <a href="https://github.com/Ghvstcode">@Ghvstcode</a>
+        on 2023-11-15 11:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ghvstcode">@Ghvstcode</a> on 2023-11-15 11:39</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.4.8</p>
+<h3>Describe your use case</h3>
+<p>When deriving command-line arguments, there appears to be an issue with the automatic generation of short flag identifiers. Specifically, if two arguments start with the same letter and the short flag (short) is not explicitly specified for them, clap defaults to using the first letter of each argument as the short flag. This results in a collision, as both arguments end up with the same short flag identifier, leading to the error: &quot;Short option names must be unique for each argument&quot;.</p>
+<pre><code class="language-Rust">use clap::Parser;
+
+// My CLI Program
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+struct Args {
+    /// An example option
+    #[clap(short, long)]
+    option: String,
+    /// An example flag
+    #[clap(short, long)]
+    online: bool,
+}
+</code></pre>
+<p>both <strong>option</strong> and <strong>online</strong> arguments start with the letter 'o'. Since short is not specified, clap defaults to using 'o' as the short flag for both, causing a conflict.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Ideally, clap should handle such scenarios more gracefully. If two arguments begin with the same letter and no explicit short flags are provided, it could automatically generate unique short flags. One possible approach is to use the first two letters of the argument names for subsequent arguments that start with the same letter. For example, in the case above, <strong>option</strong> could default to <strong>o</strong>, and <strong>online</strong> could default to <strong>on</strong>.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @Ghvstcode on 2023-11-15 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-15 14:21</div>
+            <div class="timeline-body"><p>You should get asserts in debug builds about duplicates.  #3133 is about making those asserts compiler errors.</p>
+<p>Note that we do not support multi-character shorts (like <code>-on</code>).</p>
+<p>I think this is case where it is better to fail error and have the developer fix it by explicitly specifying a short, rather than to pick something.  The CLI should be specifically designed, rather than getting incidental behavior.  For example, with this proposal, just changing the order that the fields are specified would change the CLI.</p>
+<p>I'm going to go ahead and close this as I think its best we not go a route like this.  If there is a reason for us to re-evaluate, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-11-15 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-11-15 14:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:31 UTC
+    </footer>
+</body>
+</html>

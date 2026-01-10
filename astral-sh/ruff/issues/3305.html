@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D401: Support GObject.Property from PyGObject - astral-sh/ruff #3305</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>D401: Support GObject.Property from PyGObject</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3305">#3305</a>
+        opened by <a href="https://github.com/staticssleever668">@staticssleever668</a>
+        on 2023-03-02 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/staticssleever668">@staticssleever668</a> on 2023-03-02 13:25</div>
+            <div class="timeline-body"><ul>
+<li>Ruff version: 3ed539d50ed6260358c97d2e00b49bad4abfa37e (0.0.253)</li>
+</ul>
+<pre><code class="language-py">from gi.repository import GObject
+
+
+class Thingy(GObject.GObject):
+    _beep = &quot;boop&quot;
+
+    @GObject.Property
+    def good_property(self):
+        &quot;&quot;&quot;This property method docstring does not need to be written in imperative mood.&quot;&quot;&quot;
+        return self._beep
+
+my_thingy = Thingy()
+print(my_thingy.good_property)
+</code></pre>
+<p>When run this as expected prints <code>boop</code>.
+But <code>ruff check --isolated --select D401 test.py</code> gives a D401 warning:</p>
+<pre><code>test.py:9:9: D401 First line of docstring should be in imperative mood: &quot;This property method docstring does not need to be written in imperative mood.&quot;
+</code></pre>
+<p>I made a branch that removes this warning for GObject.Property (https://github.com/staticssleever668/ruff/tree/feat_support_gobject_property), but I'm not sure if support for third-party libraries in such cases makes sense.</p>
+<p>As a note, pydocstyle produces a warning for this as well:</p>
+<pre><code>test.py:9 in public method `good_property`:
+        D401: First line should be in imperative mood; try rephrasing (found 'This')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 15:31</div>
+            <div class="timeline-body"><p>I think this would be solved by the <code>property_decorators</code> setting here: https://github.com/charliermarsh/ruff/issues/2205. Does that sound right to you? I.e., to list <code>GObject</code> as a property decorator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-02 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-03-02 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/staticssleever668">@staticssleever668</a> on 2023-03-02 18:52</div>
+            <div class="timeline-body"><p>Yes, it's good! :+1:</p>
+<pre><code class="language-toml">[tool.ruff.pydocstyle]
+ignore-decorators=[&quot;gi.repository.GObject.Property&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @staticssleever668 on 2023-03-02 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 18:53</div>
+            <div class="timeline-body"><p>I think the unimplemented <code>property_decorators</code> would be even better, since then we'd still lint the docstring, we just wouldn't enforce imperative style.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

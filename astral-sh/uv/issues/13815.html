@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv publish` fails with a 404 when uploading to a GitLab.com package registry in CI using CI_JOB_TOKEN - astral-sh/uv #13815</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv publish` fails with a 404 when uploading to a GitLab.com package registry in CI using CI_JOB_TOKEN</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13815">#13815</a>
+        opened by <a href="https://github.com/winpat">@winpat</a>
+        on 2025-06-03 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/winpat">@winpat</a> on 2025-06-03 14:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Uploading packages to a GitLab.com provided package registry through <code>uv export</code> crashes with a 404 when using the job provided <code>CI_JOB_TOKEN</code> as the password.</p>
+<p><strong>The upload works fine when using a personal access token instead.</strong></p>
+<p>I was a bit on the fence on whether I should report this as this looks more like a GitLab issue. However with <code>poetry</code> the upload works fine <code>CI_JOB_TOKEN</code>. So chances are other people will also run into a similar issue.</p>
+<p>Also thank you for developing <code>uv</code>, it's a phenomenal tool.</p>
+<p>GitLab CI configuration:</p>
+<pre><code>image: python:3.10-slim
+
+variables:
+  UV_VERSION: 0.7.9
+  UV_PUBLISH_URL: https://gitlab.com/api/v4/projects/REDACTED/packages/pypi
+  UV_PUBLISH_USERNAME: gitlab-ci-token
+  UV_PUBLISH_PASSWORD: ${CI_JOB_TOKEN}
+  # GitLab CI creates a separate mountpoint for the build directory,
+  # so we need to copy instead of using hard links.
+  UV_LINK_MODE: copy
+
+stages:
+  - publish
+
+publish:
+  stage: publish
+  script:
+    - pip install uv==${UV_VERSION}
+    - uv sync
+    - echo $UV_PUBLISH_URL
+    - echo $UV_PUBLISH_USERNAME
+    - echo $UV_PUBLISH_PASSWORD
+    - uv version ${CI_COMMIT_TAG}
+    - uv build --sdist
+    - ls dist/*
+    - uv publish -vv
+  only:
+    - tags
+</code></pre>
+<p>Job logs with <code>uv export -vv</code> active.</p>
+<pre><code>$ echo $UV_PUBLISH_URL
+https://gitlab.com/api/v4/projects/REDACTED/packages/pypi
+$ echo $UV_PUBLISH_USERNAME
+gitlab-ci-token
+$ echo $UV_PUBLISH_PASSWORD
+[MASKED]
+$ uv version ${CI_COMMIT_TAG}
+Resolved 37 packages in 760ms
+   Building somelib @ file:///builds/company/somelib
+      Built somelib @ file:///builds/company/somelib
+Prepared 1 package in 357ms
+Uninstalled 1 package in 0.81ms
+Installed 1 package in 0.97ms
+ - somelib==0.0.0 (from file:///builds/company/somelib)
+ + somelib==25.6.1rc16 (from file:///builds/company/somelib)
+somelib 0.0.0 =&gt; 25.6.1rc16
+$ uv build --sdist
+Building source distribution...
+Successfully built dist/somelib-25.6.1rc16.tar.gz
+$ ls dist/*
+dist/somelib-25.6.1rc16.tar.gz
+$ uv publish -vv
+DEBUG uv 0.7.9
+DEBUG Not a distribution filename: `.gitignore`
+Publishing 1 file to https://gitlab.com/api/v4/projects/REDACTED/packages/pypi
+DEBUG Using request timeout of 900s
+Uploading somelib-25.6.1rc16.tar.gz (1.5MiB)
+DEBUG Hashing dist/somelib-25.6.1rc16.tar.gz
+Uploading somelib-25.6.1rc16.tar.gz (1.5MiB)
+DEBUG Using HTTP Basic authentication
+TRACE Handling request for https://gitlab-ci-token:****@gitlab.com/api/v4/projects/REDACTED/packages/pypi with authentication policy auto
+TRACE Request for https://gitlab-ci-token:****@gitlab.com/api/v4/projects/REDACTED/packages/pypi already contains username and password
+DEBUG Response code for https://gitlab.com/api/v4/projects/REDACTED/packages/pypi: 404 Not Found
+TRACE Response headers for https://gitlab.com/api/v4/projects/REDACTED/packages/pypi: Response { url: &quot;https://gitlab.com/api/v4/projects/REDACTED/packages/pypi&quot;, status: 404, headers: {&quot;date&quot;: &quot;Tue, 03 Jun 2025 14:05:02 GMT&quot;, &quot;content-type&quot;: &quot;application/json&quot;, &quot;content-length&quot;: &quot;27&quot;, &quot;cf-ray&quot;: &quot;949fbe384dcfe592-ATL&quot;, &quot;cf-cache-status&quot;: &quot;DYNAMIC&quot;, &quot;cache-control&quot;: &quot;no-cache&quot;, &quot;strict-transport-security&quot;: &quot;max-age=31536000&quot;, &quot;vary&quot;: &quot;Origin, Accept-Encoding&quot;, &quot;content-security-policy&quot;: &quot;default-src 'none'&quot;, &quot;gitlab-lb&quot;: &quot;haproxy-main-52-lb-gprd&quot;, &quot;gitlab-sv&quot;: &quot;gke-cny-api&quot;, &quot;nel&quot;: &quot;{\&quot;max_age\&quot;: 0}&quot;, &quot;referrer-policy&quot;: &quot;strict-origin-when-cross-origin&quot;, &quot;x-content-type-options&quot;: &quot;nosniff&quot;, &quot;x-frame-options&quot;: &quot;SAMEORIGIN&quot;, &quot;x-gitlab-meta&quot;: &quot;{\&quot;correlation_id\&quot;:\&quot;bba124864df672f05130e218f9def24f\&quot;,\&quot;version\&quot;:\&quot;1\&quot;}&quot;, &quot;x-request-id&quot;: &quot;bba124864df672f05130e218f9def24f&quot;, &quot;x-runtime&quot;: &quot;0.138175&quot;, &quot;set-cookie&quot;: &quot;_cfuvid=9zKLGRKiEXRzHDcLZjAHa.6Vrz5M_LdEz1j5qCNkTN4-1748959502534-0.0.1.1-604800000; path=/; domain=.gitlab.com; HttpOnly; Secure; SameSite=None&quot;, &quot;server&quot;: &quot;cloudflare&quot;} }
+TRACE Response content for non-200 response for https://gitlab.com/api/v4/projects/REDACTED/packages/pypi: {&quot;message&quot;:&quot;404 Not Found&quot;}
+DEBUG Upload error response: {&quot;message&quot;:&quot;404 Not Found&quot;}
+error: Failed to publish `dist/somelib-25.6.1rc16.tar.gz` to https://gitlab.com/api/v4/projects/REDACTED/packages/pypi
+  Caused by: Upload failed with status code 404 Not Found. Server says: {&quot;message&quot;:&quot;404 Not Found&quot;}
+Cleaning up project directory and file based variables 00:01
+ERROR: Job failed: exit code 1
+</code></pre>
+<h3>Platform</h3>
+<p>GitLab CI / python:3.10-slim Docker Image</p>
+<h3>Version</h3>
+<p>0.7.9</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @winpat on 2025-06-03 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winpat">@winpat</a> on 2025-06-03 14:22</div>
+            <div class="timeline-body"><p>Sorry, this was configuration error on my side. The solution described in https://github.com/astral-sh/uv/issues/8563 works.</p>
+<p>In our case the package registry is in a different GitLab repository as the code, so one has to whitelist the job token to be accepted in the other repository.</p>
+<p>Settings &gt; CI/CD &gt; Job Tokens -&gt; Job Token permissions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @winpat on 2025-06-03 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 14:24</div>
+            <div class="timeline-body"><p>Thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 14:24</div>
+            <div class="timeline-body"><p>Do you think we should add that to the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winpat">@winpat</a> on 2025-06-04 04:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think we should add that to the docs?</p>
+</blockquote>
+<p>I don't think so, this is seems like a GitLab issue. The confusing bit was that passing an invalid password resulted in a 401 status code, which make sense. But when using the CI_JOB_TOKEN, the registry returned a 404 when the token permissions were not explicitly set for the source repository.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

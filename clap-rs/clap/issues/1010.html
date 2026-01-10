@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropagateGlobalValuesDown not working when arg has default value - clap-rs/clap #1010</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PropagateGlobalValuesDown not working when arg has default value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1010">#1010</a>
+        opened by <a href="https://github.com/AlexanderThaller">@AlexanderThaller</a>
+        on 2017-07-22 22:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexanderThaller">@AlexanderThaller</a> on 2017-07-22 22:44</div>
+            <div class="timeline-body"><p>Please use the following template to assist with creating an issue and getting a speedy resolution. If an area is not applicable, feel free to delete the area, or mark with <code>N/A</code></p>
+<h3>Rust Version</h3>
+<p>rustc 1.19.0 (0ade33941 2017-07-17)</p>
+<h3>Affected Version of clap</h3>
+<p>2.25.1</p>
+<h3>Expected Behavior Summary</h3>
+<p>The subcommand arg should inherit the set value instead of using the default value.</p>
+<h3>Actual Behavior Summary</h3>
+<p>The subcommand arg uses the default value even if the parent has a different value.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">#[test]
+fn propagate_vals_down_with_default_vals() {
+    let m = App::new(&quot;myprog&quot;)
+        .setting(AppSettings::PropagateGlobalValuesDown)
+        .arg(
+            Arg::with_name(&quot;loglevel&quot;)
+                .help(&quot;loglevel&quot;)
+                .takes_value(true)
+                .short(&quot;l&quot;)
+                .long(&quot;loglevel&quot;)
+                .global(true)
+                .default_value(&quot;info&quot;),
+        )
+        .subcommand(SubCommand::with_name(&quot;foo&quot;))
+        .get_matches_from_safe(vec![&quot;myprog&quot;, &quot;-l&quot;, &quot;trace&quot;, &quot;foo&quot;]);
+    assert!(m.is_ok(), &quot;{:?}&quot;, m.unwrap_err().kind);
+    let m = m.unwrap();
+    assert_eq!(m.value_of(&quot;loglevel&quot;), Some(&quot;trace&quot;));
+    let sub_m = m.subcommand_matches(&quot;foo&quot;).unwrap();
+    assert_eq!(sub_m.value_of(&quot;loglevel&quot;), Some(&quot;trace&quot;));
+}
+</code></pre>
+<p>Fails with</p>
+<pre><code>---- propagate_vals_down_with_default_vals stdout ----
+        thread 'propagate_vals_down_with_default_vals' panicked at 'assertion failed: `(left == right)` (left: `Some(&quot;info&quot;)`, right: `Some(&quot;trace&quot;)`)', tests/app_settings.rs:648
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderThaller">@AlexanderThaller</a> on 2017-07-22 23:04</div>
+            <div class="timeline-body"><p>I also wrote a small test programm with the debug feature enabled:</p>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App, Arg, SubCommand, AppSettings};
+
+fn main() {
+    let m = App::new(&quot;myprog&quot;)
+        .setting(AppSettings::PropagateGlobalValuesDown)
+        .arg(
+            Arg::with_name(&quot;loglevel&quot;)
+                .help(&quot;loglevel&quot;)
+                .takes_value(true)
+                .short(&quot;l&quot;)
+                .long(&quot;loglevel&quot;)
+                .global(true)
+                .default_value(&quot;info&quot;),
+        )
+        .subcommand(SubCommand::with_name(&quot;foo&quot;))
+        .get_matches_from_safe(vec![&quot;myprog&quot;, &quot;-l&quot;, &quot;trace&quot;, &quot;foo&quot;]);
+
+    let m = m.unwrap();
+    let sub_m = m.subcommand_matches(&quot;foo&quot;).unwrap();
+
+    println!(&quot;m: {:#?}&quot;, m);
+    println!(&quot;sub_m: {:#?}&quot;, sub_m);
+}
+</code></pre>
+<pre><code>DEBUG:clap:Parser::add_subcommand: term_w=None, name=foo
+DEBUG:clap:Parser::propogate_settings: self=myprog, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=foo, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=foo, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;-l&quot;' ([45, 108])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;-l&quot;, Needs Val of=NotFound
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: - found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;-l&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::parse_short_arg: full_arg=&quot;-l&quot;
+DEBUG:clap:Parser::parse_short_arg:iter:l
+DEBUG:clap:Parser::parse_short_arg:iter:l: Found valid opt
+DEBUG:clap:Parser::parse_short_arg:iter:l: p[0]=[], p[1]=[]
+DEBUG:clap:Parser::parse_opt; opt=loglevel, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(EMPTY_VALS | GLOBAL | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=loglevel
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=loglevel
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:arg_post_processing!;
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Is '--loglevel &lt;loglevel&gt;' in overrides...No
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Does '--loglevel &lt;loglevel&gt;' have overrides...No
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Does '--loglevel &lt;loglevel&gt;' have conflicts...No
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Does '--loglevel &lt;loglevel&gt;' have requirements...No
+DEBUG:clap:_handle_group_reqs!;
+DEBUG:clap:Parser:get_matches_with: After parse_short_arg Opt(&quot;loglevel&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;trace&quot;' ([116, 114, 97, 99, 101])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;trace&quot;, Needs Val of=Opt(&quot;loglevel&quot;)
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;trace&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::add_val_to_arg; arg=loglevel, val=&quot;trace&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;trace&quot;
+DEBUG:clap:Parser::groups_for_arg: name=loglevel
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=loglevel
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;foo&quot;' ([102, 111, 111])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;foo&quot;, Needs Val of=ValuesDone
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;foo&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some(&quot;foo&quot;)
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;loglevel&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;loglevel&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=foo
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_val_to_arg; arg=loglevel, val=&quot;info&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;info&quot;
+DEBUG:clap:Parser::groups_for_arg: name=loglevel
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=loglevel
+DEBUG:clap:arg_post_processing!;
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Is '--loglevel &lt;loglevel&gt;' in overrides...No
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Does '--loglevel &lt;loglevel&gt;' have overrides...No
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Does '--loglevel &lt;loglevel&gt;' have conflicts...No
+DEBUG:clap:OptBuilder::fmt:loglevel
+DEBUG:clap:arg_post_processing!: Does '--loglevel &lt;loglevel&gt;' have requirements...No
+DEBUG:clap:_handle_group_reqs!;
+DEBUG:clap:Validator::validate_blacklist: blacklist=[]
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:loglevel: vals=[
+    &quot;info&quot;
+]
+DEBUG:clap:Validator::validate_arg_num_vals;
+DEBUG:clap:Validator::validate_values: arg=&quot;loglevel&quot;
+DEBUG:clap:Validator::validate_arg_requires;
+DEBUG:clap:Validator::validate_arg_num_occurs: a=loglevel;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=myprog foo [OPTIONS]
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Validator::validate_blacklist: blacklist=[]
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:loglevel: vals=[
+    &quot;trace&quot;
+]
+DEBUG:clap:Validator::validate_arg_num_vals;
+DEBUG:clap:Validator::validate_values: arg=&quot;loglevel&quot;
+DEBUG:clap:Validator::validate_arg_requires;
+DEBUG:clap:Validator::validate_arg_num_occurs: a=loglevel;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=myprog [OPTIONS] [SUBCOMMAND]
+DEBUG:clap:ArgMatcher::propagate: arg=loglevel
+DEBUG:clap:ArgMatcher::propagate: arg=loglevel
+DEBUG:clap:ArgMatcher::propagate: Subcommand wasn't used
+m: ArgMatches {
+    args: {
+        &quot;loglevel&quot;: MatchedArg {
+            occurs: 1,
+            vals: [
+                &quot;trace&quot;
+            ]
+        }
+    },
+    subcommand: Some(
+        SubCommand {
+            name: &quot;foo&quot;,
+            matches: ArgMatches {
+                args: {
+                    &quot;loglevel&quot;: MatchedArg {
+                        occurs: 0,
+                        vals: [
+                            &quot;info&quot;
+                        ]
+                    }
+                },
+                subcommand: None,
+                usage: Some(
+                    &quot;USAGE:\n    myprog foo [OPTIONS]&quot;
+                )
+            }
+        }
+    ),
+    usage: Some(
+        &quot;USAGE:\n    myprog [OPTIONS] [SUBCOMMAND]&quot;
+    )
+}
+sub_m: ArgMatches {
+    args: {
+        &quot;loglevel&quot;: MatchedArg {
+            occurs: 0,
+            vals: [
+                &quot;info&quot;
+            ]
+        }
+    },
+    subcommand: None,
+    usage: Some(
+        &quot;USAGE:\n    myprog foo [OPTIONS]&quot;
+    )
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 02:45</div>
+            <div class="timeline-body"><p>Sorry for the long wait, I've been swamped with work traveling for the past month and a half. This may also be related to #978</p>
+<p>Once it's fixed I'll double check that this is still the case and close/fix appropriately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2017-10-04 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-10-04 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2017-10-04 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-10-04 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderThaller">@AlexanderThaller</a> on 2017-10-15 10:14</div>
+            <div class="timeline-body"><p>No worries. I saw the other issue that's where I got option from but was unsure if it was related. Thx for your amazing work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-18 14:44</div>
+            <div class="timeline-body"><p>@AlexanderThaller could you test this with the current master branch and see if it's fixed? #1070 just merged which may have helped. If not I can look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1072.html">clap-rs/clap#1072</a> on 2017-10-20 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-10-24 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexanderThaller">@AlexanderThaller</a> on 2017-11-01 16:42</div>
+            <div class="timeline-body"><p>Works fine thank you for your work.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:35 UTC
+    </footer>
+</body>
+</html>

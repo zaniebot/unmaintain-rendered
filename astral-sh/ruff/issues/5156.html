@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 Deletes import, cause EOF error - astral-sh/ruff #5156</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 Deletes import, cause EOF error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5156">#5156</a>
+        opened by <a href="https://github.com/jasikpark">@jasikpark</a>
+        on 2023-06-17 06:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jasikpark">@jasikpark</a> on 2023-06-17 06:38</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>With this program:</p>
+<pre><code class="language-python">##d####
+\
+import ost
+</code></pre>
+<p>(possibly importantly w/ the lack of a return character after <code>ost</code></p>
+<p>outputs this when run w/ <code>--fix</code>:</p>
+<pre><code class="language-shell">ruff artifacts/ruff_fix_validity/minimized-from-crash-dd75211301269fe8 --fix
+warning: Detected debug build without --no-cache.
+error: Autofix introduced a syntax error in `artifacts/ruff_fix_validity/minimized-from-crash-dd75211301269fe8` with rule codes F401: unexpected EOF while parsing at byte offset 11
+---
+##d####
+\
+
+---
+artifacts/ruff_fix_validity/minimized-from-crash-dd75211301269fe8:3:8: F401 `ost` imported but unused
+Found 1 error.
+</code></pre>
+<p>Found via #4822, run against main (be107dad64510e3e34fdd322ba333da06b61be6c)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-17 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 14:40</div>
+            <div class="timeline-body"><p>Yeah the general problem here is that a file can't <em>end</em> in a backslash, I think (even a newline is sufficient).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2023-06-17 14:46</div>
+            <div class="timeline-body"><p>Ah, thanks for the info, I was pretty bewildered by this xd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2023-06-17 14:49</div>
+            <div class="timeline-body"><p>I wonder what the right thing to do is when a simple change ends up with an incorrect program?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 16:44</div>
+            <div class="timeline-body"><p>We should of course fix it, but it's worth noting that this is a fairly unlikely case to hit in the wild. Continuations themselves are relatively rare, and most editors don't even let you save a file without a trailing newline :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 16:45</div>
+            <div class="timeline-body"><p>I actually thought we did handle this case already:</p>
+<pre><code class="language-rust">pub(crate) fn delete_stmt(
+    stmt: &amp;Stmt,
+    parent: Option&lt;&amp;Stmt&gt;,
+    locator: &amp;Locator,
+    indexer: &amp;Indexer,
+    stylist: &amp;Stylist,
+) -&gt; Edit {
+    if parent
+        .map(|parent| is_lone_child(stmt, parent))
+        .unwrap_or_default()
+    {
+        // If removing this node would lead to an invalid syntax tree, replace
+        // it with a `pass`.
+        Edit::range_replacement(&quot;pass&quot;.to_string(), stmt.range())
+    } else {
+        if let Some(semicolon) = trailing_semicolon(stmt, locator) {
+            let next = next_stmt_break(semicolon, locator);
+            Edit::deletion(stmt.start(), next)
+        } else if helpers::has_leading_content(stmt, locator) {
+            Edit::range_deletion(stmt.range())
+        } else if helpers::preceded_by_continuation(stmt, indexer, locator) {
+            if is_end_of_file(stmt, locator) &amp;&amp; locator.is_at_start_of_line(stmt.start()) {
+                // Special-case: a file can't end in a continuation.
+                Edit::range_replacement(stylist.line_ending().to_string(), stmt.range())
+            } else {
+                Edit::range_deletion(stmt.range())
+            }
+        } else {
+            let range = locator.full_lines_range(stmt.range());
+            Edit::range_deletion(range)
+        }
+    }
+}
+</code></pre>
+<p>Note the branch that says <code>// Special-case: a file can't end in a continuation.</code>. Need to look into that...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 16:49</div>
+            <div class="timeline-body"><p>I think the safest and most general fix is to extend the deletion to include the continuation character itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-17 23:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah the general problem here is that a file can't end in a backslash, I think (even a newline is sufficient).</p>
+</blockquote>
+<p>I'm pretty sure that the trailing newline is what's causing a similar issue #4404. We attempt to strip the newline, then on the next iteration, the file ends in a <code>\</code>. I think the fix will rely on some combination of physical lines (<code>Line</code>) and <code>Stmt</code>, but not quite sure how to unify them yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-18 03:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Note the branch that says <code>// Special-case: a file can't end in a continuation.</code>. Need to look into that...</p>
+</blockquote>
+<p>Did a quick debug, it turns out that specific continuation offset is not being stored here:</p>
+<p>https://github.com/astral-sh/ruff/blob/653a0ebf2d3bac67c170c247676aabd8d087d11f/crates/ruff_python_ast/src/source_code/indexer.rs#L14-L15</p>
+<p>~This is happening as the logic is not considering a possibility of having a continuation character before the first token in file.~</p>
+<p>Edit: It seems to be happening whenever the continuation character is at the start of the line because these continuation offsets are not being considered:</p>
+<pre><code class="language-python">\
+import sys
+
+\
+import os
+</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/653a0ebf2d3bac67c170c247676aabd8d087d11f/crates/ruff_python_ast/src/source_code/indexer.rs#L51-L57</p>
+<p>The logic says that if the previous token is not a newline or not at the start, only then consider this for the continuation offset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-18 04:56</div>
+            <div class="timeline-body"><p>Is that only a start-of-file problem? I wonder if that match should allow <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-18 06:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Is that only a start-of-file problem? I wonder if that match should allow <code>None</code>?</p>
+</blockquote>
+<p>No, sorry I updated the comment. It's occurring whenever the continuation character is at the start of line. This means the previous token was either a newline or <code>None</code>. The opposite of this condition is used to check whether to add the offset or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5173.html">astral-sh/ruff#5173</a> on 2023-06-19 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-19 04:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4972.html">astral-sh/ruff#4972</a> on 2023-06-19 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

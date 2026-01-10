@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nushell completions should use `glob` type for paths - clap-rs/clap #5605</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nushell completions should use `glob` type for paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5605">#5605</a>
+        opened by <a href="https://github.com/kaathewisegit">@kaathewisegit</a>
+        on 2024-07-28 18:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaathewisegit">@kaathewisegit</a> on 2024-07-28 18:55</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.80.0 (051478957 2024-07-21) (Alpine Linux 1.80.0-r0)</p>
+<h3>Clap Version</h3>
+<p>4.4.6 (4.5.3 for <code>clap_complete_nushell</code>)</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser};
+use clap_complete::generate;
+use clap_complete_nushell::Nushell;
+
+use std::path::PathBuf;
+
+#[derive(Parser)]
+pub struct Options {
+    path: PathBuf,
+
+    rest: Vec&lt;PathBuf&gt;,
+}
+
+fn main() {
+    let mut cmd = Options::command();
+    generate(Nushell, &amp;mut cmd, &quot;sd&quot;, &amp;mut std::io::stdout());
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>The following completion is generated:</p>
+<pre><code class="language-Nushell">module completions {
+
+  export extern sd [
+    path: string
+    ...rest: string
+    --help(-h)                # Print help
+  ]
+
+}
+
+export use completions *
+</code></pre>
+<h3>Expected Behaviour</h3>
+<ul>
+<li>Arguments with type <code>PathBuf</code> should have the <code>path</code> type in the completions, so that the native path completion works.</li>
+<li>Arguments with type <code>Vec&lt;PathBuf&gt;</code> should have the <code>glob</code> type, otherwise globbing breaks: <code>sd a *</code> will return an error, because path <code>*</code> doesn't exist.</li>
+</ul>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_build: name=&quot;compl&quot;
+[clap_builder::builder::command]Command::_propagate:compl
+[clap_builder::builder::command]Command::_check_help_and_version:compl expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:compl
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:path
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:rest
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[&quot;path&quot;]
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;path&quot; arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[StyledStr(&quot;&lt;PATH&gt;&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @kaathewisegit on 2024-07-28 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> removed by @epage on 2024-07-29 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2024-07-29 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-07-29 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-29 13:28</div>
+            <div class="timeline-body"><p><code>clap_complete_nushell</code> does not yet have support for <a href="https://docs.rs/clap/latest/clap/enum.ValueHint.html">ValueHint</a>.  Someone is welcome to contribute it and/or add Rust-native nushell completion support (see also #3166).</p>
+<p>Note: we implicitly set the <code>ValueHint</code> based on an <code>Arg</code> being a <code>PathBuf</code>, see
+https://github.com/clap-rs/clap/blob/16fba4b9f91cf772ab1f6e7b1016a257e5f6cf62/clap_builder/src/builder/arg.rs#L4023-L4037</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5865.html">clap-rs/clap#5865</a> on 2025-01-02 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-01-02 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`torchaudio` installed with `uv` fails to find audio backend on macOS when debugging - astral-sh/uv #9941</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`torchaudio` installed with `uv` fails to find audio backend on macOS when debugging</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9941">#9941</a>
+        opened by <a href="https://github.com/ThomasHezard">@ThomasHezard</a>
+        on 2024-12-16 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-16 17:00</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I've been struggling all day with a bug on my Python environments. After a full day of investigation, I think that the problem comes from <code>uv</code>, or at least that <code>uv</code> plays a role in it.</p>
+<p>However I do not understand why I did not encounter the issue before. I changed my computer recently so it might be related to it, but as explained below, the problem disappears entirely if I setup my Python environment using manual <code>venv</code> and <code>pip</code> rather than <code>uv</code>.</p>
+<p>The problem is quite annoying as it makes step-by-step debugging impossible.</p>
+<h3>How to reproduce</h3>
+<p>Create a project with the following <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-torchaudio-test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+  &quot;torchaudio&gt;=2.5&quot;
+]
+</code></pre>
+<p>and the following <code>.python-version</code></p>
+<pre><code>3.10.16
+</code></pre>
+<p>Call <code>uv sync</code>, it should install <code>torchaudio</code> 2.5.1, current latest release.</p>
+<p>The issue is clearly visible with the following simple script (make sure <code>sox</code> is installed with <code>Homebrew</code> before running the script):</p>
+<pre><code class="language-python">import torchaudio, shutil
+print(shutil.which(&quot;sox&quot;))
+print(torchaudio.list_audio_backends())
+</code></pre>
+<ul>
+<li><p>Running the script from terminal with <code>uv run python script.py</code> (or simply with <code>python script.py</code> after activating the environment manually) gives the following output (with possibly some warning related to <code>numpy</code> which can be avoided by adding <code>numpy</code> to your project):</p>
+<pre><code>/opt/homebrew/bin/sox
+['sox']
+</code></pre>
+</li>
+<li><p>Running the script in debug mode from VSCode (click on &quot;<em>Python Debugger: debug Python File</em>&quot;) or PyCharm (click on <em>Run current file</em> or <em>Debug current file</em>), after selecting the Python interpreter in the <code>.venv</code> directory created by <code>uv</code>, gives the following output:</p>
+<pre><code>/opt/homebrew/bin/sox
+[]
+</code></pre>
+<p>In other words, <code>torchaudio</code> does not manage to intialize its <code>sox</code> backend, even though <code>sox</code> is in the <code>PATH</code>. The consequence is that any code using <code>sox</code> backend in my projects fails when I debug, but running the same scripts from console works fine.</p>
+</li>
+</ul>
+<h3>What I tried and why I think the problem comes from <code>uv</code>.</h3>
+<ul>
+<li>If I setup the environment manually with the following procedure, debugging works perfectly fine:<ul>
+<li>install Python 3.10.16 with <code>pyenv</code>,</li>
+<li>create the virtual environment with <code>python -m venv .venv</code>,</li>
+<li>activate the environment <code>source .venv/bien/activate</code>,</li>
+<li>install <code>torchaudio</code> using <code>pip</code>: <code>pip install torchaudio</code>,</li>
+<li>debugging the script as described above works fine, &quot;Sox&quot; backend is initialized properly.</li>
+</ul>
+</li>
+<li>Using the <code>--fork-strategy fewest</code> (major change introduced in <code>uv</code> 0.5.9)  when syncing does not solve the issue.</li>
+</ul>
+<h3>In conclusion</h3>
+<p>I have no idea what can cause this 😮</p>
+<p>I thought the problem came from an issue on the setup of my new computer, but after solving the problem by installing my environment with <code>pip</code>, it seems <code>uv</code> is involved somehow.</p>
+<p>I hope my explanations are clear, let me know if I can add/provide anything else.</p>
+<p>Thank you in advance for the help 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-12-17 02:57</div>
+            <div class="timeline-body"><p>Is the issue only with debug mode with VSCode? Does it happen without VSCode debug mode?</p>
+<p>Can you share the output of both <code>RUST_LOG=uv=trace uv run python script.py</code> and the same with your vscode setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @samypr100 on 2024-12-17 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @samypr100 on 2024-12-17 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-17 08:57</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>Yes, this only happens in debug mode, in both VSCode and PyCharm (I did not test other IDEs).</p>
+<p>Here is the trace from terminal (in this case, <code>torchaudio</code> works correctly)</p>
+<pre><code>❯❯❯ RUST_LOG=uv=trace uv run python torchaudio_test.py                                                                                                                                                                                                                                                     
+DEBUG uv 0.5.9 (Homebrew 2024-12-13)
+DEBUG Found project root: `XXX/uv-torchaudio`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `uv-torchaudio-test` at: XXX/uv-torchaudio
+DEBUG Reading Python requests from version file at `XXX/uv-torchaudio/.python-version`
+DEBUG Using Python request `3.10.16` from version file at `.python-version`
+TRACE Cached interpreter info for Python 3.10.16, skipping probing: .venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `3.10.16`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-torchaudio-test @ file://XXX/uv-torchaudio
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+DEBUG Using request timeout of 30s
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;numpy&quot;), version: &quot;2.2.0&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/numpy-2.2.0.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.2.0&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: numpy==2.2.0
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;torchaudio&quot;), version: &quot;2.5.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/torchaudio-2.5.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.5.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: torchaudio==2.5.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;torch&quot;), version: &quot;2.5.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/torch-2.5.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.5.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: torch==2.5.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;filelock&quot;), version: &quot;3.16.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/filelock-3.16.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.16.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: filelock==3.16.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;fsspec&quot;), version: &quot;2024.10.0&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/fsspec-2024.10.0.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2024.10.0&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: fsspec==2024.10.0
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;jinja2&quot;), version: &quot;3.1.4&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/jinja2-3.1.4.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.1.4&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: jinja2==3.1.4
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;networkx&quot;), version: &quot;3.4.2&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/networkx-3.4.2.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.4.2&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: networkx==3.4.2
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;sympy&quot;), version: &quot;1.13.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/sympy-1.13.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;1.13.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: sympy==1.13.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;typing-extensions&quot;), version: &quot;4.12.2&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/typing_extensions-4.12.2.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;4.12.2&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: typing-extensions==4.12.2
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;markupsafe&quot;), version: &quot;3.0.2&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/MarkupSafe-3.0.2.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.0.2&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: markupsafe==3.0.2
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;mpmath&quot;), version: &quot;1.3.0&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/mpmath-1.3.0.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;1.3.0&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: mpmath==1.3.0
+DEBUG Using Python 3.10.16 interpreter at: XXX/uv-torchaudio/.venv/bin/python3
+DEBUG Running `python torchaudio_test.py`
+/opt/homebrew/bin/sox
+['sox']
+DEBUG Command exited with code: 0
+</code></pre>
+<p>I don't know how to integrate the <code>RUST_LOG=uv=trace</code> flag in the debug process of PyCharm or VSCode. The IDEs do not use <code>uv</code>, I setup my projects in both IDEs to use the Python interpreter in the <code>. venv</code> directory generated by <code>uv</code>.<br />
+However, I noticed that VSCode launches its debugger the following way:</p>
+<pre><code class="language-bash">cd XXX/uv-torchaudio ; /usr/bin/env XXX/.venv/bin/python XXX/.vscode/extensions/ms-python.debugpy-2024.14.0-darwin-arm64/bundled/libs/debugpy/adapter/../../debugpy/launcher 49820 -- XXX/uv-torchaudio/torchaudio_test.py
+</code></pre>
+<p>I am not familiar with the <code>env</code> command, but if I do <code>/usr/bin/env uv run python torchaudio_test.py</code>, I have the same problem as with VSCode and Pycharm's debuggers, <code>torchaudio</code> is unable to build its <code>sox</code> backend event though the <code>sox</code> executable is found:</p>
+<pre><code>❯❯❯ RUST_LOG=uv=trace /usr/bin/env  uv run python torchaudio_test.py
+DEBUG uv 0.5.9 (Homebrew 2024-12-13)
+DEBUG Found project root: `XXX/uv-torchaudio`
+DEBUG No workspace root found, using project root
+DEBUG Discovered project `uv-torchaudio-test` at: XXX/uv-torchaudio
+DEBUG Reading Python requests from version file at `XXX/uv-torchaudio/.python-version`
+DEBUG Using Python request `3.10.16` from version file at `.python-version`
+TRACE Cached interpreter info for Python 3.10.16, skipping probing: .venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `3.10.16`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uv-torchaudio-test @ file://XXX/uv-torchaudio
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+DEBUG Using request timeout of 30s
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;numpy&quot;), version: &quot;2.2.0&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/numpy-2.2.0.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.2.0&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: numpy==2.2.0
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;torchaudio&quot;), version: &quot;2.5.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/torchaudio-2.5.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.5.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: torchaudio==2.5.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;torch&quot;), version: &quot;2.5.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/torch-2.5.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.5.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: torch==2.5.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;filelock&quot;), version: &quot;3.16.1&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/filelock-3.16.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.16.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: filelock==3.16.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;fsspec&quot;), version: &quot;2024.10.0&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/fsspec-2024.10.0.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2024.10.0&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: fsspec==2024.10.0
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;jinja2&quot;), version: &quot;3.1.4&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/jinja2-3.1.4.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.1.4&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: jinja2==3.1.4
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;networkx&quot;), version: &quot;3.4.2&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/networkx-3.4.2.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.4.2&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: networkx==3.4.2
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;sympy&quot;), version: &quot;1.13.1&quot;, path: &quot;/XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/sympy-1.13.1.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;1.13.1&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: sympy==1.13.1
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;typing-extensions&quot;), version: &quot;4.12.2&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/typing_extensions-4.12.2.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;4.12.2&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: typing-extensions==4.12.2
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;markupsafe&quot;), version: &quot;3.0.2&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/MarkupSafe-3.0.2.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;3.0.2&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: markupsafe==3.0.2
+TRACE Comparing installed with source: Registry(InstalledRegistryDist { name: PackageName(&quot;mpmath&quot;), version: &quot;1.3.0&quot;, path: &quot;XXX/uv-torchaudio/.venv/lib/python3.10/site-packages/mpmath-1.3.0.dist-info&quot;, cache_info: None }) Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;1.3.0&quot; }]), index: Some(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }), conflict: None }
+DEBUG Requirement already installed: mpmath==1.3.0
+DEBUG Using Python 3.10.16 interpreter at: XXX/uv-torchaudio/.venv/bin/python3
+DEBUG Running `python torchaudio_test.py`
+/opt/homebrew/bin/sox
+[]
+DEBUG Command exited with code: 0
+</code></pre>
+<p>It seems that the <code>/usr/bin/env</code> is what causes the issue in VSCode. I don't know exactly how PyCharm triggers its debug session so I don't know if the problem is similar in PyCharm.</p>
+<p>I don't know what to think about this. Do you have any idea what is going on?</p>
+<p>This makes me think there is something wrong on my setup.<br />
+But again, if I replace <code>uv</code> by a manual <code>venv</code> and <code>pip install</code>, no problem at all when I debug or when I launch the scrcipt using <code>/usr/bin/env python torchaudio_test.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-17 12:47</div>
+            <div class="timeline-body"><p>If that can help, here is the environment installed by <code>pip</code> (Python 3.10.16 installed with <code>pyenv</code>, in the context of a venv created with <code>python -m venv .venv</code>), which makes the debuggers work fine.<br />
+It seems that the resolution ends up with exactly the same packages versions.</p>
+<pre><code>❯❯❯ pip install numpy torchaudio
+Collecting numpy
+  Using cached numpy-2.2.0-cp310-cp310-macosx_14_0_arm64.whl.metadata (62 kB)
+Collecting torchaudio
+  Using cached torchaudio-2.5.1-cp310-cp310-macosx_11_0_arm64.whl.metadata (6.4 kB)
+Collecting torch==2.5.1 (from torchaudio)
+  Using cached torch-2.5.1-cp310-none-macosx_11_0_arm64.whl.metadata (28 kB)
+Collecting filelock (from torch==2.5.1-&gt;torchaudio)
+  Using cached filelock-3.16.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting typing-extensions&gt;=4.8.0 (from torch==2.5.1-&gt;torchaudio)
+  Using cached typing_extensions-4.12.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting networkx (from torch==2.5.1-&gt;torchaudio)
+  Using cached networkx-3.4.2-py3-none-any.whl.metadata (6.3 kB)
+Collecting jinja2 (from torch==2.5.1-&gt;torchaudio)
+  Using cached jinja2-3.1.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting fsspec (from torch==2.5.1-&gt;torchaudio)
+  Using cached fsspec-2024.10.0-py3-none-any.whl.metadata (11 kB)
+Collecting sympy==1.13.1 (from torch==2.5.1-&gt;torchaudio)
+  Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
+Collecting mpmath&lt;1.4,&gt;=1.1.0 (from sympy==1.13.1-&gt;torch==2.5.1-&gt;torchaudio)
+  Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting MarkupSafe&gt;=2.0 (from jinja2-&gt;torch==2.5.1-&gt;torchaudio)
+  Using cached MarkupSafe-3.0.2-cp310-cp310-macosx_11_0_arm64.whl.metadata (4.0 kB)
+Using cached numpy-2.2.0-cp310-cp310-macosx_14_0_arm64.whl (5.4 MB)
+Using cached torchaudio-2.5.1-cp310-cp310-macosx_11_0_arm64.whl (1.8 MB)
+Using cached torch-2.5.1-cp310-none-macosx_11_0_arm64.whl (63.9 MB)
+Using cached sympy-1.13.1-py3-none-any.whl (6.2 MB)
+Using cached typing_extensions-4.12.2-py3-none-any.whl (37 kB)
+Using cached filelock-3.16.1-py3-none-any.whl (16 kB)
+Using cached fsspec-2024.10.0-py3-none-any.whl (179 kB)
+Using cached jinja2-3.1.4-py3-none-any.whl (133 kB)
+Using cached networkx-3.4.2-py3-none-any.whl (1.7 MB)
+Using cached MarkupSafe-3.0.2-cp310-cp310-macosx_11_0_arm64.whl (12 kB)
+Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, numpy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch, torchaudio
+Successfully installed MarkupSafe-3.0.2 filelock-3.16.1 fsspec-2024.10.0 jinja2-3.1.4 mpmath-1.3.0 networkx-3.4.2 numpy-2.2.0 sympy-1.13.1 torch-2.5.1 torchaudio-2.5.1 typing-extensions-4.12.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-17 13:23</div>
+            <div class="timeline-body"><p>One more interesting experiment.</p>
+<p>My <code>.zprofile</code> file is quite heavy. In order to check if this was to cause of the problem, I tried to <code>uv sync</code> in a bash session (I don't have any <code>.bash_profile</code> or <code>.profile</code> file).</p>
+<p>In this bash session with a much simpler and cleaner environment, when launching the Python script from terminal:</p>
+<ul>
+<li>environment created by <code>uv</code> (<code>uv sync</code>) =&gt; <code>torchaudio</code> can not load <code>sox</code> backend, even without any debugger involved, even without <code>/usr/bin/env</code>, simply calling <code>uv run python torchaudio_test.py</code> or <code>python torchaudio_test.py</code> after manually activating the venv created by <code>uv sync</code></li>
+<li>environment created by <code>venv</code> and <code>pip</code> =&gt; <code>torchaudio</code> loads the <code>sox</code> backend without any issue.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-18 09:32</div>
+            <div class="timeline-body"><p>Yet a bit more context.</p>
+<p>I opened <a href="https://discuss.pytorch.org/t/please-help-torchaudio-does-not-find-the-sox-backend-on-macos/214313/2">a discussion on torchaudio's forum</a>.</p>
+<p>The problem is that <code>torchaudio</code> fails to load <code>libsox.dylib</code>, which is made available by <code>homebrew</code> in <code>/opt/homebrew/lib.libsox.dylib</code>, when loading its own <code>libtorchaudio_sox.so</code><a href="https://github.com/pytorch/pytorch/blob/9283c40ba8e6adf55db3d12f7451d86bb9c68632/torch/_ops.py#L1356">here</a>, with the following error:</p>
+<pre><code>('dlopen(/XXX/.venv/lib/python3.10/site-packages/torchaudio/lib/libtorchaudio_sox.so, 0x0006): Library not loaded: @rpath/libsox.dylib
+  Referenced from: &lt;56CD0903-8343-3EFF-AFBF-9F60216E7F09&gt; /XXX/.venv/lib/python3.10/site-packages/torchaudio/lib/libtorchaudio_sox.so
+  Reason: no LC_RPATH's found',)
+</code></pre>
+<p>Any idea why this is the case with <code>uv</code> (only in debug) and not with <code>venv</code>/<code>pip</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-20 18:08</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>Any insight about my issue?
+I just tested the latest version (0.5.11), no change.</p>
+<p>The only workaround I found for now is to switch to <code>venv</code> and <code>pip</code> during debugging. Not very practical 😉</p>
+<p>Thanks for your help 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-12-22 00:31</div>
+            <div class="timeline-body"><p>Hmm, I tried the <code>/usr/bin/env</code> approach and didn't get issue with uv. I'm used Python 3.12.8 and uv 0.5.11.</p>
+<pre><code>$ /usr/bin/env uv run torchaudio_test.py
+/opt/homebrew/bin/sox
+['ffmpeg', 'sox']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-22 08:39</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>Thank you for trying.</p>
+<p>I finally found what seems to be the source of the issue.
+It appears that <a href="https://developer.apple.com/documentation/security/disabling-and-enabling-system-integrity-protection?language=objc">SIP</a> sanitizes the <code>DYLD_LIBRARY_PATH</code> environment variable when using <code>/usr/bin/env</code>. I tried to deactivate SIP and indeed it solves my problem (not sure I will keep this solution though, not the safest option...).</p>
+<p>Still a few things I do not understand:</p>
+<ul>
+<li>Why I did not encounter the issue in the past? =&gt; This may be an evolution of macOS 15.</li>
+<li>Why does the environment works fine when created with <code>venv</code> and <code>pip</code> and not with <code>uv</code>? =&gt; Do you have any idea? This seems a bit problematic to me.</li>
+</ul>
+<p>Thanks for your help 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @samypr100 on 2024-12-22 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">macos</span> added by @samypr100 on 2024-12-22 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2025-01-05 20:07</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>Back on this issue after a few days far from my computer ^^</p>
+<p>[TL;DR]<br />
+The issue disappeared after uninstalling and re-installing <code>uv</code>'s Python interpreters.</p>
+<p>You can close the issue if you think it is not relevant anymore. Do not hesitate to contact me if you want to investigate this further.</p>
+<p>[More details]<br />
+From what I understood after some time digging the web and debugging <code>import torchaudio</code> step-by-step, the problem came from an <code>@rpath</code> resolution failing when loading  <code>libtorchaudio_sox.so</code> —in the <code>torchaudio</code> Python package, inside my <code>.venv</code>—, which tries to load <code>@rpath/libsox.dylib</code> —located in <code>/opt/homebrew/lib</code> on my computer—.</p>
+<p>When checking with <code>otool -l</code>, I found out that the <code>LC_RPATH</code> entry with <code>/opt/homebrew/lib</code> for the <code>python</code> executables installed with <code>uv</code> was present on a colleague's computer with a setup very similar to mine, but not on mine.</p>
+<p>I deleted all my python interpreters installed with <code>uv</code> and re-installed them, and everything is now working fine (I did try to clean all the <code>uv</code> cache earlier but not the python interpreters themselves).</p>
+<p>I am not sure what happened here. My guess is that there was something wrong in my <code>.zprofile</code> (libraries paths not setup correctly maybe) at the time I downloaded <code>python</code> interpreters with <code>uv</code>, and I corrected it later without realising it, as I modified my <code>.zprofile</code> a lot during the first few days with my new macBook to make everything work fine and fast on macOS 15. But I am not sure about that.</p>
+<p>Unfortunately I cannot tell you with which <code>uv</code> version the interpreters were installed initially. I am currently using the latest 0.5.14 (installed with homebrew).</p>
+<p>Thank you for your help, and sorry if this was a false alert making you loose time 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-05 20:10</div>
+            <div class="timeline-body"><p>No worries. We made a bunch of improvements to the Python installs in the last few releases, so this might be something we actually fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-05 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kingychiu">@kingychiu</a> on 2025-02-13 16:27</div>
+            <div class="timeline-body"><p>I am adding one more case for this. I was also trying to setup torchaudio with sox or ffmpeg.</p>
+<p>The backends cannot be loaded if my <code>uv run python script</code> is under a Makefile.
+When I run directly on command line, the backends can be loaded.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type no longer available for shells - clap-rs/clap #1900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type no longer available for shells</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1900">#1900</a>
+        opened by <a href="https://github.com/alerque">@alerque</a>
+        on 2020-05-02 23:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alerque">@alerque</a> on 2020-05-02 23:03</div>
+            <div class="timeline-body"><p>Using StructOpt, I was able to parse an option like this:</p>
+<pre><code class="language-rust">stuct Cli {
+    /// Output Bash, Fish, Zsh, PowerShell, or Elvish shell completion rules
+    #[structopt(long)]
+    completions: clap::Shell,
+}
+</code></pre>
+<p>(Where <code>clap</code> here was the re-exported one StructOpt provided.)</p>
+<p>This made it really easy to parse <code>myapp --completions zsh</code> while only accepting valid shells with completion generators. Nothing like <code>myapp --completions foo</code> would be accepted, but all the known shells were. This was really easy to pass to the generator.</p>
+<p>Using the new derive system from Git HEAD there doesn't seem to be any way to do this any more. There are type objects that all implement a common interface, but I don't see a way to use that to automatically get the right values filled in here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @alerque on 2020-05-02 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-03 06:59</div>
+            <div class="timeline-body"><p>We made it <code>clap_generate</code> separate and rewrote it a bit. There's no <code>Shell</code> anymore because I made the generator agnostic and to be able to generate for other stuff and not only shells. If you need an enum like that you should probably write one yourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2020-05-03 07:31</div>
+            <div class="timeline-body"><p>I understand the refactoring was to make it more extensible to other types of things in the future, but this is also an ergonomics regression coming from StructOpt. Given that the modules does have a fixed list of shells that are supported out of the box it seems like providing an enum and the ability to type cast like this would be an appropriate thing to do as part of the module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-05-04 17:15</div>
+            <div class="timeline-body"><p>@pksunkara I like the re-write, but I also think it'd nice to add a shell enum that dispatches the proper completion type. I haven't dug into it too deep yet, so it's hard for me to say if it should only include the currently supported shells, or all completion types...</p>
+<p>Alternatively, we could so something as simple as provide an example, or clearly in the docs show how to create this enum and dispatch to the corresponding type. I agree it's pretty simple task, but to ease the transition from 2.x/structopt to 3.x, it'd help with this use case.</p>
+<p>This is especially useful for the CLIs that provide the completion script generation at runtime via some CLI option (a la <code>rustup</code> with <code>rustup completions &lt;shell&gt;</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-04 18:46</div>
+            <div class="timeline-body"><p>Yeah, I think we should probably provide <code>clap_generate::Shell</code> enum for the ones we have autocompletions available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-04 19:12</div>
+            <div class="timeline-body"><p>This enum will need to be <code>#[non_exhaustive]</code>. Who knows which shells we will add in future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-05-05 08:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @pksunkara by @pksunkara on 2020-05-14 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: generator</span> added by @pksunkara on 2020-08-23 05:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2020-08-23 05:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @pksunkara by @pksunkara on 2020-08-23 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> removed by @pksunkara on 2020-10-25 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @pksunkara by @pksunkara on 2020-10-25 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-02-28 12:32</div>
+            <div class="timeline-body"><p>@logansquirel This is easy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2407.html">clap-rs/clap#2407</a> on 2021-03-11 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-03-11 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @pksunkara by @pksunkara on 2021-03-11 15:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:15 UTC
+    </footer>
+</body>
+</html>

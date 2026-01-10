@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow getting values from environmental args if not passed in via the command line - clap-rs/clap #712</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow getting values from environmental args if not passed in via the command line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/712">#712</a>
+        opened by <a href="https://github.com/kbknapp">@kbknapp</a>
+        on 2016-10-28 02:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-28 02:06</div>
+            <div class="timeline-body"><p>Priority should be passed in manually, then env args, then default values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-10-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-10-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2016-10-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-10-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-10-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-28 02:26</div>
+            <div class="timeline-body"><p>Should add a <code>App::env_args(name)</code> which essentially extends the command line args with whatever is inside <code>name</code>. In this scenario name would contain a full set of arg(s) such as <code>--foo bar</code></p>
+<p>Should also add an <code>Arg::env_value(name)</code> where <code>name</code> can be either just a value i.e. <code>bar</code> in <code>--foo bar</code>, or the whole arg, i.e. <code>--foo bar</code> but only for a single argument, whereas <code>App::env_args</code> could theoretically contain <code>--foo bar --baz</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2016-12-13 14:14</div>
+            <div class="timeline-body"><p>Something that I would love to see is supporting the (semi-standard?) technique of having env vars (and config vars) be option/argument names, screaming snake cased and prefixed with the name of the app. To support this it would be nice if there was a <code>App::env_arg_prefix(name)</code> so that you could do (in pseudo-clap):</p>
+<pre><code>    App::env_arg_prefix(&quot;myapp&quot;).Arg(&quot;--some&quot;).Arg(&quot;required&quot;)
+</code></pre>
+<p>and be able to run your app like:</p>
+<pre><code>MYAPP_SOME=thing MYAPP_REQUIRED=yes myapp
+</code></pre>
+<p>This also maps pretty cleanly to loading things from config files (you could just specify a <code>config_arg_section</code> and have everything work theoretically the same.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/814.html">clap-rs/clap#814</a> on 2017-01-10 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x blocker</span> added by @kbknapp on 2017-05-09 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @kbknapp on 2017-05-09 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-02 01:54</div>
+            <div class="timeline-body"><p>This has already been implemented in v2 via <a href="https://docs.rs/clap/2.29.2/clap/struct.Arg.html#method.env"><code>Arg::env</code></a> and <a href="https://docs.rs/clap/2.29.2/clap/struct.Arg.html#method.env_os"><code>Arg::env_os</code></a>. Guess I forgot to close this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-02 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2018-02-02 19:20</div>
+            <div class="timeline-body"><p>Neat!</p>
+<p>It would still be nice to have a similar <code>App::fallback_args_from_os(PREFIX)</code> flag that would make it so that every arg that has a <code>long</code> option would also accept <code>PREFIX_${to_screaming_snake_case(long_name)}</code>. It's a really useful paradigm for 12FA, and it's nice to be consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-05 03:42</div>
+            <div class="timeline-body"><p>@quodlibetor I like the idea, but for now I'd rather stick with having to declare the args one would like to use with ENV vals. If an application wants to support what you're proposing, it's as simple as adding:</p>
+<pre><code>Arg::with_name(&quot;some&quot;)
+    .long(&quot;some&quot;)
+    .env(&quot;MYAPP_SOME&quot;)
+</code></pre>
+<p>I'm not sure I'm comfortable adding code that goes through ENV vars matching a prefix, converting longs to screaming snake case, doing a match, etc. This is something that could be handled pretty easily in an external crate once v3 is out (due to <code>App::mut_arg</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bestouff">@bestouff</a> on 2018-02-05 08:16</div>
+            <div class="timeline-body"><p>Automatically reading env vars would be really nice, but guarded by a global switch, like <code>.auto_2fa(true)</code> or something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-05 15:16</div>
+            <div class="timeline-body"><p>I'm not <em>necessarily</em> opposed to that feature/setting. But with the upcoming v3 and <code>mut_arg</code> I would like to start pairing back some settings that could be external crates and moving them out of the core clap code, or even creating a <code>clap_extras</code> crate that provides these one off, modification-only of an <code>App</code> or <code>Arg</code> instance and that don't rely on core clap internals to function.</p>
+<p>If you'd like to open an issue with those features in mind so I can track it separately, that's fine. However, I can't promise I'll get to it anytime soon as getting v3 out the door is my priority right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2018-02-05 16:49</div>
+            <div class="timeline-body"><p>@kbknapp yup, that's what I'm currently doing, it would just be nice if instead of:</p>
+<pre><code class="language-rust">App::new(&quot;cool&quot;)
+    .arg(
+        Arg::with_name(&quot;config&quot;)
+            .env(&quot;COOL_CONFIG&quot;))
+    .arg(
+        Arg::with_name(&quot;out-file&quot;)
+            .env(&quot;COOL_OUT_FILE&quot;))
+</code></pre>
+<p>I could just do:</p>
+<pre><code class="language-rust">App::new(&quot;cool&quot;)
+    .map_env_with_prefix(&quot;COOL_&quot;)
+    .arg(Arg::with_name(&quot;config&quot;))
+    .arg(Arg::with_name(&quot;out-file&quot;))
+</code></pre>
+<p>It's not a <em>huge</em> deal, it's mostly a &quot;every now and then I am lazy about
+correctly specifying env and then it's annoying&quot; deal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pronebird">@pronebird</a> on 2018-11-12 16:39</div>
+            <div class="timeline-body"><p>I have a use case where env variable is not backed by an argument. I am currently using <code>after_help</code> to outline the available environment variables. It would be great to support <code>env</code> and collect environment variables under <code>ENV</code> section just like <code>SUBCOMMANDS</code> or <code>FLAGS</code>, i.e:</p>
+<pre><code class="language-rust">App::new(&quot;cool&quot;)
+  .env(&quot;MAGIC_COOKIE&quot;, &quot;Does something cool&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2021-01-12 19:28</div>
+            <div class="timeline-body"><p>Something that recently came up in support of having this be a global property on <code>App</code> is it would allow linting or errorring if there are any env vars that match the prefix, but do not match any known args:</p>
+<pre><code>App::new(&quot;COOL&quot;)
+    .env_prefix(&quot;COOL_&quot;)
+    .strict_env_prefix()
+    .arg(Arg::with_name(&quot;check&quot;))
+</code></pre>
+<p>Could fail if <code>COOL_CHCEK</code> is in the environment, which I'm sure would have saved me hours of debugging over the course of the career.</p>
+<p>The <code>mut_arg</code> feature in combination with <code>get_arguments</code> does seem like it would make it pretty easy to build this in to an external crate, although I'm not sure if that would/could work with the derive macro.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:19 UTC
+    </footer>
+</body>
+</html>

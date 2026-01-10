@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff should give a nonzero exit code if file linting panics - astral-sh/ruff #11107</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff should give a nonzero exit code if file linting panics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11107">#11107</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-23 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-23 16:17</div>
+            <div class="timeline-body"><p>Currently if Ruff panics, you get this on the command line:</p>
+<pre><code>% ruff check foo.py --no-cache
+error: Panicked while linting foo.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at /Users/runner/work/ruff/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw &lt;= end.raw
+Backtrace:    0: std::backtrace::Backtrace::force_capture
+   1: &lt;ruff::panic::PanicError as core::fmt::Display&gt;::fmt
+   2: std::panicking::rust_panic_with_hook
+   3: &lt;std::panicking::begin_panic_handler::StaticStrPayload as core::panic::PanicPayload&gt;::take_box
+   4: &lt;std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display&gt;::fmt
+   5: _rust_begin_unwind
+   6: core::panicking::panic_fmt
+   7: core::panicking::panic
+   8: &lt;ruff_python_parser::lexer::LexicalErrorType as core::fmt::Display&gt;::fmt
+   9: &lt;ruff_python_parser::lexer::LexicalErrorType as core::fmt::Display&gt;::fmt
+  10: &lt;ruff_python_parser::lexer::LexicalErrorType as core::fmt::Display&gt;::fmt
+  11: ruff_python_parser::parser::Program::parse_tokens
+  12: ruff_python_parser::parser::Program::parse_tokens
+  13: ruff_python_parser::parse_tokens
+  14: ruff_linter::linter::check_path
+  15: ruff_linter::linter::lint_only
+  16: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  17: &lt;ruff::panic::PanicError as core::fmt::Display&gt;::fmt
+  18: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  19: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  20: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  21: &lt;ruff::diagnostics::FixMap as core::ops::arith::AddAssign&gt;::add_assign
+  22: ruff::check
+  23: ruff::run
+  24: &lt;ruff::cache::PackageCacheMap as ruff::cache::PackageCaches&gt;::get
+  25: _main
+  26: _main
+  27: std::rt::lang_start_internal
+  28: _main
+
+
+All checks passed!
+% echo $?
+0
+</code></pre>
+<p>Pay no attention to the specific cause of the panic here or the contents of <code>foo.py</code> (this specific panic has already been fixed on <code>main</code>). If Ruff <em>does</em> panic, though:</p>
+<ul>
+<li>We shouldn't really be exiting with code 0 -- it should probably be exit code 2, to indicate that the process crashed with an internal error.</li>
+<li>We also <em>probably</em> shouldn't print the chirpy &quot;All checks passed!&quot; message at the end</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @AlexWaygood on 2024-04-23 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff should give a nonzero exit code if it panics" to "Ruff should give a nonzero exit code if lint rule panics" by @MichaReiser on 2024-04-23 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff should give a nonzero exit code if lint rule panics" to "Ruff should give a nonzero exit code if file linting panics" by @MichaReiser on 2024-04-23 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

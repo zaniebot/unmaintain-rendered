@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unable to ban relative imports - astral-sh/ruff #14374</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unable to ban relative imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14374">#14374</a>
+        opened by <a href="https://github.com/zkurtz">@zkurtz</a>
+        on 2024-11-16 00:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zkurtz">@zkurtz</a> on 2024-11-16 00:54</div>
+            <div class="timeline-body"><p>Here's an entire minimal repo dedicated to illustrating the issue: https://github.com/zkurtz/tmp_debug_ruff</p>
+<p>My pyproject.toml includes the snippet provided <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_ban-relative-imports">in the docs</a>:</p>
+<pre><code>[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = &quot;all&quot;
+</code></pre>
+<p>My repo includes a relative import: <code>from . import blah</code>.</p>
+<p>But running <code>ruff check .</code> in my repo says all checks passed, and <code>ruff check --fix</code> makes no changes. My interpretation of the rule was that it either should throw an error or fix the import to <code>from src.import blah</code>.</p>
+<p>My ruff version is 0.7.4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 00:56</div>
+            <div class="timeline-body"><p>Thanks for the repro. You need to enable the rule -- it's not enabled by default:</p>
+<pre><code class="language-shell">❯ uvx ruff check --select TID
+src/__init__.py:1:1: TID252 Prefer absolute imports over relative imports
+  |
+1 | from . import blah
+  | ^^^^^^^^^^^^^^^^^^ TID252
+2 | # expecting ruff to require this to be `from src import blah`
+  |
+  = help: Replace relative imports with absolute imports
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>You add this to your <code>pyproject.toml</code>, as an example:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+extend-select = [&quot;TID&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zkurtz">@zkurtz</a> on 2024-11-16 01:03</div>
+            <div class="timeline-body"><p>Success, thank you! My only follow up question is whether the docs could be clarified; it's still not obvious to me where the docs imply this solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zkurtz on 2024-11-16 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 01:07</div>
+            <div class="timeline-body"><p>Sweet. There's some information on rule selection here: https://docs.astral.sh/ruff/linter/#rule-selection</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-16 01:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

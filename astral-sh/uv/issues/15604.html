@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip list` shows system python packages instead of `.venv` python packages - astral-sh/uv #15604</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip list` shows system python packages instead of `.venv` python packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15604">#15604</a>
+        opened by <a href="https://github.com/taoari">@taoari</a>
+        on 2025-08-31 06:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/taoari">@taoari</a> on 2025-08-31 06:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv pip list</code> shows the wrong (system python) environment:</p>
+<pre><code>&gt; uv pip list
+Using Python 3.11.5 environment at: D:\scoop\apps\anaconda3\current\App
+Package                       Version
+----------------------------- ---------------
+aiobotocore                   2.5.0
+</code></pre>
+<p>The following one should be the correct one:</p>
+<pre><code>&gt; .venv\Scripts\python -m pip list
+Package                      Version   Editable project location
+---------------------------- --------- ------------------------------------------------------
+annotated-types              0.7.0
+</code></pre>
+<h3>Platform</h3>
+<p>windows</p>
+<h3>Version</h3>
+<p>uv 0.8.14 (af856fb88 2025-08-28)</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @taoari on 2025-08-31 06:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-31 14:31</div>
+            <div class="timeline-body"><p>It looks like you have an active Anaconda environment? What do the <code>CONDA_PREFIX</code> and <code>VIRTUAL_ENV</code> vars show?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taoari">@taoari</a> on 2025-08-31 20:36</div>
+            <div class="timeline-body"><p>@charliermarsh Here are the environment variables. I do have the base Anaconda environment activated by default, but shouldn't uv pip list prioritize the .venv folder over the base environment?</p>
+<pre><code>&gt; $Env:CONDA_PREFIX
+D:\scoop\apps\anaconda3\current\App
+
+&gt; $Env:VIRTUAL_ENV
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gigberg">@gigberg</a> on 2025-09-01 09:10</div>
+            <div class="timeline-body"><p>the same issue in the same time, uv pip's logic is a little wired. releated to https://github.com/astral-sh/uv/issues/7124</p>
+<p>see also:</p>
+<h1></h1>
+<blockquote>
+<p>An activated virtual environment based on the VIRTUAL_ENV environment variable.
+An activated Conda environment based on the CONDA_PREFIX environment variable.
+A virtual environment at .venv in the current directory, or in the nearest parent directory.
+If no virtual environment is found, uv will prompt the user to create one in the current directory via uv venv.
+If the --system flag is included, uv will skip virtual environments search for an installed Python version.</p>
+</blockquote>
+<p>https://docs.astral.sh/uv/pip/environments/#discovery-of-python-environments</p>
+<p>However, you can use <code>uv pip install --python .venv/bin/python</code> to let pip use your venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 20:31</div>
+            <div class="timeline-body"><p>@taoari what is <code>CONDA_DEFAULT_ENV</code> set to?</p>
+<p>We do special-case base Conda environments, but we don't recognize the name &quot;App&quot; today. https://github.com/astral-sh/uv/blob/3f83390e342dcb6fccc449335c15d1255885ad20/crates/uv-python/src/virtualenv.rs#L79-L106</p>
+<p>Why is your base environment called &quot;App&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taoari">@taoari</a> on 2025-09-02 21:01</div>
+            <div class="timeline-body"><p>@zanieb $Env:CONDA_DEFAULT_ENV
+base</p>
+<p>Anaconda <code>base</code> environemnt is located at <code>anaconda3\current\App</code> by default I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 21:21</div>
+            <div class="timeline-body"><p>Really? I thought the path usually matched the <code>CONDA_DEFAULT_ENV</code> name? What other directories are in that folder?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taoari">@taoari</a> on 2025-09-02 21:57</div>
+            <div class="timeline-body"><p>@zanieb Conda environments you create yourself usually match the directory name, like <code>envs/&lt;name&gt;</code>. The base environment is a special case.</p>
+<pre><code>&gt; conda env list
+# conda environments:
+#
+base                  *  D:\scoop\apps\anaconda3\current\App
+python312                D:\scoop\apps\anaconda3\current\App\envs\python312
+</code></pre>
+<p>This is a bit off-topic — the actual issue is that uv pip seems to get the priority order wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 22:03</div>
+            <div class="timeline-body"><p>It's not really off topic, because we use a different order if we can detect it's the base environment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 22:07</div>
+            <div class="timeline-body"><p>e.g., see https://github.com/astral-sh/uv/pull/7691</p>
+<p>and prior discussions in</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8940</li>
+<li>https://github.com/astral-sh/uv/issues/7124</li>
+<li>https://github.com/astral-sh/uv/issues/7137</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 22:26</div>
+            <div class="timeline-body"><p>It seems like there is a mistake in the heuristic we're using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gigberg">@gigberg</a> on 2025-09-04 12:04</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems like there is a mistake in the heuristic we're using.</p>
+</blockquote>
+<p>Not really, the  path format <code>\&quot;$dir\\App\\envs\&quot;</code>  is caused by <code>scoop</code>, a windows package manager. I guess the op install anaconda by command <code>scoop install extras/anaconda3</code>. see as</p>
+<pre><code class="language-powershell">&quot;Start-Process \&quot;$dir\\$fname\&quot; -ArgumentList @('/S', '/InstallationType=JustMe', '/RegisterPython=1', '/AddToPath=0', '/NoRegistry=1', \&quot;/D=$dir\\App\&quot;) -Wait
+</code></pre>
+<p>https://github.com/ScoopInstaller/Extras/blob/master/bucket/anaconda3.json#L23-L24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gigberg">@gigberg</a> on 2025-09-04 12:54</div>
+            <div class="timeline-body"><p>Yes, this seems to be wrong, my ubuntu miniconda base path  is <code>$CONDA_PREFIX=~/miniconda</code> not <code>~/miniconda/base</code> or <code>$CONDA_PREFIX=~/miniconda3/envs/labelyolo</code> like special common envs.</p>
+<p>https://github.com/astral-sh/uv/blob/3f83390e342dcb6fccc449335c15d1255885ad20/crates/uv-python/src/virtualenv.rs#L96-L98</p>
+<p>Ubuntu 22.04, miniconda3:
+env_name <code>base</code>:
+$CONDA_PREFIX=~/miniconda
+$echoCONDA_DEFAULT_ENV=base</p>
+<p>env_name <code>xxx</code>
+$CONDA_PREFIX=~/miniconda/envs/xxx
+$echoCONDA_DEFAULT_ENV=xxx</p>
+<p>So, maybe use</p>
+<pre><code class="language-rust">fn from_prefix_path(path: &amp;Path) -&gt; CondaEnvironmentKind {
+    // Check whether the path contains a directory named &quot;envs&quot;
+    if path.components().any(|comp| comp.as_os_str() == &quot;envs&quot;) {
+        // If &quot;envs&quot; is part of the path, it's a child environment
+        CondaEnvironmentKind::Child
+    } else {
+        // Otherwise, it's the base environment
+        CondaEnvironmentKind::Base
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15678.html">astral-sh/uv#15678</a> on 2025-09-04 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15679.html">astral-sh/uv#15679</a> on 2025-09-04 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-17 11:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

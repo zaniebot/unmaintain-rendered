@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python symlink is wrong when building Dockerfile - astral-sh/uv #9414</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python symlink is wrong when building Dockerfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9414">#9414</a>
+        opened by <a href="https://github.com/timvink">@timvink</a>
+        on 2024-11-25 11:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/timvink">@timvink</a> on 2024-11-25 11:08</div>
+            <div class="timeline-body"><p>Consider this Dockerfile:</p>
+<pre><code class="language-Dockerfile"># adapted from https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
+FROM mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+WORKDIR /code
+
+# Copy the lockfile and settings
+COPY uv.lock .
+COPY pyproject.toml .
+COPY .python-version .
+
+# Setup python environment
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=.python-version,target=.python-version \
+    --mount=type=secret,id=uv.toml,dst=/root/.config/uv/uv.toml \
+    uv sync --frozen --no-install-project --link-mode=copy --python-preference=only-managed
+
+# Place executables in the environment at the front of the path
+ENV PATH=&quot;/code/.venv/bin:$PATH&quot;
+</code></pre>
+<p>If I build this and open a shell inside the image, and run <code>ls -lah .venv/bin/</code>;</p>
+<img width="779" alt="image" src="https://github.com/user-attachments/assets/dc1d567f-757e-49ab-8058-727586e2b40f">
+
+<p>and compare it with <code>uv python list</code> you can see the wrong symlink (notice the root, <code>/home/azureuser/</code> instead of <code>/root/</code>:</p>
+<img width="698" alt="image" src="https://github.com/user-attachments/assets/76d47107-9685-4392-b795-bfd485f57d96">
+
+<p>The consequence is that <code>which python</code> points to the wrong python version, because the python version in the .venv does not exist.</p>
+<p>I suspect something is going wrong with <code>~</code> expansion.. indeed on my host machine that points to <code>/home/azureuser/</code>.
+Using <a href="https://github.com/astral-sh/uv/releases/tag/0.5.4">0.5.4</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-25 11:26</div>
+            <div class="timeline-body"><p>I'm just double-checking this Dockerfile. Isn't the default user supposed to be root? And with uv set to only-managed, I thought it would automatically download managed Python. So, if the Docker user is root, shouldn't the location of managed Python be correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timvink">@timvink</a> on 2024-11-25 11:32</div>
+            <div class="timeline-body"><p>Yes, I even have an additional <code>USER root:root</code> in my docker. The location of managed python is correct:</p>
+<p><img src="https://github.com/user-attachments/assets/4e11eccf-0d52-43b5-8277-b2ee2e429751" alt="image" /></p>
+<p>The location of python in the <code>.venv</code> folder inside the docker container isnt:</p>
+<p><img src="https://github.com/user-attachments/assets/afcd0c82-7a9c-4875-8a97-a04b56d55289" alt="image" />
+<img src="https://github.com/user-attachments/assets/bf1b2ada-853f-47ff-8124-345117b9de19" alt="image" /></p>
+<p>I've also tried:</p>
+<ul>
+<li>uv 0.4.30, same issue.</li>
+<li>setting <code>HOME</code> env var explicit in Docker container</li>
+<li>Removing cache from host system (remove <code>--mount=type=cache,target=/root/.cache/uv</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-25 12:00</div>
+            <div class="timeline-body"><p>If we don't explicitly set the value of $HOME in Docker, what is the  value of $HOME?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timvink">@timvink</a> on 2024-11-25 12:53</div>
+            <div class="timeline-body"><p>I'm not convinced anymore this is <code>uv</code> related. I think it's related to the base image I am using. Closing issue.</p>
+<p>In case anyone hits a similar problem, I solved it by explicitly setting the VIRTUALENV variable:</p>
+<pre><code class="language-Dockerfile"># Place executables in the environment at the front of the path
+ENV PATH=&quot;/code/.venv/bin:$PATH&quot;
+ENV VIRTUAL_ENV=/uv/.venv/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @timvink on 2024-11-25 12:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:38 UTC
+    </footer>
+</body>
+</html>

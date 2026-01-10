@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821: false positive in nested func - astral-sh/ruff #18610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821: false positive in nested func</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18610">#18610</a>
+        opened by <a href="https://github.com/SoundDesignerToBe">@SoundDesignerToBe</a>
+        on 2025-06-10 12:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SoundDesignerToBe">@SoundDesignerToBe</a> on 2025-06-10 12:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I just started using ruff as a pre-commit checker/formatter/linter and ran into an issue, where
+&quot;undefined&quot; variable is reported as an error, but the code runs because it is a nested function.</p>
+<p>This is probably related to other issues w.r.t. F821 but their titles appeared to reference other scenarios.
+Sorry if I produced a duplicate report here.</p>
+<pre><code class="language-python"># test_my_code.py
+import pytest
+
+def test_my_code():
+    application = Application(...)
+
+    def check_window(app):
+        global test_success
+        windows = [
+            win
+            for win in Gtk.Window.list_toplevels()
+            if hasattr(win, &quot;application&quot;) and win.application == application
+        ]
+        ...
+
+    def decorator2(method):
+        global test_success
+
+        def wrapper(*args, **kwargs):
+            method(*args, **kwargs)
+            GLib.idle_add(check_window, args[0])
+
+        return wrapper
+</code></pre>
+<pre><code class="language-shell">tests/...:67:67: F821 Undefined name `application`
+   |
+65 |             win
+66 |             for win in Gtk.Window.list_toplevels()
+67 |             if hasattr(win, &quot;application&quot;) and win.application == application
+   |                                                                   ^^^^^^^^^^^ F821
+68 |         ]
+69 |         try:
+   |
+
+Found 1 error.
+
+</code></pre>
+<p>This is my pre-commit hook</p>
+<pre><code class="language-yaml">repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.12
+    hooks:       
+      - id: ruff  # e.g. missing imports, non-declared variables/commands, ...
+        name: ruff-unresolved-references
+        args: [--select=F821]
+        files: ^(src/|tests/)
+</code></pre>
+<h3>Version</h3>
+<p>v0.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "F841: false positive in nested func" to "F821: false positive in nested func" by @SoundDesignerToBe on 2025-06-10 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-10 16:23</div>
+            <div class="timeline-body"><p>I'm having some trouble reproducing this locally or in the <a href="https://play.ruff.rs/9bec307f-ef60-4735-8ea1-c1a8edcb8464">playground</a>. Is there possibly a <code>del</code> statement or other important code omitted from the example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @ntBre on 2025-06-10 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-24 12:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

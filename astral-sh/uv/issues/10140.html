@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding a package and pinning to a specific index by name only with `uv add` - astral-sh/uv #10140</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding a package and pinning to a specific index by name only with `uv add`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10140">#10140</a>
+        opened by <a href="https://github.com/menzenski">@menzenski</a>
+        on 2024-12-24 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/menzenski">@menzenski</a> on 2024-12-24 12:50</div>
+            <div class="timeline-body"><p>This issue is something of a followup to https://github.com/astral-sh/uv/issues/6582, which was a duplicate of https://github.com/astral-sh/uv/issues/171. That issue has comments https://github.com/astral-sh/uv/issues/171#issuecomment-2426757234 and https://github.com/astral-sh/uv/issues/171#issuecomment-2426403030 which seems to be the same thing I am interested in here (but I can't find anything in search that suggests those have been opened as independent issues yet).</p>
+<h3>Desired Behavior</h3>
+<p>Given an index definition named <code>my_artifactory</code> in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;my_artifactory&quot;
+url = &quot;https://myorg.jfrog.io/artifactory/api/pypi/pypi/simple&quot;
+explicit = true
+</code></pre>
+<p>I would like to be able to run <code>uv add my-private-package --index my_artifactory</code> (or similar command - the important part here is that the CLI command references an index by name only, not by name and URL), with the resulting behavior that the package has been added and pinned to that specific index. Desired output in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;my-private-package&gt;=0.18.0&quot;,
+]
+
+[tool.uv.sources]
+my-private-package = { index = &quot;my_artifactory&quot; }
+</code></pre>
+<h3>Current Workaround</h3>
+<p>My current workaround is to add the <code>tool.uv.sources</code> entry first, manually in the <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+my-private-package = { index = &quot;my_artifactory&quot; }
+</code></pre>
+<p>Then I can run <code>uv add my-private-package</code>. But I would prefer not to be manually updating <code>pyproject.toml</code> for this - it would be nice to be able to do all &quot;add/update dependency&quot; tasks via the <code>uv</code> CLI.</p>
+<h3>Comparison to Poetry</h3>
+<p>I am trying to migrate from Poetry to uv. With Poetry, I can specify an explicit source in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[[tool.poetry.source]]
+name = &quot;my_artifactory&quot;
+url = &quot;https://myorg.jfrog.io/artifactory/api/pypi/pypi/simple&quot;
+priority = &quot;explicit&quot;
+</code></pre>
+<p>and add a dependency using <code>poetry add</code> with a <code>--source my_artifactory</code> option, e.g.:</p>
+<pre><code class="language-shell">$ poetry add my-private-package --source my_artifactory
+</code></pre>
+<p>The result of this command is a package that is pinned to that specific source:</p>
+<pre><code class="language-toml">[tool.poetry.dependencies]
+my-private-package = {version = &quot;^0.18.0&quot;, source = &quot;my_artifactory&quot;}
+</code></pre>
+<p>I am hoping that the same behavior is possible with <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-12-24 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-24 13:05</div>
+            <div class="timeline-body"><p>I agree that this should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vmgustavo">@vmgustavo</a> on 2025-01-15 14:41</div>
+            <div class="timeline-body"><p>Yes please. It is a great feature for whoever uses private repositories a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-01-15 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12796.html">astral-sh/uv#12796</a> on 2025-04-10 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-10 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Gankra by @jtfmumm on 2025-04-10 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-10 14:15</div>
+            <div class="timeline-body"><p>If it's easier to do this with a separate argument (like <code>--index-name</code>), I'm fine with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-10 14:15</div>
+            <div class="timeline-body"><p>(As in, using <code>uv add foo --index-name bar</code> instead of <code>uv add foo --index https://...</code>, when <code>bar</code> already exists.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-10 15:59</div>
+            <div class="timeline-body"><p>Don't we accept <code>--index &lt;name&gt;</code> elsewhere? or am I misremembering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-10 17:37</div>
+            <div class="timeline-body"><p>The complexity/issue here is that <code>uv add</code> already takes <code>--index</code>, by inheriting (flattening) in <code>ResolverInstallerArgs</code>, which inherits <code>IndexArgs</code> which actually defines the flag. That version of the index flag is used by tons of different commands, and since it's currently always a URL it's eagerly parsed/resolved at CLI parsing time and everything expects to be able to pass it directly to stuff that wants indexes.</p>
+<p>So adding support for this special &quot;lazily resolved by name&quot; index mode forces tons of other commands to suddenly contend with having to also implement this lazy resolving or at least adding a &quot;not supported&quot; check/error.</p>
+<p><code>uv publish</code> <em>does</em> take an index by name but it doesn't used <code>IndexArgs</code> so it doesn't have this extra splash-work to do.</p>
+<p>I started implementing this, but backed off once the combinatoric explosion of things that needed to be updated started to reveal itself to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13445.html">astral-sh/uv#13445</a> on 2025-05-14 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesowers-cohere">@jamesowers-cohere</a> on 2025-08-01 10:48</div>
+            <div class="timeline-body"><p>Just to add to this. There's currently something that's quite confusing when using <code>uv pip install</code> or <code>uv tool install</code> (this relates more to the linked other issue: https://github.com/astral-sh/uv/issues/12796).</p>
+<p>I have a <code>/etc/uv/uv.toml</code> containing some index definitions, e.g.:</p>
+<pre><code>keyring-provider = &quot;subprocess&quot;
+
+[[index]]
+name = &quot;my-index-py&quot;
+url = &quot;https://oauth2accesstoken@.../my-index-py/simple&quot;
+publish-url = &quot;https://oauth2accesstoken@.../my-index-py&quot;
+explicit = true
+
+[[index]]
+name = &quot;my-index-py-test&quot;
+url = &quot;https://oauth2accesstoken@.../my-index-py-test/simple&quot;
+publish-url = &quot;https://oauth2accesstoken@.../my-index-py-test&quot;
+explicit = true
+</code></pre>
+<p>When I execute</p>
+<pre><code class="language-shell">uv tool install --index my-index-py ...
+</code></pre>
+<p>or</p>
+<pre><code class="language-shell">uv pip install --index my-index-py ...
+</code></pre>
+<p><strong>no error is returned</strong>. Even when I use <code>-vv</code> to get more verbose output, it is very unclear to see that the <code>--index my-index-py</code> is just being ignored. This is particularly confusing in the context when there is a package in both <code>my-index-py</code> and <code>pypi</code> with the same name. <strong>I will get the one from <code>pypi</code> and no error will be thrown</strong>. This is a bit of a security concern for me!</p>
+<p>In the interim whilst this feature is considered/developed, please may we raise an error if a user specifies <code>--index ...</code> and that index is not able to be used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-01 13:34</div>
+            <div class="timeline-body"><p>Is there not a warning as added in https://github.com/astral-sh/uv/pull/14152 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pzagieboylo">@pzagieboylo</a> on 2025-09-05 20:46</div>
+            <div class="timeline-body"><p>Is there any movement on this one? I've just discovered I wanted this too. My situation: I have a package only available from a private repository. I already have this private repository defined in <code>tool.uv.index</code>, marked <code>explicit = true</code>. However, I'm also doing local development on this package, so I want the current project to pick up the local version temporarily, but with an easy way to set it back to the private repository once I've published whatever changes I made in the dependency package (to make sure that the version I actually published still works correctly).</p>
+<p>I tried doing this with <code>uv pip install --editable ./path/to/local/package</code>, which works very temporarily, but <code>uv sync</code> automatically pops me back to the &quot;official&quot; version from the repository (and my project is otherwise set up to <code>uv sync</code> QUITE OFTEN, so this solution doesn't work well). I can instead use <code>uv add --editable ./path/to/local/package</code>, which changes the source in <code>tool.uv.sources</code> more permanently, but now I have no easy way to set it back to what it should be! I eventually stumbled on <code>uv add package --index my-index=https://url/to/private/repository</code>, which seems to fix <code>pyproject.toml</code>, but even <code>uv sync</code> still leaves my actual site-packages using the reference instead of downloading the real version from the repository, although I think this might just be a version resolution conflict. (It also insists on moving the <code>tool.uv.index</code> section to be before <code>tool.uv</code> anytime I mention an explicit index; not sure why this is.) I only get the actual result I want if I <code>uv remove package</code> first, which seems excessive, or by going into <code>pyproject.toml</code> manually and changing the entry in <code>tool.uv.sources</code> back to what it should be.</p>
+<p>What I really want, when I'm ready to go back to the official version, is to be able to say <code>uv add 'package&gt;=1.0.next' --index-name my-index</code> (or whatever the proposed syntax is) and have it: 1) stop using the local version; 2) update the requirement in <code>project.dependencies</code>; 3) retrieve and install the published version; and 4) note in <code>tool.uv.sources</code> that it did so.</p>
+<p>Am I actually just hoist on a cross of my own construction, and there's a better way that I should be doing this whole thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justinTM">@justinTM</a> on 2026-01-06 18:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there not a warning as added in <a href="https://github.com/astral-sh/uv/pull/14152">#14152</a> ?</p>
+</blockquote>
+<p>yup:</p>
+<pre><code class="language-console">❯ /home/ec2-user/.local/bin/uv add --active --refresh mypkg --index idx
+warning: Relative paths passed to `--index` or `--default-index` should be disambiguated from index names (use `./idx`). Support for ambiguous values will be removed in the future
+</code></pre>
+<p>here's the nasty workaround to avoid future breakage:</p>
+<pre><code class="language-bash">get_uv_index_url_from_pyproject() {
+  local index_name=&quot;$1&quot;
+  local pyproject_file=&quot;${_cwd}/../pyproject.toml&quot;
+
+  [ -z &quot;$index_name&quot; ] &amp;&amp; return 1
+  [ ! -f &quot;$pyproject_file&quot; ] &amp;&amp; return 1
+
+  python3 - &quot;$index_name&quot; &quot;$pyproject_file&quot; &lt;&lt;'PY' || exit_status=$?
+import sys, tomllib
+name = sys.argv[1]
+pyproject = sys.argv[2]
+with open(pyproject, &quot;rb&quot;) as fh:
+    data = tomllib.load(fh)
+for entry in data.get(&quot;tool&quot;, {}).get(&quot;uv&quot;, {}).get(&quot;index&quot;, []):
+    if entry.get(&quot;name&quot;) == name and entry.get(&quot;url&quot;):
+        print(entry[&quot;url&quot;])
+        raise SystemExit(0)
+raise SystemExit(1)
+PY
+  return &quot;${exit_status:-0}&quot;
+}
+</code></pre>
+<pre><code class="language-console">❯ get_uv_index_url_from_pyproject idx
+https://git.services.&lt;host&gt;/api/v4/projects/&lt;id&gt;/packages/pypi/simple
+</code></pre>
+<p>when it should be <code>uv add mypkg --index idx</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @konstin on 2026-01-06 18:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:56 UTC
+    </footer>
+</body>
+</html>

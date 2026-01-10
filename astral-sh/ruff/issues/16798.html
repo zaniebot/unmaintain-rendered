@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expansion to PLC1802 for `len(iterable) == 0` and `&gt;0` - astral-sh/ruff #16798</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expansion to PLC1802 for `len(iterable) == 0` and `&gt;0`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16798">#16798</a>
+        opened by <a href="https://github.com/DaniBodor">@DaniBodor</a>
+        on 2025-03-17 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2025-03-17 11:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/len-test/">PLC1802</a> currently catches this</p>
+<p>Examples 1&amp;2 (currently caught by rule PLC1802)</p>
+<pre><code class="language-py">fruits = [&quot;orange&quot;, &quot;apple&quot;]
+vegetables = []
+
+if len(fruits):
+    print(fruits)
+
+if not len(vegetables):
+    print(vegetables)
+</code></pre>
+<p>I come across the following a lot as well (potentially in botched attempt to fix the the flagged violation above), which I think should be equally flagged as a violation.</p>
+<p>Examples 3&amp;4 (not caught by PLC1802)</p>
+<pre><code class="language-py">fruits = [&quot;orange&quot;, &quot;apple&quot;]
+vegetables = []
+
+if len(fruits) &gt; 0:
+    print(fruits)
+
+if len(vegetables) == 0:
+    print(vegetables)
+</code></pre>
+<p>Examples 5&amp;6 (recommended formulation)</p>
+<pre><code class="language-py">fruits = [&quot;orange&quot;, &quot;apple&quot;]
+vegetables = []
+
+if fruits:
+    print(fruits)
+
+if not vegetables:
+    print(vegetables)
+</code></pre>
+<p>EDIT: I added numbers to the examples and the recommended way to formulate it, to make it easier to discuss them below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-03-17 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 11:44</div>
+            <div class="timeline-body"><p>I think that would be beyond the rule's scope. The only thing the rule tests for is that there's an explicit comparison of the value returned by <code>len</code> with some other value.</p>
+<p>Could you tell me more why you think the rule should catch the two examples that you listed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2025-03-17 12:42</div>
+            <div class="timeline-body"><p>The way I interpret this rule is that there is an unnecessary check against the truthiness of the length of an iterable as opposed to the truthiness of the object itself. All 4 examples above do that, albeit in a slightly different way.</p>
+<p>A Truthy iterable is one with a length larger than 0, while a Falsey iterable is one with length 0. Therefore, checking whether the length is Truthy or Falsey (example 1/2) is the same as checking whether the length is larger than 0 or not (example 3/4). But both of these are inherently different from the recommendation of checking whether the iterable <em>itself</em> is Truthy or Falsey (examples 5/6).
+By checking the length, you perform one additional unnecessary operation.</p>
+<p>I hope my explanation is clear :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 13:03</div>
+            <div class="timeline-body"><p>Oh I see. Yeah, <code>if len(fruits) &gt; 0:</code> and <code>if fruits:</code> are semantically the same if <code>fruits</code> is an iterable.</p>
+<p>However, this is not the concern of this rule. The only thing the rule tests for is that the comparison is explicit vs. relying on the implicit <code>0 == False</code> conversion.</p>
+<p>Detecting cases where <code>len(x)</code> could be replaced by <code>if x</code> would have to be its own rule and requires type-inference (which ruff doesn't support today).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 14:17</div>
+            <div class="timeline-body"><p>I think it could be worth updating the examples in the <a href="https://docs.astral.sh/ruff/rules/len-test/#example">docs</a> to show that an explicit comparison also <em>intentionally</em> satisfies the rule.</p>
+<p>The examples only show the transformation <code>if len(x)</code> -&gt; <code>if x</code> and don't account for the <code>if len(x) == 0</code> case. <code>if x</code> is also the current autofix, but it relies on the simple type inference we have now rather than full type inference.</p>
+<p>However, the docs also say &quot;You can either remove the call to len or <strong>compare the length against a scalar,</strong>&quot; which leads to Micha's conclusion that this should be a separate rule. This wording follows the <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/use-implicit-booleaness-not-len.html">upstream</a> rule, so I also think this would have to be a separate rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2025-03-17 14:33</div>
+            <div class="timeline-body"><p>I don't think that type inference is required, given that according to <a href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">Truth Value Testing - Python Docs</a> <em>any</em> object with a zero length is by definition Falsey (and vice versa).</p>
+<p>Objects without a defined <code>__len__</code> are not covered by this rule anyway.</p>
+<p>I do agree with @ntBre that it would probably need to be a separate rule, given that pylint doesn't include that either. Or maybe I'm just barking up the wrong tree here, and should be making my argument to pylint instead :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 14:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think that type inference is required, given that according to <a href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">Truth Value Testing - Python Docs</a> <em>any</em> object with a zero length is by definition Falsey (and vice versa).</p>
+</blockquote>
+<p>Interesting, I think we might be stricter on this than pylint because we check that the argument to <code>len</code> is a sequence. Calling <code>len</code> seems like a pretty good indicator on its own! However, I do think there is a little bit of subtlety around the <code>__bool__</code> method, which is probably the reason for our check here:</p>
+<blockquote>
+<p><code>object.__bool__(self)</code>
+Called to implement truth value testing and the built-in operation bool(); should return False or True. When this method is not defined, <a href="https://docs.python.org/3/reference/datamodel.html#object.__len__"><code>__len__()</code></a> is called, if it is defined, and the object is considered true if its result is nonzero. If a class defines neither<code> __len__()</code> nor <code>__bool__()</code> (which is true of the <a href="https://docs.python.org/3/library/functions.html#object">object</a> class itself), all its instances are considered true.</p>
+</blockquote>
+<p>In short, if an object has a <code>__bool__</code> implementation, it could return something different from <code>__len__</code>, in which case a naive fix for the rule could be wrong. That's the kind of type inference we need for a fully robust rule (checking if the object has defined <code>__bool__</code> and/or <code>__len__</code>).</p>
+<p>But we already do a simple form of this inference in the current rule, so it wouldn't necessarily block a more general rule either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DaniBodor">@DaniBodor</a> on 2025-03-17 16:01</div>
+            <div class="timeline-body"><p>I see your point about objects that have a defined <code>__bool__</code> that is different from the <code>__len__</code> result. My gut feeling is that that is in itself problematic, as that really shouldn't be the case.</p>
+<p>As you mention, this is not so much an issue regarding my suggestion, as it is an issue regarding the rule itself, even in the current implementation. A lengthy-Falsey (or nonlengthy-Truey) object would already lead to a different outcome after the ruff fix. Given this consideration, it may not be ideal that PLC1802 is a safe fix, as this could lead to breaking changes in the case described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pylint-dev/pylint/issues/10281.html">pylint-dev/pylint#10281</a> on 2025-03-17 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../labcc/pylint/issues/8.html">labcc/pylint#8</a> on 2025-04-04 22:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

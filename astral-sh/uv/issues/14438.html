@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build` failed to build - astral-sh/uv #14438</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build` failed to build</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14438">#14438</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-07-03 10:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-07-03 10:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-bash">❯ uv build                                                                                                                                            
+Building source distribution (uv build backend)...                                                                                                    
+Building wheel from source distribution (uv build backend)...
+  x Failed to build `C:\Users\chiri\Desktop\tst`
+  |-&gt; Failed to walk source tree: `C:\Users\chiri\AppData\Local\uv\cache\sdists-v9\.tmptJQX7u\tst-0.1.0`
+  |-&gt; IO error for operation on C:\Users\chiri\AppData\Local\uv\cache\sdists-v9\.tmptJQX7u\tst-0.1.0\src\tst: Не удается найти указанный файл. (os
+  |   error 2)
+  `-&gt; Не удается найти указанный файл. (os error 2)
+</code></pre>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;uv_build&gt;=0.7.19,&lt;0.8.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.build-backend]
+namespace = true
+
+[tool.uv.workspace]
+members = [
+    &quot;test_1&quot;,
+    &quot;test_2&quot;,
+]
+
+[project]
+name = &quot;tst&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = [
+    &quot;adaptix&gt;=3.0.0b11,&lt;4.0.0&quot;,
+]
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/fed7bad0-82f8-4743-a7d5-c43e466b1d40" alt="Image" /></p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.7.19 (38ee6ec80 2025-07-02)</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @chirizxc on 2025-07-03 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-07-03 11:20</div>
+            <div class="timeline-body"><p>oh, i guess i forgot to make the <code>tst</code> folder a level higher</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @chirizxc on 2025-07-03 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @chirizxc on 2025-07-03 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-07-03 11:34</div>
+            <div class="timeline-body"><p>if we want to have several modules in <code>src</code>, then at:</p>
+<pre><code class="language-toml">[tool.uv.build-backend]
+namespace = true
+</code></pre>
+<p>I think it makes sense to override <code>module-name</code> to <code>module-name = &quot;&quot;</code>, if it's not in <code>pyproject.toml</code></p>
+<p>because:</p>
+<pre><code class="language-toml">[tool.uv.build-backend]
+module-name = &quot;&quot;
+namespace = true
+
+[tool.uv.workspace]
+members = [
+    &quot;test_1&quot;,
+    &quot;test_2&quot;,
+]
+</code></pre>
+<p>=&gt;</p>
+<pre><code class="language-bash">❯ uv build                                                                                                                                            
+Building source distribution (uv build backend)...                                                                                                    
+Building wheel from source distribution (uv build backend)...
+Successfully built dist\tst-0.1.0.tar.gz
+Successfully built dist\tst-0.1.0-py3-none-any.whl
+</code></pre>
+<p>and</p>
+<pre><code class="language-diff">[tool.uv.build-backend]
+- module-name = &quot;&quot;
+namespace = true
+
+[tool.uv.workspace]
+members = [
+    &quot;test_1&quot;,
+    &quot;test_2&quot;,
+]
+</code></pre>
+<p>=&gt;</p>
+<pre><code class="language-bash">Building source distribution (uv build backend)...                                                                                                    
+Building wheel from source distribution (uv build backend)...
+  x Failed to build `C:\Users\chiri\Desktop\tst`
+  |-&gt; Failed to walk source tree: `C:\Users\chiri\AppData\Local\uv\cache\sdists-v9\.tmpQgy9eH\tst-0.1.0`
+  |-&gt; IO error for operation on C:\Users\chiri\AppData\Local\uv\cache\sdists-v9\.tmpQgy9eH\tst-0.1.0\src\tst: Не удается найти указанный файл. (os    
+  |   error 2)
+  `-&gt; Не удается найти указанный файл. (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-07-03 11:52</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/blob/main/crates/uv-build-backend/src/lib.rs#L216</p>
+<p>should probably do something like:</p>
+<pre><code class="language-rust">let module_relative = match module_name {
+ Some(name) if !name.trim().is_empty() =&gt; name.split('.').collect::&lt;PathBuf&gt;(),
+ _ =&gt; PathBuf::new(),
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-07-03 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 11:53</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14460.html">astral-sh/uv#14460</a> on 2025-07-05 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-09 17:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

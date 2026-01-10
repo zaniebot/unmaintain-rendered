@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv layout` to create portable offline Python distributions - astral-sh/uv #11746</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv layout` to create portable offline Python distributions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11746">#11746</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2025-02-24 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-24 16:39</div>
+            <div class="timeline-body"><h1>Proposal</h1>
+<p>uv could be used as a Python <em>distribution</em> manager to create and use a set of trusted interpreters and packages in airgapped environments.</p>
+<p>Inspiration for this comes from <a href="https://learn.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio?view=vs-2022#step-2---create-a-local-layout">Visual Studio</a>, <a href="https://docs.python.org/3/using/windows.html#installing-without-ui">Python for Windows</a>, and other tools that allow users to create offline layouts.</p>
+<p>The goals are similar to <a href="https://winpython.github.io/#overview">WinPython</a>, <a href="https://docs.anaconda.com/anaconda/release-notes/">Anaconda</a>, and <a href="http://activestate.com/platform/supported-languages/python/">ActiveState</a>.</p>
+<h1>Example</h1>
+<p>You have a <code>pyproject.toml</code> or <code>requirements.txt</code> that declares 1000 packages for a distribution named birdhouse.</p>
+<p>From the <code>pyproject.toml</code> root, run</p>
+<pre><code class="language-console">uv layout --platform windows
+</code></pre>
+<p>Or, if there is no project, run</p>
+<pre><code class="language-console">uv layout --platform windows --requirements requirements.txt
+</code></pre>
+<p>A directory is made that contains uv, Python, and packages for the specified platform. The directory might have a <code>uv.toml</code> with various settings for uv to work portably from that directory with the included Python interpreter(s) and packages. Multiple Python versions and package versions might be included.</p>
+<p>This directory can be compressed and distributed to others. The directory would contain everything that albatross, parrot, and canary devs would need to hit the ground running in an airgapped environment.</p>
+<p>Devs can use commands like <code>uv add</code>, <code>uv sync</code> and <code>uv run</code> in any projects on the system without depending on a network connection to access an external package index or external Python interpreter(s). This is a fully offline and portable Python distribution.</p>
+<h1>Use Case</h1>
+<p>Offline systems may not have access to any form of package index. These systems may have multiple users that need to make isolated Python projects containing virtual environments with installed packages. Users may not be authorized to bring in an interpreter or packages, so a distribution containing an interpreter and packages somewhere on the disk is needed.</p>
+<h1>Semantics</h1>
+<p><em>Python</em> means a build of the Python interpreter with all supporting files.</p>
+<p><em>Packages</em> means bdists (wheels) or sdists.</p>
+<p><em>Distribution</em> means <em>Python</em> and <em>Packages</em> combined and configured to work together.</p>
+<p><em>Portable</em> means to work reliably from a single directory without depending on elevated privileges or pre-configured environment variables, and without breaking if the directory location is changed or renamed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @chrisrodrigue on 2025-02-24 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-02-25 02:05</div>
+            <div class="timeline-body"><p>Is this perhaps an alternative proposal to https://github.com/astral-sh/uv/issues/5802?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-25 12:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this perhaps an alternative proposal to <a href="https://github.com/astral-sh/uv/issues/5802">#5802</a>?</p>
+</blockquote>
+<p>#5802 is slightly different.</p>
+<p>I think the intent of <code>uv bundle</code> is to be able to combine an app, its dependencies, and Python for non-developer end users. It would produce an executable binary, likely having a GUI or CLI. This would enable devs to distribute their apps without relying on users to know what uv, Python, PyPI, or virtual environments are.</p>
+<p>The intent of <code>uv layout</code> (<a href="https://learn.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio?view=vs-2022#step-2---create-a-local-layout">inspiration</a>) is to be able to combine uv, packages, and Python for developers. It would produce a directory, likely having a <code>uv.toml</code> to configure uv to work with that directory layout when invoked. This would enable devs to create projects without relying on an internet connection.</p>
+<p>Both of these commands would be valuable, with <code>uv bundle</code> artifacts targeted at users and <code>uv layout</code> artifacts targeted at developers. Both commands could read a <code>pyproject.toml</code> to produce the desired artifact for the current platform by default, or take any number of <code>--platform &lt;target-triple&gt;</code> options (or <code>--platform all</code>) to produce artifacts for different platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv as a Python distribution manager" to "Add `uv layout` to create an offline Python distribution" by @chrisrodrigue on 2025-02-25 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `uv layout` to create an offline Python distribution" to "Add `uv layout` to create offline Python distributions" by @chrisrodrigue on 2025-02-25 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5802.html">astral-sh/uv#5802</a> on 2025-02-25 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `uv layout` to create offline Python distributions" to "Add `uv layout` to create portable offline Python distributions" by @chrisrodrigue on 2025-02-25 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11856.html">astral-sh/uv#11856</a> on 2025-02-28 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/detrin">@detrin</a> on 2025-03-05 13:26</div>
+            <div class="timeline-body"><p>Not gonna lie, this would be wholesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2103.html">astral-sh/uv#2103</a> on 2025-03-06 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11996.html">astral-sh/uv#11996</a> on 2025-03-06 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12008.html">astral-sh/uv#12008</a> on 2025-03-06 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HernandoR">@HernandoR</a> on 2025-03-07 07:01</div>
+            <div class="timeline-body"><p>Could  a layout include manually solved packages? For my use case there's a venv that needs the following cmd to setup:</p>
+<pre><code>uv sync
+uv pip install pkg_a
+uv pip install pkg_b
+</code></pre>
+<p>This problem mainly due to the incorrect dependency tagged by pkg_a or its dependence. Nevertheless, i need to isolate it from the uv sync solve, also manually patch the broken pkg_b</p>
+<p>A similar situation is for mmcv users, who were recommended to use mim to install mmcv dependencies:</p>
+<pre><code>uv sync
+mim install mmcv mmdet
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-03-07 14:29</div>
+            <div class="timeline-body"><p>@HernandoR</p>
+<p>This would be a concern for the project scope rather than the layout/distribution scope.</p>
+<p>A layout might have a flat directory (let’s call it <code>pypackages</code> for now) containing wheels or sdists, which could potentially have multiple versions of packages to support the needs of various projects on a system.</p>
+<p>This flat directory would serve as an index for uv to source packages from. uv would read the <code>pyproject.toml</code> of an individual project on the systems to perform package resolution and install the dependencies from <code>pypackages</code> that project’s venv.</p>
+<p>For handling packages that have incorrect dependencies, you may want to check out <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata">Dependency metadata</a> and <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides">Dependency overrides</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/etiennebonnafoux">@etiennebonnafoux</a> on 2025-03-07 14:39</div>
+            <div class="timeline-body"><blockquote>
+<p>For handling packages that have incorrect dependencies you may want to check out <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata">Dependency metadata</a> and <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides">Dependency overrides</a>.</p>
+</blockquote>
+<p>Does this dependencis metadata override also work for python ?
+something like</p>
+<pre><code class="language-toml">[tool.uv.sources]
+python = { git = &quot;https://local.gitlab.com/python/python-build-standalone&quot;, tag = &quot;v3.12&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-03-07 14:49</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>For handling packages that have incorrect dependencies you may want to check out <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata">Dependency metadata</a> and <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides">Dependency overrides</a>.</p>
+</blockquote>
+<p>Does this dependencis metadata override also work for python ? something like</p>
+<p>[tool.uv.sources]
+python = { git = &quot;https://local.gitlab.com/python/python-build-standalone&quot;, tag = &quot;v3.12&quot; }</p>
+</blockquote>
+<p>See https://github.com/astral-sh/uv/issues/8015</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8015.html">astral-sh/uv#8015</a> on 2025-03-14 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12403.html">astral-sh/uv#12403</a> on 2025-03-24 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-04-10 23:32</div>
+            <div class="timeline-body"><p><strong>Nota Bene</strong>: The Python for Windows installer supports a <a href="https://docs.python.org/3/using/windows.html#installing-without-ui"><code>/layout</code> command</a>, which pre-downloads all components that the installer would normally download on the fly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yshvrdhn">@yshvrdhn</a> on 2025-12-31 22:09</div>
+            <div class="timeline-body"><p>any updates here ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

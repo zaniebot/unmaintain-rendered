@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv workspace doesn't install development dependencies for packages - astral-sh/uv #9863</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv workspace doesn't install development dependencies for packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9863">#9863</a>
+        opened by <a href="https://github.com/imrehg">@imrehg</a>
+        on 2024-12-13 08:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/imrehg">@imrehg</a> on 2024-12-13 08:55</div>
+            <div class="timeline-body"><p>I have a uv workspace, following a very similar layout to the <code>albatros</code> one in the <a href="https://docs.astral.sh/uv/concepts/projects/workspaces/#workspace-layouts">docs</a>. The when <code>bird-feeder</code> (a workspace package) have development dependencies that are in addition to the root packages dependencies, they don't get installed.</p>
+<p>For example:</p>
+<pre><code class="language-toml"># add in root pyproject.toml
+
+[tool.uv]
+dev-dependencies = [
+    &quot;tqdm&quot;
+]
+</code></pre>
+<p>in</p>
+<pre><code class="language-toml"># in packages/bird-feeder/pyproject.toml
+[tool.uv]
+dev-dependencies = [
+    &quot;pytest&quot;
+]
+</code></pre>
+<p>Doing a <code>uv sync</code> in the root finds both but does not install both. Is that the expected?</p>
+<h2>What expected</h2>
+<p>Package resolution is done across the whole workspace, including dev packages.</p>
+<h2>What happens</h2>
+<p>Root and each package just installs their own development dependencies:</p>
+<pre><code>❯ uv sync
+warning: Missing version constraint (e.g., a lower bound) for `tqdm`
+warning: Missing version constraint (e.g., a lower bound) for `pytest`
+Resolved 8 packages in 1.28s
+   Built albatros @ file:///Users/gergely/prog/uvworkspace/albatros
+   Built bird-feeder @ file:///Users/gergely/prog/uvworkspace/albatros/packages/bird-feeder
+Prepared 2 packages in 800ms
+Uninstalled 2 packages in 3ms
+Installed 3 packages in 5ms
+ - albatros==0.1.1.dev2+g59d56f9.d20241212 (from file:///Users/gergely/prog/uvworkspace/albatros)
+ + albatros==0.1.1.dev3+ge5c6435.d20241213 (from file:///Users/gergely/prog/uvworkspace/albatros)
+ - bird-feeder==0.1.1.dev2+g59d56f9.d20241212 (from file:///Users/gergely/prog/uvworkspace/albatros/packages/bird-feeder)
+ + bird-feeder==0.1.1.dev3+ge5c6435.d20241213 (from file:///Users/gergely/prog/uvworkspace/albatros/packages/bird-feeder)
+ + tqdm==4.67.1
+</code></pre>
+<p>On the other hand, running the sync restricted to the package:</p>
+<pre><code>❯ uv sync --package bird-feeder
+warning: Missing version constraint (e.g., a lower bound) for `tqdm`
+warning: Missing version constraint (e.g., a lower bound) for `pytest`
+Resolved 8 packages in 2ms
+Uninstalled 2 packages in 19ms
+Installed 4 packages in 8ms
+ - albatros==0.1.1.dev3+ge5c6435.d20241213 (from file:///Users/gergely/prog/uvworkspace/albatros)
+ + iniconfig==2.0.0
+ + packaging==24.2
+ + pluggy==1.5.0
+ + pytest==8.3.4
+ - tqdm==4.67.1
+</code></pre>
+<p>here it uninstalls the root requirement. So I cannot really get a &quot;development environment suitable for the whole workspace&quot;, despite the docs' saying.</p>
+<blockquote>
+<p>Workspaces are intended to facilitate the development of multiple interconnected packages within a single repository.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-13 12:59</div>
+            <div class="timeline-body"><p>I have an impression that this was intentional. I think you can try <code>uv sync --all-packages</code>.
+But I'm not sure if this usage is correct, so I suggest waiting for others' responses before considering closing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theodcr">@theodcr</a> on 2024-12-13 14:16</div>
+            <div class="timeline-body"><p>I have a very similar issue: I wish to install both a workspace package and the root dev dependencies to be able to run tests on the package. I don't want to use <code>uv sync --all-packages</code> because I don't want other workspace packages' dependencies in the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kesitrifork">@kesitrifork</a> on 2024-12-13 15:58</div>
+            <div class="timeline-body"><p>@imrehg I was looking into the same, and can see what you mean.</p>
+<p>I think unfortunately the solution is to have pytest in each repository which is not ideal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 16:00</div>
+            <div class="timeline-body"><p>Yeah, it's intentional that if each project relies on pytest, then each project should declare a dependency on pytest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kesitrifork">@kesitrifork</a> on 2024-12-13 16:04</div>
+            <div class="timeline-body"><p>@charliermarsh What is the best way to make sure that it is the same version as the root? Just defining it without a version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imrehg">@imrehg</a> on 2024-12-14 01:09</div>
+            <div class="timeline-body"><p>Hey, sorry to confuse things with the &quot;too many examples&quot;.</p>
+<p>The main thing wasn't to have things installed when they are not defined, but to understand whether or not the union of all the workspace's dev dependencies should be installed by default?</p>
+<p>@FishAlchemist the <code>--all-packages</code> seem to be doing what I meant in this particular case, I'll try it a bit more to confirm! :D Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NellyWhads">@NellyWhads</a> on 2024-12-18 18:53</div>
+            <div class="timeline-body"><p>To clarify, does this mean that <code>uv</code> does not support inheriting dependency groups from a workspace into a project? I can understand the confusion this would cause if it was done implicitly.</p>
+<p>Is there a way to explicitly define and select groups for inheritance? Configurations such as <code>tool.uv.workspace.dependency-groups</code>, and <code>tool.uv.workspace.constraint-dependencies</code> could provide a lot of monorepo value in support of <code>tool.uv.workspace.members</code>.</p>
+<p>Projects could still select which of these dependencies to install using <code>--group</code>, or include them in <code>tool.uv.default-groups</code>.</p>
+<p>Edit: Adding here that inheriting <code>tool.uv.workspace.environments</code> may be of value as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-01-07 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-01-07 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2025-03-28 03:22</div>
+            <div class="timeline-body"><p>We just ran into this and would love the ability to inherit dependency groups / tool settings from the workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexjball">@alexjball</a> on 2025-09-08 18:11</div>
+            <div class="timeline-body"><p>You can use <code>uv sync --inexact</code> to leave existing packages in the venv alone. So you would do this to sync a specific package and root dev:</p>
+<pre><code class="language-bash"># from repo root
+
+# sync package
+uv sync --package my-package
+
+# sync root dev deps
+uv sync --inexact --only-group dev 
+</code></pre>
+<p>Would still be great to have a single command for this. For example, the above can mess up a background lsp like basedpyright since the binary is deleted by the first sync</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpopowich-aca">@dpopowich-aca</a> on 2025-10-09 14:24</div>
+            <div class="timeline-body"><p>Just restructured my repo to use workspaces and am hitting the same disconnect of expectations vs reality.</p>
+<p>When developing an application that is in a workspace with dependent libraries, I'd expect running <code>uv sync</code>  to install the dev dependencies, as needed, across the workspace, without <code>--all-packages</code>, which is way too aggressive.</p>
+<p>To &quot;fix&quot; this so I can simply run <code>uv sync</code> I need to put all my dev-dependencies in each pyproject.toml, which strikes me as both non-DRY and a recipe for pain, e.g., drifting versions of tools.</p>
+<p>How about a command-line option / environment-variable: <code>--include-workspace-dev</code> / <code>UV_SYNC_WORKSPACE_DEV</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:49 UTC
+    </footer>
+</body>
+</html>

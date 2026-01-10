@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Support for no-install-package in pyproject.toml - astral-sh/uv #12523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Support for no-install-package in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12523">#12523</a>
+        opened by <a href="https://github.com/garam-kim1">@garam-kim1</a>
+        on 2025-03-28 04:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/garam-kim1">@garam-kim1</a> on 2025-03-28 04:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Summary</h1>
+<p>I would like to request the ability to configure the <code>no-install-package</code> option directly in the <code>pyproject.toml</code> file for uv. This would allow users to persistently exclude specific packages from installation when running <code>uv sync</code>, without needing to pass the <code>--no-install-package</code> flag every time.</p>
+<h1>Motivation</h1>
+<p>Currently, the <code>--no-install-package</code> flag must be provided as a command-line argument, which can be inconvenient for projects that frequently need to exclude certain packages (e.g., platform-specific dependencies or optional packages). Adding support for this configuration in <code>pyproject.toml</code> would:</p>
+<ul>
+<li>Improve developer workflow by reducing repetitive command-line options.</li>
+<li>Allow teams to share consistent exclusion rules across environments via version-controlled configuration files.</li>
+<li>Enhance flexibility and usability of uv for complex dependency management scenarios.</li>
+</ul>
+<h1>Proposed Solution</h1>
+<p>Introduce a new configuration option under <code>[tool.uv]</code> in <code>pyproject.toml</code>, such as:</p>
+<pre><code class="language-toml">[tool.uv]
+no-install-packages = [&quot;package1&quot;, &quot;package2&quot;]
+</code></pre>
+<p>When <code>uv sync</code> is run, any packages listed under <code>no-install-packages</code> would be excluded from installation automatically.</p>
+<h4>Example Usage</h4>
+<ol>
+<li><p>Add the following to <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv]
+no-install-packages = [&quot;example-package&quot;, &quot;another-package&quot;]
+</code></pre>
+</li>
+<li><p>Run <code>uv sync</code>. The specified packages would be excluded from installation without requiring additional flags.</p>
+</li>
+</ol>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @garam-kim1 on 2025-03-28 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12429.html">astral-sh/uv#12429</a> on 2025-04-01 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 19:37</div>
+            <div class="timeline-body"><blockquote>
+<p>would allow users to persistently exclude specific packages from installation when running uv sync</p>
+</blockquote>
+<p>This is intentionally not allowed. <code>--no-install-package</code> is only intended for temporarily excluding packages for Docker layer caching and such.</p>
+<blockquote>
+<p>projects that frequently need to exclude certain packages (e.g., platform-specific dependencies or optional packages).</p>
+</blockquote>
+<p>You should use platform markers and <code>project.optional-dependencies</code> for these?</p>
+<p>Can you share a more concrete use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-04-01 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garam-kim1">@garam-kim1</a> on 2025-04-02 01:07</div>
+            <div class="timeline-body"><p>Thank you for your response. I'd like to clarify my use case by drawing a parallel to Rye's implementation:</p>
+<p>In Rye, there's a <code>tool.rye.excluded-dependencies</code> <a href="https://rye.astral.sh/guide/pyproject/#toolryeexcluded-dependencies">configuration</a> that permanently excludes specific packages even when they're pulled in as indirect dependencies. Some other examples when we used it for:</p>
+<ol>
+<li>Excluding dependencies with licenses incompatible with commercial use that appear as transitive dependencies</li>
+<li>Preventing problematic dependencies that interfere with IDE functionality</li>
+<li>Replacing certain dependencies with custom implementations without installing it</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 01:14</div>
+            <div class="timeline-body"><p>We support that now by setting an impossible marker, e.g., <code>override-dependencies = [&quot;package; sys_platform = &quot;never&quot;]</code> (https://docs.astral.sh/uv/reference/settings/#override-dependencies). We could add a dedicated setting, but haven't yet. Unlike <code>--no-install-package</code>, I think this would omit that whole dependency tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garam-kim1">@garam-kim1</a> on 2025-04-02 01:30</div>
+            <div class="timeline-body"><p>Thanks for the workaround! Using overrides-dependencies = [&quot;package; sys_platform = 'never'&quot;] solves. It would be great if this approach could be documented more prominently, or perhaps implementing a dedicated excluded-dependencies option in the future for simplicity. Appreciate your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12616.html">astral-sh/uv#12616</a> on 2025-04-02 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 01:40</div>
+            <div class="timeline-body"><p>I opened an issue to track a dedicated setting https://github.com/astral-sh/uv/issues/12616</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-02 01:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

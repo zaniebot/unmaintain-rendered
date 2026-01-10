@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow setting `site-packages` root for `uv sync` instead of using venv's - astral-sh/uv #7659</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow setting `site-packages` root for `uv sync` instead of using venv's</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7659">#7659</a>
+        opened by <a href="https://github.com/Kamillaova">@Kamillaova</a>
+        on 2024-09-24 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Kamillaova">@Kamillaova</a> on 2024-09-24 14:23</div>
+            <div class="timeline-body"><p>It would be nice if <code>uv sync</code> (and similar commands) supported the setting <code>site-packages</code> root (for installation of the pep582 type), instead of using venv.</p>
+<p>Previously (with rye), I used <code>uv pip install --system --target pkgs</code></p>
+<details>
+  <summary>My old (with rye) `Dockerfile`s are like this:</summary>
+
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:labs
+
+ARG PYTHON=3.12
+ARG DEBIAN_RELEASE=bullseye
+ARG BASE_IMAGE=docker.io/python:${PYTHON}-${DEBIAN_RELEASE}
+ARG UV=0.2.34
+
+FROM ghcr.io/astral-sh/uv:${UV} AS uv
+
+FROM ${BASE_IMAGE} AS final
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONFAULTHANDLER=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV HF_HUB_ENABLE_HF_TRANSFER=1
+
+WORKDIR /app
+
+RUN --mount=from=uv,source=/uv,target=/uv \
+	--mount=target=/uv-cache,type=cache,mode=0777,sharing=shared \
+	--mount=source=requirements.lock,target=requirements.lock \
+	set -eux ;\
+	\
+	sed -e '/-e/d;' -e '/--index-url/d' requirements.lock | \
+	/uv pip install -v --link-mode=copy --cache-dir=/uv-cache --system --target pkgs -r /dev/stdin
+
+ENV PYTHONPATH=/app/pkgs
+
+COPY src/launch.sh /launch.sh
+COPY src/Censored ./censored
+
+ENTRYPOINT [ &quot;/launch.sh&quot; ]
+</code></pre>
+</details>
+
+<details>
+  <summary>My new (with uv as PM) `Dockerfile`s are like this:</summary>
+
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:labs
+
+ARG PYTHON=3.12
+ARG DEBIAN_RELEASE=bullseye
+ARG BASE_IMAGE=docker.io/python:${PYTHON}-slim-${DEBIAN_RELEASE}
+ARG UV=0.4.15
+
+FROM ghcr.io/astral-sh/uv:${UV} AS uv
+
+FROM ${BASE_IMAGE} AS final
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONFAULTHANDLER=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+RUN --mount=from=uv,source=/uv,target=/uv \
+	--mount=type=bind,source=uv.lock,target=uv.lock \
+	--mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+	--mount=type=cache,target=/uv-cache,mode=0777,sharing=shared \
+	\
+	/uv sync -v --link-mode=copy --cache-dir=/uv-cache --frozen --no-install-project
+
+COPY src/launch.sh /launch.sh
+
+RUN --mount=from=uv,source=/uv,target=/uv \
+	--mount=source=src,target=src \
+	--mount=source=uv.lock,target=uv.lock \
+	--mount=source=README.md,target=README.md \
+	--mount=source=pyproject.toml,target=pyproject.toml \
+	--mount=type=cache,target=/uv-cache,mode=0777,sharing=shared \
+	\
+	/uv sync -v --link-mode=copy --cache-dir=/uv-cache --frozen --no-editable
+
+ENTRYPOINT [ &quot;/launch.sh&quot; ]
+</code></pre>
+</details>
+
+<p>So previously my images didn't have venv, just custom <code>site-packages</code> which is specified via the <code>PYTHONPATH</code> environment variable. Now they have venv. This is not great and I don't like it.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 14:37</div>
+            <div class="timeline-body"><p>Please see https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path which allows you to change the target of <code>uv sync</code>.</p>
+<p>Note that &quot;not great and I don't like it&quot; isn't enough detail for us to actually change things for you; you'd need to explain why a virtual environment is a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-24 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8085.html">astral-sh/uv#8085</a> on 2024-10-10 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 22:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:55 UTC
+    </footer>
+</body>
+</html>

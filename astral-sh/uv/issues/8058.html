@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>relocatable entrypoints stop working if symlinked to - astral-sh/uv #8058</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>relocatable entrypoints stop working if symlinked to</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8058">#8058</a>
+        opened by <a href="https://github.com/paveldikov">@paveldikov</a>
+        on 2024-10-09 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-09 21:27</div>
+            <div class="timeline-body"><p>The order of operations in the path canonicalisation is wrong, because of self-imposed usage of a very spartan subset of POSIX shell utilities (I'm sorry -- that was my doing 😰). Consider:</p>
+<pre><code>/some/path/to/venv
+|
+|- bin
+|     |- my-script
+|     |- python -&gt; /usr/bin/python3.12
+\- lib
+
+/somewhere/completely/different
+|
+\- my-script -&gt; /some/path/to/venv/bin/my-script
+</code></pre>
+<p><code>my-script</code> has</p>
+<pre><code>#!/bin/sh
+'''exec' &quot;$(CDPATH= cd -- &quot;$(dirname -- &quot;$0&quot;)&quot; &amp;&amp; echo &quot;$PWD&quot;)&quot;/'python' &quot;$0&quot; &quot;$@&quot;
+
+# ... more boilerplate, but in Python
+</code></pre>
+<p>When called as <code>/somewhere/completely/different/my-script</code> this evaluates as:</p>
+<pre><code># interpolation
+'''exec' &quot;$(CDPATH= cd -- &quot;$(dirname -- &quot;/somewhere/completely/different/my-script&quot;)&quot; &amp;&amp; echo &quot;$PWD&quot;)&quot;/'python' ........
+
+# inner subshell
+'''exec' &quot;$(CDPATH= cd -- &quot;/somewhere/completely/different/&quot; &amp;&amp; echo &quot;$PWD&quot;)&quot;/'python' ........
+
+# outer subshell
+'''exec' &quot;/somewhere/completely/different/&quot;/'python' ........
+
+# ultimately
+/somewhere/completely/different/python ........
+</code></pre>
+<p>Which of course does not exist! 🤦‍♂️</p>
+<p>The correct approach is to canonicalise <code>$0</code> first. Back when I first did this I stuck to pure POSIX out of deference for compatibility with legacy platforms and also vanilla MacOS. So <code>readlink -f</code> or <code>realpath</code> were out of the question.</p>
+<p>Well, it turns out that MacOS 13+ do ship <code>realpath</code> as default. And even better, 12 is just freshly unsupported. So I think we can refactor and simplify all occurrences of the <code>$(CDPATH= cd -- &quot;$(dirname -- &quot;$0&quot;)&quot; &amp;&amp; echo &quot;$PWD&quot;)&quot;/</code> pattern down to</p>
+<pre><code>&quot;$(dirname -- &quot;$(realpath -- &quot;$0&quot;)&quot;)&quot;/
+</code></pre>
+<p>which is much more readable, too.</p>
+<p>I can/should raise a PR, but I will need help with testing this across as many platforms as possible. I am not sure if I ever implemented a proper live-run test for the fancy shebangs... that would help immensely I reckon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-09 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8079.html">astral-sh/uv#8079</a> on 2024-10-10 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-10 12:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:05 UTC
+    </footer>
+</body>
+</html>

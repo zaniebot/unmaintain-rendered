@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] fix equivalence (and gradual equivalence) for differently-ordered unions and intersections - astral-sh/ruff #15380</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] fix equivalence (and gradual equivalence) for differently-ordered unions and intersections</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15380">#15380</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-01-09 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 18:15</div>
+            <div class="timeline-body"><p>This issue relates to the TODO comment here:</p>
+<p>https://github.com/astral-sh/ruff/blob/b0905c4b043189879af78afb757270c4e0397e25/crates/red_knot_python_semantic/src/types.rs#L1065-L1081</p>
+<p>Some ~raw comments from discussion about this issue:</p>
+<hr />
+<p>it's not simple, but it also shouldn't be worse than the existing <code>is_subtype_of</code> support for intersections and unions, I think; it just feels wrong that it's <code>O(n^2)</code>
+i mean the simplest (but maybe not most efficient) implementation of it would be &quot;is <code>A</code> a subtype of <code>B</code> and <code>B</code> a subtype of <code>A</code>&quot;
+if so, they are equivalent</p>
+<p><strong>Alex Waygood — Today at 10:01 AM</strong></p>
+<p>except that <code>is_subtype_of()</code> calls <code>is_equivalent_to()</code>  😆
+so you'll get infinite recursion with our current structure</p>
+<p><strong>carljm — Today at 10:01 AM</strong></p>
+<p>true, we may need to split atomic equivalence
+because we do maintain a simplified two-layer structure for unions and intersections
+we don't have arbitrary recursive structures
+so we should know when handling union/intersection subtyping when we won't be dealing with more unions/intersections</p>
+<p><strong>Alex Waygood — Today at 10:02 AM</strong></p>
+<p>I do also think that we can implement optimisations by making sure that equivalent types have the same internal representation wherever possible, like the <a href="https://github.com/astral-sh/ruff/pull/15272">thing I implemented the other day</a> so that <code>type[object]</code> is eagerly simplified to <code>type</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-01-09 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Q1 2025" by @carljm on 2025-01-09 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 19:38</div>
+            <div class="timeline-body"><p>In our 1:1 just now @sharkdp raised the possibility that we could do a more efficient version of this based on consistently ordering unions and intersections according to &quot;equivalence classes&quot; of types (so that for example <code>Any</code> and <code>Unknown</code> would always be ordered adjacent to each other).</p>
+<p>This would require that we track &quot;user-facing&quot; order (i.e. to preserve the user-provided order) separately, or just decide that we're doing enough type simplification that tracking this user-facing order actually doesn't matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-13 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15516.html">astral-sh/ruff#15516</a> on 2025-01-15 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-19 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

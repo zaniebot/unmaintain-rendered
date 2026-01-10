@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>create skip_with_default attribute for Subcommands - clap-rs/clap #4411</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>create skip_with_default attribute for Subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4411">#4411</a>
+        opened by <a href="https://github.com/0xForerunner">@0xForerunner</a>
+        on 2022-10-20 21:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-20 21:06</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.17</p>
+<h3>Describe your use case</h3>
+<p>The enum that I'm using with clap derive also serves as an external API so there are certain things it must have. It looks like this:</p>
+<pre><code class="language-rust">#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Parser)]
+#[serde(rename_all = &quot;snake_case&quot;)]
+pub enum Msg {
+    #[command(subcommand)]
+    Base(BaseMsg),
+    #[clap(skip_with_default=my_default_function)] // This is the feature I would like to add
+    Receive(ExternalStruct),
+    AddAssets {
+        #[arg(value_parser=serde_json::from_str::&lt;[AssetInfo; 2]&gt;)]
+        assets: [AssetInfo; 2],
+    },
+</code></pre>
+<p>Because Default is not implemented for ExternalStruct I cannot skip the variant regularly.</p>
+<h3>Describe the solution you'd like</h3>
+<p>An attribute like</p>
+<pre><code>#[clap(skip_with_default=my_default_function)]
+</code></pre>
+<p>Should work perfectly for me. I'm currently not aware of any other solution.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @0xForerunner on 2022-10-20 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-20 21:18</div>
+            <div class="timeline-body"><p>The thing that is missing for me is why <code>#[command(skip]</code> is insufficient.  Clap would have no reason to instantiate a skipped variant, so defaults do not matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-20 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p>The thing that is missing for me is why <code>#[command(skip]</code> is insufficient. Clap would have no reason to instantiate a skipped variant, so defaults do not matter.</p>
+</blockquote>
+<p>The compiler wants the trait bound FromArgMatches to be satisfied, I assumed it was related to not implementing Default? What is the issue then?</p>
+<pre><code>error[E0277]: the trait bound `ExternalStruct: FromArgMatches` is not satisfied
+  --&gt; packages/lending/src/market.rs:26:71
+   |
+26 | #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Parser)]
+   |                                                                       ^^^^^^ the trait `FromArgMatches` is not implemented for `ExternalStruct`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4412.html">clap-rs/clap#4412</a> on 2022-10-20 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-20 21:45</div>
+            <div class="timeline-body"><p>Looks like its a bug.  A fix is upcoming</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-20 21:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks like its a bug. A fix is upcoming</p>
+</blockquote>
+<p>Oh wow thanks! I didn't realize it was a bug. Appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-20 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-20 21:59</div>
+            <div class="timeline-body"><p>v4.0.18 is now released with the fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2022-10-20 22:10</div>
+            <div class="timeline-body"><blockquote>
+<p>v4.0.18 is now released with the fix</p>
+</blockquote>
+<p>You're a legend. Thanks my friend.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:13 UTC
+    </footer>
+</body>
+</html>

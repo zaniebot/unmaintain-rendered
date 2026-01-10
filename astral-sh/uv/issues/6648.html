@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shared env cache: copy fails on install - astral-sh/uv #6648</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>shared env cache: copy fails on install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6648">#6648</a>
+        opened by <a href="https://github.com/stas00">@stas00</a>
+        on 2024-08-26 19:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stas00">@stas00</a> on 2024-08-26 19:05</div>
+            <div class="timeline-body"><p>This is a continuation of trying to use <code>uv</code> in a shared uv-cache https://github.com/astral-sh/uv/issues/5581</p>
+<p>With <code>uv==0.3.3</code> we have a new issue:</p>
+<p>The settings are:</p>
+<pre><code>export UV_LINK_MODE=copy
+export UV_CACHE_DIR=/env/cache/uv
+</code></pre>
+<p>This is installing into a just-created fresh conda env:</p>
+<pre><code>$ conda create -y -n stas-test-123 python=3.10
+$ pip install uv
+$ uv pip install -e .
+[...]
+Prepared 1 package in 5.77s
+Uninstalled 2 packages in 2.29s
+error: Failed to install: setuptools-69.5.1-py3-none-any.http.whl (setuptools==69.5.1)
+  Caused by: failed to copy file from /data/env/cache/uv/archive-v0/kYFrh3jfzM6r7gQ92HOcR/distutils-precedence.pth to /env/lib/conda/stas-test-123/lib/python3.10/site-packages/distutils-precedence.pth
+  Caused by: Operation not permitted (os error 1)
+</code></pre>
+<p>The permissions are all correct so it shouldn't be failing.</p>
+<pre><code>ls -l /data/env/cache/uv/archive-v0/kYFrh3jfzM6r7gQ92HOcR/distutils-precedence.pth
+-rw-rw-rw- 3 user1 user1 151 Aug 19 18:39 /data/env/cache/uv/archive-v0/kYFrh3jfzM6r7gQ92HOcR/distutils-precedence.pth
+
+ls -l /env/lib/conda/stas-test-123/lib/python3.10/site-packages/distutils-precedence.pth
+-rw-rw-rw- 8 user2 user2 0 Aug 26 18:48 /env/lib/conda/stas-test-123/lib/python3.10/site-packages/distutils-precedence.pth
+
+ls -l /env/lib/conda/stas-test-123/lib/python3.10/ | grep site-pac
+drwxrwxrwx  1 user3 user3    0 Aug 26 18:48 site-packages/
+</code></pre>
+<p>In fact I can copy the file just fine:</p>
+<pre><code>cp /data/env/cache/uv/archive-v0/kYFrh3jfzM6r7gQ92HOcR/distutils-precedence.pth /env/lib/conda/stas-test-123/lib/python3.10/site-packages/distutils-precedence.pth
+</code></pre>
+<p>no error and then if I rerun the command - uv pip install succeeds.</p>
+<p>Please note 3 users are involved here. The source file is owned by user1, the destination file is owned by user2 and I'm user3 running <code>uv</code>.</p>
+<p>Thank you.</p>
+<p>@charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 19:06</div>
+            <div class="timeline-body"><p>Interesting, thanks. Does this affect certain packages or files? E.g., is it always <code>.pth</code> files or something like that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-26 19:09</div>
+            <div class="timeline-body"><p>We have only run into this issue with <code>setuptools</code>, as you can see there are 3 versions of it each owned by one of the 3 users:</p>
+<pre><code>ls -l /data/env/cache/uv/archive-v0/*/distutils-precedence.pth
+-rw-rw-rw- 1 user1 user2 151 Aug 21 01:23 /data/env/cache/uv/archive-v0/TwQKRNzosf4d3PUZv4Foa/distutils-precedence.pth
+-rw-rw-rw- 1 user3 user3 151 Aug 15 19:07 /data/env/cache/uv/archive-v0/i-cXXyA_424PBsT1mucFi/distutils-precedence.pth
+-rw-rw-rw- 3 user2 user2 151 Aug 19 18:39 /data/env/cache/uv/archive-v0/kYFrh3jfzM6r7gQ92HOcR/distutils-precedence.pth
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-26 19:15</div>
+            <div class="timeline-body"><p>Interesting, inspecting the logs from conda I run into this:</p>
+<pre><code>$ conda create -y -n stas-test-123 python=3.10
+[...]
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: / 
+SafetyError: The package for setuptools located at /env/cache/conda/pkgs/setuptools-72.2.0-pyhd8ed1ab_0
+appears to be corrupted. The path 'site-packages/distutils-precedence.pth'
+has an incorrect size.
+  reported size: 151 bytes
+  actual size: 0 bytes
+</code></pre>
+<p>so it looks like the first package came from conda.</p>
+<p>Let me try and fix that by purging the bad conda cache package and retry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-26 19:19</div>
+            <div class="timeline-body"><p>ok, that resolved the problem.</p>
+<p>It's still odd why <code>uv</code> couldn't copy/overwrite the file, while a manual <code>cp</code> with the exact same args worked fine.</p>
+<p>But unless you can think of something we can close this ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-26 22:47</div>
+            <div class="timeline-body"><p>I'm pretty convinced that it has to do with some IO failure on the shared network fs and nothing to do with <code>uv</code>, since we had other IO issues this morning. So I'm closing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @stas00 on 2024-08-26 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 23:07</div>
+            <div class="timeline-body"><p>Ok thanks for following up -- appreciate it. Please feel free to reopen in the future if you hit it again and think uv is involved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-26 23:14</div>
+            <div class="timeline-body"><p>Thank you for your amazing support, Charlie!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

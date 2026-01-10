@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot `uv pip install` with yanked dependencies - astral-sh/uv #13569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot `uv pip install` with yanked dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13569">#13569</a>
+        opened by <a href="https://github.com/vangelem">@vangelem</a>
+        on 2025-05-21 10:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vangelem">@vangelem</a> on 2025-05-21 10:05</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi astral team,</p>
+<p>When trying to install a package created by another team in my company (and stored on our corporate Artficatory) with the command <code>uv pip install package_name==5.0.1</code>, I get the following error message:</p>
+<pre><code class="language-bash">Using Python 3.7.9 environment at:
+  × No solution found when resolving dependencies:
+  ╰─▶ Because futures==3.1.1 was yanked (reason: Does not declare incompatibility with Python 3) and package_name==5.0.1 depends on futures==3.1.1, we can conclude that package_name==5.0.1 cannot be
+      used.
+      And because you require package_name==5.0.1, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>The similar <code>pip install</code> command works fine though, <code>pip</code> only warns about the yanked package but doesn't stop the installation, so I'm wondering how to deal with this case. Is it possible to force install yanked packages with <code>uv pip install</code>? I didn't find anything in the doc or in the tracker about it.</p>
+<p>Cheers,
+Matt</p>
+<h3>Platform</h3>
+<p>Win11 - MSYS_NT-10.0-22631 3.4.10-87d57229.x86_64 x86_64 Msys</p>
+<h3>Version</h3>
+<p>uv 0.7.6 (7f3e94a09 2025-05-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @vangelem on 2025-05-21 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-21 11:19</div>
+            <div class="timeline-body"><p>Yeah, if you request the package explicitly, we allow it: <code>uv pip install futures==3.1.1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vangelem">@vangelem</a> on 2025-05-21 12:14</div>
+            <div class="timeline-body"><p>Hi @charliermarsh,</p>
+<p>Thank you for that. However, the solution isn't ideal for my use case, as the <code>uv pip install</code> command is actually automated within a more general package installation tool. In essence, users (who are non-developers) provide a <code>package_name</code> and its <code>version</code> to the GUI tool, and they expect everything to install smoothly. They aren't even aware of what the dependencies are.</p>
+<p>Therefore, the solution would require first extracting the yanked dependencies and then explicitly appending them to the <code>uv pip install</code> command. I suppose this might be doable, but it seems like it would complicate the process. Do you think it would be possible to add something like a <code>--ignore-yanked-dependencies</code> option to simply skip those during installation?</p>
+<p>Cheers,
+Matt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-05-21 14:27</div>
+            <div class="timeline-body"><p>FWIW, pip works here because the dependency (or transative dependency) has a pinning requirement (==).</p>
+<p>I assume, similar to pre-releaes, that uv calculates upfront from user requirements what yanks it allows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rhshadrach-8451">@rhshadrach-8451</a> on 2025-06-17 18:55</div>
+            <div class="timeline-body"><p>My understanding is that yanking a package should not break a previous working install. Since uv fails when a transitive dependency is hard pinned but yanked, this is not the case. Perhaps my understanding is wrong?</p>
+<p>Edit: from <a href="https://docs.pypi.org/project-management/yanking/">PyPI</a>:</p>
+<blockquote>
+<p>A yanked release is a release that is always ignored by an installer, unless it is the only release that matches a <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/">version specifier</a> (using either == or ===).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13308.html">astral-sh/uv#13308</a> on 2025-07-17 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-07-28 13:34</div>
+            <div class="timeline-body"><p>I don't know if I have the same problem or not:</p>
+<p>I have a package which includes an optional dependency on a yanked version of pyrfc (this it the latest/last version):</p>
+<pre><code>[project.optional-dependencies]
+sap = [
+    &quot;pyrfc==3.3.1&quot;,  # https://github.com/SAP-archive/PyRFC/issues/372#issuecomment-2483383627
+]
+</code></pre>
+<p>If I use this package from its local path (editable) there's no issues with adding <code>my-package[sap]</code>:</p>
+<pre><code>[tool.uv.sources]
+my-package = { path = &quot;../my_package&quot;, editable = true }
+</code></pre>
+<p>But if I publish it to a corporate index there's an error because of the yanked package <em>pyrfc</em>:</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;pypi-local&quot;
+url = &quot;https://my.corp/repository/pypi-local/simple/&quot;
+explicit = true
+</code></pre>
+<pre><code>uv add my-package[sap] --index pypi-local=https://my.corp/repository/pypi-local/simple/
+
+  × No solution found when resolving dependencies for split (platform_machine == 'x86_64' and sys_platform == 'linux'):
+  ╰─▶ Because pyrfc==3.3.1 was yanked (reason: No longer supported, see https://github.com/SAP/PyRFC/issues/372) and my-package[sap]==0.2.0 depends on pyrfc==3.3.1, we can conclude  
+      that my-package[sap]==0.2.0 cannot be used.
+      And because only my-package[sap]==0.2.0 is available and your project depends on my-package[sap], we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-28 13:59</div>
+            <div class="timeline-body"><p>When it's a local package, there's a direct dependency on the yanked version so it's allowed.</p>
+<p>When it's a remote package, it's not. You need to allow <code>&quot;pyrfc==3.3.1&quot;</code> by adding it as a dependency to the root package you're trying to use <code>uv add</code> on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-09-23 09:18</div>
+            <div class="timeline-body"><p>@zanieb i've discovered (by accident) that as of version 0.8.20 pyrfc is added successfully as a transitive dependency with <code>uv add</code>. So I don't have to add it explicitly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

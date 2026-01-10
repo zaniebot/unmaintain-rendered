@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imports don't resolve correctly when using `uv pip install -e` - astral-sh/uv #1708</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Imports don't resolve correctly when using `uv pip install -e`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1708">#1708</a>
+        opened by <a href="https://github.com/philipp-eisen">@philipp-eisen</a>
+        on 2024-02-19 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/philipp-eisen">@philipp-eisen</a> on 2024-02-19 16:58</div>
+            <div class="timeline-body"><h2>How to reproduce</h2>
+<p>Say you have the following file structure:</p>
+<pre><code>├── random_package
+│   ├── random_package
+│   │   └── __init__.py
+│   └── setup.py
+</code></pre>
+<pre><code>uv venv
+uv pip install -e random_package
+python -c &quot;import random_package; print(random_package.__path__)&quot; # ❌ prints a namespace path to ./random_package
+mkdir some_other_dir
+cd some_other_dir
+python -c &quot;import random_package; print(random_package.__path__)&quot; # ✅ prints correct path to ./random_package/random_package
+</code></pre>
+<p><img src="https://github.com/astral-sh/uv/assets/8607233/1eef17a6-ef1c-4478-b970-0d765f2833bc" alt="Screenshot" /></p>
+<p>I created a repo with the files to reproduce here: https://github.com/philipp-eisen/uv-editable-install-issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-19 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:00</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">installer</span> added by @zanieb on 2024-02-19 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 04:52</div>
+            <div class="timeline-body"><p>I see the same behavior with <code>pip</code> -- have you compared to <code>pip install -e</code>?</p>
+<pre><code class="language-shell">uv-editable-install-issue on  main [?]
+❯ virtualenv .venv
+created virtual environment CPython3.12.1.final.0-64 in 86ms
+  creator CPython3macOsBrew(dest=/Users/crmarsh/workspace/puffin/uv-editable-install-issue/.venv, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, via=copy, app_data_dir=/Users/crmarsh/Library/Application Support/virtualenv)
+    added seed packages: pip==23.3.2
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+uv-editable-install-issue on  main [?]
+❯ v
+uv-editable-install-issue on  main [?] via 🐍 v3.12.1 (.venv)
+❯ pip install -e random_package
+Obtaining file:///Users/crmarsh/workspace/puffin/uv-editable-install-issue/random_package
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Building wheels for collected packages: random_package
+  Building editable for random_package (pyproject.toml) ... done
+  Created wheel for random_package: filename=random_package-1.0-0.editable-py3-none-any.whl size=2548 sha256=c5099053323ae8f975a2e36259bbb1c7b0b830f52f0b23420d78ab359146187e
+  Stored in directory: /private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-ephem-wheel-cache-6dchil35/wheels/c2/79/66/ef5932c9c578f59adf4a1aa4a6130056e0158ee769622e464e
+Successfully built random_package
+Installing collected packages: random_package
+Successfully installed random_package-1.0
+
+[notice] A new release of pip is available: 23.3.2 -&gt; 24.0
+[notice] To update, run: pip install --upgrade pip
+uv-editable-install-issue on  main [?] via 🐍 v3.12.1 (.venv)
+❯ python
+Python 3.12.1 (main, Dec  7 2023, 20:45:44) [Clang 15.0.0 (clang-1500.1.0.2.5)] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import random_package
+&gt;&gt;&gt; print(random_package.__path__)
+_NamespacePath(['/Users/crmarsh/workspace/puffin/uv-editable-install-issue/random_package'])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-02-20 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philipp-eisen">@philipp-eisen</a> on 2024-02-20 12:51</div>
+            <div class="timeline-body"><p>@charliermarsh
+I dug a bit deeper, and have some more data, but don't really know why it behaves that way:</p>
+<ol>
+<li><code>venv</code> on my Macbook -&gt; &quot;wrong&quot; behavior -- same as what you posted, though I have installed and used uv on my macbook</li>
+<li>new conda environment on my macbook --&gt; &quot;correct&quot; behavior</li>
+<li><code>venv</code> on Google Cloud Shell (haven't used it before so -- &quot;clean&quot; install of whatever is in that vm image) --&gt; &quot;correct&quot; behavior</li>
+</ol>
+<p>My guess is that it has something to do with that venv just symlinks to the python executable you create the environment with, whereas conda downloads a new executable. But there is still some <code>uv</code> related (I think) missing piece that makes the imports wrong.</p>
+<p>For reference, I did the following</p>
+<pre><code>git clone https://github.com/philipp-eisen/uv-editable-install-issue.git
+cd uv-editable-install-issue
+python -m venv .venv
+source .venv/bin/activate
+python -c &quot;import random_package; print(random_package.__path__)&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philipp-eisen">@philipp-eisen</a> on 2024-03-25 13:33</div>
+            <div class="timeline-body"><p>This is still an issue btw. I.e. doesn't happen with pip in a clean environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jorricks">@Jorricks</a> on 2024-06-17 19:38</div>
+            <div class="timeline-body"><p>I am noticing the same thing with editable installations on MacOS</p>
+<p>I have a directory setup as such;</p>
+<pre><code>- lib_1
+- lib_1/lib_1
+- lib_1/lib_1/__init__.py
+- lib_1/lib_1/some_folder
+- lib_1/lib_1/some_folder/__init__.py
+- lib_1/lib_1/some_folder/module.py
+- lib_1/setup.py
+- lib_2/
+- lib_2/lib_2
+- lib_2/lib_2/__init__.py
+- lib_2/lib_2/module.py
+- lib_2/setup.py
+</code></pre>
+<p>When running the pip install with editable I get;</p>
+<pre><code>&gt;&gt;&gt; import lib_1; print(lib_1.__path__)
+['/Users/abc/my_repo/lib_1/lib_1']
+</code></pre>
+<p>However, when I installed it through <code>uv</code> I get;</p>
+<pre><code>&gt;&gt;&gt; import lib_1; print(lib_1.__path__)
+_NamespacePath(['/Users/abc/my_repo/lib_1'])
+</code></pre>
+<p>Also tried to fix it with changing the argument to add <code>#subdirectory=lib_1</code>, but also to no avail</p>
+<pre><code>-e file:///Users/abc/my_repo/lib_1#subdirectory=lib_1
+</code></pre>
+<p>This also becomes an issue for monorepo's with MyPy, because now it can not resolve the package correctly and you get errors as this;</p>
+<pre><code>lib_2.import_lib_1.py:1: error: Cannot find implementation or library stub for module named &quot;lib_1.some_folder.module&quot;  [import-not-found]
+</code></pre>
+<p>Of course you can fix this with including all of the subdirectories into the PATH manually but that's me not fixing the root issue, but instead moving around it, which is always worse then fixing the root 🤷‍♂️</p>
+<p>Note; I made some edits as my investigation went on :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-17 20:28</div>
+            <div class="timeline-body"><p>@Jorricks Can you provide a full reproduction example where you get different behavior from <code>uv</code> vs <code>pip</code>? It's important to have the exact commands run, because factors like e.g. the cwd and the exact way that Python is invoked when trying the import are all very important here.</p>
+<p>@philipp-eisen If you have repro instructions showing a difference in behavior between <code>uv</code> and <code>pip</code>, that would be really useful as well. I'm a bit confused by your most recent updates, because you mention that <code>uv</code> and <code>pip</code> behave differently, but the list of repro commands that you showed don't include installing anything with either <code>uv</code> or <code>pip</code>.</p>
+<p>At the moment, without a reproducible example, it's really not clear whether the differences in behavior described above are actually due to <code>uv</code> vs <code>pip</code> or to some other factor. So far I haven't been able to reproduce a difference in behavior.</p>
+<p>Some information that may be useful, for reference:</p>
+<p>It is normal and expected behavior in Python that an empty string is the first entry in <code>sys.path</code> (only if Python is executed like <code>python</code> and not like <code>python script_file.py</code>), and when resolving imports the empty string is always resolved as the current working directory. This means that in general imports will be preferentially resolved relative to the current working directory, which could cause the behavior described above as &quot;wrong&quot; (i.e. resolving the import to the outer directory instead of the inner one.)</p>
+<p>If the current working directory is not the outer directory containing the outer <code>lib1</code> or <code>random_package</code> directory (either because Python is run from somewhere else, or because something in-process calls <code>os.chdir()</code> and changes the current working directory), that would make the &quot;wrong&quot; behavior go away.</p>
+<p>If safe-path mode (<code>-P</code> or <code>PYTHONSAFEPATH</code> env var) or isolated mode (<code>-I</code>) are active, this empty string is not added as the first entry in <code>sys.path</code>, and then the &quot;wrong&quot; behavior would also go away.</p>
+<p>If Python is run like <code>python path/to/some/file.py</code>, then the directory containing <code>file.py</code> is set as the first entry on <code>sys.path</code> instead of the empty string; this could also make the &quot;wrong&quot; behavior go away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jorricks">@Jorricks</a> on 2024-06-17 20:55</div>
+            <div class="timeline-body"><blockquote>
+<p>@Jorricks Can you provide a full reproduction example where you get different behavior from <code>uv</code> vs <code>pip</code>? It's important to have the exact commands run, because factors like e.g. the cwd and the exact way that Python is invoked when trying the import are all very important here.</p>
+<p>@philipp-eisen If you have repro instructions showing a difference in behavior between <code>uv</code> and <code>pip</code>, that would be really useful as well. I'm a bit confused by your most recent updates, because you mention that <code>uv</code> and <code>pip</code> behave differently, but the list of repro commands that you showed don't include installing anything with either <code>uv</code> or <code>pip</code>.</p>
+<p>At the moment, without a reproducible example, it's really not clear whether the differences in behavior described above are actually due to <code>uv</code> vs <code>pip</code> or to some other factor. So far I haven't been able to reproduce a difference in behavior.</p>
+<p>Some information that may be useful, for reference:</p>
+<p>It is normal and expected behavior in Python that an empty string is the first entry in <code>sys.path</code> (only if Python is executed like <code>python</code> and not like <code>python script_file.py</code>), and when resolving imports the empty string is always resolved as the current working directory. This means that in general imports will be preferentially resolved relative to the current working directory, which could cause the behavior described above as &quot;wrong&quot; (i.e. resolving the import to the outer directory instead of the inner one.)</p>
+<p>If the current working directory is not the outer directory containing the outer <code>lib1</code> or <code>random_package</code> directory (either because Python is run from somewhere else, or because something in-process calls <code>os.chdir()</code> and changes the current working directory), that would make the &quot;wrong&quot; behavior go away.</p>
+<p>If safe-path mode (<code>-P</code> or <code>PYTHONSAFEPATH</code> env var) or isolated mode (<code>-I</code>) are active, this empty string is not added as the first entry in <code>sys.path</code>, and then the &quot;wrong&quot; behavior would also go away.</p>
+<p>If Python is run like <code>python path/to/some/file.py</code>, then the directory containing <code>file.py</code> is set as the first entry on <code>sys.path</code> instead of the empty string; this could also make the &quot;wrong&quot; behavior go away.</p>
+</blockquote>
+<p>Thank you for this information. I was not aware of the empty path resolving to the current working directory.
+Still, it does not really explain why editable pip installs do resolve to the correct folder and editable uv installs don't.
+I will see if I can provide a minimal working example tomorrow. Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jorricks">@Jorricks</a> on 2024-06-17 21:15</div>
+            <div class="timeline-body"><p>Okay I think I figured out why the result is different for <code>pip</code> then for <code>uv</code>.
+In Python we add <code>EditableFinders</code> (as they call it in <code>uv</code>) to the <code>sys.meta_path</code>.</p>
+<pre><code>$ python3
+Python 3.8.10 (v3.8.10:3d8993a744, May  3 2021, 09:09:08) 
+[Clang 12.0.5 (clang-1205.0.22.9)] on darwin
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.meta_path
+[&lt;_distutils_hack.DistutilsMetaFinder object at 0x10aa73400&gt;, &lt;class '_frozen_importlib.BuiltinImporter'&gt;, &lt;class '_frozen_importlib.FrozenImporter'&gt;, &lt;class '_frozen_importlib_external.PathFinder'&gt;,  &lt;class '__editable___lib_1_1_0_dev0_finder._EditableFinder'&gt;, &lt;class '__editable___lib_2_1_0_dev0_finder._EditableFinder'&gt;]
+&gt;&gt;&gt; import lib_1; print(lib_1.__path__)
+_NamespacePath(['/Users/abc/my_repo/lib_1'])
+</code></pre>
+<p>Now the problem resides in that the <code>PathFinder</code> comes before the EditableFinder. That causes it to first find the path locally and therefore return that. However, when we change the code in the <code>EditableFinder.install</code> method;</p>
+<pre><code>    if not any(finder == _EditableFinder for finder in sys.meta_path):
+        # before
+        # sys.meta_path.append(_EditableFinder)
+        # after
+        sys.meta_path.insert(len(sys.meta_path) - 2,_EditableFinder)
+</code></pre>
+<p>We get the expected result;</p>
+<pre><code>$ python3
+Python 3.8.10 (v3.8.10:3d8993a744, May  3 2021, 09:09:08) 
+[Clang 12.0.5 (clang-1205.0.22.9)] on darwin
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.meta_path
+[&lt;_distutils_hack.DistutilsMetaFinder object at 0x10aa73400&gt;, &lt;class '_frozen_importlib.BuiltinImporter'&gt;, &lt;class '_frozen_importlib.FrozenImporter'&gt;, &lt;class '__editable___lib_1_1_0_dev0_finder._EditableFinder'&gt;, &lt;class '__editable___lib_2_1_0_dev0_finder._EditableFinder'&gt;, &lt;class '_frozen_importlib_external.PathFinder'&gt;,]
+&gt;&gt;&gt; import lib_1; print(lib_1.__path__)
+['/Users/abc/my_repo/lib_1/lib_1']
+</code></pre>
+<p>After some googling where the editable installations were coming from, I found out that most likely it comes from setuptools and it seems to be a known issues;
+https://github.com/pypa/setuptools/issues/3518</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jorricks">@Jorricks</a> on 2024-06-17 21:32</div>
+            <div class="timeline-body"><p>Alright, my search has come to an ending.
+Turns out this is indeed related to setuptools#3518.</p>
+<p>When I ran <code>uv pip sync --config-setting editable_mode=compat requirements.txt</code> it worked fine :)!</p>
+<p>I suppose my issue would have also shown up with a newer pip version</p>
+<p>Thanks for the help :)!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2024-06-17 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @zanieb on 2024-06-17 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-06-17 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-06-17 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/pulls/3829.html">pypa/setuptools#3829</a> on 2024-06-17 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-19 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philipp-eisen">@philipp-eisen</a> on 2024-06-19 09:44</div>
+            <div class="timeline-body"><p>Thanks @Jorricks and sorry for being a bit too late to provide any useful info here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7179.html">astral-sh/uv#7179</a> on 2024-09-07 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AgentOps-AI/agentops/pulls/474.html">AgentOps-AI/agentops#474</a> on 2024-11-05 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9637.html">astral-sh/uv#9637</a> on 2025-02-24 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/pyright/pulls/10888.html">microsoft/pyright#10888</a> on 2025-09-03 10:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15652.html">astral-sh/uv#15652</a> on 2025-09-03 10:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

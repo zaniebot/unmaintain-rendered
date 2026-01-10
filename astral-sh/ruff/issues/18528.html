@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule: Avoid `try-except StopIteration` where `next(..., default)` can be used - astral-sh/ruff #18528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule: Avoid `try-except StopIteration` where `next(..., default)` can be used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18528">#18528</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2025-06-07 06:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2025-06-07 06:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A new rule that improves both readability and performance by avoiding <code>try-except StopIteration</code> constructs when iterating via <code>next()</code> could be added. In many simple statements, using <code>next(iterator, default)</code> with an explicit check is clearer and faster than relying on expensive exception handling.</p>
+<p>replace:</p>
+<pre><code class="language-python">try:
+    value = next(it)
+except StopIteration:
+    value = None
+</code></pre>
+<p>with:</p>
+<pre><code class="language-python">value = next(it, None)
+</code></pre>
+<p>where <code>None</code> is any sentinel object, which doesn't occur in the iterator.</p>
+<p>Example demonstrating performance enhancement:</p>
+<pre><code class="language-python">foo = iter([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+def v1():
+    try:
+        return next(foo)  # or whatever logic is done afterwards with it
+    except StopIteration:
+        return
+
+
+def v2():
+    d = next(foo, None)
+    if d is None:
+        return
+    return d  # or whatever logic is done afterwards with it
+
+
+def v3():
+    if d := next(foo, sentinel := object()) is not sentinel:
+        return
+    return d  # or whatever logic is done afterwards with it
+</code></pre>
+<pre><code class="language-bash">$ python3 -m timeit -s 'import test_stop' 'while test_stop.v1(): pass'
+1000000 loops, best of 5: 232 nsec per loop
+$ python3 -m timeit -s 'import test_stop' 'while test_stop.v2(): pass'
+5000000 loops, best of 5: 70.2 nsec per loop
+$ python3 -m timeit -s 'import test_stop' 'while test_stop.v3(): pass'
+2000000 loops, best of 5: 128 nsec per loop
+</code></pre>
+<p>When should the rule apply?</p>
+<ul>
+<li>The only statement in the try block is <code>next(...)</code></li>
+<li>No use of <code>else</code>, <code>finally</code>, or other logic in the exception handler.</li>
+</ul>
+<p>It should avoid applying inside generators, which are affected by <a href="https://peps.python.org/pep-0479/">PEP 479</a>.
+The suggestion to use <code>None</code> as default doesn't work when the iterator yields <code>None</code>, so propose some other singleton (e.g. <code>sentinel = object(); if next(it, sentinel) is not sentinel: </code>.</p>
+<p>Advantages:</p>
+<ul>
+<li>Better performance (no exception handling).</li>
+<li>Cleaner, more idiomatic code.</li>
+<li>Encourages explicit loop termination over implicit exception-based flow control.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-07 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-06-07 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-07 15:13</div>
+            <div class="timeline-body"><p>This doesn't mean too much since I haven't seen <em>that</em> much Python code, but I don't think I've ever seen this pattern before. Is this common? I thought the idiomatic form of these examples would use a <code>for</code> loop instead of <code>while</code> to handle the iteration automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-06-07 17:11</div>
+            <div class="timeline-body"><p>Well, the loop was my demonstration and yes it doesn't make sense. I just used it to show how performance differs.</p>
+<p>Yes, the occurrences are few but I saw the <code>StopIteration</code> pattern in many projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-06-08 07:16</div>
+            <div class="timeline-body"><p>As the initial example was irritating I moved the loop into the testit definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 16:43</div>
+            <div class="timeline-body"><p>We've been hesitant to add new performance-centric rules unless they are inherently slower (e.g., reading an entire file instead of the first few bytes when testing if a file's content starts with a specific character) mainly because performance characteristics can change between CPython versions. The performance is also unlikely to matter unless the code is in a very hot loop, which is hard to tell to determine for Ruff.</p>
+<p>Now, the second version is pretty readable. The third version, which is correct in all cases unlike version 2, goes a pretty long way only to avoid <code>StopIteration</code>. Which removes the &quot;improved readability&quot; argument IMO.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encoding issue in Windows cmd when path contains non-ASCII characters - astral-sh/uv #11828</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Encoding issue in Windows cmd when path contains non-ASCII characters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11828">#11828</a>
+        opened by <a href="https://github.com/flaribbit">@flaribbit</a>
+        on 2025-02-27 11:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flaribbit">@flaribbit</a> on 2025-02-27 11:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>uv</code> to generate a virtual environment, the <code>activate.bat</code> script is encoded in UTF-8, which is good. However, the bad thing is when executing <code>.venv\Scripts\activate</code> in <code>cmd</code>, the script uses the local codepage for execution. This causes issues when the file path contains non-ASCII characters, resulting in corrupted environment variables such as <code>VIRTUAL_ENV</code>.</p>
+<pre><code>E:\测试代码
+❯ uv init foo
+Initialized project `foo` at `E:\测试代码\foo`
+
+
+E:\测试代码
+❯ cd foo                                                                                                                
+
+foo on  master [?] is 📦 v0.1.0 via 🐍 v3.13.0
+❯ uv sync
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+Resolved 1 package in 4ms
+Audited in 0.01ms
+
+
+foo on  master [?] is 📦 v0.1.0 via 🐍 v3.13.0
+❯ .venv\Scripts\activate
+
+
+foo on  master [?] is 📦 v0.1.0 via 🐍 v3.13.0 (.venv)
+❯ uv run hello.py
+warning: `VIRTUAL_ENV=E:\娴嬭瘯浠ｇ爜\foo\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+Hello from foo!
+</code></pre>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+<h3>Python version</h3>
+<ul>
+<li></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @flaribbit on 2025-02-27 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flaribbit">@flaribbit</a> on 2025-02-27 11:05</div>
+            <div class="timeline-body"><p><code>python -m venv</code> do not have this issue as it <code>chcp 65001</code> before setting environment variables.</p>
+<p>https://github.com/python/cpython/blob/3.13/Lib/venv/scripts/nt/activate.bat#L3-L9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11831.html">astral-sh/uv#11831</a> on 2025-02-27 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Elmekior">@Elmekior</a> on 2025-02-27 18:22</div>
+            <div class="timeline-body"><p>Sorry to butt into this issue, out of curiosity would this also fix something akin to this ? ( I can create a second issue but wanted to make sure ). This is also under windows</p>
+<p>Commands to run :
+uv init --name &quot;test&quot; --no-readme --python &quot;3.7&quot; --python-preference only-managed --no-package
+uv venv --python-preference only-managed --seed --link-mode=copy</p>
+<hr />
+<p>output</p>
+<p>PS F:\Project\uv\uv_venv&gt; uv init --name &quot;test&quot; --no-readme --python &quot;3.7&quot; --python-preference only-managed --no-package</p>
+<p>Initialized project <code>test</code>
+PS F:\Project\uv\uv_venv&gt; ls</p>
+<pre><code>Directory: F:\Project\uv\uv_venv</code></pre>
+<p>Mode                 LastWriteTime         Length Name</p>
+<hr />
+<p>-a----         2/27/2025     13:19            109 .gitignore
+-a----         2/27/2025     13:19              4 .python-version
+-a----         2/27/2025     13:19             82 main.py
+-a----         2/27/2025     13:19            128 pyproject.toml</p>
+<p>PS F:\Project\uv\uv_venv&gt; uv venv --python-preference only-managed --seed --link-mode=copy
+Using CPython 3.7.9
+Creating virtual environment with seed packages at: .venv</p>
+<ul>
+<li>pip==24.0</li>
+<li>setuptools==68.0.0</li>
+<li>wheel==0.42.0
+Activate with: .venv\Scripts\activate
+PS F:\Project\uv\uv_venv&gt; ..venv\Scripts\activate
+(uv_venv) PS F:\Project\uv\uv_venv&gt; pip list
+File &quot;F:\Project\uv\uv_venv.venv\Scripts\pip.exe&quot;, line 1
+SyntaxError: Non-UTF-8 code starting with '\xe8' in file F:\Project\uv\uv_venv.venv\Scripts\pip.exe on line 2, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-27 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flaribbit">@flaribbit</a> on 2025-02-28 01:07</div>
+            <div class="timeline-body"><p>@Elmekior Sure, I can reproduce it in both <code>cmd</code> and <code>powershell</code> on windows.</p>
+<p>I don't think it is related to this issue. There is a problem with <code>pip.exe</code> generated by uv. You may create a new issue.</p>
+<pre><code>E:\测试代码
+❯ uv init --name &quot;test&quot; --no-readme --python &quot;3.7&quot; --python-preference only-managed --no-package
+Initialized project `test`
+
+测试代码 on  master [?] is 📦 v0.1.0 via 🐍 v3.13.0
+❯ uv venv --python-preference only-managed --seed --link-mode=copy
+Using CPython 3.7.9
+Creating virtual environment with seed packages at: .venv
+ + pip==24.0
+ + setuptools==68.0.0
+ + wheel==0.42.0
+Activate with: .venv\Scripts\activate
+
+测试代码 on  master [?] is 📦 v0.1.0 via 🐍 v3.13.0
+❯ .venv\Scripts\activate
+
+测试代码 on  master [?] is 📦 v0.1.0 via 🐍 v3.7.9 (测试代码)
+❯ pip list
+  File &quot;E:\测试代码\.venv\Scripts\pip.exe&quot;, line 1
+SyntaxError: Non-UTF-8 code starting with '\xe8' in file E:\测试代码\.venv\Scripts\pip.exe on line 2, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details
+
+测试代码 on  master [?] is 📦 v0.1.0 via 🐍 v3.7.9 (测试代码)
+❯ pip3
+  File &quot;E:\测试代码\.venv\Scripts\pip3.exe&quot;, line 1
+SyntaxError: Non-UTF-8 code starting with '\xe8' in file E:\测试代码\.venv\Scripts\pip3.exe on line 2, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details
+</code></pre>
+<p>(Small tip: you can put your code in code blocks to make it easier to read)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

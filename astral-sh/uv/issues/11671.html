@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrupt .pth in site-packages - astral-sh/uv #11671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Corrupt .pth in site-packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11671">#11671</a>
+        opened by <a href="https://github.com/NilsUUID">@NilsUUID</a>
+        on 2025-02-20 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NilsUUID">@NilsUUID</a> on 2025-02-20 16:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have this pyproject.toml file defining my environement :</p>
+<p><a href="https://github.com/user-attachments/files/18891242/pyproject.toml.txt">pyproject.toml.txt</a></p>
+<p>When I run uv sync the venv gets created without problems, but if I look in /.venv/Lib/site-packages I have some .pth files that are visibly corrupt:</p>
+<p><a href="https://github.com/user-attachments/files/18890161/distutils-precedence.pth.txt">distutils-precedence.pth.txt</a></p>
+<p><a href="https://github.com/user-attachments/files/18890093/pytest-cov.pth.txt">pytest-cov.pth.txt</a></p>
+<p>These corrupt files cause concern afterwards when running python scripts within the environement:</p>
+<pre><code>C:\Users\xxx\Documents\Dev\sandbox\uv_pth_corrupt&gt;uv run python -V
+error: Querying Python at `C:\Users\xxx\Documents\Dev\sandbox\uv_pth_corrupt\.venv\Scripts\python.exe` failed with exit status exit code: 1
+
+[stderr]
+Fatal Python error: init_import_site: Failed to import the site module
+Python runtime state: initialized
+Traceback (most recent call last):
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1176, in _find_and_load
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1147, in _find_and_load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 690, in _load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 980, in exec_module
+  File &quot;&lt;frozen site&gt;&quot;, line 626, in &lt;module&gt;
+  File &quot;&lt;frozen site&gt;&quot;, line 609, in main
+  File &quot;&lt;frozen site&gt;&quot;, line 541, in venv
+  File &quot;&lt;frozen site&gt;&quot;, line 394, in addsitepackages
+  File &quot;&lt;frozen site&gt;&quot;, line 236, in addsitedir
+  File &quot;&lt;frozen site&gt;&quot;, line 188, in addpackage
+  File &quot;C:\xxx\Python\Python3.11-64\Lib\encodings\cp1252.py&quot;, line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 41: character maps to &lt;undefined&gt;
+</code></pre>
+<p>As a consequence the virtual environment is unusable.</p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>0.6.1</p>
+<h3>Python version</h3>
+<p>3.11.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @NilsUUID on 2025-02-20 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-20 20:03</div>
+            <div class="timeline-body"><p>I can test this when I'm back home and have my Windows machine available. Alternatively, maybe @konstin or @Gankra can test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2025-02-20 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdheepak">@kdheepak</a> on 2025-02-21 14:27</div>
+            <div class="timeline-body"><p>I was having a possibly similar / possibly related issue on a colleague's computer. On Windows, we are seeing the following error:</p>
+<pre><code>Error processing line 1 of C:\Users\USERNAME\miniforge3\envs\conda-env-name\lib\site-packages\distutils-precedence.pth:
+
+  Traceback (most recent call last):
+    File &quot;C:\Users\USERNAME\miniforge3\envs\conda-env-name\lib\site-packages\...&quot;, 
+  ModuleNotFoundError: No module named '_distutils_hack'
+</code></pre>
+<p>In similar issues, people recommend <code>pip install -U setuptools pip</code>: https://github.com/conda/conda/issues/11931</p>
+<p>But that didn't work when we tried it.</p>
+<p>I am using the following to install a <code>uv</code> managed environment into a conda environment:</p>
+<pre><code>conda activate conda-env-name
+export UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX
+uv sync --all-extras --dev 
+</code></pre>
+<p>I'm not sure if this is because of the same issue as the OP. I can open a new issue if this happens again. One thing to note is that I've only seen this on a Windows 11 machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-21 14:32</div>
+            <div class="timeline-body"><p>I performed the following steps to try to reproduce on arm64 windows 11, uv 0.6.1 (unsuccessfully, everything worked fine for me):</p>
+<pre><code>uv init corrupt_uv_pth
+&lt;update pyproject.toml to what you have&gt;
+uv sync
+&lt;fails due to python version requirements&gt;
+uv python pin 3.11
+uv sync
+uv run python -V
+</code></pre>
+<p>It seems like an encoding mess but I can't tell what it would be... out of curiosity what's the windows Version in System Information? (Wondering if it's a really old win10 that lacks some system utf8 support...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NilsUUID">@NilsUUID</a> on 2025-02-21 14:45</div>
+            <div class="timeline-body"><p>I'm running win10 22h2 on an x86-64 platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-21 16:32</div>
+            <div class="timeline-body"><p>Thanks! That indeed should be well supported. (Which unfortunately means I'm not sure what could cause this...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-21 16:45</div>
+            <div class="timeline-body"><p>I tried reproducing on Windows 10 22H2 inside a Powershell terminal window and couldn't reproduce:</p>
+<pre><code>
+PS C:\Users\damia\opensource\uv\11671&gt; uv self update
+info: Checking for updates...
+success: Upgraded uv from v0.5.6 to v0.6.2! https://github.com/astral-sh/uv/releases/tag/0.6.2
+
+PS C:\Users\damia\opensource\uv\11671&gt; uv init corrupt_uv_pth
+Initialized project `corrupt-uv-pth` at `C:\Users\damia\opensource\uv\11671\corrupt_uv_pth`
+
+PS C:\Users\damia\opensource\uv\11671&gt; cd .\corrupt_uv_pth\
+
+~~ copied over pyproject.toml ~~
+
+PS C:\Users\damia\opensource\uv\11671\corrupt_uv_pth&gt; uv sync
+Using CPython 3.10.15
+error: The Python request from `.python-version` resolved to Python 3.10.15, which is incompatible with the project's Python requirement: `==3.11.*`. Use `uv python pin` to update the `.python-version` file to a compatible version.
+
+PS C:\Users\damia\opensource\uv\11671\corrupt_uv_pth&gt; uv python pin 3.11
+warning: No interpreter found for Python 3.11 in managed installations, search path, or registry
+Updated `.python-version` from `3.10` -&gt; `3.11`
+
+PS C:\Users\damia\opensource\uv\11671\corrupt_uv_pth&gt; uv sync
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+Resolved 137 packages in 816ms
+Prepared 134 packages in 11.05s
+Installed 134 packages in 2.18s
+ ~~ long list of packages ~~
+ 
+PS C:\Users\damia\opensource\uv\11671\corrupt_uv_pth&gt; uv run python -V
+Python 3.11.11
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NilsUUID">@NilsUUID</a> on 2025-02-24 08:51</div>
+            <div class="timeline-body"><p>Did you also check the .pth files and proper python execution? Today my python -V command was ok, but python was still broken (and .pth files were scrambled):</p>
+<pre><code>C:\Users\xxx\Documents\Dev\sandbox\uv_pth_corrupt_issue&gt;uv run python -V
+Python 3.11.9
+
+C:\Users\xxx\Documents\Dev\sandbox\uv_pth_corrupt_issue&gt;uv run python
+Fatal Python error: init_import_site: Failed to import the site module
+Python runtime state: initialized
+Traceback (most recent call last):
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1176, in _find_and_load
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1147, in _find_and_load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 690, in _load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 980, in exec_module
+  File &quot;&lt;frozen site&gt;&quot;, line 626, in &lt;module&gt;
+  File &quot;&lt;frozen site&gt;&quot;, line 609, in main
+  File &quot;&lt;frozen site&gt;&quot;, line 541, in venv
+  File &quot;&lt;frozen site&gt;&quot;, line 394, in addsitepackages
+  File &quot;&lt;frozen site&gt;&quot;, line 236, in addsitedir
+  File &quot;&lt;frozen site&gt;&quot;, line 188, in addpackage
+  File &quot;C:\xxx\Python\Python3.11-64\Lib\encodings\cp1252.py&quot;, line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 41: character maps to &lt;undefined&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DouisLavid">@DouisLavid</a> on 2025-03-04 13:43</div>
+            <div class="timeline-body"><p>Hello, I report seemingly the very same problem, also on win10, and i observed that when deleting the venv and re running <code>uv sync</code> <em>after</em> having ran <code>uv cache clean</code>, sometimes not the same pth files are corrupted. While trying a few times, i finally got lucky and got no corrupted files and a working venv, but there is definitely something nondeterministic going on with venv creation, and, i guess, package installation and caching.
+If it helps here is my pyproject.toml :</p>
+<pre><code>[project]
+name = &quot;parsers&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+readme = &quot;README.md&quot;
+authors = [{ name = &quot;Louis David&quot;, email = &quot;&quot; }]
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;attrs&gt;=25.1.0&quot;, &quot;lark&gt;=1.2.2&quot;, &quot;pandas&gt;=2.2.3&quot;]
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[dependency-groups]
+dev = [
+    &quot;mypy&gt;=1.15.0&quot;,
+    &quot;pandas-stubs&gt;=2.2.3.241126&quot;,
+    &quot;pytest&gt;=8.3.4&quot;,
+    &quot;pytest-cov&gt;=6.0.0&quot;,
+    &quot;ruff&gt;=0.9.7&quot;,
+    &quot;sphinx&gt;=8.2.1&quot;,
+]
+</code></pre>
+<p>I noticed that .venv\Lib\site-packages\sphinxcontrib_jsmath-1.0.1-py3.7-nspkg.pth and .venv\Lib\site-packages\pytest-cov.pth (as in the original issue) seemed to be scrambled more often than the rest, but my sample size is small and it very well could be non significant. I believe i have seen all other pth files scrambled at least once except .venv\Lib\site-packages_virtualenv.pth (but again, i could have been lucky).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13274.html">astral-sh/uv#13274</a> on 2025-05-03 14:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

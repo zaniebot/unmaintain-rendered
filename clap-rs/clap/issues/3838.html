@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `default_value_ifs` with `required` returns error about argument not being provided when default is matched sometime after 3.1.12 - clap-rs/clap #3838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `default_value_ifs` with `required` returns error about argument not being provided when default is matched sometime after 3.1.12</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3838">#3838</a>
+        opened by <a href="https://github.com/dsherret">@dsherret</a>
+        on 2022-06-15 17:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dsherret">@dsherret</a> on 2022-06-15 17:13</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.61</p>
+<h3>Clap Version</h3>
+<p>3.2.5</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[test]
+fn default_ifs_arg_required_not_present() {
+    let r = Command::new(&quot;df&quot;)
+        .arg(arg!(--opt &lt;FILE&gt; &quot;some arg&quot;).required(false))
+        .arg(
+            arg!([arg] &quot;some arg&quot;)
+                .default_value_ifs(&amp;[
+                    (&quot;opt&quot;, Some(&quot;some&quot;), Some(&quot;default&quot;)),
+                ])
+                .required(true),
+        )
+        .try_get_matches_from(vec![&quot;&quot;, &quot;--opt=some&quot;]);
+    assert!(r.is_ok(), &quot;{}&quot;, r.unwrap_err());
+    let m = r.unwrap();
+    assert!(m.contains_id(&quot;arg&quot;));
+    assert_eq!(
+        m.get_one::&lt;String&gt;(&quot;arg&quot;).map(|v| v.as_str()).unwrap(),
+        &quot;default&quot;
+    );
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Add this to tests/builder/default_vals.rs in the clap repo.</li>
+<li><code>cargo test default_ifs_arg_required_not_present</code></li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>error: The following required arguments were not provided:
+<arg></p>
+<h3>Expected Behaviour</h3>
+<p>Should parse.</p>
+<h3>Additional Context</h3>
+<p>This error started occuring sometime after 3.1.12</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @dsherret on 2022-06-15 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/pulls/14876.html">denoland/deno#14876</a> on 2022-06-15 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Using `default_value_ifs` with `required` returns error about argument not being provided sometime after 3.1.12" to "Using `default_value_ifs` with `required` returns error about argument not being provided when default is matched sometime after 3.1.12" by @dsherret on 2022-06-15 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-15 17:33</div>
+            <div class="timeline-body"><p>That was broken with #3793 which was released in v3.2.0.</p>
+<p>This is a tricky one.</p>
+<p>This was not a documented or tested use case and in general our various validation rules should be for non-default arguments (we've been fine making similar changes across minor releases).  We were also needing to allow <code>default_value</code> and <code>required</code> to play nicely for the new actions like <code>ArgAction::SetTrue</code> which was needed by the derive API (see #3786).  At this point, a lot depends on this combination and can't be trivially backed out.</p>
+<p>On the other hand, this broke you.</p>
+<p>We'll need to do some investigation on this to see if there is a way to make both cases work.  Otherwise we'll either need to</p>
+<ul>
+<li>Say this is ok and leave it as-is</li>
+<li>Yank the 3.2 releases and release a 4.0 and push back our other changes to a 5.0.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2022-06-15 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2022-06-15 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JoelMon">@JoelMon</a> on 2022-06-16 01:27</div>
+            <div class="timeline-body"><p>I think I'm having the same problem:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    /// The PO csv file to be used
+    #[clap(short, long, parse(from_os_str), required_unless_present = &quot;gui&quot;)]
+    input: PathBuf,
+    /// The destination directory where the processed POs will be saved
+    #[clap(short, long, parse(from_os_str))]
+    output: PathBuf,
+    /// The text file that contains all of the store numbers to be processed
+    #[clap(short, long, parse(from_os_str))]
+    list: PathBuf,
+    /// Print all RFIDs including items marked with a '$'
+    #[clap(short = 'a', long = &quot;print-all&quot;)]
+    printall: bool,
+    /// Produce a report of selected PO
+    #[clap(short, long, conflicts_with_all = &amp;[&quot;printall&quot;])]
+    report: bool,
+    /// Runs LISA in GUI mode
+    #[clap(long = &quot;gui&quot;, exclusive = true)]
+    gui: bool,
+}
+</code></pre>
+<pre><code>$ cargo run -- --gui
+    Finished dev [unoptimized + debuginfo] target(s) in 0.08s
+     Running `target/debug/lisa --gui`
+error: The following required argument was not provided: input
+
+USAGE:
+    lisa [OPTIONS] --input &lt;INPUT&gt; --output &lt;OUTPUT&gt; --list &lt;LIST&gt;
+
+For more information try --help
+</code></pre>
+<pre><code>$ cargo run -- --gui -i something
+    Finished dev [unoptimized + debuginfo] target(s) in 0.08s
+     Running `target/debug/lisa --gui -i something`
+error: The argument '--gui' cannot be used with one or more of the other specified arguments
+
+USAGE:
+    lisa [OPTIONS] --input &lt;INPUT&gt; --output &lt;OUTPUT&gt; --list &lt;LIST&gt;
+
+For more information try --help
+</code></pre>
+<p>Is this the same problem or am I just making a mistake somewhere?</p>
+<p>Full source code can be found here: <a href="https://github.com/JoelMon/LISA/tree/egui">joelmon/lisa</a>
+The above snippit can be found here: <a href="https://github.com/JoelMon/LISA/blob/egui/src/main.rs#L441">main.rs:441</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-16 01:49</div>
+            <div class="timeline-body"><p>I pinned this with clap 3.1 and it still produces the error.</p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! #clap = { path = &quot;../clap&quot;, features = [&quot;derive&quot;] }
+//! clap = { version = &quot;=3.1&quot;, features = [&quot;derive&quot;] }
+//! ```
+
+use clap::{Args, Parser, Subcommand};
+use std::path::PathBuf;
+
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    /// The PO csv file to be used
+    #[clap(short, long, parse(from_os_str), required_unless_present = &quot;gui&quot;)]
+    input: PathBuf,
+    /// The destination directory where the processed POs will be saved
+    #[clap(short, long, parse(from_os_str))]
+    output: PathBuf,
+    /// The text file that contains all of the store numbers to be processed
+    #[clap(short, long, parse(from_os_str))]
+    list: PathBuf,
+    /// Print all RFIDs including items marked with a '$'
+    #[clap(short = 'a', long = &quot;print-all&quot;)]
+    printall: bool,
+    /// Produce a report of selected PO
+    #[clap(short, long, conflicts_with_all = &amp;[&quot;printall&quot;])]
+    report: bool,
+    /// Runs LISA in GUI mode
+    #[clap(long = &quot;gui&quot;, exclusive = true)]
+    gui: bool,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    dbg!(cli);
+}
+</code></pre>
+<p>I think what is going on is that clap sees <code>input</code> isn't of <code>Option&lt;T&gt;</code> and sets <code>required = true</code>.  If you change input to use <code>Option&lt;T&gt;</code>, it then gets past that error to complaining that <code>output</code> is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JoelMon">@JoelMon</a> on 2022-06-16 02:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I think what is going on is that clap sees <code>input</code> isn't of <code>Option&lt;T&gt;</code> and sets <code>required = true</code>. If you change input to use <code>Option&lt;T&gt;</code>, it then gets past that error to complaining that <code>output</code> is required.</p>
+</blockquote>
+<p>You are right. It works as expected once the types became of the type Option<T>. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3936.html">clap-rs/clap#3936</a> on 2022-07-16 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../containers/conmon-rs/pulls/719.html">containers/conmon-rs#719</a> on 2022-09-15 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4713.html">clap-rs/clap#4713</a> on 2023-02-22 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-22 13:35</div>
+            <div class="timeline-body"><p>Closing this as the new behavior is the expected behavior and the concern was with existing users which only means 3.x users.  At this point, making a change to something like this would be too disruptive to <code>v3-master</code> branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-02-22 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crowlKats">@crowlKats</a> on 2023-08-13 01:50</div>
+            <div class="timeline-body"><p>@epage Deno actually relied on this behaviour (<code>deno run --v8-flags=--help</code> would be allowed but any other value for the <code>v8-flags</code> flag would require also a file to be specified as a positional final argument), but only now figured out (and only recently even really noticed) why it hasn't worked properly since we upgraded clap past v3.2 (ref denoland/deno#20145).
+Is there any interest in revisiting this behaviour or adding capability to enable it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/pulls/20145.html">denoland/deno#20145</a> on 2023-08-13 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-21 18:23</div>
+            <div class="timeline-body"><p>Considering the existing behavior is the expected behavior, it would require v5 for us to break it.  I also don't see us likely to change course on this which would require new validation logic.  In general, I've been trying to hold off on new validation logic because there is a long tail of feature requests for it and would go counter to our build-time / binary size goals since it'd be all-or-nothing.  Instead, I've been holding out for #3476 which will allow us and users to have more validation options without impacting build-time and binary size as much.  Unfortunately, #3476 doesn't feel like enough of a priority atm for me to set aside the other stuff I'm doing to focus on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6031.html">clap-rs/clap#6031</a> on 2025-06-10 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:02 UTC
+    </footer>
+</body>
+</html>

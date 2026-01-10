@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to download and build package from S3 - astral-sh/uv #10251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to download and build package from S3</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10251">#10251</a>
+        opened by <a href="https://github.com/duducp">@duducp</a>
+        on 2024-12-31 12:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/duducp">@duducp</a> on 2024-12-31 12:33</div>
+            <div class="timeline-body"><p>I have some packages that are hosted on S3 but when I try to add them to the project I get an authentication error. This only occurs on UV, via Poetry and PIP itself works normally. This seems to be a bug since UV is removing the query param <code>AWSAccessKeyId</code> from the URL when trying to download the package.</p>
+<ul>
+<li>Command: <code>uv add my-package --index mb=https://pypi.dev.my-domain.com.br/simple</code></li>
+</ul>
+<p><img width="1327" alt="Image" src="https://github.com/user-attachments/assets/5a0c77ea-903c-498c-a5c1-31a3b8caa710" /></p>
+<ul>
+<li>Details:</li>
+</ul>
+<pre><code class="language-bash">&gt;&gt;&gt; uv version    
+uv 0.5.13 (c456bae5e 2024-12-27)
+
+&gt;&gt;&gt; python --version
+Python 3.12.8
+
+&gt;&gt;&gt; sw_vers
+ProductName:            macOS
+ProductVersion:         15.1.1
+BuildVersion:           24B91
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-31 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-31 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10253.html">astral-sh/uv#10253</a> on 2024-12-31 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 14:33</div>
+            <div class="timeline-body"><p>Are you able to test this branch? https://github.com/astral-sh/uv/pull/10253</p>
+<p>I can't easily reproduce this since it's specific to your repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosdorneles-mb">@carlosdorneles-mb</a> on 2024-12-31 16:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you able to test this branch? <a href="https://github.com/astral-sh/uv/pull/10253">#10253</a></p>
+<p>I can't easily reproduce this since it's specific to your repository.</p>
+</blockquote>
+<p>I ran it here, but it still gives me the same error.</p>
+<p><img width="1329" alt="Image" src="https://github.com/user-attachments/assets/044dc9e2-196e-4550-99dc-cae768061f2b" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 17:08</div>
+            <div class="timeline-body"><p>Did you remove your lockfile before running that command?</p>
+<p>Is there any way I can test this myself? I don't really know where else we would be stripping the credentials.</p>
+<p>As far as I can tell from testing, that branch is preserving the query parameter everywhere:</p>
+<pre><code>cargo run add &quot;https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl?foo=1&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-31 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 17:23</div>
+            <div class="timeline-body"><p>I think I see another possible spot in the code where this could be happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosdorneles-mb">@carlosdorneles-mb</a> on 2024-12-31 17:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you remove your lockfile before running that command?</p>
+<p>Is there any way I can test this myself? I don't really know where else we would be stripping the credentials.</p>
+<p>As far as I can tell from testing, that branch is preserving the query parameter everywhere:</p>
+<pre><code>cargo run add &quot;https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl?foo=1&quot;
+</code></pre>
+</blockquote>
+<p>I have UV installed globally. To test the specific branch, I installed Cargo and ran the command <code>pip install -U git+https://github.com/astral-sh/uv@charlie/q</code> in my virtualenv.</p>
+<p>As shown in the attached image, when I ran the add command it was in the informed branch version. When running the command, it doesn't even write to lock or pyproject because the error occurs when downloading the package from S3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 17:35</div>
+            <div class="timeline-body"><p>Do you mind trying with the latest updates to that branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 17:36</div>
+            <div class="timeline-body"><p>(Honestly, it's arguably incorrect to write these credentials to the lockfile in plaintext, but I don't see other alternatives for you if you plan to use query parameters.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosdorneles-mb">@carlosdorneles-mb</a> on 2024-12-31 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you mind trying with the latest updates to that branch?</p>
+</blockquote>
+<p>Now yes, it worked!!!</p>
+<p><img width="754" alt="Image" src="https://github.com/user-attachments/assets/3209f9af-ae23-4db3-adb5-7415d270988b" /></p>
+<p>The pyproject and uv.lock files have been updated correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 17:59</div>
+            <div class="timeline-body"><p>Awesome, thanks for testing! Also worked for me locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-31 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-31 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10609.html">astral-sh/uv#10609</a> on 2025-01-14 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:58 UTC
+    </footer>
+</body>
+</html>

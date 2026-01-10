@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync failed to bytecode-compile Python file because it failed to create temporary script file - astral-sh/uv #14017</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync failed to bytecode-compile Python file because it failed to create temporary script file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14017">#14017</a>
+        opened by <a href="https://github.com/m-ad">@m-ad</a>
+        on 2025-06-13 09:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-ad">@m-ad</a> on 2025-06-13 09:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv sync</code> and <code>uv run</code> do not work with bytecode compliation enabled (see example below for error message).</p>
+<h2>Minimal working example</h2>
+<p>run in empty folder:</p>
+<pre><code class="language-cmd">❯ uv init &amp;&amp; uv sync --compile-bytecode
+Initialized project `test2`
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 1 package in 7ms
+error: Failed to bytecode-compile Python file in: .venv\Lib\site-packages
+  Caused by: Failed to create temporary script file
+  Caused by: failed to write to file `C:\Users\mad\AppData\Local\uv\cache\.tmpTi173P\pip_compileall.py`: Der Vorgang ist bei einer Datei mit einem geöffneten Bereich, der einem Benutzer zugeordnet ist, nicht anwendbar. (os error 1224)
+</code></pre>
+<p>Error message Deepl-translated to English: &quot;The process cannot be used for a file with an open area that is assigned to a user. (os error 1224)&quot;</p>
+<h2>Additional info</h2>
+<h3>no issues without bytecode-compilation</h3>
+<p><code>uv sync</code> runs fine without the <code>--compile-bytecode</code> flag, also in bigger projects.</p>
+<h3>uv run works fine</h3>
+<p>Also, I did not notice any issues when running real code with <code>uv run</code> (which should perform the bytecode compilation if I understand it correctly - however, I see no <code>*.pyc</code> files in <code>.venv\Lib\site-packages</code>, not sure where to look for them or how to confirm bytecode-compilation on the first run).</p>
+<h3>reboot does not help</h3>
+<p>Because it looks like some kind of permission/lock issue, I rebooted my machine - no effect.</p>
+<h3>Contents of cache folder:</h3>
+<pre><code>❯ ls -l C:\Users\mad\AppData\Local\uv\cache\
+total 537
+-rw-r--r-- 1 MAD 1049089 43 Feb  7 16:51 CACHEDIR.TAG
+drwxr-xr-x 1 MAD 1049089  0 Jun 13 09:22 archive-v0
+drwxr-xr-x 1 MAD 1049089  0 Jun 13 09:22 builds-v0
+drwxr-xr-x 1 MAD 1049089  0 Feb 12 14:40 environments-v1
+drwxr-xr-x 1 MAD 1049089  0 Mar 19 16:28 environments-v2
+drwxr-xr-x 1 MAD 1049089  0 Feb 12 14:58 git-v0
+drwxr-xr-x 1 MAD 1049089  0 Apr  1 10:23 interpreter-v4
+drwxr-xr-x 1 MAD 1049089  0 Feb 18 11:41 sdists-v7
+drwxr-xr-x 1 MAD 1049089  0 Mar 28 14:03 sdists-v8
+drwxr-xr-x 1 MAD 1049089  0 Jun 12 16:36 sdists-v9
+drwxr-xr-x 1 MAD 1049089  0 Feb 12 14:40 simple-v15
+drwxr-xr-x 1 MAD 1049089  0 May 27 11:26 simple-v16
+drwxr-xr-x 1 MAD 1049089  0 Feb 18 11:40 wheels-v3
+drwxr-xr-x 1 MAD 1049089  0 Feb 20 12:44 wheels-v4
+drwxr-xr-x 1 MAD 1049089  0 Apr  1 10:24 wheels-v5
+</code></pre>
+<h3>Environment</h3>
+<ul>
+<li>uv 0.7.12 (dc3fd4647 2025-06-06)</li>
+<li>Microsoft Windows 11 Enterprise (10.0.26100)</li>
+</ul>
+<h3>Platform</h3>
+<p>Microsoft Windows 11 Enterprise (10.0.26100)</p>
+<h3>Version</h3>
+<p>uv 0.7.12 (dc3fd4647 2025-06-06)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @m-ad on 2025-06-13 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-06-13 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-06-13 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 10:39</div>
+            <div class="timeline-body"><p>Does the system set any specific policies? I haven't seen a system blocking creating temp files before, so I'm not sure how this happens or what the correct option for circumventing this is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-ad">@m-ad</a> on 2025-06-13 15:06</div>
+            <div class="timeline-body"><p>@konstin Any suggestion where and what to look for? It's a company computer, so I don't have full admin rights, there are group policies, Cyberreason,... could well be related to something like that, but I have no clue how to figure it out. Any suggestion would be welcome! That said, I only noticed an issue with <code>uv</code> so far and only in this highly specific case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 15:12</div>
+            <div class="timeline-body"><p>uv here is creating a named temporary directory and a file in it so it can run a python interpreter with it, otherwise I unfortunately don't know where this would be from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-ad">@m-ad</a> on 2025-06-16 07:46</div>
+            <div class="timeline-body"><p>Other things i have tried now:</p>
+<hr />
+<p><strong>Changing the python version</strong> from 3.13 to e.g. 3.10 does not change the error message.</p>
+<hr />
+<p><strong>Changing the cache directory</strong> does not help:</p>
+<pre><code class="language-cmd">❯ set UV_CACHE_DIR=C:\Users\mad\Desktop\cache
+❯ uv sync --compile-bytecode
+Resolved 1 package in 7ms
+error: Failed to bytecode-compile Python file in: .venv\Lib\site-packages
+  Caused by: Failed to create temporary script file
+  Caused by: failed to write to file `C:\Users\mad\Desktop\cache\.tmpA5ozuS\pip_compileall.py`: Der Vorgang ist bei einer Datei mit einem geöffneten Bereich, der einem Benutzer zugeordnet ist, nicht anwendbar. (os error 1224)
+</code></pre>
+<p>So its unrelated to anything (b)locking Windows' temp folder.</p>
+<hr />
+<p><strong>Reproducing:</strong></p>
+<ul>
+<li>Could reproduce the problem at a different company machine (Windows 10 instead of Windows 11)</li>
+<li>On my private machine (Windows 10) this issue does <em>not</em> appear</li>
+</ul>
+<p><strong>This points towards some Group Policy of Antivirus interfering</strong> - still no clue how to go about this.</p>
+<hr />
+<p><strong>Byte-compilation with <a href="https://docs.python.org/3/library/compileall.html">compileall</a></strong> works fine for the freshly initialized virtual environment:</p>
+<pre><code class="language-cmd">❯ uv init &amp;&amp; uv sync
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 1 package in 11ms
+Audited in 0.02ms
+
+❯ .venv\Scripts\activate.bat &amp;&amp; python -m compileall .venv
+Listing '.venv'...
+Listing '.venv\\Lib'...
+Listing '.venv\\Lib\\site-packages'...
+Listing '.venv\\Scripts'...
+Compiling '.venv\\Scripts\\activate_this.py'...
+</code></pre>
+<p>No error here. Also, directly afterwards, no error anymore on <code>uv sync --compile-bytecode</code>.</p>
+<pre><code class="language-cmd">❯ deactivate.bat
+
+❯ uv sync --compile-bytecode
+Resolved 1 package in 7ms
+Bytecode compiled 1 file in 1.27s
+</code></pre>
+<p>However, this only works on the &quot;empty&quot; environment. If I add anything new:</p>
+<pre><code class="language-cmd">❯ uv add tqdm
+Resolved 3 packages in 465ms
+Installed 2 packages in 166ms
+ + colorama==0.4.6
+ + tqdm==4.67.1
+
+❯ uv sync --compile-bytecode
+Resolved 3 packages in 8ms
+error: Failed to bytecode-compile Python file in: .venv\Lib\site-packages
+  Caused by: Failed to create temporary script file
+  Caused by: failed to write to file `C:\Users\mad\AppData\Local\uv\cache\.tmpWx282E\pip_compileall.py`: Der Vorgang ist bei einer Datei mit einem geöffneten Bereich, der einem Benutzer zugeordnet ist, nicht anwendbar. (os error 1224)
+</code></pre>
+<p>And going the activate-venv-and-compilall route a second time does not work here:</p>
+<pre><code class="language-cmd">❯ .venv\Scripts\activate.bat &amp;&amp; python -m compileall .venv
+Listing '.venv'...
+Listing '.venv\\Lib'...
+Listing '.venv\\Lib\\site-packages'...
+Listing '.venv\\Lib\\site-packages\\colorama'...
+Listing '.venv\\Lib\\site-packages\\colorama\\tests'...
+Listing '.venv\\Lib\\site-packages\\colorama-0.4.6.dist-info'...
+Listing '.venv\\Lib\\site-packages\\colorama-0.4.6.dist-info\\licenses'...
+Listing '.venv\\Lib\\site-packages\\tqdm'...
+Listing '.venv\\Lib\\site-packages\\tqdm\\contrib'...
+Listing '.venv\\Lib\\site-packages\\tqdm-4.67.1.dist-info'...
+Listing '.venv\\Scripts'...
+
+❯ deactivate.bat
+
+❯ uv sync --compile-bytecode
+Resolved 3 packages in 8ms
+error: Failed to bytecode-compile Python file in: .venv\Lib\site-packages
+  Caused by: Failed to create temporary script file
+  Caused by: failed to write to file `C:\Users\mad\AppData\Local\uv\cache\.tmp4MScUE\pip_compileall.py`: Der Vorgang ist bei einer Datei mit einem geöffneten Bereich, der einem Benutzer zugeordnet ist, nicht anwendbar. (os error 1224)
+</code></pre>
+<p>🤷</p>
+<hr />
+<p>Forgot to do the obvious thing in the beginning and run <code>uv sync</code> with <code>-v</code>, so here is the output of that, although I don't see any obvious clue.</p>
+<pre><code class="language-cmd">❯ uv init &amp;&amp; uv sync --compile-bytecode -v
+Initialized project `test5`
+DEBUG uv 0.7.12 (dc3fd4647 2025-06-06)
+DEBUG Found project root: `C:\Users\mad\Desktop\tmp\test5`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `C:\Users\mad\Desktop\tmp\test5`
+DEBUG Reading Python requests from version file at `C:\Users\mad\Desktop\tmp\test5\.python-version`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG Searching for Python 3.13 in managed installations, search path, or registry
+DEBUG Searching for managed installations at `C:\Users\mad\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.13.2-windows-x86_64-none`
+DEBUG Found `cpython-3.13.2-windows-x86_64-none` at `C:\Users\mad\AppData\Roaming\uv\python\cpython-3.13.2-windows-x86_64-none\python.exe` (managed installations)
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+DEBUG Using base executable for virtual environment: C:\Users\mad\AppData\Roaming\uv\python\cpython-3.13.2-windows-x86_64-none\python.exe
+DEBUG Released lock at `C:\Users\mad\AppData\Local\Temp\uv-e962231ff4ec6526.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test5 @ file:///C:/Users/mad/Desktop/tmp/test5
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.2
+DEBUG Solving with target Python version: &gt;=3.13
+DEBUG Adding direct dependency: test5*
+DEBUG Searching for a compatible version of test5 @ file:///C:/Users/mad/Desktop/tmp/test5 (*)
+DEBUG Tried 1 versions: test5 1
+DEBUG all marker environments resolution took 0.001s
+Resolved 1 package in 12ms
+DEBUG Using request timeout of 30s
+DEBUG Starting 22 bytecode compilation workers
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Bytecode compilation worker exiting: Ok(())
+DEBUG Released lock at `C:\Users\mad\Desktop\tmp\test5\.venv\.lock`
+error: Failed to bytecode-compile Python file in: .venv\Lib\site-packages
+  Caused by: Failed to create temporary script file
+  Caused by: failed to write to file `C:\Users\mad\AppData\Local\uv\cache\.tmpfK3YSS\pip_compileall.py`: Der Vorgang ist bei einer Datei mit einem geöffneten Bereich, der einem Benutzer zugeordnet ist, nicht anwendbar. (os error 1224)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-08-03 08:18</div>
+            <div class="timeline-body"><p>From <a href="https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--1000-1299-">System Error Codes (1000-1299)</a>:</p>
+<blockquote>
+<h4>ERROR_USER_MAPPED_FILE</h4>
+<p>1224 (0x4C8)</p>
+<p>The requested operation cannot be performed on a file with a user-mapped section open.</p>
+</blockquote>
+<p>At first sight, it looks like some other piece of software is interfering:</p>
+<ul>
+<li>Most probably antivirus software has identified the new temporary file as producing protentially executable code, and inspects it or <a href="https://learn.microsoft.com/en-us/defender-endpoint/cloud-protection-microsoft-antivirus-sample-submission?view=o365-worldwide">sends it back to the cloud</a> for further inspection.</li>
+<li>Windows <a href="https://support.microsoft.com/en-us/windows/system-protection-e9126e6e-fa64-4f5f-874d-9db90e57645a">SystemProtection</a> might be kicking in if it's enabled,</li>
+<li>Backup or cloud synchronisation programs (like Dropbox) are usually not set up to look into temporary files.</li>
+</ul>
+<p>Why not ask some AI for guidance on how to detect the rogue software?</p>
+<details>
+<summary>Sample AI suggestions</summary>
+
+<blockquote>
+<p>The <code>ERROR_USER_MAPPED_FILE</code> (Windows error code <strong>1224</strong>) indicates that a file cannot be accessed because it is <strong>currently mapped into memory</strong>—typically by another process using <code>CreateFileMapping()</code> and <code>MapViewOfFile()</code>. This can block certain operations such as deletion, renaming, or modifying the file.</p>
+<h3>🔍 To diagnose which software is interfering:</h3>
+<h4>1. Use Sysinternals Process Explorer (or Handle.exe)</h4>
+<p>Microsoft Sysinternals provides tools that help detect file handles and memory-mapped files:</p>
+<h4>👉 Method A: Using Process Explorer</h4>
+<ol>
+<li>Download Process Explorer:
+https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer</li>
+<li>Run it <strong>as Administrator</strong>.</li>
+<li>Press <strong>Ctrl + F</strong> (Find Handle or DLL).</li>
+<li>Enter the filename or path of the problematic file.</li>
+<li>Look for entries that mention:<ul>
+<li><code>File Mapping</code></li>
+<li><code>MapViewOfFile</code></li>
+<li>The software that has a handle to the file</li>
+</ul>
+</li>
+</ol>
+<p>This will help you identify the PID and process name using or locking the file.</p>
+<h4>👉 Method B: Using Handle.exe</h4>
+<ol>
+<li><p>Download Handle from Sysinternals:
+https://learn.microsoft.com/en-us/sysinternals/downloads/handle</p>
+</li>
+<li><p>Open Command Prompt <strong>as Administrator</strong>.</p>
+</li>
+<li><p>Run:</p>
+<pre><code>handle.exe filename
+</code></pre>
+<p>or</p>
+<pre><code>handle.exe &gt; handles.txt &amp;&amp; notepad handles.txt
+</code></pre>
+<p>to search more easily.</p>
+</li>
+</ol>
+<p>It shows which process has the file <strong>mapped or opened</strong>.</p>
+<h4>2. Use Resource Monitor</h4>
+<ol>
+<li>Press <code>Win + R</code>, type <code>resmon</code>, and hit Enter.</li>
+<li>Go to the CPU tab.</li>
+<li>Expand <strong>Associated Handles</strong>.</li>
+<li>Enter part of the file path to filter.</li>
+<li>See which process is holding a handle to the file.</li>
+</ol>
+</blockquote>
+</details>
+
+<p>Unfortunately, AI guidance may not easily apply to temporary, transient files.</p>
+<p>Could you ask for assistance from IT? They have most probably installed/configured the software that interferes with uv. Are they knowledgeable enough to clean up their own mess?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2025-08-03 08:33</div>
+            <div class="timeline-body"><p>The question remains, how to defend against rogue antivirus software inside uv itself?</p>
+<p>I understand uv is unable to create <code>.tmpfK3YSS\pip_compileall.py</code>.</p>
+<ul>
+<li>Is uv trying to repeatedly (re)create the same <code>pip_compileall.py</code> file inside the same temporary directory (<code>.tmpfK3YSS</code> in this case)?</li>
+<li>Has uv previously created a different file inside the same temporary directory <code>.tmpfK3YSS</code>, perhaps deciding the antivirus software to inspect/block the whole directory?</li>
+</ul>
+<p>In both cases, it might help to use different temporary directories at each bytecode compilation step, if feasible at all. Or keep retrying until reaching a timeout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../invoke-ai/InvokeAI/issues/7686.html">invoke-ai/InvokeAI#7686</a> on 2025-08-03 08:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

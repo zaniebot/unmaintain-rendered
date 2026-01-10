@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potentially unjustified `unsafe` - clap-rs/clap #1054</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Potentially unjustified `unsafe`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1054">#1054</a>
+        opened by <a href="https://github.com/H2CO3">@H2CO3</a>
+        on 2017-09-27 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-09-27 08:08</div>
+            <div class="timeline-body"><p>There are a couple of uses of <code>unsafe</code> in the code that I think are not strictly necessary. The prime example is this:</p>
+<p>https://github.com/kbknapp/clap-rs/blob/6e948994a61e389c8f3b6726435d3d14bdd328bb/src/app/parser.rs#L1350-L1362</p>
+<p>I understand that this instance of <code>unsafe</code> might have been introduced for performance reasons, however I don't think giving up safety is a clear win here. When printing help text for the user, I/O time probably dominates UTF-8 validation time, and help texts aren't enormously long either, usually (typically at most in the tens of kilobytes).</p>
+<p>Similarly, in https://github.com/kbknapp/clap-rs/blob/6e948994a61e389c8f3b6726435d3d14bdd328bb/src/app/help.rs#L850-L855
+it seems <em>highly</em> unlikely to me that a debug build would experience a bottleneck in the UTF-8 validation of this one method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 02:53</div>
+            <div class="timeline-body"><p>Agreed! I think those were either left over from old code, or under assumptions that only ascii code would be supported. Both of which seem wrong now.</p>
+<p>The debug code one I actually want to look up <code>git blame</code> and see if that's something I did :stuck_out_tongue_winking_eye: as I <em>normally</em> don't care at all about debug performance. Even if I didn't write it, I still accepted it, so there's no escaping the blame :laughing:</p>
+<p>I'd be good with a PR removing these uses if someone wants a quick PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-10-04 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2017-10-04 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-10-04 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-10-04 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-10-04 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-10-04 09:21</div>
+            <div class="timeline-body"><p>Awesome, in this case I'll open a PR soon!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-10-04 09:57</div>
+            <div class="timeline-body"><p>There are two more instances of <code>unsafe</code> I'd like to address separately, if possible. First one is:</p>
+<p>https://github.com/kbknapp/clap-rs/blob/1ef6e62e1e05f3a1c5dee4d946eb85c9778e4065/src/macros.rs#L430-L442</p>
+<p>If this is <code>static</code> for performance reasons, it could be realized using the dedicated <code>lazy_static</code> crate instead to avoid reinventing the wheel.</p>
+<p><em>However,</em> better yet, <code>static</code>ness could also be removed altogether, with the following additional advantages:</p>
+<ol>
+<li>This gives more control to the user (if they wanted <code>static</code>, they could wrap it into a <code>lazy_static</code>, and if they preferred no <code>unsafe</code>, they could move it to a place in their code so that no <code>static</code> is necessary). This is in accordance with the common Rust design guideline that the consumer of an API should be able to decide how they want to use it, potentially based on context (for example, functions that need a value should generally take it by move, not by reference and then magically <code>clone()</code>ing inside).</li>
+<li>The current implementation of the macro is such that when called multiple times, it will always return a result that respects the separator used in the first call. This might be counter-intuitive when it's called more than once with different separator arguments. I wouldn't necessarily call it a <em>bug</em> as long as it's documented, but it can be surprising.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-10-04 10:05</div>
+            <div class="timeline-body"><p>The second one is:</p>
+<p>https://github.com/kbknapp/clap-rs/blob/53f3b65d2469a00eefa3cbad5a2650d602dbbfc8/src/osstringext.rs#L26-L32</p>
+<p>Wouldn't be it better to, instead of creating our own <code>from_bytes</code> method, use the already-existing one provided by <code>OsStr</code> itself, and use <code>OsStr</code>s instead of <code>&amp;OsStr</code>s? There aren't many places this is being used (https://github.com/kbknapp/clap-rs/search?utf8=%E2%9C%93&amp;q=from_bytes&amp;type=), so it should also be a relatively painless change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>[crate authors]</p>
+</blockquote>
+<p>I'm good trying this method if it can be implemented in a non-breaking manner. Even as unfortunate as it is, if we can't do this in a non-breaking way it'll have to wait.</p>
+<blockquote>
+<p>[OsStrExt3]</p>
+</blockquote>
+<p>This was written before the actual <code>from_bytes</code> was stablized. Now that we're well beyond the stable minus two releases from when <code>from_bytes</code> was stablized, I'm good with updating it so long as we ensure we bump the minor version of this lib and document that a newer version of Rust is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-10-04 14:39</div>
+            <div class="timeline-body"><blockquote>
+<p><code>[crate authors]</code></p>
+</blockquote>
+<p>&quot;Non-breaking&quot; meaning retaining the incorrect behavior with regards to the separator, or leaving it <code>static</code>? And if the former, wouldn't this classify as a bugfix rather than a breaking change? (AFAIK semver allows breaking changes without major version bump if they are actually bugfixes.)</p>
+<blockquote>
+<p><code>[OsStrExt3]</code></p>
+</blockquote>
+<p>Sure, will try to do that as well, then!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p>&quot;Non-breaking&quot; meaning retaining the incorrect behavior with regards to the separator, or leaving it static? And if the former, wouldn't this classify as a bugfix rather than a breaking change? (AFAIK semver allows breaking changes without major version bump if they are actually bugfixes.)</p>
+</blockquote>
+<p>I mean non breaking, meaning change of user code <em>with the exception</em> of correcting a bugfix like you stated. Specifically, I'm talking about removing <code>static</code>ness altogether. For the bug about using crate_authors multiple times, it seems unlikely to me. I agree, its a bug per-se but only due to implementation or lack of being documented. I have yet to have anyone actually complain about this bug. The only thing I'm trying to avoid (<em>not</em> that you're advocating this, I'm just making my position clear 😄 ) is justifying a breaking change behind this one bug might be a stretch of allowable semver.</p>
+<p>Thanks for tackling all this by the way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-10-04 15:13</div>
+            <div class="timeline-body"><p>Oooh, alright. Sure thing – of course I'm advocating for making these changes without user code having to change. My suggestion about &quot;giving users the control over <code>static</code>ness&quot; might have sounded contradictory to that, in fact.</p>
+<p>And indeed there may be no non-breaking way to remove <code>static</code>ness since the macro yields a pointer. I'll see — but I'll try very hard to do it anyway.</p>
+<p>And, as always — you are welcome! I'm happy to improve libraries that I love.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1058.html">clap-rs/clap#1058</a> on 2017-10-04 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/H2CO3">@H2CO3</a> on 2017-10-07 19:04</div>
+            <div class="timeline-body"><p>This has been resolved via https://github.com/kbknapp/clap-rs/pull/1058.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @H2CO3 on 2017-10-07 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1594.html">clap-rs/clap#1594</a> on 2019-11-03 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:38 UTC
+    </footer>
+</body>
+</html>

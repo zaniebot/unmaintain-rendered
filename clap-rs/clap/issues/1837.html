@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement update_from_arg_matches() - clap-rs/clap #1837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement update_from_arg_matches()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1837">#1837</a>
+        opened by <a href="https://github.com/lu-zero">@lu-zero</a>
+        on 2020-04-17 08:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lu-zero">@lu-zero</a> on 2020-04-17 08:29</div>
+            <div class="timeline-body"><p><code>clap_derive</code> has only methods to create a new structure from scratch.</p>
+<p>Provide a set of methods that can use ArgMatches to update a previously instantiated struct</p>
+<pre><code class="language-rust">trait FromArgMatches {
+    fn update_from_arg_matches(&amp;mut self, matches: &amp;ArgMatches);
+    ...
+}
+</code></pre>
+<p>From the <a href="https://github.com/clap-rs/clap/discussions/1836">discussion</a>:</p>
+<blockquote>
+<p>INPUTS:</p>
+<ul>
+<li><p>An old struct already filled by the derive. This struct needs to be updated.</p>
+</li>
+<li><p>An <code>ArgMatches</code> instance, the source of updated values.</p>
+</li>
+</ul>
+<p>STEPS:</p>
+<ul>
+<li>For every field in the struct:<ul>
+<li>Check if the updated value is available in <code>ArgMatches</code>. If yes, convert value to the field's type and assign the field with the new value (i.e <code>self.field = matches.value_of(&quot;field_id&quot;).convert().</code>). If no, do nothing (i.e, leave the old value in place).</li>
+<li>For flattened fields and subcommands, delegate to corresponding structs recursively (easy enough).</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @lu-zero on 2020-04-17 08:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-17 09:41</div>
+            <div class="timeline-body"><p>A note for other maintainers: this is not the same https://github.com/clap-rs/clap/issues/748 , this one is very derive-centric.</p>
+<p>This is about updating a preexisting <code>#[derive(Clap)]</code> struct from a preexisting <code>ArgMatches</code> instance, not about updating a preexisting <code>ArgMatches</code> from &lt;whatever&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-28 10:38</div>
+            <div class="timeline-body"><p>@lu-zero Would you be interested in implementing this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lu-zero">@lu-zero</a> on 2020-04-28 14:53</div>
+            <div class="timeline-body"><p>I would, I will need probably some code tour on what's already available though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-28 18:49</div>
+            <div class="timeline-body"><p>@lu-zero Basically, you need to add</p>
+<pre><code class="language-rust">fn update_from_arg_matches(&amp;mut self, matches: &amp;ArgMatches);
+</code></pre>
+<p>into every trait except <code>IntoApp</code>. You can start from here: open a PR and I'll answer any of your questions regarding code, tools, moon phase,, etc...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 03:42</div>
+            <div class="timeline-body"><blockquote>
+<p>into every trait except <code>IntoApp</code></p>
+</blockquote>
+<p>This <em>might</em> be able to start as just an addition to the <code>FromArgMatches</code> trait. I need to re-familiarize myself with the derive code, but off the top of my head it wouldn't need to propagate through the other traits as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lu-zero">@lu-zero</a> on 2020-04-29 09:35</div>
+            <div class="timeline-body"><p>I started looking at <code>FromArgMatches</code>. <code>gen_constructor</code> probably could be refactored so I can reuse part of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1878.html">clap-rs/clap#1878</a> on 2020-04-29 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-29 12:37</div>
+            <div class="timeline-body"><p>@kbknapp I'm afraid this is inevitable because we can't &quot;know what's on the other side&quot; in case of flatten , subcommand, etc... I'll explain in the PR thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lu-zero">@lu-zero</a> on 2020-04-29 12:42</div>
+            <div class="timeline-body"><p>I confirm that subcommand needs an update variant as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-11-14 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2605.html">clap-rs/clap#2605</a> on 2021-07-19 16:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:13 UTC
+    </footer>
+</body>
+</html>

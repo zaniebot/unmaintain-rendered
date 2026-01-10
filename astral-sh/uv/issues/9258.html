@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Dependency Overrides - astral-sh/uv #9258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Development Dependency Overrides</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9258">#9258</a>
+        opened by <a href="https://github.com/iloveitaly">@iloveitaly</a>
+        on 2024-11-20 00:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2024-11-20 00:10</div>
+            <div class="timeline-body"><p>One of the things I've always missed from ruby is development dependency overrides. Here's the situation:</p>
+<ul>
+<li>You have a dependency in one of your projects that is published on pypi</li>
+<li>Something is broken in it. You clone it with hopes of fixing it locally before getting the patch merged upstream.</li>
+<li>You want to temporarily override the pypi reference to point to a path on your local filesystem <em>without</em> modifying <code>pyproject.toml</code></li>
+</ul>
+<p>Ruby allows you to do this with:</p>
+<pre><code>bundle config set local.rack ~/Work/git/rack
+</code></pre>
+<p>It would be great if uv provided similar sort of functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-20 13:31</div>
+            <div class="timeline-body"><p>I believe this is possible today with:</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;dependency @ file:///path/to/dependency&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-20 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ReinforcedKnowledge">@ReinforcedKnowledge</a> on 2024-11-22 02:24</div>
+            <div class="timeline-body"><p>I think you can also run code with the <code>--with</code> option of <code>uv run</code> command, or <code>--with-requirements</code> if you have many. That won't modify the <code>pyproject.toml</code> and the code will only run in an ephemeral virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2024-11-22 15:57</div>
+            <div class="timeline-body"><p>This is awesome. Will try this out and report back. Thanks for all of the help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2024-11-25 22:52</div>
+            <div class="timeline-body"><p>This does not work:</p>
+<pre><code>override-dependencies = [&quot;activemodel @ file://./pypi/activemodel&quot;]
+</code></pre>
+<p>And results in the following error:</p>
+<pre><code>relative path without a working directory: ./pypi/activemodel
+</code></pre>
+<p>But an absolute path does work. Am I missing some obvious configuration option here?</p>
+<p>Also, it looks like the package is not installed as editable. What's the best way to do that? It looks like <a href="https://github.com/Zipstack/unstract/blob/78ae55ea51892b7afc868b831e1d88f895ae4e4d/pyproject.toml#L45">this syntax</a> should work, but it doesn't:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ReinforcedKnowledge">@ReinforcedKnowledge</a> on 2024-11-26 00:23</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>I will let the experts say why it didn't work because I don't know.</p>
+<p>Relative paths with <code>override-dependencies</code> aren't working for me either, but I generally don't expect relative paths to work in that fashion, they're always a hassle no matter the tool. If you want to avoid hardcoding the path you can use <code>${PROJECT_ROOT}</code>, like</p>
+<pre><code class="language-toml">[tool.uv]
+override-dependencies = [&quot;activemodel @ file:///${PROJECT_ROOT}/pypi/activemodel&quot;]
+</code></pre>
+<p>As for the editable install, there is no current way for specifying editable installs in an <code>override-dependencies</code>. But at the same time, I don't think that's what you need here.</p>
+<p>Here's how you can use your local package as editable:</p>
+<pre><code>[tool.uv.sources]
+activemodel = { path = &quot;./pypi/activemodel&quot;, editable = true }
+</code></pre>
+<p>Sources in <code>uv</code> will always take precedence over version contraints.</p>
+<p>As for why <code>override-dependencies</code> are not what you need, I think, from my modest beginner understanding of the tool, it's something that you'd use to override versions of transitive dependencies, or to force a particular version constraint in a way that no matter the current or the future resolutions of <code>uv</code> (due to a change in <code>uv</code> itself or in your dependencies), that package's version is going to stay the same.</p>
+<p>I hope someone more knowledgeable can read this and correct it if I'm wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 00:41</div>
+            <div class="timeline-body"><p>There's discussion about this same problem over in https://github.com/astral-sh/uv/issues/8148#issuecomment-2496127365 that may provide some more context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ReinforcedKnowledge">@ReinforcedKnowledge</a> on 2024-11-26 01:03</div>
+            <div class="timeline-body"><p>Oh thanks! I'll read through the thread!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2024-11-26 01:13</div>
+            <div class="timeline-body"><pre><code>[tool.uv.sources]
+activemodel = { path = &quot;./pypi/activemodel&quot;, editable = true }
+</code></pre>
+<p>This works for local development, but doesn't solve my problem:</p>
+<ol>
+<li>When developing locally, I want to use a local copy of the package</li>
+<li>In production, I want to reference a production package</li>
+<li>I don't want to have to keep a mutated copy of <code>pyproject.toml</code> locally to reference the local package</li>
+</ol>
+<p>Ruby does this with:</p>
+<pre><code>bundle config set local.rack ~/Work/git/rack
+</code></pre>
+<p>Which does not involve mutating your Gemfile but enables you to easily debug a package with a local development override.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 01:17</div>
+            <div class="timeline-body"><p>We want to build a dedicated &quot;patch&quot; workflow, but we haven't designed that yet. Does using <code>uv run --with-editable</code> not work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-26 02:52</div>
+            <div class="timeline-body"><p>You can run with <code>--no-sources</code> in production if you want to disable that local path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2024-11-27 17:47</div>
+            <div class="timeline-body"><p>I wasn't aware of <code>uv run --with-editable</code> or <code>--no-sources</code>, let me try those out and report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2024-11-28 15:45</div>
+            <div class="timeline-body"><p>Can you specify either of these options with an ENV var?</p>
+<p>I'm using <a href="https://github.com/railwayapp/nixpacks">nixpacks</a> to build my containers and I'd rather not have to customize the install scripts and instead specify ENV configuration which uv can pick up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rpmcginty">@rpmcginty</a> on 2025-01-13 23:36</div>
+            <div class="timeline-body"><blockquote>
+<p>We want to build a dedicated &quot;patch&quot; workflow, but we haven't designed that yet. Does using <code>uv run --with-editable</code> not work for you?</p>
+</blockquote>
+<p>@zanieb is there an issue tracking this, or is it too early?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 23:46</div>
+            <div class="timeline-body"><p>It's sort of tracked in https://github.com/astral-sh/uv/issues/7454</p>
+<p>I'm doing some roadmap work and will post here / there if I create a dedicated issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2025-01-15 18:54</div>
+            <div class="timeline-body"><p>I've been iterating on a script which is working well for me:</p>
+<p>https://github.com/iloveitaly/uv-development-toggle</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-07 04:18</div>
+            <div class="timeline-body"><p>I'd like to stay compatible with <code>pip</code> as much as possible, but the following doesn't solve the problem I outlined in https://github.com/astral-sh/uv/issues/9683#issuecomment-2705480073</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [
+    &quot;ts_utils @ file:lib&quot;, # pip compatible
+]
+
+[tool.uv]
+override-dependencies = [
+  &quot;ts_utils @ file:${PROJECT_ROOT}/lib&quot;, # uv won't accept relative paths
+]
+</code></pre>
+<pre><code>  × Failed to build `typeshed @ file:///E:/Users/Avasam/Documents/Git/typeshed`
+  ├─▶ Failed to parse entry in group `dev`: `ts_utils @ file:lib`
+  ╰─▶ relative path without a working directory: lib
+      ts_utils @ file:lib
+</code></pre>
+<p><code>uv 0.6.5 (bcbcd0a1e 2025-03-06)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/12806.html">python/typeshed#12806</a> on 2025-03-07 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Avasam/typeshed/pulls/40.html">Avasam/typeshed#40</a> on 2025-03-07 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/watsonjj">@watsonjj</a> on 2025-04-23 17:14</div>
+            <div class="timeline-body"><blockquote>
+<p>This works for local development, but doesn't solve my problem:</p>
+<ol>
+<li>When developing locally, I want to use a local copy of the package</li>
+<li>In production, I want to reference a production package</li>
+<li>I don't want to have to keep a mutated copy of <code>pyproject.toml</code> locally to reference the local package</li>
+</ol>
+</blockquote>
+<p>I have a similar problem, and a partial solution - create a &quot;local&quot; and a &quot;remote&quot; group (with <code>[dependency-groups]</code>) or extra (with <code>[project.optional-dependencies]</code>). The corresponding source in <code>[tool.uv.sources]</code> can be marked with the group/extra it targets. The <code>conflicts</code> table is critical for this to work. The group/extra can then be selected during commands, e.g.:</p>
+<pre><code class="language-bash">$ uv sync --extra dev-local
+
+Resolved 11 packages in 517ms
+Uninstalled 1 package in 17ms
+Installed 2 packages in 29ms
+ + pygments==2.19.1
+ - pytest==8.3.5
+ + pytest==8.4.0.dev459+g33b26e429 (from file:///Users/Jason/Software/uv_issue/pytest)
+</code></pre>
+<pre><code class="language-bash">$ uv sync --group dev-remote
+
+Resolved 11 packages in 6ms
+Uninstalled 1 package in 1ms
+Installed 1 package in 9ms
+ - pytest==8.4.0.dev459+g33b26e429 (from file:///Users/Jason/Software/uv_issue/pytest)
+ + pytest==8.4.0.dev459+g33b26e429 (from git+https://github.com/pytest-dev/pytest@33b26e429817935af8eb0202aa1e5ef0476e1cad)
+</code></pre>
+<p>The problems with this solution are:</p>
+<ul>
+<li>The version specifier in the <code>dependencies</code> is overwritten. In some cases maybe this is desired...</li>
+<li>How to additionally specify a source for a default call (<code>uv sync</code>)? The <code>dev</code> group is active by default, which at first I thought could be utilised, but then a conflict occurs when trying to use <code>dev-local</code> or <code>dev-remote</code>.</li>
+<li>How to additionally specify a source for production? There is no way I know of to add this case to the conflict table.</li>
+</ul>
+<p>Here is a simple pyproject.toml demonstration:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [&quot;pytest~=8.3&quot;]
+
+[dependency-groups]
+dev-local = [&quot;pytest&quot;]
+dev-remote = [&quot;pytest&quot;]
+
+[project.optional-dependencies]
+dev-local = [&quot;pytest&quot;]
+dev-remote = [&quot;pytest&quot;]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = &quot;dev-remote&quot; },
+        { extra = &quot;dev-local&quot; },
+        { group = &quot;dev-remote&quot; },
+        { group = &quot;dev-local&quot; },
+    ]
+]
+
+[tool.uv.sources]
+&quot;pytest&quot; = [
+    {path = &quot;../pytest&quot;, editable = true, extra = &quot;dev-local&quot;},
+    {path = &quot;../pytest&quot;, editable = true, group = &quot;dev-local&quot;},
+    {git = &quot;https://github.com/pytest-dev/pytest&quot;, branch = &quot;main&quot;, extra = &quot;dev-remote&quot;},
+    {git = &quot;https://github.com/pytest-dev/pytest&quot;, branch = &quot;main&quot;, group = &quot;dev-remote&quot;},
+]
+</code></pre>
+<p>Some other issues with a similar topic:
+#12539 #11941 #9537 #7945 #11632 #12681 #12013</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13073.html">astral-sh/uv#13073</a> on 2025-04-23 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/issues/13974.html">python/typeshed#13974</a> on 2025-05-12 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/14085.html">python/typeshed#14085</a> on 2025-05-16 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lordmauve">@lordmauve</a> on 2025-06-30 09:21</div>
+            <div class="timeline-body"><p>Going back to</p>
+<blockquote>
+<p><em>without</em> modifying pyproject.toml</p>
+</blockquote>
+<p>the issue for me is that adding <code>sources</code> in <code>pyproject.toml</code> is a change that will be tracked by git, so it becomes easy to accidentally commit them. <code>uv.toml</code> could be <code>.gitignored</code> but if it exists it shadows anything in <code>pyproject.toml</code>. It would be cool if there was a third project-local config file like <code>uv.local.toml</code> that can be <code>.gitignored</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iloveitaly">@iloveitaly</a> on 2025-06-30 15:58</div>
+            <div class="timeline-body"><p>@lordmauve yeah, totally agree. This the biggest issue with <a href="https://github.com/iloveitaly/uv-development-toggle">my tool</a> is it requires you to clear out all local references before committing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/osamimi">@osamimi</a> on 2025-09-20 06:15</div>
+            <div class="timeline-body"><p>Perhaps I am missing something, but couldn't one just create a dev only 'meta project' that does an editable install of the cloned packages and use that as the dev environment?</p>
+<p>Say we have project_A which depends on project_B. One could make clone both projects under ./meta_project and then create a ./meta_project/pyproject.toml with something like:</p>
+<pre><code>[project]
+name = &quot;meta_project&quot;
+dependencies = [
+    &quot;projectA&quot;,
+    &quot;projectB&quot;
+]
+
+[tool.uv.sources]
+projectA = { path = &quot;./projectA&quot;, editable = true }
+projectB = { path = &quot;./projectB&quot;, editable = true }
+</code></pre>
+<p>meta_project could even be a repo itself with projectA/B as git submodules (if you wanna get fancy).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/osamimi">@osamimi</a> on 2025-09-20 18:33</div>
+            <div class="timeline-body"><p>^ I just actually tried the above, and it seems to work but you also need to specify 'override-dependencies'. I'll play around with it to see if there are any gotchas. @zanieb do you see anything wrong with this setup?</p>
+<p>Directory structure:</p>
+<pre><code>├── meta_project
+├── projectA 
+├── projectB 
+</code></pre>
+<p>meta_project/pyproject.toml</p>
+<pre><code>[project]
+name = &quot;meta_project&quot;
+dependencies = [
+    &quot;projectA&quot;,
+    &quot;projectB&quot;,
+]
+
+[tool.uv.sources]
+projectA = { path = &quot;../projectA&quot;, editable = true }
+projectB = { path = &quot;../projectB&quot;, editable = true }
+
+[tool.uv]
+override-dependencies = [
+  &quot;projectA @ file:${PROJECT_ROOT}/../projectA&quot;, 
+  &quot;projectB @ file:${PROJECT_ROOT}/../projectB&quot;, 
+]
+</code></pre>
+<p>projectA/pyproject.toml</p>
+<pre><code>[project]
+name = &quot;projectA&quot;
+dependencies = [
+    &quot;projectB&quot;,
+]
+
+[tool.uv.sources]
+projectB = { git = &quot;ssh://git@github.com/osamimi/projectB&quot; , tag = &quot;1.0.0&quot;}  
+
+</code></pre>
+<p>projectB/pyproject.toml</p>
+<pre><code>[project]
+name = &quot;projectB&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/osamimi">@osamimi</a> on 2025-10-02 19:26</div>
+            <div class="timeline-body"><p>Here is a suggestion to make this more straightforward : Allow the user to specify both a normal (pypi/git/...) and a path dependency and prioritize using the path dependency if it exists (e.g. there is a pyproject.toml in that path), and fall back to pypi/git/... if not.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:34 UTC
+    </footer>
+</body>
+</html>

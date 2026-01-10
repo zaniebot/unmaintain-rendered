@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lock upgrades some locked dependencies with no --upgrade flag - astral-sh/uv #16436</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>lock upgrades some locked dependencies with no --upgrade flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16436">#16436</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2025-10-24 13:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2025-10-24 13:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>UV updates some packages when locking with no upgrade flag:</p>
+<p>Take a pyproject.toml file with two packages.<br />
+Here, requests and an example package:</p>
+<pre><code class="language-toml">[project]
+name = &quot;lock-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [ &quot;requests&lt;=2.29&quot;, &quot;example-package&lt;=2.29&quot;]
+</code></pre>
+<p>run <code>uv lock</code> → both are locked to the matching version 2.29.0
+change the pyproject toml to allow higher version (or upload a new package version):</p>
+<pre><code class="language-toml">[project]
+name = &quot;lock-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [ &quot;requests&gt;=2.29&quot;, &quot;example-package&gt;=2.29&quot;]
+</code></pre>
+<p>run <code>uv lock</code></p>
+<p><em>expected behavior</em>:</p>
+<p>lockfile is updated but no dependencies change</p>
+<p><em>observed behavior</em>:
+<code>requests</code> stays with the locked version, but <code>example-package</code> is updated to the latest version.</p>
+<p>I have done some investigation and it seems to be related to the uploaded distributions. <code>example-package</code> only contains py3-none-any wheel files: <code>GET $INDEX/simple/example-package</code> -&gt;
+<code>example-package-2.29.0-py3-none-any.whl, example-package-2.29.1-py3-none-any.whl</code></p>
+<p>This error occurs on any package where this is the case and does not appear as soon as sdist or an additional wheel platform was uploaded.</p>
+<h3>Platform</h3>
+<p>macOS26</p>
+<h3>Version</h3>
+<p>0.9.4</p>
+<h3>Python version</h3>
+<p>3.10-3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ghost on 2025-10-24 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-10-24 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-28 23:43</div>
+            <div class="timeline-body"><p>Can you please create an example that we can run against PyPI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-10-28 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-10-28 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-10-31 08:44</div>
+            <div class="timeline-body"><p>I found a package that only contains the py3-none-any wheels but to my surprise, it does not cause the same issue. So this may be caused by artifactory. I'll do some more debugging to see if I can reproduce it more reliably</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-11-07 10:48</div>
+            <div class="timeline-body"><p>I think I now found the actual condition for reproducing it. It only occurs when authentication is used.
+I reproduced it on both artifactory and gitlab package registries.  If I take an open index and set <code>authenticate = &quot;always&quot;</code>, the package is updated. When I change that to <code>authenticate = &quot;never&quot;</code> it is not.</p>
+<p>I used the package <code>12factor-vault</code> here because that meets the &quot;only py3-none-any.whl&quot; condition on pypi.org. I'd expect this to happen with any package thats deployed with <code>uv build --wheel</code> and <code>twine upload dist/*</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-11-30 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16995.html">astral-sh/uv#16995</a> on 2025-12-05 07:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-12-16 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-12-16 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-12-16 10:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

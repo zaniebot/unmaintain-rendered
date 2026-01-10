@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for ruff to automatically resolve `__all__` statements. - astral-sh/ruff #11373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for ruff to automatically resolve `__all__` statements.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11373">#11373</a>
+        opened by <a href="https://github.com/leaver2000">@leaver2000</a>
+        on 2024-05-11 22:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leaver2000">@leaver2000</a> on 2024-05-11 22:55</div>
+            <div class="timeline-body"><p>It would be very useful and appreciated if there was an option to have <code>ruff</code> automatically resolve the <code>__all__</code> statement. A configuration might look something like...</p>
+<pre><code class="language-toml">[tool.ruff]
+auto-all = [&quot;**/__init__.py&quot;]
+</code></pre>
+<p>From the <a href="https://peps.python.org/pep-0008/#public-and-internal-interfaces">pep</a> regarding <code>__all__</code>.</p>
+<blockquote>
+<p>To better support introspection, modules should explicitly declare the names in their public API using the <code>__all__</code> attribute. Setting <strong>all</strong> to an empty list indicates that the module has no public API.</p>
+</blockquote>
+<p>That fix might look something like.</p>
+<blockquote>
+<p>Module level “dunders” should be placed after the module docstring but before any import statements except from <strong>future</strong> imports <a href="https://peps.python.org/pep-0008/#module-level-dunder-names">module-level-dunder-names</a></p>
+</blockquote>
+<pre><code class="language-python"># app/__init__.py
+&quot;&quot;&quot;docstring&quot;&quot;&quot;
+
+from .core import my_function
+</code></pre>
+<p>running something along the lines of <code>ruff check auto-all=&quot;**/__init__.py&quot; --fix app</code> would result in...</p>
+<pre><code class="language-python"># app/__init__.py
+&quot;&quot;&quot;docstring&quot;&quot;&quot;
+__all__ = [&quot;my_function&quot;]
+
+from .core import my_function
+</code></pre>
+<p>Take this example from the <a href="https://github.com/dask/dask/blob/main/dask/array/__init__.py"><code>dask/array/__init__.py</code></a> where the <code>__all__</code>  is not set and the resulting complaint from <code>pylance</code>.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/76945789/931a9c6e-8464-4042-b2cb-6c2bfb8efecb" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-12 05:03</div>
+            <div class="timeline-body"><p>Hi! I think we're adding what you're looking for in https://github.com/astral-sh/ruff/pull/11314</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @leaver2000 on 2024-05-12 08:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

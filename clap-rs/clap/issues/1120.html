@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for multicall binaries - clap-rs/clap #1120</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for multicall binaries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1120">#1120</a>
+        opened by <a href="https://github.com/lucab">@lucab</a>
+        on 2017-11-30 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lucab">@lucab</a> on 2017-11-30 14:47</div>
+            <div class="timeline-body"><p>I did a bit of digging in the ticket tracker, but I didn't see this topic covered before. In short, I would like to explore how to support <a href="https://blog.flameeyes.eu/2009/10/multicall-binaries/">multicall binaries</a> in clap.</p>
+<p>Multicall binaries share a single codebase, but different codepaths can be activated based on <code>basename(argv[0])</code>. A good example to target would be the <code>hostname</code> util: https://sources.debian.net/src/hostname/3.18/hostname.c/#L6-L12.</p>
+<p>What I would like to be able to do with clap is:</p>
+<ul>
+<li>detect which flavor of a multicall binary has been called, with optional missing &amp; catchall cases</li>
+<li>define arguments which are specific to some flavor of a multicall binary</li>
+<li>define arguments which are specific to all flavors of a multicall binary</li>
+</ul>
+<p>All of this in order in order to use normal clap features transparently in a multicall binary. This can be already done with a bit of boilerplate (<a href="https://github.com/lucab/rkt-volo/blob/master/stage1/volo/src/main.rs#L63-L79">here</a> a very dirty example), but if possible I'd like to see this directly supported in clap as I've found myself repeating this logic in several places lately.</p>
+<p>I'll be happy to try contribute code/test/review for this, but it will need design inputs from @kbknapp first.</p>
+<p>PS: thanks for maintaining clap, it is a great library!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-12-02 20:02</div>
+            <div class="timeline-body"><p>Thanks for the suggestion!</p>
+<p>This could be done in two ways, either an external crate that uses clap internally and just matches <code>argv[0]</code> and calls the appropriate <code>clap::App</code> or a new <code>AppSettings::Multicall</code> variant.</p>
+<p>If you'd like to test the <code>AppSettings</code> way here's how you could do it:</p>
+<p>The basic premise would be <code>argv[0]</code> would be matched in <a href="https://github.com/kbknapp/clap-rs/blob/bc9ab21934cf657723633ee5b94e77f11a2884f7/src/app/mod.rs#L1600"><code>src/app/mod.rs:get_matches_from_safe_borrow</code></a> <em>first</em>. If it matches <code>self.p.meta.name</code> (i.e. what's given to <code>App::new</code>), everything functions exactly like it already does in clap (i.e. all the &quot;applets&quot; are just subcommands).</p>
+<p>However, if it doesn't match, you could check that it matches a subcommand name and set <code>self.p.meta.bin_name</code> <em>and</em> <code>self.p.meta.name</code> to a blank string and simply continue parsing like normal because clap will simply treat it as a subcommand. The reason you set <code>self.p.meta.bin_name</code> is to that all usage strings and error messages say <code>applet [options]</code> and not <code>q applet [options]</code>.</p>
+<p>Here's how you can add those specifics:</p>
+<ul>
+<li>Add a new variant to <code>src/app/settings.rs</code> just following the examples set by all the other variants</li>
+<li>Add any tests to the <code>tests/app_settings.rs</code> file<ul>
+<li>For testing purposes you can run <code>cargo test --test app_settings</code> so you don't need to run the full test suite while developing</li>
+<li>All tests can be run by calling <code>App::get_matches_from(vec![])</code> and just ensuring the first item in the vec is your &quot;applet name&quot; to see if it all works correct</li>
+</ul>
+</li>
+<li>I would also add an example to <code>examples/</code> since this is kind of a bigger and strange use case</li>
+<li>I would also include a help output test that can put in <code>tests/help.rs</code> following the examples in there to make sure when you call <code>q applet --foo</code> the help looks correct, as well as when you call <code>applet --foo</code></li>
+</ul>
+<p>At the end I envision this working:</p>
+<pre><code class="language-rust">let matches = App::new(&quot;q&quot;)
+    .setting(AppSettings::Multicall)
+    .subcommand(SubCommand::with_name(&quot;foo&quot;)
+        .arg(Arg::from_usage(&quot;-f, --foo-flag 'some foo flag'&quot;)))
+    .subcommand(SubCommand::with_name(&quot;bar&quot;)
+        .arg(Arg::from_usage(&quot;-b, --bar-flag 'some bar flag'&quot;)))
+    .arg(Arg::from_usage(&quot;-q, --q-flag 'some q flag'&quot;))
+    .get_matches();
+</code></pre>
+<p>And being able to work with any of these</p>
+<pre><code>$ q --q-flag
+$ foo --foo-flag
+$ bar --bar-flag
+$ q foo --foo-flag
+$ q bar --bar-flag
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-12-02 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-12-02 20:14</div>
+            <div class="timeline-body"><p>Note this also somewhat similar to #975</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucab">@lucab</a> on 2017-12-05 17:21</div>
+            <div class="timeline-body"><p>Thanks for the feedback, it was more detailed than expected! I started code-wrangling based on your hints and I have a few more questions.</p>
+<blockquote>
+<p>a new AppSettings::Multicall variant.</p>
+</blockquote>
+<p>This seems to be the busybox-style applets approach, where <code>busybox foo</code> and <code>foo</code> are both fine and equivalent. I've called it <code>MulticallApplets</code> for the moment and I think it makes sense to implement as you suggested. However my multicall usecases are more similar to the hostname one above, where <code>hostname</code> and <code>dnsdomainname</code> are fine but <code>hostname dnsdomainname</code> is not. For that one, do you envision a similar AppSetting? How should it work, perhaps always restricting matches to subcommands only? Or should this be an external create instead?</p>
+<blockquote>
+<p>and set <code>self.p.meta.bin_name</code> and <code>self.p.meta.name</code> to a blank string and simply continue parsing like normal because clap will simply treat it as a subcommand.</p>
+</blockquote>
+<p>I'm having some difficulties following how this would work. First, I assume you mean                         <code>self.p.meta.bin_name = Some(arg0.clone()); self.p.meta.name = &quot;&quot;.to_owned();</code> in order to clear the top-level name. But then, how would the parser proceed to the subcommand? A quick test doesn't seem to proceed that way, and I would expect needing to forward-call <code>subcmd.p.get_matches_with()</code> myself (instead of current <code>self</code>). In that case I may have to reconcile some mutability mismatches, but before venturing there I wanted to double-check my understandings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-07-22 02:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @kbknapp on 2018-07-22 02:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2817.html">clap-rs/clap#2817</a> on 2021-10-05 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2861.html">clap-rs/clap#2861</a> on 2021-10-12 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-16 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/215.html">epage/clapng#215</a> on 2021-12-06 22:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom exit status on clap::Error - clap-rs/clap #2575</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom exit status on clap::Error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2575">#2575</a>
+        opened by <a href="https://github.com/ceca69ec">@ceca69ec</a>
+        on 2021-07-08 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ceca69ec">@ceca69ec</a> on 2021-07-08 16:09</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Describe your use case</h3>
+<p>Give the option to the user (of the crate, obviously) to show custom error status according to internal errors of their implementation.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Addition of this function on <code>src/errors.rs</code></p>
+<pre><code class="language-rust">pub fn exit_with_status(&amp;self, status: i32) -&gt; ! {
+    if status != 0 {
+        wlnerr!(&quot;{}&quot;, self.message);
+        process::exit(status);
+    }
+    let out = io::stdout();
+    writeln!(&amp;mut out.lock(), &quot;{}&quot;, self.message).expect(&quot;Error writing Error to stdout&quot;);
+    process::exit(0);
+}
+</code></pre>
+<p>Usage example</p>
+<pre><code class="language-rust">fn main() {
+    handle_arguments(&amp;init_clap().get_matches()).unwrap_or_else(|err| {
+        clap::Error::with_description(
+            &amp;err.message(),
+            clap::ErrorKind::InvalidValue
+        ).exit_with_status(err.status());
+    });
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>The above function is just a draft. Any better idea/implementation is welcome.</p>
+<h3>Additional Context</h3>
+<p>I have used the suggested function the way I described and works well.
+I don't know if it's the better place to ask but I would like to become a contributor of <code>clap</code>.
+Thanks for your time and attention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @ceca69ec on 2021-07-08 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-16 21:32</div>
+            <div class="timeline-body"><p>This already exists, https://docs.rs/clap/2.33.3/clap/struct.Error.html#method.exit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ceca69ec">@ceca69ec</a> on 2021-07-17 02:46</div>
+            <div class="timeline-body"><p>Exists with the exit status prefixed to 1. My suggestion and function example are to enable the customization of the number (code/status) of the error. Here are the function (exit_with_status) I've suggested again:</p>
+<pre><code class="language-rust">pub fn exit_with_status(&amp;self, status: i32) -&gt; ! {
+    if status != 0 {
+        wlnerr!(&quot;{}&quot;, self.message);
+        process::exit(status);
+    }
+    let out = io::stdout();
+    writeln!(&amp;mut out.lock(), &quot;{}&quot;, self.message).expect(&quot;Error writing Error to stdout&quot;);
+    process::exit(0);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-17 03:56</div>
+            <div class="timeline-body"><p>Well, all the errors have status code 0 or 1, which are then correctly used in that method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-07-20 18:59</div>
+            <div class="timeline-body"><p>Have you tried to use <a href="https://docs.rs/clap/3.0.0-beta.2/clap/struct.App.html#method.try_get_matches"><code>try_get_matches</code></a> and do the customization on the Error type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ceca69ec">@ceca69ec</a> on 2021-07-20 20:42</div>
+            <div class="timeline-body"><p>The customization I'm suggesting is exactly on the status codes. Simply returning 0 or 1 it's not always enough. Some times cli tools inform specific status code number for operating with other tools and just to inform the user.</p>
+<p>Customize the status of each error is a good suggestion too.
+As I said: It's just a suggestion but I think it's really handy in some situations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-25 13:40</div>
+            <div class="timeline-body"><blockquote>
+<p>to enable the customization of the number (code/status) of the error</p>
+</blockquote>
+<p>I am unable to find a good reason to do this. I am closing this issue and will reconsider if more people request something like this.</p>
+<p>As an alternative, you do have <a href="https://docs.rs/clap/2.33.3/clap/enum.ErrorKind.html"><code>ErrorKind</code></a> which you can use to <code>match</code> and then provide custom errors yourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-07-25 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-26 14:54</div>
+            <div class="timeline-body"><p>With clap2 using exit_code=1, I customized the exit code in my application.  I chose USAGE_ERR rather than 2, which is what clap3 has settled on.</p>
+<p>For an example of a single exit code, see https://github.com/crate-ci/typos/blob/master/src/bin/typos-cli/main.rs#L23</p>
+<p>It is a bit messier than I would like and reimplements some details but I think the importance is less now that clap3 is using exit_code=2.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:31 UTC
+    </footer>
+</body>
+</html>

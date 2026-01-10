@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff isort fails for a simple example - astral-sh/ruff #8246</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff isort fails for a simple example</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8246">#8246</a>
+        opened by <a href="https://github.com/alanwilter">@alanwilter</a>
+        on 2023-10-26 08:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alanwilter">@alanwilter</a> on 2023-10-26 08:10</div>
+            <div class="timeline-body"><p><code>ruff</code>: 0.1.2
+<code>isort</code>: 5.10.1</p>
+<pre><code class="language-yml">[tool.ruff]
+target-version = &quot;py38&quot;
+line-length = 120
+extend-select = [&quot;UP&quot;, &quot;RUF&quot;]
+</code></pre>
+<p>I'm simply doing this and comparing with original <code>isort</code>:</p>
+<pre><code class="language-bash">cat &lt;&lt;EOF &gt;|test.py
+import os
+import parmed as pmd
+import sys
+EOF
+echo &quot;Original-----&quot;
+cat test.py
+echo &quot;--------------------------&quot;
+isort test.py
+echo &quot;--------ISORT: OK --------&quot;
+cat test.py
+echo &quot;--------------------------&quot;
+ruff format test.py
+echo &quot;-----RUFF after ISORT-----&quot;
+cat test.py
+echo &quot;--------------------------&quot;
+cat &lt;&lt;EOF &gt;|test.py
+import os
+import parmed as pmd
+import sys
+EOF
+ruff format test.py
+echo &quot;--RUFF on Original: NO CHANGE-------------&quot;
+cat test.py
+echo &quot;--------------------------&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">Original-----
+import os
+import parmed as pmd
+import sys
+--------------------------
+Fixing /mnt/data/awilter/acpype_git/_temp/test.py
+--------ISORT: OK --------
+import os
+import sys
+
+import parmed as pmd
+--------------------------
+1 file left unchanged
+-----RUFF after ISORT-----
+import os
+import sys
+
+import parmed as pmd
+--------------------------
+1 file left unchanged
+--RUFF on Original: NO CHANGE-------------
+import os
+import parmed as pmd
+import sys
+--------------------------
+</code></pre>
+<p>Interestingly, <code>VScode</code> with <code>ruff-vscode</code> extension works fine.</p>
+<img width="570" alt="Screenshot 2023-10-26 at 09 15 02" src="https://github.com/astral-sh/ruff/assets/3899850/6bcd786f-053b-42f7-933b-d9d548f53754">
+<img width="313" alt="Screenshot 2023-10-26 at 09 15 34" src="https://github.com/astral-sh/ruff/assets/3899850/8f650fd6-b635-45ed-aff5-3b4611b54371">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 08:11</div>
+            <div class="timeline-body"><p>I believe you need to enable isort manually by including <code>&quot;I&quot;</code> in <code>extend-select</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanwilter">@alanwilter</a> on 2023-10-26 08:40</div>
+            <div class="timeline-body"><p>Nope, that doesn't change anything.
+I'm actually annoyed I have to add &quot;RUF&quot; and &quot;UP&quot;. I was expecting <code>ruff</code> to do it all by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 08:43</div>
+            <div class="timeline-body"><p>Oh, <code>isort</code> is parth of <code>check</code> and not <code>format</code>. Can you try running <code>ruff check --fix</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanwilter">@alanwilter</a> on 2023-10-26 08:53</div>
+            <div class="timeline-body"><p>I had to update my test, and do <code>extend-select = [&quot;UP&quot;, &quot;RUF&quot;, &quot;I&quot;]</code>:</p>
+<pre><code class="language-bash">cat &lt;&lt;EOF &gt;|test.py
+import os
+import parmed as pmd
+import sys
+print(os,sys,pmd)
+EOF
+ruff format test.py
+echo &quot;--RUFF on Original: NO CHANGE-------------&quot;
+cat test.py
+echo &quot;--------------------------&quot;
+ruff check test.py --fix
+echo &quot;--RUFF check on Original: OK-------------&quot;
+cat test.py
+echo &quot;--------------------------&quot;
+</code></pre>
+<p>And now, you're right, it's working.</p>
+<p>I will close this ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @alanwilter on 2023-10-26 08:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

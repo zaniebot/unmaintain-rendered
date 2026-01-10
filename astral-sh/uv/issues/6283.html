@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autodetect dependencies mode for `uv run` - astral-sh/uv #6283</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autodetect dependencies mode for `uv run`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6283">#6283</a>
+        opened by <a href="https://github.com/mgaitan">@mgaitan</a>
+        on 2024-08-20 23:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgaitan">@mgaitan</a> on 2024-08-20 23:19</div>
+            <div class="timeline-body"><p>I propose a  <code>--with-auto</code> (or <code>--auto</code> directly) flag  that does its best attempt to satisfy missing dependencies in a script/package being executed by <code>uv tool</code>. For example, <a href="https://github.com/bndr/pipreqs">this lib</a> does that instrospection to generate a
+<code>requirements.txt</code>.</p>
+<p>From my <a href="https://x.com/tin_nqn_/status/1825970796478738940">tweet</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 23:36</div>
+            <div class="timeline-body"><p>I worry about security and that we won't be able to deliver a good enough user experience, but it sounds cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-08-20 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-20 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6375.html">astral-sh/uv#6375</a> on 2024-08-23 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-08-23 19:17</div>
+            <div class="timeline-body"><p>What about an option for generating/populating PEP 723 metadata automatically?</p>
+<p>Right now there is the option to add deps explicitly:</p>
+<pre><code class="language-sh">uv add --script example.py --python 3.9 'requests==2.32.3'
+</code></pre>
+<p>but some flag to have uv solve the top-level dependencies and pin exact versions as inline metadata. Even without the versions, it would just be useful to generate the inline meta as a starting point (which could be manually edited with versions).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fowles">@fowles</a> on 2025-03-05 22:33</div>
+            <div class="timeline-body"><p>Just going so far as to make:</p>
+<pre><code>#!/usr/bin/env -S uv run --script
+# /// script
+import mechanize
+import re
+import sys
+from bs4 import BeautifulSoup
+# ///
+</code></pre>
+<p>mean</p>
+<pre><code>#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;bs4&quot;,
+#     &quot;mechanize&quot;,
+# ]
+# ///
+
+import mechanize
+import re
+import sys
+from bs4 import BeautifulSoup
+</code></pre>
+<p>would be really convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 22:37</div>
+            <div class="timeline-body"><p>I think</p>
+<pre><code># /// script
+import mechanize
+import re
+import sys
+from bs4 import BeautifulSoup
+# ///
+</code></pre>
+<p>is explicitly banned by the PEP 723 specification, i.e., we can't make up how the <code>script</code> tag is handled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fowles">@fowles</a> on 2025-03-05 22:39</div>
+            <div class="timeline-body"><p>Ah well, thanks for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fowles">@fowles</a> on 2025-03-05 22:57</div>
+            <div class="timeline-body"><p>Would you be open to a <code>uv</code> specific thing like</p>
+<pre><code># /// uv-imports
+import mechanize
+import re
+import sys
+from bs4 import BeautifulSoup
+# ///
+</code></pre>
+<p>I totally understand why you might not want to fragment the ecosystem, but I just like the convenience and it should be quite easy to provide an escape hatch that would transform it back to the PEP 723 version if anyone needs it.  If you are open to it, I am happy to try my hand at it and send a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 23:05</div>
+            <div class="timeline-body"><p>That's.. also technically not allowed 😬 they say tools cannot invent their own tags (in that <code>///</code> format).</p>
+<p>Anyway, I'm not sure why we'd need them to be in a header like that. I think, if we added support for this, we'd just scan the full AST for imports?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fowles">@fowles</a> on 2025-03-05 23:07</div>
+            <div class="timeline-body"><p>The full AST gets into interesting corner cases like conditional imports based on versions or platforms that the explicit top level ones just duck</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 23:14</div>
+            <div class="timeline-body"><p>But we do know your platform and type checkers already need to perform that kind of inference (which we happen to be building over on the Ruff side).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fowles">@fowles</a> on 2025-03-05 23:29</div>
+            <div class="timeline-body"><p>I am happy to take a crack at it if you can point me in the correct area of code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 23:34</div>
+            <div class="timeline-body"><p>I just think we're not there yet on a foundation to build the solution we'd be excited to deliver to people around this. You're welcome to look at https://github.com/astral-sh/ruff/tree/main/crates/red_knot#red-knot but we won't be able to guide a contribution for this. It'd probably make sense as some sort of prototype first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vvolhejn">@vvolhejn</a> on 2025-04-03 13:30</div>
+            <div class="timeline-body"><p>Here is a (mostly Claude-generated) script that figures out what the imports are and uses <code>uv add ... --script</code> to add them. Good enough for me. Won't work for packages where the import name of the library is different than the PyPI name, e.g. <code>sklearn</code>.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import ast
+import os
+import pkgutil
+import sys
+
+
+def get_builtin_modules():
+    &quot;&quot;&quot;Get a set of all built-in modules in Python.&quot;&quot;&quot;
+    return set(sys.builtin_module_names) | {mod.name for mod in pkgutil.iter_modules()}
+
+
+def get_third_party_imports(file_path):
+    &quot;&quot;&quot;Parse a Python file and analyze its imports.
+
+    Args:
+        file_path (str): Path to the Python file to analyze
+
+    Returns:
+        tuple: (all_imports, builtin_imports, third_party_imports)
+    &quot;&quot;&quot;
+    with open(file_path, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+        content = file.read()
+
+    # Parse the file into an AST
+    tree = ast.parse(content)
+
+    # Get all built-in modules
+    builtin_modules = get_builtin_modules()
+
+    # Lists to store imports
+    all_imports = []
+
+    # Visit all import nodes in the AST
+    for node in ast.walk(tree):
+        # Handle regular imports (import x, import x.y)
+        if isinstance(node, ast.Import):
+            for name in node.names:
+                module_name = name.name.split(&quot;.&quot;)[0]  # Get the top-level module
+                all_imports.append(module_name)
+
+        # Handle from imports (from x import y, from x.y import z)
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                module_name = node.module.split(&quot;.&quot;)[0]  # Get the top-level module
+                all_imports.append(module_name)
+
+    # Remove duplicates and sort
+    all_imports = sorted(set(all_imports))
+
+    # Separate built-in from third-party imports
+    third_party_imports = [imp for imp in all_imports if imp not in builtin_modules]
+
+    return third_party_imports
+
+
+def main():
+    if len(sys.argv) != 2:
+        print(&quot;Usage: python import_analyzer.py &lt;python_file_path&gt;&quot;)
+        sys.exit(1)
+
+    file_path = sys.argv[1]
+
+    if not os.path.exists(file_path):
+        print(f&quot;Error: File '{file_path}' does not exist.&quot;)
+        sys.exit(1)
+
+    if not file_path.endswith(&quot;.py&quot;):
+        print(f&quot;Warning: File '{file_path}' does not have a .py extension.&quot;)
+
+    third_party_imports = get_third_party_imports(file_path)
+
+    command = [&quot;uv&quot;, &quot;add&quot;] + third_party_imports + [&quot;--script&quot;, file_path]
+
+    print(&quot; &quot;.join(command))
+    if input(&quot;Do it? (y/N): &quot;).strip().lower() == &quot;y&quot;:
+        os.execvp(command[0], command)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mgaitan/autopep723/pulls/5.html">mgaitan/autopep723#5</a> on 2025-07-20 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgaitan">@mgaitan</a> on 2025-07-22 21:13</div>
+            <div class="timeline-body"><p>We (me and my llm friend) crafted something here https://github.com/mgaitan/autopep723 .   Update: related <a href="https://mgaitan.github.io/en/posts/automatic-dependencies-management-python-scripts-autopep723/">blog post</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

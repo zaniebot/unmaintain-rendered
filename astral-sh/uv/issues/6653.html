@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to check all indexies - astral-sh/uv #6653</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to check all indexies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6653">#6653</a>
+        opened by <a href="https://github.com/theunkn0wn1">@theunkn0wn1</a>
+        on 2024-08-26 20:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/theunkn0wn1">@theunkn0wn1</a> on 2024-08-26 20:24</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>two issues compound here:</p>
+<ol>
+<li>Uv checks the extra index url before the primary index url</li>
+<li>Uv gives up if it finds <em>any</em> version in the extra index url, even if that version doesn't satisfy the constraints.</li>
+</ol>
+<p>I have a situation where:</p>
+<ul>
+<li><em>really old</em> versions of package <code>the-downstream</code> exists in the extra index url</li>
+<li>modern versions of the package exist in the primary index url</li>
+<li>When I try to add the <code>name-redacted</code> package, pinning it to a modern version, uv fails to resolve with an incorrect resolution.</li>
+</ul>
+<h3>Global configuration</h3>
+<p>contents of <code>~/.config/uv/uv.conf</code>, partially redacted to protect the innocent.</p>
+<pre><code class="language-toml">index-url = &quot;https://redacted_user:redacted@private-index/simple&quot;
+extra-index-url = [ &quot;https://some-other-private-index/simple&quot;]
+</code></pre>
+<h3>Executed command  (verbose)</h3>
+<p>package names, urls redacted to protect the innocent.</p>
+<pre><code>&gt; $ uv add &quot;the-downstream&gt;=3.1.0&quot;   -v       
+DEBUG uv 0.3.3
+DEBUG Found project root: `/tmp/something/some-package`
+DEBUG No workspace root found, using project root
+DEBUG The virtual environment's Python version satisfies `Python &gt;=3.12`
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Starting clean resolution
+DEBUG Acquired lock for `/home/name-redacted/.cache/uv/built-wheels-v3/editable/eae9d6d218105b40`
+DEBUG No static `PKG-INFO` available for: some-package @ file:///tmp/something/some-package (MissingPkgInfo)
+DEBUG Found static `pyproject.toml` for: some-package @ file:///tmp/something/some-package
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.5
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: some-package*
+DEBUG Searching for a compatible version of some-package @ file:///tmp/something/some-package (*)
+DEBUG Adding transitive dependency for some-package==0.1.0: the-downstream&gt;=3.1.0
+DEBUG Found stale response for: https://some-other-private-index/simple/the-downstream/
+DEBUG Sending revalidation request for: https://some-other-private-index/simple/the-downstream/
+DEBUG Found modified response for: https://some-other-private-index/simple/the-downstream/
+DEBUG Searching for a compatible version of the-downstream (&gt;=3.1.0)
+DEBUG No compatible version found for: the-downstream
+DEBUG Searching for a compatible version of some-package @ file:///tmp/something/some-package (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: some-package
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the-downstream&lt;=1.0.3 is available and your project depends on the-downstream&gt;=3.1.0, we can conclude that your project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps
+</code></pre>
+<h3>Additional info</h3>
+<p><code>the-downstream&gt;=3.1.0</code> is available in the primary index, and the index is accessible.
+If i reconfigure the global configuration to swap <code>index-url</code> and <code>extra-index-url</code> with each other, the install succeeds.</p>
+<pre><code class="language-toml">extra-index-url = [&quot;https://redacted_user:redacted@private-index.privatedomain/simple&quot;]
+index-url = &quot;https://some-other-private-index.privatedomain/simple&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 20:28</div>
+            <div class="timeline-body"><p>Take a look at this section in the docs: https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes. You can set <code>--index-strategy unsafe-best-match</code> or <code>--index-strategy = unsafe-first-match</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-26 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-08-26 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theunkn0wn1">@theunkn0wn1</a> on 2024-08-26 23:26</div>
+            <div class="timeline-body"><p>reading that documentation, UV behaves the exact opposite of how i expected.</p>
+<p>with <code>poetry</code>, we set our internal private index as the <code>primary</code> index so it always checked it first.
+we set our pypi mirror as a <code>secondary</code> so it had a fallback for nonlocal packages
+we set public pypi as <code>explicit</code> so it would never reach out to public pypi.</p>
+<p>But with UV the logic is reversed,
+we set our internal private index as the secondary/extra, and our pypi mirror as primary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 23:30</div>
+            <div class="timeline-body"><p>Yes, that sounds right to me. We don't support &quot;named&quot; index priorities like that yet -- they will come in the future. For now, we're just leveraging the existing <code>--index-url</code> and <code>--extra-index-url</code> scheme that came from <code>uv pip</code>. With <code>--index-url</code> and <code>--extra-index-url</code>, it is far more common for users to prefer that packages are selected from the <em>extra</em> index if possible. (E.g., it's very common to set the PyTorch index to <code>--extra-index-url</code>; if you did that, you would never want <code>torch</code> from PyPI to be preferred.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-26 23:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

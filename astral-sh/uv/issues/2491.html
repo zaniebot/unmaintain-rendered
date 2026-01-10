@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't pull foreign cargo packages into workspace - astral-sh/uv #2491</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't pull foreign cargo packages into workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2491">#2491</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-16 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 18:24</div>
+            <div class="timeline-body"><p>If you do <code>cargo run pip install deptry --no-binary deptry --cache-dir foo</code> from the <code>uv</code> directory:</p>
+<pre><code>error: Failed to download distributions
+  Caused by: Failed to fetch wheel: deptry==0.14.0
+  Caused by: Failed to build: deptry==0.14.0
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+Running `maturin pep517 build-wheel -i /Users/crmarsh/workspace/uv/foo/.tmp9kGP1j/.venv/bin/python --compatibility off`
+--- stderr:
+error: current package believes it's in a workspace when it's not:
+current:   /Users/crmarsh/workspace/uv/foo/built-wheels-v0/pypi/deptry/0.14.0/33SZPLpftp49A7cKw7dAq/deptry-0.14.0.tar.gz/Cargo.toml
+workspace: /Users/crmarsh/workspace/uv/Cargo.toml
+
+this may be fixable by adding `foo/built-wheels-v0/pypi/deptry/0.14.0/33SZPLpftp49A7cKw7dAq/deptry-0.14.0.tar.gz` to the `workspace.members` array of the manifest located at: /Users/crmarsh/workspace/uv/Cargo.toml
+Alternatively, to keep it out of the workspace, add the package to the `workspace.exclude` array, or add an empty `[workspace]` table to the package's manifest.
+💥 maturin failed
+  Caused by: Cargo metadata failed. Does your crate compile with `cargo build`?
+  Caused by: `cargo metadata` exited with an error:
+Error: command ['maturin', 'pep517', 'build-wheel', '-i', '/Users/crmarsh/workspace/uv/foo/.tmp9kGP1j/.venv/bin/python', '--compatibility', 'off'] returned non-zero exit status 1
+---
+</code></pre>
+<p>We need a way to &quot;stop&quot; Maturin from thinking it's in a workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-16 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 18:24</div>
+            <div class="timeline-body"><p>@konstin -- any ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 18:24</div>
+            <div class="timeline-body"><p>(This is <em>not</em> the cause of #2490.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-03-18 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Enforce build isolation for Maturin-based packages" to "Don't pull foreign cargo packages into workspace" by @konstin on 2024-03-18 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-18 08:56</div>
+            <div class="timeline-body"><p>This is a general cargo behavior,</p>
+<pre><code>mkdir bar &amp;&amp; cd bar &amp;&amp; git clone https://github.com/fpgmaas/deptry &amp;&amp; cd deptry &amp;&amp; cargo check
+</code></pre>
+<p>fails. There seems to be no way to exclude all packages, i've put a feature request upstream: https://github.com/rust-lang/cargo/issues/13600</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-03-18 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 13:06</div>
+            <div class="timeline-body"><p>Yeah we need some sort of isolated flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 13:09</div>
+            <div class="timeline-body"><p>@konstin - I guess we could add an empty <code>workspace = []</code> to the package we're building if it's not present... but that seems bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-18 13:29</div>
+            <div class="timeline-body"><p>Does that affect anyone but us when we're developing and putting the cache inside for the uv checkout?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 13:38</div>
+            <div class="timeline-body"><p>To be clear, this only affects workflows in which the user puts the cache in the same directory as their project, and their project is a Cargo workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcakyon">@fcakyon</a> on 2024-08-21 22:39</div>
+            <div class="timeline-body"><p>what can i do to overcome this error? @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @konstin on 2024-08-22 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2024-08-22 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kludex">@Kludex</a> on 2024-09-05 18:12</div>
+            <div class="timeline-body"><p>We are also interested in this... 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcakyon">@fcakyon</a> on 2024-09-05 19:42</div>
+            <div class="timeline-body"><p>This issue is the only reason we stopped using uv. Is there any fix available?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 20:07</div>
+            <div class="timeline-body"><p>Can you share why you're placing the uv cache inside your project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcakyon">@fcakyon</a> on 2024-09-06 01:38</div>
+            <div class="timeline-body"><p>I don't try to do anything specific. I just run 'pip install -r requirements' in uv env and this cargo error raises</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 01:46</div>
+            <div class="timeline-body"><p>Can you share the error?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

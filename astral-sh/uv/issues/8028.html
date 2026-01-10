@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR: List and repair broken `uv tool` venvs (e.g. after a python upgrade). - astral-sh/uv #8028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FR: List and repair broken `uv tool` venvs (e.g. after a python upgrade).</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8028">#8028</a>
+        opened by <a href="https://github.com/ilyagr">@ilyagr</a>
+        on 2024-10-09 00:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ilyagr">@ilyagr</a> on 2024-10-09 00:48</div>
+            <div class="timeline-body"><p>In the transcript below, I upgrade from Python 3.12.6 to 3.12.7 and all my <code>uv tool install</code>-ed tools break because the symlinks to python are broken. The problem is that <code>uv</code> can't handle these broken environments very well.</p>
+<p>Currently, <code>uv tool upgrade</code> does not work as seen in the transcript. <code>uv tool install</code> works, but does not remember how the tool was installed originally, which is a problem if the tool needs a non-trivial command line to be installed correctly, e.g.:</p>
+<pre><code class="language-shell"># Commands like these are needed to work around `uv tool upgrade`
+# not working.
+uv tool install xonsh[full]
+uv tool install marimo[sql] --with polars --with pandas  --with pyarrow \
+                            --with matplotlib --with altair --with ruff
+uv tool install --from \
+   https://github.com/jjlee/git-meld-index/archive/release.zip git-meld-index
+</code></pre>
+<p>I would like either a <code>uv tool repair</code> command to repair such tools or for <code>uv tool upgrade</code> to be able to repair them. I'd also like <code>uv tool list</code> to work better for such tools.</p>
+<p>Fortunately, the <code>uv-receipt.toml</code> file in the tool's venv already has all the needed info, so I'm guessing some feature like this was planned. (Let me know if there's already a way to do it that I missed!)</p>
+<p>Related: https://github.com/astral-sh/uv/issues/1640, #7287. I feel like, even if those issues are solved, it'd still be nice if <code>uv</code> handled broken tool venvs better.</p>
+<p>Also related: #7892</p>
+<h3>Transcript illustrating the problem</h3>
+<pre><code class="language-console">$ uv --version  # I'm on Mac OS on ARM
+uv 0.4.20 (0e1b25a53 2024-10-08)
+$ uv tool list
+git-meld-index v0.2.4
+- git-meld-index
+- git-meld-index-run-merge-tool
+marimo v0.9.4
+- marimo
+poetry v1.8.3
+- poetry
+pxpx v3.6.5
+- ptop
+- px
+- pxtree
+xonsh v0.18.3
+- xonsh
+- xonsh-cat
+- xonsh-uname
+- xonsh-uptime
+$ uv python install 3.12
+Searching for Python versions matching: Python 3.12
+Found existing installation for Python 3.12: cpython-3.12.6-macos-aarch64-none
+$ uv python install 3.12 --reinstall
+Searching for Python versions matching: Python 3.12
+Found existing installation for Python 3.12: cpython-3.12.6-macos-aarch64-none
+Installed Python 3.12.7 in 1.38s
+ - cpython-3.12.6-macos-aarch64-none
+ + cpython-3.12.7-macos-aarch64-none
+$ marimo
+exec: Failed to execute process '/Users/ilyagr/.local/bin/marimo': The file specified the interpreter '/Users/ilyagr/.local/share/uv/tools/marimo/bin/python', which is not an executable command.
+$ uv tool upgrade marimo --python 3.12
+`marimo` is not installed; run `uv tool install marimo` to install
+$ uv tool list
+Python interpreter not found at `/Users/ilyagr/.local/share/uv/tools/git-meld-index/bin/python3`
+Python interpreter not found at `/Users/ilyagr/.local/share/uv/tools/marimo/bin/python3`
+Python interpreter not found at `/Users/ilyagr/.local/share/uv/tools/poetry/bin/python3`
+Python interpreter not found at `/Users/ilyagr/.local/share/uv/tools/pxpx/bin/python3`
+Python interpreter not found at `/Users/ilyagr/.local/share/uv/tools/xonsh/bin/python3`
+$ uv tool upgrade --all --python 3.12
+Failed to upgrade `git-meld-index`: `git-meld-index` is not installed; run `uv tool install git-meld-index` to install
+Failed to upgrade `marimo`: `marimo` is not installed; run `uv tool install marimo` to install
+Failed to upgrade `poetry`: `poetry` is not installed; run `uv tool install poetry` to install
+Failed to upgrade `pxpx`: `pxpx` is not installed; run `uv tool install pxpx` to install
+Failed to upgrade `xonsh`: `xonsh` is not installed; run `uv tool install xonsh` to install
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "FR: Better handling for broken `uv tool` venvs (e.g. after a python upgrade)." to "FR: List and repair broken `uv tool` venvs (e.g. after a python upgrade)." by @ilyagr on 2024-10-09 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 01:22</div>
+            <div class="timeline-body"><p>Related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/4718</li>
+<li>https://github.com/astral-sh/uv/issues/7287</li>
+</ul>
+<p>Yeah there's room for improvement here in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 01:25</div>
+            <div class="timeline-body"><p><code>uv tool repair</code> sounds kind of cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-10-09 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-10-09 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7311.html">astral-sh/uv#7311</a> on 2024-10-10 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8514.html">astral-sh/uv#8514</a> on 2024-10-24 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../topgrade-rs/topgrade/pulls/1122.html">topgrade-rs/topgrade#1122</a> on 2025-04-13 08:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:04 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`requirements.txt` allows editable paths to be quoted - astral-sh/uv #3621</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`requirements.txt` allows editable paths to be quoted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3621">#3621</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-05-15 19:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 19:20</div>
+            <div class="timeline-body"><p>It seems like <code>requirements.txt</code> allows you to put editable paths in quotes (single or double). It does <em>not</em> allow quotes elsewhere though:</p>
+<pre><code># Ok
+-e &quot;./scripts/packages/black_editable&quot;
+
+# Not ok
+&quot;./scripts/packages/black_editable&quot;
+black @ &quot;./scripts/packages/black_editable&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-05-15 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-15 19:20</div>
+            <div class="timeline-body"><p>Low-priority, maybe we fix if it comes up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Briandye1987">@Briandye1987</a> on 2024-07-01 03:45</div>
+            <div class="timeline-body"><h1>Ok</h1>
+<p>-e &quot;./scripts/packages/black_editable&quot;</p>
+<h1>Not ok</h1>
+<p>&quot;./scripts/packages/black_editable&quot;
+black @ &quot;./scripts/packages/black_editable&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10417.html">astral-sh/uv#10417</a> on 2025-01-08 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11592.html">astral-sh/uv#11592</a> on 2025-02-18 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-19 13:28</div>
+            <div class="timeline-body"><p>I was poking into this and found some related compatibility issues, which might or might not make sense for uv to address. I am documenting them here as it might be efficient to batch together the implementation for these.</p>
+<p><strong>Case 1</strong>: Pip treats options similar to shell arguments</p>
+<pre><code>-c file\ name
+
+# pip: reads `file name`
+# uv: reads `file\ name` (including forward slash)
+</code></pre>
+<p><strong>Case 2</strong>: Pip allows splitting requirements in multiple lines by using <code>\</code></p>
+<pre><code>httpx \
+  == 0.0.1
+
+# pip: tries to install `httpx == 0.0.1`
+# uv: errors out parsing forward slash
+</code></pre>
+<p><strong>Case 3</strong>: Pip silently ignores some options</p>
+<pre><code>httpx == 0.0.1 -r ./requirement.txt
+
+# pip: installs httpx and silently ignores `requirement.txt`
+# uv: parsing error. (I feel this is the right thing to do here over maintaining compatibility)
+</code></pre>
+<p><strong>Pip's behaviour</strong></p>
+<ol>
+<li>Read file content</li>
+<li>Join lines depending on if they end with a forward slash</li>
+<li>Strip out comments (both inline and independent)</li>
+<li>replace environment variables</li>
+<li>For each line
+a. split line by the first occurrence of <code> -</code>
+b. The first part is treated as requirement definition and second part is treated as options (editable, constraints etc.).
+c. The first part (requirements) goes through a dedicated parser to split version, name, extras etc.
+d. The second part (options) is parsed by treating them similar to POSIX shell arguments.</li>
+</ol>
+<p>Source: <a href="https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_internal/req/req_file.py#L177">1-4</a>, <a href="https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_internal/req/req_file.py#L440">5.a-5.b</a>, <a href="https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_vendor/packaging/requirements.py#L21">5.c</a>, <a href="https://github.com/pypa/pip/blob/ce9451518f17cedf1efb3481526ae760bfdbe1a5/src/pip/_internal/req/req_file.py#L447">5.d</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FreeHarry">@FreeHarry</a> on 2025-11-27 09:47</div>
+            <div class="timeline-body"><p>If the path of the editable package contains spaces, then <code>pip</code> requires to put the path into quotes.</p>
+<pre><code># Works in pip, but not in uv
+-e &quot;./scripts/packages/subdir with spaces/black_editable&quot;
+-e &quot;./scripts/packages/pkg with spaces&quot;
+
+
+# Works in uv, but not in pip (pip cannot find the path, because it stops at the first space)
+-e ./scripts/packages/subdir with spaces/black_editable
+-e ./scripts/packages/pkg with spaces
+</code></pre>
+<p>Since <code>requirements.txt</code> supports using quotes and requires it for tools like <code>pip</code>, <code>uv</code> should do the same to ensure compatibility.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

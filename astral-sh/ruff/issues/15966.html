@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Descriptor protocol - astral-sh/ruff #15966</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Descriptor protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15966">#15966</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-05 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 13:01</div>
+            <div class="timeline-body"><p>We need to understand the descriptor protocol in order to infer proper types for attribute accesses like in this simple example:</p>
+<pre><code class="language-py">from typing import Literal
+
+class Ten:
+    def __get__(self, instance: object, owner: type | None = None) -&gt; Literal[10]:
+        return 10
+
+    def __set__(self, instance: object, value: Literal[10]) -&gt; None:
+        pass
+
+class C:
+    ten = Ten()
+
+c = C()
+
+# TODO: this should be `Literal[10]`
+reveal_type(c.ten)  # revealed: Unknown | Ten
+
+# TODO: This should `Literal[10]`
+reveal_type(C.ten)  # revealed: Unknown | Ten
+
+# These are fine:
+c.ten = 10
+C.ten = 10
+
+# TODO: Both of these should be errors
+c.ten = 11
+C.ten = 11
+</code></pre>
+<p>References: <a href="https://docs.python.org/3/howto/descriptor.html">Python Documentation: Descriptor Guide</a></p>
+<p>part of: astral-sh/ruff#14164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14164.html">astral-sh/ruff#14164</a> on 2025-02-05 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement the descriptor protocol" to "[red-knot] Descriptor protocol" by @sharkdp on 2025-02-05 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-05 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15843.html">astral-sh/ruff#15843</a> on 2025-02-05 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15972.html">astral-sh/ruff#15972</a> on 2025-02-05 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-05 16:45</div>
+            <div class="timeline-body"><p>An important case to consider here that isn't shown in the example in summary is where the <code>value</code> argument to <code>__set__</code> does not have the same type as the return type of <code>__get__</code>, meaning we need to use a different type for type-checking assignments to the attribute than we use for inferring the type of an attribute access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>where the <code>value</code> argument to <code>__set__</code> does not have the same type as the return type of <code>__get__</code></p>
+</blockquote>
+<p>Yes, thanks. This is already covered in the provisional tests (#15972).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-09 20:45</div>
+            <div class="timeline-body"><p>@carljm @sharkdp sorry, for delay</p>
+<p>Here is my thinking, proposed plan &amp; rough design.</p>
+<p>Guiding principles I've used:</p>
+<ul>
+<li>Design-wise: Avoid special-casing if possible</li>
+<li>Plan such that each steps adds one new aspect of the protocol support, while addressing the next most popular usage scenario</li>
+</ul>
+<h3>Design</h3>
+<ul>
+<li>Descriptors should be modeled as <code>Type::Instance</code>, no special <code>Type</code> variant or anything fancy.<ul>
+<li>This rule should apply to everything. Including the most common <code>@property</code>, <code>@classmethod</code>, <code>@staticmethod</code>; attrbiutes of slotted classes and functions (methods)</li>
+</ul>
+</li>
+<li><code>@property</code>, <code>@classmethod</code>, <code>@staticmethod</code> should produce an instance of <code>KnownClass</code> variant(s)</li>
+<li>Introduce <code>KnownMethod</code> enum, starting with descriptor dunders that will provide</li>
+<li>Decorators on methods should be processed at inference time and change the binding type to instance (unlike current implementation)<ul>
+<li>This would make it much easier to handle things, like writeable properties</li>
+<li>Later this would allow supporting user provided functions/decorators that create descriptors</li>
+</ul>
+</li>
+<li>If class has slots, all bindings should become data-descriptors - instances of another new <code>KnownClass</code> variant</li>
+</ul>
+<p>Obviously there are going to be a lot of minute details in actual implementation, but overall it feels like descriptors do not introduce any special needs really.</p>
+<h3>Plan</h3>
+<p>The plan, is to start with known classes and avoid bothering with full inference of descriptor dunder method signatures. Implement the non-data descriptors first, using the most popular builtins. Then expand to set only data descriptor and build-up support for known descriptor classes. Then tackle everything else.</p>
+<p>Assuming red_knot is targeting &quot;an average&quot; python user, I'd suggest implementing in the following order based on frequency of use:</p>
+<ol>
+<li>Patterns common in non-library-like user code. So code devs write for a <code>FastApi</code> controller, not <code>FastApi</code> internals<ol>
+<li>readonly <code>property</code> aka non-data descriptor<ol>
+<li>Step 1: just understanding a member is a descriptor and properly handling in <code>call_bound</code>/<code>member</code> functions</li>
+<li>Step 2: diagnostic when non-data descriptor is LHS of assignment</li>
+</ol>
+</li>
+<li><code>classmethod</code> and <code>staticmethod</code><ol>
+<li>This would involve upgrading <code>call_bound</code> to handle classes (second argument in <code>__get__</code>). Otherwise just adding more known classes, should be easy</li>
+</ol>
+</li>
+<li><code>property</code> with setter<ol>
+<li>this will be an inference &quot;upgrade&quot; - we can swtich from methods being function literals with decorators, to instances on this step</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Popular descriptor generating components from stdlib<ol>
+<li><code>functools.cached_property</code> (adding more known classes, should be very easy)</li>
+</ol>
+</li>
+<li>Custom descriptor-generating classes in popular libraries<ol>
+<li>??? Not sure, needs research</li>
+</ol>
+</li>
+<li>Less popular / library use-cases<ol>
+<li>Slotted classes</li>
+<li><code>property</code> (with delete)</li>
+<li>maybe <code>functools.singledispatchmethod</code></li>
+</ol>
+</li>
+<li>Generic inference for arbitrary classes that implement the protocol<ol>
+<li>Implement full correct search logic in <code>member</code>/<code>call_bound</code> for instances (<a href="https://docs.python.org/3.13/howto/descriptor.html#invocation-from-an-instance">this</a>), classes &amp; <code>super()</code></li>
+<li>Add <code>__set_name__</code> support, handle overriden <code>__getattribute__</code> etc.</li>
+</ol>
+</li>
+</ol>
+<p>PS. I can theoretically augment this with samples for each step, but this can also be done in individual issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-11 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Here is my thinking, proposed plan &amp; rough design.</p>
+</blockquote>
+<p>Thank you!</p>
+<blockquote>
+<p>Guiding principles I've used:</p>
+<pre><code>* Design-wise: Avoid special-casing if possible
+
+* Plan such that each steps adds one new aspect of the protocol support, while addressing the next most popular usage scenario</code></pre>
+</blockquote>
+<p>Both sound reasonable :+1:</p>
+<blockquote>
+<p>Descriptors should be modeled as <code>Type::Instance</code>, no special <code>Type</code> variant or anything fancy.</p>
+</blockquote>
+<p>:+1:</p>
+<blockquote>
+<p><code>@property</code>, <code>@classmethod</code>, <code>@staticmethod</code> should produce an instance of <code>KnownClass</code> variant(s)</p>
+</blockquote>
+<p>Maybe? Probably? But I wouldn't focus too much on use cases for now and rather get the basics straight. I think we could even defer proper decorator support until after we implemented the descriptor protocol. We might this for issues like https://github.com/astral-sh/ty/issues/207, but I'm not sure why it would be required here. Yes, those are examples of descriptors, but I don't see why we need to recognize them as such by introducing <code>KnownClass</code> variants. We want to recognize descriptors by detecting <code>__get__</code>/<code>__set__</code>/<code>__delete__</code>.</p>
+<blockquote>
+<p>Introduce <code>KnownMethod</code> enum, starting with descriptor dunders that will provide</p>
+</blockquote>
+<p>Our <code>KnownXyz</code> enums are typically used for special classes/functions from the standard library that require special treatment. They typically refer to exactly <em>one</em> individual symbol/name. For the descriptors, we want to look up if <em>a</em> method like <code>__get__</code> exists on a particular class. Maybe we want an enum for that, but it would be different from the <code>KnownXyz</code> enums (in spirit), I think.</p>
+<blockquote>
+<ul>
+<li><p>Decorators on methods should be processed at inference time and change the binding type to instance (unlike current implementation)</p>
+<ul>
+<li>This would make it much easier to handle things, like writeable properties</li>
+<li>Later this would allow supporting user provided functions/decorators that create descriptors</li>
+</ul>
+</li>
+<li><p>If class has slots, all bindings should become data-descriptors - instances of another new <code>KnownClass</code> variant</p>
+</li>
+</ul>
+</blockquote>
+<p>It would be great if we could defer decorators and slotted classes for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-12 00:48</div>
+            <div class="timeline-body"><p>@sharkdp sounds like you'd prefer going the other way around - first support custom descriptors by checking special methods, then handle common cases, like <code>@property</code>.</p>
+<p>Overall this means changing:</p>
+<p>https://github.com/astral-sh/ruff/blob/6e34f74c164a646f07f3fe9bed9492c3557a95d7/crates/red_knot_python_semantic/src/types/infer.rs#L3472</p>
+<p>and methods that it calls (<code>infer_attribute_load</code>, <code>Type::member</code>, <code>Class::instance_member</code> and indirectly <code>Class:own_instance_member</code> ).</p>
+<p>The main &quot;obstacle&quot; I see right now is that <code>Type::member</code> is used in a lot of places, but doesn't have a context parameter. But in this case we'll need to distinguish Load/Store/Del. I'd prefer trying rather than hypothetically designing the right way to address it. The simplest approach would be to implement a separate context-aware <code>member</code> call that will defer to the old <code>member</code> for everything except <code>Class</code>, <code>SubclassOf</code>, <code>Instance</code> and <code>KnownInstance</code>.</p>
+<p>Funny enough, but implementing <code>Store</code> is actually the easiest and minimal option, since it calls into <code>Class::instance_member</code> directly and can pass the context with minimal code changes.</p>
+<p>However, maybe a reasonable scope for one PR could be:</p>
+<ol>
+<li>Weave attribute access context into <code>member</code> call chain (one way or another)</li>
+<li>Add special handling of instances</li>
+</ol>
+<ul>
+<li>Check for <code>__get__</code> method and infer actual member ty using <code>Type::call</code> on the getter</li>
+<li>Same for setter and del dunders</li>
+</ul>
+<p>here:</p>
+<p>https://github.com/astral-sh/ruff/blob/6e34f74c164a646f07f3fe9bed9492c3557a95d7/crates/red_knot_python_semantic/src/types.rs#L4300-L4311</p>
+<ol start="4">
+<li>Probably extract <code>Class::own_instance_member</code> implementation into a salsa query for performance (I'd create a new one rather than using <code>symbol</code> and extending it's logic for this case)</li>
+</ol>
+<p>Does this better match your thinking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-12 11:29</div>
+            <div class="timeline-body"><blockquote>
+<p>@sharkdp sounds like you'd prefer going the other way around - first support custom descriptors by checking special methods, then handle common cases, like <code>@property</code>.</p>
+</blockquote>
+<p>Yes. I do have an old branch where I did a preliminary investigation in this direction. I picked it up today to see how far this would take us (mainly to see what to suggest here), and it looks promising. I hope you don't mind if I make an initial proposal here for the first step (also given that astral-sh/ruff#16111 might need one or two iterations before we can merge it)? I'm sure there are enough follow-up tasks, as you outlined in your <a href="https://github.com/astral-sh/ruff/issues/15966#issuecomment-2646580873">plan above</a>, if you want to contribute something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-12 15:02</div>
+            <div class="timeline-body"><p>just to re-iterate discord discussion - I'm obviously totally ok with you moving forward with this, and really appreciate that you asked!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdahlin">@jdahlin</a> on 2025-02-19 08:47</div>
+            <div class="timeline-body"><p>One popular descriptor type used by at least ORMs (django, sqlalchemy) is to return different values when accessing the attribute from the class vs from the instance:</p>
+<pre><code class="language-python">@dataclasses.dataclass
+class Column:
+    database_column: str
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self  # Accessed from the class
+        return instance.__dict__.get(self.database_column, None)  # Accessed from an instance
+
+    def __set__(self, instance, value):
+        instance.__dict__[self.database_column] = value
+
+class UserModel:
+    first_name = Column(&quot;firstName&quot;)
+
+print(UserModel.first_name)  # &lt;__main__.Column object at 0x...&gt;
+
+u = UserModel()
+u.first_name = &quot;Alice&quot;
+print(u.first_name)  # Alice
+</code></pre>
+<p>mypy solves this by using plugins (sqlalchemy-stubs/Django-stubs), I don't know how upright handles that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-19 09:01</div>
+            <div class="timeline-body"><blockquote>
+<p>return different values when accessing the attribute from the class vs from the instance</p>
+</blockquote>
+<p>We plan to support this, if the <code>__get__</code> function is annotated using appropriate <code>@overload</code>s that dispatch on the <code>instance</code> argument. See also <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md#descriptors-distinguishing-between-class-and-instance-access">this test case</a>.</p>
+<pre><code class="language-pyi">@overload
+def __get__(self, instance: None, owner: type, /) -&gt; CalledOnClassObject: ...
+@overload
+def __get__(self, instance: object, owner: type | None = None, /) -&gt; CalledOnInstance: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-21 14:25</div>
+            <div class="timeline-body"><p>A major part of this is now implemented in astral-sh/ruff#16121, but proper support for <em>data</em> descriptors is still missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16416.html">astral-sh/ruff#16416</a> on 2025-02-27 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-07 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-07 21:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

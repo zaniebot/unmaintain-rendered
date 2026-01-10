@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect file collisions / conflicts between different packages while installing - astral-sh/uv #10564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect file collisions / conflicts between different packages while installing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10564">#10564</a>
+        opened by <a href="https://github.com/mgorny">@mgorny</a>
+        on 2025-01-13 14:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgorny">@mgorny</a> on 2025-01-13 14:37</div>
+            <div class="timeline-body"><p>It is possible for two PyPI projects to provide files using the same names. When using <code>uv pip install</code>, installing both would result in <code>uv</code> silently overwriting files from the package installed earlier, and leaving over metadata for both.</p>
+<p>For example, consider the <a href="https://pypi.org/project/htmlmin/">htmlmin</a> packages and its <a href="https://pypi.org/project/htmlmin2/">htmlmin2</a> fork. Both install a <code>htmlmin</code> Python package. If I install two packages: one needing <code>htmlmin</code> and another one forked to use <code>htmlmin2</code>, I'm going to end up with <code>htmlmin</code> from either of these packages (depending on installation order), and <code>.dist-info</code> for both of them — therefore both packages will assume that their dependencies are satisfied, although I'm going to effectively end up with files from one of them (or a mix of both).</p>
+<p>I think it would be better if uv could detect when a newly installed package is attempting to overwrite files that were installed by another package before, and ideally print an error, indicating that both packages cannot be installed simultaneously.</p>
+<p>It could also be worthwhile to consider a slightly different scenario when two packages e.g. install <code>multipart.py</code> and <code>multipart</code> directory (it was previously the case with <a href="https://pypi.org/project/multipart/">multipart</a> and <a href="https://pypi.org/project/python-multipart/">python-multipart</a> packages, though the latter finally renamed itself).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 15:26</div>
+            <div class="timeline-body"><p>I don't know if we can do this, since some packages and ecosystems do this <em>intentionally</em>. It's common with Jupyter, for example, to install contents into overlapping directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2025-01-13 16:18</div>
+            <div class="timeline-body"><p>Perhaps we could at least add a warning. I've never seen it done intentionally, however I've seen multiple times when people published packages using the same Python name either accidentally, or, well, deliberately but never realizing that packages could be installed in another order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-01-13 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-04-06 06:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know if we can do this, since some packages and ecosystems do this <em>intentionally</em>. It's common with Jupyter, for example, to install contents into overlapping directories.</p>
+</blockquote>
+<p>Installing contents into overlapping directories, as in effectively namespace packages? That is entirely fine and reasonable and within the specification for how packages work. Arguably this is even okay if one package secretly injects itself into another, non-namespace, package.</p>
+<p>They should never install different file contents to the same <em>files</em> in overlapping directories. That's what is being discussed here.</p>
+<p>(As a special exception, multiple packages can install the same <code>__init__.py</code> with morally identical contents, i.e. the only thing the file does is <code>pkgutil.extend_path()</code>. Those should be allowed despite file collisions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14192.html">astral-sh/uv#14192</a> on 2025-06-21 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:05 UTC
+    </footer>
+</body>
+</html>

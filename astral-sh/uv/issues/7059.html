@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong hash is used for repeated `tensorflow-text` - astral-sh/uv #7059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong hash is used for repeated `tensorflow-text`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7059">#7059</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-05 01:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 01:22</div>
+            <div class="timeline-body"><p>Not sure it's exactly the same issue, but it is related, so adding it here.</p>
+<p>Here is a simple pyproject.toml, on macOS:</p>
+<pre><code>[project]
+name = &quot;test_uv&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.11;&lt;3.12&quot;
+dependencies = [
+  &quot;tensorflow-text @ https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.17/tensorflow_text-2.17.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16 ; sys_platform == 'darwin'&quot;,
+  &quot;tensorflow-text; sys_platform == 'linux'&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<p>an <code>uv sync</code> on this will fail with this message:</p>
+<pre><code>Resolved 41 packages in 352ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: tensorflow-text @ https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.17/tensorflow_text-2.17.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16
+  Caused by: Hash mismatch for `tensorflow-text @ https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.17/tensorflow_text-2.17.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16`
+
+Expected:
+  sha256:ff3e9a8e19256e184a0e0997b189fa4a73bb00da74a109cef542e48073d99142
+
+Computed:
+  sha256:f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16
+</code></pre>
+<p>Note that the computed is exactly as requested.</p>
+<p>More important: Removing line 7, <code>&quot;tensorflow-text; sys_platform == 'linux'&quot;,</code> allows uv to sync successfully.
+The linux line should never be activated on macos; but somehow it tells uv to fetch the hash for the linux version of the wheel and create a wrong expectation.</p>
+<p>I hope this is helpful.</p>
+<p><em>Originally posted by @maparent in https://github.com/astral-sh/uv/issues/6974#issuecomment-2329651443</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-05 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-05 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7060.html">astral-sh/uv#7060</a> on 2024-09-05 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-05 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-05 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7061.html">astral-sh/uv#7061</a> on 2024-09-05 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maparent">@maparent</a> on 2024-09-05 03:09</div>
+            <div class="timeline-body"><p>That was swift! Thanks a lot!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build is looking for the wrong sdist file - astral-sh/uv #11635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build is looking for the wrong sdist file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11635">#11635</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2025-02-19 19:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-02-19 19:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is a bit of a weird issue.</p>
+<p>First, here's how to reproduce it:</p>
+<pre><code class="language-console">$ git clone https://github.com/MeltanoLabs/tap-github tap-github-repro
+...
+
+$ cd tap-github-repro
+
+$ uv build
+Building source distribution...
+  × Failed to build `/projects/tap-github-repro`
+  ╰─▶ failed to open file `/projects/tap-github-repro/dist/meltanolabs_tap_github-1.13.0.post1.dev0+570577.tar.gz`: No such file or directory (os error 2)
+</code></pre>
+<p>But the file is there, just with a different name corresponding to the HEAD commit:</p>
+<pre><code class="language-console">$ git --no-pager log --pretty=format:&quot;%H&quot; -n1
+05705771e2c4fa6b169e3dafa158399ddb970e2d
+
+$ ls dist
+meltanolabs_tap_github-1.13.0.post1.dev0+0570577.tar.gz
+</code></pre>
+<p>Notice how uv is looking for</p>
+<pre><code class="language-diff">- meltanolabs_tap_github-1.13.0.post1.dev0+0570577.tar.gz
++ meltanolabs_tap_github-1.13.0.post1.dev0+570577.tar.gz
+</code></pre>
+<p>Now, <code>build</code> seems to do the right thing:</p>
+<pre><code class="language-console">$ uvx --from build pyproject-build .
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - poetry-core==2.1.1
+  - poetry-dynamic-versioning==1.7.1
+* Getting build dependencies for sdist...
+* Building sdist...
+* Building wheel from sdist
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - poetry-core==2.1.1
+  - poetry-dynamic-versioning==1.7.1
+* Getting build dependencies for wheel...
+* Building wheel...
+Successfully built meltanolabs_tap_github-1.13.0.post1.dev0+0570577.tar.gz and meltanolabs_tap_github-1.13.0.post1.dev0+0570577-py3-none-any.whl
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.1 (c91ee82a8 2025-02-17)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @edgarrmondragon on 2025-02-19 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-19 19:36</div>
+            <div class="timeline-body"><p>My guess is that the issue here is... when we store the local tag, if it's all numeric, we store it as a number. So we lose the leading zero.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv build is looking for a the wrong sdist file" to "uv build is looking for the wrong sdist file" by @edgarrmondragon on 2025-02-19 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 19:37</div>
+            <div class="timeline-body"><p>Thanks for the report. Presumably related to https://github.com/astral-sh/uv/pull/11593#discussion_r1959855802 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-19 19:48</div>
+            <div class="timeline-body"><p>Separate from #11593, we should probably change <code>LocalSegment::Number</code> to preserve leading zeros.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-19 19:50</div>
+            <div class="timeline-body"><p>Or maybe that's not actually a goal, to have full-fidelity there. We store any string local segments as lowercase, so we lose the casing there already in the non-numeric case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-19 19:59</div>
+            <div class="timeline-body"><p>Based on reproducing this locally, it looks like #11593 fixes this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11593.html">astral-sh/uv#11593</a> on 2025-02-19 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-02-20 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-02-20 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-02-20 08:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--system` didn't fallback to running environment when `uv` installed as python package. - astral-sh/uv #2058</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--system` didn't fallback to running environment when `uv` installed as python package.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2058">#2058</a>
+        opened by <a href="https://github.com/T-256">@T-256</a>
+        on 2024-02-28 22:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/T-256">@T-256</a> on 2024-02-28 22:02</div>
+            <div class="timeline-body"><ol>
+<li>create a venv and install <code>uv</code> in it.</li>
+<li>make sure you don't have python on the PATH.</li>
+<li>cd parent-dir to prevent <code>.venv</code> detection</li>
+</ol>
+<pre><code class="language-shell">C:\Users\User\Desktop&gt; uvtest\.venv\Scripts\python -m uv pip list
+Package Version
+------- -------
+uv      0.1.12
+
+C:\Users\User\Desktop&gt; uvtest\.venv\Scripts\python -m uv pip list --system
+error: Could not find `python.exe` through `py --list-paths` or in 'PATH'. Is Python installed?
+</code></pre>
+<p>Expected: Both of them should select <code>uvtest\.venv\Scripts\python</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-28 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:10</div>
+            <div class="timeline-body"><p>What's the use-case / motivation for invoking <code>uv</code> through <code>python -m uv</code>? (As an FYI, that will add a bunch of overhead to each invocation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:11</div>
+            <div class="timeline-body"><p>(This looks straightforward to fix though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2024-02-28 22:12</div>
+            <div class="timeline-body"><pre><code class="language-shell">$ uv pip list --help
+      [...]
+      --system
+          List packages for the system Python.
+
+          By default, `uv` lists packages in the currently activated virtual environment, or a virtual environment (`.venv`) located in the current working directory or any parent directory, falling back to the system Python if no virtual environment is found. The `--system` option instructs `uv` to use the first Python found in the system `PATH`.
+</code></pre>
+<p>I don't understand why this is a bug. From &quot;use the first Python found in the system <code>PATH</code>&quot; I would expect the observed behavior: Python is not in the <code>PATH</code>, so uv throws an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:14</div>
+            <div class="timeline-body"><p>Yeah, I guess this is debatable.</p>
+<p>Why pass system to this invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-02-28 22:33</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the use-case / motivation for invoking <code>uv</code> through <code>python -m uv</code>? (As an FYI, that will add a bunch of overhead to each invocation.)</p>
+</blockquote>
+<p>Actually, this doesn't have any usecase imo. Since first command successfully found and fallback to caller, I expected <code>--system</code> should did it too.</p>
+<blockquote>
+<p>I don't understand why this is a bug. From &quot;use the first Python found in the system <code>PATH</code>&quot; I would expect the observed behavior: Python is not in the <code>PATH</code>, so uv throws an error.</p>
+</blockquote>
+<p>Since <code>--system</code> is shorthand of <code>--python $(which python3)</code>, I think in perspective of modules run as scripts (<code>-m</code>), the <code>python/python3</code> executables are already on PATH environment.
+An example from rye app that returns PATH variable:</p>
+<pre><code>&gt; rye run hello
+C:\Users\User\Desktop\New folder (2)\ttt\.venv\Scripts;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\downlevel;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-02-28 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-02-28 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> removed by @charliermarsh on 2024-02-28 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-02-28 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2222.html">astral-sh/uv#2222</a> on 2024-03-06 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-07 15:27</div>
+            <div class="timeline-body"><p>What about we set <code>UV_DEFAULT_PYTHON</code> in the launcher and use that as precedence over <code>python</code> for the default python in uv? Many people are very used the <code>python -m</code> not only working, but being necessary to do the right thing, so i'd like to support that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 17:48</div>
+            <div class="timeline-body"><p>I suggest a similar thing in https://github.com/astral-sh/uv/issues/2222#issuecomment-1979838755</p>
+<p>I'm not opposed to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-03-10 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @konstin on 2024-03-10 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-03-10 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2334.html">astral-sh/uv#2334</a> on 2024-03-10 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2338.html">astral-sh/uv#2338</a> on 2024-03-10 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-03-21 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3736.html">astral-sh/uv#3736</a> on 2024-05-22 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-22 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-22 16:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run --active seems redundant? - astral-sh/uv #15457</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run --active seems redundant?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15457">#15457</a>
+        opened by <a href="https://github.com/AlKhrulev">@AlKhrulev</a>
+        on 2025-08-22 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlKhrulev">@AlKhrulev</a> on 2025-08-22 15:53</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello,</p>
+<p>This is the documentation for the <code>--active</code> flag:</p>
+<pre><code>Prefer the active virtual environment over the project's virtual environment.
+</code></pre>
+<p>However, <code>uv</code> already does this by default if we skip the project entirely using <code>uv run --no-project</code>.
+Because of that, I’m not sure in which cases the <code>--active</code> option produces a different result from <code>--no-project</code>.</p>
+<hr />
+<h2>Example project structure</h2>
+<p>Here’s a sample project (<code>uv_test</code>, stored in <code>/uv_test</code>):</p>
+<pre><code class="language-shell">.
+├── .git
+├── .gitignore
+├── .python-version
+├── .venv            # project venv
+├── main.py
+├── pyproject.toml
+├── README.md
+├── second_dir
+│   ├── .venv        # another venv
+└── uv.lock
+</code></pre>
+<p>According to the documentation, <code>uv run</code> will always prefer the project venv first (regardless of whether it’s currently active).
+For example, even if I activate a non-project venv:</p>
+<pre><code class="language-shell">$ source second_dir/.venv/bin/activate   # activate non-project venv
+$ uv run which python
+/uv_test/.venv/bin/python  # still resolves to project venv(as expected)
+</code></pre>
+<p>A warning is printed, which correctly highlights the issue—though it may not be obvious to users:</p>
+<pre><code>warning: `VIRTUAL_ENV=second_dir/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+</code></pre>
+<hr />
+<h2>Behavior with <code>--no-project</code></h2>
+<p>If I use <code>--no-project</code>, <code>uv</code> falls back to the active environment due to the priority rules:</p>
+<pre><code>project venv → active venv → `.venv` in current/parent directories (recursive) → executable in PATH
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-shell">$ source second_dir/.venv/bin/activate
+$ uv run --no-project which python   # skip project =&gt; use active venv(as expected)
+/uv_test/.venv/bin/python
+</code></pre>
+<p>Even if the project venv is already active, <code>--no-project</code> still defaults to it because of the discovery rules.
+This is the same behavior you’d get with <code>--active</code>:</p>
+<pre><code class="language-shell">$ source .venv/bin/activate  # manually activate project venv
+$ uv run --no-project which python
+/uv_test/.venv/bin/python # next step is to look at active venv, which happens here
+$ uv run --active which python
+/uv_test/.venv/bin/python # go directly to active venv=project venv
+</code></pre>
+<p>Everything mentioned above applies to non-project folders too as we are effectively passing <code>--no-project</code> by default and going directly to discovering an active venv first.</p>
+<hr />
+<h2>Summary</h2>
+<p>I haven’t found any case where <code>--active</code> provides behavior that <code>--no-project</code> does not.</p>
+<p>A more useful option might be something like <code>--no-active</code>, which would let you the active venv, falling back directly to <code>.venv</code> folders. It can be combined with <code>--no-project</code>. For example:</p>
+<pre><code class="language-shell">uv run --no-project             # skip project =&gt; default to active venv(might be project venv or not, just like now)
+uv run --no-project --no-active # skip project &amp; active venv =&gt; check .venv folders
+</code></pre>
+<p>Otherwise, I would suggest removing the <code>--active</code> option entirely, as it seems redundant. Feel free to correct me in case I am wrong somewhere.</p>
+<p>On a separate note, thank you for your efforts! It is a pleasure using uv 😄</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.13 (Homebrew 2025-08-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlKhrulev on 2025-08-22 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-22 16:04</div>
+            <div class="timeline-body"><p><code>--no-project</code> will not sync your project's dependencies into the active environment (which could be some arbitrary environment). In contrast, <code>--active</code> will perform both a lock and sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-22 16:06</div>
+            <div class="timeline-body"><p>So <code>--active</code> is intended to change the target environment for the project, while <code>--no-project</code> is intended to ignore the project concept entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlKhrulev">@AlKhrulev</a> on 2025-08-22 16:37</div>
+            <div class="timeline-body"><p>Hey, @zanieb thanks for the quick reply. Based on what you said, if we use <code>--active</code>, the active venv will be updated with project requirements from pyproject.toml, while <code>--no-project</code> will simply use that venv untouched without installing anything extra?</p>
+<p>In terms of locking, you mean that <code>uv run --active</code> will essentially run <code>uv lock</code> to update the project's <code>uv.lock</code> first before installing project dependencies into a new env, while <code>--no-project</code> will omit this step?</p>
+<p>As a final question, can you give me a practical example of when we would want to switch the target env for the project? My assumption was that <code>--with</code> provides necessary tools to change certain requirements already, so the use case for switching the whole venv seems less clear to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-22 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>the active venv will be updated with project requirements from pyproject.toml, while --no-project will simply use that venv untouched without installing anything extra?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>you mean that uv run --active will essentially run uv lock to update the project's uv.lock first before installing project dependencies into a new env, while --no-project will omit this step?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>As a final question, can you give me a practical example of when we would want to switch the target env for the project?</p>
+</blockquote>
+<p>You shouldn't need to, generally. We've added support for this by popular demand. See https://github.com/astral-sh/uv/pull/6834 and https://github.com/astral-sh/uv/pull/11189</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlKhrulev">@AlKhrulev</a> on 2025-08-23 04:34</div>
+            <div class="timeline-body"><p>Thank you again, @zanieb. This clarifies a lot. I do have one final question about your last point before closing this issue.</p>
+<p>To summarize, you could use <code>uv venv [PATH]</code> to intialize project venv at any <code>PATH</code> besides the default one(<code>.venv</code>) but all commands working with project env originally assumed <code>PATH=.venv</code>? That's when <code>UV_PROJECT_ENVIRONMENT</code> variable was added to let users permanently fix the project venv path for convenience? At the same time, it wasn't flexible enough for some people, so an option <code>--active</code> was added to essentially allow one-time <code>UV_PROJECT_ENVIRONMENT</code> setup, similar to the one below:</p>
+<pre><code class="language-shell">uv sync/add/run --active ...
+# same as 
+UV_PROJECT_ENVIRONMENT=&quot;$VIRTUAL_ENV&quot; uv sync/add/run ...
+</code></pre>
+<p><strong>Or so I thought</strong> but then I ran this and realised that uv still created <code>.venv</code> in that case...</p>
+<pre><code class="language-shell">$ mv .venv virtual_env
+$ uv sync # will recreate .venv(as expected)
+$ rm .venv &amp;&amp; source virtual_env/bin/active
+$ uv sync --exact --active  # I assumed would install packages into virtual_env
+Using CPython 3.11.11
+Creating virtual environment at: .venv # still created .venv?
+...
+</code></pre>
+<p>As you can tell, this is where confusion is coming from. Your issues mention <code>UV_PROJECT_ENVIRONMENT</code> but I don't see how adding <code>--active</code> solved it. Actually, I realised I don't even understand how that variable behaves because the following code also does something I didn't expect:</p>
+<pre><code class="language-shell">$ pwd # for reference
+/uv_test
+$ UV_PROJECT_ENV=second_dir/.venv uv sync --exact # I assumed would sync with second_dir/.venv
+Using CPython 3.11.11
+Creating virtual environment at: .venv # still created .venv for some reason?
+</code></pre>
+<p>Thank you in advance for your patience! I just want to figure this out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlKhrulev">@AlKhrulev</a> on 2025-08-23 04:43</div>
+            <div class="timeline-body"><p>Oh, and as an update, I've tested my example will full path to make sure it is not a problem. I am getting the same result, so I don't think that's the case:</p>
+<pre><code class="language-shell">$ UV_PROJECT_ENV=$(realpath second_dir/.venv) uv sync --exact
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-23 14:31</div>
+            <div class="timeline-body"><blockquote>
+<p>you could use uv venv [PATH] to intialize project venv at any PATH besides the default one</p>
+</blockquote>
+<p><code>uv venv</code> is just used for creating arbitrary virtual environments. You could use that environment for the project, but the concepts are not the same. There's no need to ever use <code>uv venv</code> when you're using <code>uv run</code> and <code>uv sync</code> in projects, the project environment is always created — even when using <code>UV_PROJECT_ENVIRONMENT</code>.</p>
+<p>In your examples, you're using the wrong variable name — <code>UV_PROJECT_ENV</code> is not it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlKhrulev">@AlKhrulev</a> on 2025-08-23 15:45</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv venv</code> is just used for creating arbitrary virtual environments. You could use that environment for the project, but the concepts are not the same. There's no need to ever use <code>uv venv</code> when you're using <code>uv run</code> and <code>uv sync</code> in projects, the project environment is always created — even when using <code>UV_PROJECT_ENVIRONMENT</code>.</p>
+</blockquote>
+<p>Got it but to clarify, your intention with adding <code>--active</code> was being able to specify  <code>UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV</code> for a single command, correct? Looks to be the case.</p>
+<blockquote>
+<p>In your examples, you're using the wrong variable name — <code>UV_PROJECT_ENV</code> is not it.</p>
+</blockquote>
+<p>Extremely sorry about missing that 😅 , you are totally right and now that command behaves as expected. This took a load off my mind</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-23 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Got it but to clarify, your intention with adding --active was being able to specify UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV for a single command, correct?</p>
+</blockquote>
+<p>Yeah, it makes that workflow easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlKhrulev">@AlKhrulev</a> on 2025-08-24 00:14</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Got it but to clarify, your intention with adding --active was being able to specify UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV for a single command, correct?</p>
+</blockquote>
+<p>Yeah, it makes that workflow easier.</p>
+</blockquote>
+<p>Perfect, thanks for you help. It might make sense to reflect the distinction behind <code>--active</code> and <code>--no-project</code>(i.e. locking and syncing for former and doing nothing for latter) in the documentation to make it clearer for users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlKhrulev on 2025-08-24 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vibrantlabsai/ragas/issues/2479.html">vibrantlabsai/ragas#2479</a> on 2025-12-09 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

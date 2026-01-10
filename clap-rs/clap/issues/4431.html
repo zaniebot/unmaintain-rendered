@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual bugs in `cmd` with stray underlines - clap-rs/clap #4431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Visual bugs in `cmd` with stray underlines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4431">#4431</a>
+        opened by <a href="https://github.com/thatbakamono">@thatbakamono</a>
+        on 2022-10-30 14:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thatbakamono">@thatbakamono</a> on 2022-10-30 14:36</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p><code>rustc 1.65.0-nightly (f03ce3096 2022-08-08)</code></p>
+<h3>Clap Version</h3>
+<p><code>4.0.18</code></p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rs">use clap::Command;
+
+fn main() {
+    Command::new(&quot;repro&quot;).get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --help</code></p>
+<h3>Actual Behaviour</h3>
+<p><img src="https://user-images.githubusercontent.com/13699966/198883926-98b158b4-a581-40fd-b0bd-c845f19404b5.png" alt="image" /></p>
+<h3>Expected Behaviour</h3>
+<p><img src="https://user-images.githubusercontent.com/13699966/198883870-d65286e6-7ce9-4d28-bb94-9b33ad42b328.png" alt="image" /></p>
+<h3>Additional Context</h3>
+<p>The first screenshot shows cmd, the second screenshot shows windows terminal. I wasn't able to trigger this bug in windows terminal but it's worth noting that even in cmd, it doesn't always happen:
+<img src="https://user-images.githubusercontent.com/13699966/198883969-7bccb1f1-4c99-4d22-b16e-50bb34394e45.png" alt="image" /></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @thatbakamono on 2022-10-30 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-05 03:22</div>
+            <div class="timeline-body"><p>Tbat most likely means something is going wrong with termcolor's wincon support as that is most likely the main difference between the two terminals.  Whats especially weird is that there is no reason to put an underline after &quot;information&quot; as we only use underline in headers and so we aren't touching it at that point.</p>
+<p>If you want to go an extra step, reproducing this in termcolor and creating an upstream issue would be great.  With #1433, we will most likely be moving off of termcolor though, so we'll need to keep in mind to fix this when we do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.x" by @epage on 2022-11-05 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-11-05 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2022-11-05 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saffaffi">@saffaffi</a> on 2022-12-09 22:27</div>
+            <div class="timeline-body"><p>I'm seeing this happen in Wezterm, but specifically only when the help text is printed when the output in the terminal window has reached the bottom. It happens under that condition with both <code>TERM=wezterm</code> and <code>TERM=xterm-256color</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Visual bugs in cmd" to "Visual bugs in `cmd` with stray underlines" by @epage on 2022-12-26 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Yamato-Security/hayabusa/issues/911.html">Yamato-Security/hayabusa#911</a> on 2023-02-09 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YamatoSecurity">@YamatoSecurity</a> on 2023-02-18 21:56</div>
+            <div class="timeline-body"><p>We also have the same problem when running on Windows 10 Command Prompt or Powershell Prompt.
+(It does not have this bug in Windows 11)
+Rust: 1.67.1
+Clap: 4.1.6</p>
+<p>At first it looks like this:
+<img src="https://user-images.githubusercontent.com/71482215/219901066-98d4e59a-f244-4ae1-af73-6b542aacbc53.png" alt="clap-line-1" /></p>
+<p>If I resize the window, the line will extend out from the Options group name:
+<img src="https://user-images.githubusercontent.com/71482215/219901071-d6f75eb7-19d4-469a-9d04-3aca947f9dc0.png" alt="clap-line-2" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4765.html">clap-rs/clap#4765</a> on 2023-03-17 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4767.html">clap-rs/clap#4767</a> on 2023-03-17 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-03-18 00:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A sequence of uv add an uv remove loses a package's __init__.py - astral-sh/uv #8562</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A sequence of uv add an uv remove loses a package's __init__.py</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8562">#8562</a>
+        opened by <a href="https://github.com/mgedmin">@mgedmin</a>
+        on 2024-10-25 11:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgedmin">@mgedmin</a> on 2024-10-25 11:18</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Steps to reproduce:</p>
+<ul>
+<li>mkdir /tmp/buggybyg &amp;&amp; cd /tmp/buggybug</li>
+<li>uv init</li>
+<li>uv add austin-tui  # if you uv run austin-tui now it complains that austin is missing</li>
+<li>uv add austin   # oops wrong package</li>
+<li>uv add austin-dist  # this is the right one</li>
+<li>uv remove austin  # remove the wrong one</li>
+<li>uv run austin-tui  # this now breaks</li>
+</ul>
+<p>Expected: austin-tui works</p>
+<p>Actual:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/tmp/buggybug/.venv/bin/austin-tui&quot;, line 5, in &lt;module&gt;
+    from austin_tui.__main__ import main
+  File &quot;/tmp/buggybug/.venv/lib/python3.12/site-packages/austin_tui/__main__.py&quot;, line 30, in &lt;module&gt;
+    from austin import AustinError
+ImportError: cannot import name 'AustinError' from 'austin' (unknown location)
+</code></pre>
+<p><code>uv sync</code>  failed to improve the situation.</p>
+<p><code>uv remove austin-dist &amp;&amp; uv add austin-dist</code> failed to improve the situation</p>
+<p><code>uv remove austin-tui &amp;&amp; uv add austin-tui</code> fixed it</p>
+<p>I think what happened was that multiple unrelated packages were somehow both claiming ownership of <code>.venv/lib/python3.12/site-packages/austin/__init__.py</code>, and removing one of them removed the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 13:23</div>
+            <div class="timeline-body"><p>Unfortunately this might just be a behavior of Python when package modules overlap. I'm not sure if we can do anything about it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP031 may be undesirable in raw strings and regular expressions - astral-sh/ruff #14555</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP031 may be undesirable in raw strings and regular expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14555">#14555</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-11-23 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-11-23 08:30</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Here's a real life example taken from astropy</p>
+<pre><code class="language-python"># t.py
+import re
+KEYWORD_LENGTH = 8
+re.compile(r&quot;^[A-Z0-9_-]{0,%d}$&quot; % KEYWORD_LENGTH)
+</code></pre>
+<p>This code isn't flagged for rule UP031 under ruff 0.7</p>
+<pre><code>❯ uvx --with 'ruff&lt;0.8.0' ruff check t.py --select UP031
+All checks passed!
+</code></pre>
+<p>but running the latest ruff 0.8.0:</p>
+<pre><code>❯ uvx --with 'ruff==0.8.0' ruff check t.py --select UP031
+t.py:3:12: UP031 Use format specifiers instead of percent format
+  |
+1 | import re
+2 | KEYWORD_LENGTH = 8
+3 | re.compile(r&quot;^[A-Z0-9_-]{0,%d}$&quot; % KEYWORD_LENGTH)
+  |            ^^^^^^^^^^^^^^^^^^^^^ UP031
+  |
+  = help: Replace with format specifiers
+
+Found 1 error.
+</code></pre>
+<p>On the other hand, this is the form of that string that I need to write in order to satisfy the newly expended rule UP031</p>
+<pre><code class="language-python">rf&quot;^[A-Z0-9_-]{{0,{KEYWORD_LENGTH}}}$&quot;
+</code></pre>
+<p>note that I needed to escape raw <code>{</code> and <code>}</code> to <code>{{</code> and <code>}}</code> respectively. I don't think this makes the code more readable, and may actually be counterproductive. Admittedly this is a small example were it doesn't hurt too much but there could legitimately be much more involved cases in the wild.</p>
+<p>Would it be possible to change this rule so that it ignores raw strings altogether ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/issues/17430.html">astropy/astropy#17430</a> on 2024-11-23 08:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-25 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-11-25 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 08:53</div>
+            <div class="timeline-body"><p>Thanks for bringing this up. This is an interesting case.</p>
+<p>I agree that the need for escaping the <code>{</code> adds some cognitive overhead, but I personally don't think it's too bad and I prefer trading the <code>%</code> and <code>%d</code> with two extra escapes.</p>
+<blockquote>
+<p>Would it be possible to change this rule so that it ignores raw strings altogether ?</p>
+</blockquote>
+<p>To me it's not clear how escaping <code>{</code> with <code>{{</code> is much different from having to write <code>\{</code>. Both cases require escaping.  That's why this is more about whether UP031 should be raised on strings containing any curly braces that require escaping. I would find it surprising if I opted into UP031, and some strings wouldn't be flagged (for not very apparent reasons of why).</p>
+<p>I'm interested in hearing more opinions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eerovaher">@eerovaher</a> on 2024-11-25 14:55</div>
+            <div class="timeline-body"><p>I'm not convinced the f-string is better than printf-style formatting in this particular case, but there is also the option of using <a href="https://docs.python.org/3/library/string.html#template-strings">template strings</a>. The example snippet could be rewritten as</p>
+<pre><code class="language-python">import re
+from string import Template
+KEYWORD_LENGTH = 8
+re.compile(Template(&quot;^[A-Z0-9_-]{0,$N}$$&quot;).substitute(N=KEYWORD_LENGTH))
+</code></pre>
+<p>That being said, template strings are more convenient if the string contains many literal <code>{}</code> pairs and the example string contains only one, but they are a valid way of replacing printf-style formatting, which strengthens the case for UP031 not making any exceptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-11-25 23:33</div>
+            <div class="timeline-body"><blockquote>
+<p>To me it's not clear how escaping <code>{</code> with <code>{{</code> is much different from having to write <code>\{</code>. Both cases require escaping.</p>
+</blockquote>
+<p>No, the latter case doesn't require escaping at all, per the original description where <code>r''</code> strings are successfully used for precisely that reason.</p>
+<p>I'd argue that users of raw strings are making a pretty clear statement that they would prefer to avoid having to use escapes. Although perhaps I'd also argue that f-strings should only be used when they subjectively look prettier than the alternative (and that all use cases for PEP 701 look bad) and that therefore UP031 is too unreliable due to the inability to control the heuristics used and should simply be disabled in project configs. So maybe it doesn't matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 06:42</div>
+            <div class="timeline-body"><blockquote>
+<p>No, the latter case doesn't require escaping at all, per the original description where r'' strings are successfully used for precisely that reason.</p>
+</blockquote>
+<p>My point here was mainly that I don't see a difference between converting a normal string containing curly braces to an f-string to converting a raw string containing curly braces to an f-string.</p>
+<pre><code class="language-py">&quot;a { len: %d }&quot; % LENGTH
+r&quot;a { len: %d }&quot; % LENGTH
+</code></pre>
+<p>For both cases, it's necessary to escape <code>{</code> when rewriting the format string to an f-string.</p>
+<pre><code class="language-py">&quot;a { len: {{LENGTH}} }&quot;
+r&quot;a { len: {{LENGTH}} }&quot;
+</code></pre>
+<blockquote>
+<p>I'd argue that users of raw strings are making a pretty clear statement that they would prefer to avoid having to use escapes. Although perhaps I'd also argue that f-strings should only be used when they subjectively look prettier</p>
+</blockquote>
+<p>Yeah, that's a hard metric to get right for all users, but I'm all ears if someone has suggestions. I'd suggest that users feel free to use noqa comments if they feel that it arguably looks worse in the few one-off cases where this happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy/pulls/17452.html">astropy/astropy#17452</a> on 2024-11-26 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bashonly">@bashonly</a> on 2024-11-26 14:53</div>
+            <div class="timeline-body"><blockquote>
+<p>My point here was mainly that I don't see a difference between converting a normal string containing curly braces to an f-string to converting a raw string containing curly braces to an f-string.</p>
+</blockquote>
+<p>IME, complex regex patterns with literal curly braces are where UP031 can cause the most trouble, e.g. this code snippet...</p>
+<pre><code class="language-py">        fields_m = re.finditer(
+            r'''(?x)
+                (?P&lt;key&gt;%s)\s*:\s*function\s*\((?P&lt;args&gt;(?:%s|,)*)\){(?P&lt;code&gt;[^}]+)}
+            ''' % (_FUNC_NAME_RE, _NAME_RE),
+            fields)
+</code></pre>
+<p>...would become...</p>
+<pre><code class="language-py">        fields_m = re.finditer(
+            rf'''(?x)
+                (?P&lt;key&gt;{_FUNC_NAME_RE})\s*:\s*function\s*\((?P&lt;args&gt;(?:{_NAME_RE}|,)*)\){{(?P&lt;code&gt;[^}}]+)}}
+            ''',
+            fields)
+</code></pre>
+<p>...making it significantly harder to read and maintain (IMO)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

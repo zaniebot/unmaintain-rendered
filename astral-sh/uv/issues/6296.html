@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow extras in `uvx` command - astral-sh/uv #6296</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow extras in `uvx` command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6296">#6296</a>
+        opened by <a href="https://github.com/dimaqq">@dimaqq</a>
+        on 2024-08-21 04:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-08-21 04:26</div>
+            <div class="timeline-body"><p>How to specify package extras with <code>uvx</code>?</p>
+<p>Or, in other words, how to run <code>httpx</code> with <code>uvx</code>?</p>
+<pre><code class="language-command">&gt; uvx --version
+uv-tool-uvx 0.3.0 (Homebrew 2024-08-20)
+&gt; uvx httpx
+The httpx command line client could not run because the required dependencies were not installed.
+Make sure you've installed everything with: pip install 'httpx[cli]'
+&gt; uvx httpx[cli]
+error: Not a valid package or extra name: &quot;httpx[cli]&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Eyal-Shalev">@Eyal-Shalev</a> on 2024-08-21 04:38</div>
+            <div class="timeline-body"><p>Try <code>uvx 'httpx[cli]'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-21 06:23</div>
+            <div class="timeline-body"><p><code>uvx --with 'httpx[cli]' httpx</code> works, but this is something we should support better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6306.html">astral-sh/uv#6306</a> on 2024-08-21 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uvx extras, or how to httpx?" to "Extras in uvx" by @konstin on 2024-08-21 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 13:17</div>
+            <div class="timeline-body"><p>Yeah I think <code>httpx[cli]</code> <em>could</em> be supported (install <code>httpx[cli]</code>, then run the <code>httpx</code> entrypoint).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2024-08-21 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-08-21 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extras in uvx" to "Allow extras in `uvx` command" by @charliermarsh on 2024-08-21 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-08-23 20:21</div>
+            <div class="timeline-body"><p>pipx run does this; you can specify version specifiers and extras. When making the package name, it runs them through packaging and just picks the package name out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-08-23 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @zanieb on 2024-08-23 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 20:29</div>
+            <div class="timeline-body"><p>I'm not opposed to supporting this in the short-term. If there's a reason <code>uvx httpx[cli]</code> shouldn't work lmk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 01:34</div>
+            <div class="timeline-body"><p>We need to decide on the following cases:</p>
+<ul>
+<li><code>uvx httpx==0.6.0</code></li>
+<li><code>uvx httpx[cli]</code></li>
+<li><code>uvx httpx[cli]==0.6.0</code></li>
+<li><code>uvx httpx[cli]@0.6.0</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 02:54</div>
+            <div class="timeline-body"><p>I think including the extra is arguably just an extension of the name, whereas the <code>==</code> syntax is in another category. So I'd basically say just the following are allowed:</p>
+<ul>
+<li><code>uvx httpx[cli]</code></li>
+<li><code>uvx httpx[cli]@0.6.0</code></li>
+</ul>
+<p>Alternatively, we could support <code>--extra</code>, e.g., <code>uvx --extra cli httpx</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-09-16 03:21</div>
+            <div class="timeline-body"><p>I know pipx supports the first three. Haven’t seen the forth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-09-16 03:29</div>
+            <div class="timeline-body"><p>Note, the benefits of just parsing the version and extra syntax like normal, and passing on the package name, is that people don't have to learn a new syntax (it works just like pip), and you can do things like <code>uvx cmake~=3.23.0</code>, <code>uvx &quot;https[cli]&lt;0.6&quot;</code>, <code>uvx &quot;ruff&gt;=0.6&quot;</code>,  etc. It's literally just what you'd pass to pip. That's how pipx works, anyway, and I don't think anyone's complained (though I don't follow too closely).</p>
+<p>Might make sense to support the extras first, then decide on version stuff later, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hukkin/mdformat/issues/332.html">hukkin/mdformat#332</a> on 2024-10-30 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-11-12 04:27</div>
+            <div class="timeline-body"><p>I think one more usage pattern belongs here:</p>
+<p>I wanted to do:</p>
+<pre><code class="language-command">&gt; uvx 'git+https://github.com/tox-dev/tox.git@main#egg=tox' --version
+error: Not a valid package or extra name: &quot;git+https://github.com/tox-dev/tox.git@main#egg=tox&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+</code></pre>
+<p>I can work around that with:</p>
+<pre><code>&gt; uvx --with 'git+https://github.com/tox-dev/tox.git@main#egg=tox' tox --version
+ Updated https://github.com/tox-dev/tox.git (343fe92)
+4.23.3.dev10+g343fe92 from /Users/dima/Library/Caches/uv/archive-v0/guRzVYUj3CZf_BUckU7HB/lib/python3.11/site-packages/tox/__init__.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-23 03:30</div>
+            <div class="timeline-body"><p>I'm personally okay with supporting <code>uvx httpx==0.6.0</code> (and any valid specifier).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apify/crawlee-python/issues/703.html">apify/crawlee-python#703</a> on 2024-12-06 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apify/crawlee-python/issues/628.html">apify/crawlee-python#628</a> on 2024-12-06 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaheba">@jaheba</a> on 2025-01-08 09:18</div>
+            <div class="timeline-body"><p>Looking at this issue, I'm a bit confused why <code>--from</code> is not recommended here, as it is the way of specifying what package to actually install?</p>
+<p>From my understanding, the specified command of <code>uvx</code> has some &quot;magic&quot; to it:</p>
+<p>On one hand there is the command to run and then there is the package to install it from.</p>
+<p>Usually, these are the same -- hence one can just do <code>uvx ruff</code>. However, that is just a shorthand for <code>uvx --from ruff ruff</code>.</p>
+<p>Similarly, <code>uvx ruff@0.8</code> will expand to something akin to <code>uvx --from ruff~=0.8 ruff</code>.</p>
+<p>Note that if <code>--from</code> is specified, there is no attempt to decode the command:</p>
+<pre><code class="language-sh">$ uvx --from &quot;ruff~=0.8&quot; ruff@0.8                                                                                                                                       
+The executable `ruff@0.8` was not found.
+warning: An executable named `ruff@0.8` is not provided by package `ruff`.
+</code></pre>
+<hr />
+<p>With that established, the question becomes how to populate <code>--from</code>, if only the <code>command</code> is specified.</p>
+<p>What I understand from the docs, the current allowed formats for <code>command</code> are:</p>
+<ul>
+<li><code>&lt;package&gt;</code> (e.g., <code>ruff</code>) and</li>
+<li><code>&lt;package&gt;@&lt;version&gt;</code> (e.g., <code>ruff@latest</code>).</li>
+</ul>
+<p>Now, we might want to add:</p>
+<ul>
+<li><code>&lt;package&gt;[&lt;extras&gt;]</code>, e.g. (<code>httpx[cli]</code>)</li>
+<li><code>&lt;package&gt;==&lt;version&gt;</code>, e.g. <code>httpx==0.6.0</code>, <code>httpx~=0.6.0</code></li>
+<li><code>&lt;git-url&gt;, e.g. </code>git+https://github.com/tox-dev/tox.git@main#egg=tox`</li>
+</ul>
+<p>The implementation for the first two should be relatively simple</p>
+<ul>
+<li><code>uvx &lt;package&gt;[&lt;extras&gt;]</code> becomes <code>uvx --from &lt;package&gt;[&lt;extras&gt;] package</code></li>
+<li><code>uvx &lt;package&gt;==&lt;version&gt;</code> becomes <code>uvx --from &lt;package&gt;==&lt;version&gt; package</code></li>
+<li><code>uvx &lt;package&gt;[&lt;extras&gt;]==&lt;version&gt;</code> becomes <code>uvx --from &lt;package&gt;[&lt;extras&gt;]==&lt;version&gt; package</code></li>
+</ul>
+<p>In the case of the git repository we can't assume the package name (and thus command) from the specified url, rather we would need to install the package first to receive the package (and command) name.</p>
+<p>I think there is also an argument to support mixing extras with uv's version requirements (<code>uvx httpx[cli]@0.6.0</code>). But in that case, one should not be able to also specify version pip-like requirements (<code>uvx httpx[cli]==0.6.0@0.6.0</code>).</p>
+<hr />
+<p>In my view, <code>uv</code> should at least support extras and <code>==1.2.3</code> like version specifiers to be as compatible with <code>pipx</code> as possible.</p>
+<p>Mixing <code>@&lt;version&gt;</code> and <code>==&lt;version&gt;</code> specifiers should not be allowed.</p>
+<p>Support for path-resources could also be nice, but is less important in my eyes. One can argue that is more explicit to require the command name, if it can't be derived from the package-path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11337.html">astral-sh/uv#11337</a> on 2025-02-08 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-12 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-12 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apify/crawlee-python/pulls/1011.html">apify/crawlee-python#1011</a> on 2025-02-23 19:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

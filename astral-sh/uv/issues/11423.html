@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` seems to add package directory to `sys.path` - astral-sh/uv #11423</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` seems to add package directory to `sys.path`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11423">#11423</a>
+        opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a>
+        on 2025-02-11 15:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2025-02-11 15:50</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>At first I thought this must be easily reproducible, but now I'm actually a bit stuck and unsure if this is really an issue in UV. But I can't seem to figure out how it could <em>not</em> be UV, either.</p>
+<p>The issue I'm facing is that I'd like to add a <code>pytr.types</code> module, but when using <code>uv run pytr</code> it fails because <code>pytr.types</code> is also importable as <code>types</code>. Adding to <code>pytr/__init__.py</code>:</p>
+<pre><code class="language-diff">+import sys
++print(&quot;imported pytr.__init__; sys.path =&quot;, sys.path)
+</code></pre>
+<p>and running <code>uv run pytr</code>, I get:</p>
+<pre><code class="language-console">$ uv run pytr
+imported pytr.__init__; sys.path = ['/home/niklas/git/pytr/pytr', '/home/niklas/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python313.zip', '/home/niklas/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python3.13', '/home/niklas/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python3.13/lib-dynload', '/home/niklas/git/pytr/.venv/lib/python3.13/site-packages', '/home/niklas/git/pytr']
+</code></pre>
+<p>However, when run not <em>directly</em> with Uv:</p>
+<pre><code class="language-console">$ uv run bash -c pytr
+imported pytr.__init__; sys.path = ['/home/niklas/git/pytr/.venv/bin', '/home/niklas/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python313.zip', '/home/niklas/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python3.13', '/home/niklas/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python3.13/lib-dynload', '/home/niklas/git/pytr/.venv/lib/python3.13/site-packages', '/home/niklas/git/pytr']
+</code></pre>
+<p>Note how the first contains the path <code>/home/niklas/git/pytr/pytr</code>, but it shouldn't. Where does this path come from, and is this a bug in UV or somewhere in the project?</p>
+<p>You can reproduce this on the latest version of https://github.com/pytr-org/pytr (<a href="https://github.com/pytr-org/pytr/commit/f830c55a59f5d8233a06e7328184886601583ff5">f830c55</a>).</p>
+<h3>Platform</h3>
+<p>WSL2 Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>0.5.30</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @NiklasRosenstein on 2025-02-11 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 16:25</div>
+            <div class="timeline-body"><p>I did a quick demo of this and your assessment seems right?</p>
+<pre><code>rm -rf example
+mkdir example
+cd example
+mkdir example_module
+touch example_module/__init__.py
+echo &quot;import sys; print(sys.path)&quot; &gt; example_module/__main__.py
+</code></pre>
+<pre><code>❯ uv run example_module
+['/Users/zb/workspace/uv/example/example_module', ...]
+
+❯ python -m example_module
+['/Users/zb/workspace/uv/example', ...]
+</code></pre>
+<p>I'm a little confused by that, since my understanding is we're just invoking <code>python -m</code>. Can investigate soon...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-02-11 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-02-11 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2025-02-11 17:15</div>
+            <div class="timeline-body"><p>I did not realize <code>uv run</code> works with just a module name. <code>:surprised-pikachu-face:</code></p>
+<p>Though I think that gives us a clue as to what's going on, and explains why I could at first not reproduce this in a smaller example. If you add a <code>pyproject.toml</code> with</p>
+<pre><code class="language-toml">[project.scripts]
+example-module = &quot;example_module.__main__:main&quot;
+</code></pre>
+<p>You will see the difference:</p>
+<pre><code class="language-console">$ uv run example_module
+['/home/niklas/Desktop/example-module/example_module', ...]
+$ uv run example-module
+['/home/niklas/Desktop/example-module/.venv/bin', ...]
+</code></pre>
+<p>Looks to me like it's going wrong where Uv decides to run the module over the entry point, which also seems like another bug of its own right. <code>uv run pytr</code> should probably prefer to use what's defined in the entrypoints rather than executing the module's <code>__main__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 21:27</div>
+            <div class="timeline-body"><p>Agree. I thought we fixed that but perhaps not... trying to find the previous discussion still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 21:30</div>
+            <div class="timeline-body"><p>Aha https://github.com/astral-sh/uv/issues/9167</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11431.html">astral-sh/uv#11431</a> on 2025-02-11 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2025-02-13 07:45</div>
+            <div class="timeline-body"><p>Thanks for looking into this, @zanieb!</p>
+<p>Checking out Uv 0.5.31 right now, I've got a few follow up questions.</p>
+<ul>
+<li><p>If <code>uv run &lt;name&gt;</code> should run a module that matches that name (when no other entrypoint or binary in <code>PATH</code> exists (?)), does that not mean it should run that module whether it lives in the current working directory or not (I.e. whatever is importable)?</p>
+<p>That does not seem to be the case right now (although, to be fair, it seems this behaviour has not changed from 0.5.30):</p>
+<pre><code class="language-console">❯ tree
+.
+├── pyproject.toml
+├── README.md
+├── src
+│   └── example_module
+│       ├── __init__.py
+│       └── __main__.py
+└── uv.lock
+
+❯ uv run example_module
+error: Failed to spawn: `example_module`
+  Caused by: No such file or directory (os error 
+
+❯ mv src/example_module/ .
+
+❯ uv run example_module
+Hello!
+</code></pre>
+</li>
+<li><p>I think that the package path in <code>sys.path</code> is still unexpected and should not be there. When you have a Python package, you don't expect (and don't want) to be able to import it's submodules as top-level modules.</p>
+<pre><code class="language-console">❯ echo &quot;import sys; print(sys.path)&quot; &gt; example_module/__main__.py
+
+❯ uv run example_module
+['/home/niklas/Desktop/example-module/example_module',  ...]
+</code></pre>
+</li>
+</ul>
+<p>(All uv commands show with version 0.5.31)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>If uv run <name> should run a module that matches that name (when no other entrypoint or binary in PATH exists (?)), does that not mean it should run that module whether it lives in the current working directory or not (I.e. whatever is importable)?</p>
+</blockquote>
+<p>It's actually emulating the <code>python &lt;name&gt;</code> functionality</p>
+<pre><code>❯ mkdir example
+❯ cd example
+❯ mkdir foo
+❯ touch foo/__init__.py
+❯ touch foo/__main__.py
+❯ python foo
+</code></pre>
+<p>This requires the module to be in the working directory</p>
+<p>And the path is the same for <code>python</code> and <code>uv run</code></p>
+<pre><code>❯ python foo
+['/Users/zb/workspace/uv/example/foo', ...]
+❯ uv run foo
+['/Users/zb/workspace/uv/example/foo', ...]
+</code></pre>
+<p>I know this is a little confusing, but we just implemented the <code>python &lt;name&gt;</code> parity.</p>
+<blockquote>
+<p>(when no other entrypoint or binary in PATH exists (?)),</p>
+</blockquote>
+<p>We don't read the <code>PATH</code>, just the virtual environment bin. So the Python module could take precedence in some cases still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2025-02-14 11:12</div>
+            <div class="timeline-body"><p>TIL <code>python &lt;path-to-directory&gt;</code> is a thing. Thanks 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

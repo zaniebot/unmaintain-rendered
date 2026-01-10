@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ephemeral environments lacking scripts entry points - astral-sh/uv #13327</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ephemeral environments lacking scripts entry points</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13327">#13327</a>
+        opened by <a href="https://github.com/fvbrandt">@fvbrandt</a>
+        on 2025-05-07 10:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fvbrandt">@fvbrandt</a> on 2025-05-07 10:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Short summary</h1>
+<p>Ephemeral environments created via <code>--with</code> do not contain the &quot;scripts&quot; entry points (Windows: <code>scripts/&lt;script&gt;.exe</code>, Linux: <code>bin/&lt;script&gt;</code>) of their base venv. Thus, if one launches such an entry point from an ephemeral venv, one ends up running the interpreter from the base venv which lacks the packages installed by <code>--with</code>.</p>
+<p>I already asked about this in discord and @zanieb replied it might be worth opening an issue because it might be a bug.
+If it is not a bug, then at least it might be worth a warning in the documentation of the <code>--with</code> parameter.</p>
+<h1>Minimal example</h1>
+<details>
+<summary>Windows cmd commands</summary>
+
+<pre><code>uv init uvEphemeralScriptsExample
+cd uvEphemeralScriptsExample
+uv add pytest
+# (Now we have an entry point we want to use: .venv/scripts/pytest.exe)
+mkdir tests
+# Add a test case that depends on another package, e.g. &quot;pyyaml&quot;. We will install that package via --with
+(echo def test_pyyaml^(^):&amp; echo     import yaml)&gt; tests\test_pyyaml.py
+uv run --with pyyaml python -c &quot;import subprocess;subprocess.run(['pytest'], text=True)&quot;
+</code></pre>
+</details>
+
+<h1>Work arounds / why is this bad?</h1>
+<p>In my particular use case the script I needed was <code>pytest</code> and a work around was to call <code>[sys.executable, &quot;-m&quot;, &quot;pytest&quot;]</code>.</p>
+<p>But the pytest docs have an explicit warning that this triggers slightly different behavior: https://docs.pytest.org/en/7.1.x/explanation/pythonpath.html#invoking-pytest-versus-python-m-pytest</p>
+<p>Also, other python packages might define more complicated entry points and trying to circumvent the entry-points to directly call the underlying API seems like bad practice.</p>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>uv 0.7.2 (481d05d8d 2025-04-30)</p>
+<h3>Python version</h3>
+<p>tested on 3.9 and 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @fvbrandt on 2025-05-07 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-06-08 10:12</div>
+            <div class="timeline-body"><p>Ooof thanks for opening this issue, because this is a really nasty one and I would be still debugging otherwise!</p>
+<p>The fact that <code>uv run --with pdbpp python -c 'import pdbpp'</code> works and <code>uv run --with pdbpp pytest</code> claims pdbpp isn't installed is <em>really</em> confusing. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8883.html">astral-sh/uv#8883</a> on 2025-06-08 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 14:36</div>
+            <div class="timeline-body"><p>@hynek just to be clear, the latter claims that <code>pytest</code> isn't installed, yes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-06-09 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>@hynek just to be clear, the latter claims that <code>pytest</code> isn't installed, yes?</p>
+</blockquote>
+<p>No, much worse. :)</p>
+<p>It falls back to the pytest from the main venv which means the <code>--with</code> is meaningless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 14:48</div>
+            <div class="timeline-body"><p>I see, that makes more sense.</p>
+<p>The fix here is presumably to copy over all the entry points from the parent environment with a re-written shebang, unless an entry point already exists in the ephemeral layer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-07-07 14:37</div>
+            <div class="timeline-body"><p>BTW, I would argue that the correct behavior here would be to only look at the venv's bin directory like tox – or at least warning if the command is coming from somewhere else. It's really hard to debug once a transparent fallback happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 14:58</div>
+            <div class="timeline-body"><p>That'd be really breaking and confusing, e.g., <code>uv run bash -c &quot;...&quot;</code> would warn?</p>
+<p>It might be reasonable to warn if a command comes from another <em>Python</em> environment, but not just if it's from outside the virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-07-07 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>It might be reasonable to warn if a command comes from another <em>Python</em> environment, but not just if it's from outside the virtual environment.</p>
+</blockquote>
+<p>ah yes, that!</p>
+<p>especially if it's the main one. that was really super confusing to debug. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14729.html">astral-sh/uv#14729</a> on 2025-07-21 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14749.html">astral-sh/uv#14749</a> on 2025-07-21 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14790.html">astral-sh/uv#14790</a> on 2025-07-21 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jupyterlab/jupyterlab/issues/17716.html">jupyterlab/jupyterlab#17716</a> on 2025-07-21 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-22 12:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

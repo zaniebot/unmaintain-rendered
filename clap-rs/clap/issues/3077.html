@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>conflicts_with overriding required isn't two way - clap-rs/clap #3077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>conflicts_with overriding required isn't two way</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3077">#3077</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-07 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-07 22:16</div>
+            <div class="timeline-body"><p>When testing the previous examples, I found I had to revert some changes.  We need to dig into this more. See https://github.com/clap-rs/clap/commit/93948cc7248926a6d2678ad3a065cabada8658a1</p>
+<hr />
+<p>Reproduction case (will need to be turned into a test case)</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    // Of the three argument types, flags are the most simple. Flags are simple switches which can
+    // be either &quot;on&quot; or &quot;off&quot;
+    //
+    // clap also supports multiple occurrences of flags, the common example is &quot;verbosity&quot; where a
+    // user could want a little information with &quot;-v&quot; or tons of information with &quot;-v -v&quot; or &quot;-vv&quot;
+    let matches = App::new(&quot;MyApp&quot;)
+        // Regular App configuration goes here...
+        // We'll add a flag that represents an awesome meter...
+        //
+        // I'll explain each possible setting that &quot;flags&quot; accept. Keep in mind
+        // that you DO NOT need to set each of these for every flag, only the ones
+        // you want for your individual case.
+        .arg(
+            Arg::with_name(&quot;awesome&quot;)
+                .help(&quot;turns up the awesome&quot;) // Displayed when showing help info
+                .short('a') // Trigger this arg with &quot;-a&quot;
+                .long(&quot;awesome&quot;) // Trigger this arg with &quot;--awesome&quot;
+                .takes_value(true)
+                .multiple(true) // This flag should allow multiple
+                // occurrences such as &quot;-aaa&quot; or &quot;-a -a&quot;
+                .requires(&quot;config&quot;) // Says, &quot;If the user uses -a, they MUST
+                // also use this other 'config' arg too&quot;
+                // Can also specify a list using
+                // requires_all(Vec&lt;&amp;str&gt;)
+                .conflicts_with(&quot;output&quot;), // Opposite of requires(), says &quot;if the
+                                           // user uses -a, they CANNOT use 'output'&quot;
+                                           // also has a conflicts_with_all(Vec&lt;&amp;str&gt;)
+                                           // and an exclusive(true)
+        )
+        .arg_from_usage(&quot;-c, --config=[FILE] 'sets a custom config file'&quot;)
+        .arg_from_usage(&quot;&lt;output&gt; 'sets an output file'&quot;)
+        .get_matches();
+
+    // We can find out whether or not awesome was used
+    if matches.is_present(&quot;awesome&quot;) {
+        println!(&quot;Awesomeness is turned on&quot;);
+    }
+
+    // If we set the multiple option of a flag we can check how many times the user specified
+    //
+    // Note: if we did not specify the multiple option, and the user used &quot;awesome&quot; we would get
+    // a 1 (no matter how many times they actually used it), or a 0 if they didn't use it at all
+    match matches.occurrences_of(&quot;awesome&quot;) {
+        0 =&gt; println!(&quot;Nothing is awesome&quot;),
+        1 =&gt; println!(&quot;Some things are awesome&quot;),
+        2 =&gt; println!(&quot;Lots of things are awesome&quot;),
+        _ =&gt; println!(&quot;EVERYTHING is awesome!&quot;),
+    }
+
+    // Continued program logic goes here...
+}
+</code></pre>
+<p>Running</p>
+<pre><code class="language-rust">$ cargo run -- --awesome --config foo
+error: The following required arguments were not provided:
+    &lt;output&gt;
+
+USAGE:
+    test-clap --config &lt;FILE&gt; --awesome &lt;awesome&gt;... &lt;output&gt;
+
+For more information try --help
+</code></pre>
+<p><code>output</code> is required but the conflict against it is suppose to remove that.</p>
+<p>I double checked with clap2 and it seems to be present there as well.</p>
+<p><code>Validator::is_missing_required_ok</code> is most likely where this is located.  #3212 changed up the conflict code which hopefully made it easier to reuse in this function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "co" to "conflicts_with isn't two way" by @epage on 2021-12-07 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-12-07 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-08 00:38</div>
+            <div class="timeline-body"><p>To give more context, I suspect that this is being caused by the shortcircuit nature of our validation where we report errors as soon as we find them and construct usage string for the errors with that information. It is probably done like this for performance reasons.</p>
+<p>But since I haven't actually done any investigation, this might not actually end up being the reason at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2021-12-09 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 22:35</div>
+            <div class="timeline-body"><p>We'll have to recreate a reproduction case but I believe the problem I had is that there wasn't an error being reported, so this would be independent of short-circuiting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2021-12-13 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-22 19:39</div>
+            <div class="timeline-body"><p>My suspicion is that the root cause is</p>
+<pre><code class="language-rust">    fn is_missing_required_ok(&amp;self, a: &amp;Arg&lt;'help&gt;, matcher: &amp;ArgMatcher) -&gt; bool {
+        debug!(&quot;Validator::is_missing_required_ok: {}&quot;, a.name);
+        self.validate_arg_conflicts(a, matcher) || self.p.overridden.contains(&amp;a.id)
+    }
+
+    fn validate_arg_conflicts(&amp;self, a: &amp;Arg&lt;'help&gt;, matcher: &amp;ArgMatcher) -&gt; bool {
+        debug!(&quot;Validator::validate_arg_conflicts: a={:?}&quot;, a.name);
+        a.blacklist.iter().any(|conf| {
+            matcher.contains(conf)
+                || self
+                    .p
+                    .app
+                    .groups
+                    .iter()
+                    .find(|g| g.id == *conf)
+                    .map_or(false, |g| g.args.iter().any(|arg| matcher.contains(arg)))
+        })
+    }
+</code></pre>
+<p>We are only checking what the missing required arg conflicts with.  We are not checking what present args conflict with the missing required arg.  In the conflict detection code, we explicitly look for this.</p>
+<p>Another bug in this is that we are not recursively unrolling the group like <code>unroll_args_in_group</code> does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-23 16:53</div>
+            <div class="timeline-body"><pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    // Of the three argument types, flags are the most simple. Flags are simple switches which can
+    // be either &quot;on&quot; or &quot;off&quot;
+    //
+    // clap also supports multiple occurrences of flags, the common example is &quot;verbosity&quot; where a
+    // user could want a little information with &quot;-v&quot; or tons of information with &quot;-v -v&quot; or &quot;-vv&quot;
+    let matches = App::new(&quot;MyApp&quot;)
+        // Regular App configuration goes here...
+        // We'll add a flag that represents an awesome meter...
+        //
+        // I'll explain each possible setting that &quot;flags&quot; accept. Keep in mind
+        // that you DO NOT need to set each of these for every flag, only the ones
+        // you want for your individual case.
+        .arg(
+            Arg::with_name(&quot;awesome&quot;)
+                .help(&quot;turns up the awesome&quot;) // Displayed when showing help info
+                .short('a') // Trigger this arg with &quot;-a&quot;
+                .long(&quot;awesome&quot;) // Trigger this arg with &quot;--awesome&quot;
+                .takes_value(true)
+                .multiple(true) // This flag should allow multiple
+                // occurrences such as &quot;-aaa&quot; or &quot;-a -a&quot;
+                .requires(&quot;config&quot;) // Says, &quot;If the user uses -a, they MUST
+                // also use this other 'config' arg too&quot;
+                // Can also specify a list using
+                // requires_all(Vec&lt;&amp;str&gt;)
+                .conflicts_with(&quot;output&quot;), // Opposite of requires(), says &quot;if the
+                                           // user uses -a, they CANNOT use 'output'&quot;
+                                           // also has a conflicts_with_all(Vec&lt;&amp;str&gt;)
+                                           // and an exclusive(true)
+        )
+        .arg_from_usage(&quot;-c, --config=[FILE] 'sets a custom config file'&quot;)
+        .arg_from_usage(&quot;&lt;output&gt; 'sets an output file'&quot;)
+        .get_matches();
+
+    // We can find out whether or not awesome was used
+    if matches.is_present(&quot;awesome&quot;) {
+        println!(&quot;Awesomeness is turned on&quot;);
+    }
+
+    // If we set the multiple option of a flag we can check how many times the user specified
+    //
+    // Note: if we did not specify the multiple option, and the user used &quot;awesome&quot; we would get
+    // a 1 (no matter how many times they actually used it), or a 0 if they didn't use it at all
+    match matches.occurrences_of(&quot;awesome&quot;) {
+        0 =&gt; println!(&quot;Nothing is awesome&quot;),
+        1 =&gt; println!(&quot;Some things are awesome&quot;),
+        2 =&gt; println!(&quot;Lots of things are awesome&quot;),
+        _ =&gt; println!(&quot;EVERYTHING is awesome!&quot;),
+    }
+
+    // Continued program logic goes here...
+}
+</code></pre>
+<p>Running</p>
+<pre><code class="language-rust">$ cargo run -- --awesome --config foo
+error: The following required arguments were not provided:
+    &lt;output&gt;
+
+USAGE:
+    test-clap --config &lt;FILE&gt; --awesome &lt;awesome&gt;... &lt;output&gt;
+
+For more information try --help
+</code></pre>
+<p><code>output</code> is required but the conflict against it is suppose to remove that.</p>
+<p>I double checked with clap2 and it seems to be present there as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "conflicts_with isn't two way" to "conflicts_with overriding required isn't two way" by @epage on 2021-12-23 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3212.html">clap-rs/clap#3212</a> on 2021-12-23 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-23 20:35</div>
+            <div class="timeline-body"><p>#3212 made the conflict code more reusable so hopefully it'll make it easier to fix <code>is_missing_required_ok</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2021-12-23 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2021-12-23 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-09-20 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcospb19">@marcospb19</a> on 2022-10-17 04:13</div>
+            <div class="timeline-body"><p>@epage is this a valid reproduction of this error?</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+pub struct Args {
+    #[arg(required = true)]
+    output: String,
+
+    #[arg(long, conflicts_with = &quot;output&quot;)]
+    format: String,
+}
+
+fn main() {
+    let _ = Args::parse();
+}
+</code></pre>
+<pre><code class="language-sh">$ cargo run -q -- --format .tar.gz
+error: The following required argument was not provided: output
+
+Usage: rust --format &lt;FORMAT&gt; &lt;OUTPUT&gt;
+
+For more information try '--help'
+</code></pre>
+<p>Not only the usage example contains both <code>--format</code> and <code>&lt;OUTPUT&gt;</code>, which should be impossible, but clap also thinks that <code>&lt;OUTPUT&gt;</code> should be required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-17 12:32</div>
+            <div class="timeline-body"><p>@marcospb19 you are likely running into a different issue: <code>output</code> is a <code>String</code> so when <code>conflcits_with</code> overrides <code>required = true</code>, there isn't anything to fill the value in with.  You need to make it <code>output: Option&lt;String&gt;</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:44 UTC
+    </footer>
+</body>
+</html>

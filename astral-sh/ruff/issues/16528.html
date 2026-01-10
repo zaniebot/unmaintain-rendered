@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect not executed iterators - astral-sh/ruff #16528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect not executed iterators</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16528">#16528</a>
+        opened by <a href="https://github.com/prauscher">@prauscher</a>
+        on 2025-03-06 07:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/prauscher">@prauscher</a> on 2025-03-06 07:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Imagine a code like this:</p>
+<pre><code class="language-python">
+values: dict[tuple[int, str]] = {&quot;thirteen&quot;: (13, &quot;Lorem&quot;), &quot;twentytwo&quot;: (22, &quot;Ipsum&quot;), &quot;two&quot;: (2, &quot;Dolor&quot;)}
+
+def cleanup_dict(timeout: int) -&gt; Iterator[str]:
+    items = list((key, value) for key, (expiration, value) in values.item() if expiration &lt; timeout)
+    for key, value in items:
+        yield key, value
+        del values[key]
+
+# does nothing
+cleanup_dict(20)
+
+# only runs partial
+next(cleanup_dict(20))
+
+# runs the iterator
+deque(cleanup_dict(20), 0)
+</code></pre>
+<p>It might be a bad design to mix action and iterator, but what about a rule detecting iterators not executed? A Bonus point would be to detect a not fully executed iterator too. While it might be obvious in this example, given a few bad names and splitting the code over separate files would probably already obfuscate the problem quite well.</p>
+<p>So my suggestion would be a rule which triggers on the first call (&quot;does nothing&quot;), but not on the third call (with deque). Whether the rule should also trigger on the second call is up to debate, maybe this could be split in a separate rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-06 07:23</div>
+            <div class="timeline-body"><p>Detecting iterators that aren't used at all seems reasonable to me. I don't think we can warn about only partially used iterators because that's a very valid use case.</p>
+<p>Either way, I think we should wait for better type inference to make this rule useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-06 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-03-06 07:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

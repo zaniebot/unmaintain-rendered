@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weird behaviour of uv sync and the uv cache - astral-sh/uv #16786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>weird behaviour of uv sync and the uv cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16786">#16786</a>
+        opened by <a href="https://github.com/kforner">@kforner</a>
+        on 2025-11-20 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kforner">@kforner</a> on 2025-11-20 10:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I preinstall a package using uv pip install, the cache seems to be populated but <code>uv sync</code> does not use it.
+Here's a Dockerfile:</p>
+<pre><code>FROM ubuntu:24.04
+COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /uvx /bin/
+USER ubuntu
+RUN uv python install 3.14
+WORKDIR /home/ubuntu
+
+RUN uv venv &amp;&amp; uv pip install pandas &amp;&amp; rm -rf .venv
+COPY --chown=ubuntu:ubuntu py_dev/project_only/pyproject.toml .
+
+RUN ls  -ls ~/.cache/uv/wheels-v5/pypi/
+
+RUN rm  -rf .venv &amp;&amp; uv sync --link-mode copy -v 2&gt;&amp;1 | grep pandas | grep  Identified
+RUN rm  -rf .venv &amp;&amp; uv sync --link-mode copy -v 2&gt;&amp;1 | grep pandas 
+</code></pre>
+<p>Here's the pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;dummy&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.14&quot;
+dependencies = [ 
+    &quot;pandas&quot;
+]
+</code></pre>
+<p>and here's the interesting part of the docker build output:</p>
+<pre><code>#16 [stage-0 10/12] RUN ls  -ls ~/.cache/uv/wheels-v5/pypi/
+#16 0.157 total 24
+#16 0.157 4 drwxr-xr-x 2 ubuntu ubuntu 4096 Nov 20 10:28 numpy
+#16 0.157 4 drwxr-xr-x 2 ubuntu ubuntu 4096 Nov 20 10:28 pandas
+#16 0.157 4 drwxr-xr-x 2 ubuntu ubuntu 4096 Nov 20 10:28 python-dateutil
+#16 0.157 4 drwxr-xr-x 2 ubuntu ubuntu 4096 Nov 20 10:28 pytz
+#16 0.157 4 drwxr-xr-x 2 ubuntu ubuntu 4096 Nov 20 10:28 six
+#16 0.157 4 drwxr-xr-x 2 ubuntu ubuntu 4096 Nov 20 10:28 tzdata
+#16 DONE 0.2s
+
+#17 [stage-0 11/12] RUN rm  -rf .venv &amp;&amp; uv sync --link-mode copy -v 2&gt;&amp;1 | grep pandas | grep  Identified
+#17 18.57 DEBUG Identified uncached distribution: pandas==2.3.3
+#17 DONE 18.8s
+
+#18 [stage-0 12/12] RUN rm  -rf .venv &amp;&amp; uv sync --link-mode copy -v 2&gt;&amp;1 | grep pandas
+#18 0.416 DEBUG Registry requirement already cached: pandas==2.3.3
+#18 0.416  + pandas==2.3.3
+#18 DONE 0.6s
+</code></pre>
+<ul>
+<li>the first <code>uv sync</code> execution states that <code> DEBUG Identified uncached distribution: pandas==2.3.3</code></li>
+<li>the second run: DEBUG Registry requirement already cached: pandas==2.3.3
+Since pandas was already installed using <code>uv pip install</code>, and the cache populated, I can't understand what's happening.</li>
+</ul>
+<h3>Platform</h3>
+<p>docker on linux</p>
+<h3>Version</h3>
+<p>uv 0.9.8</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kforner on 2025-11-20 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kforner">@kforner</a> on 2025-11-20 10:43</div>
+            <div class="timeline-body"><p>Note that substituting <code>uv pip install pandas</code> by <code>uv add pandas</code> fixes that behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-20 14:28</div>
+            <div class="timeline-body"><p>How do you know they're resolving to the same version of <code>pandas</code>? What version does <code>uv pip install pandas</code> install?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-20 14:59</div>
+            <div class="timeline-body"><p>I can reproduce this with any package, e.g. sniffio. When using torch it become notable that we don't share the cache between <code>uv pip install</code> and <code>uv sync</code>, but we do share it inside the interface. That shouldn't happen, cause they are the same file and should go through the same preparation and install code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-20 15:05</div>
+            <div class="timeline-body"><p>MRE (works with sniffio too, but pandas or torch shows that it's not just a logging error):</p>
+<pre><code>uv cache clean &amp;&amp; uv venv -c &amp;&amp; uv pip install nvidia-nccl-cu12 &amp;&amp; rm -rf .venv # Fresh
+uv venv -c &amp;&amp; uv pip install nvidia-nccl-cu12 &amp;&amp; rm -rf .venv # Cached
+rm -rf .venv &amp;&amp; rm -f pyproject.toml &amp;&amp; uv init &amp;&amp; uv add nvidia-nccl-cu12 # Fresh, but it should be cached
+rm -rf .venv &amp;&amp; rm -f pyproject.toml &amp;&amp; uv init &amp;&amp; uv add nvidia-nccl-cu12 # Cached
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-20 21:58</div>
+            <div class="timeline-body"><p>I think this is because in <code>uv pip</code>, we don't compute hashes by default, but <code>uv sync</code> needs them to validate -- so we end up re-downloading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-20 21:59</div>
+            <div class="timeline-body"><p>In other words, I think this works if you add <code>--verify-hashes</code> to <code>uv pip install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kforner">@kforner</a> on 2025-11-21 08:44</div>
+            <div class="timeline-body"><p>Thanks, I confirm that <code>--verify-hashes</code> fixes it.
+Is there a reason it is not enabled by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16816.html">astral-sh/uv#16816</a> on 2025-11-22 03:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect parsing of hyphenized positional arguments with mutiple positionals - clap-rs/clap #1287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect parsing of hyphenized positional arguments with mutiple positionals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1287">#1287</a>
+        opened by <a href="https://github.com/hstefan">@hstefan</a>
+        on 2018-06-04 22:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hstefan">@hstefan</a> on 2018-06-04 22:12</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.26.0 (a77568041 2018-05-07)</p>
+<h3>Affected Version of clap</h3>
+<p>clap = &quot;2&quot;</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">let matches = App::new(&quot;xargs (clone)&quot;)
+        .setting(AppSettings::TrailingVarArg)
+        .arg(
+            Arg::with_name(&quot;command&quot;)
+                .required(true)
+                .default_value(&quot;echo&quot;))
+        .arg(
+            Arg::from_usage(&quot;[initial-args]... initial arguments for command&quot;)
+            .allow_hyphen_values(true)
+        )
+       .get_matches();
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p><code>./xargs echo du -s </code></p>
+<p>&quot;command&quot; should be set to &quot;echo&quot;, and &quot;initial-args&quot; should be a list [&quot;du&quot;, &quot;-s&quot;]</p>
+<h3>Actual Behavior Summary</h3>
+<p><code>error: Found argument '-s' which wasn't expected, or isn't valid in this context</code></p>
+<h3>Steps to Reproduce the issue</h3>
+<p>Define app with two or more positional arguments, one of them being varags, and run the program with hyphenized arguments for the varargs.</p>
+<h3>Debug output</h3>
+<p><a href="https://github.com/kbknapp/clap-rs/files/2070128/log.txt">log.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hstefan">@hstefan</a> on 2018-06-04 22:29</div>
+            <div class="timeline-body"><p>A possible workaround for this issue is using <code>AllowLeadingHyphen</code>, but this still has a potential issue of parsing the remaining positionals as actual flags for the program. E.g. when calling &quot;./xargs du -h&quot; we'll print the help text, instead of simply storing &quot;-h&quot; in the list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 01:09</div>
+            <div class="timeline-body"><p>@hstefan Thanks!</p>
+<p>As per our discussion on Gitter, this is a bug.</p>
+<p>Here's my thoughts when it comes to how to fix it:</p>
+<p>Assume running <code>$ xargs du -s</code> for the following scenario</p>
+<p>The reason it's not allowing <code>-s</code> even though the last positional arg is allowing values to start with a hyphen is that clap hasn't started parsing that command yet (<code>initial-args</code>) and therefore doesn't know how to check whether that arg allows hyphen values or not</p>
+<p>The simplified flow of parsing is this (blue is what is happening in your case):</p>
+<p><img src="https://clap.rs/wp-content/uploads/2018/06/clap-parsing.jpeg" alt="flow" /></p>
+<p>There are two key parts in your case, when it's checking if the arg it's parsing is part of a value from a previous arg, or a new arg altogether. In this case it's correctly determining that it's a new arg, but because the arg starts with a single <code>-</code> it jumps to parsing short arguments. Next it tries to determine if it's an option, a flag, or something unexpected (an error). It first checks all options and finds nothing, so it checks all flags and again finds nothing. So <a href="https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L1699-L1704">clap now assumes it's an error, and exits.</a></p>
+<p>Notice how it never goes back and checks if maybe this is just a positional arg that happens to allow values starting with <code>-</code>. We can see this is the case by re-running the program with <code>$ xargs du foo -s</code> which works as expected. Because once clap realizes it's parsing a positional argument which allows <code>-</code> values, at the &quot;Is a value from a previous arg?&quot; section it jumps to parsing the value instead of trying to parse the argument as a flag/option.</p>
+<p>So how can we fix it? It's <em>slightly</em> more complicated than I'd first thought, but still not too bad. In short, we just need to <a href="https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L940-L964">save the return value of <code>parse_short_arg</code></a> (and <a href="https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L930-L935">here for <code>parse_long_arg</code></a>) and in the case it's an error for &quot;unknown_arg&quot;, allow parsing to continue to the check for positional args.</p>
+<p>Hopefully this is a good starting point, please let me know if you get hung up :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @kbknapp on 2018-06-05 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1290.html">clap-rs/clap#1290</a> on 2018-06-07 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shakyShane">@shakyShane</a> on 2019-06-03 12:21</div>
+            <div class="timeline-body"><p>@kbknapp I'm running into this same issue, where we want to define sub commands (to get auto generated help etc) but for those subcommands to consume all arguments regardless of hyphens.</p>
+<p>It looks like a fix was abandonned, is that because there's a separate fix?</p>
+<p>Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../getsentry/sentry-cli/pulls/770.html">getsentry/sentry-cli#770</a> on 2020-06-22 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 13:29</div>
+            <div class="timeline-body"><p>I can't reproduce it with master:</p>
+<pre><code class="language-rust">use clap::{App, Arg, AppSettings};
+
+fn main() {
+    let _matches = App::new(&quot;xargs (clone)&quot;)
+            .setting(AppSettings::TrailingVarArg)
+            .arg(
+                Arg::new(&quot;command&quot;)
+                    .required(true)
+                    .default_value(&quot;echo&quot;))
+            .arg(
+                Arg::from(&quot;[initial-args]... initial arguments for command&quot;)
+                .allow_hyphen_values(true)
+            )
+           .get_matches_from(&amp;[&quot;xargs&quot;,  &quot;echo&quot;, &quot;du&quot;, &quot;-s&quot;]);
+
+    println!(&quot;{:#?}&quot;, _matches);
+}
+</code></pre>
+<pre><code>ArgMatches {
+    args: {
+        command: MatchedArg {
+            occurs: 1,
+            ty: CommandLine,
+            indices: [
+                1,
+            ],
+            vals: [
+                &quot;echo&quot;,
+            ],
+        },
+        initial-args: MatchedArg {
+            occurs: 2,
+            ty: CommandLine,
+            indices: [
+                2,
+                3,
+            ],
+            vals: [
+                &quot;du&quot;,
+                &quot;-s&quot;,
+            ],
+        },
+    },
+    subcommand: None,
+}
+</code></pre>
+<p>So let's say it was fixed somewhere along the way :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-06-30 13:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:49 UTC
+    </footer>
+</body>
+</html>

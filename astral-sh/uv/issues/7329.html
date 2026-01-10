@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project's name interferes with resolution logic - astral-sh/uv #7329</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Project's name interferes with resolution logic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7329">#7329</a>
+        opened by <a href="https://github.com/nhedger">@nhedger</a>
+        on 2024-09-12 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nhedger">@nhedger</a> on 2024-09-12 13:26</div>
+            <div class="timeline-body"><p>When attempting to <code>add</code> or <code>sync</code> a dependency to a project, if the dependency depends on a package whose name matches the name in your pyproject.toml, resolution fails.</p>
+<hr />
+<p>Create the following <strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;dagster&quot;
+version = &quot;0.0.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<p>Run <code>uv add dagster-webserver --verbose</code> (<code>dagster-webserver</code> depends on <code>dagster</code>)</p>
+<p><a href="https://github.com/user-attachments/files/16980042/log.txt">log.txt</a> (too big to paste)</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Changing the name in pyproject.toml makes it work correctly.</p>
+<p>Running on macOS 14.6.1 (23G93), with uv 0.4.9 (Homebrew 2024-09-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-12 13:28</div>
+            <div class="timeline-body"><p>I think it's correct to fail here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nhedger">@nhedger</a> on 2024-09-12 13:31</div>
+            <div class="timeline-body"><p>I wasn't sure either. I guess it wasn't immediately obvious why the resolution was failing, which led me to dig further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 13:34</div>
+            <div class="timeline-body"><p>We could add a note about this somewhere. Is the error message helpful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nhedger">@nhedger</a> on 2024-09-12 14:21</div>
+            <div class="timeline-body"><p>The error got me confused at first because I did not understand why the dependency I was adding was depending on my project.</p>
+<pre><code>Because only the following versions of dagster-webserver are available:
+          dagster-webserver&gt;=1.3.14,&lt;=1.4.12
+          dagster-webserver&gt;=1.4.13,&lt;=1.5.13
+          dagster-webserver&gt;=1.5.14,&lt;=1.7.1
+          dagster-webserver&gt;=1.7.2,&lt;=1.7.8
+          dagster-webserver&gt;=1.7.9
+      and dagster-webserver==1.3.14 depends on your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.0
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+</code></pre>
+<blockquote>
+<p>and dagster-webserver==1.3.14 depends on your project</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 15:42</div>
+            <div class="timeline-body"><p>I see okay thanks! I think we can do better there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-09-12 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 00:12</div>
+            <div class="timeline-body"><p>A possible solution here is that we'd add a &quot;hint&quot; after a resolution error (we have some infrastructure for this) if the project name shadows the name of a package available in the index. I'm not sure if we'll have checked if the package is available though.</p>
+<p>Another (perhaps easier to implement)  solution is to hint if a dependency of the project depends on the project itself e.g. here <code>dagster-webserver</code> is a dependency of the project and depends on the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucab">@lucab</a> on 2024-09-18 09:24</div>
+            <div class="timeline-body"><p>As a side note related to <code>uv add</code>, the dependency resolution error message is overly verbose in part because it reports details about all available versions, at once.
+Manually asking the resolver to pick the &quot;currently latest available&quot; version results in a much a shorter and direct output:</p>
+<pre><code>$ uv add 'dagster-webserver==1.8.7'
+  × No solution found when resolving dependencies:
+  ╰─▶ Because dagster-webserver==1.8.7 depends on your project and your project depends
+      on dagster-webserver==1.8.7, we can conclude that your project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 14:00</div>
+            <div class="timeline-body"><p>Oof yeah here's the whole error message.</p>
+<p>I think there's another problem here. Like we should collapse these and say &quot;all versions of <code>dagster-webserver</code> depend on your project&quot; instead of enumerating each version. I can look into that... probably hard.</p>
+<pre><code> × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of dagster-webserver are available:
+          dagster-webserver&gt;=1.3.14,&lt;=1.4.12
+          dagster-webserver&gt;=1.4.13,&lt;=1.5.13
+          dagster-webserver&gt;=1.5.14,&lt;=1.7.1
+          dagster-webserver&gt;=1.7.2,&lt;=1.7.8
+          dagster-webserver&gt;=1.7.9
+      and dagster-webserver==1.3.14 depends on your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.0
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.0 depends on your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.1
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.1 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.3
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.3 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.5
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.5 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.7
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.7 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.9
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.9 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.11
+          dagster-webserver&gt;1.4.12,&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.11 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.13 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.15
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.15 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.4.17
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.4.17 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.1
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.1 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.3
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.3 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.5
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.5 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.7
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.7 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.9
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.9 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.11
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.11 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.5.13
+          dagster-webserver&gt;1.5.13,&lt;1.5.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.5.13 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.0
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.0 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.2
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.2 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.4
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.4 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.6
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.6 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.8
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.8 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.10
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.10 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.12
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.12 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.6.14
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.6.14 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.7.1
+          dagster-webserver&gt;1.7.1,&lt;1.7.2
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.7.1 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.7.3
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.7.3 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.7.5
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.7.5 depends on your project and your project, we can conclude that all of:
+          dagster-webserver&lt;1.7.7
+          dagster-webserver&gt;1.7.8,&lt;1.7.9
+      depend on your project.
+      And because dagster-webserver==1.7.7 depends on your project and your project, we can conclude that dagster-webserver&lt;1.7.9 depends on your project.
+      And because dagster-webserver==1.7.9 depends on your project and your project, we can conclude that dagster-webserver&lt;1.7.11 depends on your project.
+      And because dagster-webserver==1.7.11 depends on your project and your project, we can conclude that dagster-webserver&lt;1.7.13 depends on your project.
+      And because dagster-webserver==1.7.13 depends on your project and your project, we can conclude that dagster-webserver&lt;1.7.15 depends on your project.
+      And because dagster-webserver==1.7.15 depends on your project and your project, we can conclude that dagster-webserver&lt;1.8.0 depends on your project.
+      And because dagster-webserver==1.8.0 depends on your project and your project, we can conclude that dagster-webserver&lt;1.8.2 depends on your project.
+      And because dagster-webserver==1.8.2 depends on your project and dagster-webserver==1.8.3 was yanked, we can conclude that dagster-webserver&lt;1.8.4 depends on your project.
+      And because dagster-webserver==1.8.4 depends on your project and your project, we can conclude that dagster-webserver&lt;1.8.6 depends on your project.
+      And because dagster-webserver==1.8.6 depends on your project and your project depends on dagster-webserver, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 14:02</div>
+            <div class="timeline-body"><p>Here's the derivation tree</p>
+<pre><code>Resolver derivation tree after reduction
+  dagster==0.0.0 depends on dagster-webserver*
+    dagster-webserver==1.8.7 depends on dagster==1.8.7
+      dagster-webserver==1.8.6 depends on dagster==1.8.6
+        dagster-webserver==1.8.5 depends on dagster==1.8.5
+          dagster-webserver==1.8.4 depends on dagster==1.8.4
+            dagster-webserver==1.8.3 yanked
+              dagster-webserver==1.8.2 depends on dagster==1.8.2
+                dagster-webserver==1.8.1 depends on dagster==1.8.1
+                  dagster-webserver==1.8.0 depends on dagster==1.8.0
+                    dagster-webserver==1.7.16 depends on dagster==1.7.16
+                      dagster-webserver==1.7.15 depends on dagster==1.7.15
+                        dagster-webserver==1.7.14 depends on dagster==1.7.14
+                          dagster-webserver==1.7.13 depends on dagster==1.7.13
+                            dagster-webserver==1.7.12 depends on dagster==1.7.12
+                              dagster-webserver==1.7.11 depends on dagster==1.7.11
+                                dagster-webserver==1.7.10 depends on dagster==1.7.10
+                                  dagster-webserver==1.7.9 depends on dagster==1.7.9
+                                    dagster-webserver==1.7.8 depends on dagster==1.7.8
+                                      dagster-webserver==1.7.7 depends on dagster==1.7.7
+                                        dagster-webserver==1.7.6 depends on dagster==1.7.6
+                                          dagster-webserver==1.7.5 depends on dagster==1.7.5
+                                            dagster-webserver==1.7.4 depends on dagster==1.7.4
+                                              dagster-webserver==1.7.3 depends on dagster==1.7.3
+                                                dagster-webserver==1.7.2 depends on dagster==1.7.2
+                                                  dagster-webserver==1.7.1 depends on dagster==1.7.1
+                                                    dagster-webserver==1.7.0 depends on dagster==1.7.0
+                                                      dagster-webserver==1.6.14 depends on dagster==1.6.14
+                                                        dagster-webserver==1.6.13 depends on dagster==1.6.13
+                                                          dagster-webserver==1.6.12 depends on dagster==1.6.12
+                                                            dagster-webserver==1.6.11 depends on dagster==1.6.11
+                                                              dagster-webserver==1.6.10 depends on dagster==1.6.10
+                                                                dagster-webserver==1.6.9 depends on dagster==1.6.9
+                                                                  dagster-webserver==1.6.8 depends on dagster==1.6.8
+                                                                    dagster-webserver==1.6.7 depends on dagster==1.6.7
+                                                                      dagster-webserver==1.6.6 depends on dagster==1.6.6
+                                                                        dagster-webserver==1.6.5 depends on dagster==1.6.5
+                                                                          dagster-webserver==1.6.4 depends on dagster==1.6.4
+                                                                            dagster-webserver==1.6.3 depends on dagster==1.6.3
+                                                                              dagster-webserver==1.6.2 depends on dagster==1.6.2
+                                                                                dagster-webserver==1.6.1 depends on dagster==1.6.1
+                                                                                  dagster-webserver==1.6.0 depends on dagster==1.6.0
+                                                                                    dagster-webserver==1.5.14 depends on dagster==1.5.14
+                                                                                      dagster-webserver==1.5.13 depends on dagster==1.5.13
+                                                                                        dagster-webserver==1.5.12 depends on dagster==1.5.12
+                                                                                          dagster-webserver==1.5.11 depends on dagster==1.5.11
+                                                                                            dagster-webserver==1.5.10 depends on dagster==1.5.10
+                                                                                              dagster-webserver==1.5.9 depends on dagster==1.5.9
+                                                                                                dagster-webserver==1.5.8 depends on dagster==1.5.8
+                                                                                                  dagster-webserver==1.5.7 depends on dagster==1.5.7
+                                                                                                    dagster-webserver==1.5.6 depends on dagster==1.5.6
+                                                                                                      dagster-webserver==1.5.5 depends on dagster==1.5.5
+                                                                                                        dagster-webserver==1.5.4 depends on dagster==1.5.4
+                                                                                                          dagster-webserver==1.5.3 depends on dagster==1.5.3
+                                                                                                            dagster-webserver==1.5.2 depends on dagster==1.5.2
+                                                                                                              dagster-webserver==1.5.1 depends on dagster==1.5.1
+                                                                                                                dagster-webserver==1.5.0 depends on dagster==1.5.0
+                                                                                                                  dagster-webserver==1.4.17 depends on dagster==1.4.17
+                                                                                                                    dagster-webserver==1.4.16 depends on dagster==1.4.16
+                                                                                                                      dagster-webserver==1.4.15 depends on dagster==1.4.15
+                                                                                                                        dagster-webserver==1.4.14 depends on dagster==1.4.14
+                                                                                                                          dagster-webserver==1.4.13 depends on dagster==1.4.13
+                                                                                                                            dagster-webserver==1.4.12 depends on dagster==1.4.12
+                                                                                                                              dagster-webserver==1.4.11 depends on dagster==1.4.11
+                                                                                                                                dagster-webserver==1.4.10 depends on dagster==1.4.10
+                                                                                                                                  dagster-webserver==1.4.9 depends on dagster==1.4.9
+                                                                                                                                    dagster-webserver==1.4.8 depends on dagster==1.4.8
+                                                                                                                                      dagster-webserver==1.4.7 depends on dagster==1.4.7
+                                                                                                                                        dagster-webserver==1.4.6 depends on dagster==1.4.6
+                                                                                                                                          dagster-webserver==1.4.5 depends on dagster==1.4.5
+                                                                                                                                            dagster-webserver==1.4.4 depends on dagster==1.4.4
+                                                                                                                                              dagster-webserver==1.4.3 depends on dagster==1.4.3
+                                                                                                                                                dagster-webserver==1.4.2 depends on dagster==1.4.2
+                                                                                                                                                  dagster-webserver==1.4.1 depends on dagster==1.4.1
+                                                                                                                                                    dagster-webserver==1.4.0 depends on dagster==1.4.0
+                                                                                                                                                      dagster-webserver==1.3.14 depends on dagster==1.3.14
+                                                                                                                                                      no versions of dagster-webserver&lt;1.3.14 | &gt;1.3.14, &lt;1.4.0 | &gt;1.4.0, &lt;1.4.1 | &gt;1.4.1, &lt;1.4.2 | &gt;1.4.2, &lt;1.4.3 | &gt;1.4.3, &lt;1.4.4 | &gt;1.4.4, &lt;1.4.5 | &gt;1.4.5, &lt;1.4.6 | &gt;1.4.6, &lt;1.4.7 | &gt;1.4.7, &lt;1.4.8 | &gt;1.4.8, &lt;1.4.9 | &gt;1.4.9, &lt;1.4.10 | &gt;1.4.10, &lt;1.4.11 | &gt;1.4.11, &lt;1.4.12 | &gt;1.4.12, &lt;1.4.13 | &gt;1.4.13, &lt;1.4.14 | &gt;1.4.14, &lt;1.4.15 | &gt;1.4.15, &lt;1.4.16 | &gt;1.4.16, &lt;1.4.17 | &gt;1.4.17, &lt;1.5.0 | &gt;1.5.0, &lt;1.5.1 | &gt;1.5.1, &lt;1.5.2 | &gt;1.5.2, &lt;1.5.3 | &gt;1.5.3, &lt;1.5.4 | &gt;1.5.4, &lt;1.5.5 | &gt;1.5.5, &lt;1.5.6 | &gt;1.5.6, &lt;1.5.7 | &gt;1.5.7, &lt;1.5.8 | &gt;1.5.8, &lt;1.5.9 | &gt;1.5.9, &lt;1.5.10 | &gt;1.5.10, &lt;1.5.11 | &gt;1.5.11, &lt;1.5.12 | &gt;1.5.12, &lt;1.5.13 | &gt;1.5.13, &lt;1.5.14 | &gt;1.5.14, &lt;1.6.0 | &gt;1.6.0, &lt;1.6.1 | &gt;1.6.1, &lt;1.6.2 | &gt;1.6.2, &lt;1.6.3 | &gt;1.6.3, &lt;1.6.4 | &gt;1.6.4, &lt;1.6.5 | &gt;1.6.5, &lt;1.6.6 | &gt;1.6.6, &lt;1.6.7 | &gt;1.6.7, &lt;1.6.8 | &gt;1.6.8, &lt;1.6.9 | &gt;1.6.9, &lt;1.6.10 | &gt;1.6.10, &lt;1.6.11 | &gt;1.6.11, &lt;1.6.12 | &gt;1.6.12, &lt;1.6.13 | &gt;1.6.13, &lt;1.6.14 | &gt;1.6.14, &lt;1.7.0 | &gt;1.7.0, &lt;1.7.1 | &gt;1.7.1, &lt;1.7.2 | &gt;1.7.2, &lt;1.7.3 | &gt;1.7.3, &lt;1.7.4 | &gt;1.7.4, &lt;1.7.5 | &gt;1.7.5, &lt;1.7.6 | &gt;1.7.6, &lt;1.7.7 | &gt;1.7.7, &lt;1.7.8 | &gt;1.7.8, &lt;1.7.9 | &gt;1.7.9, &lt;1.7.10 | &gt;1.7.10, &lt;1.7.11 | &gt;1.7.11, &lt;1.7.12 | &gt;1.7.12, &lt;1.7.13 | &gt;1.7.13, &lt;1.7.14 | &gt;1.7.14, &lt;1.7.15 | &gt;1.7.15, &lt;1.7.16 | &gt;1.7.16, &lt;1.8.0 | &gt;1.8.0, &lt;1.8.1 | &gt;1.8.1, &lt;1.8.2 | &gt;1.8.2, &lt;1.8.3 | &gt;1.8.3, &lt;1.8.4 | &gt;1.8.4, &lt;1.8.5 | &gt;1.8.5, &lt;1.8.6 | &gt;1.8.6, &lt;1.8.7 | &gt;1.8.7
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7505.html">astral-sh/uv#7505</a> on 2024-09-18 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7524.html">astral-sh/uv#7524</a> on 2024-09-18 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-20 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-11 15:06</div>
+            <div class="timeline-body"><p>Sorry, I'm not sure to understand the issue here, which I experience too.</p>
+<p>Locally, with uv 0.4.20, I'm able to install my dependencies. Yet in CI, with the same version, 0.4.20, I'm getting this error:</p>
+<pre><code> Using CPython 3.12.7 interpreter at: /opt/hostedtoolcache/Python/3.12.7/x64/bin/python
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of griffe-inherited-docstrings are
+      available:
+          griffe-inherited-docstrings&lt;=1.0.0
+          griffe-inherited-docstrings==1.0.1
+      and griffe-inherited-docstrings==1.0.0 depends on your project, we can
+      conclude that griffe-inherited-docstrings&gt;=1.0.0,&lt;1.0.1 depends on your
+      project.
+      And because griffe-inherited-docstrings==1.0.1 depends on your project,
+      we can conclude that griffe-inherited-docstrings&gt;=1.0.0 depends on your
+      project.
+      And because griffe:dev depends on griffe-inherited-docstrings&gt;=1.0 and
+      your project depends on griffe:dev, we can conclude that your project's
+      requirements are unsatisfiable.
+
+      hint: The package `griffe-inherited-docstrings` depends on the package
+      `griffe` but the name is shadowed by your project. Consider changing the
+      name of the project.
+</code></pre>
+<p>The only difference between local and CI is that in CI I pass <code>--no-editable</code> to <code>uv sync</code>, yet passing this same flag locally works fine (even after removing <code>uv.lock</code> and <code>.venv</code>).</p>
+<p>Does this hint mean that cyclic dependencies are not supported :thinking:? I think it's pretty common for plugins/extensions to specify the main project as dependency (django-apps specify their accepted django versions, mkdocs plugins their accepted mkdocs versions, griffe extensions their accepted griffe versions, etc.), and then if the main project starts depending on a plugin/extension, it creates kind of a cyclic dependency (actual example: mkdocs depends on mkdocstrings to render API docs, and mkdocstrings specifies its accepted mkdocs versions), but I think it resolved fine previously.</p>
+<p>Changing project names is not possible, and removing the <code>griffe</code> dep spec from <code>griffe-inherited-docstrings</code> is definitely not wanted either. Yet <code>griffe</code> requires <code>griffe-inherited-docstrings</code> to build its docs... So, what should I do here :melting_face:?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-11 22:36</div>
+            <div class="timeline-body"><p>Hmmm, looks like it's working again in CI :shrug: I'll let you know if I encounter the issue again :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-11 22:43</div>
+            <div class="timeline-body"><p>Spoke too fast:</p>
+<ul>
+<li>https://github.com/mkdocstrings/griffe/actions/runs/11300146785/job/31432473858: OK</li>
+<li>https://github.com/mkdocstrings/griffe/actions/runs/11300147363/job/31432475050: OK</li>
+<li>https://github.com/mkdocstrings/griffe/actions/runs/11300201361/job/31432629294: Not OK</li>
+</ul>
+<p>No dependency changes. Is it because the two first are on a tagged commit but not the last one O_o?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-11 23:02</div>
+            <div class="timeline-body"><p>Still cannot reproduce locally so none of this will be very helpful for you :bow:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-10-11 23:29</div>
+            <div class="timeline-body"><p>Can confirm it works fine when CI is triggered by pushing a tag.</p>
+<p>Here's what I gather:</p>
+<ul>
+<li>when installing deps (in non-editable mode) at an untagged commit</li>
+<li>uv builds my project <code>A</code> with version <code>x.y.z.devN+ghash</code></li>
+<li>then wants to install <code>A@x.y.z.devN+ghash</code>, as well as <code>B</code> which depends on <code>A&gt;=x.y.z</code></li>
+<li>and it gets confused about the version of <code>A</code> to install :shrug:</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8148.html">astral-sh/uv#8148</a> on 2024-10-12 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

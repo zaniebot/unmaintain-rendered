@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E731: Lambda default value for a Callable dataclass field is incorrectly flagged as lambda assignment - astral-sh/ruff #10718</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E731: Lambda default value for a Callable dataclass field is incorrectly flagged as lambda assignment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10718">#10718</a>
+        opened by <a href="https://github.com/richardxia">@richardxia</a>
+        on 2024-04-01 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/richardxia">@richardxia</a> on 2024-04-01 17:18</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>The pycodestyle rule <a href="https://docs.astral.sh/ruff/rules/lambda-assignment/">lambda-assignment (E731)</a> is supposed to check whether a lambda expression is being assigned to a variable and instead suggest using a <code>def</code> statement. However, Ruff's implementation appears to be incorrectly flagging a dataclass field with a default value consisting of a lambda expression as violation of this rule, whereas pycodestyle does not. Here is a short example:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+from typing import Callable
+
+
+@dataclass
+class Filter:
+    filter: Callable[[str], bool] = lambda _: True
+</code></pre>
+<p>Here is the command-line output of both Ruff and pycodestyle:</p>
+<pre><code class="language-sh">$ ruff check --isolated --select=E731 mycode.py 
+mycode.py:7:5: E731 Do not assign a `lambda` expression, use a `def`
+Found 1 error.
+</code></pre>
+<pre><code class="language-sh">$ pycodestyle --select=E731 mycode.py
+</code></pre>
+<p>(No output for pycodestyle, but exits successfully with status code 0.)</p>
+<p>The examples above were run with ruff 0.3.4 and pycodestyle 2.11.1, which are the latest versions at the time of this writing.</p>
+<p>This should apply to more classes than just dataclasses, but I'm not exactly sure where I would draw the line. You probably do want to flag cases where someone assigned a lambda to a class variable when it should have been a class or instance method, but I'm not sure which heuristics you want to apply.</p>
+<p>I haven't tried reading the pycodestyle source code to see how they implemented it, but playing with my example above, I think their heuristic may just be whether or not an annotation is present on the class member declaration, which seems reasonable to me. Here are a few specific example with inline comments on whether pycodestyle reports a violation:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+from typing import Callable
+
+
+# pycodestyle is happy with this
+@dataclass
+class FilterDataclass:
+    filter: Callable[[str], bool] = lambda _: True
+
+
+# pycodestyle is happy with this
+class FilterClassWithCallableAnno:
+    filter: Callable[[str], bool] = lambda _: True
+
+
+# pycodestyle is happy with this
+class FilterClassWithAribtraryAnno:
+    filter: Foo = lambda _: True
+
+
+# pycodestyle is _not_ happy with this
+# mycode.py:24:5: E731 do not assign a lambda expression, use a def
+class FilterClassWithoutAnno:
+    filter = lambda _: True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 17:22</div>
+            <div class="timeline-body"><p>Ah yeah that's interesting. I think Pyflakes only flags unannotated assignments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 17:23</div>
+            <div class="timeline-body"><p>I could imagine always ignoring these when they're defined within class scopes. But perhaps best to start with dataclasses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-04-01 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-01 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10720.html">astral-sh/ruff#10720</a> on 2024-04-01 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-01 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/richardxia">@richardxia</a> on 2024-04-01 19:50</div>
+            <div class="timeline-body"><p>Thanks for the super fast response and fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13336.html">astral-sh/ruff#13336</a> on 2024-09-12 19:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

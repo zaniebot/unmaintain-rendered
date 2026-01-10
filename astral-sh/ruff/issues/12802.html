@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check `CPY` rules in the first cell (markdown, code, or raw cell type) - astral-sh/ruff #12802</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check `CPY` rules in the first cell (markdown, code, or raw cell type)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12802">#12802</a>
+        opened by <a href="https://github.com/adamjstewart">@adamjstewart</a>
+        on 2024-08-11 12:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2024-08-11 12:05</div>
+            <div class="timeline-body"><h3>Keywords</h3>
+<p>flake8-copyright, CPY, Jupyter Notebook, .ipynb</p>
+<h3>Steps to reproduce</h3>
+<p>Using the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend-include = [&quot;*.ipynb&quot;]
+
+[tool.ruff.lint]
+extend-select = [&quot;CPY&quot;]
+preview = true
+
+[tool.ruff.lint.flake8-copyright]
+author = &quot;...&quot;
+</code></pre>
+<p>if I run <code>ruff check</code> on my repo, all files pass except the Jupyter Notebook files. This is because ruff only checks the first 4096 bytes of the file, whereas the copyright may be in the first cell of the notebook farther below.</p>
+<h3>Version</h3>
+<p>Ruff 0.5.7</p>
+<h3>Solution</h3>
+<p>We would likely need to check more bytes, or allow the total number of bytes to be set on a per-repo or per-file basis. For now, the only workaround is to disable CPY on Jupyter Notebooks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @AlexWaygood on 2024-08-11 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-11 15:05</div>
+            <div class="timeline-body"><p>Hmm, the notebook code should run on the concatenated contend of all python cells. Could you share a notebook with us that demonstrates the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2024-08-11 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2024-08-11 15:18</div>
+            <div class="timeline-body"><p>Try this one: https://github.com/microsoft/torchgeo/blob/v0.5.2/docs/tutorials/getting_started.ipynb</p>
+<p>You'll need:</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-copyright]
+author = &quot;Microsoft Corporation&quot;
+notice-rgx = &quot;Copyright \\(c\\)&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-11 19:21</div>
+            <div class="timeline-body"><p>Thanks, I'll try to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-11 19:29</div>
+            <div class="timeline-body"><p>Hmm, I ran this locally and got:</p>
+<pre><code>getting_started.ipynb:cell 4:1:1: CPY001 Missing copyright notice at top of file
+</code></pre>
+<p>My <code>pyproject.toml</code> looks like:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend-include = [&quot;*.ipynb&quot;]
+
+[tool.ruff.lint]
+extend-select = [&quot;CPY&quot;]
+preview = true
+
+[tool.ruff.lint.flake8-copyright]
+author = &quot;Microsoft Corporation&quot;
+notice-rgx = &quot;Copyright \\(c\\)&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-12 05:26</div>
+            <div class="timeline-body"><p>@adamjstewart Is this working on your end? Could we mark this issue as resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2024-08-12 06:29</div>
+            <div class="timeline-body"><p>This is not working, I see CPY001 even though the notebook contains a copyright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-12 06:33</div>
+            <div class="timeline-body"><p>I think the problem here is that Ruff only looks at python cells, but the license is in a markdown cell.</p>
+<p>And it seems that @charliermarsh is able to successfully reproduce. The expected result is <strong>no diagnostics</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-12 06:35</div>
+            <div class="timeline-body"><p>To get this to work, I think we would have to special case the rule for notebooks or users have to move the license into a python cell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2024-08-12 06:40</div>
+            <div class="timeline-body"><p>Ah, this makes sense. Not sure how hard special casing the rule would be, but I expect it's more common to find copyrights in markdown cells than in code cells. After all, it isn't code, it's a message to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @MichaReiser on 2024-08-12 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-12 07:30</div>
+            <div class="timeline-body"><p>Oh, I see. I misunderstood Charlie's message, sorry for that.</p>
+<p>Yeah, we might have to special case this rule with some additional changes in the <code>Notebook</code> struct to access the markdown cells. It would also need to be validated in an editor context because we only ask for Python cells from the client:</p>
+<p>https://github.com/astral-sh/ruff/blob/5d85fb75eaf03f62c10472e7362ad2f1c8250e7a/crates/ruff_server/src/server.rs#L335-L344</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "CPY: no support for Jupyter Notebook files" to "Check `CPY` rules in the first cell (markdown, code, or raw cell type)" by @dhruvmanila on 2024-08-16 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../torchgeo/torchgeo/pulls/2440.html">torchgeo/torchgeo#2440</a> on 2024-12-02 16:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

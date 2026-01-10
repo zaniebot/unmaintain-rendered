@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand precedence over arguments with SubcommandsNegateReqs - clap-rs/clap #793</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand precedence over arguments with SubcommandsNegateReqs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/793">#793</a>
+        opened by <a href="https://github.com/klemens">@klemens</a>
+        on 2016-12-29 02:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/klemens">@klemens</a> on 2016-12-29 02:19</div>
+            <div class="timeline-body"><p>When using (at least) two positional arguments and a subcommand, the subcommand takes precedence when given as the second argument.</p>
+<p>The goal is a cli of the following form, where the subcommand is only matched if it is the first argument. This makes it possible to e.g. use <code>sub</code> (or <code>help</code>) as the value for the second argument.</p>
+<pre><code>test &lt;arg1&gt; &lt;arg2&gt;
+test sub ...
+</code></pre>
+<h3>Example</h3>
+<pre><code class="language-rust">println!(&quot;{:#?}&quot;, App::new(&quot;test&quot;)
+    .setting(AppSettings::SubcommandsNegateReqs)
+    .arg(Arg::with_name(&quot;arg1&quot;).required(true))
+    .arg(Arg::with_name(&quot;arg2&quot;).required(true))
+    .subcommand(SubCommand::with_name(&quot;sub&quot;))
+    .get_matches());
+</code></pre>
+<p><code>test 1 sub</code> results in:</p>
+<pre><code class="language-js">ArgMatches {
+    args: {
+        &quot;arg1&quot;: MatchedArg { ... &quot;1&quot; ... }
+    },
+    subcommand: Some(
+        SubCommand { ... }
+    ),
+    ...
+}
+</code></pre>
+<p>while it would be much more useful (IMHO) if it resulted in:</p>
+<pre><code class="language-js">ArgMatches {
+    args: {
+        &quot;arg2&quot;: MatchedArg { ... &quot;1&quot; ... },
+        &quot;arg1&quot;: MatchedArg { ... &quot;sub&quot; ... }
+    },
+    subcommand: None,
+    ...
+}
+</code></pre>
+<p>Additionally, when the <code>suggestions</code> feature is enabled, any prefix or extended version of <code>sub</code> with at least length 2 triggers a &quot;Did you mean 'sub'?&quot; help screen. Without <code>suggestions</code>, only exact matches cause the described problem.</p>
+<p>A workaround is to use <code>test -- 1 sub</code> or <code>test 1 -- sub</code>, which results in the second output.</p>
+<p>Changing the meaning of <code>SubcommandsNegateReqs</code> is of course not backwards compatible, but a new setting that prefers arguments over subcommands could be introduced.</p>
+<ul>
+<li>Rust version: 1.14.0</li>
+<li>Clap version: 2.19.2</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-29 03:49</div>
+            <div class="timeline-body"><p>Thanks for the details! :smile: I'm a little confused on one point though, are you asking for when a subcommand conflicts with a required argument that the argument take precedence? Subcommands taking precedence also happens without requirements.</p>
+<pre><code class="language-rust">println!(&quot;{:#?}&quot;, App::new(&quot;test&quot;)
+    .arg(Arg::with_name(&quot;arg1&quot;))
+    .arg(Arg::with_name(&quot;arg2&quot;))
+    .subcommand(SubCommand::with_name(&quot;sub&quot;))
+    .get_matches());
+</code></pre>
+<p>Has the same issue as what's listed above.</p>
+<p>I'd be a little leary of having args take precdence though, as there's no way to &quot;escape&quot; a subcommand, but there <em>is</em> a way to &quot;escape&quot; an argument (<code>test 1 -- sub</code> as you mentioned).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-29 03:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klemens">@klemens</a> on 2016-12-29 04:17</div>
+            <div class="timeline-body"><p>You are right, <code>SubcommandsNegateReqs</code> and required arguments are not strictly necessary for reproducing the &quot;problem&quot;, but omitting them allows something like <code>test 1 2 sub</code>, which is a totally different usage.</p>
+<blockquote>
+<p>there's no way to &quot;escape&quot; a subcommand</p>
+</blockquote>
+<p>This shouldn't be the default of course, but I think there is no other way¹ to implement my desired usage pattern:</p>
+<pre><code>app &lt;destination&gt; &lt;command&gt;
+app config ...
+</code></pre>
+<p>I first noticed the problem when I wanted to send the <code>help</code> command using my application, which instead displayed the cli help, because of the automatically added <code>help</code> subcommand.</p>
+<p>(1) There actually <em>is</em> another way: You can &quot;abuse&quot; AllowExternalSubcommands, so the first argument becomes the &quot;external subcommand&quot; if it is no internal one. However, then you can't use any advanced functionality of <code>Arg</code> and have to parse the additional arguments manually (or using a second clap <code>App</code> instance).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-30 21:00</div>
+            <div class="timeline-body"><p>Ah ok, I understand now! I do think this is doable, but I'm unsure of what to call this new setting. Bascially you want, &quot;If an arg is used, forget about subcommands entirely.&quot; i.e. down't allow the <code>&lt;cmd&gt; [args] &lt;cmd&gt; [args] &lt;cmd&gt;</code> format.</p>
+<p>Perhaps something like, <code>DisallowArgsBetweenSubcommands</code> or <code>ArgsNegateSubcommands</code> (preferred)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klemens">@klemens</a> on 2016-12-30 22:38</div>
+            <div class="timeline-body"><blockquote>
+<p>If an arg is used, forget about subcommands entirely</p>
+</blockquote>
+<p>Exactly! I think <code>ArgsNegateSubcommands</code> sounds better and fits nicely with <code>SubcommandsNegateReqs</code>.</p>
+<p>Edit: I think this new setting should only apply to positional arguments, so that something like <code>app --flag config ...</code> stays possible. Therefore we maybe should call it <code>PositionalArgsNegateSubcommands</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-31 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-12-31 05:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-31 06:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klemens">@klemens</a> on 2016-12-31 15:48</div>
+            <div class="timeline-body"><p>Wow, thank you for the fast implementation, it works fine!</p>
+<p>Have you seen my edit about only applying this setting to positional arguments? I don't currently need it, but I think it could be useful in something like temporarily specifying a different config file or a flag like <code>-v</code> for verbosity that applies to the main command and all subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../klemens/rconc/issues/1.html">klemens/rconc#1</a> on 2017-02-12 21:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:24 UTC
+    </footer>
+</body>
+</html>

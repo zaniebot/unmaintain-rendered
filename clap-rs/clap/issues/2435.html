@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure help subcommand to print long form - clap-rs/clap #2435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Configure help subcommand to print long form</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2435">#2435</a>
+        opened by <a href="https://github.com/pwinckles">@pwinckles</a>
+        on 2021-04-06 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pwinckles">@pwinckles</a> on 2021-04-06 12:54</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<p>I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a>
+I have searched the existing issues</p>
+<h3>Describe your use case</h3>
+<p>The <code>help</code> subcommand prints the short help form, and I would like to configure it to print the long form instead.</p>
+<p>The long form is more inline with my expectations of what the <code>help</code> subcommand should return. For example, compare the output of <code>git help init</code>, <code>git init -h</code>, and <code>git init --help</code>. At least on my system, the subcommand produces the long form; not the short form.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Ideally this would be configurable via <a href="https://docs.rs/clap/2.33.3/clap/enum.AppSettings.html">AppSettings</a>.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @pwinckles on 2021-04-06 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-04-06 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2021-04-06 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2021-04-06 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @pksunkara on 2021-04-06 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @pksunkara on 2021-04-06 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Configure help subsommand to print long form" to "Configure help subcommand to print long form" by @pwinckles on 2021-04-06 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reaganmcf">@reaganmcf</a> on 2021-04-09 22:09</div>
+            <div class="timeline-body"><p>I would like to work on this 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reaganmcf">@reaganmcf</a> on 2021-04-10 02:23</div>
+            <div class="timeline-body"><p>I have made a little bit of progress on this (added the setting and started integration tests). However, I am wondering how I would go about writing integration tests for this. Reading over the code base, I found <code>utils::compare_output()</code> but that seems to be for errors.</p>
+<p>(I am going to reformat and run clippy before I send the PR, so ignore that for now)</p>
+<p>Here is an example of one of my tests, what is the best way to do this?</p>
+<pre><code class="language-rust">#[test]
+fn subcommand_help_shows_long_form_with_setting_using_before_help() {
+    let m = App::new(&quot;myprog&quot;)
+        .setting(AppSettings::SubcommandHelpShowsLongForm)
+        .subcommand(App::new(&quot;test&quot;)
+            .before_help(&quot;short form help message&quot;)
+            .before_long_help(&quot;long form help message&quot;));
+    assert!(utils::compare_output(
+        m,
+        &quot;help test&quot;,
+        SUBCOMMAND_HELP_LONG_FORM_USING_BEFORE_HELP,
+        false)
+    );
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-04-10 05:02</div>
+            <div class="timeline-body"><p>@reaganmcf <code>compare_output()</code> is not only for errors. It can be used for both stdout and stderr. There is nothing wrong with you test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reaganmcf">@reaganmcf</a> on 2021-04-10 16:08</div>
+            <div class="timeline-body"><p>@ldm0 Currently the test above is pacnicking. Here is is the output:</p>
+<pre><code class="language-rust">---- subcommand_help_shows_long_form_with_setting_using_before_help stdout ----
+thread 'subcommand_help_shows_long_form_with_setting_using_before_help' panicked at 
+'called `Result::unwrap_err()` on an `Ok`  value: ArgMatches { args: {}, subcommand: Some(SubCommand { id: test, name: &quot;test&quot;, matches: ArgMatches { args: {}, subcommand: None } }) }', 
+tests/utils.rs:36:19
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-04-10 16:17</div>
+            <div class="timeline-body"><p>@reaganmcf Hmm, check this?:</p>
+<pre><code class="language-rust">    assert!(utils::compare_output(
+        m,
+        &quot;myprog help test&quot;,
+        SUBCOMMAND_HELP_LONG_FORM_USING_BEFORE_HELP,
+        false)
+    );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2440.html">clap-rs/clap#2440</a> on 2021-04-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-04-12 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3440.html">clap-rs/clap#3440</a> on 2022-02-11 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3451.html">clap-rs/clap#3451</a> on 2022-02-11 18:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:27 UTC
+    </footer>
+</body>
+</html>

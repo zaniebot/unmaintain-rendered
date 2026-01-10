@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`dev-dependencies` defined in `uv.toml` are not handled - astral-sh/uv #7007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`dev-dependencies` defined in `uv.toml` are not handled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7007">#7007</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2024-09-04 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-04 11:37</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<ul>
+<li>uv version: 0.4.4</li>
+<li>OS: macOS 14.5</li>
+</ul>
+<p>In theory, everything that lives under <code>[tool.uv]</code> section in <code>pyproject.toml</code> can also be defined in <code>uv.toml</code>. This includes <a href="https://docs.astral.sh/uv/reference/settings/#dev-dependencies">dev-dependencies</a>.</p>
+<p>But given:</p>
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;foo&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<pre><code class="language-toml"># uv.toml
+dev-dependencies = [&quot;pytest==8.3.2&quot;]
+cache-dir = &quot;/tmp&quot;
+</code></pre>
+<p>When using <code>uv lock</code>, we end up with the following lock file:</p>
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+
+[[package]]
+name = &quot;foo&quot;
+version = &quot;0.0.1&quot;
+source = { virtual = &quot;.&quot; }
+</code></pre>
+<p>so it doesn't seem that uv reads <code>dev-dependencies</code> from <code>uv.toml</code>.</p>
+<p>But <code>uv.toml</code> itself is correctly read, as can be seen with:</p>
+<pre><code class="language-console">$ uv cache dir
+/tmp
+</code></pre>
+<p>I realise that this is most likely on purpose, since it would be hard to handle dev dependencies in <code>uv.toml</code> (for instance <code>uv add --dev httpx</code> would currently add the dependency in <code>pyproject.toml</code>, even if we already have <code>dev-dependencies</code> in <code>uv.toml</code>. In that case, this most likely comes from the fact that the documentation is auto-generated based on the settings, and there's no way to mark some options as &quot;only available in <code>pyproject.toml</code> when generating the documentation.</p>
+<p>Note also than if also adding <code>dev-dependencies</code> in <code>pyproject.toml</code>, despite the warning, dev dependencies will still be handled properly from <code>pyproject.toml</code> when locking:</p>
+<pre><code class="language-toml"># pyproject.toml
+# Adding the following section below.
+[tool.uv]
+dev-dependencies = [&quot;mypy==1.11.2&quot;]
+</code></pre>
+<pre><code class="language-console">$ uv lock
+warning: Found both a `uv.toml` file and a `[tool.uv]` section in an adjacent `pyproject.toml`. The `[tool.uv]` section will be ignored in favor of the `uv.toml` file.
+Resolved 4 packages in 197ms
+Added mypy v1.11.2
+Added mypy-extensions v1.0.0
+Added typing-extensions v4.12.2
+</code></pre>
+<p>Just in case, including the full logs from the very first <code>uv lock</code> command on the initial setup (without <code>[tool.uv]</code>), even if there's nothing really interesting:</p>
+<pre><code class="language-console">$ uv lock --verbose
+DEBUG uv 0.4.4 (Homebrew 2024-09-04)
+DEBUG Found workspace root: `/Users/mathieu.kniewallner/Workspaces/perso/renovate-uv-toml`
+DEBUG Adding current workspace member: `/Users/mathieu.kniewallner/Workspaces/perso/renovate-uv-toml`
+DEBUG The virtual environment's Python version satisfies `Python &gt;=3.12`
+DEBUG Using request timeout of 30s
+DEBUG Starting clean resolution
+DEBUG Acquired lock for `/tmp/built-wheels-v3/path/672fb4b165969c97`
+DEBUG Found static `pyproject.toml` for: foo @ file:///Users/mathieu.kniewallner/Workspaces/perso/renovate-uv-toml
+DEBUG No workspace root found, using project root
+DEBUG Released lock at `/tmp/built-wheels-v3/path/672fb4b165969c97/.lock`
+DEBUG Solving with installed Python version: 3.12.1
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: foo*
+DEBUG Searching for a compatible version of foo @ file:///Users/mathieu.kniewallner/Workspaces/perso/renovate-uv-toml (*)
+DEBUG Tried 1 versions: foo 1
+DEBUG Split universal resolution took 0.001s
+Resolved 1 package in 11ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-09-04 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 13:20</div>
+            <div class="timeline-body"><p>I agree that we need to correct this is in the documentation... It's also true of <code>tool.uv.sources</code> and anything else that is considered project data rather than project configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-04 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 13:44</div>
+            <div class="timeline-body"><p>(I'm marking as <code>bug</code> because it's a bug in the docs arguably.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7053.html">astral-sh/uv#7053</a> on 2024-09-04 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-04 22:20</div>
+            <div class="timeline-body"><p>Trying something out in https://github.com/astral-sh/uv/pull/7053, with the idea of separating the &quot;project metadata&quot; and &quot;configuration&quot; options into 2 distinct sections. WIP for now, as it needs a bit of polishing.</p>
+<p>We would probably also need to:</p>
+<ul>
+<li>update <code>uv.schema.json</code> logic and how it's integrated into <a href="https://github.com/SchemaStore/schemastore">schemastore</a>, since currently it suffers from the same issue as the documentation, implying that everything we can set in <code>pyproject.toml</code> can also be set in <code>uv.toml</code> (maybe we'll unfortunately need to have 2 different files to ease the integration into <code>schemastore</code>?)</li>
+<li>update the warning shown when having both <code>uv.toml</code> and <code>pyproject.toml</code>, as technically it only is problematic if setting &quot;configuration&quot; options in <code>pyproject.toml</code> (right now it is also raised when using <code>uv.toml</code> but only setting &quot;project metadata&quot; options (like <code>dev-dependencies</code>) in <code>pyproject.toml</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 22:12</div>
+            <div class="timeline-body"><p>Do you think we should close this @mkniewallner?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-09-15 08:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think we should close this @mkniewallner?</p>
+</blockquote>
+<p>I've noted 2 follow-up items that could further help clarify things in https://github.com/astral-sh/uv/issues/7007#issuecomment-2330252383, but they are probably lower priority than the documentation. If those are items you think are worth doing, maybe we could either rename this issue to make things more clear on what this is about, or create separate issue(s) for the remaining items? I'm personally fine with both, I just think it would be nice to keep a trace of the remaining issues, as I think fixing them at some point could improve user experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-10-14 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../renovatebot/renovate/pulls/31189.html">renovatebot/renovate#31189</a> on 2024-10-27 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-20 00:28</div>
+            <div class="timeline-body"><p>We now error if <code>dev-dependencies</code> is specified in <code>uv.toml</code>. I think this is probably the best we can do for now without two separate schemas, and I don't know if two separate schemas is totally worth it. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-11-20 08:22</div>
+            <div class="timeline-body"><blockquote>
+<p>We now error if <code>dev-dependencies</code> is specified in <code>uv.toml</code>. I think this is probably the best we can do for now without two separate schemas, and I don't know if two separate schemas is totally worth it. What do you think?</p>
+</blockquote>
+<p>Yeah I believe we can close this issue, the most important item to me was the misleading documentation. I don't know exactly the cost of maintaining two schemas, but it's probably enough that it justifies not doing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-20 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MoElaSec">@MoElaSec</a> on 2025-03-24 06:43</div>
+            <div class="timeline-body"><p>so how will one be able to include <code>dev-dependencies</code> if it's not possible in <code>uv.toml</code> (I agree with the reasoning), and the presence of it leads to ignoring anything under the <code>[tool.uv]</code> in <code>pyproject.toml</code>, as we get with the warning:</p>
+<pre><code class="language-bash">warning: Found both a `uv.toml` file and a `[tool.uv]` section in an adjacent `pyproject.toml`. The `[tool.uv]` section will be ignored in favor of the `uv.toml` file.
+</code></pre>
+<p>or should this warning simply be ignored ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:39 UTC
+    </footer>
+</body>
+</html>

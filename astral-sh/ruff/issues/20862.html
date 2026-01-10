@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptionalVersionedTextDocumentIdentifier in TextDocumentEdit should include the version. - astral-sh/ruff #20862</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>OptionalVersionedTextDocumentIdentifier in TextDocumentEdit should include the version.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20862">#20862</a>
+        opened by <a href="https://github.com/pyscripter">@pyscripter</a>
+        on 2025-10-14 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pyscripter">@pyscripter</a> on 2025-10-14 12:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In https://github.com/astral-sh/ruff/blob/ac2c5303775bcf52d40eea406939a6961774e6af/crates/ruff_server/src/edit.rs#L146 there is a TODO item that has not been addressed:</p>
+<pre><code class="language-rust">                document_edits.push(lsp_types::TextDocumentEdit {
+                    text_document: lsp_types::OptionalVersionedTextDocumentIdentifier {
+                        uri,
+                        // TODO(jane): Re-enable versioned edits after investigating whether it could work with notebook cells
+                        version: None,
+                    },
+                    edits: edits.into_iter().map(lsp_types::OneOf::Left).collect(),
+                });
+</code></pre>
+<p>This is a problem because we get null for version in TextDocumentEdit responses as in the example below:</p>
+<p>Request:</p>
+<pre><code class="language-json">{
+&quot;jsonrpc&quot;: &quot;2.0&quot;,
+&quot;id&quot;: 1811,
+&quot;method&quot;: &quot;workspace/executeCommand&quot;,
+&quot;params&quot;: {
+    &quot;command&quot;: &quot;ruff.applyAutofix&quot;,
+    &quot;arguments&quot;: [
+        {
+            &quot;uri&quot;: &quot;file:///C:/Temp/Python/ruffdemo.py&quot;,
+            &quot;version&quot;: 1
+        }
+    ],
+    &quot;workDoneToken&quot;: null
+}
+</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+&quot;jsonrpc&quot;: &quot;2.0&quot;,
+&quot;id&quot;: 1,
+&quot;method&quot;: &quot;workspace/applyEdit&quot;,
+&quot;params&quot;: {
+    &quot;edit&quot;: {
+        &quot;documentChanges&quot;: [
+            {
+                &quot;edits&quot;: [
+                    {
+                        &quot;newText&quot;: &quot;&quot;,
+                        &quot;range&quot;: {
+                            &quot;end&quot;: {
+                                &quot;character&quot;: 0,
+                                &quot;line&quot;: 5
+                            },
+                            &quot;start&quot;: {
+                                &quot;character&quot;: 0,
+                                &quot;line&quot;: 1
+                            }
+                        }
+                    }
+                ],
+                &quot;textDocument&quot;: {
+                    &quot;uri&quot;: &quot;file:///C:/Temp/Python/ruffdemo.py&quot;,
+                    &quot;version&quot;: null
+                }
+            }
+        ]
+    },
+    &quot;label&quot;: &quot;Ruff: Fix all auto-fixable problems&quot;
+}
+</code></pre>
+<p>Although this is not strictly speaking a bug since null is allowed, it reduces the usefulness of the text document edit responses, since they cannot be safely applied.</p>
+<p>Please address the Todo item in the code.</p>
+<h3>Version</h3>
+<p>0.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-10-14 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-10-14 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-06 00:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash completion emits error about invalid nosort option - clap-rs/clap #5190</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bash completion emits error about invalid nosort option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5190">#5190</a>
+        opened by <a href="https://github.com/gbelouze">@gbelouze</a>
+        on 2023-10-30 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gbelouze">@gbelouze</a> on 2023-10-30 21:13</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.73.0 (cc66ad468 2023-10-03)</p>
+<h3>Clap Version</h3>
+<p><code>ruff</code> package version <code>0.0.292</code>which specifies <code>clap = { version = &quot;4.4.7&quot;, features = [&quot;derive&quot;] }</code></p>
+<h3>Minimal reproducible code</h3>
+<p>not relevant</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>brew install ruff</code>
+and somewhere in your <code>.bash_profile</code> or <code>.bashrc</code></p>
+<pre><code class="language-bash">if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>When I open a new shell, the following error message is displayed</p>
+<pre><code class="language-bash">bash: complete: nosort: invalid option name
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>No error message should be displayed.</p>
+<h3>Additional Context</h3>
+<p>Hello beautiful <code>clap</code> people. I come from <a href="https://github.com/astral-sh/ruff/issues/8361">this issue</a> with the <code>ruff</code> package (plugin ? crate ? I'm not a rust person). I'll say here again the issue I described there :</p>
+<ul>
+<li>am macOS user</li>
+<li>use <code>ruff</code> (which relies on <code>clap</code>) installed through <code>homebrew</code></li>
+<li>use <code>bash_completions</code> for the installed homebrew packages (see <em>Steps to reproduce</em> above)</li>
+<li>this triggers the issue
+Presumably, the issue is that the <code>nosort</code> option is supported starting from bash v4 only, while macOS still uses bash v3. See <a href="https://github.com/astral-sh/ruff/issues/8361#issuecomment-1785981659">this comment by @zanieb</a> which locates where this happens in <code>clap</code>.</li>
+</ul>
+<p>I'm not sure if this is a bug or if <code>clap</code> is not trying to support old bash versions. Again I'm not a <code>clap</code> nor even a rust user.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @gbelouze on 2023-10-30 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-10-30 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-10-30 21:45</div>
+            <div class="timeline-body"><p>Completions are mostly community maintained on a best-effort.  If there is a reasonable way to skip <code>nosort</code> for bash v3 but to keep it for v4+, I'm willing to accept for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gbelouze">@gbelouze</a> on 2023-10-31 08:40</div>
+            <div class="timeline-body"><p>Thanks for the quick response. The bash version is accessible with the <code>${BASH_VERSINFO[0]}</code> variable. I'd wait for the input of someone who knows bash more than I do but I suppose something like</p>
+<pre><code class="language-diff">- complete -F _{name} -o nosort -o bashdefault -o default {name}
++ if [ ${BASH_VERSINFO[0]} -ge 4 ]; then
++     complete -F _{name} -o nosort -o bashdefault -o default {name}
++ else
++     complete -F _{name} -o bashdefault -o default {name}
++ fi
+</code></pre>
+<p>would be good enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kanidm/kanidm/issues/2280.html">kanidm/kanidm#2280</a> on 2023-11-01 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sharkdp/fd/issues/1407.html">sharkdp/fd#1407</a> on 2023-11-29 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2023-11-29 20:27</div>
+            <div class="timeline-body"><p>It was added in bash 4.4, checking &gt;= 4 isn't enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-29 22:58</div>
+            <div class="timeline-body"><p>Whats the likelihood someone is using &lt;4.4 who isn't on Mac and using v3?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2023-11-29 23:47</div>
+            <div class="timeline-body"><p>@epage I think CentOS 7 uses Bash 4.2, which is one of the platforms that led to https://github.com/sharkdp/fd/issues/1407.</p>
+<p>A fully correct check is not too hard, something like</p>
+<pre><code class="language-sh">major=${BASH_VERSINFO[0]}
+minor=${BASH_VERSINFO[1]}
+if ((major &gt; 4 || (major == 4 &amp;&amp; minor &gt;= 4))); then
+    complete -F _{name} -o nosort -o bashdefault -o default {name}
+else
+    complete -F _{name} -o bashdefault -o default {name}
+fi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5240.html">clap-rs/clap#5240</a> on 2023-12-04 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/156448.html">Homebrew/homebrew-core#156448</a> on 2023-12-05 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mathomp4">@mathomp4</a> on 2023-12-20 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Whats the likelihood someone is using &lt;4.4 who isn't on Mac and using v3?</p>
+</blockquote>
+<p>FYI, I just hit this on a supercomputing cluster (via fd) which is rocking SLES12 and:</p>
+<pre><code>$ bash --version
+GNU bash, version 4.3.48(1)-release (x86_64-suse-linux-gnu)
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+</code></pre>
+<p>So, yeah, old OSs and old bashes live out there. Though I'm apparently right at the edge :)</p>
+<p>(NOTE: Soon we will move to SLES15 and be closer to modern day.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-20 14:53</div>
+            <div class="timeline-body"><p>Ouch :)  Enjoy the upgrade!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-20 14:54</div>
+            <div class="timeline-body"><p>(btw to be clear, a PR fixing this from anyone would be welcome)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5278.html">clap-rs/clap#5278</a> on 2024-01-02 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-01-02 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5430.html">clap-rs/clap#5430</a> on 2024-03-26 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:31 UTC
+    </footer>
+</body>
+</html>

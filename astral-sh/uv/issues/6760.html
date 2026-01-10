@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tries to read `project.name` whenever the `project` table is present - astral-sh/uv #6760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tries to read `project.name` whenever the `project` table is present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6760">#6760</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2024-08-28 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-08-28 15:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Here the package metadata may be at fault (https://github.com/quantile-development/dagster-ext/issues/12), but both pypa/build and Poetry are able to build the project without any issues (even if with missing metadata).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 16:34</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Technically, I think it's a violation of the specification to exclude the <code>name</code> field when a <code>[project]</code> table exists.</p>
+<p>From the relevant <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table">document</a>:</p>
+<blockquote>
+<p>The lack of a [project] table implicitly means the <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Backend">build backend</a> will dynamically provide all keys.</p>
+<p>The only keys required to be statically defined are: ... <code>name</code></p>
+</blockquote>
+<p>I believe the problem is that we see a <code>[project]</code> table so we attempt to extract <em>static</em> metadata from the project without calling into a build backend. I guess the argument here is that <code>[project.urls]</code> doesn't explicitly define a <code>[project]</code> table? That seems weird though.</p>
+<p>I see a few options:</p>
+<ol>
+<li>We fallback to dynamic metadata retrieval with the build-backend if the static metadata retrieval fails</li>
+<li>We special-case implicit <code>[project]</code> table declarations</li>
+<li>We continue to be strict here and pursue a clarification in the specification</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-08-28 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 16:37</div>
+            <div class="timeline-body"><p>I'm also reading a bit into the linked issue regarding the implicit table definition — please let me know if you think it's wrong to fail if <code>name</code> is missing even when the project table (<code>[project]</code>) is explicitly defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-08-28 18:00</div>
+            <div class="timeline-body"><p>It's invalid. Tools are supposed to error out. I really dislike that it's required, but not up to me. :) See https://github.com/pypa/cibuildwheel/issues/1064.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-poetry/poetry-core/pulls/708.html">python-poetry/poetry-core#708</a> on 2024-08-28 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6803.html">astral-sh/uv#6803</a> on 2024-08-29 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FFY00">@FFY00</a> on 2024-09-05 04:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm also reading a bit into the linked issue regarding the implicit table definition — please let me know if you think it's wrong to fail if <code>name</code> is missing even when the project table (<code>[project]</code>) is explicitly defined.</p>
+</blockquote>
+<p>If there's a <code>project</code> table, the <code>project.name</code> field must be present, but the <code>project</code> table is not required to be present.
+If a <code>project</code> table is not present, it means the project is not using PEP 621 metadata, which is perfectly valid.</p>
+<p>In this case, it seems the project was mixing the <code>project</code> (PEP 621) and <code>tool.poetry</code> tables when specifying the metadata, which shouldn't really be allowed. I consider this a bug in the build backend.</p>
+<p>With this in mind, UV's behavior is correct, however, to achieve better compatibility, I would suggest issuing a warning instead of erroring out in such scenarios.</p>
+<p>PS: Feel free to ping me if you have any more issues, or questions, regarding the project metadata, and other issues regarding packaging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2024-09-05 20:47</div>
+            <div class="timeline-body"><blockquote>
+<p>In this case, it seems the project was mixing the <code>project</code> (PEP 621) and <code>tool.poetry</code> tables when specifying the metadata, which shouldn't really be allowed. I consider this a bug in the build backend.</p>
+</blockquote>
+<p>I agree, though I wonder if it's worth reporting to the Poetry folks, specially since https://github.com/python-poetry/poetry-core/pull/708 is just waiting to be released, and the frontend is WIP (https://github.com/python-poetry/poetry/pull/9135).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-14 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-14 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

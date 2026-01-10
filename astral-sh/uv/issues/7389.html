@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install: warn when different packages install the same toplevel module - astral-sh/uv #7389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install: warn when different packages install the same toplevel module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7389">#7389</a>
+        opened by <a href="https://github.com/woutervh">@woutervh</a>
+        on 2024-09-14 09:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woutervh">@woutervh</a> on 2024-09-14 09:51</div>
+            <div class="timeline-body"><h3>Problem</h3>
+<p>One of the most diabolical anti-patterns in the Python ecosystem are published python-packages that
+contain a top-level pythonmodule that is named very different than the name of the published package.</p>
+<p>A <em>lot</em> of django-packages are called <code>django-foo</code>,
+but import a toplevel-module <code>foo</code> instead of <code>django_foo</code>, while a package <code>foo</code> might exists.
+This diabolical practice was promoted even in the official Django tutorial until recent recently,
+see https://forum.djangoproject.com/t/change-reusable-apps-naming-recommendation/25233</p>
+<p>The problem is that you can happily install <code>foo</code> and <code>django-foo</code> in your project.
+In most cases the second package will <em>overwrite</em> (not just shadow) the code of the first package.</p>
+<p>To my knowledge there is no python-installation tool (pip, poetry,...) that will prevent this or warn about this.</p>
+<h3>Example with uv</h3>
+<ul>
+<li><p>dotenv
+https://pypi.org/project/dotenv/
+https://github.com/pedroburon/dotenv</p>
+</li>
+<li><p>python-dotenv
+https://pypi.org/project/python-dotenv/
+https://github.com/theskumar/python-dotenv</p>
+</li>
+<li><p>django-dotenv
+https://pypi.org/project/django-dotenv/
+https://github.com/jpadilla/django-dotenv
+https://github.com/jpadilla/django-dotenv/issues/50</p>
+</li>
+</ul>
+<pre><code>&gt;uv --version
+uv 0.4.10
+</code></pre>
+<pre><code>&gt; mkdir /tmp/demo-dotenv
+&gt; cd /tmp/demo-dotenv
+&gt; uv venv 
+Using Python 3.12.0 interpreter at: /opt/tools/pyenv/var/repo/versions/3.12.0/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+&gt; uv pip install django-dotenv
+uv pip install django-dotenv
+Resolved 1 package in 11ms
+Installed 1 package in 0.77ms
+ + django-dotenv==1.4.2
+
+&gt; .venv/bin/python
+Python 3.12.0 (main, Oct 15 2023, 13:31:57) [GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import dotenv
+&gt;&gt;&gt; dotenv.__file__
+'/tmp/demo-dotenv/.venv/lib/python3.12/site-packages/dotenv.py'
+
+&gt; uv pip install python-dotenv
+&gt;&gt;&gt; import dotenv
+&gt;&gt;&gt; dotenv.__file__
+'/tmp/demo-dotenv/.venv/lib/python3.12/site-packages/dotenv/__init__.py'
+</code></pre>
+<p>The first installed <code>django-dotenv</code> is now installed in your project, but completely unusable.</p>
+<h3>Downstream problems</h3>
+<p>There exists code, that will check on the importability of a toplevel module and goes on to assume a specific package is installed,</p>
+<p>For example in Flask, see https://github.com/pallets/flask/blob/2fec0b206c6e83ea813ab26597e15c96fab08be7/src/flask/cli.py#L714
+<img src="https://github.com/user-attachments/assets/5718cc41-65de-4a62-82c2-d991ca3244f1" alt="image" /></p>
+<p>The ImportError will not fail when <code>dotenv</code> or <code>django-dotenv</code> is installed, but the applicaiton will fail at runtime</p>
+<h3>Solutions</h3>
+<ol>
+<li>outside uv-scope:
+The structural fix is that those package fix their toplevel-module into <code>django_dotenv</code> and <code>python_dotenv</code>,</li>
+</ol>
+<p>the (quite undocumented) python community standard for naming toplevel modules has always been:</p>
+<pre><code>toplevel_module_name = package_name.lower().replace(&quot;-&quot;, _&quot;)
+</code></pre>
+<ol start="2">
+<li>could we have a warning we installing such conflicting packages?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-09-14 11:10</div>
+            <div class="timeline-body"><p>In case it helps, some pip discussions about this can be found here:</p>
+<ul>
+<li>https://github.com/pypa/pip/issues/4625</li>
+<li>https://github.com/pypa/pip/pull/8119</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-09-14 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 12:30</div>
+            <div class="timeline-body"><p>We definitely have the ability to warn here. We'd need to decide how opinionated we want to be about it, i.e., whether we'd want to show it unconditionally or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-09-14 13:10</div>
+            <div class="timeline-body"><p>Hey team,</p>
+<h2>Solution As earlier discusses:</h2>
+<pre><code>outside uv-scope: The structural fix is that those package fix their toplevel-module into django_dotenv and python_dotenv,
+
+the (quite undocumented) python community standard for naming toplevel modules has always been:
+
+toplevel_module_name = package_name.lower().replace(&quot;-&quot;, &quot;-&quot;)
+</code></pre>
+<p>Can I try to work on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-09-14 13:52</div>
+            <div class="timeline-body"><p>I would go as far as calling this a security-impacting issue. Typosquatting packages are able to overwrite the importable namespaces of other (much more established) OSS packages such as <code>requests</code> and <code>yaml</code> (two examples from personal experience).</p>
+<p>Being able to warn (I'd say even <em>fail</em> -- at a minimum I'd like to have the option to make it fail) upon conflict will give developers &amp; security teams the ability to detect supply-chain anomalies <em>much</em> earlier in the process. E.g. if I declare a dependency on <code>requests</code> and <code>requetss</code> simultaneously, I'd rather find out sooner rather than later.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:48 UTC
+    </footer>
+</body>
+</html>

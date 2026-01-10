@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect duplicates in `__all__` - astral-sh/ruff #21945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect duplicates in `__all__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21945">#21945</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-12-12 13:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-12-12 13:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ruff.rs/1aa72d45-0c70-4a77-be1f-a782c4f4c8dd">Playground*</a></p>
+<pre><code class="language-python"># ruff: noqa: D100, D101, CPY001
+__all__ = (
+    &quot;DialogProtocol&quot;,
+    &quot;DialogProtocol&quot;,
+)
+
+
+class DialogProtocol: ...
+
+</code></pre>
+<p><img width="1143" height="721" alt="Image" src="https://github.com/user-attachments/assets/e32825ab-731c-47ed-ab5b-cf3fbaa44530" /></p>
+<p>Neither Ruff nor PyCharm told me anything about this, only <a href="https://github.com/Tishka17/aiogram_dialog/pull/504#discussion_r2603382353">CodeRabbit was able to detect it</a>.</p>
+<p>I think it would be possible to add such a rule, especially since it is not so difficult to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-12-12 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-14 21:21</div>
+            <div class="timeline-body"><p>May I be assigned to this issue? I'm new to the codebase, so my first implementation might be a bit rough and I may need some maintainer help to iron it out.</p>
+<p>For now my plan is to create the <code>RUF067</code> rule named <code>DuplicateEntryInDunderAll</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-12-14 22:52</div>
+            <div class="timeline-body"><blockquote>
+<p>May I be assigned to this issue? I'm new to the codebase, so my first implementation might be a bit rough and I may need some maintainer help to iron it out.</p>
+<p>For now my plan is to create the <code>RUF067</code> rule named <code>DuplicateEntryInDunderAll</code>.</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/pull/21079</p>
+<p>It seems to be already taken, the next available code is <code>RUF069</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @leandrobbraga by @ntBre on 2025-12-15 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-16 16:02</div>
+            <div class="timeline-body"><p>OK, I'll use <code>RUF069</code>.</p>
+<p>I have a question: is removing the duplicate entry a safe fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-16 16:10</div>
+            <div class="timeline-body"><p>I always have to study our <a href="https://docs.astral.sh/ruff/linter/#fix-safety">fix safety docs</a> again to be sure, but based on the main two criteria (safe fixes don't change runtime behavior or remove comments), I think it could be a safe fix.</p>
+<p>One thing to watch out for would be any comments in the range of the edit that might get removed, though. We use this pattern in a lot of rules:</p>
+<p>https://github.com/astral-sh/ruff/blob/0f373603ebd007196af4f211e14d421024a6b947/crates/ruff_linter/src/rules/flake8_type_checking/rules/type_alias_quotes.rs#L320-L324</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-12-16 16:14</div>
+            <div class="timeline-body"><p>Thank you for your input, @ntBre, it was really helpful.</p>
+<p>I wasn't aware of <a href="https://docs.astral.sh/ruff/linter/#fix-safety">fix safety docs</a> nor the comment in the range pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/22114.html">astral-sh/ruff#22114</a> on 2025-12-20 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

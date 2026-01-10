@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Rule: Use `Sequence` instead of `list` to annotate arguments - astral-sh/ruff #11061</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New Rule: Use `Sequence` instead of `list` to annotate arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11061">#11061</a>
+        opened by <a href="https://github.com/jd-solanki">@jd-solanki</a>
+        on 2024-04-21 00:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jd-solanki">@jd-solanki</a> on 2024-04-21 00:10</div>
+            <div class="timeline-body"><p>Hi 👋🏻</p>
+<p>Thanks for the amazing &amp; blazing fast ecosystem 🫡</p>
+<p>With the following code:</p>
+<pre><code class="language-py">from pydantic import BaseModel
+
+class Itembase(BaseModel):
+    title: str
+
+class ItemRead(Itembase): ...
+
+def my_util(Itembase): ...
+
+items = [ItemRead(title&quot;my title&quot;)]
+
+my_utils(items) # 🚨 Type Error: `Type parameter &quot;_T@list&quot; is invariant, Consider switching from &quot;list&quot; to &quot;Sequence&quot; which is covariant`
+</code></pre>
+<p>I checked the typing module and found <a href="https://docs.python.org/3/library/typing.html#typing.List">this</a> quote:</p>
+<blockquote>
+<p>Note that to annotate arguments, it is preferred to use an abstract collection type such as <a href="https://docs.python.org/3/library/typing.html#typing.Sequence">Sequence</a> or <a href="https://docs.python.org/3/library/typing.html#typing.Iterable">Iterable</a> rather than to use <a href="https://docs.python.org/3/library/stdtypes.html#list">list</a> or typing.List.</p>
+</blockquote>
+<p>Hence, I'm raising an issue that'll enforce using <code>Sequence</code> instead of <code>list</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-04-21 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-04-21 00:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2024-04-21 16:04</div>
+            <div class="timeline-body"><p>If ruff can analyze the minimally needed types/methods for arguments and, based on that, suggests widening the type (for example, from list to Sequence), that would be amazing!</p>
+<p>A blanket recommendation without some guard rails to replace list with Sequence would probably produce too many false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2024-05-04 05:56</div>
+            <div class="timeline-body"><p>Changing <code>list</code> to <code>Sequence</code> is often incorrect. <code>MutableSequence</code> is less likely to be a problem, but even that can cause issue if you are relying on the sequence being an actual list somewhere else. This would be extremely disruptive in many code bases due to interactions with other code outside of someone's control (you can't call a function expecting a list when you only know it's a sequence, for example)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @zanieb on 2024-05-04 15:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

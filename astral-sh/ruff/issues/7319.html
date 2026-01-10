@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter undocumented deviation: condition and slice wrapping - astral-sh/ruff #7319</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter undocumented deviation: condition and slice wrapping</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7319">#7319</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2023-09-12 21:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-09-12 21:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Black formatting</p>
+<pre><code class="language-python">def f():
+    return (
+        package_version is not None
+        and package_version.split(&quot;.&quot;)[:2] == package_info.version.split(&quot;.&quot;)[:2]
+    )
+</code></pre>
+<p>Ruff formatting</p>
+<pre><code class="language-python">def f():
+    return package_version is not None and package_version.split(&quot;.&quot;)[
+        :2
+    ] == package_info.version.split(&quot;.&quot;)[:2]
+</code></pre>
+<p>I use Ruff 0.0.289 with line length 100.</p>
+<p>In this case, I prefer Black.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-13 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @MichaReiser on 2023-09-13 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 06:43</div>
+            <div class="timeline-body"><p>Thanks for reporting this deviation. I'm, unfortunately, unable to reproduce the deviation. Both Black and Ruff create the same formatted output for me.</p>
+<pre><code>❯ pipx run ruff format test.py
+warning: `ruff format` is a work-in-progress, subject to change at any time, and intended only for experimentation.
+1 file left unchanged
+
+~/astral/test via 🐍 v3.11.5 
+❯ bat test.py
+───────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: test.py
+───────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ def f():
+   2   │     return (
+   3   │         package_version is not None
+   4   │         and package_version.split(&quot;.&quot;)[:2] == package_info.version.split(&quot;.&quot;)[:2]
+   5   │     )
+───────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-09-13 17:16</div>
+            <div class="timeline-body"><pre><code class="language-console">❯ cat haha.py
+def f():
+    return (
+        package_version is not None
+        and package_version.split(&quot;.&quot;)[:2] == package_info.version.split(&quot;.&quot;)[:2]
+    )
+❯ pipx run ruff format haha.py --isolated
+warning: `ruff format` is a work-in-progress, subject to change at any time, and intended only for experimentation.
+1 file reformatted
+❯ cat haha.py
+def f():
+    return package_version is not None and package_version.split(&quot;.&quot;)[
+        :2
+    ] == package_info.version.split(&quot;.&quot;)[:2]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 17:39</div>
+            <div class="timeline-body"><p>This is probably related to</p>
+<p>https://github.com/astral-sh/ruff/blob/ebe9c03545a4496811efeee7a530a5632e48e7d2/crates/ruff_python_formatter/src/expression/expr_subscript.rs#L69-L71</p>
+<p>using <code>parenthesized</code>. It seems that subscript has a lower precedence than binary expressions, meaning it should use <code>in_parentheses_only_*</code> as well.</p>
+<p><a href="https://play.ruff.rs/7a0ebba3-4261-4ca6-ad4c-e2d9a3088ea9">Playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> removed by @MichaReiser on 2023-09-13 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-13 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-09-13 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7380.html">astral-sh/ruff#7380</a> on 2023-09-14 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-14 08:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

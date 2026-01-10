@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff 0.3.5 not respecting directive for all lines of a multiline expression - astral-sh/ruff #10795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff 0.3.5 not respecting directive for all lines of a multiline expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10795">#10795</a>
+        opened by <a href="https://github.com/BenZickel">@BenZickel</a>
+        on 2024-04-05 22:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BenZickel">@BenZickel</a> on 2024-04-05 22:40</div>
+            <div class="timeline-body"><p>The bug occurs when switching from ruff 0.3.4 to 0.3.5 with the directive <code># noga: F822</code> not respected for all lines of a multiline expression.</p>
+<p>The problem is described in <a href="https://github.com/pyro-ppl/pyro/pull/3354">this</a> issue in the Pyro repo, mainly:</p>
+<ul>
+<li>Linting with ruff version 0.3.5 fails as can be seen <a href="https://github.com/pyro-ppl/pyro/actions/runs/8572360312/job/23494720392?pr=3352#step:5:16">here</a>.</li>
+<li>The failure is due to ruff version 0.3.5 not respecting <a href="https://github.com/pyro-ppl/pyro/blob/58080f81b662bd9575cdf4b466ab3d87236c95df/pyro/distributions/torch.py#L350">this</a> directive.</li>
+<li>The problem does not occur with ruff version 0.3.4.</li>
+</ul>
+<p>The command that is executed is <code>ruff check .</code> and is part of the CI workflow of the Pyro repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 22:43</div>
+            <div class="timeline-body"><p>Hmm... I don't think we respected <code># noqa</code> in that position in 0.3.4. Is it possible that we weren't raising diagnostics there <em>at all</em> in 0.3.4? I'll test it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 22:45</div>
+            <div class="timeline-body"><p>Nevermind, I stand corrected! I'll take a look at what changed...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 22:46</div>
+            <div class="timeline-body"><p>Ah ok, the change is that we fixed the ranges on those diagnostics to be on the actual strings. So, previously, they all said line 350:</p>
+<pre><code>pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Bernoulli` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Cauchy` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Chi2` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `ContinuousBernoulli` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `ExponentialFamily` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Exponential` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `FisherSnedecor` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Gumbel` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `HalfCauchy` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `HalfNormal` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Kumaraswamy` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Laplace` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `LKJCholesky` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `LogisticNormal` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `MixtureSameFamily` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `NegativeBinomial` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `OneHotCategoricalStraightThrough` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Pareto` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `RelaxedBernoulli` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `RelaxedOneHotCategorical` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `StudentT` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `TransformedDistribution` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `VonMises` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Weibull` in `__all__`
+pyro/pyro/distributions/torch.py:350:1: F822 Undefined name `Wishart` in `__all__`
+</code></pre>
+<p>Now, we have the correct lines and columns:</p>
+<pre><code>pyro/pyro/distributions/torch.py:351:5: F822 Undefined name `Bernoulli` in `__all__`
+pyro/pyro/distributions/torch.py:355:5: F822 Undefined name `Cauchy` in `__all__`
+pyro/pyro/distributions/torch.py:356:5: F822 Undefined name `Chi2` in `__all__`
+pyro/pyro/distributions/torch.py:357:5: F822 Undefined name `ContinuousBernoulli` in `__all__`
+pyro/pyro/distributions/torch.py:359:5: F822 Undefined name `ExponentialFamily` in `__all__`
+pyro/pyro/distributions/torch.py:360:5: F822 Undefined name `Exponential` in `__all__`
+pyro/pyro/distributions/torch.py:361:5: F822 Undefined name `FisherSnedecor` in `__all__`
+pyro/pyro/distributions/torch.py:364:5: F822 Undefined name `Gumbel` in `__all__`
+pyro/pyro/distributions/torch.py:365:5: F822 Undefined name `HalfCauchy` in `__all__`
+pyro/pyro/distributions/torch.py:366:5: F822 Undefined name `HalfNormal` in `__all__`
+pyro/pyro/distributions/torch.py:368:5: F822 Undefined name `Kumaraswamy` in `__all__`
+pyro/pyro/distributions/torch.py:369:5: F822 Undefined name `Laplace` in `__all__`
+pyro/pyro/distributions/torch.py:370:5: F822 Undefined name `LKJCholesky` in `__all__`
+pyro/pyro/distributions/torch.py:372:5: F822 Undefined name `LogisticNormal` in `__all__`
+pyro/pyro/distributions/torch.py:374:5: F822 Undefined name `MixtureSameFamily` in `__all__`
+pyro/pyro/distributions/torch.py:377:5: F822 Undefined name `NegativeBinomial` in `__all__`
+pyro/pyro/distributions/torch.py:380:5: F822 Undefined name `OneHotCategoricalStraightThrough` in `__all__`
+pyro/pyro/distributions/torch.py:381:5: F822 Undefined name `Pareto` in `__all__`
+pyro/pyro/distributions/torch.py:383:5: F822 Undefined name `RelaxedBernoulli` in `__all__`
+pyro/pyro/distributions/torch.py:384:5: F822 Undefined name `RelaxedOneHotCategorical` in `__all__`
+pyro/pyro/distributions/torch.py:385:5: F822 Undefined name `StudentT` in `__all__`
+pyro/pyro/distributions/torch.py:386:5: F822 Undefined name `TransformedDistribution` in `__all__`
+pyro/pyro/distributions/torch.py:388:5: F822 Undefined name `VonMises` in `__all__`
+pyro/pyro/distributions/torch.py:389:5: F822 Undefined name `Weibull` in `__all__`
+pyro/pyro/distributions/torch.py:390:5: F822 Undefined name `Wishart` in `__all__`
+</code></pre>
+<p>But now your <code># noqa</code> no longer works, since it's on the &quot;wrong&quot; line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenZickel">@BenZickel</a> on 2024-04-05 22:58</div>
+            <div class="timeline-body"><p>Thanks for the quick reply @charliermarsh!
+So it was never the intention to support applying a single directive to all lines of a multiline expression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 23:25</div>
+            <div class="timeline-body"><p>It wasn't the intention, but we can support it I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10798.html">astral-sh/ruff#10798</a> on 2024-04-05 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 23:41</div>
+            <div class="timeline-body"><p>Will be fixed in the next release: https://github.com/astral-sh/ruff/pull/10798. Thanks, and sorry for the disruption.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-06 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyro-ppl/pyro/pulls/3357.html">pyro-ppl/pyro#3357</a> on 2024-04-12 13:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv init --lib` should add `uv.lock` to the `.gitignore` - astral-sh/uv #10730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv init --lib` should add `uv.lock` to the `.gitignore`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10730">#10730</a>
+        opened by <a href="https://github.com/cjw296">@cjw296</a>
+        on 2025-01-18 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cjw296">@cjw296</a> on 2025-01-18 10:38</div>
+            <div class="timeline-body"><p>My understanding is that while application projects should include a lock file, library projects should not.</p>
+<p>If that's true, then I think <code>uv.lock</code> should be included in the <code>.gitignore</code> generate by <code>uv init --lib</code>.</p>
+<p>It currently does not:</p>
+<pre><code class="language-bash">$ uv --version
+uv 0.5.18 (27d1bad55 2025-01-11)
+$ uv init --lib testlib
+Initialized project `testlib` at `/Users/chris/testlib`
+$ cd testlib/
+$ cat .gitignore 
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-18 15:23</div>
+            <div class="timeline-body"><p>I would include locks for both libraries and application (though there are arguments for and against -- see: https://blog.rust-lang.org/2023/08/29/committing-lockfiles.html).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-18 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-01-19 10:44</div>
+            <div class="timeline-body"><p>Am I right in thinking the dependencies listed in <code>pyproject.toml</code> give the compatible ranges for a library?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-19 16:19</div>
+            <div class="timeline-body"><p>Yes that's correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-01-20 07:20</div>
+            <div class="timeline-body"><p>Okay, so once a library is published to a package index such as pypi, do the versions locked in <code>uv.lock</code> have any impact on the dependency versions considered by a tool such as pip during installation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 13:30</div>
+            <div class="timeline-body"><p>No, they do not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-01-21 09:15</div>
+            <div class="timeline-body"><p>Sure, so in that case I come down on the &quot;lock file should not be in repo for libraries&quot; side of the discussion: I test my libraries against a range of python and dependency versions, so don't think it makes sense.</p>
+<p>What would you suggest for <code>uv init --lib</code> to better suit my usecase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-21 09:35</div>
+            <div class="timeline-body"><p>My usual recommendation is to have the lockfile checked in so that all developers and CI get the same versions, and that commands are reproducible.</p>
+<p>Additionally, you can test:</p>
+<ul>
+<li><code>uv sync --fork-strategy requires-python</code>, for a larger coverage of python versions (this option can be used project wide)</li>
+<li><code>uv sync --resolution lowest</code>, only in CI, to check that the lower bounds are correct.</li>
+<li><code>uv sync --upgrade</code>, in CI job with allowed failures, so that a bad dependency update doesn't break merging of unrelated changes.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 13:18</div>
+            <div class="timeline-body"><p>If you don’t want to check in the lockfile, then you can just remove it after running uv init. That’s totally up to you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-01-22 06:43</div>
+            <div class="timeline-body"><blockquote>
+<p>If you don’t want to check in the lockfile, then you can just remove it after running uv init. That’s totally up to you!</p>
+</blockquote>
+<p>Well no, I have to manually <code>git rm uv.lock</code> and then add <code>uv.lock</code> to <code>.gitignore</code>.</p>
+<p>@konstin - those are really good options to think through! Where can I find out what the defaults are for <code>--fork-strategy</code> and <code>--resolution</code>?</p>
+<p>Where can I find out what the differences are between <code>lowest</code> and <code>lowest-direct</code>?</p>
+<p>Where can I find out what the differences are between <code>fewest</code> and <code>requires-python</code>?</p>
+<p>When using <code>uv sync --fork-strategy requires-python</code>, how can I specify the python version to use in a CI matrix?</p>
+<p>If either of you have a good example of a pure python library pull request CI based on github actions, I'd love to take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 06:47</div>
+            <div class="timeline-body"><p>See the settings reference for details on the options https://docs.astral.sh/uv/reference/settings/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-01-22 06:56</div>
+            <div class="timeline-body"><p>Thanks! Having read that, I don't understand:</p>
+<blockquote>
+<p>uv sync --fork-strategy requires-python, for a larger coverage of python versions (this option can be used project wide)</p>
+</blockquote>
+<p>This sounds almost like you're describing <code>--fork-strategy fewest</code> and <code>--fork-strategy requires-python</code> is the default, so perhaps you could give a bit more context on what you meant?</p>
+<blockquote>
+<p>uv sync --upgrade, in CI job with allowed failures, so that a bad dependency update doesn't break merging of unrelated changes.</p>
+</blockquote>
+<p>The thing with this, and indeed the approach of keeping a uv.lock file in a library project is when do you update it?
+I guess you'll suggest something like dependabot, which from my perspective contains a bunch of noise/churn commits/PRs.
+I prefer the run CI periodically, daily if possible, with unpinned deps to highlight when problems occur, as soon a they occur.
+<code>uv sync --lowest</code> certainly seems like a great addition to that approach!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/8085.html">pypa/pip#8085</a> on 2025-03-27 08:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Aleph-Alpha/pharia-skill/pulls/196.html">Aleph-Alpha/pharia-skill#196</a> on 2025-03-27 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../django-guardian/django-guardian/pulls/870.html">django-guardian/django-guardian#870</a> on 2025-05-15 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sktime/tutorial_haicon_prologue_day/pulls/1.html">sktime/tutorial_haicon_prologue_day#1</a> on 2025-07-18 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../SCM-NV/PLAMS/pulls/318.html">SCM-NV/PLAMS#318</a> on 2025-09-12 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

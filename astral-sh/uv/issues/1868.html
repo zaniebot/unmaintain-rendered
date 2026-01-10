@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv` fails because `python3.wrapper` is not available - astral-sh/uv #1868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv` fails because `python3.wrapper` is not available</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1868">#1868</a>
+        opened by <a href="https://github.com/csalerno-asml">@csalerno-asml</a>
+        on 2024-02-22 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/csalerno-asml">@csalerno-asml</a> on 2024-02-22 14:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Machine: RHEL7</p>
+<pre><code class="language-bash">$ python3 -m pip install uv==0.1.7
+$ uv venv
+Querying Python at `/home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper` failed with status exit status: 127:
+  │ --- stdout:
+
+  │ --- stderr:
+  │ /home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper: line 5: python3.wrapper: command not found
+  │ ---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 14:59</div>
+            <div class="timeline-body"><p>How did you install python?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crissal1995">@Crissal1995</a> on 2024-02-23 23:56</div>
+            <div class="timeline-body"><p>Via a proprietary enterprise tool, so some shenanigans are happening with paths.</p>
+<p>However running <code>python3 -m venv .venv</code> works correctly, shouldn't <code>uv</code> run the same command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-24 00:57</div>
+            <div class="timeline-body"><p><code>uv</code> implements its own virtual environment creation in Rust, we do not call Python's virtual environment tooling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crissal1995">@Crissal1995</a> on 2024-02-25 09:46</div>
+            <div class="timeline-body"><p>Isn't possible to implement a fallback in case of custom python installations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-26 12:56</div>
+            <div class="timeline-body"><p>Could you run with debug logging?</p>
+<pre><code>RUST_LOG=debug uv venv -v
+</code></pre>
+<p>For background, we rely on <code>python -c &quot;&lt;our probing script&gt;&quot;</code> to get information about the python interpreter (e.g. its version and its paths). Is there a reason why <code>python -m venv</code> works while <code>python -c</code> doesn't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/csalerno-asml">@csalerno-asml</a> on 2024-02-28 08:37</div>
+            <div class="timeline-body"><p>There you go:</p>
+<pre><code class="language-bash">$ RUST_LOG=debug uv venv -v
+ uv_interpreter::python_query::find_default_python platform=Platform { os: Manylinux { major: 2, minor: 17 }, arch: X86_64 }, cache=Cache { root: &quot;/home/csalerno/.cache/uv&quot;, refresh: None, _temp_dir_drop: None }
+      0.016782s  11ms DEBUG uv_interpreter::interpreter Detecting markers for: /home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper
+  × Querying Python at `/home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper` failed
+  │ with status exit status: 127:
+  │ --- stdout:
+
+  │ --- stderr:
+  │ /home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper: line 5: python3.wrapper:
+  │ command not found
+  │ ---
+</code></pre>
+<p>Regarding your question, not sure, maybe some enterprise rules, however <code>python -c</code> works fine.</p>
+<pre><code class="language-bash">$ python -c 'print(&quot;hello world&quot;)'
+hello world
+</code></pre>
+<p>However in our setup, <code>python</code> is v2.7.14, while <code>python3</code> is v3.10.5, so maybe python2 is actually called by <code>uv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-28 08:52</div>
+            <div class="timeline-body"><blockquote>
+<p>However in our setup, python is v2.7.14, while python3 is v3.10.5, so maybe python2 is actually called by uv?</p>
+</blockquote>
+<p>uv calls python 2 to get its version information. But it won't use it if you have a Python3 installation.</p>
+<p>Can you run <code>which python</code> and would you mind sharing the content of <code>cat /home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper</code> (assuming it contains no sensitive content)? I wonder if it fails because we canonicalize the path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/csalerno-asml">@csalerno-asml</a> on 2024-02-29 14:45</div>
+            <div class="timeline-body"><p>Sure, no sensitive content found :)</p>
+<blockquote>
+<p><code>which python</code></p>
+</blockquote>
+<p><code>/home/csalerno/.caddir/RHEL7/cadbin/python</code></p>
+<blockquote>
+<p><code>cat /home/cadappl_RHEL7/python3/3.10.5/wrapper/python3.wrapper</code></p>
+</blockquote>
+<pre><code class="language-bash">#!/bin/sh
+export PATH=/cadappl/python3/3.10.5/python3/bin:${PATH}
+export LD_LIBRARY_PATH=/cadappl/python3/3.10.5/python3/lib:/cadappl/tcl/8.6.11/tcl/lib:/cadappl/tk/8.6.11/tk/lib:/cadappl/sqlite/3.34.1/sqlite/lib:/cadappl/zlib/1.2.11/lib:/cadappl/openssl/1.1.1j/openssl/lib:/cadappl/valgrind/3.16.1/valgrind/lib:/cadappl/gdbm/1.19/gdbm/lib:/cadappl/readline/6.2.4.1/readline/lib:/cadappl/bzip2/1.0.6.a/bzip2/lib:${LD_LIBRARY_PATH}
+
+`basename $0` &quot;$@&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-01 10:10</div>
+            <div class="timeline-body"><p>It's probably because we resolve the symlink so the basename changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/csalerno-asml">@csalerno-asml</a> on 2024-03-01 14:30</div>
+            <div class="timeline-body"><p>is there a workaround that I could apply in <code>python3.wrapper</code>? or this is something that should be fixed in <code>uv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 04:10</div>
+            <div class="timeline-body"><p>@konstin - Related to https://github.com/astral-sh/uv/issues/1640 -- I'm unsure if we should be resolving symlinks for interpreters outside of virtualenvs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-03 17:49</div>
+            <div class="timeline-body"><p>We should stop resolving the symlinks unconditionally; Initially, it looked like a convenient solution for venv-from-venv use cases, but using <code>sys._base_executable</code> with a fallback to resolving should represent the user intent better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-03 17:51</div>
+            <div class="timeline-body"><p>@konstin - I generally agree, although if we change that, it will &quot;break&quot; cases like this: https://github.com/pypa/virtualenv/issues/2682. (That issue motivated virtualenv to start recursively resolving symlinks (on <code>main</code> but unreleased).)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-03 18:52</div>
+            <div class="timeline-body"><p>I've asked at https://github.com/python/cpython/issues/106045#issuecomment-1975257339, this should bring some clarity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-04 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @charliermarsh on 2024-03-04 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crissal1995">@Crissal1995</a> on 2024-04-05 16:12</div>
+            <div class="timeline-body"><p>Hi, is there any update regarding this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-01 14:46</div>
+            <div class="timeline-body"><p>We've rewritten interpreter discovery and this should not occur anymore, feel free to reopen if it's still a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-01 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

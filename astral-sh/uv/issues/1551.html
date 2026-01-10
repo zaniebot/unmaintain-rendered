@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using uv with internal libraries fails with `No module named 'pip'` - astral-sh/uv #1551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using uv with internal libraries fails with `No module named 'pip'`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1551">#1551</a>
+        opened by <a href="https://github.com/wsantos">@wsantos</a>
+        on 2024-02-16 23:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wsantos">@wsantos</a> on 2024-02-16 23:09</div>
+            <div class="timeline-body"><p>We are trying to implement UV in our pip line bot we are getting this error for one of out libraries:</p>
+<pre><code>error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/wsantos/projetos/xxxxxx/xxxxxxx
+  Caused by: Build backend failed to build wheel through `build_editable()`:
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 12, in &lt;module&gt;
+ModuleNotFoundError: No module named 'pip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 6, in &lt;module&gt;
+  File &quot;/private/var/folders/x_/cw97nxxx13q_f1fscwrs7g9r0000gn/T/.tmphBj6Wg/.venv/lib/python3.9/site-packages/setuptools/build_meta.py&quot;, line 436, in build_editable
+    return self._build_with_temp_dir(
+  File &quot;/private/var/folders/x_/cw97nxxx13q_f1fscwrs7g9r0000gn/T/.tmphBj6Wg/.venv/lib/python3.9/site-packages/setuptools/build_meta.py&quot;, line 389, in _build_with_temp_dir
+    self.run_setup()
+  File &quot;/private/var/folders/x_/cw97nxxx13q_f1fscwrs7g9r0000gn/T/.tmphBj6Wg/.venv/lib/python3.9/site-packages/setuptools/build_meta.py&quot;, line 480, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/private/var/folders/x_/cw97nxxx13q_f1fscwrs7g9r0000gn/T/.tmphBj6Wg/.venv/lib/python3.9/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+ModuleNotFoundError: No module named 'pip'
+</code></pre>
+<p>How can I fix it, I see some others issues about it but none told how we can fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 23:13</div>
+            <div class="timeline-body"><p>Thanks! Is this a library you all control? It looks like it depends on <code>&quot;pip&quot;</code>. Does it declare <code>&quot;pip</code>&quot; as a build requirement, in the <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Using uv with internal libraris fails with " to "Using uv with internal libraris fails with `No module named 'pip'`" by @zanieb on 2024-02-17 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wsantos">@wsantos</a> on 2024-02-17 02:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! Is this a library you all control? It looks like it depends on <code>&quot;pip&quot;</code>. Does it declare <code>&quot;pip</code>&quot; as a build requirement, in the <code>pyproject.toml</code>?</p>
+</blockquote>
+<p>Yeap we control it, we don't have a <code>pyproject.toml</code> how should I do it, we do have <code>setup.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Using uv with internal libraris fails with `No module named 'pip'`" to "Using uv with internal libraries fails with `No module named 'pip'`" by @wsantos on 2024-02-17 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArturFormella">@ArturFormella</a> on 2024-03-23 22:24</div>
+            <div class="timeline-body"><p>This is a surprising workaround:</p>
+<pre><code>➜  uv pip install pip
+Resolved 1 package in 176ms
+Installed 1 package in 16ms
+ + pip==24.0
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-03-23 22:35</div>
+            <div class="timeline-body"><p>Add a pyproject.toml with something like:</p>
+<pre><code>[build-system]
+requires = [&quot;setuptools&quot;, &quot;wheel&quot;, &quot;pip&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>(and keep your existing setup.py as-is)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 03:58</div>
+            <div class="timeline-body"><p>Closing since @hauntsaninja suggestion is what you're looking for!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-04 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7291.html">astral-sh/uv#7291</a> on 2024-09-11 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7327.html">astral-sh/uv#7327</a> on 2025-02-01 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../holdonprojekt/hcc/pulls/1.html">holdonprojekt/hcc#1</a> on 2025-04-04 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tech-ezutil">@tech-ezutil</a> on 2025-04-16 01:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Add a pyproject.toml with something like:</p>
+<pre><code>[build-system]
+requires = [&quot;setuptools&quot;, &quot;wheel&quot;, &quot;pip&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>(and keep your existing setup.py as-is)</p>
+</blockquote>
+<p>this doesn't work  for me.  there are still lots of bugs and problems with <code>uv pip</code> , instead use uv like conda :</p>
+<p><code>uv pip install pip &amp;&amp; pip install -r requirements.txt</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

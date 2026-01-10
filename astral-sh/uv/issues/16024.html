@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segfault on amd64 under QEMU - astral-sh/uv #16024</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Segfault on amd64 under QEMU</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16024">#16024</a>
+        opened by <a href="https://github.com/lczyk">@lczyk</a>
+        on 2025-09-25 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lczyk">@lczyk</a> on 2025-09-25 11:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-bash">docker run --rm --platform=linux/amd64 ubuntu:25.04 bash -c '
+apt update &amp;&amp; apt install -y curl;
+curl -LsSf https://astral.sh/uv/install.sh | sh;
+source $HOME/.local/bin/env;
+which uv;
+uv --help'
+</code></pre>
+<p>leads to</p>
+<pre><code>/root/.local/bin/uv # the output of `which`
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped
+</code></pre>
+<p>note: i'm on arm64 host.</p>
+<p>reminds me of <a href="https://github.com/junegunn/fzf/issues/4464">this</a> issue which i've reported a while ago, which turned out to be an <a href="https://github.com/golang/go/issues/69255">issue in upstream golang</a> (yes, i know this is not a golang project 😅 i said it <em>reminds me</em> of it) which they resolved in the HEAD (go1.26).</p>
+<hr />
+<p>Note: here is a useful snippet to enable qemu emulation in docker: <code>docker run --privileged --rm tonistiigi/binfmt --install all</code></p>
+<p>Note 2: i've run the same command</p>
+<h3>Platform</h3>
+<p>Ubuntu 25.04 aarch64</p>
+<h3>Version</h3>
+<p>uv 0.8.22 x86_64-unknown-linux-gnu (extracted from logs, before the segfault)</p>
+<h3>Python version</h3>
+<p>irrelevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lczyk on 2025-09-25 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-25 11:19</div>
+            <div class="timeline-body"><p>We don't have any reports from something similar happening with the native binary, so this sounds like a QEMU bug. Can you <code>cargo build</code> a debug build and use gdb to capture a backtrace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lczyk">@lczyk</a> on 2025-09-25 11:34</div>
+            <div class="timeline-body"><p>already on it 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lczyk">@lczyk</a> on 2025-09-25 11:40</div>
+            <div class="timeline-body"><p>apparently not 😆 <em>definitely</em> looks like an upstream bug though. <code>rust</code> or <code>qemu</code> or both. will escalate.</p>
+<pre><code>root@952773e6b9c4:~/uv# cargo build
+error: process didn't exit successfully: `/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc -vV` (signal: 11, SIGSEGV: invalid memory reference)
+--- stderr
+error: rustc interrupted by SIGSEGV, printing backtrace
+
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(+0x3c83a9f)[0xffffaf083a9f]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0xffffab233330]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc(realloc+0xc5c)[0x55555557be2c]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(+0x5403598)[0xffffb0803598]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(_ZN5alloc3ffi5c_str7CString19_from_vec_unchecked17hd3132e195204e147E+0x4d)[0xffffb18ea54d]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(_ZN118_$LT$std..thread..thread_name_string..ThreadNameString$u20$as$u20$core..convert..From$LT$alloc..string..String$GT$$GT$4from17h40ccdde012c08396E+0x49)[0xffffb18ea65d]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(_RNvCsaeDQxODg9Sp_17rustc_driver_impl21install_ctrlc_handler+0x1da)[0xffffb190efda]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(_RNvCsaeDQxODg9Sp_17rustc_driver_impl4main+0x15e)[0xffffb191049e]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc(+0x37a37)[0x55555558da37]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc(+0x37a23)[0x55555558da23]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc(+0x37a19)[0x55555558da19]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/lib/librustc_driver-890dfd19c9b338c0.so(_ZN3std2rt19lang_start_internal17h34f9328d113fd60aE+0x491)[0xffffb197c451]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc(+0x74da7)[0x5555555cada7]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0xffffab2181ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0xffffab21828b]
+/root/.rustup/toolchains/1.90-x86_64-unknown-linux-gnu/bin/rustc(+0x74cb4)[0x5555555cacb4]
+
+note: we would appreciate a report at https://github.com/rust-lang/rust
+help: you can increase rustc's stack size by setting RUST_MIN_STACK=16777216
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rust/issues/147026.html">rust-lang/rust#147026</a> on 2025-09-25 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-09-25 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-09-25 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lczyk">@lczyk</a> on 2025-09-25 13:24</div>
+            <div class="timeline-body"><p>escalated to <a href="https://github.com/rust-lang/rust/issues/147026">rust</a> and <a href="https://gitlab.com/qemu-project/qemu/-/issues/3130">QEMU</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../gpo/gpo-platform-configs/issues/132.html">gpo/gpo-platform-configs#132</a> on 2025-12-08 21:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

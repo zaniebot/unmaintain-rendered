@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter can reuse nested quotes before 3.12 - astral-sh/ruff #20774</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter can reuse nested quotes before 3.12</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20774">#20774</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-08 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-08 19:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>While updating our black compatibility tests for https://github.com/astral-sh/ruff/pull/20768, I ran into a failure related to this test case:</p>
+<pre><code class="language-py">f&quot;{f'''{'nested'} inner'''} outer&quot;
+</code></pre>
+<p>This is valid on Python versions before 3.12 (when quote reuse became allowed in f-strings), but the formatted result converts the innermost quotes to double quotes, making it invalid:</p>
+<pre><code class="language-py">f&quot;{f'''{&quot;nested&quot;} inner'''} outer&quot;
+</code></pre>
+<p>I was hoping to put up a quick PR fixing this, but I'm still working on it and figured I might as well open an issue. I bisected the issue to #13906, but that's not too helpful because this PR is when we first introduced f-string formatting, as Micha pointed out on Discord.</p>
+<p>Something interesting I've found besides the bug itself is that our main <code>format</code> test doesn't really catch this. <code>fstring.py</code> actually has more unsupported syntax errors before formatting than after, which I think prevents our error fingerprinting from working as intended. Our test runner produces a snapshot with the invalid quotes above, without panicking from the new unsupported syntax error, like the black test did.</p>
+<p>I've played a bit with more information we could add to the fingerprint, but unfortunately I haven't found a good solution there yet either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-10-08 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-08 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-10-08 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-08 20:41</div>
+            <div class="timeline-body"><p>Could we list the syntax errors at the end of the test snapshot? We could even use diagnostics to render them nicely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20777.html">astral-sh/ruff#20777</a> on 2025-10-08 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20794.html">astral-sh/ruff#20794</a> on 2025-10-09 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20930.html">astral-sh/ruff#20930</a> on 2025-10-16 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-17 12:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

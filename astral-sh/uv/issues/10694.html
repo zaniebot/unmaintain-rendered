@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-stage `uv sync` is annoying to use in pytorch projects - astral-sh/uv #10694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Two-stage `uv sync` is annoying to use in pytorch projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10694">#10694</a>
+        opened by <a href="https://github.com/tmm1">@tmm1</a>
+        on 2025-01-16 20:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-16 20:33</div>
+            <div class="timeline-body"><p>the <a href="https://github.com/astral-sh/uv/blob/45455b33c0a6dfb358345a79abd79ee593253887/docs/concepts/projects/config.md?plain=1#L214">docs on build isolation</a> explain how to setup a two-stage build/compile <code>uv sync</code> setup to deal with packages which depend on torch at build time.</p>
+<p>i'm glad this is documented and it is possible to use <code>uv</code> for these packages, but it's quite an annoying manual step. will it be possible to make this automatic in a single <code>uv sync</code> in the future?</p>
+<p>in the torch ecosystem, it is very common to encounter cuda kernels and other cuda/cutlass libraries which have to be built against the version of pytorch being used. it is also common to need to use nightly for specific bug fixes.</p>
+<p>i'm providing one example from my project which illustrates some of the challenges, i.e. custom env vars and cli flags currently required. i would love to be able to move as much of this configuration directly into the <code>pyproject.toml</code> so all a user needs is <code>uv sync</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;torchnightly&quot;
+requires-python = &quot;&gt;=3.11.9&quot;
+dependencies = [
+    &quot;torch&quot;,
+    &quot;torchao&quot;,
+    &quot;torchaudio&quot;,
+    &quot;torchvision&quot;,
+    &quot;setuptools&quot;, # for grouped_gemm
+    &quot;nvidia-cusparselt-cu12&quot;, # workaround #10693
+]
+dynamic = [&quot;version&quot;]
+
+[project.optional-dependencies]
+compile = [
+    &quot;grouped_gemm @ git+https://github.com/tgale96/grouped_gemm&quot;,
+]
+
+[tool.uv]
+no-build-isolation-package = ['grouped_gemm']
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-nightly-cu126&quot; }]
+torchvision = [{ index = &quot;pytorch-nightly-cu126&quot; }]
+torchaudio = [{ index = &quot;pytorch-nightly-cu126&quot; }]
+torchao = [{ index = &quot;pytorch-nightly-cu126&quot; }]
+
+[[tool.uv.index]]
+name = &quot;pytorch-nightly-cu126&quot;
+url = &quot;https://download.pytorch.org/whl/nightly/cu126&quot;
+explicit = true
+</code></pre>
+<pre><code class="language-console">$ uv sync
+Using CPython 3.11.9
+Creating virtual environment at: .venv
+⠦ Resolving dependencies...
+warning: Missing version constraint (e.g., a lower bound) for `torch`
+warning: Missing version constraint (e.g., a lower bound) for `torchao`
+warning: Missing version constraint (e.g., a lower bound) for `torchaudio`
+warning: Missing version constraint (e.g., a lower bound) for `torchvision`
+ Updated https://github.com/tgale96/grouped_gemm (ebeae0b)
+Resolved 20 packages in 7.79s
+Installed 14 packages in 39.34s
+ + filelock==3.16.1
+ + fsspec==2024.12.0
+ + jinja2==3.1.5
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + numpy==2.2.1
+ + pillow==11.1.0
+ + sympy==1.13.1
+ + torch==2.7.0.dev20250116+cu126
+ + torchao==0.8.0.dev20250116+cu126
+ + torchaudio==2.6.0.dev20250116+cu126
+ + torchvision==0.22.0.dev20250116+cu126
+ + typing-extensions==4.12.2
+</code></pre>
+<p>then second stage:</p>
+<pre><code class="language-console">$ TORCH_CUDA_ARCH_LIST=9.0 GROUPED_GEMM_CUTLASS=1 uv sync --extra compile --no-binary-package grouped_gemm
+Resolved 21 packages in 5ms
+   Built grouped-gemm @ git+https://github.com/tgale96/grouped_gemm@ebeae0bb3ded459886309b2a30410deb16937af4
+Prepared 1 package in 13.65s
+Installed 1 package in 60ms
+ + grouped-gemm==0.1.6 (from git+https://github.com/tgale96/grouped_gemm@ebeae0bb3ded459886309b2a30410deb16937af4)
+
+$ uv run python -c 'import grouped_gemm' ; echo $?
+0
+</code></pre>
+<p>so to recap, I'm looking for a way to specify the following in <code>pyproject.toml</code>:</p>
+<ul>
+<li><code>--no-binary-package grouped_gemm</code></li>
+<li>env vars that should be used during grouped_gemm build</li>
+<li>explicit build time dependency between grouped_gemm and torch, so the build waits for and uses the torch-nightly package automatically</li>
+<li>not have to pollute my deps with <code>setuptools</code> just because grouped_gemm needs it</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-16 21:45</div>
+            <div class="timeline-body"><p>Tangentially related, it would be nice to include a note on https://docs.astral.sh/uv/guides/integration/pytorch/ about the two-stage trick with a link to it on https://docs.astral.sh/uv/concepts/projects/config/#build-isolation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 05:10</div>
+            <div class="timeline-body"><p>Generally agree -- improving this is on our roadmap. Thanks for the concrete example -- very helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-01-17 05:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2025-01-17 05:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11012.html">astral-sh/uv#11012</a> on 2025-01-28 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OldaKo">@OldaKo</a> on 2025-03-17 18:35</div>
+            <div class="timeline-body"><p>@charliermarsh I'd like to add another vote for this as the two-step method is directly blocking one of my use cases.
+I'm using <a href="https://github.com/clearml/clearml-agent">clearml-agent</a> which supports uv by automatically using <code>uv sync</code> on a uv lockfile (if present) instead of default automated package discovery. However, <code>sync</code> will fail due to <code>ModuleNotFound</code> during build if any package has build dependencies (pytorch3d in my case).
+I could personally live with tracking the build dependencies in the environment myself but it would be great if <code>sync</code> installed packages listed in</p>
+<pre><code>[tool.uv] 
+no-build-isolation-package = []
+</code></pre>
+<p>only after everything else is installed or if there was a second round retry for failed package installations, which is the way <a href="https://pdm-project.org/en/latest/">pdm</a> does it as far as I understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tobiasdiez">@tobiasdiez</a> on 2025-05-13 02:20</div>
+            <div class="timeline-body"><p>Another use case are editable install of meson-python (tracked at https://github.com/astral-sh/uv/issues/10214): You need to have the build dependencies (say cython) installed at runtime as well, since meson-python may need to rebuild the project on-the-fly if you make changes to the source files. The usual way to do this is by specifying <code>no-build-isolation</code>. The two-stage solution works but is quite cumbersome - either one has to duplicate the build dependencies in an extra, or manual pip install these dependencies.</p>
+<p>It would be simpler if uv could track build dependencies in the lock file as well, and automatically install those if you specify &quot;no-build-isolation&quot;.</p>
+<p>Another related problem that came up recently is the following: Cython released a new version that broke the build of some packages. While <code>uv.lock</code> locks the version of a dependency, it doesn't lock the version of the build dependencies used to build the dependency. So the build now actually broke although the lock file didn't change at all. Moreover, there currently doesn't seem to be an easy way to say &quot;use Cython xyz to build all dependencies. Again, this would be fixed by locking all build dependencies (also those of dependencies) in <code>uv.lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-16 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15326.html">astral-sh/uv#15326</a> on 2025-08-16 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 16:59</div>
+            <div class="timeline-body"><p>We've implemented a bunch of improvements here and I just drafted some updated documentation: https://github.com/astral-sh/uv/pull/15326.</p>
+<p>For <code>grouped_gemm</code>, as an example, you should be able to do this in the latest release, which still uses an isolated build for <code>grouped_gemm</code>, but adds <code>torch</code> to the environment (and ensures that it's the same version of <code>torch</code> as is used at runtime, in the lockfile, etc.):</p>
+<pre><code class="language-toml">[project]
+name = &quot;torchnightly&quot;
+requires-python = &quot;&gt;=3.11.9&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    &quot;grouped_gemm&quot;,
+    &quot;torch&gt;=2.7.0, &lt;2.8&quot;,
+    &quot;torchao&quot;,
+    &quot;torchaudio&quot;,
+    &quot;torchvision&quot;,
+    &quot;nvidia-cusparselt-cu12&quot;,
+]
+
+[tool.uv.extra-build-dependencies]
+grouped_gemm = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+
+[tool.uv.sources]
+torch = [{ index = &quot;cu128&quot; }]
+torchvision = [{ index = &quot;cu128&quot; }]
+torchaudio = [{ index = &quot;cu128&quot; }]
+torchao = [{ index = &quot;cu128&quot; }]
+
+[[tool.uv.index]]
+name = &quot;cu128&quot;
+url = &quot;https://download.pytorch.org/whl/cu128&quot;
+explicit = true
+</code></pre>
+<p>Alternatively, if you do:</p>
+<pre><code class="language-toml">[project]
+name = &quot;torchnightly&quot;
+requires-python = &quot;&gt;=3.11.9&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    &quot;grouped_gemm&quot;,
+    &quot;torch&gt;=2.7.0, &lt;2.8&quot;,
+    &quot;torchao&quot;,
+    &quot;torchaudio&quot;,
+    &quot;torchvision&quot;,
+    &quot;setuptools&quot;, # for grouped_gemm
+    &quot;nvidia-cusparselt-cu12&quot;,
+]
+
+[tool.uv]
+no-build-isolation-package = ['grouped_gemm']
+
+[tool.uv.sources]
+torch = [{ index = &quot;cu128&quot; }]
+torchvision = [{ index = &quot;cu128&quot; }]
+torchaudio = [{ index = &quot;cu128&quot; }]
+torchao = [{ index = &quot;cu128&quot; }]
+
+[[tool.uv.index]]
+name = &quot;cu128&quot;
+url = &quot;https://download.pytorch.org/whl/cu128&quot;
+explicit = true
+</code></pre>
+<p>This should also work with a single <code>uv sync</code> in the next release (not yet out), because by default, we now install anything marked as <code>no-build-isolation-package</code> in a second install step (at which point, <code>torch</code> will already be included in the environment).</p>
+<p>We're generally recommending the first approach, since it retains build isolation everywhere (and doesn't require that the build dependencies, like <code>setuptools</code>, are included as project dependencies), but either should work with a single <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-18 21:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

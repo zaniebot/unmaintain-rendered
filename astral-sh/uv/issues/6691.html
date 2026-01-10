@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadlock in `uv pip install` with git links - astral-sh/uv #6691</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deadlock in `uv pip install` with git links</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6691">#6691</a>
+        opened by <a href="https://github.com/gozdal">@gozdal</a>
+        on 2024-08-27 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gozdal">@gozdal</a> on 2024-08-27 15:07</div>
+            <div class="timeline-body"><p>It seems that <code>uv pip install</code> deadlocks when running in parallel installing from git links.</p>
+<p><code>uv 0.3.3</code></p>
+<p><code>ps auxwww | grep uv</code></p>
+<pre><code>jenkins    44119  0.0  0.0 3430056 35320 ?       Sl   09:06   0:01 uv pip install --compile --upgrade -e starfish/agent[dev] -e starfish/redash[dev] -e starfish/jenkins[dev] -e starfish/client[dev] -e starfish/tests[dev] -e starfish/scripts[dev] -e starfish/starfish[dev] -e starfish/examples[dev]
+jenkins    45341  0.0  0.0 3350176 35344 ?       Sl   09:07   0:01 uv pip install --compile --upgrade -e starfish/agent[dev] -e starfish/redash[dev] -e starfish/jenkins[dev] -e starfish/client[dev] -e starfish/tests[dev] -e starfish/scripts[dev] -e starfish/starfish[dev] -e starfish/examples[dev]
+</code></pre>
+<p>The editables contain some requirements from git SHA1 hash.</p>
+<p>Current time is after 10:00, so the processes are hanging there for more than an hour.</p>
+<p><code>44119</code> locked <code>/home/jenkins/.cache/uv/git-v0/locks/8a439ba06638ac5d</code> and is waiting for <code>a172a1434ad2fe00</code>:</p>
+<p><code>lsof -p 44119 | grep locks</code></p>
+<pre><code>uv      44119 jenkins   10wW     REG              259,2        0 172099117 /home/jenkins/.cache/uv/git-v0/locks/8a439ba06638ac5d
+uv      44119 jenkins   11w      REG              259,2        0 172100733 /home/jenkins/.cache/uv/git-v0/locks/a172a1434ad2fe00
+</code></pre>
+<p>OTOH <code>45341</code> has <code>a172a1434ad2fe00</code> locked and is waiting on <code>8a439ba06638ac5d</code>:</p>
+<p><code>lsof -p 45341 | grep locks</code></p>
+<pre><code>uv      45341 jenkins   10wW     REG              259,2        0 172100733 /home/jenkins/.cache/uv/git-v0/locks/a172a1434ad2fe00
+uv      45341 jenkins   11w      REG              259,2        0 172099117 /home/jenkins/.cache/uv/git-v0/locks/8a439ba06638ac5d
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-27 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2024-08-27 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 15:14</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 17:27</div>
+            <div class="timeline-body"><p>Just curious, are there any duplicate repositories here? E.g., two requirements from the same repository, but with a different <code>#subdirectory</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-08-28 18:06</div>
+            <div class="timeline-body"><p>We're not using <code>#subdirectory</code>, but git repositories are duplicated between projects, yes.
+Here is a reproducer:</p>
+<pre><code>proj1
+proj1/pyproject.toml
+proj1/src
+proj1/src/__init__.py
+proj2
+proj2/pyproject.toml
+proj2/src
+proj2/src/__init__.py
+</code></pre>
+<p><code>pyproject.toml</code> (for <code>proj2</code>, <code>proj1</code> is the same, but with name/description changed)</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&gt;=64&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+requires-python = &quot;&gt;=3.12&quot;
+name = &quot;proj2&quot;
+description = &quot;Project 2&quot;
+version = &quot;0.0.1&quot;
+dependencies = [
+  &quot;gunicorn @ git+https://github.com/StarfishStorage/gunicorn.git@336276ddb46cd8dd88ebf0f3f21708aa111c06c9 ; sys_platform != 'win32'&quot;,
+  &quot;python-swiftclient @ git+https://github.com/StarfishStorage/python-swiftclient.git@fbdac94cf75e2fb5d3cf20207d6883fc6bd280b4&quot;,
+]
+</code></pre>
+<p>and then <code>deadlock.sh</code>:</p>
+<pre><code class="language-bash">#!/bin/bash
+
+set -euo pipefail
+
+while true; do
+  rm -rf .venv1 .venv2
+  uv venv .venv1
+  uv venv .venv2
+
+  uv pip install --python .venv1 -e proj1 -e proj2 &amp;
+  uv pip install --python .venv2 -e proj1 -e proj2 &amp;
+  wait
+done
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 18:13</div>
+            <div class="timeline-body"><p>Great, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 18:27</div>
+            <div class="timeline-body"><p>Easily reproduced with the above script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 22:21</div>
+            <div class="timeline-body"><p>I found the bug using your reproduction! Thanks. We'll investigate a fix...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-28 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6790.html">astral-sh/uv#6790</a> on 2024-08-29 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-29 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-29 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-29 16:16</div>
+            <div class="timeline-body"><p>Thanks again for putting together a reproduction!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-08-30 11:39</div>
+            <div class="timeline-body"><p>Thanks for fixing it so quickly. I ❤️ uv.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

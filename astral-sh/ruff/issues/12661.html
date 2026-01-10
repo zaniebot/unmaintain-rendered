@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0.5.6 fails to build on 32bit architectures - astral-sh/ruff #12661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>0.5.6 fails to build on 32bit architectures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12661">#12661</a>
+        opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a>
+        on 2024-08-04 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2024-08-04 14:24</div>
+            <div class="timeline-body"><p>Builds fail on anything that's not 64bit due to an overflow:</p>
+<pre><code>   Compiling ruff_python_stdlib v0.0.0 (/builds/WhyNotHugo/aports/community/ruff/src/ruff-0.5.6/crates/ruff_python_stdlib)
+error[E0080]: evaluation of constant value failed
+  --&gt; /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/num/mod.rs:1245:5
+  ::: /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/num/mod.rs:1263:5
+   |
+   = note: attempt to compute `65536_usize * 65536_usize`, which would overflow
+   |
+note: inside `core::num::&lt;impl usize&gt;::pow`
+  --&gt; /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/num/mod.rs:1245:5
+note: inside `cumulative_capacity`
+  --&gt; /home/buildozer/.cargo/registry/src/index.crates.io-1cd66030c949c28d/orx-split-vec-3.2.0/src/growth/doubling/constants.rs:8:5
+   |
+8  |     usize::pow(2, (fragment_idx + FIRST_FRAGMENT_CAPACITY_POW + 1) as u32) - FIRST_FRAGMENT_CAPACITY
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: inside `doubling::constants::CUMULATIVE_CAPACITIES`
+  --&gt; /home/buildozer/.cargo/registry/src/index.crates.io-1cd66030c949c28d/orx-split-vec-3.2.0/src/growth/doubling/constants.rs:42:5
+   |
+42 |     cumulative_capacity(29),
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   = note: this error originates in the macro `uint_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+   Compiling webpki-roots v0.26.1
+   Compiling env_logger v0.11.5
+   Compiling hashbrown v0.14.5
+   Compiling parking_lot v0.12.3
+note: erroneous constant encountered
+   --&gt; /home/buildozer/.cargo/registry/src/index.crates.io-1cd66030c949c28d/orx-split-vec-3.2.0/src/growth/doubling/doubling_growth.rs:123:9
+    |
+123 |         CUMULATIVE_CAPACITIES[fragments_capacity]
+    |         ^^^^^^^^^^^^^^^^^^^^^
+note: erroneous constant encountered
+   --&gt; /home/buildozer/.cargo/registry/src/index.crates.io-1cd66030c949c28d/orx-split-vec-3.2.0/src/growth/doubling/doubling_growth.rs:146:13
+    |
+146 |             CUMULATIVE_CAPACITIES[CUMULATIVE_CAPACITIES.len() - 1]
+    |             ^^^^^^^^^^^^^^^^^^^^^
+note: erroneous constant encountered
+   --&gt; /home/buildozer/.cargo/registry/src/index.crates.io-1cd66030c949c28d/orx-split-vec-3.2.0/src/growth/doubling/doubling_growth.rs:157:29
+    |
+157 |         (f, element_index - CUMULATIVE_CAPACITIES[f])
+    |                             ^^^^^^^^^^^^^^^^^^^^^
+note: erroneous constant encountered
+  --&gt; /home/buildozer/.cargo/registry/src/index.crates.io-1cd66030c949c28d/orx-split-vec-3.2.0/src/growth/doubling/from.rs:35:29
+   |
+35 |             let capacity = &amp;CUMULATIVE_CAPACITIES[curr_f];
+   |                             ^^^^^^^^^^^^^^^^^^^^^
+For more information about this error, try `rustc --explain E0080`.
+error: could not compile `orx-split-vec` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+</code></pre>
+<p>Tested on <a href="https://gitlab.alpinelinux.org/WhyNotHugo/aports/-/jobs/1472533">armv7</a>, <a href="https://gitlab.alpinelinux.org/WhyNotHugo/aports/-/jobs/1472534">armhf</a> and <a href="https://gitlab.alpinelinux.org/WhyNotHugo/aports/-/jobs/1472529">x86</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "0.5.6 fails to build on anything that's not 64bit" to "0.5.6 fails to build on 32bit architectures" by @WhyNotHugo on 2024-08-04 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nekopsykose">@nekopsykose</a> on 2024-08-04 15:27</div>
+            <div class="timeline-body"><p>should be fixed by https://github.com/orxfun/orx-split-vec/pull/45 (once merged, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-04 19:29</div>
+            <div class="timeline-body"><p>I can fix this tomorrow by replacing the dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-08-04 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12679.html">astral-sh/ruff#12679</a> on 2024-08-05 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-05 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13009.html">astral-sh/ruff#13009</a> on 2024-08-20 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM110 with a yield in the condition - astral-sh/ruff #7800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM110 with a yield in the condition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7800">#7800</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2023-10-04 05:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-10-04 05:08</div>
+            <div class="timeline-body"><p>Using SIM110 I ran into this change:</p>
+<pre><code>-        for p in self.predicates:
+-            if not (yield p.is_satisfied.asynq()):  # noqlint
+-                return False
+-        return True
++        return all((yield p.is_satisfied.asynq()) for p in self.predicates)
+</code></pre>
+<p>This code is using the <a href="https://github.com/quora/asynq">asynq</a> framework, causing the unusual yield. Ruff should not apply this fix if there is a <code>yield</code> in the condition, as the <code>yield</code> will end up in the inner generator expression, where it is a SyntaxError in recent Python versions.</p>
+<p>While looking at the code I noticed that Ruff already protects against this class of bug with <code>await</code>, but the protection is slightly too eager: it applies if there is an <code>await</code> in the for loop's iter expression. However, the iter expression of a genexp is evaluated in the outer scope, so it's fine if there's an <code>await</code> there.</p>
+<p>I will submit a PR soon with a proposed fix.</p>
+<p>Also worth noting that Ruff ate the comment here. That feels like a bug too, but it's probably more involved to fix so I'll skip it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7801.html">astral-sh/ruff#7801</a> on 2023-10-04 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-04 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

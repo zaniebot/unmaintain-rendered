@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`[tool.uv.sources]` does not override transitive dependencies - astral-sh/uv #13774</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`[tool.uv.sources]` does not override transitive dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13774">#13774</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2025-06-02 01:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-02 01:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using <code>uv.sources</code> to point a dependency to a local wheel file works. But not if that dependency is also another dep's dependency.</p>
+<p>Example to replicate on Windows + Python 3.14:</p>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-py">dependencies = [
+  &quot;PyWinCtl &gt;=0.0.42&quot;, # Has pywin32 as a dependency
+  &quot;pywin32 &gt;=307; sys_platform == 'win32' and python_version &lt; '3.14'&quot;, # Python 3.13 support
+]
+[tool.uv.sources]
+# wheel taken from https://github.com/mhammond/pywin32/actions/runs/15353580238
+pywin32 = { path = &quot;./scripts/pywin32-310.1-cp314-cp314-win_amd64.whl&quot;, marker = &quot;python_version &gt;= '3.14'&quot; } # Python 3.14 support
+</code></pre>
+<p>Running <code>uv sync</code> results in:</p>
+<pre><code>Resolved 213 packages in 1ms
+error: Distribution `pywin32==310 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're using CPython 3.14 (`cp314`), but `pywin32` (v310) only has wheels with the following Python ABI tags: `cp311`, `cp312`, `cp313`
+</code></pre>
+<p>In the above, commenting out <code>PyWinCtl</code> will work.</p>
+<h3>Platform</h3>
+<p>Windows 10.0.19045 Build 19045</p>
+<h3>Version</h3>
+<p>uv 0.7.9 (13a86a23b 2025-05-30)</p>
+<h3>Python version</h3>
+<p>Python 3.14.0a7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Avasam on 2025-06-02 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-02 17:59</div>
+            <div class="timeline-body"><p>I'd like to try to reproduce this, but I need a little more hand-holding 😅 Could you tell me exactly how to get that artifact from https://github.com/mhammond/pywin32/actions/runs/15353580238 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-02 18:38</div>
+            <div class="timeline-body"><p>Ah, @konstin helped me put together a Linux repro:</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;pandas&quot;,
+  &quot;numpy; python_version &lt; '3.13'&quot;,
+]
+
+[tool.uv.sources]
+numpy = { url = &quot;https://files.pythonhosted.org/packages/19/49/4df9123aafa7b539317bf6d342cb6d227e49f7a35b99c287a6109b13dd93/numpy-2.2.6-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;, marker = &quot;python_version &gt;= '3.13'&quot; }
+</code></pre>
+<pre><code>$ uv run -p 3.12 --with pip python -m pip download pandas
+...
+$ uv run -p 3.13 --with pip python -m pip download pandas
+...
+$ rm numpy*cp313*
+$ mkdir wheels
+$ mv *.whl wheels
+$ uv sync -p 3.12 --no-index --find-links wheels
+... [works]
+$ uv sync -p 3.13 --no-index --find-links wheels
+...
+error: Distribution `numpy==2.2.6 @ registry+wheels` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're using CPython 3.13 (`cp313`), but `numpy` (v2.2.6) only has wheels with the following Python ABI tag: `cp312`
+</code></pre>
+<p>Removing the dependency on <code>pandas</code> above fixes the last command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 18:41</div>
+            <div class="timeline-body"><p>This behavior is intentional, afaik. We require all sources to be direct dependencies.</p>
+<p>edit: ah I see this is both direct and transitive, sorry I misunderstood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-02 19:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to try to reproduce this, but I need a little more hand-holding 😅 Could you tell me exactly how to get that artifact from <a href="https://github.com/mhammond/pywin32/actions/runs/15353580238">mhammond/pywin32/actions/runs/15353580238</a> ?</p>
+</blockquote>
+<p>When you scroll down to the bottom of the page you can download artifacts</p>
+<p><img src="https://github.com/user-attachments/assets/47398e93-c5c1-44cc-9c67-aef83097a626" alt="Image" /></p>
+<p>But since you now have a linux based repro, that works too :) (and the source can probably be anything, like a url source)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-06-03 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-03 17:07</div>
+            <div class="timeline-body"><p>Does removing the <code>python_version</code> marker from your <code>[dependencies]</code> list fix the issue? For example, the NumPy repro above works if I do this (hat tip @konstin again):</p>
+<pre><code class="language-diff">diff --git i/pyproject.toml w/pyproject.toml
+index dfc8679..ee7206b 100644
+--- i/pyproject.toml
++++ w/pyproject.toml
+@@ -4,7 +4,7 @@ version = &quot;0.1.0&quot;
+ requires-python = &quot;&gt;=3.12&quot;
+ dependencies = [
+   &quot;pandas&quot;,
+-  &quot;numpy; python_version &lt; '3.13'&quot;,
++  &quot;numpy&quot;,
+ ]
+ 
+ [tool.uv.sources]
+</code></pre>
+<p>I don't understand all the machinery here yet, but I think the <code>sources</code> feature works by &quot;patching&quot; your dependencies, and if the markers/constraints don't match/overlap between <code>dependencies</code> and <code>sources</code>, that &quot;patch&quot; has no effect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-03 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Does removing the <code>python_version</code> marker from your <code>[dependencies]</code> list fix the issue?</p>
+</blockquote>
+<p>@oconnor663 Not only does it work, I didn't even realize that in my minimal example pywin32 isn't installed at all on 3.14</p>
+<p><img src="https://github.com/user-attachments/assets/98413a30-5f31-432f-a4fb-f5f28c3de295" alt="Image" /></p>
+<blockquote>
+<p>I don't understand all the machinery here yet, but I think the <code>sources</code> feature works by &quot;patching&quot; your dependencies, and if the markers/constraints don't match/overlap between <code>dependencies</code> and <code>sources</code>, that &quot;patch&quot; has no effect?</p>
+</blockquote>
+<p>Sounds like that would be it.</p>
+<hr />
+<p>Idk if there's ways to improve user messaging. Maybe detect and warn if a source in <code>tool.uv.sources</code> goes unused (taking into account the marker)? that would probably have tipped me off.</p>
+<p>Feel free to close !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-03 19:51</div>
+            <div class="timeline-body"><p>Yes I think adding a warning for cases like this would be a good idea. I'll keep this ticket open and try that today or tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 23:18</div>
+            <div class="timeline-body"><p>Just to be clear, I don't think we can unconditionally warn if <code>tool.uv.sources</code> is unused at install time — it'd be too noisy. However, I do think it's reasonable to warn if <code>tool.uv.sources</code> would <em>never</em> be used. It seems a bit tricky, but maybe it's not so bad. @oconnor663, I'd recommend opening a new issue with a simpler reproduction and dedicated title so we can close this one out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13829.html">astral-sh/uv#13829</a> on 2025-06-04 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-04 03:14</div>
+            <div class="timeline-body"><p>Opened https://github.com/astral-sh/uv/issues/13829. Closing this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-06-04 03:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

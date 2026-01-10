@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` forgets to install typing_extensions for pydantic - astral-sh/uv #4125</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` forgets to install typing_extensions for pydantic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4125">#4125</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-06-07 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-06-07 07:08</div>
+            <div class="timeline-body"><pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.4.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;pydantic &gt;=2.7.1&quot;,
+]
+</code></pre>
+<p>foo.py:</p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+print(BaseModel)
+</code></pre>
+<pre><code class="language-console">$ uv run --no-cache-dir foo.py
+warning: `uv run` is experimental and may change without warning.
+Resolved 5 packages in 558ms
+   Built foo @ file:///home/konsti/projects/github-wikidata-bot/foo
+Downloaded 4 packages in 995ms
+Installed 4 packages in 1ms
+ + annotated-types==0.7.0
+ + foo==0.4.0 (from file:///home/konsti/projects/github-wikidata-bot/foo)
+ + pydantic==2.7.3
+ + pydantic-core==2.18.4
+Traceback (most recent call last):
+  File &quot;/home/konsti/projects/github-wikidata-bot/foo/foo.py&quot;, line 1, in &lt;module&gt;
+    from pydantic import BaseModel
+  File &quot;/home/konsti/projects/github-wikidata-bot/foo/.venv/lib/python3.12/site-packages/pydantic/__init__.py&quot;, line 380, in &lt;module&gt;
+    _getattr_migration = getattr_migration(__name__)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/konsti/projects/github-wikidata-bot/foo/.venv/lib/python3.12/site-packages/pydantic/_migration.py&quot;, line 260, in getattr_migration
+    from .errors import PydanticImportError
+  File &quot;/home/konsti/projects/github-wikidata-bot/foo/.venv/lib/python3.12/site-packages/pydantic/errors.py&quot;, line 6, in &lt;module&gt;
+    from typing_extensions import Literal, Self
+ModuleNotFoundError: No module named 'typing_extensions'
+</code></pre>
+<p><code>uv pip</code> correctly installs them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-06-07 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-07 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-07 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 18:02</div>
+            <div class="timeline-body"><p>I think this @BurntSushi is a good example of why we need to track markers on dependencies. The lockfile contains:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.12.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;python_version &lt; '3.9'&quot;
+sdist = { url = &quot;https://files.pythonhosted.org/packages/e8/fb/4217a963512b9646274fe4ce0aebc8ebff09bbb86c458c6163846bb65d9d/typing_extensions-4.12.1.tar.gz&quot;, hash = &quot;sha256:915f5e35ff76f56588223f15fdd5938f9a1cf9195c0de25130c627e4d597f6d1&quot;, size = 84923 }
+wheels = [{ url = &quot;https://files.pythonhosted.org/packages/b6/53/84a859aaddfe7378a6e5820e864a2d75763e82b6fcbda1a00e92ec620bb7/typing_extensions-4.12.1-py3-none-any.whl&quot;, hash = &quot;sha256:6024b58b69089e5a89c347397254e35f1bf02a907728ec7fee9bf0fe837d203a&quot;, size = 37250 }]
+</code></pre>
+<p>Because <code>typing-extensions</code> is only required for <code>python_version &lt; '3.9'</code> <em>when requested by <code>annotated-types</code></em>. However, <code>pydantic</code> needs it unconditionally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4137.html">astral-sh/uv#4137</a> on 2024-06-07 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4136.html">astral-sh/uv#4136</a> on 2024-06-07 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4157.html">astral-sh/uv#4157</a> on 2024-06-08 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4166.html">astral-sh/uv#4166</a> on 2024-06-08 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-10 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-10 12:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

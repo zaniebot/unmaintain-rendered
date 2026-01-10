@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How does one preserve the order of arguments? - clap-rs/clap #936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How does one preserve the order of arguments?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/936">#936</a>
+        opened by <a href="https://github.com/fschutt">@fschutt</a>
+        on 2017-04-20 15:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fschutt">@fschutt</a> on 2017-04-20 15:06</div>
+            <div class="timeline-body"><h3>Actual Behavior Summary</h3>
+<p>I want my application to have arguments in a certain order. Clap reorders them.
+Example:</p>
+<pre><code>App::new(&quot;test&quot;)
+       .args_from_usage(&quot;&lt;database&gt; --database, -d '[required] Database to connect to'
+                              &lt;user&gt; --user, -u '[required] Database user'
+                              [host] --host, -h 'Server host (default: localhost)'
+                              &lt;FILE&gt; '[required] file to import'&quot;);
+</code></pre>
+<p>Output when called directly:</p>
+<pre><code>error: The following required arguments were not provided:
+    &lt;FILE&gt;
+    --database,
+    --user,
+
+USAGE:
+    test [FLAGS] &lt;FILE&gt; --database, --user,
+
+For more information try --help
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>Please make the arguments appear in order, not random or based on &quot;if the value is required&quot;. Or at least have an option to display them in order. How it should be:</p>
+<pre><code>USAGE:
+    test  --database, --user, [FLAGS] &lt;FILE&gt;
+</code></pre>
+<p>Where <code>[FLAGS]</code> would be <code>--host</code> in this case.</p>
+<p>Now I have to enter: <code>test --host 192.168.1.20 myfile --user &quot;test&quot; --database &quot;123&quot;</code>.</p>
+<p>How I want it to be: <code>test --user &quot;test&quot; --database &quot;123&quot; --host 192.168.1.20 myfile</code></p>
+<p>Either that or I am using the library wrong. I can't seem to have any way to control the order of my arguments, it's always random. The only way to have in-order arguments is making every argument optional. But then I have to do manual parsing, at which point the library sort-of loses its sense.</p>
+<h3>Rust Version</h3>
+<p>rustc 1.18.0-nightly (7627e3d31 2017-04-16)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.23.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TedDriggs">@TedDriggs</a> on 2017-04-20 16:36</div>
+            <div class="timeline-body"><p>@kbknapp can correct me, but I'm guessing this is &quot;by design&quot; and that clap is designed to be opinionated on how arguments are ordered/declared. It does seem strange to me that the required items <em>must</em> come first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fschutt">@fschutt</a> on 2017-04-20 16:49</div>
+            <div class="timeline-body"><p>I just noticed that the arguments are sorted alphabetically by their name. This is not documented anywhere.</p>
+<p>Like this:</p>
+<pre><code>    let matches = App::new(&quot;test&quot;)
+                    .arg(Arg::with_name(&quot;a&quot;)
+                         .required(true))
+                    .arg(Arg::with_name(&quot;b&quot;))
+                    .arg(Arg::with_name(&quot;c&quot;)
+                         .required(true))
+           .get_matches();
+</code></pre>
+<p>These values will be sorted. If this is by design, then I propose a change, because it is confusing.</p>
+<p>EDIT: clap seems to sort the errors by their <code>App::new()</code> value, but the arguments by their short name value. If no short name value is present, it will put it at the front. If required / optional arguments are mixed, the optional ones come first. I think that most of the time it would be OK to just have the argument in the order that they are in the file.</p>
+<p>However, I am not sure if this would break any scripts that rely on a clap-based application (<a href="https://github.com/pka/t-rex">t-rex</a> for example).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-20 17:33</div>
+            <div class="timeline-body"><p>@sharazam clap orders them alphabetically (by name) unless you specify a <a href="https://docs.rs/clap/2.23.3/clap/struct.Arg.html#method.display_order">manual ordering</a>. You can also tell clap, <a href="https://docs.rs/clap/2.23.3/clap/enum.AppSettings.html#variant.DeriveDisplayOrder">&quot;Use the order I define them in&quot;</a> instead of manually putting in an order for each one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-20 17:36</div>
+            <div class="timeline-body"><p>@TedDriggs</p>
+<blockquote>
+<p>It does seem strange to me that the required items must come first.</p>
+</blockquote>
+<p>This is only true of positional arguments (with two [<a href="https://docs.rs/clap/2.23.3/clap/enum.AppSettings.html#variant.AllowMissingPositional">1</a>] exceptions [<a href="https://docs.rs/clap/2.23.3/clap/struct.Arg.html#method.last">2</a>]). However, required positional arguments do <em>not</em> need to come before all other arguments, only before non-required positional arguments. This is simply because clap has no way of distinguishing positional arguments, except by index that they arrive after the binary name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-04-20 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Clap does not keep order of arguments" to "How does on preserve the order of arguments?" by @kbknapp on 2017-04-20 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How does on preserve the order of arguments?" to "How does one preserve the order of arguments?" by @kbknapp on 2017-04-20 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fschutt">@fschutt</a> on 2017-04-20 19:40</div>
+            <div class="timeline-body"><p>@kbknapp Alright. Sorry, I seem to have missed those two arguments. Thanks for your answer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fschutt on 2017-04-20 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-20 20:23</div>
+            <div class="timeline-body"><p>@sharazam no worries! :smile:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:30 UTC
+    </footer>
+</body>
+</html>

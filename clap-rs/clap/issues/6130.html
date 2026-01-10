@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completion keeps suggesting options (long/short) after an escape (`--`) - clap-rs/clap #6130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Completion keeps suggesting options (long/short) after an escape (`--`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6130">#6130</a>
+        opened by <a href="https://github.com/mernen">@mernen</a>
+        on 2025-09-13 23:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mernen">@mernen</a> on 2025-09-13 23:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.89.0 (29483883e 2025-08-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.43</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Arg, Command, value_parser};
+
+fn main() {
+    let mut cmd = Command::new(&quot;example&quot;).args([
+        Arg::new(&quot;complete&quot;)
+            .long(&quot;complete&quot;)
+            .value_name(&quot;SHELL&quot;)
+            .value_parser(value_parser!(clap_complete::Shell))
+            .help(&quot;complete&quot;),
+        Arg::new(&quot;mode&quot;)
+            .num_args(0..)
+            .value_name(&quot;MODE&quot;)
+            .value_parser([&quot;read&quot;, &quot;write&quot;]),
+    ]);
+
+    let matches = cmd.get_matches_mut();
+    if let Some(generator) = matches.get_one::&lt;clap_complete::Shell&gt;(&quot;complete&quot;) {
+        let bin_name = std::env::args()
+            .next()
+            .unwrap_or_else(|| cmd.get_name().to_string());
+        clap_complete::generate(*generator, &amp;mut cmd, bin_name, &amp;mut std::io::stdout());
+    } else {
+        println!(&quot;{matches:?}&quot;);
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Generate completions, e.g.: <code>. &lt;(cargo run -- --complete &quot;$SHELL&quot;)</code></li>
+<li>Enter a command that has a <code>--</code> escape, e.g.: <code>target/debug/example -- </code></li>
+<li>Press Tab to trigger completion</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>Options are suggested along positional values:</p>
+<pre><code>-h          --complete  --help      read        write</code></pre>
+<h3>Expected Behaviour</h3>
+<p>If the input contains a <code>--</code> argument, options are no longer parsed, so they shouldn't be suggested. Completion suggestions should only be:</p>
+<pre><code>read        write</code></pre>
+<h3>Additional Context</h3>
+<p>This occurs at least with bash and the dynamic completions; I'm not sure about other shells.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mernen on 2025-09-13 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6131.html">clap-rs/clap#6131</a> on 2025-09-13 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-09-16 01:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

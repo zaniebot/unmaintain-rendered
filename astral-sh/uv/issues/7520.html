@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extras contain whitespace - astral-sh/uv #7520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extras contain whitespace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7520">#7520</a>
+        opened by <a href="https://github.com/alexeagle">@alexeagle</a>
+        on 2024-09-18 22:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexeagle">@alexeagle</a> on 2024-09-18 22:56</div>
+            <div class="timeline-body"><p>Using https://github.com/astral-sh/uv/releases/download/0.4.12</p>
+<p>with a requirements.in like</p>
+<pre><code>sentencepiece~=0.1.99
+torch==2.1.0+cu118
+transformers==4.35.2
+</code></pre>
+<p>pip-compile from https://github.com/jazzband/pip-tools produces a requirements.txt like</p>
+<pre><code>transformers[sentencepiece,torch]==4.35.2 \
+    --hash=sha256:2d125e197d77b0cdb6c9201df9fa7e2101493272e448b9fba9341c695bee2f52 \
+    --hash=sha256:9dfa76f8692379544ead84d98f537be01cd1070de75c74efb13abcbc938fbe2f
+</code></pre>
+<p>while <code>uv pip compile</code> produces one with an extra whitespace</p>
+<pre><code>transformers[sentencepiece, torch]==4.35.2 \
+    --hash=sha256:2d125e197d77b0cdb6c9201df9fa7e2101493272e448b9fba9341c695bee2f52 \
+    --hash=sha256:9dfa76f8692379544ead84d98f537be01cd1070de75c74efb13abcbc938fbe2f
+</code></pre>
+<p>My understanding of the grammar, and indeed the implementation from <code>pypa/packaging</code> seems to indicate that this difference should be inconsequential.</p>
+<p>https://github.com/pypa/packaging/blob/cf2cbe2aec28f87c6228a6fb136c27931c9af407/src/packaging/_parser.py#L178</p>
+<p>However in practice the <code>uv</code> file causes an error like</p>
+<pre><code>  File &quot;/home/alex/.cache/bazel/_bazel_alex/c18c578b4ecea221790803eee605d790/sandbox/linux-sandbox/44/execroot/assemblyai/bazel-out/k8-opt-exec-ST-13d3ddad9198/bin/external/rules_python/tools/wheelmaker.runfiles/pypi__packaging/packaging/requirements.py&quot;, line 37, in __init__
+    raise InvalidRequirement(str(e)) from e
+packaging.requirements.InvalidRequirement: Expected extra name after comma
+    transformers[sentencepiece,
+                               ^
+</code></pre>
+<p>Technically you might say it's a bug in pypa/packaging but since <code>uv</code> intends to be 100% drop-in compatible with pip-tools I imagine you might want to fix it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bazel-contrib/rules_uv/issues/110.html">bazel-contrib/rules_uv#110</a> on 2024-09-18 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 23:39</div>
+            <div class="timeline-body"><p>The <a href="https://packaging.python.org/en/latest/specifications/dependency-specifiers/#complete-grammar">official grammar</a> says that whitespace is allowed — this is a bug in the parser and should be reported upstream.</p>
+<p>I'm not sure if we should change our representation here, but whatever we display should be consistent throughout uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-09-18 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-09-18 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 02:19</div>
+            <div class="timeline-body"><p>I prefer it with the space but we already do some things to accommodate pip here so it seems reasonable to change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 04:20</div>
+            <div class="timeline-body"><p>It looks like the latest version of <code>packaging</code> is fine, these both pass</p>
+<pre><code>❯ uv run --with packaging --isolated --no-project -- python -c 'from packaging.requirements import Requirement; Requirement(&quot;pkg[foo,bar]&quot;)'
+❯ uv run --with packaging --isolated --no-project -- python -c 'from packaging.requirements import Requirement; Requirement(&quot;pkg[foo, bar]&quot;)'
+</code></pre>
+<p>Are you using a really old version or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2024-09-19 13:43</div>
+            <div class="timeline-body"><p>This is using packaging version 23.1.</p>
+<p>It's not trivial to repro since https://github.com/bazelbuild/rules_python/blob/0.32.2/tools/wheelmaker.py#L555 is on the callstack here. And packaging is fetched as a wheel here: https://github.com/bazelbuild/rules_python/blob/0.32.2/python/pip_install/repositories.bzl#L54</p>
+<p>I agree that it's likely the bug is somewhere else, and I'll dig some more. Though regardless of where it is, any variability in the output runs into Hyrum's law, and is observable somewhere...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 14:05</div>
+            <div class="timeline-body"><p>Hm interesting</p>
+<pre><code>❯ uv run --with packaging==23.1 --isolated --no-project -- python -c 'from packaging.requirements import Requirement; print(Requirement(&quot;pkg[foo, bar]&quot;))'
+
+pkg[bar,foo]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2024-09-19 14:28</div>
+            <div class="timeline-body"><p>Wow, the actual bug was in a patch my client applied on top of Bazel's rules_python - so only they could observe it...</p>
+<pre><code>diff --git a/python/pip_install/pip_repository_requirements.bzl.tmpl b/python/pip_install/pip_repository_requirements.bzl.tmpl
+index 8e17720..fdeaae8 100644
+--- a/python/pip_install/pip_repository_requirements.bzl.tmpl
++++ b/python/pip_install/pip_repository_requirements.bzl.tmpl
+@@ -15,5 +15,11 @@ all_whl_requirements = all_whl_requirements_by_package.values()
+ all_data_requirements = %%ALL_DATA_REQUIREMENTS%%
+
+ _packages = %%PACKAGES%%
++
++all_packages_by_repository = {
++    package[0]: package[1].split(&quot; &quot;)[0]
++    for package in _packages
++}
++
+ _config = %%CONFIG%%
+ _annotations = %%ANNOTATIONS%%
+</code></pre>
+<p>I've fixed that to be less brittle, so I'm no longer affected by this bug. Up to you if you'd like to produce more pip-compile-compatible output in case someone else also has a broken parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 17:41</div>
+            <div class="timeline-body"><p>In that case, I'm gonna leave it as-is for now. If we see another report, let's revisit. Thanks @alexeagle!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-25 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-25 17:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:52 UTC
+    </footer>
+</body>
+</html>

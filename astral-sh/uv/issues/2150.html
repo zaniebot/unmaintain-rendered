@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `pip list --outdated` - astral-sh/uv #2150</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `pip list --outdated`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2150">#2150</a>
+        opened by <a href="https://github.com/pfmoore">@pfmoore</a>
+        on 2024-03-04 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-03-04 11:02</div>
+            <div class="timeline-body"><pre><code>          `pip list --outdated` is also a useful feature.</code></pre>
+<p><em>Originally posted by @ismail in https://github.com/astral-sh/uv/issues/1401#issuecomment-1947899132</em></p>
+<p>Creating a separate issue for visibility, as the issue for creating the <code>uv pip list</code> command has now been closed as complete. Apologies if I missed an issue that already requested this - feel free to close this as a duplicate if that's the case.</p>
+<p>I use <code>pip list --outdated</code> all the time (more than any other form of <code>pip list</code>, probably). It would be really useful to have in <code>uv</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-03-04 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2201.html">astral-sh/uv#2201</a> on 2024-03-05 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-18 02:22</div>
+            <div class="timeline-body"><p>@zanieb @charliermarsh I was wondering if there were any plans for adding this feature in the coming releases? This is one of the last pieces of the puzzle for our full transition to <code>uv</code> from <code>pip</code>. Any kind of ball-park estimate of if/when would help with our internal planning 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-18 02:26</div>
+            <div class="timeline-body"><p>We don't have any immediate plans to implement this although it seems like it wouldn't be particularly challenging (we have all the components needed for this).</p>
+<p>Can you share more about your use-case?</p>
+<p>I'd be happy to review a contribution adding support for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-18 02:39</div>
+            <div class="timeline-body"><p>Thanks for the reply. We have a somewhat complicated dependency management process which precludes us from using tools like renovate or dependabot on our repo. As such we use <code>pip list --outdated --format=json</code> together with some custom postprocessing of the output and our <code>pyproject.toml</code> to create a list of updatable packages.</p>
+<p>From that point of view this is more of a &quot;nice to have&quot; rather than a show-stopper, but for our team this functionality gives us a big quality of life improvement in our DX.</p>
+<p>I'm happy to take a swing at the implementation if all the pieces are there 🤞</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-18 02:41</div>
+            <div class="timeline-body"><p>(And while I have you, many thanks for embarking on this project. <code>pip</code> install times have been a thorn in our side for an eternity, and <code>uv</code> is an absolute game changer for us 🙏)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-18 14:50</div>
+            <div class="timeline-body"><p>Thanks for all the kind words :) that's an interesting use-case but it makes some sense to me. I imagine it'd make sense to have a future workflow that does not depend on listing the installed packages and can just give you metadata directly from a lockfile... but we can think more about that separately.</p>
+<p>Feel free to give it a try. I'm happy to provide any guidance. I'd look at the <code>pip_install</code> implementation and the <code>Plan.reinstalls</code> field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-20 01:27</div>
+            <div class="timeline-body"><p>Sounds good, I'll try to chip away at this over the coming days and see where I get to. So far I've got a build going and added the CLI arg, so I now I just need to fill in:</p>
+<pre><code class="language-rust">    if outdated {
+        ...
+    }
+</code></pre>
+<p>Simple :-) Just getting familiar with the resolver structs and how all the pieces fit together. I'll reach out with any questions and ship a draft PR for feedback when I have something to look at. <code>pip_install</code> and <code>Plan.reinstalls</code> sound like good pointers 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2582.html">astral-sh/uv#2582</a> on 2024-03-21 05:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timleslie">@timleslie</a> on 2024-03-21 05:41</div>
+            <div class="timeline-body"><p>@zanieb I've pushed up a WIP branch as #2582 which explores my first attempt. I'd appreciate any feedback on whether this is an appropriate direction, or whether there's an alternate path that might involve less noisy code 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gmankab">@gmankab</a> on 2024-04-03 07:12</div>
+            <div class="timeline-body"><p>i am writing autotests, and one of them is checking for oudated dependencies</p>
+<p>i use <code>pip list --outdated --format=json</code></p>
+<p>and it is sooo slow</p>
+<p>i hope uv will be much faster</p>
+<p>waiting for the pull request to be accepted</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2745.html">astral-sh/uv#2745</a> on 2024-04-04 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2948.html">astral-sh/uv#2948</a> on 2024-04-09 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-04-11 21:04</div>
+            <div class="timeline-body"><p>FWIW I think that the lack of <code>pip list -o</code> and <code>pip list --pre</code> are the last two items I need to replace all usage of pip and pip-tools with <code>uv</code> (when installed) in my project, <a href="https://github.com/AndydeCleyre/zpy/issues/25">zpy</a>. Although if <code>uv</code> always acts like <code>--pre</code>, that would be fine as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AndydeCleyre/zpy/issues/25.html">AndydeCleyre/zpy#25</a> on 2024-04-11 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mralusw">@mralusw</a> on 2024-04-14 04:05</div>
+            <div class="timeline-body"><p>How can one upgrade all packages in a venv without this command (or <code>pip freeze --local</code>, which also isn't supported)? Isn't this a really common task? It's been amazingly hard (but possible), for many years now, to do this with python / pip. Without these two commands in <code>uv</code> one has to crawl back to slow <code>pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-04-14 05:33</div>
+            <div class="timeline-body"><p>@mralusw You can keep track of the packages in requirements+lock files, upgrade those, then sync.</p>
+<pre><code class="language-console">$ uv pip compile -U requirements.in -o requirements.txt
+$ uv pip sync requirements.txt
+</code></pre>
+<p>Or without any locking or syncing, just listing top level pkgs, this may do:</p>
+<pre><code class="language-console">$ uv pip install -Ur requirements.in
+</code></pre>
+<p>Otherwise you might collect the names from</p>
+<pre><code class="language-console">$ uv pip list --format json
+</code></pre>
+<p>then <code>uv pip install -U </code> them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3086.html">astral-sh/uv#3086</a> on 2024-04-17 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-04-19 14:47</div>
+            <div class="timeline-body"><p>Just an opinion at here:
+use it as separated command, like <code>pip update</code>, which takes <code>requirements.txt</code> (compiled versions <code>{pkg}=={version}</code>) as input and output is updated list.
+for current venv and its installed packages in it we can then use <code>uv pip freeze | uv pip update</code>.</p>
+<p>Also, fwiw I opened a enhancement request for <code>uv pip freeze</code> in https://github.com/astral-sh/uv/issues/3141</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AndydeCleyre/zpy/issues/30.html">AndydeCleyre/zpy#30</a> on 2024-04-24 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gmankab">@gmankab</a> on 2024-04-27 16:16</div>
+            <div class="timeline-body"><p>hello, is there any progress with implementing this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mralusw">@mralusw</a> on 2024-05-13 15:33</div>
+            <div class="timeline-body"><p>While there are work-arounds, note that <code>pip</code> can be used not only from the command line, but also from scripts and higher-order software. The update-check is conceptually different from the update-install step.</p>
+<p>For example, when writing a package manager, it's a natural workflow to</p>
+<ol>
+<li>check for available updates</li>
+<li>notify the user</li>
+<li>allow them to select an action, and</li>
+<li>separately perform the update.</li>
+</ol>
+<p>Only the last step might need admin privileges, and only the last two need an interactive environment.</p>
+<p>Also, it's a waste to have a resolution mechanism and not expose it (especially when there's a clear API, already exposed by an equivalent tool — as in this case).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-05-13 15:44</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<blockquote>
+<p>Can you share more about your use-case?</p>
+</blockquote>
+<p>I think this is a really good question and illustrates your team's desire to provide good interfaces.</p>
+<p>For me, I use this in a few places:</p>
+<ul>
+<li>As a faster version of <code>poetry update --dry-run</code>.  Of course, if the Poetry command were faster, then that would be preferable since it would give more accurate results.</li>
+<li>After <code>poetry update</code> to find out if anything wasn't upgraded, and then I do <code>poetry show -t --ansi | less</code>  to find out why certain things weren't updated.</li>
+<li>In my system-wide Python to find out if anything needs updating.  For me, I would be okay with my system-wide Python being managed in the same way as a Poetry project—if that were possible.</li>
+</ul>
+<p>Thus, I don't really need <code>uv pip list --outdated</code>.  What I need are fast versions of:</p>
+<ul>
+<li><code>uv poetry update --dry-run</code>,</li>
+<li><code>uv poetry show -o</code>, and</li>
+<li>some way to manage my system Python libraries as if they were in a Poetry project.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mralusw">@mralusw</a> on 2024-05-13 19:14</div>
+            <div class="timeline-body"><p>Just curious, is there a technical reason why the results of the package resolution process might be difficult to expose?</p>
+<p>I'm writing a package manager that sits on top of <code>pip</code> and other package sources. I'm trying to avoid fancy tools (see for instance <a href="https://www.bitecode.dev/p/why-not-tell-people-to-simply-use">Why not tell people to &quot;simply&quot; use pyenv, poetry, pipx or anaconda</a> and the related series for why sticking to upstream python packaging tools might avoid a host of problems). <code>uv pip</code> is not of course vanilla <code>pip</code>, but it's close, doesn't require custom workflows, and the speed is compelling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-13 19:46</div>
+            <div class="timeline-body"><p>I don't think it's hard to expose the package resolution results per-say, it's just a good bit of work and we're not prioritizing adding output formats right now. See https://github.com/astral-sh/uv/issues/3199 which is a bit more focused on the goal of machine readable output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ziddey">@ziddey</a> on 2024-08-28 01:55</div>
+            <div class="timeline-body"><p>In case it helps someone, this is how I've been simulating <code>pip list --outdated</code>:</p>
+<pre><code>bash -c &quot;uv pip list --format=freeze |sed 's/==.*//' | uv pip compile - --no-deps --no-header |diff &lt;(uv pip list --format=freeze) - -y --suppress-common-lines || :&quot;
+</code></pre>
+<p>Obviously not in the same format, but it serves to show held back packages.</p>
+<p>Performance is simply dumbfounding on a raspberry pi 2w:</p>
+<pre><code>$ time pip list --outdated
+Package    Version Latest Type
+---------- ------- ------ -----
+jsonschema 2.6.0   4.23.0 wheel
+
+real    0m42.194s
+user    0m28.463s
+sys     0m0.996s
+
+$ time bash -c &quot;uv pip list --format=freeze |sed 's/==.*//' | uv pip compile - --no-deps --no-header |diff &lt;(uv pip list --format=freeze) - -y --suppress-common-lines || :&quot;
+Resolved 47 packages in 871ms
+jsonschema==2.6.0                                             | jsonschema==4.23.0
+
+real    0m1.002s
+user    0m0.348s
+sys     0m0.463s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gh640">@gh640</a> on 2024-08-29 00:45</div>
+            <div class="timeline-body"><p>I also encountered this issue, so for the time being, I decided to run <code>uv venv --seed</code> to install pip in my venv and then run <code>uv run pip list --outdated</code>.</p>
+<p>I hope this will be helpful to someone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6794.html">astral-sh/uv#6794</a> on 2024-08-30 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 14:58</div>
+            <div class="timeline-body"><p>Bun has this now too, it's nice!</p>
+<p><img src="https://github.com/user-attachments/assets/ce89a628-0973-418e-bad4-4e01d16aa74c" alt="Screenshot 2024-08-30 at 10 57 57 AM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-09-03 12:22</div>
+            <div class="timeline-body"><p>Another use case: I use <code>pip list --outdated</code> regularly when coming back to a project after some time, to quickly see what work I have ahead of me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7006.html">astral-sh/uv#7006</a> on 2024-09-04 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/golgor">@golgor</a> on 2024-09-06 08:33</div>
+            <div class="timeline-body"><p>@zanieb
+The use-case we have is keeping our IoT Pipeline up to date and to avoid to large required changes or tech backlog. We have a fairly large application for this with quite a lot of packages and it is simply not feasible to check everything manually.</p>
+<p>For example, every time I work with a PR, I can just run one command to check the status of all the used packages. If I see that quite a few packages that could be updated, I would start looking into this. I do it like this using Poetry and it works very good with keeping things up to date.</p>
+<p>The alternative would be to leave this to random chance (check when you remember to do it) or set up something like a quartely calendar event to check it.</p>
+<p>It would also be a neater way to automate this with for example a Github Action (which is possible with the script from @ziddey, but would be better with a an official solution).</p>
+<p>This is the one feature holding me back from migrating to UV for all our packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-09-06 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Another use case: I use pip list --outdated regularly when coming back to a project after some time, to quickly see what work I have ahead of me.</p>
+</blockquote>
+<p>Wouldn't this be better as <code>uv tree --outdated</code> (analogous to <code>poetry show -o</code>, but with a nice tree view)?   After all, it doesn't matter which dependencies have updates, but rather which dependencies <em>can be</em> updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-09-06 15:12</div>
+            <div class="timeline-body"><p>I don't know about a tree output, which may be nice, but FWIW regarding output format: I currently wrap <code>pip --disable-pip-version-check list -o --format json</code> with a function that presents a table for me of outdated packages across an arbitrary number of projects (venvs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-09-06 18:26</div>
+            <div class="timeline-body"><p>My point wasn't that the output format.  My point was that the use case suggested above should be showing the packages that can be updated given the lock rather than simply the outdated packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-09-07 12:20</div>
+            <div class="timeline-body"><p>This seems sensible - coming from pip, <code>pip list --outdated</code> already shows all available updates, not just the direct dependencies. Is there any reason why <code>uv pip list --outdated</code> would only show outdated direct dependencies? Or do you just mean that the format would be nicer from <code>uv tree --outdated</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-09-07 20:22</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems sensible - coming from pip, pip list --outdated already shows all available updates, not just the direct dependencies.</p>
+</blockquote>
+<p>Sorry, I think we're talking past each other.  As I said in my last comment, this has nothing to do with format.  (It also has nothing to do with direct dependencies.)  My point was that the use case suggested above should be showing <em>the packages that can be updated given the [project file]</em> rather than <em>simply the outdated packages</em>.</p>
+<p>Consider, for example that you have dependencies:</p>
+<pre><code>dependencies = [
+    'jaxlib &gt;=0.4.14, &lt;=0.4.31',
+    'numpy &lt;= 2.1.0'
+    ...
+</code></pre>
+<p>And you have jaxlib==0.4.31 and numpy==2.0.0 installed.  Suppose that jaxlib 0.5.0 and numpy 2.1.0 are available. What should be displayed?</p>
+<p>pip list --outdated naively says: jaxlib 0.5.0 and numpy 2.1.0</p>
+<p>That's because it doesn't see your pyproject.toml file.  I think it's more useful (considering the use cases mentioned in this thread, which are project use cases) to show only that numpy is outdated.  This is because <code>uv lock -U</code> will not update jaxlib, and it will be both useless and confusing (in my opinion)  to keep saying that it is outdated and refuse to update it.</p>
+<p>This is what <code>poetry show -o</code> currently does.</p>
+<p>Of course, when it comes to packaging there are more use cases than I can imagine.  Perhaps other people are more interested in the pip-like behavior.  I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-09-07 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>This is what poetry show -o currently does.</p>
+</blockquote>
+<p>no it isn't. poetry shows all packages for which newer versions are available even if <code>poetry lock</code> would not use those newer versions.</p>
+<p>fwiw I find this behaviour more useful than telling me which packages it would upgrade if I re-locked.  (I can <code>update --dry-run</code> for that: or just update and revert if I don't like the answer).</p>
+<p>whereas telling me that I have an upper bound that I might want to relax is something I want to know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-09-07 21:10</div>
+            <div class="timeline-body"><blockquote>
+<p>fwiw I find this behaviour more useful than telling me which packages it would upgrade if I re-locked. (I can <code>update --dry-run</code> for</p>
+</blockquote>
+<p>Ah, my mistake.  For some reason I thought it was doing the dry run essentially.</p>
+<blockquote>
+<p>whereas telling me that I have an upper bound that I might want to relax is something I want to know.</p>
+</blockquote>
+<p>For me, I get a lot of noise from downstream package limits that I can't relax holding things back.  That's why I'd rather just see what I can control.  Maybe it would be nice to show at least two sections:</p>
+<ul>
+<li>things that would be upgraded given <code>uv lock -U</code>, and</li>
+<li>things that could be upgraded if constraints in the project file were relaxed.</li>
+</ul>
+<p>This would still hide some outdated packages if they are blocked by dependencies within dependencies.  Maybe those should be shown in a third section so that you can ping their maintainers.  WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-09-09 05:58</div>
+            <div class="timeline-body"><p>Sounds sensible, those are three use cases. The last one would be the least useful to me, but the first two I use very regularly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2024-09-09 20:46</div>
+            <div class="timeline-body"><p>Looks like there are different features being discussed here. I propose we use this thread to only discuss what seems to be the original feature, which is what <code>pip list --outdated</code> does and also what the script posted <a href="https://github.com/astral-sh/uv/issues/2150#issuecomment-2313934453">above</a> by @ziddey does, which is: to list outdated packages <strong>based on which packages are installed on the current virtual environment (or in the system)</strong>. This ignores any lock files or pyproject.toml files, as it only looks at which packages are currently installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7245.html">astral-sh/uv#7245</a> on 2024-09-10 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7532.html">astral-sh/uv#7532</a> on 2024-09-19 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pep-sanwer">@pep-sanwer</a> on 2024-09-27 19:55</div>
+            <div class="timeline-body"><p>(Apologies for continuing this thread for the not directly <code>pip --outdated</code> use case)</p>
+<p>FYI - not great but functional work around:
+Just ported a project over to <code>uv</code> from <code>poetry</code> and seeing a list of upgradeable packages (both uses cases specced by https://github.com/astral-sh/uv/issues/2150#issuecomment-2336453465) was a major missing functionality in the switch</p>
+<p>Current work around (not ideal):</p>
+<ul>
+<li>Setup <code>pyproject.toml</code> via standard <code>uv</code> approach with deps pinned as strictly as you would like, make sure at least one <code>uv</code> install command has been run, like <code>uv sync</code></li>
+<li>For deps that would be upgraded given <code>uv lock -U</code>:<ul>
+<li>Setup (and maintain) a shadow <code>poetry.pinned.pyproject.toml</code> via the minimal required <code>poetry</code> standard with the same deps and pins</li>
+</ul>
+</li>
+<li>For deps that could be upgraded if constraints in the project file were relaxed.:<ul>
+<li>Setup (and maintain) a shadow <code>poetry.nopin.pyproject.toml</code> via the minimal required <code>poetry</code> standard with the same deps, only do not pin dep versions (or remove upper bounds)</li>
+</ul>
+</li>
+<li>Whenever you'd like to check upgradeable deps (either case) - swap the actual <code>pyproject.toml</code> with the use case associated <code>poetry.*.pyproject.toml</code> and run <code>poetry update --dry-run</code> - no <code>venv</code> activation needed (both tools default to use <code>/path/to/project/.venv</code>)</li>
+<li><code>poetry show -o</code> works as well after a <code>poetry lock</code> (requires a <code>poetry.lock</code>)<ul>
+<li>Trivial to wrap in a script</li>
+</ul>
+</li>
+</ul>
+<p>I'm not happy with this (I'm sure there are many complexities being missed here), but it works-ish</p>
+<p>Goes with saying - thank you to the Astral team for all the incredible work y'all are doing in this space - huge strides!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-28 23:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RatulMaharaj">@RatulMaharaj</a> on 2024-11-01 22:40</div>
+            <div class="timeline-body"><p>I would love for this to be a thing. I mostly use <code>pnpm</code> for my node.js projects and to me <code>uv</code> feels super familiar because of that.</p>
+<p>In that ecosystem, my favourite and most commonly used commands are <code>pnpm add</code>, <code>pnpm remove</code> and <code>pnpm outdated</code>. We already have <code>uv add</code> and <code>uv remove</code> - I think being able to run <code>uv outdated</code> would be awesome too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8872.html">astral-sh/uv#8872</a> on 2024-11-07 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-07 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-07 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rafalkrupinski">@rafalkrupinski</a> on 2025-02-26 16:39</div>
+            <div class="timeline-body"><p>Not sure what the command is supposed to do but with this in project.dependencies:</p>
+<p>&quot;boltons&gt;=24.1.0&quot;,</p>
+<p>it doesn't show that boltons is outdated (25.0.0 available)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-02-26 17:11</div>
+            <div class="timeline-body"><p>AFAIU, like pip, it's reporting on the actually installed version vs the newest release, disregarding stated requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 17:14</div>
+            <div class="timeline-body"><p>Yeah this is a <code>pip</code> command which is not project-aware, it's reading the environment</p>
+<pre><code>❯ uv venv
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install boltons==24.1.0
+Resolved 1 package in 128ms
+Prepared 1 package in 65ms
+Installed 1 package in 3ms
+ + boltons==24.1.0
+❯ uv pip list --outdated
+Package Version Latest Type
+------- ------- ------ -----
+boltons 24.1.0  25.0.0 wheel
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/htran-ubed">@htran-ubed</a> on 2025-04-14 09:31</div>
+            <div class="timeline-body"><p>Could this be added to the documentation of managing packages or maybe somewhere else? As I could not find it anywhere in the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-15 20:26</div>
+            <div class="timeline-body"><p>@htran-ubed we tend not to spend too much time on documenting <code>pip</code> command since it's just a parity interface. Feel free to open a pull request adding it to the documentation though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-04-15 22:41</div>
+            <div class="timeline-body"><p>For anyone documenting, note that it's not an <em>exact</em> parity interface, e.g.:</p>
+<pre><code class="language-console">$ pip list --outdated --format columns --exclude-editable --format json --include-editable     # valid
+$ uv pip list --outdated --format columns --exclude-editable --format json --include-editable  # invalid for two reasons
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avegao">@avegao</a> on 2025-05-27 10:43</div>
+            <div class="timeline-body"><p>Im using</p>
+<pre><code class="language-shell">uv tree --outdated --depth 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tyilo">@tyilo</a> on 2025-10-23 14:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Im using</p>
+<p>uv tree --outdated --depth 1</p>
+</blockquote>
+<p>This doesn't seem to work anymore in uv 0.9.4. It just lists all dependencies.</p>
+<p><code>uv pip list --outdated</code> works instead.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

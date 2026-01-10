@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH123 false positive - astral-sh/ruff #2140</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PTH123 false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2140">#2140</a>
+        opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a>
+        on 2023-01-24 19:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-01-24 19:20</div>
+            <div class="timeline-body"><p>Taken directly from this repository in the <code>script</code> folder.</p>
+<pre><code class="language-python">def main(*, name: str, code: str, linter: str) -&gt; None:
+    &quot;&quot;&quot;Generate boilerplate for a new rule.&quot;&quot;&quot;
+    # Create a test fixture.
+    with (ROOT_DIR / &quot;resources/test/fixtures&quot; / dir_name(linter) / f&quot;{code}.py&quot;).open(
+        &quot;a&quot;,
+    ):
+        pass
+</code></pre>
+<p>Here is the minimal code</p>
+<pre><code class="language-python">from pathlib import Path
+
+(Path(&quot;&quot;) / &quot;&quot;).open()
+</code></pre>
+<p>Generate the error <code>PTH123</code> <code>open(&quot;foo&quot;)</code> should be replaced by <code>Path(&quot;foo&quot;).open()</code></p>
+<p>Ruff version: <code>0.0.231</code></p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 19:33</div>
+            <div class="timeline-body"><p>Definitely an error. Does the originating plugin raise this? (Regardless we should fix.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-24 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-01-24 19:38</div>
+            <div class="timeline-body"><p>No, it does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-01-24 20:26</div>
+            <div class="timeline-body"><p>The problem comes from <code>collect_call_path</code> that returns <code>[&quot;open&quot;]</code> which is confused for the builtin <code>open</code>.
+Maybe <code>collect_call_path</code> should return <code>[&quot;&quot;, &quot;open&quot;]</code> to separate the two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 20:31</div>
+            <div class="timeline-body"><p><code>collect_call_path</code> returns <code>[&quot;&quot;, &quot;open&quot;]</code> when <code>open</code> is bound to the builtin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 20:32</div>
+            <div class="timeline-body"><p>I'm guessing the problem here is that we're treating <code>x.open()</code> as if it's equivalent to <code>open</code> within the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-25 00:45</div>
+            <div class="timeline-body"><p>I can fix tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-25 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2144.html">astral-sh/ruff#2144</a> on 2023-01-25 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-25 01:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

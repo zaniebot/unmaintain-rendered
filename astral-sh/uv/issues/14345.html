@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to install package with filenames containing commas - astral-sh/uv #14345</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to install package with filenames containing commas</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14345">#14345</a>
+        opened by <a href="https://github.com/danielhollas">@danielhollas</a>
+        on 2025-06-29 12:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-06-29 12:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>uv fails to install our package (not published on PyPI) due to the following RECORD parsing error</p>
+<pre><code class="language-console">$ git clone https://github.com/aiidalab/aiidalab-qe-vibroscopy &amp;&amp; cd aiidalab-qe-vibroscopy
+$ uv venv -p 3.9
+$ uv pip install .
+error: RECORD file is invalid
+  Caused by: CSV error: record 8 (line: 9, byte: 743): found record with 5 fields, but the previous record has 3 fields
+</code></pre>
+<p>pip succeeds, but it does print a warning message which shows the actual problem</p>
+<pre><code>  WARNING: RECORD line has more than three elements: ['aiidalab_qe_vibroscopy/app/guides/0_Phonons', ' thermal properties', ' inelastic neutron scattering.html', 'sha256=kkasTWUWn9znl263j3QCCRJksEfnBw6oh52sNU2gTk8', '10668']
+  WARNING: RECORD line has more than three elements: ['aiidalab_qe_vibroscopy/app/guides/1_IR and Raman spectroscopy', ' dielectric properties.html', 'sha256=DHzHi6PGAQpTeSsuT1EkdWxhAfLj9MeIy16PLV_qSMA', '9061']
+</code></pre>
+<p>The problem is that the package contains files with commas in their filenames, and these commas are not properly escaped in the RECORD file.</p>
+<p>It's not clear to me if uv's behaviour is wrong here, or if it should be more lenient (as pip?). But in any case, it would be great to improve the error message to show the actual line that fails to parse, otherwise it's quite painful to figure out what the problem is.</p>
+<p>I would assume that the RECORD file is produced by build backed (flit_core in this case) so perhaps it should file a bug there as well?</p>
+<p>(minor note: editable install works, but I guess that is not surprising)</p>
+<h3>Platform</h3>
+<p>Linux 6.11.9-100.fc39.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.7.15</p>
+<h3>Python version</h3>
+<p>3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @danielhollas on 2025-06-29 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aiidalab/aiidalab-qe-vibroscopy/issues/147.html">aiidalab/aiidalab-qe-vibroscopy#147</a> on 2025-06-29 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-06-29 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-29 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2025-06-29 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-21 12:44</div>
+            <div class="timeline-body"><p>This does sound like a flit-core bug, PEP 376 says:</p>
+<blockquote>
+<p>The csv module is used to generate this file, so the field separator is “,”. Any “,” character found within a field is escaped automatically by csv.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-08-21 12:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

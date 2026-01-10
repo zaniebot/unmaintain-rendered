@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Support for global venv - astral-sh/uv #8435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Support for global venv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8435">#8435</a>
+        opened by <a href="https://github.com/gaby">@gaby</a>
+        on 2024-10-22 03:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaby">@gaby</a> on 2024-10-22 03:55</div>
+            <div class="timeline-body"><p>The main purpose of this ticket is to request support for global venvs. Similar concept to what <code>pipx install --global</code> does. Where the package is installed in a <code>global</code> venv instead of a user one. This allows for systems that pre-install applications for multiple-users to be able to manage/isolate these easily.</p>
+<p>Current workaround is to use <code>uv pip install --system ruff</code>. But this doesn't isolate the dependencies the same way a venv does and it's very easy to run into dependency issues between installed packages. We have a tried using <code>pipx</code>, but the inject ecosystem and upgrading packages using a <code>spec</code> is inconsistent across the board. Currently <code>pipx</code> supports using <code>--global</code> for all their commands.</p>
+<p>Information about how the <code>--global</code> in <code>pipx</code> works is here: https://pipx.pypa.io/stable/installation/#-global-argument</p>
+<p>When using <code>--global</code> in <code>pipx</code>, the following happens:</p>
+<ul>
+<li>man pages are installed here: <code>/usr/local/share/man</code></li>
+<li>binaries/entrypoints are installed here: <code>/usr/local/bin</code></li>
+<li>global envs are installed here: <code>/opt/pipx/venv</code></li>
+</ul>
+<p>When injecting packages/dependencies into a package it does support passing <code>--global</code>, and these application binaries/man-pages also become global within that global venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 04:02</div>
+            <div class="timeline-body"><p>Similar to the request in https://github.com/astral-sh/uv/issues/8431</p>
+<p>You can use <code>UV_TOOL_BIN_DIR</code> and <code>UV_TOOL_DIR</code> for this right now. It seem sort of nice to have a flag for this, but I'm not sure if it's a high priority and generally these paths are different based on the distribution you're using so I'm hesitant to add defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-10-22 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-10-22 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-22 04:43</div>
+            <div class="timeline-body"><p>Oh I didn't know that was an option, That's neat trick although a bit verbose. The paths should be consistent between <code>linux</code> and <code>macos</code>. The feature is not supported for Windows (It's supported on Windows WSL through which uses sames paths as linux I believe.).</p>
+<p>At least <code>/usr/local/share/man</code> and <code>/usr/local/bin</code> are consistent across distributions. The one where the global env's go is basically <code>PIPX_HOME</code>.</p>
+<p>I was able to replicate using the instructions from #8431</p>
+<pre><code class="language-console">root@pi:/home/pi # docker run -it --rm --entrypoint=/bin/bash python:3.10-slim
+root@68e761f4bba3:/# pip install uv
+Collecting uv
+  Downloading uv-0.4.25-py3-none-manylinux_2_28_aarch64.whl (12.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.7/12.7 MB 16.4 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.4.25
+root@68e761f4bba3:/# mkdir -p /opt/uv/venv
+root@68e761f4bba3:/# export UV_TOOL_BIN_DIR=/usr/local/bin
+root@68e761f4bba3:/# export UV_TOOL_DIR=/opt/uv/venv
+root@68e761f4bba3:/# uv tool install ruff
+Resolved 1 package in 401ms
+Prepared 1 package in 629ms
+Installed 1 package in 3ms
+ + ruff==0.7.0
+Installed 1 executable: ruff
+root@68e761f4bba3:/# pip list
+Package    Version
+---------- -------
+pip        23.0.1
+setuptools 65.5.1
+uv         0.4.25
+wheel      0.44.0
+
+root@68e761f4bba3:/# ruff version
+ruff 0.7.0
+</code></pre>
+<p>Having a native way of doing this without setting 2 ENV's would be ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-22 13:26</div>
+            <div class="timeline-body"><p>Looking at the docs, <code>uv</code> probably needs an ENV for setting the install location of man pages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 13:34</div>
+            <div class="timeline-body"><p>We don't support man pages yet. #4731</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8431.html">astral-sh/uv#8431</a> on 2024-10-23 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-24 03:26</div>
+            <div class="timeline-body"><p>@zanieb Is it possible to set these two ENV variables via the new <code>/etc/uv/uv.toml</code> file?</p>
+<p>This way I could setup systems to use <code>uv</code>. Right now having to add <code>ENVs</code> everytime I call <code>uv</code> from ansible is not clean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bennnnnnnn">@bennnnnnnn</a> on 2025-03-13 10:20</div>
+            <div class="timeline-body"><p>There is still an issue for global installs if it is a managed python install. The python install will always happen under $HOME/.local/.local/share/uv/python/ (which will most likely be /root in this case), which then breaks the binaries in the bin dir because the user is not able to access anything under /root.
+It would be handy if we could choose the location where the python binaries are installed as well (similar to UV_TOOL_DIR).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DerPlayer2001">@DerPlayer2001</a> on 2025-05-28 07:02</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be handy if we could choose the location where the python binaries are installed as well (similar to UV_TOOL_DIR).</p>
+</blockquote>
+<p>This would be very handy, I ran into <code>Error loading shared library libpython3.13.so.1.0: No such file or directory</code> errors when deploying a docker k8s deployment were a nonroot user is desired. Took me a while to find this Issue. In addition to passing those 2 env variables to the tool install command i also had to <code>apk add python3</code> since i couldn't acess the uv python binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 16:01</div>
+            <div class="timeline-body"><p>@DerPlayer2001 that exists, <code>UV_PYTHON_INSTALL_DIR</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DerPlayer2001">@DerPlayer2001</a> on 2025-06-03 06:30</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/DerPlayer2001">@DerPlayer2001</a> that exists, <code>UV_PYTHON_INSTALL_DIR</code></p>
+</blockquote>
+<p>Sry i seem to have missed that. But i think it is still not ideal in my Example i install a uv tool in my dockerfile, but since i need it to be accessible by nonroot users i have to set <code>UV_PYTHON_INSTALL_DIR</code>, <code>UV_TOOL_BIN_DIR</code> and <code>UV_TOOL_DIR</code>. Even if that is the desired approach, some documentation describing this Problem and it's Solution would come a long way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bit0r">@Bit0r</a> on 2025-08-04 14:24</div>
+            <div class="timeline-body"><p>pipx has a <code>--global</code> option, but the <code>uv tool</code> currently doesn't have an equivalent alternative</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AleksBelytskyi">@AleksBelytskyi</a> on 2025-08-19 12:38</div>
+            <div class="timeline-body"><p>An analogue to the pipx <code>--global</code> option would be useful. We also need it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:15 UTC
+    </footer>
+</body>
+</html>

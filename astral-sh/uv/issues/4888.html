@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove extra duplication from lockfile - astral-sh/uv #4888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove extra duplication from lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4888">#4888</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-08 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-08 12:10</div>
+            <div class="timeline-body"><p>When declaring a dependency <code>pandas[excel,html,plot]</code>, the lockfile shows:</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;pandas&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;excel&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;html&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;plot&quot; },
+]
+</code></pre>
+<p>We should collapse those entries:</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;pandas&quot;, extra = [&quot;excel&quot;, &quot;html&quot;, &quot;plot&quot;] },
+]
+</code></pre>
+<p>This makes more sense to the user (we don't install pandas four times, we install it once and then those extra packages, that's our internal abstraction into virtual packages leaking) and makes the lockfile more concise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-08 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-08 12:25</div>
+            <div class="timeline-body"><p>Is this limited to the specific example shown here, or in general? In general, each of those dependency entries can have other fields on them that are different. For example, markers. In theory, I think, other fields could be different too, such as version and source. Or at least, that's what our data model supports. But I think the markers really could be different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-08 12:29</div>
+            <div class="timeline-body"><p>This should only collapse entries with the same markers. Say we have</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;pandas[excel,html]; python_version == '3.13'&quot;,
+    &quot;pandas[excel,plot]&quot;,
+]
+</code></pre>
+<p>we currently get</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;pandas&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;excel&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;html&quot;, marker = &quot;python_version == '3.13'&quot; },
+    { name = &quot;pandas&quot;, extra = &quot;plot&quot; },
+]
+</code></pre>
+<p>which we could collapse to</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;pandas&quot;, extras = [&quot;excel&quot;, &quot;plot&quot;] },
+    { name = &quot;pandas&quot;, extras = [&quot;html&quot;], marker = &quot;python_version == '3.13'&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-08 13:36</div>
+            <div class="timeline-body"><p>Right, okay. I think this LGTM. Although I don't totally mind our existing format, I am very sympathetic to the fact that it leaks our &quot;virtual package&quot; abstraction. So I think I would on balance favor your suggestion here to the status quo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4893.html">astral-sh/uv#4893</a> on 2024-07-08 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3347.html">astral-sh/uv#3347</a> on 2024-07-09 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-07-18 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5181.html">astral-sh/uv#5181</a> on 2024-07-18 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-18 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-18 18:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

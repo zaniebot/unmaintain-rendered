@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider exposing value_t as function rather than macro - clap-rs/clap #915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider exposing value_t as function rather than macro</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/915">#915</a>
+        opened by <a href="https://github.com/TedDriggs">@TedDriggs</a>
+        on 2017-03-23 17:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TedDriggs">@TedDriggs</a> on 2017-03-23 17:23</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.17.0-nightly (6eb9960d3 2017-03-19)</p>
+<h3>Affected Version of clap</h3>
+<p>2.21.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>Be able to get a typed value for an argument using standard functions (and thus also through local type inference).</p>
+<h3>Actual Behavior Summary</h3>
+<p>A macro must be used, which also <em>requires</em> explicitly stating the desired type.</p>
+<h3>Sample Implementation</h3>
+<pre><code class="language-rust">pub trait TypedGet {
+    fn parse&lt;S: AsRef&lt;str&gt;, T: FromStr&gt;(&amp;self, name: S) -&gt; Result&lt;T, String&gt;
+        where T::Err: fmt::Display;
+}
+
+impl&lt;'a&gt; TypedGet for ArgMatches&lt;'a&gt; {
+    fn parse&lt;S: AsRef&lt;str&gt;, T: FromStr&gt;(&amp;self, name: S) -&gt; Result&lt;T, String&gt;
+        where T::Err: fmt::Display
+    {
+        let raw = self.value_of(name).ok_or(&quot;parameter not found&quot;.to_string())?;
+        T::from_str(raw).map_err(|e| e.to_string())
+    }
+}
+</code></pre>
+<p>In this case, I used <code>parse</code> for its alignment with the function exposed on strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-25 02:39</div>
+            <div class="timeline-body"><p>Interesting. I like this idea! I'll need some time to play with this idea and see if it leads to any strange edge cases or breakage, but looks pretty straight forward!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @kbknapp on 2017-03-25 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-03-25 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-03-25 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2017-03-25 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-03-25 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-03-25 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-25 02:45</div>
+            <div class="timeline-body"><p>Three quick thoughts:</p>
+<ul>
+<li>I'd probably make  the trait <code>TypedValue</code> to go along with the <code>value_of</code> methods</li>
+<li>There should also be an <code>OsStr</code> equivilant, or we'll need to decide how this'll work with the <code>value_of_os</code> and <code>value_of_lossy</code> methods.</li>
+<li>We'd need to also figure out multiple values (<code>values_of</code> and their <code>_os</code> and <code>_lossy</code> counterparts).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TedDriggs">@TedDriggs</a> on 2017-04-12 23:11</div>
+            <div class="timeline-body"><p>I've forked the repro to start looking at adding this. The macro doesn't currently support <code>OsStr</code>, so I'm not planning on doing that in method form. I am looking at <code>values_of</code>, since there is a <code>values_t!</code> macro today.</p>
+<p>I have some questions about the desired return type.</p>
+<h2>Error Type</h2>
+<p>There are 3 options for the error type:</p>
+<ol>
+<li><code>clap::Error</code> - this is consistent with the current <code>values_t!</code> macro, but completely suppresses the error returned by the invoked <code>FromStr</code> impl. That seems suboptimal.</li>
+<li><code>T::Err</code> - this would expose the error returned by the parser, but doesn't account for the possibility of failures in clap's conversion from <code>OsStr</code> to <code>&amp;str</code>.</li>
+<li><code>String</code> - this can pipe either kind of error back through, but is impossible to match on or otherwise handle, and it requires that <code>T::Err: std::fmt::Display</code>, which may not always be true.</li>
+</ol>
+<p>I don't have a good answer here, especially since <code>clap::ErrorKind</code> doesn't have a <code>__Hidden__</code> variant and therefore extending it could break existing users who depend on an exhaustive match.</p>
+<h2>Return Structure (Fail-fast)</h2>
+<ol>
+<li><code>Result&lt;Vec&lt;T&gt;, __&gt;</code> - the method would abort on first error.</li>
+<li><code>Vec&lt;Result&lt;T, _&gt;&gt;</code> - the method would process all arguments and return the collection of successes and failures.</li>
+</ol>
+<p>For the return structure, I'm leaning towards option 1: The caller can invoke <code>values_of</code> and map those through <code>FromStr::from_str</code> if they want to provide more detailed errors to the caller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-04-18 00:03</div>
+            <div class="timeline-body"><p>@TedDriggs thanks for taking a swing at this! Apologies for the late reply, I was travelling the past week. As for your questions, here's my thoughts:</p>
+<blockquote>
+<p>Error Type</p>
+</blockquote>
+<p>I would lean option 1 because we could also add an impl to resolve the error <a href="https://github.com/kbknapp/clap-rs/blob/3f44dd4b91d15ec9287eb236e2d3a2fd068afad1/src/errors.rs#L880-L884">as we do with errors arising from <code>std::fmt</code></a>.</p>
+<blockquote>
+<p>I don't have a good answer here, especially since clap::ErrorKind doesn't have a <strong>Hidden</strong> variant and therefore extending it could break existing users who depend on an exhaustive match.</p>
+</blockquote>
+<p>There's two options.</p>
+<ol>
+<li>Re-use the <code>ErrorKind::ValueValidation</code> or perhaps more appropriately <code>ErrorKind::InvalidValue</code> which is correct-ish provided the docs are updated as well.</li>
+<li>We add the variant, being that I would unbelievably surprised if someone was actually relying on exhaustive matching here being that it would mean they're handling each of clap's error types manually. I believe this is the type of breaking change that is also in line with Rust precedents of allowing a minor breaking change that no code in the wild is using or likely to use.</li>
+</ol>
+<p>In fact, doing a quick ripgrep through all the crates on crates.io and looking through Github yields none. I know this doesn't represent 100% coverage especially considering clap is made for binaries and not libs, and not all projects use Github but I still think it's telling.</p>
+<p>Having said this, I also don't want to go this route unless all other options have worse downsides.</p>
+<p>Technically there's a third option of waiting until 3x (which I'm actively working on as we speak, but don't have a good idea for release candidates yet. I'm planning on within the next 2 months, but life can always throw curveballs....in fact I'm typing this at about 1/8th normal speed due to a cast on my hand).</p>
+<blockquote>
+<p>Return Structure (Fail-fast)</p>
+</blockquote>
+<blockquote>
+<p>For the return structure, I'm leaning towards option 1: The caller can invoke values_of and map those through FromStr::from_str if they want to provide more detailed errors to the caller.</p>
+</blockquote>
+<p>I 100% agree. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/933.html">clap-rs/clap#933</a> on 2017-04-18 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 01:31</div>
+            <div class="timeline-body"><p>Closing this in favor of the Custom Derive <code>structopt</code> style use which will be primary in v3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-07-22 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1809.html">clap-rs/clap#1809</a> on 2020-04-12 00:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:29 UTC
+    </footer>
+</body>
+</html>

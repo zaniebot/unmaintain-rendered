@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ValueEnum fails to parse variant with an unmatched ToString implementation - clap-rs/clap #6019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ValueEnum fails to parse variant with an unmatched ToString implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6019">#6019</a>
+        opened by <a href="https://github.com/zeozeozeo">@zeozeozeo</a>
+        on 2025-05-28 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zeozeozeo">@zeozeozeo</a> on 2025-05-28 13:10</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.89.0-nightly (45f256d9d 2025-05-27)</p>
+<h3>Clap Version</h3>
+<p>4.5.39</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, ValueEnum};
+use std::fmt;
+
+#[derive(Debug, Clone, ValueEnum)]
+enum Color {
+    Red,
+    Blue,
+}
+
+impl fmt::Display for Color {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        let color_str = match self {
+            Color::Red =&gt; &quot;Red&quot;,
+            Color::Blue =&gt; &quot;Blue&quot;,
+        };
+        write!(f, &quot;{}&quot;, color_str)
+    }
+}
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(short, long, default_value_t = Color::Red)]
+    color: Color,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;You selected the color {:?}&quot;, args.color);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>$ cargo run
+error: invalid value 'Red' for '--color &lt;COLOR&gt;'
+  [possible values: red, blue]
+
+  tip: a similar value exists: 'red'
+
+For more information, try '--help'.
+error: process didn't exit successfully: `target\debug\clap-test.exe` (exit code: 2)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>In stdout: <code>You selected the color Red</code></p>
+<h3>Additional Context</h3>
+<p>Works if you replace &quot;Red&quot; and &quot;Blue&quot; in the Display impl with &quot;red&quot; and &quot;blue&quot;
+(note that <code>default_value_t</code> for <code>color</code> is correctly set to <code>Color::Red</code> - program complains either way)</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-test&quot;
+[clap_builder::builder::command]Command::_propagate:clap-test
+[clap_builder::builder::command]Command::_check_help_and_version:clap-test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:clap-test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:color
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:color:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:color: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:color: wasn't used
+[clap_builder::parser::parser]Parser::react action=Set, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;color&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;Red&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: invalid value 'Red' for '--color &lt;COLOR&gt;'
+  [possible values: red, blue]
+
+  tip: a similar value exists: 'red'
+
+For more information, try '--help'.
+error: process didn't exit successfully: `target\debug\clap-test.exe` (exit code: 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @zeozeozeo on 2025-05-28 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-05-28 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-28 13:51</div>
+            <div class="timeline-body"><p>Is there a reason to have an unmatched <code>ToString</code>?</p>
+<p>To help people catch this, we could add a <code>debug_assert!</code> in the proc macro that they match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeozeozeo">@zeozeozeo</a> on 2025-05-28 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a reason to have an unmatched <code>ToString</code>?</p>
+</blockquote>
+<p>I was under impression that clap handled the PascalCase =&gt; kebab-case conversion everywhere automatically, and since ValueEnum required a ToString impl, I just did this:</p>
+<pre><code class="language-rs">impl ToString for Color {
+    fn to_string(&amp;self) -&gt; String { format!(&quot;{:?}&quot;, self) }
+}
+</code></pre>
+<p>but apparently this does not seem to be the case. I think clap should handle this automatically instead of just throwing an assertion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-28 14:11</div>
+            <div class="timeline-body"><p>clap does not derive a <code>Display</code> automatically (which is generally what should be implemented instead of <code>ToString</code>).  We could offer one but with the caveats of (1) it would assert or be underivable when fields are skipped and (2) unsure what the common practice is for naming specialized derives like that.  I would be against <code>derive(ValueEnum)</code> automatically deriving <code>Display</code> as people may want other options and the skipped issue.</p>
+<p>Our <a href="https://docs.rs/clap/latest/clap/_cookbook/git_derive/index.html">git-derive</a> cookbook entry has an example of a <code>Display</code> on <code>ColorWhen</code>.  I could see extending our <a href="https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html#enumerated-values">tutorial on <code>ValueEnum</code></a> to also cover this.</p>
+<p>Note: If you apply the <code>#[arg(value_enum)]</code> attribute to <code>color</code>, then <code>Display</code> won't be used.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:46 UTC
+    </footer>
+</body>
+</html>

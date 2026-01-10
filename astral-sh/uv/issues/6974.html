@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv installs wrong (cached) version when specifying a git+ dependency with hash - astral-sh/uv #6974</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv installs wrong (cached) version when specifying a git+ dependency with hash</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6974">#6974</a>
+        opened by <a href="https://github.com/MacLake">@MacLake</a>
+        on 2024-09-03 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MacLake">@MacLake</a> on 2024-09-03 18:42</div>
+            <div class="timeline-body"><p>I use uv 0.4.3 with Python 3.11 on Manjaro Linux.</p>
+<p>I need to install updated versions of a package from Github. I have a dependency in my <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">dependencies = [
+    …
+    &quot;djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git&quot;,  # The blog application for django CMS
+    …
+]
+</code></pre>
+<p>uv writes the correct version hash to the requirement files:</p>
+<pre><code>djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325
+</code></pre>
+<p>Before I had other versions installed. As it is a package in development where the author fixes a bug, the version number defined in the source doesn’t change in every commit, but the hash does for sure.  E. g. the one before is <code>29a799ea11dd9206bf88ff71ef61effd1692d9e6</code>.</p>
+<p>As I noticed from an error message, the newest version was not installed with <code>uv pip install -r dev-requirements.txt</code>, as the message refers to content in line 64, which still mentioned <code>content</code> instead of <code>contents</code>.</p>
+<p>I also tried to uninstall and reinstall the package:</p>
+<pre><code class="language-shell">$ uv pip uninstall djangocms-blog
+Uninstalled 1 package in 12ms                                                                                                                                                               
+ - djangocms-blog==2.0.0rc1 (from git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325)                                                               
+$ uv pip install 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325'  
+Resolved 35 packages in 72ms                                                                                                                                                                
+Installed 1 package in 16ms                                                                                                                                                                 
+ + djangocms-blog==2.0.0rc1 (from git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325)                                                               
+$ uv pip uninstall djangocms-blog
+Uninstalled 1 package in 10ms                                                                                                                                                               
+ - djangocms-blog==2.0.0rc1 (from git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325)                                                               
+$ pip install 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325' 
+</code></pre>
+<p>After <code>uv pip uninstall djangocms-blog</code> or <code>pip uninstall djangocms-blog</code> the corresponding directory is deleted, so <code>uv</code> apparently installs an old cached version.</p>
+<p>With <code>pip</code> I get the correct version.</p>
+<p>There are other version mismatch issues, which seem to me similar, but not the same, so I wanted to tell about this specific problem encounter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 18:47</div>
+            <div class="timeline-body"><p>I'm having a little trouble following, but can you try passing the <code>--upgrade</code> flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-04 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MacLake">@MacLake</a> on 2024-09-04 09:53</div>
+            <div class="timeline-body"><p>Well, to summarize it: <code>uv pip install 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325'</code> installs the wrong version on my system, even when the package is not installed right before carrying out this instruction and even though I provide the hash. I suspect it uses a cached version I had installed earlier.</p>
+<p>Adding <code>-U</code>  or <code>--upgrade</code> doesn’t help, it even shows a strange behaviour: When I first applied it, uv upgraded other packages, django and packaging and didn’t even mention the package I want to install:</p>
+<pre><code class="language-shell">uv pip install -U 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325'                                                                            
+Resolved 34 packages in 7.84s                                                                                                      
+Prepared 2 packages in 2.78s                                                                                                       
+Uninstalled 2 packages in 174ms                                                                                                    
+Installed 2 packages in 134ms                                                                                                      
+ - django==5.0.8                                                                                                                   
+ + django==5.0.9                                                                                                                   
+ - packaging==21.3                                                                                                                 
+ + packaging==24.1
+</code></pre>
+<p>In a second try, the output looks as expected, but still the wrong version is being installed.</p>
+<pre><code class="language-shell">uv pip install --upgrade 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325'
+Resolved 34 packages in 1.40s
+Prepared 1 package in 7ms
+Installed 1 package in 4ms
+ + djangocms-blog==2.0.0rc1 (from git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 14:51</div>
+            <div class="timeline-body"><blockquote>
+<p>...django and packaging and didn’t even mention the package I want to install:</p>
+</blockquote>
+<p>This could be completely correct if the package is already installed at the correct version. I can't know without <code>--verbose</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 14:52</div>
+            <div class="timeline-body"><p>Do you mind providing a clear sequence of commands that demonstrate the behavior you're seeing from a clean state? (I.e., running <code>uv cache clean</code>, <code>rm -rf .venv</code>, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 14:54</div>
+            <div class="timeline-body"><p>(I would love to help and fix any issues here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maparent">@maparent</a> on 2024-09-04 17:48</div>
+            <div class="timeline-body"><p>Not sure it's exactly the same issue, but it is related, so adding it here.</p>
+<p>Here is a simple pyproject.toml, on macOS:</p>
+<pre><code>[project]
+name = &quot;test_uv&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.11;&lt;3.12&quot;
+dependencies = [
+  &quot;tensorflow-text @ https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.17/tensorflow_text-2.17.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16 ; sys_platform == 'darwin'&quot;,
+  &quot;tensorflow-text; sys_platform == 'linux'&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<p>an <code>uv sync</code> on this will fail with this message:</p>
+<pre><code>Resolved 41 packages in 352ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: tensorflow-text @ https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.17/tensorflow_text-2.17.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16
+  Caused by: Hash mismatch for `tensorflow-text @ https://github.com/sun1638650145/Libraries-and-Extensions-for-TensorFlow-for-Apple-Silicon/releases/download/v2.17/tensorflow_text-2.17.0-cp311-cp311-macosx_11_0_arm64.whl#sha256=f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16`
+
+Expected:
+  sha256:ff3e9a8e19256e184a0e0997b189fa4a73bb00da74a109cef542e48073d99142
+
+Computed:
+  sha256:f0a7225a1242f06e4d206235f56025a0f70fb9a2e3ecb85bd5ba686269e74c16
+</code></pre>
+<p>Note that the computed is exactly as requested.</p>
+<p>More important: Removing line 7, <code>&quot;tensorflow-text; sys_platform == 'linux'&quot;,</code> allows uv to sync successfully.
+The linux line should never be activated on macos; but somehow it tells uv to fetch the hash for the linux version of the wheel and create a wrong expectation.</p>
+<p>I hope this is helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 01:22</div>
+            <div class="timeline-body"><p>Thanks @maparent. Looks like a real bug but separate from the above; going to move into its own issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7059.html">astral-sh/uv#7059</a> on 2024-09-05 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MacLake">@MacLake</a> on 2024-09-05 16:20</div>
+            <div class="timeline-body"><p>Thanks, @charliermarsh. After cleaning the cache with <code>uv cache clean</code>  <code>uv pip install</code> behaves again as expected, i. e. installing the package with git+ using a hash installs the correct version. So the bug was triggered by the state of the cache. I have saved a copy of the cache directory, so if there is something I should look for, let me know. Otherwise I’m going to delete it soon, since it’s 16 GB big.</p>
+<p>Wehn reproducing the bug, I had deleted all other virtualenvs of this project, just in case. So for trying to reproduce this bug, one could first install an older version like</p>
+<pre><code class="language-shell">uv pip install 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@29a799ea11dd9206bf88ff71ef61effd1692d9e6'
+</code></pre>
+<p>Then verify the version by looking at <code>djangocms_blog/migrations/0044_copy_plugins.py</code> line 64</p>
+<p>Uninstalling the package should not be necessary, but like this you can be sure that uv or pip use the correct virtualenv:</p>
+<pre><code class="language-shell">uv pip uninstall djangocms-blog
+</code></pre>
+<p>or shell</p>
+<pre><code>pip uninstall djangocms-blog
+</code></pre>
+<p>Check that the package directory in the virtualenv is empty. The install the newer version:</p>
+<pre><code class="language-shell">uv pip install 'djangocms-blog @ git+https://github.com/fsbraun/djangocms-blog.git@6b5b5f0fd716a6a3df07c32ab1897aaa34a2e325'
+</code></pre>
+<p>Check if the mentioned file has changed and corresponds to the desired version. A colleague of mine could not reproduce the bug, and after cleaning the cache I cannot either.</p>
+<p>So I don’t know if it makes sense to chase this reason for bug or jut live with it that sometimes uv may not install the correct version. In many cases you might not even notice it. i only realized it because the error message didn’t match the code (content vs. contents).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 21:50</div>
+            <div class="timeline-body"><p>Ok, going to close out due to lack of reproduction, but let me know if you see it consistently!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-25 21:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-25 21:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:38 UTC
+    </footer>
+</body>
+</html>

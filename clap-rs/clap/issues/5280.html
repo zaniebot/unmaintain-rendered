@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundness: clap_lex makes incorrect assumption about OsStr - clap-rs/clap #5280</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Soundness: clap_lex makes incorrect assumption about OsStr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5280">#5280</a>
+        opened by <a href="https://github.com/Manishearth">@Manishearth</a>
+        on 2024-01-03 01:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Manishearth">@Manishearth</a> on 2024-01-03 01:18</div>
+            <div class="timeline-body"><p>https://github.com/clap-rs/clap/blob/48d28aa689bfd0fb44ec025244b30ba261e2515a/clap_lex/src/ext.rs#L248-L256</p>
+<p>It's not true that <code>OsStr</code> is <em>stably</em> a transparent wrapper around <code>[u8]</code>, this code is technically unsound. It's fine as long as the Rust stdlib avoids making this change.</p>
+<p>Fortunately the soon-to-be-stabilized <a href="https://doc.rust-lang.org/std/ffi/struct.OsStr.html#method.as_os_str_bytes"><code>as_os_str_bytes()</code></a> will fix this. Opening this issue to track it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-04 19:17</div>
+            <div class="timeline-body"><p>While I generally feel I'm not creative enough to play these games, when I analyzed this, I could not find a way that the language or standard library can change that would violate this assumption because of the roundtripping involved with the conversions: &quot;ref to DST&quot; (<code>&amp;[u8]</code>) -&gt; &quot;ref to DST&quot; (<code>&amp;str</code>) -&gt; &quot;ref to DST&quot; (<code>&amp;OsStr</code>) -&gt; &quot;ref to DST&quot; (<code>&amp;str</code>) -&gt; &quot;ref to DST&quot; (<code>&amp;[u8]</code>).  Is there something I'm missing?</p>
+<p>I guess if the language allowed refs to DSTs to choose their representation (<code>(ptr, ptr)</code> vs <code>(ptr, length)</code>) and they chose different representations, then this could happen but (again, maybe not being creative enough) I cannot think of a situation this would actually happen.</p>
+<p>As you said, <code>as_os_str_bytes</code> will soon be in our MSRV and we can switch to it.  I'm more concerned about the perception of risk from people seeing this issue if the perception of risk doesn't match the reality of the risk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Manishearth">@Manishearth</a> on 2024-01-04 19:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there something I'm missing?</p>
+</blockquote>
+<p>Yes, that it's still not a documented invariant; I'm in general not comfortable relying on those in unsafe code and usually note them when performing unsafe review. I mostly filed this issue so I have something to point to in the <a href="https://github.com/google/rust-crate-audits/blob/7345370de0faff4a4812ad02653ffd3b6f31a9cf/audits.toml#L961-L970">published unsafe audit</a>, it's not a huge deal and this will be a non-problem in the future anyway.</p>
+<p>DSTs changing their representation is indeed a real worry. In general it's not a huge one: so much code relies on DST repr that it's unlikely to change without major warning, but that still does make it important to track. Fortunately in this case it will be fixed before any such change can come down the pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5344.html">clap-rs/clap#5344</a> on 2024-02-08 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-08 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p>DSTs changing their representation is indeed a real worry. In general it's not a huge one: so much code relies on DST repr that it's unlikely to change without major warning, but that still does make it important to track. Fortunately in this case it will be fixed before any such change can come down the pipeline.</p>
+</blockquote>
+<p>While I am fixing this (#4344), I'm wanting to understand this further as I find other needs for transmuting DSTs into each other (<code>const</code> functions).  Maybe I don't have a creative enough imagination but in what ways can the DST representation change where we can't transmute them between each other when the roundtripping guarantees exist like with <code>&amp;str</code> / <code>&amp;OsStr</code> / <code>&amp;[u8]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-02-08 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Manishearth">@Manishearth</a> on 2024-02-08 16:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe I don't have a creative enough imagination but in what ways can the DST representation change where we can't transmute them between each other when the roundtripping guarantees exist like with <code>&amp;str</code> / <code>&amp;OsStr</code> / <code>&amp;[u8]</code>.</p>
+</blockquote>
+<p>The metadata order could swap. And the provenance could be weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-08 17:00</div>
+            <div class="timeline-body"><p>So two DSTs in the same rustc version could have metadata in different order?  That seems odd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Manishearth">@Manishearth</a> on 2024-02-08 17:15</div>
+            <div class="timeline-body"><p>Rust has <code>randomize-type-layout</code> today and in the long run the hope seems to be that correctly written Rust code will always succeed under <code>randomize-type-layout</code>. I'm not sure if that option currently randomizes DST representations, but I don't think there's any reason for it not to in the long run.</p>
+<p>So yes, that is a potential reality.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:32 UTC
+    </footer>
+</body>
+</html>

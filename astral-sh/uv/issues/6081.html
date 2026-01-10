@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` ignore configuration file settings for index-url and extra-index-url - astral-sh/uv #6081</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` ignore configuration file settings for index-url and extra-index-url</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6081">#6081</a>
+        opened by <a href="https://github.com/Magic-wei">@Magic-wei</a>
+        on 2024-08-14 12:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Magic-wei">@Magic-wei</a> on 2024-08-14 12:02</div>
+            <div class="timeline-body"><!--
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Thank you for developing the great tool for python package management! I just tried uv recently and got an issue where <code>uv add</code> command ignored index settings from both project- and user-level configuration files, whereas <code>uv pip install</code> works properly.</p>
+<h2>Testing Environment</h2>
+<ul>
+<li>OS: Ubuntu 22.04.4 LTS</li>
+<li>uv version: 0.2.36</li>
+<li>Environment variable <code>UV_INDEX_URL</code> is not <code>used</code></li>
+</ul>
+<p>Start a new uv project:</p>
+<pre><code class="language-shell">$ uv init test_project --python 3.9
+$ cd test_project
+
+# create venv manually at the project directory
+$ uv venv --python 3.9 --python-preference managed
+Using Python 3.9.19
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+# project structure
+$ tree
+.
+├── pyproject.toml
+├── README.md
+└── src
+    └── test_project
+        └── __init__.py
+
+# clean uv cache
+$ uv clean
+</code></pre>
+<h2>Reproduce the Issue</h2>
+<p>To reproduce the issue, <code>rospy</code> for example comes from a specific index url &quot;https://rospypi.github.io/simple&quot; and you can't install it with default index url. To install it, you can either add an <code>extra-index-url</code> in the user-level configuration file <code>~/.config/uv/uv.toml</code> or in the project-level configuration file <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml"># in `~/.config/uv/uv.toml`:
+[pip]
+extra-index-url = [&quot;https://rospypi.github.io/simple&quot;]
+</code></pre>
+<p>or</p>
+<pre><code class="language-toml"># in the project-level configuration file `pyproject.toml`:
+# ...
+[tool.uv.pip]
+extra-index-url = [&quot;https://rospypi.github.io/simple&quot;]
+</code></pre>
+<p>Running <code>uv add rospy</code> in the project root path will fail:</p>
+<pre><code class="language-shell">$ uv add rospy
+warning: `uv add` is experimental and may change without warning
+  × No solution found when resolving dependencies:
+  ╰─▶ Because rospy was not found in the package registry and test-project==0.1.0 depends on rospy, we can conclude that test-project==0.1.0
+      cannot be used.
+      And because only test-project==0.1.0 is available and you require test-project, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>In contrast, <code>uv pip install rospy</code> should work properly:</p>
+<pre><code class="language-shell">$ uv pip install rospy
+Resolved 17 packages in 6.60s
+Prepared 17 packages in 7.13s
+Installed 17 packages in 18ms
+ + catkin==0.7.18
+ + catkin-pkg==0.4.13
+ + docutils==0.21.2
+ + genmsg==0.5.12
+ + genpy==0.6.14
+ + numpy==2.0.1
+ + pyparsing==3.1.2
+ + python-dateutil==2.9.0.post0
+ + pyyaml==6.0.2
+ + roscpp==1.15.11
+ + rosgraph==1.15.11
+ + rosgraph-msgs==1.11.3.post2
+ + roslib==1.14.7.post0
+ + rospkg==1.1.10
+ + rospy==1.15.11
+ + six==1.16.0
+ + std-msgs==0.5.13.post0
+</code></pre>
+<p>Same behavior for <code>index-url</code> in configuration files.</p>
+<blockquote>
+<p>BTW, <code>UV_INDEX_URL</code> works for both <code>uv add</code> and <code>uv pip install</code>.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 13:18</div>
+            <div class="timeline-body"><p>Can you try removing the <code>pip</code> part of your configuration? So:</p>
+<pre><code class="language-toml"># in `~/.config/uv/uv.toml`:
+extra-index-url = [&quot;https://rospypi.github.io/simple&quot;]
+</code></pre>
+<p>Or:</p>
+<pre><code class="language-toml"># in the project-level configuration file `pyproject.toml`:
+# ...
+[tool.uv]
+extra-index-url = [&quot;https://rospypi.github.io/simple&quot;]
+</code></pre>
+<p>When you add under the <code>pip</code> namespace, it only applies to <code>uv pip</code> commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-14 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Magic-wei">@Magic-wei</a> on 2024-08-14 13:23</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks Charlie, that works! So I just configured in the wrong field.</p>
+<p>Issue closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Magic-wei on 2024-08-14 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C409 now makes code slower - astral-sh/ruff #12912</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C409 now makes code slower</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12912">#12912</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2024-08-15 23:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-15 23:04</div>
+            <div class="timeline-body"><p>Introduced in https://github.com/astral-sh/ruff/pull/12657</p>
+<p><code>tuple(i for i in range(10000))</code> is like 50% slower than <code>tuple([i for i in range(10000)])</code>. I think it's still fine to have this as a lint, but it's now impossible to configure ruff to distinguish between the two.</p>
+<p>This is a thematically similar complaint to https://github.com/astral-sh/ruff/issues/8884</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12657.html">astral-sh/ruff#12657</a> on 2024-08-15 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "C409 now makes my code slower" to "C409 now makes code slower" by @hauntsaninja on 2024-08-15 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-15 23:05</div>
+            <div class="timeline-body"><p>Oh this is also similar to https://github.com/astral-sh/ruff/issues/10838</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 23:08</div>
+            <div class="timeline-body"><p>These changes are all in preview and so we can still decide to change them before stabilizing. If we revert that change, though, we should do the same for the list rule variants.</p>
+<p>I don’t feel strongly about it. I would also be open to making it configurable. Perhaps the setting should state whether the user prefers a comprehension or a generator, and enforce it one way or another? Or would the setting just ignore comprehensions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-08-15 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-08-15 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-08-15 23:23</div>
+            <div class="timeline-body"><p>By list rule variant do you mean C410? I think that one is fine because it never introduces a generator comprehension.</p>
+<p>It's maybe more dangerous to enforce list comprehensions over generator comprehensions. Also for probably mostly theoretical memory reasons, despite the perf impact, people typically seem more eager to go from list -&gt; generator than generator -&gt; list. So maybe I lean towards a setting to leave list comprehensions alone.</p>
+<p>Or actually, maybe the slowening parts of C409 and C419 should be split into separate rules. The new rule that applies to comprehensions could then have a setting for whether you prefer list comprehensions or generator comprehensions (defaulting to generator). I think this would let everyone configure their ideal behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 01:51</div>
+            <div class="timeline-body"><p>Sorry, I misspoke. I thought there was a rule that changed:</p>
+<pre><code class="language-python">list([f(x) for x in foo])
+</code></pre>
+<p>To:</p>
+<pre><code class="language-python">list(f(x) for x in foo)
+</code></pre>
+<p>But no, the fix there is <code>[f(x) for x in foo]</code>, so that's fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 01:51</div>
+            <div class="timeline-body"><p>I generally agree that this behavior should be configurable (or even removed). What do you think, @AlexWaygood?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 13:44</div>
+            <div class="timeline-body"><p>I agree that these should either be two rules (one that makes your code slower and one that doesn't), or one configurable rule (where the default is to only emit the recommendations that do not make your code slower).</p>
+<p>Some people prefer to always remove inner parentheses in calls like <code>tuple([x for x in foo])</code> because they find it annoying when they're not necessary for semantics, and/or they feel that the inner parentheses are a &quot;micro-optimisation&quot; that you should only worry about in very performance-sensitive code. Other people prefer to always include them, because they want their code to be as fast as possible. I think both are reasonable points of view, but we shouldn't mix recommendations that have no negative performance implications with ones that could seriously slow down your code in the same rule. (At least, not with our default settings.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-17 23:58</div>
+            <div class="timeline-body"><blockquote>
+<p><code>tuple(i for i in range(10000))</code> is like 50% slower than <code>tuple([i for i in range(10000)])</code>.</p>
+<p>Oh this is also similar to #10838</p>
+</blockquote>
+<p>And similar to the exact kind of example I requested there: https://github.com/astral-sh/ruff/issues/11839
+I wouldn't mind merging my Feature Request with an already open issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/pulls/4386.html">pypa/setuptools#4386</a> on 2024-12-31 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-03-04 15:11</div>
+            <div class="timeline-body"><p>See this PR https://github.com/pytorch/pytorch/pull/148412#issue-2892876294 for timing that shows that removing the list comprehension here can be sub-optimal. At least, we need to add a knob to back out of the preview behavior.</p>
+<p>See</p>
+<pre><code class="language-python">&gt;&gt;&gt; timeit.timeit(&quot;tuple(x for x in range(10))&quot;)
+0.39464114885777235
+&gt;&gt;&gt; timeit.timeit(&quot;tuple([x for x in range(10)])&quot;)
+0.21258362499065697
+&gt;&gt;&gt;
+</code></pre>
+<p>At the very least, there should be a knob to turn this more controversial behavior off on this flake8 rule.</p>
+<p>@charliermarsh was the preview of this rule removed recently? We really should make this behavior optin since it's worse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/pulls/148412.html">pytorch/pytorch#148412</a> on 2025-03-04 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 15:18</div>
+            <div class="timeline-body"><blockquote>
+<p>was the preview of this rule removed recently? We really should make this behavior optin since it's worse.</p>
+</blockquote>
+<p>I didn't go back further but it is stable since before october 2023</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16500.html">astral-sh/ruff#16500</a> on 2025-03-04 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-03-04 15:25</div>
+            <div class="timeline-body"><p>@MichaReiser Found the issue, it's overlap with another rule that was flagging it in our linter system: reported in #16500</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-03-04 15:31</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>was the preview of this rule removed recently? We really should make this behavior optin since it's worse.</p>
+</blockquote>
+<p>I didn't go back further but it is stable since before october 2023</p>
+</blockquote>
+<p>Also if the preview behavior of this rule was removed, it still mentioned the preview behavior in the official docs: https://docs.astral.sh/ruff/rules/unnecessary-literal-within-tuple-call/#unnecessary-literal-within-tuple-call-c409</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 09:40</div>
+            <div class="timeline-body"><p>@Skylion007 sorry, I misread your question. This behavior is still under preview, but the rule was stabilized a long time ago</p>
+<p>https://github.com/astral-sh/ruff/blob/a1a536b2c57ae1a7cc9e84b60db0e8216a34fc9d/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_literal_within_tuple_call.rs#L100-L105</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15468.html">astral-sh/ruff#15468</a> on 2025-03-11 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16904.html">astral-sh/ruff#16904</a> on 2025-03-31 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-31 18:21</div>
+            <div class="timeline-body"><p>Looks like tuple call with a generator expression is getting optimized in Python 3.14 from https://github.com/astral-sh/ruff/issues/12912</p>
+<p>I don't have actual numbers to compare though.</p>
+<p>(thanks @davfsa for spotting this in https://github.com/astral-sh/ruff/issues/16904#issuecomment-2766646655 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21588.html">astral-sh/ruff#21588</a> on 2025-12-03 05:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

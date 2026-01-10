@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` does not invoke a custom post-installation script - astral-sh/uv #5176</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` does not invoke a custom post-installation script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5176">#5176</a>
+        opened by <a href="https://github.com/rexledesma">@rexledesma</a>
+        on 2024-07-18 03:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rexledesma">@rexledesma</a> on 2024-07-18 03:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Title says it all. See the <code>setup.py</code> for <a href="https://pypi.org/project/sdf-cli/0.3.9/#files"><code>sdf-cli</code></a> or <a href="https://stackoverflow.com/a/36902139">this StackOverflow post</a> for an implementation of a Python package's post-installation script.</p>
+<h2>Version</h2>
+<pre><code>dagster on  master 🐍 (dagster) 
+❯ uv --version                               
+uv 0.2.9 (e9fc99e62 2024-06-06)
+</code></pre>
+<h2>Reproduction</h2>
+<p><strong>Installation with <code>uv pip install</code></strong>:</p>
+<pre><code>dagster on  master 🐍 (dagster) 
+❯ sdf
+zsh: command not found: sdf
+
+dagster on  master 🐍 (dagster) 
+❯ uv pip install sdf-cli
+Resolved 2 packages in 8ms
+Installed 1 package in 2ms
+ + sdf-cli==0.3.9
+
+dagster on  master 🐍 (dagster) 
+❯ sdf
+zsh: command not found: sdf
+</code></pre>
+<p><strong>Installation with <code>pip install</code></strong>:</p>
+<pre><code>dagster on  master 🐍 (dagster) 
+❯ pip install --upgrade --force-reinstall --no-cache-dir sdf-cli
+Collecting sdf-cli
+  Downloading sdf_cli-0.3.9.tar.gz (3.4 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting setuptools&gt;=61.2 (from sdf-cli)
+  Downloading setuptools-71.0.1-py3-none-any.whl.metadata (6.5 kB)
+Downloading setuptools-71.0.1-py3-none-any.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 5.4 MB/s eta 0:00:00
+Building wheels for collected packages: sdf-cli
+  Building wheel for sdf-cli (pyproject.toml) ... done
+  Created wheel for sdf-cli: filename=sdf_cli-0.3.9-py3-none-any.whl size=3480 sha256=67ccbaf725a0d2ebb1fbcb611ca2989762d971e27eb38b7f5959deb4866f78a4
+  Stored in directory: /private/var/folders/c1/glmlq29s7k56h5stbslqg0100000gn/T/pip-ephem-wheel-cache-29err12w/wheels/a4/62/4c/f96e6ec1eca4b47887ad2ab8c41fa5df2709faec6bbb70167a
+Successfully built sdf-cli
+Installing collected packages: setuptools, sdf-cli
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 71.0.1
+    Uninstalling setuptools-71.0.1:
+      Successfully uninstalled setuptools-71.0.1
+  Attempting uninstall: sdf-cli
+    Found existing installation: sdf-cli 0.3.9
+    Uninstalling sdf-cli-0.3.9:
+      Successfully uninstalled sdf-cli-0.3.9
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+dagster-open-platform 0.0.1 requires dagster-insights, which is not installed.
+dagster-databricks 1!0+dev requires databricks-sdk&lt;0.9, but you have databricks-sdk 0.17.0 which is incompatible.
+dagster-open-platform 0.0.1 requires pydantic&gt;2, but you have pydantic 1.10.15 which is incompatible.
+dlt 0.4.7 requires orjson&lt;=3.9.10,&gt;=3.6.7; platform_python_implementation != &quot;PyPy&quot;, but you have orjson 3.10.3 which is incompatible.
+Successfully installed sdf-cli-0.3.9 setuptools-71.0.1
+
+[notice] A new release of pip is available: 24.0 -&gt; 24.1.2
+[notice] To update, run: python3.10 -m pip install --upgrade pip
+
+dagster on  master 🐍 (dagster) took 12s 
+❯ sdf
+SDF: A fast SQL compiler, local development framework, and in-memory analytical database
+
+Usage: sdf [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  new      Create a new sdf workspace
+  clean    Remove artifacts that sdf has generated in the past
+  compile  Compile models
+  run      Run models
+  test     Test your models
+  stats    Statistics for your data
+  report   Report code quality
+  check    Check code quality
+  lineage  Display lineage for a given table and/or column
+  push     Push a local workspace to the SDF Service
+  system   System maintenance, install and update
+  auth     Authenticate CLI to services like SDF, AWS, OpenAI, etc
+  man      Display reference material, like the CLI, dialect specific functions, schemas for authoring and interchange
+  dbt      Initialize an sdf workspace from an existing dbt project
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+      --log-level &lt;LOG_LEVEL&gt;  Set log level [possible values: trace, debug, info, warn, error]
+      --log-file &lt;LOG_FILE&gt;    Creates or replaces the log file
+      --log-form &lt;LOG_FORM&gt;    Set the log format; default flat [possible values: flat, nested, pretty]
+  -h, --help                   Print help (see more with '--help')
+  -V, --version                Print version
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rexledesma">@rexledesma</a> on 2024-07-18 03:40</div>
+            <div class="timeline-body"><p>Looks like this is solved by using <code>uv pip install --no-build-isolation</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @rexledesma on 2024-07-18 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 03:55</div>
+            <div class="timeline-body"><p>ref #2252</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

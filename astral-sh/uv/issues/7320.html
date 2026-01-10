@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minor: `uv tool install` should be able to modify which Python a tool uses. - astral-sh/uv #7320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Minor: `uv tool install` should be able to modify which Python a tool uses.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7320">#7320</a>
+        opened by <a href="https://github.com/ilyagr">@ilyagr</a>
+        on 2024-09-12 01:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ilyagr">@ilyagr</a> on 2024-09-12 01:54</div>
+            <div class="timeline-body"><p>This is loosely related to #6297 (<strong>Update</strong> and/or https://github.com/astral-sh/uv/issues/7287). I have <code>poetry</code> installed with the default option, which meant that it used Homebrew python. I wanted to switch to managed python.</p>
+<pre><code class="language-console">$ pwd
+/Users/ilyagr/.local/share/uv/tools/poetry/bin
+$ realpath python
+/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+$ uv tool install poetry --python-preference only-managed --reinstall
+&lt;Installs managed python&gt;
+&lt;Some output omitted&gt;
+Installed 1 executable: poetry
+$ realpath python # Should have changed but didn't
+/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+</code></pre>
+<p>After <code>uv tool uninstall poetry</code>, <code>uv tool install poetry --python-preference only-managed</code> did work correctly.</p>
+<pre><code class="language-console">$ realpath python
+/Users/ilyagr/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/bin/python3.12
+</code></pre>
+<p>Either the original command should have changed <code>poetry</code> to use the correct python version, or it should have shown an error and <em>should not</em> have installed the managed python. In the latter case, it could suggest <code>uv tool upgrade --python</code> once #6297 is solved.</p>
+<p>I'm using <code>uv 0.4.9 (77d278f68 2024-09-10)</code> on ARM Mac OS X.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv tool install` should be able to modify which Python a tool uses." to "Minor: `uv tool install` should be able to modify which Python a tool uses." by @ilyagr on 2024-09-12 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 02:17</div>
+            <div class="timeline-body"><p>This sounds like a bug, thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-12 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-09-12 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 02:17</div>
+            <div class="timeline-body"><p>cc @charliermarsh the solution may be immediately obvious to you here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 02:57</div>
+            <div class="timeline-body"><p>We fetch a matching Python interpreter upfront because we (might) need it to resolve unnamed requirements. But we then reuse the existing environment later when reinstalling the package.</p>
+<p>I am wondering if <code>--reinstall</code> should never reuse the existing environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-14 03:04</div>
+            <div class="timeline-body"><p>I think even without <code>--reinstall</code> if we select a different Python interpreter than the one in the environment we should replace it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 03:16</div>
+            <div class="timeline-body"><p>Do you think &quot;any different Python interpreter&quot;? Or just that we should take <code>--python-preference</code> into account when determining whether the existing interpreter satisfies the request (like how we would allow a Python 3.12.3 interpreter today if the user passed <code>--python 3.12</code>, even if Python 3.12.4 was also installed)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 03:19</div>
+            <div class="timeline-body"><p>(The former is way easier.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 01:05</div>
+            <div class="timeline-body"><p>I think &quot;any different Python interpreter&quot; sounds compelling though it seems a little dubious to do a reinstall when <code>--python 3.12</code> is requested and there's just a different patch version. Hm. Idk it still seems simple to teach that if we resolve to a different interpreter we'll use it on <code>install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucab">@lucab</a> on 2024-09-16 18:48</div>
+            <div class="timeline-body"><p>I started looking into this and noticed that there is already some logic wired to the <code>--python</code> flag, which can (conservatively) decide to invalidate an environment:
+https://github.com/astral-sh/uv/blob/23494d85ab7d416e7f746b28b1d5897e16b1b9ff/crates/uv/src/commands/tool/install.rs#L275-L292</p>
+<p>If I understood the CLI logic correctly, it feels like the issue can be scoped back to &quot;install-or-upgrade without explicit -p&quot;.</p>
+<p>In that case, we may want to enhance the fallback case (hardcoded <code>true</code> in the logic above) to something smarter like:</p>
+<pre><code class="language-rust">settings.reinstall.is_none() ||
+settings.upgrade.is_none() ||
+(environment.interpreter().markers() == interpreter.markers())
+</code></pre>
+<p>I haven't seen better primitives to implement a more conservative comparison logic without comparing markers (e.g. based on a managed/system bit).
+The heuristic above may be a bit overkill, but should definitely cover all possible cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 18:51</div>
+            <div class="timeline-body"><blockquote>
+<p>environment.interpreter().markers() == interpreter.markers()</p>
+</blockquote>
+<p>I think this wouldn't be quite enough, since the example use-case here is about managed vs. unmanaged Pythons which isn't captured in the markers. (&quot;Managed&quot; means the interpreter was installed by uv via <code>uv python install</code>.)</p>
+<p>I think we have two options: (1) <em>always</em> reset if the interpreter is different; or (2) upgrade <code>python_request.satisfied</code> to take the &quot;preference&quot; into account, such that we invalidate the environment if the user passes <code>--python-preference only-managed</code> but we used an unmanaged Python.</p>
+<p>(2) is harder -- we don't really track whether the current Python is managed IIUC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 18:52</div>
+            <div class="timeline-body"><p>Seems easiest to just do (1) since it's already a new &quot;install&quot; invocation. If it was a more frequent operation, I'd be more concerned about invalidating too eagerly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucab">@lucab</a> on 2024-09-16 19:15</div>
+            <div class="timeline-body"><p>Makes sense, thanks for the feedback.</p>
+<p>The whole <code>Interpreter</code> itself isn't <code>Eq</code> right now, but I think it can be made so if needed.
+Is the binary path (<code>sys_executable</code>) enough to compare to detect if it is the same interpreter (I think so), or is there some edge behavior that requires deep-comparing all of the fields below?
+https://github.com/astral-sh/uv/blob/23494d85ab7d416e7f746b28b1d5897e16b1b9ff/crates/uv-python/src/interpreter.rs#L30-L50</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 20:06</div>
+            <div class="timeline-body"><p>For this purpose it seems fine to compare <code>sys_executable</code>. I'm not sure about a general <code>Eq</code> implementation, but @konstin would probably know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 20:09</div>
+            <div class="timeline-body"><p>Yeah I think you basically want <code>is_same_executable</code> from the <code>satisfied</code> check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7451.html">astral-sh/uv#7451</a> on 2024-09-17 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7471.html">astral-sh/uv#7471</a> on 2024-09-17 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lucab on 2024-09-18 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lucab on 2024-09-18 06:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

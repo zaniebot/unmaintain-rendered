@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature request] Default values for an argument with multiple values - clap-rs/clap #1452</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature request] Default values for an argument with multiple values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1452">#1452</a>
+        opened by <a href="https://github.com/tprodanov">@tprodanov</a>
+        on 2019-04-08 23:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tprodanov">@tprodanov</a> on 2019-04-08 23:10</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<p>rust 1.33.0</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.33.0</p>
+<h3>Feature Request</h3>
+<p>As I understand, there is no way to specify default values for arguments that have number of values higher than 1. For example, the argument requires exactly two values, and there is a way to name this values with <code>value_names(&amp;[...])</code>, but there is no way to specify default values like <code>default_values(&amp;[...])</code>.</p>
+<h3>Expected Behavior</h3>
+<p>I can imagine two ways to have this feature:</p>
+<ul>
+<li><code>.default_values(&amp;[&quot;A&quot;, &quot;B&quot;])</code></li>
+<li><code>.default_value(&quot;A B&quot;)</code></li>
+</ul>
+<h3>Actual Behavior</h3>
+<p>The first option is not implemented, and if you specifying default values like <code>default_value(&quot;A B&quot;)</code> would produce one default value with a space in it.</p>
+<h3>Sample Code</h3>
+<pre><code>use clap::{App, Arg};
+
+fn main() {
+    App::new(&quot;multiple_default&quot;)
+        .arg(Arg::with_name(&quot;argument&quot;)
+                .short(&quot;a&quot;)
+                .long(&quot;argument&quot;)
+                .takes_value(true)
+                .number_of_values(2)
+                .value_names(&amp;[&quot;INT&quot;, &quot;INT&quot;])
+                .default_value(&quot;1 2&quot;)
+                ).get_matches();
+}
+</code></pre>
+<p>This code would compile, and it would show help on <code>./multiple_default --help</code>, and it would work fine with <code>./multiple_default --argument 1 2</code>. However, running it with <code>./multiple_default</code> would produce the following error:</p>
+<pre><code>The argument '--argument &lt;INT&gt; &lt;INT&gt;' requires 2 values, but 1 was provided
+</code></pre>
+<h3>Workarounds</h3>
+<ul>
+<li>It is possible to not specify default values at all. However, in that case there is no automatic default values in the help message, and they will not be colored if I manually add them in there. Also, in this case I need to specify default values twice, once in the help message, and the second time when I extract the value.</li>
+<li>It is also possible to split the argument into several arguments. However, it increases the size of the help message and makes it more complicated if these values are highly related. Also, it is possible that there is no fixed number of values, for example 4 to 7 values, and the default are 4 values.</li>
+<li>Allow only one entry and then manually split on spaces and check the number of entries. However, this does not allow for multiple value names, as the following code would still fail (<code>The argument '--argument &lt;INT&gt; &lt;INT&gt;' requires 2 values, but 1 was provided</code>)</li>
+</ul>
+<pre><code>.value_names(&amp;[&quot;INT&quot;, &quot;INT&quot;])
+.number_of_values(1)
+.default_value(&quot;1 2&quot;)
+</code></pre>
+<p>If I specify value names as <code>.value_name(&quot;INT INT&quot;)</code> it would look like <code>&lt;INT INT&gt;</code> in the help message.</p>
+<h3>Possible implementation</h3>
+<p>In the <code>Valued</code> struct to replace <code>default_val: Option&lt;&amp;'b OsStr&gt;</code> with <code>default_vals: Option&lt;VecMap&lt;&amp;'b OsStr&gt;&gt;</code>, the same as for <code>val_names</code>.</p>
+<p>Then we can have two functions:</p>
+<ul>
+<li><code>Arg::default_value(self, val: &amp;'a str)</code></li>
+<li><code>Arg::default_values(self, vals: &amp;[&amp;'a str])</code>, also similar to <code>value_names</code></li>
+</ul>
+<p>Another implementation would be to just allow single default value and then split in on spaces, but this sounds more like a workaround than a solid solution.</p>
+<h3>Summary</h3>
+<p>There is no way to specify several default values. If <code>min_values &gt; 1</code> it is impossible to add any default values at all.</p>
+<p>I understand that it is not so straightforward to implement, however, I think that it is a logical feature, that is consistent with multiple value names, and which is neccessary for an argument parser that allows multiple values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Default values for an argument with multiple values" to "[Feature request] Default values for an argument with multiple values" by @tprodanov on 2019-04-10 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">not-sure</span> added by @CreepySkeleton on 2020-02-01 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cc: CreepySkeleton</span> removed by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0.0-alpha.2" by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0.0-alpha.2" by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0.0-alpha.3" by @CreepySkeleton on 2020-02-06 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0.0-alpha.3" by @CreepySkeleton on 2020-02-06 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-06 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-06 09:11</div>
+            <div class="timeline-body"><p>Triaging it for before 3.0 because it seems to be commonly asked feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NilsIrl">@NilsIrl</a> on 2020-02-14 12:08</div>
+            <div class="timeline-body"><p>For someone looking to implement this, is there anything that needs to be changed to the API described by @tprodanov ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-02-14 12:13</div>
+            <div class="timeline-body"><p>Yeah go ahead. I like the idea of having the slice as a parameter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-14 12:18</div>
+            <div class="timeline-body"><p>Yup, slice as a parameter is the best here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-14 12:36</div>
+            <div class="timeline-body"><p><code>default_values(&amp;[&quot;a&quot;, &quot;b&quot;])</code> is good, <code>default_values(&quot;a b&quot;)</code> is not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NilsIrl">@NilsIrl</a> on 2020-02-14 21:00</div>
+            <div class="timeline-body"><p>Hasn't this been already implemented in https://github.com/clap-rs/clap/commit/c3b7c01f54d95c4907e33256f9d4dfe5f20ce1cc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-14 21:26</div>
+            <div class="timeline-body"><p>Oops, yeah, it done already 😮</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-02-14 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kahing">@kahing</a> on 2020-04-05 22:48</div>
+            <div class="timeline-body"><p>will there be a release soon with <code>default_values</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-05 22:50</div>
+            <div class="timeline-body"><p>It won't be backported to v2 since it is a feature. Expect this to be in v3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kahing">@kahing</a> on 2020-04-05 22:56</div>
+            <div class="timeline-body"><p>@pksunkara thanks for the super quick response! It's a little hard to figure out how to use this from https://github.com/clap-rs/clap/commit/c3b7c01f54d95c4907e33256f9d4dfe5f20ce1cc . Could you provide a small example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NilsIrl">@NilsIrl</a> on 2020-04-06 08:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you provide a small example?</p>
+</blockquote>
+<p>https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html is what you're looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-07 09:12</div>
+            <div class="timeline-body"><p>This is an example in the test, https://github.com/clap-rs/clap/commit/c3b7c01f54d95c4907e33256f9d4dfe5f20ce1cc#diff-d8218b866ec5a9148d9d1d31ca8c87b3R457</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:57 UTC
+    </footer>
+</body>
+</html>

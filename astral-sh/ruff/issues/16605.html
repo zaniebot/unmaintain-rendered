@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix non-contextmanager use of `pytest.raises` &amp; friends - astral-sh/ruff #16605</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix non-contextmanager use of `pytest.raises` &amp; friends</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16605">#16605</a>
+        opened by <a href="https://github.com/jakkdl">@jakkdl</a>
+        on 2025-03-10 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jakkdl">@jakkdl</a> on 2025-03-10 15:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Rule request</h1>
+<p>https://github.com/pytest-dev/pytest/pull/13241 wants to deprecate the use of the callable form of <code>raises</code>, <code>warns</code> and <code>deprecated_call</code> - i.e.</p>
+<pre><code class="language-pytest">excinfo = pytest.raises(ValueError, int, &quot;hello&quot;)
+# should be
+with pytest.raises(ValueError) as excinfo:
+  int(&quot;hello&quot;)
+</code></pre>
+<p>but in the rare codebase where it's widely used it will be a massive pain to rewrite it manually, so we don't want to deprecate it until there's a good option for autofixing it. I thought ruff would be a good option for supplying this.</p>
+<p>It can optionally also handle <code>match</code>, which requires a separate assert when using the callable form:</p>
+<pre><code class="language-pytest">excinfo = pytest.raises(ValueError, int, &quot;hello&quot;)
+assert excinfo.match(&quot;^invalid literal&quot;)
+# to
+with pytest.raises(ValueError, match=&quot;^invalid literal&quot;):
+    int(&quot;hello&quot;)
+</code></pre>
+<h2>Rationale</h2>
+<p>The context-manager form is more readable, easier to extend, and supports additional kwargs. And is not on the verge of being deprecated</p>
+<p>Requested uptream in flake8-pytest: https://github.com/m-burst/flake8-pytest-style/issues/331, but it's mostly the autofix we're interested in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-10 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-03-10 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-10 18:24</div>
+            <div class="timeline-body"><p>I don't see a reason not to add this rule if it is accepted upstream if someone's interested in implementing the rule + fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @MichaReiser on 2025-03-10 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-03-10 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2025-03-11 09:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't see a reason not to add this rule if it is accepted upstream if someone's interested in implementing the rule + fix</p>
+</blockquote>
+<p>With upstream, do you mean <code>pytest</code> or <code>flake8-pytest-style</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-11 09:39</div>
+            <div class="timeline-body"><p><code>flake8-pytest-style</code>. The alternative is to make it a Ruff rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17368.html">astral-sh/ruff#17368</a> on 2025-04-12 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-16 17:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

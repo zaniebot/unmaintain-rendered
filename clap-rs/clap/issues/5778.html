@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive-argument with camel-case enum variant as default_value_t generates wrong default value - clap-rs/clap #5778</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive-argument with camel-case enum variant as default_value_t generates wrong default value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5778">#5778</a>
+        opened by <a href="https://github.com/Cydhra">@Cydhra</a>
+        on 2024-10-15 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Cydhra">@Cydhra</a> on 2024-10-15 14:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.81.0 (eeb90cda1 2024-09-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.20</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::fmt::Display;
+use clap::{Parser, ValueEnum};
+
+#[derive(Clone, Debug, Parser)]
+struct Cli {
+    #[arg(short, long, default_value_t = Cmd::AnotherAction)]
+    args: Cmd,
+}
+
+#[derive(Clone, Debug, ValueEnum)]
+enum Cmd {
+    Action, AnotherAction
+}
+
+impl Display for Cmd {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        write!(f, &quot;{:?}&quot;, self)
+    }
+}
+
+fn main() {
+    let _ = Cli::parse();
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Parsing panics with:</p>
+<pre><code>error: invalid value 'AnotherAction' for '--args &lt;ARGS&gt;'
+  [possible values: action, another-action]
+
+  tip: a similar value exists: 'another-action'
+
+For more information, try '--help'.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Since I specify the <code>default_value_t</code> in a type-safe manner, I'd expect it to generate a correct default value (<code>another-action</code>).</p>
+<h3>Additional Context</h3>
+<p>The wrong default is also visible when printing <code>--help</code>:</p>
+<pre><code>  -a, --args &lt;ARGS&gt;  [default: AnotherAction] [possible values: action, another-action]
+</code></pre>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-test&quot;
+[clap_builder::builder::command]Command::_propagate:clap-test
+[clap_builder::builder::command]Command::_check_help_and_version:clap-test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:args
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:args:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:args: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:args: wasn't used
+[clap_builder::parser::parser]Parser::react action=Set, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;args&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;AnotherAction&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: invalid value 'AnotherAction' for '--args &lt;ARGS&gt;'
+  [possible values: action, another-action]
+
+  tip: a similar value exists: 'another-action'
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Cydhra on 2024-10-15 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-10-23 11:16</div>
+            <div class="timeline-body"><p><code>default_value_t</code> is a wrapper around <code>default_value</code>.  All of our internal logic deals with command-line-like values.</p>
+<p>We rely on <code>Display</code> for doing this and if the <code>Display</code> doesn't match then it will fail.  You can opt-in to an alternative to <code>Display with the </code>value_enum` attribute</p>
+<pre><code class="language-rust">use std::fmt::Display;
+use clap::{Parser, ValueEnum};
+
+#[derive(Clone, Debug, Parser)]
+struct Cli {
+    #[arg(short, long, value_enum, default_value_t = Cmd::AnotherAction)]
+    args: Cmd,
+}
+
+#[derive(Clone, Debug, ValueEnum)]
+enum Cmd {
+    Action, AnotherAction
+}
+
+impl Display for Cmd {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        write!(f, &quot;{:?}&quot;, self)
+    }
+}
+
+fn main() {
+    let _ = Cli::parse();
+}
+</code></pre>
+<p>Alternative, you can delegate your <code>Display</code> to <code>ValueEnum</code>, see
+https://github.com/clap-rs/clap/blob/61f5ee514f8f60ed8f04c6494bdf36c19e7a8126/examples/git-derive.rs#L68-L75</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-10-23 11:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:41 UTC
+    </footer>
+</body>
+</html>

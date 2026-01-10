@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unconventional-import-alias` (ICN001) always flags imports without an `as` clause - astral-sh/ruff #10599</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`unconventional-import-alias` (ICN001) always flags imports without an `as` clause</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10599">#10599</a>
+        opened by <a href="https://github.com/bardiharborow">@bardiharborow</a>
+        on 2024-03-26 06:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bardiharborow">@bardiharborow</a> on 2024-03-26 06:57</div>
+            <div class="timeline-body"><p>Currently <code>unconventional-import-alias</code> (ICN001) will always flag imports without an <code>as</code> clause, even if the conventional alias is the same as the module name:</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-import-conventions.aliases]
+&quot;django.conf.settings&quot; = &quot;settings&quot;
+</code></pre>
+<pre><code class="language-py">from django.conf import settings  # ICN001 `django.conf.settings` should be imported as `settings`
+from django.conf import settings as settings  # No errors
+</code></pre>
+<p>Instead it should detect that the module name matches the conventional alias:</p>
+<pre><code class="language-py">from django.conf import settings  # No errors
+from django.conf import settings as settings  # No errors
+</code></pre>
+<p>(Though I realise that another rule may want to simply <code>from django.conf import settings as settings</code> to <code>from django.conf import settings</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-03-26 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-26 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2024-03-26 10:23</div>
+            <div class="timeline-body"><p>This is an interesting case... <a href="https://docs.astral.sh/ruff/rules/unconventional-import-alias/"><code>ICN001</code></a> seems to be targeted at importing as a <em>different</em> name, not enforcing that <code>import x.y.z</code> should be styled <code>from x.y import z</code>. This is certainly a bug - it shouldn't be flagged - but it feels as though the issue trying to be solved is what I have described at #10608 (and why I came here in the first-place).</p>
+<p>Semi-related is that, with the above configuration, <code>import django.conf.settings</code> would imply changing to <code>import django.conf.settings as settings</code> which would be in violation of <a href="https://docs.astral.sh/ruff/rules/manual-from-import/"><code>PLR0402</code></a> and that is fixable to <code>from django.conf import settings</code> which raises the above issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-02 03:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10729.html">astral-sh/ruff#10729</a> on 2024-04-02 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-02 03:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

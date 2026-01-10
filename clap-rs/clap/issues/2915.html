@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[modular] Pull out a clap_lex - clap-rs/clap #2915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[modular] Pull out a clap_lex</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2915">#2915</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-19 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-19 15:42</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>We are looking to modular clap</p>
+<ul>
+<li>We can look for opportunities to shrink clap</li>
+<li>We can share logic with other argument parsers</li>
+</ul>
+<p>As previously discussed at https://github.com/clap-rs/clap/discussions/2615, one part of this would be pulling out a <code>clap_lex</code> crate, similar to <code>lexopt</code>.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Clap is a wrapper around <code>clap_lex</code></p>
+<h3>Alternatives, if applicable</h3>
+<p>Expand <code>lexopt</code> for our needs (probably easier to do an extraction refactor)</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @epage on 2021-10-19 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @epage by @epage on 2021-10-19 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-19 19:21</div>
+            <div class="timeline-body"><p>I agree with the author of <code>lexopt</code> in that discussion. I think there are quite a few scenarios clap is currently used for where a CFG parser would not work. (To give more context, lexer is used in CFG parsers and is useless in PEG parsers).</p>
+<p>From all the examples of clap usage I have seen for the past 2 years, I am confident that we need to keep this as a PEG parser. We can make this PEG parser modular by implementing the plugins proposal in #2832.</p>
+<p>I would nominate to close this issue (take your time to do research/experimentation) if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-19 19:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I agree with the author of lexopt in that discussion. I think there are quite a few scenarios clap is currently used for where a CFG parser would not work. (To give more context, lexer is used in CFG parsers and is useless in PEG parsers).</p>
+</blockquote>
+<p>The <code>lexopt</code> author didn't saw it was impossible, just said <code>lexopt</code> is insufficient.  They went on to say:</p>
+<blockquote>
+<p>I like the idea of clap_lexer, though, so I'll follow this discussion with interest.</p>
+</blockquote>
+<p>kbnapp also <a href="https://www.reddit.com/r/rust/comments/oley2c/lexopt_a_minimalist_pedantic_argument_parser/h5evqhk/">thought it was possible</a></p>
+<blockquote>
+<p>Very cool, I like the API a lot. I keep wishing I had more time on my hands to make something analogous to this as an internal clap API that all the clap features are built on top of which would allow using cargo features to aggressively trim down clap's features in an opt in/out manner (and thus be able to get that sweet small binary size).</p>
+</blockquote>
+<p>Could you give a concrete example of why <code>lexopt</code>s general approach is incompatible with clap?</p>
+<blockquote>
+<p>We can make this PEG parser modular by implementing the plugins proposal in #2832.</p>
+</blockquote>
+<p>A future experiment I want to do is something like <code>clap_derive</code> that directly populates the struct, without using the builder API.</p>
+<p>In general, I would like to raise the bar for all of these non-clap parsers so we can have discussions beyond &quot;does it support non-utf8?&quot; :)</p>
+<p>These are what I would like to see unlocked by decoupling our lowest level parsing logic from all of the clap's policy.  https://github.com/clap-rs/clap/discussions/2832 is insufficient for this.</p>
+<p>I'm also hopeful this will help us reduce bloat, directly and indirectly by</p>
+<ul>
+<li>Giving us an opportunity to find ways to streamline logic that has grown organically over time to help us reduce our bloat.</li>
+<li>Have more definiable pieces that we can attribute cost towards</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-20 14:58</div>
+            <div class="timeline-body"><p>I think a simple example here would be <code>-1</code>. Would you parse it as a short option or a value by the lexer? There are other ambiguous things like this that would indicate that this is not a context free grammar. And lexers are only useful in CFG.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-21 13:59</div>
+            <div class="timeline-body"><p>I get the feeling you are thinking we'd have a signature like</p>
+<pre><code class="language-rust">pub fn lex(args: &amp;[OsString) -&gt; Vec&lt;Token&gt;;
+</code></pre>
+<p>Is that correct?</p>
+<p>If so, then maybe we aren't using terms correctly but that isn't what <code>lexopt</code> does which is the base of my suggestion (both in name and in functionality).</p>
+<p><a href="https://docs.rs/lexopt/0.1.0/lexopt/"><code>lexopt</code></a> processes one token at a time, driven by the caller.  A simple call to <code>next()</code> will auto-detect the token type but you can tell it the next token should be a value by calling <code>value()</code>.  We could even have a <code>peek_next()</code> to handle some of our precedence cases between values and args or values and subcommands.</p>
+<p>This leaves it to the caller to handle what <code>-1</code> should be, along with whether <code>-svalue</code> is <code>-s value</code> or <code>-s -v -a -l -u -e</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-27 02:29</div>
+            <div class="timeline-body"><p>I understand what you are saying now. Let's agree to not call this <code>lex</code> anywhere because it gives off the wrong impression.</p>
+<p>Once this is implemented, do you envision this to be used by the plugins?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-27 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Let's agree to not call this lex anywhere because it gives off the wrong impression.</p>
+</blockquote>
+<p>So far I've seen little confusion over <code>lexopt</code>s name and suspect it helped people get the intent.  Now, if you have an idea for a better name, I'm open.</p>
+<blockquote>
+<p>Once this is implemented, do you envision this to be used by the plugins?</p>
+</blockquote>
+<p>I've not seen a case where a plugin would have access to this.  The benefits I see to this work are</p>
+<ul>
+<li>Help clean up clap, hopefully reducing our code size along the way</li>
+<li>Provide a solid base of up and coming argument parser to build on top of, rather than everyone reinventing the wheel, but poorly</li>
+<li>One day, open the door to experimenting on a <code>clap_derive</code> that doesn't use the builder.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blyxxyz">@blyxxyz</a> on 2021-10-27 18:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Provide a solid base of up and coming argument parser to build on top of, rather than everyone reinventing the wheel, but poorly</p>
+</blockquote>
+<p>It seems you could end up with something tightly coupled to clap if it needs to know about settings like <a href="https://docs.rs/clap/2.33.3/clap/enum.AppSettings.html#variant.AllowNegativeNumbers"><code>AppSettings::AllowNegativeNumbers</code></a>. And I don't know how clap implements features like pointing out that while some option is invalid <em>here</em> it would be valid if you put it <em>there</em> after the subcommand, but that also seems like it could get in the way of being generic.</p>
+<p>Clap is large and ambitious. If some third-party generic basis already existed then I wouldn't expect clap to use it because it's working at a scale where a bespoke solution is worth the effort. It's like how rustc and GCC use handwritten parsers instead of parser generators.</p>
+<p>A basis shared by multiple parsers could be a good idea, but I would guess that extracting it from clap isn't the way to go. (Then again, I know almost nothing about clap's internals.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-27 21:19</div>
+            <div class="timeline-body"><p>My hope is that it doesn't need to know about any settings like that, those would all be driven by the caller. The main risk is that this doesn't simplify our code but makes it more complicated. If it doesn't work then we've learned something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-27 22:21</div>
+            <div class="timeline-body"><blockquote>
+<p>So far I've seen little confusion over lexopts name and suspect it helped people get the intent.</p>
+</blockquote>
+<blockquote>
+<p>This library may also be useful if a lot of control is desired, like when the exact argument order matters or not all options are known ahead of time. It could be considered more of a lexer than a parser.</p>
+</blockquote>
+<p>It was more of a general idea, but that library is not lexer. A better name would be <code>clap_parser</code> or <code>clap_parse_stream</code> etc..</p>
+<blockquote>
+<p>I've not seen a case where a plugin would have access to this.</p>
+</blockquote>
+<blockquote>
+<p>My hope is that it doesn't need to know about any settings like that, those would all be driven by the caller.</p>
+</blockquote>
+<p>And I envision that the callers here will be plugins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-27 23:35</div>
+            <div class="timeline-body"><blockquote>
+<p>And I envision that the callers here will be plugins.</p>
+</blockquote>
+<p>I'm not aware of this fitting in with any of our existing plugin talk (value validation currently being the most concrete).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-28 00:20</div>
+            <div class="timeline-body"><p>We discussed that in https://github.com/clap-rs/clap/discussions/2832#discussioncomment-1465059.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-29 16:37</div>
+            <div class="timeline-body"><blockquote>
+<p>We discussed that in <a href="https://github.com/clap-rs/clap/discussions/2832#discussioncomment-1465059">#2832 (comment)</a>.</p>
+</blockquote>
+<p>There was not enough detail on that for me to know what its referring to or how it ties into this</p>
+<blockquote>
+<blockquote>
+<p>So far I've seen little confusion over lexopts name and suspect it helped people get the intent.</p>
+</blockquote>
+<blockquote>
+<p>This library may also be useful if a lot of control is desired, like when the exact argument order matters or not all options are known ahead of time. It could be considered more of a lexer than a parser.</p>
+</blockquote>
+<p>It was more of a general idea, but that library is not lexer. A better name would be <code>clap_parser</code> or <code>clap_parse_stream</code> etc..</p>
+</blockquote>
+<p>All it does is tokenization.  All of the policy of how to parse those tokens is up to the caller.  That sounds closer to a lexer in name than anything else and calling it a parser would be overselling it.  Also, the term &quot;parser&quot; is being used in so many places in clap in different ways, its good for us to look for more specific terms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-29 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>All it does is tokenization.</p>
+</blockquote>
+<p>But we are not planning to do tokenization. We are planning to let them read the items one by one without us categorizing them. That's it. And that's called a parse stream IIUC. Ex: <code>syn</code> uses the same word too.</p>
+<p>Lexopt does actually categorize those args (and thus tokenize) but as @blyxxyz pointed out, it doesn't handle the corner cases that clap does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-29 17:22</div>
+            <div class="timeline-body"><p>At least from my searching, <code>syn</code> is the only user of that term. I did see &quot;Token Stream&quot; used in a similar manner.</p>
+<blockquote>
+<p>We are planning to let them read the items one by one without us categorizing them</p>
+</blockquote>
+<p>I see what we create being relatively similar to <code>lexopt</code> except it will have peek functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-29 17:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I see what we create being relatively similar to lexopt except it will have peek functionality.</p>
+</blockquote>
+<p>I am not sure how that would work with those corner cases (ex: negative values, multiple values) since we definitely need to leave up the categorization to individual parsers. But I guess it's a design for later.</p>
+<p>I realise that we are just bikeshedding on the name of this module at this point. But yeah, I felt that the term <code>lex</code> would be too confusing since it's not CFG.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1210.html">clap-rs/clap#1210</a> on 2021-11-01 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1232.html">clap-rs/clap#1232</a> on 2021-11-15 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/92.html">epage/clapng#92</a> on 2021-12-06 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/228.html">epage/clapng#228</a> on 2021-12-06 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-09 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3166.html">clap-rs/clap#3166</a> on 2021-12-13 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-13 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> removed by @epage on 2021-12-13 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2021-12-13 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3309.html">clap-rs/clap#3309</a> on 2022-01-18 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/pulls/3081.html">uutils/coreutils#3081</a> on 2022-02-06 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3635.html">clap-rs/clap#3635</a> on 2022-04-15 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-04-15 19:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:40 UTC
+    </footer>
+</body>
+</html>

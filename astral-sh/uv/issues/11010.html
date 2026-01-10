@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>caching: Ignoring existing virtual environment - astral-sh/uv #11010</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>caching: Ignoring existing virtual environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11010">#11010</a>
+        opened by <a href="https://github.com/sshleifer">@sshleifer</a>
+        on 2025-01-28 00:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sshleifer">@sshleifer</a> on 2025-01-28 00:49</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I am trying to mount a uv cache on every pod of my CI application to save startup time (at <code>/root/.cache/uv</code>).</p>
+<p>I have tried a few different configurations following <a href="https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs">documented caching Dockerfile</a> and variants.</p>
+<p>When I only specify <code>$UV_CACHE_DIR</code> it takes 3 minutes, as expected.
+When I additionally specify <code>$UV_PROJECT_ENVIRONMENT</code> it takes 4 minutes and prints</p>
+<pre><code>warning: Ignoring existing virtual environment linked to non-existent Python interpreter: 
+/root/.cache/uv/project2/bin/python3 -&gt; python
+
+Using CPython 3.11.11
+Removed virtual environment at: /root/.cache/uv/project2
+Creating virtual environment at: /root/.cache/uv/project2
+</code></pre>
+<p>Any recommendations how to do this efficiently? The less work for each pull request the better. Usually dependencies don't change.</p>
+<h3>Full Build Script</h3>
+<pre><code class="language-bash">export UV_INSTALL_DIR=/root/.cache/uv/install2
+export UV_LINK_MODE=&quot;copy&quot;
+export UV_CACHE_DIR=/root/.cache/uv/cache
+export UV_PROJECT_ENVIRONMENT=/root/.cache/uv/project2
+
+start_time=$(date +%s)
+
+# UV setup
+echo &quot;Installing UV if missing&quot;
+if [ -f &quot;${UV_INSTALL_DIR}/env&quot; ]; then
+    . &quot;${UV_INSTALL_DIR}/env&quot;
+else
+    echo &quot;UV install env not found, skipping&quot;
+fi
+
+if ! command -v uv &amp;&gt; /dev/null; then
+  curl -LsSf https://astral.sh/uv/0.5.18/install.sh | sh
+  . &quot;${UV_INSTALL_DIR}/env&quot;
+fi
+
+if [ -f &quot;${UV_PROJECT_ENVIRONMENT}/bin/activate&quot; ]; then
+    . &quot;${UV_PROJECT_ENVIRONMENT}/bin/activate&quot;
+else
+    echo &quot;UV project environment activate script not found, skipping&quot;
+fi
+
+uv sync --frozen --no-install-project --no-editable;
+sync_time=$(date +%s)
+echo &quot;Preamble took $((sync_time - start_time)) seconds&quot;
+
+uv run pytest
+echo &quot;Done tests&quot;
+</code></pre>
+<h3>Platform</h3>
+<p>linux</p>
+<h3>Version</h3>
+<p>0.5.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @sshleifer on 2025-01-28 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 01:11</div>
+            <div class="timeline-body"><p>In</p>
+<pre><code>warning: Ignoring existing virtual environment linked to non-existent Python interpreter: 
+/root/.cache/uv/project2/bin/python3 -&gt; python
+</code></pre>
+<p>Does <code>/root/.cache/uv/project2/bin/python</code> exist? Or resolve to a file that does? The message indicates we're invalidating your environment because the interpreter is broken / missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sshleifer">@sshleifer</a> on 2025-01-28 04:32</div>
+            <div class="timeline-body"><p>It probably was linked to something outside of /root/.cache. Is there a flag to keep python inside UV_PROJECT_ENVIRONMENT or UV_CACHE_DIR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clafoutis42">@clafoutis42</a> on 2025-10-16 11:40</div>
+            <div class="timeline-body"><p>Hi @sshleifer I am encountering the same issue, did you manage to solve this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clafoutis42">@clafoutis42</a> on 2025-10-16 11:44</div>
+            <div class="timeline-body"><p>For people future people, I solved this by using <code>UV_LINK_MODE=copy</code> and/or <code>UV_SYSTEM_PYTHON=true</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

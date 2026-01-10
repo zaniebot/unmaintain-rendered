@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python find --system` chooses Homebrew Python instead of system one - astral-sh/uv #9715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python find --system` chooses Homebrew Python instead of system one</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9715">#9715</a>
+        opened by <a href="https://github.com/abitrolly">@abitrolly</a>
+        on 2024-12-08 09:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/abitrolly">@abitrolly</a> on 2024-12-08 09:01</div>
+            <div class="timeline-body"><p>Here is the Fedora 41 setup.</p>
+<pre><code class="language-shell">$ which uv
+/home/linuxbrew/.linuxbrew/bin/uv
+$ uv --version
+uv 0.5.7 (Homebrew 2024-12-06)
+</code></pre>
+<pre><code class="language-shell">$ which python
+/usr/bin/python
+$ which python3
+/home/linuxbrew/.linuxbrew/bin/python3
+</code></pre>
+<p>Here are Python interpreters that <code>uv</code> sees.</p>
+<pre><code class="language-shell">$ uv python list     
+cpython-3.13.1+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.13.1-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.13.0-linux-x86_64-gnu                 /usr/bin/python3.13
+cpython-3.13.0-linux-x86_64-gnu                 /usr/bin/python3 -&gt; python3.13
+cpython-3.13.0-linux-x86_64-gnu                 /usr/bin/python -&gt; ./python3
+cpython-3.13.0-linux-x86_64-gnu                 /home/linuxbrew/.linuxbrew/opt/python@3.13/bin/python3.13
+cpython-3.12.8-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.12.7-linux-x86_64-gnu                 /home/linuxbrew/.linuxbrew/opt/python@3.12/bin/python3.12
+cpython-3.11.11-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.16-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.9.21-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                  &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                   &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                    &lt;download available&gt;
+</code></pre>
+<p>I expect <code>ux python find --system</code> to get <code>/usr/bin/python</code> first (which points to <code>/usr/bin/python3.13</code>, but instead it chooses Homebrew one.</p>
+<pre><code class="language-shell">$ uv python find --system -vvv
+    0.000121s DEBUG uv uv 0.5.7 (Homebrew 2024-12-06)
+    0.002906s DEBUG uv_python::discovery Searching for default Python interpreter in managed installations or search path
+    0.002969s DEBUG uv_python::discovery Searching for managed installations at `/home/anatoli/.local/share/uv/python`
+    0.008152s DEBUG uv_python::discovery Found `cpython-3.13.0-linux-x86_64-gnu` at `/home/linuxbrew/.linuxbrew/bin/python3` (search path)
+/home/linuxbrew/.linuxbrew/opt/python@3.13/bin/python3.13
+</code></pre>
+<p>EDIT: This is important, because virtual environment with <code>/usr/bin/python</code> doesn't have problem with <code>tkinter</code> (https://github.com/astral-sh/uv/issues/7036) and Homebrew one needs extra steps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-08 10:14</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions</p>
+<blockquote>
+<p>A Python interpreter on the PATH as python, python3, or python3.x on macOS and Linux, or python.exe on Windows.</p>
+</blockquote>
+<p>Adjusting the order in PATH might help your desired Python version be found first.
+While it's not the ideal solution, it should be able to fix your problem temporarily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-08 16:04</div>
+            <div class="timeline-body"><p>Please see https://docs.astral.sh/uv/concepts/python-versions/#managed-and-system-python-installations</p>
+<blockquote>
+<p>uv does not distinguish between Python versions installed by the operating system vs those installed and managed by other tools. For example, if a Python installation is managed with pyenv, it would still be considered a system Python version in uv.</p>
+</blockquote>
+<p>We have some sort of unfortunate naming here that we inherited from <code>pip install --system</code>. I have some plans to re-frame the option, but uv does not have the capability to distinguish between a Python installation native to your system and one that you installed separately (at this time).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-08 16:05</div>
+            <div class="timeline-body"><p>I'd recommend being explicit about the interpreter you need in this case, e.g., <code> --python /usr/bin/python3 python</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @samypr100 on 2024-12-09 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @samypr100 on 2024-12-09 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abitrolly">@abitrolly</a> on 2024-12-09 02:05</div>
+            <div class="timeline-body"><blockquote>
+<p>uv does not have the capability to distinguish between a Python installation native to your system and one that you installed separately (at this time)</p>
+</blockquote>
+<p>On Linux system it is just a matter of sorting, putting <code>/bin</code> and <code>/usr/bin</code> first. In this particular case it helps if lookup for <code>python</code> was made first, and if it is not found, then a search for <code>python3</code> would be done.</p>
+<p>Even now the <code>uv python list</code> order is right, so selecting first available from it would do the trick. I tried to see if I can patch https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/discovery.rs but nope, Rust is not my language.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-09 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>On Linux system it is just a matter of sorting, putting /bin and /usr/bin first.</p>
+</blockquote>
+<p>We respect the order in <code>PATH</code> — which I believe is correct.</p>
+<blockquote>
+<p>In this particular case it helps if lookup for python was made first, and if it is not found, then a search for python3 would be done.</p>
+</blockquote>
+<p>Perhaps, but I think that would also be surprising? Some discussion on this in https://github.com/astral-sh/uv/issues/6444</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-09 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Even now the uv python list order is right, so selecting first available from it would do the trick.</p>
+</blockquote>
+<p>The <code>uv python list</code> order isn't sorted by discovery order, it's sorted by implementation, version, then platform ~alphabetically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-12-10 13:33</div>
+            <div class="timeline-body"><blockquote>
+<p>We have some sort of unfortunate naming here that we inherited from <code>pip install --system</code>.</p>
+</blockquote>
+<p>Wait, that's not true. This is a uv-specific option:</p>
+<pre><code>❯ pip install --help | grep -- &quot;--system&quot; || echo &quot;Nothing to see here.&quot;
+Nothing to see here.
+❯ uv pip install --help | grep -- &quot;--system&quot; || echo &quot;Nothing to see here.&quot;
+      --system                               Install packages into the system Python environment [env: UV_SYSTEM_PYTHON=]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 13:35</div>
+            <div class="timeline-body"><p>(I think we came up with <code>--system</code> on our own.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 14:04</div>
+            <div class="timeline-body"><p>Oh, sorry — misremembered there. Thanks for the correction @pradyunsg.</p>
+<p>The unfortunate naming is my mistake, I guess :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 14:04</div>
+            <div class="timeline-body"><p>I think it might be mine :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 14:28</div>
+            <div class="timeline-body"><p>It makes sense until you pick at the definition of a system interpreter.</p>
+<p>Anyway.. this behavior is intentional. We should track better naming for the options elsewhere, but <code>--system</code> is here to stay for compatibility purposes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-10 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-12-10 16:12</div>
+            <div class="timeline-body"><p>FYI, I <em>suspect</em> the name &quot;system&quot; was inspired by the actual pip flag &quot;--break-system-packages&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abitrolly">@abitrolly</a> on 2024-12-10 17:31</div>
+            <div class="timeline-body"><p>This root cause of this issue is actually a duplicate of https://github.com/astral-sh/uv/issues/6444</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashleyconnor">@ashleyconnor</a> on 2025-03-07 04:37</div>
+            <div class="timeline-body"><p>Setting envvar <code>UV_PYTHON_PREFERENCE=only-managed</code> will make uv ignore system, homebrew and other unmanaged python installations in favour of the ones uv manages. This was the desired behaviour for my case.</p>
+<p>Docs: https://docs.astral.sh/uv/configuration/environment/#uv_python_preference</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:46 UTC
+    </footer>
+</body>
+</html>

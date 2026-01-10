@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let dependency-group members share a dependency source - astral-sh/uv #8577</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Let dependency-group members share a dependency source</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8577">#8577</a>
+        opened by <a href="https://github.com/ealap">@ealap</a>
+        on 2024-10-25 21:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ealap">@ealap</a> on 2024-10-25 21:39</div>
+            <div class="timeline-body"><p>I have just read the recent release that added supported for PEP-735 and immediately went on to try it on my project. So far I have something like this:</p>
+<pre><code class="language-toml">[dependency-groups]
+groupA = [
+  &quot;pytest&quot;,
+  &quot;ruff&quot;
+]
+groupB = [
+  &quot;cool-stuff-1&quot;,
+  &quot;cool-stuff-2&quot;,
+  &quot;cool-stuff-3&quot;,
+  &quot;cool-stuff-4&quot;,
+  &quot;cool-stuff-5&quot;,
+  &quot;cool-stuff-6&quot;,
+  &quot;cool-stuff-7&quot;,
+  &quot;cool-stuff-8&quot;,
+  &quot;cool-stuff-9&quot;,
+  &quot;cool-stuff-10&quot;
+]
+groupMACOS = [
+  &quot;apple-stuff-1&quot;,
+  &quot;apple-stuff-2&quot;,
+  &quot;apple-stuff-3&quot;
+]
+
+[tool.uv.sources]
+pytest = { index = &quot;groupA&quot; }
+cool-stuff-1 = { index = &quot;groupB&quot; }
+cool-stuff-2 = { index = &quot;groupB&quot; }
+cool-stuff-3 = { index = &quot;groupB&quot; }
+cool-stuff-4 = { index = &quot;groupB&quot; }
+cool-stuff-5 = { index = &quot;groupB&quot; }
+cool-stuff-6 = { index = &quot;groupB&quot; }
+cool-stuff-7 = { index = &quot;groupB&quot; }
+cool-stuff-8 = { index = &quot;groupB&quot; }
+cool-stuff-9 = { index = &quot;groupB&quot; }
+cool-stuff-10 = { index = &quot;groupB&quot; }
+apple-stuff-1 = { index = &quot;groupA&quot;, marker = &quot;sys_platform == 'darwin'&quot; }
+apple-stuff-2 = { index = &quot;groupA&quot;, marker = &quot;sys_platform == 'darwin'&quot; }
+apple-stuff-3 = { index = &quot;groupA&quot;, marker = &quot;sys_platform == 'darwin'&quot; }
+
+[[tool.uv.index]]
+name = &quot;groupA&quot;
+url = &quot;https://download.mypypi.org/whl/group/A&quot;
+
+[[tool.uv.index]]
+name = &quot;groupB&quot;
+url = &quot;https://download.mypypi.org/whl/group/B&quot;
+</code></pre>
+<p>As you can see, it's easy to make a wall of similar text when you need specific sources and specifiers for a couple or more dependencies. But most are just sharing the same 2 unique values: <code>{ index = &quot;groupB&quot; }</code>, <code>{ index = &quot;groupA&quot;, marker = &quot;sys_platform == 'darwin'&quot; }</code></p>
+<p>To simplify this, it seems that next improvement is to have a group share a <code>sources</code> setting.</p>
+<pre><code class="language-toml">[dependency-groups]
+groupA = [
+  &quot;pytest&quot;,
+  &quot;ruff&quot;
+]
+groupB = [
+  &quot;cool-stuff-1&quot;,
+  &quot;cool-stuff-2&quot;,
+  &quot;cool-stuff-3&quot;,
+  &quot;cool-stuff-4&quot;,
+  &quot;cool-stuff-5&quot;,
+  &quot;cool-stuff-6&quot;,
+  &quot;cool-stuff-7&quot;,
+  &quot;cool-stuff-8&quot;,
+  &quot;cool-stuff-9&quot;,
+  &quot;cool-stuff-10&quot;
+]
+groupMACOS = [
+  &quot;apple-stuff-1&quot;,
+  &quot;apple-stuff-2&quot;,
+  &quot;apple-stuff-3&quot;
+]
+
+[tool.uv.sources]
+pytest = { index = &quot;groupA&quot; }
+groupB = { index = &quot;groupB&quot; }
+groupMACOS = { index = &quot;groupA&quot;, marker = &quot;sys_platform == 'darwin'&quot; }
+
+[[tool.uv.index]]
+name = &quot;groupA&quot;
+url = &quot;https://download.mypypi.org/whl/group/A&quot;
+
+[[tool.uv.index]]
+name = &quot;groupB&quot;
+url = &quot;https://download.mypypi.org/whl/group/B&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 22:00</div>
+            <div class="timeline-body"><p>I believe this is pretty similar to https://github.com/astral-sh/uv/issues/8415</p>
+<p>We could provide a way to define sources for entire group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-25 22:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`.` only works with `--editable` - astral-sh/uv #1499</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`.` only works with `--editable`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1499">#1499</a>
+        opened by <a href="https://github.com/altendky">@altendky</a>
+        on 2024-02-16 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/altendky">@altendky</a> on 2024-02-16 15:11</div>
+            <div class="timeline-body"><p>I am in an empty directory so the failure to install due to lack of <code>pyproject.toml</code> is expected.  What is not expected is the failure to parse <code>.</code> at all without <code>--editable</code> having been specified.</p>
+<pre><code class="language-console">$ python3.11 -m venv venv
+</code></pre>
+<pre><code class="language-console">$ venv/bin/python -m pip install 'uv @ git+https://github.com/astral-sh/uv@1ed6ba0ba0d3756312085ec21c90469985b5bbb6'
+Collecting uv@ git+https://github.com/astral-sh/uv@1ed6ba0ba0d3756312085ec21c90469985b5bbb6
+  Using cached uv-0.1.2-py3-none-linux_x86_64.whl
+Installing collected packages: uv
+Successfully installed uv-0.1.2
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: /home/altendky/tmp/venv/bin/python -m pip install --upgrade pip
+</code></pre>
+<pre><code class="language-console">$ source venv/bin/activate
+</code></pre>
+<pre><code class="language-console">(venv) $ ls -la
+total 52
+drwxrwxr-x 12 altendky altendky 4096 Feb 16 10:09  .
+drwxr-x--- 51 altendky altendky 4096 Feb 16 09:55  ..
+drwxrwxr-x  4 altendky altendky 4096 Dec  5 08:29  blue
+drwxrwxr-x  4 altendky altendky 4096 Dec 12 09:17  c
+drwxrwxr-x 11 altendky altendky 4096 Nov 29 07:31  chia-blockchain
+drwxrwxr-x  3 altendky altendky 4096 Dec  1 12:12 'chia-installers-linux-rpm-intel (3)'
+drwxrwxr-x  2 altendky altendky 4096 Dec  4 10:01  hwd
+drwxrwxr-x  5 altendky altendky 4096 Nov 30 15:29  it
+drwxrwxr-x  2 altendky altendky 4096 Dec  4 16:06  oc
+drwxrwxr-x  3 altendky altendky 4096 Dec 13 13:46  p
+drwxrwxr-x  3 altendky altendky 4096 Nov 18 14:00  .pytest_cache
+drwxrwxr-x  5 altendky altendky 4096 Feb 16 10:09  venv
+-rw-rw-r--  1 altendky altendky  793 Nov 18 14:27  x.py
+</code></pre>
+<pre><code class="language-console">(venv) $ python -m uv pip install .
+error: Failed to parse `.`
+  Caused by: Expected package name starting with an alphanumeric character, found '.'
+.
+^
+</code></pre>
+<pre><code class="language-console">(venv) $ python -m uv pip install --editable .
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///home/altendky/tmp
+  Caused by: Invalid source distribution: The archive contains neither a `pyproject.toml` nor a `setup.py` file at the top level
+</code></pre>
+<pre><code class="language-console">(venv) $ python -m pip install .
+ERROR: Directory '.' is not installable. Neither 'setup.py' nor 'pyproject.toml' found.
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: pip install --upgrade pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 15:14</div>
+            <div class="timeline-body"><p>Thanks for the thorough report!</p>
+<p>Please see #313 and https://github.com/astral-sh/uv/pull/1424</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-02-16 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/altendky">@altendky</a> on 2024-02-16 15:17</div>
+            <div class="timeline-body"><p>I wasn't sure what to search for and so I missed it.  Thanks for the help with that.  I'll try being more explicit with the ~<code>file @</code>~ <code>package-name @</code> form.  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @altendky on 2024-02-16 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 15:20</div>
+            <div class="timeline-body"><p>FWIW, the <code>.</code> should work ok, it's just that we require a package name, so you can either do:</p>
+<pre><code>uv pip install &quot;foo @ .&quot;
+</code></pre>
+<p>Or:</p>
+<pre><code>uv pip install -e .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/altendky">@altendky</a> on 2024-02-16 15:26</div>
+            <div class="timeline-body"><p>Thanks for the specifics.  That's exactly what I was going to try, though in my case I'm also specifying extras.  First pass didn't work, but I'll dig a bit and see if I still need to follow up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 15:26</div>
+            <div class="timeline-body"><p>Please do, happy to help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Chia-Network/chia-blockchain/pulls/17572.html">Chia-Network/chia-blockchain#17572</a> on 2024-02-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-16 22:43</div>
+            <div class="timeline-body"><p>I was testing this out as a replacement for <code>nox</code>, and this will break a lot of nox scripts which assume <code>pip install .</code> works, it's a very common idiom.</p>
+<p>It is insanely fast though as a nox backend. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wntrblm/nox/pulls/762.html">wntrblm/nox#762</a> on 2024-02-16 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/altendky">@altendky</a> on 2024-02-16 23:47</div>
+            <div class="timeline-body"><p>I believe the idea is that the case reported here would be addressed by https://github.com/astral-sh/uv/issues/313.  At least that's why I was comfortable closing this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1506.html">astral-sh/uv#1506</a> on 2024-02-18 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 21:24</div>
+            <div class="timeline-body"><p>This is supported as of <code>v0.1.24</code>. You can <code>uv pip install .</code> directly, without including a package name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10941.html">astral-sh/uv#10941</a> on 2025-01-24 18:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

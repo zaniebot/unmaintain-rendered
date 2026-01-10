@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter collapses overlong assignment's parenthesized value - astral-sh/ruff #7067</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter collapses overlong assignment's parenthesized value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7067">#7067</a>
+        opened by <a href="https://github.com/cnpryer">@cnpryer</a>
+        on 2023-09-02 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-09-02 18:50</div>
+            <div class="timeline-body"><p>Closest report I could find is #6271</p>
+<p>Line-length: 88</p>
+<pre><code class="language-py"># Input
+def f():
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = (
+        True
+    )
+
+# Black (23.7.0)
+def f():
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = (
+        True
+    )
+
+# Ruff (0.0.287)
+def f():
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = True
+</code></pre>
+<p><a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ADcAFpdAD2IimZxl1N_WlbvK5V9Hvo0zZlhiNcotlgDB7bxaZbBIS7i9HHvnbCajGMUIFr--DNDeP0oafJeATSaNSH9GzI8pkS3XaKv-jPsai7bQVxaN824AdHr-MlyAAAAAICN8x74Dvl9AAF23QEAAACM5vfXscRn-wIAAAAABFla">Black Playground</a></p>
+<p><a href="https://play.ruff.rs/22307bf7-4d68-4163-9937-cb6a4609b6c1">Ruff Playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter un-expands overlong assignment target's parenthesized value" to "Formatter un-expands overlong assignment's parenthesized value" by @cnpryer on 2023-09-02 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-02 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-09-02 19:50</div>
+            <div class="timeline-body"><p>Hmm. What's the best implementation here?</p>
+<p>Would <code>ExprConstant</code>'s <code>NeedsParentheses</code> need to be updated to consider if the expression breaks? The way <code>maybe_parenthesize</code> for <code>Expr</code> is called from <code>FormatStmtAssign</code> seems right to me.</p>
+<p>https://github.com/astral-sh/ruff/blob/577280c8bea1e4bb1e1a37ca7e1325dc655b38bb/crates/ruff_python_formatter/src/expression/parentheses.rs#L68-L69</p>
+<p><em>Parenthesize if the expression breaks.</em> But IIUC since <code>ExprConstant</code>'s <code>NeedParentheses</code> will return <code>Never</code> then the <code>Parenthesize::IfBreaks</code> strategy will never be used.</p>
+<p>Would it make more sense to add conditional logic to consider this when <code>needs_parentheses</code> is evaluated?</p>
+<p>https://github.com/astral-sh/ruff/blob/577280c8bea1e4bb1e1a37ca7e1325dc655b38bb/crates/ruff_python_formatter/src/expression/mod.rs#L199-L206</p>
+<p>In order to avoid reaching the <code>Never</code> match?</p>
+<p>https://github.com/astral-sh/ruff/blob/577280c8bea1e4bb1e1a37ca7e1325dc655b38bb/crates/ruff_python_formatter/src/expression/mod.rs#L290-L299</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-09-03 19:08</div>
+            <div class="timeline-body"><p>Using <code>OptionalParentheses::Multiline</code> would resolve this, but then the following would need to be addressed</p>
+<pre><code>Snapshot file: crates/ruff_python_formatter/tests/snapshots/format@expression__unsplittable.py.snap
+Snapshot: unsplittable
+Source: crates/ruff_python_formatter/tests/fixtures.rs:160
+Input file: crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/unsplittable.py
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  109   109 │ aaaaaaa = (
+  110   110 │     1111111111111111111111111111111111111111111111111111111111111111111111111111111
+  111   111 │ )
+  112   112 │ 
+  113       │-aaaaaaa = &quot;&quot;&quot;111111111111111111111111111111111111111111111111111111111111111111111111111
+        113 │+aaaaaaa = (
+        114 │+    &quot;&quot;&quot;111111111111111111111111111111111111111111111111111111111111111111111111111
+  114   115 │ 1111111111111111111111111111111111111111111111111111111111111111111111111111111111111&quot;&quot;&quot;
+        116 │+)
+  115   117 │ 
+  116   118 │ # Never parenthesize multiline strings
+  117       │-aaaaaaa = &quot;&quot;&quot;1111111111111111111111111111111111111111111111111111111111111111111111111111
+        119 │+aaaaaaa = (
+        120 │+    &quot;&quot;&quot;1111111111111111111111111111111111111111111111111111111111111111111111111111
+  118   121 │ 1111111111111111111111111111111111111111111111111111111111111111111111111111111111111&quot;&quot;&quot;
+        122 │+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7106.html">astral-sh/ruff#7106</a> on 2023-09-03 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-04 06:19</div>
+            <div class="timeline-body"><p>This is related to https://github.com/astral-sh/ruff/pull/6816 and specifically this &quot;optimisation&quot;</p>
+<p>https://github.com/astral-sh/ruff/blob/c05e4628b1d385d106e7e3d355f5d1d76fbfe401/crates/ruff_python_formatter/src/expression/parentheses.rs#L38-L50</p>
+<p>My assumptions were:</p>
+<ul>
+<li>This pattern is rare</li>
+<li>Breaking doesn't improve readability significantly for very short right hand sides.</li>
+</ul>
+<p>Which is why I ultimately opted for better performance than using best fit for every constant/identifier (which are very common)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-09-08 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-08 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7475.html">astral-sh/ruff#7475</a> on 2023-09-18 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-09-18 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-19 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter un-expands overlong assignment's parenthesized value" to "Formatter collapses overlong assignment's parenthesized value" by @cnpryer on 2023-11-02 17:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

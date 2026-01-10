@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specify defaults in terms of the underlying type rather than strings - clap-rs/clap #1694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specify defaults in terms of the underlying type rather than strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1694">#1694</a>
+        opened by <a href="https://github.com/emilazy">@emilazy</a>
+        on 2020-02-14 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emilazy">@emilazy</a> on 2020-02-14 16:50</div>
+            <div class="timeline-body"><p>I really like how the new clap v3 is shaping up! Now that structopt is integrated, it'd be great if defaults could be specified in terms of the default resulting value they produce rather than as a string. Other argument parsing libraries like Python's argparse work this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @emilazy on 2020-02-14 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-14 16:51</div>
+            <div class="timeline-body"><p>Could you provide a small example so we are on the same page? Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emilazy">@emilazy</a> on 2020-02-14 16:53</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code class="language-rust">enum Switch {
+    Magic,
+    MoreMagic,
+}
+
+impl FromStr for Switch {
+    // ...
+}
+
+#[derive(Clap)]
+struct Opts {
+    #[clap(default_value(Switch::MoreMagic))]
+    switch: Switch,
+}
+</code></pre>
+<p>Currently you have to do e.g. <code>#[clap(default_value(&quot;more-magic&quot;))]</code>, which is less flexible and elegant (as well as incurring an unnecessary parse).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-02-14 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2020-02-14 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1695.html">clap-rs/clap#1695</a> on 2020-02-14 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg enums</span> added by @pksunkara on 2020-04-12 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 03:02</div>
+            <div class="timeline-body"><p>If your <code>enum</code> implements <code>Default</code> you can simply use <code>#[clap(default_value)]</code> on that field.</p>
+<p>Full example:</p>
+<pre><code class="language-rust">use std::fmt;
+
+use clap::Clap;
+
+#[derive(Clap, Debug, PartialEq, Copy, Clone)]
+enum Magic {
+    Little,
+    Lots,
+    None,
+}
+
+impl Default for Magic {
+    fn default() -&gt; Self {
+        Magic::Little
+    }
+}
+
+impl fmt::Display for Magic {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;{:?}&quot;, self)
+    }
+}
+
+#[derive(Clap)]
+struct Ctx {
+    /// How much magic do you want?
+    #[clap(long, arg_enum, default_value)]
+    magic: Magic,
+}
+
+fn main() {
+    let ctx = Ctx::parse();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 03:06</div>
+            <div class="timeline-body"><p>@emilazy it's not 100% what you asked for, but in your example it's at least part of the way there. I need to re-familiarize myself with the derive macros we made, but I think the underlying issue is that it just calls <code>Arg::default_value</code> underneath which only accepts a string. Now since we're already doing it where values have a valid default, we may be able to extend that case more generally...but I'm not 100% certain how much of a re-work that would entail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-29 07:51</div>
+            <div class="timeline-body"><p>Implementation wise, this would just adding one more method to the ArgEnum trait.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 13:21</div>
+            <div class="timeline-body"><p>We would also potentially need to impl <code>Display</code> for the enum as well...the downside being that prevents the consumer from doing this if they had some specialized version of <code>Display</code> they wanted to use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mainrs">@mainrs</a> on 2020-07-17 22:25</div>
+            <div class="timeline-body"><p>This would still be useful for cases where the underlying default of the application differs from the default of the type:</p>
+<pre><code class="language-rust">use clap::Clap;
+use std::env;
+use std::path::PathBuf;
+
+#[derive(Clap, Debug)]
+#[clap(author, version)]
+pub struct App {
+    #[clap(name = &quot;REPO&quot;, default = &quot;default_repo_path&quot;, parse(from_os_str))]
+    pub repo_path: PathBuf,
+}
+
+fn default_repo_path() -&gt; PathBuf {
+    env::current_dir().expect(&quot;Failed to find current working directory!&quot;)
+}
+</code></pre>
+<p>This is currently IIRC not possible. The default of <code>PathBuf</code> isn't useful here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lunderberg">@Lunderberg</a> on 2021-04-19 02:04</div>
+            <div class="timeline-body"><p>A similar change would also be useful for <code>required_if</code>'s interaction with case insensitive arguments.  Currently, I want to make a case-insensitive enum argument, where some of the enum values would also have additional required arguments.  I have this set up as below, which works in most cases.</p>
+<pre><code class="language-rust">use clap::{arg_enum, App, Arg};                                                                                                                                      
+                                                                                                                                                                     
+arg_enum! {                                                                                                                                                          
+    #[derive(Debug, PartialEq)]                                                                                                                                      
+    enum EnumOpt {                                                                                                                                                   
+        OptionA,                                                                                                                                                     
+        OptionB,                                                                                                                                                     
+    }                                                                                                                                                                
+}                                                                                                                                                                    
+                                                                                                                                                                     
+fn main() {                                                                                                                                                          
+    let matches = App::new(&quot;test&quot;)                                                                                                                                   
+        .arg(                                                                                                                                                        
+            Arg::with_name(&quot;enum&quot;)                                                                                                                                   
+                .long(&quot;enum&quot;)                                                                                                                                        
+                .takes_value(true)                                                                                                                                   
+                .required(true)                                                                                                                                                      .possible_values(&amp;EnumOpt::variants())                                                                                                               
+                .case_insensitive(true),                                                                                                                             
+        )                                                                                                                                                            
+        .arg(                                                                                                                                                        
+            Arg::with_name(&quot;dependent&quot;)                                                                                                                              
+                .long(&quot;dependent&quot;)                                                                                                                                   
+                .required_if(&quot;enum&quot;, &quot;OptionB&quot;),                                                                                                                     
+        )                                                                                                                                                            
+        .get_matches();                                                                                                                                              
+    println!(&quot;Matches = {:?}&quot;, matches);                                                                                                                             
+} 
+</code></pre>
+<p>If this is run as <code>test --enum OptionA</code>, I get the expected behavior, an error message that the <code>--dependent</code> flag is also required.  However, if this is run as <code>test --enum optiona</code>, the enum value is correctly set, but there is no error message for the missing <code>--dependent</code> flag.  Specifying <code>required_if</code> in terms of the underlying type would resolve this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-21 20:03</div>
+            <div class="timeline-body"><p>#2612 adds <code>ArgEnum::as_arg(&amp;self) -&gt; &amp;'static str</code> to make it easier for end-users to implement <code>Display</code> so they can use <code>clap(arg_enum, default_value)</code>.  I've not yet gone through the effort of providing a <code>Display</code> or <code>Default</code> macro since there is probably more to be decided there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-21 21:39</div>
+            <div class="timeline-body"><p>Also wanted to add</p>
+<blockquote>
+<p>Currently you have to do e.g. #[clap(default_value(&quot;more-magic&quot;))], which is less flexible and elegant (as well as incurring an unnecessary parse).</p>
+</blockquote>
+<p>We'll do that extra parsing anyways because we store the default in <code>App</code> and then pull it back out from <code>ArgMatches</code>, relying completely on the build APIs machinery to do things for us, like generate help text with the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-22 14:22</div>
+            <div class="timeline-body"><p>Another way of solving this problem is we change the attributes to:</p>
+<ul>
+<li><code>default_value</code>: raw method that directly maps to <code>Arg::default_value</code></li>
+<li><code>default_value_t</code>: takes in a type, defaults to <code>Default::default</code></li>
+</ul>
+<p>StructOpt porting work</p>
+<ul>
+<li>If using <code>default_value</code>, change to <code>default_value_t</code></li>
+<li>If using <code>default_value=&quot;foo&quot;</code>, no change needed</li>
+</ul>
+<p>Benefits</p>
+<ul>
+<li>Keeps to the pattern of exposing the raw methods as-is (<code>default_value</code> just forwards to <code>Arg::default_value</code>)</li>
+<li>Keeps to the pattern of typed stuff having a <code>_t</code> suffix (e.g. <code>ArgMatches::value_of_t</code>)</li>
+<li>Makes magic method (non-raw) less magical by not having it do either typed or string, but instead each is strictly typed or string</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2635.html">clap-rs/clap#2635</a> on 2021-07-28 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-08-09 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-08-09 01:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-13 18:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:07 UTC
+    </footer>
+</body>
+</html>

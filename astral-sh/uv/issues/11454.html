@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moved venv causes: Failed to spawn: `pytest` Caused by: No such file or directory (os error 2) - astral-sh/uv #11454</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Moved venv causes: Failed to spawn: `pytest` Caused by: No such file or directory (os error 2)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11454">#11454</a>
+        opened by <a href="https://github.com/michealroberts">@michealroberts</a>
+        on 2025-02-12 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-02-12 16:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm kind of stumped with the following issue, we use development containers as our uv environment, the following command works for the same container for one user, but not for another:</p>
+<pre><code class="language-bash">uv run --link-mode=copy --active pytest 
+</code></pre>
+<p>So for one user, the tests run perfectly and all green ticks as should be:</p>
+<p><img src="https://github.com/user-attachments/assets/f1d18ac9-bb7b-4662-b9dd-4a5b3f3420a8" alt="Image" /></p>
+<p>However, for another user (we're both on Macs), they see the following error:</p>
+<p><img src="https://github.com/user-attachments/assets/78896de2-8b6e-4089-990a-c28514bcf9cf" alt="Image" /></p>
+<p>I'm happy to give any information required, replication steps, and examples of our devcontainer.json setup etc if needed, but just reaching out</p>
+<h3>Platform</h3>
+<p>Linux 6.12.9-orbstack-00297-gaa9b46293ea3 aarch64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.30</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @michealroberts on 2025-02-12 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 17:03</div>
+            <div class="timeline-body"><p>Are they mounting their working directory into the container? That can clobber the <code>.venv</code> and break the Python interpreter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 17:04</div>
+            <div class="timeline-body"><p>e.g.</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11355#issuecomment-2646466351</li>
+<li>https://github.com/astral-sh/uv/issues/10615</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/facundoq">@facundoq</a> on 2025-04-15 16:45</div>
+            <div class="timeline-body"><p>I ran onto this today (kubuntu 24.04, uv 0.6.13, python 3.12.3, no docker, worked 5 days ago, didn't work today).</p>
+<p>I fixed it by running  <code>uv remove --dev pytest &amp;&amp; uv add --dev pytest</code>. No version changes between remove and add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roshambo919">@roshambo919</a> on 2025-04-17 01:24</div>
+            <div class="timeline-body"><p>I also ran into this issue on ubuntu 22.04, uv 0.6.13, python 3.10 when running <code>uv run pytest tests</code> locallly. My GitHub actions workflow for pytest works just fine with uv.</p>
+<p>uv is in the <code>test</code> dependency group in the <code>pyproject.toml</code>, fyi.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-wittig">@max-wittig</a> on 2025-05-02 14:48</div>
+            <div class="timeline-body"><p>deleting the <code>.venv</code> and recreating it, fixed it for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/norbertmaager">@norbertmaager</a> on 2025-05-08 07:20</div>
+            <div class="timeline-body"><p>I get the same issue both with pytest and jupyter lab. Deleting the <code>.venv</code> and recreating it fixes the issue only for a single run.</p>
+<p>Edit: I could resolve the issue by deleting the uv cache (/Users/[username]/.cache/uv).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mwesthelle">@mwesthelle</a> on 2025-06-20 17:51</div>
+            <div class="timeline-body"><p>I'm getting the same issue with bump-my-version: https://github.com/callowayproject/bump-my-version. Deleting the <code>.venv</code> does not work in my case. The only solution I could find was removing the package (bump-my-version) and adding it back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-06-22 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-06-22 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 14:05</div>
+            <div class="timeline-body"><p>Could you provide a minimal reproduction for this, a series of steps that makes the problem occur?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/faisal-fida">@faisal-fida</a> on 2025-08-11 01:59</div>
+            <div class="timeline-body"><p>This error typically occurs when <code>uv</code> is unable to locate or execute the <code>pytest</code> binary, often due to environment inconsistencies, especially in containerized or cached environments. It's a common issue when using development containers or after changes in dependencies.</p>
+<h3>Why it happens:</h3>
+<ul>
+<li>The virtual environment (<code>.venv</code>) might be corrupted or out of sync with the current project dependencies.</li>
+<li>The <code>pytest</code> executable may not be properly installed or linked within the environment.</li>
+<li>In containerized setups, mounting the working directory can overwrite the virtual environment or interfere with path resolution.</li>
+<li>Caching issues (e.g., in <code>~/.cache/uv</code>) can lead to stale or broken references to installed tools.</li>
+</ul>
+<h3>How to solve it:</h3>
+<ol>
+<li><p><strong>Recreate the virtual environment</strong>:</p>
+<pre><code class="language-bash">rm -rf .venv
+uv sync
+</code></pre>
+</li>
+<li><p><strong>Clear the uv cache</strong> (if the problem persists):</p>
+<pre><code class="language-bash">rm -rf ~/.cache/uv
+uv sync
+</code></pre>
+</li>
+<li><p><strong>Reinstall the problematic package</strong>:</p>
+<pre><code class="language-bash">uv remove --dev pytest &amp;&amp; uv add --dev pytest
+</code></pre>
+</li>
+<li><p><strong>In containerized environments</strong>, ensure that:</p>
+<ul>
+<li>The working directory isn't being mounted in a way that overwrites the <code>.venv</code>.</li>
+<li>The container is built with consistent base images and dependency versions.</li>
+<li>Use <code>--link-mode=copy</code> or similar flags cautiously and test across environments.</li>
+</ul>
+</li>
+<li><p><strong>Verify installation</strong>:
+After syncing, confirm that <code>pytest</code> is available:</p>
+<pre><code class="language-bash">uv run which pytest
+</code></pre>
+</li>
+</ol>
+<p>This kind of issue usually resolves with environment cleanup and ensuring consistent state between installations and containers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/facundoq">@facundoq</a> on 2025-08-11 14:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you provide a minimal reproduction for this, a series of steps that makes the problem occur?</p>
+</blockquote>
+<p>I found out that moving the venv in a local project triggers it consistently (I did not use --relocatable when creating the venv (https://github.com/astral-sh/uv/pull/5515)).  Moving the venv to its original location fixes it. Surely some step in the containerization messes up the env in a similar fashion as @zanieb indicated. In my case, running <code>uv run file_in_project.py</code> does not fail with relocated venv, only pytest;  perhaps this suprises other people too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-19 11:53</div>
+            <div class="timeline-body"><p>Thanks @facundoq! In that case this is another instance of https://github.com/astral-sh/uv/issues/13989</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-08-19 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[BUG] error: Failed to spawn: `pytest` Caused by: No such file or directory (os error 2)" to "Moved venv causes: Failed to spawn: `pytest` Caused by: No such file or directory (os error 2)" by @konstin on 2025-08-19 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DronHazra">@DronHazra</a> on 2025-09-29 21:48</div>
+            <div class="timeline-body"><p>this issue happens even without moving the venv, not sure why!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-29 22:27</div>
+            <div class="timeline-body"><p>@DronHazra please see #9452 and open a new issue if you have a reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 13:35</div>
+            <div class="timeline-body"><p>Can confirm that this is still an issue ... uv does not play nicely with containers. The REAL fix if anyone is interested:</p>
+<pre><code>rm -rf .venv
+</code></pre>
+<p>Then rebuild your container without the .venv file.</p>
+<p>Then do:</p>
+<pre><code>uv sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-08 13:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Can confirm that this is still an issue ... uv does not play nicely with container</p>
+</blockquote>
+<p>Or... ensure you don't add your <code>.venv</code> to your container at all... which is included in t he example at https://github.com/astral-sh/uv-docker-example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 14:01</div>
+            <div class="timeline-body"><p>@zanieb Brilliant! I did not know we had to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @michealroberts on 2025-10-08 14:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

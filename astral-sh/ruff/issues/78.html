@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider using `libcst` - astral-sh/ruff #78</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider using `libcst`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/78">#78</a>
+        opened by <a href="https://github.com/sobolevn">@sobolevn</a>
+        on 2022-09-01 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-01 16:51</div>
+            <div class="timeline-body"><p>https://github.com/Instagram/LibCST</p>
+<p>It is partially written in Rust and allows you to have <strong>way more</strong> over the syntax tree.
+It will allow code rewrite and will allow more syntax checks.</p>
+<p>I highly recommend trying this before the project will have a lot of exisiting source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-01 16:54</div>
+            <div class="timeline-body"><p>It seems like the author was looking into this in #25. A problem with LibCST is that it's significantly slower than the AST parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-01 16:58</div>
+            <div class="timeline-body"><p>As a long time maintainer of different <code>flake8</code> tools - no one ever complained about performance (however, it is 100% important), but people do complain about missing features such as code auto-fixing, minor style details that are not possible to get right with <code>ast</code> + <code>tokenize</code>, etc.</p>
+<p>This is my opinion :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-01 17:04</div>
+            <div class="timeline-body"><p>I <em>definitely</em> want to look into LibCST! The AST is more complicated so I have to rewrite the traversal code, but that's mostly mechanical. It may be the case that a more expensive parse is actually worth it -- LibCST is super powerful and would immediately enable auto-fixing and other features. It's also possible that we could use LibCST only for autofixing, in which case, we wouldn't have to parse every file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-09-01 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-01 17:12</div>
+            <div class="timeline-body"><p>LibCST would totally have longer parsing time, but it might also help when working with regex (I haven't seen your project - but I speak from my experience with <code>pyflakes</code>, <code>pydocstyle</code>, and others). There are lots of checks that are implemented with <code>regex</code> (which can be very slow on large inputs). But, LibCST will make most of them absolete.</p>
+<p>So, probably we can win some performance during the execution :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-01 17:14</div>
+            <div class="timeline-body"><p>(Very flattering that you even care to comment here. You've contributed to some of my favorite tools. Appreciate the engagement! Same for you @jack1142!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-01 17:15</div>
+            <div class="timeline-body"><blockquote>
+<p>As a long time maintainer of different flake8 tools - no one ever complained about performance</p>
+</blockquote>
+<p>It depends a lot on the size and count of files you lint but when running flake8 as pre-commit hook, the delay can sometimes be noticeable.</p>
+<p>However if someone, hypothetically, decided to refactor flake8 to use LibCST instead of <code>ast</code> module (leaving the code as pure Python), it would likely be way slower so that's where my worry stems from. Maybe it's not going to be a problem when you skip the Python VM entirely by writing everything in Rust with no pure Python code but it's hard to tell without more testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MapleCCC">@MapleCCC</a> on 2022-09-02 11:20</div>
+            <div class="timeline-body"><p>It may worth mentioning that the Rust parser implementation of LibCST requires setting the environment variable <code>LIBCST_PARSER_TYPE</code> to <code>native</code> to activate, otherwise it defaults to the pure Python parser implementation, which is slower.</p>
+<p>This important knowledge is not explicitly mentioned anywhere in LibCST's README or document, so I guess I may want to point it out. Please kindly take this into consideration when using and examining the performance aspect of LibCST.</p>
+<p>As a recent contributor to LibCST I am really excited at ruff and its potential synergy with LibCST. Looking forward to see more to come! 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-02 20:50</div>
+            <div class="timeline-body"><p>I'm tracking the exploration in #89. That branch implements F634 (the ~simplest AST-based lint check) using LibCST. It <em>is</em> much slower than the current version, but I'd still like to see how difficult it is to layer autofix on top of that foundation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-28 21:37</div>
+            <div class="timeline-body"><p>I'm still interested in using LibCST to power autofixing specifically: find errors + erroring statements via the current strategy, then pass snippets to LibCST to correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-03 20:11</div>
+            <div class="timeline-body"><p>We're now using LibCST to power some of the autofix behavior 🚀 🚀 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-03 20:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:02 UTC
+    </footer>
+</body>
+</html>

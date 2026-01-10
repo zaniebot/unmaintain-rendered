@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` and caching - astral-sh/uv #15732</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` and caching</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15732">#15732</a>
+        opened by <a href="https://github.com/stdedos">@stdedos</a>
+        on 2025-09-08 08:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stdedos">@stdedos</a> on 2025-09-08 08:52</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I was wondering how to do &quot;correctly&quot; uv and caching.</p>
+<p>I was very happy to already find so much documentation already dedicated to that (https://docs.astral.sh/uv/concepts/cache/#caching-in-continuous-integration, https://docs.astral.sh/uv/guides/integration/)
+Thank you for that 🙏</p>
+<p>I am thinking:</p>
+<blockquote>
+<p>With uv, it turns out that it's often faster to omit pre-built wheels from the cache (and instead re-download them from the registry on each run). On the other hand, caching wheels that are built from source tends to be worthwhile, since the wheel building process can be expensive, especially for extension modules.</p>
+</blockquote>
+<p>Do you have any data for that? It is not necessarily a no-faith - but it is always nice to have visible results ✌️</p>
+<blockquote>
+<pre><code class="language-yaml"> # GitLab CI creates a separate mountpoint for the build directory,
+ # so we need to copy instead of using hard links.
+ UV_LINK_MODE: copy
+</code></pre>
+</blockquote>
+<p>Isn't this something that uv can detect itself?</p>
+<p>If default is <em><code>auto</code></em> (<code>cow</code> on MacOS, <code>hardling</code> rest), and <em>hardlinking</em> fails - shouldn't uv be able to fall back automatically selecting the next-best option that works and continue with that mode for the rest of the run?</p>
+<p>If <code>UV_LINK_MODE</code> is hardcoded to something, then ofc it should fail and NOT fall back to anything.</p>
+<blockquote>
+<pre><code class="language-yaml">...
+  cache:
+    - key:
+        files:
+          - uv.lock
+</code></pre>
+</blockquote>
+<p>Is it worth to throw away the whole cache, for just a minuscule dependency change?</p>
+<p>I get it that it is saner - but I was wondering if someone &quot;compared it&quot; with e.g. heavy dependabot usage.</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @stdedos on 2025-09-08 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 13:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have any data for that?</p>
+</blockquote>
+<p>We don't have anything to share here. We benchmarked it initially, but it's not something we're continuously benchmarking to publish data for.</p>
+<blockquote>
+<p>If default is auto (cow on MacOS, hardling rest), and hardlinking fails - shouldn't uv be able to fall back automatically selecting the next-best option that works and continue with that mode for the rest of the run?</p>
+</blockquote>
+<p>We do fallback to copying on hardlink failures, but it emits a warning. Changing the mode silences the warning.</p>
+<blockquote>
+<p>Is it worth to throw away the whole cache, for just a minuscule dependency change?</p>
+</blockquote>
+<p>On GitHub, we do</p>
+<pre><code>          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: |
+            uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+            uv-${{ runner.os }}
+</code></pre>
+<p>so we'll fallback on inexact matches.</p>
+<p>I'm not sure what the GitLab equivalent is — that integration guide is user contributed. Happy to change it if there's something better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stdedos">@stdedos</a> on 2025-09-08 13:24</div>
+            <div class="timeline-body"><p>The <em>existing</em> Gitlab suggestion that is what it does exactly.</p>
+<p>My question is &quot;is it worth it or not&quot; (in cache metrics: speed, network, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 13:28</div>
+            <div class="timeline-body"><p>I'm not quite sure what you're saying there. My point is that the GitLab documentation seems less than ideal.</p>
+<p>It seems like https://docs.gitlab.com/ci/caching/#per-cache-fallback-keys should be added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stdedos">@stdedos</a> on 2025-09-08 14:22</div>
+            <div class="timeline-body"><p>Ah, right - so I have missed</p>
+<blockquote>
+<p>so we'll fallback on inexact matches.</p>
+</blockquote>
+<p>😅</p>
+<p>I guess I'll try my hands on fallback-keys 🤝</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-03 02:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

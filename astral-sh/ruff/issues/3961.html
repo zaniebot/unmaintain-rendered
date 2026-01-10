@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: alternative to SIM118 - astral-sh/ruff #3961</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: alternative to SIM118</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3961">#3961</a>
+        opened by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a>
+        on 2023-04-13 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/upstartjohnvandivier">@upstartjohnvandivier</a> on 2023-04-13 18:10</div>
+            <div class="timeline-body"><p>as a developer, I would like an alternative to <code>SIM118</code> so that I can enforce <code>.keys()</code> is used consistently, instead of having to choose between enabling or disabling SIM118. When <code>SIM118</code> is disabled, developers can use <code>.keys()</code> or not use it as they please, leading to inconsistent code which is not ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/markis">@markis</a> on 2023-04-13 19:39</div>
+            <div class="timeline-body"><p>I believe the alternative, using the <code>.keys()</code> method, would come at a performance cost. My simple test had these results.</p>
+<pre><code class="language-python">DATA: dict[str, int | None] = {&quot;value&quot;: 1, &quot;value2&quot;: 1}
+
+
+def default_method() -&gt; None:
+    for key in DATA:
+        assert DATA[key] == 1
+
+
+def keys_method() -&gt; None:
+    for key in DATA.keys():
+        assert DATA[key] == 1
+
+
+&quot;&quot;&quot;
+Python 3.10 on an M1
+(smaller is better)
+default_method ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 49.0
+keys_method    ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 61.0
+&quot;&quot;&quot;
+
+&quot;&quot;&quot;
+Python 3.10 on an intel xeon based server
+(smaller is better)
+default_method ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 18.0
+keys_method    ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 21.0
+&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 22:37</div>
+            <div class="timeline-body"><p>I think it's gonna be hard for us to reasonably enforce the <em>opposite</em> right now, since we don't have a good way of detecting that something is a <code>dict</code> and thus needs <code>.keys()</code>. So, I'm gonna err on the side of closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-08 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpivarski">@jpivarski</a> on 2023-10-19 21:18</div>
+            <div class="timeline-body"><p>Because you can't detect whether something is a dict, SIM118 has false positives. I just ran into one—automatically removing the <code>.keys()</code> caused a bug that took me a while to solve.</p>
+<p>I think it's fine for SIM118 to raise an error, but not for it to auto-fix. When it's raised as an error, that gives me the chance to choose whether to remove <code>.keys()</code> or to add <code># noqa: SIM118</code>, depending on the specific context that ruff doesn't know.</p>
+<p>Should this be a new issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-19 21:20</div>
+            <div class="timeline-body"><p>@jpivarski - In the most recent release (<a href="https://astral.sh/blog/ruff-v0.1.0">v0.1.0</a>), we introduced the concept of fix safety, and the fix here is marked as &quot;unsafe&quot; -- so you now have to provide the <code>--unsafe-fixes</code> flag in order for it to be applied (though the CLI will tell you that it's available). I think that should roughly match what you're describing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpivarski">@jpivarski</a> on 2023-10-19 21:28</div>
+            <div class="timeline-body"><p>Perfect, thanks!</p>
+<p>Yes, my .pre-commit-config.yaml is at ruff 0.0.291, but it will auto-update soon. Looking forward to it!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

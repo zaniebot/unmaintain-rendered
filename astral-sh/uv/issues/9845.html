@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read `UV_INDEX_&lt;NAME&gt;_` credentials during `uv publish` - astral-sh/uv #9845</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Read `UV_INDEX_&lt;NAME&gt;_` credentials during `uv publish`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9845">#9845</a>
+        opened by <a href="https://github.com/sfriedowitz">@sfriedowitz</a>
+        on 2024-12-12 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sfriedowitz">@sfriedowitz</a> on 2024-12-12 16:16</div>
+            <div class="timeline-body"><p>I was very excited to see the functionality with <code>uv publish --index &lt;index&gt;</code> come out in version <code>0.5.8</code> with this PR https://github.com/astral-sh/uv/pull/9694, but I don't think it behaves quite as I expected. It does not appear that publishing reads the <code>UV_INDEX_MYINDEX_USERNAME</code> and <code>UV_INDEX_MYINDEX_PASSWORD</code> for credentials when publishing.</p>
+<p>Is this expected behavior? And if so, would it be possible to add support for reading credentials from those existing environment variables?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-12-13 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 22:26</div>
+            <div class="timeline-body"><p>I think it seems reasonable to pass the configuration to the publish URL. What do you think, @konstin @zanieb?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-13 22:48</div>
+            <div class="timeline-body"><p>Oh interesting. Do you expect the credentials for publishing to be the same as the ones for reading?</p>
+<p>I'd expect them to be used, but I worry a different credential will be required?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-14 01:27</div>
+            <div class="timeline-body"><p>Is the implication that you might want a different environment variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sfriedowitz">@sfriedowitz</a> on 2024-12-14 02:29</div>
+            <div class="timeline-body"><p>At least for the private PyPI repository we run in my organization, the publishing and reading credentials are the same.
+So it seemed intuitive that the UV_INDEX_<NAME> variables would be used.</p>
+<p>But perhaps the UV_INDEX variables could be used in the absence of the UV_PUBLISH variables?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-17 10:32</div>
+            <div class="timeline-body"><p>We can add <code>UV_INDEX_</code> as lowest priority credential source, behind CLI,<code>UV_PUBLISH_</code> and (if used) the keyring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sfriedowitz">@sfriedowitz</a> on 2024-12-18 02:23</div>
+            <div class="timeline-body"><blockquote>
+<p>We can add <code>UV_INDEX_</code> as lowest priority credential source, behind CLI,<code>UV_PUBLISH_</code> and (if used) the keyring.</p>
+</blockquote>
+<p>That would be perfect, thank you !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10193.html">astral-sh/uv#10193</a> on 2024-12-30 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menzenski">@menzenski</a> on 2024-12-30 18:22</div>
+            <div class="timeline-body"><p>We publish Python libraries to a private Artifactory registry and use separate credentials for read-only operations and for publishing. Those are easy enough to map to the same environment variable names if needed but IMO it'd be nicer to be able to use different names when reading (installing dependencies) vs writing (publishing).</p>
+<blockquote>
+<p>We can add UV_INDEX_ as lowest priority credential source, behind CLI,UV_PUBLISH_ and (if used) the keyring.</p>
+</blockquote>
+<p>This option sounds great - this would let us use <code>UV_PUBLISH_</code> for publishing operations and <code>UV_INDEX_</code> for read-only operations - having the two &quot;look&quot; different is less confusing IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV publish with index name does not read environment credentials" to "Read `UV_INDEX_<NAME>_` credentials during `uv publish`" by @zanieb on 2024-12-30 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2024-12-30 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-12-30 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10386.html">astral-sh/uv#10386</a> on 2025-01-08 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SalttownUser">@SalttownUser</a> on 2025-01-08 15:05</div>
+            <div class="timeline-body"><p>We publish to private GitLab projects with individual credentials for every project.  In GitLab all the packages from one group are available accessing the group package registry(https://docs.gitlab.com/ee/user/packages/package_registry/#view-packages).</p>
+<p>In this scenario the publish token for pushing the package to the project is not the same as the read token for getting the packages from the group registry. So in this case it would be nice, when <code>UV_PUBLISH_</code>  would be used to authenticate with <code>publish-url</code> and <code>UV_INDEX_&lt;name&gt;</code> would be used to authenticate with index  <code>&lt;name&gt;</code> to read/check dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-01-08 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7839.html">astral-sh/uv#7839</a> on 2025-01-28 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 15:11</div>
+            <div class="timeline-body"><p>Reviewing our authentication system, i'm less inclined to do this: We currently fall back to prompting the user for username and password if there isn't any set. When index credentials and upload credentials are not the same (they usually should be different, since regular <code>uv</code> operations should have less privileges than publish), we would then instead of prompting use the wrong credentials from <code>UV_INDEX_*</code> and fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @konstin on 2025-01-28 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @konstin on 2025-01-28 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11032.html">astral-sh/uv#11032</a> on 2025-01-28 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erny">@erny</a> on 2025-03-04 13:26</div>
+            <div class="timeline-body"><p>I couldn't find any comment about using .netrc or .pypirc to store credentials for <code>uv publish</code>. Although I have both, uv doesn't use any of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-04 13:39</div>
+            <div class="timeline-body"><p>uv does not read <code>.netrc</code> or <code>.pypirc</code> for publishing, we currently only support the keyring as persistent password storage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-04 13:54</div>
+            <div class="timeline-body"><p>@konstin -- It seems like <code>.netrc</code> could make sense, what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-04 14:09</div>
+            <div class="timeline-body"><p>Both files are standards that we can support (https://everything.curl.dev/usingcurl/netrc.html, https://packaging.python.org/en/latest/specifications/pypirc/), and we already support netrc for index authenticaton (i.e. we only have to wire this to publish, too), with the caveat that I'd generally nudge people towards the system keyring as a safer alternative to storing password in a plain text file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BartekSzpak">@BartekSzpak</a> on 2025-03-11 20:31</div>
+            <div class="timeline-body"><p>I went through this <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#publishing-packages-to-aws-codeartifact">page</a> in the documentation and got surprised that setting the <code>UV_PUBLISH_USERNAME</code> and <code>UV_PUBLISH_PASSWORD</code> allowed me to publish to a private repository (nexus and not the codeartifact) without being prompted for credentials.</p>
+<p>Not sure if this is intentional, but very useful from my perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dzanaga">@dzanaga</a> on 2025-03-21 10:43</div>
+            <div class="timeline-body"><p>in case a user wants to publish to different indexes, would it be possible to have different UV_PUBLISH_ env vars?
+similarly to UV_INDEX_INDEXNAME_USERNAME, could we have UV_PUBLISH_INDEXNAME_USERNAME/PASSWORD</p>
+<p>or what would be the preferred way to automate publishing to different indexes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-21 23:16</div>
+            <div class="timeline-body"><p>I'd recommend running the two <code>uv publish</code> commands with different <code>UV_PUBLISH_</code> values. If you're publishing from a local machine, you can also use the keyring support for dispatching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rainermensing">@rainermensing</a> on 2025-05-26 15:30</div>
+            <div class="timeline-body"><p>A closely related issue to this that I could consider part of it: Can we add the --env-file flag to uv publish? To be fair, it is not available for uv sync either (only uv run), but since sync runs in the background of uv run, you can already use a .env file to set index credentials. Maybe this needs a new issue?</p>
+<p>EDIT:
+would there be anything problematic with this workaround? It does not seem to install uv again...
+<code>uvx --env-file .env uv publish</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14253.html">astral-sh/uv#14253</a> on 2025-06-25 07:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:49 UTC
+    </footer>
+</body>
+</html>

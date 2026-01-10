@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>compression not supported: 14 - astral-sh/uv #13192</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>compression not supported: 14</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13192">#13192</a>
+        opened by <a href="https://github.com/yourlogarithm">@yourlogarithm</a>
+        on 2025-04-29 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yourlogarithm">@yourlogarithm</a> on 2025-04-29 12:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-sh">uv add somepackage
+Resolved 58 packages in 283ms
+  × Failed to download `somepackage==1.2.3`
+  ├─▶ Failed to extract archive: somepackage-1.2.3-py3-none-manylinux_2_28_x86_64.whl
+  ╰─▶ compression not supported: 14
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>The dependency is from a private index, but I have managed reproduce this issue by manually creating a broken <code>.whl</code> file with this script:</p>
+<pre><code class="language-python"># lzma.py
+
+import lzma
+import zipfile
+import os
+
+# Step 1: Create dummy file
+os.makedirs(&quot;fakepkg&quot;, exist_ok=True)
+with open(&quot;fakepkg/__init__.py&quot;, &quot;w&quot;) as f:
+    f.write(&quot;# dummy package&quot;)
+
+# Step 2: Manually compress with LZMA
+with open(&quot;fakepkg/__init__.py&quot;, &quot;rb&quot;) as f:
+    data = f.read()
+
+compressed = lzma.compress(data)
+
+# Step 3: Write raw ZIP with method 14 (LZMA)
+from zipfile import ZipFile, ZIP_STORED, ZipInfo
+import time
+
+with ZipFile(&quot;broken-0.0.1-py3-none-any.whl&quot;, &quot;w&quot;) as zf:
+    info = ZipInfo(&quot;fakepkg/__init__.py&quot;)
+    info.compress_type = 14  # LZMA
+    info.date_time = time.localtime()[:6]
+    info.external_attr = 0o644 &lt;&lt; 16  # permissions
+    info.file_size = len(data)
+    info.compress_size = len(compressed)
+    zf.writestr(info, compressed)
+
+print(&quot;Created broken .whl with compression method 14&quot;)
+</code></pre>
+<pre><code class="language-sh">python3 lzma.py
+uv add ./broken-0.0.1-py3-none-any.whl
+  × Failed to read `broken @ file:///path/broken-0.0.1-py3-none-any.whl`
+  ├─▶ Failed to extract archive: broken-0.0.1-py3-none-any.whl
+  ╰─▶ compression not supported: 14
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<h3>Platform</h3>
+<p>Fedora Linux 41 (Workstation Edition)</p>
+<h3>Version</h3>
+<p>uv 0.6.16</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yourlogarithm on 2025-04-29 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-29 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-29 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-29 13:00</div>
+            <div class="timeline-body"><p>Currently, wheels are either assumed to use stored or deflate compression. Since we're already using the lzma crate for <code>.tar.xz</code> files, it's not much overhead to support it for zip files, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelbischoff">@marcelbischoff</a> on 2025-04-30 01:56</div>
+            <div class="timeline-body"><p>I am getting similar errors installing uv with <code>pip install -U uv</code> in a Docker build. Pinning it to an older version fixes this so this might be a regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelbischoff">@marcelbischoff</a> on 2025-04-30 02:11</div>
+            <div class="timeline-body"><p>Nevermind runing out of disk space  in CI it looks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 12:49</div>
+            <div class="timeline-body"><p>@konstin -- Is this hard to support?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13285.html">astral-sh/uv#13285</a> on 2025-05-04 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-04 16:02</div>
+            <div class="timeline-body"><p>It has a feature flag we can activate: #13285</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-04 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2025-05-06 08:23</div>
+            <div class="timeline-body"><p>I made a wheel using LZMA compression format with this script. pip can install it, but unfortunately, I’m getting an error from uv saying “stream/file format not recognized.”</p>
+<p><code>make-lzma-wheel.py</code></p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#     &quot;wheel&quot;,
+# ]
+# ///
+from zipfile import ZIP_LZMA
+
+from wheel.wheelfile import WheelFile
+
+with WheelFile(&quot;fakepkg-0.0.1-py3-none-any.whl&quot;, &quot;w&quot;, compression=ZIP_LZMA) as zf:
+    zf.writestr(&quot;fakepkg/__init__.py&quot;, b'print(&quot;hello world&quot;)')
+    zf.writestr(
+        &quot;fakepkg-0.0.1.dist-info/METADATA&quot;,
+        &quot;&quot;&quot;\
+Metadata-Version: 2.4
+Name: fakepkg
+Version: 0.0.1
+Summary: fakepkg
+Requires-Python: &gt;=3.8
+
+fakepkg is a fake package for testing purposes.
+&quot;&quot;&quot;,
+    )
+    zf.writestr(
+        &quot;fakepkg-0.0.1.dist-info/WHEEL&quot;,
+        &quot;&quot;&quot;\
+Wheel-Version: 1.0
+Generator: fakepkg
+Root-Is-Purelib: false
+&quot;&quot;&quot;.encode(),
+    )
+
+print(&quot;Created fakepkg-0.0.1-py3-none-any.whl&quot;)
+</code></pre>
+<p>pip can install this wheel:</p>
+<pre><code class="language-console">$ uv venv --seed
+$ .venv/bin/pip install fakepkg-0.0.1-py3-none-any.whl
+Processing ./fakepkg-0.0.1-py3-none-any.whl
+Installing collected packages: fakepkg
+Successfully installed fakepkg-0.0.1
+$ .venv/bin/python -c 'import fakepkg'
+hello world
+</code></pre>
+<p><code>uv add</code> or <code>uv pip install</code> fails:</p>
+<pre><code class="language-console">$ cargo run -- pip install fakepkg-0.0.1-py3-none-any.whl
+  × Failed to read `fakepkg @ file:///private/tmp/hello/fakepkg-0.0.1-py3-none-any.whl`
+  ├─▶ Failed to read metadata: `/private/tmp/hello/fakepkg-0.0.1-py3-none-any.whl`
+  ├─▶ Failed to read from zip file
+  ├─▶ an upstream reader returned an error: stream/file format not recognized
+  ╰─▶ stream/file format not recognized
+
+$ cargo run -- --version
+uv 0.7.2+24 (3218e364a 2025-05-05)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13310.html">astral-sh/uv#13310</a> on 2025-05-06 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 08:38</div>
+            <div class="timeline-body"><p>I've moved this to a separate issue: #13310</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

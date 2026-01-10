@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect pyproject.toml defined index-url &amp; keyring-provider in 1st level commands - astral-sh/uv #6230</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect pyproject.toml defined index-url &amp; keyring-provider in 1st level commands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6230">#6230</a>
+        opened by <a href="https://github.com/Eyal-Shalev">@Eyal-Shalev</a>
+        on 2024-08-19 20:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Eyal-Shalev">@Eyal-Shalev</a> on 2024-08-19 20:19</div>
+            <div class="timeline-body"><p>1st level commands such as <code>uv lock</code>, <code>uv add</code> &amp; <code>uv sync</code> do not respect the <code>index-url</code> &amp; <code>keyring-provider</code> parameters as they are defined in <code>pyproject.toml</code></p>
+<h3><code>pyproject.toml</code></h3>
+<pre><code>[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools_scm]
+
+[tool.uv.pip]
+python = &quot;3.12&quot;
+index-url = &quot;https://aws@foo-012345678901.d.codeartifact.us-east-1.amazonaws.com/pypi/bar/simple/&quot;
+keyring-provider = &quot;subprocess&quot;
+
+[project]
+name = &quot;my-project&quot;
+version = &quot;0.0.0-dev&quot;
+requires-python = &quot;~=3.12.0&quot;
+dependencies = [ &quot;my-private-package&quot; ]
+</code></pre>
+<h3>Doesn't work</h3>
+<pre><code class="language-sh">uv lock --no-cache
+</code></pre>
+<pre><code>  × No solution found when resolving dependencies for split (python_full_version &lt; '4' and implementation_name == 'pypy'):
+  ╰─▶ Because my-private-package was not found in the package registry and your project depends on my-private-package, we can
+      conclude that your project's requirements are unsatisfiable.
+      And because your project requires my-project, we can conclude that your projects's requirements are unsatisfiable.
+</code></pre>
+<h3>Works</h3>
+<pre><code class="language-sh">uv lock --no-cache --index-url=&quot;https://aws@foo-012345678901.d.codeartifact.us-east-1.amazonaws.com/pypi/bar/simple/&quot; --keyring-provider=&quot;subprocess&quot;
+</code></pre>
+<h3><code>uv --version</code></h3>
+<p><code>uv 0.2.37 (15dfb660a 2024-08-15)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 20:21</div>
+            <div class="timeline-body"><p>Hey @Eyal-Shalev — that's because they're in the <code>uv.pip</code> section — you'll need to move them to just a <code>uv</code> section. See #6225</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-19 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Eyal-Shalev">@Eyal-Shalev</a> on 2024-08-19 20:49</div>
+            <div class="timeline-body"><p>Indeed the following works.</p>
+<p>@zanieb thank you very very much 😄</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools_scm]
+
+[tool.uv]
+index-url = &quot;https://aws@foo-012345678901.d.codeartifact.us-east-1.amazonaws.com/pypi/bar/simple/&quot;
+keyring-provider = &quot;subprocess&quot;
+
+[tool.uv.pip]
+python = &quot;3.12&quot;
+
+[project]
+name = &quot;my-project&quot;
+version = &quot;0.0.0-dev&quot;
+requires-python = &quot;~=3.12.0&quot;
+dependencies = [ &quot;my-private-package&quot; ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Eyal-Shalev on 2024-08-19 20:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

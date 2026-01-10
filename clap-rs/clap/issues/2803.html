@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't leak `help_heading` when flattening - clap-rs/clap #2803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't leak `help_heading` when flattening</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2803">#2803</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-01 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-01 20:53</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>v3.0.0-beta.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Debug, Clone, Clap)]
+#[clap(help_heading = &quot;General&quot;)]
+struct CliOptions {
+    #[clap(flatten)]
+    options_a: OptionsA,
+
+    #[clap(flatten)]
+    options_b: OptionsB,
+}
+
+#[derive(Debug, Clone, Clap)]
+#[clap(help_heading = &quot;HEADING A&quot;)]
+struct OptionsA {
+    #[clap(long)]
+    should_be_in_section_a: Option&lt;u32&gt;,
+}
+
+#[derive(Debug, Clone, Clap)]
+struct OptionsB {
+    #[clap(long)]
+    option_b: Option&lt;u32&gt;,
+}
+
+fn main() {
+    CliOptions::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- --help</p>
+<h3>Actual Behaviour</h3>
+<p><code>option_b</code> is in &quot;HEADING A&quot;</p>
+<h3>Expected Behaviour</h3>
+<p><code>option_b</code> should be in `General</p>
+<h3>Additional Context</h3>
+<p>This is split out of  #2785.</p>
+<p>Similarly, we should also support setting <code>help_heading</code> when specifying <code>flatten</code> and it should push and pop the heading.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-10-01 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-10-01 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 20:54</div>
+            <div class="timeline-body"><p>I'm assuming we'd need to add a <code>get_heading_help</code> and have the derive get it and then restore it afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2021-10-01 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-01 23:13</div>
+            <div class="timeline-body"><p>Oddly enough I ran into exactly this at work the other day.</p>
+<blockquote>
+<p>I'm assuming we'd need to add a get_heading_help and have the derive get it and then restore it afterwards.</p>
+</blockquote>
+<p>Yeah that's the best way I can think of to do this in the least obtrusive manner. An alternative would be to have <code>#[clap(help_heading = &quot;Foo&quot;] struct Foo;</code> use <code>Arg::help_heading</code> individually on each field when creating the <code>Arg</code> struct instead of setting the &quot;global&quot; <code>App</code> help heading which sets the current heading for all future args added to the <code>App</code> until it's changed or reset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 23:35</div>
+            <div class="timeline-body"><blockquote>
+<p>An alternative would be to have #[clap(help_heading = &quot;Foo&quot;] struct Foo; use Arg::help_heading individually on each field when creating the Arg struct instead of setting the &quot;global&quot; App help heading which sets the current heading for all future args added to the App until it's changed or reset.</p>
+</blockquote>
+<p>Forgot to mention that I had considered this.  I assumed people would want the setting to be inherited which this wouldn't allow.  For example, <a href="https://github.com/rust-cli/clap-verbosity-flag">clap-verbosity-flag</a> probably wouldn't be so prescriptive as setting its own help heading, relying on inheriting it.  We could extend the trait to allow passing in a heading, but I worry about that being a slippery slope for what goes in the trait interface.</p>
+<p>Granted, now that I say this, the converse to this also needs to be implemented  If someone sets the heading on a <code>flatten</code>, that should apply as an <code>App</code> heading and be reset afterwards so someone can set the heading on the clap-verbosity flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-12 12:41</div>
+            <div class="timeline-body"><p>Related to #2785</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2872.html">clap-rs/clap#2872</a> on 2021-10-14 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2882.html">clap-rs/clap#2882</a> on 2021-10-15 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2884.html">clap-rs/clap#2884</a> on 2021-10-15 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2895.html">clap-rs/clap#2895</a> on 2021-10-16 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2021-10-16 20:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:38 UTC
+    </footer>
+</body>
+</html>

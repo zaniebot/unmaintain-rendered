@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend only allows `&lt;name&gt;/src/&lt;name&gt;` structure - astral-sh/uv #11428</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Backend only allows `&lt;name&gt;/src/&lt;name&gt;` structure</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11428">#11428</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2025-02-11 21:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-11 21:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Trying to convert <a href="https://github.com/pyserial/pyserial/">pyserial</a> to an in-project dependency (as either workspace member or path dependency under <code>albatross/packages</code>) is tricky.</p>
+<p>Although the package name is <code>pyserial</code>, it actually installs a package named <code>serial</code> into the virtual environment. There is no way to indicate this to the uv backend, which enforces a strict <code>&lt;name&gt;/src/&lt;name&gt;</code> for installation.</p>
+<p><a href="https://github.com/pyserial/pyserial/blob/7aeea35429d15f3eefed10bbb659674638903e3a/setup.py#L60">setup.py</a> permits specifying an arbitrary package layout, but this does not seem to be supported in the <code>pyproject.toml</code> spec or any <code>tool.uv</code> settings. Nested workspaces are not supported either.</p>
+<p>Sample subpackage <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;uv&gt;=0.5,&lt;0.6&quot;]
+build-backend = &quot;uv&quot;
+
+[project]
+name = &quot;pyserial&quot;
+version = &quot;3.5&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+</code></pre>
+<p>Sample root <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;uv&gt;=0.5,&lt;0.6&quot;]
+build-backend = &quot;uv&quot;
+
+[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;pyserial==3.5&quot;,
+]
+
+[tool.uv.sources]
+pyserial = { path = &quot;packages/pyserial&quot; }
+</code></pre>
+<h3>Error</h3>
+<pre><code class="language-cmd">  × Failed to build `pyserial @ file:///C:/Users/user/dev/albatross/packages/pyserial`
+  ╰─▶ Expected a Python module with an `__init__.py` at: `packages\pyserial\src\pyserial`
+  help: `pyserial` was included because `albatross` (v0.1.0) depends on `pyserial`
+</code></pre>
+<p>In the case of pyserial, you cannot actually <code>import pyserial</code>. You can only do <code>import serial</code>, <code>import  serial.tools</code>, <code>import serial.urlhandler</code>, or <code>import serial.threaded</code>.</p>
+<p>To support these types of projects, there could be a way to specify a different module name and subpackages to the builder.</p>
+<p>i.e.</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;uv&gt;=0.5,&lt;0.6&quot;]
+build-backend = &quot;uv&quot;
+
+[project]
+name = &quot;pyserial&quot;
+version = &quot;3.5&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.uv.build-backend]
+module-name = &quot;serial&quot; # module path is now pyserial/src/serial
+packages = [&quot;serial&quot;, &quot;serial.tools&quot;, &quot;serial.urlhandler&quot;,  &quot;serial.threaded&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.5.30</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @chrisrodrigue on 2025-02-11 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-11 21:54</div>
+            <div class="timeline-body"><p>Main tracking issue: #8779</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Backend expects `<package-name>/src/<package-name>` structure for in-project packages" to "Backend only allows `<name>/src/<name>` structure" by @chrisrodrigue on 2025-02-12 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11884.html">astral-sh/uv#11884</a> on 2025-03-04 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-03-04 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-03-04 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-07 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-07 14:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

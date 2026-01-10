@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backwards incompatibility for ArgMatches and UnwindSafe - clap-rs/clap #3876</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Backwards incompatibility for ArgMatches and UnwindSafe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3876">#3876</a>
+        opened by <a href="https://github.com/doivosevic">@doivosevic</a>
+        on 2022-06-27 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/doivosevic">@doivosevic</a> on 2022-06-27 17:50</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.60</p>
+<h3>Clap Version</h3>
+<p>between 3.1.18 and 3.2.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">
+
+fn a(a: ArgMatches) {
+    b(a)
+}
+
+fn b&lt;T: UnwindSafe&gt;(b: T) {
+    
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo check</p>
+<h3>Actual Behaviour</h3>
+<p>Compile should pass</p>
+<h3>Expected Behaviour</h3>
+<p>Compile fails</p>
+<h3>Additional Context</h3>
+<p>This looks like a backwards incompatibility</p>
+<h3>Debug Output</h3>
+<pre><code>
+error[E0277]: the type `(dyn std::any::Any + Sync + std::marker::Send + 'static)` may contain interior mutability and a reference may not be safely transferrable across a catch_unwind boundary
+  --&gt; index/src/utils.rs:31:7
+   |
+31 |     b(a)
+   |     - ^ `(dyn std::any::Any + Sync + std::marker::Send + 'static)` may contain interior mutability and a reference may not be safely transferrable across a catch_unwind boundary
+   |     |
+   |     required by a bound introduced by this call
+   |
+   = help: the trait `RefUnwindSafe` is not implemented for `(dyn std::any::Any + Sync + std::marker::Send + 'static)`
+   = note: required because of the requirements on the impl of `UnwindSafe` for `Arc&lt;(dyn std::any::Any + Sync + std::marker::Send + 'static)&gt;`
+   = note: required because it appears within the type `parser::matches::any_value::AnyValue`
+   = note: required because of the requirements on the impl of `UnwindSafe` for `Unique&lt;parser::matches::any_value::AnyValue&gt;`
+   = note: required because it appears within the type `alloc::raw_vec::RawVec&lt;parser::matches::any_value::AnyValue&gt;`
+   = note: required because it appears within the type `Vec&lt;parser::matches::any_value::AnyValue&gt;`
+   = note: required because of the requirements on the impl of `UnwindSafe` for `Unique&lt;Vec&lt;parser::matches::any_value::AnyValue&gt;&gt;`
+   = note: required because it appears within the type `alloc::raw_vec::RawVec&lt;Vec&lt;parser::matches::any_value::AnyValue&gt;&gt;`
+   = note: required because it appears within the type `Vec&lt;Vec&lt;parser::matches::any_value::AnyValue&gt;&gt;`
+   = note: required because it appears within the type `parser::matches::matched_arg::MatchedArg`
+   = note: required because it appears within the type `indexmap::Bucket&lt;clap::util::id::Id, parser::matches::matched_arg::MatchedArg&gt;`
+   = note: required because of the requirements on the impl of `UnwindSafe` for `Unique&lt;indexmap::Bucket&lt;clap::util::id::Id, parser::matches::matched_arg::MatchedArg&gt;&gt;`
+   = note: required because it appears within the type `alloc::raw_vec::RawVec&lt;indexmap::Bucket&lt;clap::util::id::Id, parser::matches::matched_arg::MatchedArg&gt;&gt;`
+   = note: required because it appears within the type `Vec&lt;indexmap::Bucket&lt;clap::util::id::Id, parser::matches::matched_arg::MatchedArg&gt;&gt;`
+   = note: required because it appears within the type `indexmap::map::core::IndexMapCore&lt;clap::util::id::Id, parser::matches::matched_arg::MatchedArg&gt;`
+   = note: required because it appears within the type `indexmap::map::IndexMap&lt;clap::util::id::Id, parser::matches::matched_arg::MatchedArg&gt;`
+   = note: required because it appears within the type `ArgMatches`
+note: required by a bound in `b`
+  --&gt; index/src/utils.rs:34:9
+   |
+34 | fn b&lt;T: UnwindSafe&gt;(b: T) {
+   |         ^^^^^^^^^^ required by this bound in `b`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @doivosevic on 2022-06-27 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-27 19:39</div>
+            <div class="timeline-body"><p>I'm curious, how did you find this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-06-27 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-06-27 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doivosevic">@doivosevic</a> on 2022-06-27 19:40</div>
+            <div class="timeline-body"><p>I had code which was working which is let's say a wrapper for executing binaries on worker machines and when someone from my org bumped clap in develop my code broke after rebasing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-27 19:40</div>
+            <div class="timeline-body"><p>Note: I'm assuming we'd need to add another trait bound.  It gets a little awkward making a breaking change to fix a breaking change but this would be unlikely to break someone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3877.html">clap-rs/clap#3877</a> on 2022-06-28 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3878.html">clap-rs/clap#3878</a> on 2022-06-28 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-28 02:12</div>
+            <div class="timeline-body"><p>Some thoughts in working on a fix (#3878)</p>
+<ul>
+<li>Auto-traits are a weird lot for ensuring compatibility on.  Ideally, we could say what auto-traits are assumed and which aren't in a user-facing way.  Instead we have to add compile-time tests for what auto traits we implement and don't.  The big concern is accidentally implementing an auto-trait that we don't provide a guarantee for.</li>
+<li>Its hard to decide whether we should intend a guarantee on this long term</li>
+<li>I seem to be stuck in the implementation with parts dealing with <code>Arc&lt;dyn&gt;</code>.  If we can't implement a fix for this, that puts us in an awkward space of either pulling the entire 3.2 release and breaking people or leaving it and letting this breakage continue (if we consider it a breakage).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doivosevic">@doivosevic</a> on 2022-06-28 08:12</div>
+            <div class="timeline-body"><p>Can we then get an interface to get all the args from ArgMatches instead so that we can pass the args in some other format across this boundary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-16 02:46</div>
+            <div class="timeline-body"><p>That most likely is blocked on breaking changes, see https://github.com/clap-rs/clap/issues/1206</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/374.html">rust-lang/cargo#374</a> on 2022-07-25 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../obi1kenobi/cargo-semver-checks/issues/32.html">obi1kenobi/cargo-semver-checks#32</a> on 2022-08-07 02:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../obi1kenobi/cargo-semver-checks/pulls/33.html">obi1kenobi/cargo-semver-checks#33</a> on 2022-08-07 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rust/issues/100252.html">rust-lang/rust#100252</a> on 2022-08-08 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-04 15:28</div>
+            <div class="timeline-body"><p>As clap v4 is now out, I'm going ahead and closing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-04 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4347.html">clap-rs/clap#4347</a> on 2022-10-04 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../libp2p/rust-libp2p/pulls/3312.html">libp2p/rust-libp2p#3312</a> on 2023-02-25 02:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:03 UTC
+    </footer>
+</body>
+</html>

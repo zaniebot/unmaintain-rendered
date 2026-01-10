@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[fish] Flags are not completed after first flag has been completed - clap-rs/clap #1212</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[fish] Flags are not completed after first flag has been completed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1212">#1212</a>
+        opened by <a href="https://github.com/zx8">@zx8</a>
+        on 2018-03-18 12:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zx8">@zx8</a> on 2018-03-18 12:58</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<ul>
+<li><code>rustc 1.24.1 (d3ae9a9e0 2018-02-27)</code></li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li><code>v2.31.1</code></li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<pre><code>$ rg --&lt;TAB&gt;
+# list of completions
+$ rg --no-follow --&lt;TAB&gt;
+# list of completions
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<pre><code>$ rg --&lt;TAB&gt;
+# works - list of completions
+$ rg --no-follow --&lt;TAB&gt;
+# broken; no completions
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zx8">@zx8</a> on 2018-03-18 13:06</div>
+            <div class="timeline-body"><p>The issue here is the usage of the <code>__fish_using_command</code> function. Here's what's going on:</p>
+<pre><code>$ rg --no-follow --&lt;TAB&gt;
+function __fish_using_command
+    # cmd is set to array: [&quot;rg&quot;, &quot;--no-line-number&quot;]
+    set cmd (commandline -opc)
+    # 'count $cmd' is 2, 'count $argv' is 1  
+    if [ (count $cmd) -eq (count $argv) ]
+        # etc.
+        return 0
+    end
+    # no completions
+    return 1
+end
+</code></pre>
+<p>If you drop this function entirely (which I understand was introduced to fix subcommand completion; https://github.com/kbknapp/clap-rs/pull/687, /ping @wdv4758h), flag completions &gt;1 work again, i.e.</p>
+<pre><code>complete -c rg -s N -l no-line-number -d 'Suppress line numbers.'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1214.html">clap-rs/clap#1214</a> on 2018-03-18 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-03-19 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wdv4758h">@wdv4758h</a> on 2018-03-19 17:34</div>
+            <div class="timeline-body"><p>this issue fix so fast, nice :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-19 18:03</div>
+            <div class="timeline-body"><p>I'm putting out the new version in just a minute :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/issues/862.html">BurntSushi/ripgrep#862</a> on 2018-03-19 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:46 UTC
+    </footer>
+</body>
+</html>

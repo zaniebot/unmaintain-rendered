@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend allowed dunder methods (PLW3201) - astral-sh/ruff #9716</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend allowed dunder methods (PLW3201)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9716">#9716</a>
+        opened by <a href="https://github.com/johnslavik">@johnslavik</a>
+        on 2024-01-30 19:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-30 19:51</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Opened as a followup to discussion at #9706.</p>
+<p>Kudos to @AlexWaygood for scraping all dunders from CPython:</p>
+<blockquote>
+<p>This is the set of dunders that were surfaced in my script and are not currently listed by ruff as excluded from this rule:</p>
+<pre><code>['__cmp__',
+ '__conform__',
+ '__getinitargs__',
+ '__getitem_inner__',
+ '__getslice__',
+ '__import__',
+ '__isabstractmethod__',
+ '__members__',
+ '__newobj__',
+ '__newobj_ex__',
+ '__nonzero__',
+ '__parameters__',
+ '__rich__',
+ '__rich_console__',
+ '__rich_measure__',
+ '__rich_repr__',
+ '__setslice__',
+ '__signature__',
+ '__tp_del__',
+ '__typing_is_unpacked_typevartuple__',
+ '__typing_unpacked_tuple_args__',
+ '__unicode__',
+ '__version__',
+ '__wrapped__']
+</code></pre>
+<p>Most of them seem to be definitions in tests, internal implementation details that are undocumented, and/or leftovers from Python 2 that still haven't been cleaned up. The <code>__rich_*__</code> ones are because I have <code>rich</code> installed in a venv inside my cpython local clone, I think?</p>
+<p>I like that the script surfaced <code>__import__</code> -- that's the literal definition of Python's <code>import</code> statement right there 😄</p>
+</blockquote>
+<p>In my opinion, it would be useful to add <code>__wrapped__</code> , <code>__isabstractmethod__</code> and <code>__signature__</code> to the list in case one wants to define those as properties (it's a niche use case though), especially since <code>__class__</code> is in the list.
+<code>__rich_*__</code> should definitely be supported, a lot of critical tools &amp; libraries have integrations with rich (including pip or Pydantic).</p>
+<p>Some external libraries also implement their own dunders, such as pyarrow's <a href="https://github.com/pandas-dev/pandas/blob/9b95e4596c5d47b5dcc3cbedf143023475930595/pandas/core/arrays/string_.py#L429"><code>__arrow_array__</code> used in pandas</a> or <a href="https://www.attrs.org/en/stable/init.html#post-init"><code>__attrs_post_init__</code> from attrs</a> (among others) which I can see being supported now.
+How should we research and collect them? What criteria should we have?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9706.html">astral-sh/ruff#9706</a> on 2024-01-30 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-30 19:55</div>
+            <div class="timeline-body"><p>Current list of known dunder methods:
+https://github.com/astral-sh/ruff/blob/541aef4e6c569949350818b256d7b53eea1b995a/crates/ruff_linter/src/rules/pylint/helpers.rs#L205-L337</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-30 20:39</div>
+            <div class="timeline-body"><p>I feel like the <code>__rich_*__</code> methods (and <code>__arrow_array__</code> for PyArrow) would be good candidates for the <a href="https://docs.astral.sh/ruff/settings/#pylint-allow-dunder-method-names"><code>tool.pylint.allow-dunder-method-names</code></a> setting that you can use in your <code>pyproject.toml</code> file. I love <code>rich</code>, I think it's a fantastic library, but as a CPython core dev I have to point out that they <em>are</em> violating the <a href="https://docs.python.org/3/reference/lexical_analysis.html#reserved-classes-of-identifiers">contract specified by the Python reference documentation</a>, which states that all dunders are reserved for use by CPython internals and the CPython standard library:</p>
+<blockquote>
+<p><code>__*__</code></p>
+<p>System-defined names, informally known as “dunder” names. These names are defined by the interpreter and its implementation (including the standard library). Current system names are discussed in the <a href="https://docs.python.org/3/reference/datamodel.html#specialnames">Special method names</a> section and elsewhere. More will likely be defined in future versions of Python. <em>Any</em> use of <code>__*__</code> names, in any context, that does not follow explicitly documented use, is subject to breakage without warning.</p>
+</blockquote>
+<p>But having said that, I see we already include some third-party dunders in our list -- the <code>__attrs_*__</code> dunders are all included :)</p>
+<blockquote>
+<p>In my opinion, it would be useful to add <code>__wrapped__</code> , <code>__isabstractmethod__</code> and <code>__signature__</code> to the list in case one wants to define those as properties (it's a niche use case though), especially since <code>__class__</code> is in the list.</p>
+</blockquote>
+<p>I have no objection to adding exemptions for these, since they're all ~public (some of them have less-than-ideal docs, but that's probably a CPython issue really). But I think they should only be allowed as properties -- defining them as methods would likely be a mistake. I see we treat methods decorated with <code>@property</code> exactly the same way as other methods for this rule currently -- do you happen to know if pylint does the same thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-01-30 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extend allowed dunder methods" to "Extend allowed dunder methods (PLW3201)" by @AlexWaygood on 2024-01-30 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15624.html">astral-sh/ruff#15624</a> on 2025-01-20 23:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

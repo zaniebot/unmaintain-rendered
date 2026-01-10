@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bugs in the activate_this.py script created by uv venv - astral-sh/uv #3346</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bugs in the activate_this.py script created by uv venv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3346">#3346</a>
+        opened by <a href="https://github.com/pfmoore">@pfmoore</a>
+        on 2024-05-03 13:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-05-03 13:51</div>
+            <div class="timeline-body"><p>If I do <code>uv venv</code>, the file <code>.venv/Scripts/activate_this.py</code> contains errors:</p>
+<p>Too many closing parentheses:</p>
+<pre><code>    msg = &quot;You must use exec(open(this_file).read(), {'__file__': this_file}))&quot;
+</code></pre>
+<p>Invalid backslash escapes (this is on Windows):</p>
+<pre><code>for lib in &quot;..\Lib\site-packages&quot;.split(os.pathsep):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-03 13:59</div>
+            <div class="timeline-body"><p>Thanks, we vendored these from virtualenv and looks like the first one at least was fixed: https://github.com/pypa/virtualenv/pull/2651</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-03 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-03 13:59</div>
+            <div class="timeline-body"><p>The second looks like <em>our</em> bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-03 15:27</div>
+            <div class="timeline-body"><p>There's some other weirdness as well.</p>
+<p>https://github.com/astral-sh/uv/blob/1089abda3f98fe681c75cdb784b2e4b200122da2/crates/uv-virtualenv/src/activator/activate_this.py#L47</p>
+<p>Isn't that just exactly equivalent to this?</p>
+<pre><code class="language-py">os.environ[&quot;VIRTUAL_ENV_PROMPT&quot;] = os.path.basename(base)
+</code></pre>
+<p>https://github.com/astral-sh/uv/blob/1089abda3f98fe681c75cdb784b2e4b200122da2/crates/uv-virtualenv/src/activator/activate_this.py#L53-L54</p>
+<p>Isn't that exactly equivalent to this?</p>
+<pre><code class="language-py">     site.addsitedir(path) 
+ sys.path[:] = sys.path[prev_length:] + sys.path[:prev_length] 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-03 15:30</div>
+            <div class="timeline-body"><p>I think some parts were lost when copying the upstream (https://github.com/pypa/virtualenv/blob/01cc6fbeb9f6e4a261d3bcf292801d5959525870/src/virtualenv/activation/python/activate_this.py), i'll give this a proper a look on monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-04 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3376.html">astral-sh/uv#3376</a> on 2024-05-04 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-04 23:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

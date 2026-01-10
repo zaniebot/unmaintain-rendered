@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B018 false positive on attribute access with side effect - astral-sh/ruff #10536</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B018 false positive on attribute access with side effect</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10536">#10536</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2024-03-23 14:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-23 14:09</div>
+            <div class="timeline-body"><p>Using ruff 0.3.4 and attempting to adopt bugbear (B) checks in the <a href="/jaraco/keyring">keyring</a> project, I'm encountering what appear to be false positives:</p>
+<pre><code> keyring main @ ruff check --select B018 --fix --unsafe-fixes
+keyring/backend.py:71:13: B018 Found useless expression. Either assign it to a variable or remove it.
+keyring/backends/SecretService.py:35:13: B018 Found useless expression. Either assign it to a variable or remove it.
+keyring/backends/Windows.py:14:9: B018 Found useless expression. Either assign it to a variable or remove it.
+keyring/backends/Windows.py:21:9: B018 Found useless expression. Either assign it to a variable or remove it.
+keyring/core.py:137:5: B018 Found useless expression. Either assign it to a variable or remove it.
+keyring/testing/backend.py:177:13: B018 Found useless expression. Either assign it to a variable or remove it.
+</code></pre>
+<p>(there was one other prior to jaraco/keyring@7881db629e13725fa19fa6aadc378acb18386a3e)</p>
+<p>Looking at <a href="https://github.com/jaraco/keyring/blob/7881db629e13725fa19fa6aadc378acb18386a3e/keyring/backend.py#L68-L72">keyring.backend:71</a>, it's apparent that the &quot;useless expression&quot; is <code>cls.priority</code>. The protocol for keyring, however, is for a backend to raise an exception in the <code>.priority</code> access if the backend is not viable at all.</p>
+<p>Looking at <a href="https://github.com/jaraco/keyring/blob/7881db629e13725fa19fa6aadc378acb18386a3e/keyring/backends/Windows.py#L13-L14">keyring.backends.Windows:14</a>, the purpose of the attribute access is explicitly documented (force demand import to import the module).</p>
+<p>The advice is wrong. In particular, the expression isn't useless (the application would fail without the side effect of accessing the property), and the guidance is misleading (assigning to a variable would introduce more lint and removing it would break the the behavior).</p>
+<p>I can imagine one possible workaround is to replace direct attribute access with a <code>getattr</code> call:</p>
+<pre><code class="language-diff">diff --git a/keyring/backend.py b/keyring/backend.py
+index a21418f..e082fbe 100644
+--- a/keyring/backend.py
++++ b/keyring/backend.py
+@@ -68,7 +68,7 @@ class KeyringBackend(metaclass=KeyringBackendMeta):
+     @properties.classproperty
+     def viable(cls):
+         with errors.ExceptionRaisedContext() as exc:
+-            cls.priority
++            getattr(cls, 'priority')
+         return not exc
+ 
+     @classmethod
+diff --git a/keyring/backends/Windows.py b/keyring/backends/Windows.py
+index 7208ed1..5d057ec 100644
+--- a/keyring/backends/Windows.py
++++ b/keyring/backends/Windows.py
+@@ -11,7 +11,7 @@ with ExceptionRaisedContext() as missing_deps:
+         from win32ctypes.pywin32 import pywintypes, win32cred
+ 
+         # force demand import to raise ImportError
+-        win32cred.__name__
++        getattr(win32cred, '__name__')
+     except ImportError:
+         # fallback to pywin32
+         import pywintypes
+</code></pre>
+<p>However, this approach makes the code less readable and idiosyncratic (the canonical way to access an attribute is with dot notation), and making the change introduces B009 errors:</p>
+<pre><code> keyring main @ ruff check --select B009
+keyring/backend.py:71:13: B009 [*] Do not call `getattr` with a constant attribute value. It is not any safer than normal property access.
+keyring/backends/Windows.py:14:9: B009 [*] Do not call `getattr` with a constant attribute value. It is not any safer than normal property access.
+</code></pre>
+<p>Another workaround could be to disable B018 checks for all projects (or possibly just this project; I'm not yet sure how much this issue is isolated to keyring). That would be somewhat undesirable. It would be nice to get an error for failing to call a method (e.g. <code>self._init</code>).</p>
+<p>The workaround I'm leaning toward is to put <code>noqa: B018</code> on each of these expressions, but that feels messy.</p>
+<p>Since I'm not confident that ruff could readily distinguish between a property access that has a side-effect and a useless property access, I wonder if the documentation should at least capture this scenario and make a recommendation on what to do in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-23 14:11</div>
+            <div class="timeline-body"><p>I did <a href="https://github.com/search?q=repo%3APyCQA%2Fflake8-bugbear+B018&amp;type=issues">search the flake8-bugbear issue tracker</a> (and this one) to see if this issue had been discussed previously, but came up empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "B018 false positive on attribute access" to "B018 false positive on attribute access with side effect" by @jaraco on 2024-03-23 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-03-23 20:31</div>
+            <div class="timeline-body"><p>I am reviewing the ruff rules in Home Assistant and my solution is to use <code>_ = &lt;attribute&gt;</code> to make it clear that it is deliberately accessing the attribute without using the value (see https://github.com/home-assistant/core/pull/113582)</p>
+<p>Of course normally reading attributes or properties should not have side-effects, but there are occasions where it is done. The underscore as throw-away assignment is also quite common in the programming environment (e.g. in Rust)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-23 21:32</div>
+            <div class="timeline-body"><p>Ah yeah, I think suggesting <code>_ = ...</code> is a pretty reasonable workaround (or adding a <code># noqa: B018</code>). I just can't think of a way for us to know that an attribute access is <em>intentionally</em> included to trigger a side effect. We can add this to the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-03-23 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-24 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10551.html">astral-sh/ruff#10551</a> on 2024-03-25 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-25 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-25 02:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>derive error for missing `= value` for attributes is confusing - clap-rs/clap #3726</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>derive error for missing `= value` for attributes is confusing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3726">#3726</a>
+        opened by <a href="https://github.com/ravenexp">@ravenexp</a>
+        on 2022-05-13 07:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ravenexp">@ravenexp</a> on 2022-05-13 07:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.18</p>
+<h3>Describe your use case</h3>
+<p>I'm trying to add an environment variable fallback for the <code>--password</code> option. I do not want the variable value to be accidentally revealed when <code>--help</code> is used.</p>
+<p>I tried to write</p>
+<pre><code>#[clap(short, long, env = &quot;PROGRAM_PASSWORD&quot;, hide_env_values)]
+password: Option&lt;String&gt;,
+</code></pre>
+<p>but the error made me think that the attribute doesn't exist when it does:</p>
+<pre><code>error: unexpected attribute: hide_env_values
+</code></pre>
+<p>(Note: #3620 is for bool shorthand support)</p>
+<h3>Describe the solution you'd like</h3>
+<p>A clearer error message</p>
+<h3>Alternatives, if applicable</h3>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @ravenexp on 2022-05-13 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyO3/maturin/pulls/915.html">PyO3/maturin#915</a> on 2022-05-13 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-13 12:01</div>
+            <div class="timeline-body"><p>Boolean builder functions do not have an implied <code> = true</code> but you have to set it manually.  The following should work</p>
+<pre><code class="language-rust">#[clap(short, long, env = &quot;PROGRAM_PASSWORD&quot;, hide_env_values = true)]
+password: Option&lt;String&gt;,
+</code></pre>
+<p>See https://github.com/clap-rs/clap/issues/3620</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ravenexp">@ravenexp</a> on 2022-05-13 12:13</div>
+            <div class="timeline-body"><p>Thanks! I should've tried that before opening an issue :face_exhaling:</p>
+<p>I was getting</p>
+<pre><code>error: unexpected attribute: hide_env_values
+</code></pre>
+<p>when compiling, and it is not mentioned anywhere in <a href="https://github.com/clap-rs/clap/blob/v3.1.18/examples/derive_ref/README.md#arg-attributes">the documentation</a>, so I just assumed that this attribute was not implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-13 13:48</div>
+            <div class="timeline-body"><p>Thats an artifact of how we parse the attributes.  It isn't in our hard coded list of attributes that work without a <code>=</code> or <code>()</code>.  It would be nice to improve that message but unsure what to say.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`hide_env_values()` can't be used via the Derive API" to "derive error for missing `= value` for attributes is confusing" by @epage on 2022-05-13 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-05-13 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-05-13 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielparks">@danielparks</a> on 2022-07-31 05:02</div>
+            <div class="timeline-body"><p>Would you be opposed to adding the boolean attributes to the list that are accepted without a value? I imagine they all could be treated as true, but I would go through them and check. (To be clear, I’m volunteering.)</p>
+<p>Otherwise, I suppose the error could be something like:</p>
+<pre><code>error: unexpected attribute without value: hide_env_values</code></pre>
+<p>I‘m not sure how much clearer that is, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-01 17:07</div>
+            <div class="timeline-body"><p>@danielparks see https://github.com/clap-rs/clap/issues/3620</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:00 UTC
+    </footer>
+</body>
+</html>

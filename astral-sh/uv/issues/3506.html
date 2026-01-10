@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iron out how to represent path dependencies in the universal lock file - astral-sh/uv #3506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>iron out how to represent path dependencies in the universal lock file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3506">#3506</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-10 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-10 14:02</div>
+            <div class="timeline-body"><p>We want to support path dependencies in our lock file. But the data model for path dependencies in our lock file is, at the time of writing, not quite right. I believe what we <em>ought</em> to have for a path dependency is a single file URL to a directory, source distribution or wheel. But the data model currently allows for a source distribution <em>and</em> zero or more wheels, but specifically does not allow for a directory.</p>
+<p>I think the current data model is mostly just a reaction to the types that we have after resolution. Namely, I think we have two related types. The first is for wheel path dependencies:</p>
+<p>https://github.com/astral-sh/uv/blob/616ed530430f08577af5ae549c3d2b525e7e34ce/crates/distribution-types/src/lib.rs#L174-L180</p>
+<p>And the second is for source distribution path dependencies:</p>
+<p>https://github.com/astral-sh/uv/blob/616ed530430f08577af5ae549c3d2b525e7e34ce/crates/distribution-types/src/lib.rs#L206-L213</p>
+<p>My understanding is that the second is <em>also</em> used when we have a path dependency to a directory.</p>
+<p>This all matters for the lock file because if a path dependency points to a wheel or a source dist, then we want to record a hash for it. But if it comes from a directory, then we very specifically do not want to record a hash.</p>
+<p>So to fix this issue, I think we need to:</p>
+<ul>
+<li>[x] Adjust the <code>PathSourceDist</code> type so that it indicates whether it came from a real source distribution or a directory. Possibly one way to do this is to split the type in two, with one type representing source distributions and the other representing a directory.</li>
+<li>[ ] Adjust the <code>Lock</code> data model so that distributions with a <code>path</code> source kind are more limited than what they are today. I think we actually do <em>not</em> want to encode the file path itself, and instead derive that from the <code>pyproject.toml</code>. (This would match what Cargo does.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @BurntSushi on 2024-05-10 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3347.html">astral-sh/uv#3347</a> on 2024-05-10 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 14:03</div>
+            <div class="timeline-body"><p>I can look at the first bullet there, splitting <code>PathSourceDist</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3505.html">astral-sh/uv#3505</a> on 2024-05-10 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3519.html">astral-sh/uv#3519</a> on 2024-05-10 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 14:10</div>
+            <div class="timeline-body"><p>What does the second bullet mean exactly? Can you flesh it out a bit more? Perhaps I can help with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-20 14:12</div>
+            <div class="timeline-body"><p>Is it that the path gets omitted entirely when it's part of the workspace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-20 14:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it that the path gets omitted entirely when it's part of the workspace?</p>
+</blockquote>
+<p>Yeah exactly. Cargo rebuilds the path from the <code>Cargo.toml</code> instead, as I understand it. So in order to get the path of a path dependency in a lock file, I think there is some interaction point between what's in <code>pyproject.toml</code> and what's in the lock file.</p>
+<p>(There is at least one other interaction point as well: finding the relevant root package in the lock file at which to start a graph traversal.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3965.html">astral-sh/uv#3965</a> on 2024-06-02 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3611.html">astral-sh/uv#3611</a> on 2024-06-04 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-06-10 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-11 14:09</div>
+            <div class="timeline-body"><p>Fixed by https://github.com/astral-sh/uv/pull/4205, we can revisit this later if we want to omit paths</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-06-11 14:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

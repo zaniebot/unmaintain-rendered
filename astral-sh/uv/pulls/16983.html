@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bail when trying to attach ambiguous credentials instead of picking an arbitrary one - astral-sh/uv #16983</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bail when trying to attach ambiguous credentials instead of picking an arbitrary one</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16983">#16983</a>
+        opened by <a href="https://github.com/zsol">@zsol</a>
+        on 2025-12-04 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zsol">@zsol</a> on 2025-12-04 18:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR makes <code>TextCredentialStore.get_credentials</code> fail on ambiguous matches, instead of returning the first &quot;best&quot; match while iterating over all credentials.</p>
+<h2>Test Plan</h2>
+<p>Added a unit test, plus tested via:</p>
+<pre><code>❯ jq -n '{uri: &quot;https://foo&quot;}' | cargo -q run auth helper --protocol=bazel get
+error: Multiple credentials found for URL 'https://foo/', specify which username to use
+</code></pre>
+<p>(the above needed two username/password combos registered for <code>https://foo</code> using <code>uv auth login https://foo</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zsol on 2025-12-04 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zsol on 2025-12-04 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16886.html">astral-sh/uv#16886</a> on 2025-12-04 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zsol on 2025-12-04 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zsol on 2025-12-04 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-12-04 19:08</div>
+            <div class="timeline-body"><p>I applied the <code>breaking</code> label because technically this might change might cause currently (accidentally) working setups to suddenly stop attaching credentials in cases when the credentials were ambiguous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zsol on 2025-12-04 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-05 18:39</div>
+            <div class="timeline-body"><p>Given that this is a preview feature, I'd consider it a preview change instead of a breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-05 20:10</div>
+            <div class="timeline-body"><p>Is the interface in preview? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-08 11:13</div>
+            <div class="timeline-body"><p>I was thinking about this:</p>
+<blockquote>
+<p>warning: The <code>uv auth helper</code> command is experimental and may change without warning. Pass <code>--preview-features auth-helper</code> to disable this warning</p>
+</blockquote>
+<p>If that affects stable code too then it's breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-08 12:17</div>
+            <div class="timeline-body"><p>Yeah <code>uv auth token</code> should be affected by this change and is stable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-12-08 12:21</div>
+            <div class="timeline-body"><p>Yes it does, here's a repro:</p>
+<pre><code class="language-bash">pushd $(mktemp -d)
+# set up a basic auth pypi-server
+htpasswd -bc passwords foo1 bar
+uvx --python 3.12 --from pypiserver[passlib] pypi-server run -a 'download, list, update' -P passwords --log-stream stderr -v . &amp;
+# fetch a random wheel
+curl -LO https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl
+# configure uv with two usernames on the same url
+uv auth login http://localhost:8080 -u foo1 --password=bar
+uv auth login http://localhost:8080 -u foo2 --password=bar
+
+uv venv --clear
+# latest version of uv succeeds
+uvx uv pip install --default-index http://localhost:8080 sniffio --no-cache
+# with -vv you can see it's using `foo1` (on my machine)
+
+# with this PR:
+~/dev/uv/target/debug/uv pip install --default-index http://localhost:8080 anyio --no-cache
+
+  × No solution found when resolving dependencies:
+  ╰─▶ Because anyio was not found in the package registry and you require anyio, we can conclude that your requirements are unsatisfiable.
+
+      hint: An index URL (http://localhost:8080/) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

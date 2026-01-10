@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `Command::args_overrides_self` the default - clap-rs/clap #4261</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make `Command::args_overrides_self` the default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4261">#4261</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2022-09-26 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2022-09-26 18:08</div>
+            <div class="timeline-body"><p>We had <a href="https://github.com/clap-rs/clap/discussions/2627">talked about swapping the default for 3.0</a> but punted.</p>
+<p>When working on <code>ArgAction</code> during 3.2, I modeled it after Python's <code>argparse</code> which only supports overriding, making <code>args_overrides_self</code> the only behavior for the new actions.</p>
+<p>When <a href="https://github.com/rust-lang/cargo/pull/11117">switching cargo to the new actions</a>, some tests specifically checking for self-conflicts failed.  This reminded me that in <a href="https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1640-2022-09-22">cargo 1.64.0</a>, <code>--target</code> switched from a <code>multiple_occurrences(false)</code> to <code>multiple_occurrences(true)</code>.  This was a switch from an error case to a working case.  If <code>args_overrides_self</code> had been on, it would have been a switch from a working case to a working case, being a change in working behavior.</p>
+<p><a href="https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/Behavior.20Change.20with.20Clap.20v4.20Upgrade">We decided</a> in 4.0.0 to defer a decision on the behavior and bring back <code>args_overrides_self</code>, making the new actions behave like the old ones,</p>
+<p>So to summarize <code>args_overrides_self(true)</code></p>
+<ul>
+<li>Allows easy overriding of previous arguments, especially if args/aliases are involved<ul>
+<li>e.g. <code>alias ls='ls -xyz'</code> would be safe to repeat some of those flagd</li>
+</ul>
+</li>
+<li>Has compatibility hazards</li>
+</ul>
+<p>So should we switch to it being on by default, only on, or maintain status quo?</p>
+<p>Notes</p>
+<ul>
+<li>Overriding of self is the exclusive behavior for Python's <code>argparse</code></li>
+<li><a href="https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/Behavior.20Change.20with.20Clap.20v4.20Upgrade/near/300447239">A user on Zulip thought <code>args_overrides_self(true)</code> was set</a></li>
+<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1511821">A user reported the conflict error as a bug</a></li>
+<li>Most tools Josh has used seem to ignore duplicate flags, at least (e.g. <code>rm -fffff file</code>).</li>
+<li>And at least some tools silently override option values as well; for instance, <code>touch -d 'Jan 1 1970' -d 'Dec 31 2400' file</code> will use the latter timestamp.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2022-09-26 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-09-26 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-09-26 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4262.html">clap-rs/clap#4262</a> on 2022-09-26 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-09-26 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4281.html">clap-rs/clap#4281</a> on 2022-09-28 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/issues/3248.html">astral-sh/uv#3248</a> on 2024-04-25 02:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:10 UTC
+    </footer>
+</body>
+</html>

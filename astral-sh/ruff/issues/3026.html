@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding custom python codecs - astral-sh/ruff #3026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Understanding custom python codecs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3026">#3026</a>
+        opened by <a href="https://github.com/delfick">@delfick</a>
+        on 2023-02-19 08:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/delfick">@delfick</a> on 2023-02-19 08:57</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>Python has a feature where you can register a codec such that when python imports a file it can run the contents of that file through your codec to translate it before it's imported.</p>
+<p>I use this technique for my testing library <a href="https://noseofyeti.readthedocs.io">nose-of-yeti</a> which lets me write my tests using an rspec inspired nested &quot;describe&quot; and &quot;it&quot; syntax.</p>
+<p>Currently it <a href="https://noseofyeti.readthedocs.io/en/latest/api/usage.html">supports</a> tooling like black, pylama and mypy.</p>
+<p>I'm wondering if it were possible for ruff to be able to understand python codecs? (when the file starts with a <code># coding: &lt;codec_name&gt;</code> line). I imagine ruff seeing that it uses a codec and asking python to find that codec and decode the file before ruff reads it. I understand there is a speed cost to that as this is an existing cost I'm fine with.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-19 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @charliermarsh on 2023-07-10 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-07-10 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2023-07-10 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delfick">@delfick</a> on 2024-04-05 09:06</div>
+            <div class="timeline-body"><p>@charliermarsh I'm wondering if this would even be possible (with or without ruff having some kind of plugin ability). It stops me using ruff for most of my projects. I feel if ruff supported it, it would make the biggest drawback of it go away (the time cost for linting/formatting adds up and becomes noticeable with a big enough file).</p>
+<p>I don't have any rust knowledge (and definitely not enough time to try and learn it) so I don't know if this kind of support could be optionally added or added in a way that doesn't cause too much undue effort on ruff maintainers.</p>
+<p>It essentially boils down that</p>
+<p>this:</p>
+<pre><code>describe &quot;Thing&quot;:
+</code></pre>
+<p>Is equivalent to <code>class TestThing:</code></p>
+<p>and:</p>
+<pre><code>it &quot;does stuff&quot;, one: int, two: str:
+</code></pre>
+<p>is equivalent to <code>def test_does_stuff(one: int, two: str)</code> (with a self argument if nested under a describe)</p>
+<p>and:</p>
+<pre><code>ignore &quot;does things&quot;:
+</code></pre>
+<p>becomes <code>def ignore_does_things</code></p>
+<p>and:</p>
+<pre><code>async it &quot;does more stuff&quot;:
+</code></pre>
+<p>is <code>async def test_does_more_stuff():</code></p>
+<p>And describes can be nested under other describes and get flattened out</p>
+<p>so</p>
+<pre><code>describe &quot;One&quot;:
+    describe &quot;Two&quot;:
+        pass
+</code></pre>
+<p>becomes</p>
+<pre><code>class TestOne:
+    pass
+
+class TestTwo(TestOne):
+    pass
+</code></pre>
+<p>(technically it also has <code>context</code> as an alias for <code>describe</code> and <code>after_each</code>/<code>before_each</code> but I don't use any of that anymore and should probably deprecate that functionality)</p>
+<p>Currently for my black support I have a <a href="https://github.com/delfick/nose-of-yeti/blob/7bcb9327071f1591f9684c2ff90c398125f8ed2a/noseOfYeti/black/Grammar.noy.txt">slightly modified Grammar.txt</a> where this is the difference</p>
+<pre><code class="language-patch">--- b	2024-04-05 20:00:19
++++ a	2024-04-05 19:59:45
+@@ -20,8 +20,8 @@
+ 
+ decorator: '@' namedexpr_test NEWLINE
+ decorators: decorator+
+-decorated: decorators (classdef | funcdef | async_funcdef)
+-async_funcdef: ASYNC funcdef
++decorated: decorators (classdef | funcdef | async_funcdef | noy_stmt)
++async_funcdef: ASYNC (funcdef | it_stmt | setup_teardown_stmts)
+ funcdef: 'def' NAME [typeparams] parameters ['-&gt;' test] ':' suite
+ parameters: '(' [typedargslist] ')'
+ 
+@@ -110,8 +110,8 @@
+ assert_stmt: 'assert' test [',' test]
+ type_stmt: &quot;type&quot; NAME [typeparams] '=' test
+ 
+-compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt | match_stmt
+-async_stmt: ASYNC (funcdef | with_stmt | for_stmt)
++compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt | match_stmt | noy_stmt
++async_stmt: ASYNC (funcdef | with_stmt | for_stmt | it_stmt | setup_teardown_stmts)
+ if_stmt: 'if' namedexpr_test ':' suite ('elif' namedexpr_test ':' suite)* ['else' ':' suite]
+ while_stmt: 'while' namedexpr_test ':' suite ['else' ':' suite]
+ for_stmt: 'for' exprlist 'in' testlist_star_expr ':' suite ['else' ':' suite]
+@@ -254,3 +254,8 @@
+ guard: 'if' namedexpr_test
+ patterns: pattern (',' pattern)* [',']
+ pattern: (expr|star_expr) ['as' expr]
++
++it_stmt: ('it' | 'ignore') STRING (',' NAME [':' [test]])* ':' ['-&gt;' test] NEWLINE INDENT stmt+ DEDENT
++setup_teardown_stmts: ('before_each' | 'after_each') ':' suite
++describe_stmt: ('context' | 'describe') [dotted_name ','] STRING ':' suite
++noy_stmt: setup_teardown_stmts | it_stmt  | describe_stmt['as' expr]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-05 10:08</div>
+            <div class="timeline-body"><p>I don't think this fits well into Ruff because it requires executing Python code, which adds a dependency on Python.</p>
+<p>I still don't fully understand the workflow but wouldn't it be possible to integrate this around Ruff by using a Python script that:</p>
+<ul>
+<li>Loads the file</li>
+<li>Executes the codec</li>
+<li>Uses subprocess to call ruff and passes the decoded text via stdin</li>
+<li>Does something with the output</li>
+</ul>
+<p>It's not entirely clear to me how &quot;does something with the output&quot; would work in the formatter case.</p>
+<p>So I think this functionality is better suited outside of Ruff, rather than being integrated into Ruff (also considering that it isn't a very common ask)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delfick">@delfick</a> on 2024-04-05 10:22</div>
+            <div class="timeline-body"><p>@MichaReiser yeah. the way I make it work for black is I monkeypatch the grammar such that it considers the grammar to be valid (and <a href="https://github.com/delfick/nose-of-yeti/blob/main/noseOfYeti/plugins/black_compat.py#L107-L140">modify some visit hooks</a>) and it seems to deal with that fine because everything else is still valid python.</p>
+<p>For pylama I <a href="https://github.com/delfick/nose-of-yeti/blob/main/noseOfYeti/plugins/pylama.py#L57">replace how it reads the file</a> so that when it reads the file, the translation happens as part of that and so as long as I disable formatting related lint rules, it lints it like normal python and works fine.</p>
+<p>I imagine for ruff check it could work for the latter and be no worse than the current situation (except that ruff check itself is much faster and integrates with my editor better, so would in fact be better)</p>
+<p>For ruff formatter however, it would require the ability to extend ruff's understanding of the python grammar cause of that &quot;what do with the output&quot;. I imagine though it's not as simple as &quot;extend ruff's grammar&quot;!</p>
+<blockquote>
+<p>(also considering that it isn't a very common ask)</p>
+</blockquote>
+<p>This project of mine (which I've actively worked on and used since 2010) definitely gets a wide range of reactions hahhah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-05 10:35</div>
+            <div class="timeline-body"><p>I see. Yeah I don't think we have capacity to add support for a custom grammar today (that also requires transformation). We do support Python code embedded in Jupyter notebook but that's different because the code can be used as is, without the need for any transformation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-05 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delfick">@delfick</a> on 2024-04-05 11:37</div>
+            <div class="timeline-body"><p>Fair enough. Hopefully black/pylama at least continue to exist for a long time yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delfick">@delfick</a> on 2024-04-19 05:26</div>
+            <div class="timeline-body"><p>@MichaReiser I have one more question sorry. If I made it so that it doesn't do any dedents would that make it easier?</p>
+<p>So essentially all that needs supporting is &quot;it&quot; and &quot;describe&quot; as syntax sugar for <code>def</code> and <code>class</code> and everything else could be ignored. So:</p>
+<pre><code>it &quot;does stuff&quot;:
+</code></pre>
+<p>would be syntax sugar for</p>
+<pre><code>def test_it_does_stuff():
+</code></pre>
+<p>and</p>
+<pre><code>it &quot;does stuff&quot;, one: int, two: str -&gt; None:
+</code></pre>
+<p>would be syntax sugar for</p>
+<pre><code>def test_it_does_stuff(one: int, two: str) -&gt; None:
+</code></pre>
+<p>and</p>
+<pre><code>describe &quot;Things&quot;:
+</code></pre>
+<p>would be syntax sugar for</p>
+<pre><code>class TestThings:
+</code></pre>
+<p>and</p>
+<pre><code>describe &quot;Things&quot;, Parent:
+</code></pre>
+<p>would be syntax sugar for</p>
+<pre><code>class TestThings(Parent):
+</code></pre>
+<p>and no other transformations would be required. (how it currently transforms into a flat class structure is no longer required now I don't use nosetests)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

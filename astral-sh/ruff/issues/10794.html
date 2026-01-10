@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff format` not producing same results as vs code extension - astral-sh/ruff #10794</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff format` not producing same results as vs code extension</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10794">#10794</a>
+        opened by <a href="https://github.com/alexdauenhauer">@alexdauenhauer</a>
+        on 2024-04-05 21:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexdauenhauer">@alexdauenhauer</a> on 2024-04-05 21:12</div>
+            <div class="timeline-body"><p>in my local repo I have these pyproject.toml settings</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 100
+indent-width = 4
+include = [&quot;*.py&quot;, &quot;*.pyi&quot;, &quot;**/pyproject.toml&quot;, &quot;*.ipynb&quot;]
+
+[tool.ruff.lint]
+extend-select = [&quot;D403&quot;]
+
+[tool.ruff.lint.per-file-ignores]
+&quot;*.ipynb&quot; = [&quot;E402&quot;, &quot;F401&quot;]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-between-types = 1
+order-by-type = false
+</code></pre>
+<p>and produces this when I run <code>ruff format --config=pyproject.toml</code></p>
+<p>https://github.com/astral-sh/ruff/assets/11903445/f05099dd-28fc-4ab9-a1e0-98a5abb8bcee</p>
+<p>and also <code>ruff check --fix</code> says &quot;All tests passed!&quot;
+whereas my vscode extension points to a <code>ruff.toml</code> which looks like this</p>
+<pre><code class="language-toml">line-length = 100
+extend-select = [&quot;D403&quot;]
+extend-include = [&quot;*.ipynb&quot;]
+
+[isort]
+force-single-line = true
+lines-between-types = 1
+order-by-type = false
+
+[per-file-ignores]
+&quot;*.ipynb&quot; = [&quot;E402&quot;, &quot;F401&quot;]
+</code></pre>
+<p>and produces this result when I save</p>
+<p>https://github.com/astral-sh/ruff/assets/11903445/079eca51-7343-4ae7-afe5-61f43c5edb45</p>
+<p>The vs code extension results are the ones I want and I don't know how to achieve them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 21:14</div>
+            <div class="timeline-body"><p>It looks like in the latter case, Ruff is attempting to sort the imports, whereas in the former it's not. Is that correct? You might have <code>organizeImports</code> enabled in VS Code, which will attempt to organize imports even if the rule isn't selected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexdauenhauer">@alexdauenhauer</a> on 2024-04-05 21:24</div>
+            <div class="timeline-body"><p>@charliermarsh yes correct, but how do I turn on <code>organizeImports</code> using the CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 21:26</div>
+            <div class="timeline-body"><p>Change:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+extend-select = [&quot;D403&quot;]
+</code></pre>
+<p>To:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+extend-select = [&quot;D403&quot;, &quot;I&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexdauenhauer">@alexdauenhauer</a> on 2024-04-05 21:32</div>
+            <div class="timeline-body"><p>I had to also do this</p>
+<pre><code class="language-sh">ruff check --fix --config=./pyproject.toml
+ruff format --config=./pyproject.toml
+</code></pre>
+<p>but that worked! Thanks @charliermarsh !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @alexdauenhauer on 2024-04-05 21:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

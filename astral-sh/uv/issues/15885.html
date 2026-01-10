@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How can I reuse the same uv virtualenv in different project? - astral-sh/uv #15885</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How can I reuse the same uv virtualenv in different project?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15885">#15885</a>
+        opened by <a href="https://github.com/havanoname">@havanoname</a>
+        on 2025-09-16 02:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/havanoname">@havanoname</a> on 2025-09-16 02:42</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I've used Conda as a package manager before. But now I want to try UV, I'm having some problems.
+i have different project, for exmple: <em>test1</em> and <em>test2</em>. The same packages are used for both projects.
+In Conda, I just create a virtual environment and choose the same interpreter for different projects. I read <a href="https://docs.astral.sh/uv/guides/projects/">docs</a>, it seems uv environment must be created in each project. How can I reuse the same uv virtualenv in different project?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @havanoname on 2025-09-16 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 02:47</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>Why do you want to use the same environment for each project? What's the benefit of reusing it? The intent of uv is that each project declares its dependencies and you don't need to think about what virtual environment you're using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/havanoname">@havanoname</a> on 2025-09-16 03:25</div>
+            <div class="timeline-body"><p>Because my project needs to use many packages to handle different data, like pytorch and tensorflow, etc, which are quite large. If I had a separate virtual environment for each project, each project folder would large, even just a test project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-16 07:38</div>
+            <div class="timeline-body"><p>uv uses hardlinks for venvs, so each now pytorch or tensorflow venv is small on disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2025-09-16 16:05</div>
+            <div class="timeline-body"><blockquote>
+<p>uv uses hardlinks for venvs, so each now pytorch or tensorflow venv is small on disk.</p>
+</blockquote>
+<p>Only if you are then keeping each project in sync. If you have a dozen projects that you are updating at different frequencies you quite quickly end up with close to a dozen versions of each package, in this case uv's strategy for saving space becomes significantly less effective, and uv's cache strategy of unpacked packages often uses quite a lot more space.</p>
+<p>For my work I still use conda environments until uv has support for something like https://github.com/astral-sh/uv/issues/1495 that covers this use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 18:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Only if you are then keeping each project in sync. If you have a dozen projects that you are updating at different frequencies you quite quickly end up with close to a dozen versions of each package, in this case uv's strategy for saving space becomes significantly less effective, and uv's cache strategy of unpacked packages often uses quite a lot more space.</p>
+</blockquote>
+<p>This is more about our cache design than sharing environments though? even if you shared a single environment, we'd have multiple unpacked versions in the cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 18:46</div>
+            <div class="timeline-body"><p>Without getting into the details of uv's cache, which I think is out of scope here and has various trade-offs, the environments will share files so any duplicate package versions will not consume additional disk space (as noted by konsti).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2025-09-16 19:15</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Only if you are then keeping each project in sync. If you have a dozen projects that you are updating at different frequencies you quite quickly end up with close to a dozen versions of each package, in this case uv's strategy for saving space becomes significantly less effective, and uv's cache strategy of unpacked packages often uses quite a lot more space.</p>
+</blockquote>
+<p>This is more about our cache design than sharing environments though? even if you shared a single environment, we'd have multiple unpacked versions in the cache.</p>
+</blockquote>
+<p>But those can be cleaned up by clearing the cache, when you have a dozen projects that validly point to almost a dozen versions of large packages you can not clean them up in one command, you have to go through laborious process of getting everything in line in each project.</p>
+<blockquote>
+<p>Without getting into the details of uv's cache, which I think is out of scope here and has various trade-offs, the environments will share files so any duplicate package versions will not consume additional disk space (as noted by konsti).</p>
+</blockquote>
+<p>It's related in the sense that uv's cache can use a lot more disk space, so you can regularly hit disk space limits because of such large cache, so you're forced into cleaning up diskspace more often, and the lack of first class support for sharing environments is quite noticeable as the different versions of the packages in each project use a lot more space than using a smaller number of reusable environments.</p>
+<p>As I say, I am using conda to solve this problem, so it's not pressing for me, but it is a real annoyance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kmantel">@kmantel</a> on 2025-10-07 07:53</div>
+            <div class="timeline-body"><p>I think this and #1495 would get me to start using uv. I basically went looking for pyenv + package sharing. For me, the benefit aside from my preference of having an active env regardless of directory is in a situation like where packages a and b have a dependency d, and say</p>
+<p>package a:
+<code>d&gt;=1, &lt;2</code></p>
+<p>package b
+<code>d&gt;=1, &lt;1.6</code></p>
+<p>If I have two separate envs, then I could end up with two copies, d==1.7 and d==1.5, when with one env I can just have one copy of d==1.5 without needing to micromanage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KercyDing">@KercyDing</a> on 2025-11-19 04:32</div>
+            <div class="timeline-body"><p>I had the same issue when migrating from Conda to uv. Really missed being able to share environments across projects.</p>
+<p>Looks like others have hit this too (#14988, #14856) - the &quot;one project, one env&quot; model doesn't fit all workflows, especially for those coming from Conda.</p>
+<p>So I built <a href="https://github.com/KercyDing/uvup">uvup</a> to handle this:</p>
+<pre><code class="language-bash"># Create a global environment
+uvup create myenv
+uvup add numpy pandas requests
+
+# Use it in different projects
+cd ~/test1
+uvup activate myenv
+uv run script.py
+
+# Reuse the same env
+cd ~/test2
+uvup activate myenv
+uv run another_script.py
+</code></pre>
+<p>Environments live in <code>~/.uvup/</code>, not tied to any project directory.</p>
+<p>It also supports template-based project creation, cross-platform shell integration (bash/zsh/fish/PowerShell), and more.</p>
+<p>Check out the <a href="https://github.com/KercyDing/uvup">repo</a> and <a href="https://kercyding.github.io/uvup/">docs</a> for details.</p>
+<p>The project's still pretty early stage, so there might be some rough edges. Contributions welcome if you run into issues!😘</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

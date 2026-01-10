@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended way to use keyring for private package index - astral-sh/uv #8409</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recommended way to use keyring for private package index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8409">#8409</a>
+        opened by <a href="https://github.com/timchap">@timchap</a>
+        on 2024-10-21 08:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/timchap">@timchap</a> on 2024-10-21 08:43</div>
+            <div class="timeline-body"><p>I know that uv supports keyring in subprocess mode for authenticating to private package indices. However, because the keyring CLI is installed into a Python environment, this creates a bit of a chicken-and-egg problem. In particular, it seems to me that keyring would need to be installed into my system Python for this to work. This is additionally complicated by that fact that with uv python binaries don't get installed to the system path - this means that the installation of keyring into my system Python needs to be managed entirely outside of the uv workflow.</p>
+<p>Is my interpretation of the current functionality correct? What is the recommended solution here? Perhaps there's a simple workaround that I'm missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harteros">@harteros</a> on 2024-10-21 09:38</div>
+            <div class="timeline-body"><p>Hey @timchap, you can install and use keyring with the <code>uv tool</code> CLI command. After that it is pretty straightforward to use your private indexes with the new custom indexes functionality and environmental variables that were recently added.</p>
+<p>To give you an example this is how we setup and use our private package index with uv.</p>
+<ol>
+<li>Setup uv with keyring for Google Artifactory (you can use whatever artifactory you have your private packages at):</li>
+</ol>
+<pre><code class="language-shell">uv tool install keyring --with keyrings.google-artifactregistry-auth
+</code></pre>
+<ol start="2">
+<li>Define the private index and link the internal package to the specific index:</li>
+</ol>
+<pre><code class="language-toml">[tool.uv]
+keyring-provider = &quot;subprocess&quot;
+
+[[tool.uv.index]]
+name = &quot;internal&quot;
+url = &quot;https://&lt;internal url&gt;/&lt;internal artifacts&gt;/pypi-virtual/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+internal-utils = { index = &quot;internal&quot; }
+</code></pre>
+<ol start="3">
+<li>Add the index username and password to your <code>.bashrc</code> or <code>.zshrc</code> to setup the username and password of your private index:</li>
+</ol>
+<pre><code class="language-shell">UV_INDEX_INTERNAL_USERNAME=&lt;your private index username&gt;
+UV_INDEX_INTERNAL_PASSWORD=&lt;your private index password&gt;
+</code></pre>
+<p>After that you can just run <code>uv sync</code> and everything will run smoothly with uv syncing your packages from your private index</p>
+<p>Note: You should probably use <code>uv version 0.4.25</code> which solved an issues with env vars and keyring authentication</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timchap">@timchap</a> on 2024-10-21 17:02</div>
+            <div class="timeline-body"><p>Oh wow, that's great @harteros! Indeed looks like <code>uv tool</code> was the functionality I was missing. Huge thanks for the quick response 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @timchap on 2024-10-21 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install is unable to locate wheels built with pip wheel --no-binary - astral-sh/uv #1706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install is unable to locate wheels built with pip wheel --no-binary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1706">#1706</a>
+        opened by <a href="https://github.com/radupotop">@radupotop</a>
+        on 2024-02-19 16:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/radupotop">@radupotop</a> on 2024-02-19 16:48</div>
+            <div class="timeline-body"><p>I have a private wheelhouse where wheels are compiled with:</p>
+<pre><code>pip wheel  -r requirements.txt --no-binary psycopg2,uwsgi
+</code></pre>
+<p>In order to compile <code>psycopg2</code> and <code>uwsgi</code>  for the target system, and not use the prebuilt binaries.</p>
+<p>My issue is that <code>uv</code> is unable to locate the wheels for <code>psycopg2</code> and <code>uwsgi</code> and insists on compiling them every time.<br />
+That fails because there's no gcc on the running system (only on the build system).</p>
+<details>
+<summary><b>Error message below</b></summary>
+
+<pre><code>2.364 Resolved 199 packages in 1.93s                                                                                          
+5.957 error: Failed to download distributions                                                                                 
+5.957   Caused by: Failed to fetch wheel: uwsgi==2.0.20                                                                       
+5.957   Caused by: Failed to build: uwsgi==2.0.20                                                                             
+5.957   Caused by: Build backend failed to build wheel through `build_wheel()`:
+5.957 --- stdout:
+5.957 running bdist_wheel
+5.957 running build
+5.957 running build_py
+5.957 creating build
+5.957 creating build/lib
+5.957 copying uwsgidecorators.py -&gt; build/lib
+5.957 installing to build/bdist.linux-x86_64/wheel
+5.957 running install
+5.957 using profile: buildconf/default.ini
+5.957 detected include path: ['/usr/include', '/usr/local/include']
+5.957 --- stderr:
+5.957 /root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/dist.py:265: UserWarning: Unknown distribution option: 'descriptions'
+5.957   warnings.warn(msg)
+5.957 Traceback (most recent call last):
+5.957   File &quot;/root/.cache/uv/built-wheels-v0/pypi/uwsgi/2.0.20/xUKlaAbW3ViL6rzb5viBY/uwsgi-2.0.20.tar.gz/uwsgiconfig.py&quot;, line 750, in __init__
+5.957     gcc_version_components = gcc_version.split('.')
+5.957 AttributeError: 'NoneType' object has no attribute 'split'
+5.957 
+5.957 During handling of the above exception, another exception occurred:
+5.957 
+5.957 Traceback (most recent call last):
+5.957   File &quot;&lt;string&gt;&quot;, line 6, in &lt;module&gt;
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 404, in build_wheel
+5.957     return self._build_with_temp_dir(
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 389, in _build_with_temp_dir
+5.957     self.run_setup()
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 480, in run_setup
+5.957     super().run_setup(setup_script=setup_script)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+5.957     exec(code, locals())
+5.957   File &quot;&lt;string&gt;&quot;, line 117, in &lt;module&gt;
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/__init__.py&quot;, line 103, in setup
+5.957     return distutils.core.setup(**attrs)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/core.py&quot;, line 185, in setup
+5.957     return run_commands(dist)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/core.py&quot;, line 201, in run_commands
+5.957     dist.run_commands()
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/dist.py&quot;, line 969, in run_commands
+5.957     self.run_command(cmd)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/dist.py&quot;, line 963, in run_command
+5.957     super().run_command(command)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/dist.py&quot;, line 988, in run_command
+5.957     cmd_obj.run()
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/wheel/bdist_wheel.py&quot;, line 403, in run
+5.957     self.run_command(&quot;install&quot;)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/cmd.py&quot;, line 318, in run_command
+5.957     self.distribution.run_command(command)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/dist.py&quot;, line 963, in run_command
+5.957     super().run_command(command)
+5.957   File &quot;/root/.cache/uv/.tmpJQFW30/.venv/lib/python3.10/site-packages/setuptools/_distutils/dist.py&quot;, line 988, in run_command
+5.957     cmd_obj.run()
+5.957   File &quot;&lt;string&gt;&quot;, line 77, in run
+5.957   File &quot;/root/.cache/uv/built-wheels-v0/pypi/uwsgi/2.0.20/xUKlaAbW3ViL6rzb5viBY/uwsgi-2.0.20.tar.gz/uwsgiconfig.py&quot;, line 758, in __init__
+5.957     raise Exception(&quot;you need a C compiler to build uWSGI&quot;)
+5.957 Exception: you need a C compiler to build uWSGI
+5.957 ---
+------
+</code></pre>
+</details>
+
+<p>But it works fine when I do:</p>
+<pre><code>uv pip install psycopg2@https://wheelhouse.example.org/psycopg2-2.9.x-cp310-cp310-linux_x86_64.whl
+</code></pre>
+<p>Any ideas how i could sort this out? Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:03</div>
+            <div class="timeline-body"><p>How are you pointing uv to your private wheelhouse?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-19 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zanieb on 2024-02-19 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/radupotop">@radupotop</a> on 2024-02-19 18:52</div>
+            <div class="timeline-body"><p>So the wheelhouse is a flat list of links (i.e. a folder with an <code>index.html</code> page) to be used with<br />
+<code>pip install --find-links</code>.</p>
+<p>I tried the following and it works fine:</p>
+<pre><code>uv pip install --verbose --find-links $INDEX_URL --no-index -r requirements.txt
+</code></pre>
+<p>For some reason i was expecting the <code>PIP_FIND_LINKS</code> and <code>PIP_NO_INDEX</code> env vars to be picked up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @radupotop on 2024-02-19 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

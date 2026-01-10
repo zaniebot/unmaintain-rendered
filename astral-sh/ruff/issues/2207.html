@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B007 breaks code - astral-sh/ruff #2207</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B007 breaks code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2207">#2207</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-26 17:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 17:43</div>
+            <div class="timeline-body"><pre><code>$ cat foo.py
+for foo, bar, baz in (['1', '2', '3'], ):
+    if foo or baz:
+        break
+
+int(bar)
+$ ruff --select B007 foo.py
+foo.py:1:10: B007 Loop control variable `bar` not used within loop body
+Found 1 error.
+1 potentially fixable with the --fix option.
+$ ruff --select B007 --fix foo.py
+Found 1 error (1 fixed, 0 remaining).
+$ cat foo.py
+for foo, _bar, baz in (['1', '2', '3'], ):
+    if foo or baz:
+        break
+
+int(bar)
+$ python3 foo.py
+Traceback (most recent call last):
+  File &quot;foo.py&quot;, line 5, in &lt;module&gt;
+    int(bar)
+NameError: name 'bar' is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-01-26 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-26 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dycw">@dycw</a> on 2023-01-27 02:59</div>
+            <div class="timeline-body"><p>Isn't this the right behaviour? <code>bar</code> is not used in the loop, it's used outside the loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 03:02</div>
+            <div class="timeline-body"><p>If the thing you're iterating over is non-empty, then when the loop finishes, <code>bar</code> will continue to exist, taking on the last value (in this case, <code>'2'</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 12:33</div>
+            <div class="timeline-body"><p>It's possible for us to avoid this, but it requires some refactoring. We do track whether variables are used, even after their declaration site, but this specific check doesn't have access to that info.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2397.html">astral-sh/ruff#2397</a> on 2023-01-31 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-01 15:02</div>
+            <div class="timeline-body"><p>another real life example which was caused by this:</p>
+<pre><code>        def _fake_func(self, iterator, *args):
+-               for args in iterator:
++               for _args in iterator:
+                        break
+                yield function(self, *args)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2509.html">astral-sh/ruff#2509</a> on 2023-02-03 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2511.html">astral-sh/ruff#2511</a> on 2023-02-03 03:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

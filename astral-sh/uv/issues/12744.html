@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong dependency built from correct git hash - astral-sh/uv #12744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong dependency built from correct git hash</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12744">#12744</a>
+        opened by <a href="https://github.com/robtovey">@robtovey</a>
+        on 2025-04-08 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/robtovey">@robtovey</a> on 2025-04-08 14:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have just tried to update a specific dependency from git and I'm getting really weird resolving behaviour.</p>
+<p>The update was on a public repository, the change is <a href="https://github.com/ElmerCSC/elmer_circuitbuilder/commit/a32eee95ccec3887b099bb718576ddecfb79ebed">here</a>
+Importantly note that the docstring at the top has changed from <code>Rmat_str : numpy.chararray</code> to <code>Rmat_str : numpy.ndarray of 'bytes' strings</code>.</p>
+<p>I now mainly get the old (wrong) version on my laptop:</p>
+<pre><code class="language-bash">uv run --with numpy --with https://github.com/ElmerCSC/elmer_circuitbuilder.git --no-project --isolated --upgrade --no-cache python -c &quot;import elmer_circuitbuilder; print(elmer_circuitbuilder.get_incidence_matrix_str.__doc__)&quot; | grep Amat
+</code></pre>
+<p>prints the <code>numpy.chararray</code> version.</p>
+<pre><code class="language-bash">uv run --with numpy==2.1.3 --with https://github.com/ElmerCSC/elmer_circuitbuilder.git --no-project --isolated --upgrade --no-cache python -c &quot;import elmer_circuitbuilder; print(elmer_circuitbuilder.get_incidence_matrix_str.__doc__)&quot; | grep Amat
+</code></pre>
+<p>prints the correct <code>ndarray of 'bytes'</code> message!</p>
+<p>Some additional context to this:</p>
+<ul>
+<li>originally the dependency was bound to main (like above) in a pyproject.toml</li>
+<li>I later tried to pin it to <code>rev = &quot;a32eee95ccec3887b099bb718576ddecfb79ebed&quot;</code>, which is the current main, in my pyproject.toml, but calling <code>uv sync</code> has never updated to the new version of the package.</li>
+<li>if I look in the <code>.lock</code> file, then it points to the correct <code>a32eee</code> hash</li>
+<li>if I call <code>uv sync -P elmer-circuitbuilder -vv</code>, then every reference points at the same correct <code>a32eee</code> hash</li>
+</ul>
+<p>I haven't managed to find anything which looks wrong to me, I'm happy to run some additional commands if that helps you identify the problem.</p>
+<p>In fact, a colleague has just pointed out to me that the message is not deterministic! If I run the first command repeatedly then I get the correct version 1 out of 4 times!</p>
+<p>I have attached the output of:</p>
+<pre><code class="language-bash">uv run --with numpy --with https://github.com/ElmerCSC/elmer_circuitbuilder.git --no-project --isolated --upgrade --no-cache -vv python -c &quot;import elmer_circuitbuilder; print(elmer_circuitbuilder.get_incidence_matrix_str.__doc__)&quot; &amp;&gt; verbose.txt
+</code></pre>
+<p>when it has resolved wrongly
+<a href="https://github.com/user-attachments/files/19650642/tmp.txt">verbose.txt</a></p>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.12</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @robtovey on 2025-04-08 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-04-08 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>In fact, a colleague has just pointed out to me that the message is not deterministic! If I run the first command repeatedly then I get the correct version 1 out of 4 times!</p>
+</blockquote>
+<p>A little bit more on this..</p>
+<p>We've discovered some strangeness in the <code>elmer-circuitbuilder</code> repository. Specifically, in the latest commit, the main library file exists twice:</p>
+<ul>
+<li>Correctly: https://github.com/ElmerCSC/elmer_circuitbuilder/blob/a32eee95ccec3887b099bb718576ddecfb79ebed/elmer_circuitbuilder/elmer_circuitbuilder.py</li>
+<li>An old version that seems to be the by-product of an old build: https://github.com/ElmerCSC/elmer_circuitbuilder/blob/a32eee95ccec3887b099bb718576ddecfb79ebed/build/lib/elmer_circuitbuilder.py</li>
+</ul>
+<p>Naturally the library needs fixing, but we are slightly surprised that uv (*) seems to switch between these two versions non-deterministically.</p>
+<p>It took about an hour of debugging for us to figure this out, so if there's any scope for uv to moan loudly in situations like this, that could be helpful for others in the future!</p>
+<p>(*) although possibly this isn't uv, but rather what setuptools would do in the presence of a dirty build directory..?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robtovey">@robtovey</a> on 2025-04-08 14:34</div>
+            <div class="timeline-body"><p>It looks like I should have looked into the specific dependency a bit more first...
+I am assuming that such an edge-case will not appear very often!
+Feel free to close this issue whenever you consider it solved from the uv side</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ElmerCSC/elmer_circuitbuilder/issues/12.html">ElmerCSC/elmer_circuitbuilder#12</a> on 2025-04-08 15:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

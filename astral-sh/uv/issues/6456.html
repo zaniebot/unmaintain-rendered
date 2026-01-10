@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker build hangs with uv sync - astral-sh/uv #6456</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docker build hangs with uv sync</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6456">#6456</a>
+        opened by <a href="https://github.com/jules-ch">@jules-ch</a>
+        on 2024-08-22 18:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jules-ch">@jules-ch</a> on 2024-08-22 18:48</div>
+            <div class="timeline-body"><p>Docker build hangs with this configuration.
+It's working outside of docker.</p>
+<p>uv version: <code>uv 0.3.1 (be17d132a 2024-08-21)</code></p>
+<p>Tested on both Linux Ubuntu and Windows.</p>
+<p>Probably related to network calls.</p>
+<pre><code class="language-Dockerfile">
+FROM python:3.11-slim
+ENV RUST_LOG=TRACE
+RUN pip install uv
+
+COPY ./pyproject.toml ./uv.lock ./
+RUN uv venv
+RUN uv sync
+</code></pre>
+<p>pyproject.toml :</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+  &quot;fastapi&gt;=0.112.1&quot;,
+  &quot;pyjwt[crypto]&gt;=2.9.0&quot;,
+  &quot;polars&gt;=1.5.0&quot;,
+  &quot;pyarrow&gt;=17.0.0&quot;,
+  &quot;numpy&gt;=2.1.0&quot;,
+  &quot;pydantic&gt;=2.8.2&quot;,
+  &quot;pydantic-settings&gt;=2.4.0&quot;,
+  &quot;uvicorn[standard]&gt;=0.30.6&quot;,
+  &quot;arq&gt;=0.26.0&quot;,
+  &quot;psycopg[binary]&gt;=3.2.1&quot;,
+  &quot;fastjsonschema&gt;=2.20.0&quot;,
+  &quot;structlog&gt;=24.4.0&quot;,
+  &quot;httpx&gt;=0.27.0&quot;,
+  &quot;xarray&gt;=2024.7.0&quot;,
+  &quot;aiocache[redis]&gt;=0.12.2&quot;,
+  &quot;alembic&gt;=1.13.2&quot;,
+  &quot;orjson&gt;=3.10.7&quot;,
+]
+</code></pre>
+<h3>Log:</h3>
+<p><a href="https://github.com/user-attachments/files/16716291/build.log">build.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 18:50</div>
+            <div class="timeline-body"><p>Hi! Is this a duplicate of #6443?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-08-22 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jules-ch">@jules-ch</a> on 2024-08-22 18:58</div>
+            <div class="timeline-body"><p>Yeah seems t be related.</p>
+<p>Using just pyproject.toml + uv.lock does not seem to work.
+When I add my src folder with hatchling</p>
+<pre><code class="language-toml">
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src&quot;]
+</code></pre>
+<p>It works, still failing with default setuptools</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 19:00</div>
+            <div class="timeline-body"><p>Unfortunately this is a setuptools bug — and I think we need to default to that to match the specification. Maybe there's something we can do to help avoid hanging here though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jules-ch">@jules-ch</a> on 2024-08-22 19:01</div>
+            <div class="timeline-body"><p>Alright I'm closing thanks for pointing the related issue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jules-ch on 2024-08-22 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6460.html">astral-sh/uv#6460</a> on 2024-08-22 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6462.html">astral-sh/uv#6462</a> on 2024-08-22 21:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

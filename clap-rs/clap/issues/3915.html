@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_complete does not work as expected with Bash and ValueHint::Hostname - clap-rs/clap #3915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_complete does not work as expected with Bash and ValueHint::Hostname</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3915">#3915</a>
+        opened by <a href="https://github.com/Shatnerz">@Shatnerz</a>
+        on 2022-07-13 04:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Shatnerz">@Shatnerz</a> on 2022-07-13 04:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>3.2.10</p>
+<h3>Minimal reproducible code</h3>
+<p>Build this: https://github.com/Shatnerz/clap-completion-example</p>
+<p>which is effectively</p>
+<pre><code class="language-rust">use clap::{Parser, ValueHint};
+
+#[derive(Parser, Debug)]
+
+pub struct Args {
+    /// Attempting to get hostname completion to work
+    #[clap(long, value_hint = ValueHint::Hostname)]
+    pub host: String,
+}
+</code></pre>
+<p>and</p>
+<pre><code class="language-rust">use clap::*;
+use clap_complete::{generate_to, shells};
+
+include!(&quot;src/cli.rs&quot;);
+
+const BIN_NAME: &amp;str = &quot;xxx&quot;; // something easy and unique for this example
+
+fn main() {
+    let mut app = Args::into_app();
+    app.set_bin_name(BIN_NAME);
+
+    let outdir = std::path::Path::new(env!(&quot;CARGO_MANIFEST_DIR&quot;)).join(&quot;completions/&quot;);
+    generate_to(shells::Bash, &amp;mut app, BIN_NAME, outdir.clone()).unwrap();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Build code</li>
+<li>Either inspect the bash completion script or source it and attempt to use (<code>xxx &lt;TAB&gt; &lt;TAB&gt;</code>)</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>Completion does not suggestion homenames by including something similar to</p>
+<pre><code class="language-bash">_known_hosts_real -a -- &quot;$cur&quot;
+</code></pre>
+<p>and uses the default completions</p>
+<h3>Expected Behaviour</h3>
+<p>I expect to see something like</p>
+<pre><code class="language-bash">_known_hosts_real -a -- &quot;$cur&quot;
+</code></pre>
+<p>so that hostnames are suggested</p>
+<h3>Additional Context</h3>
+<pre><code>[build-dependencies]
+clap = &quot;3.2.10&quot;
+clap_complete = &quot;3.2.3&quot;
+</code></pre>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Shatnerz on 2022-07-13 04:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> removed by @epage on 2022-07-13 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2022-07-13 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-07-13 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-07-13 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-13 13:54</div>
+            <div class="timeline-body"><p>Correct, it is unsupported in bash.  <a href="https://docs.rs/clap/latest/clap/enum.ValueHint.html">ValueHint</a> is only documented to work with zsh and fish at the moment.</p>
+<p>However, we are shifting our focus to https://github.com/clap-rs/clap/issues/3166 which will ensure we get a consistent experience across shells.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Shatnerz">@Shatnerz</a> on 2022-07-13 20:51</div>
+            <div class="timeline-body"><p>Oh thanks, I completely missed that. I think my brain saw <code>zsh</code> and thought <code>bash</code>. Thanks a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Shatnerz on 2022-07-13 20:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:05 UTC
+    </footer>
+</body>
+</html>

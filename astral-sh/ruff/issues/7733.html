@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid `undefined-name` errors for recursive calls after deletions - astral-sh/ruff #7733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid `undefined-name` errors for recursive calls after deletions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7733">#7733</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-01 04:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 04:05</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-python">def func(x: int):
+    if x &gt; 0:
+        func(x - 1)
+    print(x)
+
+func(1)
+del func
+</code></pre>
+<p>Ruff reports an undefined name (F821) on the inner <code>func</code> call, because it's deleted in the outer scope. This is hard to solve in general, but given that the function must exist in order for it to be called, we should be able to do better here.</p>
+<p>See: https://github.com/python-trio/trio/pull/2795#discussion_r1341908880.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-01 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-trio/trio/pulls/2795.html">python-trio/trio#2795</a> on 2023-10-01 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid undefined-name errors for recursive calls after deletions" to "Avoid `undefined-name` errors for recursive calls after deletions" by @charliermarsh on 2023-10-01 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/A5rocks">@A5rocks</a> on 2023-10-01 05:44</div>
+            <div class="timeline-body"><p>I suppose that a quick sanity check for whatever solution (if there is one) is that this should still fail...</p>
+<pre><code class="language-py">&gt;&gt;&gt; def f(x):
+...   if x: f(False)
+...
+&gt;&gt;&gt; z = f
+&gt;&gt;&gt; z(True)
+&gt;&gt;&gt; del f
+&gt;&gt;&gt; z(True)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 2, in f
+NameError: name 'f' is not defined
+</code></pre>
+<p>... but I think as long as you just assume the worst if reassignment happens, then this shouldn't have other issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9858.html">astral-sh/ruff#9858</a> on 2024-02-07 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joaoleveiga">@joaoleveiga</a> on 2024-07-19 14:33</div>
+            <div class="timeline-body"><p>Any recommendations here? I am not sure if I should open a new issue or not but should this feature capture situations such as:</p>
+<pre><code class="language-python"># script.py
+X = &quot;default value&quot;
+
+def main():
+    def f():
+        print(X)
+
+    if False:
+        X = &quot;new value&quot;
+    f()
+
+main()
+</code></pre>
+<pre><code>$ python script.py
+NameError: free variable 'X' referenced before assignment in enclosing scope
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14521.html">astral-sh/ruff#14521</a> on 2024-11-23 07:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

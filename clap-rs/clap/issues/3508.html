@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>generated zsh completion fails when `source &lt;()`'d - clap-rs/clap #3508</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>generated zsh completion fails when `source &lt;()`'d</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3508">#3508</a>
+        opened by <a href="https://github.com/drahnr">@drahnr</a>
+        on 2022-02-25 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/drahnr">@drahnr</a> on 2022-02-25 19:25</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.1 (db9d1b20b 2022-01-20)</p>
+<h3>Clap Version</h3>
+<p>3.1.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{AppSettings, Arg, Command, PossibleValue, Subcommand, ValueHint};
+use clap_complete::{generate, Generator, Shell};
+use std::{io, collections::{HashSet, HashMap}};
+
+fn build_cli() -&gt; Command&lt;'static&gt; {
+    Command::new(env!(&quot;CARGO_PKG_NAME&quot;))
+        .subcommand_required(true)
+        .subcommand(
+            Command::new(&quot;foo&quot;)
+            .arg(
+                Arg::new(&quot;foo&quot;)
+                    .long(&quot;foo&quot;)
+                    .help(&quot;foos for real&quot;)
+                    .possible_value(PossibleValue::new(&quot;7&quot;))
+                    .possible_value(PossibleValue::new(&quot;seven&quot;))
+            ),
+        )
+        .subcommand(
+            Command::new(&quot;comp&quot;)
+            .arg(
+                Arg::new(&quot;shell&quot;)
+                    .long(&quot;shell&quot;)
+                    .help(&quot;shell to generate for&quot;)
+                    .possible_values(Shell::possible_values()),
+            ),
+        )
+}
+
+fn print_completions&lt;G: Generator&gt;(gen: G, cmd: &amp;mut Command) {
+    generate(gen, cmd, cmd.get_name().to_string(), &amp;mut io::stdout());
+}
+
+fn main() {
+    let app = build_cli();
+    let matches = app.get_matches();
+
+    match matches.subcommand() {
+        Some((&quot;comp&quot;, args)) =&gt; {
+            if let Ok(shell) = args.value_of_t::&lt;Shell&gt;(&quot;shell&quot;) {
+                let mut cmd = build_cli();
+                eprintln!(&quot;Generating completion file for {}...&quot;, shell);
+                print_completions(dbg!(shell), &amp;mut cmd);
+                return;
+            }
+            eprintln!(&quot;nope&quot;);
+        }
+        Some((&quot;foo&quot;, _args)) =&gt; {
+            println!(&quot;foo&quot;);
+            return;
+        }
+        _ =&gt; {}
+    }
+    build_cli().print_long_help().unwrap();
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>source &lt;(cargo run -- comp --shell zsh)</code></p>
+<h3>Actual Behaviour</h3>
+<p>errors out and the completion does not work with the binary afterwards</p>
+<p>error:</p>
+<pre><code># source &lt;(cargo run -- comp --shell zsh)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/clap-completion-zoink comp --shell zsh`
+Generating completion file for zsh...
+[src/main.rs:42] shell = Zsh
+
+_arguments:comparguments:325: can only be called from completion function
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>should source the completion and from thereon complete the execution</p>
+<h3>Additional Context</h3>
+<p>An <em>almost</em> minimal, reproducible example can be checked out at https://github.com/drahnr/clap-completion-zoink</p>
+<p>Encountered in the wild on https://github.com/soywod/himalaya and reported as https://github.com/volta-cli/volta/issues/496</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @drahnr on 2022-02-25 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-02-25 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-02-25 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jjmark15">@jjmark15</a> on 2022-04-22 19:02</div>
+            <div class="timeline-body"><p>did you find a way to avoid the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drahnr">@drahnr</a> on 2022-04-24 14:29</div>
+            <div class="timeline-body"><p>The generated file is meant to be written to a file, assuming the above project is <code>foo</code>, <code>_foo</code> would be the correct file name which has to reside in <code>$fpath</code>.</p>
+<p>There also seems to be an artifact when writing to a file via <code>foo comp --shell zsh &gt; _foo</code>:</p>
+<pre><code>&lt;snip&gt;
+_cargo-spellcheck &quot;$@&quot;
+
+</code></pre>
+<p>which doesn't seem to be an ordinary linebreak when openeing an editor :shrug:
+<img src="https://user-images.githubusercontent.com/667047/164981502-ed7963f3-d565-4032-bcac-36c190c106be.png" alt="grafik" /></p>
+<hr />
+<p>Quick fix:</p>
+<p>Delete the comment <code>#compinit foo</code> marker at the top and the last line <code>_foo</code> and it then should load fine, unless you hit #3022</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kindelia/Kindelia/pulls/219.html">kindelia/Kindelia#219</a> on 2022-11-08 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vrc-get/vrc-get/issues/35.html">vrc-get/vrc-get#35</a> on 2023-02-10 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4734.html">clap-rs/clap#4734</a> on 2023-02-27 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-02-27 16:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:56 UTC
+    </footer>
+</body>
+</html>

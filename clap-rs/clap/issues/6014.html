@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control if Arg is hidden based on presence of another Arg - clap-rs/clap #6014</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Control if Arg is hidden based on presence of another Arg</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6014">#6014</a>
+        opened by <a href="https://github.com/emersonford">@emersonford</a>
+        on 2025-05-24 06:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emersonford">@emersonford</a> on 2025-05-24 06:16</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.38</p>
+<h3>Describe your use case</h3>
+<p>I have a subcommand with 20+ flags. A small subset of these are common flags, while the rest are for advanced features.</p>
+<p>Showing <em>all</em> the flags in <code>--help</code> is quite noisy; I would ideally like to have a <code>--help</code> where only the common flags are shown and a <code>--help-all</code> where all of the flags are shown. There doesn't seem to be a good mechanism to do this today?</p>
+<p>The suggestion in #4687 is to use <code>-h</code> and <code>--help</code>, which doesn't work super great for me because the users of my CLI have all gotten accustomed to using <code>--help</code>. Further, it's not particularly ergonomic to write a custom <code>--help</code> flag for myself because my subcommands are defined in separate crates (where I have a main binary crate that depends on each subcommand crate), so there's no way for me to grab a <code>CommandFactory</code> to customize <code>--help</code>.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I was thinking of something like <code>hide_unless_present</code>, along the lines of <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.required_unless_present"><code>required_unless_present</code></a>. Then you could write a subcommand like so:</p>
+<pre><code>#[derive(Args)]
+struct Foo {
+    #[arg(long)]
+    common_flag: Option&lt;String&gt;,
+
+    #[arg(long, hide_unless_present = &quot;help_all&quot;)]
+    advanced_flag: Option&lt;String&gt;,
+
+    /// Show advanced feature flags.
+    #[arg(long, action = ArgAction::HelpLong)]
+    help_all: (),
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @emersonford on 2025-05-24 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Control if Arg is hidden based on value of another Arg" to "Control if Arg is hidden based on presence of another Arg" by @emersonford on 2025-05-24 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6015.html">clap-rs/clap#6015</a> on 2025-05-26 06:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-26 17:27</div>
+            <div class="timeline-body"><p>The multi-crate aspect isn't too clear to me as to why you can't just do</p>
+<pre><code class="language-rust">#[derive(Args)]
+#[command(disable_help_flag = true)]
+struct Foo {
+    #[arg(long)]
+    common_flag: Option&lt;String&gt;,
+
+    #[arg(long, hide_short_help = true)]
+    advanced_flag: Option&lt;String&gt;,
+
+    /// Show basic feature flags.
+    #[arg(long, action = ArgAction::HelpShort)]
+    help: (),
+
+    /// Show advanced feature flags.
+    #[arg(long, action = ArgAction::HelpLong)]
+    help_all: (),
+}
+</code></pre>
+<p>You might even be able to do</p>
+<pre><code class="language-rust">#[derive()]
+#[command(disable_help_flag = true)]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+
+    /// Show basic feature flags.
+    #[arg(long, action = ArgAction::HelpShort, global = true)]
+    help: (),
+
+    /// Show advanced feature flags.
+    #[arg(long, action = ArgAction::HelpLong, global = true)]
+    help_all: (),
+}
+
+
+#[derive(Subcommand)]
+enum Command {
+    Foo(Foo),
+}
+
+#[derive(Args)]
+#[command(disable_help_flag = true)]
+struct Foo {
+    #[arg(long)]
+    common_flag: Option&lt;String&gt;,
+
+    #[arg(long, hide_short_help = true)]
+    advanced_flag: Option&lt;String&gt;,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-26 17:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I was thinking of something like hide_unless_present, along the lines of <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.required_unless_present">required_unless_present</a>. Then you could write a subcommand like so:</p>
+</blockquote>
+<p>The problem with this is that the help action is activated immediately and is not aware of the full command line available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emersonford">@emersonford</a> on 2025-05-28 19:16</div>
+            <div class="timeline-body"><blockquote>
+<p>The multi-crate aspect isn't too clear to me as to why you can't just do</p>
+</blockquote>
+<p>Ah I brought up the multi-crate aspect because one way you could achieve this is by:</p>
+<ol>
+<li>Parse args (that include some <code>--help-all</code> flag)</li>
+<li>If <code>--help-all</code> is used, then create a command factory, override <code>hide</code> for a set of arguments, then call <code>print_help</code> on that new <code>Command</code>.</li>
+</ol>
+<p>But this only works if you have access to the top-level CommandFactory.</p>
+<blockquote>
+<p><code>#[arg(long, action = ArgAction::HelpLong, global = true)]</code></p>
+</blockquote>
+<p>Hmm, suppose this works, though you're still limited to only having two &quot;versions&quot; of the help page. I.e. you could not have something like <code>--help-feature-one</code> and <code>--help-feature-two</code>.</p>
+<blockquote>
+<p>The problem with this is that the help action is activated immediately and is not aware of the full command line available.</p>
+</blockquote>
+<p>Yeah -- the solution I had in mind was to pass <em>just</em> the first argument that triggers <code>HelpLong</code> to <code>write_help</code>. If you wanted some &quot;additive&quot; functionality, that's where <code>hide_unless_present_any</code> comes in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2025-05-28 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-28 19:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, suppose this works, though you're still limited to only having two &quot;versions&quot; of the help page. I.e. you could not have something like --help-feature-one and --help-feature-two.</p>
+</blockquote>
+<p>Keep in mind, the original request was only for two forms of help.  I'm ok with entertaining the idea of different flavors of help beyond short/long <em>but</em> it shouldn't be theoretical but a case we can concretely talk about <em>and</em> a clear example of why its important or generally applicable.</p>
+<p>Generally when I've seen people want more than two topics, they tend to instead have &quot;help topics&quot; in a help subcommand. That is something we don't help with atm.  If we went down the route of N flavors of help, I don't feel comfortable with <code>hide_unless_present</code> as I feel that over generalizes into a way that can be confusing for users approaching this as they are likely to assume that arguments after <code>--help</code> can affect <code>--help</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:46 UTC
+    </footer>
+</body>
+</html>

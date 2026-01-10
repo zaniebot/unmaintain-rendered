@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder and `clap_derive` should be WYSIWYG - clap-rs/clap #2808</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Builder and `clap_derive` should be WYSIWYG</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2808">#2808</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-04 18:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-04 18:52</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>1.55.0</p>
+<h3>Affected Version of clap</h3>
+<p>v3.0.0-beta.4</p>
+<h3>Expected Behavior Summary</h3>
+<p>Args are ordered as I declare them</p>
+<h3>Actual Behavior Summary</h3>
+<p>Args are sorted, without any exception (exceptions are common)</p>
+<h3>Context</h3>
+<p><code>DeriveDisplayOrder</code> is a <a href="https://github.com/clap-rs/clap/discussions/2627#discussion-3478195">very popular flag to turn on</a>.  When further researching this, <a href="https://github.com/clap-rs/clap/discussions/2627#discussioncomment-1120949">it is popular across CLIs and even when args are sorted, its one manually to allow exceptions</a>.</p>
+<p><code>rg</code> is one major exception for this</p>
+<blockquote>
+<p>I don't enable <code>DeriveDisplayOrder</code> because I do actually want everything to be alphabetical. See <a href="https://github.com/BurntSushi/ripgrep/issues/1814">group command line args into affected processing steps BurntSushi/ripgrep#1814</a> and <a href="https://github.com/BurntSushi/ripgrep/issues/1022">organized flags in man page according to logical section? BurntSushi/ripgrep#1022</a> for more details.</p>
+</blockquote>
+<p>I chalk this up to <code>rg</code> being an exceptional case in its scope and design and being limited by clap2's lack of <code>help_heading</code>.</p>
+<h4>Trade offs</h4>
+<p>Current Sorting Implementation</p>
+<ul>
+<li>Strengths<ul>
+<li>Immediate polish for quick and dirty programs</li>
+<li>Maintainable polish with large CLIs that have no good sort order and can't use <code>help_heading</code> (ie <code>rg</code>)</li>
+</ul>
+</li>
+<li>Weaknesses<ul>
+<li>Doesn't group <code>--no-</code> flags with their positive versions</li>
+<li>Sorts all, even <code>--help</code> and <code>--version</code> which are generally left unsorted</li>
+</ul>
+</li>
+</ul>
+<p>Deriving Order</p>
+<ul>
+<li>Easily discoverable path to both behaviors (can manually sort without finding the Setting)<ul>
+<li>Except when composing CLIs, like with <code>#[clap(flatten)]</code></li>
+</ul>
+</li>
+<li>Commonly what is expected</li>
+</ul>
+<h4>Survey of CLIs</h4>
+<p>Sorted</p>
+<ul>
+<li><code>rg</code><ul>
+<li>sort order is always respected, even for <code>--help</code> and <code>--version</code> (uses clap, author confirmed its intentional)</li>
+</ul>
+</li>
+<li><code>tokei</code><ul>
+<li>sort order is always respected, even for <code>--help</code> and <code>--version</code> (uses clap)</li>
+</ul>
+</li>
+<li>gnu <code>ls</code><ul>
+<li>sort order is broken for <code>--help</code> / <code>--version</code></li>
+</ul>
+</li>
+<li>gnu <code>df</code><ul>
+<li>sort order is broken for <code>--help</code> / <code>--version</code></li>
+</ul>
+</li>
+<li><code>less</code><ul>
+<li>sorts by short name, then long name (so long names without a short name are last)</li>
+<li>Even sorts <code>no-</code> variants</li>
+</ul>
+</li>
+</ul>
+<p>Custom</p>
+<ul>
+<li><code>cargo</code></li>
+<li><code>bat</code></li>
+<li><code>fd</code></li>
+<li><code>delta</code></li>
+<li><code>hyperfine</code></li>
+<li><code>rsync</code></li>
+<li><code>vim</code></li>
+<li>gnu <code>chmod</code><ul>
+<li>Even if this was sorted, I suspect the <code>no-</code> variants would not be sorted</li>
+</ul>
+</li>
+<li><code>mount</code></li>
+<li><code>curl</code></li>
+<li><code>wget</code></li>
+<li><code>iptables</code></li>
+<li><code>traceroute</code></li>
+<li>gnu <code>grep</code></li>
+<li>gnu <code>find</code> (mostly sorted but there are exceptions</li>
+</ul>
+<p><em>(List of commands was inspired by prior Rust command list, some off the top of my head, and a random <a href="https://www.ubuntupit.com/best-linux-commands-to-run-in-the-terminal/">50 linux command list</a> I found.  I only did a random sampling of the GNU CoreUtils though)</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-10-04 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @epage on 2021-10-04 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @epage on 2021-10-04 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2021-10-04 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2021-10-04 21:37</div>
+            <div class="timeline-body"><p>I really do want options alphabetized by default, even if I only have a few of them. For small, quick tools, that'll avoid having options in a haphazard order. For larger tools with more options, I'd want to decide some kind of logical grouping of options, and in that case I might consider turning on DeriveDisplayOrder, but I would want that to be a deliberate choice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-04 21:42</div>
+            <div class="timeline-body"><p>@joshtriplett thats an interesting use case to keep in mind!</p>
+<p>This presents a bit of a tension.  Unorganized prototypes might want things alphabetized and these benefit most from defaults.  In contrast, I know a lot of my CLIs have logical ordering but I forget to set the display order to derive in them.</p>
+<p>I'd be curious what other precedence there is.  I know <code>argparse</code> only has the equivalent of <code>DeriveDisplayOrder</code>.  I've not looked at Go or any other arg parser from a modern development ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2021-10-04 21:51</div>
+            <div class="timeline-body"><blockquote>
+<p>In contrast, I know a lot of my CLIs have logical ordering but I forget to set the display order to derive in them.</p>
+</blockquote>
+<p>Wouldn't you notice this when reviewing the help (e.g. to polish, or to prepare screenshots or screencasts or manual pages)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-04 23:55</div>
+            <div class="timeline-body"><ul>
+<li>Often, I overlook reviewing <code>--help</code></li>
+<li>When I do screenshots, they generally don't have <code>--help</code></li>
+<li>I've not yet done man pages.  I've been waiting for the mythical day when clap can code-gen the majority of it for me :)  Granted, git's behavior of overriding my command's <code>--help</code> with a manpage lookup might push me to write one before then.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-05 11:13</div>
+            <div class="timeline-body"><p>I've been thinking about this issue on and off for a while; about making DeriveDisplayOrder the default.</p>
+<p>@joshtriplett makes a great point, but if I may make a counter point to get some people's opinions. When building a CLI, small or not, upon first running <code>--help</code> if you see the options are in the same order you declared them (WYSIWYG) I think that's decently unsurprising, even if it's not the desired behavior at the time. Assume <code>AppSettings</code> wasn't a thing for a moment, and after running <code>--help</code> you see your args are not sorted, but you'd like them sorted by default the solution would be to &quot;quickly&quot; sort them by hand. Even if that's a manual and less than pleasant experience it's at least easy to grok.</p>
+<p>Contrast that with our current behavior of sorting them by default; if that's what you wanted it's no big deal but if that's <em>not</em> the desired behavior there is no clear solution unless you already know about <code>AppSettings</code> and take a gamble to see if there is a setting that does what you want.</p>
+<p>It's anecdotal but in my experience in the wild I've run into more people who either expect the WYSIWYG ordering and are somewhat surprised by the sorted args, or don't care either way.</p>
+<p>One last comment about alphabetizing is that with <code>--[no-]flag</code> style flags, all the <code>--no-*</code> options are grouped together instead of with the option they relate to. Not too big an issue unless there are a significant number of flags. However, if we're able to ever add the &quot;automatically add <code>--no-*</code> flags for CLIs&quot;, that could become a bigger issue because I suspect more people will end up using <code>--no-*</code> flags than currently do because they'd be easier to add.</p>
+<p>So I'm leaning towards DeriveDisplayOrder should be the default, but I'm open to being swayed by more opinions and discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-05 13:42</div>
+            <div class="timeline-body"><p>I've updated the issue with a summary of the conversations and included my survey of different tools <code>--help</code></p>
+<p>For cases like <code>rg</code> (large CLI with sorting), almost seems like a custom comparator would be needed to handle the different exceptions (<code>--no-</code>, <code>--help</code>, <code>--version</code>) or alternative approaches (sort by short vs long)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-05 14:11</div>
+            <div class="timeline-body"><p>For completeness sake, it'd be possible for us to always sort <code>--no-*</code> flags next their positive value even if we maintained the current alphabetical sort <em>and</em> added an automatic <code>--no-*</code> flag generation option. So I don't want people to think that would be the sole reason for leaning away from alphabetical sort by default.</p>
+<p>Unfortunately for us, it's difficult to tell if those tools (that use clap) that are using alphabetical sort currently are doing so because that's what they prefer, or simply because that's what clap v2 did by default. Likewise, it'd be interesting to see if any of those tools <em>also</em> have their declarations in alphabetical order or not. I'm not suggesting we hunt down that info, just musing on the subject :stuck_out_tongue_winking_eye:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-05 15:16</div>
+            <div class="timeline-body"><p>Yes, in the Issue, I intentionally referred to this as &quot;Current Sorting Implementation&quot; so we kept in mind that this was changeable.  I brought up the custom comparator because it felt like I was seeing a lot of different sort policies and I worry that it'd be hard to have &quot;one true policy&quot;.  For example, I know <code>rg</code> intentionally sorts and I'd want to check in with burntsushi to see how any sorting changes or new features (custom comparator) would impact <code>rg</code>.    It'd also be good to get clap3 out to see if <code>help_heading</code> ends up having an impact on <code>rg</code> though I expect that to be a slow process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2812.html">clap-rs/clap#2812</a> on 2021-10-05 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2807.html">clap-rs/clap#2807</a> on 2021-10-11 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @epage on 2021-10-19 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-03 18:29</div>
+            <div class="timeline-body"><p>Talking about discoverable paths forward (whether we support derive-only or just make derive the default), in addition to manually ordering items, people can also override the display order position.  In particular, we sort all items within the same display order position.</p>
+<p>I was curious about providing &quot;sort items of same display position&quot; as a way of allowing sorting to discover we already do it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-11-03 18:43</div>
+            <div class="timeline-body"><p>FWIW, I am okay with changing the default for this in v4 if the user feedback we collect doesn't prefer keeping the current sorting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-04 16:30</div>
+            <div class="timeline-body"><p>I ended up on a rabbit trail and as part of it, was reading through https://github.com/clap-rs/clap/issues/1365.  Remembering this issue, I realized we can drop <code>IndexMap</code> from our dependencies by making <code>DeriveDisplayOrder</code> the only* option.</p>
+<p>* It will no longer be globally configured but sorting would still be available via:</p>
+<ul>
+<li>Manual sorting</li>
+<li>Assigning the same display order to everything</li>
+<li>Or, if its important enough, we can add <code>App::next_display_order(dsplay_order: Option&lt;usize&gt;)</code> where <code>None</code> is a default pool of sorted items<ul>
+<li>Can't be <code>App::display_order</code> because that is used for subcommands.  Maybe we should rename <code>App::help_heading</code> to <code>App::next_help_heading</code> to be consistent</li>
+</ul>
+</li>
+</ul>
+<p>We do this by</p>
+<ul>
+<li>Remove <code>DeriveDisplayOrder</code></li>
+<li>Add a <code>App { ..., next_disp_order: usize }</code> (or <code>Option&lt;usize&gt;</code>)</li>
+<li>In <code>App::arg</code>, assign <code>next_disp_order</code> to <code>Arg::disp_ord</code> and increment <code>next_disp_order</code></li>
+</ul>
+<p>By assigning <code>Arg::disp_ord</code> at the time of <code>App::arg</code>, we no longer care what order items are inserted into the arg map.  We can then switch away from <code>IndexMap</code> to <code>HashMap</code> or <code>BTreeMap</code>, dropping a depedency and removing the need for <code>App::_derive_display_order</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1365.html">clap-rs/clap#1365</a> on 2021-11-04 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-11-05 07:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Or, if its important enough, we can add App::next_display_order(dsplay_order: Option<usize>) where None is a default pool of sorted items</p>
+</blockquote>
+<p>I am not sure why we need that if we are allowing them to assign the same display order value and then clap sorts them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-05 13:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I am not sure why we need that if we are allowing them to assign the same display order value and then clap sorts them.</p>
+</blockquote>
+<p>I was exploring ideas to make it easier to disable the display order en-masse in case concern was raised over having to set it one-by-one, much like we have <code>App::help_heading</code> to make it easier to not set it on everything.</p>
+<p>Whether to do this depends on</p>
+<ul>
+<li>How many people expect to sort</li>
+<li>How many args those sorting will have to be setting it on (e.g. <code>rg</code> has quite a bit)</li>
+<li>How comfortable we feel with the proposed API, balanced with the above two</li>
+</ul>
+<p>A counter idea for this is to have them use #2976 to bulk set it.  #2976 doesn't work as well for <code>help_heading</code> because that is done in groups but would work quite well here since people will want it applied to all or have only one or two exceptions (e.g. help and version are generally no sorted)</p>
+<p>EDIT:  the downside with bulk editing is that users of <code>clap_derive</code> would need to manually do the steps of <code>Parser</code>'s inherent methods to inject custom <code>App</code> logic like this.  If the case is small enough (users of <code>clap_derive</code> that also want sorting) than it is probably fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-05 13:33</div>
+            <div class="timeline-body"><p>I was considering whether we can implement this now, and just key the <code>App::arg</code> logic off of <code>DeriveDisplayOrder</code> so we can drop <code>indexmap</code> as a dependency.</p>
+<p>The reason we &quot;can't&quot; is ordering.  We can't guarantee <code>DeriveDIsplayOrder</code> will be set before calls to <code>App::arg</code>.  For example, <code>clap_derive</code> applies nearly all app methods <em>after</em> calls to <code>App::arg</code>.</p>
+<p>&quot;can't&quot; is quoted because this is software, there is always something we could do.  For example, we could special case this setting like we special case <code>help_heading</code>.  I don't think going down that route is worth it though,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3002.html">clap-rs/clap#3002</a> on 2021-11-08 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/210.html">epage/clapng#210</a> on 2021-12-06 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/234.html">epage/clapng#234</a> on 2021-12-06 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1807.html">clap-rs/clap#1807</a> on 2021-12-13 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @epage on 2021-12-13 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3096.html">clap-rs/clap#3096</a> on 2021-12-14 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-08 01:23</div>
+            <div class="timeline-body"><p>#3414 added <code>App::next_display_order</code> which can accept <code>None</code> to turn it off.</p>
+<p>That just leaves (all for clap4)</p>
+<ul>
+<li>Making <code>DeriveDisplayOrder</code> the default, deprecating it</li>
+<li>Removing the <code>enum DisplayOrder</code> tracking we won't need anymore</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2717.html">clap-rs/clap#2717</a> on 2022-02-10 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3800.html">clap-rs/clap#3800</a> on 2022-06-08 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3975.html">clap-rs/clap#3975</a> on 2022-07-22 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-22 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../foundry-rs/foundry/pulls/3459.html">foundry-rs/foundry#3459</a> on 2022-10-05 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hashintel/hash/pulls/1195.html">hashintel/hash#1195</a> on 2022-10-13 09:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3*: Rules now also report non-function calls - astral-sh/ruff #16673</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>S3*: Rules now also report non-function calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16673">#16673</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-03-12 12:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 12:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://github.com/astral-sh/ruff/pull/15541 changed the S3* rules to report all references instead of only checking for the problematic functions in call expressions (callee) positions to detect them when used in callback positions.</p>
+<p>I think there are two issues with the change:</p>
+<ol>
+<li>The rule uses the same error message regardless if the function is used in a call position or not: <em>S321 FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.</em> The <code>are being called</code> part can be confusing when there's no actual call, e.g. <code>port = ftplib.FTP_PORT</code></li>
+<li>The rule now also reports usages for symbols that aren't functions</li>
+</ol>
+<pre><code class="language-py">        if self.conn is None:
+          params = self.get_connection(self.ftp_conn_id)
+          pasv = params.extra_dejson.get(&quot;passive&quot;, True)
+          self.conn = ftplib.FTP()  # nosec: B321
+          if params.host:
+              port = ftplib.FTP_PORT
+              if params.port is not None:
+                  port = params.port
+              logger.info(&quot;Connecting via FTP to %s:%d&quot;, params.host, port)
+              self.conn.connect(params.host, port)
+              if params.login:
+                  self.conn.login(params.login, params.password)
+          self.conn.set_pasv(pasv)
+</code></pre>
+<p>Some of this could be addressed by rephrasing the message or we want a more sophisticated check to e.g. only check for usages in function call arguments rather than references anywhere in code.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-03-12 12:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Git credentials in `pyproject.toml` are ignored during sync - astral-sh/uv #7453</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>HTTP Git credentials in `pyproject.toml` are ignored during sync</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7453">#7453</a>
+        opened by <a href="https://github.com/flbraun">@flbraun</a>
+        on 2024-09-17 10:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flbraun">@flbraun</a> on 2024-09-17 10:15</div>
+            <div class="timeline-body"><p>I'm currently evaluating uv for our Python teams. So far I'm very impressed with the overall snappiness (compared to Pipenv), thank you very much for the good work so far. Unfortunately I ran into an issue when dealing with private packages from our Gitlab.<br />
+I don't have knowledge about uv's internal workings, but my guess is that the authentication credentials aren't stored properly at some point and are then missing for successive operations.</p>
+<pre><code class="language-shell">$ uv --version
+uv 0.4.10
+$ uname -sp
+Linux x86_64
+</code></pre>
+<p>First, I'm adding the dependency to the project:</p>
+<pre><code class="language-shell">$ RUST_LOG=uv=trace uv add &quot;git+https://user:pass@gitlab.mycompany.com/group/project.git&quot; --tag &quot;v2024.8.6&quot;
+[...]
+DEBUG Fetching source distribution from Git: https://user:pass@gitlab.mycompany.com/group/project.git
+TRACE Checking lock for `https://gitlab.mycompany.com/group/project` at `/tmp/.tmp5Co2Yg/git-v0/locks/924509151ecc8240`
+DEBUG Acquired lock for `https://gitlab.mycompany.com/group/project`
+DEBUG Updating Git source `https://user:pass@gitlab.mycompany.com/group/project.git`
+DEBUG Performing a Git fetch for: https://user:pass@gitlab.mycompany.com/group/project.git
+DEBUG reset /tmp/.tmp5Co2Yg/git-v0/checkouts/924509151ecc8240/9bf0934 to 9bf093425188c4feaa7f86a78569b2fbbf5ba1a0
+DEBUG Released lock at `/tmp/.tmp5Co2Yg/git-v0/locks/924509151ecc8240`
+TRACE Checking lock for `/tmp/.tmp5Co2Yg/built-wheels-v3/git/8742abde34b47f9d/9bf093425188c4fe` at `/tmp/.tmp5Co2Yg/built-wheels-v3/git/8742abde34b47f9d/9bf093425188c4fe/.lock`
+DEBUG Acquired lock for `/tmp/.tmp5Co2Yg/built-wheels-v3/git/8742abde34b47f9d/9bf093425188c4fe`
+DEBUG No static `pyproject.toml` available for: git+https://user:pass@gitlab.mycompany.com/group/project.git (PyprojectToml(DynamicField(&quot;version&quot;)))
+DEBUG No static `PKG-INFO` available for: git+https://user:pass@gitlab.mycompany.com/group/project.git (MissingPkgInfo)
+DEBUG No static `egg-info` available for: git+https://user:pass@gitlab.mycompany.com/group/project.git (MissingEggInfo)
+DEBUG Preparing metadata for: git+https://user:pass@gitlab.mycompany.com/group/project.git
+[...]
+Prepared 97 packages in 6.90s
+Installed 97 packages in 179ms
+[...]
+</code></pre>
+<p>As you can clearly see in the logs the credentials are present and the operation finishes successfully.</p>
+<p>The package appears in <code>pyproject.toml</code> and <code>uv.lock</code>; note that the stated credentials are missing:</p>
+<pre><code class="language-ini"># pyproject.toml
+[project]
+...
+dependencies = [
+    ...
+    &quot;package&quot;,
+]
+
+[tool.uv.sources]
+bxlog = { git = &quot;https://gitlab.mycompany.com/group/project.git&quot;, tag = &quot;v2024.8.6&quot; }
+</code></pre>
+<pre><code class="language-ini"># uv.lock
+...
+[[package]]
+name = &quot;thisproject&quot;
+...
+dependencies = [
+    ...
+    { name = &quot;package&quot; },
+]
+
+[package.metadata]
+requires-dist = [
+    ...
+    { name = &quot;package&quot;, git = &quot;https://gitlab.mycompany.com/group/project.git?tag=v2024.8.6&quot; },
+]
+
+...
+[[package]]
+name = &quot;package&quot;
+version = &quot;2024.8.6&quot;
+source = { git = &quot;https://gitlab.mycompany.com/group/project.git?tag=v2024.8.6#020cae642886a1fce3528366402047d479621904&quot; }
+</code></pre>
+<p>Now, let's simulate another developer checking the project out and installing the dependencies for the first time:</p>
+<pre><code class="language-shell">$ rm -rf .venv
+$ RUST_LOG=uv=trace uv sync --no-cache
+[...]
+DEBUG Identified uncached requirement: package @ git+https://gitlab.mycompany.com/group/package.git@v2024.8.6
+[...]
+DEBUG Fetching source distribution from Git: https://gitlab.mycompany.com/group/package.git
+[...]
+TRACE Checking lock for `https://gitlab.mycompany.com/group/package` at `/tmp/.tmpcPhaTx/git-v0/locks/924509151ecc8240`
+DEBUG Acquired lock for `https://gitlab.mycompany.com/group/package`
+[...]
+DEBUG Updating Git source `https://gitlab.mycompany.com/group/package.git`
+DEBUG Performing a Git fetch for: https://gitlab.mycompany.com/group/package.git
+[...]
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: package @ git+https://gitlab.mycompany.com/group/package.git@020cae642886a1fce3528366402047d479621904
+  Caused by: Git operation failed
+  Caused by: failed to clone into: /tmp/.tmpcPhaTx/git-v0/db/924509151ecc8240
+  Caused by: failed to fetch commit `020cae642886a1fce3528366402047d479621904`
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok 'https://gitlab.mycompany.com/group/package.git' '+020cae642886a1fce3528366402047d479621904:refs/remotes/origin/HEAD'` (exit status: 128)
+--- stderr
+remote: 
+remote: ========================================================================
+remote: 
+remote: The project you were looking for could not be found or you don't have permission to view it.
+remote: 
+remote: ========================================================================
+remote: 
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+</code></pre>
+<p>Looking back at <code>pyproject.toml</code>  and <code>uv.lock</code> that's an understandable response - the <code>username:password</code> tuple is nowhere to be seen, there simply aren't any credentials that uv could have included in the request.</p>
+<p>Interestingly, manually adding the credentials back into the URL  in <code>uv.lock</code> makes <code>uv sync</code> operate as expected, but after the next uv operation that modifies the lock file (e.g. <code>uv lock --upgrade</code>) the credentials are lost again, so that's not even a valid workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 12:59</div>
+            <div class="timeline-body"><p>We intentionally do not store any credentials in plaintext files by default. You should be able to re-add them to the <code>pyproject.toml</code> if you actually want them to be persisted in plaintext.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 13:11</div>
+            <div class="timeline-body"><p>It's generally dangerous to commit credentials to your project, is there a reason that you need to do that?</p>
+<p>You might want to look into the <a href="https://git-scm.com/docs/git-credential-store">Git credential store</a> which we will use automatically if the credentials have been populated. Some similar notes on this exist in the <a href="https://doc.rust-lang.org/cargo/appendix/git-authentication.html#https-authentication">Cargo documentation</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-17 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flbraun">@flbraun</a> on 2024-09-17 13:33</div>
+            <div class="timeline-body"><p>@charliermarsh Re-adding the credentials to <code>pyproject.toml</code> will keep them there, but they will never be included in <code>uv.lock</code> which ultimately results in the error described above.</p>
+<p>I'm fully aware of the security implications of plaintext secrets. In this case it is fine however, since the project is only used within the company and the credential is a <a href="https://docs.gitlab.com/ee/user/project/deploy_tokens/">Gitlab deploy token</a>, not a personal account. I won't deny that there are better ways of handling this, but that's the way it is right now.</p>
+<p>uv's documentation explicitly states support for HTTP authentication, so I'd expect that to work with basic uv workflows without any big surprises:</p>
+<pre><code>Authentication can come from the following sources, in order of precedence:
+- The URL, e.g., https://&lt;user&gt;:&lt;password&gt;@&lt;hostname&gt;/...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 13:35</div>
+            <div class="timeline-body"><p>If you're seeing the above trace after re-adding the credentials to <code>pyproject.toml</code>, then that's a bug, but your summary didn't suggest that you tried that -- only that you re-added them to the <code>uv.lock</code>. Did you? uv should not require that the credentials are present in the <code>uv.lock</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flbraun">@flbraun</a> on 2024-09-17 14:03</div>
+            <div class="timeline-body"><p>Sorry for the confusion, let me clear this up:</p>
+<p>In my original post I just manually added it to <code>uv.lock</code> but not <code>pyproject.toml</code>. That worked until I ran <code>uv lock --upgrade</code> which removed the credentials from <code>uv.lock</code>, leading to the described error when running <code>uv sync --no-cache</code>.</p>
+<p>After your response I tried adding them to both <code>pyproject.toml</code> and <code>uv.lock</code>. That also works, but when running <code>uv lock --upgrade</code> the credentials are kept in <code>pyproject.toml</code> but are removed from <code>uv.lock</code>.
+With the credentials <em>only</em> being in <code>pyproject.toml</code> running <code>uv sync --no-cache</code> fails to fetch the package again.</p>
+<p>If you say that having it only in <code>pyproject.toml</code> is the desired state, then yeah, I guess we have a bug here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-09-17 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-17 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 14:33</div>
+            <div class="timeline-body"><p>We have test coverage for this exact situation — I'm surprised this isn't working for you? https://github.com/astral-sh/uv/blob/fe8880bf3cd132bb1c4795f7423dc1628fd3742c/crates/uv/tests/lock.rs#L5999-L6030</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 14:38</div>
+            <div class="timeline-body"><p>Does it work with <code>--frozen</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 14:39</div>
+            <div class="timeline-body"><p>I think that's different @zanieb -- that tests an index, but here the credentials are provided on the URL directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 14:42</div>
+            <div class="timeline-body"><p>Oh good point! We have test coverage for that too, but the test might be wrong https://github.com/astral-sh/uv/pull/7463</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-17 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 15:25</div>
+            <div class="timeline-body"><p>Let's call it a bug for Git credentials then. I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "HTTP authentication credentials are forgotten" to "HTTP Git credentials in `pyproject.toml` are ignored during sync" by @zanieb on 2024-09-17 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7474.html">astral-sh/uv#7474</a> on 2024-09-17 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-17 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flbraun">@flbraun</a> on 2024-09-18 12:33</div>
+            <div class="timeline-body"><p>Thank you guys for addressing this so quickly! I'm running 0.4.11 now and everything works as expected.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:50 UTC
+    </footer>
+</body>
+</html>

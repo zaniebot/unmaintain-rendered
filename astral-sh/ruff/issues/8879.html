@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsafe fix for `ANN2XX` is too unsafe - astral-sh/ruff #8879</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unsafe fix for `ANN2XX` is too unsafe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8879">#8879</a>
+        opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a>
+        on 2023-11-28 20:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-11-28 20:01</div>
+            <div class="timeline-body"><pre><code>def do_thing(thing: Thing | None):
+    if not thing:
+        return None
+    return { 'foo': 1 }
+</code></pre>
+<p>The (unsafe) autofix adds <code> -&gt; None</code> as the return type. I know this is under &quot;unsafe&quot; fixes, but this should be easy enough to avoid. https://github.com/JelleZijlstra/autotyping handles this case, so maybe that logic can be reused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-28 20:05</div>
+            <div class="timeline-body"><pre><code class="language-python">Thing = dict
+
+
+def do_thing(thing: Thing | None):
+    if not thing:
+        return None
+    return {&quot;foo&quot;: 1}
+</code></pre>
+<pre><code>❯ ruff check example.py --select ANN
+example.py:4:5: ANN201 Missing return type annotation for public function `do_thing`
+Found 1 error.
+</code></pre>
+<pre><code>❯ ruff version
+ruff 0.1.6 (f460f9c5c 2023-11-17)
+</code></pre>
+<p>I don't get a suggested fix for this example. Could you provide more reproduction details?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 20:18</div>
+            <div class="timeline-body"><p>I can reproduce this with preview enabled -- I think it's just a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-28 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-28 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 20:37</div>
+            <div class="timeline-body"><p>Huh, I can reproduce this in the playground but not locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 20:38</div>
+            <div class="timeline-body"><p>Oh, you need to have the target Python version set to &gt;= 3.10. Okay. I'm on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8881.html">astral-sh/ruff#8881</a> on 2023-11-28 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-28 21:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

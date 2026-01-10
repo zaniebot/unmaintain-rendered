@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom stdout and stderr - clap-rs/clap #1273</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom stdout and stderr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1273">#1273</a>
+        opened by <a href="https://github.com/Arcterus">@Arcterus</a>
+        on 2018-05-15 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Arcterus">@Arcterus</a> on 2018-05-15 23:46</div>
+            <div class="timeline-body"><p>Would it be possible to add support for custom <code>stdout</code> and <code>stderr</code>?  Something like so:</p>
+<pre><code class="language-rust">let mut file = File::create(&quot;somefile&quot;).unwrap();
+let mut another = File::create(&quot;anotherfile&quot;).unwrap();
+
+let app = App::new(&quot;utils&quot;).stdout(file).stderr(another);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eminence">@eminence</a> on 2018-05-20 22:04</div>
+            <div class="timeline-body"><p>This feature would also be useful when you want to redirect <em>all</em> clap output to a certain stream (like to stderr)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arcterus">@Arcterus</a> on 2018-05-25 22:16</div>
+            <div class="timeline-body"><p>I added support in a fork at <a href="https://github.com/mesalock-linux/clap-rs">mesalock-linux/clap-rs</a>.  I may have missed something while adding support, but things seem to be working.  Adding support required extending <code>App</code> from <code>struct App&lt;'a, 'b&gt; where 'a: 'b</code> to:</p>
+<pre><code class="language-rust">struct App&lt;'a, 'b, I, O, E&gt;
+where
+    'a: 'b,
+    I: BufRead,
+    O: Write,
+    E: Write
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 01:19</div>
+            <div class="timeline-body"><p>You can do this by using the <a href="https://docs.rs/clap/2.31.2/clap/struct.App.html#method.get_matches_safe"><code>App::get_matches_safe</code></a> methods which allow one to print the output to whatever stream you like.</p>
+<p>I don't particularly want to add the additional generics for something that isn't as common though. I'm not against adding a method which writes to a different stream, however it's not something I currently have time to add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-06-05 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arcterus">@Arcterus</a> on 2018-06-05 02:24</div>
+            <div class="timeline-body"><p>That was what I tried to do at first, but I was getting incorrect output when calling the <code>write_</code> functions manually (in one case I was actually getting nothing).</p>
+<p>It would also be trivial to remove the generics, but doing so would require dynamic dispatch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eminence">@eminence</a> on 2018-06-05 02:52</div>
+            <div class="timeline-body"><p><code>get_matches_safe</code> worked for me, but I also had to <code>DisableHelpCommand</code> and <code>DisableVersion</code>, since those seem <a href="https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L1923-L1927">hard-coded</a> to use <code>stdout</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 13:35</div>
+            <div class="timeline-body"><p>@Arcterus if you're using the <code>write_</code> methods you'll have to <a href="https://doc.rust-lang.org/std/io/trait.Write.html#tymethod.flush"><code>flush</code></a> the stream manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arcterus">@Arcterus</a> on 2018-06-05 14:42</div>
+            <div class="timeline-body"><p>@kbknapp I did.  I flush before exiting.</p>
+<p>@eminence pretty sure I tried that, but I’ll see if that fixes some of my issues on an older version of the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 18:28</div>
+            <div class="timeline-body"><p>@eminence <a href="https://github.com/kbknapp/clap-rs/blob/f74646de8c94d98db3e50f19846f050f6fee9c76/src/app/parser.rs#L1929-L1931"><code>App::write_help</code></a> will let you write to any stream. You'll still have to use the DisableHelp and DisableVersion, but you can then write those to whatever stream you want.</p>
+<p>@Arcterus Do you have the code I could look at that's not working?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arcterus">@Arcterus</a> on 2018-06-05 19:10</div>
+            <div class="timeline-body"><p>I’ll try to find it in the next day or two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eminence">@eminence</a> on 2018-06-05 22:44</div>
+            <div class="timeline-body"><p>Yep, it worked fine.  But I had to dig into the source to figure out what was going on.  Actually, would you accept a PR to improve the docs on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 23:37</div>
+            <div class="timeline-body"><p>@eminence of course! I'm thankful for all PRs :smile:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:48 UTC
+    </footer>
+</body>
+</html>

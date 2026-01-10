@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclude pragma comments from measured line width - astral-sh/ruff #6772</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclude pragma comments from measured line width</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6772">#6772</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-22 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-22 14:32</div>
+            <div class="timeline-body"><p>Exclude trailing expression end-of-line comments to be included in the measured line width (<code>type: </code>, <code>pyright:</code> <code>pylint:</code>, <code>noqa</code>, but NOT <code>nocoverage</code> because it is a trailing clause comment that isn't sensitive about its positioning</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6197.html">astral-sh/ruff#6197</a> on 2023-08-22 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-22 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-08-22 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Exclude trailing expression end-of-line comments to be included in the measured line width (`type: `, `pyright:` `pylint:`, `noqa`, but NOT `nocoverage` because it is a trailing clause comment that isn't sensitive about its positioning" to "Exclude pragma comments from measured line width" by @MichaReiser on 2023-08-22 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Alpha" by @MichaReiser on 2023-08-22 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-22 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Beta" by @MichaReiser on 2023-08-22 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-08-22 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-27 00:44</div>
+            <div class="timeline-body"><p>Curious of what a solution would look like. These are line suffixes, so would we want to just match on the content that'd we want to ignore? Or is there a more robust way to go about this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-27 08:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Curious of what a solution would look like. These are line suffixes, so would we want to just match on the content that'd we want to ignore? Or is there a more robust way to go about this?</p>
+</blockquote>
+<p>No, matching on the content is what we'll need to do here. Similar to how formatter suppression comments:</p>
+<p>https://github.com/astral-sh/ruff/blob/0cea4975fcfe09716c084c0a18d1b4c4cd9b8f05/crates/ruff_python_formatter/src/comments/mod.rs#L173-L193</p>
+<p>We'll match on the content and set reserved width to 0 if it is a pragma comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-29 22:17</div>
+            <div class="timeline-body"><p>Sounds very straight-forward then. I can tackle this after #6901.</p>
+<p>Reading through https://github.com/astral-sh/ruff/discussions/6670 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-30 00:32</div>
+            <div class="timeline-body"><p>IIUC there would be no exceptions based on the <em>values</em> of the pragmas.</p>
+<p>So something like this would probably work, right?</p>
+<pre><code class="language-rust">      // Don't reserve width for excluded pragma comments.
+      let reserved_width = if [&quot;noqa&quot;, &quot;type:&quot;, &quot;pylint&quot;, &quot;pyright:&quot;]
+          .iter()
+          .any(|prefix| trimmed.starts_with(prefix))
+      {
+          0
+      } else {
+          normalized_comment.text_len().to_u32() + 2 // Account for two added spaces
+      };
+</code></pre>
+<p>Might need some redundant trims to get <code>trimmed</code> unless we refactor some of #6901. Not sure how worth it it is.</p>
+<p><a href="https://github.com/cnpryer/ruff/blob/3d32f2cf2d442f72911533cd6ec0e58855539ea3/crates/ruff_python_formatter/src/comments/format.rs#L361-L373">This</a> is where my mind is at with this currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 08:12</div>
+            <div class="timeline-body"><p>That looks about right. I don't think we need to handle non-breaking spaces. I don't even think most pragma comments remain valid if you add a non breaking space.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7008.html">astral-sh/ruff#7008</a> on 2023-08-30 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-30 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't even think most pragma comments remain valid if you add a non breaking space.</p>
+</blockquote>
+<p>Interesting. I didn't think that a NBSP would invalidate pragmas. I just tested it with</p>
+<pre><code class="language-py">&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;  # noqa
+a = []  # type: list[str]
+</code></pre>
+<p>Both contain a leading NBSP.</p>
+<blockquote>
+<p>I don't think we need to handle non-breaking spaces</p>
+</blockquote>
+<p>Is the reasoning just because they become invalid pragmas? I'd think the <em>intention</em> is that they're there to be treated as pragmas. I'd think from a consistency point of view it might make sense to treat their formatting the same.</p>
+<p>I'm imagining a case where a user realizes their pragmas are invalid due to NBPS and corrects them. They might need to address both their pragmas' reinstated functionality <strong>and</strong> now potential formatting changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 13:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting. I didn't think that a NBSP would invalidate pragmas. I just tested it with</p>
+</blockquote>
+<p>What was the result. Did the typechecker pick up the type or not?</p>
+<blockquote>
+<p>I'm imagining a case where a user realizes their pragmas are invalid due to NBPS and corrects them. They might need to address both their pragmas' reinstated functionality and now potential formatting changes.</p>
+</blockquote>
+<p>I can see how this is annoying. But I'm not too worried because I don't know how you accidentally end up with a NBPS.  That's why I think this is rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-30 13:45</div>
+            <div class="timeline-body"><blockquote>
+<p>What was the result. Did the typechecker pick up the type or not?</p>
+</blockquote>
+<p>It did not pick up the type. You called it.</p>
+<pre><code class="language-py"># Lead by a NBSP
+a = []  # type: list[str]
+
+# Lead by a space
+b = []  # type: list[str]
+</code></pre>
+<pre><code>❯ mypy scratch.py
+scratch.py:2: error: Need type annotation for &quot;a&quot; (hint: &quot;a: List[&lt;type&gt;] = ...&quot;)  [var-annotated]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<p>If you throw the NBSP into <code>b</code>'s pragma you get</p>
+<pre><code>scratch.py:2: error: Need type annotation for &quot;a&quot; (hint: &quot;a: List[&lt;type&gt;] = ...&quot;)  [var-annotated]
+scratch.py:5: error: Need type annotation for &quot;b&quot; (hint: &quot;b: List[&lt;type&gt;] = ...&quot;)  [var-annotated]
+Found 2 errors in 1 file (checked 1 source file)
+</code></pre>
+<blockquote>
+<p>I can see how this is annoying. But I'm not too worried because I don't know how you accidentally end up with a NBPS. That's why I think this is rare.</p>
+</blockquote>
+<p>Yea this is what I've been trying to understand. In all transparency I wasn't too familiar with NBSP prior to working on this stuff. So I'd have to look into them more to gauge it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Yea this is what I've been trying to understand. In all transparency I wasn't too familiar with NBSP prior to working on this stuff. So I'd have to look into them more to gauge it.</p>
+</blockquote>
+<p>Me neither. I only used <code>&amp;nbsp;</code> when writing HTML but that's a long time ago... I don't even know how to insert a NBSP in the editor :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-30 21:54</div>
+            <div class="timeline-body"><p>So I've looked into this more. Tools like <code>mypy</code> and <code>flake8</code> will invalidate pragma comments if they are lead by a NBSP (doesn't matter how many). However <code>ruff</code> doesn't invalidate the pragmas. Since #5554 these comments are stripped of their whitespace regardless of the <em>kind</em> of whitespace that is there.</p>
+<p>My preliminary thoughts are that I actually prefer <code>ruff</code>'s current behavior. Regardless of how the NBSP ends up there, you're still <em>intentionally</em> marking it with a pragma. In fact, I'd think that having a NBSP (for some kind of rendering purposes) actually makes sense. A pragma comment is inherently tied to the comment prefix <code>#</code>.</p>
+<p>A NBSP is meant to attach two elements together <strong>always</strong> and not break the content. So while this might be rare, it's not <em>unreasonable</em> (IMO).</p>
+<p><a href="https://discord.com/channels/1039017663004942429/1073384953741574217/1146453786202751057">Here</a> is the relevant Discord thread.</p>
+<p><a href="https://play.ruff.rs/00430b93-f281-453a-b2bb-fc8be32d4ad4">Here</a> is a playground script I've been messing with to better understand NBSP in the context of <code>ruff</code> and other tools.</p>
+<p>I'll defer to your judgement, but if we decide to move forward with invalidating them then maybe we need to consider updating <code>ruff</code> to align with other tools. I have a commit ready:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/noqa.rs b/crates/ruff/src/noqa.rs
+index 36cf5105a..62801801c 100644
+--- a/crates/ruff/src/noqa.rs
++++ b/crates/ruff/src/noqa.rs
+@@ -11,7 +11,7 @@ use log::warn;
+ use ruff_text_size::{Ranged, TextLen, TextRange, TextSize};
+ 
+ use ruff_diagnostics::Diagnostic;
+-use ruff_python_trivia::indentation_at_offset;
++use ruff_python_trivia::{indentation_at_offset, PythonWhitespace};
+ use ruff_source_file::{LineEnding, Locator};
+ 
+ use crate::codes::NoqaCode;
+@@ -53,7 +53,7 @@ impl&lt;'a&gt; Directive&lt;'a&gt; {
+             let mut comment_start = noqa_literal_start;
+ 
+             // Trim any whitespace between the `#` character and the `noqa` literal.
+-            comment_start = text[..comment_start].trim_end().len();
++            comment_start = text[..comment_start].trim_whitespace_end().len();
+ 
+             // The next character has to be the `#` character.
+             if text[..comment_start]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-01 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ndevenish">@ndevenish</a> on 2023-09-01 07:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know how you accidentally end up with a NBPS. That's why I think this is rare.</p>
+</blockquote>
+<p>FWIW I <em>constantly</em> type unintentional NBSP. On UK mac Keyboard, Alt-3 is #, and Alt-Space is NBSP. If I'm typing fast sometimes these can blur together (hitting space before releasing the alt). However, I always catch them now, because I set up my IDE to highlight NBSP. I'm not sure how often other people encounter or notice this problem, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8531.html">astral-sh/ruff#8531</a> on 2023-11-06 22:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

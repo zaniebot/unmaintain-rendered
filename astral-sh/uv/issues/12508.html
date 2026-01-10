@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Url dependency makes install from registry fail - astral-sh/uv #12508</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Url dependency makes install from registry fail</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12508">#12508</a>
+        opened by <a href="https://github.com/ivan94fi">@ivan94fi</a>
+        on 2025-03-27 09:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ivan94fi">@ivan94fi</a> on 2025-03-27 09:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a project with a URL dependency on <code>mvsfunc</code>:</p>
+<pre><code>[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+
+dependencies = [
+    &quot;mvsfunc @ https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip&quot;,
+    &quot;vapoursynth==66&quot;,
+]
+
+[tool.uv.sources]
+mvsfunc = { url = &quot;https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip&quot; }
+</code></pre>
+<p>If I build the wheel with <code>uv build</code> and install the wheel locally, the installation works.</p>
+<p>If I upload the wheel to a local pypi server and try to install the project from pypi, the installation fails with this error:</p>
+<pre><code>$ uv pip install uv-test
+error: Package `mvsfunc` attempted to resolve via URL: https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip. URL dependencies must be expressed as direct requirements or constraints. Consider adding `mvsfunc @ https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip` to your dependencies or constraints file.
+</code></pre>
+<p>Is this the expected behavior? I am aware of https://docs.astral.sh/uv/pip/compatibility/#transitive-url-dependencies, but I am not sure if this is the case.</p>
+<h2>How to reproduce</h2>
+<p>Use the attached Dockerfile and the following commands: <code>docker build -t uv_bug_test . &amp;&amp; docker run --rm -it uv_bug_test</code></p>
+<pre><code>FROM ubuntu:24.04
+
+SHELL [&quot;/bin/bash&quot;, &quot;-c&quot;]
+
+# Install vapoursynth package (need to build vapoursynth itself before)
+RUN &lt;&lt;EOF
+apt update
+apt install -y libzimg-dev git python3-pip python3-dev ffmpeg libass9 imagemagick autoconf pkg-config libtool curl
+git clone https://github.com/vapoursynth/vapoursynth.git
+
+pip install cython pypiserver --break-system-packages
+
+cd vapoursynth/
+./autogen.sh 
+./configure
+make -j 10
+make install
+
+pip install Vapoursynth==66 --break-system-packages
+
+# Check that everything works
+LD_LIBRARY_PATH=/usr/local/lib PYTHONPATH=/usr/local/lib/python3.12/site-packages vspipe --version
+
+EOF
+
+# Install uv, init project
+RUN &lt;&lt;EOF
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.local/bin/env
+
+mkdir ~/uv_test
+cd ~/uv_test
+
+uv init
+
+EOF
+
+# Create pyproject
+COPY &lt;&lt;EOPYPROJECT /root/uv_test/pyproject.toml
+[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+
+dependencies = [
+    &quot;mvsfunc @ https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip&quot;,
+    &quot;vapoursynth==66&quot;,
+]
+
+# [tool.hatch.build.targets.wheel]
+# packages = [&quot;hello.py&quot;]
+#
+# [tool.hatch.metadata]
+# allow-direct-references = true
+
+[tool.uv.sources]
+mvsfunc = { url = &quot;https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip&quot; }
+EOPYPROJECT
+
+# Build project
+RUN &lt;&lt;EOF
+cd ~/uv_test
+source ~/.local/bin/env
+uv venv
+uv build
+EOF
+
+# Create test script
+COPY --chmod=774 &lt;&lt;EOF /test_script.sh
+source ~/.local/bin/env
+cd ~/uv_test
+
+# 1. Install from local wheel: ok
+uv pip install ./dist/uv_test-0.1.0-py3-none-any.whl
+uv pip list
+
+# Cleanup
+uv pip uninstall mvsfunc uv-test
+uv cache clean
+uv pip list
+
+# Start pypi server in background subshell
+( pypi-server run -p 8080 ~/uv_test/dist/ &gt; /dev/null 2&gt;&amp;1 &amp; )
+
+sleep 1
+
+# 2. Install from pypi: fails
+uv pip install --extra-index-url http://localhost:8080 uv-test
+# error: Package `mvsfunc` attempted to resolve via URL: https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip. URL dependencies must be expressed as direct requirements or constraints. Consider adding `mvsfunc @ https://github.com/HomeOfVapourSynthEvolution/mvsfunc/archive/865c7486ca860d323754ec4774bc4cca540a7076.zip` to your dependencies or constraints file.
+
+EOF
+
+ENTRYPOINT [&quot;bash&quot;, &quot;/test_script.sh&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.8.0-52-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.6.10</p>
+<h3>Python version</h3>
+<p>3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ivan94fi on 2025-03-27 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-27 12:54</div>
+            <div class="timeline-body"><p>Yeah, this would qualify as a transitive URL dependency so the behavior is expected as of now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-27 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-27 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ivan94fi">@ivan94fi</a> on 2025-03-27 13:00</div>
+            <div class="timeline-body"><p>Oh I see, thank you for the clarification. I actually suspected that it was a &quot;non transitive&quot; or direct url dependency as I listed the dependency in pyproject.toml.</p>
+<p>What is the situation in which the url dependency is actually direct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-27 13:11</div>
+            <div class="timeline-body"><p>If you did something like <code>uv sync</code> or <code>uv pip install .</code>, and the <code>pyproject.toml</code> in the current directory referenced a URL, that'd be considered a direct URL dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-27 13:11</div>
+            <div class="timeline-body"><p>In the above case, it's like if you did <code>uv pip install requests</code>. We wouldn't consider requests's dependencies to be direct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ivan94fi">@ivan94fi</a> on 2025-03-27 14:14</div>
+            <div class="timeline-body"><p>Ok got it now. Thank you very much, closing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ivan94fi on 2025-03-27 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

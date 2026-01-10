@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build cache pollution with `no-build-isolation-package` + `match-runtime = true` - astral-sh/uv #16850</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build cache pollution with `no-build-isolation-package` + `match-runtime = true`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16850">#16850</a>
+        opened by <a href="https://github.com/ryan-clancy">@ryan-clancy</a>
+        on 2025-11-25 19:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ryan-clancy">@ryan-clancy</a> on 2025-11-25 19:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Build cache pollution with <code>no-build-isolation-package</code> + <code>match-runtime = true</code></h1>
+<p>When using <code>no-build-isolation-package</code> with <code>extra-build-dependencies</code> and <code>match-runtime = true</code>, changing the runtime dependency version (e.g., torch) doesn't trigger a rebuild. Setuptools reuses stale build artifacts from <code>src/build/</code> inside the sdist cache.</p>
+<p>Impacts any package requiring <code>no-build-isolation</code> with torch, e.g., <code>flash-attn</code>, <code>xformers</code>. Repro uses <code>fast_jl</code> for faster iteration.</p>
+<h2>Repro</h2>
+<pre><code class="language-toml">[project]
+name = &quot;repro&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [&quot;torch==2.6.0&quot;, &quot;fast_jl==0.1.3&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;fast-jl&quot;]
+
+[tool.uv.extra-build-dependencies]
+fast-jl = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;fast-jl&quot;
+version = &quot;0.1.3&quot;
+requires-dist = [&quot;torch&quot;]
+</code></pre>
+<pre><code class="language-bash">uv sync  # builds fast_jl against torch 2.6.0
+uv run python -c &quot;import torch; import fast_jl; print('success')&quot; # run, works fine
+# change torch to 2.7.0 in pyproject.toml
+uv sync  # reuses stale .so, import fails with undefined symbol
+uv run python -c &quot;import torch; import fast_jl; print('success')&quot; # run, throws error
+</code></pre>
+<h2>Root cause</h2>
+<p>uv correctly creates separate cache slots per build config hash (e.g., <code>f3e277be7cca2a73</code> for torch 2.6, <code>951f323efb6ab57b</code> for torch 2.7). However, all builds share the same <code>src/</code> directory, and setuptools caches compiled artifacts in <code>src/build/</code>.</p>
+<p>When torch version changes:</p>
+<ol>
+<li>uv computes new cache hash, runs build in shared <code>src/</code></li>
+<li>setuptools sees source unchanged, skips recompilation</li>
+<li>stale <code>.so</code> gets packaged into new cache slot</li>
+</ol>
+<p>Both cached wheels end up with identical binaries (verified via md5sum).</p>
+<h2>Workaround</h2>
+<p>Force setuptools to rebuild extensions:</p>
+<pre><code class="language-toml">config-settings-package = { fast-jl = { &quot;--global-option&quot; = [&quot;build_ext&quot;, &quot;--force&quot;] } }
+</code></pre>
+<p>Ideally, we should not need to do this.</p>
+<h3>Platform</h3>
+<p>Dedbian 11 (amd64)</p>
+<h3>Version</h3>
+<p>uv 0.9.10</p>
+<h3>Python version</h3>
+<p>3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ryan-clancy on 2025-11-25 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-25 19:48</div>
+            <div class="timeline-body"><p>Hm, shouldn't setuptools be including the packages present in the build environment in its cache key? I'm not sure we can fix the problem on our end if setuptools is doing intermediate caching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-11-25 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryan-clancy">@ryan-clancy</a> on 2025-11-25 20:06</div>
+            <div class="timeline-body"><p>@zanieb would deleting the <code>src/build</code> dir (e.g., in <code>~/.cache/uv/sdists-v9/pypi/fast-jl/0.1.3/&lt;sdist-hash&gt;/src/build/</code>) if a change in the dependencies are detected and <code>match-runtime = true</code> be possible? If I do this manually before the second <code>uv sync</code> in the repro it looks to run properly.</p>
+<p>It seems like this is related to https://github.com/astral-sh/uv/issues/15218 and https://github.com/astral-sh/uv/pull/15289, but it needs to go one step further to cover cases like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-25 20:12</div>
+            <div class="timeline-body"><p>I'm not sure if that's sound, since we'd be encoding behavior specific to <code>setuptools</code> and it could change at any time.</p>
+<p>The other two issues were about encoding information we have control over in our cache key. It's plausible we can do something here, but (without going deep) it seems outside of our purview.</p>
+<p>I think you should at least open an issue in setuptools about the use-case and see if they have recommendations. It's plausible that the solution you have (just forcing setuptools to disable caching) is appropriate? I think the alternative would be for them to provide an option to configure their cache directory, and we could place it within the respective wheel caches or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-11-26 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 16:48</div>
+            <div class="timeline-body"><p>This is IMHO a setuptools bug, we're only seeing this kind of problem with setuptools, but not with other build backends, other build backends either don't use a directory in the source tree or they use the cache invalidation of the underlying compiler which is sensitive to such version changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

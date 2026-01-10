@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow configuration from config files as well - clap-rs/clap #251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow configuration from config files as well</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/251">#251</a>
+        opened by <a href="https://github.com/wackywendell">@wackywendell</a>
+        on 2015-09-11 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-11 17:04</div>
+            <div class="timeline-body"><p>For example, imagine you have a program <code>foobar</code> that has many configuration options. You want them to be available on the command-line, but you also want to allow users to write a <code>.foobarrc</code> (perhaps in TOML format) so that they can pre-specify their choices. Or maybe there might be multiple configuration files, one in the home directory (<code>$HOME/.foobarrc</code>), one in the current directory (<code>./.foobarrc</code>), and maybe even one specified on the command-line.</p>
+<p>If this is outside the scope of this library, perhaps adding more ways to extract information from an <code>App</code> (such as <code>get_names(&amp;self) -&gt; [&amp;str]</code>, which would list all the names of the arguments defined) would allow someone else to build this.</p>
+<p>I ask because I am building an application that could use something like this - <a href="https://github.com/wackywendell/parview">ParView</a> - and I can't find a good way to do this without having to write every config option in multiple places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-11 18:17</div>
+            <div class="timeline-body"><p>Interesting problem... At least for now, I'm going to suggest <code>Option</code>'s <code>or_else</code> to extract the fields from your secondary source. Here; we preference any arguments supplied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-11 18:20</div>
+            <div class="timeline-body"><p>What two lists? I don't understand what you're suggesting.</p>
+<p>I would like to be able to allow config files with a limited set of valid configuration options. But... how do I provide those options to <code>clap</code>, and also to my TOML validator, without repeating myself, and while allowing for all the options <code>clap</code> allows for long arguments, short arguments, help, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-11 18:30</div>
+            <div class="timeline-body"><p>It would appear that you responded to an older message of mine, that I had deleted. Thoughts for my updated message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @sru on 2015-09-11 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @sru on 2015-09-11 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @sru on 2015-09-11 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: app</span> added by @sru on 2015-09-11 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-11 19:15</div>
+            <div class="timeline-body"><p>I don't entirely understand your new suggestion.</p>
+<p>Let's say I have thirty configuration options, with various <code>clap</code> features that I would like:</p>
+<pre><code class="language-rust">let app = App::new(&quot;myapp&quot;)
+    .arg(Arg::with_name(&quot;foo&quot;)
+        .short(&quot;f&quot;)
+        .long(&quot;foo&quot;)
+        .help(&quot;Sets a custom foo&quot;)
+        .takes_value(true))
+    .arg(Arg::with_name(&quot;bar&quot;)
+        .help(&quot;Sets baz&quot;)
+        .required(true)
+        .index(1))
+    .arg(Arg::with_name(&quot;baz&quot;)
+        .short(&quot;b&quot;)
+        .multiple(true)
+        .help(&quot;Sets the bazness&quot;))
+        [...]
+</code></pre>
+<p>So I can create the app that way. Now, how do I get a list of options to pass to my TOML validator? I could have made it ahead of time, but that's cumbersome if I want to use features like <code>.multiple</code> or <code>.short</code>. AFAICT, I can't extract the list from <code>app</code>, as there is no method available to do so, and <code>App::flags</code> etc. are private. So... how do I tell the TOML validator what are and are not valid options, without basically writing every config option in two different places?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-11 19:56</div>
+            <div class="timeline-body"><p>I am not sure whether this is in the scope of this library or not. @kbknapp could comment on this.</p>
+<p>Maybe you could use <code>.validator()</code> method on <code>Arg</code>, <a href="http://kbknapp.github.io/clap-rs/clap/struct.Arg.html#method.validator">here</a> is the doc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-12 02:30</div>
+            <div class="timeline-body"><p>@wackywendell</p>
+<p>I see two possible actions for your question, so bare with me if one of them is way off track! It may also help if you show us an example of what a <code>.foobarrc</code> could look like.</p>
+<h4>Pre-Specifying Argument Values</h4>
+<p>Meaning, your application accepts <code>-a some_value</code> and the user leaves out that option because it's specified in a <code>.foobarrc</code> file somewhere. I.e. you are not using the TOML files to <em>create</em> valid arguments, only <em>use</em> valid arguments. If instead, you are trying to <em>create</em> valid arguments with the TOML files, skip down to the next section.</p>
+<p>To <em>use</em> valid arguments you shouldn't need to pass any <code>Arg</code> stucts to your TOML validator because <code>clap</code> does the validating, the TOML parser just supplies the values for <code>clap</code> to parse. In essence, you're trying to merge what the user passes in <code>env::args()</code> and these TOML files to create something for <code>clap</code> to parse.</p>
+<p>First, you could pre-check for your <code>.foobarrc</code> <em>before</em> calling any of the <code>get_matches</code> methods, and instead use a <code>get_matches_from</code> which would be a merged version of what was provided in <code>.foobarrc</code> and <code>env::args()</code>. The cumbersome part is doing the merging/filtering which would have to be done manually.</p>
+<p>The next option is just to use default values using <code>.unwrap_or(get_default_from_toml(&quot;.foobarrc&quot;)</code> for the args which might have a default value, where <code>get_default_from_toml()</code> would search this TOML file and pull out any defaults. Again, the cumbersome part is having to write that function manually.</p>
+<p>Finally, you could also re-parse a simulated arguments list <strong>if</strong> there are errors on parsing. But doing this would require all the potentially default arg values to be required (i.e. in order to cause an error when omitted).</p>
+<p>If you're looking for a way to programmatically <em>change</em> <code>Arg</code>s within an <code>App</code> struct, your only options are to have separate <code>let mut</code> bindings for each, and re-create the <code>App</code> struct on a failed parse, or <em>after</em> reading a <code>.foobarrc</code>. Again this is kind of manual.</p>
+<h4>Getting A List of Valid Arguments from the App struct</h4>
+<p>If you're trying to <em>create</em> valid arguments from these TOML files, your options are a little more limited. In those cases I would almost exclusively recommend parsing those files FIRST to create an <code>App</code> struct, and add your static (i.e. known at development time) <code>Arg</code>s after.</p>
+<p>If there is overlap, you almost certainly want it to error or panic, unless you truly want users to be able to <em>change</em> arguments at runtime...which seems dangerous! Adding arguments seems safe, but changing existing is ones is something I'd think hard about :stuck_out_tongue_winking_eye:</p>
+<p>Having said that, I have it on the back burner to add a method to get a <code>&amp;mut Arg</code> out of an <code>App</code> struct. This is somewhat complicated though due to how <code>Arg</code>s are parsed and such, which would pretty much require all of the internals of <code>App</code> to be re-checked because literally anything could have fundamentally changed about the <code>Arg</code> changing it into a new type of argument entirely.</p>
+<p>The other option is to add some way to get a <code>&amp;Arg</code> which would be far easier, but of less use unless you are dynamically generating your <code>Arg</code>s and don't actually know what they are at development time. If this is what you're looking for, let us know and I'll add a tracking issue to add it.</p>
+<p>Because <code>&amp;Arg</code> doesn't differentiate from various types of arguments, we have internal structs which <em>do</em> and we could also expose those various &quot;builders&quot;; <code>FlagBuilder</code>, <code>OptBuilder</code>, and <code>PosBuilder</code> but those aren't really meant for public consumption because they change from time to time.</p>
+<p>Hopefully this helped a little. If not, please let us know! Thanks for taking the time to file this issue! :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-12 03:21</div>
+            <div class="timeline-body"><blockquote>
+<p>The next option is just to use default values using .<code>unwrap_or(get_default_from_toml(&quot;.foobarrc&quot;)</code> for the args which might have a default value, where <code>get_default_from_toml()</code> would search this TOML file and pull out any defaults. Again, the cumbersome part is having to write that function manually.</p>
+</blockquote>
+<p><code>unwrap_or</code> assumes there will be some value; you want <code>or_else</code> which is the inverse of <code>and_then</code>. The value may or may not also be in the toml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-12 03:45</div>
+            <div class="timeline-body"><p>Good point! I went through a few iterations of that comment and didn't
+re-screen for changes or test.</p>
+<p>On Fri, Sep 11, 2015, 11:21 PM James McGlashan notifications@github.com
+wrote:</p>
+<blockquote>
+<p>The next option is just to use default values using .
+unwrap_or(get_default_from_toml(&quot;.foobarrc&quot;) for the args which might
+have a default value, where get_default_from_toml() would search this
+TOML file and pull out any defaults. Again, the cumbersome part is having
+to write that function manually.</p>
+<p>unwrap_or assumes there will be some value; you want or_else which is the
+inverse of and_then. The value may or may not also be in the toml.</p>
+<p>—
+Reply to this email directly or view it on GitHub
+https://github.com/kbknapp/clap-rs/issues/251#issuecomment-139705833.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wackywendell">@wackywendell</a> on 2015-09-12 13:28</div>
+            <div class="timeline-body"><p>Thanks for the thoughtful and thorough response!</p>
+<p>I was thinking of option 1: the final user of the application creates a <code>.foobarrc</code> so that they don't have to write <code>--foo --bar 8</code> on the command-line every single time they run the program.</p>
+<p>Your suggestions on how to merge TOML config and <code>clap</code> matches make sense to me. However, there is one thing that this leaves out. <code>clap</code> does a very good job of telling the user when they put in an incorrect argument, and even suggests differences; I don't see a good way to do that with a TOML file <em>without</em> having to write the app settings in two places.</p>
+<p>For example, let's imagine we have this app:</p>
+<pre><code class="language-rust">let app = App::new(&quot;myapp&quot;)
+    .arg(Arg::with_name(&quot;foo&quot;)
+        .short(&quot;f&quot;)
+        .long(&quot;foo&quot;)
+        .help(&quot;Sets a custom foo&quot;)
+        .takes_value(true))
+    .arg(Arg::with_name(&quot;bar&quot;)
+        .help(&quot;Sets baz&quot;)
+        .required(true)
+        .index(1))
+    .arg(Arg::with_name(&quot;baz&quot;)
+        .short(&quot;b&quot;)
+        .multiple(true)
+        .help(&quot;Sets the bazness&quot;));
+</code></pre>
+<p>Then the user might have a config <code>.foobarrc</code>:</p>
+<pre><code class="language-toml">foo=&quot;some string&quot;
+bar=3
+</code></pre>
+<p>Your plan would work fine.</p>
+<p>However, if they had this file:</p>
+<pre><code class="language-toml">fooo=&quot;some string&quot;
+bar=3
+</code></pre>
+<p>I can't see a good way to inform the user that option <code>fooo</code> is invalid; where do I get the list of valid names?</p>
+<p>I could build it up at the same time as the <code>clap::App</code>, with some sort of function like</p>
+<pre><code class="language-rust">let valid_names = vec!();
+let mut app = clap::App::new(&quot;foobar&quot;);
+
+let new_opt = |s: &amp;str| {
+    valid_names.append(s);
+    Arg::with_name(&quot;foo&quot;)
+}
+
+app = app
+    .arg(new_opt(&quot;foo&quot;)
+        .short(&quot;f&quot;)
+        .long(&quot;foo&quot;)
+        .help(&quot;Sets a custom foo&quot;)
+        .takes_value(true))
+    .arg(new_opt(&quot;bar&quot;)
+        .help(&quot;Sets baz&quot;)
+        .required(true)
+        .index(1))
+    .arg(new_opt(&quot;baz&quot;)
+        .short(&quot;b&quot;)
+        .multiple(true)
+        .help(&quot;Sets the bazness&quot;));
+</code></pre>
+<p>That's... actually not too bad; its still a bit awkward, though, and while it works for a single instance, it seems to me like it would be hard to extend to a library for use in many apps that handles configuration files as carefully and thoroughly as <code>clap</code> handles <code>env::args()</code>.</p>
+<p>If I wanted to write such a library, I can't really see how to do it effectively. I can't extend <code>clap::App</code>, to allow the user to do something like <code>app.arg([...]).value_type(toml::Integer)</code>; I can't have the user pass my library a <code>clap::App</code> instance, because I can't extract any information about options from it (other than post-facto matches); the only way I can see to do it is to have thelibrary completely wrap <code>clap</code>, duplicating many of its functions, and producing its own, semi-internal <code>clap::App</code> instance, which seems like a much more painful path than if <code>clap</code> provided some sort of API for <code>Arg::get_name(&amp;self) -&gt; &amp;str</code>, <code>App::get_options(&amp;self) -&gt; Iter&lt;Item=Arg&gt;</code>, or even better, a mutable form like you suggested.</p>
+<p>Do you see what I mean? Right now, <code>clap</code> does a great job of handling many possibilities; however, it doesn't seem to leave many good ways for users to <em>extend</em> this functionality without forking <code>clap</code> or twisting their code in weird ways to work around <code>clap</code>'s architecture.</p>
+<p>What are your thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-12 13:56</div>
+            <div class="timeline-body"><p>Your suggestion of <code>App::get_options(&amp;self) -&gt; Iter&lt;Item=Arg&gt;</code> seems very suitable; also works very well for the macro builder, yaml parser and <code>from_usage</code> methods for <code>App</code> constructing. I recommend rename to <code>get_args</code> as you're returning the <code>self.args.iter()</code>. <code>app.get_args().map(|arg| arg.get_name()).collect()</code> for a usable <code>Vec&lt;&amp;'app_arg str&gt;</code>.</p>
+<p>As for value types - #146 already covers this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/254.html">clap-rs/clap#254</a> on 2015-09-13 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-08-21 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/748.html">clap-rs/clap#748</a> on 2016-11-14 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gilescope">@gilescope</a> on 2018-12-11 17:59</div>
+            <div class="timeline-body"><p>Having support for dot files out of the box would be wonderful (maybe as a 'feature'?). This could help standardise the way that rust cli apps are configured which seems like a good thing for the community. I know this is an old ticket, clap has come on so much in this time. Is clap able to do configs out of the box for 'free'?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/malarinv">@malarinv</a> on 2019-08-09 10:57</div>
+            <div class="timeline-body"><p>I ended up here looking for a rust port of https://github.com/bw2/ConfigArgParse
+@wackywendell weren't you suggesting the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dankamongmen">@dankamongmen</a> on 2020-03-27 09:45</div>
+            <div class="timeline-body"><p>@kbknapp you had asked for an example of such usage. I can think of two:</p>
+<p><code>dialog</code>: ncurses program for shell-launched terminal widgets
+<code>openvpn</code>: VPN program</p>
+<p>both allow all config file options to be stuffed in a file provided with <code>--file</code> (for <code>dialog</code>) or <code>--config</code> (for <code>openvpn</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-27 10:22</div>
+            <div class="timeline-body"><p>@dankamongmen This issue has been merged into https://github.com/clap-rs/clap/issues/748 since that one has more of a constructive discussion going. Perhaps you should go there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmcqueen">@cmcqueen</a> on 2021-11-12 06:51</div>
+            <div class="timeline-body"><p>I agree with @malarinv — I ended up here essentially trying to find a Rust equivalent of <a href="https://pypi.org/project/ConfigArgParse/">ConfigArgParse</a> package for Python. I've used ConfigArgParse in previous Python projects, and its feature set has been perfect for my needs in those projects.</p>
+<p>In ConfigArgParse, I really like the <code>is_config_file</code> feature, where you can specify a path of a config file on the command line, and it will read config from that file (as well as being able to hard-code paths for config files).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions - astral-sh/ruff #16816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16816">#16816</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-17 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-17 16:31</div>
+            <div class="timeline-body"><p>Some AST nodes are always invalid in type expressions; we should emit an <code>invalid-type-form</code> diagnostic in red-knot if we see one of these in a type expression. This applies to all of these branches:</p>
+<p>https://github.com/astral-sh/ruff/blob/7ca5f132ca274a45ea3776b8732ab8dadf91f349/crates/red_knot_python_semantic/src/types/infer.rs#L6150-L6233</p>
+<p>Similarly, an ellipsis literal is only valid in very specific contexts in type expressions: as part of a <code>Callable</code> type expression (e.g. <code>Callable[..., int]</code> or as part of a <code>tuple</code>-subscript type expression (e.g. <code>tuple[int, ...]</code>. We should never call <code>infer_type_expression_no_store</code> with an ellipsis literal node if we're visiting a sub-expression in either of those type expressions. So we should also be emitting a diagnostic if we hit this branch:</p>
+<p>https://github.com/astral-sh/ruff/blob/7ca5f132ca274a45ea3776b8732ab8dadf91f349/crates/red_knot_python_semantic/src/types/infer.rs#L6070-L6074</p>
+<p>This would be a good contributor task. The changes required will be very similar to the ones done in https://github.com/astral-sh/ruff/pull/16765. @MatthewMckee4, you might be interested in taking this one on, possibly? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-03-17 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-17 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-17 19:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Some AST nodes are always invalid in type expressions; we should emit an <code>invalid-type-form</code> diagnostic in red-knot if we see one of these in a type expression. This applies to all of these branches:</p>
+<p>https://github.com/astral-sh/ruff/blob/7ca5f132ca274a45ea3776b8732ab8dadf91f349/crates/red_knot_python_semantic/src/types/infer.rs#L6150-L6233</p>
+</blockquote>
+<p>So currently we don't emit any error message right? So we want to do similar to what we did for the literal types. Also, right now, why is the expression still evaluated (or inferred)?</p>
+<p>Edit: sorry I didn't see that you referenced my PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-17 19:53</div>
+            <div class="timeline-body"><p>I think I can see why we still infer the type, so nevermind. I'm happy to take this on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16822.html">astral-sh/ruff#16822</a> on 2025-03-17 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MatthewMckee4 by @carljm on 2025-03-18 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-18 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-18 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

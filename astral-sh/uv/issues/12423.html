@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>installing pygame in a uv venv causes an error but not with pip3 - astral-sh/uv #12423</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>installing pygame in a uv venv causes an error but not with pip3</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12423">#12423</a>
+        opened by <a href="https://github.com/yashranjan1">@yashranjan1</a>
+        on 2025-03-24 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2025-03-24 10:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When i try to import pygame in a uv venv after installing it on an M1 pro macbook, it fails to run a file. This is the error i see in the terminal</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/Users/yashranjan/Documents/snake/main.py&quot;, line 1, in &lt;module&gt;
+    import pygame
+  File &quot;/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/__init__.py&quot;, line 92, in &lt;module&gt;
+    from pygame.base import *  # pylint: disable=wildcard-import; lgtm[py/polluting-import]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so, 0x0002): tried: '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (no such file), '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
+</code></pre>
+<p>But it works perfectly fine if i use pip3 to install it globally. It doesnt work if i use uv to install it globally either.</p>
+<p>The code i wrote for your reference</p>
+<pre><code>import pygame
+
+
+def main() -&gt; None:
+    pygame.init()
+    pygame.display.set_mode((400, 500))
+    running = True
+
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>VERSION INFO</p>
+<pre><code>❯ python --version
+Python 3.13.2
+
+❯ uv pip freeze
+pygame==2.6.1
+
+❯ uv --version
+uv 0.6.9 (3d9460278 2025-03-20)
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20)</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yashranjan1 on 2025-03-24 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 13:18</div>
+            <div class="timeline-body"><p>Hmm, does <code>uv cache clean</code>, followed by <code>uv pip install --reinstall pygame==2.6.1</code> do anything here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2025-03-24 13:40</div>
+            <div class="timeline-body"><p>hey, thanks for the prompt response!</p>
+<p>I tried that and it didnt work, here's exactly what i did</p>
+<pre><code>❯ source .venv/bin/activate
+❯ python main.py
+Traceback (most recent call last):
+  File &quot;/Users/yashranjan/Documents/snake/main.py&quot;, line 3, in &lt;module&gt;
+    import pygame
+  File &quot;/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/__init__.py&quot;, line 92, in &lt;module&gt;
+    from pygame.base import *  # pylint: disable=wildcard-import; lgtm[py/polluting-import]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so, 0x0002): tried: '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (no such file), '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
+❯ uv cache clean
+Clearing cache at: /Users/yashranjan/Library/Caches/uv
+Removed 3692 files (178.6MiB)
+❯ uv pip install --reinstall pygame==2.6.1
+Resolved 1 package in 212ms
+Prepared 1 package in 830ms
+Uninstalled 1 package in 58ms
+Installed 1 package in 14ms
+ ~ pygame==2.6.1
+❯ python main.py
+Traceback (most recent call last):
+  File &quot;/Users/yashranjan/Documents/snake/main.py&quot;, line 3, in &lt;module&gt;
+    import pygame
+  File &quot;/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/__init__.py&quot;, line 92, in &lt;module&gt;
+    from pygame.base import *  # pylint: disable=wildcard-import; lgtm[py/polluting-import]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so, 0x0002): tried: '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (no such file), '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 18:41</div>
+            <div class="timeline-body"><p>What's your global Python install from? i.e., Homebrew? Python.org? Apple? Can you share <code>uv python find --system</code>?</p>
+<p>Can you share verbose logs for the <code>uv pip install</code> command? (<code>-v</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2025-04-04 08:01</div>
+            <div class="timeline-body"><p>I think i used python.org but im not too sure i dont remember tbh, sorry</p>
+<pre><code>❯ uv python find --system
+/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+</code></pre>
+<p>ok this is strange but it worked this time ...?</p>
+<pre><code>❯ uv pip install pygame -v
+DEBUG uv 0.6.9 (3d9460278 2025-03-20)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.2-macos-x86_64-none` at `/Users/yashranjan/Documents/snake/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.13.2 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: pygame
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13.2
+DEBUG Solving with target Python version: &gt;=3.13.2
+DEBUG Adding direct dependency: pygame*
+DEBUG Found stale response for: https://pypi.org/simple/pygame/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pygame/
+DEBUG Found not-modified response for: https://pypi.org/simple/pygame/
+DEBUG Searching for a compatible version of pygame (*)
+DEBUG Selecting: pygame==2.6.1 [compatible] (pygame-2.6.1-cp313-cp313-macosx_10_13_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e1/91/718acf3e2a9d08a6ddcc96bd02a6f63c99ee7ba14afeaff2a51c987df0b9/pygame-2.6.1-cp313-cp313-macosx_10_13_x86_64.whl.metadata
+DEBUG Tried 1 versions: pygame 1
+DEBUG marker environment resolution took 0.118s
+Resolved 1 package in 127ms
+DEBUG Registry requirement already cached: pygame==2.6.1
+Installed 1 package in 15ms
+ + pygame==2.6.1
+DEBUG Released lock at `/Users/yashranjan/Documents/snake/.venv/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2025-04-04 08:05</div>
+            <div class="timeline-body"><p>wait nvm sorry it didnt</p>
+<pre><code>❯ uv venv
+Using CPython 3.13.2 interpreter at: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ source .venv/bin/activate
+❯ uv pip freeze
+❯ uv pip install pygame -v
+DEBUG uv 0.6.9 (3d9460278 2025-03-20)
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.13.2-macos-x86_64-none` at `/Users/yashranjan/Documents/snake/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.13.2 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: pygame
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13.2
+DEBUG Solving with target Python version: &gt;=3.13.2
+DEBUG Adding direct dependency: pygame*
+DEBUG Found fresh response for: https://pypi.org/simple/pygame/
+DEBUG Searching for a compatible version of pygame (*)
+DEBUG Selecting: pygame==2.6.1 [compatible] (pygame-2.6.1-cp313-cp313-macosx_10_13_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/e1/91/718acf3e2a9d08a6ddcc96bd02a6f63c99ee7ba14afeaff2a51c987df0b9/pygame-2.6.1-cp313-cp313-macosx_10_13_x86_64.whl.metadata
+DEBUG Tried 1 versions: pygame 1
+DEBUG marker environment resolution took 0.017s
+Resolved 1 package in 21ms
+DEBUG Registry requirement already cached: pygame==2.6.1
+Installed 1 package in 12ms
+ + pygame==2.6.1
+DEBUG Released lock at `/Users/yashranjan/Documents/snake/.venv/.lock`
+
+❯ python snake.py
+Traceback (most recent call last):
+  File &quot;/Users/yashranjan/Documents/snake/snake.py&quot;, line 4, in &lt;module&gt;
+    import pygame
+  File &quot;/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/__init__.py&quot;, line 92, in &lt;module&gt;
+    from pygame.base import *  # pylint: disable=wildcard-import; lgtm[py/polluting-import]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so, 0x0002): tried: '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (no such file), '/Users/yashranjan/Documents/snake/.venv/lib/python3.13/site-packages/pygame/base.cpython-313-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

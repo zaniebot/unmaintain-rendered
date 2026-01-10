@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip wont accept my requirements file - astral-sh/uv #2276</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip wont accept my requirements file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2276">#2276</a>
+        opened by <a href="https://github.com/yashranjan1">@yashranjan1</a>
+        on 2024-03-07 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2024-03-07 13:03</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>The command I wrote:</p>
+<pre><code>uv pip install -r .\requirements.txt
+</code></pre>
+<p>The result:</p>
+<pre><code>error: failed to read from file `.\requirements.txt`
+  Caused by: stream did not contain valid UTF-8
+</code></pre>
+<p>The requirements file:</p>
+<pre><code>annotated-types==0.6.0
+anyio==4.3.0
+certifi==2024.2.2
+cffi==1.16.0
+charset-normalizer==3.3.2
+click==8.1.7
+colorama==0.4.6
+cryptography==42.0.5
+exceptiongroup==1.2.0
+fastapi==0.110.0
+h11==0.14.0
+idna==3.6
+pycparser==2.21
+pydantic==2.6.3
+pydantic-core==2.16.3
+python-dotenv==1.0.1
+requests==2.31.0
+sniffio==1.3.1
+starlette==0.36.3
+typing-extensions==4.10.0
+urllib3==2.2.1
+uvicorn==0.27.1
+</code></pre>
+<p>Current UV version:</p>
+<pre><code>Yash ❯❯ uv --version
+uv 0.1.15 (a8ac7b1eb 2024-03-05)
+</code></pre>
+<p>Operating System: Windows</p>
+<p>This works when I use pip but not with UV. I tried to look for a similar issue but couldn't find one. If this is a duplicate, I apologise. Would you be so kind to give me a link to the issue where the solution for this is discussed? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 13:32</div>
+            <div class="timeline-body"><p>Can you upload an exact copy of your <code>requirements.txt</code> as an attachment? My hunch is that it's UTF-16 or otherwise contains invalid UTF-8 based on the error message you're getting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-07 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2024-03-07 15:42</div>
+            <div class="timeline-body"><p>My requirements file -&gt; <a href="https://github.com/astral-sh/uv/files/14526633/requirements.txt">requirements.txt</a></p>
+<p>I had uv write this out for me using the command:</p>
+<pre><code>uv pip freeze &gt; requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 15:43</div>
+            <div class="timeline-body"><p>Can you share the original <code>requirements.txt</code>? The one that produced the error in the original issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2024-03-07 15:46</div>
+            <div class="timeline-body"><p>That is the one, I installed the packages myself using uv and then i created a requirements file so other people can run my program on their computers as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-07 16:15</div>
+            <div class="timeline-body"><blockquote>
+<p>My requirements file -&gt; <a href="https://github.com/astral-sh/uv/files/14526633/requirements.txt">requirements.txt</a></p>
+<p>I had uv write this out for me using the command:</p>
+<pre><code>uv pip freeze &gt; requirements.txt
+</code></pre>
+</blockquote>
+<p>No idea on the cause, but FYI this file is &quot;UTF-16 LE BOM&quot; , not &quot;UTF-8&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 16:17</div>
+            <div class="timeline-body"><p>Oh interesting, okay, thank you. Sorry, I misunderstood. I can actually reproduce the problem:</p>
+<pre><code>$ curl -sLO 'https://github.com/astral-sh/uv/files/14526633/requirements.txt'
+
+$ uv venv
+Using Python 3.11.6 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+
+$ uv pip install -r requirements.txt
+error: failed to read from file `requirements.txt`
+  Caused by: stream did not contain valid UTF-8
+</code></pre>
+<p>So the file is indeed UTF-16. Specifically, it starts with a <code>0xFF 0xFE</code> byte order mark, which indicates UTF-16 little endian:</p>
+<pre><code>$ iconv -futf8 -tutf8 requirements.txt
+iconv: illegal input sequence at position 0
+
+$ iconv -futf16be -tutf8 requirements.txt
+￾愀渀渀漀琀愀琀攀搀ⴀ琀礀瀀攀猀㴀㴀　⸀㘀⸀　ഀ਀愀渀礀椀漀㴀㴀㐀⸀㌀⸀　ഀ਀挀攀爀琀椀昀椀㴀㴀㈀　㈀㐀⸀㈀⸀㈀ഀ਀挀昀昀椀㴀㴀㄀⸀㄀㘀⸀　ഀ਀挀栀愀爀猀攀琀ⴀ渀漀爀洀愀氀椀稀攀爀㴀㴀㌀⸀㌀⸀㈀ഀ਀挀氀椀挀欀㴀㴀㠀⸀㄀⸀㜀ഀ਀挀漀氀漀爀愀洀愀㴀㴀　⸀㐀⸀㘀ഀ਀挀爀礀瀀琀漀 最爀愀瀀栀礀㴀㴀㐀㈀⸀　⸀㔀ഀ਀攀砀挀攀瀀琀椀漀渀最爀漀甀瀀㴀㴀㄀⸀㈀⸀　ഀ਀昀愀猀琀愀瀀椀㴀㴀　⸀㄀㄀　⸀　ഀ਀栀㄀㄀㴀㴀　⸀㄀㐀⸀　ഀ਀椀搀渀愀㴀㴀㌀⸀㘀ഀ਀瀀礀挀瀀愀爀猀攀爀㴀㴀㈀⸀㈀㄀ഀ਀瀀礀搀愀渀琀椀挀㴀㴀㈀⸀㘀⸀㌀ഀ਀瀀礀搀愀渀琀椀挀ⴀ挀漀爀攀㴀㴀㈀⸀㄀㘀⸀㌀ഀ਀瀀 礀琀栀漀渀ⴀ搀漀琀攀渀瘀㴀㴀㄀⸀　⸀㄀ഀ਀爀攀焀甀攀猀琀猀㴀㴀㈀⸀㌀㄀⸀　ഀ਀猀渀椀昀昀椀漀㴀㴀㄀⸀㌀⸀㄀ഀ਀猀琀愀爀氀攀琀琀攀㴀㴀　⸀㌀㘀⸀㌀ഀ਀琀礀瀀椀渀最ⴀ攀砀琀攀渀猀椀漀渀猀㴀㴀㐀⸀㄀　⸀　ഀ਀甀爀氀氀椀戀㌀㴀㴀㈀⸀㈀⸀㄀ഀ਀甀瘀椀挀漀爀渀㴀㴀　⸀㈀㜀⸀㄀ഀ਀%
+
+$ iconv -futf16le -tutf8 requirements.txt
+annotated-types==0.6.0
+anyio==4.3.0
+certifi==2024.2.2
+cffi==1.16.0
+charset-normalizer==3.3.2
+click==8.1.7
+colorama==0.4.6
+cryptography==42.0.5
+exceptiongroup==1.2.0
+fastapi==0.110.0
+h11==0.14.0
+idna==3.6
+pycparser==2.21
+pydantic==2.6.3
+pydantic-core==2.16.3
+python-dotenv==1.0.1
+requests==2.31.0
+sniffio==1.3.1
+starlette==0.36.3
+typing-extensions==4.10.0
+urllib3==2.2.1
+uvicorn==0.27.1
+</code></pre>
+<p>And <code>xxd</code> confirms:</p>
+<pre><code>$ xxd requirements.txt
+00000000: fffe 6100 6e00 6e00 6f00 7400 6100 7400  ..a.n.n.o.t.a.t.
+00000010: 6500 6400 2d00 7400 7900 7000 6500 7300  e.d.-.t.y.p.e.s.
+00000020: 3d00 3d00 3000 2e00 3600 2e00 3000 0d00  =.=.0...6...0...
+00000030: 0a00 6100 6e00 7900 6900 6f00 3d00 3d00  ..a.n.y.i.o.=.=.
+00000040: 3400 2e00 3300 2e00 3000 0d00 0a00 6300  4...3...0.....c.
+00000050: 6500 7200 7400 6900 6600 6900 3d00 3d00  e.r.t.i.f.i.=.=.
+00000060: 3200 3000 3200 3400 2e00 3200 2e00 3200  2.0.2.4...2...2.
+00000070: 0d00 0a00 6300 6600 6600 6900 3d00 3d00  ....c.f.f.i.=.=.
+00000080: 3100 2e00 3100 3600 2e00 3000 0d00 0a00  1...1.6...0.....
+00000090: 6300 6800 6100 7200 7300 6500 7400 2d00  c.h.a.r.s.e.t.-.
+000000a0: 6e00 6f00 7200 6d00 6100 6c00 6900 7a00  n.o.r.m.a.l.i.z.
+000000b0: 6500 7200 3d00 3d00 3300 2e00 3300 2e00  e.r.=.=.3...3...
+000000c0: 3200 0d00 0a00 6300 6c00 6900 6300 6b00  2.....c.l.i.c.k.
+000000d0: 3d00 3d00 3800 2e00 3100 2e00 3700 0d00  =.=.8...1...7...
+000000e0: 0a00 6300 6f00 6c00 6f00 7200 6100 6d00  ..c.o.l.o.r.a.m.
+000000f0: 6100 3d00 3d00 3000 2e00 3400 2e00 3600  a.=.=.0...4...6.
+00000100: 0d00 0a00 6300 7200 7900 7000 7400 6f00  ....c.r.y.p.t.o.
+00000110: 6700 7200 6100 7000 6800 7900 3d00 3d00  g.r.a.p.h.y.=.=.
+00000120: 3400 3200 2e00 3000 2e00 3500 0d00 0a00  4.2...0...5.....
+00000130: 6500 7800 6300 6500 7000 7400 6900 6f00  e.x.c.e.p.t.i.o.
+00000140: 6e00 6700 7200 6f00 7500 7000 3d00 3d00  n.g.r.o.u.p.=.=.
+00000150: 3100 2e00 3200 2e00 3000 0d00 0a00 6600  1...2...0.....f.
+00000160: 6100 7300 7400 6100 7000 6900 3d00 3d00  a.s.t.a.p.i.=.=.
+00000170: 3000 2e00 3100 3100 3000 2e00 3000 0d00  0...1.1.0...0...
+00000180: 0a00 6800 3100 3100 3d00 3d00 3000 2e00  ..h.1.1.=.=.0...
+00000190: 3100 3400 2e00 3000 0d00 0a00 6900 6400  1.4...0.....i.d.
+000001a0: 6e00 6100 3d00 3d00 3300 2e00 3600 0d00  n.a.=.=.3...6...
+000001b0: 0a00 7000 7900 6300 7000 6100 7200 7300  ..p.y.c.p.a.r.s.
+000001c0: 6500 7200 3d00 3d00 3200 2e00 3200 3100  e.r.=.=.2...2.1.
+000001d0: 0d00 0a00 7000 7900 6400 6100 6e00 7400  ....p.y.d.a.n.t.
+000001e0: 6900 6300 3d00 3d00 3200 2e00 3600 2e00  i.c.=.=.2...6...
+000001f0: 3300 0d00 0a00 7000 7900 6400 6100 6e00  3.....p.y.d.a.n.
+00000200: 7400 6900 6300 2d00 6300 6f00 7200 6500  t.i.c.-.c.o.r.e.
+00000210: 3d00 3d00 3200 2e00 3100 3600 2e00 3300  =.=.2...1.6...3.
+00000220: 0d00 0a00 7000 7900 7400 6800 6f00 6e00  ....p.y.t.h.o.n.
+00000230: 2d00 6400 6f00 7400 6500 6e00 7600 3d00  -.d.o.t.e.n.v.=.
+00000240: 3d00 3100 2e00 3000 2e00 3100 0d00 0a00  =.1...0...1.....
+00000250: 7200 6500 7100 7500 6500 7300 7400 7300  r.e.q.u.e.s.t.s.
+00000260: 3d00 3d00 3200 2e00 3300 3100 2e00 3000  =.=.2...3.1...0.
+00000270: 0d00 0a00 7300 6e00 6900 6600 6600 6900  ....s.n.i.f.f.i.
+00000280: 6f00 3d00 3d00 3100 2e00 3300 2e00 3100  o.=.=.1...3...1.
+00000290: 0d00 0a00 7300 7400 6100 7200 6c00 6500  ....s.t.a.r.l.e.
+000002a0: 7400 7400 6500 3d00 3d00 3000 2e00 3300  t.t.e.=.=.0...3.
+000002b0: 3600 2e00 3300 0d00 0a00 7400 7900 7000  6...3.....t.y.p.
+000002c0: 6900 6e00 6700 2d00 6500 7800 7400 6500  i.n.g.-.e.x.t.e.
+000002d0: 6e00 7300 6900 6f00 6e00 7300 3d00 3d00  n.s.i.o.n.s.=.=.
+000002e0: 3400 2e00 3100 3000 2e00 3000 0d00 0a00  4...1.0...0.....
+000002f0: 7500 7200 6c00 6c00 6900 6200 3300 3d00  u.r.l.l.i.b.3.=.
+00000300: 3d00 3200 2e00 3200 2e00 3100 0d00 0a00  =.2...2...1.....
+00000310: 7500 7600 6900 6300 6f00 7200 6e00 3d00  u.v.i.c.o.r.n.=.
+00000320: 3d00 3000 2e00 3200 3700 2e00 3100 0d00  =.0...2.7...1...
+00000330: 0a00                                     ..
+</code></pre>
+<p>When writing to a console, <a href="https://github.com/rust-lang/rust/blob/52f8aec14c616387c5f793687f2d9026de6c78ca/library/std/src/sys/pal/windows/stdio.rs#L175-L229">Rust will write data as UTF-16</a>. Since you're piping the output via stdout, this is indeed the code path being exercised.</p>
+<p>So I think the solution to this is for <code>uv</code> to transparently accept UTF-16 encoded files in addition to UTF-8 encoded files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-03-07 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-03-07 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @BurntSushi on 2024-03-07 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashranjan1">@yashranjan1</a> on 2024-03-07 16:22</div>
+            <div class="timeline-body"><p>Thanks for the explanation and the prompt response Please do tag me on the PR for fixing this issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 17:27</div>
+            <div class="timeline-body"><p>@BurntSushi we previously said we would not change this behavior:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/1666</li>
+</ul>
+<p>We could still change our mind though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2283.html">astral-sh/uv#2283</a> on 2024-03-07 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-03-08 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ofek/pyapp/issues/75.html">ofek/pyapp#75</a> on 2024-03-12 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7733.html">astral-sh/uv#7733</a> on 2024-09-27 09:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

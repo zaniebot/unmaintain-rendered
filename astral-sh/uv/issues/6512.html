@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricting universal lock by OS still downloads wheels from all OSes - astral-sh/uv #6512</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Restricting universal lock by OS still downloads wheels from all OSes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6512">#6512</a>
+        opened by <a href="https://github.com/tmct">@tmct</a>
+        on 2024-08-23 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmct">@tmct</a> on 2024-08-23 13:04</div>
+            <div class="timeline-body"><p>Hi - I'm very glad to see uv's recent universal locking features, and engagement with the lockfile standard - but I've found one behaviour that seems a little odd.</p>
+<p>Perhaps I have misunderstood how <a href="https://docs.astral.sh/uv/reference/settings/#environments">environment markers</a> are used in <a href="https://docs.astral.sh/uv/concepts/resolution/#universal-resolution">universal resolution</a>, but I am surprised by this behaviour:</p>
+<pre><code>mkdir temp
+cd temp
+uv init -p 3.10
+
+# I only want to produce a lockfile for Linux, across Python versions
+cat &lt;&lt;EOL &gt;&gt; pyproject.toml
+
+[tool.uv]
+environments = [&quot;sys_platform == 'linux'&quot;]
+EOL
+
+uv add torch==2.1.0 -p 3.10
+</code></pre>
+<p>Result: I still get plently Windows-specific wheels in my <code>uv.lock</code> lockfile, e.g. <code>torch-2.1.0-cp310-cp310-win_amd64.whl</code> - presumably these have all still been downloaded.</p>
+<p>Would it be possible please not to download these Mac/Windows-only wheels for linux-only universal locks, as an example?</p>
+<p>Many thanks,
+Tom</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-08-23 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 13:36</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>@konstin you marked this as an enhancement, is this not a bug?</p>
+<p>cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @zanieb on 2024-08-23 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-23 13:43</div>
+            <div class="timeline-body"><p>We already never install those wheels, but we're missing the pruning of the wheels list for platforms. We're currently only prune the wheels list for the python version (#4696), but we can extend this to the platform markers also. It may not work 100% for platform marker them since markers and wheels tags don't have a perfect 1:1 mapping, but we would still trim the lockfile down by a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 13:51</div>
+            <div class="timeline-body"><p>Thanks for the additional context. Is this hard?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-23 14:25</div>
+            <div class="timeline-body"><p>Hard to tell, hopefully it's a just a lookup table and some filtering. Ideally, you create a mapping from a marker to what tags it supports, e.g. <code>sys_platform == 'linux'</code> -&gt; <code>manylinux</code>, <code>musllinnux</code> and <code>linux</code>, and then filter the wheels by that wheel tag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 14:52</div>
+            <div class="timeline-body"><p>This would be a good improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2024-08-23 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmct">@tmct</a> on 2024-08-23 15:17</div>
+            <div class="timeline-body"><p>Thanks very much all - would be very happy to see this enhancement - none of the other &quot;universal&quot; lockfile tools seems to support this filtering...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 15:47</div>
+            <div class="timeline-body"><p>This is a bit more tedious because we don't track &quot;all the markers under which this package could be relevant&quot; in the lockfile directly -- you have to compute it by propagating markers. So at this point in the lockfile:</p>
+<pre><code class="language-rust">// Remove wheels that don't match `requires-python` and can't be selected for
+// installation.
+if let Some(requires_python) = &amp;requires_python {
+    package
+        .wheels
+        .retain(|wheel| requires_python.matches_wheel_tag(&amp;wheel.filename));
+}
+</code></pre>
+<p>We'd need to track the supported platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-09-02 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6957.html">astral-sh/uv#6957</a> on 2024-09-03 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 20:14</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/uv/pull/6957.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-04 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmct">@tmct</a> on 2024-09-04 21:18</div>
+            <div class="timeline-body"><p>Thank you! Though that PR is described as &quot;Prep for fixing https://github.com/astral-sh/uv/issues/6512. No functional changes.&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmct">@tmct</a> on 2024-09-04 21:20</div>
+            <div class="timeline-body"><p>Ah, now I see the subsequent #6961 and #6959 in the release notes. Very nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 21:25</div>
+            <div class="timeline-body"><p>Apologies, I linked the wrong PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmct">@tmct</a> on 2024-10-15 07:12</div>
+            <div class="timeline-body"><p>~Hi, quick question, which caches do I need to clear to make this happen if I forgot to restrict by OS before first sync? Thanks~</p>
+<p>Apologies, was using an old version of uv 😂</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

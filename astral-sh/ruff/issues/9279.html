@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Panic] VS Code extension Jupyter notebook UTF8 in doc string - astral-sh/ruff #9279</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Panic] VS Code extension Jupyter notebook UTF8 in doc string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9279">#9279</a>
+        opened by <a href="https://github.com/rkrueck">@rkrueck</a>
+        on 2023-12-25 21:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rkrueck">@rkrueck</a> on 2023-12-25 21:32</div>
+            <div class="timeline-body"><p>In Jupyter notebooks with Ruff extension, when using UTF8 lines in doc string (&quot;&quot;&quot; ... &quot;&quot;&quot;) I get:
+Ruff: Lint failed (error: Ruff crashed ...
+thread 'main' panicked at /rustc/a28077b28a02b92985b3a3faecf92813155f1ea1\library\core\src\str\mod.rs:660:13:
+byte index 2 is not a char boundary; it is inside '╭' (bytes 0..3) of <code>╭─────────┬─────────┬─────────┬─────────┬─────────╮</code>
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace
+)</p>
+<p>This type of table is returned for example from polars dataframe with <code>print(df)</code>
+Then I copy the output in the doc string to remind me what output to expect</p>
+<p>Removing <code>docstring-code-format = true</code> from pyproject.toml  does not help
+When using the same UTF8 in comment (#) it works.
+Workaround: For now I can select <code>pl.Config.set_ascii_tables(True) </code>with <code>print(df)</code></p>
+<p>Sample code:</p>
+<pre><code>import polars as pl
+
+
+def create_df() -&gt; pl.DataFrame:
+    &quot;&quot;&quot;sample
+
+    Returns:
+        pl.DataFrame:
+    shape: (3, 5)
+    ╭─────────┬─────────┬─────────┬─────────┬─────────╮
+    │ A (i64) ┆ B (i64) ┆ C (i64) ┆ D (i64) ┆ E (i64) │
+    ╞═════════╪═════════╪═════════╪═════════╪═════════╡
+    │ 20      ┆ 43      ┆ 31      ┆ 31      ┆ 42      │
+    │ 36      ┆ 23      ┆ 0       ┆ 39      ┆ 46      │
+    │ 5       ┆ 14      ┆ 5       ┆ 25      ┆ 13      │
+    ╰─────────┴─────────┴─────────┴─────────┴─────────╯
+    &quot;&quot;&quot;
+    return pl.DataFrame(
+        [
+            {'A': 20, 'B': 43, 'C': 31, 'D': 31, 'E': 42},
+            {'A': 36, 'B': 23, 'C': 0, 'D': 39, 'E': 46},
+            {'A': 5, 'B': 14, 'C': 5, 'D': 25, 'E': 13},
+        ]
+    )
+</code></pre>
+<p>pyproject.toml settings:
+[tool.ruff.format]
+quote-style = &quot;single&quot;
+docstring-code-format = true</p>
+<p>v2023.58.0 from VS Code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-26 03:53</div>
+            <div class="timeline-body"><p>I think this should be fixed in the latest version of Ruff. What version of ruff (not the VS code extension) are you using in your project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rkrueck">@rkrueck</a> on 2023-12-26 14:09</div>
+            <div class="timeline-body"><p>I checked. There is no Ruff installed. Only the VS Code extension</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-26 22:07</div>
+            <div class="timeline-body"><p>I was able to reproduce by copying the above into a Jupyter notebook, and running on Ruff v0.1.8. But it works without error on <code>main</code>, as expected. We'll cut a new VS Code release soon which will increment the bundled version of Ruff (the latest extension uses v0.1.8, not v0.1.9), or in the meantime you can install Ruff outside of the extension and it should pick up the latest version from your environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-26 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-26 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-26 22:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

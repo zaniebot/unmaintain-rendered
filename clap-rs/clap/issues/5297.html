@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand flags can't conflict with arguments - clap-rs/clap #5297</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand flags can't conflict with arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5297">#5297</a>
+        opened by <a href="https://github.com/nix-enthusiast">@nix-enthusiast</a>
+        on 2024-01-10 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nix-enthusiast">@nix-enthusiast</a> on 2024-01-10 17:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.75.0</p>
+<h3>Clap Version</h3>
+<p>4.4.14</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rs">use clap::{Arg, ArgAction, Command};
+use std::process::exit;
+
+fn main() {
+    let matches = Command::new(&quot;cmd&quot;)
+        .args_conflicts_with_subcommands(true)
+        .arg(
+            Arg::new(&quot;foo&quot;)
+                .short('f')
+                .long(&quot;foo&quot;)
+                .action(ArgAction::SetTrue)
+                .exclusive(true),
+        )
+        .subcommand(
+            Command::new(&quot;bar&quot;).short_flag('B').long_flag(&quot;bar&quot;).arg(
+                Arg::new(&quot;baz&quot;)
+                    .short('b')
+                    .long(&quot;baz&quot;)
+                    .action(ArgAction::Append)
+                    .num_args(1..),
+            ),
+        )
+        .get_matches();
+
+    if matches.get_flag(&quot;foo&quot;) {
+        println!(&quot;-f is used&quot;)
+    };
+    println!(
+        &quot;{:?}&quot;,
+        matches
+            .subcommand_matches(&quot;bar&quot;)
+            .unwrap_or_else(|| {
+                println!(&quot;Bar subcommand is not used&quot;);
+                exit(0)
+            })
+            .get_many::&lt;String&gt;(&quot;baz&quot;).unwrap().map(|x|x.to_string()).collect::&lt;Vec&lt;String&gt;&gt;()
+    );
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- -f -Bb 1 2</p>
+<h3>Actual Behaviour</h3>
+<pre><code>-f is used
+[&quot;1&quot;, &quot;2&quot;]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>error: -f can not be used with -B subcommand 
+
+example:
+     -f &lt;foo&gt;
+</code></pre>
+<h3>Additional Context</h3>
+<p>Using it with/without<code>.subcommand_precedence_over_arg(true)</code> won't make any difference</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;cmd&quot;
+[clap_builder::builder::command]Command::_propagate:cmd
+[clap_builder::builder::command]Command::_check_help_and_version:cmd expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:cmd
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-f&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-f&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;f&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['f']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:f
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:f: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;foo&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;foo&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;foo&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-Bb&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-Bb&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;Bb&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['B', 'b']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:B
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:B: subcommand=bar
+[clap_builder::parser::parser]Parser::parse_short_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg FlagSubCommand(&quot;bar&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with:FlagSubCommandShort: subcmd_name=bar, keep_state=true, flag_subcmd_skip=1
+[clap_builder::parser::parser]Parser::parse_subcommand
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of bar to &quot;args bar&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of bar to &quot;cmd-bar&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;bar&quot;
+[clap_builder::builder::command]Command::_propagate:bar
+[clap_builder::builder::command]Command::_check_help_and_version:bar expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:bar
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:baz
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=bar
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-Bb&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-Bb&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;Bb&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['B', 'b']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b: Found valid opt or flag
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:b: val=&quot;&quot;, short_arg=ShortFlags { inner: &quot;Bb&quot;, utf8_prefix: CharIndices { front_offset: 2, iter: Chars([]) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=baz, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg Opt(&quot;baz&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;1&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=baz, pending=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=1
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;2&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=baz, pending=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=2
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;baz&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=3
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;baz&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;baz&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;baz&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;1&quot;, &quot;2&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=5
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=baz, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:baz:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:baz: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;baz&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;baz&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate: needs_val_of=&quot;baz&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;baz&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;baz&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;baz&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:foo:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:foo: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:foo: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;foo&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;foo&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;foo&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;foo&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nix-enthusiast on 2024-01-10 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-10 17:33</div>
+            <div class="timeline-body"><p>Started as #5294</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Argument doesn't conflict with subcommand even if it's set" to "Subcommand flags can't conflict with arguments" by @epage on 2024-01-10 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2024-01-10 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2024-01-10 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-01-10 17:35</div>
+            <div class="timeline-body"><p>As noted in #5294, there is likely a similar bug with <code>subcommand_precedence_over_arg</code> because we only check for conflicts if the argument doesn't exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5298.html">clap-rs/clap#5298</a> on 2024-01-11 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-01-11 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arg::to_string panics - clap-rs/clap #5627</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Arg::to_string panics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5627">#5627</a>
+        opened by <a href="https://github.com/crowlKats">@crowlKats</a>
+        on 2024-08-06 06:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/crowlKats">@crowlKats</a> on 2024-08-06 06:53</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.79.0</p>
+<h3>Clap Version</h3>
+<p>4.5.13</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    let cmd = clap::Command::new(&quot;cargo&quot;)
+      .bin_name(&quot;cargo&quot;)
+      .arg(clap::Arg::new(&quot;manifest-path&quot;).long(&quot;manifest-path&quot;));
+
+    dbg!(cmd.get_arguments().next().unwrap().to_string());
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>its panicking with
+<code>thread 'main' panicked at /Users/crowlkats/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.13/src/builder/arg.rs:4001:29</code>
+which is https://github.com/clap-rs/clap/blob/edcaf8fcae5b747cee7e70f196d70a49ffcbdb84/clap_builder/src/builder/arg.rs#L4024</p>
+<h3>Expected Behaviour</h3>
+<p>shouldn't panic</p>
+<h3>Additional Context</h3>
+<p>Am trying to get the arg usage representation to do a basic JSON output.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @crowlKats on 2024-08-06 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-06 19:35</div>
+            <div class="timeline-body"><p>You need to <code>cmd.build()</code> first.</p>
+<p>The next question is if our panic message should call that out.  I'm unsure.  There are a lot of corner cases and am unsure if we should go for &quot;catastrophic failure&quot; or &quot;you didn't do one specific thing&quot; (when you might have and instead something else went wrong).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crowlKats">@crowlKats</a> on 2024-08-06 22:55</div>
+            <div class="timeline-body"><blockquote>
+<p>You need to <code>cmd.build()</code> first.</p>
+</blockquote>
+<p>Ah, that makes sense.</p>
+<blockquote>
+<p>The next question is if our panic message should call that out. I'm unsure. There are a lot of corner cases and am unsure if we should go for &quot;catastrophic failure&quot; or &quot;you didn't do one specific thing&quot; (when you might have and instead something else went wrong).</p>
+</blockquote>
+<p>I tend to be in favour of more documentation, especially if its a behaviour that is here to stay indefinitively and has a reason, but I do understand your point, especially if such cases are common, so not sure either which would be better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-08-07 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2024-08-07 01:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:38 UTC
+    </footer>
+</body>
+</html>

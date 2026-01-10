@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `CommandWithArguments` hint for options - clap-rs/clap #3266</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `CommandWithArguments` hint for options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3266">#3266</a>
+        opened by <a href="https://github.com/tmccombs">@tmccombs</a>
+        on 2022-01-07 09:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-01-07 09:24</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.5</p>
+<h3>Describe your use case</h3>
+<p>I have an argument like:</p>
+<pre><code class="language-rust">            Arg::new(&quot;exec-batch&quot;)
+                .long(&quot;exec-batch&quot;)
+                .short('X')
+                .min_values(1)
+                .allow_hyphen_values(true)
+                .value_terminator(&quot;;&quot;)
+                .value_name(&quot;cmd&quot;)
+</code></pre>
+<p>Ideally, I would be able to use <code>.value_hint(ValueHint::CommandWithArguments)</code> for this, but since it isn't a positional argument, I can't.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Allow using <code>ValueHint::CommandWithArguments</code> for non-positional arguments, as long as:</p>
+<ol>
+<li>It accepts multiple values</li>
+<li>there is a <code>value_terminator</code> supplied</li>
+</ol>
+<h3>Alternatives, if applicable</h3>
+<p>possibly have a seperate hint type for this use case?</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @tmccombs on 2022-01-07 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-07 14:45</div>
+            <div class="timeline-body"><p>In what way are you not seeing this supported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-01-07 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-01-07 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-01-08 07:02</div>
+            <div class="timeline-body"><p>If I add <code>.value_hint(ValueHint::CommandWithArguments)</code> I get:</p>
+<pre><code>thread 'main' panicked at 'App fd: Argument 'exec-batch' has hint CommandWithArguments and must be positional.', /home/thayne/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.5/src/build/app/debug_asserts.rs:210:13
+</code></pre>
+<p>There is a debug_assert that requires the argument to be positional if it has the <code>CommandWithArguments</code> hint.
+This is also mentioned in the documentation:</p>
+<blockquote>
+<p>the argument must be a positional argument and have <code>.multiple_values(true)</code> and App must use <code>AppSettings::TrailingVarArg</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-01-08 07:24</div>
+            <div class="timeline-body"><p>I believe in this case the zsh completion would need to be different. Instead of using <code>_cmdambivalent</code> it would need to use something like:</p>
+<p><code>&quot; _command_names -e:*{}::args: _normal&quot;</code> where <code>{}</code> is replaced with the escaped value of the terminator.</p>
+<p>That is, the first value is completed as a command name, and then every value after up to and including the value that matches the terminator are completed using <code>_normal</code> but using excluding the command up to the first value passed to the option.</p>
+<p>See https://github.com/clap-rs/clap/blob/453356e044db898d6ad4dd4578c2c50583913615/clap_complete/src/shells/zsh.rs#L392</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 16:56</div>
+            <div class="timeline-body"><p>Sorry, I somehow had missed that part of the code when searching</p>
+<blockquote>
+<p>I believe in this case the zsh completion would need to be different. Instead of using <code>_cmdambivalent</code> it would need to use something like:</p>
+<p><code>&quot; _command_names -e:*{}::args: _normal&quot;</code> where <code>{}</code> is replaced with the escaped value of the terminator.</p>
+<p>That is, the first value is completed as a command name, and then every value after up to and including the value that matches the terminator are completed using <code>_normal</code> but using excluding the command up to the first value passed to the option.</p>
+<p>See</p>
+<p>https://github.com/clap-rs/clap/blob/453356e044db898d6ad4dd4578c2c50583913615/clap_complete/src/shells/zsh.rs#L392</p>
+</blockquote>
+<p>Sounds like loosening <code>CommandWithArguments</code> won't help unless we manually implement the handling.</p>
+<p>As an alternative, would per-value <code>ValueHint</code>s help with this (something brought up in https://github.com/clap-rs/clap/issues/2683)?  The first value would be <code>_cmdambivalent</code> with the next being <code>_normal</code>.  That being the last value hint, we'd then repeat it for all future value hints in that occurrence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-01-13 06:41</div>
+            <div class="timeline-body"><blockquote>
+<p>As an alternative, would per-value ValueHints help with this (something brought up in #2683)? The first value would be _cmdambivalent with the next being _normal. That being the last value hint, we'd then repeat it for all future value hints in that occurrence.</p>
+</blockquote>
+<p>I'm guessing you ment <code>_command_names -</code> not <code>_cmdambivalent</code>?</p>
+<p>That would probably be tricky to do. The arguments that use <code>_normal</code> should use the command name argument in order to determine completion. In the example I gave above that is accomplished by using the double colon form. It would also need to be aware of the terminator in order to know when to stop accepting arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4612.html">clap-rs/clap#4612</a> on 2023-01-09 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-03 21:59</div>
+            <div class="timeline-body"><p>For native completions, our issue for this is #5653.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6016.html">clap-rs/clap#6016</a> on 2025-11-03 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support `CommandWithArguments` hint for " to "Support `CommandWithArguments` hint for options" by @tmccombs on 2025-12-10 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sharkdp/fd/issues/1857.html">sharkdp/fd#1857</a> on 2025-12-10 07:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:50 UTC
+    </footer>
+</body>
+</html>

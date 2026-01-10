@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a way to put subcommands first, before required positional arguments - clap-rs/clap #6026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a way to put subcommands first, before required positional arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6026">#6026</a>
+        opened by <a href="https://github.com/fck-gthb">@fck-gthb</a>
+        on 2025-06-08 07:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fck-gthb">@fck-gthb</a> on 2025-06-08 07:18</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.39</p>
+<h3>Describe your use case</h3>
+<pre><code>#[derive(Parser)]
+#[command()]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+
+    path: String,
+}
+</code></pre>
+<p><code>clap</code> insists on putting the subcommand last despite it being first in the struct:</p>
+<p><code>Usage: clap_test &lt;PATH&gt; &lt;COMMAND&gt;</code></p>
+<p>What I want instead is <code>clap_test &lt;COMMAND&gt; &lt;PATH&gt;</code>; <code>clap</code> somehow does it all backwards, which is counterintuitive.</p>
+<p>Note that <code>path</code> is required, so I can't use <code>#[arg(global = true)]</code>. I also want to read <code>path</code> once before getting to the subcommands:</p>
+<pre><code class="language-rust">fn main() {
+    let args = Cli::parse();
+    read_file(args.path); // It's a common required argument.
+    match args.command {
+        Command::Simple { alpha } =&gt; todo!(),
+        Command::Fancy { beta } =&gt; todo!(),
+    }
+}
+</code></pre>
+<p>Not like this:</p>
+<pre><code class="language-rust">#[derive(Subcommand)]
+enum Command {
+    Simple(SharedArgs),
+    Fancy(SharedArgs),
+}
+
+#[derive(Args)]
+struct SharedArgs {
+    path: String,
+}
+
+fn main() {
+    let args = Cli::parse();
+    match args.command {
+        Command::Simple(args) =&gt; {
+            read_file(args.path); // repeating
+        }
+        Command::Fancy(args) =&gt; {
+            read_file(args.path);  // repeating
+        }
+    }
+}
+</code></pre>
+<p>I could do this, but I lose the ability to use subcommand-specific arguments and parameters:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command()]
+struct Cli {
+    command: Command,
+
+    path: String,
+}
+
+
+#[derive(Clone, clap::ValueEnum)]
+enum Command {
+    Simple, // ValueEnum only supports unit variants
+    Fancy, // ValueEnum only supports unit variants
+}
+
+#[derive(Args, Clone)]
+struct SharedArgs {
+    path: String,
+}
+
+fn main() {
+    let args = Cli::parse();
+    match args.command {
+        Command::Simple =&gt; {}
+        Command::Fancy =&gt; {}
+    }
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>A possible solution: make the order matter.</p>
+<p>The subcommand first, then <code>path</code>:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command()]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+
+    path: String,
+}
+</code></pre>
+<p><code>path</code> first:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[command()]
+struct Cli {
+    path: String,
+
+    #[command(subcommand)]
+    command: Command,
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @fck-gthb on 2025-06-08 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2025-06-09 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-06-09 14:22</div>
+            <div class="timeline-body"><blockquote>
+<p><code>clap</code> insists on putting the subcommand last despite it being first in the struct:</p>
+<p><code>Usage: clap_test &lt;PATH&gt; &lt;COMMAND&gt;</code></p>
+<p>What I want instead is <code>clap_test &lt;COMMAND&gt; &lt;PATH&gt;</code>; <code>clap</code> somehow does it all backwards, which is counterintuitive.</p>
+</blockquote>
+<p>CLIs are generally context-sensitive parsers.  What you are currently parsing is dependent on the context of what came before.  Especially with subcommands, everything after a subcommand is exclusively parsed as part of that subcommand.  Besides the complexity and user confusion over allowing something like this, it can degrade the quality of error messages.  The closest we are looking to change this is with #2222 which we still need to be very careful with.</p>
+<blockquote>
+<p>Note that <code>path</code> is required, so I can't use <code>#[arg(global = true)]</code>.</p>
+</blockquote>
+<p>The issue for this is #5977.</p>
+<blockquote>
+<p>I also want to read <code>path</code> once before getting to the subcommands:</p>
+</blockquote>
+<p>While I can understand the convenience of this, implementing this comes at a cost build time and binary size cost for everyone to have this behavior.  This would also either be a breaking change, which would have to wait for 5.0, or a new flag which also balloons the API.  We've found the larger the API, the less likely people will use whats in the API and will instead hand roll things, so by adding something to the API we lower the value of everything in the API, including the item being added.</p>
+<p>I've also found that in practice, a lot of people put things as global arguments for code reuse or because they assume something is truly global, to later find it isn't and regret it.  I suggest extreme caution in even using <code>global</code>.  I think <code>cargo --frozen</code> / <code>cargo --locked</code>, and <code>cargo --offline</code> are good examples of this.  In fact, no non-modal global in <code>cargo</code> makes sense in the presence of external subcommands which confuses users.</p>
+<p>Overall, this feels like a fairly specialized case that has a lot of negatives that I'm going to go ahead and close this.  If there is a reason we should re-evaluate, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-06-09 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fck-gthb">@fck-gthb</a> on 2025-06-13 16:05</div>
+            <div class="timeline-body"><p>So the way to go is to implement my own argument parser. Okay.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:47 UTC
+    </footer>
+</body>
+</html>

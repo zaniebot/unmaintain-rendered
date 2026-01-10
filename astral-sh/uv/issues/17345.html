@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolving `tensorrt` in macOS fails -- even with `dependency-metadata` declaration. - astral-sh/uv #17345</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolving `tensorrt` in macOS fails -- even with `dependency-metadata` declaration.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17345">#17345</a>
+        opened by <a href="https://github.com/ggoggam">@ggoggam</a>
+        on 2026-01-07 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ggoggam">@ggoggam</a> on 2026-01-07 14:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a workspace layout <strong>where one of the workspace member</strong> has the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;An example workspace member&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;torch-tensorrt==2.8.0+cu126; sys_platform != 'darwin'&quot;,
+]
+
+[tool.uv]
+package = false
+index = [
+    { name = &quot;pytorch&quot;, url = &quot;https://download.pytorch.org/whl/cu126&quot; }
+]
+dependency-metadata = [
+    { name = &quot;tensorrt&quot;, requires-dist = [&quot;tensorrt-cu12==10.3.0&quot;] },
+    { name = &quot;tensorrt-cu12&quot;, requires-dist = [&quot;tensorrt-cu12-bindings==10.12.0.36&quot;, &quot;tensorrt-cu12-libs==10.12.0.36&quot;, &quot;tensorrt==10.12.0.36&quot;] },
+    { name = &quot;tensorrt-cu12-libs&quot;, requires-dist = [&quot;nvidia-cuda-runtime-cu12==12.6.77&quot;] },
+    { name = &quot;nvidia-cuda-runtime-cu12&quot; },
+    { name = &quot;tensorrt-cu12-bindings&quot; }
+]
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;.&quot;]
+sources = { &quot;.&quot; = &quot;example&quot; }
+exclude = [&quot;**/*_test.py&quot;, &quot;**/conftest.py&quot;]
+
+[tool.hatch.build.targets.sdist]
+exclude = [&quot;**/*_test.py&quot;, &quot;**/conftest.py&quot;]
+</code></pre>
+<p>Running <code>uv {sync,run,lock}</code> for universal dependency resolution fails on macOS with the following error:</p>
+<pre><code>  × Failed to build `tensorrt-cu12==10.12.0.36`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;~/.cache/uv/builds-v0/.tmpj1kRN4/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 331, in
+      get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;~/.cache/uv/builds-v0/.tmpj1kRN4/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 301, in
+      _get_build_requires
+          self.run_setup()
+        File &quot;~/.cache/uv/builds-v0/.tmpj1kRN4/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;~/.cache/uv/builds-v0/.tmpj1kRN4/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 65, in &lt;module&gt;
+      RuntimeError: TensorRT currently only builds wheels for Linux and Windows
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `tensorrt-cu12` (v10.12.0.36) was included because `example` (v0.1.0) depends on `torch-tensorrt==2.8.0+cu126` (v2.8.0+cu126) which
+        depends on `tensorrt&gt;=10.12.0, &lt;10.13.0` (v10.12.0.36) which depends on `tensorrt-cu12==10.12.0.36
+</code></pre>
+<p>I am aware that <code>tensorrt</code> does not provide static metadata, which requires build at runtime. Following the <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata">guide</a> and one of the many other <a href="https://github.com/astral-sh/uv/issues/13942">issues</a> regarding this, I have defined <code>tool.uv.dependency-metadata</code> like below but this does not resolve the issue:</p>
+<pre><code>dependency-metadata = [
+    { name = &quot;tensorrt&quot;, requires-dist = [&quot;tensorrt-cu12==10.3.0&quot;] },
+    { name = &quot;tensorrt-cu12&quot;, requires-dist = [&quot;tensorrt-cu12-bindings==10.12.0.36&quot;, &quot;tensorrt-cu12-libs==10.12.0.36&quot;, &quot;tensorrt==10.12.0.36&quot;] },
+    { name = &quot;tensorrt-cu12-libs&quot;, requires-dist = [&quot;nvidia-cuda-runtime-cu12==12.6.77&quot;] },
+    { name = &quot;nvidia-cuda-runtime-cu12&quot; },
+    { name = &quot;tensorrt-cu12-bindings&quot; }
+]
+</code></pre>
+<p>I only need to resolve the dependency when working with the project in the macOS, nothing more. I have separate CI for resolving dependencies in linux, which I have no problem with.</p>
+<h3>Platform</h3>
+<p>Darwin 25.2.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.22 (82a6a66b8 2026-01-06)</p>
+<h3>Python version</h3>
+<p>3.11.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ggoggam on 2026-01-07 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

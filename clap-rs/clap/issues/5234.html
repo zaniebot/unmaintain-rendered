@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`default_value_if` does not respect `global(true)` - clap-rs/clap #5234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`default_value_if` does not respect `global(true)`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5234">#5234</a>
+        opened by <a href="https://github.com/adamspofford-dfinity">@adamspofford-dfinity</a>
+        on 2023-12-01 01:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamspofford-dfinity">@adamspofford-dfinity</a> on 2023-12-01 01:06</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.73.0 (cc66ad468 2023-10-03)</p>
+<h3>Clap Version</h3>
+<p>4.4.10, master (c0a1814d)</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, builder::ArgPredicate};
+#[derive(Parser)]
+struct Cmd {
+    #[arg(
+      default_value_if(&quot;default&quot;, ArgPredicate::IsPresent, &quot;default value&quot;)
+    )]
+    param: Option&lt;String&gt;,
+    #[arg(long, global = true)]
+    default: bool,
+    #[command(subcommand)]
+    subcommand: Option&lt;Subcommand&gt;,
+}
+#[derive(Parser)]
+enum Subcommand {
+    Subcommand,
+}
+fn main() {
+    let cmd = Cmd::parse();
+    println!(&quot;param: {}&quot;, cmd.param.unwrap_or(&quot;&lt;none&gt;&quot;.into()));
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-sh">cargo run -- --default
+cargo run -- subcommand --default
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>param: default value
+param: &lt;none&gt;
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>param: default value
+param: default value
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;claptest&quot;
+[clap_builder::builder::command]Command::_propagate:claptest
+[clap_builder::builder::command]Command::_check_help_and_version:claptest expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:claptest
+[clap_builder::builder::command]Command::_propagate pushing &quot;default&quot; to subcommand
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:param
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:default
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;subcommand&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;subcommand&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;subcommand&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of subcommand to &quot;claptest subcommand&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of subcommand to &quot;claptest-subcommand&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;subcommand&quot;
+[clap_builder::builder::command]Command::_propagate:subcommand
+[clap_builder::builder::command]Command::_check_help_and_version:subcommand expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:subcommand
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:default
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=subcommand
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--default&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--default&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--default'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;default&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;default&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;default&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;default&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:default:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:default: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:default: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;default&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;default&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;default&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;default&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;default&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:param:
+[clap_builder::parser::parser]Parser::add_default_value: has conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:param: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:default:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:default: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:default: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;default&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[&quot;default&quot;, &quot;default&quot;]
+param: &lt;none&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @adamspofford-dfinity on 2023-12-01 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-12-01 02:00</div>
+            <div class="timeline-body"><p>This is related to #1546 but I'm keeping it separate because solving it for the validation pass might not solve it for the default value pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-12-01 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-12-01 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../autobib/autobib/pulls/234.html">autobib/autobib#234</a> on 2025-10-07 23:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:32 UTC
+    </footer>
+</body>
+</html>

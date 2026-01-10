@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build --no-build` fails - astral-sh/uv #12607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build --no-build` fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12607">#12607</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-04-01 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 20:30</div>
+            <div class="timeline-body"><pre><code>❯ uv build --no-build
+Building source distribution...
+  × Failed to build `/Users/zb/workspace/uv/example`
+  ╰─▶ Building source distributions is disabled
+</code></pre>
+<p>Shouldn't we allow this as it's a local source tree?</p>
+<p><em>Originally posted in <a href="https://github.com/astral-sh/uv/issues/11682#issuecomment-2768520419">#11682</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-04-01 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-04-01 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 14:37</div>
+            <div class="timeline-body"><p>We currently deny local source tree builds in other places, e.g., <code>uv sync --no-build</code>, so it's consistent that <code>UV_NO_BUILD=0</code> blocks <code>uv build</code>, too. We would need to differentiate our no-build flags by whether they include or exclude local source trees.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:21</div>
+            <div class="timeline-body"><p>Oh, thanks for clarifying. I think that's weird tbh.</p>
+<pre><code>❯ uv init --package example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ uv sync --no-build
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 1 package in 0.97ms
+error: Distribution `example==0.1.0 @ editable+.` can't be installed because it is marked as `--no-build` but has no binary distribution
+❯ uv pip install --no-build .
+Resolved 1 package in 0.81ms
+error: Failed to prepare distributions
+  Caused by: Building source distributions is disabled, but attempted to build `example`
+</code></pre>
+<p>As a note, the workaround is</p>
+<pre><code>❯ uv sync --no-build --no-binary-package example
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-08-26 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CHC383">@CHC383</a> on 2025-10-21 02:08</div>
+            <div class="timeline-body"><p>Differentiate no-build for local source trees would be helpful. In my case I would like to enable no-build for my dependencies but not my current project/local source tree while running <code>uv sync</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optional positionals before required positionals - clap-rs/clap #2514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optional positionals before required positionals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2514">#2514</a>
+        opened by <a href="https://github.com/ljrk0">@ljrk0</a>
+        on 2021-06-01 14:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ljrk0">@ljrk0</a> on 2021-06-01 14:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p>In brief, I'm trying to replicate https://pubs.opengroup.org/onlinepubs/9699919799/utilities/find.html.  The syntax is quite simple:</p>
+<pre><code>find [-H|-L] path... [operand_expression...]</code></pre>
+<ol>
+<li>A positional flag <code>-H</code> or <code>-L</code> (they can override each other, so <code>find -H -L -H -H</code> is equivalent to <code>find -H</code>)</li>
+<li>After that, at least one path which all don't start with a hyphen <code>-</code> (in theory, one would also need to check whether the argument is a <code>!</code> or a <code>(</code>, and if so, collect all following into the third argument, <code>operand_expression</code>)</li>
+<li>Finally, optionally, <code>operand_expression</code> tokens.  They aren't supposed to be parsed by clap, but should be returned in a <code>Vec&lt;&amp;str&gt;</code> or the like.  They start as soon as the parser finds an argument that starts with <code>-</code> (optional: or is a <code>!</code> or <code>(</code>).</li>
+</ol>
+<p>It's <em>crucial</em> that <code>-H</code> and <code>-L</code> are given <em>before</em> the path (but yet, are optional).</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'd like to define <code>-H</code> and <code>-L</code> as positionals using <code>.index(1)</code> (maybe as a group?), but not making them required. Currently I get:</p>
+<blockquote>
+<p>Found positional argument which is not required with a lower index than a required positional argument.</p>
+</blockquote>
+<p>Further, I'd like to use <code>TrailingVarArg</code> which collect everything after the <code>path</code> arg into <code>operand_expressions</code>.</p>
+<blockquote>
+<p>When using a positional argument with .multiple(true) that is <em>not the last</em> positional argument, the last positional argument (i.e the one with the highest index) <em>must</em> have .required(true) or .last(true) set.</p>
+</blockquote>
+<p>In theory, this grammar is unambiguous, since <code>path</code> is set to <code>allow_hyphen_values(false)</code>, thus it should be clear where <code>operand_expression</code> should start, even w/o setting <code>.last(true)</code></p>
+<p>I found issues like https://github.com/clap-rs/clap/issues/1538 but they don't seem to be completely analogous to the one described.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>A theoretical implementation of parts of the above described would be:</p>
+<pre><code>extern crate clap;
+
+use clap::{App, Arg, AppSettings};
+
+fn main() {
+    let m = App::new(&quot;find&quot;)
+        .arg(
+            Arg::new(&quot;follow-link&quot;)
+                .short('H')
+                .index(1)
+        )
+        .arg(
+            Arg::new(&quot;path&quot;)
+                .multiple(true)
+                .required(true)
+                .index(2)
+        )
+        .arg(
+            Arg::new(&quot;operand_expression&quot;)
+                .multiple(true)
+                .index(3)
+        )
+        .setting(AppSettings::TrailingVarArg)
+        .get_matches_from(vec![&quot;find&quot;, &quot;-H&quot;, &quot;path1&quot;, &quot;path2&quot;, &quot;-some_expr&quot;]);
+
+    let trail: Vec&lt;&amp;str&gt; = m.values_of(&quot;operand_expression&quot;).unwrap().collect();
+    for oe in &amp;trail {
+        eprintln!(&quot;oe: {:?}&quot;, oe);
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @ljrk0 on 2021-06-01 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-06-03 19:36</div>
+            <div class="timeline-body"><blockquote>
+<p>It's crucial that -H and -L are given before the path (but yet, are optional).</p>
+</blockquote>
+<p>Why is that? That is the issue with your CLI design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-06-03 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @clap-rs on 2021-06-03 19:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:30 UTC
+    </footer>
+</body>
+</html>

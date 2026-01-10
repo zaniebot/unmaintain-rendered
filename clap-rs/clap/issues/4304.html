@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>short version of help is not overridden anymore - clap-rs/clap #4304</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>short version of help is not overridden anymore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4304">#4304</a>
+        opened by <a href="https://github.com/erazor-de">@erazor-de</a>
+        on 2022-09-30 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/erazor-de">@erazor-de</a> on 2022-09-30 17:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (a55dd71d5 2022-09-19)</p>
+<h3>Clap Version</h3>
+<p>4.0.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>[package]
+name = &quot;claptest&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+pub struct Args {
+    #[arg(short, long)]
+    pub hyperlink: bool,
+}
+
+fn main() {
+    let _args = Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>Panicks with following message:</p>
+<blockquote>
+<p>thread 'main' panicked at 'Command claptest: Short option names must be unique for each argument, but '-h' is in use by both 'hyperlink' and 'help' (call <code>cmd.disable_help_flag(true)</code> to remove the auto-generated <code>--help</code>)', /home/stefan/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.6/src/builder/debug_asserts.rs:121:17</p>
+</blockquote>
+<h3>Expected Behaviour</h3>
+<p>clap version 3 removed the short help '-h' when another arg used it.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;claptest&quot;
+[      clap::builder::command]  Command::_propagate:claptest
+[      clap::builder::command]  Command::_check_help_and_version:claptest expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_propagate_global_args:claptest
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:hyperlink
+thread 'main' panicked at 'Command claptest: Short option names must be unique for each argument, but '-h' is in use by both 'hyperlink' and 'help' (call `cmd.disable_help_flag(true)` to remove the auto-generated `--help`)', /home/stefan/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.6/src/builder/debug_asserts.rs:121:17
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @erazor-de on 2022-09-30 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shepmaster">@shepmaster</a> on 2022-09-30 18:01</div>
+            <div class="timeline-body"><p>The section &quot;Removing Implicit Version/Help Behavior&quot; in <a href="https://epage.github.io/blog/2022/09/clap4/">clap 4.0, a Rust CLI argument parser</a> may be relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 18:08</div>
+            <div class="timeline-body"><p>Yes,. this was an intentional change and the above linked blog post provides a summary of it and why.</p>
+<p>We covered parts of the change in the CHANGELOG,</p>
+<blockquote>
+<p>mut_arg can no longer be used to customize help and version arguments, instead disable them (Command::disable_help_flag, Command::disable_version_flag) and provide your own (#4056)</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>Arg::new(&quot;help&quot;) and Arg::new(&quot;version&quot;) no longer implicitly disable the built-in flags and be copied to all subcommands, instead disable the built-in flags (Command::disable_help_flag, Command::disable_version_flag) and mark the custom flags as global(true). (#4056)</p>
+</blockquote>
+<p>but we seemed to have not explicitly called out this aspect of it.  That has no been rectified.</p>
+<p>As this is expected behavior and (now) documented, I'm closing this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-30 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4311.html">clap-rs/clap#4311</a> on 2022-09-30 19:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:11 UTC
+    </footer>
+</body>
+</html>

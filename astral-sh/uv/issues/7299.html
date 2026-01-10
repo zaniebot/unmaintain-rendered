@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV tries to build from source during package resolution - astral-sh/uv #7299</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV tries to build from source during package resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7299">#7299</a>
+        opened by <a href="https://github.com/jdumas">@jdumas</a>
+        on 2024-09-11 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-11 17:47</div>
+            <div class="timeline-body"><p>Hi. I'm trying to install the setup the following project:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myproject&quot;
+version = &quot;0.1.0&quot;
+description = &quot;My project&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;numpy&gt;=1.23&quot;,
+    &quot;colorama&gt;=0.4.5&quot;,
+    &quot;cuda-python&quot;,
+    &quot;torch&gt;=2.4.1,&lt;2.5&quot;,
+    &quot;torchvision&quot;,
+    &quot;plyfile&quot;,
+    &quot;tqdm&quot;,
+    &quot;opencv-python&quot;,
+    &quot;imageio&quot;,
+    &quot;pycolmap&quot;,
+]
+
+[project.optional-dependencies]
+build = [&quot;setuptools&quot;]
+compile = [
+    &quot;diff-surfel-rasterization@git+https://github.com/hbb1/diff-surfel-rasterization.git@7bdbd51&quot;
+]
+
+[tool.uv.pip]
+extra-index-url = [&quot;https://download.pytorch.org/whl/cu124&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;diff-surfel-rasterization&quot;]
+</code></pre>
+<p>I've tried the various approaches documented in the <a href="https://docs.astral.sh/uv/concepts/projects/#build-isolation">build isolation</a> page:</p>
+<pre><code>uv venv
+uv pip install setuptools
+uv sync --extra build --extra build
+</code></pre>
+<p>But they all failed to locate <code>setuptools</code> during resolve:</p>
+<pre><code>❯ uv sync --extra build --extra compile
+ Updated https://github.com/hbb1/diff-surfel-rasterization.git (7bdbd51)
+error: Failed to download and build: `diff-surfel-rasterization @ git+https://github.com/hbb1/diff-surfel-rasterization.git@7bdbd51`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit code: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'setuptools'
+---
+</code></pre>
+<p>Note that if I manually comment out the <code>compile</code> extra in the <code>pyproject.toml</code> to install all the dependencies I need, and then later on uncomment it, it then fails with a different error message (which is probably a separate issue):</p>
+<pre><code>❯ uv sync --extra build --extra compile
+ Updated https://github.com/hbb1/diff-surfel-rasterization.git (7bdbd51)
+error: Failed to download and build: `diff-surfel-rasterization @ git+https://github.com/hbb1/diff-surfel-rasterization.git@7bdbd51`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit code: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;C:\devel\myproject\.venv\Lib\site-packages\setuptools\build_meta.py&quot;, line 373, in prepare_metadata_for_build_wheel
+    self.run_setup()
+  File &quot;C:\devel\myproject\.venv\Lib\site-packages\setuptools\build_meta.py&quot;, line 503, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;C:\devel\myproject\.venv\Lib\site-packages\setuptools\build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 22, in &lt;module&gt;
+  File &quot;C:\devel\myproject\.venv\Lib\site-packages\torch\utils\cpp_extension.py&quot;, line 1076, in CUDAExtension
+    library_dirs += library_paths(cuda=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\devel\myproject\.venv\Lib\site-packages\torch\utils\cpp_extension.py&quot;, line 1214, in library_paths
+    paths.append(_join_cuda_home(lib_dir))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\devel\myproject\.venv\Lib\site-packages\torch\utils\cpp_extension.py&quot;, line 2416, in _join_cuda_home
+    raise OSError('CUDA_HOME environment variable is not set. '
+OSError: CUDA_HOME environment variable is not set. Please set it to your CUDA install root.
+---
+</code></pre>
+<p>Would appreciate any guidance on the matter. Thanks!</p>
+<ul>
+<li><strong>Platform</strong>: Windows</li>
+<li><strong>UV version</strong>: 0.4.9</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/2033.html">prefix-dev/pixi#2033</a> on 2024-09-11 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 18:48</div>
+            <div class="timeline-body"><p>Interesting... On my machine, I get:</p>
+<pre><code>❯ uv sync --extra build --extra build
+ Updated https://github.com/hbb1/diff-surfel-rasterization.git (7bdbd51)
+error: Failed to download and build: `diff-surfel-rasterization @ git+https://github.com/hbb1/diff-surfel-rasterization.git@7bdbd51`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/Users/crmarsh/workspace/puffin/bar/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 366, in prepare_metadata_for_build_wheel
+    self.run_setup()
+  File &quot;/Users/crmarsh/workspace/puffin/bar/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/Users/crmarsh/workspace/puffin/bar/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 13, in &lt;module&gt;
+ModuleNotFoundError: No module named 'torch'
+</code></pre>
+<p>Which I assume is the expected result?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-11 20:10</div>
+            <div class="timeline-body"><p>Hmm right, maybe I had the other packages installed in the venv and for me it was only missing setuptools which I've added later. But it's essentially the same problem (other packages should be installed first before trying to build the repo from source).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 20:42</div>
+            <div class="timeline-body"><p>You would need to run <code>uv sync</code> before <code>uv sync --extra compile</code>, because you need <code>torch</code> to be installed prior to <code>uv sync --extra compile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-11 21:10</div>
+            <div class="timeline-body"><p><code>uv sync</code> without <code>--extra compile</code> still tries to build <code>diff-surfel-rasterization</code> from source at the resolve stage, and would fail due to missing <code>torch</code> or <code>setuptool</code> package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 12:58</div>
+            <div class="timeline-body"><p>It looks like <code>diff-surfel-rasterization</code> doesn't ship with <em>any</em> static metadata. So we have to build the package even just to resolve its dependencies. There's a chicken-and-egg problem -- in that case, you can't use <code>uv sync</code> and <code>uv lock</code> on their own. You have to pre-build the package with <code>uv venv &amp;&amp; uv pip install torch setuptools &amp;&amp; uv pip install diff-surfel-rasterization</code> (shorthand) so that either (1) <code>diff-surfel-rasterization</code> is already in the environment and/or (2) <code>diff-surfel-rasterization</code> is in the uv cache, so that it doesn't need to build it to resolve and install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-13 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-13 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-13 14:41</div>
+            <div class="timeline-body"><p>I see, thanks. Is this because the <code>diff-surfel-rasterization</code> doesn't have a <code>pyproject.toml</code>, and is using a straight up <code>setup.py</code> that you need to run before being able to resolve anything? Is there any way to workaround this? I can't expect to fix all the imperfectly packaged repo around, although maybe that would be the easiest solution in this case.</p>
+<p>Finally, even if I'm able to resolve it correctly, I still have the issue of the unset <code>CUDA_HOME</code> variable. Let me know if I should create a separate issue for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 14:46</div>
+            <div class="timeline-body"><p>Yeah, that's correct. We have to run <code>setup.py</code> to get the dependencies for the package. If it had a <code>pyproject.toml</code> that included a static <code>dependencies</code> field under <code>[project]</code>, it wouldn't be necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-13 15:13</div>
+            <div class="timeline-body"><p>Thanks. After adding a simple <a href="https://github.com/jdumas/diff-surfel-rasterization/commit/155efa9590ac73ff5535ca84eb08df1b00934236">pyproject.toml</a>, I am now stuck due to the missing <code>CUDA_HOME</code> env variable:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myproject&quot;
+version = &quot;0.1.0&quot;
+description = &quot;My project&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;numpy&gt;=1.23&quot;,
+    &quot;colorama&gt;=0.4.5&quot;,
+    &quot;cuda-python&quot;,
+    &quot;torch&gt;=2.4.1,&lt;2.5&quot;,
+    &quot;torchvision&quot;,
+    &quot;plyfile&quot;,
+    &quot;tqdm&quot;,
+    &quot;opencv-python&quot;,
+    &quot;imageio&quot;,
+    &quot;pycolmap&quot;,
+    &quot;diff-surfel-rasterization@git+https://github.com/jdumas/diff-surfel-rasterization.git@155efa9&quot;,
+]
+
+[tool.uv.pip]
+extra-index-url = [&quot;https://download.pytorch.org/whl/cu124&quot;]
+</code></pre>
+<p>Yields:</p>
+<pre><code>❯ uv sync
+ Updated https://github.com/jdumas/diff-surfel-rasterization.git (155efa9)
+Resolved 34 packages in 299ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: diff-surfel-rasterization @ git+https://github.com/jdumas/diff-surfel-rasterization.git@155efa9590ac73ff5535ca84eb08df1b00934236
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit code: 1
+--- stdout:
+
+--- stderr:
+C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\torch\_subclasses\functional_tensor.py:258: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\torch\csrc\utils\tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\setuptools\build_meta.py&quot;, line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\setuptools\build_meta.py&quot;, line 302, in _get_build_requires
+    self.run_setup()
+  File &quot;C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\setuptools\build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 22, in &lt;module&gt;
+  File &quot;C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\torch\utils\cpp_extension.py&quot;, line 1076, in CUDAExtension
+    library_dirs += library_paths(cuda=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\torch\utils\cpp_extension.py&quot;, line 1214, in library_paths
+    paths.append(_join_cuda_home(lib_dir))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\jedumas\AppData\Local\uv\cache\builds-v0\.tmpbVUHKB\Lib\site-packages\torch\utils\cpp_extension.py&quot;, line 2416, in _join_cuda_home
+    raise OSError('CUDA_HOME environment variable is not set. '
+OSError: CUDA_HOME environment variable is not set. Please set it to your CUDA install root.
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 15:59</div>
+            <div class="timeline-body"><p>Dumb question, but is <code>CUDA_HOME</code> set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-13 16:42</div>
+            <div class="timeline-body"><p>It's not. But who should set it? I've added the <code>cuda-python</code> pip package as a dependency to the <a href="https://github.com/jdumas/diff-surfel-rasterization/blob/main/pyproject.toml">pyproject.toml</a>. Is there a way to have UV specify environment variables for building packages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 00:35</div>
+            <div class="timeline-body"><p>I think you're responsible for setting it, outside of uv. I'm not familiar with building that specific package, but it's not uncommon to need to provide some configuration if you're building packages from source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-09-14 01:23</div>
+            <div class="timeline-body"><p>Ok but the problem is that <code>CUDA_HOME</code> should point to where <code>cuda-python</code> gets installed by <code>uv</code>. How can I know that in advance? Building Cuda kernel is kinda ubiquitous in ML Python code. However I have very little experience with it and I'm struggling to find build instructions that work.</p>
+<p>EDIT: If I don't try to build the package (i.e. just install the deps in the pyproject.toml), and then run:</p>
+<pre><code>uv run python -c &quot;import torch; print(torch.cuda.is_available())&quot;
+</code></pre>
+<p>It replies <code>False</code>. So at this point I'm not quite sure what's wrong with my setup.</p>
+<p>EDIT2: After further investigation it looks like I had the name of a table wrong in my <code>pyproject.toml</code>. If I replace <code>[tool.uv.pip]</code> with <code>[tool.uv]</code> in the <code>pyproject.toml</code>, it does reply <code>True</code>. So Cuda is properly setup via <code>pip</code>, but I still don't know who is supposed to set <code>CUDA_HOME</code> and how, etc. Very frustrating :(</p>
+<p>Conda has some way to define env vars in their .yml. Is there something similar supported by UV or <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matejpekar">@matejpekar</a> on 2024-10-01 09:32</div>
+            <div class="timeline-body"><p>I am running into a similar problem when trying to install <code>detectron2</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;torch&gt;=2.3.1&quot;, &quot;detectron2&gt;=0.6&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;detectron2&quot;]
+
+[tool.uv.sources]
+detectron2 = { git = &quot;https://github.com/facebookresearch/detectron2.git&quot; }
+</code></pre>
+<p>When running <code>uv lock</code> with a clean cache (<code>uv cache clean</code>) I get this error:</p>
+<pre><code class="language-bash">Using CPython 3.12.6 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+ Updated https://github.com/facebookresearch/detectron2.git (ebe8b45)
+error: Failed to download and build: `detectron2 @ git+https://github.com/facebookresearch/detectron2.git`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'setuptools'
+---
+</code></pre>
+<p>The workaround is to add <code>detectron2</code> after installing all other dependencies, however this is very inconvenient when working on multiple devices.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7846.html">astral-sh/uv#7846</a> on 2024-10-01 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 14:28</div>
+            <div class="timeline-body"><p>I'm going to close this for now because I <em>think</em> the <code>CUDA_HOME</code> piece isn't specific to uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-10 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-10-11 02:50</div>
+            <div class="timeline-body"><p>What's a good platform to discuss this issue then? While the <code>CUDA_HOME</code> issue might be specific to PyTorch, I feel that being able to define environment variables, and being able to have some form of introspection (i.e. refer to the active uv environment) is a useful feature to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-10-27 06:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you're responsible for setting it, outside of uv. I'm not familiar with building that specific package, but it's not uncommon to need to provide some configuration if you're building packages from source.</p>
+</blockquote>
+<p>This is correct. On Linux, you should download CUDA runfiles from <a href="https://developer.nvidia.com/cuda-toolkit">NVIDIA’s official site</a> (they have downloads for all versions), or use the module system of your compute cluster. For Windows, consider reading a tutorial on best practices for installation. Either way, you need to set up the CUDA environment yourself, not uv.</p>
+<p>If you want a quick fix, you can set up a Conda environment just for CUDA and run uv in it. But honestly, I wouldn’t recommend it—because, well, Conda.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstarodub">@mstarodub</a> on 2025-06-26 16:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm going to close this for now because I <em>think</em> the <code>CUDA_HOME</code> piece isn't specific to uv.</p>
+</blockquote>
+<p>I thought CUDA was supposed to &quot;just work&quot; with uv?
+If uv downloads it, why should the user set CUDA_HOME to whatever location uv placed it in? This makes no sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-26 16:31</div>
+            <div class="timeline-body"><p>I have never had to set <code>CUDA_HOME</code>. If you have a specific scenario we can reproduce feel free to open a new issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstarodub">@mstarodub</a> on 2025-06-26 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>If you have a specific scenario</p>
+</blockquote>
+<p>very easy:</p>
+<pre><code>[user@htc-g040 user]$ mkdir test
+[user@htc-g040 user]$ cd test
+[user@htc-g040 test]$ uv init -p 3.12 .
+Initialized project `test` at `/data/prj/user/test`
+[user@htc-g040 test]$ uv add torch numpy
+Using CPython 3.12.9
+Creating virtual environment at: .venv
+Resolved 27 packages in 936ms
+Prepared 18 packages in 1m 38s
+░░░░░░░░░░░░░░░░░░░░ [0/26] Installing wheels...                                                    warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 26 packages in 1m 40s
+ + filelock==3.18.0
+ + fsspec==2025.5.1
+ + jinja2==3.1.6
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + networkx==3.5
+ + numpy==2.3.1
+ + nvidia-cublas-cu12==12.6.4.1
+ + nvidia-cuda-cupti-cu12==12.6.80
+ + nvidia-cuda-nvrtc-cu12==12.6.77
+ + nvidia-cuda-runtime-cu12==12.6.77
+ + nvidia-cudnn-cu12==9.5.1.17
+ + nvidia-cufft-cu12==11.3.0.4
+ + nvidia-cufile-cu12==1.11.1.6
+ + nvidia-curand-cu12==10.3.7.77
+ + nvidia-cusolver-cu12==11.7.1.2
+ + nvidia-cusparse-cu12==12.5.4.2
+ + nvidia-cusparselt-cu12==0.6.3
+ + nvidia-nccl-cu12==2.26.2
+ + nvidia-nvjitlink-cu12==12.6.85
+ + nvidia-nvtx-cu12==12.6.77
+ + setuptools==80.9.0
+ + sympy==1.14.0
+ + torch==2.7.1
+ + triton==3.3.1
+ + typing-extensions==4.14.0
+[user@htc-g040 test]$ uv add vllm
+Resolved 77 packages in 419ms
+  × Failed to build `vllm==0.2.5`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      /home/user/.cache/uv/builds-v0/.tmp3SkAF5/lib/python3.12/site-packages/torch/_subclasses/functional_tensor.py:276:
+      UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at
+      /pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+        cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File
+      &quot;/home/user/.cache/uv/builds-v0/.tmp3SkAF5/lib/python3.12/site-packages/setuptools/build_meta.py&quot;,
+      line 331, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      &quot;/home/user/.cache/uv/builds-v0/.tmp3SkAF5/lib/python3.12/site-packages/setuptools/build_meta.py&quot;,
+      line 301, in _get_build_requires
+          self.run_setup()
+        File
+      &quot;/home/user/.cache/uv/builds-v0/.tmp3SkAF5/lib/python3.12/site-packages/setuptools/build_meta.py&quot;,
+      line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 44, in &lt;module&gt;
+      RuntimeError: Cannot find CUDA_HOME. CUDA must be available to build the package.
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen`
+        flag to skip locking and syncing.
+[user@htc-g040 test]$ 
+</code></pre>
+<p>edit: i think i had this with flash-attn too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-26 16:56</div>
+            <div class="timeline-body"><p>Like I said, can you please create a separate issue with the information we'd need to reproduce, like your operating system and architecture? (vLLM v0.2.5 is extremely old by the way -- you probably want to add a lower-bound constraint to ensure you're not building from source.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mstarodub">@mstarodub</a> on 2025-06-26 21:26</div>
+            <div class="timeline-body"><blockquote>
+<p>can you please create a separate issue with the information we'd need to reproduce</p>
+</blockquote>
+<p>actually, your comment helped - no issue on my side anymore. the package resolution resulted in a very old vllm. i added a <code>numpy&lt;2.3</code> constraint to make it happy. thanks!</p>
+<pre><code>uname -a
+Linux htc-g040 4.18.0-147.8.1.el8_2.arc.x86_64 #1 SMP Fri Aug 6 10:16:14 BST 2021 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PrimeIntellect-ai/prime-rl/pulls/1309.html">PrimeIntellect-ai/prime-rl#1309</a> on 2025-11-18 05:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:46 UTC
+    </footer>
+</body>
+</html>

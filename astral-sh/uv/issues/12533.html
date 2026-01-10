@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for declarative tool installations (e.g., like Brewfile) - astral-sh/uv #12533</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for declarative tool installations (e.g., like Brewfile)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12533">#12533</a>
+        opened by <a href="https://github.com/michaeltinsley">@michaeltinsley</a>
+        on 2025-03-28 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michaeltinsley">@michaeltinsley</a> on 2025-03-28 15:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It would be great if uv had a way to store all installed tool installations into a standard file, similar to a homebrew brewfile.</p>
+<p>My use case is I want to have tools installed with <code>uv tool install ...</code> added to a config file that I can track in git along with my brew installed libs in a brewfile, and my other dotfiles.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @michaeltinsley on 2025-03-28 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a uv tool equivalent of a Brewfile" to "Add support for declarative tool installations (e.g., like Brewfile)" by @zanieb on 2025-04-01 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 19:45</div>
+            <div class="timeline-body"><p>Yeah; this is on the roadmap, though it's not a high priority right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13268.html">astral-sh/uv#13268</a> on 2025-05-02 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itcarroll">@itcarroll</a> on 2025-05-02 17:12</div>
+            <div class="timeline-body"><p>@michaeltinsley Would you be okay with using <code>pyproject.toml</code> for this (see my near duplicate at #13268) or do you need to keep this separate from any project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michaeltinsley">@michaeltinsley</a> on 2025-05-02 17:29</div>
+            <div class="timeline-body"><p>@itcarroll - I think a pyproject.toml would work for my use case. I could dump that in <code>~/.config/uv/pyproject.toml</code>.</p>
+<p>For <em>my</em> ideal workflow, I would have something like:</p>
+<pre><code class="language-toml"># ~/.config/uv/pyproject.toml
+[dependency-groups]
+tools = [
+    &quot;ruff&quot;,
+]
+</code></pre>
+<p>which would give something like:</p>
+<pre><code class="language-shell">&gt; uv tool list
+ruff v0.11.8
+- ruff
+</code></pre>
+<p>Then if I do <code>uv tool add black</code>, it would automatically add it</p>
+<pre><code class="language-shell">&gt; cat ~/.config/uv/pyproject.toml
+...
+[dependency-groups]
+tools = [
+    &quot;ruff&quot;,
+    &quot;black&quot;,
+]
+</code></pre>
+<p>That would be my ideal flow - I guess I'm more interested in <code>uv tool add ...</code> being automatically persisted to a file than anything, if that makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codethief">@codethief</a> on 2025-05-22 22:28</div>
+            <div class="timeline-body"><p>@michaeltinsley While I agree that <code>pyproject.toml</code> would be the appropriate place to persist tools, I'm not sure about filing them under <code>[dependency-groups]</code>. Keep in mind that each tool is meant to live in a separate venv, so they are somewhat different from other dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3560.html">astral-sh/uv#3560</a> on 2025-05-22 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itcarroll">@itcarroll</a> on 2025-05-23 13:42</div>
+            <div class="timeline-body"><p>@codethief The <code>[dependency-groups]</code> table doesn't have any requirement that all packages listed in a group be installed in one environment, does it? Using a shared location for the list of tools seems better to me than putting it somewhere under <code>[tools.uv]</code>. Eventually <code>pipx</code> might pick up the behavior of installing tools from a given dependency group, for instance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rabader">@rabader</a> on 2025-05-29 20:15</div>
+            <div class="timeline-body"><p>If I could chime in, it'd be great if we could also specify if it is implied that with a &quot;uv sync&quot; command, &quot;uv tool sync&quot; runs first. In a project that requires the keyrings tool today, my environment fails to install/sync unless I have first installed those tools with:</p>
+<p><code>uv tool install keyring --with keyrings.google-artifactregistry-auth</code></p>
+<p>Even if those packages are defined as dependencies, &quot;uv sync&quot; fails unless I first have those tools installed in a separate command. It'd be nice to be able to define that in the pyproject.toml file. Unless there's already a way to do that and I just missed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14039.html">astral-sh/uv#14039</a> on 2025-06-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amardeep">@amardeep</a> on 2025-07-08 03:47</div>
+            <div class="timeline-body"><p>My usecase is also similar.</p>
+<p>I am working in a monorepo, with no top level pyproject.toml as of now. I would like to declaratively configure tools required for the project - for eg. sqlmesh / dbt / sqlfluff etc. These should be version locked, so other team members working on the project get the exactly same versions. At the same time, I don't want to be forced to activate a virtual environment, as it is a monorepo, and a developer would mostly we working in another virtual environment related to his work.</p>
+<p>Ideally, I would like:</p>
+<ul>
+<li>Declarative config for monorepo tools that can be checked in as part of the monorepo</li>
+<li>No venv activation needed to use the tools</li>
+<li>Tools get installed in some bin directory, which developers can add to their path (or use direnv to add it)</li>
+<li>Tools remain in sync. For eg if i pull latest main branch, where the lockfile has changed, uv automatically updates the installed version</li>
+<li>Tools can be invoked directly, without requiring to use something like &quot;uv run&quot;</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codethief">@codethief</a> on 2025-07-08 13:13</div>
+            <div class="timeline-body"><p>@amardeep My use case is very similar to yours; however, now that you spelled out your ideal solution, to me it sounds very much like what <a href="https://mise.jdx.dev/">mise</a> already provides. In fact, mise can already install tools from pip packages using uv, provided that <code>uv</code> is installed globally, see https://mise.jdx.dev/dev-tools/backends/pipx.html (in particular, the section on the <code>pipx.uvx</code> setting).</p>
+<p>Of course there is something to be said about uv providing everything out of the box and not having to install mise separately. Then again, even in a monorepo with only Python projects it might very well be that people want to use tools not written in Python / not available as pip package. In other words: In an ideal world, uv would provide similar features as mise. Maybe it would make sense for uv &amp; mise to collaborate on this topic instead of uv reinventing the wheel? (FWIW, mise <a href="https://mise.jdx.dev/lang/python.html#mise-uv">already integrates quite well</a> with uv.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amardeep">@amardeep</a> on 2025-07-09 14:49</div>
+            <div class="timeline-body"><p>Thank you for the mise recommendation @codethief. It does look like it might support my use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5903.html">astral-sh/uv#5903</a> on 2025-07-14 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14746.html">astral-sh/uv#14746</a> on 2025-07-22 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

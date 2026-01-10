@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best practices for using uv's cache in CI / Github Actions? - astral-sh/uv #2231</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Best practices for using uv's cache in CI / Github Actions?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2231">#2231</a>
+        opened by <a href="https://github.com/strickvl">@strickvl</a>
+        on 2024-03-06 06:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/strickvl">@strickvl</a> on 2024-03-06 06:53</div>
+            <div class="timeline-body"><p>Wondering if there's any advice or best practices starting to develop around how to (re)use and share the <code>uv</code> cache across multiple Github Actions runners?</p>
+<p>We repeat the same Python installations across multiple runners / OSes and Python versions. Previously we were taking advantage of Github Actions' caching to save us from redownloading packages, but not any more with <code>uv</code> as it it isn't clear how best to reuse the cache or to what extent that helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jardarbo">@jardarbo</a> on 2024-03-06 14:45</div>
+            <div class="timeline-body"><p>There is an issue on GitHub Action setup-python discussing this: https://github.com/actions/setup-python/issues/822. They argue that the benefit of caching uv .cache folder depends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-06 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-24 20:15</div>
+            <div class="timeline-body"><p>See also previous discussion at https://github.com/astral-sh/uv/issues/1386</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jayqi">@jayqi</a> on 2024-03-27 22:01</div>
+            <div class="timeline-body"><p>I made a composite action that sets up uv with optional caching, after piecing together all of the information in the various places about how to get things to work.</p>
+<p>https://github.com/drivendataorg/setup-python-uv-action</p>
+<p>It supports:</p>
+<ul>
+<li>no caching</li>
+<li>caching the uv packages cache</li>
+<li>caching the virtual environment directory itself</li>
+</ul>
+<p>I'm reasonably confident all options should work across the different OS runners.</p>
+<p>Your mileage may vary on what actually saves time, depending on what your dependencies are. uv resolution and installation is so fast, that I've found the network speed to be the limiting factor in a lot of cases. Downloading from PyPI is often just as fast as loading a cache. Windows runners seem to have particularly bad cache performance so sometimes the cache is actually slower on Windows than downloading from PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../meltano/sdk/pulls/2377.html">meltano/sdk#2377</a> on 2024-04-17 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aiidateam/aiida-core/pulls/6363.html">aiidateam/aiida-core#6363</a> on 2024-04-22 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alechouse97">@alechouse97</a> on 2024-04-24 14:34</div>
+            <div class="timeline-body"><p>I've been playing with replacing pip with uv in our Gitlab CI pipeline, and it massively speeds up installing packages when you've got the cache. However, I've noticed that the uv cache is notably larger than the pip one (along with significantly more files), and the increase in Gitlab's cache time almost outweighs the shift to uv. Anyone else run into this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strickvl">@strickvl</a> on 2024-04-24 14:53</div>
+            <div class="timeline-body"><p>I recently just noticed that there's a 40GB <code>uv</code> cache sitting on my HD, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-24 15:08</div>
+            <div class="timeline-body"><p>(Can always <code>uv cache clean</code> or <code>uv cache prune</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../WeblateOrg/weblate/pulls/11679.html">WeblateOrg/weblate#11679</a> on 2024-05-21 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pybamm-team/pybamm-cookie/pulls/9.html">pybamm-team/pybamm-cookie#9</a> on 2024-06-13 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/153957">@153957</a> on 2024-09-05 11:13</div>
+            <div class="timeline-body"><p>Perhaps the best practice is now to use https://github.com/astral-sh/setup-uv
+and use its caching? https://github.com/astral-sh/setup-uv?tab=readme-ov-file#enable-caching</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 12:26</div>
+            <div class="timeline-body"><p>👍 yeah we also documented best practices a while ago https://docs.astral.sh/uv/guides/integration/github/#caching</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-05 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../KyleKing/textract-py3/pulls/16.html">KyleKing/textract-py3#16</a> on 2025-11-20 04:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

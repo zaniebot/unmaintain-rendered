@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX: `uv python install` silently skips requests depending on what I already have installed - astral-sh/uv #11551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UX: `uv python install` silently skips requests depending on what I already have installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11551">#11551</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-02-16 10:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-02-16 10:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Starting from a state where I don't have a managed copy of Python 3.14 installed. Installing works as expected</p>
+<pre><code>❯ uv python install 3.14
+Installed Python 3.14.0a5 in 15.92s
+ + cpython-3.14.0a5-macos-aarch64-none
+</code></pre>
+<p>However, immediately running the same command doesn't produce any output</p>
+<pre><code>❯ uv python install 3.14
+</code></pre>
+<p>this is surprising to me: I would expect a &quot;warning&quot; of some sort to tell me that I already have the requested version installed, which is why nothing was done.
+Even in verbose mode, there doesn't seem to be a clear indication of that skip</p>
+<pre><code>❯ uv python install 3.14 -v
+DEBUG uv 0.6.0 (591f38c25 2025-02-14)
+DEBUG Acquired lock for `/Users/clm/.local/share/uv/python`
+DEBUG Found `cpython-3.14.0a5-macos-aarch64-none` for request `Python 3.14`
+DEBUG Using request timeout of 30s
+DEBUG Skipping installation of Python executables, use `--preview` to enable.
+DEBUG Released lock at `/Users/clm/.local/share/uv/python/.lock`
+</code></pre>
+<p>Of course in the context of this minimal reprod it is pretty obvious what's happening, but it's a little bit more confusing when running a longer command such as, e.g.</p>
+<pre><code>❯ uv python install 3.14 3.13 3.12 3.11
+</code></pre>
+<p>and all versions I requested <em>but one</em> appear on the output.</p>
+<p><em>update</em>: this second part was resolved in https://github.com/astral-sh/uv/pull/12124
+I'm putting it in quote mode to highlight this fact</p>
+<blockquote>
+<p>Similarily, if I try to re-install a version I <em>don't</em> already have, it is also silently skipped</p>
+<pre><code>❯ uv python install 3.14t --reinstall
+</code></pre>
+<p>This time, in verbose mode, the version I asked for is not even mentioned</p>
+<pre><code>❯ uv python install 3.14t --reinstall -v
+DEBUG uv 0.6.0 (591f38c25 2025-02-14)
+DEBUG Acquired lock for `/Users/clm/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+DEBUG Released lock at `/Users/clm/.local/share/uv/python/.lock`
+</code></pre>
+</blockquote>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.0 (591f38c25 2025-02-14)</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @neutrinoceros on 2025-02-16 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-02-16 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-02-16 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-02-16 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 15:36</div>
+            <div class="timeline-body"><p>Seems like we could do something better here</p>
+<p>For reference, the output from, e.g., <code>uv pip install</code>, looks like</p>
+<pre><code>❯ uv pip install anyio
+Resolved 3 packages in 77ms
+Installed 3 packages in 7ms
+ + anyio==4.8.0
+ + idna==3.10
+ + sniffio==1.3.1
+❯ uv pip install anyio
+Audited 1 package in 2ms
+</code></pre>
+<p>Also the log that your request is satisfied is</p>
+<blockquote>
+<p>DEBUG Found <code>cpython-3.14.0a5-macos-aarch64-none</code> for request <code>Python 3.14</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-02-16 16:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Also the log that your request is satisfied is</p>
+</blockquote>
+<p>Ah ! I wasn't sure if this line was about the requested interpreter found on my system or on the host server !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 16:34</div>
+            <div class="timeline-body"><p>Yeah the message for that is, e.g.</p>
+<blockquote>
+<p>DEBUG Found download <code>cpython-3.12.8-macos-aarch64-none</code> for request <code>Python 3.12.8</code></p>
+</blockquote>
+<p>We can clear things up here though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-03-12 06:22</div>
+            <div class="timeline-body"><p>#12124 was merged and looks to me like it partially address this issue.
+@zanieb do you know if this should be closed ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-03-12 13:53</div>
+            <div class="timeline-body"><p>nevermind I just tried it again, and this part is sill relevant</p>
+<blockquote>
+<p>this is surprising to me: I would expect a &quot;warning&quot; of some sort to tell me that I already have the requested version installed, which is why nothing was done.</p>
+</blockquote>
+<p>I'll edit the OP to reflect that part of it is now solved though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-12 14:47</div>
+            <div class="timeline-body"><p>👍 I can work on the messaging still, just lots of tasks on the backlog :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-03-12 14:52</div>
+            <div class="timeline-body"><p>No rush at all. In fact, I'm game to give it a try myself.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help text for `-h` is too long for two-column short help - clap-rs/clap #4409</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help text for `-h` is too long for two-column short help</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4409">#4409</a>
+        opened by <a href="https://github.com/bgilbert">@bgilbert</a>
+        on 2022-10-20 16:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-10-20 16:21</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (Fedora 1.64.0-1.fc36)</p>
+<h3>Clap Version</h3>
+<p>4.0.17</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+pub struct Cmd {
+    /// Process an integer
+    ///
+    /// Convert an integer into a more pleasing format.
+    #[clap(long, value_name = &quot;INTEGER&quot;)]
+    process_int: Option&lt;i64&gt;,
+
+    /// Process a string
+    ///
+    /// Convert an integer into a more pleasing format.
+    #[clap(long, value_name = &quot;STRING&quot;)]
+    process_string: Option&lt;String&gt;,
+}
+
+fn main() {
+    Cmd::parse();
+}
+</code></pre>
+<p>Cargo.toml:</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap-help&quot;
+version = &quot;0.0.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;, &quot;wrap_help&quot;] }
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- -h
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>On an 80-column terminal, short help uses multiple lines per option:</p>
+<pre><code>Usage: clap-help [OPTIONS]
+
+Options:
+      --process-int &lt;INTEGER&gt;
+          Process an integer
+      --process-string &lt;STRING&gt;
+          Process a string
+  -h, --help
+          Print help information (use `--help` for more detail)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Short help uses two-column format:</p>
+<pre><code>Usage: clap-help [OPTIONS]
+
+Options:
+      --process-int &lt;INTEGER&gt;    Process an integer
+      --process-string &lt;STRING&gt;  Process a string
+  -h, --help                     Print help ('--help' for more)
+</code></pre>
+<h3>Additional Context</h3>
+<p>Applications may want to constrain their short help to use the two-column format so the <code>-h</code> output is as compact as possible.  They might do this by optimizing short help texts to fit within the right-hand column on 80-character terminals, and then providing long help texts with more info.  However, #4159 made the short help text for <code>-h</code>/<code>--help</code> much longer when the short and long help are different, forcing short help to wrap to the multiple-line format if medium-sized option/value names are used.</p>
+<p>Proposed fix in https://github.com/clap-rs/clap/pull/4408.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @bgilbert on 2022-10-20 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4408.html">clap-rs/clap#4408</a> on 2022-10-20 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-20 16:32</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>#3300</li>
+<li>#3663</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-20 16:56</div>
+            <div class="timeline-body"><p>Framing this in a different way, what do you see is the appropriate reserved size for the flag column and the help column?  Without having a guiding number, it is hard to make decisions on what are appropriate trade offs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-10-20 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-10-20 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-10-20 19:19</div>
+            <div class="timeline-body"><p>I think it makes sense to leave those tradeoffs to the application as much as possible.  In my application we have one subcommand with really tight spacing constraints, where we've sometimes had to choose between shortening a value name or rewording a help text to keep to 80 columns while retaining as much clarity as possible.  (And we've had to carefully choose long option names as well.)  Having the flexibility to trade one column against the other is helpful here, and the shorter the <code>-h</code> help text is, the more room it leaves for the application to make those choices.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../coreos/coreos-installer/pulls/1021.html">coreos/coreos-installer#1021</a> on 2022-10-21 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-11-02 18:40</div>
+            <div class="timeline-body"><p>Anything I can do to help unblock this?  The fix for this regression is just a string change, which should be ready to go in https://github.com/clap-rs/clap/pull/4408.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-03 02:22</div>
+            <div class="timeline-body"><p>imo &quot;as short as possible&quot; and contorting the text to do so, is not acceptable.  We should have a suggested length so we can better discuss acceptable trade offs in what we do with the clarity of the text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-11-03 03:17</div>
+            <div class="timeline-body"><p>In my experience, short help text <em>always</em> has to be contorted for compactness, similar to fitting a meaningful Git commit summary into 50 characters.  In the application I mentioned, using clap 4, the tightest constraint is a subcommand that needs 27 characters for long options and (abbreviated) value names.  Subtracting 8 characters for short options and padding, that leaves 45 characters for short help.</p>
+<p>It's maybe worth noting that the reason we're so aggressive about optimizing short help is that if any one option exceeds the character limit, clap sparsifies the entire help section, rather than merely wrapping that message onto a second line within its column.  We even ended up adding a CI check for it.  That's out of scope for this issue, of course.</p>
+<p>#4405 currently uses 30 characters for <code>-h</code> short help, but if you have some slightly longer text that you'd prefer, I'd be happy to update the PR.  clap 4 currently uses 53 characters, leaving 19 characters for long options and value names (enough for e.g. <code>--run-thing &lt;thing&gt;</code>), which seems pretty limited.  This is actually longer than the <code>--help</code> long help, which only uses 47 characters.  For comparison, clap 3 used 15.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-03 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>In my experience, short help text always has to be contorted for compactness, similar to fitting a meaningful Git commit summary into 50 characters. In the application I mentioned, using clap 4, the tightest constraint is a subcommand that needs 27 characters for long options and (abbreviated) value names. Subtracting 8 characters for short options and padding, that leaves 45 characters for short help.</p>
+</blockquote>
+<p>I suspect some additional constraints are at play as I see ripgrep and cargo seem to be fairly generous with their short helps.  Some additional context would help.</p>
+<blockquote>
+<p>It's maybe worth noting that the reason we're so aggressive about optimizing short help is that if any one option exceeds the character limit, clap sparsifies the entire help section, rather than merely wrapping that message onto a second line within its column. We even ended up adding a CI check for it. That's out of scope for this issue, of course.</p>
+</blockquote>
+<p>That might be the more important conversation to have though (over in #3300 most likely)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-11-05 07:02</div>
+            <div class="timeline-body"><p>cargo and ripgrep both allow their help lines to overflow the terminal onto a second line, sometimes breaking in the middle of a word.  That's functional but doesn't seem especially readable.</p>
+<p>Re context, this is a low-level tool (an OS installer) which is often run from a Linux virtual console (not a graphical session).  It has many options, and most users probably don't run it often enough to memorize its CLI.  So I'd expect the short help to be consulted fairly often, and would like it to be nicely formatted and not to produce many screenfuls of text.  These seem like reasonable goals for many programs though.</p>
+<p>Re line wrapping, I'll comment over in #3300.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3300.html">clap-rs/clap#3300</a> on 2022-11-05 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4601.html">clap-rs/clap#4601</a> on 2023-01-03 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-01-03 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:13 UTC
+    </footer>
+</body>
+</html>

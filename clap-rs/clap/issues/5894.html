@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting `value_parser` hides `value_enum` variants from help output - clap-rs/clap #5894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Setting `value_parser` hides `value_enum` variants from help output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5894">#5894</a>
+        opened by <a href="https://github.com/dcsommer">@dcsommer</a>
+        on 2025-01-27 17:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcsommer">@dcsommer</a> on 2025-01-27 17:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.84.0</p>
+<h3>Clap Version</h3>
+<p>4.5.26</p>
+<h3>Minimal reproducible code</h3>
+<p>Run this (e.g. in rustexplorer.com)</p>
+<pre><code class="language-rust">/*
+$ play --help
+*/
+
+/*
+[dependencies]
+anyhow = { version = &quot;*&quot;}
+clap = { version = &quot;4.5.26&quot;, features = [ &quot;derive&quot; ] }
+*/
+use std::io::IsTerminal;
+use clap::ValueEnum;
+use clap::Parser;
+use anyhow::Result;
+
+#[derive(Clone, Parser, Debug)]
+#[command(about, arg_required_else_help = true)]
+struct Command {
+    // XXX: this shows the default and options
+    // #[arg(default_value = &quot;off&quot;, value_enum)]
+    // XXX: this shows the default but NOT the options
+    #[arg(default_value = &quot;auto&quot;, value_parser = custom_parser, value_enum)]
+    color: Color,
+}
+
+#[derive(Clone, ValueEnum, Debug)]
+enum Color {
+    /// Color is off
+    Off,
+    /// Color is on
+    On,
+}
+
+#[allow(dead_code)]
+fn custom_parser(arg: &amp;str) -&gt; Result&lt;Color&gt; {
+    if arg == &quot;auto&quot; {
+        if std::io::stdout().is_terminal() {
+            Ok(Color::On)
+        } else {
+            Ok(Color::Off)
+        }
+    } else {
+        Color::from_str(arg, false)
+            .map_err(|e| anyhow::anyhow!(&quot;Invalid color option: {}&quot;, e))
+    }
+}
+
+fn main() {
+    let c = Command::parse_from(&amp;[&quot;--help&quot;]);
+    println!(&quot;{:?}&quot;, c);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>The default value is shown on the help for <code>--color</code></p>
+<h3>Expected Behaviour</h3>
+<p>The possible values should also be shown (via the <code>value_enum</code> derive)</p>
+<h3>Additional Context</h3>
+<p>In my experimentation, it appears the presence of <code>value_parser</code> suppresses the help string behavior of <code>value_enum</code> to show list the possible options. The presence of or value within <code>default_value</code> does not seem to matter.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @dcsommer on 2025-01-27 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-01-27 18:00</div>
+            <div class="timeline-body"><p>The help is driven by <code>ValueParser</code>.  If you replace it, then you lose that.</p>
+<p>Instead of providing a custom <code>value_parser</code>, you could provide <a href="https://docs.rs/clap/latest/clap/builder/struct.EnumValueParser.html"><code>EnumValueParser</code></a> and call <code>map</code> or <code>try_map</code> on it.</p>
+<p>However, I personally would recommend handling <code>auto</code> later by having it in the <code>Color</code> enum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcsommer">@dcsommer</a> on 2025-01-28 17:25</div>
+            <div class="timeline-body"><ol>
+<li>Is it possible to provide an <code>EnumValueParser</code> from the derive macro?</li>
+<li>The argument to <code>map</code> and <code>try_map</code> is the already-parsed enum value, not the input string. So it seems too late to handle <code>auto</code> there?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-01-28 17:58</div>
+            <div class="timeline-body"><ol>
+<li>yes, you can do <code>value_parser = EnumValueParser...</code> like any other `value_parser</li>
+<li>yes, you're right. I overlooked that you are doing pre-processing rather than post-processing</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcsommer">@dcsommer</a> on 2025-01-28 18:25</div>
+            <div class="timeline-body"><p>I don't suppose there are any options for pre-processing in clap? I suppose a custom <code>TypedValueParser</code> that wraps <code>EnumValueParser</code> is one way, but is there a lighter-weight option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-01-28 18:47</div>
+            <div class="timeline-body"><p>Not at the moment and I feel like this might be too specialized too support natively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcsommer on 2025-01-28 20:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:43 UTC
+    </footer>
+</body>
+</html>

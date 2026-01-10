@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Even with `uv sync --no-dev`, development dependencies are still installed when workflow executes. - astral-sh/uv #12558</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Even with `uv sync --no-dev`, development dependencies are still installed when workflow executes.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12558">#12558</a>
+        opened by <a href="https://github.com/WitherZuo">@WitherZuo</a>
+        on 2025-03-30 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WitherZuo">@WitherZuo</a> on 2025-03-30 14:28</div>
+            <div class="timeline-body"><p>With the documentation of uv, I used <code>uv sync --no-dev</code> in order to not install the development dependencies while the GitHub Actions workflow is running, however the switch <code>--no-dev</code> doesn't seem to work while the workflow is running, with this switch it still installs all of the dependencies including the development dependencies. using <code>uv sync --no-dev</code> locally works perfectly fine and does not install development dependencies when installing dependencies.</p>
+<h2>GitHub Actions workflow and log:</h2>
+<p>For my project, <code>Ruff</code> is the only dev dependency.</p>
+<ul>
+<li><strong><code>pyproject.toml</code> file:</strong></li>
+</ul>
+<pre><code class="language-toml">[project]
+name = &quot;newsphoto&quot;
+version = &quot;1.0.0&quot;
+description = &quot;NewsPhoto everyday.&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;pangu&gt;=4.0.6.1&quot;,
+    &quot;playwright&gt;=1.51.0&quot;,
+    &quot;requests&gt;=2.32.3&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;ruff&gt;=0.11.2&quot;,
+]
+</code></pre>
+<ul>
+<li><strong>GitHub Actions workflow file <code>main.yml</code>:</strong></li>
+</ul>
+<details>
+<summary>Click here to expand.</summary>  
+
+<pre><code class="language-yaml">name: Create NewsPhoto
+on:
+  workflow_dispatch:
+    inputs:
+      greeting:
+        description: 'Greeting text:'
+        required: false
+        default: '……'
+        type: string
+      style:
+        description: 'NewsPhoto style:'
+        required: true
+        default: 'light'
+        type: choice
+        options:
+          - light
+          - dark
+          - springfestival
+
+jobs:
+  generate_newsphoto:
+    name: Generate NewsPhoto
+    runs-on: windows-latest
+    steps:
+    - name: Set timezone to Asia/Shanghai
+      uses: WitherZuo/set-timezone@v1.0.0
+      with:
+        timezoneWindows: &quot;China Standard Time&quot;
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        repository: WitherZuo/NewsPhoto
+
+    - name: Install uv and Python.
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: &quot;0.6.10&quot;
+        enable-cache: true
+        cache-dependency-glob: &quot;**/pyproject.toml&quot;
+
+    - name: Install dependencies
+      run: uv sync --no-dev
+
+    - name: Install Pandoc
+      run: choco install -y pandoc
+
+    - name: Create markdown sources and convert to HTML
+      run: |
+        uv run main.py --greeting &quot;${{ inputs.greeting }}&quot; --style ${{ inputs.style }}
+        Get-ChildItem -Path .\sources\
+        Get-ChildItem -Path .\outputs\
+
+    - name: Generate screenshot
+      run: |
+        uv run save-as-image.py --browser chrome
+        Get-ChildItem -Path .\outputs\
+
+    - name: Upload NewsPhoto - Webpage
+      uses: actions/upload-artifact@v4
+      with:
+        name: newsphoto-webpage
+        path: outputs/NewsPhoto.html
+
+    - name: Upload NewsPhoto - Image
+      uses: actions/upload-artifact@v4
+      with:
+        name: newsphoto-image
+        path: outputs/NewsPhoto.png
+</code></pre>
+</details>  
+
+<ul>
+<li><strong>Workflow log:</strong></li>
+</ul>
+<p><strong>For full log</strong>, you can visit <strong><a href="https://github.com/WitherZuo/NewsPhoto/actions/runs/14153678743/job/39650104473">here</a></strong>.</p>
+<details>
+<summary>Click here to expand.</summary>  
+
+<pre><code>Sun, 30 Mar 2025 07:05:44 GMT
+Run uv sync --no-dev
+Sun, 30 Mar 2025 07:05:45 GMT Using CPython 3.13.2 interpreter at: C:\hostedtoolcache\windows\Python\3.13.2\x64\python.exe
+Sun, 30 Mar 2025 07:05:45 GMT Creating virtual environment at: .venv
+Sun, 30 Mar 2025 07:05:45 GMT Resolved 12 packages in 1ms
+Sun, 30 Mar 2025 07:05:46 GMT Downloading playwright (33.2MiB)
+Sun, 30 Mar 2025 07:05:52 GMT  Downloaded playwright
+Sun, 30 Mar 2025 07:05:52 GMT Prepared 10 packages in 7.06s
+Sun, 30 Mar 2025 07:05:52 GMT Installed 10 packages in 52ms
+Sun, 30 Mar 2025 07:05:52 GMT  + certifi==2025.1.31
+Sun, 30 Mar 2025 07:05:52 GMT  + charset-normalizer==3.4.1
+Sun, 30 Mar 2025 07:05:52 GMT  + greenlet==3.1.1
+Sun, 30 Mar 2025 07:05:52 GMT  + idna==3.10
+Sun, 30 Mar 2025 07:05:52 GMT  + pangu==4.0.6.1
+Sun, 30 Mar 2025 07:05:52 GMT  + playwright==1.51.0
+Sun, 30 Mar 2025 07:05:52 GMT  + pyee==12.1.1
+Sun, 30 Mar 2025 07:05:52 GMT  + requests==2.32.3
+Sun, 30 Mar 2025 07:05:52 GMT  + typing-extensions==4.13.0
+Sun, 30 Mar 2025 07:05:52 GMT  + urllib3==2.3.0
+
+.......  
+
+Sun, 30 Mar 2025 07:06:16 GMT
+Run uv run main.py --greeting &quot;……&quot; --style dark
+Sun, 30 Mar 2025 07:06:16 GMT Downloading ruff (10.8MiB)
+Sun, 30 Mar 2025 07:06:19 GMT  Downloaded ruff
+Sun, 30 Mar 2025 07:06:19 GMT Installed 1 package in 3ms
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-30 15:21</div>
+            <div class="timeline-body"><p>By default, <code>uv run</code> will ensure that your project environment and lockfile are up-to-date. By default, <code>dev</code> dependencies are enabled (see: <code>https://docs.astral.sh/uv/reference/settings/#default-groups</code>). So if you use <code>uv run</code>, we will install the <code>dev</code> dependencies if they're missing. <code>uv run</code> does not &quot;remember&quot; what you passed to <code>uv sync</code> -- it's not a stateful command.</p>
+<p>A few options:</p>
+<ul>
+<li>Remove <code>dev</code> from <code>default-groups</code>, so <code>dev</code> dependencies always need to be enabled explicitly (<code>uv run --group dev</code>).</li>
+<li>Pass <code>--no-sync</code> to <code>uv run</code> (<code>uv run --no-sync</code>) so that <code>uv run</code> doesn't install new dependencies.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-30 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-30 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @WitherZuo on 2025-04-07 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microbiomedata/nmdc-runtime/issues/1251.html">microbiomedata/nmdc-runtime#1251</a> on 2025-10-03 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimasInchidi">@DimasInchidi</a> on 2025-12-01 22:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Remove <code>dev</code> from <code>default-groups</code>, so <code>dev</code> dependencies always need to be enabled explicitly (<code>uv run --group dev</code>).</p>
+</blockquote>
+<p>\cc @charliermarsh</p>
+<p>is there any env var i can use for not passing <code>--no-sync</code> for each <code>uv run</code> after <code>uv sync</code>? it could be useful to make <code>uv sync</code> feels like stateful for this kind of use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 23:05</div>
+            <div class="timeline-body"><p>You can use <code>UV_NO_SYNC</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 23:06</div>
+            <div class="timeline-body"><p>You can also use <code>UV_NO_DEV</code> instead of <code>--no-dev</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16994.html">astral-sh/uv#16994</a> on 2025-12-05 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartektrybala">@bartektrybala</a> on 2026-01-02 11:43</div>
+            <div class="timeline-body"><p>In your case you can just add this to the pyproject.toml:</p>
+<pre><code>[tool.uv]
+# This prevents 'uv run' and 'uv sync' from including dev dependencies by default
+default-groups = []
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

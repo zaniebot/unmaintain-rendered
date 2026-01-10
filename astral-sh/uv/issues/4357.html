@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>universal-lock: non-conflicting requirements with non-overlapping marker expressions provoke a fork - astral-sh/uv #4357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>universal-lock: non-conflicting requirements with non-overlapping marker expressions provoke a fork</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4357">#4357</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-17 13:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-17 13:28</div>
+            <div class="timeline-body"><p>Consider these requirements:</p>
+<pre><code>a &gt;= 1 ; sys_platform == 'linux'
+a &lt; 2 ; sys_platform == 'darwin'
+</code></pre>
+<p>with <code>a==1.0.0</code> and <code>a==2.0.0</code> available in the registry.</p>
+<p>(These are captured in <a href="https://github.com/astral-sh/packse/blob/0954dc3bb84c0c4f83c6e4a7d109f7745e996ce1/scenarios/fork/allows-non-conflicting-non-overlapping-dependencies.toml">this packse test</a>.)</p>
+<p>Even though the version constraints are non-conflicting, because the marker expressions are non-overlapping, this will actually provoke a fork in the universal resolver. The fork means that the <code>a &gt;= 1</code> requirement is free to choose, say, <code>a==2.0.0</code> if it's available because the fork exists in isolation from the <code>a &lt; 2</code> requirement. However, if no fork were to happen, then both the <code>a &gt;= 1</code> and <code>a &lt; 2</code> requirements would be active simultaneously such that <code>a==2.0.0</code> couldn't be chosen. So in this case, there exists a resolution without forking, but it is distinct from the resolution we get if we fork.</p>
+<p>I think we could detect this case by looking at whether the version constraints themselves are conflicting. That is, if there exists an overlap in the version constraints, then we don't fork even if the marker expressions are non-overlapping. I think a decision like that would be predicated on the idea that it could be <em>possible</em> to find one resolution that works across multiple platforms. But it might not be possible. It feels like forking in this case, even if it isn't always necessary, results in more freedom for the resolver to find a resolution. But... maybe it's surprising to users in real cases.</p>
+<p>I'm overall not quite sure what the right behavior is here. My sense of things right now is that this shouldn't block shipping, but I'm happy to have my mind changed on that!</p>
+<p>Original discussion: https://github.com/astral-sh/uv/pull/4339#discussion_r1642814360</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3347.html">astral-sh/uv#3347</a> on 2024-06-17 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4339.html">astral-sh/uv#4339</a> on 2024-06-17 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-17 13:58</div>
+            <div class="timeline-body"><p>For reference, if we run the <a href="https://github.com/astral-sh/packse/blob/0954dc3bb84c0c4f83c6e4a7d109f7745e996ce1/scenarios/fork/allows-non-conflicting-non-overlapping-dependencies.toml">corresponding packse scenario</a> with <code>uv</code>, we get this lock file (current main is <code>e264637b63b29b5e9a99ef9ac64594a8b827b611</code>):</p>
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+
+[[distribution]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies&quot;
+version = &quot;0.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+sdist = { url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-non-overlapping-dependencies/fork_allows_non_conflicting_non_overlapping_dependencies-0.0.0.tar.gz#sha256=a715415043cafef783fd4d6d3adcbfb0e823663f9af3e2a6e73810da9269e472&quot;, hash = &quot;sha256:a715415043cafef783fd4d6d3adcbfb0e823663f9af3e2a6e73810da9269e472&quot; }
+
+[[distribution.dependencies]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies-a&quot;
+version = &quot;1.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+marker = &quot;sys_platform == 'darwin'&quot;
+
+[[distribution.dependencies]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies-a&quot;
+version = &quot;2.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+marker = &quot;sys_platform == 'linux'&quot;
+
+[[distribution]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies-a&quot;
+version = &quot;1.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+sdist = { url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-non-overlapping-dependencies/fork_allows_non_conflicting_non_overlapping_dependencies_a-1.0.0.tar.gz#sha256=dd40a6bd59fbeefbf9f4936aec3df6fb6017e57d334f85f482ae5dd03ae353b9&quot;, hash = &quot;sha256:dd40a6bd59fbeefbf9f4936aec3df6fb6017e57d334f85f482ae5dd03ae353b9&quot; }
+wheels = [{ url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-non-overlapping-dependencies/fork_allows_non_conflicting_non_overlapping_dependencies_a-1.0.0-py3-none-any.whl#sha256=37c13aa13cca009990929df08bed3d9de26e1d405a5ebd16ec0c3baef6899b23&quot;, hash = &quot;sha256:37c13aa13cca009990929df08bed3d9de26e1d405a5ebd16ec0c3baef6899b23&quot; }]
+
+[[distribution]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies-a&quot;
+version = &quot;2.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+sdist = { url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-non-overlapping-dependencies/fork_allows_non_conflicting_non_overlapping_dependencies_a-2.0.0.tar.gz#sha256=0b4ca63d060f4daa2269c08b7083f594e096b94e1bcbde53d212c65b52378358&quot;, hash = &quot;sha256:0b4ca63d060f4daa2269c08b7083f594e096b94e1bcbde53d212c65b52378358&quot; }
+wheels = [{ url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-non-overlapping-dependencies/fork_allows_non_conflicting_non_overlapping_dependencies_a-2.0.0-py3-none-any.whl#sha256=35168196ad80d0f2822191a47e3a805b4ad527280c8b84e7eed77b7fee505497&quot;, hash = &quot;sha256:35168196ad80d0f2822191a47e3a805b4ad527280c8b84e7eed77b7fee505497&quot; }]
+
+[[distribution]]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+source = &quot;editable+.&quot;
+sdist = { path = &quot;.&quot; }
+
+[[distribution.dependencies]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies&quot;
+version = &quot;0.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+</code></pre>
+<p>And if we run it with <code>poetry 1.8.2</code>, we get this lock file:</p>
+<pre><code class="language-toml"># This file is automatically @generated by Poetry 1.8.2 and should not be changed by hand.
+
+[[package]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies&quot;
+version = &quot;0.0.0&quot;
+description = &quot;This test ensures that multiple non-conflicting but also non-overlapping dependency specifications with the same package name are allowed and supported.  At time of writing, this provokes a fork in the resolver, but it arguably shouldn't since the requirements themselves do not conflict with one another. However, this does impact resolution. Namely, it leaves the `a&gt;=1` fork free to choose `a==2.0.0` since it behaves as if the `a&lt;2` constraint doesn't exist.&quot;
+optional = false
+python-versions = &quot;&gt;=3.8&quot;
+files = [
+    {file = &quot;fork_allows_non_conflicting_non_overlapping_dependencies-0.0.0.tar.gz&quot;, hash = &quot;sha256:a715415043cafef783fd4d6d3adcbfb0e823663f9af3e2a6e73810da9269e472&quot;},
+]
+
+[package.dependencies]
+fork-allows-non-conflicting-non-overlapping-dependencies-a = [
+    {version = &quot;&lt;2&quot;, markers = &quot;sys_platform == \&quot;darwin\&quot;&quot;},
+    {version = &quot;&gt;=1&quot;, markers = &quot;sys_platform == \&quot;linux\&quot;&quot;},
+]
+
+[package.source]
+type = &quot;legacy&quot;
+url = &quot;http://localhost:3141&quot;
+reference = &quot;packse&quot;
+
+[[package]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies-a&quot;
+version = &quot;1.0.0&quot;
+description = &quot;&quot;
+optional = false
+python-versions = &quot;&gt;=3.8&quot;
+files = [
+    {file = &quot;fork_allows_non_conflicting_non_overlapping_dependencies_a-1.0.0-py3-none-any.whl&quot;, hash = &quot;sha256:37c13aa13cca009990929df08bed3d9de26e1d405a5ebd16ec0c3baef6899b23&quot;},
+    {file = &quot;fork_allows_non_conflicting_non_overlapping_dependencies_a-1.0.0.tar.gz&quot;, hash = &quot;sha256:dd40a6bd59fbeefbf9f4936aec3df6fb6017e57d334f85f482ae5dd03ae353b9&quot;},
+]
+
+[package.source]
+type = &quot;legacy&quot;
+url = &quot;http://localhost:3141&quot;
+reference = &quot;packse&quot;
+
+[[package]]
+name = &quot;fork-allows-non-conflicting-non-overlapping-dependencies-a&quot;
+version = &quot;2.0.0&quot;
+description = &quot;&quot;
+optional = false
+python-versions = &quot;&gt;=3.8&quot;
+files = [
+    {file = &quot;fork_allows_non_conflicting_non_overlapping_dependencies_a-2.0.0-py3-none-any.whl&quot;, hash = &quot;sha256:35168196ad80d0f2822191a47e3a805b4ad527280c8b84e7eed77b7fee505497&quot;},
+    {file = &quot;fork_allows_non_conflicting_non_overlapping_dependencies_a-2.0.0.tar.gz&quot;, hash = &quot;sha256:0b4ca63d060f4daa2269c08b7083f594e096b94e1bcbde53d212c65b52378358&quot;},
+]
+
+[package.source]
+type = &quot;legacy&quot;
+url = &quot;http://localhost:3141&quot;
+reference = &quot;packse&quot;
+
+[metadata]
+lock-version = &quot;2.0&quot;
+python-versions = &quot;^3.11&quot;
+content-hash = &quot;fa3f7ba6b95fa7787a5a362f6373095804b9e6ab1ce0a4608ebd5adb23d36999&quot;
+</code></pre>
+<p>So here, it seems like both poetry and uv are forking since both <code>a==1.0.0</code> and <code>a==2.0.0</code> show up in the lock file.</p>
+<p>But notice what happens if we try the packse test <a href="https://github.com/astral-sh/packse/blob/0954dc3bb84c0c4f83c6e4a7d109f7745e996ce1/scenarios/fork/allows-non-conflicting-repeated-dependencies.toml"><code>fork-allows-non-conflicting-repeated-dependencies</code></a>. It looks a lot like the one above, but both requirements are unconditional so no forking happens:</p>
+<pre><code>a &gt;= 1
+a &lt; 2
+</code></pre>
+<p>So locking with uv gets us:</p>
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+
+[[distribution]]
+name = &quot;fork-allows-non-conflicting-repeated-dependencies&quot;
+version = &quot;0.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+sdist = { url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-repeated-dependencies/fork_allows_non_conflicting_repeated_dependencies-0.0.0.tar.gz#sha256=f71a547328d8616fddcc6ac173a242690d754e0d42427edd7d1f4df34b41d073&quot;, hash = &quot;sha256:f71a547328d8616fddcc6ac173a242690d754e0d42427edd7d1f4df34b41d073&quot; }
+
+[[distribution.dependencies]]
+name = &quot;fork-allows-non-conflicting-repeated-dependencies-a&quot;
+version = &quot;1.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+
+[[distribution]]
+name = &quot;fork-allows-non-conflicting-repeated-dependencies-a&quot;
+version = &quot;1.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+sdist = { url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-repeated-dependencies/fork_allows_non_conflicting_repeated_dependencies_a-1.0.0.tar.gz#sha256=45ca30f1f66eaf6790198fad279b6448719092f2128f23b99f2ede0d6dde613b&quot;, hash = &quot;sha256:45ca30f1f66eaf6790198fad279b6448719092f2128f23b99f2ede0d6dde613b&quot; }
+wheels = [{ url = &quot;http://localhost:3141/packages/fork-allows-non-conflicting-repeated-dependencies/fork_allows_non_conflicting_repeated_dependencies_a-1.0.0-py3-none-any.whl#sha256=b08be7896afa7402a2650dd9ebf38e32cf65d5bf86956dc23cf793c5f1f21af2&quot;, hash = &quot;sha256:b08be7896afa7402a2650dd9ebf38e32cf65d5bf86956dc23cf793c5f1f21af2&quot; }]
+
+[[distribution]]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+source = &quot;editable+.&quot;
+sdist = { path = &quot;.&quot; }
+
+[[distribution.dependencies]]
+name = &quot;fork-allows-non-conflicting-repeated-dependencies&quot;
+version = &quot;0.0.0&quot;
+source = &quot;registry+http://localhost:3141/&quot;
+</code></pre>
+<p>And locking with poetry gets us:</p>
+<pre><code class="language-toml"># This file is automatically @generated by Poetry 1.8.2 and should not be changed by hand.
+
+[[package]]
+name = &quot;fork-allows-non-conflicting-repeated-dependencies&quot;
+version = &quot;0.0.0&quot;
+description = &quot;This test ensures that multiple non-conflicting dependency specifications with the same package name are allowed and supported.  This test exists because the universal resolver forks itself based on duplicate dependency specifications by looking at package name. So at first glance, a case like this could perhaps cause an errant fork. While it's difficult to test for \&quot;does not create a fork\&quot; (at time of writing, the implementation does not fork), we can at least check that this case is handled correctly without issue. Namely, forking should only occur when there are duplicate dependency specifications with disjoint marker expressions.&quot;
+optional = false
+python-versions = &quot;&gt;=3.8&quot;
+files = [
+    {file = &quot;fork_allows_non_conflicting_repeated_dependencies-0.0.0.tar.gz&quot;, hash = &quot;sha256:f71a547328d8616fddcc6ac173a242690d754e0d42427edd7d1f4df34b41d073&quot;},
+]
+
+[package.dependencies]
+fork-allows-non-conflicting-repeated-dependencies-a = &quot;&gt;=1,&lt;2&quot;
+
+[package.source]
+type = &quot;legacy&quot;
+url = &quot;http://localhost:3141&quot;
+reference = &quot;packse&quot;
+
+[[package]]
+name = &quot;fork-allows-non-conflicting-repeated-dependencies-a&quot;
+version = &quot;1.0.0&quot;
+description = &quot;&quot;
+optional = false
+python-versions = &quot;&gt;=3.8&quot;
+files = [
+    {file = &quot;fork_allows_non_conflicting_repeated_dependencies_a-1.0.0-py3-none-any.whl&quot;, hash = &quot;sha256:b08be7896afa7402a2650dd9ebf38e32cf65d5bf86956dc23cf793c5f1f21af2&quot;},
+    {file = &quot;fork_allows_non_conflicting_repeated_dependencies_a-1.0.0.tar.gz&quot;, hash = &quot;sha256:45ca30f1f66eaf6790198fad279b6448719092f2128f23b99f2ede0d6dde613b&quot;},
+]
+
+[package.source]
+type = &quot;legacy&quot;
+url = &quot;http://localhost:3141&quot;
+reference = &quot;packse&quot;
+
+[metadata]
+lock-version = &quot;2.0&quot;
+python-versions = &quot;^3.11&quot;
+content-hash = &quot;8b88e3e9187c6b396033abe10456761aceb0847dcdb391fd7a2cf091ab6a5bfb&quot;
+</code></pre>
+<p>So both tools behave the same on this example too. No forking happens, and as a result, <code>a==2.0.0</code> is completely excluded from the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-09 11:34</div>
+            <div class="timeline-body"><p>This has been fixed by https://github.com/astral-sh/uv/pull/4662: We fork, but since we use the resolution of the first fork as preference for the next fork, we end up with only <code>a==1.0.0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-09 11:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

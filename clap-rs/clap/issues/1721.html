@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document that multi-value options do not get along with trailing subcommands - clap-rs/clap #1721</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Document that multi-value options do not get along with trailing subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1721">#1721</a>
+        opened by <a href="https://github.com/nagisa">@nagisa</a>
+        on 2020-03-04 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nagisa">@nagisa</a> on 2020-03-04 16:51</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.43.0-nightly (7760cd0fb 2020-02-19)</p>
+<h3>Code</h3>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {
+    let matches = App::new(&quot;My Super Program&quot;)
+                      .subcommand(SubCommand::with_name(&quot;test&quot;))
+                      .arg(Arg::with_name(&quot;config&quot;)
+                           .long(&quot;config&quot;)
+                           .value_name(&quot;FILE&quot;)
+                           .multiple(true)
+                           .takes_value(true))
+                      .get_matches();
+    println!(&quot;{:?}&quot;, matches);
+}
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li><code>cargo run -- --config 'banana=true' test</code></li>
+<li><code>cargo run -- --config='banana=true' test</code></li>
+<li>Note how clap parses the last argument.</li>
+</ol>
+<h3>Affected Version of <code>clap*</code></h3>
+<p>2.33</p>
+<h3>Actual Behavior Summary</h3>
+<p>clap will greedily consume values into space-separated <code>--config</code> flag.</p>
+<h3>Expected Behavior Summary</h3>
+<p>I’m not sure how common place this behaviour (<code>--long arg1 arg2</code> parsing as <code>--long arg1 --long arg2</code>) is. Definitely was unexpected to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @nagisa on 2020-03-04 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-04 16:56</div>
+            <div class="timeline-body"><p>Yeah, this is <a href="https://github.com/clap-rs/clap/issues/1707#issuecomment-592920247">a known problem</a>, but <code>clap</code> simply doesn't know where the options end and where the subcommand starts. Even if there's a way to rule this out, I'm not aware of it, so I doubt this will change. Take it as limitation.</p>
+<p>I think we should document it better though.</p>
+<p><a href="https://github.com/clap-rs/clap/issues/1708">We also consider to improve error reporting in such cases</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`multiple(true)` top-level flags do not interact well with subcommands." to "Document that multi-value options do not get along with trailing subcommands" by @CreepySkeleton on 2020-03-04 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @CreepySkeleton on 2020-03-04 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @CreepySkeleton on 2020-03-04 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-04 16:58</div>
+            <div class="timeline-body"><p>Check this for more info, https://github.com/clap-rs/clap/issues/1610 and please give us feedback if that explains your issue. I am thinking of pointing to that issue in the docs for <code>multiple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nagisa">@nagisa</a> on 2020-03-04 17:01</div>
+            <div class="timeline-body"><p>Is there a way to implement an option that would require each value for the multiple flag to be accompanied with the flag? That is to disable this implicit token consumption? I’m sure most of the users will be plenty happy with <code>--flag val1 val2...</code> not parsing the <code>val2</code> into <code>--flag</code>.</p>
+<p>EDIT: That is, I originally expected <code>multiple</code> to mean that it would require something along the lines of <code>--flag val1 --flag val2...</code> and if I wanted to supply multiple values without repeating the <code>--flag</code> I would be responsible for setting <code>use_delimiter</code>.</p>
+<p>EDIT: Ah, I see, its <code>require_delimiters</code>. Cool. Definitely very difficult to discover.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-04 17:06</div>
+            <div class="timeline-body"><p>The more I think about it, the more I get assured that we need <strong>two different methods for that</strong>: <code>multiple_values</code> and <code>multiple_occurrences</code>.</p>
+<ul>
+<li><code>multiple_values(true)</code>: <code>--foo val1 val2</code> but not <code>-foo val1 --foo val2</code></li>
+<li><code>multiple_occurrences(true)</code>: <code>-foo val1 --foo val2</code> but not <code>--foo val1 val2</code></li>
+<li><code>multiple_values(true).multiple_occurrences(true)</code>: enables both</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nagisa">@nagisa</a> on 2020-03-04 17:49</div>
+            <div class="timeline-body"><p>I got mostly the behaviour I want by setting <code>require_delimiters(true).value_delimiter(&quot;\0&quot;)</code>, so this is not critical by any means.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-04 19:18</div>
+            <div class="timeline-body"><p>But it should be documented better nonetheless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/367.html">TeXitoi/structopt#367</a> on 2020-03-31 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidMcneil">@davidMcneil</a> on 2020-04-15 20:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, this is a known problem, but clap simply doesn't know where the options end and where the subcommand starts. Even if there's a way to rule this out, I'm not aware of it, so I doubt this will change. Take it as limitation.</p>
+</blockquote>
+<p>@CreepySkeleton could we check if the next token matches a subcommand and if it does stop parsing the argument and instead parse the subcommand? Essentially, remove this <a href="https://github.com/clap-rs/clap/blob/4805de02edd10454b7bb9819fdb4ce306c841b2b/src/app/parser.rs#L941">line</a>. It looks like this used to be the behavior, but was changed due to #1031.</p>
+<p>My personal opinion is that handling (1) &quot;multi-value options with subcommands&quot; is more important than (2) &quot;argument value taking precedence over subcommand with the same name&quot;. The reasons being:</p>
+<ul>
+<li>1 occurs more frequently than 2. How often do arg values and subcommands with the same name occur next to each other?</li>
+<li>2 the user of the cli can easily fix 2 by simply adding an <code>=</code>. There is no good way for the user to get around 1 without the author of the app already taking special action.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-15 22:02</div>
+            <div class="timeline-body"><p>We are happy to add support for something like this with an AppSetting. But it would have to be something for later and not a priority for 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-16 00:58</div>
+            <div class="timeline-body"><p>If we remove that line, positional with multiple values would stop working at all; the logic over there looks far more complicated.</p>
+<ol>
+<li><p>I believe, when it comes to defaults, this kind of decisions should not be based on personal opinions, yours and mine all the same. For example, my experience is exactly contrary here.</p>
+</li>
+<li><p><em>This</em> is a good argument.</p>
+</li>
+</ol>
+<p>I'd go for changing the default behavior (because 2) and introducing an <code>AppSetting</code> or something so developer could revert it back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-16 06:14</div>
+            <div class="timeline-body"><p>I wouldn't change the default but introduce an <code>AppSetting</code>. I feel the default should be how it is behaving now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-16 07:24</div>
+            <div class="timeline-body"><p>Maybe we should conduct a survey of sorts? Ask on users forum or something, &quot;Here's the problem, which default would you like and why?&quot;. Our opinions... well, they are <em>our</em> opinions, and we are not the majority here, despite we are indeed the greatest!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-16 07:57</div>
+            <div class="timeline-body"><p>Adding <code>--</code> after multi value options is the standard in CLI tools. We had said this many times in the past to people who came to us with this issue. And this is also the main reason we should keep it as a default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-16 09:30</div>
+            <div class="timeline-body"><p>No no, these are different problems.</p>
+<ul>
+<li><code>--</code> is about &quot;everything after this delimiter belongs to a single clap Arg, no matter what it starts from (subcommand name, <code>-</code>, whatever). It is used as <em>the last</em> option in CLI, no option can possibly follow it because it would be considered as a value.<pre><code>app --option subcommand --option2 -- --option3 abc subcommand
+    -----------------------------    ------------------------
+     normal options and subcmds      this is not parsed at all
+                                     just a list of values
+</code></pre>
+</li>
+<li>This problem is about &quot;if an option taking unrestrained number of values contains something that is a valid subcommand among these values, the subcommand (and everything following) must not be considered as value&quot;. In other words, such option <em>can</em> be followed by something else. This is possible today via<pre><code>app --option val1 val2 val3 subcommand arg
+             -------------- ---------- ---
+                  values     sub name  sub argument
+</code></pre>
+</li>
+</ul>
+<p>To be honest, I personally don't like this design. I consider this design error prone and pretty non-intuitive, I would not write such a CLI and I would try to dissuade people from this sort of desing. But, even thought I'm admittedly a very wise person, I'm not the <em>whole</em> community. This is why I'm proposing to <em>ask</em>. Just to hear people out.</p>
+<p>If we find their argument not so compelling or opinions will differ significantly, we will just pull our Dictatorship card and chant &quot;Succumb to our will!&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @pksunkara on 2020-04-16 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1834.html">clap-rs/clap#1834</a> on 2020-04-16 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-04-21 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1915.html">clap-rs/clap#1915</a> on 2020-05-08 03:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:08 UTC
+    </footer>
+</body>
+</html>

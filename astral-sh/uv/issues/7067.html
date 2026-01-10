@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Non workspaced&quot; monorepo editable dependencies path resolution is by relative path. - astral-sh/uv #7067</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Non workspaced&quot; monorepo editable dependencies path resolution is by relative path.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7067">#7067</a>
+        opened by <a href="https://github.com/nrbnlulu">@nrbnlulu</a>
+        on 2024-09-05 05:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nrbnlulu">@nrbnlulu</a> on 2024-09-05 05:37</div>
+            <div class="timeline-body"><p>Hey there, and thanks for uv!<br />
+I am trying to setup a monorepo with editable dependencies.<br />
+<em>(I don't want to use the workspace feature because
+mostly because you can import stuff you are not allowed you don't need to (it also affects IDE completions)</em>
+Anyways thats my setup:</p>
+<pre><code class="language-tree">.
+├── hello.py
+├── libs
+│   └── sdk
+│       ├── pyproject.toml
+│       ├── README.md
+│       ├── src
+│       │   └── sdk
+│       │       ├── amaizing.py
+│       │       ├── __init__.py
+│       └── uv.lock
+├── LICENSE
+├── pyproject.toml
+├── README.md
+└── uv.lock
+</code></pre>
+<p>libs/sdk/pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;sdk&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+sources = [&quot;src/sdk&quot;]
+</code></pre>
+<p>./pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-monorerpo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;sdk&quot;,
+]
+
+[tool.uv.sources]
+sdk = { path = &quot;libs/sdk&quot;, editable = true }
+</code></pre>
+<p>hello.py</p>
+<pre><code class="language-py">def main():
+    def this_fails():
+        from sdk.amaizing import so_amaizing  # what I would expect
+        print(so_amaizing())
+    def this_works():
+        from libs.sdk.src.sdk.amaizing import so_amaizing # reality
+        print(so_amaizing())
+    this_works()
+    this_fails()
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>As you can see you can only import the sdk package via its relative path from ./pyproject.toml (normalized with dots) which is kinda weird.</p>
+<p>here is the demo project https://github.com/nrbnlulu/uv-monorerpo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""Non workspaced" monorepo editable dependencies path resolution is by the relative path." to ""Non workspaced" monorepo editable dependencies path resolution is by relative path." by @nrbnlulu on 2024-09-05 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrbnlulu">@nrbnlulu</a> on 2024-09-05 06:13</div>
+            <div class="timeline-body"><p>Ok found it. you should remove this entry</p>
+<pre><code class="language-toml">[tool.hatch.build.targets.wheel]
+sources = [&quot;src/sdk&quot;]
+</code></pre>
+<p>otherwise it would generate wheels for whats inside &quot;src/sdk&quot; :disappointed:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @nrbnlulu on 2024-09-05 06:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:41 UTC
+    </footer>
+</body>
+</html>

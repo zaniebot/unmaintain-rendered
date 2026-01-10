@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to configure uv to use namespace packages? - astral-sh/uv #10628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to configure uv to use namespace packages?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10628">#10628</a>
+        opened by <a href="https://github.com/rvhaasen">@rvhaasen</a>
+        on 2025-01-15 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rvhaasen">@rvhaasen</a> on 2025-01-15 10:55</div>
+            <div class="timeline-body"><p>While migrating a project from setuptools to uv I cannot get a namespace package correct:</p>
+<p><strong>First the &quot;setuptools version&quot; of the project:</strong></p>
+<p>It contains directives for finding the namespace packages (in setup.cfg):</p>
+<pre><code>...
+package_dir = =src
+packages = find_namespace:
+[options.packages.find]
+where = src
+include = a.b.*
+...
+</code></pre>
+<p>The file layout of MyPackage is as follows:</p>
+<pre><code>pyproject.toml
+setup.cfg
+src/a/b/MyPackage
+        __init__.py
+        SomeSubPackage
+           __init__.py
+
+</code></pre>
+<p>pip install -e .
+MyPackage is now available using namespace &quot;a.b&quot;:</p>
+<p><code>import a.b.MyPackage</code></p>
+<p><strong>Now the &quot;uv version&quot; of the project:</strong>
+(relevant parts)</p>
+<p>It uses following lines in pyproject.toml for specifiying the package:</p>
+<pre><code>...
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/a/b/MyPackage&quot;]
+...
+</code></pre>
+<p>uv sync
+will get the depenedencies and creates an editable installation in .venv</p>
+<p>This makes MyPackage available without the namespace part</p>
+<p><code>import MyPackage</code></p>
+<p>Which is not what I want, MyPackage should be available in namespace &quot;a.b&quot;</p>
+<p>I cannot not find a way how to configure it such that i can import the package as &quot;a.b.MPackage&quot;.
+I tried variations like:
+packages = [&quot;src/*&quot;]</p>
+<p>But none of the variations work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 16:39</div>
+            <div class="timeline-body"><p>If you're using <code>setup.cfg</code>, I don't think you should be using <code>[tool.hatch.build.targets.wheel]</code>? (That's not related to uv, though. That's your &quot;build backend&quot; which is independent of uv.) You should be using something like</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&gt;=42&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-15 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rvhaasen">@rvhaasen</a> on 2025-01-16 09:30</div>
+            <div class="timeline-body"><p>I'm not using setup.cfg in the &quot;uv version&quot;. The goal is to only have all configuration in pyproject.toml.</p>
+<p>I did specify hatchling as backend, and by doing so, I had to set</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+packages = [&quot;src/a/b/MyPackage&quot;]
+
+</code></pre>
+<p>If it is not specified, then 'uv sync' failed because hatchling cannot find the package. I think that by default it tries to build the package when a build-system is defined.
+I did however not expect that this option would have effect on the installation of the package in .venv,
+but somehow it did. If &quot;packages&quot; is not defined as &quot;src/a/b/MyPackage&quot; then MyPackage is not installed in the .venv.</p>
+<p>But finally, I found a solution by not specifying a build system in pyproject.toml (and of course removing the tool.hatch.build.targets.wheel parameter). No it all works fine and the pyproject.toml looks clean.</p>
+<p>'uv sync' installs the package and dependencies properly, and I can import MyPackage as
+<code>import a.b.MyPackage </code></p>
+<p>Thanks for your comment, it helped finding a solution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moaddib666">@moaddib666</a> on 2025-05-14 14:41</div>
+            <div class="timeline-body"><p>Hi @rvhaasen Looks like a duplicate of https://github.com/astral-sh/uv/issues/6575, I'd suggest take a brief look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervhy">@woutervhy</a> on 2025-10-10 08:29</div>
+            <div class="timeline-body"><p>@rvhaasen
+Take a look at my example:
+https://github.com/libranet/demo-uv-workspace/tree/main</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../linkml/linkml/pulls/2873.html">linkml/linkml#2873</a> on 2025-10-16 21:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:57 UTC
+    </footer>
+</body>
+</html>

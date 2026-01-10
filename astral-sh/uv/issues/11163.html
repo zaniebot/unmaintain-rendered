@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>'Invalid cross-device link (os error 18)' during 'ruff' installation in Docker container - astral-sh/uv #11163</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>'Invalid cross-device link (os error 18)' during 'ruff' installation in Docker container</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11163">#11163</a>
+        opened by <a href="https://github.com/heso">@heso</a>
+        on 2025-02-02 11:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/heso">@heso</a> on 2025-02-02 11:09</div>
+            <div class="timeline-body"><h3>Problem:</h3>
+<p>When trying to install dependencies mentioned in the dependencies section (only ruff at the moment) using:</p>
+<pre><code>docker-compose build
+docker-compose run --rm test_app uv sync -v
+</code></pre>
+<p>I get the following error:</p>
+<pre><code>error: Failed to install: ruff-0.1.15-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (ruff==0.1.15)
+  Caused by: failed to rename file from /usr/local/lib/python3.11/site-packages/ruff-0.1.15.data/scripts/ruff to /usr/local/bin/ruff: Invalid cross-device link (os error 18)
+</code></pre>
+<h3>Configuration:</h3>
+<p>Dockerfile:</p>
+<pre><code class="language-Dockerfile">FROM docker-proxy.kontur.host/python:3.11-slim
+
+ENV UV_LINK_MODE=copy
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+ENV UV_SYSTEM_PYTHON=1
+
+RUN pip install uv~=0.5.26
+</code></pre>
+<p>compose.yml</p>
+<pre><code>services:
+  test_app:
+    build:
+      context: .
+    working_dir:  /opt/test
+    volumes:
+      - site_packages:/usr/local/lib/python3.11/site-packages
+      - usr_local_bin:/usr/local/bin
+      - uv_cache:/root/.cache/uv
+      - ./src:/opt/test
+
+volumes:
+  site_packages:
+  usr_local_bin:
+  uv_cache:
+</code></pre>
+<p>pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;example-app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;ruff~=0.1.14&quot;,
+]
+</code></pre>
+<p>structure:</p>
+<pre><code>project/
+├── compose.yml
+├── Dockerfile
+└── src/
+    ├── main.py
+    ├── pyproject.toml
+    └── uv.lock
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 5.15.153.1-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.26</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @heso on 2025-02-02 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-02-02 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11167.html">astral-sh/uv#11167</a> on 2025-02-02 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-12 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-12 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

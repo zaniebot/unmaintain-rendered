@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`typing_extensions.TYPE_CHECKING` branch ignored and `TCH001` &amp; `TCH002` are raised - astral-sh/ruff #8427</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`typing_extensions.TYPE_CHECKING` branch ignored and `TCH001` &amp; `TCH002` are raised</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8427">#8427</a>
+        opened by <a href="https://github.com/chaburkland">@chaburkland</a>
+        on 2023-11-02 01:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chaburkland">@chaburkland</a> on 2023-11-02 01:12</div>
+            <div class="timeline-body"><pre><code class="language-python"># example.py prior to ruff fix
+from __future__ import annotations
+
+import typing_extensions as tp
+
+if tp.TYPE_CHECKING:
+    from application.types import something
+    from sqlalchemy.orm.session import Session
+
+
+def foo(a: something) -&gt; Session:
+    pass
+</code></pre>
+<p>Command: <code>ruff example.py --fix</code> (Unable to reproduce with the <code>--isolated</code> flag)</p>
+<p>The fix applies a strange behavior. It appears that <code>ruff</code> is unable to identify the <code>typing_extensions.TYPE_CHECKING</code> branch.</p>
+<pre><code class="language-python"># example.py after ruff fix
+from __future__ import annotations
+
+import typing_extensions as tp
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from application.types import something
+    from sqlalchemy.orm.session import Session
+
+if tp.TYPE_CHECKING:
+    pass
+
+
+def foo(a: something) -&gt; Session:
+    pass
+</code></pre>
+<p>Version: <code>ruff 0.0.292</code></p>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py38&quot;
+exclude = [
+	&quot;.git&quot;,
+	&quot;__pycache__&quot;,
+	&quot;.mypy_cache&quot;,
+	&quot;.ruff_cache&quot;,
+]
+ignore = [
+	&quot;B011&quot;,     
+	&quot;B015&quot;,     
+	&quot;B023&quot;,     
+	&quot;B028&quot;,     
+	&quot;F811&quot;,     
+	&quot;F841&quot;,     
+	&quot;PLR0911&quot;,  
+	&quot;PLR0912&quot;,  
+	&quot;PLR0913&quot;,  
+	&quot;PLR0915&quot;,  
+	&quot;PLW2901&quot;,  
+	&quot;PLW3301&quot;,  
+	&quot;RUF001&quot;,   
+	&quot;RUF002&quot;,   
+	&quot;RUF003&quot;,   
+	&quot;RUF005&quot;,   
+	&quot;RUF012&quot;,   
+	&quot;UP025&quot;,    
+	&quot;PLR1711&quot;,  
+	&quot;PLR2004&quot;,  
+	&quot;PLR5501&quot;,  
+	&quot;PIE794&quot;,
+	&quot;F821&quot;,     
+	&quot;PLC0414&quot;,  
+]
+select = [
+	&quot;F&quot;,   
+	&quot;W&quot;,   
+	&quot;UP&quot;,  
+	&quot;B&quot;,   
+	&quot;T10&quot;, 
+	&quot;EXE&quot;, 
+	&quot;ISC&quot;, 
+	&quot;ICN&quot;, 
+	&quot;PIE&quot;, 
+	&quot;RSE&quot;, 
+	&quot;TCH&quot;, 
+	&quot;PGH&quot;, 
+	&quot;PL&quot;,  
+	&quot;NPY&quot;, 
+	&quot;RUF&quot;, 
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8429.html">astral-sh/ruff#8429</a> on 2023-11-02 01:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 01:35</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I've started a fix at https://github.com/astral-sh/ruff/pull/8429 with some notes on what else needs to be done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-02 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-09 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

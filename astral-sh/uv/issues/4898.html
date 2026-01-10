@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv versions 0.2.19 and 0.2.20 not respecting wheel dependecies - astral-sh/uv #4898</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv versions 0.2.19 and 0.2.20 not respecting wheel dependecies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4898">#4898</a>
+        opened by <a href="https://github.com/atrbgithub">@atrbgithub</a>
+        on 2024-07-08 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/atrbgithub">@atrbgithub</a> on 2024-07-08 14:26</div>
+            <div class="timeline-body"><p>Given the following:</p>
+<pre><code>python --version
+Python 3.8.19
+
+uv --version
+uv 0.2.20
+</code></pre>
+<p>The error is:</p>
+<pre><code>uv pip install dvc==3.42.0
+error: No virtual environment found
+sh-5.1$ uv venv
+Using Python 3.8.19 interpreter at: /some/location/bin/python3
+Creating virtualenv at: .venv
+sh-5.1$ uv pip install dvc==3.42.0
+error: Failed to download and build `voluptuous==0.15.1`
+  Caused by: Failed to build: `voluptuous==0.15.1`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/home/a_home_dir/.cache/uv/environments-v0/.tmpvwToiO/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 327, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+  File &quot;/home/a_home_dir/.cache/uv/environments-v0/.tmpvwToiO/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 297, in _get_build_requires
+    self.run_setup()
+  File &quot;/home/a_home_dir/.cache/uv/environments-v0/.tmpvwToiO/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 497, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/home/a_home_dir/.cache/uv/environments-v0/.tmpvwToiO/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 313, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 7, in &lt;module&gt;
+  File &quot;/home/a_home_dir/.cache/uv/built-wheels-v3/pypi/voluptuous/0.15.1/MQJft_QmRPeFdMipU2XVd/voluptuous-0.15.1.tar.gz/./voluptuous/__init__.py&quot;, line 78, in &lt;module&gt;
+    from voluptuous.schema_builder import *
+  File &quot;/home/a_home_dir/.cache/uv/built-wheels-v3/pypi/voluptuous/0.15.1/MQJft_QmRPeFdMipU2XVd/voluptuous-0.15.1.tar.gz/./voluptuous/schema_builder.py&quot;, line 13, in &lt;module&gt;
+    from functools import cache, wraps
+ImportError: cannot import name 'cache' from 'functools' (/some/location/lib/python3.8/functools.py)
+---
+</code></pre>
+<p>This also fails with uv <code>0.2.19</code></p>
+<p>It works with <code>0.2.18</code>, which installs the correct supported package:</p>
+<pre><code> + voluptuous==0.14.2
+</code></pre>
+<p>Rather than attempting to install:</p>
+<pre><code>voluptuous==0.15.1
+</code></pre>
+<p>As this does not support python 3.8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-08 14:29</div>
+            <div class="timeline-body"><p>Thanks for the report. We'll look into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-08 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @zanieb on 2024-07-08 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-08 14:30</div>
+            <div class="timeline-body"><p>I'm a bit suspicious of https://github.com/astral-sh/uv/pull/4705 / #4707. Probably related to https://github.com/astral-sh/uv/issues/4885.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 14:35</div>
+            <div class="timeline-body"><p>I haven't been able to repro this yet with <code>echo &quot;dvc==3.42.0&quot; | uv pip compile - --python-version 3.8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-08 14:41</div>
+            <div class="timeline-body"><p>I reproduced with</p>
+<pre><code>uv venv --python 3.8 --preview
+uv pip install dvc==3.42.0
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/16130720/log.txt">log.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 14:41</div>
+            <div class="timeline-body"><p>Okay, I think this is a prefetching problem. We're no longer filtering by <code>Requires-Python</code> in the prefetching codepath.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 14:41</div>
+            <div class="timeline-body"><p>Because it was removed from the version map but not &quot;re-added&quot; there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-08 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4900.html">astral-sh/uv#4900</a> on 2024-07-08 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-08 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

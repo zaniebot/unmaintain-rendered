@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRY004 applies when unrelated values are type-checked - astral-sh/ruff #12287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TRY004 applies when unrelated values are type-checked</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12287">#12287</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-07-11 02:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-07-11 02:16</div>
+            <div class="timeline-body"><p>TRY004 assumes that if any exception is raised, subject to a type-checking <code>if</code> condition, the exception should be a <code>TypeError</code>. That is only true when an argument has the wrong type. If the exception happens for a different reason (e.g. invalid state) then <code>TypeError</code> isn’t necessarily appropriate (even if the invalid state is detected by checking the type of an instance variable).</p>
+<p><a href="https://docs.python.org/3/library/exceptions.html#TypeError">The Python documentation for <code>TypeError</code></a> says:</p>
+<blockquote>
+<p>Passing arguments of the wrong type (e.g. passing a <a href="https://docs.python.org/3/library/stdtypes.html#list"><code>list</code></a> when an <a href="https://docs.python.org/3/library/functions.html#int"><code>int</code></a> is expected) should result in a <a href="https://docs.python.org/3/library/exceptions.html#TypeError"><code>TypeError</code></a>, but passing arguments with the wrong value (e.g. a number outside expected boundaries) should result in a <a href="https://docs.python.org/3/library/exceptions.html#ValueError"><code>ValueError</code></a>.</p>
+</blockquote>
+<p>Example code:</p>
+<pre><code class="language-python">class FreezableList:
+    def __init__(self):
+        self.delegate = []
+
+    def freeze(self):
+        self.delegate = tuple(self.delegate)
+
+    def append(self, value):
+        if isinstance(self._delegate, list):
+            self.delegate.append(value)
+        else:
+            raise ValueError(&quot;Appending to a frozen list&quot;)
+</code></pre>
+<p>Current behavior:</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.5.1
+$ ruff check --isolated --select TRY004 --output-format concise try004_example.py
+try004_example.py:12:13: TRY004 Prefer `TypeError` exception for invalid type
+Found 1 error.
+</code></pre>
+<p>A heuristic could be that, if the value in the <code>isinstance</code> call is neither an argument to the method or function nor is derived from an argument, TRY004 should not report anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-11 03:13</div>
+            <div class="timeline-body"><p>Thanks for opening this issue! Technically, I think the heuristic is correct to raise a violation in this case. I'm not sure whether raising a <code>ValueError</code> makes more sense here because the &quot;value&quot; is not the problem here. Personally, I would raise a <code>TypeError</code> here because the main issue is in the type itself. CPython also raises a <code>TypeError</code> in case you try to concatenate a frozenset:</p>
+<pre><code>In [1]: x = frozenset(['a', 'b', 'c'])
+
+In [2]: x + frozenset(['d'])
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[2], line 1
+----&gt; 1 x + frozenset(['d'])
+
+TypeError: unsupported operand type(s) for +: 'frozenset' and 'frozenset'
+</code></pre>
+<blockquote>
+<p>A heuristic could be that, if the value in the <code>isinstance</code> call is neither an argument to the method or function nor is derived from an argument, TRY004 should not report anything.</p>
+</blockquote>
+<p>I'm not sure if that would solve your use-case because <code>self.delegate</code> would be considered as derived from the <code>self</code> argument. Or, am I misunderstanding what you're trying to say?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-07-11 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Personally, I would raise a <code>TypeError</code> here because the main issue is in the type itself.</p>
+</blockquote>
+<p>I raise <code>ValueError</code> because the fact that I’m using <code>isinstance</code> is an internal implementation detail. For example, here is an alternative implementation of that class:</p>
+<pre><code class="language-python">class FreezableList:
+    def __init__(self):
+        self._delegate = []
+        self._frozen = False
+
+    @property
+    def delegate(self):
+        return tuple(self._delegate) if self._frozen else self._delegate
+
+    def freeze(self):
+        self._frozen = True
+
+    def append(self, value):
+        if not self._frozen:
+            self.delegate.append(value)
+        else:
+            raise ValueError(&quot;Appending to a frozen list&quot;)
+</code></pre>
+<p>Both versions of the class implement essentially the same API, so they should presumably raise the same errors under the same circumstances, regardless of whether <code>isinstance</code> is used internally. The error is fundamentally about calling a method when the object is in the wrong state, not about types, so <code>ValueError</code> is more appropriate than <code>TypeError</code>.</p>
+<blockquote>
+<p>I'm not sure whether raising a <code>ValueError</code> makes more sense here because the &quot;value&quot; is not the problem here.</p>
+</blockquote>
+<p>It isn’t great but <code>ValueError</code> seems to be the closest Python has to what I mean; in Java, I would use <code>IllegalStateException</code>.</p>
+<blockquote>
+<p>I'm not sure if that would solve your use-case because <code>self.delegate</code> would be considered as derived from the <code>self</code> argument. Or, am I misunderstanding what you're trying to say?</p>
+</blockquote>
+<p>That’s true; I meant arguments besides <code>self</code>. <code>self</code> is an exception because it is set apart syntactically when calling the method, so it doesn’t feel like an argument in the same way. My intuition is that if the type-checking problem is related to a non-<code>self</code> argument, it is probably the caller’s fault for passing in a value of the wrong type, which warrants a <code>TypeError</code>, whereas if the problem is related to <code>self</code> (or one of its attributes), it has a different cause and need not warrant being surfaced to the caller as a <code>TypeError</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-15 09:36</div>
+            <div class="timeline-body"><blockquote>
+<p>That’s true; I meant arguments besides <code>self</code>. <code>self</code> is an exception because it is set apart syntactically when calling the method, so it doesn’t feel like an argument in the same way. My intuition is that if the type-checking problem is related to a non-<code>self</code> argument, it is probably the caller’s fault for passing in a value of the wrong type, which warrants a <code>TypeError</code>, whereas if the problem is related to <code>self</code> (or one of its attributes), it has a different cause and need not warrant being surfaced to the caller as a <code>TypeError</code>.</p>
+</blockquote>
+<p>I see. I think it makes sense, I'm trying to think through if there's any case where this might yield false negatives but can't find any. I'd love to hear others opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-07-15 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wolkiewiczk">@wolkiewiczk</a> on 2025-06-09 12:35</div>
+            <div class="timeline-body"><blockquote>
+<p>A heuristic could be that, if the value in the isinstance call is neither an argument to the method or function nor is derived from an argument, TRY004 should not report anything.</p>
+</blockquote>
+<p>I don't think that TRY004 should report if isinstance check is performed on an object derived from an argument. See this example:</p>
+<pre><code class="language-python">class MyTree(IntervalTree):
+
+    def __init__(self, intervals=None):
+        intervals = intervals or []
+        for iv in intervals:
+            if not isinstance(iv.data, MyDataclass):
+                raise ValueError(
+                    f&quot;All intervals in {type(self).__name__} must have the 'data' attribute set to &quot;
+                    f&quot;the instance of {MyDataclass.__name__} subclass.&quot;
+                )
+        super().__init__(*args, **kwargs)
+</code></pre>
+<p>In this case TRY004 is reported, even though the type of my argument is correct. Even the types of objects inside the iterable are correct, they are just required to have a certain class set as an attribute so I think that the <code>ValueError</code> is the correct choice here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

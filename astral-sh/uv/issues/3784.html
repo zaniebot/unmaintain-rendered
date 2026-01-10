@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip venv discovery broken for some relative paths - astral-sh/uv #3784</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip venv discovery broken for some relative paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3784">#3784</a>
+        opened by <a href="https://github.com/bulletmark">@bulletmark</a>
+        on 2024-05-23 05:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-05-23 05:04</div>
+            <div class="timeline-body"><p>I am using:</p>
+<pre><code>$  uv --version
+uv 0.2.2
+</code></pre>
+<p>I create a venv and the let <code>uv pip</code> discover that at the default <code>.venv/</code>:</p>
+<pre><code>$ uv venv
+Using Python 3.12.3 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+lt:~ uv pip list -v
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Found a virtual environment at: /home/mark/.venv
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+</code></pre>
+<p>However, I tend to use <code>$VIRTUAL_ENV</code> to relatively specify my various venv paths and this is broken since 0.2.2 (probably since 0.2.0?):</p>
+<pre><code># In same directory as above where  I just created `.venv`
+$ export VIRTUAL_ENV=.venv
+$ uv pip list -v
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Searching for interpreter that fulfills Python @ default
+INFO Found active virtual environment (via VIRTUAL_ENV) at: .venv
+DEBUG Found a virtual environment at: /home/mark/.venv
+DEBUG Using Python 3.12.3 environment at Data/src/gh/dyndns/.venv/bin/python
+Package        Version
+-------------- -------
+aiohttp        3.9.5
+... etc
+</code></pre>
+<p>Note the &quot;Found a ..&quot; which is correct and the next &quot;Using ..&quot; which is bogus. I have no idea how it picked up that bogus venv.</p>
+<p>If I set <code>export VIRTUAL_ENV=./.venv</code> or I set it to an absolute path it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-05-23 05:09</div>
+            <div class="timeline-body"><p>Actually I just noticed this is broken even if I specify the venv path, i.e. <code>uv pip list -p .venv</code> is broken,
+but  <code>uv pip list -p ./.venv</code> and <code>uv pip list -p /fullpath/.venv</code> both work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 12:46</div>
+            <div class="timeline-body"><p>Hi @bulletmark thanks for the details.</p>
+<p>Could you share logs with trace logs i.e. <code>RUST_LOG=uv=trace uv pip ...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-05-23 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-05-23 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 12:54</div>
+            <div class="timeline-body"><p>I can't reproduce this with a simple case</p>
+<pre><code>❯ uv pip install --python .venv anyio -v
+DEBUG Searching for interpreter that fulfills directory .venv
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+DEBUG Trying to lock if free: .venv/.lock
+...
+Audited 1 package in 4ms
+</code></pre>
+<pre><code>❯ VIRTUAL_ENV=.venv uv pip install anyio -v
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Searching for interpreter that fulfills Python @ default
+INFO Found active virtual environment (via VIRTUAL_ENV) at: .venv
+DEBUG Found a virtual environment at: /Users/zb/workspace/uv/.venv
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+DEBUG Trying to lock if free: .venv/.lock
+...
+Audited 1 package in 0.80ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-05-23 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-05-23 22:45</div>
+            <div class="timeline-body"><pre><code># Create a new directory for this test:
+$ mkdir uv-issue-3784
+$ cd uv-issue-3784
+$ ls -la
+total 16
+drwxr-xr-x  2 mark mark  4096 May 24 08:33 .
+drwx------ 99 mark mark 12288 May 24 08:33 ..
+
+# Create a new simple venv at .venv:
+$ uv venv
+Using Python 3.12.3 interpreter at: /usr/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+$ ls -la
+total 20
+drwxr-xr-x  3 mark mark  4096 May 24 08:33 .
+drwx------ 99 mark mark 12288 May 24 08:33 ..
+drwxr-xr-x  4 mark mark  4096 May 24 08:33 .venv
+
+# Normal uv pip list works fine:
+$ uv pip list -v
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Searching for interpreter that fulfills Python @ default
+DEBUG Found a virtual environment at: /home/mark/uv-issue-3784/.venv
+DEBUG Using Python 3.12.3 environment at .venv/bin/python
+
+# Specify .venv explicitly and it somehow chooses a bogus one:
+$ uv pip list -v -p .venv
+DEBUG Searching for interpreter that fulfills directory .venv
+DEBUG Using Python 3.12.3 environment at /home/mark/Data/src/gh/dyndns/.venv/bin/python
+Package        Version
+-------------- -------
+aiohttp        3.9.5
+aiosignal      1.3.1
+argcomplete    3.3.0
+attrs          23.2.0
+frozenlist     1.4.1
+idna           3.7
+inotify-simple 1.3.5
+markdown-it-py 3.0.0
+mdurl          0.1.2
+multidict      6.0.5
+platformdirs   4.2.2
+pygments       2.18.0
+rich           13.7.1
+rich-argparse  1.4.0
+yarl           1.9.4
+
+# Do same as above and capture RUST_LOG TRACE as requested:
+$ RUST_LOG=uv=trace uv pip list -v -p .venv
+DEBUG Searching for interpreter that fulfills directory .venv
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: .venv/bin/python
+DEBUG Using Python 3.12.3 environment at /home/mark/Data/src/gh/dyndns/.venv/bin/python
+Package        Version
+-------------- -------
+aiohttp        3.9.5
+aiosignal      1.3.1
+argcomplete    3.3.0
+attrs          23.2.0
+frozenlist     1.4.1
+idna           3.7
+inotify-simple 1.3.5
+markdown-it-py 3.0.0
+mdurl          0.1.2
+multidict      6.0.5
+platformdirs   4.2.2
+pygments       2.18.0
+rich           13.7.1
+rich-argparse  1.4.0
+yarl           1.9.4
+
+# Show with RUST_LOG that it works if we specify ./.venv instead of .venv:
+$ RUST_LOG=uv=trace uv pip list -v -p ./.venv
+DEBUG Searching for interpreter that fulfills directory ./.venv
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: ./.venv/bin/python
+DEBUG Using Python 3.12.3 environment at /home/mark/.venv/bin/python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-05-23 22:54</div>
+            <div class="timeline-body"><p>Actually, just noticed that the last example above (<code>uv pip list -v -p ./.venv)</code> doesn't work either as it is selecting a different bogus venv  <code>~/.venv</code> which is an empty one I created for a previous demo for this bug. If I delete that <code>~/.venv</code> and then run that same test in the same dir above then I get:</p>
+<pre><code>$ RUST_LOG=uv=trace uv pip list -v -p ./.venv
+DEBUG Searching for interpreter that fulfills directory ./.venv
+TRACE Cached interpreter info for Python 3.12.3, skipping probing: ./.venv/bin/python
+DEBUG Using Python 3.12.3 environment at /home/mark/.venv/bin/python
+</code></pre>
+<p>I.e. it still seems to want to use that bogus <code>/home/mark/.venv</code> even though it is now deleted? But there is no error reporting when listing it so I presume it somehow fell back to the correct <code>./.venv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bulletmark">@bulletmark</a> on 2024-05-23 23:02</div>
+            <div class="timeline-body"><p>Seems to me that uv is caching the name of <code>venvs</code> that get created and that cache is based on the name passed on the command line (or environment var) even if it is a relative path but it must be cached based on absolute path name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 23:26</div>
+            <div class="timeline-body"><p>Thanks for the details! I'll dig into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @zanieb on 2024-05-23 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArthurZucker">@ArthurZucker</a> on 2024-05-24 08:25</div>
+            <div class="timeline-body"><p>Hard to reproduce, but I think our CIs are broken for something similar: https://app.circleci.com/pipelines/github/huggingface/transformers/93822/workflows/50779f61-f59f-483d-bc3f-9b173dd4cc15/jobs/1231217 starting uv==0.2.2</p>
+<ul>
+<li>we build a docker image with uv venv</li>
+<li>then we download the docker and we install stuff</li>
+<li>only uv is shown to be installed.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArthurZucker">@ArthurZucker</a> on 2024-05-24 08:25</div>
+            <div class="timeline-body"><p>We also use VIRTUALENV: https://github.com/huggingface/transformers/blob/046c2ad7923bb0601f53d6f32c3092aa697ab14d/docker/quality.dockerfile#L1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-24 13:35</div>
+            <div class="timeline-body"><p>Ah yeah, we stopped supporting the use of <code>VIRTUAL_ENV</code> to point to non-virtual environments in v0.2. You could try either telling uv to discover the system Python:</p>
+<pre><code>ENV UV_SYSTEM=1
+</code></pre>
+<p>Or point it to a specific Python:</p>
+<pre><code>ENV UV_PYTHON=/usr/local/bin/python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-24 14:30</div>
+            <div class="timeline-body"><p>~Hey @bulletmark, just want to check — are the listed packages correct regardless of the log message about which interpreter is being used??~ Nevermind</p>
+<p>I reproduced this and have a fix up at https://github.com/astral-sh/uv/pull/3823</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3823.html">astral-sh/uv#3823</a> on 2024-05-24 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-24 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../huggingface/transformers/pulls/31055.html">huggingface/transformers#31055</a> on 2024-05-27 09:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

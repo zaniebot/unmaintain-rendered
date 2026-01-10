@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppSettings::AllowLeadingHyphen makes app silence unknown unexpected arguments - clap-rs/clap #1066</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>AppSettings::AllowLeadingHyphen makes app silence unknown unexpected arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1066">#1066</a>
+        opened by <a href="https://github.com/axelchalon">@axelchalon</a>
+        on 2017-10-12 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/axelchalon">@axelchalon</a> on 2017-10-12 15:34</div>
+            <div class="timeline-body"><p><em>rustc 1.18.0 / clap 2.26.0</em></p>
+<p>When the global setting AllowLeadingHyphen is set and the app has at least one argument registered, Clap doesn't return an error if the program is called with an unknown, unexpected argument (it doesn't even have to start with a hyphen)</p>
+<h3>Sample Code / Steps to Reproduce the Issue</h3>
+<pre><code>App::new(&quot;My program&quot;)
+    .global_setting(AppSettings::AllowLeadingHyphen) 
+    .arg(Arg::from_usage(&quot;--some-argument&quot;))
+    .get_matches();
+</code></pre>
+<pre><code>$ program hello
+... (program runs fine)
+
+Output of get_matches() :
+ArgMatches { args: {}, subcommand: None, usage: Some(&quot;USAGE:\n    program [FLAGS]&quot;) }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../openethereum/parity-ethereum/issues/6485.html">openethereum/parity-ethereum#6485</a> on 2017-10-12 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../openethereum/parity-ethereum/pulls/6711.html">openethereum/parity-ethereum#6711</a> on 2017-10-12 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-12 18:26</div>
+            <div class="timeline-body"><p>This <em>should</em> only happen if there is something expecting a value, i.e. if the unknown/unexpected argument could <em>possibly</em> be a value to some other argument (either positional or option). This is because clap can't really know if something starting with a hyphen is supposed to be a value, or just an incorrect flag/option.</p>
+<p>If this <em>isn't</em> the case, i.e. there's no possible way it could be a valid value and it's <em>still</em> not detecting the error then that's a bug.</p>
+<p>I haven't tested this yet on my machine as I'll have to do that when I get home, so this may very well be the bug you're suggesting 😉 I just wanted to lay out how this is supposed to work in a bug free world.</p>
+<p>On a side note, if possible I recommend only using this setting for individual args via <a href="https://docs.rs/clap/2.26.2/clap/struct.Arg.html#method.allow_hyphen_values"><code>Arg::allow_hyphen_values</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.27.0" by @kbknapp on 2017-10-12 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-10-25 01:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:39 UTC
+    </footer>
+</body>
+</html>

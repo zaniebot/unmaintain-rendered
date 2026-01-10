@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Too many diagnostics for subclasses of cyclic classes - astral-sh/ruff #14223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Too many diagnostics for subclasses of cyclic classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14223">#14223</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-11-09 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-09 11:20</div>
+            <div class="timeline-body"><p>Consider the following Python snippet:</p>
+<pre><code class="language-py">class Foo(Bar): ...
+class Bar(Foo): ...
+class Baz(Foo): ...
+class Spam(Baz): ...
+</code></pre>
+<p>If you save this snippet in a <code>bar.pyi</code> file and run red-knot over that file, red-knot currently emits four diagnostics:</p>
+<pre><code>error[cyclic-class-def] /Users/alexw/dev/experiment/bar.pyi:1:1 Cyclic definition of `Foo` or bases of `Foo` (class cannot inherit from itself)
+error[cyclic-class-def] /Users/alexw/dev/experiment/bar.pyi:2:1 Cyclic definition of `Bar` or bases of `Bar` (class cannot inherit from itself)
+error[cyclic-class-def] /Users/alexw/dev/experiment/bar.pyi:3:1 Cyclic definition of `Baz` or bases of `Baz` (class cannot inherit from itself)
+error[cyclic-class-def] /Users/alexw/dev/experiment/bar.pyi:4:1 Cyclic definition of `Spam` or bases of `Spam` (class cannot inherit from itself)
+</code></pre>
+<p>Ideally we'd emit the first two of those diagnostics, but not the third or the fourth. Although it's impossible to calculate an accurate MRO for any of these classes due to the cycle between <code>Foo</code> and <code>Bar</code>, emitting so many diagnostics as a result of a single error is undesirable. If we actually emitted these diagnostics on user code, it would be likely to confuse the user about where the issue actually is.</p>
+<p><code>Baz</code> and <code>Spam</code> <em>are</em> cyclically defined, of course, and we <em>do</em> need to detect that cycle, as we do currently, or we'll try to calculate the MROs of these classes and fall into infinite recursion. I think what we're currently missing is that after detecting the cycle (or perhaps as part of detecting the cycle), we need to do some extra work somewhere to figure out which classes are actually involved in the cycle. Here it is <code>Foo</code> and <code>Bar</code>; we should not emit diagnostics for <code>Baz</code> and <code>Spam</code>, since they are not directly involved in the cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-09 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-11-09 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-09 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15561.html">astral-sh/ruff#15561</a> on 2025-01-17 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-20 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unclear how to `uv add causal-conv1d` - astral-sh/uv #14671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unclear how to `uv add causal-conv1d`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14671">#14671</a>
+        opened by <a href="https://github.com/riklopfer">@riklopfer</a>
+        on 2025-07-16 20:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/riklopfer">@riklopfer</a> on 2025-07-16 20:29</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When I try to add <a href="https://github.com/Dao-AILab/causal-conv1d"><code>causal-conv1d</code></a> to my project, I get a series of errors. This dependency is only needed on machines with a CUDA device. With that in mind, I also tried <code>uv add &quot;causal-conv1d; sys_platform == 'linux'&quot;</code> but received the same error. I also tried doing <code>uv add torch</code> first. It's possible that &quot;causal-conv1d&quot; can only be built when the CUDA libs are installed but I'm not certain about that.</p>
+<pre><code class="language-console">❯ uv add causal-conv1d
+  × Failed to build `causal-conv1d==1.5.0.post8`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmp8zLtL2/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 331,
+      in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmp8zLtL2/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 301,
+      in _get_build_requires
+          self.run_setup()
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmp8zLtL2/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 512,
+      in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmp8zLtL2/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 317,
+      in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 20, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'torch'
+
+      hint: This error likely indicates that `causal-conv1d@1.5.0.post8` depends on `torch`, but doesn't declare it as a
+      build dependency. If `causal-conv1d` is a first-party package, consider adding `torch` to its `build-system.requires`.
+      Otherwise, `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.21 (77c771c7f 2025-07-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @riklopfer on 2025-07-16 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-16 20:33</div>
+            <div class="timeline-body"><p>It looks like they require <code>--no-build-isolation</code> as hinted at</p>
+<blockquote>
+<p>hint: This error likely indicates that <code>causal-conv1d@1.5.0.post8</code> depends on <code>torch</code>, but doesn't declare it as a
+build dependency. If <code>causal-conv1d</code> is a first-party package, consider adding <code>torch</code> to its <code>build-system.requires</code>.
+Otherwise, <code>uv pip install torch</code> into the environment and re-run with <code>--no-build-isolation</code>.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riklopfer">@riklopfer</a> on 2025-07-16 20:51</div>
+            <div class="timeline-body"><p>I tried that and I get the following error. Does this mean I need to add <code>setuptools</code>  too?</p>
+<pre><code class="language-console"> ❯ uv add causal-conv1d --no-build-isolation
+  × Failed to build `causal-conv1d==1.5.0.post8`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.prepare_metadata_for_build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'setuptools'
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-16 21:15</div>
+            <div class="timeline-body"><p>Yeah, you need to add its build dependencies manually since build isolation is disabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riklopfer">@riklopfer</a> on 2025-07-17 16:26</div>
+            <div class="timeline-body"><p>The errors keep coming (pasted below). This package is only needed in environments when a CUDA device is present. Is there a way to specify that in <code>pyproject.toml</code> such that <code>uv lock</code> will work?</p>
+<p>I would like to do something like the snippet below where I the this package is installed as an extra when we know we have a CUDA device. But <code>uv lock</code> fails because it can't find torch and there is no build isolation flag available.  The fact that adding this dependency is so difficult makes me wonder if I am taking the wrong approach. Do I need to have a completely separate package for the GPU-enabled version?</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+cuda = [
+    &quot;causal-conv1d&gt;=1.5.0&quot;,
+]
+</code></pre>
+<pre><code class="language-console">❯ uv add causal-conv1d --no-build-isolation
+  × Failed to build `causal-conv1d==1.5.0.post8`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.prepare_metadata_for_build_wheel` failed (exit status: 1)
+
+      [stdout]
+
+
+      torch.__version__  = 2.7.1
+
+
+
+      [stderr]
+      /Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/torch/_subclasses/functional_tensor.py:276:
+      UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at
+      /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+        cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+      &lt;string&gt;:113: UserWarning: causal_conv1d was requested, but nvcc was not found.  Are you sure your environment has nvcc
+      available?  If you're installing within a container from https://hub.docker.com/r/pytorch/pytorch, only images whose
+      names contain 'devel' will provide nvcc.
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;/Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 374, in
+      prepare_metadata_for_build_wheel
+          self.run_setup()
+        File &quot;/Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 185, in &lt;module&gt;
+      NameError: name 'bare_metal_version' is not defined
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<p>here's the <code>uv lock</code> output when I add it as an extra with the TOML snippet from above.</p>
+<pre><code class="language-console">❯ uv lock
+  × Failed to build `causal-conv1d==1.5.0.post8`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmpIKTNSW/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 331,
+      in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmpIKTNSW/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 301,
+      in _get_build_requires
+          self.run_setup()
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmpIKTNSW/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 512,
+      in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/Users/a9dwhzz/.cache/uv/builds-v0/.tmpIKTNSW/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 317,
+      in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 20, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'torch'
+
+      hint: This error likely indicates that `causal-conv1d@1.5.0.post8` depends on `torch`, but doesn't declare it as a
+      build dependency. If `causal-conv1d` is a first-party package, consider adding `torch` to its `build-system.requires`.
+      Otherwise, `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+  help: `causal-conv1d` (v1.5.0.post8) was included because `xxx[cuda]` (v0.1.0) depends on `causal-conv1d&gt;=1.5.0`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riklopfer">@riklopfer</a> on 2025-07-17 17:24</div>
+            <div class="timeline-body"><p>I found this https://github.com/Zyphra/Zonos/issues/144 issue. I see on that repo how to add no build isolation when using <code>uv lock</code>, so now my <code>pyproject.toml</code> is</p>
+<pre><code class="language-toml">[project]
+name = &quot;xxx&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;torch&gt;=2.7.1&quot;,
+    &quot;setuptools&gt;=80.9.0&quot;,
+]
+
+[project.optional-dependencies]
+cuda = [
+    &quot;causal-conv1d&gt;=1.5.0&quot;,
+]
+
+[tool.uv]
+no-build-isolation-package = [&quot;causal-conv1d&quot;]
+</code></pre>
+<p>and here is the <code>uv lock</code> output</p>
+<pre><code class="language-console">❯ uv lock
+  × Failed to build `causal-conv1d==1.5.0.post8`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.prepare_metadata_for_build_wheel` failed (exit status: 1)
+
+      [stdout]
+
+
+      torch.__version__  = 2.7.1
+
+
+
+      [stderr]
+      /Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/torch/_subclasses/functional_tensor.py:276:
+      UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at
+      /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+        cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+      &lt;string&gt;:113: UserWarning: causal_conv1d was requested, but nvcc was not found.  Are you sure your environment has nvcc
+      available?  If you're installing within a container from https://hub.docker.com/r/pytorch/pytorch, only images whose
+      names contain 'devel' will provide nvcc.
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File &quot;/Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 374, in
+      prepare_metadata_for_build_wheel
+          self.run_setup()
+        File &quot;/Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/Users/a9dwhzz/tmp/xxx/.venv/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 185, in &lt;module&gt;
+      NameError: name 'bare_metal_version' is not defined
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `causal-conv1d` (v1.5.0.post8) was included because `xxx[cuda]` (v0.1.0) depends on `causal-conv1d&gt;=1.5.0`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 02:34</div>
+            <div class="timeline-body"><p>Like <code>flash-attn</code>, you need:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;...&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;causal-conv1d&quot;, &quot;torch&quot;]
+
+[tool.uv.extra-build-dependencies]
+causal-conv1d = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+
+[tool.uv.extra-build-variables]
+causal-conv1d = { CAUSAL_CONV1D_SKIP_CUDA_BUILD = &quot;TRUE&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-03 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-03 02:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

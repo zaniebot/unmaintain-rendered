@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to set min_values per occurance when multiple_occurances is used - clap-rs/clap #3542</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to set min_values per occurance when multiple_occurances is used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3542">#3542</a>
+        opened by <a href="https://github.com/tmccombs">@tmccombs</a>
+        on 2022-03-07 07:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-03-07 07:40</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.5</p>
+<h3>Describe your use case</h3>
+<p>I have an option that supports multiple occurrences, but each occurrence is independent, and needs a minimum of 1 value passed to it.  I'm using <code>grouped_values_of</code> to get the groups of values. If I use <code>.min_values(1)</code>, then it requires that there is at least one value in total, not that there is one value per occurance.</p>
+<p>Here's some example code:</p>
+<pre><code class="language-rust">use clap::*; // 3.1.5
+
+fn main() {
+ let app = Command::new(&quot;test&quot;)
+ .arg(Arg::new(&quot;example&quot;).short('x').min_values(1).multiple_occurrences(true).value_name(&quot;x&quot;));
+ let matches = app.get_matches_from(&amp;[&quot;test&quot;, &quot;-x&quot;, &quot;a&quot;, &quot;-x&quot;]);
+ println!(&quot;{:?}&quot;, matches);
+
+}
+</code></pre>
+<p>This produces a successful match, but I want it to fail, because no argument is given to the second occurance of <code>-x</code>.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Ideally, <code>.min_values</code> would behave as I've described. And if the current behavior is unintentional , then this is probably a bug, and it might be worth changing. However, changing <code>min_values</code>'s behavior would technically be backwards incompatible, so it may be necessary to introduce a new api like <code>min_values_per_occurance</code> (and probably a similar <code>max_values_per_occurance</code>).</p>
+<h3>Alternatives, if applicable</h3>
+<p>The only alternative I know of is to have the application check that enough arguments are provided to each group returned by <code>grouped_values_of</code> rather than letting clap do the validation for me.</p>
+<h3>Additional Context</h3>
+<p>See https://github.com/sharkdp/fd/pull/960#issuecomment-1059998122.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @tmccombs on 2022-03-07 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-03-07 08:04</div>
+            <div class="timeline-body"><p>See also the workaround in https://github.com/sharkdp/fd/pull/960/commits/eb65a7e1cba4481ace80f9cfe065a65742a5a66e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-03-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-03-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-03-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2022-03-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-07 16:44</div>
+            <div class="timeline-body"><p>Thanks for reporting this!</p>
+<p>I had thought we had an issue for this (because I was aware of this and agree that this should change).</p>
+<p>However, I worry about people relying on this and we'd need to wait until 4.0, though we might be able to do it earlier as part of the <code>unstable-v4</code> feature flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3678.html">clap-rs/clap#3678</a> on 2022-05-02 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2688.html">clap-rs/clap#2688</a> on 2022-06-15 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 22:05</div>
+            <div class="timeline-body"><p>Missed this, its resolved via #2688.  The new <code>num_args</code> is per occurrence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-09 22:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:57 UTC
+    </footer>
+</body>
+</html>

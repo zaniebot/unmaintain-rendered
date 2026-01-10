@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow groups of groups - clap-rs/clap #5711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow groups of groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5711">#5711</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2024-08-30 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2024-08-30 20:30</div>
+            <div class="timeline-body"><p>A blocker for #4697 which is important for #3123 and #2621 is the ability to have a group own another group.</p>
+<p>API-wise, I suspect we'd change <code>ArgGroup::arg</code> to <code>ArgGroup::member</code> or <code>ArgGroup::child</code> to generalize it for taking either an arg or a group ID.</p>
+<ul>
+<li>To meet our compatibility goals,. this &quot;change&quot; would be a deprecation and a new function.<ul>
+<li>I'd recommend doing this with a PR that (1) adds the new function, (2) updates existing uses to the new function, (3) adds the deprecation notice</li>
+<li>We might need to soft-deprecate it and not apply the attribute because a true deprecation must be done on a point release</li>
+</ul>
+</li>
+</ul>
+<p>To unblock this, we'd need to update the debug assertions to make sure the <code>Id</code> is a valid Arg or Group <code>Id</code>.</p>
+<p>There is also the validation work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2024-08-30 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2024-08-30 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5700.html">clap-rs/clap#5700</a> on 2024-08-30 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ysndr">@ysndr</a> on 2024-09-04 22:08</div>
+            <div class="timeline-body"><p>I've been looking into this a bit more.</p>
+<p>Are you sure there are still &quot;debug assertions to make sure the Id is a valid Arg or Group Id&quot; in the project?</p>
+<p>Grepping for <code>debug_assert</code> didn't yield anything looking close to that.
+The assertions i found are apparently only checking for Id but don;t assert what that Id represents: [1].
+Also it seems to check <code>arg in group.args</code> against <em>both</em> arg_ids and group_ids: [2]
+That is to say, I dont think &quot;groups of groups&quot; are particularly <em>disallowed</em>.</p>
+<p>Variable naming is a bit biased, &quot;arg&quot; is everywhere around those methods even if it is explicitly checked against group_ids as well.</p>
+<p>Renaming the method(s) on <code>ArgGroup</code> is <em>relatively</em> straight forward (sans all the doc tests..), i figure this should actually go further a bit, also changing &quot;arg&quot; at the usage side to &quot;member&quot;.
+Since i'm particularly interested in the conflict side tho i might work on that first before hunting down umpteen &quot;arg&quot; variables that should be &quot;member&quot; instead.</p>
+<p>[1] https://github.com/ysndr/clap/blob/6539ab81c4858e051dfd2d76a984faec75c7b88d/clap_builder/src/builder/debug_asserts.rs#L307-L327</p>
+<p>[2] https://github.com/ysndr/clap/blob/6539ab81c4858e051dfd2d76a984faec75c7b88d/clap_builder/src/builder/debug_asserts.rs#L290-L305</p>
+<p>Edit:
+Turns out the handling for groups in [1] were prior changes of mine that snuck into the renaming commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-04 22:29</div>
+            <div class="timeline-body"><p>I'm a bit confused.  You pointed at code in <code>debug_asserts.rs</code> in 6539ab81c4858e051dfd2d76a984faec75c7b88d to show that child groups are checked but for 6539ab81c4858e051dfd2d76a984faec75c7b88d  github is reporting &quot;This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.&quot;.</p>
+<p>If I look in
+https://github.com/clap-rs/clap/blob/64e37904615c3e2df85fd38370beb5961a31d557/clap_builder/src/builder/debug_asserts.rs#L290-L299
+which is the latest commit for <code>master</code>
+https://github.com/clap-rs/clap/blob/master/clap_builder/src/builder/debug_asserts.rs#L290-L299
+that code is not there.</p>
+<p>This matches the behavior you saw in https://github.com/clap-rs/clap/pull/5700#discussion_r1735314380</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ysndr">@ysndr</a> on 2024-09-04 23:36</div>
+            <div class="timeline-body"><p>Oh my that happens when you start off with existing work and mess up your rebase.</p>
+<p>So those lines 290 - 300 were <em>my</em> changes from investigating the original subgroups approach.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:40 UTC
+    </footer>
+</body>
+</html>

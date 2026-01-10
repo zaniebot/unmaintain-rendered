@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand name without hyphen in help - clap-rs/clap #1431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand name without hyphen in help</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1431">#1431</a>
+        opened by <a href="https://github.com/chriskrycho">@chriskrycho</a>
+        on 2019-03-18 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chriskrycho">@chriskrycho</a> on 2019-03-18 18:49</div>
+            <div class="timeline-body"><p>Maintainer's notes</p>
+<ul>
+<li>We hope #1334 will provide a way to resolve this.  This is being left open to ensure this use case isn't lost in case a minimum or full solution doesn't include this</li>
+</ul>
+<hr />
+<!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<ul>
+<li>rustc 1.33.0 (2aa4c46cf 2019-02-28)</li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li>clap 2.32.0</li>
+</ul>
+<h3>Bug or Feature Request Summary</h3>
+<p>Add a flag which supports printing the name of an app subcommand without the hyphen instead of with a hyphen, for apps which do not use external commands.</p>
+<h3>Expected Behavior Summary</h3>
+<p>Clap apps can output <code>app subcommand</code> as the name of a subcommand when running <code>app subcommand --help</code>.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Clap apps can only output <code>app-subcommand</code> as the name of a subcommand when running <code>app subcommand --help</code>.</p>
+<h3>Steps to Reproduce the issue</h3>
+<ol>
+<li><code>App::new('app').subcommand(Subcommand::with_name('subcommand'))</code>.</li>
+<li>Run `<appname></li>
+</ol>
+<h3>Sample Code or Link to Sample Code</h3>
+<p><a href="https://github.com/notion-cli/notion/pulls">notion</a> is an app where we want subcommands to print like <code>notion install</code> <em>not</em> <code>notion-install</code>.</p>
+<h3>Debug output</h3>
+<p>Compile clap with cargo features <code>&quot;debug&quot;</code> such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>Paste Debug Output Here</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtucker-mozilla">@rtucker-mozilla</a> on 2019-11-27 13:22</div>
+            <div class="timeline-body"><p>Is there a way to disable this output alltogether?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @CreepySkeleton on 2020-02-01 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-02-01 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-02-01 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-02-01 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @CreepySkeleton on 2020-02-01 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-14 14:24</div>
+            <div class="timeline-body"><p>@CreepySkeleton If I want to do this, I just need to add a new <code>global_settings</code> right like <code>Subcommand::DisableHyphen</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-14 14:27</div>
+            <div class="timeline-body"><p>Unfortunately it's not that simple. We do <code>app._build()</code> before parsing which kind of propagates the app binary name to subcommands and the subcommand binary name becomes this. I have been planning to look at the binary name being used in usage messages for quite a while but it's not a priority for v3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pickfire">@pickfire</a> on 2020-03-14 15:04</div>
+            <div class="timeline-body"><p>@pksunkara But then it was marked is <code>D: easy</code>? I thought it seemed easy but not. T_T</p>
+<p>Tests are here:</p>
+<pre><code class="language-rust">static ISSUE_1431: &amp;str = &quot;ctest-foo 
+
+USAGE:
+    ctest foo
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information&quot;;
+
+#[test] ▶Run Test
+fn help_subcommand_without_hyphen() {
+    let app = App::new(&quot;ctest&quot;).subcommand(App::new(&quot;foo&quot;));
+    assert!(utils::compare_output(
+        app,
+        &quot;ctest foo -h&quot;,
+        ISSUE_1431,
+        false
+    ));
+}
+</code></pre>
+<p>It took me some time to find the trailing space that fails the test, <code>ctest-foo </code>. Especially when I cannot see or copy anything correctly:</p>
+<details>
+  <summary>Click to expand!</summary>
+
+<pre><code>...
+failures:
+
+---- help_subcommand_without_hyphen stdout ----
+
+--&gt; left
+ctest-foo
+
+USAGE:
+    ctest foo
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+--&gt; right
+ctest-foo
+
+USAGE:
+    ctest foo
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+--
+thread 'help_subcommand_without_hyphen' panicked at 'assertion failed: utils::compare_output(app, &quot;ctest foo -h&quot;, ISSUE_1431, false)', tests/help.rs:1667:5
+
+
+failures:
+    help_subcommand_without_hyphen
+
+test result: FAILED. 59 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @pksunkara on 2020-03-14 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> added by @pksunkara on 2020-03-14 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-02-22 09:30</div>
+            <div class="timeline-body"><p>Related to #1382</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2564.html">clap-rs/clap#2564</a> on 2021-06-22 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../geldata/gel-cli/issues/415.html">geldata/gel-cli#415</a> on 2021-08-02 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2738.html">clap-rs/clap#2738</a> on 2021-08-25 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/115.html">epage/clapng#115</a> on 2021-12-06 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> removed by @epage on 2021-12-08 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-08 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1382.html">clap-rs/clap#1382</a> on 2021-12-08 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> removed by @epage on 2021-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2021-12-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 19:50</div>
+            <div class="timeline-body"><p>My question is why is <code>-</code> present and why shouldn't we remove it?</p>
+<p>I see someone commented about external subcommands.  I'd be curious to see for that would look like that justifies putting the <code>-</code> in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-10 14:19</div>
+            <div class="timeline-body"><p>I think the standard of treating subcommands name is always <code>maincommand-subcommand</code>. For example, <code>git</code> does that. If you want to read info about <code>git commit</code>, you check <code>man git-commit</code> etc..</p>
+<p>Also, <code>git</code> automatically picks up external commands by doing the same. <code>git-trim</code> is picked up by <code>git trim</code>.</p>
+<p>Another aspect from your comment in #1382 is:</p>
+<blockquote>
+<p>One other aspect of this is that we can have per-subcommand versions.</p>
+</blockquote>
+<p><code>app subcommand</code> doesn't give the impression that it is one command while <code>app-subcommand</code> does. And that command is actually the subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature: subcommand name without hyphen" to "Subcommand name without hyphen in help" by @epage on 2021-12-10 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 17:06</div>
+            <div class="timeline-body"><p>So I've only played with git and docker so far. My original assumption when starting to look at commands was that <code>git</code> is a bit unique due to its history of being composed of a lot of a pile of scripts, assuming everything was originally external commands.</p>
+<p>Neither mentions the command name, only the usage.  The usage does not use <code>-</code>.</p>
+<p>The man pages do use <code>-</code>.</p>
+<p>I'd be interested in exploring other examples and considering whether we should reduce some of the boilerplate, not just whitespace in #3096.  That might also help with help2man.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abatkin">@abatkin</a> on 2021-12-10 17:33</div>
+            <div class="timeline-body"><p>I think Git is the exception here. With most other tools, the subcommand is not &quot;part&quot; of the main command. <code>docker image list</code>, <code>aws ec2 describe-instances</code>, <code>dnf update</code>. Even with Git, the safest way of accessing the manpage is <code>git subcommand --help</code> because that works on systems without <code>man</code> (like Windows, where it opens a browser with the docs instead).</p>
+<p>Update: On my system, all the git subcommands (i.e. <code>git-status</code>) are hidden away, well outside the user's <code>PATH</code>. It is difficult (and discouraged) to run the subcommands directly (i.e. <code>/usr/libexec/git-core/git-status</code>) and the fact that <code>git status</code> runs that binary is an implementation detail and likely not guaranteed. <code>git status</code> is the correct incantation, and all of the documentation (including what it displays if you run something like <code>git status --blargh</code>) report the command back as <code>git status [&lt;options&gt;] ...</code> not <code>git-status</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1334.html">clap-rs/clap#1334</a> on 2022-01-04 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 14:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I think Git is the exception here. With most other tools, the subcommand is not &quot;part&quot; of the main command. <code>docker image list</code>, <code>aws ec2 describe-instances</code>, <code>dnf update</code>. Even with Git, the safest way of accessing the manpage is <code>git subcommand --help</code> because that works on systems without <code>man</code> (like Windows, where it opens a browser with the docs instead).</p>
+</blockquote>
+<p>docker doesn't show the &quot;name&quot; but <code>man docker-image</code>  is used to access the man page.</p>
+<p>apt does show the <code>apt</code> name but <code>man apt-get</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 14:08</div>
+            <div class="timeline-body"><p>On thought I had is in https://github.com/clap-rs/clap/issues/1334 we are looking at allowing opting in to flattening subcommand help output, like <code>git stash -h</code>.  When flattening, we would only want to show the parent command (<code>git-stash</code> in <code>git stash -h</code> and <code>git-stash pop</code> in <code>git stash pop -h</code>).  Trying to decide whether to bake that into #1334 or offer it as a separate flag.  I'm leaning towards baking-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kolektiv">@kolektiv</a> on 2022-02-01 22:46</div>
+            <div class="timeline-body"><p>Another &quot;second&quot; for subcommand help being a) potentially slightly more configurable and b) defaulting to non-hyphenated. I'm not sure it's user obvious. In the worst case, it could easily be interpreted as an expectation that the user should type <code>app-subcommand</code> to invoke, rather than <code>app subcommand</code> and while they might get very lucky with oddities like git, there will be no <code>app-subcommand</code> binary on their system with this.</p>
+<p>Personally, I'd be more than happy if the title at least only ever showed the top-level app name. The actual subcommand is pretty clear from the usage section, as well as any actual help text that's been written.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> removed by @epage on 2022-02-03 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2022-02-03 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-04 21:38</div>
+            <div class="timeline-body"><p>btw the fix for #1474 will allow users to specify their own display names for commands / subcommands that can be used for help.  Its currently at the phase of explicit opt-in with providing an <code>help_template</code> but we plan to make use the display name in the default help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1474.html">clap-rs/clap#1474</a> on 2022-05-04 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3693.html">clap-rs/clap#3693</a> on 2022-05-05 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-05 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-05 17:02</div>
+            <div class="timeline-body"><p>With #3693, we are putting it in users hands for making the display name in the help how they want it.</p>
+<p>In https://github.com/clap-rs/clap/discussions/3695#discussioncomment-2694978 I talk about how to programmatically generate an alternative display name</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:57 UTC
+    </footer>
+</body>
+</html>

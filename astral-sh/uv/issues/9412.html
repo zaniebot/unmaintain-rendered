@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locking / resolving a version without appropriate distribution wheels available - astral-sh/uv #9412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Locking / resolving a version without appropriate distribution wheels available</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9412">#9412</a>
+        opened by <a href="https://github.com/jonaslb">@jonaslb</a>
+        on 2024-11-25 10:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jonaslb">@jonaslb</a> on 2024-11-25 10:05</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Currently, the <code>eccodes</code> library's latest release, v. 2.39.0, is released without source or manylinux builds. It's an error on their side for sure, and I've created an issue in their repo. However, in spite of this, <code>uv</code> still resolves this latest problematic version when locking, and it means that <code>eccodes</code> can't be added without version specifier:</p>
+<pre><code class="language-sh">$ uv add eccodes
+Resolved 7 packages in 821ms
+error: Distribution `eccodes==2.39.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>Specifying the old version (which has the right files on PyPI) works fine. However, in my projects I don't depend directly on eccodes, it's somewhere down the dependency tree, so I'd prefer not having to explicitly pin it in my pyproject file.</p>
+<p>So, I'm not sure if it should be considered a bug in uv, but it's certainly annoying that a dependency somewhere in the tree can create this kind of disturbance.</p>
+<p>Likely related (don't know if considered dupe):</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/7816</li>
+<li>https://github.com/astral-sh/uv/issues/8375</li>
+<li>https://github.com/astral-sh/uv/issues/8492</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 14:17</div>
+            <div class="timeline-body"><p>Ah yeah, this is expected, though it's understandably not a great experience. It's another case of the problem I outlined here: https://github.com/astral-sh/uv/issues/5182#issuecomment-2237858277. I'd prefer to track in that issue. I think right now, you may want to set a constraint on your end (with <code>constraint-dependencies</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-25 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonaslb">@jonaslb</a> on 2025-02-28 13:34</div>
+            <div class="timeline-body"><p>Returning to this because I just had the issue again with another ecmwf library, <code>eckitlib</code>, which in the latest version only has macos wheels. Since #5182 was closed, I believe the new tracking issue is #9711.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-28 13:37</div>
+            <div class="timeline-body"><p>uv now supports <a href="https://docs.astral.sh/uv/concepts/resolution/#required-environments">required environments</a> for which wheels must exist for a version to be selected, this should match the original problem well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11855.html">astral-sh/uv#11855</a> on 2025-02-28 14:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:38 UTC
+    </footer>
+</body>
+</html>

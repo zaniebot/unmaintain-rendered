@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the default derive for booleans should also handle explicit `--flag=true`, `--flag=false` - clap-rs/clap #5577</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>the default derive for booleans should also handle explicit `--flag=true`, `--flag=false`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5577">#5577</a>
+        opened by <a href="https://github.com/AaronKutch">@AaronKutch</a>
+        on 2024-07-09 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AaronKutch">@AaronKutch</a> on 2024-07-09 18:37</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4</p>
+<h3>Describe your use case</h3>
+<p>I searched around for related issues but only saw stuff like --flag/--no-flag which is not what this is about, or posts that were actually using this pattern in examples (I'm not the first one to need this, and have seen it elsewhere). In things such as automated scripts, sometimes I have a pattern of usage like passing <code>format!(&quot;... --flag={val}&quot;)</code>. However, if the value is a boolean, it does not allow things like <code>--flag=true</code> or <code>--flag=false</code>, only passing <code>--flag</code> by itself which requires annoying conditionals in the scripts. What I have to do is apply</p>
+<pre><code>#[clap(
+      long,
+      default_missing_value(&quot;true&quot;),
+      default_value(&quot;false&quot;),
+      num_args(0..=1),
+      action = clap::ArgAction::Set,
+)]
+</code></pre>
+<p>to every single boolean (note that it still allows <code>--flag</code> by itself and the absence of the flag to work as before). This is obviously quite annoying to use if there are a lot of booleans across many structs.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Simply make this the default for booleans. I feel like this is a property of some other command argument systems I've seen before, but can't remember.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @AaronKutch on 2024-07-09 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2024-07-09 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2024-07-09 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-09 19:33</div>
+            <div class="timeline-body"><p>As proposed, this would be inappropriate due to the <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.num_args">WARNING on <code>num_args</code></a>.</p>
+<p>We could add <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.require_equals"><code>require_equals(true)</code></a> but I'm at least not a fan of the inconsistency of sometimes <code>=</code> is needed and sometimes it isn't.</p>
+<p>This would also be a dramatic shift away from the builder API.  This would also be too much policy to put in the builder API.</p>
+<p>At this time, I am against this change but I'm ok with leaving this open to see what other feedback comes in, either way.  We should note that an issue like this is more likely to collect feedback in favor of it than against because only people wanting this will be actively looking for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-07-09 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AaronKutch">@AaronKutch</a> on 2024-07-09 20:36</div>
+            <div class="timeline-body"><p>The way I think about it, is that the normal form would always be to give values to flags, except that since booleans have only two states, they can be used without arguments. I see however how it would cause problems with positional arguments. Maybe some kind of shorthand that works in place of <code>#[derive(long)]</code> but adds the functionality for booleans could be added?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kokic/kodama/issues/14.html">kokic/kodama#14</a> on 2025-03-15 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:37 UTC
+    </footer>
+</body>
+</html>

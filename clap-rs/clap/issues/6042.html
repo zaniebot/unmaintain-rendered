@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `ArgMatches::indicies_of` with an argument action of `ArgAction::Count` returns incorrect indicies - clap-rs/clap #6042</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `ArgMatches::indicies_of` with an argument action of `ArgAction::Count` returns incorrect indicies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6042">#6042</a>
+        opened by <a href="https://github.com/MEhrn00">@MEhrn00</a>
+        on 2025-06-22 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MEhrn00">@MEhrn00</a> on 2025-06-22 20:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.87.0 (17067e9ac 2025-05-09)</p>
+<h3>Clap Version</h3>
+<p>4.5.40</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Arg, ArgAction, Command};
+
+fn main() {
+    let cmd = Command::new(&quot;test&quot;).arg(
+        Arg::new(&quot;count&quot;)
+            .short('c')
+            .long(&quot;count&quot;)
+            .action(ArgAction::Count),
+    );
+
+    let matches = cmd.get_matches();
+
+    println!(&quot;count: {}&quot;, matches.get_count(&quot;count&quot;));
+
+    let mut count_indicies = Vec::new();
+
+    if let Some(indicies) = matches.indices_of(&quot;count&quot;) {
+        count_indicies.extend(indicies);
+    }
+
+    println!(&quot;count indicies: {count_indicies:?}&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the above example with zero arguments passed to the program and with any number of <code>-c</code> or <code>--count</code> flags passed on the command line.</p>
+<pre><code class="language-shell"># No arguments
+cargo run --
+
+# Passing '-c' 4 times
+cargo run -- -c -c -c -c
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Clap misinterprets the argument indicies when zero <code>-c</code> flags are passed. The <code>count</code> value is 0 but the <code>.indicies_of()</code> reports that the flag was found at index 1.</p>
+<pre><code class="language-shell">cargo run --
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/argactioncount`
+count: 0
+count indicies: [1]
+</code></pre>
+<p>Running the example with any number of <code>-c/--count</code> flags will only report the last index when calling <code>.indicies_of()</code>.</p>
+<pre><code class="language-shell"> cargo run -- -c -c -c -c
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/argactioncount -c -c -c -c`
+count: 4
+count indicies: [4]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Running the example without passing any command line flags should report 0 indicies.</p>
+<pre><code class="language-shell">cargo run --
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/argactioncount`
+count: 0
+count indicies: []
+</code></pre>
+<p>The <code>.indicies_of()</code> function should list each index where <code>-c/--count</code> is passed on the command line.</p>
+<pre><code class="language-shell">cargo run -- -c -c -c -c
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/argactioncount`
+count: 0
+count indicies: [1, 2, 3, 4]
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>cargo run --
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/argactioncount`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:count:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:count: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:count: wasn't used
+[clap_builder::parser::parser]Parser::react action=Count, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;count&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;0&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+count: 0
+count indicies: [1]
+</code></pre>
+<pre><code>cargo run -- -c -c -c -c
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/argactioncount -c -c -c -c`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;test&quot;
+[clap_builder::builder::command]Command::_propagate:test
+[clap_builder::builder::command]Command::_check_help_and_version:test expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-c&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;c&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=Count, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;count&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;count&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;count&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;1&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-c&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;c&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=Count, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;count&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;count&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;count&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;2&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-c&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;c&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=Count, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;count&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;count&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;count&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;3&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-c&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;c&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['c']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:c: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=Count, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;count&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;count&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;count&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;4&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:count:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:count: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:count: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;count&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;count&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;count&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;count&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;count&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+count: 4
+count indicies: [4]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @MEhrn00 on 2025-06-22 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-06-23 14:28</div>
+            <div class="timeline-body"><p>Exploring some variants on <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=79a0580f35e90f3cb93d3cc2ee2adfff">the playground</a></p>
+<pre><code class="language-rust">use clap::{Arg, ArgAction, Command};
+
+fn main() {
+    let cmd = Command::new(&quot;test&quot;).args([
+        Arg::new(&quot;flag&quot;)
+            .short('f')
+            .long(&quot;flag&quot;)
+            .action(ArgAction::SetTrue),
+        Arg::new(&quot;count&quot;)
+            .short('c')
+            .long(&quot;count&quot;)
+            .action(ArgAction::Count),
+        Arg::new(&quot;set&quot;)
+            .short('s')
+            .long(&quot;set&quot;)
+            .action(ArgAction::Set)
+            .overrides_with(&quot;set&quot;),
+    ]);
+
+    let args: &amp;[&amp;[&amp;str]] = &amp;[
+        &amp;[&quot;test&quot;],
+        &amp;[&quot;test&quot;, &quot;-c&quot;],
+        &amp;[&quot;test&quot;, &quot;-cccc&quot;],
+        &amp;[&quot;test&quot;, &quot;-c&quot;, &quot;-c&quot;],
+        &amp;[&quot;test&quot;, &quot;-f&quot;],
+        &amp;[&quot;test&quot;, &quot;-sone&quot;],
+        &amp;[&quot;test&quot;, &quot;-sone&quot;, &quot;-stwo&quot;],
+    ];
+    for args in args {
+        println!(&quot;args: {args:?}&quot;);
+        let matches = cmd.clone().get_matches_from(*args);
+
+        println!(&quot;  count: {}&quot;, matches.get_count(&quot;count&quot;));
+        let indicies = matches
+            .indices_of(&quot;count&quot;)
+            .map(|i| i.collect::&lt;Vec&lt;_&gt;&gt;())
+            .unwrap_or_default();
+        println!(&quot;  count indicies: {indicies:?}&quot;);
+
+        println!(&quot;  flag: {}&quot;, matches.get_flag(&quot;flag&quot;));
+        let indicies = matches
+            .indices_of(&quot;flag&quot;)
+            .map(|i| i.collect::&lt;Vec&lt;_&gt;&gt;())
+            .unwrap_or_default();
+        println!(&quot;  flag indicies: {indicies:?}&quot;);
+        println!(&quot;  set: {:?}&quot;, matches.get_one::&lt;String&gt;(&quot;set&quot;));
+        let indicies = matches
+            .indices_of(&quot;set&quot;)
+            .map(|i| i.collect::&lt;Vec&lt;_&gt;&gt;())
+            .unwrap_or_default();
+        println!(&quot;  set indicies: {indicies:?}&quot;);
+    }
+}
+
+</code></pre>
+<pre><code>args: [&quot;test&quot;]
+  count: 0
+  count indicies: [2]
+  flag: false
+  flag indicies: [1]
+  set: None
+  set indicies: []
+args: [&quot;test&quot;, &quot;-c&quot;]
+  count: 1
+  count indicies: [1]
+  flag: false
+  flag indicies: [2]
+  set: None
+  set indicies: []
+args: [&quot;test&quot;, &quot;-cccc&quot;]
+  count: 4
+  count indicies: [4]
+  flag: false
+  flag indicies: [5]
+  set: None
+  set indicies: []
+args: [&quot;test&quot;, &quot;-c&quot;, &quot;-c&quot;]
+  count: 2
+  count indicies: [2]
+  flag: false
+  flag indicies: [3]
+  set: None
+  set indicies: []
+args: [&quot;test&quot;, &quot;-f&quot;]
+  count: 0
+  count indicies: [2]
+  flag: true
+  flag indicies: [1]
+  set: None
+  set indicies: []
+args: [&quot;test&quot;, &quot;-sone&quot;]
+  count: 0
+  count indicies: [4]
+  flag: false
+  flag indicies: [3]
+  set: Some(&quot;one&quot;)
+  set indicies: [2]
+args: [&quot;test&quot;, &quot;-sone&quot;, &quot;-stwo&quot;]
+  count: 0
+  count indicies: [6]
+  flag: false
+  flag indicies: [5]
+  set: Some(&quot;two&quot;)
+  set indicies: [4]
+</code></pre>
+<p>iirc the overiding principle is that there is a one-to-one of values to indices.  For flags, they are treated as a single value.</p>
+<ul>
+<li>So if you override yourself, the previous indices are removed</li>
+<li>Counts are like override and the previous indices are removed</li>
+<li>Indices are provided for all values.  For defaults and env variables, we just keep counting, putting them &quot;at the end&quot;</li>
+</ul>
+<p>Not all of this behavior is <a href="https://docs.rs/clap/latest/clap/struct.ArgMatches.html#method.indices_of">currently documented</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2025-06-23 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MEhrn00">@MEhrn00</a> on 2025-06-24 22:42</div>
+            <div class="timeline-body"><p>I was able to do what I needed to do in a different way but the behavior is a little bit confusing.</p>
+<p>I followed the <a href="https://docs.rs/clap/latest/clap/_cookbook/find/index.html"><code>clap::_cookbook::find</code></a> example to get position-sensitive flags.</p>
+<p>I assumed that even with the overriding principle, <code>.indicies_of()</code> would still return the indicies of each occurence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-06-26 14:51</div>
+            <div class="timeline-body"><p>Flags are a single value and so only have one index. As this is working as expected, I'm going to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-06-26 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uvx` doesn't upgrade when existing tool is installed - astral-sh/uv #5797</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uvx` doesn't upgrade when existing tool is installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5797">#5797</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-05 18:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 18:44</div>
+            <div class="timeline-body"><p>This is a confusing workflow:</p>
+<pre><code>❯ uv tool install ruff==0.0.60
+Resolved 1 package in 5ms
+Installed 1 package in 3ms
+ + ruff==0.0.60
+Installed 1 executable: ruff
+
+❯ uvx ruff --version
+ruff 0.0.60
+
+❯ uvx --upgrade ruff --version
+ruff 0.0.60
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-05 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-05 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 18:47</div>
+            <div class="timeline-body"><p>Not 100% sure what the semantics should be here, it's actually pretty tricky. <em>Even if</em> we respected <code>--upgrade</code> here properly, we wouldn't upgrade the installed tool past <code>0.0.60</code>, since the receipt has <code>ruff==0.0.60</code> in it. So, like, even if you did <code>uvx --upgrade ruff</code> and we gave you latest Ruff, running <code>uvx ruff</code> again would... give you <code>0.0.60</code>.</p>
+<p>I wonder if we should avoid using installed tools <em>ever</em> in <code>uvx</code> now that we have cached environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 18:48</div>
+            <div class="timeline-body"><p>\cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-05 18:52</div>
+            <div class="timeline-body"><p>I think using the installed tool wasn't intended as a performance thing, rather it's part of the experience to use the version you've chosen to install by default. This becomes more important when we consider project-level tools where <code>uvx</code> would invoke the project-specific version by default. We could reconsider that experience.</p>
+<p>The <code>--isolated</code> flag was intended to ignore the installed version. Is there an equivalent for that now?</p>
+<p>A <code>--latest</code> flag was discussed in the design, should we add that?</p>
+<p>I don't think <code>--upgrade</code> is even intended to be available in <code>uvx</code> since it's an ephemeral environment? If resolver options are passed, we should probably just ignore the receipt entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 18:54</div>
+            <div class="timeline-body"><p>Yeah <code>--isolated</code> already exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 18:55</div>
+            <div class="timeline-body"><p>I guess we can ignore the installed tool if you pass <code>--upgrade</code> or <code>--reinstall</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 18:57</div>
+            <div class="timeline-body"><p>@zanieb -- I might expect <code>ruff@latest</code> to work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5799.html">astral-sh/uv#5799</a> on 2024-08-05 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-05 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-06 01:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

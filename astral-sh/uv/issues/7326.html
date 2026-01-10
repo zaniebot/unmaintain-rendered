@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent error output when multiple PEP violations are present in pyproject.toml - astral-sh/uv #7326</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent error output when multiple PEP violations are present in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7326">#7326</a>
+        opened by <a href="https://github.com/benjaminbauer">@benjaminbauer</a>
+        on 2024-09-12 08:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benjaminbauer">@benjaminbauer</a> on 2024-09-12 08:47</div>
+            <div class="timeline-body"><p>I am running <code>uv lock</code> (0.4.9, linux/arm) on a <code>uv init example</code> project where I added:</p>
+<ol>
+<li><code>authors = [&quot;a&quot;]</code>, which as I realized is wrong, but poetry does not complain</li>
+<li><code>dependencies = [&quot;ruff == 0.6.4&quot;]</code></li>
+</ol>
+<p>and <code>uv lock</code> works w/o errors:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+authors = [&quot;a&quot;]
+dependencies = [&quot;ruff == 0.6.4&quot;]
+</code></pre>
+<p>When I introduce a typo in the dependency specification (<code>=~</code> instead of <code>~=</code>):</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+authors = [&quot;a&quot;]
+dependencies = [&quot;ruff =~ 0.6.4&quot;]
+</code></pre>
+<p><code>uv lock</code> fails with</p>
+<pre><code>Using Python 3.11.9 interpreter at: /usr/local/bin/python3.11
+error: Failed to build: `example @ file:///tmp/test-uv/example`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+configuration error: `project.authors[0]` must be object
+GIVEN VALUE:
+    &quot;a&quot;
+
+OFFENDING RULE: 'type'
+
+DEFINITION:
+    {
+        &quot;$id&quot;: &quot;#/definitions/author&quot;,
+        &quot;title&quot;: &quot;Author or Maintainer&quot;,
+        &quot;$comment&quot;: &quot;https://peps.python.org/pep-0621/#authors-maintainers&quot;,
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;additionalProperties&quot;: false,
+        &quot;properties&quot;: {
+            &quot;name&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;$$description&quot;: [
+                    &quot;MUST be a valid email name, i.e. whatever can be put as a name, before an&quot;,
+                    &quot;email, in :rfc:`822`.&quot;
+                ]
+            },
+            &quot;email&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;format&quot;: &quot;idn-email&quot;,
+                &quot;description&quot;: &quot;MUST be a valid email address&quot;
+            }
+        }
+    }
+
+For more details about `format` see
+https://validate-pyproject.readthedocs.io/en/latest/api/validate_pyproject.formats.html
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 302, in _get_build_requires
+    self.run_setup()
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 503, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/__init__.py&quot;, line 117, in setup
+    return distutils.core.setup(**attrs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/_distutils/core.py&quot;, line 158, in setup
+    dist.parse_config_files()
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/_virtualenv.py&quot;, line 20, in parse_config_files
+    result = old_parse_config_files(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/dist.py&quot;, line 608, in parse_config_files
+    pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 71, in apply_configuration
+    config = read_configuration(filepath, True, ignore_option_errors, dist)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 139, in read_configuration
+    validate(subset, filepath)
+  File &quot;/home/vscode/.cache/uv/builds-v0/.tmpg1sWZn/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 60, in validate
+    raise ValueError(f&quot;{error}\n{summary}&quot;) from None
+ValueError: invalid pyproject.toml config: `project.authors[0]`.
+configuration error: `project.authors[0]` must be object
+---
+</code></pre>
+<h1>What I observe</h1>
+<ol>
+<li>complains about the <code>authors</code> field (which it accepted before)</li>
+<li>does not mention the error I introduced with <code>=~</code></li>
+</ol>
+<h1>What I expect</h1>
+<ol>
+<li>the <code>=~</code> should be mentioned</li>
+<li>the wrong type of <code>authors</code> should always or never be mentioned (maybe as a warning?)</li>
+</ol>
+<h1>What I suspect</h1>
+<p>When I fix/remove the <code>authors</code> entry, <code>uv lock</code> correctly fails, mentioning the faulty dependency spec. So the error output is generated only on the first encountered error? If that is true, why does it not fail, when only the <code>authors</code> field is faulty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 00:29</div>
+            <div class="timeline-body"><p>For what it's worth, that error isn't coming from uv. It's coming from setuptools which is attempting to build your project.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

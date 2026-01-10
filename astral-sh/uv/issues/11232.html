@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflicting groups should handle conflicting inclusions automatically - astral-sh/uv #11232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conflicting groups should handle conflicting inclusions automatically</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11232">#11232</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-02-05 04:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 04:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using the <code>include-group</code> directive in dependency groups, uv does not propagate dependency group conflicts automatically. Instead, the conflicts must be manually enumerated. uv should be able to do this? Either by retaining the provenance of the included dependencies, or by just filling in more conflicts for the user before forwarding to the resolver.</p>
+<h3>Example</h3>
+<p>The following is required</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[dependency-groups]
+dev = [
+  { include-group = &quot;test&quot; },
+]
+test = [&quot;tox&gt;4&quot;]
+magic = [&quot;tox&lt;4&quot;]
+
+[tool.uv]
+conflicts = [
+  [
+    { group = &quot;test&quot; },
+    { group = &quot;magic&quot; },
+  ],
+  [
+    { group = &quot;dev&quot; },
+    { group = &quot;magic&quot; },
+  ], 
+]
+</code></pre>
+<p>But I would like to just do</p>
+<pre><code class="language-toml">[tool.uv]
+conflicts = [
+  [
+    { group = &quot;test&quot; },
+    { group = &quot;magic&quot; },
+  ],
+]
+</code></pre>
+<p>which fails with</p>
+<pre><code>❯ uv lock
+  × No solution found when resolving dependencies:
+  ╰─▶ Because example:magic depends on tox&lt;4 and example:dev depends on tox&gt;4, we can conclude that example:dev and
+      example:magic are incompatible.
+      And because your project requires example:dev and example:magic, we can conclude that your project's requirements
+      are unsatisfiable.
+</code></pre>
+<p>While this example is contrived, you can imagine more complicated examples with multiple nested group inclusions and conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-02-05 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 04:19</div>
+            <div class="timeline-body"><p>cc @BurntSushi just curious for your take on feasibility here.</p>
+<p>Does something similar apply to extras since those can reference other extras too? I'd need to check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-02-05 04:20</div>
+            <div class="timeline-body"><p>Here's the real world example where this came up https://github.com/gaborbernat/datamodel-code-generator/commit/b654b43e7f5d84d78788b60b4976ce57ba9f50e1, <code>dev</code> needs to be included otherwise things fail, even though only <code>pkg-meta</code> conflicts....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-05 12:18</div>
+            <div class="timeline-body"><blockquote>
+<p>or by just filling in more conflicts for the user before forwarding to the resolver.</p>
+</blockquote>
+<p>I think this implementation path would be pretty feasible. I think this is ultimately what you would have to do anyway. As in, I don't see how the resolver could do anything better per se given knowledge that one group references another.</p>
+<p>As for extras, I'm actually not sure if you can do this? Is there syntax for referring to a sibling extra in the same package?</p>
+<p>Overall I think the main concern I'd have here is that this could make it very easy for the number of conflicts to grow large. And that you could have a number of conflicts that isn't proportional to the actual written down declared conflicts. And this matters because increasing the number of conflicts means increasing the number of resolver forks, which can slow down resolution. But this is a very vague hand-wavy concern, and I don't think it's enough of a concern to out-weigh the benefits here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>As for extras, I'm actually not sure if you can do this? Is there syntax for referring to a sibling extra in the same package?</p>
+</blockquote>
+<p>Of course! People frequently use this to make an <code>all</code> group.</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+dev = [&quot;example[test]&quot;]
+test = [&quot;tox&gt;4&quot;]
+magic = [&quot;tox&lt;4&quot;]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;test&quot; },
+    { extra = &quot;magic&quot; },
+  ],
+]
+</code></pre>
+<p>which fails with</p>
+<pre><code>❯ uv lock
+  × No solution found when resolving dependencies:
+  ╰─▶ Because example[magic] depends on tox&lt;4 and example[dev] depends on tox&gt;4, we can conclude that example[dev] and
+      example[magic] are incompatible.
+      And because your project requires example[dev] and example[magic], we can conclude that your project's requirements
+      are unsatisfiable.
+</code></pre>
+<blockquote>
+<p>And that you could have a number of conflicts that isn't proportional to the actual written down declared conflicts. And this matters because increasing the number of conflicts means increasing the number of resolver fork</p>
+</blockquote>
+<p>If the declared conflict is correct, then the transitive inferred conflict is strictly necessary for them to perform a successful resolution at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-05 15:18</div>
+            <div class="timeline-body"><p>Derp, I tried that, but I had a typo.</p>
+<p>So yeah, it probably makes sense to do this for extras as well. I think it only requires a shallow traversal of optional dependencies here? As in, we don't need the full dependency tree to setup the conflicts. I think that would be harder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12005.html">astral-sh/uv#12005</a> on 2025-03-06 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-03-07 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-03-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-03-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TorchSim/torch-sim/pulls/188.html">TorchSim/torch-sim#188</a> on 2025-05-12 17:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

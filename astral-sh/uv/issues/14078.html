@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running with JIT compilation enabled? - astral-sh/uv #14078</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Running with JIT compilation enabled?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14078">#14078</a>
+        opened by <a href="https://github.com/michealroberts">@michealroberts</a>
+        on 2025-06-16 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-06-16 15:36</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>It seems like running a script with <code>PYTHON_JIT=1</code> does not use JIT compilation ... for example:</p>
+<pre><code class="language-bash">PYTHON_JIT=1 uv run python example.py
+</code></pre>
+<p>I'd expect in the following:</p>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    import sysconfig
+
+    config = sysconfig.get_config_var(&quot;PY_CORE_CFLAGS&quot;)
+
+    print(config)
+</code></pre>
+<p>Somewhere to see Py_JIT or similar ... however, this is what is printed:</p>
+<pre><code class="language-bash">-fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fno-semantic-interposition -flto -fuse-linker-plugin -ffat-lto-objects -flto-partition=none -g -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration -fvisibility=hidden -fprofile-use -fprofile-correction -I./Include/internal -I./Include/internal/mimalloc -I. -I./Include -fPIC -DPy_BUILD_CORE
+</code></pre>
+<p>For context, running <code>uv run python --version</code>, I see the following:</p>
+<p><code>3.13.3</code></p>
+<p>So the Python version is JIT ready.</p>
+<h3>Platform</h3>
+<p>Linux 6.14.8-orbstack-00288-g80b66077b748-dirty aarch64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @michealroberts on 2025-06-16 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-16 16:56</div>
+            <div class="timeline-body"><p>Why is <code>PY_CORE_FLAGS</code> what you're using to see if the JIT is enabled? Are you getting that from this old thread? https://discuss.python.org/t/jit-build-not-working-3-13/60128</p>
+<pre><code>❯ uv run --managed-python -p 3.13 python -m sysconfig | grep jit
+	CONFIG_ARGS = &quot;'--build=aarch64-apple-darwin' '--host=aarch64-apple-darwin' '--prefix=/install' '--with-openssl=/var/folders/y4/8dcllrc96x32z0w3fgrlx6_m0000gn/T/tmprnjw5hhq/tools/deps' '--with-system-expat' '--with-system-libmpdec' '--without-ensurepip' '--enable-shared' '--with-mimalloc' '--enable-optimizations' '--enable-experimental-jit=yes-off' '--with-lto' '--with-build-python=/var/folders/y4/8dcllrc96x32z0w3fgrlx6_m0000gn/T/tmprnjw5hhq/tools/host/bin/python3.13' 'ac_cv_lib_intl_textdomain=no' 'ac_cv_func_ptsname_r=no' '--with-dbmliborder=ndbm' 'build_alias=aarch64-apple-darwin' 'host_alias=aarch64-apple-darwin' 'PKG_CONFIG=pkg-config --static' 'PKG_CONFIG_PATH=/var/folders/y4/8dcllrc96x32z0w3fgrlx6_m0000gn/T/tmprnjw5hhq/tools/deps/share/pkgconfig:/var/folders/y4/8dcllrc96x32z0w3fgrlx6_m0000gn/T/tmprnjw5hhq/tools/deps/lib/pkgconfig' 'CC=clang' 'CFLAGS=-arch arm64 -mmacosx-version-min=11.0 -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-undef-prefix -fPIC -Werror=unguarded-availability-new' 'LDFLAGS=-arch arm64 -mmacosx-version-min=11.0 -LModules/_hacl' 'CPPFLAGS=-arch arm64 -mmacosx-version-min=11.0 -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-undef-prefix -fPIC -Werror=unguarded-availability-new'&quot;
+</code></pre>
+<p>We set <code>--enable-experimental-jit=yes-off</code>. <code>PYTHON_JIT=1</code> does enable it.</p>
+<p>I used the demo script from that thread...</p>
+<pre><code class="language-python">import time
+import types
+import _opcode
+
+def workload_func():
+    def inner():
+        [y for y in [x for x in range(5000)]]
+    [inner() for x in range(50)]
+
+def run():
+    def inner():
+        [workload_func() for x in range(10)]
+    return inner
+
+def main():
+    # use fast local variable
+    local_func = run()
+
+    # Warm up?
+    [local_func() for x in range(100)]
+
+    t0 = time.perf_counter()
+    [local_func() for x in range(100)]
+    dt = time.perf_counter() - t0
+    print(f&quot;Took {dt} seconds.&quot;)
+    
+
+    print(f&quot;{is_jitted(workload_func)=}&quot;)
+    print(f&quot;{is_jitted(run)=}&quot;)
+
+def is_jitted(f: types.FunctionType) -&gt; bool:
+    for i in range(0, len(f.__code__.co_code), 2):
+        try:
+            print(f&quot;Valid executor for {f.__name__}: {_opcode.get_executor(f.__code__, i).is_valid()}&quot;)
+        except RuntimeError:
+            # This isn't a JIT build:
+            return False
+        except ValueError:
+            # No executor found:
+            continue
+        return True
+    return False
+
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<pre><code>❯ PYTHON_JIT=1 uv run --managed-python -p 3.13 example.py
+Took 3.665429832995869 seconds.
+Valid executor for workload_func: True
+is_jitted(workload_func)=True
+is_jitted(run)=False
+❯ PYTHON_JIT=0 uv run --managed-python -p 3.13 example.py
+Took 3.595544042007532 seconds.
+is_jitted(workload_func)=False
+is_jitted(run)=False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-06-20 07:31</div>
+            <div class="timeline-body"><p>@zanieb Hey Zanie, yeh so was referencing from that post it seemed reasonable.</p>
+<p>This does indeed look to be jitted.</p>
+<p>Happy to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-20 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14779.html">astral-sh/uv#14779</a> on 2025-07-21 06:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

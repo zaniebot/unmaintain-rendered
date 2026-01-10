@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for Option Value Binding or ArgMatches Traversal - clap-rs/clap #5727</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for Option Value Binding or ArgMatches Traversal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5727">#5727</a>
+        opened by <a href="https://github.com/JS-Zheng">@JS-Zheng</a>
+        on 2024-09-11 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JS-Zheng">@JS-Zheng</a> on 2024-09-11 13:02</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.11</p>
+<h3>Describe your use case</h3>
+<p>I am developing a GNU <code>rm</code>-like tool and need to support options like:</p>
+<ul>
+<li><code>-i</code>: prompt always</li>
+<li><code>-I</code>: prompt once</li>
+<li><code>-f</code>: force</li>
+<li><code>--interactive[=WHEN]</code>: prompt according to WHEN: never, once (<code>-I</code>), or always (<code>-i</code>); without WHEN, prompt always</li>
+</ul>
+<p>I am following the GNU &quot;last one wins&quot; precedence rule. When two mutually exclusive options are provided (e.g., <code>-i</code> and <code>-f</code>), the last one specified on the command line should override the previous ones.</p>
+<p>Additionally, I want to extend this behavior to support levels for <code>interactive</code> and <code>force</code> options. For example, <code>-i -i</code> would set the <code>interactive level = 2</code>, and <code>-fff</code> would set the <code>force level = 3</code>.</p>
+<p>Clap handles the &quot;last one wins&quot; behavior using <code>overrides_with_all</code>, and I used <code>ArgAction::Count</code> for level counting.</p>
+<pre><code class="language-rust">.arg(
+    Arg::new(ARG_FORCE)
+        .short('f')
+        .long(ARG_FORCE)
+        .help(&quot;Ignore nonexistent files and arguments, never prompt&quot;)
+        .overrides_with_all(&amp;[ARG_PROMPT_ALWAYS, ARG_PROMPT_ONCE, ARG_INTERACTIVE])
+        .action(ArgAction::Count),
+)
+.arg(
+    Arg::new(ARG_PROMPT_ALWAYS)
+        .short('i')
+        .help(&quot;Prompt before every removal&quot;)
+        .overrides_with_all(&amp;[ARG_PROMPT_ONCE, ARG_FORCE])
+        .action(ArgAction::Count),
+)
+.arg(
+    Arg::new(ARG_PROMPT_ONCE)
+        .short('I')
+        .help(&quot;Prompt once before removing more than three files, or when removing recursively&quot;)
+        .overrides_with_all(&amp;[ARG_PROMPT_ALWAYS, ARG_FORCE])
+        .action(ArgAction::Count),
+)
+</code></pre>
+<p>However, implementing the long option <code>--interactive=WHEN</code> alongside short options like <code>-i</code> and <code>-I</code> poses challenges. Specifically:</p>
+<ul>
+<li><code>-i</code> cannot be aliased to <code>--interactive=always</code></li>
+<li><code>-I</code> cannot be aliased to <code>--interactive=once</code></li>
+<li>Currently, Clap does not allow for traversing <code>ArgMatches</code> in a way that can respect option order, which is crucial for determining precedence in cases like <code>rm -I --interactive=always -I</code>, where <code>-I</code> should win, but it's difficult to ensure this given the current API.</li>
+</ul>
+<pre><code class="language-rust">Arg::new(&quot;interactive&quot;)
+    .long(&quot;interactive&quot;)
+    .help(&quot;Prompt according to WHEN: never, once (-I), or always (-i). Without WHEN, prompts always&quot;)
+    .value_name(&quot;WHEN&quot;)
+    .value_parser(arg_interactive_parser)
+    .num_args(0..=1)
+    .require_equals(true)
+    .default_missing_value(&quot;always&quot;)
+    .overrides_with_all(&amp;[ARG_FORCE])
+    .action(ArgAction::Append),
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>I propose two features:</p>
+<ol>
+<li><p><strong>Support for <code>ArgMatches</code> Traversal</strong><br />
+Traversing <code>ArgMatches</code> would allow me to check the order in which options were provided, making it possible to implement the &quot;last one wins&quot; precedence rule accurately.</p>
+</li>
+<li><p><strong>Option Value Binding</strong><br />
+This would allow short options to be bound to specific values of long options. For example, <code>-i</code> would be treated as an alias for <code>--interactive=always</code>, and <code>-I</code> would map to <code>--interactive=once</code>. This would provide an elegant solution to handle the complexity of combining long and short options with the same meaning.</p>
+</li>
+</ol>
+<h3>Example (pseudo-code):</h3>
+<pre><code class="language-rust">Arg::new(&quot;interactive&quot;)
+    .long(&quot;interactive&quot;)
+    .value_name(&quot;WHEN&quot;)
+    .value_parser([&quot;always&quot;, &quot;once&quot;, &quot;never&quot;])
+    .bind_to(&quot;-i&quot;, &quot;always&quot;) // Bind short option -i to --interactive=always
+    .bind_to(&quot;-I&quot;, &quot;once&quot;)   // Bind short option -I to --interactive=once
+    .bind(Fn)                // Bind by Closure
+</code></pre>
+<p>In addition to allowing option precedence, this feature could benefit other tools that rely on complex option parsing and precedence rules. It would also make it easier to support aliasing of options and reduce manual argument handling for developers.</p>
+<h3>Alternatives, if applicable</h3>
+<p>An alternative would be to manually parse the arguments in sequence and manage conflicts ourselves, but this would result in more complex code, reduce the benefits of using Clap, and potentially introduce bugs. Supporting these features natively in Clap would be much cleaner and more reliable.</p>
+<h3>Additional Context</h3>
+<p>Related issue: #1206</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @JS-Zheng on 2024-09-11 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-17 21:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I propose two features:</p>
+</blockquote>
+<p>Please keep issues focused on a single feature.  It helps keep the conversation focused and makes the state clear as we have a single status (close, rejected) for an issue.</p>
+<blockquote>
+<p>Support for ArgMatches Traversal
+Traversing ArgMatches would allow me to check the order in which options were provided, making it possible to implement the &quot;last one wins&quot; precedence rule accurately.</p>
+</blockquote>
+<p>We support position-sensitive arguments, though it might not be the most intuitive, see https://docs.rs/clap/latest/clap/_derive/_cookbook/find/index.html</p>
+<pre><code class="language-rust">fn position_sensitive_flag(arg: Arg) -&gt; Arg {
+    // Flags don't track the position of each occurrence, so we need to emulate flags with
+    // value-less options to get the same result
+</code></pre>
+<p>Huh, that shouldn't be the case anymore and we should be able to drop that part from the example</p>
+<blockquote>
+<p>Option Value Binding
+This would allow short options to be bound to specific values of long options. For example, -i would be treated as an alias for --interactive=always, and -I would map to --interactive=once. This would provide an elegant solution to handle the complexity of combining long and short options with the same meaning.</p>
+</blockquote>
+<p>We previously had <code>Arg::replace</code> which ran into issues, see #2836.  We'll need this more fleshed out to evaluate how to move forward.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:40 UTC
+    </footer>
+</body>
+</html>

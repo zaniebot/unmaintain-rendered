@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> False positive TCH003 for singledispatchmethod - astral-sh/ruff #13924</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1> False positive TCH003 for singledispatchmethod</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13924">#13924</a>
+        opened by <a href="https://github.com/last-partizan">@last-partizan</a>
+        on 2024-10-25 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/last-partizan">@last-partizan</a> on 2024-10-25 11:41</div>
+            <div class="timeline-body"><p>This is almost the same as #11520  , but for <code>@singledispatchmethod</code></p>
+<pre><code class="language-py">from __future__ import annotations
+
+from collections.abc import MutableMapping
+from functools import singledispatchmethod
+from typing import Any
+
+
+class Foo:
+    @singledispatchmethod
+    def foo(self, x: Any) -&gt; int:
+        raise NotImplementedError
+
+    @foo.register
+    def _(self, x: MutableMapping) -&gt; int:
+        return 0
+</code></pre>
+<pre><code>&gt; ruff check --select TCH app/test.py
+
+app/test.py:3:29: TCH003 Move standard library import `collections.abc.MutableMapping` into a type-checking block
+  |
+1 | from __future__ import annotations
+2 |
+3 | from collections.abc import MutableMapping
+  |                             ^^^^^^^^^^^^^^ TCH003
+4 | from functools import singledispatchmethod
+5 | from typing import Any
+  |
+  = help: Move into type-checking block
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<pre><code>&gt; python --version
+Python 3.12.7
+&gt; ruff --version
+ruff 0.7.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-26 08:20</div>
+            <div class="timeline-body"><p>I don't think I understand this issue. Could you explain me why <code>MutableMapping</code> can't be moved into a type checking block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/last-partizan">@last-partizan</a> on 2024-10-26 15:45</div>
+            <div class="timeline-body"><p>Because <code>@simgledispatchmethod</code> is using runtime types, just like normal <code>@singledispatch</code> from #11520</p>
+<p>Example:</p>
+<pre><code class="language-py">&gt; python /tmp/test.py
+Traceback (most recent call last):
+  File &quot;/tmp/test.py&quot;, line 10, in &lt;module&gt;
+    class Foo:
+  File &quot;/tmp/test.py&quot;, line 15, in Foo
+    @foo.register
+     ^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/functools.py&quot;, line 939, in register
+    return self.dispatcher.register(cls, func=method)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/functools.py&quot;, line 877, in register
+    argname, cls = next(iter(get_type_hints(func).items()))
+                             ^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/typing.py&quot;, line 2310, in get_type_hints
+    hints[name] = _eval_type(value, globalns, localns, type_params)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/typing.py&quot;, line 415, in _eval_type
+    return t._evaluate(globalns, localns, type_params, recursive_guard=recursive_guard)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/typing.py&quot;, line 947, in _evaluate
+    eval(self.__forward_code__, globalns, localns),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name 'MutableMapping' is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-26 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13941.html">astral-sh/ruff#13941</a> on 2024-10-27 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-28 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-28 01:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

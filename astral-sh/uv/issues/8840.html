@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to authenticate with Azure artifact feed in github actions - astral-sh/uv #8840</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to authenticate with Azure artifact feed in github actions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8840">#8840</a>
+        opened by <a href="https://github.com/maarten-betman">@maarten-betman</a>
+        on 2024-11-05 19:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-05 19:33</div>
+            <div class="timeline-body"><p>Dear Astral team,</p>
+<p>First of all thanks for the awesome tools you guys make 😄</p>
+<p>I'm having issue getting authenticated with a private Azure Artifacts feed in GitHub Actions.</p>
+<p>In local development we use artifacts keyring as explained in the <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#azure-artifacts">uv docs</a>. See below snip of <code>pyproject.toml</code> which successfully installs the internal dependency.</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.9&quot;
+name = &quot;geo-tools&quot;
+version = &quot;0.1.2&quot;
+description = &quot;Geotechnical Tools&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    &quot;pandas&lt;=2.1,&gt;=1.4.3&quot;,
+    &quot;internal-package&gt;=0.3.0&quot;,
+]
+
+[tool.uv]
+extra-index-url = [&quot;https://VssSessionToken@&lt;org-name&gt;.pkgs.visualstudio.com/&lt;project&gt;/_packaging/&lt;feed&gt;/pypi/simple/&quot;]
+keyring-provider = &quot;subprocess&quot;
+</code></pre>
+<p>However when running the tests in github actions I get a 401 Unauthorized error from my organizational feed.
+I've now set UV_EXTRA_INDEX_URL including a PAT token, but no success unfortunately. See below snip from the github actions file Used several flags after the <code>uv sync</code> command:
+<code>--no-cache</code>
+<code>--index-strategy unsafe-first-match</code> and <code>unsafe-best-match</code></p>
+<pre><code class="language-yaml">name: Test package on PR
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      UV_CACHE_DIR: ${{ github.workspace }}/.uv-cache
+      RUST_LOG: uv=trace
+      UV_EXTRA_INDEX_URL: &quot;https://token:${{ secrets.AZURE_DEVOPS_PAT }}@&lt;org&gt;.pkgs.visualstudio.com/&lt;project&gt;/_packaging/&lt;feed&gt;/pypi/simple/&quot;
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [&quot;3.9&quot;, &quot;3.10&quot;, &quot;3.11&quot; ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Setup python
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --keyring-provider disabled
+</code></pre>
+<p>RUST_LOG uv=trace:
+<a href="https://github.com/user-attachments/files/17637561/github-actions-log.log">github-actions-log.log</a></p>
+<p>understand it's hard to debug given you don't have access to the feed, but hope the log clarifies a bit where things are going wrong for me 🤞🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-05 20:22</div>
+            <div class="timeline-body"><p>Does the username need to be <code>VssSessionToken</code> instead of <code>token</code>?</p>
+<p>Have you considered switching to our <a href="https://docs.astral.sh/uv/configuration/indexes/">new index settings</a> and using <code>UV_INDEX_&lt;NAME&gt;_PASSWORD</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-05 20:27</div>
+            <div class="timeline-body"><p>Haven't tried the new index settings yet, will try tomorrow.
+<code>VssSessionToken</code> should be present in the url when using the <code>artifacts-keyring</code> auth provider. This auth mechanism can't be used in github actions as far as I'm aware.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-12 13:09</div>
+            <div class="timeline-body"><p>Switched to new index setting. Works fine locally, but when running <code>uv sync</code> in GH Actions I still get the 401.</p>
+<p>When changing the wheel URL in the lock file to include the username and password I can successfully install the dependencies...
+The URL with the wheel file location is shown in the 401 Unauthorized error. It's quite different to the registry URL. Could it be that <code>uv</code> doesn't add the credentials in the request to the URL that points to the wheel?</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;mpl-templates&quot;
+version = &quot;0.3.0&quot;
+source = { registry = &quot;https://&lt;org&gt;.pkgs.visualstudio.com/&lt;project&gt;/_packaging/&lt;feed&gt;/pypi/simple/&quot; }
+dependencies = [
+    { name = &quot;matplotlib&quot; },
+    { name = &quot;papersize&quot; },
+    { name = &quot;pydantic&quot; },
+]
+wheels = [
+    { url = &quot;https://token:password@&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl&quot;, hash = &quot;sha256:....&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-13 10:59</div>
+            <div class="timeline-body"><p>Tried deleting the lock files before <code>uv sync</code>. Noticed that uv does use the credentials when getting the metadata but an unauthenticated request to get the wheel;</p>
+<pre><code class="language-log">TRACE Updating cached credentials for https://&lt;org&gt;.pkgs.visualstudio.com/&lt;project&gt;/_packaging/&lt;feed&gt;/pypi/simple/mpl-templates/ to Credentials { username: Username(Some(&quot;token&quot;)), password: Some(&quot;&lt;token&gt;&quot;) }
+TRACE cached request https://&lt;org&gt;.pkgs.visualstudio.com/&lt;project&gt;/_packaging/&lt;feed&gt;/pypi/simple/mpl-templates/ is not storable because its response has a 'no-store' cache-control directive
+TRACE Received package metadata for: mpl-templates
+TRACE Selecting candidate for mpl-templates with range &gt;=0.3.0 with 3 remote versions
+DEBUG Searching for a compatible version of mpl-templates (&gt;=0.3.0)
+TRACE Selecting candidate for mpl-templates with range &gt;=0.3.0 with 3 remote versions
+TRACE found candidate for package PackageName(&quot;mpl-templates&quot;) with range Ranges { segments: [(Included(&quot;0.3.0&quot;), Unbounded)] } after 1 steps: &quot;0.3.0&quot; version
+TRACE found candidate for package PackageName(&quot;mpl-templates&quot;) with range Ranges { segments: [(Included(&quot;0.3.0&quot;), Unbounded)] } after 1 steps: &quot;0.3.0&quot; version
+DEBUG Selecting: mpl-templates==0.3.0 [compatible] (mpl_templates-0.3.0-py3-none-any.whl)
+TRACE No cache entry exists for /tmp/.tmpUHbrIk/wheels-v3/index/0c5a42c4bb4da8fc/mpl-templates/mpl_templates-0.3.0-py3-none-any.msgpack
+DEBUG No cache entry for: https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl#sha256=...
+TRACE Sending fresh HEAD request for https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl#sha256=...
+TRACE Handling request for https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl#sha256=...
+TRACE Request for https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl#sha256=90d9891c7dff91387dbeb0bdf5763a4e4cfe532f2c6a7f5e0303569009c61019 is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl#sha256=...
+TRACE Attempting unauthenticated request for https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e7a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl#sha256=...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-13 12:46</div>
+            <div class="timeline-body"><p>So removed the step that removes <code>uv.lock</code> and added <code>--show-settings</code> to <code>uv sync</code> and now it seems to be able to install packages from the private package feed... But now I have a PAT token in the logs of my pipelines. Are there any logs I can output that would be useful @zanieb?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdAyers">@EdAyers</a> on 2024-11-18 14:10</div>
+            <div class="timeline-body"><p>With the new <code>UV_INDEX_&lt;NAME&gt;_PASSWORD</code>, is there a way of getting uv to figure out it needs to get this token from the keyring as described <a href="https://docs.astral.sh/uv/guides/integration/alternative-indexes/#using-keyring">here</a>. as far as I can tell using a keyring token in this way is only supported with UV_INDEX_URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 14:13</div>
+            <div class="timeline-body"><p>I believe you need to set <code>UV_INDEX_&lt;NAME&gt;_USERNAME</code> (but not password -- keyring requires a username) then add <code>--keyring-provider subprocess</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdAyers">@EdAyers</a> on 2024-11-18 14:14</div>
+            <div class="timeline-body"><p>Cheers, got it working. Just to be clear: for azure devops: you set <code>UV_INDEX_&lt;NAME&gt;_USERNAME=VssSessionToken</code> and set <code>UV_KEYRING_PROVIDER=subprocess</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-18 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe you need to set <code>UV_INDEX_&lt;NAME&gt;_USERNAME</code> (but not password -- keyring requires a username) then add <code>--keyring-provider subprocess</code>.</p>
+</blockquote>
+<p>Does this also apply in GitHub actions? Reason for opening the issue is that using keyring in GHA doesn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 14:58</div>
+            <div class="timeline-body"><p>Which part? But yes, it should all apply to GHA. You always need a username for keyring, which is a keyring requirement IIUC.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-18 15:36</div>
+            <div class="timeline-body"><p>This is what I get now with:
+<code>UV_INDEX_BOKALYTICS_USERNAME=VssSessionToken</code> &amp; <code>UV_KEYRING_PROVIDER=subprocess</code></p>
+<pre><code class="language-sh">Run uv sync
+  uv sync
+  shell: /usr/bin/bash -e {0}
+  env:
+    UV_PYTHON: 3.1[2](https://github.com/Company-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:2)
+    UV_INDEX_&lt;NAME&gt;_PASSWORD: &lt;PAT&gt;
+    UV_INDEX_&lt;NAME&gt;_USERNAME: VssSessionToken
+    UV_KEYRING_PROVIDER: subprocess
+Using CPython [3](https://github.com/Company-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:3).12.7
+Creating virtual environment at: .venv
+Resolved 67 packages in 0.95ms
+  × Failed to download `mpl-templates==0.3.0`
+  ├─▶ Failed to fetch:
+  │   `https://&lt;org&gt;.pkgs.visualstudio.com/163c[4](https://github.com/Company-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:4)536-8[5](https://github.com/Company-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:5)9e-4e7a-9407-154e3f2313d5/_packaging/2dc[6](https://github.com/Company-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:6)adee-8c7f-478b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl`
+  ╰─▶ HTTP status client error (401 Unauthorized) for url
+      (https://&lt;org&gt;.pkgs.visualstudio.com/163c4536-859e-4e[7](https://github.com/Company-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:7)a-9407-154e3f2313d5/_packaging/2dc6adee-8c7f-47[8](https://github.com/Boskalis-Community/geo-tools/actions/runs/11895622841/job/33145635059#step:5:8)b-8b17-d3ac8102c6bb/pypi/download/mpl-templates/0.3/mpl_templates-0.3.0-py3-none-any.whl)
+  help: `mpl-templates` was included because `geo-tools==0.1.2`
+        depends on `mpl-templates`
+Error: Process completed with exit code 1.
+</code></pre>
+<p>Also without setting the password to a PAT I get the 401. I've tried most combinations of settings. Method described 5 days ago seemed to work. Would some logs be helpful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-19 12:52</div>
+            <div class="timeline-body"><p>of all combination currently the below setup works. This includes adding <code>--show-settings</code>.
+Removing it results in the 401.</p>
+<p>Looking at the logs, it also seems that dependencies are only installed in the last step and not in the <code>uv sync</code> step.</p>
+<pre><code class="language-yaml">jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      RUST_LOG: uv=trace
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ &quot;3.11&quot;, &quot;3.12&quot;, &quot;3.13&quot;]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Setup python
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --show-settings
+        env:
+          UV_PYTHON: ${{ matrix.python-version }}
+          UV_INDEX_&lt;NAME&gt;_PASSWORD: ${{ secrets.AZURE_DEVOPS_PAT }}
+          UV_INDEX_&lt;NAME&gt;_USERNAME: &quot;VssSessionToken&quot;
+
+      - name: Run tests
+        run: uv run pytest tests/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maarten-betman">@maarten-betman</a> on 2024-11-22 09:08</div>
+            <div class="timeline-body"><p>Found out that the issue was caused by a incorrectly set token at organizational level
+Sorry for wasting your time 🙏🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @maarten-betman on 2024-11-22 09:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:24 UTC
+    </footer>
+</body>
+</html>

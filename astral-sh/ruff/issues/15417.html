@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`D214` doesn't respect codeblocks - astral-sh/ruff #15417</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`D214` doesn't respect codeblocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15417">#15417</a>
+        opened by <a href="https://github.com/ezorita">@ezorita</a>
+        on 2025-01-10 22:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ezorita">@ezorita</a> on 2025-01-10 22:05</div>
+            <div class="timeline-body"><p>When format on save is enabled in vscode, an indentation will be added to the nested docstring every time the file is saved:</p>
+<pre><code>def func():
+    &quot;&quot;&quot;This function does nothing.
+
+    It must be documented using a Google-style docstring, though, like this other function:
+    ```
+    def func() -&gt; str:
+        '''This function does nothing.
+
+        Args:
+            param1 (type): Description of param1.
+            param2 (type): Description of param2.
+
+        Returns:
+            str: Description of the return value.
+        '''
+    ```
+    &quot;&quot;&quot;
+    pass
+
+</code></pre>
+<p>It can be fixed adding <code>#noqa: D214</code> but I wonder if this could be avoided in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 23:31</div>
+            <div class="timeline-body"><p>This sounds like a <code>ruff format</code> bug, we may transfer this issue to the Ruff repository.</p>
+<p>cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-11 08:48</div>
+            <div class="timeline-body"><p>I don't think this is a formatter bug because the formatter doesn't respect the <code>noqa: D214</code>. I also pasted the example and the formatted output into the playground and both result in the same formatting (<a href="https://play.ruff.rs/2d2941f3-a17b-4403-9150-d9cd9e72c1b7">playground</a>)</p>
+<p>What I can reproduce is that the D214 fix here is somewhat nonsensical because it doesn't understand the code block and applying the fix dedents <code>Args</code> and <code>Returns</code> by one level which in turn indents <code>param1</code>, <code>param2</code>, and <code>str</code> by an extra level (but just once). The formatter than correctly aligns the inner docstring which then results in <code>D214</code> complaining about an over indent (See this <a href="https://play.ruff.rs/fed975bb-13e2-4af3-94a0-2c1af84780d4">playground</a>).</p>
+<p>The underlying problem here isn't the formatter but that <code>D214</code> (and probably other docstring rules) doesn't respect code blocks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Endless indentation in nested docstring" to "`D214` doesn't respect codeblocks" by @MichaReiser on 2025-01-11 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-11 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2025-01-11 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

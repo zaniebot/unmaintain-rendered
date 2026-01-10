@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a lockfile for a workspace member - astral-sh/uv #15697</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create a lockfile for a workspace member</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15697">#15697</a>
+        opened by <a href="https://github.com/fau-st">@fau-st</a>
+        on 2025-09-05 09:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fau-st">@fau-st</a> on 2025-09-05 09:05</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello,</p>
+<p>Given the following sample project structure:</p>
+<pre><code>my_app
+├── main.py
+├── my_lib
+│   ├── pyproject.toml
+│   └── src
+│       └── my_lib
+│           ├── __init__.py
+│           └── py.typed
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+<pre><code class="language-toml">[project]
+name = &quot;my-app&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;my-lib&quot;,
+]
+
+[tool.uv.sources]
+my-lib = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    &quot;my_lib&quot;,
+]
+</code></pre>
+<p>Is there a way to generate/update <code>uv.lock</code> for <code>my_lib</code>?</p>
+<h3>My use case</h3>
+<p>In our real project, <code>my_app/my_lib</code> is a git submodule that lives in another repository.
+This repo has some CI scripts that rely on the <code>uv.lock</code> to ensure a reproducible build.</p>
+<p>The issue is: when a developer works on <code>my_app</code>, they sometime need to add a new dependency to <code>my_lib</code> so they <code>cd my_app/my_lib</code> and then <code>uv add ...</code> because it's more convenient than cloning the <code>my_lib</code> repo and do it there.
+Doing this properly updates <code>my_app/uv.lock</code> and <code>my_app/my_lib/pyproject.toml</code> however <code>my_app/my_lib/uv.lock</code> is left as-is.</p>
+<p>Right now, the only &quot;workaround&quot; I found is to rename <code>my_app/pyproject.toml</code> to something else so I can <code>cd my_app/my_lib &amp;&amp; uv lock</code>.</p>
+<p>Would there be a way to ignore that <code>my_app/my_lib</code> is inside a workspace for the duration of a single command, so I could do something like <code>cd my_app/my_lib &amp;&amp; uv lock --ignore-workspace</code>?
+Or am I trying to do something outside of the workspace feature scope?</p>
+<p>Kind of related <a href="https://github.com/astral-sh/uv/issues/9150">issue</a> but I don't really care about a separate venv, I'd just like to update the lockfile of a workspace member.</p>
+<p>Thank you very much for the great tools you're building! I really enjoy using them.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>0.8.15</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @fau-st on 2025-09-05 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 09:38</div>
+            <div class="timeline-body"><p>Workspaces are built under the assumption that everything lives in one repo and uses one lockfile. Does a path dependency on my-lib work for you too? That way, both projects get a lockfile in their respective repostories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fau-st">@fau-st</a> on 2025-09-05 09:54</div>
+            <div class="timeline-body"><p>Yes I already tried using a path dependency with <code>editable = true</code> and indeed I get a lockfile for the member but I lose some nice features (<code>uv run --package</code>, <code>uv build --all-packages</code>, etc...), but well, it's documented.
+Maybe I'm being too greedy by wanting the best of both worlds for my use case 😅
+If there's nothing more that can be done, tell me, I'll just close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 09:57</div>
+            <div class="timeline-body"><p>One other option may be using the <code>pylock.toml</code> export for my-lib, but apart from that I'm afraid a path dependency is the best we can do there currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fau-st">@fau-st</a> on 2025-09-05 10:00</div>
+            <div class="timeline-body"><p>Ok, that's what I wanted to know. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fau-st on 2025-09-05 10:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

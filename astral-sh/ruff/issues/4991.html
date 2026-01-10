@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff_textwrap accepts illegal Python whitespace - astral-sh/ruff #4991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff_textwrap accepts illegal Python whitespace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4991">#4991</a>
+        opened by <a href="https://github.com/addisoncrump">@addisoncrump</a>
+        on 2023-06-09 21:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-09 21:23</div>
+            <div class="timeline-body"><p>Python does not consider <code>U+00a0</code> to be whitespace, but this character <em>is</em> whitespace according to Rust's <code>trim_start</code> (which uses Unicode character classes): https://doc.rust-lang.org/std/string/struct.String.html#method.trim_start</p>
+<p>In addition, Rust's str::len() method returns the length in <em>bytes</em>, not in characters. This combination can lead to a confusion in ruff_textwrap: https://github.com/astral-sh/ruff/blob/main/crates/ruff_textwrap/src/lib.rs#L95</p>
+<p>This issue potentially indicates incorrect processing of leading whitespace in ruff_textwrap::dedent. For example, the mixing of tabs and spaces, the use of non-ASCII whitespace, etc. will be misprocessed by dedent currently.</p>
+<hr />
+<h4>How this was discovered</h4>
+<p>Since trim_start removes UTF-8 whitespace, <code>U+00a0</code> used as leading whitespace leads to a panic if an odd number of single-byte whitespace (e.g., space) characters are used as leading whitespace later. The <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_textwrap/src/lib.rs#L117">string slicing</a> attempts to slice between UTF-8 code points because <code>prefix_len</code> is computed by number of bytes, not in characters.</p>
+<p>Here is a reproducing (illegal python syntax, don't pay attention to that) file which triggers this behaviour: <a href="https://github.com/astral-sh/ruff/files/11710187/illegal-whitespace.txt">illegal-whitespace.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4972.html">astral-sh/ruff#4972</a> on 2023-06-09 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-09 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-09 21:38</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-10 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4994.html">astral-sh/ruff#4994</a> on 2023-06-10 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-10 01:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-10 02:09</div>
+            <div class="timeline-body"><p>Looks like this was a potentially incomplete fix; I am still able to trigger this behaviour. See this line: https://github.com/astral-sh/ruff/blob/main/crates/ruff_textwrap/src/lib.rs#L117</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-10 02:17</div>
+            <div class="timeline-body"><p>I'm confused, I fixed that and added a test all in that same PR, but somehow it didn't end up in the diff on GitHub? Operator error somewhere.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

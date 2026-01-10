@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB188 calculates lengths wrong for non-ASCII affixes - astral-sh/ruff #13620</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB188 calculates lengths wrong for non-ASCII affixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13620">#13620</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-10-03 22:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-10-03 22:49</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/slice-to-remove-prefix-or-suffix/"><code>slice-to-remove-prefix-or-suffix</code> (FURB188)</a> determines string length by UTF-8 code units, as in Rust, whereas Python counts code points. This discrepancy causes problems for non-ASCII affixes. In the following, furb188.py has two parts: the first has a false positive and the second has a false negative.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.6.8
+$ cat furb188.py
+text = &quot;řetězec&quot;
+if text.startswith(&quot;ř&quot;):
+    text = text[2:]
+print(text)
+
+text = &quot;řetězec&quot;
+if text.startswith(&quot;ř&quot;):
+    text = text[1:]
+print(text)
+$ python furb188.py
+tězec
+etězec
+$ ruff check --isolated --preview --target-version py39 --select FURB188 furb188.py --fix
+Found 1 error (1 fixed, 0 remaining).
+$ cat furb188.py
+text = &quot;řetězec&quot;
+text = text.removeprefix(&quot;ř&quot;)
+print(text)
+
+text = &quot;řetězec&quot;
+if text.startswith(&quot;ř&quot;):
+    text = text[1:]
+print(text)
+$ python furb188.py
+etězec
+etězec
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-10-04 04:47</div>
+            <div class="timeline-body"><p>Thank you! I'll try to fix this shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-10-04 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13631.html">astral-sh/ruff#13631</a> on 2024-10-04 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-07 14:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

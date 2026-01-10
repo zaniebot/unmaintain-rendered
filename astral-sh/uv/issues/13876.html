@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install -r requirements.txt should always reinstall packages with a specified path - astral-sh/uv #13876</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install -r requirements.txt should always reinstall packages with a specified path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13876">#13876</a>
+        opened by <a href="https://github.com/danra">@danra</a>
+        on 2025-06-06 00:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danra">@danra</a> on 2025-06-06 00:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv pip install -r requirements.txt</code> should always reinstall packages which have a specified path. Currently it apparently doesn't, which is different from the behavior for packages with a path specified on the command-line, which do always reinstall (following #12038). That's unexpected.</p>
+<p>Verbosely:</p>
+<pre><code>uv pip install ./package
+</code></pre>
+<p>always re-installs the package.</p>
+<p>In contrast, given requirements.txt with the content:</p>
+<pre><code> ./package
+</code></pre>
+<p>running</p>
+<pre><code>uv pip install -r requirements.txt
+</code></pre>
+<p>does not always reinstall the package.</p>
+<h3>Platform</h3>
+<p>Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.11 (90a4416ab 2025-06-04)</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @danra on 2025-06-06 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-06 00:03</div>
+            <div class="timeline-body"><p>Candidly this is pretty unlikely to change and has been talked about in a few other issues -- you can read about the caching behavior here: https://docs.astral.sh/uv/concepts/cache/#dependency-caching</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danra">@danra</a> on 2025-06-06 00:26</div>
+            <div class="timeline-body"><p>@charliermarsh Indeed, that doc describes a path <em>on the command-line</em> as an explicit special case:</p>
+<blockquote>
+<p>As a special case, uv will always rebuild and reinstall any local directory dependencies passed explicitly on the command-line (e.g., uv pip install .).</p>
+</blockquote>
+<p>But why? The same rationale of #12038 holds regardless of whether the dependency is specified on the command-line or requirements file:</p>
+<blockquote>
+<p>When dealin with local packages, uv is also caching the installation parameter making it very dificult when I work on package to run my tox or nox session with a uv backend as everytime I make a modification my local package in the venv are not updated. I fail to see a configuration where people would install a local package without wanting to update it as usually when the package is locally installed it means that you are currently working on it.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-06 13:56</div>
+            <div class="timeline-body"><p>For packages you change locally, you can use editable installs or <code>cache-keys</code> for compiled packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-22 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-06-22 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-22 02:22</div>
+            <div class="timeline-body"><p>Yeah, I'd suggest editables in this case (or <code>cache-keys</code> to mark sources as invalidating the package).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-06-22 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danra">@danra</a> on 2025-06-23 03:13</div>
+            <div class="timeline-body"><p>It's likely others would stumble into this unexpected inconsistency as well, regardless of alternatives. That's why I suggest it might be a bug, though that depends on the trade-offs.</p>
+<p>@charliermarsh you'd mentioned those trade-offs were discussed in other issues in addition to https://github.com/astral-sh/uv/issues/12038. Would you mind attaching the references to those?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danra">@danra</a> on 2025-06-23 16:42</div>
+            <div class="timeline-body"><p>I think I actually see the main problem myself - one wouldn't want <code>uv run ...</code> to unconditionally re-build local paths specified in the project.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

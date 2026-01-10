@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv compile now shows annotations for -c and -r paths that causes issues cross platform - astral-sh/uv #3800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv compile now shows annotations for -c and -r paths that causes issues cross platform</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3800">#3800</a>
+        opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a>
+        on 2024-05-23 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-23 19:08</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Since uv 0.2.x the pip compile tool adds -r and -c annotations on the &quot;via&quot; part of the code, but uses windows-style paths when running on Windows, not respecting the command line on &quot;-c&quot;.</p>
+<p>tested both
+uv 0.2.1 (1fc71ea73 2024-05-22)
+uv 0.2.2 (e52ae0e2b 2024-05-22)</p>
+<p>See diff below
+<img src="https://github.com/astral-sh/uv/assets/148236158/d3ac3456-41b8-45c5-bb0d-d398307a4891" alt="Screenshot 2024-05-23 154932" /></p>
+<p>my command line is (I run from the project root):
+<code>uv pip compile ./requirements/requirements.in -o ./requirements/requirements-win.txt --python-platform=windows</code></p>
+<p>I run the same command line on Windows and on my Linux CI, I make sure to always use forward slashes so outputs are compatible.</p>
+<p>In my &quot;requirements.in&quot; file there is a line <code>-c dependencies.txt</code> since the file is in the same directory, I cannot prefix it with &quot;-c requirements/dependencies.txt&quot; so UV gets to chose how to build the path.</p>
+<p>I like having the annotations and wouldn't want to switch to &quot;--no-annotate&quot;, but running the same command in 2 different OSs now accuses a diff in the files.</p>
+<p>Since UV already respects the forward slashes when I pass &quot;requirements/requirements.in&quot;, could it use the same prefix of the file containing the value when prefixing names that are relative?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:14</div>
+            <div class="timeline-body"><p>Hmm, I think the annotation should match whatever form is used verbatim. What is the exact form used in <code>requirements.in</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:16</div>
+            <div class="timeline-body"><p>Can you include a <code>requirements.in</code> file that replicates it along with the command? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:17</div>
+            <div class="timeline-body"><p>Oh sorry I see. You're using a relative path. Hmm...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-05-23 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-23 19:30</div>
+            <div class="timeline-body"><p>Simplified version of my setup:</p>
+<ul>
+<li>/project-root/<ul>
+<li>requirements/<ul>
+<li>requirements.in</li>
+<li>dependencies.txt</li>
+<li>requirements-win.txt</li>
+</ul>
+</li>
+<li>compile.bat</li>
+</ul>
+</li>
+</ul>
+<p>requirements.in:</p>
+<pre><code>-c dependencies.txt
+bcrypt
+bs4
+</code></pre>
+<p>dependencies.txt</p>
+<pre><code>pip&gt;24
+</code></pre>
+<p>compile.bat (it contains just the commands so I use it both as a bat and sh file)</p>
+<pre><code>uv pip compile ./requirements/requirements.in -o ./requirements/requirements-win.txt --python-platform=windows
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-23 19:34</div>
+            <div class="timeline-body"><p>I would be ok with the -c being verbatim. Althought it woud be less correct i guess</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-23 19:41</div>
+            <div class="timeline-body"><p>Funny thing that I just noticed: you already use <code>./requirements</code> and join with <code>\</code> the <code>\dependencies.txt</code>
+So you more or less do what I described. Probably getting one extra char from the same string you extract the prefix will solve the issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:59</div>
+            <div class="timeline-body"><p>I agree that it would be nice to be consistent here. Will look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-23 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:59</div>
+            <div class="timeline-body"><p>Marking as a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-23 20:29</div>
+            <div class="timeline-body"><p>I think this could be solved in the user_display method (or maybe the origin.path()). I am having issues with the rust debugger on Windows right now, but I think at this point it should be possible to acquire the path separator.</p>
+<p>https://github.com/astral-sh/uv/blob/3e4365301e36ab084650a6acdbe2b7b1487777c2/crates/distribution-types/src/annotation.rs#L31-L36</p>
+<p>https://github.com/astral-sh/uv/blob/bc963d13cb5b1e0ca0783f62848d3ff5d93f3dda/crates/uv-fs/src/path.rs#L52-L63</p>
+<p>https://github.com/astral-sh/uv/blob/3e4365301e36ab084650a6acdbe2b7b1487777c2/crates/pep508-rs/src/origin.rs#L16-L21</p>
+<p>Here is the original PR published in v0.1.43</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/3269</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-23 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3804.html">astral-sh/uv#3804</a> on 2024-05-23 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-24 03:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-05-24 18:57</div>
+            <div class="timeline-body"><p>I just tried release v0.2.3 and it works perfectly. Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pip list` in activated venv differs from `uv pip list` - astral-sh/uv #9111</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pip list` in activated venv differs from `uv pip list`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9111">#9111</a>
+        opened by <a href="https://github.com/nataziel">@nataziel</a>
+        on 2024-11-14 03:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nataziel">@nataziel</a> on 2024-11-14 03:22</div>
+            <div class="timeline-body"><p>This may be working as intended but is extremely confusing.</p>
+<p>I understand that <code>uv</code> creates a virtual environment called <code>.venv</code> by default when first adding requirements to a project, or running <code>uv sync</code> or <code>uv venv</code> etc.</p>
+<p>If you are in the project folder but don't have the venv activated, when you run the command <code>uv pip list</code> it will list the packages installed in that venv, but running <code>pip list</code> will list the packages in your base environment. This makes sense.</p>
+<p>By extension, say I have <code>pytest</code> installed in the venv, but not my base python installation, if I run <code>pytest</code>, pytest won't be on $PATH and the command will fail. If I run <code>uv run pytest</code> it works as expected, again this makes sense.</p>
+<p>When you activate that venv by running <code>source .venv/Scripts/activate</code>, you can now run <code>pytest</code> and it will work, which again matches my expectations.</p>
+<p>However, if you run <code>pip list</code> with the venv activated it will list the packages installed in your base python installation, not the activated venv. If you had created the venv via <code>python -m venv .venv</code>, and activated it exactly the same way, <code>pip list</code> would list the packages in the activated venv, not the base python installation. This creates a very confusing situation where <code>pip list</code> and <code>uv pip list</code> don't agree on what packages are available.</p>
+<p>What I think it all boils down to is the presence of <code>pip</code> in the venv.</p>
+<p>Some experimentation has found that this doesn't happen if you create the venv with <code>python -m venv .venv</code>, then use <code>uv sync</code> to install the project packages (<code>pip</code> is available within the activated venv!). This only works if the python version specified in <code>pyproject.toml</code> and <code>.python-version</code> match the base python installation.</p>
+<p>If they don't match, <code>uv</code> destroys the existing <code>.venv/</code> directory and creates a new one. The venv created by <code>uv</code> doesn't have <code>pip</code>, so if you run <code>pip list</code> it uses the <code>pip</code> from the base environment. Therefore, it lists different packages to the what is listed by <code>uv pip list</code></p>
+<p>Is this expected behaviour? If it is, is there a way it can be made less confusing? Even just showing a warning that the listed packages refer to a different environment than the activated venv would make this way more clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 03:33</div>
+            <div class="timeline-body"><p>All expected. We don't include pip in the virtual environment, so running <code>pip list</code> is calling the pip installed on your system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 04:52</div>
+            <div class="timeline-body"><p>(You can run <code>uv venv --seed</code> if you want to include pip in a uv-created virtualenv. We don't include those &quot;seed packages&quot; by default.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-14 05:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nataziel">@nataziel</a> on 2024-11-14 06:03</div>
+            <div class="timeline-body"><p>Ok yep understood. Is there a way you could intercept the call to <code>pip</code> and print a warning of that surprising behaviour?</p>
+<p>Also, you may want to consider a <code>uv list</code> or similar command to display the project dependencies. <code>uv tree</code> is good but sometimes a bit verbose. I found myself running <code>cat pyproject.toml</code> quite a bit while I was experimenting with adding and removing dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @nataziel on 2024-11-14 06:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14215.html">astral-sh/uv#14215</a> on 2025-06-25 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:31 UTC
+    </footer>
+</body>
+</html>

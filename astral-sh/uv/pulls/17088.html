@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--compile-bytecode` to `uv python install` and `uv python upgrade` to compile the standard library - astral-sh/uv #17088</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `--compile-bytecode` to `uv python install` and `uv python upgrade` to compile the standard library</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17088">#17088</a>
+        opened by <a href="https://github.com/EliteTK">@EliteTK</a>
+        on 2025-12-11 16:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-11 16:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement #16408.</p>
+<p>Currently doesn't avoid recompiling the bytecode when it is already compiled, which I initially thought could be fine but then realised that it would be annoying if you have the environment variable set.</p>
+<p>Covers upgrades, installs, reinstalls, and compiling existing installs. But not certain about the UX.</p>
+<p>pyodide is weird and currently gets skipped by the heuristic I came up with.</p>
+<h2>Test Plan</h2>
+<p>Styling of the status report was manually tested, there is a new test for testing the actual functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @EliteTK on 2025-12-11 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-11 16:52</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/tk%2Fpy-install-bytecomp?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #17088 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>tk/py-install-bytecomp</code> (cc0d3f9) with <code>main</code> (59d73fd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 5</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:5871 on 2025-12-11 17:13</div>
+            <div class="timeline-body"><p>I'd put something other than &quot;critical&quot;, like &quot;For cases where first-start time is important&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:5875 on 2025-12-11 17:15</div>
+            <div class="timeline-body"><p>I wouldn't compare to pip in a non-pip interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:445 on 2025-12-11 17:19</div>
+            <div class="timeline-body"><p>Is there a specific reason to sort inside here, vs. ensuring we're getting a fixed order from previous code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:484 on 2025-12-11 17:21</div>
+            <div class="timeline-body"><p>That's elegant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:519 on 2025-12-11 17:21</div>
+            <div class="timeline-body"><p>@oconnor663 Since we talked about <code>.await</code>ing while another future is pending - you and @EliteTK both have a better understanding of this than me.</p>
+<p>The tl;dr from that conversation is that if we await here, the download futures stall. I think we actually have to do the bytecode compilation inside the download stream and use a semaphore to limit the number of parallel stdlib compilations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:1123 on 2025-12-11 17:25</div>
+            <div class="timeline-body"><p>Is that for pyodide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:5872 on 2025-12-11 17:27</div>
+            <div class="timeline-body"><p>Notably, also larger directory sizes, which is the reason why the pyc files are often not shipped by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:4004 on 2025-12-11 17:28</div>
+            <div class="timeline-body"><p>Doesn't that count change when we bump the patch version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/help.rs</code>:583 on 2025-12-11 17:32</div>
+            <div class="timeline-body"><p>The option can be in the main options section, &quot;Installer options&quot; generally refers to things that control wheel installs, not Python installs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-11 17:34</div>
+            <div class="timeline-body"><p>Looks good! Added some smaller comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-11 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:5872 on 2025-12-11 17:40</div>
+            <div class="timeline-body"><p>Yeah this will also increase your Docker image size, so it's a trade-off in that regard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-11 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:5866 on 2025-12-11 17:40</div>
+            <div class="timeline-body"><p>We should also document at https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

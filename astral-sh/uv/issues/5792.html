@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--non-editable` to allow syncing with non-editable workspace members - astral-sh/uv #5792</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `--non-editable` to allow syncing with non-editable workspace members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5792">#5792</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-05 12:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 12:53</div>
+            <div class="timeline-body"><p>Do we want to support this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-08-05 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-08-05 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-05 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 13:02</div>
+            <div class="timeline-body"><p>(It's very easy to do.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 13:07</div>
+            <div class="timeline-body"><p>If no one objects I can add it, not too hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-05 17:39</div>
+            <div class="timeline-body"><p>I don't fully understand what this means. I worry how close the flag is to <code>--no-editable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 17:55</div>
+            <div class="timeline-body"><p>It would mean: install the project and any workspace members as non-editable. So, build them to sdists, and install them into the environment, rather than adding a <code>.pth</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-05 17:57</div>
+            <div class="timeline-body"><p>Hm. <code>--no-editable-project</code>? I'm not sure. Makes sense as something to support though. Seems easy to defer to after stabilization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5958.html">astral-sh/uv#5958</a> on 2024-08-09 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eruvanos">@eruvanos</a> on 2024-08-23 13:19</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I think I would need this flag, but maybe it is better to describe my use case, there might be another solution for it with uv:</p>
+<p>I want to setup multiple AWS Lambda Functions, which all come with their own dependencies, some use flask, some don't, etc.</p>
+<p>For local development it is convenient, to have one virtual environment, so I go with setting up a virtual workspace. I add multiple packages, one for each Lambda function.</p>
+<p>I add one &quot;shared&quot; package, which I will use for code that is shared between all Lambdas.</p>
+<p>I install the shared package into the other ones, which will create an entry like:</p>
+<pre><code>[tool.uv.sources]
+shared = { workspace = true }
+</code></pre>
+<p>Next I create the Lambda artefact, by installing the package with <code>--target</code></p>
+<pre><code>cd package_a
+uv pip install -c ../uv.lock --target dist .
+</code></pre>
+<p><code>dist/</code> now contains everything I would have to ship, but the <code>shared</code> package is only referenced with <code>.pth</code> file, which will not work in the lambda environment.</p>
+<p>From my point of view, <code>--non-editable</code> support in the <code>uv pip install</code> command could be used to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2024-08-30 16:38</div>
+            <div class="timeline-body"><p>I would use such a flag, yes, for the project itself (I don't use workspaces (yet)). Apologies if this not what this issue is about.</p>
+<p>The initial use-case (a few years ago) was for <a href="https://github.com/pdm-project/pdm/issues/443">multi-stage Docker builds</a>: install every deps + project in a first stage, copy in a later stage. Editable installs of the project would not be working once the venv was copied in the final stage, since the sources were not present anymore.</p>
+<p>The current use-case is to make CI more robust (to spot packaging issues early), with something like this:</p>
+<pre><code class="language-bash">if [ -n &quot;${CI}&quot; ]; then
+  uv sync --no-editable-project
+else
+  uv sync
+fi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6935.html">astral-sh/uv#6935</a> on 2024-09-02 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7126.html">astral-sh/uv#7126</a> on 2024-09-06 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7166.html">astral-sh/uv#7166</a> on 2024-09-07 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2024-09-11 14:33</div>
+            <div class="timeline-body"><p>This would be very useful when building docker images with workspaces - you would be able to do something akin to:</p>
+<pre><code class="language-dockerfile">RUN --mount=bind,from=project,source=src/,target=src/ \
+   --mount=type=bind,from=project,source=pyproject.toml,target=pyproject.toml \
+   --mount=type=bind,from=project,source=uv.lock,target=uv.lock \
+   uv sync --frozen
+</code></pre>
+<p>and avoid having to copy the <code>src/</code> directory into the image at all, and avoid multi-stage builds that in essence just try and emuate the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bachya">@bachya</a> on 2024-09-11 16:28</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb Is there anything further the community could provide input on here? Noting that CM said this was relatively easy; this one feature is all that remains for us to move our large monorepo completely over to <code>uv</code>, so I'm excited to see it in action. I'd be happy to contribute if feedback/additional dialog would help drive a decision. No rush, of course—I'm sure many other priorities are going on.</p>
+<p>(Unfortunately, my Rust is non-existent, and I'm not in a position to submit an actual PR. 🫠)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 17:28</div>
+            <div class="timeline-body"><p>I think I can take this one on soon. It’s mostly about figuring the right names / UX / concepts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-13 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7371.html">astral-sh/uv#7371</a> on 2024-09-13 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-17 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run a uv tool with packages installed from pyproject.toml - astral-sh/uv #9026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run a uv tool with packages installed from pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9026">#9026</a>
+        opened by <a href="https://github.com/Levelleor">@Levelleor</a>
+        on 2024-11-11 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Levelleor">@Levelleor</a> on 2024-11-11 18:49</div>
+            <div class="timeline-body"><p>If I install packages via:</p>
+<pre><code class="language-shell">uv sync
+or
+uv pip install -r pyproject.toml
+</code></pre>
+<p>Then try to run pytest on the project via a tool</p>
+<pre><code class="language-shell">uv tool run pytest
+</code></pre>
+<p>It won't work because:</p>
+<blockquote>
+<p>ModuleNotFoundError: No module named 'boto3'</p>
+</blockquote>
+<p>Which is part of the main dependencies block in pyproject.toml.</p>
+<p>To overcome this I could do either of:</p>
+<ol>
+<li></li>
+</ol>
+<pre><code class="language-shell">uv sync
+uv run pytest
+</code></pre>
+<ol start="2">
+<li></li>
+</ol>
+<pre><code class="language-shell">uv tool run --with boto3 pytest
+</code></pre>
+<ol start="3">
+<li>(i am assuming this will also install dev packages every time a tool is ran)</li>
+</ol>
+<pre><code class="language-shell">uv tool run --with-requirements pyproject.toml pytest
+</code></pre>
+<p>The second one isn't worth it in my case due to the number of tools I may need to add, and the last one will re-link (or in my case it copies over the files as a fallback option) the packages on every run for that specific tool.</p>
+<p>I'd like to be able to run the tool in the same environment as the <code>uv run pytest</code> would run in. This is useful when I want to enforce a tool on users of a CI pipeline without affecting their project dependencies with &quot;add&quot;. While I could run something along the lines of <code>uv sync --with pytest</code> and then have the ability to execute it I'd like to know whether a simpler solution is available to me.</p>
+<p>I also have found that <code>tool run</code> comes with an <code>--isolated</code> flag, which I am assuming is on by default from the output of the example above?</p>
+<pre><code>--isolated
+    Run the tool in an isolated virtual environment, ignoring any already-installed tools
+</code></pre>
+<p>So I am not sure if I can de-isolate the tool to reuse the isolated environment of a project .venv instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codethief">@codethief</a> on 2025-05-22 22:20</div>
+            <div class="timeline-body"><p>I think this is a great suggestion! This could go hand in hand with introducing <a href="https://github.com/astral-sh/uv/issues/3560#issuecomment-2719148617">project-level tools</a> by adding an option to include the project's &quot;prod&quot; dependencies in a given project tool's isolated venv.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:29 UTC
+    </footer>
+</body>
+</html>

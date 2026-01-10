@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack overflow when using too many arguments with `arg!()` - clap-rs/clap #3524</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stack overflow when using too many arguments with `arg!()`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3524">#3524</a>
+        opened by <a href="https://github.com/bkstein">@bkstein</a>
+        on 2022-03-01 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bkstein">@bkstein</a> on 2022-03-01 16:17</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.1 (db9d1b20b 2022-01-20)</p>
+<h3>Clap Version</h3>
+<p>3.1.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{arg, Command};
+
+fn main() {
+    let _cli_args = Command::new(&quot;clap-overflow&quot;)
+        .about(&quot;Demonstrates stack overflow using clap.&quot;)
+        .arg(arg!(-a --aa &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-b --bb &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-c --cc &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-d --dd &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-e --ee &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-f --ff &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-g --gg &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-h --hh &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-i --ii &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-j --jj &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-k --kk &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-l --ll &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-m --mm &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-o --oo &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-p --pp &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-q --qq &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-r --rr &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-s --ss &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-t --tt &lt;ARG&gt; &quot;&quot;))
+        .arg(arg!(-u --uu &lt;ARG&gt; &quot;&quot;))// this line makes the difference
+        .get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>thread 'main' has overflowed its stack
+error: process didn't exit successfully: <code>C:\Users\kletterstein\Projects\rust-bug-clap-stackoverflow\target\debug\rust-bug-clap-stackoverflow.exe</code> (exit code: 0xc00000fd, STATUS_STACK_OVERFLOW)</p>
+<p>Process finished with exit code -1073741571 (0xC00000FD)</p>
+<h3>Expected Behaviour</h3>
+<p>I expect the following output on stdout:</p>
+<pre><code>error: The following required arguments were not provided:
+    --aa &lt;ARG&gt;
+    --bb &lt;ARG&gt;
+    --cc &lt;ARG&gt;
+    --dd &lt;ARG&gt;
+    --ee &lt;ARG&gt;
+    --ff &lt;ARG&gt;
+    --gg &lt;ARG&gt;
+    --hh &lt;ARG&gt;
+    --ii &lt;ARG&gt;
+    --jj &lt;ARG&gt;
+    --kk &lt;ARG&gt;
+    --ll &lt;ARG&gt;
+    --mm &lt;ARG&gt;
+    --oo &lt;ARG&gt;
+    --pp &lt;ARG&gt;
+    --qq &lt;ARG&gt;
+    --rr &lt;ARG&gt;
+    --ss &lt;ARG&gt;
+    --tt &lt;ARG&gt;
+    --uu &lt;ARG&gt;
+
+USAGE:
+    rust-bug-clap-stackoverflow.exe --aa &lt;ARG&gt; --bb &lt;ARG&gt; --cc &lt;ARG&gt; --dd &lt;ARG&gt; --ee &lt;ARG&gt; --ff &lt;ARG&gt; --gg &lt;ARG&gt; --hh &lt;ARG&gt; --ii &lt;ARG&gt; --jj &lt;ARG&gt; --kk &lt;ARG&gt; --ll &lt;ARG&gt; --mm &lt;ARG&gt; --oo &lt;ARG&gt; --pp &lt;ARG&gt; --qq &lt;ARG&gt; --rr &lt;ARG&gt; --ss &lt;ARG&gt; --tt &lt;ARG&gt; --uu &lt;ARG&gt;
+
+For more information try --help
+</code></pre>
+<h3>Additional Context</h3>
+<p>Using Windows 10</p>
+<h3>Debug Output</h3>
+<p>No additional output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @bkstein on 2022-03-01 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-01 18:37</div>
+            <div class="timeline-body"><p>Not reproducible on Linux.  I'll have to scrounge up a Windows computer and look at this later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bkstein">@bkstein</a> on 2022-03-02 06:59</div>
+            <div class="timeline-body"><p>Hint: no stack overflow, if the arguments are created without the <code>arg!</code> macro, but with <code>clap::Arg::new()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-09-28 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2022-09-28 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-09-28 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2023-01-06 16:18</div>
+            <div class="timeline-body"><p>IIRC Windows uses a much smaller default stack size (1MB) versus Linux (8MB I believe)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-06 16:25</div>
+            <div class="timeline-body"><p>#4516 also deals with a stack overflow but from within the derive API.  In that case, temporary variables are also being used but one per statement (<code>let cmd = cmd.arg(...);</code>).  I suspect rustc isn't being smart about reclaiming stack space so we need to do things to force it to do that.  Just unsure what the best approach for that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2023-01-06 16:34</div>
+            <div class="timeline-body"><p>I wonder also if the way rustc will write heap values by first writing them to the stack and <code>memcpy</code> them is playing a role here too? For that there are <code>unsafe</code> ways out of it, as well as crates that avoid the copy in order to write directly to the heap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-06 16:41</div>
+            <div class="timeline-body"><p>A part of me hopes this problem will go away with</p>
+<ul>
+<li>pcwalton's stack work: https://arewestackefficientyet.com/</li>
+<li>As I get to implementing the <a href="https://github.com/clap-rs/clap/discussions/3476">plugin architecture</a> where less commonly used fields get moved into an <code>AnyMap</code>, reducing the stack size of <code>Command</code> and <code>Arg</code> (while allowing cases like a user applying a <code>clap_complete</code> setting to an <code>Arg</code> without <code>clap </code> ever needing to know about it <em>cough</em> ValueHint <em>cough</em>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4670.html">clap-rs/clap#4670</a> on 2023-01-24 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5134.html">clap-rs/clap#5134</a> on 2023-09-23 17:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:56 UTC
+    </footer>
+</body>
+</html>

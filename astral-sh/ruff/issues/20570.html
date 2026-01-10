@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query regarding try-consider-else documentation - astral-sh/ruff #20570</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Query regarding try-consider-else documentation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20570">#20570</a>
+        opened by <a href="https://github.com/LilMonk">@LilMonk</a>
+        on 2025-09-25 10:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LilMonk">@LilMonk</a> on 2025-09-25 10:47</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>In the documentation https://docs.astral.sh/ruff/rules/try-consider-else/ it says to use the pattern</p>
+<pre><code class="language-python">import logging
+
+def reciprocal(n):
+    try:
+        rec = 1 / n
+    except ZeroDivisionError:
+        logging.exception(&quot;Exception occurred&quot;)
+    else:
+        print(f&quot;reciprocal of {n} is {rec}&quot;)
+        return rec
+</code></pre>
+<p>when I use it in my code</p>
+<pre><code class="language-python">import logging
+
+class Bar(BaseModel):
+    a: int
+    b: str
+
+def create_bar(a: int, b: str) -&gt; Bar:
+    if a &lt; 0:
+        raise ValueError(&quot;a must be non-negative&quot;)
+    return Bar(a=a, b=b)
+
+def foo() -&gt; Bar:
+    log = logging.getLogger(&quot;foo&quot;)
+    log.info(&quot;Creating Bar instance&quot;)
+    try:
+        bar = create_bar(1, &quot;test&quot;)
+    except Exception:
+        log.exception(&quot;Failed to create Bar instance&quot;)
+    else:
+        return bar
+</code></pre>
+<p>But on type checkers like pylance, it gives an error</p>
+<pre><code>Function with declared return type &quot;Bar&quot; must return a value on all code paths
+  &quot;None&quot; is not assignable to &quot;Bar&quot;
+</code></pre>
+<p>It is only resolved if I have a <code>raise</code> in an except block like this</p>
+<pre><code class="language-python">import logging
+
+class Bar(BaseModel):
+    a: int
+    b: str
+
+def create_bar(a: int, b: str) -&gt; Bar:
+    if a &lt; 0:
+        raise ValueError(&quot;a must be non-negative&quot;)
+    return Bar(a=a, b=b)
+
+def foo() -&gt; Bar:
+    log = logging.getLogger(&quot;foo&quot;)
+    log.info(&quot;Creating Bar instance&quot;)
+    try:
+        bar = create_bar(1, &quot;test&quot;)
+    except Exception:
+        log.exception(&quot;Failed to create Bar instance&quot;)
+        raise
+    else:
+        return bar
+</code></pre>
+<p>Is my understanding of the documentation wrong, or is there anything else that I'm missing?</p>
+<h3>Version</h3>
+<p>ruff 0.12.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @LilMonk on 2025-09-25 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 13:22</div>
+            <div class="timeline-body"><p>I think the docs could probably be made more clear by returning a default value after logging the exception:</p>
+<pre><code class="language-py">import logging
+
+def reciprocal(n):
+    try:
+        rec = 1 / n
+    except ZeroDivisionError:
+        logging.exception(&quot;Exception occurred&quot;)
+        return 0
+    else:
+        print(f&quot;reciprocal of {n} is {rec}&quot;)
+        return rec
+</code></pre>
+<p>or re-raising as you mentioned. I think code like this should also run afoul of type checkers for the same reason, though:</p>
+<pre><code class="language-py"># try.py
+import logging
+
+class Bar: ...
+
+def create_bar(a, b) -&gt; Bar: Bar()
+
+def foo() -&gt; Bar:
+    log = logging.getLogger(&quot;foo&quot;)
+    log.info(&quot;Creating Bar instance&quot;)
+    try:
+        bar = create_bar(1, &quot;test&quot;)
+        return bar
+    except Exception:
+        log.exception(&quot;Failed to create Bar instance&quot;)
+</code></pre>
+<pre><code class="language-shell">&gt; pyright try.py
+/tmp/tmp.AK1s99fmwX/try.py
+  /tmp/tmp.AK1s99fmwX/try.py:6:25 - error: Function with declared return type &quot;Bar&quot; must return value on all code paths
+    &quot;None&quot; is not assignable to &quot;Bar&quot; (reportReturnType)
+  /tmp/tmp.AK1s99fmwX/try.py:8:14 - error: Function with declared return type &quot;Bar&quot; must return value on all code paths
+    &quot;None&quot; is not assignable to &quot;Bar&quot; (reportReturnType)
+2 errors, 0 warnings, 0 informations
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LilMonk">@LilMonk</a> on 2025-09-25 14:12</div>
+            <div class="timeline-body"><p>So it means the doc needs some changes, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 14:26</div>
+            <div class="timeline-body"><p>Sure! Feel free to open a PR if you're interested :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-09-25 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-09-25 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LilMonk">@LilMonk</a> on 2025-09-26 01:09</div>
+            <div class="timeline-body"><p>Sure will try to make the changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20587.html">astral-sh/ruff#20587</a> on 2025-09-26 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-01 21:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

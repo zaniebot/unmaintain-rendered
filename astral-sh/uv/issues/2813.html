@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Expose python and venv discovery as a machine interpretable uv subcommand - astral-sh/uv #2813</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Expose python and venv discovery as a machine interpretable uv subcommand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2813">#2813</a>
+        opened by <a href="https://github.com/strangemonad">@strangemonad</a>
+        on 2024-04-03 16:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/strangemonad">@strangemonad</a> on 2024-04-03 16:19</div>
+            <div class="timeline-body"><p>Many tools in the python development process could benefit from a consistent way of resolving the current project's python executable and virtual env. Since uv already has <a href="https://github.com/astral-sh/uv?tab=readme-ov-file#python-discovery">documented logic for python discovery</a> it would be nice if we could just build off of this mechanism.</p>
+<p>One example is how pyright tries to do its own python discovery but in many cases doesn't work properly. The way pyright actually works when it's invoked via pylance in vscode is closer to the following invocation <code>pyright --pythonpath $ABS_PATH_TO_PYTHON --project $ABS_PATH_TO_PROJECT_ROOT</code> see <a href="https://github.com/zed-industries/zed/issues/7296#issuecomment-2013158802">this discussion on how to improve the python experience in Zed</a>.</p>
+<p>VSCode and PyCharm have similar issues where the user usually has to go hunt for the path to the python interpreter. Poetry does a similar python discovery, if you've installed poetry via <code>pipx</code> this means you already have an active venv so you find yourself needed to do <code>pyenv ... &amp;&amp; poetry env use $(which python)</code> to make sure it doesn't pick the pipx base python install (often either system python or homebrew managed python rather than the pyenv managed version you actually want).</p>
+<p>I'm sure there are details to think through, but a first proposal might be something like the following:</p>
+<pre><code class="language-bash">uv which python [PATH(default=PWD)]
+</code></pre>
+<p>where the path could be a PROJECT_ROOT (containing a pyproject.toml or some other marker) or any child path of the project root. I'm assuming ruff could also share some of this project root and python language version inference logic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-03 16:24</div>
+            <div class="timeline-body"><p>Interesting idea! I'm not sure how we'd want to expose this but I feel the pain of finding versions.</p>
+<p>See also #2386 which defines robust logic we want to implement for interpreter discovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-04-03 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-04-03 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zed-industries/zed/issues/7808.html">zed-industries/zed#7808</a> on 2024-06-03 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-11-05 20:54</div>
+            <div class="timeline-body"><p>I came across this issue when wondering how to figure out, in a script, how <code>uv</code> was installed on a system: specifically, I would like to know if the user installed <code>uv</code> via pip (in which case I should not uninstall <code>uv</code> during <code>uv pip sync</code>) or if it's a system-wide binary (in which case I do not need to special-case a <code>uv</code> pip package). Maybe figuring out <code>uv</code> kind of installation fits into this issue.</p>
+<p>(If there are other ways to achieve what I describe above, I'm all ears, too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-05 21:11</div>
+            <div class="timeline-body"><p>@bersbersbers I guess I'd just <code>which uv</code> and see if's in the Python environment's bin directory or not? You could also see if it's in the site-packages which won't be the case for non-pip installs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-11-06 02:13</div>
+            <div class="timeline-body"><p>@zanieb yes, that was my idea, too. It's not straightforward, given symlinks, the various Python distributions, system installations vs. virtual environments (various ones), etc. But I assume <code>uv</code> itself may not know better, so maybe I'll just try myself :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/526.html">astral-sh/ty#526</a> on 2025-05-27 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zed-industries/zed/issues/21743.html">zed-industries/zed#21743</a> on 2025-05-29 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

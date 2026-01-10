@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>installing private repo in Dockerfile fails with uv, works with poetry - astral-sh/uv #6305</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>installing private repo in Dockerfile fails with uv, works with poetry</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6305">#6305</a>
+        opened by <a href="https://github.com/captnswing">@captnswing</a>
+        on 2024-08-21 07:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-21 07:36</div>
+            <div class="timeline-body"><p>Hello!
+and congratulations on the bombastic release of <code>uv 0.3.0</code>! I've been using <code>poetry</code> for a while now and I'm excited to
+try out <code>uv</code> as a replacement.</p>
+<p>My project has a dependency to a private GHE repo. In the <code>pyproject.toml</code> I use with poetry, I have the following</p>
+<pre><code>[tool.poetry.dependencies]
+...
+&lt;mypackage&gt; = { git = &quot;git+ssh://git@github.com/&lt;org&gt;/&lt;mypackage&gt;.git&quot;, rev = &quot;release-XYZ&quot; }
+...
+</code></pre>
+<p>building the Docker container on my host with</p>
+<pre><code>eval $(ssh-agent) &amp;&amp; ssh-add ~/.ssh/&lt;ghe_ssh_key&gt; 
+DOCKER_BUILDKIT=1 docker build --ssh default .
+</code></pre>
+<p>the following <code>Dockerfile</code> always used to work with poetry, installing the package from the private GHE repo in the
+container</p>
+<pre><code>...
+COPY poetry.lock pyproject.toml ./
+
+RUN --mount=type=ssh \
+    # suppress hostkey checking
+    mkdir -p -m 0600 ~/.ssh &amp;&amp; ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts &amp;&amp; \
+    # install project requirements
+    poetry install --only main
+...
+</code></pre>
+<p>Switching to <code>uv</code>, I made the necessary adjustments to <code>pyproject.toml</code> (and <code>uv sync</code> works on the host)</p>
+<pre><code>...
+dependencies = [
+    ...
+    &lt;mypackage&gt;,
+    ...
+]
+
+[tool.uv.sources]
+&lt;mypackage&gt; = { git = &quot;git+ssh://git@github.com/&lt;org&gt;/&lt;mypackage&gt;.git&quot;, rev = &quot;release-XYZ&quot; }
+...
+</code></pre>
+<p>the relevant section of my Dockerfile now looks like this</p>
+<pre><code>...
+RUN curl -LsSf https://astral.sh/uv/0.3.0/install.sh | sh
+
+COPY uv.lock pyproject.toml ./
+
+RUN --mount=type=ssh \
+    # suppress hostkey checking
+    mkdir -p -m 0600 ~/.ssh &amp;&amp; ssh-keyscan -t rsa github.com &gt;&gt; ~/.ssh/known_hosts &amp;&amp; \
+    # install project requirements
+    $HOME/.cargo/bin/uv sync --no-dev --frozen
+...    
+</code></pre>
+<p>running</p>
+<pre><code>eval $(ssh-agent) &amp;&amp; ssh-add ~/.ssh/&lt;ghe_ssh_key&gt; 
+DOCKER_BUILDKIT=1 docker build --ssh default .
+</code></pre>
+<p>again fails with</p>
+<pre><code>...
+3.217 root@github.com: Permission denied (publickey).
+3.217 fatal: Could not read from remote repository.
+3.217 
+3.217 Please make sure you have the correct access rights
+3.217 and the repository exists.
+...
+</code></pre>
+<p>Feels like <code>uv</code> ignores the ssh key passed to the container with <code>--mount=type=ssh</code>?</p>
+<p>What am I missing? How can I install the private repo with <code>uv</code> in the Dockerfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 13:19</div>
+            <div class="timeline-body"><p>Thanks. What you're doing looks right -- I'll test it out today and report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-21 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-21 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 14:31</div>
+            <div class="timeline-body"><p>Confirming that I've reproduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 14:32</div>
+            <div class="timeline-body"><p>Ahhh it's because we're stripping the username in the lockfile (<code>git@</code> in <code>git@github.com</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 14:35</div>
+            <div class="timeline-body"><p>I'll fix this for today's release, sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6335.html">astral-sh/uv#6335</a> on 2024-08-21 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-21 16:42</div>
+            <div class="timeline-body"><p>just... wow 🤩
+and thank you, Charlie and team astral.sh 🚀 🙇🏼</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-22 07:06</div>
+            <div class="timeline-body"><p>So I tried the fresh new release of uv 0.3.1 (🙌🏼) and it seems that it doesn't write <code>git@</code> user to the lock file.</p>
+<p>My session:</p>
+<pre><code>❯ uv --version
+uv 0.3.1 (be17d132a 2024-08-21)
+</code></pre>
+<pre><code>❯ rm uv.lock                     
+</code></pre>
+<pre><code>❯ uv lock
+ Updated git+ssh://git@github.com/&lt;my_org&gt;/&lt;my_package&gt;.git (6f3be93)
+Resolved 121 packages in 3.80s
+</code></pre>
+<pre><code>❯ grep -B 1 'git@' pyproject.toml 
+[tool.uv.sources]
+&lt;my_package&gt; = { git = &quot;git+ssh://git@github.com/&lt;my_org&gt;/&lt;my_package&gt;.git&quot;, rev = &quot;release-0.3.24&quot; }
+</code></pre>
+<pre><code>❯ grep -B 1 'git@' uv.lock       
+ 
+</code></pre>
+<pre><code>❯ eval $(ssh-agent) &amp;&amp; ssh-add ~/.ssh/&lt;my_ghe_key&gt; 
+Agent pid 17176
+Identity added: &lt;my_ghe_key&gt;
+
+❯ DOCKER_BUILDKIT=1 docker build --ssh default .
+...
+3.611 --- stderr
+3.611 root@github.com: Permission denied (publickey).
+3.611 fatal: Could not read from remote repository.
+3.611 
+3.611 Please make sure you have the correct access rights
+3.611 and the repository exists.
+3.611 
+...
+</code></pre>
+<p><code>uv sync</code>  works on the host (a Mac), with the lockfile written (without <code>git@</code> user), but fails in the docker build (using python:3.11-bookworm base image).</p>
+<p>I can confirm that manually adding <code>git@</code> to the repo url in <code>uv.lock</code> makes the docker build work.</p>
+<p>But it seems that uv 0.3.1 writes the lock file without the <code>git@</code> user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 11:45</div>
+            <div class="timeline-body"><p>Is there any chance that your Docker build is still getting v0.3.0? Perhaps you’re using the CURL installer and the layer is still cached?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-22 13:11</div>
+            <div class="timeline-body"><p>The relevant section of the Dockerfile looks like this</p>
+<pre><code>RUN curl -LsSf https://astral.sh/uv/0.3.1/install.sh | sh
+COPY uv.lock pyproject.toml README.md ./
+RUN --mount=type=ssh \
+    # suppress hostkey checking
+    mkdir -p -m 0600 ~/.ssh &amp;&amp; ssh-keyscan -t rsa github.com &gt;&gt; ~/.ssh/known_hosts &amp;&amp; \
+    # install project requirements according to the lock file, without dev dependencies
+    $HOME/.cargo/bin/uv sync --no-dev
+</code></pre>
+<p>I even added <code>ENV foo=bar</code> above to force rebuild of these layers, same result.</p>
+<p>Isn't the tell-tale sign that the <code>uv.lock</code> file generated by uv 0.3.1 on the host (and that's copied into the container) does not contain <code>git@</code> anywhere?</p>
+<pre><code>❯ rm uv.lock &amp;&amp; uv --version &amp;&amp; uv lock
+uv 0.3.1 (be17d132a 2024-08-21)
+ Updated git+ssh://git@github.com/&lt;myorg&gt;/&lt;mypackage&gt;.git (6f3be93)
+Resolved 121 packages in 6.02s
+
+❯ grep 'git@' uv.lock       
+
+</code></pre>
+<p>after I manually add <code>git@</code> to the url in <code>uv.lock</code>, the docker build works.</p>
+<p><code>uv sync</code> works on the host, whether or not <code>git@</code> is present on the github url in <code>uv.lock</code> 🤷🏼</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-23 07:12</div>
+            <div class="timeline-body"><p>same with uv 0.3.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-08-23 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-24 10:29</div>
+            <div class="timeline-body"><p>working around it now by adding the <code>RUN sed -i ...</code> step to the Dockerfile</p>
+<pre><code>FROM python:3.11-bookworm
+WORKDIR /opt
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:0.3.3 /uv /bin/uv
+
+# Copy files needed for uv sync
+COPY uv.lock pyproject.toml ./
+
+# https://github.com/astral-sh/uv/issues/6305
+RUN sed -i 's|git+ssh://github.com|git+ssh://git@github.com|g' uv.lock
+
+# Install the dependencies for the project into /opt/.venv
+# Access to key agent needed to install package from private git repo
+RUN --mount=type=ssh \
+    # suppress hostkey checking
+    mkdir -p -m 0600 ~/.ssh &amp;&amp; ssh-keyscan -t rsa github.com &gt;&gt; ~/.ssh/known_hosts &amp;&amp; \
+    # install project requirements according to the lock file, without dev dependencies
+    uv sync --no-dev --frozen --no-install-project
+
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 13:59</div>
+            <div class="timeline-body"><p>@captnswing -- Just confirming -- still a problem? Can look into it today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-08-27 20:59</div>
+            <div class="timeline-body"><p>yes, actually this still isn't working (on my machine...)</p>
+<p>I've been banging my head against what could be the problem in my environment that could be the cause, so I tried to create reproducable scripts and run them from a clean docker slate <code>docker system prune -a</code>, (and using <code>uv 0.3.3</code>)</p>
+<h3>Test plan</h3>
+<ol>
+<li>generate <code>uv.lock</code> on the host (the case originally reported here)</li>
+<li>generate <code>uv.lock</code> in the container (not really what I need, but just to see what happens)</li>
+<li>compare the host-generated and the container-generated <code>uv.lock</code> files to see if / how they differ</li>
+</ol>
+<h3>Results</h3>
+<p>case 1.) 🛑 <code>docker build -ssh ...</code> <strong>fails</strong> with <code>root@github.com: Permission denied (publickey)</code> as reported here (even after docker system prune)</p>
+<p>case 2.) ✅ <code>docker build -ssh ...</code> <strong>works</strong> 🤷🏼</p>
+<p>case 3.) ❓❗the container- and host-generated <code>uv.lock</code> files are <strong>identical</strong> 😳</p>
+<h3>Appendix: scripts used</h3>
+<h5>host_generated.sh</h5>
+<pre><code class="language-bash">#!/bin/sh
+eval $(ssh-agent)
+ssh-add ~/.ssh/id_ghe
+rm -f uv.lock &amp;&amp; uv lock
+cat &lt;&lt;EOL &gt;Dockerfile.host_generated
+    FROM python:3.11-bookworm
+    COPY --from=ghcr.io/astral-sh/uv:0.3.3 /uv /bin/uv
+    WORKDIR /app
+    COPY pyproject.toml uv.lock .
+    RUN mkdir -p -m 0600 ~/.ssh &amp;&amp; ssh-keyscan -t rsa github.com &gt;&gt; ~/.ssh/known_hosts
+    RUN --mount=type=ssh uv sync --frozen --no-dev --no-install-project
+EOL
+DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t host_generated -f Dockerfile.host_generated .
+</code></pre>
+<h5>container_generated.sh</h5>
+<pre><code class="language-bash">#!/bin/sh
+eval $(ssh-agent)
+ssh-add ~/.ssh/id_ghe
+cat &lt;&lt;EOL &gt;Dockerfile.container_generated
+    FROM python:3.11-bookworm
+    COPY --from=ghcr.io/astral-sh/uv:0.3.3 /uv /bin/uv
+    WORKDIR /app
+    COPY pyproject.toml .
+    RUN mkdir -p -m 0600 ~/.ssh &amp;&amp; ssh-keyscan -t rsa github.com &gt;&gt; ~/.ssh/known_hosts
+    RUN --mount=type=ssh uv lock
+    RUN --mount=type=ssh uv sync --no-dev --no-install-project
+EOL
+DOCKER_BUILDKIT=1 docker build --no-cache --ssh default -t container_generated -f Dockerfile.container_generated .
+</code></pre>
+<h5>diff_lockfiles.sh.sh</h5>
+<pre><code class="language-bash">#!/bin/sh
+# copy the tarfile from the container to a tmp_dir on the host
+tmp_dir=$(mktemp -d)
+docker cp $(docker create container_generated):/app/uv.lock - &gt; $tmp_dir/uv_container.lock.tar
+tar -xf $tmp_dir/uv_container.lock.tar -C $tmp_dir
+# move container lockfile from tmp_dir to current directory, not overwriting the host lockfile
+mv $tmp_dir/uv.lock uv_container.lock
+# cleanup
+rm -rf $tmp_dir
+# diff the lockfiles
+if diff -q uv.lock uv_container.lock; then
+    echo &quot;The files are identical.&quot;
+else
+    diff uv.lock uv_container.lock
+fi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nikhilweee">@nikhilweee</a> on 2024-09-10 00:02</div>
+            <div class="timeline-body"><p>I had a simlar issue where lockfile generated by <code>uv</code> v3 was giving me errors when running <code>uv sync</code> inside the container, but upgrading <code>uv</code> to v4 fixed the issue for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/captnswing">@captnswing</a> on 2024-09-21 12:58</div>
+            <div class="timeline-body"><p>great! I'm not crazy 🤣</p>
+<p>This works now. using my scripts, I could triangulate it to uv 0.4.10</p>
+<p>so uv 0.4.10 is the last version that had the reported behaviour, and it works since uv 0.4.11</p>
+<p>thanks for making uv @charliermarsh !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @captnswing on 2024-09-21 12:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

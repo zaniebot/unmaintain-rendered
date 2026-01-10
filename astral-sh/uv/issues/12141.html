@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't resolve dependencies with git dependency - astral-sh/uv #12141</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't resolve dependencies with git dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12141">#12141</a>
+        opened by <a href="https://github.com/adriangb">@adriangb</a>
+        on 2025-03-12 18:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adriangb">@adriangb</a> on 2025-03-12 18:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am getting at least a confusing error message if not a bug with the following dependencies:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+  &quot;opentelemetry-api==1.31.0&quot;,
+  &quot;opentelemetry-instrumentation-asgi@git+https://github.com/open-telemetry/opentelemetry-python-contrib.git@v0.52b0#subdirectory=instrumentation/opentelemetry-instrumentation-asgi&quot;,
+]
+</code></pre>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of opentelemetry-api==1.31.0 and your project depends on opentelemetry-api==1.31.0, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>I find this error message rather confusing: clearly <code>opentelemetry-api==1.31.0</code> <em>does</em> exist, but it must be getting filtered out. Saying it doesn't exist is confusing.</p>
+<p>Note that I pointed it specifically to the rev <code>v0.52b0</code> which is the rev corresponding to the version released on PyPi: https://github.com/open-telemetry/opentelemetry-python-contrib/releases/tag/v0.52b0</p>
+<p>Without the git dependency resolution works:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+  &quot;opentelemetry-api==1.31.0&quot;,
+  &quot;opentelemetry-instrumentation-asgi==0.52b0&quot;,  # should be the same as the version in git
+]
+</code></pre>
+<h3>Platform</h3>
+<p>macOS Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.6 (Homebrew 2025-03-12)</p>
+<h3>Python version</h3>
+<p>3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @adriangb on 2025-03-12 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../open-telemetry/opentelemetry-python-contrib/pulls/3012.html">open-telemetry/opentelemetry-python-contrib#3012</a> on 2025-03-12 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-12 21:11</div>
+            <div class="timeline-body"><p>I think this is because <code>https://github.com/open-telemetry/opentelemetry-python-contrib</code> defines its own uv sources, and we respect sources on Git dependencies:</p>
+<pre><code>[tool.uv.sources]
+opentelemetry-api = { git = &quot;https://github.com/open-telemetry/opentelemetry-python&quot;, branch = &quot;main&quot;, subdirectory = &quot;opentelemetry-api&quot; }
+</code></pre>
+<p>So now you have a dependency on two conflicting versions of <code>opentelemetry-api</code>. You could run with <code>--no-sources</code> to ignore those sources?</p>
+<p>(I'm not sure why the error message is so lacking, though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adriangb">@adriangb</a> on 2025-03-12 22:37</div>
+            <div class="timeline-body"><p>Ahh makes sense thank you for explaining. Indeed with <code>--no-sources</code> resolution works 😄. Is opentelemetry doing something weird here? Or Am I doing something unreasonable? To me it would seem reasonable to want to test one off these instrumentation packages off of git. I don't care where the <code>opentelemetry-api</code> and <code>opentelemetry-sdk</code> come from but I obviously need them installed for things to work. I came here from https://github.com/open-telemetry/opentelemetry-python-contrib/pull/3012#issuecomment-2718182084 btw, I find the inline deps make for an amazing MRE tool 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-12 22:46</div>
+            <div class="timeline-body"><p>I need to give it a little thought... I think opentelemetry and you are both doing something reasonable, though the combination of behaviors here is pretty confusing in the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-12 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-03-12 22:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

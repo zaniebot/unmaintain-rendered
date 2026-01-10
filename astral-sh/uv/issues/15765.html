@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Difference in file inclusion behavior between source distribution and wheel - astral-sh/uv #15765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Difference in file inclusion behavior between source distribution and wheel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15765">#15765</a>
+        opened by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a>
+        on 2025-09-10 08:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a> on 2025-09-10 08:45</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>(Follow-up of https://github.com/astral-sh/uv/issues/15655)</p>
+<p>I have the following MRE:</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.15,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.build-backend.data]
+data = &quot;subdirectory&quot;
+</code></pre>
+<pre><code class="language-console">$ tree
+.
+├── pyproject.toml
+├── src
+│   └── debug
+│       └── __init__.py
+└── subdirectory
+    └── file.txt
+
+4 directories, 3 files
+</code></pre>
+<p>After building, the source distribution and wheel look like this:</p>
+<pre><code class="language-console">$ tar -tf dist/debug-0.1.0.tar.gz
+debug-0.1.0/PKG-INFO
+debug-0.1.0/
+debug-0.1.0/pyproject.toml
+debug-0.1.0/src
+debug-0.1.0/src/debug
+debug-0.1.0/src/debug/__init__.py
+debug-0.1.0/subdirectory
+debug-0.1.0/subdirectory/file.txt
+</code></pre>
+<pre><code class="language-console">$ tar -tf dist/debug-0.1.0-py3-none-any.whl
+debug/
+debug/__init__.py
+debug-0.1.0.data/data/
+debug-0.1.0.data/data/file.txt
+debug-0.1.0.dist-info/
+debug-0.1.0.dist-info/WHEEL
+debug-0.1.0.dist-info/METADATA
+debug-0.1.0.dist-info/RECORD
+</code></pre>
+<p><code>file.txt</code> is included in both archives, but the <code>subdirectory</code> is included in the source distribution while it is stripped from the wheel. Is this intentional?</p>
+<p>If I create a second subdirectory within the first, the layout looks like this:</p>
+<pre><code class="language-console">$ mkdir subdirectory/another &amp;&amp; touch subdirectory/another/file2.txt
+$ uv build
+$ tar -tf dist/debug-0.1.0.tar.gz
+debug-0.1.0/PKG-INFO
+debug-0.1.0/
+debug-0.1.0/pyproject.toml
+debug-0.1.0/src
+debug-0.1.0/src/debug
+debug-0.1.0/src/debug/__init__.py
+debug-0.1.0/subdirectory
+debug-0.1.0/subdirectory/another
+debug-0.1.0/subdirectory/another/file2.txt
+debug-0.1.0/subdirectory/file.txt
+$ tar -tf dist/debug-0.1.0-py3-none-any.whl
+debug/
+debug/__init__.py
+debug-0.1.0.data/data/
+debug-0.1.0.data/data/another/
+debug-0.1.0.data/data/another/file2.txt
+debug-0.1.0.data/data/file.txt
+debug-0.1.0.dist-info/
+debug-0.1.0.dist-info/WHEEL
+debug-0.1.0.dist-info/METADATA
+debug-0.1.0.dist-info/RECORD
+</code></pre>
+<p>So only the first directory is stripped from the wheel.</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.15 (Homebrew 2025-09-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BartSchuurmans on 2025-09-10 08:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Difference between file inclusion between source distribution and wheel" to "Difference in file inclusion behavior between source distribution and wheel" by @BartSchuurmans on 2025-09-10 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-10 09:06</div>
+            <div class="timeline-body"><p>This is intentional, it allows adding multiple entries at the top level of the data directory without exposing a complex combination of globbing and strip-prefix. We're including the contents of the specified directory in the wheel, not the directory itself (internally we're translating <code>subdirectory</code> to <code>subdirectory/**</code> and stripping the data/data directory prefix from each entry).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BartSchuurmans on 2025-09-12 11:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

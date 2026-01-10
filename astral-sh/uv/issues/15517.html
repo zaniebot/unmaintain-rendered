@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to use pre-commit with certain python versions - astral-sh/uv #15517</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to use pre-commit with certain python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15517">#15517</a>
+        opened by <a href="https://github.com/heydonovan">@heydonovan</a>
+        on 2025-08-25 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/heydonovan">@heydonovan</a> on 2025-08-25 15:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>$ cd /tmp &amp;&amp; mkdir x &amp;&amp; cd x &amp;&amp; git init
+
+$ cat .pre-commit-config.yaml
+---
+default_language_version:
+  python: python3.12
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.10
+    hooks:
+      - id: ruff
+
+$ pre-commit install-hooks
+[INFO] Installing environment for https://github.com/astral-sh/ruff-pre-commit.
+[INFO] Once installed this environment will be reused.
+[INFO] This may take a few minutes...
+An unexpected error has occurred: CalledProcessError: command: ('/Users/dhernandez/.cache/pre-commit/repoi6bnvw5_/py_env-python3.12/bin/python', '-mpip', 'install', '.')
+return code: 1
+stdout: (none)
+stderr:
+    Could not find platform independent libraries &lt;prefix&gt;
+    Could not find platform dependent libraries &lt;exec_prefix&gt;
+    Python path configuration:
+      PYTHONHOME = (not set)
+      PYTHONPATH = (not set)
+      program name = '/Users/dhernandez/.cache/pre-commit/repoi6bnvw5_/py_env-python3.12/bin/python'
+      isolated = 0
+      environment = 1
+      user site = 1
+      safe_path = 0
+      import site = 1
+      is in build tree = 0
+      stdlib dir = '/install/lib/python3.12'
+      sys._base_executable = '/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/bin/python3.12'
+      sys.base_prefix = '/install'
+      sys.base_exec_prefix = '/install'
+      sys.platlibdir = 'lib'
+      sys.executable = '/Users/dhernandez/.cache/pre-commit/repoi6bnvw5_/py_env-python3.12/bin/python'
+      sys.prefix = '/install'
+      sys.exec_prefix = '/install'
+      sys.path = [
+        '/install/lib/python312.zip',
+        '/install/lib/python3.12',
+        '/install/lib/python3.12/lib-dynload',
+      ]
+    Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+    Python runtime state: core initialized
+    ModuleNotFoundError: No module named 'encodings'
+
+    Current thread 0x00000001fda220c0 (most recent call first):
+      &lt;no Python frame&gt;
+Check the log at /Users/dhernandez/.cache/pre-commit/pre-commit.log
+</code></pre>
+<p>I've tried various troubleshooting steps:</p>
+<pre><code>$ which -a python3.12
+/Users/dhernandez/.local/bin/python3.12
+
+$ /Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/bin/python3.12 -m ensurepip
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─&gt; This Python installation is managed by uv and should not be modified.
+
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/lib/python3.12/ensurepip/__main__.py&quot;, line 5, in &lt;module&gt;
+    sys.exit(ensurepip._main())
+             ^^^^^^^^^^^^^^^^^
+  File &quot;/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/lib/python3.12/ensurepip/__init__.py&quot;, line 284, in _main
+    return _bootstrap(
+           ^^^^^^^^^^^
+  File &quot;/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/lib/python3.12/ensurepip/__init__.py&quot;, line 200, in _bootstrap
+    return _run_pip([*args, *_PACKAGE_NAMES], additional_paths)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/lib/python3.12/ensurepip/__init__.py&quot;, line 101, in _run_pip
+    return subprocess.run(cmd, check=True).returncode
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/lib/python3.12/subprocess.py&quot;, line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/bin/python3.12', '-W', 'ignore::DeprecationWarning', '-c', '\nimport runpy\nimport sys\nsys.path = [\'/var/folders/5s/cy7m5h_93z3_ynm037d311hc0000gp/T/tmpe7gco2v8/pip-25.0.1-py3-none-any.whl\'] + sys.path\nsys.argv[1:] = [\'install\', \'--no-cache-dir\', \'--no-index\', \'--find-links\', \'/var/folders/5s/cy7m5h_93z3_ynm037d311hc0000gp/T/tmpe7gco2v8\', \'pip\']\nrunpy.run_module(&quot;pip&quot;, run_name=&quot;__main__&quot;, alter_sys=True)\n']' returned non-zero exit status 1.
+
+$ uv python uninstall 3.12.11
+Searching for Python versions matching: Python 3.12.11
+Uninstalled Python 3.12.11 in 161ms
+
+$ uv python install 3.12.11
+Installed Python 3.12.11 in 808ms
+
+$ uv run python --version
+Python 3.12.11
+
+$ python --version
+Python 3.13.2
+
+$ uv python list
+cpython-3.14.0rc2-macos-aarch64-none                 /Users/dhernandez/.local/bin/python3.14 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.14.0rc2-macos-aarch64-none/bin/python3.14
+cpython-3.14.0rc2-macos-aarch64-none                 /Users/dhernandez/.local/share/uv/python/cpython-3.14.0rc2-macos-aarch64-none/bin/python3.14
+cpython-3.14.0rc2+freethreaded-macos-aarch64-none    &lt;download available&gt;
+cpython-3.13.7-macos-aarch64-none                    /opt/homebrew/bin/python3.13 -&gt; ../Cellar/python@3.13/3.13.7/bin/python3.13
+cpython-3.13.7-macos-aarch64-none                    /opt/homebrew/bin/python3 -&gt; ../Cellar/python@3.13/3.13.7/bin/python3
+cpython-3.13.7-macos-aarch64-none                    &lt;download available&gt;
+cpython-3.13.7+freethreaded-macos-aarch64-none       &lt;download available&gt;
+cpython-3.13.2-macos-aarch64-none                    /Users/dhernandez/.local/bin/python3.13 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+cpython-3.13.2-macos-aarch64-none                    /Users/dhernandez/.local/bin/python3 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+cpython-3.13.2-macos-aarch64-none                    /Users/dhernandez/.local/bin/python -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+cpython-3.13.2-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+cpython-3.12.11-macos-aarch64-none                   /Users/dhernandez/.local/bin/python3.12 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/bin/python3.12
+cpython-3.12.11-macos-aarch64-none                   /Users/dhernandez/.local/share/uv/python/cpython-3.12.11-macos-aarch64-none/bin/python3.12
+cpython-3.12.10-macos-aarch64-none                   /Users/dhernandez/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/bin/python3.12
+cpython-3.12.8-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/bin/python3.12
+cpython-3.12.7-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.12.7-macos-aarch64-none/bin/python3.12
+cpython-3.12.6-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none/bin/python3.12
+cpython-3.12.5-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.12.5-macos-aarch64-none/bin/python3.12
+cpython-3.11.13-macos-aarch64-none                   /Users/dhernandez/.local/bin/python3.11 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/bin/python3.11
+cpython-3.11.13-macos-aarch64-none                   /Users/dhernandez/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/bin/python3.11
+cpython-3.11.11-macos-aarch64-none                   /Users/dhernandez/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+cpython-3.11.9-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.11.9-macos-aarch64-none/bin/python3.11
+cpython-3.11.1-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.11.1-macos-aarch64-none/bin/python3.11
+cpython-3.10.18-macos-aarch64-none                   &lt;download available&gt;
+cpython-3.10.16-macos-aarch64-none                   /Users/dhernandez/.local/bin/python3.10 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10
+cpython-3.10.16-macos-aarch64-none                   /Users/dhernandez/.local/share/uv/python/cpython-3.10.16-macos-aarch64-none/bin/python3.10
+cpython-3.10.8-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.10.8-macos-aarch64-none/bin/python3.10
+cpython-3.9.23-macos-aarch64-none                    &lt;download available&gt;
+cpython-3.9.6-macos-aarch64-none                     /usr/bin/python3
+cpython-3.8.20-macos-aarch64-none                    /Users/dhernandez/.local/bin/python3.8 -&gt; /Users/dhernandez/.local/share/uv/python/cpython-3.8.20-macos-aarch64-none/bin/python3.8
+cpython-3.8.20-macos-aarch64-none                    /Users/dhernandez/.local/share/uv/python/cpython-3.8.20-macos-aarch64-none/bin/python3.8
+pypy-3.11.13-macos-aarch64-none                      &lt;download available&gt;
+pypy-3.10.16-macos-aarch64-none                      &lt;download available&gt;
+pypy-3.9.19-macos-aarch64-none                       &lt;download available&gt;
+pypy-3.8.16-macos-aarch64-none                       &lt;download available&gt;
+graalpy-3.11.0-macos-aarch64-none                    &lt;download available&gt;
+graalpy-3.10.0-macos-aarch64-none                    &lt;download available&gt;
+graalpy-3.8.5-macos-aarch64-none                     &lt;download available&gt;
+</code></pre>
+<p>I've also used <code>asdf</code> to install <code>uv 0.8.0</code> thinking it was an upgrade that broke it, but that didn't work.</p>
+<pre><code>$ echo $PATH
+/Users/dhernandez/.asdf/shims /opt/homebrew/bin /opt/homebrew/sbin /opt/homebrew/opt/node@18/bin /Users/dhernandez/.local/bin /usr/local/bin /System/Cryptexes/App/usr/bin /usr/bin /bin /usr/sbin /sbin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin /opt/podman/bin /Applications/iTerm.app/Contents/Resources/utilities
+
+$ cat ~/.config/fish/config.fish | grep -v '#' | grep -v 'alias'
+
+set -g fish_greeting
+
+if status is-interactive
+    cd ~/projects/
+end
+
+set -gx PATH /opt/homebrew/bin /opt/homebrew/sbin $PATH
+set -gx BUILDKIT_PROGRESS plain
+set -gx HOMEBREW_PREFIX /opt/homebrew
+set -gx HOMEBREW_CELLAR /opt/homebrew/Cellar
+set -gx HOMEBREW_REPOSITORY /opt/homebrew
+set -gx AWS_PAGER cat
+set -gx EDITOR &quot;code --wait&quot;
+set -gx TZ UTC
+set -gx GO111MODULE auto
+set -gx GCL_JSON_SCHEMA_VALIDATION false
+</code></pre>
+<p>If I try <code>3.13</code> instead of <code>3.12</code> it works fine. It breaks with <code>3.11</code> too. Weird.</p>
+<pre><code>$ sed -i '' 's/3.12/3.13/' .pre-commit-config.yaml
+
+$ pre-commit install-hooks
+[INFO] Installing environment for https://github.com/astral-sh/ruff-pre-commit.
+[INFO] Once installed this environment will be reused.
+[INFO] This may take a few minutes...
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.13 (Homebrew 2025-08-21)</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @heydonovan on 2025-08-25 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-08-26 01:24</div>
+            <div class="timeline-body"><p>This looks similar to #15334</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-26 08:42</div>
+            <div class="timeline-body"><p>The underlying problem is https://github.com/astral-sh/python-build-standalone/issues/380, which pre-commit seems to run into.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

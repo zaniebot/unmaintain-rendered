@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for `PD011` when `pd` does not exist in module - astral-sh/ruff #3807</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for `PD011` when `pd` does not exist in module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3807">#3807</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2023-03-30 04:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danparizher">@danparizher</a> on 2023-03-30 04:25</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Code Snippet:</p>
+<pre><code class="language-py">async def select_callback(
+    self,
+    select: discord.ui.Select,
+    interaction: discord.Interaction,
+) -&gt; None:  # the function called when the user is done selecting options
+    value = select.values[0]
+    if value == &quot;current_value&quot;:
+        # do nothing
+        await interaction.response.defer()
+        return
+</code></pre>
+<p><code>PD011</code> comes up on the line <code>value = select.values[0]</code>, but pd doesn't even exist in this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-03-30 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 13:09</div>
+            <div class="timeline-body"><p>Unfortunately this is hard to prevent. We can't rely on the presence of a <code>pd</code> import, since you can use Pandas in a given module without importing it (e.g., imagine you call a function, defined in another file, that returns a DataFrame, and call <code>.values</code> on that DataFrame).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gustavi">@gustavi</a> on 2023-06-09 09:53</div>
+            <div class="timeline-body"><p>Same issue here with Django on https://github.com/django/django/blob/4.2/django/db/models/enums.py#L55.</p>
+<p>I got the problme with <code>ACL.Type.values</code> where <code>ACL</code> is the Django model and <code>Type</code> a <code>TextChoices</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-09 12:23</div>
+            <div class="timeline-body"><p>One idea that we could support is to detect the frameworks in a project (or configure them manually for the time being), and then enable/disable the appropriate rules based on that (or use that knowledge for preciser inference)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/souliane">@souliane</a> on 2024-10-02 07:19</div>
+            <div class="timeline-body"><p>I also get a false positive with this minimal example:</p>
+<pre><code class="language-python">class Dummy:
+    values: str
+
+
+x = Dummy().values
+</code></pre>
+<pre><code class="language-shell">❯ ruff --version         
+ruff 0.6.8
+
+❯ ruff check test_ruff.py
+test_ruff.py:5:5: PD011 Use `.to_numpy()` instead of `.values`
+  |
+5 | x = Dummy().values
+  |     ^^^^^^^^^^^^^^ PD011
+  |
+</code></pre>
+<p>Given the simplicity of this code, I would expect ruff to rule out the possibility of <code>Dummy</code> being a pandas dataframe, but I understand that whether the code is simple or not does not impact the result. Or is this a similar but actually a different issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 07:39</div>
+            <div class="timeline-body"><p>This is related to https://github.com/astral-sh/ruff/issues/6432. I'll merge the two issues</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-07 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14671.html">astral-sh/ruff#14671</a> on 2024-11-29 07:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

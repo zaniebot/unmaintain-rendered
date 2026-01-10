@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Since 0.8.0, version_get_fallback_unmanaged_json fails outside of a git checkout - astral-sh/uv #14785</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Since 0.8.0, version_get_fallback_unmanaged_json fails outside of a git checkout</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14785">#14785</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2025-07-21 11:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-07-21 11:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I run tests for 0.8.0 in a git checkout, everything is fine:</p>
+<pre><code>$ git clone https://github.com/astral-sh/uv
+$ cd uv
+$ git checkout 0.8.0
+$ cargo run python install
+$ cargo test
+</code></pre>
+<p>Otherwise, <code>version::version_get_fallback_unmanaged_json</code> fails:</p>
+<pre><code>$ curl -L -O https://github.com/astral-sh/uv/archive/0.8.0/uv-0.8.0.tar.gz
+$ tar -xzf uv-0.8.0.tar.gz
+$ cd uv-0.8.0
+$ cargo run python install
+$ cargo test
+[…]
+
+failures:
+
+---- version::version_get_fallback_unmanaged_json stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+error: The project is marked as unmanaged: `/tmp/uv/tests/.tmpV5Tavj/temp`
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: version_get_fallback_unmanaged_json
+Source: crates/uv/tests/it/version.rs:1597
+──────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+──────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬─────────────────────────────────────────────────────────────────────────────────────────
+    0       │-success: true
+    1       │-exit_code: 0
+          0 │+success: false
+          1 │+exit_code: 2
+    2     2 │ ----- stdout -----
+    3       │-{
+    4       │-  &quot;package_name&quot;: &quot;uv&quot;,
+    5       │-  &quot;version&quot;: &quot;[VERSION]&quot;,
+    6       │-  &quot;commit_info&quot;: null
+    7       │-}
+    8     3 │
+    9     4 │ ----- stderr -----
+   10       │-warning: Failed to read project metadata (The project is marked as unmanaged: `[TEMP_DIR]/`). Running `uv self version` for compatibility. This fallback will be removed in the future; pass `--preview` to force an error.
+          5 │+error: The project is marked as unmanaged: `[TEMP_DIR]/`
+────────────┴─────────────────────────────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+
+thread 'version::version_get_fallback_unmanaged_json' panicked at /home/ben/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/insta-1.43.1/src/runtime.rs:679:13:
+snapshot assertion for 'version_get_fallback_unmanaged_json' failed in line 1597
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    version::version_get_fallback_unmanaged_json
+
+test result: FAILED. 2111 passed; 1 failed; 3 ignored; 0 measured; 0 filtered out; finished in 158.22s
+
+error: test failed, to rerun pass `-p uv --test it`
+</code></pre>
+<p>A similar but not identical problem occurred in the past, https://github.com/astral-sh/uv/issues/13212.</p>
+<h3>Platform</h3>
+<p>Fedora 42 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.8.0</p>
+<h3>Python version</h3>
+<p>Python 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @musicinmybrain on 2025-07-21 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 12:27</div>
+            <div class="timeline-body"><p>I guess the logic in <code>git_version_info_expected</code> is wrong. Regardless, we removed this fallback in 0.8.0, so we should probably just remove the test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Copilot by @zanieb on 2025-07-21 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14786.html">astral-sh/uv#14786</a> on 2025-07-21 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-21 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

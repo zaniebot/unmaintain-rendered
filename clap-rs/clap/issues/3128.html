@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accept anything `ToString` as a `default_value` - clap-rs/clap #3128</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Accept anything `ToString` as a `default_value`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3128">#3128</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 16:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/CodeSandwich"><img src="https://avatars.githubusercontent.com/u/26183680?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/CodeSandwich">CodeSandwich</a></strong>
+<em>Tuesday Apr 07, 2020 at 07:51 GMT</em>
+<em>Originally opened as https://github.com/TeXitoi/structopt/issues/371</em></p>
+<hr />
+<p>It would be great if <code>default_value</code> could accept anything implementing <code>ToString</code>, e.g.</p>
+<pre><code class="language-rust">const ABC_DEFAULT: u32 = 123;
+...
+#[structopt(long, default_value = ABC_DEFAULT)]
+abc: u32,
+</code></pre>
+<p>or</p>
+<pre><code class="language-rust">#[structopt(long, default_value = 50 * 2 + 20 + 3)]
+abc: u32,
+</code></pre>
+<p>It's already possible to pass nothing to <code>default_value</code> and then its <code>ArgType::default().to_string()</code> is used. This change wouldn't affect existing code, because all string literals implement <code>ToString</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Tuesday Apr 07, 2020 at 14:56 GMT</em></p>
+<hr />
+<p>The main problem here is that <code>Arg::default_value</code> takes <code>&amp;str</code> and not <code>String</code>. We would have to leak the string which may be undesirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/CodeSandwich"><img src="https://avatars.githubusercontent.com/u/26183680?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CodeSandwich">CodeSandwich</a></strong>
+<em>Tuesday Apr 07, 2020 at 17:49 GMT</em></p>
+<hr />
+<p>How is empty <code>default_value</code> solved? It uses type's <code>ToString</code>, does it cache it anywhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Tuesday Apr 07, 2020 at 18:05 GMT</em></p>
+<hr />
+<p>Exactly as described: we leak the string and make use of <code>lazy_static</code> to make sure that using it in loops is safe.</p>
+<p>https://github.com/TeXitoi/structopt/blob/15f65db7540dfe6818d440329198d98c0ca49505/structopt-derive/src/attrs.rs#L314-L323</p>
+<p>Well yeah, we could use direct call for <code>&quot;...&quot;</code> string literals and <code>(expr).to_string().leak()</code> for everything else.</p>
+<p>@TeXitoi What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Wednesday Apr 22, 2020 at 13:52 GMT</em></p>
+<hr />
+<p>@TeXitoi gentle ping</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Saturday Apr 25, 2020 at 12:09 GMT</em></p>
+<hr />
+<p>The problem, is that it's really a special case. A lot of other methods would like such a feature (I think in particular to <code>env</code>).</p>
+<p>And no leak, but a lazy static is acceptable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Saturday Apr 25, 2020 at 12:19 GMT</em></p>
+<hr />
+<p>Maybe just https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=884d76afb1211e02a6ddfd2f176cea6d would do the job? (I didn't try inside structopt attribute, but it should work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+<em>Saturday Apr 25, 2020 at 12:20 GMT</em></p>
+<hr />
+<p>Sure, it would. Can I make a PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:18</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Saturday Apr 25, 2020 at 13:27 GMT</em></p>
+<hr />
+<p>Ok</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:35</div>
+            <div class="timeline-body"><p><code>default_value_t</code> works with any <code>Display</code> type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-09 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:46 UTC
+    </footer>
+</body>
+</html>

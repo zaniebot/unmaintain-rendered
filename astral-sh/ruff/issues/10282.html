@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Parameter` range is incorrect for `*args` and `**kwargs` - astral-sh/ruff #10282</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Parameter` range is incorrect for `*args` and `**kwargs`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10282">#10282</a>
+        opened by <a href="https://github.com/GtrMo">@GtrMo</a>
+        on 2024-03-07 22:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GtrMo">@GtrMo</a> on 2024-03-07 22:58</div>
+            <div class="timeline-body"><p>I'm working on a fix for the <code>flake8-unused-arguments</code> (ARG) rules that would delete them.</p>
+<p>While working on this, I noticed that the <code>*args</code> and <code>**kwargs</code> <code>Parameter.range</code> does not include the <code>*</code>.
+I think that <code>Parameter.range</code> should include <code>*</code> or <code>**</code>, leaving <code>Parameter.name.range</code> for the actual name range if needed.</p>
+<pre><code class="language-python">def f(*args, **kwargs): pass
+#      ~~~~    ~~~~~~    &lt;-- actual range
+#     ^^^^^  ^^^^^^^^    &lt;-- expected range
+</code></pre>
+<details>
+<summary>See the currently generated AST</summary>
+
+<p>https://github.com/astral-sh/ruff/blob/7b4a73d421c130430883bb944a285f096e3aa9a5/crates/ruff_python_parser/src/snapshots/ruff_python_parser__function__tests__function_pos_and_kw_only_args_with_defaults_and_varargs_and_kwargs.snap#L58-L67</p>
+<p>Here I would expect the <code>Parameter</code> range to be 1 longer than the <code>Identifier</code> range.</p>
+<p>https://github.com/astral-sh/ruff/blob/7b4a73d421c130430883bb944a285f096e3aa9a5/crates/ruff_python_parser/src/snapshots/ruff_python_parser__function__tests__function_pos_and_kw_only_args_with_defaults_and_varargs_and_kwargs.snap#L124-L134</p>
+<p>And here I would expect the <code>Parameter</code> range to be 2 longer than the <code>Identifier</code> range.</p>
+</details>
+
+<p>If this is indeed considered a bug, I have a PR ready to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 23:18</div>
+            <div class="timeline-body"><p>I generally agree, since <code>x: int = 1</code> is the parameter range for a non-variadic parameter, it makes sense that the <code>*</code> and <code>**</code> would be included. CPython doesn't seem to include it in the range, but our AST structure is a bit different...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-03-07 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10283.html">astral-sh/ruff#10283</a> on 2024-03-07 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 23:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

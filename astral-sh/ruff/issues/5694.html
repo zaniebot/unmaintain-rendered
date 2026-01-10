@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging rules not flagged if logger imported from another module - astral-sh/ruff #5694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Logging rules not flagged if logger imported from another module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5694">#5694</a>
+        opened by <a href="https://github.com/petermattia">@petermattia</a>
+        on 2023-07-11 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/petermattia">@petermattia</a> on 2023-07-11 19:25</div>
+            <div class="timeline-body"><p>I'm observing that logging rules aren't flagged if a logger is imported from another module.</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p>If I set up logging here, both of these violations are flagged:</p>
+<pre><code class="language-python"># logging_setup.py
+import logging
+
+linter = &quot;ruff&quot;
+logging.info(f&quot;Hello, {linter}!&quot;) # G004 flagged
+
+logger = logging.getLogger(__name__)
+
+logger.info(f&quot;Hello, {linter}!&quot;) # G004 flagged
+</code></pre>
+<p>However, if I import <code>logger</code> into another module, the below identical violation is not flagged:</p>
+<pre><code class="language-python"># my_module.py
+from logging_setup import logger
+
+linter = &quot;ruff&quot;
+logger.info(f&quot;Hello, {linter}!&quot;) # G004 *not* flagged
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<p><code>ruff .</code></p>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+</ul>
+<p><code>&quot;G&quot;</code> ruleset</p>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).
+<code>0.0.277</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermattia">@petermattia</a> on 2023-07-13 22:08</div>
+            <div class="timeline-body"><p>Hi <code>ruff</code> team, friendly follow up on this one, please let me know if I'm missing something here. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 22:29</div>
+            <div class="timeline-body"><p>Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-13 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 22:35</div>
+            <div class="timeline-body"><p>Looks like an oversight, we would flag <code>logging_setup.logger.info(f&quot;Hello, {linter}!&quot;)</code> but not the <code>import from</code> variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-13 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermattia">@petermattia</a> on 2023-07-13 22:41</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 22:53</div>
+            <div class="timeline-body"><p>I think I misdiagnosed this, <code>logging_setup.logger.info</code> also isn't working in my initial testing, but regardless it'll be fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5750.html">astral-sh/ruff#5750</a> on 2023-07-13 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-24 04:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

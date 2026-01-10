@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executables not found in Docker after installing with uv - astral-sh/uv #8342</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Executables not found in Docker after installing with uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8342">#8342</a>
+        opened by <a href="https://github.com/victor-ajayi">@victor-ajayi</a>
+        on 2024-10-18 17:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/victor-ajayi">@victor-ajayi</a> on 2024-10-18 17:45</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I'm trying to use uv in my Docker container but the image keeps failing, because of a <code>Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: &quot;fastapi&quot;: executable file not found in $PATH: unknown</code> error.</p>
+<p>Here's my Dockerfile, it's basically the same as the example from the uv docs, this specific one is from tiangolo's fullstack FastAPI template.</p>
+<pre><code>FROM python:3.12
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app/
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.15 /uv /bin/uv
+
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+ENV UV_COMPILE_BYTECODE=1
+
+ENV UV_LINK_MODE=copy
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project
+
+ENV PYTHONPATH=/app
+
+COPY ./pyproject.toml ./uv.lock ./alembic.ini /app/
+
+COPY ./app /app/app
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync
+
+CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;--workers&quot;, &quot;4&quot;, &quot;app/main.py&quot;]
+</code></pre>
+<p>The final command keeps failing, how do I get this to work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 17:56</div>
+            <div class="timeline-body"><p>Does <code>CMD [&quot;/app/.venv/bin/fastapi&quot;, &quot;run&quot;, &quot;--workers&quot;, &quot;4&quot;, &quot;app/main.py&quot;]</code> work as expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-18 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/victor-ajayi">@victor-ajayi</a> on 2024-10-18 18:39</div>
+            <div class="timeline-body"><p>No, it doesn't. ((</p>
+<p><code>Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: &quot;/app/.venv/bin/fastapi&quot;: stat /app/.venv/bin/fastapi: no such file or directory: unknown</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 18:45</div>
+            <div class="timeline-body"><p>Sounds like the Python executable is missing. What does <code>/app/.venv/bin/python</code> point to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/victor-ajayi">@victor-ajayi</a> on 2024-10-18 18:47</div>
+            <div class="timeline-body"><p>When I run <code>CMD which python3</code> as the final line in the Dockerfile it prints <code>/usr/local/bin/python3</code>. Version 3.12.7. So it does exist. But it seems Python can't find any of the installed packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 19:04</div>
+            <div class="timeline-body"><p>But what does <code>ls -lah /app/.venv/bin</code> show?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/victor-ajayi">@victor-ajayi</a> on 2024-10-18 19:16</div>
+            <div class="timeline-body"><p><code>ls: cannot access '/app/.venv/bin': No such file or directory</code>.</p>
+<p>Okay so I tried this <code>CMD ls -lah backend/.venv/bin</code> and the packages are in fact installed.</p>
+<img width="764" alt="image" src="https://github.com/user-attachments/assets/9239c9f5-b52b-4269-964b-d5988104f16a">
+
+<p>But interestingly, when I try <code>CMD [&quot;backend/.venv/bin/fastapi&quot;, &quot;dev&quot;, &quot;--workers&quot;, &quot;4&quot;, &quot;backend/app/main.py&quot;]</code>, which is the same path, I get a <code>exec backend/.venv/bin/fastapi: no such file or directory</code>. I noticed the Python executable is pointing to my local instance of Python? Is that normal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 22:26</div>
+            <div class="timeline-body"><p>Yeah the <code>python</code> is pointing to a file that does not exist, hence the error. My best guess is that you don't have a <code>dockerignore</code> file that excludes your virtual environment and it's being copied into the container or something?</p>
+<p>I'd recommend checking out https://github.com/astral-sh/uv-docker-example/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/victor-ajayi">@victor-ajayi</a> on 2024-10-19 00:24</div>
+            <div class="timeline-body"><p>The uv-docker-example works! I'm not sure exactly what about the tiangolo example Dockerfile wasn't right, it seemed to me like the same thing. Thank you!</p>
+<p>Also, my apologies for creating an issue that really has more to do with Docker than uv itself. I appreciate the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-19 04:02</div>
+            <div class="timeline-body"><p>No problem. That message when a Python executable can't be found is really confusing, but I'm not sure what we can do about it. Glad you got it working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-19 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gabo71096">@gabo71096</a> on 2024-11-05 13:26</div>
+            <div class="timeline-body"><p>I have the same issue, not even the uv-docker-example works :( I really want to use uv in Docker because it really speeds build time, but has been a pain, I've tried many things and always hit the same spot of</p>
+<p><code>exec /app/.venv/bin/fastapi: no such file or directory</code></p>
+<p>or</p>
+<p><code>Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: &quot;fastapi&quot;: executable file not found in $PATH: unknown.</code></p>
+<p>Here's the Dockerfile, it's basically the same as the example:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+WORKDIR /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+ADD . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+# Then, use a final image without uv
+FROM python:3.12-slim-bookworm
+# It is important to use the image that matches the builder, as the path to the
+# Python executable must be the same, e.g., using `python:3.11-slim-bookworm`
+# will fail.
+
+# Copy the application from the builder
+COPY --from=builder --chown=app:app /app /app
+
+# Place executables in the environment at the front of the path
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+# Run the FastAPI application by default
+CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;app/main.py&quot;, &quot;--proxy-headers&quot;, &quot;--port&quot;, &quot;80&quot;]
+</code></pre>
+<p>If I run <code>CMD ls -lah /app</code> I can see that the <code>.venv</code> folder doesn't exist, so it makes sense I think that the command wasn't found, is it supposed to be like this, though?</p>
+<p>I am doing this in Windows, and also tried WSL, none works :(, a little help please.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petebachant">@petebachant</a> on 2024-12-09 23:30</div>
+            <div class="timeline-body"><p>Had a similar problem, and noticed that the Docker Compose config was mounting the local directory, which in turn mounted the local <code>.venv</code> directory, messing up the path to the Python executable in the <code>fastapi</code> script shebang line. The fix was to ensure that directory was not mapped, e.g., in <code>docker-compose.yml</code>:</p>
+<pre><code class="language-yaml">  backend:
+    restart: &quot;no&quot;
+    env_file:
+      - .env
+    ports:
+      - &quot;8000:8000&quot;
+    volumes:
+      - ./backend/:/app
+      - /app/.venv
+    build:
+      context: ./backend
+    command:
+      - fastapi
+      - run
+      - --reload
+      - &quot;app/main.py&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gabo71096">@gabo71096</a> on 2025-01-09 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I have the same issue, not even the uv-docker-example works :( I really want to use uv in Docker because it really speeds build time, but has been a pain, I've tried many things and always hit the same spot of</p>
+<p><code>exec /app/.venv/bin/fastapi: no such file or directory</code></p>
+<p>or</p>
+<p><code>Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: &quot;fastapi&quot;: executable file not found in $PATH: unknown.</code></p>
+<p>Here's the Dockerfile, it's basically the same as the example:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+WORKDIR /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+ADD . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+# Then, use a final image without uv
+FROM python:3.12-slim-bookworm
+# It is important to use the image that matches the builder, as the path to the
+# Python executable must be the same, e.g., using `python:3.11-slim-bookworm`
+# will fail.
+
+# Copy the application from the builder
+COPY --from=builder --chown=app:app /app /app
+
+# Place executables in the environment at the front of the path
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+# Run the FastAPI application by default
+CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;app/main.py&quot;, &quot;--proxy-headers&quot;, &quot;--port&quot;, &quot;80&quot;]
+</code></pre>
+<p>If I run <code>CMD ls -lah /app</code> I can see that the <code>.venv</code> folder doesn't exist, so it makes sense I think that the command wasn't found, is it supposed to be like this, though?</p>
+<p>I am doing this in Windows, and also tried WSL, none works :(, a little help please.</p>
+</blockquote>
+<p>I stopped trying since this comment, and today I got it working.
+Stupid error as always.
+I was bind mounting in my docker-compose file.</p>
+<p>End of story.</p>
+<p>Thanks guys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Paulescu/kubernetes-for-ml-engineers/issues/3.html">Paulescu/kubernetes-for-ml-engineers#3</a> on 2025-03-30 02:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:12 UTC
+    </footer>
+</body>
+</html>

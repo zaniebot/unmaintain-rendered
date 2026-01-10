@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow command for `tool.uv.index-url` and `tool.uv.pip.index-url` - astral-sh/uv #7660</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow command for `tool.uv.index-url` and `tool.uv.pip.index-url`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7660">#7660</a>
+        opened by <a href="https://github.com/jpedrick">@jpedrick</a>
+        on 2024-09-24 14:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jpedrick">@jpedrick</a> on 2024-09-24 14:34</div>
+            <div class="timeline-body"><p>UV currently supports using a keyring for the credential provider. However, in my case it's not always practical. I would like to have a simple command line script: <code>get_pip_credentials.sh</code> that could invoke something like:</p>
+<p><code>scripts/get-pip-credentials.sh</code></p>
+<pre><code>aws codeartifact login --tool pip --domain my_domain --repository python --dry-run --profile pip-read-access | cut -d &quot; &quot; -f 5
+</code></pre>
+<p>So, in my pyproject.toml:</p>
+<pre><code>[tool.uv]
+index-url = { 'command' : [ './scripts/get-pip-credentials.sh' ] }
+
+[tool.uv.pip]
+index-url = { 'command' : [ './scripts/get-pip-credentials.sh' ] }
+</code></pre>
+<p>Likewise, if <code>--index-url</code> is specified on the command line, I would prefer that to override <code>tool.uv.index-url.command</code> and <code>tool.uv.pip.index-url.command</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 19:42</div>
+            <div class="timeline-body"><p>How would this work with writing index URLs to the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpedrick">@jpedrick</a> on 2024-09-24 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>How would this work with writing index URLs to the lockfile?</p>
+</blockquote>
+<p>Currently, when I put CodeArtifact credentials in the index-url it strips the credentials and just puts the repository address. I would expect the same behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-09-24 21:37</div>
+            <div class="timeline-body"><p>For many usecases, the private pypi-credentials  are set as environment variables.</p>
+<p>Would there be a reason to not support variable substitution?</p>
+<p>For example:</p>
+<pre><code>[tool.uv]
+index-url = &quot;https://__token__:${PERSONAL_ACCESS_TOKEN}@gitlab.com/...&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 21:40</div>
+            <div class="timeline-body"><p>@woutervh that is tracked in https://github.com/astral-sh/uv/issues/5734</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpedrick">@jpedrick</a> on 2024-09-25 00:15</div>
+            <div class="timeline-body"><p>@zanieb as I think about this more, it could be more general to have the configuration look like the following:</p>
+<pre><code>[tool.uv]
+index-url = {
+'url' = &quot;https://aws:${ACCESS_TOKEN}@${DOMAIN}-${ACCOUNT_ID}.d.codeartifact.${REGION}.amazonaws.com/pypi/python/simple/&quot;
+'substitition_command' :  './scripts/get-codeartifact-url-with-credentials.sh'
+}
+</code></pre>
+<p><code>./scripts/get-codeartifact-url-with-credentials.sh</code> would return json like:</p>
+<pre><code>{
+&quot;ACCESS_TOKEN&quot; : &quot;ABCDEFG&quot;,
+&quot;REGION&quot; : &quot;eu-west-1&quot;,
+&quot;DOMAIN&quot;: &quot;my_domain&quot;,
+&quot;ACCOUNT_ID&quot; : &quot;1234567890&quot;
+}
+</code></pre>
+<p>Ideally, the system call would use the location of the <code>pyproject.toml</code> as CWD, but absolute paths could be provided by users. However, I don't want to over specify.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-10-02 00:44</div>
+            <div class="timeline-body"><blockquote>
+<p>@zanieb as I think about this more, it could be more general to have the configuration look like the following:</p>
+<pre><code>[tool.uv]
+index-url = {
+'url' = &quot;https://aws:${ACCESS_TOKEN}@${DOMAIN}-${ACCOUNT_ID}.d.codeartifact.${REGION}.amazonaws.com/pypi/python/simple/&quot;
+'substitition_command' :  './scripts/get-codeartifact-url-with-credentials.sh'
+}
+</code></pre>
+<p><code>./scripts/get-codeartifact-url-with-credentials.sh</code> would return json like:</p>
+<pre><code>{
+&quot;ACCESS_TOKEN&quot; : &quot;ABCDEFG&quot;,
+&quot;REGION&quot; : &quot;eu-west-1&quot;,
+&quot;DOMAIN&quot;: &quot;my_domain&quot;,
+&quot;ACCOUNT_ID&quot; : &quot;1234567890&quot;
+}
+</code></pre>
+<p>Ideally, the system call would use the location of the <code>pyproject.toml</code> as CWD, but absolute paths could be provided by users. However, I don't want to over specify.</p>
+</blockquote>
+<p>Could you just call that script and set the required environment variables prior to using <code>uv</code>, rather than specifying it in <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpedrick">@jpedrick</a> on 2024-10-02 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you just call that script and set the required environment variables prior to using <code>uv</code>, rather than specifying it in <code>pyproject.toml</code>?</p>
+</blockquote>
+<p>Sure, everything except the access token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-02 18:38</div>
+            <div class="timeline-body"><p>Why can't the access token be in the environment variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-02 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-10-02 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpedrick">@jpedrick</a> on 2024-10-02 22:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Why can't the access token be in the environment variable?</p>
+</blockquote>
+<p>In that case I can just put the entire url in the UV_INDEX_URL environment variable, but that doesn't allow dynamic keychain-like credentials</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-02 22:54</div>
+            <div class="timeline-body"><p>I'm responding to</p>
+<blockquote>
+<blockquote>
+<p>Could you just call that script and set the required environment variables prior to using uv, rather than specifying it in pyproject.toml?</p>
+</blockquote>
+<p>Sure, everything except the access token.</p>
+</blockquote>
+<p>In which you wrap uv with a script that sets the relevant variable with authentication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpedrick">@jpedrick</a> on 2024-10-03 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>In which you wrap uv with a script that sets the relevant variable with authentication.</p>
+</blockquote>
+<p>Hi @zanieb, perhaps we have gotten away from the central idea of the feature request. Currently, I do pre-set the index-url/extra-index-url. I'm basically requesting something like https://pypi.org/project/keyrings.codeartifact/, but without requiring all the setup for the keyring.</p>
+<p><code>credential_process</code> for the AWS cli config would be an example of the kind of solution I'm hoping for: https://docs.aws.amazon.com/sdkref/latest/guide/feature-process-credentials.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dean-tate">@dean-tate</a> on 2024-12-04 02:54</div>
+            <div class="timeline-body"><p>It'd be nice to be able to use keyring for AWS CodeArtifact. It'd make switching my team over to uv a much easier proposition. This approach for pixi using pipx is the approach that'd make sense - I'm trying to replicate this with uv now.</p>
+<p>https://ericmjl.github.io/blog/2024/9/19/how-to-set-up-pixi-with-codeartifacts/</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:55 UTC
+    </footer>
+</body>
+</html>

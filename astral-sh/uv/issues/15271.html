@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove manual Docker image annotations - astral-sh/uv #15271</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove manual Docker image annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15271">#15271</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-08-14 04:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-14 04:36</div>
+            <div class="timeline-body"><p>Now that Depot supports these https://github.com/depot/build-push-action/pull/38 we can drop manual push of annotations (originally added in https://github.com/astral-sh/uv/pull/14165)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-08-14 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-08-18 17:03</div>
+            <div class="timeline-body"><p>I can take this if you'd like, although I'll need a depot token for testing as my trial expired 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-08-25 20:28</div>
+            <div class="timeline-body"><p>I tested two releases on my fork, one with &quot;current&quot; <a href="https://github.com/samypr100/uv/actions/runs/17050325414">workflow</a> and one with &quot;modified&quot; <a href="https://github.com/samypr100/uv/actions/runs/17192775708">workflow</a> with the new annotation support per https://github.com/depot/build-push-action/pull/38</p>
+<p>Sadly, it seems the <code>--annotation</code> parameters are ignored entirely by the depot build backend. The annotations don't work for either GHCR or DockerHub. My guess is that the version of buildx being used by depot when pushing is using is too old to support annotations. It's possible the buildx backend baseline on depot needs to be at least <a href="https://docs.docker.com/build/release-notes/#0160">0.16.0</a>, although possibly greater.</p>
+<p>The frontend cli commands seem correct at a glance when compared to the old buildx workflow.</p>
+<p>depot-build-action:</p>
+<pre><code class="language-shell">/opt/hostedtoolcache/depot/2.98.0/x64/depot build \
+--annotation index:org.opencontainers.image.created=2025-08-24T19:26:43.337Z \
+--annotation index:org.opencontainers.image.description=An extremely fast Python package installer and resolver, written in Rust. \
+--annotation index:org.opencontainers.image.licenses=Apache-2.0 \
+--annotation index:org.opencontainers.image.revision=9815132a8bc31286fc8b2189f9c1ca79820f5326 \
+--annotation index:org.opencontainers.image.source=https://github.com/samypr100/uv \
+--annotation index:org.opencontainers.image.title=uv \
+--annotation index:org.opencontainers.image.url=https://github.com/samypr100/uv \
+--annotation index:org.opencontainers.image.version=0.8.13-alpine3.21 \
+--iidfile /tmp/depot-build-push-PqozBu/iidfile \
+--label org.opencontainers.image.created=2025-08-24T19:26:43.337Z \
+--label org.opencontainers.image.description=An extremely fast Python package installer and resolver, written in Rust. \
+--label org.opencontainers.image.licenses=Apache-2.0 \
+--label org.opencontainers.image.revision=9815132a8bc31286fc8b2189f9c1ca79820f5326 \
+--label org.opencontainers.image.source=https://github.com/samypr100/uv \
+--label org.opencontainers.image.title=uv \
+--label org.opencontainers.image.url=https://github.com/samypr100/uv \
+--label org.opencontainers.image.version=0.8.13-alpine3.21 \
+--metadata-file /tmp/depot-build-push-PqozBu/metadata-file \
+--platform linux/amd64,linux/arm64 \
+--push \
+--tag ghcr.io/samypr100/uv:0.8.13-alpine3.21 \
+--tag ghcr.io/samypr100/uv:0.8-alpine3.21 \
+--tag ghcr.io/samypr100/uv:0.8.13-alpine \
+--tag ghcr.io/samypr100/uv:0.8-alpine \
+--tag ghcr.io/samypr100/uv:alpine3.21 \
+--tag ghcr.io/samypr100/uv:alpine \
+--tag docker.io/samypr100/uv:0.8.13-alpine3.21 \
+--tag docker.io/samypr100/uv:0.8-alpine3.21 \
+--tag docker.io/samypr100/uv:0.8.13-alpine \
+--tag docker.io/samypr100/uv:0.8-alpine \
+--tag docker.io/samypr100/uv:alpine3.21 \
+--tag docker.io/samypr100/uv:alpine \
+--provenance mode=max,builder-id=https://github.com/samypr100/uv/actions/runs/17192775708 \
+--project s46lwks5ft .
+</code></pre>
+<p>docker-build-action (translated from old buildx workflows we had)</p>
+<pre><code class="language-shell">/usr/bin/docker buildx build \
+--annotation index:org.opencontainers.image.created=2025-08-24T19:26:43.337Z \
+--annotation index:org.opencontainers.image.description=An extremely fast Python package installer and resolver, written in Rust. \
+--annotation index:org.opencontainers.image.licenses=Apache-2.0 \
+--annotation index:org.opencontainers.image.revision=9815132a8bc31286fc8b2189f9c1ca79820f5326 \
+--annotation index:org.opencontainers.image.source=https://github.com/samypr100/uv \
+--annotation index:org.opencontainers.image.title=uv \
+--annotation index:org.opencontainers.image.url=https://github.com/samypr100/uv \
+--annotation index:org.opencontainers.image.version=0.8.13-alpine3.21 \
+--iidfile /home/runner/work/_temp/docker-actions-toolkit-LlDxC1/build-iidfile-cd95da4225.txt \
+--label org.opencontainers.image.created=2025-08-24T19:26:43.337Z \
+--label org.opencontainers.image.description=An extremely fast Python package installer and resolver, written in Rust. \
+--label org.opencontainers.image.licenses=Apache-2.0 \
+--label org.opencontainers.image.revision=9815132a8bc31286fc8b2189f9c1ca79820f5326 \
+--label org.opencontainers.image.source=https://github.com/samypr100/uv \
+--label org.opencontainers.image.title=uv \
+--label org.opencontainers.image.url=https://github.com/samypr100/uv \
+--label org.opencontainers.image.version=0.8.13-alpine3.21 \
+--platform linux/amd64,linux/arm64 \
+--tag ghcr.io/samypr100/uv:0.8.13-alpine3.21 \
+--tag ghcr.io/samypr100/uv:0.8-alpine3.21 \
+--tag ghcr.io/samypr100/uv:0.8.13-alpine \
+--tag ghcr.io/samypr100/uv:0.8-alpine \
+--tag ghcr.io/samypr100/uv:alpine3.21 \
+--tag ghcr.io/samypr100/uv:alpine \
+--tag docker.io/samypr100/uv:0.8.13-alpine3.21 \
+--tag docker.io/samypr100/uv:0.8-alpine3.21 \
+--tag docker.io/samypr100/uv:0.8.13-alpine \
+--tag docker.io/samypr100/uv:0.8-alpine \
+--tag docker.io/samypr100/uv:alpine3.21 \
+--tag docker.io/samypr100/uv:alpine \
+--metadata-file /home/runner/work/_temp/docker-actions-toolkit-LlDxC1/build-metadata-34da053294.json \
+--push .
+</code></pre>
+<p>Output from current  workflow (manual annotations added):</p>
+<pre><code class="language-shell">$ docker buildx imagetools inspect --format '{{ json .Manifest.Annotations }}' ghcr.io/samypr100/uv:0.8.11-alpine
+{
+  &quot;org.opencontainers.image.created&quot;: &quot;2025-08-18T19:31:51.421Z&quot;,
+  &quot;org.opencontainers.image.description&quot;: &quot;An extremely fast Python package installer and resolver, written in Rust.&quot;,
+  &quot;org.opencontainers.image.licenses&quot;: &quot;Apache-2.0&quot;,
+  &quot;org.opencontainers.image.revision&quot;: &quot;617b75b85c7792774ba8576bf46546a766386a73&quot;,
+  &quot;org.opencontainers.image.source&quot;: &quot;https://github.com/samypr100/uv&quot;,
+  &quot;org.opencontainers.image.title&quot;: &quot;uv&quot;,
+  &quot;org.opencontainers.image.url&quot;: &quot;https://github.com/samypr100/uv&quot;,
+  &quot;org.opencontainers.image.version&quot;: &quot;0.8.11-alpine3.21&quot;
+}
+</code></pre>
+<p>Output from modified workflow (no manual annotations added):</p>
+<pre><code class="language-shell">$docker buildx imagetools inspect --format '{{ json .Manifest.Annotations }}' ghcr.io/samypr100/uv:0.8.13-alpine
+null
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

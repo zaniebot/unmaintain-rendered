@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove magic arg type in `Args` - clap-rs/clap #2687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove magic arg type in `Args`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2687">#2687</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-08-13 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-08-13 19:27</div>
+            <div class="timeline-body"><h3>Discussed in https://github.com/clap-rs/clap/discussions/2674</h3>
+<div type='discussions-op-text'>
+
+<p><sup>Originally posted by <strong>epage</strong> August  9, 2021</sup></p>
+<ul>
+<li><code>Arg::new()</code> creates a positional argument that <code>takes_value(true)</code></li>
+<li><code>Args::new().long()</code> creates a named flag (<code>takes_value(false)</code>)</li>
+<li><code>Args::new().long().takes_value(true)</code> is required to created a named arg / option</li>
+</ul>
+<p>This requires us to guess the users intent at various stages.  kbknapp  explained this when trying to explain existing challenges with <code>values</code> vs <code>occurrences</code>:</p>
+<blockquote>
+<p>Keeping in mind that clap has some implied rules that at times contradict one-another in subtle ways. For example Arg::new effectively creates a positional value, i.e. an argument that accepts a single value with flags/switches. Adding either short or long actually removes the value, and turns it into a flag (i.e. switch with no associated value). Then adding takes_value (or any of the value associated methods) implicitly turns it into an option (combined flag/switch with an associated value), so giving it a value again.</p>
+<p>Because of how these rules/settings combine, it turns out there are multiple ways to end up at the same final product; some just more explicit while others passively allow the rules to combine. As in the Arg::new example above, that's all that's required to create a positional argument, but doing Arg::new(&quot;foo&quot;).takes_value(true).index(1) works just as well.</p>
+<p>Because of this, clap sometimes has to infer if the user meant to allow the rules to combine. This primarily comes out around the multiple values/occurrences. In other words clap has a default state for many of the settings, and we need to ensure that when a user only sets one (or a few) settings the remaining defaults don't combine to do something surprising.</p>
+</blockquote>
+<p>I'm even running into a problem I'm debugging for #751 that I think comes from this.</p>
+<p>Just a small tweak would make clap less brittle for change and I believe make the user experience better, if we switch to</p>
+<ul>
+<li><code>Arg::new()</code> creates a positional argument that <code>takes_value(true)</code></li>
+<li><code>Args::new().long()</code> creates a named arg / option (ie <code>takes_value(true)</code>)</li>
+<li><code>Args::new().long().takes_value(false)</code> is required to created a flag</li>
+</ul>
+<p>@kbknapp was open to changing this, though with a different approach (this was before clarifying the approach above, see below for his thoughts on each approach)</p>
+<blockquote>
+<p>I’m not against removing changing the default behavior of Arg::new, the only reason it hasn’t been done before is the only other sensible thing to do (IMO) is to have Arg::new result in a “useless” argument,  Further methods would be required to determine this. This would accomplish what you’re speaking about, and solve a few of the issues related to ambiguities. The only reason I didn’t do that before, was I tend to lean towards a contractor should at least make the struct usable to some extent…but I can see how in this case that may not be the case.</p>
+</blockquote>
+<p>We could fix the &quot;always valid object&quot; problem by instead making some helper constructors (<code>positional</code>, <code>flag</code>, and <code>option</code> where the latter take long names since 99% of the time, they are used)</p>
+<p>Between flag-opt-in and construct invalid options (I didn't bring up the named constructors), kbknapp said</p>
+<blockquote>
+<p>I think it's almost 50/50 as to which route would be preferred. Opt-in to a flag (takes_value(false)) I think really only has the downside of being different from v2 causing (minimal) churn in that those that currently have Arg::new().long() would auto-magically have all their flags turn into options unless they go in and add takes_value(false) to them all. Whereas the I believe the number of users who are using Arg::new and no other &quot;value based&quot; methods and just relying on it being a positional are few and far between, so less churn. But again, I'm somewhat 50/50 as to which I think is &quot;better&quot; so to speak.</div></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @pksunkara on 2021-08-13 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2021-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: hard</span> added by @pksunkara on 2021-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @pksunkara on 2021-08-13 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-13 20:52</div>
+            <div class="timeline-body"><p>Note to self: when implementing this, look into also implementing #2688</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-08-14 00:53</div>
+            <div class="timeline-body"><p>The idea of using helper constructors <code>positional</code>, <code>flag</code>, or <code>option</code> is a great idea IMO instead of <code>Arg::new</code> resulting in a not &quot;always valid object.&quot; In fact I've seen several binaries do almost exactly this with type aliases and macros, <code>ripgrep</code> being the largest (at least they did this a while back when I looked...not sure about the current status).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-14 00:54</div>
+            <div class="timeline-body"><p>From the discussion,</p>
+<blockquote>
+<p>If we want takes_value to be true by default, <code>Arg::new</code> would have <code>takes_value(true)</code> set, which means it is a valid positional. Which is why I was saying it will be always valid and we don't need helper constructors</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-14 00:55</div>
+            <div class="timeline-body"><p>Yeah, I got the idea from ripgrep which I copied until I switched to <code>Structopt</code>.  I did a quick look earlier as part of this conversation and it looks like burntsushi has moved away from it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-08-14 01:18</div>
+            <div class="timeline-body"><p>@pksunkara I was thinking more about the long game of leave <code>Arg::new</code> as it is for v3, but deprecate it and introduce three constructors that are more explicit about what they're doing. Or least discuss doing so, even if it's not until v4.</p>
+<p>Just for backstory; I think the point I was trying to make in the thread between @epage and I was that currently since <code>Arg::new</code> returns a valid positional argument, when one simply adds <code>short</code> or <code>long</code> to it, clap implicitly <em>unsets</em> <code>takes_value(true)</code> turning the argument into a flag which is somewhat surprising to the user (at least until they learn that's how it works). Now it's not <em>that</em> big a deal, and I doubt this particular issue has caused anyone true confusion.</p>
+<p>But this minor constructor problem is indicative of certain <em>other</em> similar cases in clap that can/do either cause confusion for the consumer, or ambiguities for clap parsing itself. Ambiguities aren't the worst thing, but they lead to implicit parsing rules, that if not specified somewhere can cause subtle breakage or cause unintended consequences as the API grows or evolves.</p>
+<p>clap's original design(tm) was deliberately different from something like <code>getopt</code> which had distinct argument types (i.e. at the type system level). I found that most often I would iterate over my CLI design and change between various arg types fluidly while coming up with something that felt right for the particular tool I was working on. APIs like <code>getopt</code> made that iteration harder because changing an arguments type was more involved. Whereas in clap it usually meant either adding or removing a single method call and that's it. Now as the clap API grew this caused some minor issues, like why does a &quot;flag&quot; effectively have all the methods for handling values? But it had a huge benefit that if I wanted to turn my flag into an option which I just added a single method call for that nifty new thing I wanted to try and done. Didn't work and back to a flag? Just comment out that single line again. It also had the benefit of being able to treat positional values and values of options as identical, which most of the time is nice (but it's not without oddities). Yes, that can be done through traits as well, but then you either end up with massive code bloat via generics along with the pain that threading these generics through the call stacks can be, or the slower dynamic dispatch.</p>
+<p>Hopefully that makes sense, or at least captures some the &quot;why&quot; from the early days :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-17 16:41</div>
+            <div class="timeline-body"><p>Thanks for the background!</p>
+<p>Unless someone has an alternative idea on how things might work, I don't think <code>Arg::new</code> can ever go away.</p>
+<h2>API options</h2>
+<h3>Name-only</h3>
+<pre><code class="language-rust">fn positional(name: &amp;str);
+fn flag(name: &amp;str);
+fn option(name: &amp;str);
+</code></pre>
+<ul>
+<li>Can get rid of <code>Arg::new</code></li>
+<li>But, doesn't enforce <code>flag</code> and <code>option</code> are &quot;valid&quot;, <code>short</code> or <code>long</code> is still needed</li>
+<li>We could infer <code>long</code> from <code>name</code> if no flag is no long/short is set.  Might confuse users when adding a short removes the long</li>
+<li>We could infer <code>long</code> from <code>name</code> generally.  This turns it into an implicit version of the &quot;Helper&quot; solution below and needs <code>Arg::new</code></li>
+</ul>
+<h3>Option-all-the-way</h3>
+<pre><code class="language-rust">fn postional(name: &amp;str);
+fn flag(name: &amp;str, long: Option&lt;&amp;str&gt;, short: Option&lt;char&gt;);
+fn option(name: &amp;str: long: Option&lt;&amp;str&gt;, short: Option&lt;char&gt;);
+</code></pre>
+<ul>
+<li>This is not much different than the &quot;Name-only&quot; option since someone can do <code>None, None</code></li>
+<li>Feels a bit ugly to me</li>
+</ul>
+<h3>Helper</h3>
+<pre><code class="language-rust">fn new(name: &amp;str);
+fn postional(name: &amp;str);
+fn flag(name: &amp;str, long: &amp;str);
+fn option(name: &amp;str: long: &amp;str);
+</code></pre>
+<ul>
+<li><code>flag</code> and <code>option</code> are always valid but you can't have a short-only flag/option</li>
+<li><code>Arg::new</code> needed for the 1% case of short-only</li>
+<li>Can still construct into an invalid state</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @epage by @epage on 2021-10-19 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/197.html">epage/clapng#197</a> on 2021-12-06 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-13 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2022-06-13 17:28</div>
+            <div class="timeline-body"><p>Could the constructors take a trait, implemented on &amp;str and char, such that &quot;abc&quot; is a long option and 'a' is a short option? You could also implement it for an array, allowing <code>[&quot;long&quot;, 'o', &quot;alias&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-14 20:07</div>
+            <div class="timeline-body"><p>I feel like I'm missing something in looking back at this issue.  My original proposal was to make <code>takes_value(true)</code> the default which will mean that <code>Arg</code>s are always valid.  I brought up named constructors as a workaround for kbknapp's misunderstanding on my proposal (iirc he thought I meant to keep <code>takes_value(false)</code> as the default).  We then focused on the topic of named constructors but not much conversation on the original idea of <code>takes_value(true)</code> being the default which won't need the named constructors.</p>
+<blockquote>
+<p>you could also implement it for an array, allowing [&quot;long&quot;, 'o', &quot;alias&quot;].</p>
+</blockquote>
+<p>Couldn't quite do it with an array (since the types are different) but you could with a tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2022-06-15 02:42</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>you could also implement it for an array, allowing [&quot;long&quot;, 'o', &quot;alias&quot;].</p>
+</blockquote>
+<p>Couldn't quite do it with an array (since the types are different) but you could with a tuple.</p>
+</blockquote>
+<p>Right, sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-06-16 04:23</div>
+            <div class="timeline-body"><p>what if you had an api like:</p>
+<pre><code class="language-rust">fn postional(name: &amp;str);
+fn flag(name: &amp;str, flagName: FlagName);
+fn option(name: &amp;str, flagName: FlagName);
+
+enum FlagName {
+   Short(char),
+   Long(&amp;'static str),
+   LongAndShort(&amp;'static str, char),
+}
+</code></pre>
+<p>(I'm sure someone else can come up with a better name).</p>
+<p>I think changing <code>takes_value</code> to default to true also makes sense. Fwiw, this is how the python argparse library works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-25 23:30</div>
+            <div class="timeline-body"><p>Postponing to 5.0 because I realized its changing too many variables on people as they upgrade, making it more difficult, since they already need to switch from <code>ArgAction::IncOccurrences</code> to <code>ArgAction::SetTrue</code> / <code>ArgAction::Count</code> with the associated <code>ArgMatches</code> changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "4.0" by @epage on 2022-07-25 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "5.0" by @epage on 2022-07-25 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3993.html">clap-rs/clap#3993</a> on 2022-07-26 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "5.0" by @epage on 2022-08-04 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2022-08-04 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-04 22:53</div>
+            <div class="timeline-body"><p>#2688 is already getting gnarly and this will help in communicating it.  I think I'm going to pull it back in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4032.html">clap-rs/clap#4032</a> on 2022-08-05 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-06 00:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:33 UTC
+    </footer>
+</body>
+</html>

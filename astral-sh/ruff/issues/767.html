@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imported but not used fix under conditional as last import - astral-sh/ruff #767</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Imported but not used fix under conditional as last import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/767">#767</a>
+        opened by <a href="https://github.com/LefterisJP">@LefterisJP</a>
+        on 2022-11-16 13:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-11-16 13:16</div>
+            <div class="timeline-body"><p>Hey I got a kind of an edge case to report but guess it may be fixable so thought why not make an issue.</p>
+<p>Consider the following</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from random import randint
+    from typing import List
+
+a = 1
+</code></pre>
+<p>If you run <code>ruff --fix</code> on this it will detect that the 2 imports unde the if are not used and will delete them. But this will leave the <code>if TYPE_CHECKING</code> block empty, which is a syntax error.</p>
+<p>Would it be possible to detect this and also delete the if?</p>
+<p>Funnily enough if I only put one unused import, ruff fix will add a <code>pass</code> under the if which will fix the syntax error.</p>
+<p>Another corollary of this is that a second run of ruff should also delete the <code>from typing import TYPE_CHECKING</code> since it's also unused. Could those two runs be combined?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 13:31</div>
+            <div class="timeline-body"><p>Thanks for filing! The intended behavior is to remove the two imports in the if-block, and replace them with a pass… so sounds like a bug if it’s leaving you with an empty body.</p>
+<p>I’d been hesitant to remove the if itself since it introduces a lot of complexity, but in theory it’s possible…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-16 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 13:51</div>
+            <div class="timeline-body"><p>Can I just confirm: are you on the latest version? I’m seeing Ruff correctly add a pass statement in that example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-11-16 15:17</div>
+            <div class="timeline-body"><p>Hey @charliermarsh apologies. I should have checked. I was in an 1 week older venv and had <code>ruff 0.0.105</code> there. With <code>ruff 0.0.122</code> I also see the correct behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @LefterisJP on 2022-11-16 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 15:55</div>
+            <div class="timeline-body"><p>No prob! That was a regression anyway. Glad it’s working now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

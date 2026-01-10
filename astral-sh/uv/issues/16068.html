@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --no-sources` does not fall back to pre-existing dependencies in the environment that satisfy the requirements (uv&gt;=v0.8.18) - astral-sh/uv #16068</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --no-sources` does not fall back to pre-existing dependencies in the environment that satisfy the requirements (uv&gt;=v0.8.18)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16068">#16068</a>
+        opened by <a href="https://github.com/pausz">@pausz</a>
+        on 2025-09-30 03:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pausz">@pausz</a> on 2025-09-30 03:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello 👋. I thought <code>uv pip install --no-sources</code> would inherently first use pre-existing dependencies in the environment if they satisfy the requirements. For uv &lt; 0.8.18, this is/was true, but for uv &gt;=0.8.18, it isn't. Which version has the bug?</p>
+<p>To reproduce:</p>
+<pre><code class="language-bash"># Setup
+mkdir uv-sandbox
+cd uv-sandbox
+
+uv init --lib package_a
+uv init --lib package_b
+
+</code></pre>
+<p>package_a's pyproject.toml:</p>
+<pre><code class="language-toml">
+[project]
+name = &quot;package-a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;The package A&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;PSL&quot;}
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;numpy&quot;]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.17,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+<p>package_b's pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;package-b&quot;
+version = &quot;0.1.0&quot;
+description = &quot;The package B&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;pausz&quot;}
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;package_a&quot;]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.17,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+
+[tool.uv.sources]
+package-a = {git = &quot;ssh://git@github.com/pausz/package_a.git&quot;, branch = &quot;main&quot;}
+</code></pre>
+<p>By the way, both toy repositories are publicly available:</p>
+<p><code>package_a</code>: https://github.com/pausz/package_a
+<code>package_b</code>: https://github.com/pausz/package_b</p>
+<h3>Test with uv 0.8.17</h3>
+<pre><code class="language-bash"># 
+uv venv
+source .venv/bin/activate
+
+uv pip install package_a/.
+</code></pre>
+<p>Output</p>
+<pre><code>Resolved 2 packages in 39ms
+      Built package-a @ file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a
+Prepared 1 package in 6ms
+Installed 2 packages in 17ms
+ + numpy==2.3.3
+ + package-a==0.1.0 (from file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a)
+</code></pre>
+<p>Then</p>
+<pre><code class="language-bash">uv pip install --no-sources package_b/.
+</code></pre>
+<p>Output</p>
+<pre><code>Resolved 3 packages in 363ms
+      Built package-b @ file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_b
+Prepared 1 package in 9ms
+Installed 1 package in 1ms
+ + package-b==0.1.0 (from file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_b)
+</code></pre>
+<h3>Test with uv 0.8.18 and 0.8.22</h3>
+<pre><code class="language-bash"># Get rid of previous virtual environment
+deactivate
+rm -r .venv
+
+# upgrade from 0.8.17 to 0.8.22, but also tested with 0.8.18 with pip install --force uv==0.8.18
+pipx upgrade uv
+
+# Make new environment
+uv venv
+source .venv/bin/activate
+
+# Install dependency of package-b
+uv pip install package_a/.
+</code></pre>
+<p>Output</p>
+<pre><code class="language-bash">Resolved 2 packages in 6ms
+      Built package-a @ file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a
+Prepared 1 package in 5ms
+Installed 2 packages in 18ms
+ + numpy==2.3.3
+ + package-a==0.1.0 (from file:///home/psanz-leon/CodeWorkspaces/uv-sandbox/package_a)
+</code></pre>
+<p>Then</p>
+<pre><code>uv pip install --no-sources package_b/.
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">  × No solution found when resolving dependencies:
+  ╰─▶ Because package-a was not found in the package registry and package-b==0.1.0 depends on package-a, we can conclude that package-b==0.1.0
+      cannot be used.
+      And because only package-b==0.1.0 is available and you require package-b, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<h4>Use case</h4>
+<p>We want to pre-install heavy dependencies in an environment on a VM. These dependencies are in private repositories and for security reasons, for the time being, we are not providing the VM with our github credentials. We could of course update the uv sources table in pyproject.toml (of package_b in this example) to reference local paths, but prior to uv == 0.8.18,  the <code>--no-sources</code> option does what we need. Ideally we want to use the latest and greatest uv version ✨ , except that in this case, the recent versions break our installation process.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.3 LTS</p>
+<h3>Version</h3>
+<p>uv 0.8.17 &amp;  0.8.18, 0.8.22</p>
+<h3>Python version</h3>
+<p>3.12.3 &amp; 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @pausz on 2025-09-30 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-30 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-30 03:34</div>
+            <div class="timeline-body"><p>I can look tomorrow, likely a result of my change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-01 15:57</div>
+            <div class="timeline-body"><p>(Apologies this slipped, but it's on my list for today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16094.html">astral-sh/uv#16094</a> on 2025-10-02 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-02 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

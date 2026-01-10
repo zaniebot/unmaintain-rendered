@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule RET503 cause autofix error - astral-sh/ruff #7075</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule RET503 cause autofix error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7075">#7075</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-09-03 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-09-03 09:34</div>
+            <div class="timeline-body"><p>Ruff 0.0.287 (latest changes from main branch)</p>
+<pre><code>ruff --fix *.py  --no-cache --select RET503
+</code></pre>
+<p>file content:</p>
+<pre><code>def generate_route(points, type):
+        return {
+        }
+        for i, waypoint in enumerate(json['route_instructions']):
+                (instruction, length, position, time, length_caption,
+                 earth_direction, azimuth, turn_type, turn_angle) = waypoint
+            waypoints.append({
+                'additional': ugettext('%(direction)s for %(distance)s (taking approximately %(time)s)') % {
+                    },
+                'path': LineString(map(lambda ps: Point(*ps),
+                        ))
+            })
+</code></pre>
+<p>error:</p>
+<pre><code>error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `9716902.py`, the rule codes RET503, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+9716902.py:7:13: RET503 Missing explicit `return` at the end of function able to return non-`None` value
+Found 1 error.
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12505630/9716902.py.zip">9716902.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-09-03 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @charliermarsh on 2023-09-03 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-03 22:31</div>
+            <div class="timeline-body"><p>This is invalid source code. Need to decide how to handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-09-04 05:40</div>
+            <div class="timeline-body"><p>How can I check if python file is invalid?
+I'm using now such script</p>
+<pre><code>import ast
+import sys
+
+def parse_python_file(file_path):
+    with open(file_path, 'r') as file:
+        source_code = file.read()
+
+    try:
+        ast.parse(source_code)
+        print(f&quot;Syntax is correct in {file_path}&quot;)
+    except SyntaxError as e:
+        print(f&quot;Syntax error in {file_path}: {e}&quot;)
+        sys.exit(12)
+        # raise Exception()
+
+if len(sys.argv) != 2:
+    print(&quot;Usage: python script.py &lt;file_path&gt;&quot;)
+else:
+    file_path = sys.argv[1]
+    parse_python_file(file_path)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-04 06:31</div>
+            <div class="timeline-body"><p>Your script should correctly detect that the code is invalid because either the tuple or <code>waypoints.append</code> is incorrectly indented.</p>
+<pre><code>❯ python -m ast /home/micha/.cache/.fr-52CTA2/9716902.py
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/usr/lib/python3.11/ast.py&quot;, line 1736, in &lt;module&gt;
+    main()
+  File &quot;/usr/lib/python3.11/ast.py&quot;, line 1732, in main
+    tree = parse(source, args.infile.name, args.mode, type_comments=args.no_type_comments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.11/ast.py&quot;, line 50, in parse
+    return compile(source, filename, mode, flags,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/micha/.cache/.fr-52CTA2/9716902.py&quot;, line 7
+    waypoints.append({
+                      ^
+IndentationError: unindent does not match any outer indentation level
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-10-01 08:31</div>
+            <div class="timeline-body"><p>Only UP032 reports problem here(reported in other issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @qarmin on 2023-10-01 08:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

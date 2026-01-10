@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A parameter called parameters causes false positives for pydocstyle rules (D405, D406, D407, and D414) - astral-sh/ruff #9806</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A parameter called parameters causes false positives for pydocstyle rules (D405, D406, D407, and D414)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9806">#9806</a>
+        opened by <a href="https://github.com/owenlamont">@owenlamont</a>
+        on 2024-02-03 11:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/owenlamont">@owenlamont</a> on 2024-02-03 11:54</div>
+            <div class="timeline-body"><p>Ran into this bug where I'm working with a function with a parameter named <em>parameters</em> and they caused false positive triggers (and incorrect automatic fixes) for the pydocstyle ruleset.</p>
+<p>E.g.</p>
+<pre><code class="language-python">def some_function(parameters: list[str]):
+    &quot;&quot;&quot;A function with a parameters parameter
+
+    Parameters
+    ----------
+
+    parameters:
+        A list of string parameters
+    &quot;&quot;&quot;
+    ...
+</code></pre>
+<p>The docstring for parameters (the parameter, not the section) is incorrectly interpreted as a misformatted section and if fix is enabled it is converted to a second redundant Parameters section which causes follow on errors like D414 section has no content...</p>
+<p>I found I needed to disable rules D405 D406 D407 D414 to allow this to pass.</p>
+<p>I ran:</p>
+<pre><code class="language-shell">ruff test.py --fix
+</code></pre>
+<p>Relevant section of my pyproject.toml is:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+# See https://docs.astral.sh/ruff/rules/
+select = [&quot;A&quot;, &quot;B&quot;, &quot;C4&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;FURB&quot;, &quot;I&quot;, &quot;ISC&quot;, &quot;Q&quot;, &quot;RET&quot;, &quot;T20&quot;, &quot;UP&quot;]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;ALL&quot;]
+unfixable = []
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;numpy&quot;
+</code></pre>
+<p>I'm using ruff 0.2.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-03 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-02-03 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2024-02-07 09:52</div>
+            <div class="timeline-body"><p>If you add type annotation for the parameters arg then rules D405, D406, D407, D414 should not trigger:</p>
+<pre><code class="language-python">def some_function(parameters: list[str]):
+    &quot;&quot;&quot;A function with a parameters parameter
+
+    Parameters
+    ----------
+
+    parameters: list[str]
+        A list of string parameters
+    &quot;&quot;&quot;
+    ...
+</code></pre>
+<p>I have fixed this issue but now I am starting to wonder whether we should also warn about a missing type definition. My understanding is that this example violates <a href="https://numpydoc.readthedocs.io/en/latest/format.html#parameters">Numpy style guide</a> if you read it very &quot;strictly&quot; .
+What do you think @charliermarsh?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-02-07 10:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I have fixed this issue but now I am starting to wonder whether we should also warn about a missing type definition.</p>
+</blockquote>
+<p>I don't think this would be a particularly useful rule, as documenting types in a docstring is redundant if you use type annotations in the actual signature (documentation generators can read signatures). I can only think it would be useful in a codebase where Python type annotations are taboo for whatever reason...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2024-02-07 11:01</div>
+            <div class="timeline-body"><p>Yes, it is kind of duplicate/redundant but nevertheless using it will fix the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 02:52</div>
+            <div class="timeline-body"><p>I think it would be best to fix the issue (as described) and not warn on missing type annotations -- at minimum, the rule should work without these false positives when type annotations are omitted.</p>
+<p>(Also: thank you @mikeleppane for so many useful fixes!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9894.html">astral-sh/ruff#9894</a> on 2024-02-08 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 00:09</div>
+            <div class="timeline-body"><p>This was fixed in https://github.com/astral-sh/ruff/pull/9894.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-11 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/owenlamont">@owenlamont</a> on 2024-02-11 01:02</div>
+            <div class="timeline-body"><p>Thanks so much for resolving this so quickly!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install packages or download Python in Windows with Corporate Cisco Umbrella Certificate - astral-sh/uv #6649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install packages or download Python in Windows with Corporate Cisco Umbrella Certificate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6649">#6649</a>
+        opened by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a>
+        on 2024-08-26 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a> on 2024-08-26 19:25</div>
+            <div class="timeline-body"><p>Using the <em>native TLS</em> option, <code>uv</code> is able to do a self-update, create a virtual environment, and list available Python versions. It cannot download Python or install packages from pypi. The issue is that self-update and checking for available package versions does work, so the initial SSL queries are okay using native TLS and the corporate man-in-the-middle certificate. It's later in the process when <code>uv</code> tries to download, that certificate errors occur. I suspect that <code>uv</code> is not using native TLS during the download phase for Python distributions as well as for packages. Below are a number of responses to executing <code>uv</code> at the command line under bash for Windows:</p>
+<pre><code>320159535@YY291217 MINGW64 ~/junk
+$ env | grep UV
+UV_NATIVE_TLS=1
+
+320159535@YY291217 MINGW64 ~/junk
+$ uv self update
+info: Checking for updates...
+success: You're on the latest version of uv (v0.3.3)
+
+320159535@YY291217 MINGW64 ~/junk
+$ uv python list
+cpython-3.12.5-windows-x86_64-none     &lt;download available&gt;
+cpython-3.12.3-windows-x86_64-none     C:\Users\320159535\.rye\py\cpython@3.12.3\python.exe
+cpython-3.11.9-windows-x86_64-none     &lt;download available&gt;
+cpython-3.10.14-windows-x86_64-none    &lt;download available&gt;
+cpython-3.9.19-windows-x86_64-none     &lt;download available&gt;
+cpython-3.8.19-windows-x86_64-none     &lt;download available&gt;
+pypy-3.7.13-windows-x86_64-none        &lt;download available&gt;
+
+320159535@YY291217 MINGW64 ~/junk
+$ uv venv
+Using Python 3.12.3 interpreter at: C:\Users\320159535\.rye\py\cpython@3.12.3\python.exe
+Creating virtualenv at: .venv
+Activate with: source .venv/Scripts/activate
+
+320159535@YY291217 MINGW64 ~/junk
+$ source .venv/Scripts/activate
+(junk)
+
+320159535@YY291217 MINGW64 ~/junk
+$ uv pip install -vv pytest
+    0.001628s DEBUG uv uv 0.3.3
+ uv_requirements::specification::from_source source=pytest
+    0.003174s DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.003691s DEBUG uv_python::discovery Found `cpython-3.12.3-windows-x86_64-none` at `C:/Users/320159535/junk/.venv\Scripts\python.exe` (active virtual environment)
+    0.003865s DEBUG uv::commands::pip::install Using Python 3.12.3 environment at .venv\Scripts\python.exe
+    0.004097s DEBUG uv_fs Acquired lock for `.venv`
+    0.004278s DEBUG uv::commands::pip::install At least one requirement is not satisfied: pytest
+ uv_client::linehaul::linehaul
+    0.005090s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_resolver::resolver::solve
+    0.006598s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.3
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.006909s   0ms DEBUG uv_resolver::resolver Adding direct dependency: pytest*
+   uv_resolver::resolver::choose_version package=pytest
+ uv_resolver::resolver::process_request request=Versions pytest
+   uv_client::registry_client::simple_api package=pytest
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\C:\Users\320159535\AppData\Local\uv\cache\simple-v12\pypi\pytest.rkyv
+ uv_resolver::resolver::process_request request=Prefetch pytest *
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\C:\\Users\\320159535\\AppData\\Local\\uv\\cache\\simple-v12\\pypi\\pytest.rkyv&quot;
+        0.007591s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/pytest/
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/pytest/&quot;
+          0.330667s 323ms DEBUG uv_client::base_client Transient request failure for https://pypi.org/simple/pytest/, retrying: error sending request for url (https://pypi.org/simple/pytest/)
+         Caused by: client error (Connect)
+         Caused by: invalid peer certificate: UnknownIssuer
+          1.264913s   1s  DEBUG uv_client::base_client Transient request failure for https://pypi.org/simple/pytest/, retrying: error sending request for url (https://pypi.org/simple/pytest/)
+         Caused by: client error (Connect)
+         Caused by: invalid peer certificate: UnknownIssuer
+          3.268109s   3s  DEBUG uv_client::base_client Transient request failure for https://pypi.org/simple/pytest/, retrying: error sending request for url (https://pypi.org/simple/pytest/)
+         Caused by: client error (Connect)
+         Caused by: invalid peer certificate: UnknownIssuer
+          3.995104s   3s  DEBUG uv_client::base_client Transient request failure for https://pypi.org/simple/pytest/, retrying: error sending request for url (https://pypi.org/simple/pytest/)
+         Caused by: client error (Connect)
+         Caused by: invalid peer certificate: UnknownIssuer
+error: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/pytest/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+(junk)
+
+320159535@YY291217 MINGW64 ~/junk
+$ uv python install -vv 3.10
+    0.001109s DEBUG uv uv 0.3.3
+    0.002154s DEBUG uv_fs Acquired lock for `C:\Users\320159535\AppData\Roaming\uv\python`
+Searching for Python versions matching: Python 3.10
+    0.003047s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_python::downloads::fetch self=ManagedPythonDownload { key: PythonInstallationKey { implementation: Known(CPython), major: 3, minor: 10, patch: 14, os: Os(Windows), arch: Arch(X86_64), libc: None }, url: &quot;https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz&quot;, sha256: Some(&quot;61ad1abcaca639eecb5bd0b129ac0315d79f7b90cf0aca8e9fb85c9e7269c26b&quot;) }, download=cpython-3.10.14-windows-x86_64-none
+    0.385735s 382ms DEBUG uv_client::base_client Transient request failure for https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+   Caused by: client error (Connect)
+   Caused by: invalid peer certificate: UnknownIssuer
+    1.208488s   1s  DEBUG uv_client::base_client Transient request failure for https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+   Caused by: client error (Connect)
+   Caused by: invalid peer certificate: UnknownIssuer
+    2.554677s   2s  DEBUG uv_client::base_client Transient request failure for https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+   Caused by: client error (Connect)
+   Caused by: invalid peer certificate: UnknownIssuer
+    4.117660s   4s  DEBUG uv_client::base_client Transient request failure for https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz, retrying: error sending request for url (https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+   Caused by: client error (Connect)
+   Caused by: invalid peer certificate: UnknownIssuer
+error: Failed to install cpython-3.10.14-windows-x86_64-none
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-3.10.14%2B20240814-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+(junk)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a> on 2024-08-26 19:26</div>
+            <div class="timeline-body"><p>On the same machine, <code>uv</code> works without any issues under WSL2 in bash on Ubuntu.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a> on 2024-08-26 19:36</div>
+            <div class="timeline-body"><p>On the same machine using <code>rye</code>:</p>
+<pre><code>320159535@YY291217 MINGW64 ~/junk
+$ rye fetch 3.12
+Downloading cpython@3.12.5
+Checking checksum
+Unpacking
+Downloaded cpython@3.12.5
+(junk)
+
+320159535@YY291217 MINGW64 ~/junk
+$ uv python list
+cpython-3.12.5-windows-x86_64-none     C:\Users\320159535\.rye\py\cpython@3.12.5\python.exe
+cpython-3.12.5-windows-x86_64-none     &lt;download available&gt;
+cpython-3.11.9-windows-x86_64-none     &lt;download available&gt;
+cpython-3.10.14-windows-x86_64-none    &lt;download available&gt;
+cpython-3.9.19-windows-x86_64-none     &lt;download available&gt;
+cpython-3.8.19-windows-x86_64-none     &lt;download available&gt;
+pypy-3.7.13-windows-x86_64-none        &lt;download available&gt;
+(junk)
+</code></pre>
+<p>So <code>rye</code> is able to do the download whereas <code>uv</code> cannot. Under the same TLS environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a> on 2024-09-25 21:02</div>
+            <div class="timeline-body"><p>As of today, using version 0.4.16, all of these issues are gone using the bash shell installed with git-for-windows. The following environment variables are set:</p>
+<pre><code>$ env | grep UV
+UV_INDEX_URL=https://biotelemetry.jfrog.io/artifactory/api/pypi/pypi/simple
+UV_NATIVE_TLS=1
+</code></pre>
+<p>I was able to install Python 3.12.6, and I was able to install packages from our JFrog pypi mirror. Bravo!</p>
+<p>Note that <code>uv</code> continues to fail in the same manner as before under PowerShell, but working under <code>bash</code> in my corporate Windows environment is stellar progress. Thanks to the dev team.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Syrus-at-Philips on 2024-09-25 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oddrationale">@oddrationale</a> on 2024-09-27 18:30</div>
+            <div class="timeline-body"><p>I'm having the same issue (except with the Zscalar certificate). I'm not able to download any managed Python version due to the certificate error.</p>
+<p>I've tried using the Bash shell that came with git but get the same error as in PowerShell:</p>
+<pre><code>$ uv python --native-tls install 3.11
+Searching for Python versions matching: Python 3.11
+error: Failed to install cpython-3.11.10-windows-x86_64-none
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://objects.githubusercontent.com/github-production-release-asset-
+2e65be/162334160/3e217200-e667-403a-942f-c46eca0e15b6?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=releaseass
+etproduction%2F20240927%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20240927T182646Z&amp;X-Amz-Expires=300&amp;X-Amz-Signat
+ure=a960fdea08f8196362c1dbff5244dda57f346ec1d9dc6a590c5c4ceed35cf953&amp;X-Amz-SignedHeaders=host&amp;response-content-dis
+position=attachment%3B%20filename%3Dcpython-3.11.10%2B20240909-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+&amp;response-content-type=application%2Foctet-stream)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+</code></pre>
+<p>I'm also on uv version 0.4.16:</p>
+<pre><code>$ uv --version
+uv 0.4.16 (e81ed8ec5 2024-09-24) 
+</code></pre>
+<p>Maybe we should keep this issue open until it is fixed in both Bash and PowerShell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a> on 2024-09-27 20:51</div>
+            <div class="timeline-body"><p>Look at your environment variables in <code>bash</code>. I had to unset an SSL Certificate variable to make it work. It's working with native TLS but not with a variable that points to an actual certificate file. Your error does look the same as mine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Syrus-at-Philips">@Syrus-at-Philips</a> on 2024-09-27 20:52</div>
+            <div class="timeline-body"><p>I also had a conflict with Conda/Mamba variables. I had to ensure I did not have a Conda environment activated in my shell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oddrationale">@oddrationale</a> on 2024-09-30 14:25</div>
+            <div class="timeline-body"><p>Gotcha! That helped! I was able to get it to work now. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

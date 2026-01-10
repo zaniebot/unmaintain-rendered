@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to allow users to simply `pip install` when I use uv workspaces? - astral-sh/uv #13543</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to allow users to simply `pip install` when I use uv workspaces?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13543">#13543</a>
+        opened by <a href="https://github.com/adamtuft">@adamtuft</a>
+        on 2025-05-19 19:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamtuft">@adamtuft</a> on 2025-05-19 19:51</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi! Thanks for this awesome tool, I really like how fast it is and that it can replace multiple CLI tools for managing my Python development setup. I have been experimenting with moving to UV from setuptools for a project, and I'm a little stumped by an issue I'm having.</p>
+<p>Trying to follow <a href="https://docs.astral.sh/uv/concepts/projects/workspaces/">this page</a>, I have a project that looks like this:</p>
+<pre><code>&gt; tree uv-test
+uv-test
+├── packages
+│   └── uv-helper
+│       ├── pyproject.toml
+│       └── src
+│           └── uv_helper
+│               └── __init__.py
+├── pyproject.toml
+├── README.md
+├── src
+│   └── uv_test
+│       ├── __init__.py
+│       └── py.typed
+└── uv.lock
+
+7 directories, 7 files
+</code></pre>
+<p>In <code>uv-test/pyproject.toml</code> I have:</p>
+<pre><code>[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+authors = [
+    { name = &quot;Adam&quot;, email = &quot;73994535+adamtuft@users.noreply.github.com&quot; }
+]
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;uv-helper&quot;]
+
+[tool.uv.sources]
+uv-helper = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;packages/uv-helper/src/uv_helper&quot;]
+</code></pre>
+<p>In <code>uv-test/packages/uv-helper/pyproject.toml</code> I have:</p>
+<pre><code>[project]
+name = &quot;uv-helper&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+authors = [
+    { name = &quot;Adam&quot;, email = &quot;73994535+adamtuft@users.noreply.github.com&quot; }
+]
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>When I run <code>uv pip install git/uv-test</code> with a fresh venv active, all works as expected:</p>
+<pre><code>&gt; uv pip install git/uv-test
+Using Python 3.13.3 environment at: .venv/uv-test
+Resolved 2 packages in 2ms
+      Built uv-test @ file:///home/adam/git/uv-test
+      Built uv-helper @ file:///home/adam/git/uv-test/packages/uv-helper
+Prepared 2 packages in 288ms
+Installed 2 packages in 0.56ms
+ + uv-helper==0.1.0 (from file:///home/adam/git/uv-test/packages/uv-helper)
+ + uv-test==0.1.0 (from file:///home/adam/git/uv-test)
+</code></pre>
+<p>However, if I simply try to run <code>pip install git/uv-test</code> then the installation fails:</p>
+<pre><code>&gt; pip install git/uv-test
+Processing ./git/uv-test
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+INFO: pip is looking at multiple versions of uv-test to determine which version is compatible with other requirements. This could take a while.
+ERROR: Could not find a version that satisfies the requirement uv-helper (from uv-test) (from versions: none)
+ERROR: No matching distribution found for uv-helper
+</code></pre>
+<p>What am I getting wrong here? I would have expected to be able to <code>pip install</code> the package if I have correctly structured the project and given the dependencies. I'd like to allow my end-users to <code>pip install &lt;path-or-git-repo&gt;</code> without requiring that they use uv - I would have thought that uv is part of my development workflow, and shouldn't be required for users to install my package.</p>
+<p>Thanks!</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<pre><code>uv 0.7.5
+Python 3.13.3
+pip pip 25.1.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @adamtuft on 2025-05-19 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-19 20:01</div>
+            <div class="timeline-body"><p>If I'm reading correctly: anything that relies on <code>[tool.uv.sources]</code> won't work with pip, because pip doesn't know how to resolve those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtuft">@adamtuft</a> on 2025-05-19 20:28</div>
+            <div class="timeline-body"><p>I see, is there a <code>pip</code>-compatible way that I can declare the <code>uv-helper</code> dependency is part of the project? Should I avoid using uv's workspaces in this case?</p>
+<p>EDIT: Having thought some more about my problem, I realise that my project's structure is confused. In my case the <code>uv_helper</code> package makes more sense as an internal sub-package rather than a standalone dependency. That will solve all my packaging problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @adamtuft on 2025-05-20 08:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

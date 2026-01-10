@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can not use Vec-Flags with Environment Variables - clap-rs/clap #4656</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can not use Vec-Flags with Environment Variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4656">#4656</a>
+        opened by <a href="https://github.com/MarcelCoding">@MarcelCoding</a>
+        on 2023-01-22 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarcelCoding">@MarcelCoding</a> on 2023-01-22 16:32</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.66.0 (69f9c33d7 2022-12-12)</p>
+<h3>Clap Version</h3>
+<p>4.1.1</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Args {
+  #[arg(long, env = &quot;IDS&quot;)]
+  ids: Vec&lt;i64&gt;,
+}
+
+fn main() {
+  let args = Args::parse();
+  println!(&quot;{:?}&quot;, args);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>[marcel@pc-marcel rust-test]$ IDS=123,123 cargo run 
+   Compiling clap v4.1.1
+   Compiling rust-test v0.1.0 (/home/marcel/IdeaProjects/rust-test)
+    Finished dev [unoptimized + debuginfo] target(s) in 3.59s
+     Running `target/debug/rust-test`
+error: invalid value '123,123' for '--ids &lt;IDS&gt;': invalid digit found in string
+
+For more information, try '--help'.
+</code></pre>
+<pre><code>[marcel@pc-marcel rust-test]$ IDS=123 cargo run 
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/rust-test`
+Args { ids: [123] }
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Lists can not be populated with multiple values, if the values are provided using environment variables.</p>
+<h3>Expected Behaviour</h3>
+<p>Add an option to express lists in environment variables.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[marcel@pc-marcel rust-test]$ IDS=123,123 cargo run 
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/rust-test`
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;rust-test&quot;
+[      clap::builder::command]  Command::_propagate:rust-test
+[      clap::builder::command]  Command::_check_help_and_version:rust-test expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_propagate_global_args:rust-test
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:ids
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::add_env
+[        clap::parser::parser]  Parser::add_env: Checking arg `--ids &lt;IDS&gt;`
+[        clap::parser::parser]  Parser::add_env: Found an opt with value=&quot;123,123&quot;
+[        clap::parser::parser]  Parser::react action=Append, identifier=None, source=EnvVariable
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;ids&quot;, source=EnvVariable
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;ids&quot;
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=EnvVariable
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;123,123&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+error: invalid value '123,123' for '--ids &lt;IDS&gt;': invalid digit found in string
+
+For more information, try '--help'.
+</code></pre>
+<pre><code>[marcel@pc-marcel rust-test]$ IDS=123 cargo run 
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/rust-test`
+[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;rust-test&quot;
+[      clap::builder::command]  Command::_propagate:rust-test
+[      clap::builder::command]  Command::_check_help_and_version:rust-test expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --help
+[      clap::builder::command]  Command::_propagate_global_args:rust-test
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:ids
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::add_env
+[        clap::parser::parser]  Parser::add_env: Checking arg `--ids &lt;IDS&gt;`
+[        clap::parser::parser]  Parser::add_env: Found an opt with value=&quot;123&quot;
+[        clap::parser::parser]  Parser::react action=Append, identifier=None, source=EnvVariable
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;ids&quot;, source=EnvVariable
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;ids&quot;
+[   clap::parser::arg_matcher]  ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=EnvVariable
+[        clap::parser::parser]  Parser::push_arg_values: [&quot;123&quot;]
+[        clap::parser::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: o=ids, pending=0
+[   clap::parser::arg_matcher]  ArgMatcher::needs_more_vals: expected=1, actual=0
+[        clap::parser::parser]  Parser::react not enough values passed in, leaving it to the validator to complain
+[        clap::parser::parser]  Parser::add_env: Checking arg `--help`
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:ids:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:ids: doesn't have default vals
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: doesn't have default vals
+[     clap::parser::validator]  Validator::validate
+[      clap::builder::command]  Command::groups_for_arg: id=&quot;ids&quot;
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=&quot;ids&quot;, conflicts=[]
+[     clap::parser::validator]  Conflicts::gather_direct_conflicts id=&quot;Args&quot;, conflicts=[]
+[     clap::parser::validator]  Validator::validate_conflicts
+[     clap::parser::validator]  Validator::validate_exclusive
+[     clap::parser::validator]  Validator::validate_conflicts::iter: id=&quot;ids&quot;
+[     clap::parser::validator]  Conflicts::gather_conflicts: arg=&quot;ids&quot;
+[     clap::parser::validator]  Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator]  Validator::validate_required: required=ChildGraph([])
+[     clap::parser::validator]  Validator::gather_requires
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;ids&quot;
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Args&quot;
+[     clap::parser::validator]  Validator::gather_requires:iter:&quot;Args&quot;:group
+[     clap::parser::validator]  Validator::validate_required: is_exclusive_present=false
+[   clap::parser::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[]
+Args { ids: [123] }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @MarcelCoding on 2023-01-22 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-23 14:14</div>
+            <div class="timeline-body"><p>One option is you can set the <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.value_delimiter">value_delimiter</a>.  This will also apply to the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcelCoding">@MarcelCoding</a> on 2023-01-23 18:29</div>
+            <div class="timeline-body"><p>Ok, thanks, that would be fine for me. Sadly, I did not come up with this myself. But anyway, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MarcelCoding on 2023-01-23 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:19 UTC
+    </footer>
+</body>
+</html>

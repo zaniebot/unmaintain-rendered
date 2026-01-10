@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide access to the original error for `ValueValidation` errors - clap-rs/clap #2151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide access to the original error for `ValueValidation` errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2151">#2151</a>
+        opened by <a href="https://github.com/Nemo157">@Nemo157</a>
+        on 2020-10-05 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Nemo157">@Nemo157</a> on 2020-10-05 10:38</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>I have a <code>FromStr</code> implementation that returns a chained error providing more context when decoding an argument fails. When this error is returned <code>clap</code> (using v3's <code>derive</code> and <code>Clap::try_parse</code>) serializes <em>just</em> the outer context into a string and attaches that to the <code>ValueValidation</code> error returned, removing the more important information contained inside the inner error.</p>
+<p>Here's a (not that small) minimal representation of the issue:</p>
+<pre><code class="language-rust">use std::{fmt, str::FromStr, error::Error};
+use clap::Clap;
+
+#[derive(Debug, Copy, Clone)]
+struct Foo;
+
+#[derive(Debug, Copy, Clone)]
+struct InnerError;
+
+#[derive(Debug, Copy, Clone)]
+struct OuterError(InnerError);
+
+impl Error for InnerError {}
+impl Error for OuterError {
+    fn source(&amp;self) -&gt; Option&lt;&amp;(dyn Error + 'static)&gt; {
+        Some(&amp;self.0)
+    }
+}
+
+impl fmt::Display for InnerError {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        f.write_str(&quot;inner error&quot;)
+    }
+}
+
+impl fmt::Display for OuterError {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        f.write_str(&quot;outer error&quot;)
+    }
+}
+
+impl FromStr for Foo {
+    type Err = OuterError;
+
+    fn from_str(_: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        Err(OuterError(InnerError))
+    }
+}
+
+#[derive(Debug, Clap)]
+struct Args {
+    foo: Foo,
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    dbg!(Args::try_parse())?;
+
+    Ok(())
+}
+</code></pre>
+<p>Running this with <code>cargo run -- test</code> we can see that the returned error only contains:</p>
+<pre><code>        kind: ValueValidation,
+        info: [
+            &quot;&lt;foo&gt;&quot;,
+            &quot;test&quot;,
+            &quot;outer error&quot;,
+        ],
+</code></pre>
+<p>losing the <code>InnerError</code> completely.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Add an <code>Option&lt;Box&lt;dyn Error&gt;&gt;</code> onto the <code>Error</code> struct and support the <code>Error::source</code> method to get access to this error.</p>
+<p>This would cause (additional) issues with the current <code>Display</code> implementation, when using an error reporter such as <code>anyhow::Error</code> which chains the causes on; you would get duplicate error messages because of <code>impl Display for clap::Error</code> printing the <code>cause</code> already. (Additional because you already get duplicate <code>Error: </code> prefixes from <code>clap::Error</code> printing this prefix itself).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @Nemo157 on 2020-10-05 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-10-05 13:33</div>
+            <div class="timeline-body"><p>For me, the solution is to change the Display implementation or your OuterError to what you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemo157">@Nemo157</a> on 2020-10-05 13:47</div>
+            <div class="timeline-body"><p>That would be against the modern error handling standards where an error should only print its own details and rely on an error reporting implementation (such as <code>anyhow</code> or <code>eyre</code>, or <code>clap</code>'s internal reporting when using <code>Args::parse()</code>) to chain on the context when the error is being shown to a user.</p>
+<p>EDIT: And be against long-time error guidelines such as <a href="https://rust-lang.github.io/api-guidelines/interoperability.html#c-good-err">C-GOOD-ERR</a> which says</p>
+<blockquote>
+<p>The error message given by the Display representation of an error type should be lowercase without trailing punctuation, and typically concise.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-10-05 15:12</div>
+            <div class="timeline-body"><p>Then, returns a anyhow::Result in FronStr, and if that's still not good, use a custom validator/parser that returns the kind of error you want. I don't think that's clap work to do complicated error formating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemo157">@Nemo157</a> on 2020-10-05 15:23</div>
+            <div class="timeline-body"><p>I do return an <code>anyhow::Result</code> in my real code, but that obeys the error standards and doesn't print the <code>source</code> in its <code>Display</code> impl either (it only prints the source-chain when actually printing to the user).</p>
+<blockquote>
+<p>I don't think that's clap work to do complicated error formating.</p>
+</blockquote>
+<p>That's precisely why I believe <code>clap</code> should give access to the entire error structure, so that other code can perform complicated error formatting using all the details available to it, rather than being reduced to printing a string that <code>clap</code> has formatted from the internal error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-10-05 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemo157">@Nemo157</a> on 2020-10-05 15:29</div>
+            <div class="timeline-body"><p>Quickly looking into what would be necessary to implement this, there would need to be at least one breaking change of changing <code>Arg::validator</code> to require <code>E: Error + Send + Sync</code> instead of <code>E: ToString</code> (I'm not sure whether <code>validator_os</code> would change as well, it seems odd that it requires a <code>String</code> error currently).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-05 15:30</div>
+            <div class="timeline-body"><p>I tagged this as 3.0 in case we want to decide on changing the API before release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemo157">@Nemo157</a> on 2020-10-05 16:01</div>
+            <div class="timeline-body"><p>If you want I can prepare a PR with this change to look at, I just quickly hacked it in to test the behaviour and it works well with both <code>anyhow</code> and <code>color-eyre</code> error reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-05 16:10</div>
+            <div class="timeline-body"><p>Sounds good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-09 16:35</div>
+            <div class="timeline-body"><p>@Nemo157 Any update with the PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @pksunkara on 2020-10-09 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemo157">@Nemo157</a> on 2020-10-12 12:26</div>
+            <div class="timeline-body"><p>Sorry, I <a href="https://github.com/clap-rs/clap/compare/master...Nemo157:error-source">prepared the change</a> and got it passing tests, but I don't remember if there was anything else I needed to check before opening a PR, I'll try to get it open tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2169.html">clap-rs/clap#2169</a> on 2020-10-12 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-10-14 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/project-error-handling/issues/27.html">rust-lang/project-error-handling#27</a> on 2020-12-25 10:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:21 UTC
+    </footer>
+</body>
+</html>

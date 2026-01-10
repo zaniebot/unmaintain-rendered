@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alias into subcomand - clap-rs/clap #1603</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Alias into subcomand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1603">#1603</a>
+        opened by <a href="https://github.com/CAD97">@CAD97</a>
+        on 2019-12-09 02:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CAD97">@CAD97</a> on 2019-12-09 02:51</div>
+            <div class="timeline-body"><p>As far as I can tell, it's currently possible to alias command arguments and subcommands. For things such as https://github.com/rust-lang/rustup/issues/2148#issue-534509269, it'd be really nice if it's somehow possible to alias both &quot;across&quot; and &quot;into&quot; subcommands, e.g. treat <code>rustup install</code> the same as <code>rustup toolchain install</code>, i.e. including all arguments and such configured for the target subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rustup/issues/2148.html">rust-lang/rustup#2148</a> on 2019-12-09 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1606.html">clap-rs/clap#1606</a> on 2019-12-26 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Stupremee">@Stupremee</a> on 2020-01-01 18:09</div>
+            <div class="timeline-body"><p>I would like to work on this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-01-01 18:24</div>
+            <div class="timeline-body"><p>@Stupremee sure. you can go ahead and submit a PR. If you have any questions, you can post them here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: alias</span> added by @CreepySkeleton on 2020-02-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-02-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-02-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-01 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-01 22:13</div>
+            <div class="timeline-body"><p>I have come up with 2 ways to implement this:</p>
+<ol>
+<li><p>Have a new subcommand type thing whose job is just replacing things.</p>
+<pre><code class="language-rust">App::new(&quot;rustup&quot;)
+    .replacer(&quot;install&quot;, &quot;toolchain install&quot;)
+
+// Or alternatively
+App::new(&quot;rustup&quot;)
+    .subcommand(SubCommand::with_name(&quot;install&quot;)
+        .replace_with(&quot;toolchain install&quot;)
+    )
+</code></pre>
+<p><strong>PROS</strong>: Can also use flags and options in the replace target string
+<strong>CONS</strong>: Parsing logic might become a bit more complex?</p>
+</li>
+<li><p>Have a <code>alias_up</code> and <code>visible_alias_up</code> which takes number argument on how many levels it has go up.</p>
+<pre><code class="language-rust">App::new(&quot;rustup&quot;)
+    .subcommand(SubCommand::with_name(&quot;toolchain&quot;)
+        .subcommand(SubCommand::with_name(&quot;install&quot;)
+            .visible_alias_up(2, &quot;install&quot;)
+        )
+    )
+</code></pre>
+<p><strong>PROS</strong>: Works like <code>alias</code> api
+<strong>CONS</strong>: Sometimes might not know how many levels it has go up. Also, what about going down?</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kinnison">@kinnison</a> on 2020-02-01 22:21</div>
+            <div class="timeline-body"><p>An idea I had was:</p>
+<pre><code class="language-rust">App::new(&quot;rustup&quot;)
+    .mirror(&quot;install&quot;, &quot;toolchain-install&quot;)
+    ...
+    .subcommand(SubCommand::with_name(&quot;toolchain&quot;)
+        .subcommand(SubCommand::with_name(&quot;install&quot;)
+            .as_mirror(&quot;toolchain-install&quot;)
+            ...
+        )
+    )
+)
+</code></pre>
+<p>Where the <code>.mirror()</code> and <code>.as_mirror()</code> names would have to match up by the time you called .get_matches() or somesuch perhaps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-03 12:41</div>
+            <div class="timeline-body"><p>I like <code>visible_alias_up</code> but <code>mirror</code> is more general.</p>
+<p>Again, I have yet to familiarize myself with clap internals (except for some) so I can't tell which way would be easier to implement. Let's postpone it until we dealt with clap_derive (I'll get to it in ~30 mins)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-02-03 14:08</div>
+            <div class="timeline-body"><p>I was thinking more of <code>.mirror(&quot;toolchain&quot;)</code> in app and then you can add <code>.delegate()</code> to each subcommand you want to send to toolchain (I'm assuming they'll be multiple at some point)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kinnison">@kinnison</a> on 2020-02-03 14:22</div>
+            <div class="timeline-body"><p>Are you imagining <code>.mirror(&quot;label&quot;)</code> sets up a subcommand which can be referenced and then <code>.delegate(&quot;name&quot;, &quot;label&quot;)</code> is like <code>.subcommand(with_name(&quot;name&quot;).....)</code> matching the subcommand which had the <code>.mirror()</code> on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-02-03 14:49</div>
+            <div class="timeline-body"><p>Yeah I guess you got it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-10 22:43</div>
+            <div class="timeline-body"><p>So, I was looking to implement this, and as of now, I can simply do delegation to sibling commands. You can't delegate up. Is that okay?</p>
+<pre><code class="language-rust">App::new(&quot;rustup&quot;)
+    .subcommand(App::new(&quot;install&quot;)
+        .delegate([&quot;toolchain&quot;, &quot;install&quot;]))
+    .subcommand(App::new(&quot;toolchain&quot;)
+        .subcommand(App::new(&quot;install&quot;)))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kinnison">@kinnison</a> on 2020-02-11 17:16</div>
+            <div class="timeline-body"><p>That would be sufficient for <code>rustup</code>'s use case, if others in <code>clap</code> are OK with that as a limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-11 17:21</div>
+            <div class="timeline-body"><p>Actually, we can do something like this:</p>
+<pre><code class="language-rust">App::new(&quot;rustup&quot;)
+    .delegate([&quot;install&quot;], [&quot;toolchain&quot;, &quot;install&quot;])
+    .subcommand(App::new(&quot;install&quot;))
+    .subcommand(App::new(&quot;toolchain&quot;)
+        .subcommand(App::new(&quot;install&quot;)))
+</code></pre>
+<p>Which would be the same thing, but it actually allows us to delegate up too. Would require more checks though.</p>
+<pre><code class="language-rust">// These runs `rustup install` logic if you run `rustup toolchain install`
+App::new(&quot;rustup&quot;)
+    .delegate([&quot;toolchain&quot;, &quot;install&quot;], [&quot;install&quot;])
+    .subcommand(App::new(&quot;install&quot;))
+    .subcommand(App::new(&quot;toolchain&quot;)
+        .subcommand(App::new(&quot;install&quot;)))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-02-11 17:26</div>
+            <div class="timeline-body"><p>Looks good to me. I don't see much of a usecase of delegating upwords.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kinnison">@kinnison</a> on 2020-02-11 17:31</div>
+            <div class="timeline-body"><p>From <code>rustup</code>'s perspective the <strong>canonical</strong> form is <code>rustup toolchain install</code> and we want to support <em>silently</em> <code>rustup install</code> as an alias for those who have it stuck in scripting etc.  We don't want it showing in help etc, but simply to be internally converted by clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-11 18:30</div>
+            <div class="timeline-body"><p>I would like propagating things only <em>down</em> (this delegation is a form of propagation too), like it has been for all this time; global args and global settings has been propagating down. It's being done in one, up-bottom propagation step. Making an exception for <code>.delegate</code> would essentially add another, bottom-up propagation step which may affect performance for other cases. It's hard to say for sure without concrete numbers, but I would still like to keep things simple.</p>
+<p>@kinnison You're able to hide subcommands from help messages via <code>AppSettings::Hidden</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kinnison">@kinnison</a> on 2020-02-11 19:01</div>
+            <div class="timeline-body"><p>I'm aware of <code>Hidden</code> yes -- my point was that whatever the scheme, I'd need to be able to do that.  That's all :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-14 02:39</div>
+            <div class="timeline-body"><p>I have been looking at this the past few days and I have realized that doing this requires large changes in parsing logic. I would like to instead throw an alternative.</p>
+<pre><code class="language-rust">let install = App::new(&quot;install&quot;); // The install command
+
+App::new(&quot;rustup&quot;)
+	.subcommand(App::new(&quot;toolchain&quot;)
+		.subcommand(install.clone()))
+	.subcommand(install.settings(AppSettings::Hidden))
+</code></pre>
+<p>Doesn't this basically solve your use case? Also, this is more correct since if we are just aliasing to a different path, then it might have issues with args on parent subcommands (<code>toolchain</code> args here).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CAD97">@CAD97</a> on 2020-02-14 02:43</div>
+            <div class="timeline-body"><p>@pksunkara the issue is that, while the arguments are correctly parsed in this case, the actual code still has to handle the fact that there are two entry points to the functionality. The advantage of alias over just mounting the same <code>App</code> at two places is being able to handle it in one place and have it automatically apply to the other, aliased location.</p>
+<p>In short, we want to let the user say <code>rustup install &lt;args&gt;</code> and have that automatically expanded to <code>rustup toolchain install &lt;args&gt;</code>, replacing &quot;<code>install</code>&quot; with &quot;<code>toolchain install</code>&quot;. The lack of arguments between <code>toolchain</code> and <code>install</code> is not an issue; the alias is, in effect, an alias to the zero argument (before the subcommand) form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-14 02:46</div>
+            <div class="timeline-body"><blockquote>
+<p>the actual code still has to handle the fact that there are two entry points to the functionality</p>
+</blockquote>
+<p>Could you explain why you do not want this?</p>
+<blockquote>
+<p>The advantage of alias over just mounting the same <code>App</code> at two places is being able to handle it in one place and have it automatically apply to the other, aliased location.</p>
+</blockquote>
+<p>You are still writing just one <code>install</code> App. All you are doing is adding 2 lines to your root App.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CAD97">@CAD97</a> on 2020-02-14 02:56</div>
+            <div class="timeline-body"><p>The issue comes after doing <code>get_matches</code>. Once you have done the matching, you need to test to see if <code>subcommand_matches(&quot;install&quot;)</code> and then somehow jump into the middle of your code handling <code>subcommand_matches(&quot;toolchain&quot;)</code> to where it handles <code>subcommand_matches(&quot;install&quot;)</code>.</p>
+<p>The point of having the alias at the <code>App</code> layer is enforcing, at the argument parsing level, that the two are identical functionality, rather than two distinct endpoints that happen to have the same exact syntax.</p>
+<p>Or are you saying that if I use your code, then <code>matches.subcommand_matches(&quot;install&quot;)</code> and <code>mathces.subcommand_matches(&quot;toolchain&quot;).subcommand_matches(&quot;install&quot;)</code> are actually equivalent? We want the processing code to not know (because it doesn't care and <em>shouldn't</em> know) that the alias was used. It <em>should not be possible</em> for the behavior to diverge; that's the exact issue we have with <code>rustup install</code> currently that led to the maintenance team wanting to remove it, because they couldn't just say &quot;treat it as if the user invoked the canonical command, <code>rustup toolchain install</code>&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-14 03:01</div>
+            <div class="timeline-body"><p>My bad, I was thinking of a different architecture for the CLI.</p>
+<p>I was thinking <code>App</code>s have <code>run()</code> and when you get matches, you just iterate over them to get the <code>App</code> and then just <code>run()</code> on it. (clap_derive/structopt makes this even easier).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1697.html">clap-rs/clap#1697</a> on 2020-02-17 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-17 09:23</div>
+            <div class="timeline-body"><p>@CAD97 I have the PR ready, please give it a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-02-21 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2011.html">clap-rs/clap#2011</a> on 2021-10-09 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2836.html">clap-rs/clap#2836</a> on 2021-10-09 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/158.html">epage/clapng#158</a> on 2021-12-06 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-23 20:50</div>
+            <div class="timeline-body"><p>Cross posting from #2836 for greater visibility</p>
+<blockquote>
+<p>Due to the lack of interest on this tracking issue, I'm considering removing this unstable feature.</p>
+<p>Any concerns people want to raise?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @epage on 2024-10-22 18:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add copy fallback for reflink-based linker - astral-sh/uv #1444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add copy fallback for reflink-based linker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1444">#1444</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-16 06:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 06:46</div>
+            <div class="timeline-body"><p>See: https://twitter.com/mpr0010/status/1758299951254388875.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-16 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-02-16 16:55</div>
+            <div class="timeline-body"><p>Same issue here, and it's on a mac.</p>
+<p>I have my python package in case-sensitive volume e.g. <code>/Volumnes/casesensitive</code> and when I try to <code>uv pip install -e '.[dev,testing]'</code>, I get an errors along the lines of</p>
+<pre><code>error: Failed to build editables
+  Caused by: Failed to build editable: file:///Volumes/casesensitive/MyTestPackage
+  Caused by: Failed to install requirements from build-system.requires (install)
+  Caused by: Failed to install build dependencies
+  Caused by: Failed to install: setuptools-69.1.0-py3-none-any.whl (setuptools==69.1.0)
+  Caused by: Failed to reflink /Volumes/casesensitive/uvc/archive-v0/Zgihw_1YQkIZZNdz81Rtf/setuptools-69.1.0.dist-info to /private/var/folders/43/29_b2rv50rj6c9t29s0t5w5whc959c/T/.tmpYrzRHM/.venv/lib/python3.10/site-packages/setuptools-69.1.0.dist-info
+  Caused by: Cross-device link (os error 18)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1513.html">astral-sh/uv#1513</a> on 2024-02-16 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">macos</span> added by @zanieb on 2024-02-16 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 18:53</div>
+            <div class="timeline-body"><p>Thanks! This one should be straightforward to fix. (In the interim, I might suggest setting <code>UV_CACHE_DIR</code> to something in the same volume as your projects, it will also speed up installation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-02-16 19:02</div>
+            <div class="timeline-body"><p>No worries, I'm still testing this out. I had tried <code>UV_CACHE_DIR</code> to be on the same volume as my projects.
+In some attempts it worked, in others it didn't, but when it didn't, it was likely - as can be seen in the earlier logs, there's a <code>/private/var...</code> path that popped up, that I don't think I have control over - that I was trying to force no cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-02-18 00:14</div>
+            <div class="timeline-body"><p>I looked again into it, and tried out with the newer <code>0.1.4</code> version.</p>
+<p>Setting the cache dir to be on the same volume</p>
+<ol>
+<li>Succeeds if I install normally <code>uv pip install MyTestPackage[dev,testing]</code></li>
+<li>Fails if I install in editable mode  <code>uv pip install -e '.[dev,testing]'</code> and the failure shows <code>/private/var/...</code>.</li>
+</ol>
+<p>and verbose output in case it helps</p>
+<pre><code>UV_CACHE_DIR=.uv_cache uv pip install --verbose --reinstall -e '.[sm,dev,testing]'
+ uv::requirements::from_source source=-e .[sm,dev,testing]
+    0.003566s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /Volumes/casesensitive/MyTestPackage/.venv
+    0.004943s DEBUG uv_interpreter::interpreter Using cached markers for: /Volumes/casesensitive/MyTestPackage/.venv/bin/python
+    0.004958s DEBUG uv::commands::pip_install Using Python 3.10.13 environment at /Volumes/casesensitive/MyTestPackage/.venv/bin/python
+ uv_client::flat_index::from_entries
+ uv_installer::downloader::build_editables
+      0.177786s   0ms DEBUG uv_distribution::source Building (editable) file:///Volumes/casesensitive/MyTestPackage
+   uv_dispatch::setup_build package_id=&quot;file:///Volumes/casesensitive/MyTestPackage&quot;, subdirectory=None
+     uv_resolver::resolver::solve
+          0.182888s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.10.13
+       uv_resolver::resolver::choose_version package=root
+       uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+            0.183596s   0ms DEBUG uv_resolver::resolver Adding direct dependency: setuptools*
+       uv_resolver::resolver::choose_version package=setuptools
+         uv_resolver::resolver::package_wait package_name=setuptools
+     uv_resolver::resolver::process_request request=Versions setuptools
+       uv_client::registry_client::simple_api package=setuptools
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Volumes/casesensitive/MyTestPackage/.uv_cache/simple-v1/pypi/setuptools.rkyv
+     uv_resolver::resolver::process_request request=Prefetch setuptools *
+              0.184517s   0ms  WARN uv_client::cached_client Broken cache entry at /Volumes/casesensitive/MyTestPackage/.uv_cache/simple-v1/pypi/setuptools.rkyv, removing: failed to open file `/Volumes/casesensitive/MyTestPackage/.uv_cache/simple-v1/pypi/setuptools.rkyv`
+              0.184975s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/setuptools/
+           uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/setuptools/&quot;
+           uv_client::cached_client::new_cache file=/Volumes/casesensitive/MyTestPackage/.uv_cache/simple-v1/pypi/setuptools.rkyv
+           uv_client::registry_client::parse_simple_api package=setuptools
+ uv_resolver::version_map::from_metadata
+       uv_distribution::distribution_database::get_or_build_wheel_metadata dist=setuptools==69.1.0
+         uv_client::registry_client::wheel_metadata built_dist=setuptools==69.1.0
+           uv_client::cached_client::get_serde
+             uv_client::cached_client::get_cacheable
+               uv_client::cached_client::read_and_parse_cache file=/Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.msgpack
+            0.326924s 143ms DEBUG uv_resolver::resolver Searching for a compatible version of setuptools (*)
+            0.326935s 143ms DEBUG uv_resolver::resolver Selecting: setuptools==69.1.0 (setuptools-69.1.0-py3-none-any.whl)
+       uv_resolver::resolver::get_dependencies package=setuptools, version=69.1.0
+         uv_resolver::resolver::distributions_wait package_id=setuptools-69.1.0
+                  0.327113s   0ms  WARN uv_client::cached_client Broken cache entry at /Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.msgpack, removing: failed to open file `/Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.msgpack`
+                  0.327154s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/bb/0a/203797141ec9727344c7649f6d5f6cf71b89a6c28f8f55d4f18de7a1d352/setuptools-69.1.0-py3-none-any.whl
+               uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/bb/0a/203797141ec9727344c7649f6d5f6cf71b89a6c28f8f55d4f18de7a1d352/setuptools-69.1.0-py3-none-any.whl&quot;
+               uv_client::cached_client::new_cache file=/Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.msgpack
+               uv_client::registry_client::read_metadata_range_request wheel=setuptools-69.1.0-py3-none-any.whl
+     uv_dispatch::install resolution=&quot;setuptools==69.1.0&quot;, venv=&quot;/private/var/folders/43/29_b2rv50rj6c9t29s0t5w5whc959c/T/.tmpNfA2Od/.venv&quot;
+          0.634726s   0ms DEBUG uv_dispatch Installing in setuptools==69.1.0 in /private/var/folders/43/29_b2rv50rj6c9t29s0t5w5whc959c/T/.tmpNfA2Od/.venv
+          0.635592s   0ms DEBUG uv_installer::plan Identified uncached requirement: setuptools ==69.1.0
+          0.635645s   0ms DEBUG uv_dispatch Downloading and building requirement for build: setuptools==69.1.0
+       uv_installer::downloader::download total=1
+         uv_installer::downloader::get_wheel name=setuptools==69.1.0, size=Some(819310), url=&quot;https://files.pythonhosted.org/packages/bb/0a/203797141ec9727344c7649f6d5f6cf71b89a6c28f8f55d4f18de7a1d352/setuptools-69.1.0-py3-none-any.whl&quot;
+           uv_distribution::distribution_database::get_or_build_wheel dist=Built(Registry(RegistryBuiltDist { filename: WheelFilename { name: PackageName(&quot;setuptools&quot;), version: &quot;69.1.0&quot;, python_tag: [&quot;py3&quot;], abi_tag: [&quot;none&quot;], platform_tag: [&quot;any&quot;] }, file: File { dist_info_metadata: None, filename: &quot;setuptools-69.1.0-py3-none-any.whl&quot;, hashes: Hashes { md5: None, sha256: Some(&quot;c054629b81b946d63a9c6e732bc8b2513a7c3ea645f11d0139a2191d735c60c6&quot;) }, requires_python: Some(VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.8&quot; }])), size: Some(819310), upload_time_utc_ms: Some(1707700511837), url: AbsoluteUrl(&quot;https://files.pythonhosted.org/packages/bb/0a/203797141ec9727344c7649f6d5f6cf71b89a6c28f8f55d4f18de7a1d352/setuptools-69.1.0-py3-none-any.whl&quot;), yanked: Some(Bool(false)) }, index: Pypi }))
+             uv_client::cached_client::get_serde
+               uv_client::cached_client::get_cacheable
+                 uv_client::cached_client::read_and_parse_cache file=/Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.http
+                    0.635820s   0ms  WARN uv_client::cached_client Broken cache entry at /Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.http, removing: failed to open file `/Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.http`
+                    0.635848s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/bb/0a/203797141ec9727344c7649f6d5f6cf71b89a6c28f8f55d4f18de7a1d352/setuptools-69.1.0-py3-none-any.whl
+                 uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/bb/0a/203797141ec9727344c7649f6d5f6cf71b89a6c28f8f55d4f18de7a1d352/setuptools-69.1.0-py3-none-any.whl&quot;
+                 uv_client::cached_client::new_cache file=/Volumes/casesensitive/MyTestPackage/.uv_cache/wheels-v0/pypi/setuptools/setuptools-69.1.0-py3-none-any.http
+                 uv_distribution::distribution_database::download wheel=setuptools==69.1.0
+          0.770841s 136ms DEBUG uv_dispatch Installing build requirement: setuptools==69.1.0
+       uv_installer::installer::install num_wheels=1
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///Volumes/casesensitive/MyTestPackage
+  Caused by: Failed to install requirements from build-system.requires (install)
+  Caused by: Failed to install build dependencies
+  Caused by: Failed to install: setuptools-69.1.0-py3-none-any.whl (setuptools==69.1.0)
+  Caused by: Failed to reflink /Volumes/casesensitive/MyTestPackage/.uv_cache/archive-v0/Ha3UGLq7qAPgqh6uXovPQ/setuptools-69.1.0.dist-info to /private/var/folders/43/29_b2rv50rj6c9t29s0t5w5whc959c/T/.tmpNfA2Od/.venv/lib/python3.10/site-packages/setuptools-69.1.0.dist-info
+  Caused by: Cross-device link (os error 18)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-18 00:18</div>
+            <div class="timeline-body"><p>And in (2), it fails with the cross-device link error seen above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-02-18 00:29</div>
+            <div class="timeline-body"><p>Yes. I edited the message to add more verbose output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 07:29</div>
+            <div class="timeline-body"><p>Hm so in <code>pip install</code> we create a temporary directory in the current virtual environment</p>
+<p>https://github.com/astral-sh/uv/blob/b5617198f35c89a33f073c677ed9164bb661509c/crates/uv/src/commands/pip_install.rs#L188</p>
+<p>https://github.com/astral-sh/uv/blob/b5617198f35c89a33f073c677ed9164bb661509c/crates/uv/src/commands/pip_install.rs#L360</p>
+<p>but eventually we get to</p>
+<p>https://github.com/astral-sh/uv/blob/12fea1d058083a4f8a032ca8295a7d95a776292e/crates/uv-build/src/lib.rs#L286</p>
+<p>via</p>
+<p>https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-dispatch/src/lib.rs#L274</p>
+<p>https://github.com/astral-sh/uv/blob/340cb67a8b2a708996bd87369d2cadf48ef9df63/crates/uv-distribution/src/source/mod.rs#L954</p>
+<p>where we create a temporary directory to actually perform the build but it is not scoped to the current virtual environment or our cache (hence your issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1628.html">astral-sh/uv#1628</a> on 2024-02-18 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-02-19 10:56</div>
+            <div class="timeline-body"><p>I've just tried the <code>0.1.5</code> release and it finally works :)</p>
+<p>I haven't said it earlier in my comments here, and on other issues, but I have to say it, <strong>Thank you for your awesome work... this is great ⚡ 🚀</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ifplusor">@ifplusor</a> on 2024-02-19 11:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I've just tried the <code>0.1.5</code> release and it finally works :)</p>
+<p>I haven't said it earlier in my comments here, and on other issues, but I have to say it now, Thank you for your awesome work... this is great ⚡ 🚀</p>
+</blockquote>
+<p>I run <code>uv</code> in an additional APFS (Case-sensitive) volume, but it does not work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:36</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>@ifplusor we still need to add a fallback copy as described in this issue, but until then you should be able to set <code>UV_CACHE_DIR</code> to avoid copying across volumes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @zanieb on 2024-02-19 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1773.html">astral-sh/uv#1773</a> on 2024-02-20 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 05:01</div>
+            <div class="timeline-body"><p>Should be fixed in v0.1.7 (out now).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:21 UTC
+    </footer>
+</body>
+</html>

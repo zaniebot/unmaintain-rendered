@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow creating a `python` shim on `python install` - astral-sh/uv #6265</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow creating a `python` shim on `python install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6265">#6265</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-20 18:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 18:44</div>
+            <div class="timeline-body"><p>When installing Python, I should be able to opt-in to adding a <code>python</code> shim to my PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-20 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5229.html">astral-sh/uv#5229</a> on 2024-08-21 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ophiry">@ophiry</a> on 2024-08-23 09:22</div>
+            <div class="timeline-body"><p>not sure this was the original intention, but if the shim will work the same as uv run (in terms of environment resolution) it would be very useful</p>
+<p>this will allow simpler integration with IDEs</p>
+<p>(instead of explicitly providing a venv, they could be pointed to the uv shim that will do the environment resolution)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tux-type">@tux-type</a> on 2024-08-25 09:35</div>
+            <div class="timeline-body"><p>This would be very useful, and is also what is missing in uv compared to pyenv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6598.html">astral-sh/uv#6598</a> on 2024-08-25 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 16:42</div>
+            <div class="timeline-body"><p>Please just 👍 the original post if you want this. If you have commentary on the implementation or behavior of the shim, that's totally welcome but let's keep the noise down for those subscribing to updates.</p>
+<blockquote>
+<p>not sure this was the original intention, but if the shim will work the same as uv run (in terms of environment resolution) it would be very useful</p>
+</blockquote>
+<p>We don't think we can do this by <em>default</em> because people have specific expectations about <code>python</code> behavior but I think an opt-in mode makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pietrodn">@pietrodn</a> on 2024-09-08 11:31</div>
+            <div class="timeline-body"><p>This would be a great improvement for the entire Python ecosystem user-friendliness. Currently we manage Python projects like this where I work:</p>
+<ol>
+<li>Install <code>pyenv</code>.</li>
+<li>Install Python versions from source, <em>compiling</em> them (this is a huge pain especially for nontechnical users which get stuck with environment issues and compilation errors).</li>
+<li>Use Poetry which automatically detects the correct Python version from the constraint in <code>pyproject.toml</code>.</li>
+</ol>
+<p>Having <code>uv</code> install <em>binary</em> version of Python with pyenv-style shims would allow us to entirely drop pyenv and remove the burden of compiling Python from the users... even if we don't switch to uv for package management. 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7377.html">astral-sh/uv#7377</a> on 2024-09-14 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tats-u">@tats-u</a> on 2024-09-23 12:34</div>
+            <div class="timeline-body"><p>I want to migrate from rye to uv, but the migration is blocked by this issue.
+This feature is especially wanted by Windows users because Windows doesn't bundle Python.
+If you run <code>python</code> command without a global Python, an annoying Microsoft Store window is launched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pietrodn">@pietrodn</a> on 2024-09-23 12:57</div>
+            <div class="timeline-body"><p>I am currently using this workaround to expose uv's Pythons to my shell's <code>PATH</code>:</p>
+<pre><code class="language-shell">for dir in $(uv python dir)/*/bin; do PYTHON_PATHS=&quot;$dir:$PYTHON_PATHS&quot;; done
+export PATH=&quot;$PYTHON_PATHS:$PATH&quot;
+</code></pre>
+<p>The problem is that there are multiple <code>python3.10</code>, <code>python3.11</code>, ... executables, only one version for each minor would be exposed. But I typically pick only one version for each Python minor version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivienm">@vivienm</a> on 2024-09-23 13:42</div>
+            <div class="timeline-body"><p>As a workaround, I wrote the following script <code>python3.x</code>:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_NAME=&quot;$(basename &quot;${BASH_SOURCE[0]}&quot;)&quot;
+
+if [[ &quot;${SCRIPT_NAME}&quot; =~ ^python3\.[0-9]+$ ]]; then
+  PYTHON_VERSION=&quot;${SCRIPT_NAME#python}&quot;
+else
+  2&gt;&amp;1 echo &quot;Error: Invalid script name: ${SCRIPT_NAME}&quot;
+  exit 1
+fi
+
+exec uv run --no-project --python &quot;${PYTHON_VERSION}&quot; --python-preference only-managed --no-config python &quot;$@&quot;
+</code></pre>
+<p>And I have symlinks <code>python3.x</code> pointing to this script:</p>
+<pre><code>~/.local/bin/python3.8  -&gt; ~/.local/share/python3.x
+~/.local/bin/python3.9  -&gt; ~/.local/share/python3.x
+~/.local/bin/python3.10 -&gt; ~/.local/share/python3.x
+~/.local/bin/python3.11 -&gt; ~/.local/share/python3.x
+~/.local/bin/python3.12 -&gt; ~/.local/share/python3.x
+</code></pre>
+<p>It's not great, but it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7710.html">astral-sh/uv#7710</a> on 2024-09-26 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8534.html">astral-sh/uv#8534</a> on 2024-10-24 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chaush-server">@chaush-server</a> on 2024-10-31 11:02</div>
+            <div class="timeline-body"><p>My like was 101, so this feature is in high demand. How can we communicate this to developers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garyj">@garyj</a> on 2024-10-31 11:08</div>
+            <div class="timeline-body"><p>Checkout #8458 - the functionality is nearly there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-31 13:30</div>
+            <div class="timeline-body"><p>We agree this is important, we're working on it. There's also a prototype at #7677.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 01:01</div>
+            <div class="timeline-body"><p>Note that there's a version of this available in preview mode (i.e. <code>uv python install --preview</code>) via #8458 and there's ongoing work in #8650</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/weihenglim">@weihenglim</a> on 2024-11-07 02:08</div>
+            <div class="timeline-body"><p>Are there any plans to add <a href="https://peps.python.org/pep-0514/">PEP 514</a> support so that the Python executables are discoverable by the Windows <code>py</code> launcher?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 03:14</div>
+            <div class="timeline-body"><p>@weihenglim yes there are plans for that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9090.html">astral-sh/uv#9090</a> on 2024-11-13 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9380.html">astral-sh/uv#9380</a> on 2024-11-23 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zanieb/uv/issues/6.html">zanieb/uv#6</a> on 2024-11-26 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9452.html">astral-sh/uv#9452</a> on 2024-11-26 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/feoh">@feoh</a> on 2024-12-16 19:38</div>
+            <div class="timeline-body"><p>This is so great!</p>
+<p>I have use cases that make needing to type uv run every time I want something to use the uv installed Python problematic.</p>
+<p>Putting a 'python' executable in $HOME/.local/bin works perfectly for my use cases. Super appreciate the hard work!</p>
+<p>(In particular we use poetry for managing our python runtime environments and I couldn't get that working with uv run but it works great with the python installed using --preview --default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10015.html">astral-sh/uv#10015</a> on 2024-12-19 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/postylem">@postylem</a> on 2025-02-26 15:36</div>
+            <div class="timeline-body"><blockquote>
+<p>We agree this is important, we're working on it. There's also a prototype at <a href="https://github.com/astral-sh/uv/pull/7677">#7677</a>.</p>
+</blockquote>
+<p>I'm happy to see this is underway!</p>
+<p>In the meantime, is there a reason why a simple alias would be a bad idea?</p>
+<pre><code class="language-zsh">echo 'alias python=&quot;uv run python&quot;'  &gt;&gt; ~/.zshrc
+</code></pre>
+<p>I don't have a system python installation, I'll just use uv to manage it, like I did with <code>pyenv global</code> before switching to uv and uninstalling pyenv.</p>
+<p>EDIT:</p>
+<p>I think what I want would be better solved by doing e.g.</p>
+<pre><code class="language-zsh">uv python install 3.12 --preview --default
+</code></pre>
+<p>which installs the executables in my .local/bin directory</p>
+<pre><code>~/.local/bin/
+├── python -&gt; ~/.local/share/uv/python/...bin/python3.12
+├── python3 -&gt; ~/.local/share/uv/python/.../bin/python3.12
+└── python3.12 -&gt; ~/.local/share/uv/python/.../bin/python3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 16:09</div>
+            <div class="timeline-body"><p>Yeah aliases are tricky because they require a shell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thanksshu">@thanksshu</a> on 2025-02-28 08:29</div>
+            <div class="timeline-body"><blockquote>
+<p>not sure this was the original intention, but if the shim will work the same as uv run (in terms of environment resolution) it would be very useful</p>
+<p>this will allow simpler integration with IDEs</p>
+<p>(instead of explicitly providing a venv, they could be pointed to the uv shim that will do the environment resolution)</p>
+</blockquote>
+<p>I'm not a heavy user, but shims like rye as mentioned above may indeed benefit me. Here's my use case: I have some projects using pyo3 with rust-analyser in vscode. Now using uv, I have to try to reset the global python or start virtualenv manually every time I switch projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auxym">@auxym</a> on 2025-02-28 15:25</div>
+            <div class="timeline-body"><p>I'd certainly like this feature! Would it be possible to install packages in this python install?</p>
+<p>I often use interactive python sessions, or one-off scripts, where spinning up a new throw-away venv is a bit annoying. It's convenient to have a &quot;general purpose&quot; python install with a few packages for use cases like this. If it ever gets broken for whatever reason you throw it away and start a new one.</p>
+<p>I assume it might not be possible since it wouldn't be linked to a venv, but I wanted to throw this use case out there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Winand">@Winand</a> on 2025-02-28 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I often use interactive python sessions, or one-off scripts, where spinning up a new throw-away venv is a bit annoying. It's convenient to have a &quot;general purpose&quot; python install with a few packages for use cases like this.</p>
+</blockquote>
+<p>@auxym have you tried something like <code>uv tool run --with pandas ptpython</code> ? it creates a temporary venv with specified packages installed and start an interactive session in ptpython. Or you just don't want venv to be created each time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-28 16:22</div>
+            <div class="timeline-body"><p>👍 <code>uvx --with ... python</code> is the recommendation for that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clement-tourriere">@clement-tourriere</a> on 2025-03-03 09:48</div>
+            <div class="timeline-body"><p>I was also a huge fan of the automatic shims with <code>rye</code> and being able to perform only a <code>python</code> in a project was great.
+You can achieve almost the same with something like <a href="https://mise.jdx.dev/">mise</a> and with the following <code>mise.toml</code> file in your project:</p>
+<pre><code>[env]
+_.python.venv = &quot;.venv&quot; # relative to this file's directory
+</code></pre>
+<p>For global tools, like others said, I go with <code>uvx --with ...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auxym">@auxym</a> on 2025-03-03 12:38</div>
+            <div class="timeline-body"><blockquote>
+<p>👍 <code>uvx --with ... python</code> is the recommendation for that</p>
+</blockquote>
+<p>To be perfectly clear, it's perfectly fine if uv doesn't support my use case.  I understand it might not really fit with the philosophy.</p>
+<p>But just for further explanation, <code>uvx --with</code> wouldn't really work for me. First, if I need, say, <code>matplotlib pandas numpy jupyter ipympl nptdms</code>, it's a bit of a hassle to type all that. Second, if I start an interactive ipython session or jupyter, then halfway through realize that I forgot <code>scipy</code>, I have to kill everything and start it back up with scipy. In a normal venv, I can just uv add or pip install scipy then import it without having to restart any process.</p>
+<p>I'll probably just keep doing what I'm doing, which is a venv in .local which is added to my path.</p>
+<p>But typing all this out... I might consider adding a shell alias that expands to <code>uvx --with ...</code> for all the packages I commonly use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12147.html">astral-sh/uv#12147</a> on 2025-03-14 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xM8WVqaG">@xM8WVqaG</a> on 2025-03-24 21:41</div>
+            <div class="timeline-body"><p>Is the intention to also install a <code>pip</code> shim as well? The current preview only creates a symlink for <code>python</code>.</p>
+<pre><code class="language-console">$ uv --version
+uv 0.6.9
+$ uv python install 3.12 --default --preview                                
+Installed Python 3.12.9 in 6ms
+ + cpython-3.12.9-linux-x86_64-gnu (python, python3, python3.12)
+$ ls -1 ~/.local/bin | grep -E (pip|python)
+python
+python3
+python3.12
+</code></pre>
+<p>I appreciate the intended workflow for projects is to use <code>venvs</code> where possible, but when using <code>uv</code> to install a &quot;global&quot; Python with no system Python it can be handy to be able to install things like <code>yt-dlp</code> or personal Python programs and have them always be just readily available in interactive shells and scripts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbeijen">@mbeijen</a> on 2025-03-24 21:47</div>
+            <div class="timeline-body"><p>Therefore you can use <code>uv tool install yt-dlp</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12263.html">astral-sh/uv#12263</a> on 2025-03-28 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fduxiao">@fduxiao</a> on 2025-05-06 20:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the intention to also install a <code>pip</code> shim as well? The current preview only creates a symlink for <code>python</code>.</p>
+<p>$ uv --version
+uv 0.6.9
+$ uv python install 3.12 --default --preview<br />
+Installed Python 3.12.9 in 6ms</p>
+<ul>
+<li>cpython-3.12.9-linux-x86_64-gnu (python, python3, python3.12)
+$ ls -1 ~/.local/bin | grep -E (pip|python)
+python
+python3
+python3.12
+I appreciate the intended workflow for projects is to use <code>venvs</code> where possible, but when using <code>uv</code> to install a &quot;global&quot; Python with no system Python it can be handy to be able to install things like <code>yt-dlp</code> or personal Python programs and have them always be just readily available in interactive shells and scripts.</li>
+</ul>
+</blockquote>
+<p>My case is that besides those python projects, I also have a lot of build scripts, crawlers, automation scripts scattering everywhere. They are all very simple and can be written in one file, and they all share the same dependencies like <code>numpy</code> or <code>requests</code>. Before the 3.11 version of python, I could just install dependencies using <code>pip</code>. After that, the system-wide python packages are managed by system package managers like <code>apt</code> or <code>brew</code>. So, if a dependency is not shipped with <code>apt</code> or <code>brew</code>, I have to turn to a virtual environment.</p>
+<p>Because they belongs to non-python projects, e.g. build scripts, I don't want to put them in some <code>uv</code> project. They all share the same dependencies, so I don't want to prepare a virtual environment for each of them due to the unnecessary usage of disk spaces. (The size of <code>numpy</code> is around 50M, which is even larger than the data I want to manipulate for most of the cases.)</p>
+<p>My solution is to make a <code>global</code> virtual environment by activating it at <code>.zshrc</code>. This method is certainly not good because when I activate another virtual environment and deactivate it, I will also deactivate the global one, and <code>uv</code> also complains about that if I forget to deactivate the global environment.</p>
+<p>Previously, I was using <code>pyenv</code> to create <code>python shims</code>, with <code>pip</code> working as before. So, I can manage <code>system-wide</code> python packages by <code>pip</code>. But I also had to install <code>poetry</code> or <code>pipx</code> for project management  and python-shipped tools. Besides, <code>pyenv</code> sticks to compiling from source when installing a <code>python</code>, which I think is unnecessary. (This is why I also don't want to compile and install python manually from source.)</p>
+<p>In a word, there does exist the need to maintain a <code>global</code> or <code>system-wide</code> python environment (e.g., <code>conda</code> is something like this). I really hope you can think of adding <code>pip</code> to shim and it is then the user's responsibility to resolve correct versions or create virtual environments.</p>
+<p>The case for <code>cargo</code> or <code>npm</code> is different, because the outcome of such a project is something other than source code. For example, <code>cargo</code> makes an executable binary/shared-object that doesn't rely on the dependencies of source code. Thus, we don't need a <code>global</code> environment for them, which is not the case for <code>python</code> as we run a python script (source code) mostly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leejoramo-d51">@leejoramo-d51</a> on 2025-05-06 22:29</div>
+            <div class="timeline-body"><p>@fduxiao</p>
+<blockquote>
+<p>My case is that besides those python projects, I also have a lot of build scripts, crawlers, automation scripts scattering everywhere.</p>
+</blockquote>
+<p>This is major use case for me too. Using python for utilities, shell scripts and other CLI tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auxym">@auxym</a> on 2025-05-07 21:47</div>
+            <div class="timeline-body"><p>@fduxiao</p>
+<p>That's similar to the use case I describe in my previous comments, I believe. What currently do, and works well for me, is a &quot;default&quot; venv similar to what you describe, managed by uv, in my <code>$HOME/.local</code> dir. However, I don't activate it with the normal activate scripts, I just add its <code>bin</code> dir to my <code>PATH</code> in my shell init file. Packages in that venv are easily managed with <code>uv pip ...</code>. You can activate other venvs that override your &quot;default&quot; as you normally would with a &quot;system&quot; python install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-23 18:18</div>
+            <div class="timeline-body"><p>Is there a way to undo <code>--preview</code> or <code>--default</code> without completely reinstalling Python or just removing them from <code>.local/bin</code> should do and <code>uv</code> doesn't use preview and default python instances anywhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15867.html">astral-sh/uv#15867</a> on 2025-09-15 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TurtleOrangina">@TurtleOrangina</a> on 2025-12-28 09:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Because they belongs to non-python projects, e.g. build scripts, I don't want to put them in some <code>uv</code> project. They all share the same dependencies, so I don't want to prepare a virtual environment for each of them due to the unnecessary usage of disk spaces. (The size of <code>numpy</code> is around 50M, which is even larger than the data I want to manipulate for most of the cases.)</p>
+<p>My solution is to make a <code>global</code> virtual environment by activating it at <code>.zshrc</code>. This method is certainly not good because when I activate another virtual environment and deactivate it, I will also deactivate the global one, and <code>uv</code> also complains about that if I forget to deactivate the global environment.</p>
+</blockquote>
+<p>I think there is a better way to solve this.</p>
+<ul>
+<li>Use uv for all your python scripts. You can use the &quot;inline syntax&quot; for dependency definitions to avoid creating a separate folder and a separate pyproject.toml file for each script: E.g. with these commands: <code>uv init --script example.py</code> and <code>uv add --script example.py numpy</code> and <code>uv run example.py</code></li>
+<li>When you run such a script uv will create a temporary virtual environment that is immediately removed after the script execution ends - uv is so fast that it can do that without slowing down noticably. It uses caching aggressively to make this work, and disk space utilization is minimal.</li>
+<li>Even when you use the &quot;full blown&quot; approach with a separate folder and a <code>pyproject.toml</code> file, the .venv directories use hard linking on Unix operating systems so the used disk storage will also not multiply if you have the same dependencies in multiple places, i think.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

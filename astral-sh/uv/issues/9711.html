@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking issue: package without source distribution gets an &quot;incomplete&quot; resolution - astral-sh/uv #9711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tracking issue: package without source distribution gets an &quot;incomplete&quot; resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9711">#9711</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-07 20:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 20:46</div>
+            <div class="timeline-body"><p>Using TensorFlow as an example: if you lock against the CPU index, we choose <code>2.5.2+cpu</code>. However, <code>2.5.2+cpu</code> doesn't have any macOS wheels. So the resulting resolution doesn't work on macOS at all -- you get something like:</p>
+<pre><code>error: distribution torch==2.5.2+cpu @ registry+https://download.pytorch.org/whl/cpu can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>(If a package-version doesn't have <em>any</em> compatible wheels for the Python requirement, then we skip it; but as long as it has at least one compatible wheel, we &quot;accept&quot; it for all Python versions and platforms.)</p>
+<p>As a second example: for <code>markupsafe==3.0.2</code>, if you use the PyTorch CPU index, they <em>only</em> ship <code>MarkupSafe-3.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl</code>. So we might pick that version, but then we'd be lacking wheels for anything other than Python 3.13 on Linux.</p>
+<p>Solving this is quite difficult, but as evidenced by the linked issues, it's a common problem.</p>
+<p>A solution might involve something like: determine the set of Python versions and platforms (coarsely-defined: Linux, macOS, Windows) covered by the wheels. If some Python versions or platforms aren't satisfied, we have to fork and look for older / other versions.</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/9647</li>
+<li>https://github.com/astral-sh/uv/issues/5182</li>
+<li>https://github.com/astral-sh/uv/issues/7557</li>
+<li>https://github.com/astral-sh/uv/issues/7005</li>
+<li>https://github.com/astral-sh/uv/issues/8536</li>
+<li>https://github.com/astral-sh/uv/issues/8603</li>
+<li>https://github.com/astral-sh/uv/issues/9228</li>
+<li>https://github.com/astral-sh/uv/issues/9988</li>
+<li>https://github.com/astral-sh/uv/issues/9963</li>
+<li>https://github.com/astral-sh/uv/issues/9646</li>
+<li>https://github.com/astral-sh/uv/issues/10059</li>
+<li>https://github.com/astral-sh/uv/issues/10056</li>
+<li>https://github.com/astral-sh/uv/issues/10849</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-12-07 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9840.html">astral-sh/uv#9840</a> on 2024-12-12 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9865.html">astral-sh/uv#9865</a> on 2024-12-13 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-15 03:10</div>
+            <div class="timeline-body"><p>One hard thing here is that it requires us to define a set of &quot;required&quot; environments... Like, if we don't see any macOS wheels, then we need to look for a different version of the package that <em>does</em> have macOS wheels. But do we need to find both macOS ARM and x86 wheels? Or is one of the two sufficient?</p>
+<p>(In the case of PyTorch, if we require x86 wheels, we'll always fail!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-15 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-15 03:12</div>
+            <div class="timeline-body"><p>For example, we could say:</p>
+<ul>
+<li>We need a wheel for each supported Python version...</li>
+<li>For each platform...</li>
+</ul>
+<p>But ignore architecture? (This would be a heuristic, but so would anything.)</p>
+<p>Even that first condition seems a little tricky, since we don't know what the &quot;max&quot; Python version is. So maybe we'd do like: look at the latest supported version (in the wheels), and then make sure there are wheels for all prior versions? Or we just ignore Python version entirely and focus on on platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9907.html">astral-sh/uv#9907</a> on 2024-12-15 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9928.html">astral-sh/uv#9928</a> on 2024-12-16 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> removed by @charliermarsh on 2024-12-16 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-16 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9961.html">astral-sh/uv#9961</a> on 2024-12-17 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9963.html">astral-sh/uv#9963</a> on 2024-12-17 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-18 13:38</div>
+            <div class="timeline-body"><p>I've tried to categorize the linked issues:</p>
+<p><strong>old mac torch</strong> <a href="https://github.com/astral-sh/uv/issues/9988">https://github.com/astral-sh/uv/issues/9988</a> <a href="https://github.com/astral-sh/uv/issues/7557">https://github.com/astral-sh/uv/issues/7557</a> <a href="https://github.com/astral-sh/uv/issues/8536">https://github.com/astral-sh/uv/issues/8536</a> <a href="https://github.com/astral-sh/uv/issues/9228">https://github.com/astral-sh/uv/issues/9228</a></p>
+<blockquote>
+<p>The expectation here is that the resolver should pick PyTorch version 2.2.2 for Intel MacOS, and a different version (e.g., 2.5.1) for other platforms. However, the current behavior enforces a single version (2.2.2) across all platforms.</p>
+</blockquote>
+<p>Similarly, <strong>odrive</strong> <a href="https://github.com/astral-sh/uv/issues/8536">https://github.com/astral-sh/uv/issues/8536</a>, where a user would like older mac os support. <a href="https://github.com/astral-sh/uv/issues/8536#issuecomment-2436213562">https://github.com/astral-sh/uv/issues/8536#issuecomment-2436213562</a> is a syntax for solving this, but there's no clear connection between the toml and the problem/solution. For solving this overall, there are two possible intents: I want a separate resolution for <code>platform_system == 'Darwin' and platform_release &lt;= '20.6.0'</code>, and i want (ideally) one resolution that has wheels that support <code>platform_system == 'Darwin' and platform_release &lt;= '20.6.0'</code>.</p>
+<p>https://github.com/astral-sh/uv/issues/8536#issuecomment-2436213562</p>
+<p><strong>torch_scatter</strong> <a href="https://github.com/astral-sh/uv/issues/9646">https://github.com/astral-sh/uv/issues/9646</a></p>
+<p>From https://data.pyg.org/whl/torch-2.5.1+cpu.html:</p>
+<pre><code>torch_scatter-2.1.2+pt25cpu-cp310-cp310-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp310-cp310-win_amd64.whl
+torch_scatter-2.1.2+pt25cpu-cp311-cp311-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp311-cp311-win_amd64.whl
+torch_scatter-2.1.2+pt25cpu-cp312-cp312-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp312-cp312-win_amd64.whl
+torch_scatter-2.1.2+pt25cpu-cp39-cp39-linux_x86_64.whl
+torch_scatter-2.1.2+pt25cpu-cp39-cp39-win_amd64.whl
+torch_scatter-2.1.2-cp310-cp310-macosx_10_9_universal2.whl
+torch_scatter-2.1.2-cp311-cp311-macosx_10_9_universal2.whl
+torch_scatter-2.1.2-cp312-cp312-macosx_10_13_universal2.whl
+torch_scatter-2.1.2-cp39-cp39-macosx_10_9_universal2.whl
+</code></pre>
+<p><strong>torch</strong> <a href="https://github.com/astral-sh/uv/issues/5182">https://github.com/astral-sh/uv/issues/5182</a></p>
+<p>Similar to <code>torch_scatter</code>, except that the wheel tags overlap. Python 3.10 only for simplicity:</p>
+<pre><code>torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cpu-cp310-cp310-win_amd64.whl
+torch-2.3.1+cpu.cxx11.abi-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cu118-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cu118-cp310-cp310-win_amd64.whl
+torch-2.3.1+cu121-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+cu121-cp310-cp310-win_amd64.whl
+torch-2.3.1+rocm5.7-cp310-cp310-linux_x86_64.whl
+torch-2.3.1+rocm6.0-cp310-cp310-linux_x86_64.whl
+torch-2.3.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+torch-2.3.1-cp310-none-macosx_11_0_arm64.whl
+</code></pre>
+<p><strong>pyqt5</strong> <a href="https://github.com/astral-sh/uv/issues/7005">https://github.com/astral-sh/uv/issues/7005</a> <a href="https://github.com/astral-sh/uv/issues/8603">https://github.com/astral-sh/uv/issues/8603</a></p>
+<blockquote>
+<p>I did some digging and found that pyqt5 depends on a package called pyqt5-qt5 which does not support Windows in versions 5.15.11 - 5.15.14, but does support Windows in 5.15.2.</p>
+</blockquote>
+<p>5.15.2 has all binaries except arm mac, which only exist on more recent releases.</p>
+<p><strong>markupsafe</strong> <a href="https://github.com/astral-sh/uv/issues/9647">https://github.com/astral-sh/uv/issues/9647</a></p>
+<p>The torch index' mirroring is incomplete, <a href="https://pypi.org/project/MarkupSafe/#files">https://pypi.org/project/MarkupSafe/#files</a> has all versions and a source distribution while  <a href="https://download.pytorch.org/whl/markupsafe/">https://download.pytorch.org/whl/markupsafe/</a> does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 14:11</div>
+            <div class="timeline-body"><p>I care (by far) the most about solving the <code>torch</code> and <code>torch_scatter</code> issues, since they're the most popular by far.</p>
+<p>The <code>markupsafe</code> issue I feel less strongly about... Even the current PR doesn't really solve it, since it doesn't add <em>other</em> Linux wheels beyond the one that's on the PyTorch index.</p>
+<p>The <code>odrive</code> and &quot;old&quot; <code>torch</code> issue I also feel less strongly about. It'd be nice to have better error messages for this... But I think it's probably &quot;correct&quot; to require some user intervention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 14:11</div>
+            <div class="timeline-body"><p>The idea that @konstin and I are discussing is to only apply this for local versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 14:12</div>
+            <div class="timeline-body"><p>Sorry, the other example to mention here is https://github.com/astral-sh/uv/pull/9928#issuecomment-2549404134. Our current <code>transformers[all]</code> resolution is subtly &quot;wrong&quot; because it chooses a <code>tensorflow-text</code> version that doesn't have any Windows wheels. With forking, we select an older version for the entire Windows subtree (not just for <code>tensorflow-text</code>, but for <code>tensorflow</code> too, since they're coupled). It's not clear if that's desirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9988.html">astral-sh/uv#9988</a> on 2024-12-18 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10059.html">astral-sh/uv#10059</a> on 2024-12-20 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10056.html">astral-sh/uv#10056</a> on 2024-12-20 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-20 19:16</div>
+            <div class="timeline-body"><p>We shipped https://github.com/astral-sh/uv/pull/10046 which fixes this for PyTorch and packages in the PyTorch ecosystem (i.e., it's limited to inspecting local versions vs. base versions).</p>
+<p>We may return to this to make it more general in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10067.html">astral-sh/uv#10067</a> on 2024-12-21 04:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10085.html">astral-sh/uv#10085</a> on 2024-12-21 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10849.html">astral-sh/uv#10849</a> on 2025-01-22 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../google/magika/issues/922.html">google/magika#922</a> on 2025-01-24 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../google/magika/issues/928.html">google/magika#928</a> on 2025-01-24 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9412.html">astral-sh/uv#9412</a> on 2025-02-28 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11855.html">astral-sh/uv#11855</a> on 2025-02-28 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2025-03-20 11:43</div>
+            <div class="timeline-body"><p>@charliermarsh, ad https://github.com/astral-sh/uv/issues/9711#issuecomment-2557584106: this is also an issue with <a href="https://pypi.org/project/spacy/#files">spaCy</a>, another big data science distribution package/ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-20 13:35</div>
+            <div class="timeline-body"><p>@sanmai-NL We shipped <a href="https://docs.astral.sh/uv/reference/settings/#required-environments">required environments</a>, do those work for your use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2025-03-20 18:44</div>
+            <div class="timeline-body"><p>@konstin Not sure. Problem is there's no binary wheel for one of our supported platforms (aarch64 Linux) either. In that case, we want <code>no-build</code> to turn <code>false</code> and spaCy to be built from source. We now have to do a lot of trickery to do that out-of-band and get <code>uv</code> to live with that (and not try to resolve the spaCy dependency upon about every <code>uv</code> invocation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../napari/napari/pulls/7744.html">napari/napari#7744</a> on 2025-03-25 20:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for multi-line tables in `pyproject.toml` - astral-sh/ruff #961</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for multi-line tables in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/961">#961</a>
+        opened by <a href="https://github.com/patrick91">@patrick91</a>
+        on 2022-11-29 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patrick91">@patrick91</a> on 2022-11-29 12:56</div>
+            <div class="timeline-body"><p>I do have a few per-file ignores in my project[1]. Do you think it is possible to add support for multi-line tables?</p>
+<p>This works:</p>
+<pre><code>[tool.ruff]
+line-length = 89
+per-file-ignores = {&quot;tests/federation/printer/*&quot; = [&quot;E501&quot;], &quot;tests/test_printer/test_basic.py&quot; = [&quot;E501&quot;], &quot;tests/pyright/test_federation.py&quot; = [&quot;E501&quot;], &quot;tests/test_printer/test_schema_directives.py&quot; = [&quot;E501&quot;]}
+</code></pre>
+<p>This does not:</p>
+<pre><code>[tool.ruff]
+line-length = 89
+per-file-ignores = {
+  &quot;tests/federation/printer/*&quot; = [&quot;E501&quot;], 
+  &quot;tests/test_printer/test_basic.py&quot; = [&quot;E501&quot;], 
+  &quot;tests/pyright/test_federation.py&quot; = [&quot;E501&quot;], 
+  &quot;tests/test_printer/test_schema_directives.py&quot; = [&quot;E501&quot;]
+}
+</code></pre>
+<p>Error:</p>
+<pre><code>error expected a table key, found a newline at line 196 column 21
+</code></pre>
+<p>I get the same error in VS Code:</p>
+<img width="733" alt="CleanShot 2022-11-29 at 12 54 13@2x" src="https://user-images.githubusercontent.com/667029/204534442-85b0c67d-a73e-4edc-a5da-94190965c61f.png">
+
+<p>My understanding is that multi-line tables are supported by TOML: https://github.com/toml-lang/toml/pull/904</p>
+<p>but it's a relatively new feature :)</p>
+<p>Anyway, I'm fine with having the ignores on one line, it's not a big deal, I opened the issue just in case it is easy to implement and for others that might stumble on the same problem :)</p>
+<p>[1] https://github.com/strawberry-graphql/strawberry/pull/2367/files#diff-50c86b7ed8ac2cf95bd48334961bf0530cdc77b5a56f852c5c61b89d735fd711R196</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sondr3">@sondr3</a> on 2022-11-29 13:26</div>
+            <div class="timeline-body"><p>I'm not an expert in TOML and how tables work, but I ran into this problem in a project too. You can use the following syntax for this at the moment:</p>
+<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+&quot;tests/federation/printer/*&quot; = [&quot;E501&quot;]
+&quot;tests/test_printer/test_basic.py&quot; = [&quot;E501&quot;]
+&quot;tests/pyright/test_federation.py&quot; = [&quot;E501&quot;]
+&quot;tests/test_printer/test_schema_directives.py&quot; = [&quot;E501&quot;]
+</code></pre>
+<p>It doesn't look to me like the PR your linked has been published under a new TOML version, so for now the spec doesn't allow these kinds of tables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick91">@patrick91</a> on 2022-11-29 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not an expert in TOML and how tables work, but I ran into this problem in a project too. You can use the following syntax for this at the moment:</p>
+<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+&quot;tests/federation/printer/*&quot; = [&quot;E501&quot;]
+&quot;tests/test_printer/test_basic.py&quot; = [&quot;E501&quot;]
+&quot;tests/pyright/test_federation.py&quot; = [&quot;E501&quot;]
+&quot;tests/test_printer/test_schema_directives.py&quot; = [&quot;E501&quot;]
+</code></pre>
+</blockquote>
+<p>ah! great suggestion!</p>
+<blockquote>
+<p>It doesn't look to me like the PR your linked has been published under a new TOML version, so for now the spec doesn't allow these kinds of tables.</p>
+</blockquote>
+<p>didn't notice that! thanks for checking 😊</p>
+<p>I'll close the issue for now then!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @patrick91 on 2022-11-29 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paddyroddy">@paddyroddy</a> on 2023-03-02 14:43</div>
+            <div class="timeline-body"><p>It ain't pretty, but I like one section per tool. The following works, which is good enough for me.</p>
+<pre><code>[tool.ruff]
+per-file-ignores = {&quot;btrack/models.py&quot; = [
+    &quot;UP006&quot;,
+    &quot;UP007&quot;,
+], &quot;btrack/config.py&quot; = [
+    &quot;UP006&quot;,
+    &quot;UP007&quot;,
+]}
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

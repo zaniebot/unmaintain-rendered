@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wrong erro msgs for arg dependecies. - clap-rs/clap #607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>wrong erro msgs for arg dependecies.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/607">#607</a>
+        opened by <a href="https://github.com/laishulu">@laishulu</a>
+        on 2016-07-28 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-28 10:19</div>
+            <div class="timeline-body"><p>If I have args:</p>
+<pre><code class="language-yaml">- a:
+   required=true
+- b:
+   required=false
+- c:
+   required=false
+   requires:
+     - b
+</code></pre>
+<p>and I invoke as <code>myapp -a -c</code> then I got the following error msg:</p>
+<blockquote>
+<p>error: The following required arguments were not provided
+-a
+-b</p>
+</blockquote>
+<p>but, <code>-a</code> should not be listed in the error msgs because it's already presented in the command args</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-29 01:21</div>
+            <div class="timeline-body"><p>This would be a bug. Let me reproduce and I should be able to fix it pretty easily. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-07-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-07-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-07-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-07-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-07-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-07-29 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-29 01:26</div>
+            <div class="timeline-body"><p>I'm not able to reproduce. Could you link to the code that defines the arguments?</p>
+<p>I tested:</p>
+<pre><code class="language-rust">fn main() {
+    let m = App::new(&quot;test&quot;)
+        .arg(Arg::with_name(&quot;a&quot;)
+            .required(true)
+            .takes_value(true)
+            .short(&quot;a&quot;))
+        .arg(Arg::with_name(&quot;b&quot;)
+            .short(&quot;b&quot;))
+        .arg(Arg::with_name(&quot;c&quot;)
+            .requires(&quot;b&quot;)
+            .short(&quot;c&quot;))
+        .get_matches();
+}
+</code></pre>
+<p>And ran with</p>
+<pre><code>$ test -a val -c
+error: The following required arguments were not provided:
+    -b
+
+USAGE:
+    test -b -c -a &lt;a&gt;
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-29 03:44</div>
+            <div class="timeline-body"><p>The bug seems related with groups</p>
+<pre><code class="language-rust">fn main() {
+    let m = App::new(&quot;test&quot;)
+        .arg(Arg::with_name(&quot;a&quot;).short(&quot;a&quot;))
+        .arg(Arg::with_name(&quot;b&quot;).short(&quot;b&quot;))
+
+        .arg(Arg::with_name(&quot;c&quot;).short(&quot;c&quot;))
+        .arg(Arg::with_name(&quot;d&quot;).short(&quot;d&quot;).requires(&quot;c&quot;))
+
+        .group(ArgGroup::with_name(&quot;flag&quot;)
+         .args(&amp;[&quot;a&quot;, &quot;b&quot;])
+         .required(true))
+        .get_matches();
+}
+</code></pre>
+<p>and ran with</p>
+<pre><code> $ cargo run -- -d -a                          [11:40:02]
+     Running `target/debug/test -d -a`
+error: The following required arguments were not provided:
+    -c
+    &lt;-a|-b&gt;
+
+USAGE:
+    polobot -c -d -a &lt;-a|-b&gt;
+
+For more information try --help
+error: Process didn't exit successfully: `target/debug/test -d -a` (exit code: 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-31 17:16</div>
+            <div class="timeline-body"><p>Ah ok, thanks! I think I know where the issue is stemming from now :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @kbknapp on 2016-08-20 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @kbknapp on 2016-08-20 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.10.1" by @kbknapp on 2016-08-20 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-20 22:38</div>
+            <div class="timeline-body"><p>Closed with #619</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-08-20 22:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

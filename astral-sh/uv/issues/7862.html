@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>requires-python specification not correctly resolved - astral-sh/uv #7862</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>requires-python specification not correctly resolved</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7862">#7862</a>
+        opened by <a href="https://github.com/Wietse">@Wietse</a>
+        on 2024-10-02 09:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Wietse">@Wietse</a> on 2024-10-02 09:29</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I'm having a problem specifying <code>requires-python</code>.</p>
+<p>My environment:
+MacOS M1
+uv 0.4.16 (e81ed8ec5 2024-09-24)
+python 3.12.6 (pyenv)</p>
+<p>To reproduce:</p>
+<pre><code class="language-bash">uv init test-requires-python --lib --python 3.12.6 --python-preference only-system
+cd test-requires-python
+python -m venv .venv
+. ./.venv/bin/activate
+</code></pre>
+<p>Open <code>pyproject.toml</code> and update the value for <code>requires-python</code>:</p>
+<pre><code>requires-python = &quot;&gt;=3.8,&lt;3.13,!=3.9.7&quot;
+</code></pre>
+<p>Next:</p>
+<pre><code>uv lock
+</code></pre>
+<p>This gives an error:</p>
+<pre><code>Using CPython 3.12.6
+error: The Python request from `.python-version` resolved to Python 3.12.6, which is incompatible with the project's Python requirement: `&gt;=3.8, &lt;3.9.7, &gt;3.9.7, &lt;3.13`. However, a workspace member (`test-requires-python`) supports Python &gt;=3.8, !=3.9.7, &lt;3.13. To install the workspace member on its own, navigate to ``, then run `uv venv --python 3.12.6` followed by `uv pip install -e .`.
+</code></pre>
+<p>I would expect the version 3.12.6 to be according to the constraints.
+See https://packaging.python.org/en/latest/specifications/version-specifiers/#id5 which states:</p>
+<blockquote>
+<p>The comma (“,”) is equivalent to a logical and operator: a candidate version must match all given version clauses in order to match the specifier as a whole.</p>
+</blockquote>
+<p>But it seems that <code>uv</code> transforms <code>&gt;=3.8,&lt;3.13,!=3.9.7</code> to <code>&gt;=3.8, &lt;3.9.7, &gt;3.9.7, &lt;3.13</code>, which is not what is intended. OTOH, in a different code path, <code>uv</code> does recognize that  <code>3.12.6</code> is within the constraint of <code>&gt;=3.8, !=3.9.7, &lt;3.13</code></p>
+<p>Thanks for a great tool!
+Wietse</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wietse">@Wietse</a> on 2024-10-02 09:48</div>
+            <div class="timeline-body"><p>I've upgraded uv to the latest <code>uv 0.4.18 (7b55e9790 2024-10-01)</code>, but the problem still exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-02 14:42</div>
+            <div class="timeline-body"><p>This looks like a weird bug, thanks for the report.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-02 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 13:04</div>
+            <div class="timeline-body"><p>The issue here is in the PubGrub conversion: we convert to a range with a hole, and when we convert back, that becomes <code>&gt;3.9.7, &lt;3.9.7</code>. Then <code>3.12.6</code> doesn't match, since those conditions are AND'd, and <code>3.12.6</code> is not less than <code>3.9.7</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7897.html">astral-sh/uv#7897</a> on 2024-10-03 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-09 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-09 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wietse">@Wietse</a> on 2024-10-10 07:26</div>
+            <div class="timeline-body"><p>Thanks for the fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8103.html">astral-sh/uv#8103</a> on 2024-10-10 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:59 UTC
+    </footer>
+</body>
+</html>

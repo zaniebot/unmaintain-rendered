@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM108 not raised for instance variables - astral-sh/ruff #16542</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM108 not raised for instance variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16542">#16542</a>
+        opened by <a href="https://github.com/cspoelstra">@cspoelstra</a>
+        on 2025-03-06 19:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cspoelstra">@cspoelstra</a> on 2025-03-06 19:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>SIM108 is not being raised for instance variables.</p>
+<pre><code>class A:
+    def func(self):
+        if cond:
+            self.x = a
+        else:
+            self.x = b
+</code></pre>
+<p>Expected behavior:
+SIM108 raised to suggest</p>
+<pre><code>self.x = a if cond else b
+</code></pre>
+<p>Actual behavior:
+SIM108 not raised.</p>
+<p>Removing <code>self.</code> causes the rule to be raised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-06 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-03-06 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 20:47</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like the rule is currently restricted to simple variable name expressions like the <a href="https://github.com/MartinThoma/flake8-simplify/blob/4f1b89f74feb8032f82c1e1eb1f2f77dd7005d96/flake8_simplify/rules/ast_if.py#L138-L139">upstream rule</a>, but I think it makes sense to expand it to attribute accesses (as in this example) and probably subscripts too. I think that should cover valid left-hand sides of assignments.</p>
+<p>https://github.com/astral-sh/ruff/blob/b3c884f4f33a81cd08e9ebc13fd0d5a538c8afc7/crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_if_exp.rs#L128-L133</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @MichaReiser on 2025-03-07 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 09:31</div>
+            <div class="timeline-body"><p>The challenge with allowing more expressions is that we then get pushback that the resulting expression is now too complicated and isn't a simplification. That's why, for now, I'd prefer to keep the rule aligned with the upstream rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-13 00:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

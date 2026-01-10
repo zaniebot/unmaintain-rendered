@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python install --no-bin` arg description is vague - astral-sh/uv #16325</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python install --no-bin` arg description is vague</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16325">#16325</a>
+        opened by <a href="https://github.com/polarathene">@polarathene</a>
+        on 2025-10-15 23:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/polarathene">@polarathene</a> on 2025-10-15 23:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>UPDATE:</strong> See next comment posted. This was a misunderstanding from the CLI description of <code>--no-bin</code>.</p>
+<p>The <code>--no-bin</code> option doesn't appear functional? It would presumably install without the executable (<em>making it 25% lighter in weight</em>).</p>
+<pre><code class="language-console">$ docker run --rm -it ghcr.io/astral-sh/uv:0.9.3-alpine ash
+$ uv python install --help | grep 'no-bin'
+      --no-bin                                                 Do not install a Python executable into the `bin` directory
+
+$ uv python install --no-bin --install-dir /opt/python3/x86_64 3.13.6
+$ ls -l /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python*
+
+lrwxrwxrwx    1 root     root            10 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python -&gt; python3.13
+lrwxrwxrwx    1 root     root            10 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3 -&gt; python3.13
+lrwxrwxrwx    1 root     root            17 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3-config -&gt; python3.13-config
+-rwxr-xr-x    1 root     root      20260152 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3.13
+-rwxr-xr-x    1 root     root          3141 Oct 15 23:34 /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin/python3.13-config
+
+$ du -shx /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl
+81.0M   /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl
+
+$ du -shx /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin
+19.4M   /opt/python3/x86_64/cpython-3.13.6-linux-x86_64-musl/bin
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.8.0-60-generic x86_64 Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.3</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @polarathene on 2025-10-15 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2025-10-15 23:57</div>
+            <div class="timeline-body"><p><code>--no-bin</code> was referring to <code>~/.local/bin</code> as a symlink to the actual install executable. So perhaps a better CLI description would be more suitable? (executable is kept regardless, only a symlink is &quot;installed&quot;)</p>
+<pre><code class="language-console">$ docker run --rm -it ghcr.io/astral-sh/uv:0.9-alpine ash
+$ uv python install --no-bin 3.11
+$ uv python install 3.12
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, add the directory to your PATH.
+
+# Only 3.12 is linked (3.11 skipped due to `--no-bin`):
+$ ls -l ~/.local/bin
+
+lrwxrwxrwx    1 root     root            77 Oct 15 23:52 python3.12 -&gt; /root/.local/share/uv/python/cpython-3.12.12-linux-x86_64-musl/bin/python3.12
+</code></pre>
+<hr />
+<p>In my case I was only interested in foreign arch installs for cross-compilation with Nuitka which needs <code>libpython*.so.*</code> + Python headers.</p>
+<p>This is another area that could maybe be improved as I don't think I saw in the CLI or UV docs that you could do <code>uv python install 3.11-aarch64-gnu</code> for example.</p>
+<ul>
+<li>I had seen that I could list foreign archs via <code>uv python list --all-arches --only-downloads | grep aarch64 | grep 3.11</code> and use <code>uv python install cpython-3.11.14-linux-aarch64-musl</code>, so the shorter match syntax is helpful information :)</li>
+<li>There is a <code>x86_64-musl</code> variant by default, but no <code>-musl</code> equivalent for <code>aarch64</code>, so specifying libc alongside that is useful.
+<strong>EDIT:</strong> There is <code>-musl</code> aarch64 available for newer UV releases (since Aug 29 2025) supporting <a href="https://github.com/astral-sh/python-build-standalone/releases/tag/20250828"><code>python-build-standalone</code> tag <code>20250828</code> or newer</a> <a href="https://github.com/astral-sh/uv/releases/tag/0.8.14">UV <code>0.8.14</code></a>:<pre><code class="language-console">$ docker run --rm -it ghcr.io/astral-sh/uv:0.9-alpine ash
+$ apk add patchelf
+
+# `uv python list --all-arches | grep aarch64-musl`
+$ uv python install --install-dir /opt/python cpython-3.14.0-linux-aarch64-musl
+
+# Dynamic link requiring musl `libc` to support `dlopen()`:
+$ patchelf --print-needed /opt/python/cpython-3.14.0-linux-aarch64-musl/lib/libpython3.14.so.1.0
+libc.so
+</code></pre>
+</li>
+<li><code>--no-bin</code> is a bit more important here for when installing foreign archs that shouldn't be added to <code>~/.local/bin</code> (<em>unless it's a foreign arch root like via <code>dnf --forcearch=aarch64 --installroot /sysroot/aarch64 ...</code></em>).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-16 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-10-16 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv python install --no-bin` doesn't exclude the binary" to "`uv python install --no-bin` arg description is vague" by @polarathene on 2025-10-16 07:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

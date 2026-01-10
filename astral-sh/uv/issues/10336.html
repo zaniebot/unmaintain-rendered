@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign published executables for Windows - astral-sh/uv #10336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sign published executables for Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10336">#10336</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-01-06 23:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 23:03</div>
+            <div class="timeline-body"><p>It’d be great to sign our Windows releases so we stop getting reported by antivirus software. We haven’t done much investigation yet, but requiring a physical key on release would be disappointing — I think there are alternative workflows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2025-01-06 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-01-06 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shauneccles">@shauneccles</a> on 2025-01-07 06:16</div>
+            <div class="timeline-body"><p>You can use Azure Key Vault to store keys to sign - here's a <a href="https://support.globalsign.com/code-signing/Code-Signing-certificate-setup-in-Azure-Key-vault">globalsign guide on setting up AKV</a>, and a similar guide for <a href="https://support.globalsign.com/code-signing/code-signing-using-azure-key-vault">using the key</a></p>
+<p>There's an azure action for signing - https://github.com/Azure/trusted-signing-action</p>
+<p>(not affiliated with anyone, just using resources I know about)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 17:27</div>
+            <div class="timeline-body"><p>Thank you! That is the alternative I was referring to, just didn't have it off the top of my head :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 17:28</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/python-build-standalone/issues/89</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10428.html">astral-sh/uv#10428</a> on 2025-01-09 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-13 15:06</div>
+            <div class="timeline-body"><p>I researched this a bunch a couple years ago, which is an important period because in June 2023 Windows codesigning became significantly more challenging: an agreement between all code signing cert providers went into affect and the minimum security level of (useful for Windows) code signing certs went up.</p>
+<p>The result is that code signing certs cost hundreds of dollars a year and can <em>only</em> be issued via HSMs (yubikeys). This necessitates paying a certificate authority for the cert, and then paying a cloud services provider that has a peering agreement with them to host an HSM for you (and as of a year ago this was a tangle of bad interop stories). Alternatively you use your cert provider's cloud service where you upload files to be signed and they send them back to you (so they're hosting their own HSMs).</p>
+<p>However last year Microsoft announced they were throwing a first-party hat into the process, which seemed cheaper and easier to use. However at the time they were quoting things like &quot;you need 2 (3?) years of tax filings to apply for one of our certs&quot; which bounced a lot of the folks we were working with. They've since left beta and redone all their copy so I am having trouble finding that requirement anymore, hopefully it's gone.</p>
+<p>Useful links:</p>
+<ul>
+<li><p><a href="https://about.signpath.io/code-signing/windows-platform">Incredible summary of Windows code signing infra/practicalities</a></p>
+</li>
+<li><p><a href="https://azure.microsoft.com/en-us/products/trusted-signing">Microsoft's first-party solution: Trusted Signing</a></p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14486.html">astral-sh/uv#14486</a> on 2025-07-07 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14870.html">astral-sh/uv#14870</a> on 2025-07-24 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kariharju">@kariharju</a> on 2025-10-01 15:05</div>
+            <div class="timeline-body"><p>Pinged in the mac signing topic as well.</p>
+<p>We've been doing signing for our tool executables and installers for years now.
+Windows EV does not cost that much and can simply be stored in Azure Vault. At the moment mac signing costs more.</p>
+<p>Getting the EV cert. takes a while and is a process to get, but manageable.</p>
+<p>We would be open to contribute GHA pipeline examples if needed.
+This is not a thing to be afraid about, but having not-signed executables is becoming a non-starter for any kind of wide-scale enterprise us. Most antivirus tools are ML based and a un-signed executable download scripts and other executables is understandably not a good look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-01 15:13</div>
+            <div class="timeline-body"><p>Do you have suggestions / preferences between the vendors at https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/code-signing-reqs#where-to-get-ev-code-signing-certificates ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kariharju">@kariharju</a> on 2025-10-01 15:21</div>
+            <div class="timeline-body"><p>We went with GlobalSign, mostly because we had used that in our previous jobs.
+No real preference, the prices seem to differ a lot these days (for some weird reasons)
+And I guess the identity vetting process times can vary. We knew from get go that we needed to sign every single executable. Back 6 years ago this required the usb dongle and a dedicated machine.. which was .. fun 😅</p>
+<p>Now in GHA it is just:</p>
+<pre><code>- name: Build
+  run: |
+    dotnet tool install --global AzureSignTool --version 3.0.0
+    azuresigntool sign `
+      --description-url &quot;https://astral.sh&quot; `
+      --file-digest sha256 `
+      --azure-key-vault-url $Env:VAULT_URL `
+      --azure-key-vault-client-id $Env:CLIENT_ID `
+      --azure-key-vault-tenant-id $Env:TENANT_ID `
+      --azure-key-vault-client-secret $Env:CLIENT_SECRET `
+      --azure-key-vault-certificate $Env:CERTIFICATE_NAME `
+      --timestamp-rfc3161 http://timestamp.digicert.com `
+      --timestamp-digest sha256 `
+      &lt;your executable&gt;
+</code></pre>
+<p>..and setup the secrets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-10-01 18:58</div>
+            <div class="timeline-body"><p>@kariharju Could you explain why an EV cert is needed here? My understanding is that Windows code signing (= Authenticode) doesn't <em>require</em> EV or OV, i.e. we <em>could</em> use just a basic code signing certificate here as long as it chains to one of MSFT's trusted roots. But I could be wrong about that 🙂</p>
+<p>I'm basing that in part on Azure's &quot;Trusted Signing&quot; service, which appears to offer short-lived signing certs without the EV/OV validation bits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-10-01 19:02</div>
+            <div class="timeline-body"><p>(@Gankra just informed me that EV is now the industry standard/baseline for codesigning certs, even outside of driver signing. Sorry for the confusion!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14401.html">astral-sh/uv#14401</a> on 2025-10-30 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ffyring">@ffyring</a> on 2025-11-19 09:27</div>
+            <div class="timeline-body"><p>I just want to bump this issue / feature request. Currently I cannot fully use uv in my restrictive corporate environment (see #14401).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattculler">@mattculler</a> on 2025-11-24 13:48</div>
+            <div class="timeline-body"><p>I too cannot fully integrate uv into my team's workflow until it distributes signed Windows executables.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:00 UTC
+    </footer>
+</body>
+</html>

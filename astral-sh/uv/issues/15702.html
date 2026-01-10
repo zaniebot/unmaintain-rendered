@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 Bug: `uv build` fails with invalid Python module path with no clear error message - astral-sh/uv #15702</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>🐛 Bug: `uv build` fails with invalid Python module path with no clear error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15702">#15702</a>
+        opened by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a>
+        on 2025-09-05 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-09-05 13:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Project Structure</h2>
+<p>I am working with a Django project where:</p>
+<ul>
+<li>Not using <strong>uv</strong> as project management</li>
+<li>Using <strong>uv</strong> only for backend build</li>
+</ul>
+<pre><code>
+electo_premium/
+    client/
+    newspaper/
+    payments/
+    pyproject.toml
+    manage.py
+    __init__.py   # necessary for uv build
+
+</code></pre>
+<p><strong>Note:</strong> If you are wondering why I am building the whole project as a wheel:</p>
+<p>To use <strong>Apache Airflow</strong>, I need to place my Django source code inside the virtual environment's <code>site-packages/</code> folder on the AWS Airflow server so that my Django code is also accessible in AWS Airflow.</p>
+<p>For example, this import should work at aws airflow environment:</p>
+<pre><code class="language-python">from electo_premium.newspaper.models import NewsLetter
+</code></pre>
+<h2>pyproject.toml</h2>
+<pre><code class="language-toml"># pyproject.toml - content
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.12,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.build-backend]
+module-name = &quot;electo_premium&quot;
+module-root = &quot;../&quot;  # Go one step backward (Not sure if going backward is even possible)
+</code></pre>
+<h2>Command Run</h2>
+<p>At the same directory where <code>manage.py</code> exists:</p>
+<pre><code class="language-bash">uv build
+</code></pre>
+<h2>Actual Output</h2>
+<pre><code class="language-text">Building source distribution (uv build backend)...
+Building wheel from source distribution (uv build backend)...
+  × Failed to build `/home/trootech/Production Projects/electo/electo_premium`
+  ╰─▶ Expected a Python module at: `/home/trootech/.cache/uv/sdists-v9/.tmpR0ugJW/electo_premium-1.0.0/../electo_premium/__init__.py`
+</code></pre>
+<h2>❌ Problem</h2>
+<p>The error message seems <strong>invalid/weird</strong> — it is looking for the module at a path containing <code>/home/trootech/.cache/uv/sdists-v9/.tmpR0ugJW/electo_premium-1.0.0/../electo_premium/__init__.py</code>, which doesn’t look correct.</p>
+<h2>✅ Expected Behavior</h2>
+<p><code>uv build</code> should correctly locate the <code>__init__.py</code> inside the project and build the package without path resolution errors.</p>
+<hr />
+<h3>📝 Notes</h3>
+<ul>
+<li>The <code>__init__.py</code> file <strong>does exist</strong> inside <code>electo_premium/</code>.</li>
+<li>The error message suggests that path resolution may be going one step too far (<code>../</code>) during build.</li>
+</ul>
+<h3>Platform</h3>
+<p>Linux 6.8.0-45-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.15</p>
+<h3>Python version</h3>
+<p>Python 3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @DhavalGojiya on 2025-09-05 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">build-backend</span> added by @konstin on 2025-09-05 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-09-05 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15733.html">astral-sh/uv#15733</a> on 2025-09-08 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-08 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MosheSteinberg">@MosheSteinberg</a> on 2025-09-28 10:00</div>
+            <div class="timeline-body"><p>I'm still getting this with 0.8.22 on windows. It is pretty much the same, barring <code>module-root = &quot;Source&quot;</code> in the toml file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-09-28 10:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm still getting this with 0.8.22 on windows. It is pretty much the same, barring <code>module-root = &quot;Source&quot;</code> in the toml file.</p>
+</blockquote>
+<p>Can you please elaborate more on this?
+Mind sharing your pyproject.toml file content and your project structure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16049.html">astral-sh/uv#16049</a> on 2025-09-28 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MosheSteinberg">@MosheSteinberg</a> on 2025-09-28 13:45</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm still getting this with 0.8.22 on windows. It is pretty much the same, barring <code>module-root = &quot;Source&quot;</code> in the toml file.</p>
+</blockquote>
+<p>Can you please elaborate more on this? Mind sharing your pyproject.toml file content and your project structure?</p>
+</blockquote>
+<p>I should have mentioned - I've made a separate issue #16049 which hopefully explains the situation I'm getting this error message for.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv init` fails to create .git directory or .gitignore file when inside git repo - astral-sh/uv #11655</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv init` fails to create .git directory or .gitignore file when inside git repo</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11655">#11655</a>
+        opened by <a href="https://github.com/mason-fabel">@mason-fabel</a>
+        on 2025-02-20 06:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mason-fabel">@mason-fabel</a> on 2025-02-20 06:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When inside of a git repo, running <code>uv init my-project --vsc=git</code> does not create a <code>.git</code> directory or <code>.gitignore</code> file in <code>my-project</code>.</p>
+<p>For example, my <code>$HOME</code> is a git repo containing my dotfiles, and I'm trying to create an uv project at <code>$HOME/dev/my-project</code>.</p>
+<h3>Output</h3>
+<pre><code>$ uv init my-project --vcs=git --verbose
+DEBUG uv 0.6.2
+DEBUG Checking for Python environment at `my-project/.venv`
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/home/username/.local/share/uv/python`
+DEBUG Found `cpython-3.13.0-linux-x86_64-gnu` at `/usr/bin/python` (first executable in the search path)
+DEBUG Writing python versions to `/home/username/dev/my-project/.python-version`
+$ rm -rf my-project
+$ uv init my-project --verbose
+DEBUG uv 0.6.2
+DEBUG Checking for Python environment at `my-project/.venv`
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Searching for managed installations at `/home/username/.local/share/uv/python`
+DEBUG Found `cpython-3.13.0-linux-x86_64-gnu` at `/usr/bin/python` (first executable in the search path)
+DEBUG Detected existing version control system: git
+DEBUG Writing python versions to `/home/username/dev/my-project/.python-version`
+Initialized project `my-project` at `/home/username/dev/my-project`
+</code></pre>
+<h3>Example</h3>
+<pre><code>git init
+uv init my-project --vcs=git
+cd my-project
+
+# Expected: default uv .gitignore file
+# Result: cat: .gitignore: No such file or directory
+cat .gitignore
+
+# Expected: new .git directory
+# Result: ls: cannot access '.git': No such file or directory
+ls .git
+</code></pre>
+<h3>Platform</h3>
+<p>Fedora Linux 41 (Sway) - Linux 6.12.4-200.fc41.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.2</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mason-fabel on 2025-02-20 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mason-fabel">@mason-fabel</a> on 2025-02-20 06:49</div>
+            <div class="timeline-body"><p>Maybe this shouldn't be labelled as a bug? Reading the comments at https://github.com/astral-sh/uv/blob/6d3614eece09b35d250bd0c1fe35bcc56fffebcc/crates/uv/src/commands/project/init.rs#L1221-L1229 it looks like I'm running into an intentional design (or at least an unconsidered edge case).</p>
+<p>I get what <code>uv</code> is doing by default, it's probably the correct default even, but I would like something like <code>uv init my-project --vsc=git --force</code> to confirm that I really mean it when I'm asking for a fresh <code>.git</code> directory and I know what I'm doing. I'm borrowing the <code>--force</code> flag from git, I have no particular attachment to that name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 14:09</div>
+            <div class="timeline-body"><p>I feel like this is a valid use-case. I think we could perhaps treat an explicit <code>--vcs=git</code> as &quot;force&quot; (vs the default &quot;auto&quot; behavior)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mason-fabel">@mason-fabel</a> on 2025-02-20 18:32</div>
+            <div class="timeline-body"><p>That makes sense to me. In fact, that's what I initially assumed would happen and led to this issue.</p>
+<p>I haven't finished setting up the repo locally, but I'm happy to work on a patch for this. Would <code>(Some(vcs), Some(existing)) =&gt; vcs</code> be an appropriate solution, or are there other edge cases I'm not aware of in play here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11785.html">astral-sh/uv#11785</a> on 2025-02-26 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Chaoses-Ib">@Chaoses-Ib</a> on 2025-02-26 13:45</div>
+            <div class="timeline-body"><p>Regarding the default behavior, how about creating <code>.gitignore</code> but without <code>.git</code>? Currently, one has to write <code>.gitignore</code> manually if the project is inited inside an existing repo that doesn't have ignore rules for Python. If uv creates <code>.gitignore</code> by default, this can be skipped, and if someone doesn't want it they can simply remove it, much eaiser than the opposite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mason-fabel">@mason-fabel</a> on 2025-02-27 03:52</div>
+            <div class="timeline-body"><p>@Chaoses-Ib I don't understand, what are you proposing? Are you saying <code>uv init &lt;project&gt;</code> should always create a <code>.gitignore</code>, even when <code>&lt;project&gt;</code> is inside a git repo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xuatpham">@xuatpham</a> on 2025-10-04 03:01</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/Chaoses-Ib">@Chaoses-Ib</a> I don't understand, what are you proposing? Are you saying <code>uv init &lt;project&gt;</code> should always create a <code>.gitignore</code>, even when <code>&lt;project&gt;</code> is inside a git repo?</p>
+</blockquote>
+<p>as I see, default, when I do: <code>uv init project-name</code> , uv will auto create .git &amp; .gitignore .
+but if I do <code>uv init project-name</code> inside another git repor, it won't.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

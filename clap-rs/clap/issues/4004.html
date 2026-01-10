@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument that requires another argument in an argument group gives empty error - clap-rs/clap #4004</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument that requires another argument in an argument group gives empty error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4004">#4004</a>
+        opened by <a href="https://github.com/crat0z">@crat0z</a>
+        on 2022-07-29 17:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/crat0z">@crat0z</a> on 2022-07-29 17:09</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0-nightly (9067d5277 2022-07-28)</p>
+<h3>Clap Version</h3>
+<p>3.2.15</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{ArgGroup, Parser};
+
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+#[clap(group(ArgGroup::new(&quot;either_or_both&quot;).multiple(true).required(true).args(&amp;[&quot;first&quot;, &quot;second&quot;])))]
+struct Args {
+    #[clap(short, long, requires(&quot;first&quot;))]
+    require_first: bool,
+    #[clap(short, long)]
+    first: bool,
+    #[clap(short, long)]
+    second: bool,
+}
+fn main() {
+    let args: Args = Args::parse();
+
+    dbg!(args);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --require-first --second</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>error: The following required arguments were not provided:
+
+USAGE:
+    clap_example --require-first &lt;--first|--second&gt;
+
+For more information try --help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Error message should provide context, e.g.</p>
+<pre><code>error: The following required arguments were not provided:
+    --first
+
+USAGE:
+    clap_example --require-first &lt;--first|--second&gt;
+
+For more information try --help
+</code></pre>
+<h3>Additional Context</h3>
+<p>Removing the <code>multiple(true)</code> part unintuitively works:</p>
+<pre><code>[src/main.rs:17] args = Args {
+    require_first: true,
+    first: false,
+    second: true,
+}
+</code></pre>
+<p>This leads me to believe I'm probably misusing <code>ArgGroup</code> in this case, however the error message should still say <em>something</em> IMO.</p>
+<h3>Debug Output</h3>
+<pre><code>[      clap::builder::command] 	Command::_do_parse
+[      clap::builder::command] 	Command::_build: name=&quot;clap_example&quot;
+[      clap::builder::command] 	Command::_propagate:clap_example
+[      clap::builder::command] 	Command::_check_help_and_version: clap_example
+[      clap::builder::command] 	Command::_propagate_global_args:clap_example
+[      clap::builder::command] 	Command::_derive_display_order:clap_example
+[clap::builder::debug_asserts] 	Command::_debug_asserts
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:help
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:version
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:require-first
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:first
+[clap::builder::debug_asserts] 	Arg::_debug_asserts:second
+[clap::builder::debug_asserts] 	Command::_verify_positionals
+[        clap::parser::parser] 	Parser::get_matches_with
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--require-first&quot;)' ([45, 45, 114, 101, 113, 117, 105, 114, 101, 45, 102, 105, 114, 115, 116])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--require-first&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--require-first'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;require-first&quot;): Presence validated
+[        clap::parser::parser] 	Parser::react action=IncOccurrence, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=1
+[        clap::parser::parser] 	Parser::remove_overrides: id=require-first
+[   clap::parser::arg_matcher] 	ArgMatcher::start_occurrence_of_arg: id=require-first
+[      clap::builder::command] 	Command::groups_for_arg: id=require-first
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--second&quot;)' ([45, 45, 115, 101, 99, 111, 110, 100])
+[        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--second&quot;)
+[        clap::parser::parser] 	Parser::get_matches_with: sc=None
+[        clap::parser::parser] 	Parser::parse_long_arg
+[        clap::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--second'
+[        clap::parser::parser] 	Parser::parse_long_arg(&quot;second&quot;): Presence validated
+[        clap::parser::parser] 	Parser::react action=IncOccurrence, identifier=Some(Long), source=CommandLine
+[        clap::parser::parser] 	Parser::react: cur_idx:=2
+[        clap::parser::parser] 	Parser::remove_overrides: id=second
+[   clap::parser::arg_matcher] 	ArgMatcher::start_occurrence_of_arg: id=second
+[      clap::builder::command] 	Command::groups_for_arg: id=second
+[   clap::parser::arg_matcher] 	ArgMatcher::start_occurrence_of_group: id=either_or_both
+[        clap::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
+[        clap::parser::parser] 	Parser::add_defaults
+[        clap::parser::parser] 	Parser::add_defaults:iter:help:
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default missing vals
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:version:
+[        clap::parser::parser] 	Parser::add_default_value:iter:version: doesn't have default missing vals
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:version: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:require-first:
+[        clap::parser::parser] 	Parser::add_default_value:iter:require-first: doesn't have default missing vals
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:require-first: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:first:
+[        clap::parser::parser] 	Parser::add_default_value:iter:first: doesn't have default missing vals
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:first: doesn't have default vals
+[        clap::parser::parser] 	Parser::add_defaults:iter:second:
+[        clap::parser::parser] 	Parser::add_default_value:iter:second: doesn't have default missing vals
+[        clap::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser] 	Parser::add_default_value:iter:second: doesn't have default vals
+[     clap::parser::validator] 	Validator::validate
+[     clap::parser::validator] 	Validator::validate_conflicts
+[     clap::parser::validator] 	Validator::validate_exclusive
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:require-first
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:second
+[     clap::parser::validator] 	Validator::validate_exclusive:iter:either_or_both
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=require-first
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=require-first
+[      clap::builder::command] 	Command::groups_for_arg: id=require-first
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=require-first, conflicts=[]
+[      clap::builder::command] 	Command::groups_for_arg: id=second
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=second, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=either_or_both, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_conflicts::iter: id=second
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=second
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::validate_required: required=ChildGraph([Child { id: either_or_both, children: [] }])
+[     clap::parser::validator] 	Validator::gather_requires
+[     clap::parser::validator] 	Validator::gather_requires:iter:require-first
+[     clap::parser::validator] 	Validator::gather_requires:iter:second
+[     clap::parser::validator] 	Validator::gather_requires:iter:either_or_both
+[     clap::parser::validator] 	Validator::gather_requires:iter:either_or_both:group
+[     clap::parser::validator] 	Validator::validate_required: is_exclusive_present=false
+[     clap::parser::validator] 	Validator::validate_required:iter:aog=first
+[     clap::parser::validator] 	Validator::validate_required:iter: This is an arg
+[     clap::parser::validator] 	Validator::is_missing_required_ok: first
+[     clap::parser::validator] 	Conflicts::gather_conflicts: arg=first
+[      clap::builder::command] 	Command::groups_for_arg: id=first
+[     clap::parser::validator] 	Conflicts::gather_direct_conflicts id=first, conflicts=[]
+[     clap::parser::validator] 	Conflicts::gather_conflicts: conflicts=[]
+[     clap::parser::validator] 	Validator::missing_required_error; incl=[]
+[     clap::parser::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: either_or_both, children: [] }, Child { id: first, children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={either_or_both, first}
+[      clap::builder::command] 	Command::unroll_args_in_group: group=either_or_both
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=first
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=second
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group: group=either_or_both
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=first
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=second
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val={}
+[     clap::parser::validator] 	Validator::missing_required_error: req_args=[]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[require-first, second, either_or_both], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={either_or_both, first}
+[      clap::builder::command] 	Command::unroll_args_in_group: group=either_or_both
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=first
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=second
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:require-first
+[      clap::builder::command] 	Command::unroll_args_in_group: group=either_or_both
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=first
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=second
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val={&quot;--require-first&quot;, &quot;&lt;--first|--second&gt;&quot;}
+[      clap::builder::command] 	Command::color: Color setting...
+[      clap::builder::command] 	Auto
+error: The following required arguments were not provided:
+
+USAGE:
+    clap_example --require-first &lt;--first|--second&gt;
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @crat0z on 2022-07-29 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-29 21:58</div>
+            <div class="timeline-body"><p>If I read the code correctly, when we generate the error, we know which argument is required but we don't want to report just that one required argument but all of them, so instead of forcing that argument to be present, we delegate to a &quot;missing required&quot; calculator.  For some reason it is removing &quot;first&quot; from the list</p>
+<p>Relevant log entry</p>
+<pre><code>[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={either_or_both, first}
+[      clap::builder::command] 	Command::unroll_args_in_group: group=either_or_both
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=first
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=second
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group: group=either_or_both
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=first
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: entity=second
+[      clap::builder::command] 	Command::unroll_args_in_group:iter: this is an arg
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val={}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-07-29 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-07-29 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-29 22:06</div>
+            <div class="timeline-body"><p>Say you just run <code>cargo run</code> (no args to the command).  We could potentially show in the required <code>--first</code>, <code>--second</code>, and <code>&lt;--first|--second&gt;</code>.  We work to de-duplicate this but in doing so, I think we have a bug that is removing <code>--first</code> when the requirement on <code>&lt;--first|--second&gt;</code> is resolved, causing it to not show up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4005.html">clap-rs/clap#4005</a> on 2022-07-30 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-30 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4006.html">clap-rs/clap#4006</a> on 2022-07-30 01:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-30 01:52</div>
+            <div class="timeline-body"><p>v3.2.16 is released with the fix for this</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:07 UTC
+    </footer>
+</body>
+</html>

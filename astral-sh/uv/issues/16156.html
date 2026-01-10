@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform markers in `tool.uv.sources` array are not respected during path resolution - astral-sh/uv #16156</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Platform markers in `tool.uv.sources` array are not respected during path resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16156">#16156</a>
+        opened by <a href="https://github.com/oryon-dominik">@oryon-dominik</a>
+        on 2025-10-07 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oryon-dominik">@oryon-dominik</a> on 2025-10-07 16:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using an array of sources with platform-specific markers in
+<code>[tool.uv.sources]</code>, uv attempts to resolve and validate paths even when the
+marker indicates the source should not be used on the current platform. This
+causes failures when a path source is only valid on one platform.</p>
+<h2>Current Behavior</h2>
+<p>With the following configuration:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+mypackage = [
+  { git = &quot;https://github.com/user/mypackage&quot;, branch = &quot;mybranch&quot;, marker = &quot;sys_platform != 'win32'&quot;},
+  { path = &quot;../../mypackage&quot;, editable = true, marker = &quot;sys_platform == 'win32'&quot;},
+]
+</code></pre>
+<p>On Linux (where <code>sys_platform != 'win32'</code> should match and use the Git source):</p>
+<pre><code class="language-bash">$ python -c &quot;import sys; print(sys.platform)&quot;
+linux
+
+$ uv sync --verbose
+DEBUG Found static `pyproject.toml` for: project @ file:///apps/project/src/application
+DEBUG No workspace root found, using project root
+DEBUG Attempting GitHub fast path for: mypackage @ git+https://****@github.com/user/mypackage@mybranch
+DEBUG Querying GitHub for commit at: https://api.github.com/repos/user/mypackage/commits/mybranch
+error: Distribution not found at: file:///apps/project/mypackage
+</code></pre>
+<p>Despite the marker indicating the path source should not be used on Linux, uv
+still attempts to resolve and validate the local path, causing the sync to
+fail.</p>
+<h2>Expected Behavior</h2>
+<p>When <code>sys_platform == 'win32'</code> is false (on Linux), uv should:</p>
+<ol>
+<li>Skip the path source entirely</li>
+<li>Only use the Git source that matches <code>sys_platform != 'win32'</code></li>
+<li>Never attempt to resolve or validate the <code>../../mypackage</code> path</li>
+</ol>
+<p>The verbose output shows uv correctly attempts the GitHub path first, but then
+falls back to checking the local path even though the marker should prevent
+this.</p>
+<h2>Workarounds Attempted</h2>
+<ol>
+<li>✅ <strong>Switching marker order</strong> - Git source first in array (still fails)</li>
+<li>✅ <strong>Different marker syntax</strong> - Tried <code>platform_system</code> instead of <code>sys_platform</code> (still fails)</li>
+<li>⚠️  <strong>Cloning repo at path location</strong> - Works but defeats the purpose of markers</li>
+</ol>
+<h2>Environment</h2>
+<ul>
+<li><strong>uv version</strong>: 0.8.24</li>
+<li><strong>Platform</strong>: Linux (server), Windows 11 (development)</li>
+<li><strong>Python</strong>: 3.13.7</li>
+</ul>
+<h2>Related Issues</h2>
+<ul>
+<li>#10777 - <code>[tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker</code> - Similar issue with path normalization, supposedly fixed but still occurring</li>
+<li>#14289 - <code>Cannot specify multiple uv.sources which depend on platform markers</code> - Enhancement request that led to array syntax implementation (which we're using correctly)</li>
+</ul>
+<h3>Platform</h3>
+<p>Linux (server), Windows 11 (development)</p>
+<h3>Version</h3>
+<p>0.8.24</p>
+<h3>Python version</h3>
+<p>3.13.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @oryon-dominik on 2025-10-07 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 20:59</div>
+            <div class="timeline-body"><p>In order to create a <code>uv.lock</code> file, uv needs to be able to access all of the declared dependencies to extract their metadata -- even those that won't ultimately be installed. So it's correct for uv to look for the <code>../../mypackage</code> package even on non-Windows machines, as the lockfile is intended to be used across <em>all</em> platforms.</p>
+<p>If you create a <code>uv.lock</code> and check it in, you can (e.g.) install on macOS without the local <code>mypackage</code> using <code>uv sync --frozen</code>. In other words, if the lockfile already exists, uv can use it and doesn't require access to dependencies it won't install; but to <em>create</em> the lockfile, we need access to all of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-01 20:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

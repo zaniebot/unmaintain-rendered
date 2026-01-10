@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv in ReadTheDocs - astral-sh/uv #10074</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv in ReadTheDocs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10074">#10074</a>
+        opened by <a href="https://github.com/cthoyt">@cthoyt</a>
+        on 2024-12-21 12:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cthoyt">@cthoyt</a> on 2024-12-21 12:01</div>
+            <div class="timeline-body"><p>Note, this issue has now been upstreamed by incorporating the discussion into the ReadTheDocs documentation upstream at https://docs.readthedocs.com/platform/stable/build-customization.html#install-dependencies-with-uv.</p>
+<p>Thanks to the comment in https://github.com/astral-sh/uv/issues/10074#issuecomment-3245337840 that made me aware of this.</p>
+<h1>Original Issue Text</h1>
+<p>This is more of a &quot;show and tell&quot; than an issue, but it could be something worth incorporating into the uv documentation.</p>
+<h2>Using uv as the installer instead of pip</h2>
+<p>ReadTheDocs uses pip by default when installing sphinx, your package, and its dependencies. The build can be greatly sped up by switching to uv, but this isn't easy to configure without making a custom override in the commands. Here's an example <code>readthedocs.yml</code> that makes it work using <code>uv pip install</code> as an alternative, that uses the <code>asdf</code> program for configuring uv:</p>
+<pre><code class="language-yaml"># See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+version: 2
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: &quot;3.12&quot;
+
+  # adapted from uv recipe at https://docs.readthedocs.io/en/stable/build-customization.html#install-dependencies-with-uv
+  # and comment at https://github.com/readthedocs/readthedocs.org/issues/11289#issuecomment-2103832834
+  commands:
+    - asdf plugin add uv
+    - asdf install uv latest
+    - asdf global uv latest
+    - uv venv $READTHEDOCS_VIRTUALENV_PATH
+    - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv --preview pip install .[docs,pandas,flask,fastapi,rdflib]
+    - python -m sphinx -T -b html -d docs/_build/doctrees -D language=en docs/source $READTHEDOCS_OUTPUT/html
+</code></pre>
+<p>Note: this example is adapted from https://github.com/cthoyt/curies where the <code>docs</code> extra installs sphinx, sphinx-click, sphinx-rtd-theme, and other related documentation build dependencies.</p>
+<p>Here's an example build log from the website for this project: https://app.readthedocs.org/projects/curies/builds/26642806/</p>
+<h2>Getting uv's build backend to work while it's in preview</h2>
+<p>If you've already switched your package to using uv's preview build backend, then you have to make sure to pass either <code>--preview</code> when calling uv, or setting <code>UV_PREVIEW=1</code> in the command line. In the above scenario, where you have control over the commands that are being run, then this is pretty straightforward.</p>
+<p>Something I am still working on: if you want to keep using the default installer (pip) because you don't want to configure too much here, but have a package that's using the uv build backend. If you try and pip install a package with the uv build backend without setting <code>UV_PREVIEW=1</code> in the environment, the build will fail. I wasn't yet able to figure out how to use another part of ReadTheDocs' <a href="https://docs.readthedocs.io/en/stable/build-customization.html">build process customization</a> to set this environment variable in a way that worked. If anyone has a clean idea on this, then it would be great to comment here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">show-and-tell</span> added by @zanieb on 2025-01-07 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kmnhan">@kmnhan</a> on 2025-01-15 14:53</div>
+            <div class="timeline-body"><p>For me, the following configuration worked:</p>
+<pre><code class="language-yaml"># See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+version: 2
+
+# Set the OS, Python version and other tools you might need
+build:
+  os: ubuntu-24.04
+  tools:
+    python: &quot;3.12&quot;
+  jobs:
+    post_install:
+      - pip install uv
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --all-extras --group docs --link-mode=copy
+
+# Build documentation in the &quot;docs/&quot; directory with Sphinx
+sphinx:
+  configuration: docs/source/conf.py
+  fail_on_warning: true
+
+# Optionally build your docs in additional formats such as PDF and ePub
+formats:
+  - pdf
+</code></pre>
+<p>I have all my documentation-related dependencies placed in a dependency group named <code>docs</code>.</p>
+<p>I personally find this approach more comfortable since I can keep using <code>sphinx</code> and <code>formats</code> sections as I used to before migrating to uv. One caveat is that setuptools and sphinx is installed via pip by ReadTheDocs before uv is installed, so it has an unnecessary overhead of ~15 seconds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scverse/spatialdata/pulls/877.html">scverse/spatialdata#877</a> on 2025-02-12 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../smsearcy/mesh-info/issues/134.html">smsearcy/mesh-info#134</a> on 2025-02-13 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coroa">@coroa</a> on 2025-02-28 21:54</div>
+            <div class="timeline-body"><p>I combined both approaches to avoid tinkering with the sphinx-build steps including multiple formats, but can still replace the unnecessary sphinx venv setup and install steps (ie. fix the caveat @kmnhan mentioned)</p>
+<pre><code class="language-yaml">version: 2
+
+# Specify os and python version
+build:
+  os: &quot;ubuntu-24.04&quot;
+  tools:
+    python: &quot;3.12&quot;
+  jobs:
+    create_environment:
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --all-extras --group docs
+    install:
+      - &quot;true&quot;
+
+# Build documentation in the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py
+
+# Optionally build your docs in additional formats such as PDF and ePub
+formats: all
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DeiC-HPC/cotainr/issues/100.html">DeiC-HPC/cotainr#100</a> on 2025-03-14 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DeiC-HPC/cotainr/pulls/126.html">DeiC-HPC/cotainr#126</a> on 2025-03-21 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-rf/scikit-rf/pulls/1269.html">scikit-rf/scikit-rf#1269</a> on 2025-03-29 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../welchbj/tt/issues/14.html">welchbj/tt#14</a> on 2025-05-06 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../VIDA-NYU/UrbanMapper/pulls/49.html">VIDA-NYU/UrbanMapper#49</a> on 2025-05-08 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jax-ml/jax/pulls/28887.html">jax-ml/jax#28887</a> on 2025-05-21 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../GreenBankObservatory/dysh/pulls/593.html">GreenBankObservatory/dysh#593</a> on 2025-05-22 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cpp-linter/cpp-linter/pulls/143.html">cpp-linter/cpp-linter#143</a> on 2025-05-31 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hagenw/sphinxcontrib-katex/pulls/144.html">hagenw/sphinxcontrib-katex#144</a> on 2025-06-13 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hagenw">@hagenw</a> on 2025-06-13 14:28</div>
+            <div class="timeline-body"><p>Another simple solution (assuming your doc dependencies are part of the <code>dev</code> dependency group):</p>
+<pre><code class="language-yaml">version: 2
+
+# Specify os and python version
+build:
+  os: &quot;ubuntu-24.04&quot;
+  tools:
+    python: &quot;3.12&quot;
+  commands:
+    - pip install uv
+    - uv run python -m sphinx docs $READTHEDOCS_OUTPUT/html -b html -W
+
+# Build documentation in the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lookit/lookit-jspsych/issues/160.html">lookit/lookit-jspsych#160</a> on 2025-07-16 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-07-25 08:10</div>
+            <div class="timeline-body"><p>@hagenw Is the <code>sphinx:</code> really necessary then? Since the build already happens above?
+Thanks for sharing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hagenw">@hagenw</a> on 2025-07-25 08:16</div>
+            <div class="timeline-body"><p>Good question, I guess I just left it there, because I used it before. I would also expect that it should work without the <code>sphinx:</code> section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-07-28 17:17</div>
+            <div class="timeline-body"><p>This works too:</p>
+<pre><code class="language-yaml">version: 2
+build:
+  os: ubuntu-lts-latest
+  tools: {}
+  commands:
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - ~/.local/bin/uv tool install tox --with tox-uv -p 3.13 --managed-python
+    - ~/.local/bin/tox run -e docs --
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pipecat-ai/pipecat/pulls/2371.html">pipecat-ai/pipecat#2371</a> on 2025-08-06 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-09-02 13:23</div>
+            <div class="timeline-body"><p>the official docs shows a recommended solution:
+https://docs.readthedocs.com/platform/stable/build-customization.html#install-dependencies-with-uv</p>
+<pre><code class="language-yaml">   jobs:
+      pre_create_environment:
+         - asdf plugin add uv
+         - asdf install uv latest
+         - asdf global uv latest
+      create_environment:
+         - uv venv &quot;${READTHEDOCS_VIRTUALENV_PATH}&quot;
+      install:
+         - UV_PROJECT_ENVIRONMENT=&quot;${READTHEDOCS_VIRTUALENV_PATH}&quot; uv sync --frozen --group docs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-09-02 13:26</div>
+            <div class="timeline-body"><p>amazing, the updates to the official docs are so comprehensive across many different installation tools!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-02 13:44</div>
+            <div class="timeline-body"><p>Do you consider this solved now that it's in the official docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-09-02 13:47</div>
+            <div class="timeline-body"><p>Yes, I do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cthoyt on 2025-09-02 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sfstoolbox/sfs-python/pulls/187.html">sfstoolbox/sfs-python#187</a> on 2025-09-04 07:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:54 UTC
+    </footer>
+</body>
+</html>

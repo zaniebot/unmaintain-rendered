@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-platform requirement.txt export - astral-sh/uv #14967</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multi-platform requirement.txt export</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14967">#14967</a>
+        opened by <a href="https://github.com/LatreviousYI">@LatreviousYI</a>
+        on 2025-07-30 09:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LatreviousYI">@LatreviousYI</a> on 2025-07-30 09:25</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>sometimes,i need export a requirement.txt,this can be use by Multi-platform like window or linux ,some Third-party libraries can not install in linux like pywin32,but i develop in window ,like poetry can export public requirement.txt like this</p>
+<p><img width="742" height="159" alt="Image" src="https://github.com/user-attachments/assets/256ddd17-4f20-4326-9bb2-284b39d0be4d" /></p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @LatreviousYI on 2025-07-30 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-30 09:41</div>
+            <div class="timeline-body"><p>You can use the <code>--universal</code> flag to export a multi-platform <code>requirements.txt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-31 01:20</div>
+            <div class="timeline-body"><p>Can you please provide a complete reproduction? What are your input files? What commands are you running exactly? What do you expect to &quot;depend on&quot; <code>pywin32</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LatreviousYI">@LatreviousYI</a> on 2025-07-31 01:28</div>
+            <div class="timeline-body"><blockquote>
+<p>You can use the <code>--universal</code> flag to export a multi-platform <code>requirements.txt</code>.
+Ok, but I tried it, and the result was not what I wanted.</p>
+</blockquote>
+<p><img width="824" height="317" alt="Image" src="https://github.com/user-attachments/assets/1932bff6-e83b-4724-8d1a-43d82e8597bd" />
+I think it's because  <code>--no-strip-markers</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LatreviousYI">@LatreviousYI</a> on 2025-07-31 01:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you please provide a complete reproduction? What are your input files? What commands are you running exactly? What do you expect to &quot;depend on&quot; <code>pywin32</code>?</p>
+</blockquote>
+<p>Since I’m developing on Windows, some libraries handle different platforms differently. Some libraries have underlying dependencies that include pywin32, but installing this library on Linux will result in an error. This is my command:
+<code>uv pip compile --universal .\pyproject.toml -o requirements.txt.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-31 01:39</div>
+            <div class="timeline-body"><p>We need the <code>pyproject.toml</code> file that you're using as an input. Without it, there's no way of knowing what the correct output is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LatreviousYI">@LatreviousYI</a> on 2025-07-31 01:41</div>
+            <div class="timeline-body"><blockquote>
+<p>We need the <code>pyproject.toml</code> file that you're using as an input. Without it, there's no way of knowing what the correct output is.</p>
+</blockquote>
+<p>ok This is my pyproject.toml</p>
+<pre><code>[project]
+name = &quot;json-migration&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;aiomysql&gt;=0.2.0&quot;,
+    &quot;pywin32&gt;=311&quot;,
+]
+[tool.ruff]
+line-length = 50
+indent-width = 4
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-31 01:50</div>
+            <div class="timeline-body"><p>The output looks correct, then. You've declared that your project depends on <code>pywin32&gt;=311</code>, so it will always be included in the output. If you only want it on Windows, then you need to do something like <code>pywin32&gt;=311 ; platform_system == &quot;Windows&quot;</code> in your <code>project.dependencies</code> list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LatreviousYI">@LatreviousYI</a> on 2025-07-31 01:59</div>
+            <div class="timeline-body"><blockquote>
+<p>The output looks correct, then. You've declared that your project depends on <code>pywin32&gt;=311</code>, so it will always be included in the output. If you only want it on Windows, then you need to do something like <code>pywin32&gt;=311 ; platform_system == &quot;Windows&quot;</code> in your <code>project.dependencies</code> list.</p>
+</blockquote>
+<p>I know that when pywin32 is a second- or third-level dependency, platform markers are automatically added. But if it is a first-level dependency, they won’t be. like this
+by the way  thank all of you help me I appreciate</p>
+<pre><code>[project]
+name = &quot;json-migration&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;aiomysql&gt;=0.2.0&quot;,
+    &quot;nb-log&gt;=13.7&quot;,
+]
+[tool.ruff]
+line-length = 50
+indent-width = 4
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+[[tool.uv.index]]
+url=&quot;https://pypi.tuna.tsinghua.edu.cn/simple&quot;
+default=true
+</code></pre>
+<pre><code># This file was autogenerated by uv via the following command:
+#    uv pip compile --universal .\pyproject.toml -o requirements.txt
+aiomysql==0.2.0
+    # via json-migration (./pyproject.toml)
+attrs==25.3.0
+    # via service-identity
+certifi==2025.7.14
+    # via requests
+cffi==1.17.1 ; platform_python_implementation != 'PyPy'
+    # via cryptography
+chained-mode-time-tool==0.4
+    # via nb-log
+charset-normalizer==3.4.2
+    # via requests
+concurrent-log-handler==0.9.23
+    # via nb-log
+cryptography==45.0.5
+    # via service-identity
+deprecated==1.2.14
+    # via nb-log
+idna==3.10
+    # via requests
+logging-tree==1.10
+    # via nb-log
+nb-filelock==0.9
+    # via nb-log
+nb-libs==2.0
+    # via nb-log
+nb-log==13.7
+    # via
+    #   json-migration (./pyproject.toml)
+    #   nb-libs
+portalocker==2.3.2
+    # via
+    #   concurrent-log-handler
+    #   nb-filelock
+pyasn1==0.6.1
+    # via
+    #   pyasn1-modules
+    #   service-identity
+pyasn1-modules==0.4.2
+    # via service-identity
+pycparser==2.22 ; platform_python_implementation != 'PyPy'
+    # via cffi
+pymysql==1.1.1
+    # via aiomysql
+python-json-logger==0.1.10
+    # via nb-log
+pytz==2025.2
+    # via
+    #   chained-mode-time-tool
+    #   nb-libs
+pywin32==311 ; sys_platform == 'win32'
+    # via portalocker
+requests==2.32.4
+    # via nb-log
+service-identity==24.2.0
+    # via nb-log
+tomorrow3==1.1.0
+    # via nb-log
+tzdata==2025.2 ; sys_platform == 'win32'
+    # via tzlocal
+tzlocal==5.3.1
+    # via nb-libs
+urllib3==2.5.0
+    # via requests
+wrapt==1.17.2
+    # via deprecated
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-31 02:00</div>
+            <div class="timeline-body"><p>That looks right to me.</p>
+<p>If you define:</p>
+<pre><code class="language-toml">[project]
+name = &quot;json-migration&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;aiomysql&gt;=0.2.0&quot;,
+    &quot;pywin32&gt;=311&quot;,
+]
+</code></pre>
+<p>Then it is correct to output <code>pywin32==311</code> without any markers, since you don't have any markers on your requirement definition. You're saying that you <em>always</em> want <code>pywin32</code> to be installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-31 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LatreviousYI">@LatreviousYI</a> on 2025-07-31 02:02</div>
+            <div class="timeline-body"><blockquote>
+<p>That looks right to me.</p>
+<p>If you define:</p>
+<p>[project]
+name = &quot;json-migration&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+&quot;aiomysql&gt;=0.2.0&quot;,
+&quot;pywin32&gt;=311&quot;,
+]
+Then it is correct to output <code>pywin32==311</code> without any markers, since you don't have any markers on your requirement definition. You're saying that you <em>always</em> want <code>pywin32</code> to be installed.</p>
+</blockquote>
+<p>thank you so much and thank you for your patience</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

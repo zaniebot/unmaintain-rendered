@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How do I replace using `python -m` with `uv` - astral-sh/uv #6914</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How do I replace using `python -m` with `uv`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6914">#6914</a>
+        opened by <a href="https://github.com/mattpodolak">@mattpodolak</a>
+        on 2024-09-01 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mattpodolak">@mattpodolak</a> on 2024-09-01 17:03</div>
+            <div class="timeline-body"><p>To download a language for spacy, normally I would run  <code>python -m spacy download</code>, I  can't seem to figure out the <code>uv</code> way of doing this.</p>
+<p><strong>Version:</strong> <code>uv 0.4.1 (823f23e22 2024-08-30)</code></p>
+<h3>as a package</h3>
+<p>I've tried adding it to my workspace and I get the error when i try to use uv run:</p>
+<pre><code>$ uv run --package spacy download es_core_news_md
+error: Package `spacy` not found in workspace
+</code></pre>
+<p>from my <code>pyproject.toml</code>:</p>
+<pre><code>dependencies = [
+    ....,
+    &quot;spacy&gt;=3.7.6&quot;,
+]
+
+[tool.uv.sources]
+spacy = { workspace = true }
+</code></pre>
+<p>Running <code>uv add spacy</code> gives me this error:</p>
+<pre><code>  Caused by: Failed to parse entry for: `spacy`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+<h3>as a tool</h3>
+<pre><code>$ uv tool run spacy download es_core_news_md
+...\uv\tools\spacy\Scripts\python.exe: No module named pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 17:16</div>
+            <div class="timeline-body"><p>Good question. <code>{ workspace = true }</code> is intended for other <em>local</em> projects in your workspace (like, if you had a subdirectory that was a standalone Python project, and you wanted to import it from the root of your project).</p>
+<p>You have a few different options...</p>
+<ol>
+<li>If you're outside of a project, and are just trying to run this as a one-off command, you could <code>uv run --with spacy -- spacy download es_core_news_md</code>. The <code>--with spacy</code> says &quot;Download and install Spacy before running the command&quot;, and then the contents after the <code>--</code> are the actual command (<code>spacy download es_core_news_md</code>).</li>
+</ol>
+<pre><code class="language-console">❯  uv run --with spacy spacy download es_core_news_md
+Collecting es-core-news-md==3.7.0
+  Downloading https://github.com/explosion/spacy-models/releases/download/es_core_news_md-3.7.0/es_core_news_md-3.7.0-py3-none-any.whl (42.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.3/42.3 MB 42.5 MB/s eta 0:00:00
+Requirement already satisfied: spacy&lt;3.8.0,&gt;=3.7.0 in /Users/crmarsh/.cache/uv/archive-v0/g5MPE_L8O18cSfqHr7c9v/lib/python3.12/site-packages (from es-core-news-md==3.7.0) (3.7.6)
+Requirement already satisfied: spacy-legacy&lt;3.1.0,&gt;=3.0.11 in /Users/crmarsh/.cache/uv/archive-v0/g5MPE_L8O18cSfqHr7c9v/lib/python3.12/site-packages (from spacy&lt;3.8.0,&gt;=3.7.0-&gt;es-core-news-md==3.7.0) (3.0.12)
+Requirement already satisfied: spacy-loggers&lt;2.0.0,&gt;=1.0.0 in /Users/crmarsh/.cache/uv/archive-v0/g5MPE_L8O18cSfqHr7c9v/lib/python3.12/site-packages (from spacy&lt;3.8.0,&gt;=3.7.0-&gt;es-core-news-md==3.7.0) (1.0.5)
+Requirement already satisfied: murmurhash&lt;1.1.0,&gt;=0.28.0 in /Users/crmarsh/.cache/uv/archive-v0/g5MPE_L8O18cSfqHr7c9v/lib/python3.12/site-packages (from spacy&lt;3.8.0,&gt;=3.7.0-&gt;es-core-news-md==3.7.0) (1.0.10)
+Requirement already satisfied: cymem&lt;2.1.0,&gt;=2.0.2 in /Users/crmarsh/.cache/uv/archive-v0/g5MPE_L8O18cSfqHr7c9v/lib/python3.12/site-packages (from spacy&lt;3.8.0,&gt;=3.7.0-&gt;es-core-news-md==3.7.0) (2.0.8)
+...
+</code></pre>
+<p>Alternatively, you can make a <code>pyproject.toml</code> like:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;spacy&gt;=3.7.6&quot;]
+</code></pre>
+<p>And then run <code>uv run -- spacy download es_core_news_md</code> from that directory. In this case, uv will lock and sync your project (which lists <code>spacy</code> as a dependency), then run <code>spacy download es_core_news_md</code> in your project's virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 17:16</div>
+            <div class="timeline-body"><p>(In both examples, the <code>--</code> is optional, I'm just including it for clarity.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattpodolak">@mattpodolak</a> on 2024-09-01 17:21</div>
+            <div class="timeline-body"><p>Thanks for the quick response @charliermarsh ! I was able to download the model 🙌🏽</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mattpodolak on 2024-09-01 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-03 14:14</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/uv/issues/6638</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lrvdijk">@lrvdijk</a> on 2024-12-03 00:57</div>
+            <div class="timeline-body"><p>I have listed spacy as one of my dependencies in my pyproject.toml (for a completely <code>uv</code> managed app package).</p>
+<p>However, when I run <code>uv run spacy download en_core_web_sm</code>, I get the error <code>[...]/.venv/bin/python3: No module named pip</code>.</p>
+<p>Do you know how I can fix this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 17:11</div>
+            <div class="timeline-body"><p>@lrvdijk probably with <code>uv venv --seed</code> or <code>uv pip install pip</code>, though the specifics depend on more information about the error.</p>
+<p>Please open new issues instead of bumping old ones though, see #9452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devhero">@devhero</a> on 2025-04-27 10:27</div>
+            <div class="timeline-body"><p>@zanieb <code>uv pip install pip</code> works, thanks!
+I prefer use: <code>uv add pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GregSotiropoulos">@GregSotiropoulos</a> on 2025-12-16 11:34</div>
+            <div class="timeline-body"><p>Since I didn't see anyone mentioning this: I got the Spacy models to install fine <strong>without installing pip</strong> in my virtual environment, by adding the wheel URL for the model in pyproject.toml:</p>
+<pre><code>[project]
+...
+dependencies = [
+    &quot;en_core_web_trf @ https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.8.0/en_core_web_trf-3.8.0-py3-none-any.whl&quot;,
+    ...
+]
+</code></pre>
+<p>Links to all model wheels can be found at the <a href="https://github.com/explosion/spacy-models/releases">spacy models releases page</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:36 UTC
+    </footer>
+</body>
+</html>

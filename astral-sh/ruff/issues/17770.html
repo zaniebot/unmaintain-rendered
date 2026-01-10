@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`S110` only works for `Exception` not other exception types for multi-line `try` blocks - astral-sh/ruff #17770</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`S110` only works for `Exception` not other exception types for multi-line `try` blocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17770">#17770</a>
+        opened by <a href="https://github.com/shearer12345">@shearer12345</a>
+        on 2025-05-01 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shearer12345">@shearer12345</a> on 2025-05-01 16:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For multi-line <code>try</code> blocks <code>S110</code> only detects for <code>Exception</code> - other exception types (e.g. <code>RuntimeError</code>) stop it detecting.</p>
+<p>See <a href="https://play.ruff.rs/b6777ce2-5c56-4d5e-967e-d1fe85a9e309">playground link for reproduction</a></p>
+<p>Also relates to https://github.com/astral-sh/ruff/issues/8593 - where <code>S110</code> is suggested for that case.</p>
+<pre><code class="language-python"># Detected by S110
+try:
+    i = 42
+    j = 24
+except Exception:
+    pass
+
+# Not detected by S110
+try:
+    i = 42
+    j = 24
+except RuntimeError:
+    pass
+</code></pre>
+<p>gives</p>
+<pre><code class="language-bash">$ ruff check --isolated --select S110 test.py
+test.py:3:1: S110 `try`-`except`-`pass` detected, consider logging the exception
+  |
+1 |   try:
+2 |       i = 42
+3 | / except Exception:
+4 | |     pass
+  | |________^ S110
+5 |
+6 |   try:
+  |
+
+Found 1 error.
+
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 17:12</div>
+            <div class="timeline-body"><p>Does setting <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-bandit_check-typed-exception"><code>checked-typed-exception</code></a> work for you (<a href="https://play.ruff.rs/97395e63-9e60-463a-bc06-8403752d6633">playground</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-05-01 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shearer12345">@shearer12345</a> on 2025-05-01 19:29</div>
+            <div class="timeline-body"><p>Thanks Micha,</p>
+<p>I hadn't seen that setting - I'd expect them to be linked from the specific
+rule page (https://docs.astral.sh/ruff/rules/try-except-pass/), not just
+the general flake8-bandit page (
+https://docs.astral.sh/ruff/rules/#flake8-bandit-s).</p>
+<p>Is that a reasonable expectation?</p>
+<p>Using checked-typed-exception does work for me. Thanks</p>
+<p>John</p>
+<p>On Thu, 1 May 2025, 18:12 Micha Reiser, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p><em>MichaReiser</em> left a comment (astral-sh/ruff#17770)
+<a href="https://github.com/astral-sh/ruff/issues/17770#issuecomment-2845282964">https://github.com/astral-sh/ruff/issues/17770#issuecomment-2845282964</a></p>
+<p>Does setting checked-typed-exception
+<a href="https://docs.astral.sh/ruff/settings/#lint_flake8-bandit_check-typed-exception">https://docs.astral.sh/ruff/settings/#lint_flake8-bandit_check-typed-exception</a>
+work for you (playground
+<a href="https://play.ruff.rs/97395e63-9e60-463a-bc06-8403752d6633">https://play.ruff.rs/97395e63-9e60-463a-bc06-8403752d6633</a>)</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/issues/17770#issuecomment-2845282964">https://github.com/astral-sh/ruff/issues/17770#issuecomment-2845282964</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AA5K4LKKJC7PESXHUYWFKKD24JIXPAVCNFSM6AAAAAB4IFY75SVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDQNBVGI4DEOJWGQ">https://github.com/notifications/unsubscribe-auth/AA5K4LKKJC7PESXHUYWFKKD24JIXPAVCNFSM6AAAAAB4IFY75SVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDQNBVGI4DEOJWGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+<p>--
+John Shearer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17786.html">astral-sh/ruff#17786</a> on 2025-05-02 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-02 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shearer12345">@shearer12345</a> on 2025-05-02 07:28</div>
+            <div class="timeline-body"><p>Awesome speedy work. Thanks Micha</p>
+<p>On Fri, 2 May 2025, 08:26 Micha Reiser, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Closed #17770 <a href="https://github.com/astral-sh/ruff/issues/17770">https://github.com/astral-sh/ruff/issues/17770</a> as
+completed via #17786 <a href="https://github.com/astral-sh/ruff/pull/17786">https://github.com/astral-sh/ruff/pull/17786</a>.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/issues/17770#event-17496319032">https://github.com/astral-sh/ruff/issues/17770#event-17496319032</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AA5K4LJFVCMX7WCPIOZDX7324MMZZAVCNFSM6AAAAAB4IFY75SVHI2DSMVQWIX3LMV45UABCJFZXG5LFIV3GK3TUJZXXI2LGNFRWC5DJN5XDWMJXGQ4TMMZRHEYDGMQ">https://github.com/notifications/unsubscribe-auth/AA5K4LJFVCMX7WCPIOZDX7324MMZZAVCNFSM6AAAAAB4IFY75SVHI2DSMVQWIX3LMV45UABCJFZXG5LFIV3GK3TUJZXXI2LGNFRWC5DJN5XDWMJXGQ4TMMZRHEYDGMQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

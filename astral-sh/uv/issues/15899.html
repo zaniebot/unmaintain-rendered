@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --offline-first flag to uvx to request from index if necessary but otherwise use local cache - astral-sh/uv #15899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --offline-first flag to uvx to request from index if necessary but otherwise use local cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15899">#15899</a>
+        opened by <a href="https://github.com/raoulj">@raoulj</a>
+        on 2025-09-16 20:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/raoulj">@raoulj</a> on 2025-09-16 20:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have uvx commands I'm running in cron as a production system.  I want the command I'm running to be the minimal code necessary to run a script:</p>
+<pre><code class="language-cron">0 0 * * * /path/to/uvx --index private_index somepackge@1.2.3 some_script arg1
+</code></pre>
+<p>I love that updating production can be as simple as updating the version number.  A breath of fresh air.  Simple.</p>
+<p>But I found that if the index is down, uvx hangs.  I want to remove the dependency on my internal index being up in order for production to run.  I can use --offline but if the cache is empty or cleared (which could happen on this system if the user uses uv and clears the cache) it'll break prod!</p>
+<p>So I ended up making a little script I call <code>uvx-resilient</code> which is:</p>
+<pre><code class="language-bash">
+#!/bin/bash
+# uvx-resilient
+# This exists because there's no way to read the cache first, else hit the index
+
+UV=$HOME/.local/bin/uv
+
+# Extract uv args
+uv_args=()
+while [[ $# -gt 0 ]] &amp;&amp; [[ &quot;$1&quot; != *@* ]] || [[ &quot;$1&quot; == --* ]]; do
+    uv_args+=(&quot;$1&quot;)
+    shift
+done
+
+tool=&quot;$1&quot;
+shift
+
+# Extract package and version
+pkg=$(echo &quot;$tool&quot; | cut -d'@' -f1 | cut -d'[' -f1)
+version=$(echo &quot;$tool&quot; | cut -d'@' -f2)
+
+# Check if tool is not installed with correct version
+if ! $UV tool list | grep -q &quot;^$pkg v$version$&quot;; then
+    $UV tool install &quot;${uv_args[@]}&quot; --force &quot;$tool&quot; || exit 1
+fi
+
+exec $UV tool run --offline &quot;${uv_args[@]}&quot; --from &quot;$tool&quot; &quot;$@&quot;
+
+</code></pre>
+<p>I figure others may be self-hosting their indexes and want to make this all more resilient.  Thanks for creating uv.  Great tool.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @raoulj on 2025-09-16 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add --offline-first flag to uvx to request from index if necessary but otherwise using local cache" to "Add --offline-first flag to uvx to request from index if necessary but otherwise use local cache" by @raoulj on 2025-09-16 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 20:45</div>
+            <div class="timeline-body"><p>Thanks for the details, this is a duplicate of https://github.com/astral-sh/uv/issues/10380 though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2025-09-16 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raoulj">@raoulj</a> on 2025-09-16 20:48</div>
+            <div class="timeline-body"><p>Apologies!  Didn't see that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @raoulj on 2025-09-16 20:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

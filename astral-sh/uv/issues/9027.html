@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to set `--check-url` option in `pyproject.toml` or `uv.toml` - astral-sh/uv #9027</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to set `--check-url` option in `pyproject.toml` or `uv.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9027">#9027</a>
+        opened by <a href="https://github.com/bruckner">@bruckner</a>
+        on 2024-11-11 18:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bruckner">@bruckner</a> on 2024-11-11 18:53</div>
+            <div class="timeline-body"><p>I'm using the new <code>--check-url</code> feature introduced in https://github.com/astral-sh/uv/pull/8531 to support to ability to <code>uv publish</code> skip uploads when an artifact already exists. It's great!</p>
+<p>This is a request for a minor enhancement: to be able to set <code>check-url</code> in a configuration file instead of only on the command line.</p>
+<p>Running with the parameter set on the command line I get the expected behavior:</p>
+<pre><code>$ uv publish --check-url https://&lt;my-pypi-url&gt; --verbose
+...snip...
+File &lt;my-package&gt;+gf9b8e7c45.d20241111.tar.gz already exists, skipping
+</code></pre>
+<p>But when I tried moving it to my <code>pyproject.toml</code>:</p>
+<pre><code>[tool.uv]
+publish-url = &quot;&lt;my-pypi-url&gt;&quot;
+check-url = &quot;https://&lt;my-pypi-url&gt;&quot;
+</code></pre>
+<p>And got the warning message:</p>
+<pre><code>$ uv publish --verbose
+...snip...
+warning: Failed to parse `pyproject.toml` during settings discovery:
+  TOML parse error at line 22, column 1
+     |
+  22 | check-url = &quot;https://&lt;my-pypi-url&gt;&quot;
+     | ^^^^^^^^^
+  unknown field `check-url`, expected one of `native-tls`, `offline`, `no-cache`, `cache-dir`, `preview`, `python-preference`, `python-downloads`, `concurrent-downloads`, `concurrent-builds`, `concurrent-installs`, `index`, `index-url`, `extra-index-url`, `no-index`, `find-links`, `index-strategy`, `keyring-provider`, `allow-insecure-host`, `resolution`, `prerelease`, `dependency-metadata`, `config-settings`, `no-build-isolation`, `no-build-isolation-package`, `exclude-newer`, `link-mode`, `compile-bytecode`, `no-sources`, `upgrade`, `upgrade-package`, `reinstall`, `reinstall-package`, `no-build`, `no-build-package`, `no-binary`, `no-binary-package`, `publish-url`, `trusted-publishing`, `pip`, `cache-keys`, `override-dependencies`, `constraint-dependencies`, `environments`, `workspace`, `sources`, `managed`, `package`, `default-groups`, `dev-dependencies`
+</code></pre>
+<p>The expected behavior for this enhancement would be that setting <code>check-url</code> in a configuration file has the same effect as if it were set on the command line.</p>
+<p>For reference, I've seen the behavior described above with uv <code>0.5.0</code> and <code>0.5.1</code> on macos and ubuntu.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 19:30</div>
+            <div class="timeline-body"><p>I believe this would be solved by my suggestion at https://github.com/astral-sh/uv/pull/8531#issuecomment-2442698889</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2024-11-11 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 19:40</div>
+            <div class="timeline-body"><p>Oh that's a nice solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bruckner">@bruckner</a> on 2024-11-11 19:51</div>
+            <div class="timeline-body"><p>@zanieb thanks for the super quick uptake. I like the suggestion to consolidate under the Index config, partly for reasons tangential to this issue. I use Google Artifact Registry and have to configure auth two distinct ways for read and write (username in the URL for reads, username via <code>--username</code> for writes). This was confusing to get working initially—would be really nice to consolidate all URLs and auth config under one localized umbrella for the Index.</p>
+<p>That said, a quick fix for this issue would be valuable pending any discussion planning required for something like the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9032.html">astral-sh/uv#9032</a> on 2024-11-11 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bruckner">@bruckner</a> on 2024-11-11 21:19</div>
+            <div class="timeline-body"><p>@konstin - when I looked at your code I saw this appears to be a trivial extension so I put up a PR ^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-11-12 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-11-12 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bruckner">@bruckner</a> on 2024-11-25 23:34</div>
+            <div class="timeline-body"><p>@zanieb I understand there are internal discussions about next steps here and saw your comment on the PR. I don't want to preempt that process, but how would you feel about landing the simple extension while that plays out? It wouldn't create any additional interface exposure beyond what's already in, and would be valuable improvement for build configuration in projects like mine. Let me know what you think, I'll be happy to rebase and get the PR rolling if you give the green light.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 00:37</div>
+            <div class="timeline-body"><p>Ideally, we'd just deliver the full feature in the very near future. Let me check back in with the team to see where that's at.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-26 08:32</div>
+            <div class="timeline-body"><p>I'm sorry to delay this for now, but i'm hesistant to merge since i want to see how <code>--index</code> would play out against this, it might be better to only advertise <code>--index</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 18:26</div>
+            <div class="timeline-body"><p>We talked a bit more about this — the <code>--index</code> work is probably a ways out and we already have a <code>publish_url</code> configuration option so  I think this makes sense to add for short-term feature parity. We may hide it in the future, once we implement the new interface. If you want to rebase, I'll review the pul request again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bruckner">@bruckner</a> on 2024-12-01 05:35</div>
+            <div class="timeline-body"><p>@konstin @zanieb - thanks for the discussion, sounds like a plan. I rebased the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-02 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-02 23:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate invalid UTF-8? - clap-rs/clap #763</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Validate invalid UTF-8?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/763">#763</a>
+        opened by <a href="https://github.com/sector-f">@sector-f</a>
+        on 2016-12-03 07:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sector-f">@sector-f</a> on 2016-12-03 07:15</div>
+            <div class="timeline-body"><p>Having custom validators is very useful, but (as far as I can tell) it's impossible to validate things that aren't UTF-8.</p>
+<p>Specifically, the signature is</p>
+<pre><code class="language-rust">fn validator&lt;F&gt;(self, f: F) -&gt; Self where F: Fn(String) -&gt; Result&lt;(), String&gt; + 'static
+</code></pre>
+<p>The validator function must take a String rather than an OsString. Doesn't this mean it will panic if you pass an argument that isn't valid UTF-8?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-03 16:42</div>
+            <div class="timeline-body"><p>This is true, yes. The problem with having validators for invalid UTF-8 is OsStings are harder to work with if you only want valid UTF-8. So by allowing validators which could handle invalid UTF-8 you make it harder for the majority case.</p>
+<p>Now having said that I'm not against adding a <code>Arg::validator_os</code> which does exactly what you're asking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sector-f">@sector-f</a> on 2016-12-04 00:26</div>
+            <div class="timeline-body"><blockquote>
+<p>So by allowing validators which could handle invalid UTF-8 you make it harder for the majority case.</p>
+</blockquote>
+<p>Well, since <code>validator</code> and <code>validator_os</code> are two separate functions, couldn't the majority simply use <code>validator</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-04 00:52</div>
+            <div class="timeline-body"><p>Yes absolutely. But <code>validator_os</code> doesn't exist yet. I meant that <em>prior to</em> making a <code>validator_os</code> those assumptions would be true. :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @kbknapp on 2016-12-04 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-04 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2016-12-04 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-04 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-12-04 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-04 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-04 00:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glowing-chemist">@glowing-chemist</a> on 2016-12-08 12:22</div>
+            <div class="timeline-body"><p>if i'm looking to start contributing do i understand it correctly that validator would check to see if its arguments conformed to a specification but wasn't necessarily valid UTF-8?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-10 04:47</div>
+            <div class="timeline-body"><p>@glowing-chemist Correct. You can pretty much copy/paste the <code>Arg::validator</code> code into an <code>Arg::validator_os</code> (in <code>src/args/arg.rs</code>) except use an <code>OsString</code> instead of <code>String</code></p>
+<p>You'll also need to make the appropriate additions to <code>src/args/arg_builder/valued.rs</code> which is the basis for all args which contain values.</p>
+<p>Next you'll have to update <code>src/args/any_arg.rs</code> which is a trait for querying information about any kind of arg. By adding a <code>validator_os</code> you'll have to add the implementation in four places:</p>
+<ul>
+<li><code>src/args/arg_builder/{option, positional}.rs</code> which could actually contian vlaidators</li>
+<li><code>src/args/arg_builder/flag.rs</code> which can't, so it simply returns <code>None</code></li>
+<li><code>src/app/mod.rs</code> which is just like <code>flag.rs</code> and can't contain a validator, so it just returns <code>None</code> as well.</li>
+</ul>
+<p>Finally, you'll have to update <code>src/app/parser.rs</code> which is where the actual parsing and validation is done. Look for where <code>validators</code> are checked and applied, and simply do the same for any <code>validator_os</code>s.</p>
+<p>Let me know if you get stuck :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glowing-chemist">@glowing-chemist</a> on 2016-12-25 18:15</div>
+            <div class="timeline-body"><p>@kbknapp Thanks, sorry it took so long but I should be putting in a pull request now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 03:41</div>
+            <div class="timeline-body"><p>Closed with #784</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-12-31 03:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:22 UTC
+    </footer>
+</body>
+</html>

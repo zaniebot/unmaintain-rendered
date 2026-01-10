@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last argument needs to be quoted - clap-rs/clap #1344</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Last argument needs to be quoted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1344">#1344</a>
+        opened by <a href="https://github.com/marceloboeira">@marceloboeira</a>
+        on 2018-09-24 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marceloboeira">@marceloboeira</a> on 2018-09-24 09:46</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.27.0 (3eda71b00 2018-06-19)</code></p>
+<h3>Affected Version of clap</h3>
+<pre><code>&quot;checksum clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)&quot; = &quot;b957d88f4b6a63b9d70d5f454ac8011819c6efa7727858f458ab71c756ce2d3e&quot;
+</code></pre>
+<h3>Expected Behavior Summary</h3>
+<p>My command line tool is supposed to work like this
+<code>foo -u &lt;user&gt; &lt;command&gt;</code>
+e.g.:
+<code>foo -u jack echo s</code>
+<code>foo -u paul ls -al</code></p>
+<p>So, I need to get options such as user, but the <code>&lt;command&gt;</code> itself, I need to be the <code>rest</code> of the args.</p>
+<h3>Actual Behavior Summary</h3>
+<p>The code below, results on a behavior where I can't get the value of <code>&lt;command&gt;</code> unless is quoted:</p>
+<p><code>foo -u jack echo s</code> -&gt; <code>error: Found argument 's' which wasn't expected, or isn't valid in this context</code></p>
+<p>whereas:
+<code>foo -u jack 'echo s'</code> works fine.</p>
+<p>Is there anyway of avoiding the quotes?</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">    let matches = App::new(&quot;foo&quot;)
+                          .version(&quot;0.1&quot;)
+                          .arg(Arg::with_name(&quot;user&quot;)
+                               .short(&quot;u&quot;)
+                               .long(&quot;user&quot;)
+                               .required(true)
+                               .takes_value(true))
+                          .arg(Arg::with_name(&quot;command&quot;)
+                               .help(&quot;The command to run&quot;)
+                               .required(true)
+                               .takes_value(true)).get_matches();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../marceloboeira/awsudo/issues/3.html">marceloboeira/awsudo#3</a> on 2018-09-24 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marceloboeira">@marceloboeira</a> on 2019-03-25 13:14</div>
+            <div class="timeline-body"><p>Any updates? Is the project still maintained?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marceloboeira">@marceloboeira</a> on 2019-03-25 20:42</div>
+            <div class="timeline-body"><p>If it's of anyones interest:</p>
+<p>By default, clap will only parse any argument once. This means that in <code>-u jack echo s</code>, it will parse <code>-u jack</code> as the &quot;user&quot; option, <code>echo</code> as the &quot;command&quot; argument, and have an argument <code>s</code> that it doesn't know what to do with (hence it &quot;wasn't expected&quot;).</p>
+<p>I'm assuming you want all of the non-option arguments instead of just one, in which case setting <code>.multiple(true)</code> on your non-option argument (&quot;command&quot;) is what you want. In that case, it will parse all remaining, non-option arguments as &quot;command&quot;, and give you a list back with each of the arguments (which you can deal with as you please):</p>
+<pre><code class="language-rust">let matches = App::new(&quot;foo&quot;)
+    .version(&quot;0.1&quot;)
+    .arg(
+        Arg::with_name(&quot;user&quot;)
+            .short(&quot;u&quot;)
+            .long(&quot;user&quot;)
+            .required(true)
+            .takes_value(true),
+    )
+    .arg(
+        Arg::with_name(&quot;command&quot;)
+            .help(&quot;The command to run&quot;)
+            .required(true)
+            .takes_value(true)
+            .multiple(true),
+    )
+    // parse as if program ran as:   foo -u jack echo s
+    .get_matches_from(&amp;[&quot;foo&quot;, &quot;-u&quot;, &quot;jack&quot;, &quot;echo&quot;, &quot;s&quot;]);
+
+// get command arguments
+let command: Vec&lt;&amp;str&gt; = matches.values_of(&quot;command&quot;).unwrap().collect();
+println!(&quot;{:?}&quot;, command); // [&quot;echo&quot;, &quot;s&quot;]
+</code></pre>
+<p>More info: https://stackoverflow.com/questions/55345730/how-can-i-prevent-the-last-argument-from-needing-to-be-quoted-with-clap/55345899#55345899</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @marceloboeira on 2019-03-25 20:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:52 UTC
+    </footer>
+</body>
+</html>

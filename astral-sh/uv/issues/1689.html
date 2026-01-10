@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pyvenv.cfg` version-info doesn't match `virtualenv`'s - astral-sh/uv #1689</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pyvenv.cfg` version-info doesn't match `virtualenv`'s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1689">#1689</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2024-02-19 12:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/akx">@akx</a> on 2024-02-19 12:40</div>
+            <div class="timeline-body"><p>I was playing around trying to make <code>pre-commit</code> use <code>uv venv</code> and <code>uv pip</code> (because why not!), and it ends up reporting</p>
+<pre><code>virtualenv python version did not match created version:
+- actual version: 3.12.1.final.0
+- expected version: 3.12
+</code></pre>
+<p>(which I can work around while patching things over there).</p>
+<p>I tracked this down to https://github.com/astral-sh/uv/blob/b76efc62a72ed8031aa91ae80bb1b4a159bd3d21/crates/uv-interpreter/src/get_interpreter_info.py#L8-L13 trimming things, but changing that breaks other things (&quot;Querying Python at <code>/opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin/python3.12</code> did not return the expected data: after parsing 3.12.1, found &quot;.final.0&quot; after it, which is not part of a valid version)&quot; so I'm not sure that's the right way to go here.</p>
+<p>Just thought I'd report this in case it is (or should be) actionable – in case it's not, never mind 😁</p>
+<h2>Environment</h2>
+<ul>
+<li>uv: 0.1.5</li>
+<li>Platform: macOS 14.2.1, Homebrew-installed Python 3.12.1.</li>
+</ul>
+<h3>diff between pyvenv.cfg created by <code>virtualenv</code> 20.24.6 and <code>uv</code> 0.1.5</h3>
+<pre><code class="language-patch">1c1
+&lt; home = /opt/homebrew/opt/python@3.12/bin
+---
+&gt; home = /opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin
+3,4c3,4
+&lt; version_info = 3.12.1.final.0
+&lt; virtualenv = 20.24.6
+---
+&gt; version_info = 3.12
+&gt; gourgeist = 0.0.4
+8c8
+&lt; base-executable = /opt/homebrew/opt/python@3.12/bin/python3.12
+---
+&gt; base-executable = /opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+</code></pre>
+<h3>diff between pyvenv.cfg created by <code>venv</code> shipped with said Python and <code>uv</code> 0.1.5</h3>
+<pre><code class="language-patch">1a2,4
+&gt; implementation = CPython
+&gt; version_info = 3.12
+&gt; gourgeist = 0.0.4
+3,5c6,8
+&lt; version = 3.12.1
+&lt; executable = /opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+&lt; command = /Users/akx/envs/uv/bin/python3.12 -m venv /Users/akx/build/uv/foofoo-venv
+---
+&gt; base-prefix = /opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12
+&gt; base-exec-prefix = /opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12
+&gt; base-executable = /opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-19 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-02-19 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @dhruvmanila on 2024-02-20 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 01:46</div>
+            <div class="timeline-body"><p>We now match <code>venv</code> when reporting the Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-04 01:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

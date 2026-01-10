@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument cannot require a particular value of positional argument - clap-rs/clap #764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument cannot require a particular value of positional argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/764">#764</a>
+        opened by <a href="https://github.com/nagisa">@nagisa</a>
+        on 2016-12-04 14:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nagisa">@nagisa</a> on 2016-12-04 14:34</div>
+            <div class="timeline-body"><h3>Affected Version of clap</h3>
+<ul>
+<li>2.19.1</li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<p>The application works <em>or</em> clap reports a misconfiguration error.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Instead clap complains about some required argument not being provided</p>
+<pre><code>     Running `.../kt --error 0.25 channel`
+error: The following required arguments were not provided:
+
+USAGE:
+    kt &lt;ELEMENT&gt; --error &lt;error&gt;
+</code></pre>
+<p>and doesn’t accept either of <code>--error 0.25</code> or <code>channel</code> positional argument in isolation:</p>
+<pre><code>     Running `.../kt --error 0.25`
+error: The following required arguments were not provided:
+
+USAGE:
+    kt --error &lt;error&gt;
+</code></pre>
+<pre><code>     Running `.../kt channel`
+error: The following required arguments were not provided:
+
+USAGE:
+    kt &lt;ELEMENT&gt; --error &lt;error&gt;
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code>        .arg(Arg::with_name(&quot;error&quot;)
+             .long(&quot;error&quot;)
+             .requires(&quot;channel&quot;) // NB: particular value of a positional argument
+             .default_value(&quot;0.25&quot;)
+        )
+        .arg(Arg::with_name(&quot;element&quot;)
+             .value_name(&quot;ELEMENT&quot;)
+             .possible_value(&quot;channel&quot;)
+             .min_values(1)
+        );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-05 02:16</div>
+            <div class="timeline-body"><p><code>Arg::requires</code> takes an argument name, not an argument value. Try:</p>
+<pre><code class="language-rust">       .arg(Arg::with_name(&quot;error&quot;)
+             .long(&quot;error&quot;)
+             .requires(&quot;element&quot;) // Use the name, not the value
+             .default_value(&quot;0.25&quot;)
+        )
+        .arg(Arg::with_name(&quot;element&quot;)
+             .value_name(&quot;ELEMENT&quot;)
+             .possible_value(&quot;channel&quot;)
+             .min_values(1)
+        );
+</code></pre>
+<p>Let me know if that works as expected. :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-05 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nagisa">@nagisa</a> on 2016-12-05 05:30</div>
+            <div class="timeline-body"><p>The point of this issue is that I want to require specific value of (there
+might be more valid values added eventually) the positional argument.</p>
+<p>I understand the feature like that not being built-in, but I would very
+much like if clap at very least figured out the argument config was
+malformed (i.e. I required a non-existant argument) and told me so.</p>
+<p>On Dec 5, 2016 04:16, &quot;Kevin K.&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Arg::requires takes an argument name, not an argument value. Try:</p>
+<p>.arg(Arg::with_name(&quot;error&quot;)
+.long(&quot;error&quot;)
+.requires(&quot;element&quot;) // NB: particular value of a positional argument
+.default_value(&quot;0.25&quot;)
+)
+.arg(Arg::with_name(&quot;element&quot;)
+.value_name(&quot;ELEMENT&quot;)
+.possible_value(&quot;channel&quot;)
+.min_values(1)
+);</p>
+<p>Let me know if that works as expected. 😉</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/kbknapp/clap-rs/issues/764#issuecomment-264753220">https://github.com/kbknapp/clap-rs/issues/764#issuecomment-264753220</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AApc0qDGpgdxoZBD_22kiS4iT8RATLgIks5rE3QQgaJpZM4LDmS5">https://github.com/notifications/unsubscribe-auth/AApc0qDGpgdxoZBD_22kiS4iT8RATLgIks5rE3QQgaJpZM4LDmS5</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-05 16:41</div>
+            <div class="timeline-body"><blockquote>
+<p>The point of this issue is that I want to require specific value of (there
+might be more valid values added eventually) the positional argument.</p>
+</blockquote>
+<p>Ahhh Ok, my mistake! There seems to be two version of this issue in my mind.</p>
+<ol>
+<li>Upon receiving the value <code>channel</code>, <code>--error &lt;error&gt;</code> is now required.</li>
+</ol>
+<ul>
+<li>Implemented via <code>Arg::requires_if(arg, value)</code> (set on <code>&quot;element&quot;</code> as in <code>element.requires_if(&quot;error&quot;, &quot;channel&quot;)</code>)</li>
+</ul>
+<ol start="2">
+<li>Using <code>--error &lt;error&gt;</code> requires that <code>&lt;element&gt;</code> be set to <code>channel</code>.</li>
+</ol>
+<ul>
+<li>Perhaps implemented via <code>Arg::default_if(arg, default)</code> (set on <code>&quot;element&quot;</code> as in <code>element.default_if(&quot;error&quot;, &quot;channel&quot;)</code>)</li>
+<li>An alternative would be <code>Arg::default_if(arg, value, default)</code> (i.e. only use this default is <code>arg</code> is used, <em>and</em> with value <code>value</code> such as <code>element.default_if(&quot;error&quot;, &quot;some_val&quot;, &quot;channel&quot;)</code>)</li>
+</ul>
+<p>Both seem doable, although I haven't tried implementing them yet.</p>
+<p>With number 2, the only issue I can see is should this be a new default (i.e. only set <code>&lt;element&gt;</code> to <code>channel</code> if the user didn't <code>&lt;element&gt;</code> directly), or a mandatory setting (i.e. override the user's manual value)? The silently override user input seems dangerous to me and is something I'm not interested in doing. The new default value seems legitimate to me.</p>
+<blockquote>
+<p>but I would very much like if clap at very least figured out the argument config was
+malformed</p>
+</blockquote>
+<p>I had a branch which was the base of 3.x which used enum variants as argument keys instead of strings (although was still backwards compatible with strings) which solved exactly this. Although I've been waiting for Macros 1.1 in order to finish this.</p>
+<p>Edit: more thoughts on the matter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-10 04:42</div>
+            <div class="timeline-body"><p>I'm working on this in a local branch, here's the TODO:</p>
+<ul>
+<li>[x] Conditional default values (<code>Arg::default_value_if[s]</code>, This arg has a default value of ____ in the following conditions)<ul>
+<li>[x] Implmement <code>default_value_if</code></li>
+<li>[x] Implmeent <code>default_value_ifs</code></li>
+<li>[x] <code>default_value_if</code> docs</li>
+<li>[x] <code>default_value_ifs</code> docs</li>
+<li>[x] <code>default_value_if</code> tests</li>
+<li>[x] <code>default_value_ifs</code> tests</li>
+<li>[x] <code>default_value_if</code> YAML</li>
+<li>[x] <code>default_value_ifs</code> YAML</li>
+</ul>
+</li>
+<li>[x] Conditional requirements (<code>Arg::required_if[s]</code>, or &quot;This arg becomes required in the following conditions...)<ul>
+<li>[x] Implement <code>required_if</code></li>
+<li>[x] Implement <code>required_ifs</code></li>
+<li>[x] <code>required_if</code> docs</li>
+<li>[x] <code>required_ifs</code> docs</li>
+<li>[x] <code>required_if</code> tests</li>
+<li>[x] <code>required_ifs</code> tests</li>
+<li>[x] <code>required_if</code> YAML</li>
+<li>[x] <code>required_ifs</code> YAML</li>
+</ul>
+</li>
+<li>[x] Conditional external requirements (<code>Arg::requires_if[s]</code>, This arg has additional requirements in the following conditions...)<ul>
+<li>[x] <code>requires_if</code> docs</li>
+<li>[x] <code>requires_ifs</code> docs</li>
+<li>[x] Implement <code>requires_if</code></li>
+<li>[x] Implement <code>requires_ifs</code></li>
+<li>[x] <code>requires_if</code> tests</li>
+<li>[x] <code>requies_ifs</code> tests</li>
+<li>[x] <code>requires_if</code> YAML</li>
+<li>[x] <code>requires_ifs</code> YAML</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-12-27 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-29 16:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:22 UTC
+    </footer>
+</body>
+</html>

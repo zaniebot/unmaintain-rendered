@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement flake8-pie - astral-sh/ruff #1543</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement flake8-pie</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1543">#1543</a>
+        opened by <a href="https://github.com/sbdchd">@sbdchd</a>
+        on 2023-01-02 01:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-02 01:25</div>
+            <div class="timeline-body"><p>There might be some overlap with these rules and pylint / flake8-simplify, but I think I eliminated most of the dupes / unnecessary rules:</p>
+<ul>
+<li>[x] PIE810: <a href="https://github.com/sbdchd/flake8-pie#pie810-single-starts-ends-with">single-starts-ends-with</a>
+Instead of calling startswith or endswith on the same string for multiple prefixes, pass the prefixes as a tuple in a single startswith or endswith call.</li>
+</ul>
+<pre><code class="language-python"># error
+foo.startswith(&quot;foo&quot;) or foo.startswith(&quot;bar&quot;)
+
+# error
+foo.endswith(&quot;foo&quot;) or foo.endswith(&quot;bar&quot;)
+
+# error
+foo.startswith(&quot;foo&quot;) or str.startswith(foo, &quot;bar&quot;)
+
+# ok
+foo.startswith((&quot;foo&quot;,  &quot;bar&quot;))
+
+# ok
+foo.endswith((&quot;foo&quot;,  &quot;bar&quot;))
+
+# ok
+foo.startswith(&quot;foo&quot;) or foo.endswith(&quot;bar&quot;)
+</code></pre>
+<ul>
+<li>[x] PIE790: <a href="https://github.com/sbdchd/flake8-pie#pie790-no-unnecessary-pass">no-unnecessary-pass</a></li>
+</ul>
+<p><code>pass</code> is unnecessary when definining a class or function with an empty body.</p>
+<pre><code class="language-python"># error
+class BadError(Exception):
+    &quot;&quot;&quot;
+    some doc comment
+    &quot;&quot;&quot;
+    pass
+
+def foo() -&gt; None:
+    &quot;&quot;&quot;
+    some function
+    &quot;&quot;&quot;
+    pass
+
+# ok
+class BadError(Exception):
+    &quot;&quot;&quot;
+    some doc comment
+    &quot;&quot;&quot;
+
+def foo() -&gt; None:
+    &quot;&quot;&quot;
+    some function
+    &quot;&quot;&quot;
+</code></pre>
+<ul>
+<li>[x] PIE794: <a href="https://github.com/sbdchd/flake8-pie#pie794-dupe-class-field-definitions">dupe-class-field-definitions</a></li>
+</ul>
+<p>Finds duplicate definitions for the same field, which can occur in large ORM model definitions.</p>
+<pre><code class="language-python"># error
+class User(BaseModel):
+    email = fields.EmailField()
+    # ...80 more properties...
+    email = fields.EmailField()
+
+# ok
+class User(BaseModel):
+    email = fields.EmailField()
+    # ...80 more properties...
+</code></pre>
+<ul>
+<li>[x] <a href="https://github.com/sbdchd/flake8-pie#pie796-prefer-unique-enums">PIE796: prefer-unique-enums</a></li>
+</ul>
+<p>By default the stdlib enum allows multiple field names to map to the same value, this lint requires each enum value be unique.</p>
+<pre><code class="language-python"># error
+class Foo(enum.Enum):
+    A = &quot;A&quot;
+    B = &quot;B&quot;
+    C = &quot;C&quot;
+    D = &quot;C&quot;
+
+# ok
+class Foo(enum.Enum):
+    A = &quot;A&quot;
+    B = &quot;B&quot;
+    C = &quot;C&quot;
+    D = &quot;D&quot;
+</code></pre>
+<ul>
+<li>[x] <a href="https://github.com/sbdchd/flake8-pie#pie800-no-unnecessary-spread">PIE800: no-unnecessary-spread</a></li>
+</ul>
+<p>Check for unnecessary dict unpacking.</p>
+<pre><code class="language-python"># error
+{**foo, **{&quot;bar&quot;: 10}}
+
+# ok
+{**foo, &quot;bar&quot;: 10}
+</code></pre>
+<ul>
+<li>[x] <a href="https://github.com/sbdchd/flake8-pie#pie804-no-unnecessary-dict-kwargs">PIE804: no-unnecessary-dict-kwargs</a></li>
+</ul>
+<p>As long as the keys of the dict are valid Python identifier names, we can safely remove the surrounding dict.</p>
+<pre><code class="language-python"># error
+foo(**{&quot;bar&quot;: True})
+
+# ok
+foo(bar=True)
+foo(**buzz)
+foo(**{&quot;bar foo&quot;: True})
+</code></pre>
+<ul>
+<li>[x] <a href="https://github.com/sbdchd/flake8-pie#pie807-prefer-list-builtin">PIE807: prefer-list-builtin</a></li>
+</ul>
+<p><code>lambda: []</code> is equivalent to the builtin list</p>
+<pre><code class="language-python"># error
+@dataclass
+class Foo:
+    foo: List[str] = field(default_factory=lambda: [])
+
+# ok
+@dataclass
+class Foo:
+    foo: List[str] = field(default_factory=list)
+</code></pre>
+<p>Do these all sound good / are there any I should leave out? I skipped a few different ones from the original package that were too specific / awkward.</p>
+<p>Also skipped rules that overlapped with:</p>
+<ul>
+<li>https://github.com/charliermarsh/ruff/issues/970</li>
+<li>https://github.com/charliermarsh/ruff/issues/998</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 02:23</div>
+            <div class="timeline-body"><p>Yeah these are all quite nice. I can try to implement one of them tomorrow to lay the groundwork for the plugin and we can run from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 02:23</div>
+            <div class="timeline-body"><p>(Thanks for this thoughtful collation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-01-02 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 19:54</div>
+            <div class="timeline-body"><p>I didn't realize you actually wrote that plugin, very cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1578.html">astral-sh/ruff#1578</a> on 2023-01-03 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1580.html">astral-sh/ruff#1580</a> on 2023-01-03 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1581.html">astral-sh/ruff#1581</a> on 2023-01-03 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-01-12 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Misc rules from flake8-pie" to "Implement flake8-pie" by @charliermarsh on 2023-01-14 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1881.html">astral-sh/ruff#1881</a> on 2023-01-15 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1884.html">astral-sh/ruff#1884</a> on 2023-01-15 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1922.html">astral-sh/ruff#1922</a> on 2023-01-16 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ljesparis">@ljesparis</a> on 2023-01-16 21:47</div>
+            <div class="timeline-body"><p>I was passing by and was wondering if can i write some of these ? I'm actually learning rust, but, these plugins look easy enough.</p>
+<p>I actually got around to developing the <strong>prefer_unique_enums rule</strong> last night 😅  and i made a mistake with a PR so i closed it 😓</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1923.html">astral-sh/ruff#1923</a> on 2023-01-16 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 22:02</div>
+            <div class="timeline-body"><p>@ljesparis - Yes please, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 02:53</div>
+            <div class="timeline-body"><p>@sbdchd - Are you planning to do PIE810 to close this one out? Just trying to keep tabs on who's working on what. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-23 19:10</div>
+            <div class="timeline-body"><p>Yeah I can do that one as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-06 19:08</div>
+            <div class="timeline-body"><p>Gonna close this for now, can always do that final rule if anyone wants to grab it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-06 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2616.html">astral-sh/ruff#2616</a> on 2023-02-07 01:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

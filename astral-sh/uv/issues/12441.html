@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` does not respect `build-constraint-dependencies` - astral-sh/uv #12441</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` does not respect `build-constraint-dependencies`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12441">#12441</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-03-24 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-24 17:03</div>
+            <div class="timeline-body"><p>While debugging #12440, we noticed this setting was not properly propagated. These constraints <em>are</em> respected when using <code>uv pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12440.html">astral-sh/uv#12440</a> on 2025-03-24 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12442.html">astral-sh/uv#12442</a> on 2025-03-24 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h0rv">@h0rv</a> on 2025-03-24 17:13</div>
+            <div class="timeline-body"><p>For reference, a workaround:</p>
+<pre><code class="language-bash">uv export &gt; requirements.txt
+uv venv
+uv pip install -r requirements.txt
+</code></pre>
+<p>Also need to set build constraints: https://docs.astral.sh/uv/reference/settings/#build-constraint-dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MeltanoLabs/tap-gitlab/pulls/110.html">MeltanoLabs/tap-gitlab#110</a> on 2025-03-24 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12437.html">astral-sh/uv#12437</a> on 2025-03-24 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-03-24 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-24 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2025-03-25 14:38</div>
+            <div class="timeline-body"><p>Hi everyone, I know this is no longer very high priority since setuptools rolled back the issue yesterday, but I would like to make sure I can control the version used to build some old libraries via uv sync.</p>
+<p>Just checking if there is a fix or workaround for sync (not pip install).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-25 14:39</div>
+            <div class="timeline-body"><p>It's still a high priority for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/setuptools/issues/4919.html">pypa/setuptools#4919</a> on 2025-03-25 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12502.html">astral-sh/uv#12502</a> on 2025-03-27 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-27 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-27 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamied-treatmachine">@jamied-treatmachine</a> on 2025-08-27 19:04</div>
+            <div class="timeline-body"><p>This seems to still be broken in 0.8.13... what am I doing wrong? Below is an example pyproject.toml and my shell transcipt for creating it. My goal is to get rid of the setuptools deprecation warnings in newer versions. QUICK EDIT: running <code>uv sync</code> doesn't change the situation at all.</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;snowflake-snowpark-python==1.36.0&quot;,
+]
+
+[tool.uv]
+build-constraint-dependencies = [
+    &quot;setuptools==60.0.0&quot;,
+]
+</code></pre>
+<pre><code>[11:57:02 ~/Projects]$ mkdir uv-test
+[11:57:10 ~/Projects]$ cd uv-test
+[11:57:14 ~/Projects/uv-test]$ uv --version
+uv 0.8.13 (ede75fe62 2025-08-21)
+[11:57:27 ~/Projects/uv-test]$ uv init
+Initialized project `uv-test`
+[11:57:45 ~/Projects/uv-test]$ echo '
+[tool.uv]
+build-constraint-dependencies = [
+    &quot;setuptools==60.0.0&quot;,
+]
+' &gt;&gt; pyproject.toml
+[11:57:45 ~/Projects/uv-test]$ uv add snowflake-snowpark-python==1.36.0
+Using CPython 3.10.9
+Creating virtual environment at: .venv
+Resolved 34 packages in 57ms
+Installed 32 packages in 86ms
+ + asn1crypto==1.5.1
+ + boto3==1.40.18
+ + botocore==1.40.18
+ + certifi==2025.8.3
+ + cffi==1.17.1
+ + charset-normalizer==3.4.3
+ + cloudpickle==3.0.0
+ + cryptography==45.0.6
+ + filelock==3.19.1
+ + idna==3.10
+ + jmespath==1.0.1
+ + packaging==25.0
+ + platformdirs==4.4.0
+ + protobuf==5.29.5
+ + pycparser==2.22
+ + pyjwt==2.10.1
+ + pyopenssl==25.1.0
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + pyyaml==6.0.2
+ + requests==2.32.5
+ + s3transfer==0.13.1
+ + setuptools==80.9.0
+ + six==1.17.0
+ + snowflake-connector-python==3.17.2
+ + snowflake-snowpark-python==1.36.0
+ + sortedcontainers==2.4.0
+ + tomlkit==0.13.3
+ + typing-extensions==4.15.0
+ + tzlocal==5.3.1
+ + urllib3==2.5.0
+ + wheel==0.45.1
+[12:02:45 ~/Projects/uv-test]$ uv pip show setuptools
+Name: setuptools
+Version: 80.9.0
+Location: /Users/jamie/Projects/uv-test/.venv/lib/python3.10/site-packages
+Requires:
+Required-by: snowflake-snowpark-python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-27 19:22</div>
+            <div class="timeline-body"><p>It's a constraint on <em>build</em> dependencies, i.e., packages for isolated build environments. It looks like there you just have a transitive <em>runtime</em> dependency on setuptools? In which case, you want a normal constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamied-treatmachine">@jamied-treatmachine</a> on 2025-08-27 19:47</div>
+            <div class="timeline-body"><blockquote>
+<p>It's a constraint on <em>build</em> dependencies, i.e., packages for isolated build environments. It looks like there you just have a transitive <em>runtime</em> dependency on setuptools? In which case, you want a normal constraint.</p>
+</blockquote>
+<p>Thank you! this worked, hopefully it will help other noobs confused by the two options</p>
+<pre><code>[12:46:30 ~/Projects/uv-test]$ uv sync
+Resolved 34 packages in 494ms
+Prepared 1 package in 183ms
+Uninstalled 1 package in 63ms
+Installed 1 package in 7ms
+ - setuptools==80.9.0
+ + setuptools==60.0.0
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

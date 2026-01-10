@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run `uv sync` in a workspace member as if no workspace root was present - astral-sh/uv #8334</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run `uv sync` in a workspace member as if no workspace root was present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8334">#8334</a>
+        opened by <a href="https://github.com/thorbenk">@thorbenk</a>
+        on 2024-10-18 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thorbenk">@thorbenk</a> on 2024-10-18 15:03</div>
+            <div class="timeline-body"><p>I have the following setup:</p>
+<ul>
+<li>A workspace root, declaring multiple workspace members. This is for development convenience (can hack on all interdependent packages at once)</li>
+<li>The workspace members, each git submodules, are all independently published and have their independent CI.
+In particular, they all have their own <code>uv.lock</code> files.</li>
+</ul>
+<p>Now, if I want to pass the CI for workspace member &quot;package_a&quot;, I would like to do:</p>
+<pre><code>cd packages/workspace_a
+uv --no-discover-workspace sync
+uv --no-discover-workspace run pytest .
+</code></pre>
+<p>which I would expect would add a <code>.venv</code> in <code>packages/workspace_a</code> as well as a <code>uv.lock</code> file. The dependency calculation would all be done without knowing that this package is actually part of a workspace, and the test would run exactly as in that independent CI.</p>
+<p>Thanks for <code>uv</code> and for considering my use-case :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AirswitchAsa">@AirswitchAsa</a> on 2024-12-20 15:47</div>
+            <div class="timeline-body"><p>I am in a very similar situation as you, where my company wants to organize multiple services written in python in one workspace but at the same time being able to build and deploy them as if they are not part of a workspace. I think #9571 is also related.</p>
+<p>It seems you may do <code>uv run --package</code> if all you want is an isolated environment locally to run <code>pytest</code>. In my case, I would still need the individual lock files to build the container-based service from the service root instead of workspace root. And it can be a plus if we can do that from root with something like <code>uv lock --all-packages</code> to generate individual lock files, whether as a subset of the root lock file or individually locked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wsascha">@wsascha</a> on 2025-02-04 20:42</div>
+            <div class="timeline-body"><p>It'd be a great feature to lock workspace member packages.</p>
+<h3>Use case</h3>
+<p>For developing an application package, some libraries may be included as submodules into that application package. These libraries should have their own lock files for managing them separately and we may wish to update those also during application package development. However, this is not possible when the library packages are inside of a workspace.</p>
+<h3>Proposal</h3>
+<p>Looking at</p>
+<pre><code class="language-sh">uv run --package ...
+</code></pre>
+<p>sth similar for locking could look like</p>
+<pre><code class="language-sh">uv lock --package ...
+</code></pre>
+<h3>MWE</h3>
+<pre><code class="language-bash">uv init foo
+cd foo
+
+mkdir packages
+cd packages
+uv init bar
+cd bar
+
+uv add pydantic # updates /foo/packages/bar/pyproject.toml &amp; /foo/uv.lock
+uv lock # nothing happens, /foo/uv.lock is already up-to-date
+
+# Comment out 'members = [&quot;packages/bar&quot;]' in /foo/pyproject.toml
+sed --in-place --expression='/members = /s/^/# /g' ../../pyproject.toml
+uv lock # updates /foo/packages/bar/uv.lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamestwebber">@jamestwebber</a> on 2025-04-16 15:55</div>
+            <div class="timeline-body"><p>I'm looking into <code>uv</code> workspaces for our projects and running into some similar questions. These projects are currently set up as individual repos on Github with their own CI/CD and github action. They depend on each other with tagged git dependencies (i.e. <code>dep = { git = &quot;https://github.com/.../dep&quot;, rev = &quot;0.1.0&quot; }</code>.</p>
+<p>I would <em>like</em> to create a workspace where we can develop these projects in a coordinated fashion, but it's unclear how to do that without a substantial refactor of our tools (which is very unlikely). I'm not sure submodules would help or hurt us in this case--we'd prefer that Github actions continue to run in the individual repositories, when applicable.</p>
+<p>One possibility I thought of was to set up a workspace but actually <code>.gitignore</code> the individual repositories inside. Using the example from docs:</p>
+<pre><code>albatross
+├── packages
+│   ├── bird-feeder  # from github.com/org/bird-feeder, but this directory is in top-level .gitignore
+│   │   ├── pyproject.toml
+│   │   ├── uv.lock  # is this allowed?
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds # from github.com/org/seeds, also ignored
+│       ├── pyproject.toml
+│       ├── uv.lock
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── albatross
+        └── main.py
+</code></pre>
+<p>But I'm not sure if those inner <code>uv.lock</code> files will function properly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-04-16 18:18</div>
+            <div class="timeline-body"><p>@jamestwebber</p>
+<blockquote>
+<p>These projects are currently set up as individual repos on Github with their own CI/CD and github action.</p>
+</blockquote>
+<p>As we are working with the same structure - multiple repos, I found useful when developing in the main repo which depends on our packages, to use the:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+package_1 = [{ path = &quot;../package_1&quot; }]
+package_2 = [{ index = &quot;../package_2&quot; }]
+...
+</code></pre>
+<p>You still need to <code>uv sync</code> when you change your packages, but seems the best approach so far. I admit I haven't try submodules in a big monorepo mirror with all the packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12984.html">astral-sh/uv#12984</a> on 2025-04-20 03:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:12 UTC
+    </footer>
+</body>
+</html>

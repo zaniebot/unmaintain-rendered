@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tool upgrade - problem with private indexes due to short living credentials - astral-sh/uv #8523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tool upgrade - problem with private indexes due to short living credentials</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8523">#8523</a>
+        opened by <a href="https://github.com/delicb">@delicb</a>
+        on 2024-10-24 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/delicb">@delicb</a> on 2024-10-24 11:02</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I am using <code>uv tool install</code> to install some CLI tools from private index (CodeArtifact).</p>
+<p>When new version is released, <code>uv tool upgrade</code>  generally fails. I have a mechanism that refreshes CodeArtifact index URL with new credentials and stores them in <code>~/.config/uv/uv.toml</code>, but when tools are installed, index used is stored in <code>uv-receipt.toml</code> as far as I can tell and <code>upgrade</code> is trying to use that again. It usually fails, because those credentials are good only for couple hours.</p>
+<p>Workaround is <code>uv tool uninstall &lt;tool&gt; &amp;&amp; uv tool install &lt;tool&gt;</code>.</p>
+<p>Should upgrade use globally defined index if stored one fails? Maybe only if domain is the same (but ignore credentials)? Not sure what the best approach is here, but it would be good for upgrade to work.</p>
+<p>Happy to provide any additional details if needed.</p>
+<pre><code class="language-shell">❯ uv --version
+uv 0.4.26 (1b9b9d56b 2024-10-23)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-24 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-10-24 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-24 14:41</div>
+            <div class="timeline-body"><p>Thanks for the report! I'm not sure what the best solution here is, seems tricky to know which credentials we should prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delicb">@delicb</a> on 2024-10-24 20:16</div>
+            <div class="timeline-body"><p>Maybe do what <code>pipx</code> does, which is to use <code>pip</code> config at the moment of command invocation (I haven't read the code, but behaviour seems like that, since updating <code>pip.conf</code> has that effect on <code>pipx</code> as well).</p>
+<p>In this case, its not even a different tool (like <code>pip</code> and <code>pipx</code>), its all <code>uv</code> and <code>uv add</code> (for example) works with values from config file while <code>uv tool</code> only sometimes uses same values. I am not sure what is the purpose of storing index in <code>receipt.toml</code>, so I am not sure if suggestion make sense at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delicb">@delicb</a> on 2024-11-09 13:01</div>
+            <div class="timeline-body"><p>My current workaround is this script:</p>
+<pre><code class="language-python">#!/usr/bin/env uv run
+# /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = [
+#    &quot;tomlkit&quot;,
+# ]
+# ///
+
+from pathlib import Path
+
+import tomlkit
+
+
+def main() -&gt; None:
+    tools = Path(&quot;~/.local/share/uv/tools&quot;).expanduser()
+    recipes = tools.glob(&quot;*/uv-receipt.toml&quot;)
+    current_index_url = get_current_index()
+
+    for r in recipes:
+        with open(r, &quot;rb&quot;) as f:
+            rec = tomlkit.parse(f.read())
+
+        rec.setdefault(&quot;tool&quot;, {}).setdefault(&quot;options&quot;, {})
+        rec[&quot;tool&quot;][&quot;options&quot;][&quot;index-url&quot;] = current_index_url
+
+        with open(r, &quot;w&quot;) as f:
+            tomlkit.dump(rec, f)
+
+
+def get_current_index():
+    with open(Path(&quot;~/.config/uv/uv.toml&quot;).expanduser(), &quot;rb&quot;) as f:
+        uv_config = tomlkit.parse(f.read())
+    return uv_config[&quot;index-url&quot;]
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>Actual <code>get_current_index</code> is a bit more complicated, because it generates URL by generating authorization token from AWS and constructs URL, like I do to update <code>~/.config/uv/uv.toml</code> as well, but for me that is part of larger CLI, this is good enough approximation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I am not sure what is the purpose of storing index in receipt.toml, so I am not sure if suggestion make sense at all.</p>
+</blockquote>
+<p>We store the index in the receipt so that if you do something like <code>uv tool install --index-url ...</code> a subsequent <code>uv tool upgrade</code> operation will use the correct index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delicb">@delicb</a> on 2024-11-11 15:32</div>
+            <div class="timeline-body"><p>Ah, ok. In that case, maybe it can be stored only if one from config file was overridden via CLI flag? Not sure, but it seems wrong to store credentials there anyway, especially ones that have short lifespan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 16:12</div>
+            <div class="timeline-body"><p>Unfortunately it's a pain to distinguish between values from the CLI and config file (due to the way we've implemented it), but yeah I think that would make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 16:13</div>
+            <div class="timeline-body"><p>Indexes are actually the one thing where we <em>can</em> differentiate between CLI and elsewhere, we track the origin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 16:14</div>
+            <div class="timeline-body"><p>Ah great, I knew you added that for something :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-11-11 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 16:18</div>
+            <div class="timeline-body"><p>(N.B. that I didn't read the full discussion here before commenting, just your last comment.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idan-rahamim-lendbuzz">@idan-rahamim-lendbuzz</a> on 2025-07-01 07:45</div>
+            <div class="timeline-body"><p>Hi, is there any built-in workaround for this now, or is uninstall + install still the recommended way to handle upgrades with expiring credentials?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:16 UTC
+    </footer>
+</body>
+</html>

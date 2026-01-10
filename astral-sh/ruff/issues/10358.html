@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't strip an ellipsis (`...`) from a function's body - this has special meaning to type-checkers - astral-sh/ruff #10358</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't strip an ellipsis (`...`) from a function's body - this has special meaning to type-checkers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10358">#10358</a>
+        opened by <a href="https://github.com/rsokl">@rsokl</a>
+        on 2024-03-12 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rsokl">@rsokl</a> on 2024-03-12 14:13</div>
+            <div class="timeline-body"><p>Before <code>ruff</code>:</p>
+<pre><code class="language-python">if TYPE_CHECKING:
+    def compress(bytes: Sequence[int], target: int) -&gt; list[int]:
+        &quot;&quot;&quot;Docs&quot;
+        ...   # &lt;- this tells type-checkers to treat this function like a stub and ignore its body
+</code></pre>
+<p>After <code>ruff</code>:</p>
+<pre><code class="language-python">if TYPE_CHECKING:
+    def compress(bytes: Sequence[int], target: int) -&gt; list[int]:  # type: ignore
+        &quot;&quot;&quot;Docs&quot;&quot;&quot;
+        # Without ... the type-checker assumes the return type is None
+        # thus the type-checker marks the return-type annotation as an error.
+</code></pre>
+<p>The ellipses signals to the type-checker (e.g. pyright) that function is acting as a stub and the body should be ignored. In the latter case, the type-checker thinks that the function returns <code>None</code> and thus marks the return-type as an error.</p>
+<p>I.e. without the ellipses, you have to either: provide a fake function body or <code># type: ignore</code> the function's signature, which would mask actual type-errors in the signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-03-12 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 14:23</div>
+            <div class="timeline-body"><p>Hm we talked about this previously re protocols</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/8756</li>
+</ul>
+<p>Should we make another exception for <code>if TYPE_CHECKING</code> blocks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8756.html">astral-sh/ruff#8756</a> on 2024-03-12 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsokl">@rsokl</a> on 2024-03-12 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we make another exception for if TYPE_CHECKING blocks?</p>
+</blockquote>
+<p>That would be good.</p>
+<p>Treating <code>pass</code> and <code>...</code> as being the same seems weird to me. They are definitely not the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 14:30</div>
+            <div class="timeline-body"><p>This should be relatively easy if someone is interested in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10413.html">astral-sh/ruff#10413</a> on 2024-03-14 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-15 03:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

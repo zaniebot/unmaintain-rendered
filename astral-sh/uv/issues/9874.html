@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub CI for lockfile being in sync with pyproject.toml fails - astral-sh/uv #9874</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>GitHub CI for lockfile being in sync with pyproject.toml fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9874">#9874</a>
+        opened by <a href="https://github.com/superlopuh">@superlopuh</a>
+        on 2024-12-13 16:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 16:34</div>
+            <div class="timeline-body"><p>I am trying to set up a CI that will prevent merging lockfiles out of sync with pyproject.toml:</p>
+<p>https://github.com/xdslproject/xdsl/pull/3639/files#diff-2c6e103334c617ab830e3e4463daaafe724b1e9290af26cd928b8b8eb6df55e9R31-R35</p>
+<p>What am I doing wrong? Locally, <code>uv sync --extra gui --extra dev --extra jax --extra riscv --locked</code> exits successfully, even outside the venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 16:35</div>
+            <div class="timeline-body"><p>This is the failing job: https://github.com/xdslproject/xdsl/actions/runs/12319379803/job/34386281895?pr=3639</p>
+<p>It errors out with an uninformative message:</p>
+<pre><code>error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 16:44</div>
+            <div class="timeline-body"><p>If you run with <code>--verbose</code>, it will tell you what specifically is out-of-date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 17:06</div>
+            <div class="timeline-body"><p>Thank you, I added --verbose, and have no idea what's out of date:</p>
+<p>https://github.com/xdslproject/xdsl/actions/runs/12319900775/job/34388006772?pr=3639</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 17:09</div>
+            <div class="timeline-body"><p>Is this even the recommended way to do this? I want to make it impossible to merge a PR, either from Dependabot, or another contributor, that updates pyproject.toml in a way that conflicts with the lockfile. Maybe there's already a guide for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 17:11</div>
+            <div class="timeline-body"><p>It says:</p>
+<pre><code>Ignoring existing lockfile due to mismatched version: `xdsl` (expected: `0.25.0+50.g582ac851`, found: `0+untagged.1.g3b3a249`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 17:17</div>
+            <div class="timeline-body"><p>OK so I'm using it wrong? This is the project I'm currently running the CI for, the lockfile should be of the current commit with the current tags etc, no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 17:32</div>
+            <div class="timeline-body"><p>How is the version calculated in the lockfile? We use versioneer, whose dynamic version calculation may well not work in the CI. Would one possible solution be to add an option to ignore the version mismatch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 17:34</div>
+            <div class="timeline-body"><p>Is the +1/+50 the number of commits since the version tag? If so, it seems like this approach will definitely not work in the way that I'd like it to, as the lockfile would have to be updated on every commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-13 17:51</div>
+            <div class="timeline-body"><p>See #7533</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 18:07</div>
+            <div class="timeline-body"><p>Thank you, I had a feeling this should have come up already, but couldn't find it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @superlopuh on 2024-12-13 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-13 19:18</div>
+            <div class="timeline-body"><p>Is this a Very Bad Idea?</p>
+<p>I added an override to our makefile command that returns a dynamic version when installing locally, and a similar one on the CI. It correctly passes on the branch without a dependency update, and fails on the branch that requires one:</p>
+<p>https://github.com/xdslproject/xdsl/actions/runs/12321584036/job/34393305969?pr=3639
+https://github.com/xdslproject/xdsl/actions/runs/12321623323/job/34393428033?pr=3634</p>
+<p>These are the relevant changes:</p>
+<p>https://github.com/xdslproject/xdsl/pull/3639/files</p>
+<p>I read through both the thread linked and the PEP discussion, and it looks like there's an aspect that I don't quite understand: that lockfiles are supposed to pin both the dependencies and the currently edited project. In my understanding, the objective of the lockfile is a declarative way to recreate the exact venv for everything to work, but it doesn't exist in a vacuum, and the surrounding context from the git commit should let uv recreate the venv of editable installs from only the dependencies, and not the version of the project itself. Am I wrong in my understanding? Would this question be better for the linked discussion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thcrt">@thcrt</a> on 2024-12-14 17:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this even the recommended way to do this? I want to make it impossible to merge a PR, either from Dependabot, or another contributor, that updates pyproject.toml in a way that conflicts with the lockfile. Maybe there's already a guide for this?</p>
+</blockquote>
+<p>Sorry for stepping in, but I'm curious as to why you would want this? Surely that would make it impossible for any contributor to update or add any dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/superlopuh">@superlopuh</a> on 2024-12-15 14:21</div>
+            <div class="timeline-body"><p>It's still possible if the PR contains the changes to both pyproject.toml and uv.lock. The objective here is a guarantee that if the dependency changes in the pyproject.toml this is reflected in the lockfile.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:50 UTC
+    </footer>
+</body>
+</html>

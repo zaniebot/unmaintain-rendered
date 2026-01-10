@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a uv wrapper - astral-sh/uv #11639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a uv wrapper</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11639">#11639</a>
+        opened by <a href="https://github.com/cliebBS">@cliebBS</a>
+        on 2025-02-19 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-02-19 20:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With Gradle, there is <code>gradlew</code>, which acts as a Gradle launcher that reads a file in the project that specifies the version of Gradle that it should use, downloads and installs it if it is missing from the system, then executes the provided arguments using this specific version of Gradle.  SBT makes this even more streamlined by including this logic directly within the build tool, forking a subprocess with the correct SBT version from the original SBT process.</p>
+<p>It would be very convenient for development if we could have something similar for <code>uv</code>.  I roughed out a simple <code>uvw</code> script that runs on MacOS with Homebrew that seems to work, with the caveat of relying on a non-standard file, <code>uv.version</code>, and of relying on the current directory to contain this file rather than using the current directory or its parents.</p>
+<pre><code class="language-bash">#!/bin/sh
+
+# uvw: the uv wrapper
+#
+# Emulate similar tools like gradlew, where this script installs the version of uv specified by this
+# project and executes the provided command using the correct version of uv.  This is performed by
+# using pipx to do side-by-side installs of multiple uv versions, utilizing suffixes to prevent
+# warring global installations of uv.  uv versions will be exposed to the system as `uv@version`,
+# for example `uv@0.5.31`.
+
+SCRIPT_DIR=$( cd -- &quot;$( dirname -- &quot;${BASH_SOURCE[0]}&quot; )&quot; &amp;&gt; /dev/null &amp;&amp; pwd )
+
+. &quot;${SCRIPT_DIR}/uv.version&quot;
+
+SUFFIX=&quot;@${UV_VERSION}&quot;
+BIN_NAME=&quot;uv${SUFFIX}&quot;
+
+# ensure that a global copy of uv is installed (should work with any version)
+if ! command -v pipx &amp;&gt; /dev/null; then
+  echo &quot;! pipx not found on system, installing via homebrew&quot;
+  brew install pipx
+fi
+
+# ensure that a global copy of uv is installed (should work with any version)
+if ! command -v ${BIN_NAME} &amp;&gt; /dev/null; then
+  echo &quot;! ${BIN_NAME} not found on system, installing via pipx&quot;
+  pipx install --suffix=${SUFFIX} uv==${UV_VERSION}
+fi
+
+${BIN_NAME} &quot;$@&quot;
+</code></pre>
+<p>Ideally, it would be <code>uv</code> itself that does this so that I don't need wrapper scripts everywhere like what happens with <code>gradlew</code>.  Just like how <code>uv</code> already automatically creates <code>.venv</code> when running <code>uv pip install</code> or <code>uv sync</code>, it would be nice if <code>uv</code> could read the uv version from <code>pyproject.toml</code> and then automatically download and use the correct version of uv without any changes to normal <code>uv</code> commands.</p>
+<h3>Example</h3>
+<ol>
+<li>Install <code>uv</code> using official script, pip install, pipx install, brew install, etc.</li>
+<li>uv 0.6.2 is now installed</li>
+<li><code>uv pip install -r requirements.txt</code></li>
+<li><code>uv</code> sees that <code>pyproject.toml</code> specifies that uv 0.5.31 is specified for this project</li>
+<li>uv 0.5.31 is not installed, so it is downloaded and installed (like how Python versions are installed by uv)</li>
+<li>uv 0.5.31 is now installed into uv cache</li>
+<li>uv then invokes 0.5.31 from cache to execute the <code>pip install -r requirements.txt</code> command</li>
+</ol>
+<p>With this enhancement, the user doesn't need to worry about what version of <code>uv</code> they have installed or what version their current project is designed to work with.  This insulates them from the pain of breaking changes in <code>uv</code> causing different (or broken) behavior from what the original developer intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @cliebBS on 2025-02-19 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11637.html">astral-sh/uv#11637</a> on 2025-02-19 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 09:17</div>
+            <div class="timeline-body"><p>This sounds like the same proposal as #6662</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cliebBS on 2025-02-20 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-02-20 14:54</div>
+            <div class="timeline-body"><p>Sorry, it appears my Google-foo failed me.  I've started contributing to the original discussion and closed this ticket.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

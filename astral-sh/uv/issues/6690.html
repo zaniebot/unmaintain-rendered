@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv python list shows duplicate symlinks - astral-sh/uv #6690</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv python list shows duplicate symlinks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6690">#6690</a>
+        opened by <a href="https://github.com/jooon">@jooon</a>
+        on 2024-08-27 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jooon">@jooon</a> on 2024-08-27 14:26</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>When I put uv managed python in $PATH, uv lists the same symlink twice. Likely once from uv knowing where its own python is and also finding it in $PATH.</p>
+<pre><code>$ uv --version
+uv 0.3.4
+$ uv python list
+cpython-3.12.5-linux-x86_64-gnu     .local/share/uv/python/cpython-3.12.5-linux-x86_64-gnu/bin/python3.12
+cpython-3.12.5-linux-x86_64-gnu     .local/share/uv/python/cpython-3.12.5-linux-x86_64-gnu/bin/python3 -&gt; python3.12
+cpython-3.12.5-linux-x86_64-gnu     .local/share/uv/python/cpython-3.12.5-linux-x86_64-gnu/bin/python -&gt; python3.12
+cpython-3.12.5-linux-x86_64-gnu     .local/share/uv/python/cpython-3.12.5-linux-x86_64-gnu/bin/python3 -&gt; python3.12
+cpython-3.11.9-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.10.14-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.10.12-linux-x86_64-gnu    /usr/bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu    /usr/bin/python3 -&gt; python3.10
+cpython-3.10.12-linux-x86_64-gnu    /bin/python3.10
+cpython-3.10.12-linux-x86_64-gnu    /bin/python3 -&gt; python3.10
+cpython-3.9.19-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python3.8
+cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python3 -&gt; python3.8
+cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python -&gt; python3.8
+cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python3 -&gt; python3.8
+pypy-3.7.13-linux-x86_64-gnu        &lt;download available&gt;
+</code></pre>
+<p>The reason I have put uv python is that I have finally replaced mise/pyenv with just uv.</p>
+<p>I only ever used pyenv like this:</p>
+<pre><code>pyenv install 3.12 3.8
+pyenv global 3.12 3.8
+</code></pre>
+<p>I mostly wanted <code>python3.12</code> and <code>python3.8</code> to end up in $PATH wherever I was and then the tools that when I needed a specific python I never configured <code>3.8</code> in a .python-version and then called <code>python3</code>, but rather called the minor version like <code>python3.8</code> directly. This works for instance great with tox.</p>
+<p>My pyenv replacement is thus just:</p>
+<pre><code>uv python install 3.12 3.8
+</code></pre>
+<p>Instead of activating pyenv and putting a directory with shims in $PATH, I instead have this in my .bashrc which adds the bin directories in reverse version order.</p>
+<pre><code>UVPYTHON=&quot;$HOME/.local/share/uv/python&quot;
+case &quot;:$PATH&quot; in
+    *:&quot;$UVPYTHON&quot;*)
+    ;;
+    *)
+    PATH=$(ls -1dvr &quot;$UVPYTHON&quot;/*/bin 2&gt; /dev/null | tr $'\n' ':')$PATH
+    ;;
+esac
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-27 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 14:37</div>
+            <div class="timeline-body"><p>Some of this behavior is intentional, per the discussion at https://github.com/astral-sh/uv/issues/5308 and change at https://github.com/astral-sh/uv/pull/5343</p>
+<p>I think the only true duplicates here are, e.g., the first and third lines here:</p>
+<pre><code>cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python3 -&gt; python3.8
+cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python -&gt; python3.8
+cpython-3.8.19-linux-x86_64-gnu     .local/share/uv/python/cpython-3.8.19-linux-x86_64-gnu/bin/python3 -&gt; python3.8
+</code></pre>
+<p>The rest are &quot;correct&quot; though we could consider a better way to display interpreters with multiple symlinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-08-27 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the only true duplicates here are, e.g., the first and third lines here:</p>
+</blockquote>
+<p>Yes. Those lines are what I referred to as duplicates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-08-27 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-08-27 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6740.html">astral-sh/uv#6740</a> on 2024-08-28 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 23:09</div>
+            <div class="timeline-body"><p>I believe this was closed by https://github.com/astral-sh/uv/pull/6740.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-28 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12302.html">astral-sh/uv#12302</a> on 2025-03-18 23:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

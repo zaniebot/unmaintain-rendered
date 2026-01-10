@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 false positive - astral-sh/ruff #2247</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2247">#2247</a>
+        opened by <a href="https://github.com/dalcinl">@dalcinl</a>
+        on 2023-01-27 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dalcinl">@dalcinl</a> on 2023-01-27 10:19</div>
+            <div class="timeline-body"><p>I have typing stub files like the following minimal reproducer (original code <a href="https://github.com/mpi4py/mpi4py/blob/master/src/mpi4py/futures/_core.pyi#L2">here</a> ):</p>
+<pre><code class="language-python"># file: stub.pyi
+from concurrent.futures import (
+    CancelledError as CancelledError,
+    TimeoutError as TimeoutError,
+)
+</code></pre>
+<p>This approach of importing <code>Foo as Foo</code> is a common <code>mypy</code> convention to mark symbols as &quot;public&quot; or &quot;exported&quot; in the stub file.</p>
+<p>However, I'm getting an F401 false positive from <code>ruff</code>:</p>
+<pre><code>$ ruff stub.pyi 
+stub.pyi:3:5: F401 `concurrent.futures.TimeoutError` imported but unused
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+</code></pre>
+<p>Interestingly, the complaint is only about <code>TimeoutError</code>, but not <code>CancelledError</code>. My wild guess is that it is related to <code>TimeoutError</code> being a built-in exception name. To confirm my guess, I wrote the following alternative reproducer:</p>
+<pre><code>$ cat stub2.pyi 
+from pathlib import Path as Path
+from builtins import dict as dict
+from builtins import list as ListType
+
+$ ruff stub2.pyi 
+stub2.pyi:2:22: F401 `builtins.dict` imported but unused
+stub2.pyi:3:22: F401 `builtins.list` imported but unused
+Found 2 error(s).
+2 potentially fixable with the --fix option.
+</code></pre>
+<p>Ruff version: <code>0.0.236</code></p>
+<p>Sorry I cannot be more helpful, I have zero familiarity with ruff's codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 12:24</div>
+            <div class="timeline-body"><p>No worries! Will try to fix today. We do mark those kinds of explicit re-exports as “always used” for this exact reason, so definitely seems like a bug related to built ins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-27 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2251.html">astral-sh/ruff#2251</a> on 2023-01-27 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 16:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

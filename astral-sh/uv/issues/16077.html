@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version `0.8.0` introduced bug in python discovery on Windows - astral-sh/uv #16077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Version `0.8.0` introduced bug in python discovery on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16077">#16077</a>
+        opened by <a href="https://github.com/wikiped">@wikiped</a>
+        on 2025-09-30 17:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wikiped">@wikiped</a> on 2025-09-30 17:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There seems to be a bug with python discovery in <code>uv</code> versions 0.8+.
+Using <code>uv python list</code> on <code>uv</code> versions starting with <code>0.8.0</code> does not show anything:</p>
+<pre><code class="language-powershell">&gt; uv self version
+uv 0.8.22 (ade2bdbd2 2025-09-23)
+&gt; uv python list --verbose
+DEBUG uv 0.8.22 (ade2bdbd2 2025-09-23)
+DEBUG Acquired shared lock for `E:\cache\uv`
+DEBUG Searching for any Python interpreter in registry or search path
+WARN Broken interpreter cache entry at E:\cache\uv\interpreter-v4\79d66dac82fc70e0\b9f0db740e5eaade.msgpack, removing: invalid type: string &quot;D:\\Python\\Python313\\Lib&quot;, expected a sequence
+DEBUG Found `cpython-3.13.7-windows-x86_64-none` at `C:\Python\Python313\python.exe` (first executable in the search path)
+DEBUG Ignoring Python interpreter at `C:\Python\Python313\python.exe`: only system interpreters allowed
+WARN Broken interpreter cache entry at E:\cache\uv\interpreter-v4\79d66dac82fc70e0\bda971ee0901f517.msgpack, removing: invalid type: string &quot;D:\\Python\\Python312\\Lib&quot;, expected a sequence
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Python\Python312\python.exe` (search path)
+DEBUG Ignoring Python interpreter at `C:\Python\Python312\python.exe`: only system interpreters allowed
+WARN Broken interpreter cache entry at E:\cache\uv\interpreter-v4\79d66dac82fc70e0\b85ea2b953b5aa48.msgpack, removing: invalid type: string &quot;D:\\Python\\Python310\\Lib&quot;, expected a sequence
+DEBUG Found `cpython-3.10.11-windows-x86_64-none` at `C:\Python\Python310\python.exe` (search path)
+DEBUG Ignoring Python interpreter at `C:\Python\Python310\python.exe`: only system interpreters allowed
+DEBUG Found `cpython-3.13.7-windows-x86_64-none` at `C:\Python\Python313\python.exe` (registry)
+DEBUG Ignoring Python interpreter at `C:\Python\Python313\python.exe`: only system interpreters allowed
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Python\Python312\python.exe` (registry)
+DEBUG Ignoring Python interpreter at `C:\Python\Python312\python.exe`: only system interpreters allowed
+DEBUG Found `cpython-3.10.11-windows-x86_64-none` at `C:\Python\Python310\python.exe` (registry)
+DEBUG Ignoring Python interpreter at `C:\Python\Python310\python.exe`: only system interpreters allowed
+DEBUG Released lock at `E:\cache\uv\.lock`
+</code></pre>
+<p>Below are results of bisecting the recent versions history.
+So it appears the bug was introduced in uv version <code>0.8.0</code>.</p>
+<pre><code>0.8.22  &lt;- Bug
+0.8.21  &lt;- Bug
+...     &lt;- Unchecked
+0.8.9   &lt;- Bug
+...     &lt;- Unchecked
+0.8.0   &lt;- Bug
+0.7.22  &lt;- OK
+</code></pre>
+<p>Last version producing correct results is <code>0.7.22</code>:</p>
+<pre><code class="language-powershell">&gt; uv self version
+uv 0.7.22 (78d6d1134 2025-07-17)
+&gt; uv python list --verbose
+DEBUG uv 0.7.22 (78d6d1134 2025-07-17)
+DEBUG Searching for any Python interpreter in registry or search path
+WARN Broken interpreter cache entry at E:\cache\uv\interpreter-v4\79d66dac82fc70e0\b9f0db740e5eaade.msgpack, removing: invalid type: sequence, expected path string
+DEBUG Found `cpython-3.13.7-windows-x86_64-none` at `C:\Python\Python313\python.exe` (first executable in the search path)
+WARN Broken interpreter cache entry at E:\cache\uv\interpreter-v4\79d66dac82fc70e0\bda971ee0901f517.msgpack, removing: invalid type: sequence, expected path string
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Python\Python312\python.exe` (search path)
+WARN Broken interpreter cache entry at E:\cache\uv\interpreter-v4\79d66dac82fc70e0\b85ea2b953b5aa48.msgpack, removing: invalid type: sequence, expected path string
+DEBUG Found `cpython-3.10.11-windows-x86_64-none` at `C:\Python\Python310\python.exe` (search path)
+DEBUG Found `cpython-3.13.7-windows-x86_64-none` at `C:\Python\Python313\python.exe` (registry)
+DEBUG Found `cpython-3.12.10-windows-x86_64-none` at `C:\Python\Python312\python.exe` (registry)
+DEBUG Found `cpython-3.10.11-windows-x86_64-none` at `C:\Python\Python310\python.exe` (registry)
+cpython-3.13.7-windows-x86_64-none     C:\Python\Python313\python.exe
+cpython-3.12.10-windows-x86_64-none    C:\Python\Python312\python.exe
+cpython-3.10.11-windows-x86_64-none    C:\Python\Python310\python.exe
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 11 x64</p>
+<h3>Version</h3>
+<p>0.8.22</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @wikiped on 2025-09-30 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 17:42</div>
+            <div class="timeline-body"><p>Please share verbose logs as described in #9452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wikiped">@wikiped</a> on 2025-09-30 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Please share verbose logs as described in <a href="https://github.com/astral-sh/uv/issues/9452">#9452</a></p>
+</blockquote>
+<p>Added in the original post</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 18:46</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>It looks like they're being filtered here</p>
+<p>https://github.com/astral-sh/uv/blob/8f3583a6e63800b770fec3b7be9b754be9d65602/crates/uv-python/src/discovery.rs#L955-L973</p>
+<p>which means that</p>
+<p>https://github.com/astral-sh/uv/blob/8f3583a6e63800b770fec3b7be9b754be9d65602/crates/uv-python/src/discovery.rs#L990</p>
+<p>is detecting that they are managed Python installations.</p>
+<p>Do you have <code>UV_PYTHON_PREFERENCE=only-system</code> or <code>UV_NO_MANAGED_PYTHON=1</code> set? or the equivalent in a <code>uv.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wikiped">@wikiped</a> on 2025-09-30 19:29</div>
+            <div class="timeline-body"><pre><code class="language-powershell">&gt; $env:UV_CONFIG_FILE
+C:\Python\uv\uv.toml
+
+&gt; $env:UV_NO_MANAGED_PYTHON
+1
+
+&gt; $env:UV_PYTHON_DOWNLOADS
+never
+
+&gt; cat C:\Python\uv\uv.toml
+cache-dir = &quot;E:\\cache\\uv&quot;
+compile-bytecode = true
+link-mode = &quot;hardlink&quot;
+python-downloads = &quot;manual&quot;
+python-preference = &quot;only-system&quot;
+</code></pre>
+<p>env does not have <code>UV_PYTHON_PREFERENCE</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 19:40</div>
+            <div class="timeline-body"><p>You have <code>python-preference = &quot;only-system&quot;</code></p>
+<p>So we're no longer showing those managed installations that we registered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 19:41</div>
+            <div class="timeline-body"><p>This change is documented in the changelog, see https://github.com/astral-sh/uv/blob/main/CHANGELOG.md#080 / Validate that discovered interpreters meet the Python preference (https://github.com/astral-sh/uv/pull/7934)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wikiped">@wikiped</a> on 2025-09-30 19:49</div>
+            <div class="timeline-body"><p>My understanding was that &quot;managed&quot; meant &quot;downloaded and installed by uv&quot;, and &quot;system&quot; meant &quot;installed via system (i.e. python installer, etc)&quot;. Is this incorrect?</p>
+<p>Those pythons installations that were discovered by <code>0.7.22</code> and which are being ignored by <code>0.8+</code> were in fact installed via official python installers, not <code>uv</code>.</p>
+<p>And since I do not want <code>uv</code> to interfere with python installations there are those useful settings...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 19:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Those pythons installations that were discovered by 0.7.22 and which are being ignored by 0.8+ were in fact installed via official python installers, not uv.</p>
+</blockquote>
+<p>If that's the case, then there is indeed a bug.</p>
+<p>What does <code>C:\Python\Python313\python.exe -c &quot;import sys; print(sys.base_prefix)&quot;</code> show?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 19:57</div>
+            <div class="timeline-body"><p>Are you changing the uv Python install directory? e.g., with <code>UV_PYTHON_INSTALL_DIR</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wikiped">@wikiped</a> on 2025-09-30 21:01</div>
+            <div class="timeline-body"><pre><code class="language-powershell">&gt; C:\Python\Python313\python.exe -c &quot;import sys; print(sys.base_prefix)&quot;
+C:\Python\Python313
+
+&gt; $env:UV_PYTHON_INSTALL_DIR
+C:\Python
+</code></pre>
+<p>I can see how <code>uv</code> can get confused seeing <code>UV_PYTHON_INSTALL_DIR</code> pointing to the folder where there are also system installations, so it seems now it would not be possible to keep all python installations in one place (both system and managed), one would have to make sure that <code>UV_PYTHON_INSTALL_DIR</code> points to a folder where there are no system python installations, like: <code>C:\Python\uv-managed</code>.</p>
+<p>I have tested this and it does solve the issue with discovery of all python versions in <code>0.8+</code></p>
+<p>Not sure now if this is a bug or documentation issue...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 22:11</div>
+            <div class="timeline-body"><p>We can adjust the logic to account for that case. uv currently assumes complete control of that directory, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16080.html">astral-sh/uv#16080</a> on 2025-09-30 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-03 19:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

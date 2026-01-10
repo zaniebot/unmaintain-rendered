@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive: specifying invalid struct field type fails with Epic error message - clap-rs/clap #4994</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive: specifying invalid struct field type fails with Epic error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4994">#4994</a>
+        opened by <a href="https://github.com/LunarLambda">@LunarLambda</a>
+        on 2023-07-05 11:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LunarLambda">@LunarLambda</a> on 2023-07-05 11:57</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.70</p>
+<h3>Clap Version</h3>
+<p>4.3.10</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(short = 'C')]
+    foo: Option&lt;Box&lt;std::path::Path&gt;&gt;
+}
+
+fn main() {
+    let cli = Cli::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo check</p>
+<h3>Actual Behaviour</h3>
+<p>The user is presented with a truly threatening error message:</p>
+<pre><code>error[E0599]: the method `value_parser` exists for reference `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;`, but its trait bounds were not satisfied
+    --&gt; src/main.rs:5:5
+     |
+5    |       #[arg(short = 'C')]
+     |       ^ method cannot be called on `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;` due to unsatisfied trait bounds
+     |
+    ::: /home/luna/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.3.10/src/builder/value_parser.rs:2221:1
+     |
+2221 |   pub struct _AutoValueParser&lt;T&gt;(std::marker::PhantomData&lt;T&gt;);
+     |   ------------------------------ doesn't satisfy `_: _ValueParserViaParse`
+     |
+    ::: /home/luna/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/boxed.rs:195:1
+     |
+195  | / pub struct Box&lt;
+196  | |     T: ?Sized,
+197  | |     #[unstable(feature = &quot;allocator_api&quot;, issue = &quot;32838&quot;)] A: Allocator = Global,
+198  | | &gt;(Unique&lt;T&gt;, A);
+     | | -
+     | | |
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;&amp;'s std::ffi::OsStr&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;&amp;'s str&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;OsString&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;std::string::String&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: FromStr`
+     | |_doesn't satisfy `Box&lt;Path&gt;: ValueEnum`
+     |   doesn't satisfy `Box&lt;Path&gt;: ValueParserFactory`
+     |
+     = note: the following trait bounds were not satisfied:
+             `Box&lt;Path&gt;: ValueEnum`
+             which is required by `&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaValueEnum`
+             `Box&lt;Path&gt;: ValueParserFactory`
+             which is required by `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaFactory`
+             `Box&lt;Path&gt;: From&lt;OsString&gt;`
+             which is required by `&amp;&amp;&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaFromOsString`
+             `Box&lt;Path&gt;: From&lt;&amp;'s std::ffi::OsStr&gt;`
+             which is required by `&amp;&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaFromOsStr`
+             `Box&lt;Path&gt;: From&lt;std::string::String&gt;`
+             which is required by `&amp;&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaFromString`
+             `Box&lt;Path&gt;: From&lt;&amp;'s str&gt;`
+             which is required by `&amp;_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaFromStr`
+             `Box&lt;Path&gt;: FromStr`
+             which is required by `_AutoValueParser&lt;Box&lt;Path&gt;&gt;: clap::builder::via_prelude::_ValueParserViaParse`
+     = note: this error originates in the macro `clap::value_parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The derive macro should produce a human-readable error when it detects an invalid type being used, rather than produce a horrific type error after expansion,</p>
+<p>Additionally, it would be nice if parsing into smart pointers was supported. Using a <code>PathBuf</code> would be wasteful in my case, as I don't intend on modifying the path, and would like to encode this directly into my type. Using Rc or Arc would also allow cheaply cloning the struct to pass it to other code. Serde allows this afaik.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @LunarLambda on 2023-07-05 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LunarLambda">@LunarLambda</a> on 2023-07-05 12:12</div>
+            <div class="timeline-body"><p>Worked around it like so (which is a little ugly, but it works)</p>
+<pre><code class="language-rs">use clap::builder::{PathBufValueParser, TypedValueParser};
+
+fn box_path() -&gt; impl TypedValueParser&lt;Value = Box&lt;Path&gt;&gt; {
+    PathBufValueParser::new().map(|p| p.into())
+}
+
+#[derive(Parser)] 
+struct Cli {
+    #[arg(short = 'C', value_parser = box_path())]
+    foo: Option&lt;Box&lt;Path&gt;&gt;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-05 14:17</div>
+            <div class="timeline-body"><blockquote>
+<p>The derive macro should produce a human-readable error when it detects an invalid type being used, rather than produce a horrific type error after expansion,</p>
+</blockquote>
+<p>The derive macro can only see the textual name for a type (ie <code>PathBuf</code> and <code>std::path::PathBuf</code> are different).  We are delegating to rust code to map types to value parsers so we don't have to worry about how a type is named and to workaround the lack of specialization in the language (having a single trait with a blanket impl plus some hand impls)</p>
+<p>A subset of that error actually provides some really good hints</p>
+<pre><code>     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;&amp;'s std::ffi::OsStr&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;&amp;'s str&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;OsString&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: From&lt;std::string::String&gt;`
+     | | doesn't satisfy `Box&lt;Path&gt;: FromStr`
+     | |_doesn't satisfy `Box&lt;Path&gt;: ValueEnum`
+     |   doesn't satisfy `Box&lt;Path&gt;: ValueParserFactory`
+</code></pre>
+<p>though it can't also suggest your workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4995.html">clap-rs/clap#4995</a> on 2023-07-05 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-05 15:13</div>
+            <div class="timeline-body"><p>#4995 adds support for some serde types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-07 19:09</div>
+            <div class="timeline-body"><p>As part of the message is intentional and our options are limited for resolving this and with us adding support for more types, I'm not seeing what more can be done for this and am closing this.</p>
+<p>If this needs further discussion, feel free to say something!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-07-07 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kobzol">@Kobzol</a> on 2023-07-31 14:12</div>
+            <div class="timeline-body"><p>I also hit this error message when implementing <code>FromStr</code> with an <code>Err</code> type of <code>()</code> (https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=99878a7c31bf79048c92a77c06096969). It was quite confusing to me, until I realized that the problem goes away when <code>Err</code> gets set to <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4286.html">clap-rs/clap#4286</a> on 2024-02-17 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5360.html">clap-rs/clap#5360</a> on 2024-02-17 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SteveLauC">@SteveLauC</a> on 2024-02-17 07:01</div>
+            <div class="timeline-body"><p>Hi @Kobzol, thanks for that comment (and workaround), I filed an issue for it: #5360</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:26 UTC
+    </footer>
+</body>
+</html>

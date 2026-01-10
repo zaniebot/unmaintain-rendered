@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No way to really hide an argument - clap-rs/clap #2940</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No way to really hide an argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2940">#2940</a>
+        opened by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a>
+        on 2021-10-25 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-25 11:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Describe your use case</h3>
+<p>In #1820 it's recommended to create two <code>Arg</code>'s to solve the issue. Fine.</p>
+<p>But then, it shows up in USAGE, even if not in OPTIONS:</p>
+<pre><code>USAGE:
+    glif2svg &lt;input&gt; --input &lt;input_file&gt;
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+
+
+ARGS:
+    &lt;input&gt;    The path to the input file.
+</code></pre>
+<p>This is of course documented in <code>Arg::hidden</code>:</p>
+<pre><code>NOTE: This does not hide the argument from usage strings on error
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Please either fix <code>Arg::hidden</code> or add a flag to hide from usage. Possible names being <code>Arg::really_hidden</code>, <code>Arg::easter_egg</code> (also another entirely valid reason to want this, what fun is Rust if we can't hide an easter egg or two in our binaries) or <code>Arg::usage_hidden</code>.</p>
+<h3>Alternatives, if applicable</h3>
+<p>N/A</p>
+<h3>Additional Context</h3>
+<p>N/A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @ctrlcctrlv on 2021-10-25 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @pksunkara on 2021-10-25 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-25 13:11</div>
+            <div class="timeline-body"><p>Could you provide a code sample for creating the help output you listed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-25 13:38</div>
+            <div class="timeline-body"><p>Certainly—</p>
+<pre><code class="language-rust">fn main() -&gt; ! {
+    let matches = App::new(&quot;glif2svg&quot;)
+        .setting(AppSettings::ArgRequiredElseHelp)
+        .version(&quot;0.1.0&quot;)
+        .author(&quot;Fredrick R. Brennan &lt;copypasteⒶkittens⊙ph&gt;; MFEK Authors&quot;)
+        .about(&quot;Convert between glif to SVG&quot;)
+        .arg(Arg::with_name(&quot;input_file&quot;)
+            .short(&quot;in&quot;)
+            .long(&quot;input&quot;)
+            .takes_value(true)
+            .hidden(true)
+            .required(true))
+        .arg(Arg::with_name(&quot;input&quot;)
+            .index(1)
+            .takes_value(true)
+            .help(&quot;The path to the input file.&quot;)
+            .required_unless(&quot;input_file&quot;))
+        .get_matches();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-25 14:07</div>
+            <div class="timeline-body"><p>Okay, I figured it out. But, <code>clap</code>'s behavior is still strange.</p>
+<pre><code class="language-rust">fn main() {
+    let matches = App::new(&quot;glif2svg&quot;)
+        .setting(AppSettings::ArgRequiredElseHelp)
+        .version(&quot;0.1.0&quot;)
+        .author(&quot;Fredrick R. Brennan &lt;copypasteⒶkittens⊙ph&gt;; MFEK Authors&quot;)
+        .about(&quot;Convert between glif to SVG&quot;)
+        .arg(Arg::with_name(&quot;input_file&quot;)
+            .short(&quot;in&quot;)
+            .long(&quot;input&quot;)
+            .takes_value(true)
+            .conflicts_with(&quot;input&quot;)
+            .hidden(true))
+        .arg(Arg::with_name(&quot;input&quot;)
+            .index(1)
+            .help(&quot;The path to the input file.&quot;)
+            .conflicts_with(&quot;input_file&quot;)
+            .required_unless(&quot;input_file&quot;))
+        .arg(Arg::with_name(&quot;output_file&quot;)
+            .short(&quot;out&quot;)
+            .long(&quot;output&quot;)
+            .takes_value(true)
+            .conflicts_with(&quot;output&quot;)
+            .required_unless(&quot;output&quot;)
+            .display_order(1)
+            .help(&quot;The path to the output file.\n\n\n&quot;))
+        .arg(Arg::with_name(&quot;output&quot;)
+            .index(2)
+            .hidden(true))
+        .arg(Arg::with_name(&quot;no-transform&quot;)
+            .short(&quot;T&quot;)
+            .long(&quot;no-transform&quot;)
+            .help(&quot;Don't put transform=\&quot;translate(…)\&quot; in SVG&quot;))
+        .arg(Arg::with_name(&quot;no-glif-metrics&quot;)
+            .short(&quot;M&quot;)
+            .long(&quot;no-glif-metrics&quot;)
+            .help(&quot;Don't consider glif's height/width when writing SVG, use minx/maxx/miny/maxy&quot;))
+        .arg(Arg::with_name(&quot;fontinfo&quot;)
+            .short(&quot;F&quot;)
+            .long(&quot;fontinfo&quot;)
+            .takes_value(true)
+            .help(&quot;fontinfo file (for metrics, should point to fontinfo.plist path)\n\n&quot;))
+        .get_matches();
+}
+</code></pre>
+<p>Giving:</p>
+<pre><code>glif2svg 0.1.0
+Fredrick R. Brennan &lt;copypasteⒶkittens⊙ph&gt;; MFEK Authors
+Convert between glif to SVG
+
+USAGE:
+    glif2svg [FLAGS] [OPTIONS] &lt;input&gt; --output &lt;output_file&gt;
+
+FLAGS:
+    -h, --help               Prints help information
+    -M, --no-glif-metrics    Don't consider glif's height/width when writing SVG, use minx/maxx/miny/maxy
+    -T, --no-transform       Don't put transform=&quot;translate(…)&quot; in SVG
+    -V, --version            Prints version information
+
+OPTIONS:
+    -o, --output &lt;output_file&gt;    The path to the output file.
+                                  
+                                  
+    -F, --fontinfo &lt;fontinfo&gt;     fontinfo file (for metrics, should point to fontinfo.plist path)
+                                  
+
+ARGS:
+    &lt;input&gt;    The path to the input file.
+</code></pre>
+<p>The issue here comes down to <code>Arg::required</code> and <code>Arg::required_unless</code>. You must <em>remove both functions from the one you want to not show in the documentation</em>. Consider this variation, which panics:</p>
+<pre><code>thread 'main' panicked at 'Found positional argument which is not required with a lower index than a required positional argument: &quot;input&quot; index 1', /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:643:21
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/ae90dcf0207c57c3034f00b07048d63f8b2363c8/library/std/src/panicking.rs:517:5
+   1: std::panicking::begin_panic_fmt
+             at /rustc/ae90dcf0207c57c3034f00b07048d63f8b2363c8/library/std/src/panicking.rs:460:5
+   2: clap::app::parser::Parser::verify_positionals
+             at /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:643:21
+   3: clap::app::parser::Parser::app_debug_asserts
+             at /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:146:17
+   4: clap::app::parser::Parser::get_matches_with
+             at /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/parser.rs:894:23
+   5: clap::app::App::get_matches_from_safe_borrow
+             at /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/mod.rs:1639:25
+   6: clap::app::App::get_matches_from
+             at /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/mod.rs:1519:9
+   7: clap::app::App::get_matches
+             at /home/fred/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.33.3/src/app/mod.rs:1460:9
+   8: glif2svg::main
+             at ./src/main.rs:47:19
+   9: core::ops::function::FnOnce::call_once
+             at /rustc/ae90dcf0207c57c3034f00b07048d63f8b2363c8/library/core/src/ops/function.rs:227:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+shell returned 101
+</code></pre>
+<pre><code class="language-diff">@@ -54,21 +54,22 @@ fn main() {
+             .long(&quot;input&quot;)
+             .takes_value(true)
+             .conflicts_with(&quot;input&quot;)
++            .required_unless(&quot;input&quot;)
+             .hidden(true))
+         .arg(Arg::with_name(&quot;input&quot;)
++            //.index(1)
++            .help(&quot;The path to the input file.&quot;))
+-            .index(1)
+-            .help(&quot;The path to the input file.&quot;)
+-            .conflicts_with(&quot;input_file&quot;)
+-            .required_unless(&quot;input_file&quot;))
+         .arg(Arg::with_name(&quot;output_file&quot;)
+             .short(&quot;out&quot;)
+             .long(&quot;output&quot;)
+             .takes_value(true)
+-            .conflicts_with(&quot;output&quot;)
+-            .required_unless(&quot;output&quot;)
+             .display_order(1)
+             .help(&quot;The path to the output file.\n\n\n&quot;))
+         .arg(Arg::with_name(&quot;output&quot;)
++            .conflicts_with(&quot;output&quot;)
++            .required_unless(&quot;output_file&quot;)
++            //.index(2)
+-            .index(2)
+             .hidden(true))
+         .arg(Arg::with_name(&quot;no-transform&quot;)
+             .short(&quot;T&quot;)
+</code></pre>
+<p>Putting <code>Arg::required_unless</code> on either one should have the same result, but doesn't. So this is now a combination bug/FR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-25 14:14</div>
+            <div class="timeline-body"><p>Yes, as is, the usage shows all required arguments and collapses the optional ones.</p>
+<p>And it doesn't surprise me that the parser is straightforward in its handling of positional arguments.</p>
+<p>So if I understand, this boils down to request either</p>
+<ul>
+<li>Hiding or collapsing an item in the usage</li>
+<li>Allowing multiple optional positional arguments in a scenario like this<ul>
+<li>With this requiring us defining what scenarios these would be so we can prevent ambiguities</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-25 14:18</div>
+            <div class="timeline-body"><p>Personally I'd prefer #1820 just be solved. ~~It wasn't mentioned by anyone there but the case of input/output args is a <em>classic</em> case where you can provide either positional or flag (<code>-i</code>, <code>-o</code>) because users forget which programs require which (this being free software, there are plenty of programs which barf on one or the other, we shouldn't do that).~~ (Silly me, was mentioned, I'm just tired.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-26 21:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Hiding or collapsing an item in the usage</p>
+</blockquote>
+<p>If the arg is required, why do we want to hide it from usage? If the arg is required depending on certain situations we do hide it. (Check <a href="https://github.com/clap-rs/clap/issues/2940#issuecomment-950965939">this</a> comment. Ignore the panic because that's fixed in v3).</p>
+<p>I am leaning towards closing this issue because the usage/required interaction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-26 21:26</div>
+            <div class="timeline-body"><p>If the panic is fixed there's nothing left to discuss :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ctrlcctrlv on 2021-10-26 21:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:41 UTC
+    </footer>
+</body>
+</html>

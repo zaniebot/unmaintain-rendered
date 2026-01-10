@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nesting of string literals with the same quote type inside f-string - astral-sh/ruff #10184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>nesting of string literals with the same quote type inside f-string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10184">#10184</a>
+        opened by <a href="https://github.com/Zerotask">@Zerotask</a>
+        on 2024-03-01 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zerotask">@Zerotask</a> on 2024-03-01 12:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>before</h2>
+<pre><code class="language-python">email = factory.LazyAttribute(lambda obj: f&quot;info@{obj.name.lower().replace(' ', '')}.de&quot;)
+</code></pre>
+<h2>after</h2>
+<pre><code class="language-python">email = factory.LazyAttribute(lambda obj: f&quot;info@{obj.name.lower().replace(&quot; &quot;, &quot;&quot;)}.de&quot;)
+</code></pre>
+<h2>issue</h2>
+<p>(tooltip from PyCharm)</p>
+<blockquote>
+<p>Python version 3.11 does not allow nesting of string literals with the same quote type inside f-strings</p>
+</blockquote>
+<h2>solution</h2>
+<pre><code class="language-python">email = factory.LazyAttribute(lambda obj: f'info@{obj.name.lower().replace(&quot; &quot;, &quot;&quot;)}.de')
+</code></pre>
+<p>or don't change the single quotes at all.</p>
+<hr />
+<p>ruff 0.2.2 with preview enabled</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 100
+output-format = &quot;grouped&quot;
+extend-exclude = [&quot;apps/*/migrations/*&quot;, &quot;static&quot;, &quot;staticfilles&quot;, &quot;templates&quot;]
+target-version = &quot;py312&quot;
+fix = true
+
+[tool.ruff.format]
+preview = true
+docstring-code-format = true
+
+[tool.ruff.lint]
+preview = true
+ignore = [
+    &quot;E501&quot;,
+    &quot;S101&quot;,
+    &quot;S106&quot;,
+    &quot;RUF012&quot;,
+    &quot;PT027&quot;,
+    &quot;ISC001&quot;,
+    &quot;FBT001&quot;,
+    &quot;FBT002&quot;,
+    &quot;FBT003&quot;,
+    &quot;PLC0415&quot;
+]
+select = [
+    &quot;F&quot;,     # Pyflakes
+    &quot;E&quot;,     # pycodestyle errors
+    &quot;W&quot;,     # pycodestyle warnings
+    &quot;C90&quot;,   # mccabe
+    &quot;I&quot;,     # isort&quot;
+    &quot;N&quot;,     # pep8-naming
+    &quot;UP&quot;,    # pyupgrade
+    &quot;PL&quot;,    # pylint
+    &quot;PERF&quot;,  # perflint
+    &quot;S&quot;,     # flake8-bandit
+    &quot;FBT&quot;,   # flake8-boolean-trap
+    &quot;B&quot;,     # flake8-bugbear
+    &quot;DJ&quot;,    # flake8-django
+    &quot;ICN&quot;,   # flake8-import-conventions
+    &quot;ASYNC&quot;, # flake8-async
+    &quot;C4&quot;,    # flake8-comprehensions
+    &quot;Q&quot;,     # flake8-quotes
+    &quot;RET&quot;,   # flake8-return
+    &quot;SIM&quot;,   # flake8-simplify
+    &quot;TID&quot;,   # flake8-tidy-imports
+    &quot;TCH&quot;,   # flake8-type-checking
+    &quot;PTH&quot;,   # flake8-use-pathlib
+    &quot;INT&quot;,   # flake8-gettext
+    &quot;SLOT&quot;,  # flake8-slots
+    &quot;SLF&quot;,   # flake8-self
+    &quot;RSE&quot;,   # flake8-raise
+    &quot;PYI&quot;,   # flake8-pyi&quot;
+    &quot;PIE&quot;,   # flake8-pie&quot;
+    &quot;ISC&quot;,   # flake8-implicit-str-concat
+    &quot;A&quot;,     # flake8-builtins
+    &quot;COM&quot;,   # flake8-commas
+    &quot;T10&quot;,   # flake8-debugger
+    &quot;YTT&quot;,   # flake8-2020
+    &quot;G&quot;,     # flake8-logging-format
+    &quot;ERA&quot;,   # eradicate
+    &quot;RUF&quot;,   # ruff
+    &quot;FLY&quot;,   # flynt
+    &quot;FURB&quot;,  # refurb
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "quotes replaced inside a f-string" to "nesting of string literals with the same quote type inside f-string" by @Zerotask on 2024-03-01 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-01 12:55</div>
+            <div class="timeline-body"><p>Is this after you ran <code>ruff format</code> or after you applied a fix? Do you remember the name of the rule that you applied?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zerotask">@Zerotask</a> on 2024-03-01 13:05</div>
+            <div class="timeline-body"><p>Yes, it must be <code>ruff format</code>.
+If I remove <code>preview = true</code> from format, it doesn't replace the single quotes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-01 13:12</div>
+            <div class="timeline-body"><p>Yeah, that's expected because you configured <code>target-version = &quot;py312&quot;</code>, which allows the formatter to re-use the same quotes. However, the style is still in preview and we're open to change how the formatter picks quotes.</p>
+<p>What are your reasons for preferring alternating quotes? What's your preferred formatting if the f-string has one more level of nesting?</p>
+<p>CC: @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-03-01 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-03-01 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2024-03-01 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zerotask">@Zerotask</a> on 2024-03-01 13:18</div>
+            <div class="timeline-body"><blockquote>
+<p>What are your reasons for preferring alternating quotes? What's your preferred formatting if the f-string has one more level of nesting?</p>
+</blockquote>
+<p>I prefer double quotes and I try to avoid nesting f-strings. You are right that with Python 3.12 the f-string behavior has changed. I was just a bit confused at the beginning because PyCharm marked it.
+Even though we define Python 3.12 as required, the alternating style would also allow Python 3.11 to work properly (better backward compatibility)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-01 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Even though we define Python 3.12 as required, the alternating style would also allow Python 3.11 to work properly (better backward compatibility)</p>
+</blockquote>
+<p>That's true. I'm leaning towards leaving it as is and allow users to configure whether they want backwards compatibility or not by setting the target-version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Zerotask on 2024-03-01 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10273.html">astral-sh/ruff#10273</a> on 2024-03-07 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11056.html">astral-sh/ruff#11056</a> on 2024-04-22 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nccgroup/SteppingStones/pulls/12.html">nccgroup/SteppingStones#12</a> on 2024-10-16 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ihoru">@ihoru</a> on 2025-02-14 12:09</div>
+            <div class="timeline-body"><p>It would be great to address this issue to be able to leave the same (single) quotes inside single-quoted f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anatoli26">@anatoli26</a> on 2025-02-25 03:02</div>
+            <div class="timeline-body"><p>I second this request, at least a setting to preserve or to use same quotes inside f-strings too is needed. pylint is warning about inconsistent quotes, I have to run it with <code>--disable=W1405</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

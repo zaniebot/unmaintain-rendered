@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install failed with uv but works with regular python - astral-sh/uv #10440</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install failed with uv but works with regular python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10440">#10440</a>
+        opened by <a href="https://github.com/thewh1teagle">@thewh1teagle</a>
+        on 2025-01-09 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thewh1teagle">@thewh1teagle</a> on 2025-01-09 18:32</div>
+            <div class="timeline-body"><p>With uv (failed)</p>
+<pre><code class="language-console">uv venv -p 3.12
+uv pip install --no-cache --refresh librosa==0.10.2.post1 --force-reinstall
+</code></pre>
+<p>Error</p>
+<pre><code class="language-console">error: Failed to prepare distributions
+  Caused by: Failed to download and build `llvmlite==0.36.0`
+  Caused by: Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+[stderr]
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/private/var/folders/k6/b4k6mjy92dxbm_l2my6zzlnm0000gn/T/.tmpg2Mr97/builds-v0/.tmp7sA06J/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 334, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/private/var/folders/k6/b4k6mjy92dxbm_l2my6zzlnm0000gn/T/.tmpg2Mr97/builds-v0/.tmp7sA06J/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 304, in _get_build_requires
+    self.run_setup()
+  File &quot;/private/var/folders/k6/b4k6mjy92dxbm_l2my6zzlnm0000gn/T/.tmpg2Mr97/builds-v0/.tmp7sA06J/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 522, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/private/var/folders/k6/b4k6mjy92dxbm_l2my6zzlnm0000gn/T/.tmpg2Mr97/builds-v0/.tmp7sA06J/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 320, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 55, in &lt;module&gt;
+  File &quot;&lt;string&gt;&quot;, line 52, in _guard_py_ver
+RuntimeError: Cannot install on Python version 3.12.8; only versions &gt;=3.6,&lt;3.10 are supported.
+
+</code></pre>
+<p>With python (works)</p>
+<pre><code class="language-console">brew install python@3.12   
+python3.12 -m venv venv
+source venv/bin/activate
+pip install --no-cache librosa==0.10.2.post1
+</code></pre>
+<p>macOS M1 macOS 14.5</p>
+<p>Related:</p>
+<ul>
+<li>https://github.com/librosa/librosa/issues/1896#issuecomment-2581001434</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidmarttila">@davidmarttila</a> on 2025-01-09 18:42</div>
+            <div class="timeline-body"><p>I've run into this issue before as well, I'm not sure what exactly causes it but it must be something in the dependency resolution of <code>numba</code> and <code>llvmlite</code>.</p>
+<p>As a workaround, try explicitly installing numba first:</p>
+<pre><code>uv venv -p 3.12
+uv pip install numba
+uv pip install librosa
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thewh1teagle">@thewh1teagle</a> on 2025-01-09 19:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I've run into this issue before as well, I'm not sure what exactly causes it but it must be something in the dependency resolution of <code>numba</code> and <code>llvmlite</code>.</p>
+<p>As a workaround, try explicitly installing numba first:</p>
+</blockquote>
+<p>The issue happens in package that I created, currenly I pinned numba version</p>
+<p>https://github.com/thewh1teagle/kokoro-onnx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-01-09 19:13</div>
+            <div class="timeline-body"><p>I can't reproduce on Linux, but it looks like uv is backtracking to a version of llvmlite your platform doesn't support, uv downloads the source distribution, it doesn't compile and it fails.</p>
+<p>A workaround that might work would be to use <code>--only-binary llvmlite</code>, or maybe even <code>--only-binary :all:</code> if no source distributions are required at all, forcing uv to not select source distributions that might fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thewh1teagle">@thewh1teagle</a> on 2025-01-09 19:18</div>
+            <div class="timeline-body"><p>It might be off-topic, but does anyone know why these packages pin to specific Python versions, forcing users to compile them every time? As far as I know, Python's ABI doesn’t change that frequently (does he?). So why do they create wheels for each specific Python version? It's so hard to maintain this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidmarttila">@davidmarttila</a> on 2025-01-09 19:43</div>
+            <div class="timeline-body"><p>@thewh1teagle I tested this a bit more and it seems to only occur on <code>uv 0.5.9</code> and older for me. The issue goes away after upgrading <code>uv</code> to the latest version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-09 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 03:38</div>
+            <div class="timeline-body"><p>uv doesn't respect upper-bounds on <code>requires-python</code>. Our stance is that <code>requires-python</code> is intended to indicate minimum Python version compatibility. There's a lot of discussion around that elsewhere -- here's one reference that links to a few more: https://github.com/astral-sh/uv/issues/4022#issuecomment-2148505055.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-10 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-01-10 04:03</div>
+            <div class="timeline-body"><p>I hadn't thought of that, because the error is coming from setuptools I just took it for &quot;having backtracked too far&quot;.</p>
+<p>If uv did respect upper bounds would it have skipped over this version because it makes the simplifying assumption that metadata is consistent between wheels and sdists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesdeluk">@jamesdeluk</a> on 2025-01-16 08:17</div>
+            <div class="timeline-body"><p>I'm having a similar issue with <code>llvmlite</code> when trying to install https://github.com/santinic/audiblez</p>
+<blockquote>
+<p>As a workaround, try explicitly installing numba first:</p>
+<pre><code>uv venv -p 3.12
+uv pip install numba
+uv pip install librosa
+</code></pre>
+</blockquote>
+<p>This works and enables audiblez to be installed.</p>
+<p>However, audiblez is run as a tool (from my understanding of <code>uv</code> - i.e., it's run from the command line <code>&gt;audiblez blah blah</code>). It's not possible to <code>uv tool install numba</code> as it's not a tool, meaning audiblez also cannot be.</p>
+<p>Am I doing something wrong, or is it not working / a bug?</p>
+<p>EDIT: Solved with <code>uv tool install --with numba audiblez --prerelease=allow --python 3.12</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10664.html">astral-sh/uv#10664</a> on 2025-01-16 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4022.html">astral-sh/uv#4022</a> on 2025-09-18 09:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:02 UTC
+    </footer>
+</body>
+</html>

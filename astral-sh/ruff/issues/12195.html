@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPY201 rules seem to miss imports for NAN - astral-sh/ruff #12195</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>NPY201 rules seem to miss imports for NAN</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12195">#12195</a>
+        opened by <a href="https://github.com/xmatthias">@xmatthias</a>
+        on 2024-07-05 05:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xmatthias">@xmatthias</a> on 2024-07-05 05:40</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Using the following test file should show multiple deprecation warnings - but only shows one while using ruff 0.5.0 (the latest afaik).</p>
+<pre><code class="language-python">from numpy import nan, NaN, NAN
+
+import numpy as np
+
+np.NaN
+np.NAN
+np.nan
+</code></pre>
+<p><code>ruff check test_npy.py --preview --select NPY2</code></p>
+<pre><code>test_npy.py:5:1: NPY201 [*] `np.NaN` will be removed in NumPy 2.0. Use `numpy.nan` instead.
+  |
+3 | import numpy as np
+4 | 
+5 | np.NaN
+  | ^^^^^^ NPY201
+6 | np.NAN
+7 | np.nan
+  |
+  = help: Replace with `numpy.nan`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option
+</code></pre>
+<p>In reality, np.NAN is also not valid, so should raise an error, too.</p>
+<p>Also, explicit imports (not used through <code>np.xxx</code>) seem to be completely ignored ...
+Neither is <code>from numpy import NaN, NAN</code> (only <code>from numpy import nan</code> is still valid for numpy2.0).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-08 08:04</div>
+            <div class="timeline-body"><p>Thanks for reporting this. I just checked the <a href="https://numpy.org/devdocs/release/2.0.0-notes.html#numpy-2-0-python-api-removals">numpy release notes</a> and they only mention the deprecation of <code>NaN</code> in favor of  <code>nan</code>.</p>
+<p>Do you have a link to documentation saying that <code>NAN</code> has been deprecated well?</p>
+<p>In case you're interested to PR a fix. <a href="https://github.com/astral-sh/ruff/issues/12034">PR</a> is a good example on how to add new NUMPY deprecations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-08 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-07-08 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmatthias">@xmatthias</a> on 2024-07-08 09:43</div>
+            <div class="timeline-body"><p>not official documentation as much - but https://github.com/numpy/numpy/pull/26741 - and the pr actually removing both the NaN, as well as the NAN alias (https://github.com/numpy/numpy/pull/24376/files - search for <code>NAN: Final[float]</code> in <code>numpy/__init__.pyi</code>).</p>
+<p>It's not in the release notes - but from actually trying it out - it's clear that it's been removed.
+My assumption is that it's been forgotten to be mentioned in the release notes - as it's clearly gone - in the same PR as the NaN alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2024-07-08 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12292.html">astral-sh/ruff#12292</a> on 2024-07-11 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 02:06</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/12292.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-17 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmatthias">@xmatthias</a> on 2024-07-17 04:55</div>
+            <div class="timeline-body"><p>@charliermarsh i tend to disagree.</p>
+<p>As mentioned in the PR, the case of <code>from numpy import nan, NaN, NAN</code> (NAN and NaN shouldn't import as they've been removed) isn't covered in that PR.</p>
+<p>Let me know if you'd prefer me to open a new issue for that, though its very closely related to this issue, as i reported both problems together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 18:07</div>
+            <div class="timeline-body"><p>@xmatthias -- You're saying that we should also catch <code>from</code> imports for those symbols, rather than just usages? I think that would be a separate issue since it applies to all of the cases in that rule and isn't specific to <code>NAN</code> (unless I'm misunderstanding).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmatthias">@xmatthias</a> on 2024-07-17 18:11</div>
+            <div class="timeline-body"><p>yeah essentially exactly that</p>
+<p>it's deprecated / removed from numpy just as NaN ... just ruff isn't warning it.
+You're absolutely correct in that it'd apply to essentially all other entries, too.</p>
+<blockquote>
+<p>I think that would be a separate issue</p>
+</blockquote>
+<p>Works for me - will open one :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 18:11</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xmatthias">@xmatthias</a> on 2024-07-17 18:15</div>
+            <div class="timeline-body"><p>mmmh, i realize now (while recreating code for the new issue) that while the import doesn't warn - usage does - so never mind :+1:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

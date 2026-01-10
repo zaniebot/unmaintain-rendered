@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync --dry-run --reinstall` does not check access to indexes - astral-sh/uv #12493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync --dry-run --reinstall` does not check access to indexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12493">#12493</a>
+        opened by <a href="https://github.com/LewisGaul">@LewisGaul</a>
+        on 2025-03-26 17:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LewisGaul">@LewisGaul</a> on 2025-03-26 17:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm testing out using a custom index with the following config:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-pkg&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [&quot;pyyaml&quot;]
+
+[[tool.uv.index]]
+name = &quot;foo-pypi&quot;
+url = &quot;https://.../foo-pypi-local/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+pyyaml = { index = &quot;foo-pypi&quot; }
+</code></pre>
+<p>I can then install <code>pyyaml</code> from the &quot;foo&quot; index with: <code>UV_INDEX_FOO_PYPI_PASSWORD=$TOKEN uv sync</code> as expected (and <code>--dry-run</code> works fine here too).</p>
+<p>If I try to reinstall the package without the token being provided this errors, as expected:</p>
+<pre><code>   &gt; uv sync --reinstall
+Resolved 2 packages in 0.75ms
+x Failed to download `pyyaml==0.0.1`
+  |-&gt; Failed to fetch: `https://.../foo-pypi-local/pyyaml/0.0.1/pyyaml-0.0.1-py3-none-any.whl`
+  `-&gt; HTTP status client error (403 Forbidden) for url
+      (https://.../foo-pypi-local/pyyaml/0.0.1/pyyaml-0.0.1-py3-none-any.whl)
+  help: `pyyaml` (v0.0.1) was included because `test-pkg` (v0.1.0) depends on `pyyaml`
+</code></pre>
+<p>However with <code>--dry-run</code> there is no indication of the error:</p>
+<pre><code>   &gt; uv sync --reinstall --dry-run
+Discovered existing environment at: .venv
+Resolved 2 packages in 0.78ms
+Found up-to-date lockfile at: uv.lock
+Would download 1 package
+Would uninstall 1 package
+Would install 1 package
+ - pyyaml==0.0.1
+ + pyyaml==0.0.1
+</code></pre>
+<p>I appreciate this is a bit niche/low priority but thought the issue would be appreciated by a team that has such an impressive attention to detail!</p>
+<h3>Platform</h3>
+<p>RHEL8 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.10</p>
+<h3>Python version</h3>
+<p>Python 3.11.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @LewisGaul on 2025-03-26 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-04-01 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-04-01 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 19:24</div>
+            <div class="timeline-body"><p>I'm unsure if we <em>should</em> hit the network during dry-run since it's sort of a &quot;real&quot; action? It could be nice to check and warn if it would fail though 🤔</p>
+<p>What's the use-case for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-04-01 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LewisGaul">@LewisGaul</a> on 2025-04-03 00:09</div>
+            <div class="timeline-body"><p>Apologies for the miscategorisation, I did question whether it should be considered a bug.</p>
+<p>I was assuming <code>--dry-run</code> already relies on network access get package metadata? A couple of use-cases shown below.</p>
+<p>To resolve dependencies:</p>
+<pre><code>   &gt; uv pip install --dry-run --reinstall --no-cache pydantic
+Resolved 5 packages in 102ms
+Would download 5 packages
+Would install 5 packages
+ + annotated-types==0.7.0
+ + pydantic==2.11.1
+ + pydantic-core==2.33.0
+ + typing-extensions==4.13.0
+ + typing-inspection==0.4.0
+</code></pre>
+<p>Or to check the actual project name from a URL:</p>
+<pre><code>   &gt; uv pip install --dry-run 'git+https://github.com/jackrosenthal/legacy-cgi.git'
+Resolved 1 package in 482ms
+Would download 1 package
+Would install 1 package
+ + legacy-cgi @ git+https://github.com/jackrosenthal/legacy-cgi.git@968c02eaa3c13188a448bacc17d3e1a994eb4c4d
+</code></pre>
+<p>The use-case I showed in the description was wanting to check some config variations when installing from multiple indexes, using the version number that would be installed to determine which index was selected, but not actually caring about the install being completed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 00:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Apologies for the miscategorisation, I did question whether it should be considered a bug.</p>
+</blockquote>
+<p>No worries!</p>
+<blockquote>
+<p>I was assuming --dry-run already relies on network access get package metadata?</p>
+</blockquote>
+<p>I think <code>uv sync</code> can get all that metadata from the <code>uv.lock</code> file. It's a bit different in <code>uv pip</code> where we don't have a local source.</p>
+<pre><code>❯ uv sync --no-cache --dry-run --offline
+Discovered existing environment at: .venv
+Resolved 5 packages in 7ms
+Found up-to-date lockfile at: uv.lock
+Audited 4 packages in 0.20ms
+Would make no changes
+
+❯ uv pip install --no-cache --dry-run pydantic --offline
+  × No solution found when resolving dependencies:
+  ╰─▶ Because pydantic was not found in the cache and you require pydantic, we can conclude that your
+      requirements are unsatisfiable.
+
+      hint: Packages were unavailable because the network was disabled. When the network is disabled,
+      registry packages may only be read from the cache.
+</code></pre>
+<p>Though, it looks like I can get <code>uv sync</code> to hit the network if the lockfile is stale.</p>
+<p>That's an interesting use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LewisGaul">@LewisGaul</a> on 2025-04-03 00:55</div>
+            <div class="timeline-body"><p>Ah I see, that does expose another case where <code>--dry-run</code> indicates something would succeed when actually it would fail (which could be determined without accessing the network): combining <code>--no-cache</code> and <code>--offline</code>, since it's impossible to install in offline mode without the cache?</p>
+<pre><code>$uv sync --offline --no-cache --dry-run
+Discovered existing environment at: .venv
+Resolved 52 packages in 1ms
+Found up-to-date lockfile at: uv.lock
+Would download 1 package
+Would install 1 package
+ + pydantic-core==2.27.2
+
+$uv sync --offline --no-cache
+Resolved 52 packages in 1ms
+  x Failed to download `pydantic-core==2.27.2`
+  `-&gt; Network connectivity is disabled, but the requested data wasn't found in the cache for:
+      `https://files.pythonhosted.org/packages/a6/74/d12b2cd841d8724dc8ffb13fc5cef86566a53ed358103150209ecd5d1999/pydantic_core-2.27.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl`
+  help: `pydantic-core` (v2.27.2) was included because `my-pypi` (v0.1.0) depends on `pypi-simple` (v1.6.1) which depends on `pydantic` (v2.10.6) which depends on
+        `pydantic-core`
+</code></pre>
+<p>I'd personally be in favour of making dry-run more correct by accessing the network when needed, and actually just be a dry-run of <em>whether packages get installed or not</em> (and also not updating the lock file or anything else potentially destructive on the local system).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 01:12</div>
+            <div class="timeline-body"><p>I think what you're proposing makes sense. It sounds hard though :)</p>
+<p>I'd be happy to take a look at some proposed changes, but we're unlikely to pursue it ourselves in the short-term.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

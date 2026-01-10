@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` makes warnings in installed packages appear that don't appear with `pip install` - astral-sh/uv #10691</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` makes warnings in installed packages appear that don't appear with `pip install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10691">#10691</a>
+        opened by <a href="https://github.com/gerhard4">@gerhard4</a>
+        on 2025-01-16 17:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gerhard4">@gerhard4</a> on 2025-01-16 17:45</div>
+            <div class="timeline-body"><p>When I install my requirements into a virtual environment with <code>uv pip sync/install</code>, I get these warnings from <code>docopt</code> (version 0.6.2):</p>
+<pre><code>/home/.../ve/bin/python -m doctest --fail-fast -o ELLIPSIS &lt;...&gt;
+/home/.../ve/lib/python3.12/site-packages/docopt.py:165: SyntaxWarning: invalid escape sequence '\S'
+  name = re.findall('(&lt;\S*?&gt;)', source)[0]
+...
+</code></pre>
+<p>But when I use <code>pip install</code> to install the same requirements (same <code>docopt</code> version), I don't get them.</p>
+<p>I know why the warning is there, but it's library code and I don't want to get warnings for (working) library code. I also know that I can get rid of the warning with <code>PYTHONWARNINGS=&quot;ignore::SyntaxWarning&quot;</code>, but I'd rather not have to use this in every environment I run Python code.</p>
+<p>My virtual environment is in a directory &quot;ve&quot; of the project directory. The commands I use are</p>
+<pre><code>uv pip sync --python ve/bin/python requirements.txt  # I tried this first; it gives me the SyntaxWarnings.
+uv pip install --python ve/bin/python -r requirements.txt  # Then I tried this; same result.
+ve/bin/pip install -r requirements.txt  # When I use this, I don't get the SyntaxWarnings.
+</code></pre>
+<p>It doesn't matter whether I created the virtual environment with <code>uv</code> or standard Python (same Python version in both cases).</p>
+<p>Is there something I can do to make <code>uv</code> behave the same as <code>pip</code> in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-16 17:56</div>
+            <div class="timeline-body"><p>I have no clue why you'd get this from uv but not pip 🤔</p>
+<p>These warnings are shown on usage after install?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2025-01-16 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 17:56</div>
+            <div class="timeline-body"><p>We don't compile bytecode by default, while pip does. Once the bytecode is compiled, these warnings don't appear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 17:57</div>
+            <div class="timeline-body"><p>See, e.g., https://github.com/astral-sh/uv/issues/1559 or https://github.com/astral-sh/uv/issues/1928#issuecomment-1968857514.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 17:58</div>
+            <div class="timeline-body"><p>It's a real warning, it's just hidden when you install via pip. You can set <a href="https://docs.astral.sh/uv/configuration/environment/#uv_compile_bytecode"><code>UV_COMPILE_BYTECODE</code></a> if you want to change the behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-16 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gerhard4">@gerhard4</a> on 2025-01-16 18:20</div>
+            <div class="timeline-body"><blockquote>
+<p>These warnings are shown on usage after install?</p>
+</blockquote>
+<p>They show up on first usage. This is explained by charliermarsh's comments.</p>
+<p>And when I searched for issues, I mistakenly only searched open issues, or else I would have found the related issues Charlie posted. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 18:23</div>
+            <div class="timeline-body"><p>No worries. I’ll add something to the docs to make note of this. It was super confusing to us when we first saw it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

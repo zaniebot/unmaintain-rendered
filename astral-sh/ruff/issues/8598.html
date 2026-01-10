@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff formatter: one call per line for chained method calls - astral-sh/ruff #8598</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff formatter: one call per line for chained method calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8598">#8598</a>
+        opened by <a href="https://github.com/MartinBernstorff">@MartinBernstorff</a>
+        on 2023-11-10 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MartinBernstorff">@MartinBernstorff</a> on 2023-11-10 11:43</div>
+            <div class="timeline-body"><p>This is something I miss <em>tremendously</em> from the rust ecosystem. One example:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/8526086/1cf147a0-8959-4c5c-b9d0-b588444e9622" alt="image" /></p>
+<p>When formatted becomes:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/8526086/fe0bc898-a0be-451f-862c-210e78d713b6" alt="image" /></p>
+<p>I think the first example is <em>much</em> more readable, and would <strong>love</strong> a Python formatter which supported it ❤️</p>
+<p><strong>Meta:</strong>
+I was uncertain about where to make a feature request for the ruff formatter, hope this is the right place!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2023-11-10 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @zanieb on 2023-11-10 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-27 11:10</div>
+            <div class="timeline-body"><p>Hy @MartinBernstorff</p>
+<p>This is something that I also noticed coming from JS where Prettier formats call chains as outlined by you above (except without the outer parentheses).</p>
+<p>My reasoning for Black/Ruff's call chain formatting is that Black tries to avoid parenthesizing expressions which is more idiomatic (I think):</p>
+<pre><code class="language-python">if a + long_call(
+	arg1, 
+	arg2
+): 
+	pass
+</code></pre>
+<p>instead of</p>
+<pre><code>if (
+	a + 
+	long_call(
+		arg1, 
+		arg2
+	)
+): 
+	pass
+</code></pre>
+<p>The way this is implemented is that anything inside of parentheses gets a higher split priority (try to split the content inside parentheses first).</p>
+<p>I'm not saying that we can't improve the formatting. I'm just trying to explain where I believe black's formatting decision is coming from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MartinBernstorff">@MartinBernstorff</a> on 2023-11-27 12:42</div>
+            <div class="timeline-body"><p>@MichaReiser Appreciate the context! I completely agree your first example is more readable, so there's some work on defining the goal here.</p>
+<p>From a very brief consideration, I can only come up with chained method calls as an example of my desired splitting, so perhaps this is a special case? Love to lean on your experience here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9577.html">astral-sh/ruff#9577</a> on 2024-01-25 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pola-rs/polars/pulls/14223.html">pola-rs/polars#14223</a> on 2024-02-02 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9999.html">astral-sh/ruff#9999</a> on 2024-02-15 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nick4u">@nick4u</a> on 2024-02-21 07:55</div>
+            <div class="timeline-body"><p>I would love to see some option to preserve chain methods-call-per-line
+SQLAlchemy code is so much more readable when those new lines are preserved - it almost looks like real SQL</p>
+<pre><code class="language-python">some_query = (
+  select(whatever.id, x.something)
+  .join(x, x.y == whatever.y)
+  .where(x &gt; 12)
+  .order_by(whatever.id)
+)
+</code></pre>
+<p>anyway - ruff rules!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Red-Eyed">@Red-Eyed</a> on 2024-03-01 09:08</div>
+            <div class="timeline-body"><p>Hello, first of all, thank you for a great piece of software!</p>
+<p>Came here to ask for a similar functionality mentioned above: I would like to see chaining methods on new line:</p>
+<p>It is heavily used in the <a href="https://github.com/dbrattli/Expression?tab=readme-ov-file#composition">expression</a> library:</p>
+<pre><code class="language-python">(Seq(find_node(labels, polygons_predicate))
+    .choose(lambda x: x)
+    .map(parse_points)
+    .choose(lambda x: x),
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5343.html">astral-sh/ruff#5343</a> on 2024-03-08 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattharrison">@mattharrison</a> on 2024-03-20 21:07</div>
+            <div class="timeline-body"><p>As a big proponent of chaining in Pandas and Polars, I would love to see some options to help with code readability with these libraries. Starting each line with a period makes the code easier to understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mchccc">@mchccc</a> on 2024-03-28 10:37</div>
+            <div class="timeline-body"><p>As a sort of workaround, you can add comments in between the lines:</p>
+<pre><code>        plot_df = (
+            self.data
+            # Round costs
+            .assign(cost=np.round((self.data.cost / 1000), decimals=0))
+        )
+</code></pre>
+<p>One might even argue it helps <em>more</em> with readability ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomas-mckay">@thomas-mckay</a> on 2024-05-10 18:41</div>
+            <div class="timeline-body"><p>As mentioned by nick4u, this would be a great feature for SQLAlchemy, and I'll add Django to the list:</p>
+<pre><code class="language-python">result = (
+    SomeModel.objects
+    .filter(...)
+    .annotate(...)
+    .prefetch_related(...)
+    .order_by(...)
+)
+</code></pre>
+<p>We format like this naturally at my current job, and the main blocking-point of adopting a formatter is that it mangles this syntax regardless of line length (i.e.: the formatter will reformat even code that is within line-length limits). To be fair, the larger pain-point is that formatters in general don't care about what the developer's intent was regarding readability, it just assumes it knows better (or that the dev didn't care to begin with). So both a carefully-crafted, readable piece of code and a long unreadable string will be overridden regardless. The magic-comma is a big step in the right direction, as it lets developers tell the formatter what is more readable. Thankfully, that covers a lot of cases, but not all.</p>
+<p>As tmke8 commented on <a href="https://github.com/astral-sh/ruff/issues/9577#issuecomment-1900178928">#9577</a>, maybe the solution to circumvent the complexity of implementing this type of formatting, at least for now, would be for the formatter to understand &quot;magic-parenthesis&quot;. In other words, if it encounters this formatting, apply formatting within the parenthesis, but don't remove them. The example above would be left unchanged, but</p>
+<pre><code class="language-python">result = (
+    SomeModel.objects
+    .filter(some_very_long_column_name_1__startswith='some_very_long_value', some_very_long_column_name_2__startswith='some_very_long_value')
+    .order_by(...)
+)
+</code></pre>
+<p>would become</p>
+<pre><code class="language-python">result = (
+    SomeModel.objects
+    .filter(
+        some_very_long_column_name_1__startswith='some_very_long_value',
+        some_very_long_column_name_2__startswith='some_very_long_value',
+    )
+    .order_by(...)
+)
+</code></pre>
+<p>Also, this would have a great side-effect for multi-line conditions, I think:</p>
+<p>Currently, this code:</p>
+<pre><code class="language-python">if (
+    self.task
+    and not self.task.is_canceled
+    and not self.task.is_finished
+): ...
+</code></pre>
+<p>gets auto-formatted to</p>
+<pre><code class="language-python">if self.task and not self.task.is_canceled and not self.task.is_finished: ...
+</code></pre>
+<p>But with &quot;magic-parenthesis&quot;, the first formatting would be left as-is.</p>
+<p>PS: I realize, this comment may be taking the issue in a different direction. If so, let me know and I'll open a new one.
+PPS: Thank you for Ruff :heart:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/parikls">@parikls</a> on 2024-05-23 16:01</div>
+            <div class="timeline-body"><p>+1 for this. using such code-style constantly for queries for both alchemy and django</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shner-elmo">@shner-elmo</a> on 2024-06-01 22:10</div>
+            <div class="timeline-body"><p>Great suggestion for a great linter!</p>
+<p>Has there been any progress so far on this feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aayushchhabra1999">@aayushchhabra1999</a> on 2024-06-02 19:23</div>
+            <div class="timeline-body"><p>+1
+Need this for method chaining and sqlalchemy formatting.</p>
+<p>CC: @MichaReiser @charliermarsh - Any work or plans for this anytime soon?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/the-infinity">@the-infinity</a> on 2024-06-12 10:57</div>
+            <div class="timeline-body"><p>+1 too, also at SQLAlchemy, this would really improve readability if you have this option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12312.html">astral-sh/ruff#12312</a> on 2024-07-15 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yamplum">@yamplum</a> on 2024-08-13 18:14</div>
+            <div class="timeline-body"><p>Just wanted to raise another voice in support of this feature. It seems like Black supports this style of formatting? https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#call-chains</p>
+<p>I would really prefer to stick with a Rust-based tool but this might be worth switching over.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 06:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Just wanted to raise another voice in support of this feature. It seems like Black supports this style of formatting? <a href="https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#call-chains">black.readthedocs.io/en/stable/the_black_code_style/current_style.html#call-chains</a></p>
+</blockquote>
+<p>Ruff should support call-chain formatting the same as Black. If there are cases where Black applies call-chain formatting and Ruff doesn't, then that's a bug.</p>
+<p><a href="https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AF4AMRdAD2IimZxl1N_WlbvK5V89Lw1SkhVsHyCyFI3Ge-c_SY0TY6P_OLyAFiRQMuVoFY03JMyZhZN-7ASJqq2VZCUup6xZH5v_zwde2-zdNfCZbvFEFX_KGNn5o_M_WL_SihxF35F2tjqgX6o52pPk9LHKmz0GMSc0y7DI3t7cahkVFjBBB85STD5GrbbkG9moy1aXtJl7ZsMs2ryKfyrtPbVzx7MNBU5H2VvrkYgfAtgkH_RlVRE_GyUt4ICVVtGU2E0bkbZSUgAVZfIsddZUJ8AAeAB-QIAAKxrmxCxxGf7AgAAAAAEWVo%3D">Black</a>
+<a href="https://play.ruff.rs/d3a035bc-9cbb-4853-80cc-d2c07f3128b8?secondary=Format">Ruff</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yamplum">@yamplum</a> on 2024-08-14 07:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff should support call-chain formatting the same as Black. If there are cases where Black applies call-chain formatting and Ruff doesn't, than that's a bug.</p>
+</blockquote>
+<p>Sorry, you're right — it seems that Ruff matches Black here, however both &quot;fail&quot; in this manner when there is only one method in the &quot;chain&quot;, <a href="https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AEZAK1dAD2IimZxl1N_WlbvK5V89Lw1SkhVsHyCx9GZ6qFyX6O6Dgbtf1mqAYh1u3gpTGEoS6HRi596QCkIoR9bReFJ-fCjKtsup1JLDK1oJbjnHHTMgVTh5_VrxhQjS-kug2cB10E1FF8z8BNBFrsQAAmPIoLpBG9LifBwPOklX1KCXMtEtqxKQDQcxf9KYiCYskYM0J_4xhvzGYS9NJSZNfzwwm91m3N-r6kHooO6bakAAAAAAK_zSAH6PwTvAAHJAZoCAAC_Z6sZscRn-wIAAAAABFla">like here</a>. It would be great if cases like that could also be formatted sanely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 07:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry, you're right — it seems that Ruff matches Black here, however both &quot;fail&quot; in this manner when there is only one method in the &quot;chain&quot;, <a href="https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AEZAK1dAD2IimZxl1N_WlbvK5V89Lw1SkhVsHyCx9GZ6qFyX6O6Dgbtf1mqAYh1u3gpTGEoS6HRi596QCkIoR9bReFJ-fCjKtsup1JLDK1oJbjnHHTMgVTh5_VrxhQjS-kug2cB10E1FF8z8BNBFrsQAAmPIoLpBG9LifBwPOklX1KCXMtEtqxKQDQcxf9KYiCYskYM0J_4xhvzGYS9NJSZNfzwwm91m3N-r6kHooO6bakAAAAAAK_zSAH6PwTvAAHJAZoCAAC_Z6sZscRn-wIAAAAABFla">like here</a>. It would be great if cases like that could also be formatted sanely.</p>
+</blockquote>
+<p>No worries. I do agree that better call chain formatting would be great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leotrs">@leotrs</a> on 2024-11-26 07:36</div>
+            <div class="timeline-body"><p>Any movement here? A similar conversation over at the black repository ended up in a less than welcoming response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tranhd95">@tranhd95</a> on 2024-11-28 12:29</div>
+            <div class="timeline-body"><p>Seems like putting <code># fmt: skip</code> next to the closing parentheses works as a quick hack.</p>
+<p>e.g. using the snippet above like so</p>
+<pre><code class="language-py">(
+    select(whatever.id, x.something)
+    .join(x, x.y == whatever.y)
+    .where(x &gt; 12)
+)  # fmt: skip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olofahlen">@olofahlen</a> on 2024-12-06 11:25</div>
+            <div class="timeline-body"><p>Adding my voice of support for this feature. @mattharrison taught me to embrace the fluent interface and now I'm working hard to convert my colleagues, and also sell them on Black or Ruff as a formatter. Without nice formatting of call chains it's harder. Also switched from Black to Ruff hoping that this community might be more open for something like magic parentheses, or at least one call per line.</p>
+<p>Thanks for your great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-06 12:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Any movement here? A similar conversation over at the black repository ended up in a less than welcoming response.</p>
+</blockquote>
+<p>No. We consider this important but it didn't made the cut for the upcoming 2025 release. We're all just a bit thin stretched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leotrs">@leotrs</a> on 2024-12-06 20:45</div>
+            <div class="timeline-body"><p>Understandable! Is there any way the community can nudge the development priorities? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-07 13:11</div>
+            <div class="timeline-body"><p>Upvoting the issue is the way to go. We frequently look at the most upvoted issues to decide on priorities and this one has a fair amount of upvotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Any movement here? A similar conversation over at the black repository ended up in a less than welcoming response.</p>
+</blockquote>
+<p>Do you have a link to the issue? I'm interested in understanding their reasoning. I only found https://github.com/psf/black/issues/1037, which has some interesting context on why it is the way it is today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olofahlen">@olofahlen</a> on 2024-12-31 19:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a link to the issue? I'm interested in understanding their reasoning. I only found <a href="https://github.com/psf/black/issues/1037">psf/black#1037</a>, which has some interesting context on why it is the way it is today.</p>
+</blockquote>
+<p>Short on time as it's NYE (happy new year), but here are a few more:
+https://github.com/psf/black/issues/571
+https://github.com/psf/black/issues/1723
+https://github.com/psf/black/issues/2920
+https://github.com/psf/black/issues/67 (I suppose this was the &quot;original&quot;)</p>
+<p>There's also talk outside of Github on the matter, for example this lonely dude: https://stackoverflow.com/questions/77921369/black-formatting-of-fluent-method-calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ebonnal/streamable/issues/49.html">ebonnal/streamable#49</a> on 2025-01-02 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genevieve-me">@genevieve-me</a> on 2025-02-28 02:40</div>
+            <div class="timeline-body"><p>Does anyone know if there's currently a workaround for keeping the chained method in the third snippet of this playground link? https://play.ruff.rs/b5cb5ba0-f15c-4c37-a35e-c51733358203</p>
+<p>The example code is obviously nonsense but I am hitting this on real code where ruff, like black, allows method chaining in parentheses on unindented code, but will compress it for some reason in indented blocks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhirschfeld">@dhirschfeld</a> on 2025-02-28 05:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Does anyone know if there's currently a workaround</p>
+</blockquote>
+<p><code># fmt: skip</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-28 07:17</div>
+            <div class="timeline-body"><blockquote>
+<p>The example code is obviously nonsense but I am hitting this on real code where ruff, like black, allows method chaining in parentheses on unindented code, but will compress it for some reason in indented blocks.</p>
+</blockquote>
+<p>I don't think this is related to the indentation but that the chain is shorter and fits into the configured line length. Using the second chain gives consistent formatting https://play.ruff.rs/184cf06e-2246-44b3-98a9-f92abfd4bd1e (I'm not arguing that flattning the chain looks a bit silly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luksquaresma">@luksquaresma</a> on 2025-04-24 17:56</div>
+            <div class="timeline-body"><p>I'm also in need of this functionality.</p>
+<p>Something that turns this:</p>
+<pre><code class="language-python">variable = something.fist_method(&quot;some string&quot;).second_method(&quot;other string&quot;).third_method(&quot;another string&quot;).forth_method(&quot;yet another string&quot;)
+</code></pre>
+<p>Into this:</p>
+<pre><code class="language-python">variable = (
+    something
+    .fist_method(&quot;some string&quot;)
+    .second_method(&quot;other string&quot;)
+    .third_method(&quot;another string&quot;)
+    .forth_method(&quot;yet another string&quot;)
+)
+</code></pre>
+<p>But <strong>NOT this</strong>:</p>
+<pre><code class="language-python">variable = (
+    something.fist_method(&quot;some string&quot;)
+    .second_method(&quot;other string&quot;)
+    .third_method(&quot;another string&quot;)
+    .forth_method(&quot;yet another string&quot;)
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olofahlen">@olofahlen</a> on 2025-04-30 12:03</div>
+            <div class="timeline-body"><p>@luksquaresma agreed. Also worth adding <strong>NOT this</strong></p>
+<pre><code class="language-python">variable = (
+    something.loc[&quot;2024&quot;]
+    .fist_method(&quot;some string&quot;)
+    .second_method(&quot;other string&quot;).loc[&quot;2024-01&quot;]
+    .third_method(&quot;another string&quot;)
+    .forth_method(&quot;yet another string&quot;)
+)
+</code></pre>
+<p>instead we want this</p>
+<pre><code class="language-python">variable = (
+    something
+    .loc[&quot;2024&quot;]
+    .fist_method(&quot;some string&quot;)
+    .second_method(&quot;other string&quot;)
+    .loc[&quot;2024-01&quot;]
+    .third_method(&quot;another string&quot;)
+    .forth_method(&quot;yet another string&quot;)
+)
+</code></pre>
+<p>Black and ruff only do line breaks for method calls, but here <code>.loc</code> (drawing on pandas <code>.loc</code> as an example) is something else (for example a property) so it stays on the same line. It would be desirable if any attribute (method or not) accessed with the <code>.</code>-syntax is done on a separate line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bakerbs">@bakerbs</a> on 2025-07-11 13:34</div>
+            <div class="timeline-body"><p>Would also love for this to be implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nicpottier">@nicpottier</a> on 2025-07-13 21:01</div>
+            <div class="timeline-body"><p>I'll also put in my hat tip here. Fluent interfaces are common in Python and ruff/black mangling these is a big problem in wider adoption.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luksquaresma">@luksquaresma</a> on 2025-07-13 21:40</div>
+            <div class="timeline-body"><p>One workaround I've been able to use is to put the first object inside parenthesis to achieve the same effect.</p>
+<p>It results in something like this:</p>
+<pre><code>variable = (
+    (something)  # parenthesis here
+    .fist_method(&quot;some string&quot;)
+    .second_method(&quot;other string&quot;)
+    .third_method(&quot;another string&quot;)
+    .forth_method(&quot;yet another string&quot;)
+)
+</code></pre>
+<p>It's not ideal, but works ok for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olofahlen">@olofahlen</a> on 2025-07-15 10:03</div>
+            <div class="timeline-body"><blockquote>
+<p>One workaround I've been able to use is to put the first object inside parenthesis to achieve the same effect.
+...</p>
+</blockquote>
+<p>Thanks that's a good tip, I will be using that. Unfortunately it doesn't go &quot;all the way&quot;, for example this</p>
+<pre><code class="language-python">variable = (
+    (something)
+    .fist_method(&quot;some string&quot;)
+)
+</code></pre>
+<p>gets reformatted to</p>
+<pre><code class="language-python">variable = (something).fist_method(&quot;some string&quot;)
+</code></pre>
+<p>and interestingly this</p>
+<pre><code class="language-python">variable = (
+    (something)  # a comment
+    .fist_method(&quot;some string&quot;)
+)
+</code></pre>
+<p>gets reformatted to</p>
+<pre><code class="language-python">variable = (something)  # a comment
+.fist_method(&quot;some string&quot;)
+</code></pre>
+<p>which is a syntax error, so there's a bug in ruff here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19350.html">astral-sh/ruff#19350</a> on 2025-07-15 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexreinking">@alexreinking</a> on 2025-07-28 14:05</div>
+            <div class="timeline-body"><p>Another example from Halide...</p>
+<pre><code class="language-python">            (
+                g.output_buf.bound(x, 0, g.input_buf.width())
+                .bound(y, 0, g.input_buf.height())
+                .bound(c, 0, 3)
+                .reorder(c, x, y)
+                .tile(x, y, xi, yi, 32, 32, hl.TailStrategy.RoundUp)
+                .tile(xi, yi, xii, yii, 2, 2)
+                .gpu_blocks(x, y)
+                .gpu_threads(xi, yi)
+                .unroll(xii)
+                .unroll(yii)
+                .unroll(c)
+            )
+</code></pre>
+<p>https://github.com/halide/Halide/blob/d1c7b6136d6444cb9bcfd6bcdcfff4230f6da5c5/python_bindings/apps/interpolate_generator.py#L94-L106</p>
+<p>It would really be great if the <code>.output_buf</code> and (at least) the subsequent <code>.bound(x, 0, g.input_buf.width())</code> could get their own lines.</p>
+<hr />
+<p>As an aside, when we were formatting this code manually, we preferred to write the following, but I understand newline escapes are frowned upon in Python-land.</p>
+<pre><code class="language-python">            g.output_buf \
+             .bound(x, 0, g.input_buf.width()) \
+             .bound(y, 0, g.input_buf.height()) \
+             .bound(c, 0, 3) \
+             .reorder(c, x, y) \
+             .tile(x, y, xi, yi, 32, 32, hl.TailStrategy.RoundUp) \
+             .tile(xi, yi, xii, yii, 2, 2) \
+             .gpu_blocks(x, y) \
+             .gpu_threads(xi, yi) \
+             .unroll(xii) \
+             .unroll(yii) \
+             .unroll(c)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmnunezd">@jmnunezd</a> on 2025-08-07 15:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm also in need of this functionality.</p>
+<p>Something that turns this:</p>
+<p>variable = something.fist_method(&quot;some string&quot;).second_method(&quot;other string&quot;).third_method(&quot;another string&quot;).forth_method(&quot;yet another string&quot;)
+Into this:</p>
+<p>variable = (
+something
+.fist_method(&quot;some string&quot;)
+.second_method(&quot;other string&quot;)
+.third_method(&quot;another string&quot;)
+.forth_method(&quot;yet another string&quot;)
+)
+But <strong>NOT this</strong>:</p>
+<p>variable = (
+something.fist_method(&quot;some string&quot;)
+.second_method(&quot;other string&quot;)
+.third_method(&quot;another string&quot;)
+.forth_method(&quot;yet another string&quot;)
+)</p>
+</blockquote>
+<p>LOVE IT! This is what we would love to see!</p>
+<p>Ruff has been fantastic in my workflow, but this issue annoys me every now and then. I often work with fluent APIs in Polars, and the dot-leading layout really helps me visually align and understand the transformation pipeline.</p>
+<p>It would be amazing to have this style as an optional formatting mode in Ruff, Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MoritzHorch">@MoritzHorch</a> on 2025-10-08 06:25</div>
+            <div class="timeline-body"><p>I kindly would like to ask what the status of this issue is.</p>
+<p>There are many more fluent APIs which are widely used the same way as Polars: PySpark, Ibis and others which were already mentioned.</p>
+<p>The biggest bummer for me personally is that you can't disable line breaks formatting for specific data classes or in general (e.g. warn only when line is too long). Commenting every code block that uses such an API is not readable and annoying to work with. Or is it? Otherwise it sadly is a deal breaker for such a good tool and we would really like to adopt the astral-tooling.</p>
+<p>Kind regards</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GniLudio">@GniLudio</a> on 2025-11-18 15:14</div>
+            <div class="timeline-body"><p>Workaround until there is proper support:</p>
+<pre><code class="language-python">counts = rdd \
+    .map(lambda x: (x[0], 1)) \
+    .reduceByKey(lambda a, b: a + b)  # fmt: skip
+</code></pre>
+<pre><code class="language-python">(
+    df.groupBy(&quot;city&quot;)
+    .count()
+    .toPandas()
+    .set_index(&quot;city&quot;)
+    .plot.pie(
+        subplots=True,
+        autopct=&quot;%1.1f%%&quot;,
+        ylabel=&quot;&quot;,
+    )
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laundmo">@laundmo</a> on 2025-12-04 16:35</div>
+            <div class="timeline-body"><p>I think everyone here would appreciate at least <em>some</em> update on this. Its the most upvoted formatter style issue by 100 👍 - its clearly something people want.</p>
+<p>Are you willing to accept contributions for some version of this as a <code>preview</code> feature? I dont want to spend effort on a change thats likely to be denied, even if previous comments don't indicate it would be, and i can only imagine a lot of people who want this feel similar.</p>
+<p>Or, considering this part of the docs:</p>
+<blockquote>
+<p>The initial goal of the Ruff formatter is not to innovate on code style, but rather, to innovate on performance, and provide a unified toolchain across Ruff's linter, formatter, and any and all future tools.
+[...]
+Specifically, the formatter is intended to emit near-identical output when run over existing Black-formatted code.
+[...]
+Like Black, the Ruff formatter does not support extensive code style configuration; however, unlike Black, it does support configuring the desired quote style, indent style, line endings, and more.</p>
+</blockquote>
+<p>Should everyone here take this issue to Black? It seems like they're open to contributions for implementing something like this: https://github.com/psf/black/issues/571#issuecomment-2499791828 - but then again that message is not very specific, and locking the issue isn't a good sign.
+While i understand the goal of following Black formatting, Ruff is at a stage in its popularity where being more open to features for improving upon percieved mistakes in Blacks style could be a great boon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-04 16:59</div>
+            <div class="timeline-body"><p>There's a draft PR exploring this right now in https://github.com/astral-sh/ruff/pull/21369, so it's certainly on our mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laundmo">@laundmo</a> on 2025-12-04 17:02</div>
+            <div class="timeline-body"><p>Oh very nice! I didnt see any PRs linked, good to know that work is ongoing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21369.html">astral-sh/ruff#21369</a> on 2025-12-04 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laundmo">@laundmo</a> on 2025-12-04 22:11</div>
+            <div class="timeline-body"><p>In the Draft PR an interesting point was raised:</p>
+<pre><code class="language-py">(
+    np
+    .arange(shape)
+    .foo()
+    .bar()
+)
+# vs
+s = &quot;str&quot;
+(
+    s
+    .replace(&quot;a&quot;, &quot;b&quot;)
+    .replace(&quot;c&quot;, &quot;d&quot;)
+)
+</code></pre>
+<p>Here, breaking up np.arange can feel wrong since <code>np</code> being the module name can almost become part of the function name, like you may read its function name as &quot;np arange&quot; instead of &quot;arange&quot;. But because <code>s</code> is a variable it doesn't get this effect.</p>
+<p>This presents a dilemma, as part of the point of this issue and the PR is exactly to break the call across multiple lines, but now we have a case where that's less obviously the correct choice. In the PR it was already discussed that the formatter doesn't have semantic information, like np being a module.</p>
+<p>I'm putting this here so people can weigh in ideas about this situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luksquaresma">@luksquaresma</a> on 2025-12-04 22:16</div>
+            <div class="timeline-body"><p>I disagree here @laundmo . For me, both cases are ok. I don't like the idea of not breaking in the module.</p>
+<blockquote>
+<p>In the Draft PR an interesting point was raised:</p>
+<pre><code class="language-py">(
+    np
+    .arange(shape)
+    .foo()
+    .bar()
+)
+# vs
+s = &quot;str&quot;
+(
+    s
+    .replace(&quot;a&quot;, &quot;b&quot;)
+    .replace(&quot;c&quot;, &quot;d&quot;)
+)
+</code></pre>
+<p>Here, breaking up np.arange feels wrong since <code>np</code> being the module name can almost become part of the function name, like you may read its function name as &quot;np arange&quot; instead of &quot;arange&quot;. But because <code>s</code> is a variable it doesn't get this effect.</p>
+<p>This presents a dilemma, as part of the point of this issue and the PR is exactly to break the call across multiple lines, but now we have a case where that's less obviously the correct choice. In the PR it was already discussed that the formatter doesn't have semantic information, like np being a module.</p>
+<p>I'm putting this here so people can weigh in ideas about this situation.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-12-15 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

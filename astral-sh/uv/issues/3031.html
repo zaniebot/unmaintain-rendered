@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure with source installations  - astral-sh/uv #3031</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failure with source installations </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3031">#3031</a>
+        opened by <a href="https://github.com/sayakpaul">@sayakpaul</a>
+        on 2024-04-15 03:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sayakpaul">@sayakpaul</a> on 2024-04-15 03:30</div>
+            <div class="timeline-body"><p>I am on my Apple M2 and uv-0.1.31.</p>
+<p>Running: <code>uv pip install -U peft@git+https://github.com/huggingface/peft.git</code>.</p>
+<p>It's failing with:</p>
+<pre><code class="language-bash">error: Failed to download and build: peft @ git+https://github.com/huggingface/peft.git
+  Caused by: Git operation failed
+  Caused by: no URL configured for submodule 'examples/boft_dreambooth/data/dreambooth'; class=Submodule (17)
+</code></pre>
+<p>Didn't happen last week.</p>
+<p>FWIW, <code>uv pip install -U transformers@git+https://github.com/huggingface/transformers.git</code> doesn't fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../huggingface/diffusers/pulls/7650.html">huggingface/diffusers#7650</a> on 2024-04-15 03:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-15 03:50</div>
+            <div class="timeline-body"><p>Thanks for the report! Was it working with a previous version of <code>uv</code> or a different commit of the repository?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sayakpaul">@sayakpaul</a> on 2024-04-15 04:08</div>
+            <div class="timeline-body"><p>A different commit of the repository being used.</p>
+<p>Was able to pin-point:</p>
+<pre><code class="language-bash">uv pip install -U peft@git+https://github.com/huggingface/peft.git@b0f1bb468ce58a26c1403db37e2ca8a76977b4c1
+</code></pre>
+<p>This works. Things break after: https://github.com/huggingface/peft/pull/1326/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-15 18:53</div>
+            <div class="timeline-body"><p>Thanks! I'll look into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-04-15 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-15 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-15 20:59</div>
+            <div class="timeline-body"><p>Interesting I can't reproduce with a simple project</p>
+<pre><code>❯ cargo run -- pip install git+https://github.com/astral-test/uv-submodule-pypackage
+    Finished dev [unoptimized + debuginfo] target(s) in 0.68s
+     Running `target/debug/uv pip install 'git+https://github.com/astral-test/uv-submodule-pypackage'`
+ Updated https://github.com/astral-test/uv-submodule-pypackage (d2c44b8)                                                     Resolved 1 package in 3ms
+Installed 1 package in 3ms
+ + uv-public-pypackage==0.1.0 (from git+https://github.com/astral-test/uv-submodule-pypackage@d2c44b87eef25896dd30a6e55d4689b918180c7b)
+
+❯ cargo run -- pip install git+https://github.com/astral-test/uv-submodule-pypackage#subdirectory=submodule
+    Finished dev [unoptimized + debuginfo] target(s) in 0.66s
+     Running `target/debug/uv pip install 'git+https://github.com/astral-test/uv-submodule-pypackage#subdirectory=submodule'`
+ Updated https://github.com/astral-test/uv-submodule-pypackage (d2c44b8)                                                     Resolved 1 package in 3ms
+   Built uv-public-pypackage @ git+https://github.com/astral-test/uv-submodule-pypackage@d2c44b87eef25896dd30a6e55d4689b918180c7bDownloaded 1 package in 353ms
+Installed 1 package in 1ms
+ - uv-public-pypackage==0.1.0 (from git+https://github.com/astral-test/uv-submodule-pypackage@d2c44b87eef25896dd30a6e55d4689b918180c7b)
+ + uv-public-pypackage==0.1.0 (from git+https://github.com/astral-test/uv-submodule-pypackage@d2c44b87eef25896dd30a6e55d4689b918180c7b#subdirectory=submodule)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-15 21:00</div>
+            <div class="timeline-body"><p>This seems like something legitimately wrong with their submodule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sayakpaul">@sayakpaul</a> on 2024-04-16 04:27</div>
+            <div class="timeline-body"><p>It works with regular pip, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2024-04-17 14:04</div>
+            <div class="timeline-body"><p>I'm getting the same problem:</p>
+<pre><code>uv pip install &quot;git+https://github.com/gooogle/flax.git&quot;
+Updating https://github.com/gooogle/flax.git (HEAD)
+Updating https://github.com/gooogle/flax.git (HEAD)
+Updating https://github.com/gooogle/flax.git (HEAD)
+Updating https://github.com/gooogle/flax.git (HEAD)                                                                                                                                       error: Git operation failed
+  Caused by: failed to clone into: /Users/neil/Library/Caches/uv/git-v0/db/149b51fdacfaafab
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok 'https://github.com/gooogle/flax.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+--- stderr
+remote: Repository not found.
+fatal: Authentication failed for 'https://github.com/gooogle/flax.git/'
+</code></pre>
+<p>This works fine with normal pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:06</div>
+            <div class="timeline-body"><p>I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:18</div>
+            <div class="timeline-body"><p>@NeilGirdhar - I think you have a typo, three o's in Google.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:23</div>
+            <div class="timeline-body"><p>Ok so I've confirmed that pip doesn't recursively clone the contents of <code>examples/boft_dreambooth/data/dreambooth</code> either (but they clearly don't error).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 14:25</div>
+            <div class="timeline-body"><p>@charliermarsh I'm not sure what behavior is right here. I think we need to understand precisely what's wrong with that submodule setup to know if we should fail because of it or not.</p>
+<p>Otherwise... you could install from git and be silently missing a meaningful part of the package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:27</div>
+            <div class="timeline-body"><p>Yeah I can just fix the repo itself if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:29</div>
+            <div class="timeline-body"><p>I'll try now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:43</div>
+            <div class="timeline-body"><p>I think <code>uv</code> is correct to fail here. I've submitted a PR to <code>peft</code> to modify the repo setup: https://github.com/huggingface/peft/pull/1660</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-09 14:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

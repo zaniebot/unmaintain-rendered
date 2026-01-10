@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModuleNotFound when installing from local dependency - astral-sh/uv #13128</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ModuleNotFound when installing from local dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13128">#13128</a>
+        opened by <a href="https://github.com/JuR-0">@JuR-0</a>
+        on 2025-04-27 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JuR-0">@JuR-0</a> on 2025-04-27 11:53</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi there,</p>
+<p>I have a ModuleNotFoundError arising on a local library.</p>
+<p>My project has the following tree:</p>
+<pre><code>.
+|-- common-lib
+|   |-- pyproject.toml
+|   |-- src
+|   |   `-- common_lib
+|   |       `-- __init__.py
+|   |       
+|   |-- tests
+|   |   `-- __init__.py
+|   `-- uv.lock
+`-- other-lib
+    |-- pyproject.toml
+    |-- src
+    |   `-- other_lib
+    |       `-- __init__.py
+    |-- tests
+    |   `-- __init__.py
+    `-- uv.lock
+</code></pre>
+<p>The pyproject.toml in common-lib is as follow:</p>
+<pre><code>[project]
+name = &quot;common-lib&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[dependency-groups]
+dev = [
+    &quot;pytest&gt;=8.3.5&quot;,
+]
+test = [
+    &quot;pytest&gt;=8.3.5&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build]
+include = [&quot;src&quot;]
+exclude = [&quot;tests&quot;]
+
+[tool.pytest.ini_options]
+pythonpath = 'src'
+testpaths = [&quot;tests&quot;]
+python_files = &quot;test_*.py&quot;
+python_functions = &quot;test_*&quot;
+</code></pre>
+<p>And in other-lib:</p>
+<pre><code>[project]
+name = &quot;other-lib&quot;
+version = &quot;0.1.0&quot;
+
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;common_lib&quot;
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build]
+include = [&quot;src&quot;]
+exclude = [&quot;tests&quot;]
+
+[dependency-groups]
+dev = [
+    &quot;pytest&gt;=8.3.5&quot;,
+]
+test = [
+    &quot;pytest&gt;=8.3.5&quot;,
+]
+
+
+[tool.pytest.ini_options]
+pythonpath = 'src'
+testpaths = [&quot;tests&quot;]
+python_files = &quot;test_*.py&quot;
+python_functions = &quot;test_*&quot;
+
+[tool.uv.sources]
+common_lib = { path = &quot;../common-lib&quot;, editable = true }
+</code></pre>
+<p>I have no problem running common-lib tests. But when I run other-lib tests I get the import error.
+I have checked the following:</p>
+<ul>
+<li>common-lib is present in .venv folder in other-lib</li>
+<li>I have added a print of sys.path at the very beginning of other-lib tests and I can see the following:
+<code>['/path_to_project/other-lib', '/path_to_project/other-lib/src', '/path_to_project/other-lib/.venv/bin', '/usr/local/lib/python312.zip', '/usr/local/lib/python3.12', '/usr/local/lib/python3.12/lib-dynload', '/path_to_project/other-lib/.venv/lib/python3.12/site-packages', '/path_to_project/common-lib', '/path_to_project/other-lib']</code></li>
+<li><a href="https://github.com/astral-sh/uv/issues/10006">Issue #10006</a></li>
+</ul>
+<p>So the problem is that '/path_to_project/common-lib' is in python path but not '/path_to_project/common-lib/src' I suppose. How can I make this happen?</p>
+<p>Thanks in advance for your time !</p>
+<h3>Platform</h3>
+<p>mac OS 15</p>
+<h3>Version</h3>
+<p>uv 0.5.29 (ca73c4754 2025-02-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @JuR-0 on 2025-04-27 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JuR-0">@JuR-0</a> on 2025-04-27 13:44</div>
+            <div class="timeline-body"><p>Adding</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+packages = [&quot;src/common_lib&quot;]
+</code></pre>
+<p>In common-lib pyproject.toml fixed it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @JuR-0 on 2025-04-27 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

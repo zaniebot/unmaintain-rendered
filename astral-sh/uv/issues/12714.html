@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV does not resolve environment markers correctly - astral-sh/uv #12714</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV does not resolve environment markers correctly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12714">#12714</a>
+        opened by <a href="https://github.com/Vdaleke">@Vdaleke</a>
+        on 2025-04-07 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Vdaleke">@Vdaleke</a> on 2025-04-07 13:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My project depends on &quot;docling&gt;=2.27.0,&lt;3.0.0&quot; and &quot;tokenizers&gt;=0.20.2&quot; for Python3.13 support.
+When <code>uv lock</code> I get an error:</p>
+<pre><code>➜  docling-vision-ocr uv lock
+  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'):
+  ╰─▶ Because transformers&gt;=4.42.0,&lt;=4.42.4 depends on tokenizers&gt;=0.19,&lt;0.20 and only the following versions of transformers{platform_machine == 'x86_64' and
+      sys_platform == 'darwin'} are available:
+          transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}&lt;=4.42.0
+          transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}==4.42.1
+          transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}==4.42.2
+          transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}==4.42.3
+          transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}==4.42.4
+          transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}&gt;4.43.0
+      we can conclude that transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}&gt;=4.42.0,&lt;4.43.0 depends on tokenizers&gt;=0.19,&lt;0.20.
+      And because docling-ibm-models&gt;=3.4.0 depends on transformers{platform_machine == 'x86_64' and sys_platform == 'darwin'}&gt;=4.42.0,&lt;4.43.0, we can conclude that
+      docling-ibm-models&gt;=3.4.0 depends on tokenizers&gt;=0.19,&lt;0.20.
+      And because only the following versions of docling-ibm-models are available:
+          docling-ibm-models&lt;=3.4.0
+          docling-ibm-models==3.4.1
+      and docling&gt;=2.27.0 depends on docling-ibm-models&gt;=3.4.0, we can conclude that docling&gt;=2.27.0 depends on tokenizers&gt;=0.19,&lt;0.20.
+      And because only the following versions of docling are available:
+          docling&lt;=2.27.0
+          docling==2.28.0
+          docling==2.28.1
+          docling==2.28.2
+          docling==2.28.3
+          docling==2.28.4
+      and your project depends on docling&gt;=2.27.0, we can conclude that your project depends on tokenizers&gt;=0.19,&lt;0.20.
+      And because your project depends on tokenizers&gt;=0.20.2 and your project requires docling-vision-ocr[dev], we can conclude that your project's requirements are
+      unsatisfiable.
+</code></pre>
+<p>If you look at the markers for docling-ibm-models:</p>
+<pre><code>➜  python curl -s https://pypi.org/pypi/docling-ibm-models/json | jq '.info.requires_dist'
+[
+  &quot;torch&lt;3.0.0,&gt;=2.2.2&quot;,
+  &quot;torchvision&lt;1,&gt;=0&quot;,
+  &quot;transformers&lt;5.0.0,&gt;=4.42.0; sys_platform != \&quot;darwin\&quot; or platform_machine != \&quot;x86_64\&quot;&quot;,
+  &quot;transformers&lt;4.43.0,&gt;=4.42.0; sys_platform == \&quot;darwin\&quot; and platform_machine == \&quot;x86_64\&quot;&quot;,
+  &quot;numpy&lt;3.0.0,&gt;=1.24.4; sys_platform != \&quot;darwin\&quot; or platform_machine != \&quot;x86_64\&quot;&quot;,
+  &quot;numpy&lt;2.0.0,&gt;=1.24.4; sys_platform == \&quot;darwin\&quot; and platform_machine == \&quot;x86_64\&quot;&quot;,
+  &quot;jsonlines&lt;4.0.0,&gt;=3.1.0&quot;,
+  &quot;Pillow&lt;12.0.0,&gt;=10.0.0&quot;,
+  &quot;tqdm&lt;5.0.0,&gt;=4.64.0&quot;,
+  &quot;opencv-python-headless&lt;5.0.0.0,&gt;=4.6.0.66&quot;,
+  &quot;huggingface_hub&lt;1,&gt;=0.23&quot;,
+  &quot;safetensors[torch]&lt;1,&gt;=0.4.3&quot;,
+  &quot;pydantic&lt;3.0.0,&gt;=2.0.0&quot;,
+  &quot;docling-core&lt;3.0.0,&gt;=2.19.0&quot;
+]
+</code></pre>
+<p>then you can see that the second marker is selected instead of the first. <code>{platform_machine == 'x86_64' and sys_platform == 'darwin'}</code> is not correct since I work on ARM, and <code>sys_platform != \&quot;darwin\&quot; or platform_machine != \&quot;x86_64\</code> is OK.</p>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.12 (e4e03833f 2025-04-02)</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Vdaleke on 2025-04-07 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vdaleke">@Vdaleke</a> on 2025-04-07 13:28</div>
+            <div class="timeline-body"><p>Hello @zanieb, I saw your answers in a similar issue #12678, can you take a look at this problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-07 13:48</div>
+            <div class="timeline-body"><p><code>uv lock</code> creates an universal lockfile, which includes the <code>python_full_version &gt;= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'</code> environment that fails to resolve here. If you want to only solve for specific environments, you can set <code>tool.uv.environments</code> (https://docs.astral.sh/uv/reference/settings/#environments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-07 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-07 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vdaleke">@Vdaleke</a> on 2025-04-07 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>If you want to only solve for specific environments, you can set <code>tool.uv.environments</code> (https://docs.astral.sh/uv/reference/settings/#environments).</p>
+</blockquote>
+<p>Thank you very much for the quick reply! With this configuration:</p>
+<pre><code>[tool.uv]
+environments = [&quot;sys_platform != 'darwin' or platform_machine != 'x86_64'&quot;]
+</code></pre>
+<p>it works as I expected!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Vdaleke on 2025-04-07 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psychopy/psychopy/issues/7166.html">psychopy/psychopy#7166</a> on 2025-04-23 02:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

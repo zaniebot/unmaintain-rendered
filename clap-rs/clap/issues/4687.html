@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>how to enable `-h` / `--help` (short help) + `--help-all` (long help) - clap-rs/clap #4687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>how to enable `-h` / `--help` (short help) + `--help-all` (long help)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4687">#4687</a>
+        opened by <a href="https://github.com/asottile">@asottile</a>
+        on 2023-01-30 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/asottile">@asottile</a> on 2023-01-30 18:15</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.1.4</p>
+<h3>Describe your use case</h3>
+<p>I've found #3405 which hints at the same idea, but I wasn't able to follow whether this was implemented or not</p>
+<p>I have this, which is <em>close</em> but doesn't satisfy the &quot;--help gives short help&quot; (mostly, I find <code>clap</code>'s choice of <code>-h</code> and <code>--help</code> an odd one, and not one I've found precedence for elsewhere, the more common approach I've seen is <code>--help-all</code> or <code>--help-full</code> or <code>--help-{thing}</code> to give additional help for specific areas).</p>
+<pre><code class="language-rs">use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+#[command(propagate_version = true)]
+#[clap(disable_help_flag = true)]
+struct Cli {
+    /// Should always be shown in all helps
+    #[arg(long)]
+    someopt: String,
+    /// Secret option, should only be shown in --help-all
+    #[arg(long, hide_short_help = true)]
+    wacky: String,
+    /// Print help
+    #[arg(short, long, action = clap::ArgAction::Help)]
+    help: bool,
+    /// Print help, including uncommon options
+    #[arg(long, action = clap::ArgAction::Help)]
+    help_all: bool,
+}
+
+
+fn main() {
+    let args = Cli::parse();
+    println!(&quot;Hello, world!, {:?}&quot;, args);
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>maybe something like this?</p>
+<pre><code class="language-rust">    /// Print help
+    #[arg(short, long, action = clap::ArgAction::HelpShort)]
+    help: bool,
+    /// Print help, including uncommon options
+    #[arg(long, action = clap::ArgAction::HelpLong)]
+    help_all: bool,
+</code></pre>
+<p>(<code>HelpShort</code> / <code>HelpLong</code>)</p>
+<h3>Alternatives, if applicable</h3>
+<p>I am very new to <code>clap</code>, so I'd be happy enough if there's already a solution to this</p>
+<h3>Additional Context</h3>
+<p>for example, <code>python</code>'s help:</p>
+<pre><code class="language-console">$ python3.12 --help
+usage: python3.12 [option] ... [-c cmd | -m mod | file | -] [arg] ...
+Options (and corresponding environment variables):
+-b     : issue warnings about str(bytes_instance), str(bytearray_instance)
+         and comparing bytes/bytearray with str. (-bb: issue errors)
+...
+--help-env      : print help about Python environment variables and exit
+--help-xoptions : print help about implementation-specific -X options and exit
+--help-all      : print complete help information and exit
+Arguments:
+file   : program read from script file
+-      : program read from stdin (default; interactive mode if a tty)
+arg ...: arguments passed to program in sys.argv[1:]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @asottile on 2023-01-30 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-30 18:41</div>
+            <div class="timeline-body"><p>For now, what you will need to do is use <code>ArgAction::SetTrue</code>, call <code>CommandFactory::command</code> on the top-level command, then call the appropriate short/long help rendering functions on <code>Command</code>.</p>
+<p>Hmm, I'm not finding in the notes why <code>HelpShort</code> and <code>HelpLong</code> weren't implemented.  I then assumed it was left to an issue but not finding an issue for it.  I vaguely remember considering ways to generalize this but do not remember the details, seeing as we are trying to keep the API small for easier discovery and for reduced compile times / API size.</p>
+<p>If we do this, we'd need similar for <code>Version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2023-01-30 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2023-01-30 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asottile">@asottile</a> on 2023-01-30 19:36</div>
+            <div class="timeline-body"><p>cool!  are those available in the derive notation?  -- or would it be more that I check the arguments manually after <code>Cli::parse()</code> instead of using <code>ArgAction::Help</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-30 20:52</div>
+            <div class="timeline-body"><p>Yes, those instructions are for doing it manually.</p>
+<pre><code class="language-rust">let args = Cli::parse();
+if args.help {
+    let mut cmd = Cli::command();
+    cmd.build();
+    cmd.print_help();
+    std::process::exit(0);
+} else if args.help_all {
+    let mut cmd = Cli::command();
+    cmd.build();
+    cmd.print_long_help();
+    std::process::exit(0);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asottile">@asottile</a> on 2023-01-31 01:07</div>
+            <div class="timeline-body"><p>ah neat, unfortunately my case is a little more complicated and I've got subcommands -- so I need something more like:</p>
+<pre><code class="language-rust">    // I just let `help_all` use `action = ArgAction::Help` since it always triggers `long` help anyway!
+
+    if matches!(res.command, Some(Commands::Run(Run { help: true, .. }))) {
+        let mut cmd = Cli::command();
+        cmd.build();
+        cmd.find_subcommand_mut(&quot;run&quot;).unwrap().print_help()?;
+        std::process::exit(0);
+    }
+</code></pre>
+<p>this works fine for things which don't have any required arguments -- but as soon as there are required arguments it's too late to trigger the <code>store_true</code> or <code>::Help</code> (as an error occurs on the missing required argument)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/1525.html">jj-vcs/jj#1525</a> on 2023-04-16 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5015.html">clap-rs/clap#5015</a> on 2023-07-17 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-17 15:42</div>
+            <div class="timeline-body"><p>The main delay here is going back and forth on what this should look like from the API.  I figured, rather than worrying about perfection, I'll implement something and we can always change it when v5 comes around</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-07-17 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/pulls/4772.html">astral-sh/uv#4772</a> on 2024-07-03 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6014.html">clap-rs/clap#6014</a> on 2025-05-24 06:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mrswastik-robot/pixi/pulls/2.html">mrswastik-robot/pixi#2</a> on 2025-07-03 09:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate AWS lambda zips using `uv build` - astral-sh/uv #9350</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate AWS lambda zips using `uv build`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9350">#9350</a>
+        opened by <a href="https://github.com/kishaningithub">@kishaningithub</a>
+        on 2024-11-22 09:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kishaningithub">@kishaningithub</a> on 2024-11-22 09:08</div>
+            <div class="timeline-body"><p>Generating python lambda zips is a cumbersome process. It would be great if <code>uv build</code> can have the ability to generate AWS Lambda zip files which can be used to create lambda function in AWS.</p>
+<p>AWS Documentation Link: https://docs.aws.amazon.com/lambda/latest/dg/python-package.html#python-package-create-dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-23 02:49</div>
+            <div class="timeline-body"><p>Could you expand on how are you currently using <code>uv</code> to generate these?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kishaningithub">@kishaningithub</a> on 2024-11-23 04:05</div>
+            <div class="timeline-body"><p>My shell script does the following</p>
+<ul>
+<li><p>Use uv to build wheel file</p>
+</li>
+<li><p>Extract the wheel file</p>
+</li>
+<li><p>Copy contents of the wheel into a directory</p>
+</li>
+<li><p>~~Copy~~ <em>Install</em> project runtime dependencies into the same directory <em>using <code>pip install --target</code></em></p>
+</li>
+<li><p>Zip the directory</p>
+</li>
+<li><p>Upload the zip to AWS</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-23 16:32</div>
+            <div class="timeline-body"><p>Is there a reason you wouldn't be able to use <code>--target</code> like the AWS lambda guide says? I'm trying to understand if there's a compatibility gap with what pip enables you to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kishaningithub">@kishaningithub</a> on 2024-11-24 02:05</div>
+            <div class="timeline-body"><p>The 4th point of <code>copying runtime dependencies</code> is exactly a <code>pip install --target</code>. I guess &quot;installing&quot; would have been a better word than &quot;copying&quot;.. will update the above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @samypr100 on 2024-11-24 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 00:13</div>
+            <div class="timeline-body"><p>At the very least it'd be nice to include some documentation for this process.</p>
+<p>I'm not sure how we'd expose this if we did. An alternative <code>uv build</code> output format?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-11-26 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doron98">@doron98</a> on 2024-11-27 10:06</div>
+            <div class="timeline-body"><p>What is tricky is including path dependencies https://github.com/sst/sst/pull/5132</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8935.html">astral-sh/uv#8935</a> on 2024-11-27 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kishaningithub">@kishaningithub</a> on 2024-11-27 14:51</div>
+            <div class="timeline-body"><p>@zanieb In my mind it was an alternative uv build output format</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/williamrjribeiro">@williamrjribeiro</a> on 2024-11-28 01:29</div>
+            <div class="timeline-body"><p>Hi @kishaningithub , I'm struggling with this issue as well. Can you share your shell script please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kishaningithub">@kishaningithub</a> on 2024-12-09 10:18</div>
+            <div class="timeline-body"><p>@williamrjribeiro The script i am using is basically the same as the in the <a href="https://docs.aws.amazon.com/lambda/latest/dg/python-package.html#python-package-create-dependencies">AWS documentation</a>. Can you let know the issue you are facing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toddlers">@toddlers</a> on 2024-12-16 13:38</div>
+            <div class="timeline-body"><p>here is something worked out for me @williamrjribeiro  , I didn't try to use <code>pip</code>, because that's what I am running away from.</p>
+<pre><code class="language-sh">#!/usr/bin/env bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Step 1: Clean up old builds
+echo &quot;Cleaning up old builds...&quot;
+rm -rf build dist lambda_package lambda_function.zip
+
+# Step 2: Verify the virtual environment exists
+if [ ! -d &quot;.venv&quot; ]; then
+    echo &quot;Error: Virtual environment '.venv' not found!&quot;
+    exit 1
+fi
+
+# Step 4: Build the wheel file using `uv`
+echo &quot;Building the wheel package...&quot;
+uv build --wheel
+
+
+# Step 3: Use `uv run` to determine the Python version
+echo &quot;Detecting Python version...&quot;
+PYTHON_VERSION=$(echo &quot;import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')&quot;|uv run -)
+if [ -z &quot;$PYTHON_VERSION&quot; ]; then
+    echo &quot;Error: Could not determine Python version!&quot;
+    exit 1
+fi
+echo &quot;Detected Python version: $PYTHON_VERSION&quot;
+
+
+# Step 4: Locate site-packages directory
+VENV_SITE_PACKAGES=&quot;.venv/lib/python$PYTHON_VERSION/site-packages&quot;
+if [ ! -d &quot;$VENV_SITE_PACKAGES&quot; ]; then
+    echo &quot;Error: Could not locate site-packages in the virtual environment at $VENV_SITE_PACKAGES!&quot;
+    exit 1
+fi
+
+
+# Step 5: Extract the wheel file
+echo &quot;Extracting the wheel file...&quot;
+WHEEL_FILE=$(ls dist/*.whl | head -n 1)  # Get the first wheel file
+if [ -z &quot;$WHEEL_FILE&quot; ]; then
+    echo &quot;Error: No wheel file found in 'dist/' directory!&quot;
+    exit 1
+fi
+mkdir -p lambda_package
+unzip -q &quot;$WHEEL_FILE&quot; -d lambda_package
+
+# Step 6: Copy dependencies from the virtual environment
+echo &quot;Copying dependencies from virtual environment...&quot;
+cp -r &quot;$VENV_SITE_PACKAGES/&quot;* lambda_package/
+
+# Step 7: Package the Lambda deployment
+echo &quot;Packaging Lambda deployment...&quot;
+cd lambda_package
+
+# here using -u option helped me and it speed up the zip creation too
+# Replace (update) an existing entry in the zip archive only if it has been 
+# modified more recently than the version already in the zip archive
+
+zip -qr ../lambda_function.zip .
+cd ..
+
+echo &quot;Lambda deployment package created successfully: lambda_function.zip&quot;
+
+# Step 8: Upload to AWS Lambda
+LAMBDA_FUNCTION_NAME=&quot;delete_me&quot;  # Replace with your Lambda function name
+echo &quot;Uploading to AWS Lambda: $LAMBDA_FUNCTION_NAME&quot;
+aws lambda update-function-code --function-name &quot;$LAMBDA_FUNCTION_NAME&quot; --zip-file fileb://lambda_function.zip
+
+echo &quot;Deployment complete!&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/williamrjribeiro">@williamrjribeiro</a> on 2024-12-18 00:18</div>
+            <div class="timeline-body"><p>@toddlers Thank you for the script! 🙏</p>
+<p>I'm using SST+Pulumi to deploy my little Python script to a lambda function. The lambda fails when it runs with error <code>[ERROR] Runtime.ImportModuleError: Unable to import module 'main': No module named 'main' Traceback (most recent call last):</code></p>
+<p>Here's my <code>pyporject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;poc-events_python-consumer&quot;
+version = &quot;0.0.0&quot;
+
+dependencies = [
+    &quot;sst&quot;,
+    &quot;pydantic&gt;=2.10.2&quot;,
+    &quot;cloudevents[pydantic]&quot;,
+]
+
+requires-python = &quot;~=3.12&quot;
+
+[tool.uv.pip]
+no-strip-extras = true
+
+[tool.uv.sources]
+sst = { git = &quot;https://github.com/sst/sst.git&quot;, subdirectory = &quot;sdk/python&quot;, branch = &quot;dev&quot; }
+cloudevents = { git = &quot;https://github.com/cloudevents/sdk-python.git&quot;, branch = &quot;main&quot; }
+
+[tool.setuptools]
+py-modules = []
+
+[project.scripts]
+handler = &quot;lambda:handler&quot;
+</code></pre>
+<p>The script path is <code>python-consumer/src/lambda/__init__.py</code> which has the <code>def handler</code> function.</p>
+<p>This is how the lambda function is created with Pulumi:</p>
+<pre><code class="language-ts">const pythonConsumer = new aws.lambda.Function(&quot;PocEventPythonConsumer&quot;, {
+      role: lambdaRole.arn,
+      runtime: &quot;python3.12&quot;,
+      handler: &quot;lambda.handler&quot;,
+      code: $asset(&quot;packages/python-consumer/lambda_package/&quot;),
+    });
+</code></pre>
+<p>Maybe I should just wait for https://github.com/sst/sst/pull/5132 to be merged and released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kucharzyk-sebastian">@kucharzyk-sebastian</a> on 2025-01-04 11:41</div>
+            <div class="timeline-body"><p>In case anyone is looking for a solution using Python, UV, and AWS CDK, it seems they're going to support it in <a href="https://github.com/aws/aws-cdk/issues/31238">#31238</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eidorb">@eidorb</a> on 2025-02-19 23:59</div>
+            <div class="timeline-body"><p>This will be nice.</p>
+<p>I hacked together a bundler using Poetry some time ago when arm64 Lambda functions dropped. It bundled arm64 Lambda functions (with pure Python dependencies) on non-arm platforms, without the Docker overhead. CDK bundled the result with <code>aws_lambda.Code.from_asset()</code>.</p>
+<pre><code class="language-python">def bundle():
+    &quot;&quot;&quot;Bundles lambda function to lambda/dist/lambda-bundle.&quot;&quot;&quot;
+    # The target is relative to this directory.
+    target_path = Path(__file__).parent / &quot;lambda/dist/lambda-bundle&quot;
+
+    # Build a Python wheel. It appears in lambda/dist/lambda-0.1.0-py3-none-any.whl.
+    subprocess.run(&quot;poetry build --format wheel&quot;.split(), cwd=&quot;lambda&quot;)
+
+    # Delete the target directory if it exists.
+    try:
+        shutil.rmtree(target_path)
+    except FileNotFoundError:
+        pass
+
+    # Install the wheel to the target directory. This installs the wheel AND its
+    # dependencies.
+    #
+    # Becaouse our Lambda functions run on arm64 architecture, we specify the
+    # manylinux2014_aarch64 platform. This installs Linux aarch64 packages,
+    # regardless of the platform that bundles the code. i.e., bundling on Windows
+    # will result in the desired Linux aarch64 packages.
+    subprocess.run(
+        [
+            &quot;poetry&quot;,
+            &quot;run&quot;,
+            &quot;pip&quot;,
+            &quot;install&quot;,
+            &quot;dist/lambda-0.1.0-py3-none-any.whl&quot;,
+            &quot;--target&quot;,
+            target_path,
+            &quot;--platform&quot;,
+            &quot;manylinux2014_aarch64&quot;,
+            &quot;--only-binary&quot;,
+            &quot;:all:&quot;,
+        ],
+        cwd=&quot;lambda&quot;,
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @samypr100 on 2025-02-26 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12257.html">astral-sh/uv#12257</a> on 2025-03-18 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maruryota">@maruryota</a> on 2025-05-27 09:21</div>
+            <div class="timeline-body"><p>@kishaningithub If you're using an OS other than Linux, try changing @toddlers 's Step 6 as follows:</p>
+<pre><code class="language-bash"># Step 6: Install dependencies
+echo &quot;Creating requirements.txt...&quot;
+uv export --frozen --no-emit-workspace --no-dev --no-editable -o requirements.txt
+
+echo &quot;Installing dependencies for Linux (Lambda runtime)...&quot;
+uv pip install \
+    --no-installer-metadata \
+    --no-compile-bytecode \
+    --python-platform x86_64-manylinux2014 \
+    --python $PYTHON_VERSION \
+    --target lambda_package \
+    -r requirements.txt
+</code></pre>
+<p>I'm using macOS and this worked for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mjb141">@Mjb141</a> on 2025-09-13 18:25</div>
+            <div class="timeline-body"><p>Feels like we shouldn't have to do all that to build a zip for Lambda.  Poetry has <a href="https://github.com/micmurawski/poetry-plugin-lambda-build">plugin support</a> for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Feature request] Generate AWS lambda zips using `uv build`" to "Generate AWS lambda zips using `uv build`" by @konstin on 2025-09-25 19:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:36 UTC
+    </footer>
+</body>
+</html>

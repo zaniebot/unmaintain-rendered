@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup `--preview` flag for neovim lsp - astral-sh/ruff #12408</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Setup `--preview` flag for neovim lsp</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12408">#12408</a>
+        opened by <a href="https://github.com/eltbus">@eltbus</a>
+        on 2024-07-19 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eltbus">@eltbus</a> on 2024-07-19 16:33</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h1>Keywords</h1>
+<p>&quot;neovim&quot;, &quot;nvim&quot;, &quot;lsp&quot;, &quot;ruff&quot;, &quot;server&quot;, &quot;--preview&quot;</p>
+<h1>Code/settings example</h1>
+<pre><code># Using Lazy, inside &quot;neovim/nvim-lspconfig&quot;:
+[&quot;ruff&quot;] = function()
+	local lspconfig = require(&quot;lspconfig&quot;)
+	local lsp_python = require(&quot;plugins.lsp.python&quot;)
+	local custom_on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+		client.server_capabilities.hoverProvider = false
+	end
+	lspconfig.ruff.setup {
+		on_attach = custom_on_attach,
+		capabilities=capabilities,
+		on_init = function(client)
+			client.config.settings.interpreter = lsp_python.get_python_path(client.config.root_dir)
+		end,
+		init_options = { settings = { lint = { preview = true } } }
+	}
+end,
+</code></pre>
+<h1>Ruff version</h1>
+<p>0.5.2</p>
+<h1>Issue</h1>
+<p>On medium to big projects (i.e. <a href="https://github.com/encode/uvicorn">uvicorn</a>) I get the following warning:</p>
+<pre><code>[ERROR][2024-07-19 18:03:54] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/Users/eltbus/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;error: --preview needs to be provided as a command line argument while the server is still unstable.\nFor example: `ruff server --preview`\n&quot;
+</code></pre>
+<h1>Question</h1>
+<p>How can I set that flag while using nvim? I tried the following</p>
+<pre><code>init_options = { settings = { lint = { preview = true } } }
+</code></pre>
+<p>But it does not solve the issue (probably because this is a LINTER option, and not a SERVER option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-07-19 17:27</div>
+            <div class="timeline-body"><p>If you want to enable preview for lint, why not just set it in the configuration file(e.g. pyproject.toml, ruff.toml)?
+I just want to know why your usage scenario can't do this.</p>
+<p>These are the relevant link to the settings:
+https://docs.astral.sh/ruff/settings/#preview
+https://docs.astral.sh/ruff/settings/#lint_preview
+https://docs.astral.sh/ruff/settings/#format_preview</p>
+<p>Edit:
+Ruff server (ruff-lsp) was unstable before Ruff version 0.5.3, so the <code>preview</code> flag needed to be provided. Providing only the preview flag for lint would not allow the Ruff server to be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-07-19 19:21</div>
+            <div class="timeline-body"><blockquote>
+<p>error: --preview needs to be provided as a command line argument while the server is still unstable.</p>
+</blockquote>
+<p>I think update to 0.5.3 will solve it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eltbus">@eltbus</a> on 2024-07-20 06:58</div>
+            <div class="timeline-body"><p>Update 0.5.3 did indeed solve my issue. Thank you, @T-256!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-22 10:15</div>
+            <div class="timeline-body"><p>Yes, this was indicated as a breaking change in <code>nvim-lspconfig</code> (https://github.com/neovim/nvim-lspconfig/pull/3241). If you've upgrade <code>nvim-lspconfig</code> to include that commit, you need to be using a minimum Ruff version of <code>0.5.3</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-07-22 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-22 10:18</div>
+            <div class="timeline-body"><p>Closing this issue as resolved. Feel free to ask any other questions that you might have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-22 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-07-22 10:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, this was indicated as a breaking change in <code>nvim-lspconfig</code> (<a href="https://github.com/neovim/nvim-lspconfig/pull/3241">neovim/nvim-lspconfig#3241</a>). If you've upgrade <code>nvim-lspconfig</code> to include that commit, you need to be using a minimum Ruff version of <code>0.5.3</code>.</p>
+</blockquote>
+<p>Should this PR be mentioned in Editors &gt; Setup &gt; Neovim?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-22 10:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Should this PR be mentioned in Editors &gt; Setup &gt; Neovim?</p>
+</blockquote>
+<p>Yeah, good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12507.html">astral-sh/ruff#12507</a> on 2024-07-25 13:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

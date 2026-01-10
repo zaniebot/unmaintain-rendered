@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF013 incorrectly emitted on invalid annotation with bare `Optional` - astral-sh/ruff #13833</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF013 incorrectly emitted on invalid annotation with bare `Optional`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13833">#13833</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2024-10-20 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-10-20 16:33</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Here is the bad code diff</p>
+<pre><code class="language-diff">-        hsdp_device_mesh: Optional = None,
++        hsdp_device_mesh: Optional[Optional] = None,
+</code></pre>
+<p>Obviously, an untyped Optional is fine, and <code>Optional[Optional]</code> doesn't make much sense here as an autofix.</p>
+<ul>
+<li>version ruff 0.7.0</li>
+<li>ruff check RUF013 --select=RUF013 . --fix --unsafe-fixes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-20 17:14</div>
+            <div class="timeline-body"><p>A bare <code>Optional</code> is not a valid type annotation; both mypy and pyright will reject using <code>Optional</code> without type arguments in an annotation:</p>
+<ul>
+<li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=6cb9bb283ad911103c5a7ba4c09def98</li>
+<li>https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDyCMSYKAhgDYBQ1AHgFyHGkWVQC8UAcmQKZA</li>
+</ul>
+<p>But you're right that the autofix here just makes things worse! I think we should just not emit RUF013 at all here. It's outside the scope of this rule to detect type annotations that are simply invalid, and definitely outside the scope of the rule to try to fix them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-10-20 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Autofix bug with RUF013" to "RUF013 incorrectly emitted on invalid annotation with bare `Optional`" by @AlexWaygood on 2024-10-20 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-21 14:31</div>
+            <div class="timeline-body"><p>A bare <code>Optional</code> would be <code>Optional[Any]</code>, which is <code>Any | None</code>. Which isn't helpful, since <code>Any</code> already includes <code>None</code>. The ones that are allowed to be bare, like <code>list</code> -&gt; <code>list[Any]</code>, still make sense with <code>Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14181.html">astral-sh/ruff#14181</a> on 2024-11-08 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-09 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-09 13:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

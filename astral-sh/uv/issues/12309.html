@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install library in editable mode in dev, but from a private repo in prod - astral-sh/uv #12309</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install library in editable mode in dev, but from a private repo in prod</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12309">#12309</a>
+        opened by <a href="https://github.com/andrej-peterka">@andrej-peterka</a>
+        on 2025-03-19 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andrej-peterka">@andrej-peterka</a> on 2025-03-19 08:07</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi,</p>
+<p>I'm developing a couple of scripts (<code>tool_01</code>, <code>tool_02</code>) that depend on a common library (<code>lib_common</code>).
+Everything is developed by me and I have a private repo to where I publish the library.</p>
+<p>Final step is building my <code>tool_01</code> as a docker image and publishing it to a docker registry.</p>
+<p>This is my folder structure:</p>
+<pre><code>lib_common
+|-- README.md
+|-- pyproject.toml
+|-- src
+|   `-- lib_common
+|       |-- __init__.py
+|       |-- py.typed
+|       `-- my_code
+|           |-- __init__.py
+`-- uv.lock
+
+tool_01
+|-- Dockerfile
+|-- README.md
+|-- pyproject.toml
+|-- src
+|   |-- docker-entrypoint.py
+|   `-- tool.py
+`-- uv.lock
+</code></pre>
+<p>The <code>lib_common</code> and <code>tool_01</code> folders are in the same folder, one next to the other.</p>
+<p><code>tool_01</code> includes <code>lib_common</code> as a dependency:</p>
+<pre><code>[project]
+name = &quot;tool-01&quot;
+version = &quot;0.1.0&quot;
+classifiers = [
+    &quot;Private :: Do Not Upload&quot;
+]
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;requests~=2.32.3&quot;,
+    &quot;lib-common==0.1.0&quot;,
+]
+
+[tool.uv.sources]
+lib-common = [
+    { index = &quot;private-repo&quot; }
+]
+
+[[tool.uv.index]]
+name = &quot;private-repo&quot;
+url = &quot;https://.../simple/&quot;
+explicit = true
+</code></pre>
+<p>And this works, no issues.</p>
+<p>The question I have is how can I develop <code>lib-common</code> and have the changes be reflected in the <code>tool_01</code> project without building, publishing and re-instaling the <code>lib-common</code>?</p>
+<p>I know that installing <code>lib-common</code> in editable mode is the solution, but how can I incorporate that into the <code>pyproject.toml</code> and the lock file?</p>
+<p>I tried adding this to the <code>tool_01</code> pyproject.toml:</p>
+<pre><code>[dependency-groups]
+dev = [
+    &quot;lib-common&quot;,
+]
+
+[tool.uv.sources]
+lib-common = [
+    { path = &quot;../lib_common&quot;, editable = true, group = &quot;dev&quot; },
+    { index = &quot;private-repo&quot; }
+]
+</code></pre>
+<p>But then my docker build of the <code>tool_01</code> fails with error:</p>
+<pre><code>0.481 Using CPython 3.13.2 interpreter at: /usr/local/bin/python3
+0.482 Creating virtual environment at: .venv
+0.525 error: Failed to determine installation plan
+0.525   Caused by: Distribution not found at: file:///lib_common
+</code></pre>
+<p>which makes sense, since that folder is not present in my docker build - I want it to use the package from my private repo there.</p>
+<p>Dockerfile:</p>
+<pre><code>ARG BUILD_PLATFORM=linux/amd64
+FROM --platform=${BUILD_PLATFORM} ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
+
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
+
+WORKDIR /src
+
+RUN --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+ADD src/ /src/
+
+FROM --platform=${BUILD_PLATFORM} python:3.13-slim AS final
+
+# Copy the application from the builder
+COPY --from=builder /src /src
+
+# Place executables in the environment at the front of the path
+ENV PATH=&quot;/src/.venv/bin:$PATH&quot;
+</code></pre>
+<p>I saw some related issues, but after reading through them, I'm not sure what the solution to my question is...</p>
+<p>https://github.com/astral-sh/uv/issues/9654
+https://github.com/astral-sh/uv/issues/11104
+https://github.com/astral-sh/uv/issues/11363
+https://github.com/astral-sh/uv/issues/11675</p>
+<h3>Platform</h3>
+<p>macOS, docker, linux</p>
+<h3>Version</h3>
+<p>uv 0.6.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @andrej-peterka on 2025-03-19 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edenian-prince">@edenian-prince</a> on 2025-10-01 17:55</div>
+            <div class="timeline-body"><p>Did you ever figure out a solution to this? I'm running into a similar issue where one project needs a package to be pulled from a certain repo, and another project needs to pull that package from a different repo. Like this</p>
+<pre><code class="language-bash">[tool.uv.sources]
+lib-common = [
+    { index = &quot;github/repo/package&quot;, group = &quot;default&quot; },
+    { index = &quot;private-repo&quot;, group = &quot;dev&quot; }
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andrej-peterka">@andrej-peterka</a> on 2025-10-02 12:36</div>
+            <div class="timeline-body"><p>No, I haven't found a solution. I might revisit this soon-ish.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatting adds unnecessary parentheses to long patterns with `as` captures - astral-sh/ruff #17796</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatting adds unnecessary parentheses to long patterns with `as` captures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17796">#17796</a>
+        opened by <a href="https://github.com/brandtbucher">@brandtbucher</a>
+        on 2025-05-02 19:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brandtbucher">@brandtbucher</a> on 2025-05-02 19:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>See this playground link, where I've put the expected formatting going in, and you can see the unexpected formatting coming out:</p>
+<p>https://play.ruff.rs/81f62f2d-6858-43eb-8a9b-67dcebdc56f6?secondary=Format</p>
+<p>It appears that &quot;grouping&quot; characters in patterns like <code>()</code>, <code>[]</code>, and <code>{}</code> aren't being used correctly when they are followed by a capture (<code>as name</code>). Instead of breaking on these, the entire pattern (including the capture) is wrapped in parentheses and indented.</p>
+<p>First encountered in https://github.com/python/cpython/pull/133123/files#r2071981099.</p>
+<h3>Version</h3>
+<p>0.11.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandtbucher">@brandtbucher</a> on 2025-05-02 19:04</div>
+            <div class="timeline-body"><p>My guess is that ruff tries to wrap in parens, <em>then</em> start exploding the patterns if that isn't enough. Maybe trying to explode first would help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/cpython/pulls/133123.html">python/cpython#133123</a> on 2025-05-02 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2025-05-02 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandtbucher">@brandtbucher</a> on 2025-05-02 19:07</div>
+            <div class="timeline-body"><p>Or, maybe it <em>is</em> exploding from the outside in, and this is just how it tries to explode <code>as</code> patterns. That could be trickier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandtbucher">@brandtbucher</a> on 2025-05-02 19:15</div>
+            <div class="timeline-body"><p><a href="https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AQDAMNdAD2IimZxl1N_Wg09_vNkRMhK5tWzqqjBLs_dVanTwyECN_AIXR88-_hLSm_aDQarigInAf6QJxkog7UyjNDDvmUA5f9AVdkvmK5HqwLgJEQYg8GxO6JIcM-m2d4Vt3qTOOoBy3FadZeV7kY1Wz0_3Toe2IC5x91rjblu-RdckO0DnwpH__eyexiCK5_op8BmASkuMHIsZWTYu50juXU_19_ylEPQ5cP85PDSbExL1nYOex0l_mQFOpAG3xUdsHsn2Jpb9AAAH5v1gYqq2ZAAAd8BhAgAAEMjdXGxxGf7AgAAAAAEWVo=">Black does the expected thing here.</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-02 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-02 19:27</div>
+            <div class="timeline-body"><p>Thanks for reporting this incorrect formatting.</p>
+<p>We use some heuristics to decide if we can omit the parentheses and it seems that it's overly restrictive when using <code>as</code>. It should probably recurse here</p>
+<p>https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/crates/ruff_python_formatter/src/pattern/mod.rs#L290-L334</p>
+<p>and here</p>
+<p>https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/crates/ruff_python_formatter/src/pattern/mod.rs#L240</p>
+<p>But I'd have to think about if we can do this always or only sometimes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20482.html">astral-sh/ruff#20482</a> on 2025-09-19 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/cpython/pulls/139591.html">python/cpython#139591</a> on 2025-10-05 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21176.html">astral-sh/ruff#21176</a> on 2025-10-31 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-03 22:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

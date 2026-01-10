@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download a package from a private repository with bad certificate - astral-sh/uv #1700</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Download a package from a private repository with bad certificate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1700">#1700</a>
+        opened by <a href="https://github.com/frague59">@frague59</a>
+        on 2024-02-19 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/frague59">@frague59</a> on 2024-02-19 15:53</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I'm using a requirements.txt file, with some packages from a private repository. This repo is based on a private gitlab, with a self-signed certificate (Cannot use a right one, for some infrastructure reasons...)</p>
+<p>I can install my packages from this repo using <code>pip install -r ...</code> but not using <code>uv pip install -r ...</code>.</p>
+<p>My requirements.txt:</p>
+<pre><code class="language-txt">mypackage @ git+https://gitlab.example.com/&lt;my_user&gt;/mypackage@main#egg=&lt;my_egg&gt;
+</code></pre>
+<p>With <code>pip</code>:</p>
+<pre><code class="language-sh">$ pip install -r requirements.txt
+Collecting mypackage@ git+https://gitlab.ville.tg/&lt;my user&gt;/mypackage@main#egg=mypackage (from -r ../requirements/common.txt (line 24))
+  Cloning https://gitlab.ville.tg/&lt;my user&gt;/mypackage  (to revision main) to /tmp/pip-install-0wbxgsrj/mypackage_3369986277e8440d861fb9f680c74595
+  Running command git clone --filter=blob:none --quiet https://gitlab.ville.tg/&lt;my user&gt;/mypackage /tmp/pip-install-0wbxgsrj/mypackage_3369986277e8440d861fb9f680c74595
+  avertissement : redirection vers https://gitlab.ville.tg/&lt;my user&gt;/django-notifications.git/
+  Resolved https://gitlab.ville.tg/&lt;my user&gt;/mypackage to commit b13c3a56f54f0cf35a60df4281995ca1fc75d67f
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+...
+</code></pre>
+<p>Witih <code>uv pip</code></p>
+<pre><code class="language-sh">$ uv pip install -r requirements.txt
+Updating https://gitlab.ville.tg/fguerin/mypackage (main)                                                                                                                                                               error: Failed to download and build: mypackage @ git+https://gitlab.ville.tg/&lt;my user&gt;/mypackage@main#egg=mypackage
+  Caused by: Git operation failed
+  Caused by: failed to fetch into: /home/&lt;my user&gt;/.cache/uv/git-v0/db/c13f4940a991ecb3
+  Caused by: failed to connect to the repository
+  Caused by: the SSL certificate is invalid; class=Ssl (16); code=Certificate (-17)
+</code></pre>
+<p>Thanks for your help !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Download a package from a privet repository with bad certificate" to "Download a package from a private repository with bad certificate" by @frague59 on 2024-02-19 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 15:55</div>
+            <div class="timeline-body"><p>Hi! Thanks for the clear issue.</p>
+<p>Is this a duplicate of #1339? Can you add the certificate to your system trust store per #1512?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-19 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frague59">@frague59</a> on 2024-02-19 16:08</div>
+            <div class="timeline-body"><p>Thanks for your quick answer !</p>
+<p>I do not use the --trusted-host parameter while using pip install, but I've my credentials installed in the <code>/home/&lt;my user&gt;/.pypirc</code>.</p>
+<p>Look's like I already have this cert in my &quot;system trust store&quot; (not sure of what I've to put on it...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:09</div>
+            <div class="timeline-body"><p>Are you using the latest version of <code>uv</code>?</p>
+<p>Note we don't support reading from the <code>.pypirc</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frague59">@frague59</a> on 2024-02-19 17:31</div>
+            <div class="timeline-body"><p>Yes, I do.</p>
+<p>Fresh install using pipx -- 0.1.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-02-19 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-19 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zanieb on 2024-02-19 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:44</div>
+            <div class="timeline-body"><p>Thanks I'll look into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-02-19 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1819.html">astral-sh/uv#1819</a> on 2024-02-21 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmatos2012">@dmatos2012</a> on 2024-02-28 10:08</div>
+            <div class="timeline-body"><p>What is the recommended <code>uv</code> way of handling this instead? Running into same issue. Yes, I could pass <code>--extra-index-url</code> but I have multiple packages thus it would become unfeasible. My <code>~/.pypirc</code> has th following:</p>
+<pre><code>[distutils]
+index-servers = 
+    proj1
+    proj2
+
+[proj1]
+repository = https://gitlab.com/api/v4/projects/&lt;GITLAB_PROJECT_ID&gt;/packages/pypi
+username = un
+password = pw
+
+[proj2]
+repository = https://gitlab.com/api/v4/projects/&lt;GITLAB_PROJECT_ID&gt;/packages/pypi
+username = un
+password = pw
+
+[proj..n]
+.....
+
+</code></pre>
+<p>Thus running <code>pip install -r requirements.txt</code> looks in all these private indexes, but <code>uv pip install -r requirements.txt</code> fails with:
+<code>error: HTTP status client error (401 Unauthorized) for https://gitlab.com/api/v4/projects/&lt;GITLAB_PROJECT_ID&gt;/packages/pypi</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @zanieb on 2024-02-28 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sephib">@sephib</a> on 2024-03-05 13:40</div>
+            <div class="timeline-body"><p>Hi,
+guessing this is the same issue
+just giving another aspect
+working via a private repo on <code>GCP</code>
+the authentication is done via</p>
+<pre><code>keyring==24.3.0
+keyrings-google-artifactregistry-auth==1.1.2
+</code></pre>
+<p>when running</p>
+<pre><code>python -m pip install \
+		--index-url https://my-region-python.pkg.dev/my-gcp-prj/python-repo/simple/ \
+		--extra-index-url https://pypi.python.org/simple/ \
+		--upgrade \
+		-r requirements-private.txt
+</code></pre>
+<p>successfully installed
+But when running</p>
+<pre><code>uv pip install --index-url https://my-region-python.pkg.dev/my-gcp-prj/python-repo/simple/   \      
+                      --extra-index-url https://pypi.python.org/simple/   \
+                      --upgrade  \
+                      -r requirements-private.txt
+</code></pre>
+<p>getting the following error:</p>
+<blockquote>
+<p>error: HTTP status client error (401 Unauthorized) for url (https://my-region-python.pkg.dev/my-gcp-prj/python-repo/simple/my-package/)</p>
+</blockquote>
+<p>I also had an issue with the <code>--pre</code> flag
+if my <code>requirements-private.txt</code> has the <code>--pre</code> flag, e.g.</p>
+<blockquote>
+<p>my-package --pre</p>
+</blockquote>
+<p>i get the following error</p>
+<blockquote>
+<p>error: Expected '--hash', found '&quot;--pre&quot;' in <code>requirements-private.txt</code> at position NN</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-05 15:05</div>
+            <div class="timeline-body"><p>Hi! We don't have keyring support yet. You can track that at https://github.com/astral-sh/uv/issues/1520</p>
+<p>We also do not support specifying <code>--pre</code> in requirements files. You can specify <code>my-package &gt;=0.0.0dev0</code> if you want to enable prereleases for a single package or <code>--pre</code> on the command line to enable them globally. Please open a new issue if you want to discuss that further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-27 11:42</div>
+            <div class="timeline-body"><p>These should now be supported through <code>SSL_CERT_FILE</code> and <code>--keyring-provider</code>/<code>UV_KEYRING_PROVIDER</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-06-27 11:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

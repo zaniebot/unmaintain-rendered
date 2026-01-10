@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv export` does not generate hashes for `--find-links` - astral-sh/uv #10987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv export` does not generate hashes for `--find-links`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10987">#10987</a>
+        opened by <a href="https://github.com/apaleyes">@apaleyes</a>
+        on 2025-01-27 15:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/apaleyes">@apaleyes</a> on 2025-01-27 15:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Probably related to other similar entries, some of which are closed and some are open: https://github.com/astral-sh/uv/issues/3874, https://github.com/astral-sh/uv/pull/5544, https://github.com/astral-sh/uv/issues/7064</p>
+<p>When generating requirements.txt file from the uv environment, it does not add hashes for dependencies supplied via <code>find-links</code>. This means that resulting requirements.txt file is not usable - <code>pip install</code> <a href="https://pip.pypa.io/en/stable/cli/pip_download/#cmdoption-require-hashes">cannot work</a> with a file where some dependencies have hashes and some don't.</p>
+<h3>Minimal example to reproduce</h3>
+<p>Create a new directory with the following <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;uv-hash-repro&quot;
+version = &quot;0.1&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.13&quot;
+dependencies = [
+    &quot;torch&quot;,
+    &quot;torch-geometric&quot;,
+    &quot;torch-cluster&quot;,
+    &quot;torch-scatter&quot;,
+]
+
+[tool.uv]
+find-links = [
+    &quot;https://data.pyg.org/whl/torch-2.5.1+cpu.html&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+<p>Now run</p>
+<pre><code>uv venv
+uv sync
+</code></pre>
+<p>And now generate requirements with export, and observe absence of hashes:</p>
+<pre><code>uv export --frozen --no-emit-project | grep -A 1 torch
+</code></pre>
+<p>On my machine this gives following output, where hashes for <code>torch-scatter</code> and <code>torch-cluster</code> are clearly missing:</p>
+<pre><code>torch==2.5.1 \
+    --hash=sha256:23d062bf70776a3d04dbe74db950db2a5245e1ba4f27208a87f0d743b0d06e86 \
+--
+torch-cluster==1.6.3 ; (platform_machine != 'x86_64' and sys_platform == 'linux') or (platform_machine != 'x86_64' and sys_platform == 'win32') or (sys_platform != 'linux' and sys_platform != 'win32')
+torch-cluster==1.6.3+pt25cpu ; (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'win32')
+torch-geometric==2.6.1 \
+    --hash=sha256:1f18f9d0fc4d2239d526221e4f22606a4a3895b5d965a9856d27610a3df662c6 \
+--
+torch-scatter==2.1.2 ; (platform_machine != 'x86_64' and sys_platform == 'linux') or (platform_machine != 'x86_64' and sys_platform == 'win32') or (sys_platform != 'linux' and sys_platform != 'win32')
+torch-scatter==2.1.2+pt25cpu ; (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'win32')
+tqdm==4.67.1 \
+</code></pre>
+<h3>Platform</h3>
+<p>macos (Darwin 23.2.0 arm64)</p>
+<h3>Version</h3>
+<p>uv 0.5.23</p>
+<h3>Python version</h3>
+<p>3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @apaleyes on 2025-01-27 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 15:12</div>
+            <div class="timeline-body"><p>Yeah, this is a duplicate of https://github.com/astral-sh/uv/issues/7064.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 15:15</div>
+            <div class="timeline-body"><p>For what it's worth, we may not change it. Adding hashes for <code>--find-links</code> would require downloading and hashing <em>all</em> distributions for a matching version in the index. For PyTorch, for example, this would be <em>incredibly</em> slow.</p>
+<p>You can run with <code>--no-hashes</code> to omit hashes entirely (or use uv to install the file (which accepts partial hashes)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-27 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/apaleyes">@apaleyes</a> on 2025-01-27 15:17</div>
+            <div class="timeline-body"><p>that was lightning fast, thanks for the response @charliermarsh !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

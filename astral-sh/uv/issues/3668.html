@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tilde seen in site-packages - astral-sh/uv #3668</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tilde seen in site-packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3668">#3668</a>
+        opened by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a>
+        on 2024-05-20 05:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-05-20 05:03</div>
+            <div class="timeline-body"><p>I'm unsure how I got to this point, but the easiest way to reproduce this is to create a directory with a tilde at the front. As far as I can tell, the package and dist-info directories both have this tilde in the front. I also have the actual datadog_api_client 2.2.0 installed (i.e. both directories exist, it's just that the 1.11.0 version has a tilde replacing the <code>d</code>), so there must've been some kind of deletion error that happened that caused this tilde directory.</p>
+<pre><code>uv pip install -r dev_requirements.txt
+error: Failed to list installed packages
+  Caused by: Failed to read metadata: from /Users/andrew/Work/.direnv/python-3.10/lib/python3.10/site-packages/~atadog_api_client-1.11.0.dist-info
+  Caused by: Not a valid package or extra name: &quot;~atadog_api_client&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+</code></pre>
+<p>reference SO answer: https://stackoverflow.com/a/57488427:</p>
+<p>Is it possible that you installed those particular packages with pip? If so, then the mangled directories are probably the temporary directories that pip creates when it uninstalls a package (or when it uninstalls a package in preparation for updating a package).</p>
+<p>I dug through the pip source code and found <a href="https://github.com/pypa/pip/blob/19.2.2/src/pip/_internal/utils/temp_dir.py#L87-L106">this snippet</a> which is evidently only used on uninstalling packages:</p>
+<pre><code>class AdjacentTempDirectory(TempDirectory):
+    &quot;&quot;&quot;Helper class that creates a temporary directory adjacent to a real one.
+    Attributes:
+        original
+            The original directory to create a temp directory for.
+        path
+            After calling create() or entering, contains the full
+            path to the temporary directory.
+        delete
+            Whether the directory should be deleted when exiting
+            (when used as a contextmanager)
+    &quot;&quot;&quot;
+    # The characters that may be used to name the temp directory
+    # We always prepend a ~ and then rotate through these until
+    # a usable name is found.
+    # pkg_resources raises a different error for .dist-info folder
+    # with leading '-' and invalid metadata
+    LEADING_CHARS = &quot;-~.=%0123456789&quot;
+
+    ...
+</code></pre>
+<p>If that's what these files are, then you can safely delete them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 12:05</div>
+            <div class="timeline-body"><p>Thanks! Not sure what to do with these... We don't create them and they <em>are</em> invalid package names, and the solution is indeed to delete them. Failing seems okay to me? The alternative is a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-05-21 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-05-21 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrew-Chen-Wang">@Andrew-Chen-Wang</a> on 2024-05-21 16:35</div>
+            <div class="timeline-body"><p>Would love to see an explicit warning and recommendation such as &quot;Probably need to delete&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-28 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2024-07-28 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5520.html">astral-sh/uv#5520</a> on 2024-07-28 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-28 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-28 19:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

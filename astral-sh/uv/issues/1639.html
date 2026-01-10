@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executables installed via `uv` don't work in GitHub Actions on Windows - astral-sh/uv #1639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Executables installed via `uv` don't work in GitHub Actions on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1639">#1639</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-02-18 11:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-18 11:03</div>
+            <div class="timeline-body"><p>Following #1523, standalone executables installed via <code>uv</code> seem to work fine on Windows locally. However, they still <em>don't</em> seem to be working on Windows in the context of GitHub Actions. (By &quot;standalone executables&quot;, I mean simply invoking <code>black</code> rather than <code>python -m black</code>, or simply invoking <code>coverage</code> rather than <code>python -m coverage</code>.) For a repro, see this PR, where CI is passing on MacOS and Linux, but not Windows:</p>
+<ul>
+<li>https://github.com/AlexWaygood/typeshed-stats/pull/190</li>
+</ul>
+<p>The error occurs when the workflow tries to run <code>coverage run -m pytest</code>, and the error message is:</p>
+<pre><code>Error: The system cannot find the file specified.
+ (from CreateProcessA(null(), child_cmdline.into_bytes_with_nul().as_mut_ptr(),
+    null(), null(), 1, 0, null(), null(), addr_of!(*si),
+    child_process_info.as_mut_ptr()))
+Error: Process completed with exit code 1.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-02-18 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2024-02-18 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1612.html">astral-sh/uv#1612</a> on 2024-02-18 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AlexWaygood/typeshed-stats/pulls/190.html">AlexWaygood/typeshed-stats#190</a> on 2024-02-18 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 11:38</div>
+            <div class="timeline-body"><p>That sounds like it can't find python for some reason. I can take a look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-02-18 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 12:02</div>
+            <div class="timeline-body"><p>I wonder if it's related to the venv &quot;trick&quot;.</p>
+<p>The trampoline (it creates the call that failes above) should construct the following command:</p>
+<pre><code class="language-bash">&lt;path_to_scripts&gt;\python.exe &lt;path_to_scripts&gt;\black.exe
+</code></pre>
+<p>where <code>path_to_scripts</code> is constructed by taking the parent directory from <code>black.exe</code>'s absolute path. We know that it fails to resolve python because python emits a different error (see #1612) when the module can't be found.</p>
+<p>Now, I would expect that it can find the python.exe just fine because our activation script ensures that there's a python.exe next to the scripts.</p>
+<p>I won't have time to look into this before tomorrow but maybe something stands out for you why the python.exe wouldn't be found</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-18 12:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if it's related to the venv &quot;trick&quot;.</p>
+</blockquote>
+<p>Ah, that would make some sense, given that I wasn't able to repro this one locally — I'm not using the &quot;trick&quot; locally, of course!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-18 12:38</div>
+            <div class="timeline-body"><p>Unfortunately I really know very little about this area. What I <em>can</em> tell you -- which you may already know, and may not be relevant -- is that the <code>python.exe</code> executable isn't located in the same place on Windows when a virtual environment isn't activated. When a virtual environment <code>.venv</code> is activated, <code>python.exe</code> is located at <code>.venv/Scripts/python.exe</code>. But my global Python installation (installed using the python.org installers) is located at <code>C:\Users\alexw\AppData\Local\Programs\Python\Python312\python.exe</code>. In GitHub Actions, it looks like it's located at <code>C:\hostedtoolcache\windows\Python\3.12.2\x64\python.exe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 12:43</div>
+            <div class="timeline-body"><p>We can figure it out together. I know very little about how venv works on windows ;)</p>
+<blockquote>
+<p>is that the python.exe executable isn't located in the same place on Windows when a virtual environment isn't activated.</p>
+</blockquote>
+<p>I think this is the issue because our trampoline script assumes that the script and the python.exe are in the same directory which they're not according to your description. So we'll need another way to find the python installation. I need to look into what venv does but I wonder if we should parse out the shebang header from the python scrpt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-18 13:08</div>
+            <div class="timeline-body"><p>Hmmm... I tried using <code>uv</code> without the trick in this PR:</p>
+<ul>
+<li>https://github.com/AlexWaygood/typeshed-stats/pull/191</li>
+</ul>
+<p>It gets much further: <code>coverage run -m pytest</code> correctly finds the <code>coverage</code> executable, and all tests but one are passing. But the specific test in my test suite that asserts that the standalone <code>typeshed-stats</code> executable (which has been installed via uv using <code>uv pip install -e .</code>) works as expected seems to be failing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-18 16:16</div>
+            <div class="timeline-body"><p>I'm just guessing but I get the impression that the tests run into the same problem because they run without activating a venv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-18 23:08</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/1310</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 07:12</div>
+            <div class="timeline-body"><p>Thanks @ofek but this is different than #1310. The python executable is correctly discovered. This issue is related to scripts, specifically when using <code>VIRTUAL_ENV=&lt;global_path&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 09:35</div>
+            <div class="timeline-body"><p>I have a working workflow in https://github.com/AlexWaygood/typeshed-stats/pull/192 where I migrated most of the pipeline to use the native shell instead of <code>bash</code> on Windows (which matches the pip setup).</p>
+<p>It also works if you source the activation script instead of setting <code>VIRTUAL_ENV</code> and the path variables. https://github.com/AlexWaygood/typeshed-stats/pull/194</p>
+<p>That makes me think that this is some path/environment variable issue rather than an issue with <code>uv</code> itself. However, using <code>uv</code> in github actions must become easier. It should just work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-19 13:12</div>
+            <div class="timeline-body"><p>Agreed, I think we figured out that this isn't, fundamentally, an issue with <code>uv</code> itself (except perhaps that there are some missing features that are needed to make working with GitHub Actions easier).</p>
+<p>Closing in favour of #1386</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-02-19 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1779.html">astral-sh/uv#1779</a> on 2024-02-20 21:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

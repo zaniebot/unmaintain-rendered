@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access denied for `uv pip sync` on Windows - astral-sh/uv #1368</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Access denied for `uv pip sync` on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1368">#1368</a>
+        opened by <a href="https://github.com/jrkerns">@jrkerns</a>
+        on 2024-02-15 22:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jrkerns">@jrkerns</a> on 2024-02-15 22:05</div>
+            <div class="timeline-body"><p>Within a given venv, running <code>uv pip sync &lt;requirement file&gt;</code> fails with Access is denied. This is on Windows.</p>
+<pre><code>(venv311) C:\Users\kraken&gt;uv pip sync requirements.txt
+error: failed to remove file `\\?\C:\Users\kraken\venv311\Scripts\uv.exe`
+  Caused by: Access is denied. (os error 5)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-15 22:06</div>
+            <div class="timeline-body"><p>Thank you for reporting. This is related to https://github.com/astral-sh/uv/issues/1327</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-15 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jrkerns">@jrkerns</a> on 2024-02-15 22:07</div>
+            <div class="timeline-body"><p>Ah, I looked for something similar but missed it. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-02-15 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-03-05 12:09</div>
+            <div class="timeline-body"><p>I think deleting executable is not allowed when it's running, but it can rename itself.
+I think solution here is to rename self to temp dir.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3239.html">astral-sh/uv#3239</a> on 2024-04-24 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-24 16:59</div>
+            <div class="timeline-body"><p>Just completing, the issue  also happens with <code>uv pip install uv --upgrade</code> meaning uv can't replace its own executable. See closed issue #3239 above.
+It is blocking us from adopting it for devs using Windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 17:14</div>
+            <div class="timeline-body"><p>I would strongly recommend against managing uv as a Python package and use our installer and <code>uv self update</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-04-24 17:30</div>
+            <div class="timeline-body"><p>@zanieb We have issues on windows with the path and installing uv globally is not always possible.
+Also if there is a uv installed inside the env, it will take priority over the one outside since the command will be replaced on env activation.</p>
+<p>You cannot run <code>uv self update</code> if uv was installed in the env as package. BTW, it makes way more sense to version control uv this way -- also version lock it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3339.html">astral-sh/uv#3339</a> on 2024-05-02 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4980.html">astral-sh/uv#4980</a> on 2024-07-10 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EricThomson">@EricThomson</a> on 2024-08-05 14:47</div>
+            <div class="timeline-body"><p>Not a solution, but a workaround (and note I use <code>uv</code> within a conda environment). I hit this error when I installed <code>uv</code> <em>within</em> a virtual environment, but when I installed it in my base conda environment, so I could then use it in every created virtual environment, I stopped getting the error.</p>
+<p>When I tried updating uv (or pip/setuptools) within the environment, that didn't help.</p>
+<p>I know this won't help all users, but maybe the handful who stumble in here searching for the  <code>Caused by: Access is denied. (os error 5)</code> that use conda. 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 14:50</div>
+            <div class="timeline-body"><p>Yeah, in general you can &quot;solve&quot; this by installing uv <em>outside</em> of whatever environment you're trying to manage. uv doesn't need to be in a given virtual environment in order to operate on it (it's just a Rust binary, it can run over any environment or Python interpreter on your system).</p>
+<p>(Of course I'd prefer not to error here though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-08-05 18:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, in general you can &quot;solve&quot; this by installing uv <em>outside</em> of whatever environment you're trying to manage.</p>
+</blockquote>
+<p>That is not easy without the right permissions unless I download the binary and run it locally. It makes managing UV version way more difficult IMO.</p>
+<p>In the end I resort to <code>pip install uv</code> and then I can use <code>uv pip install &lt;stuff&gt;</code> and other commands.</p>
+<p>This is one of the 4 open tickets here preventing me from fully adopting uv. It is very close, but I still rely on several workarounds and other compromises with pip.</p>
+<p>Would it be possible to check if the file you're going to write exists and then save a temp one then perform a rename operation?</p>
+<pre><code>fs::rename(temp_executable_path, &amp;current_executable_path)
+</code></pre>
+<p>This operation would be atomic without first removing the original file which the Windows forbids. If that does not work, the solution would be somewhere in the lines of running UV from a temp executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-08-05 23:11</div>
+            <div class="timeline-body"><blockquote>
+<p>That is not easy without the right permissions unless I download the binary and run it locally</p>
+</blockquote>
+<p>Does https://github.com/astral-sh/uv/pull/5455 solve your need? you can set <code>CARGO_HOME</code> env variable to where you have permissions before executing <code>uv-installer</code>; so uv will install there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6400.html">astral-sh/uv#6400</a> on 2024-08-22 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Comfy-Org/comfy-cli/pulls/169.html">Comfy-Org/comfy-cli#169</a> on 2024-08-29 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8914.html">astral-sh/uv#8914</a> on 2024-11-08 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-08 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 02:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timonmerk">@timonmerk</a> on 2024-11-11 10:03</div>
+            <div class="timeline-body"><p>Just wanted to mention that manually deleting the <code>Scripts\uv.exe</code> or <code>Scripts\ruff.exe</code> on Windows also fixes that error. I know it's not related to fixing the core of the problem. But just wanted to throw it out in case someone needs a quick fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2024-12-13 01:00</div>
+            <div class="timeline-body"><p><code>poetry</code> ran into this exact same problem: <a href="https://github.com/python-poetry/poetry/issues/7610">#7610</a>.</p>
+<p>I'm betting using <code>uvx</code> will make the issue will go away:</p>
+<pre><code>uvx pip sync requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 01:03</div>
+            <div class="timeline-body"><p>Should also be fixed in newer releases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2024-12-13 01:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Should also be fixed in newer releases.</p>
+</blockquote>
+<p>Out of curiosity, what is the fix for this issue?</p>
+<p>FYI, these may help:</p>
+<p><a href="https://github.com/python-poetry/poetry/issues/1031">poetry Issue #1031</a>
+<a href="https://github.com/python-poetry/poetry-core/pull/460">poetry PR #460</a> (<em>Fixes 1031</em>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 01:23</div>
+            <div class="timeline-body"><p>We use a library called <a href="https://docs.rs/self-replace/latest/self_replace/"><code>self-replace</code></a> when targeting the currently-running binary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2024-12-13 01:25</div>
+            <div class="timeline-body"><blockquote>
+<p>We use a library called <a href="https://docs.rs/self-replace/latest/self_replace/"><code>self-replace</code></a> when targeting the currently-running binary.</p>
+</blockquote>
+<p>Doy, just saw <a href="https://github.com/astral-sh/uv/pull/8914">#8914</a>. Sorry, my bad. And thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arden13">@arden13</a> on 2024-12-17 13:03</div>
+            <div class="timeline-body"><p>Hey All,</p>
+<p>I've been testing out uv for my work and am hitting what seems a related issue to this one. Running on a windows 11 machine I'm generating some base python environments and I hit this same error (os error 5) when running</p>
+<p><code>uv venv py311 --native-tls --python 3.11</code></p>
+<p>running this one time it fails. Running it a second time it succeeds.</p>
+<pre><code>(nipals_uv) PS C:\Users\username\git_repos\open_nipals&gt; uv venv py311 --native-tls --python 3.11
+  × Failed to copy to:
+  │ C:\Users\username\AppData\Roaming\uv\python\cpython-3.11.11-windows-x86_64-none
+  ╰─▶ failed to rename file from C:\Users\username\AppData\Roaming\uv\python\.temp\.tmpu6Kxca\python
+      to C:\Users\username\AppData\Roaming\uv\python\cpython-3.11.11-windows-x86_64-none: Access    
+      is denied. (os error 5)
+(nipals_uv) PS C:\Users\username\git_repos\open_nipals&gt; uv venv py311 --native-tls --python 3.11
+Using CPython 3.11.11
+Creating virtual environment at: py311
+Activate with: py311\Scripts\activate
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 13:11</div>
+            <div class="timeline-body"><p>@arden13 -- That's a different issue -- you're looking for https://github.com/astral-sh/uv/issues/1327.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arden13">@arden13</a> on 2024-12-17 13:12</div>
+            <div class="timeline-body"><p>Thanks I'll go there</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

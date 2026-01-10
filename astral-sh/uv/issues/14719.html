@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cache-control override not working as expected - astral-sh/uv #14719</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>cache-control override not working as expected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14719">#14719</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2025-07-18 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2025-07-18 12:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>i'm trying out the new cache-control index setting but it's not working as i expect (i may be misunderstanding or doing something wrong)</p>
+<p>the index is running devpi-server 6.5.1</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;https://private.example.com/org/dev/+simple&quot;
+cache-control = { api = &quot;max-age=600&quot;, files = &quot;max-age=365000000, immutable&quot; }
+default = true
+</code></pre>
+<p>(index renamed to remove private dns names etc, hopefully correctly applied the same change in the logs snippet)</p>
+<pre><code>$ uv --version
+uv 0.7.22 (78d6d1134 2025-07-17)
+</code></pre>
+<p>bumping the minor version of a <code>pytest</code> dependency up and down i see this in the logs from <code>uv run -vvv pytest --version</code></p>
+<pre><code>DEBUG reuse idle connection for (&quot;https&quot;, private.example.com)
+TRACE Cached request https://private.example.com/org/dev/+simple/colorama/ is storable because its response has a heuristically cacheable status code 200                      TRACE Could not determine freshness lifetime, assuming none exists
+TRACE Cached request https://private.example.com/org/dev/+simple/colorama/ has a cached response that does not allow staleness
+TRACE Request https://private.example.com/org/dev/+simple/colorama/ does not have a fresh cache because its age is 22 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: https://private.example.com/org/dev/+simple/colorama/
+DEBUG Sending revalidation request for: https://private.example.com/org/dev/+simple/colorama/                                                                                  TRACE Handling request for https://private.example.com/org/dev/+simple/colorama/ with authentication policy auto
+TRACE Request for https://private.example.com/org/dev/+simple/colorama/ is unauthenticated, checking cache                                                                     TRACE No credentials in cache for URL https://private.example.com/org/dev/+simple/colorama/                                                                                    TRACE Attempting unauthenticated request for https://private.example.com/org/dev/+simple/colorama/
+</code></pre>
+<p><code>22 seconds</code> &lt; <code>600</code>?</p>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.22 (78d6d1134 2025-07-17)</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @davidszotten on 2025-07-18 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2025-07-18 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 12:53</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 14:45</div>
+            <div class="timeline-body"><p>Sorry, I think I wired this up in the wrong place (the request, not the response).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14736.html">astral-sh/uv#14736</a> on 2025-07-18 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-18 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2025-07-19 07:04</div>
+            <div class="timeline-body"><p>thanks! seems to be working with that patch for me too</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

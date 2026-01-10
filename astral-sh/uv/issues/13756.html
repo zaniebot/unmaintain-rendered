@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run python3` handles SIGINT incorrectly - astral-sh/uv #13756</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run python3` handles SIGINT incorrectly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13756">#13756</a>
+        opened by <a href="https://github.com/Nemowang2003">@Nemowang2003</a>
+        on 2025-05-31 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Nemowang2003">@Nemowang2003</a> on 2025-05-31 21:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv run python3 demo.py</code> acts differently with directly running <code>python3 demo.py</code> with programs handling SIGINT(aka. <code>KeyboardInterrupt</code>).</p>
+<h2>Reproduction</h2>
+<pre><code class="language-python"># demo.py
+import time
+
+
+def wait():
+    try:
+        time.sleep(5)
+    except KeyboardInterrupt:
+        print(&quot;inside&quot;)
+
+
+while True:
+    try:
+        input()
+        wait()
+    except KeyboardInterrupt:
+        print(&quot;outside&quot;)
+    except EOFError:
+        break
+</code></pre>
+<p>The action is：</p>
+<ol>
+<li>hit enter(to enter nothing)</li>
+<li>hit Control+C to send SIGINT(in 5 seconds, to interrupt <code>wait</code> function)</li>
+<li>hit enter(to enter nothing again)</li>
+<li>hit control+C(again, to interrup <code>wait</code> function)</li>
+</ol>
+<p>In normal <code>python3 demo.py</code>, the result is:</p>
+<pre><code class="language-text">
+^Cinside
+
+^Cinside
+</code></pre>
+<p>In <code>uv run -v python3 demo.py</code>, the result (with log) is:</p>
+<pre><code class="language-text">DEBUG Running `python3 demo.py`
+DEBUG Spawned child 91884 in process group 91883
+
+^Cinside
+DEBUG Received SIGINT, assuming the child received it as part of the process group
+
+^CDEBUG Received SIGINT, forwarding to child at 91884 in 200ms
+inside
+outside
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 22.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.8 (Homebrew 2025-05-23)</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Nemowang2003 on 2025-05-31 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemowang2003">@Nemowang2003</a> on 2025-05-31 21:41</div>
+            <div class="timeline-body"><p>And when I deleted the <code>input()</code> line, the behavior changed again.</p>
+<pre><code class="language-python"># demo.py
+import time
+
+
+def wait():
+    try:
+        time.sleep(5)
+    except KeyboardInterrupt:
+        print(&quot;inside&quot;)
+
+
+while True:
+    try:
+        wait()
+    except KeyboardInterrupt:
+        print(&quot;outside&quot;)
+
+</code></pre>
+<p>Now when I repeat the step2 &amp; step4 mentioned above, <code>python3 demo.py</code> behaves the same.
+However <code>uv run -v python3 demo.py</code> outputs this:</p>
+<pre><code class="language-text">DEBUG Running `python3 demo.py`
+DEBUG Spawned child 92156 in process group 92155
+^Cinside
+DEBUG Received SIGINT, assuming the child received it as part of the process group
+^Cinside
+DEBUG Received SIGINT, forwarding to child at 92156 in 200ms
+inside
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-31 23:28</div>
+            <div class="timeline-body"><p>Have you read the other open issues about SIGINT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-01 04:58</div>
+            <div class="timeline-body"><p>i.e., https://github.com/astral-sh/uv/issues/12108</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nemowang2003">@Nemowang2003</a> on 2025-06-01 05:55</div>
+            <div class="timeline-body"><p>I see why it's designed to forward SIGINT when received at second time.
+I am working on my personal scripts, therefore it's really not quite a common usage.
+Thank you for response, I think I should close this issue as duplicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Nemowang2003 on 2025-06-01 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-01 15:10</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

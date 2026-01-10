@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question: how to extract {flags, opts, subcommands, ...} - clap-rs/clap #1285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question: how to extract {flags, opts, subcommands, ...}</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1285">#1285</a>
+        opened by <a href="https://github.com/yoshuawuyts">@yoshuawuyts</a>
+        on 2018-06-03 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yoshuawuyts">@yoshuawuyts</a> on 2018-06-03 12:41</div>
+            <div class="timeline-body"><p>Heya :wave:,</p>
+<p>I was wondering what the recommended approach is to extract the currently used flags, subcommands, opts (and similar).</p>
+<p>My goal is to generate man pages from a Clap struct, with the short versions and descriptions included. I've tried <code>app.write_long_help()</code>, but having to parse strings using regexes seems a bit wasteful.</p>
+<p>I've also been digging into Clap's (undocumented) internals but given it's all undocumented, I take it that it might not have any stability guarantees.</p>
+<h2>Current Best Approach I've Found</h2>
+<pre><code class="language-rust">#[macro_use]
+extern crate structopt;
+
+use structopt::StructOpt;
+
+mod cli;
+
+fn main() {
+  let mut app = cli::Opts::clap();
+  let mut stdout = std::io::stdout();
+  app.write_long_help(&amp;mut stdout).unwrap();   // We need to run this first.
+  for f in app.p.flags() {
+    println!(&quot;flag {:?}&quot;, &amp;f);                 // Otherwise this doesn't work.
+  }
+}
+</code></pre>
+<p>So umm, to make these questions a bit more concrete:</p>
+<h2>Concrete Questions</h2>
+<ul>
+<li>What's going on in <code>app.write_long_help</code> that provisions <code>app.p.flags()</code> with its contents?</li>
+<li>Is there a better way to extract flags than what we're currently doing?</li>
+<li>If there currently isn't a better way, could we perhaps add an interface to access this information?</li>
+</ul>
+<hr />
+<p>I hope these questions make sense. Thanks so much for your time! :sparkles:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-cli/team/issues/23.html">rust-cli/team#23</a> on 2018-06-03 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-cli/team/issues/38.html">rust-cli/team#38</a> on 2018-06-03 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-04 21:15</div>
+            <div class="timeline-body"><p>This is actually a goal of 3.x! So if you'd like to work on this problem set on the v3-master branch it would be HIGHLY appreciated!</p>
+<p>The v3-master branch is quite different from the current master branch (i.e. v2) in that you iterate the subcommands and args directly and not through a <code>Parser</code> facade.</p>
+<p>In the v3-master branch you'd use macros (<code>flags!</code>, <code>opts!</code>, <code>subcommands!</code>, <code>positionals!</code> etc.) which have already been defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: hard</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: man page gen</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help pages gen</span> added by @kbknapp on 2018-06-04 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yoshuawuyts">@yoshuawuyts</a> on 2018-06-05 10:09</div>
+            <div class="timeline-body"><p>Oh, this is amazing! - I'll dig further into the v3 branch then. Thanks for taking your time to reply! :sparkles:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-09 07:24</div>
+            <div class="timeline-body"><p>Should be fixed by #1736. cc @CreepySkeleton</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-10 02:12</div>
+            <div class="timeline-body"><p>Yeah, right. Will get to it 11, should be done in a couple of days from then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-04-11 16:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:48 UTC
+    </footer>
+</body>
+</html>

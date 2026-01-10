@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run recreates virtual environment every time when using asdf-managed Python - astral-sh/uv #16362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run recreates virtual environment every time when using asdf-managed Python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16362">#16362</a>
+        opened by <a href="https://github.com/joelleibow">@joelleibow</a>
+        on 2025-10-19 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joelleibow">@joelleibow</a> on 2025-10-19 21:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When using Python managed by <code>asdf</code>, <code>uv run</code> recreates the virtual environment on every invocation, even when the Python version is correct and satisfies requirements. This happens because <code>uv</code> compares the asdf shim path (<code>~/.asdf/shims/python</code>) with the actual interpreter path (<code>~/.asdf/installs/python/3.13.5/bin/python</code>) and considers them different, triggering a venv rebuild.</p>
+<h2>Minimal Reproducible Example</h2>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>Python managed by <code>asdf</code></li>
+<li><code>uv</code> installed via Homebrew</li>
+</ul>
+<p><strong>Steps to reproduce:</strong></p>
+<ol>
+<li>Create a new project:</li>
+</ol>
+<pre><code class="language-bash">uv init test-project --no-pin-python
+cd test-project
+</code></pre>
+<ol start="2">
+<li>Sync and verify venv is created:</li>
+</ol>
+<pre><code class="language-bash">uv sync
+# Virtual environment created successfully
+</code></pre>
+<ol start="3">
+<li>Run a command twice:</li>
+</ol>
+<pre><code class="language-bash">uv run python --version
+# Works, uses existing venv
+
+uv run python --version
+# Recreates venv unnecessarily
+</code></pre>
+<p><strong>Observed output:</strong></p>
+<pre><code>$ uv run python --version
+Python 3.13.5
+
+$ uv run python --version
+Using CPython 3.13.5 interpreter at: ~/.asdf/installs/python/3.13.5/bin/python
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Installed 1 package in 250ms
+Python 3.13.5
+</code></pre>
+<p><strong>With verbose output:</strong></p>
+<pre><code class="language-bash">$ uv run --verbose python --version 2&gt;&amp;1 | grep -A2 &quot;not satisfy&quot;
+
+DEBUG Using Python request \`~/.asdf/shims/python\` from explicit request
+DEBUG Checking for Python environment at: \`.venv\`
+DEBUG The project environment's Python version does not satisfy the request: \`path \`~/.asdf/shims/python\`\`
+DEBUG Checking for Python interpreter at path \`~/.asdf/shims/python\`
+Using CPython 3.13.5 interpreter at: ~/.asdf/installs/python/3.13.5/bin/python
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+</code></pre>
+<p>The issue is clear: uv is comparing <strong>paths</strong> rather than resolving shims to their actual interpreter and comparing <strong>versions</strong>.</p>
+<h2>Expected Behavior</h2>
+<p><code>uv</code> should resolve the asdf shim to the actual Python interpreter before comparing paths, or compare Python versions rather than paths. The virtual environment should persist across <code>uv run</code> invocations when the Python version is compatible.</p>
+<h2>Additional Context</h2>
+<ul>
+<li>This issue is similar to #14884, but occurs even <strong>without</strong> <code>.python-version</code> file</li>
+<li>The <code>pyproject.toml</code> has <code>requires-python = &quot;&gt;=3.13.5&quot;</code></li>
+<li>The venv's <code>pyvenv.cfg</code> correctly points to the actual interpreter</li>
+<li>Direct venv usage (<code>.venv/bin/python</code>) works fine</li>
+<li>The issue affects all <code>uv run</code> commands, adding ~250ms overhead per invocation</li>
+</ul>
+<h2>Workaround</h2>
+<p>Setting <code>UV_PYTHON</code> to the actual interpreter path works but is impractical:</p>
+<pre><code class="language-bash">export UV_PYTHON=~/.asdf/installs/python/3.13.5/bin/python
+uv run python --version  # Now works without rebuilding
+</code></pre>
+<p>However, this is not a proper solution as:</p>
+<ul>
+<li>It's machine-specific (breaks on different machines)</li>
+<li>It breaks when upgrading Python versions</li>
+<li>It requires maintaining environment variables per project</li>
+</ul>
+<h2>Platform</h2>
+<p>macOS 14.6 (Darwin 24.6.0) arm64</p>
+<h2>Version</h2>
+<p>uv 0.9.4 (Homebrew 2025-10-18)</p>
+<h2>Python Version</h2>
+<p>Python 3.13.5 (managed by asdf 0.18.0)</p>
+<h2>Configuration Files</h2>
+<p><strong>pyproject.toml:</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;test-project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13.5&quot;
+dependencies = []
+</code></pre>
+<p><strong>Shell environment:</strong></p>
+<pre><code class="language-bash">$ which python
+~/.asdf/shims/python
+
+$ python --version
+Python 3.13.5
+
+$ asdf which python
+~/.asdf/installs/python/3.13.5/bin/python
+</code></pre>
+<p><strong>After venv creation - pyvenv.cfg:</strong></p>
+<pre><code class="language-ini">home = ~/.asdf/installs/python/3.13.5/bin
+implementation = CPython
+uv = 0.9.4
+version_info = 3.13.5
+include-system-site-packages = false
+</code></pre>
+<h2>Suggested Fix</h2>
+<p><code>uv</code> should:</p>
+<ol>
+<li>Resolve shims/symlinks to actual interpreter paths before comparison</li>
+<li>Compare Python versions (semantic versioning) rather than exact paths</li>
+<li>Consider a venv valid if the Python version satisfies <code>requires-python</code>, regardless of interpreter path</li>
+</ol>
+<p>This would make <code>uv</code> work seamlessly with version managers like <code>asdf</code>, <code>pyenv</code>, <code>mise</code>, etc., which all use shim-based approaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joelleibow">@joelleibow</a> on 2025-10-19 22:10</div>
+            <div class="timeline-body"><h2>Resolution: User Error</h2>
+<p>We've identified the root cause - this was <strong>not a bug in uv</strong>, but rather an environment configuration issue on my end.</p>
+<p><strong>Root Cause:</strong></p>
+<ul>
+<li><code>UV_PYTHON=/Users/joelleibow/.asdf/shims/python</code> was set in my <code>.zshrc</code></li>
+<li>This caused uv to recreate the virtual environment on every invocation</li>
+</ul>
+<p><strong>The Fix:</strong></p>
+<ol>
+<li>Removed the <code>UV_PYTHON</code> export from <code>.zshrc</code></li>
+<li>Restarted VS Code to pick up the clean environment</li>
+<li>Now uv uses its default Python resolution and doesn't recreate <code>.venv</code></li>
+</ol>
+<p><strong>Verification:</strong>
+After the fix, running <code>uv run</code> commands no longer shows:</p>
+<pre><code>Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Installed 133 packages in XXXms
+</code></pre>
+<p>The <code>.venv</code> directory now persists correctly across invocations.</p>
+<p>Apologies for the noise - closing this issue as it was a configuration error on my side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @joelleibow on 2025-10-19 22:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

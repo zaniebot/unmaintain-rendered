@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prerelease versions shouldn't satisfy release versions - astral-sh/uv #16608</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prerelease versions shouldn't satisfy release versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16608">#16608</a>
+        opened by <a href="https://github.com/flofriday">@flofriday</a>
+        on 2025-11-06 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/flofriday">@flofriday</a> on 2025-11-06 10:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is more a discussion and I do understand that there will be tricky tradeoffs.</p>
+<h2>Problem</h2>
+<p>Yesterday a coworker ran my uv project on their machine but crashed with a Segfault (when invoking the bindings to openssl via the cryptography package) when running it. We both are on the same OS, same openssl version, same uv version. Since we also specified the Python version in the project (to <code>&gt;=3.14.0</code>) we didn't think of checking that until very late.</p>
+<p>As it turns out they were on <code>3.14.0a5</code> which I assume has a bug causing the segfault, which is fine and expected for a alpha version eight months before the official release.</p>
+<p>What I think is unexpected is that <code>uv</code> allows <code>3.14.0a5</code> to satisfy the requirement <code>3.14.0</code> as technically I would say that <code>3.14.0a5</code> &lt; <code>3.14.0</code>. For example in 3.14.0 we have free threading support which that alpha doesn't contain.</p>
+<h2>Solution Suggestion 1 - Explicit Opt in</h2>
+<p>In general I would assume that most developers don't intend to use pre release versions of python without explicit opt-in.</p>
+<p>For this we could add explicit flags to pyproject.toml  and the CLI to allow uv to use pre-release versions.</p>
+<p>The problem with that is that it would break behavior so it would make sense to only apply this change for the upcoming python 3.16.x and later.</p>
+<h2>Solution Suggestion 2 - Automatic upgrade to stable</h2>
+<p>Once a stable version of 3.xx.yy is released uv automatically upgrades to that if only a pre-release version of 3.xx.yy is currently available.</p>
+<p>Again this would break backbackwards compatibility but I think we could implement this for 3.15 and onward.</p>
+<h2>Solution Suggestion 3 - Add a warning</h2>
+<p>Maybe we should always print a warning if uv uses a pre-release version of python, urging the user to upgrade.</p>
+<h2>Conclusion</h2>
+<p>Maybe I'm missing something but this has happened to me twice now and I do think we can do better here. However, as a PL nerd I'm really happy that it's that easy to try out new (unstable) python versions with uv :)</p>
+<h3>Platform</h3>
+<p>Darwin 25.1.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @flofriday on 2025-11-06 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 12:54</div>
+            <div class="timeline-body"><p>We only allow pre-release versions to satisfy the release version if it's the only version we can find.</p>
+<p>I think for <code>requires-python = &quot;&gt;=3.14.0&quot;</code>, we must allow pre-release versions to satisfy that request in order for people to be able to test the pre-releases. (i.e., you can't update this value in third-party packages)</p>
+<p>I agree it'd be great to automatically upgrade or hint to upgrade once the stable version is available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-06 16:13</div>
+            <div class="timeline-body"><p>You can find some more discussion fo this in https://discuss.python.org/t/requires-python-and-pre-release-python-versions/62959. Basically, requires-python shouldn't actually be a PEP version specifier, but a Python API level which is <code>{major}.{minor}</code>, and the mismatch between those two causes the confusing interface. (And we already ignore version parts that CPython may add that are not PEP 440)</p>
+<blockquote>
+<p>I agree it'd be great to automatically upgrade or hint to upgrade once the stable version is available.</p>
+</blockquote>
+<p>+1 for printing a hint if you're on a prerelease but a stable version is available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-11-06 16:26</div>
+            <div class="timeline-body"><p>My current thinking is the semantics of requires Python should just act on the Python API level provided and ignore the pre release and patch part.</p>
+<p>But that tools have a lot of descretion, such as using the current interpreter version to warn that users they are on an old version of CPython.</p>
+<p>I'll try and get a pre-PEP out this year.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 16:48</div>
+            <div class="timeline-body"><p>Tracking this in https://github.com/astral-sh/uv/issues/16616</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-06 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flofriday">@flofriday</a> on 2025-11-07 11:38</div>
+            <div class="timeline-body"><p>@notatallshaw I think I do agree but I just don't think pre-release versions (especially the alphas) don't satisfy the API level. For example in October &quot;3.15.0a1&quot; was released but at the moment it's too early in the release cycle and nobody can say what will eventually land in the &quot;3.15.0&quot;.</p>
+<p>So I don't see how CPython &quot;3.15.0a1&quot; could satisfy Python API level &quot;3.15.0&quot;. Since new features could land in the release that aren't available in the first alpha.</p>
+<p>Is that also what you meant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-11-07 15:02</div>
+            <div class="timeline-body"><p>@flofriday The intent of <code>requires-python</code>, as you can read in the link @konstin is to be about the language version, not the interpreter version. The language versions have no alpha, beta, release candidate, or bug fix versions, they simply go: 3.12, 3.13, 3.14, 3.15, 3.16 etc. On the language side it is either 3.14 or 3.15.</p>
+<p>Further I would disagree that if someone wrote <code>&gt;=3.15</code> and only CPython <code>3.15.0a1</code> is currently available they meant anything else, packages authors do exactly this to test against the new pre-releases of CPython. This also matches pip's current behavior which only takes the major, minor, and patch version components from the CPython version and ignores the pre-release component, so for pip <code>&gt;=3.15</code> matches <code>3.15.0a1</code> for CPython versions (not for Python packages though).</p>
+<p>That said, for tools that have the ability to install Python or select from multiple versions of Python, if a user selects <code>&gt;=3.14</code> and only  <code>3.15.0a1</code> is available then I think there should be a clear warning message. Or if they select  <code>&gt;=3.15</code> and <code>3.15.0a1</code> is available locally but newer versions are available remotely I think there should be a clear warning message. But when those warning messages trigger exactly I think should be the prerogative of the tool, like uv, to decide what makes sense for their users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16984.html">astral-sh/uv#16984</a> on 2025-12-04 18:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

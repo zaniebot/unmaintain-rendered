@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable Arg::env also for options which do not take value - clap-rs/clap #1476</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable Arg::env also for options which do not take value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1476">#1476</a>
+        opened by <a href="https://github.com/izderadicka">@izderadicka</a>
+        on 2019-05-22 12:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/izderadicka">@izderadicka</a> on 2019-05-22 12:52</div>
+            <div class="timeline-body"><h3>Affected Version of clap</h3>
+<p>2.33.0</p>
+<h3>Feature Request Summary</h3>
+<p>It would nice if Arg::env would work also for argument that do not take value. In this case is_present will mean that either:</p>
+<ul>
+<li>Argument is present on command line, or</li>
+<li>There is environment variable, with given name, which is not empty (similar to test -n &quot;$MY_VAR&quot; in shell)</li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<p>Arg::env should not automatically set takes_values (but this is a breaking change, so maybe just leave it as it is).
+If Arg::env has defined related env variable and takes_value is false, then ArgMatches::is_present will be true if argument is present on command line or env variable exists and is not empty.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Currently clap Arg::env works only for arguments which take value - environment value is used as default if argument is not provided on command line. Arg::env also automatically sets takes_value to true automatically, which can lead to bit confusing behavior (if you do not know that Arg::env works <strong>only</strong> for Arguments which takes value (and considering that takes_value = false  is default). See short code example below:</p>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{App,Arg};
+use std::env;
+
+fn main() {
+    env::set_var(&quot;MY_FLAG&quot;, &quot;1&quot;);
+    
+    let matches_not_ok = App::new(&quot;prog&quot;)
+        .arg(Arg::with_name(&quot;flag&quot;)
+            .long(&quot;flag&quot;)
+            .env(&quot;MY_FLAG&quot;)
+            .takes_value(false)
+            )
+        .get_matches_from(vec![
+            &quot;prog&quot;
+        ]);
+        
+    // Not working for argument which does not take value :-(
+     assert!(! matches_not_ok.is_present(&quot;flag&quot;));  
+     
+     let matches_ok = App::new(&quot;prog&quot;)
+        .arg(Arg::with_name(&quot;flag&quot;)
+            .long(&quot;flag&quot;)
+            .takes_value(false) // switching order of takes_value and env
+            .env(&quot;MY_FLAG&quot;)
+            )
+        .get_matches_from(vec![
+            &quot;prog&quot;
+        ]);
+        
+    // And it looks like it's working 
+     assert!(matches_ok.is_present(&quot;flag&quot;));  
+     
+     //but flag will now consumes value, cause env will set takes_value to true behind scenes
+     
+     env::remove_var(&quot;MY_FLAG&quot;);
+     
+     let matches_ok = App::new(&quot;prog&quot;)
+        .arg(Arg::with_name(&quot;pos&quot;))
+        .arg(Arg::with_name(&quot;flag&quot;)
+            .long(&quot;flag&quot;)
+            .takes_value(false) 
+            .env(&quot;MY_FLAG&quot;)
+            )
+        .get_matches_from(vec![
+            &quot;prog&quot;, &quot;--flag&quot;, &quot;pos&quot;
+        ]);
+        
+    // now works as expected, however now flag takes value
+     assert!(matches_ok.is_present(&quot;flag&quot;));  
+     // and pos argument is consumed
+     assert!(! matches_ok.is_present(&quot;pos&quot;));  
+     //by flag
+     assert_eq!( matches_ok.value_of(&quot;flag&quot;), Some(&quot;pos&quot;));
+     
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/305.html">TeXitoi/structopt#305</a> on 2019-12-11 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/318.html">TeXitoi/structopt#318</a> on 2019-12-30 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: environment variable</span> added by @CreepySkeleton on 2020-02-01 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-02-01 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-01 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @CreepySkeleton on 2020-02-01 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-01 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-02-01 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @CreepySkeleton on 2020-02-01 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1362.html">clap-rs/clap#1362</a> on 2020-02-01 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-01 19:00</div>
+            <div class="timeline-body"><p>We don't need to backport this 2.x, so we can remove <code>W: 2.x</code> label.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @CreepySkeleton on 2020-02-02 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/372.html">TeXitoi/structopt#372</a> on 2020-04-09 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-01 10:45</div>
+            <div class="timeline-body"><p>Here's what I propose:</p>
+<ul>
+<li><code>Arg::env</code> no longer implies <code>takes_value(true)</code>. It's up to user to set it.</li>
+<li>If <code>env(&quot;ENV&quot;)</code> IS set:<ul>
+<li>if <code>takes_value(true)</code> IS NOT set (the arg is a flag), than the flag is considered raised if <code>ENV</code> is defined. Its precise value doesn't matter, empty or not, its precise value will not be recorded.</li>
+<li>if <code>takes_value(true)</code> IS set, than <code>ENV</code> behaves just like it does today.</li>
+</ul>
+</li>
+</ul>
+<p>@pksunkara Any objections?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-11 15:08</div>
+            <div class="timeline-body"><p>Agreed. Marking this for 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @pksunkara on 2020-07-11 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-07-11 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @CreepySkeleton by @CreepySkeleton on 2020-07-11 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/428.html">TeXitoi/structopt#428</a> on 2020-09-08 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../meilisearch/meilisearch/issues/958.html">meilisearch/meilisearch#958</a> on 2020-09-08 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-26 07:43</div>
+            <div class="timeline-body"><p>@ldm0 Would you like to take this next?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2020-10-26 07:56</div>
+            <div class="timeline-body"><p>No problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2020-10-26 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2190.html">clap-rs/clap#2190</a> on 2020-10-30 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-11-06 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flavio">@flavio</a> on 2021-05-28 09:40</div>
+            <div class="timeline-body"><p>Is there any chance to get this fix available inside of the v2 branch? I can take care of the backport if you are fine with this idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-28 09:42</div>
+            <div class="timeline-body"><p>Unfortunately no, we are accepting only security patches to v2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kubewarden/policy-server/pulls/115.html">kubewarden/policy-server#115</a> on 2021-10-25 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Concordium/concordium-node/issues/233.html">Concordium/concordium-node#233</a> on 2022-01-01 16:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:59 UTC
+    </footer>
+</body>
+</html>

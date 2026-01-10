@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand aliases not included in completion scripts - clap-rs/clap #4265</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand aliases not included in completion scripts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4265">#4265</a>
+        opened by <a href="https://github.com/martinvonz">@martinvonz</a>
+        on 2022-09-26 21:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/martinvonz">@martinvonz</a> on 2022-09-26 21:39</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.63.0</p>
+<h3>Clap Version</h3>
+<p>3.2.22</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::io::{stdout, Write};
+use clap;
+use clap::CommandFactory;
+
+#[derive(clap::Parser, Clone, Debug)]
+enum App {
+    #[clap(alias = &quot;bar&quot;)]
+    Foo(FooArgs),
+}
+
+#[derive(clap::Args, Clone, Debug)]
+struct FooArgs {
+    my_flag: bool,
+}
+
+fn main() {
+    let mut app = App::command().disable_help_flag(true).disable_help_subcommand(true);
+    let mut buf = vec![];
+    clap_complete::generate(clap_complete::Shell::Bash, &amp;mut app, &quot;test&quot;, &amp;mut buf);
+    stdout().write_all(&amp;mut buf).unwrap();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the program to print out a completion script for Bash</p>
+<h3>Actual Behaviour</h3>
+<p>Sourcing the completion script and then running <code>test &lt;TAB&gt;</code> will not suggest <code>bar</code> and <code>test bar &lt;TAB&gt;</code> will not suggest <code>--my-flag</code>.</p>
+<h3>Expected Behaviour</h3>
+<p><code>test bar &lt;TAB&gt;</code> should suggest <code>--my-flag</code>. I'm not sure if I think <code>test &lt;TAB&gt;</code> should suggest both <code>foo</code> and <code>bar</code>; perhaps the current behavior of not suggesting aliases is best?</p>
+<p>The same bug exists in the Fish completion script. I haven't tried others (or checked the code).</p>
+<p>I actually noticed the bug because my tool has <code>jj log</code> command and a <code>jj operation/op log</code> command, and I ran <code>jj op log &lt;TAB&gt;</code>, which suggested arguments that are for <code>jj log</code>. That's because the <code>op</code> (an alias for <code>operation</code>) is ignored and completion is run for <code>jj log</code> instead.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @martinvonz on 2022-09-26 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-26 22:02</div>
+            <div class="timeline-body"><p><code>alias</code> is hidden in <code>--help</code> and you need <code>visible_alias</code> to show up in <code>--help</code>.</p>
+<p>We've had some back and forth on whether things that are hidden from help should show up in completions</p>
+<ul>
+<li>https://github.com/clap-rs/clap/issues/2541</li>
+<li>https://github.com/clap-rs/clap/issues/1335</li>
+</ul>
+<p>When we resolve https://github.com/clap-rs/clap/issues/3166, my thought is to handle this according to https://github.com/clap-rs/clap/issues/3951</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinvonz">@martinvonz</a> on 2022-09-26 23:21</div>
+            <div class="timeline-body"><blockquote>
+<p><code>alias</code> is hidden in <code>--help</code> and you need <code>visible_alias</code> to show up in <code>--help</code>.</p>
+</blockquote>
+<p>That makes sense, but it doesn't seem to affect the completion script.</p>
+<p>Are you open to a PR to add visible aliases to the completion scripts if I can figure out how?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-27 01:02</div>
+            <div class="timeline-body"><p>Yes</p>
+<p>Supports visible aliases:</p>
+<ul>
+<li>zsh: https://github.com/clap-rs/clap/blob/master/clap_complete/src/shells/zsh.rs#L170</li>
+</ul>
+<p>Doesn't</p>
+<ul>
+<li>bash: https://github.com/clap-rs/clap/blob/master/clap_complete/src/shells/bash.rs#L104</li>
+<li>elvish: https://github.com/clap-rs/clap/blob/master/clap_complete/src/shells/elvish.rs#L122</li>
+<li>fish: https://github.com/clap-rs/clap/blob/master/clap_complete/src/shells/fish.rs#L135</li>
+<li>powershell: https://github.com/clap-rs/clap/blob/master/clap_complete/src/shells/powershell.rs#L151</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-09-28 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-09-28 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-09-28 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinvonz">@martinvonz</a> on 2022-09-28 16:45</div>
+            <div class="timeline-body"><p>I've noticed a few other bugs while working on this. Do you prefer that I file separate bugs for those? Looking at past release notes, it doesn't look like you require a bug for each fix, but I don't mind creating them if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-28 16:50</div>
+            <div class="timeline-body"><p>Separate issues are good in case</p>
+<ul>
+<li>There is discussion around the requirements (I prefer PRs to be focused on the implementation)</li>
+<li>In case not all of them get resolved together</li>
+</ul>
+<p>I would at least ask for separate commits for each one.  If a change is likely to have more discussion, having that in a separate PR helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4273.html">clap-rs/clap#4273</a> on 2022-09-28 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4284.html">clap-rs/clap#4284</a> on 2022-09-29 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4289.html">clap-rs/clap#4289</a> on 2022-09-29 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ouch-org/ouch/issues/357.html">ouch-org/ouch#357</a> on 2023-02-03 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T0mstone">@T0mstone</a> on 2023-10-31 16:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Supports visible aliases:</p>
+<ul>
+<li>zsh: https://github.com/clap-rs/clap/blob/master/clap_complete/src/shells/zsh.rs#L170</li>
+</ul>
+</blockquote>
+<p>Although the zsh completion supports listing the aliases for <code>test &lt;TAB&gt;</code>, there is currently still the bug with <code>test bar &lt;TAB&gt;</code> not suggesting <code>--my-flag</code> (or anything else, for that matter).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../typst/typst/issues/3281.html">typst/typst#3281</a> on 2024-01-27 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/issues/2947.html">jj-vcs/jj#2947</a> on 2024-02-05 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5243.html">clap-rs/clap#5243</a> on 2024-03-21 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5412.html">clap-rs/clap#5412</a> on 2024-03-21 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5476.html">clap-rs/clap#5476</a> on 2024-04-27 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-06-06 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/4811.html">jj-vcs/jj#4811</a> on 2024-11-10 09:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tree-sitter/tree-sitter/pulls/4005.html">tree-sitter/tree-sitter#4005</a> on 2024-12-15 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:10 UTC
+    </footer>
+</body>
+</html>

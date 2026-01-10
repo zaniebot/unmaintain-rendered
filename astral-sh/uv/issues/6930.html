@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add documentation for type stub packages and mypy invocation - astral-sh/uv #6930</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add documentation for type stub packages and mypy invocation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6930">#6930</a>
+        opened by <a href="https://github.com/KDruzhkin">@KDruzhkin</a>
+        on 2024-09-02 09:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-09-02 09:02</div>
+            <div class="timeline-body"><p>Type stubs can be provided in separate packages. For example, a package <code>foo</code> has a companion package <code>types-foo</code> or <code>foo-stubs</code>.</p>
+<p>With poetry, a typical <em>pyproject.toml</em> file looks like this:</p>
+<pre><code class="language-toml">[tool.poetry.dependencies]
+pandas = &quot;&gt;=2.2.2&quot;
+psutil = &quot;&gt;=6.0.0&quot;
+tqdm = &quot;^4.66.0&quot;
+
+[tool.poetry.group.dev.dependencies]
+mypy = &quot;&gt;=1.10.0&quot;
+pandas-stubs = &quot;&gt;=2.2.2&quot;
+types-psutil = &quot;&gt;=6.0.0&quot;
+types-tqdm = &quot;&gt;=4.66.0&quot;
+</code></pre>
+<p>So, with poetry, the development virtual environment contains both <code>mypy</code> and the stub packages (used by <code>mypy</code> to check the project).</p>
+<p>How should I handle stub packages with <code>uv</code>? Do they belong in the tool environment for <code>mypy</code>? If yes, how do I put them there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-09-02 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 17:16</div>
+            <div class="timeline-body"><p>Good question, we can document this. In general MyPy and the type stubs should all be in <code>[tool.uv.dev-dependencies]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-02 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-09-03 07:45</div>
+            <div class="timeline-body"><p>So, <code>mypy</code> is different from most other tools: it does not work well in isolation.</p>
+<p>To be precise, <em>if</em> you want <code>mypy</code> to follow imports:</p>
+<pre><code class="language-toml">[tool.mypy]
+follow_imports = &quot;normal&quot;
+</code></pre>
+<p>... then <code>uv tool run mypy</code> is not the way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-03 17:35</div>
+            <div class="timeline-body"><p>Yeah this is explicitly noted at https://docs.astral.sh/uv/concepts/tools/#relationship-to-uv-run — do we need to provide more context somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-09-04 14:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah this is explicitly noted at https://docs.astral.sh/uv/concepts/tools/#relationship-to-uv-run — do we need to provide more context somewhere?</p>
+</blockquote>
+<p>For any other tool, I would say, no.</p>
+<p>But <code>mypy</code> is not <em>a</em> tool among many, it is <em>the</em> tool for type checking, and it deserves a section of its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 14:53</div>
+            <div class="timeline-body"><p>We do literally mention <code>mypy</code> there though. I'm not quite sure a section that says &quot;mypy is a dev dependency&quot; makes sense for the project documentation. Maybe we could do an integration guide for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-09-04 15:05</div>
+            <div class="timeline-body"><p>Hmm…</p>
+<p>It would be nice if <a href="https://docs.astral.sh/uv/concepts/tools/">the tools section</a> <em>started</em> with something like:</p>
+<p>“… there are two general categories of tools: 1) tools which work in isolation, e.g. <code>ruff</code>, and 2) tools which require access the development environment, e.g. <code>mypy</code>, <code>pytest</code>. For the first category <code>uv</code> includes a dedicated interface…”</p>
+<p>Yes, the docs say just so, but they say it at the <em>end</em> of the section, under the subtle “Relationship to uv run”.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-09-04 15:06</div>
+            <div class="timeline-body"><p>Anyway, thanks for your fantastic work on <code>ruff</code> and <code>uv</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-04 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 15:09</div>
+            <div class="timeline-body"><p>That makes sense, I think. I will look into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgarron">@lgarron</a> on 2024-11-19 12:10</div>
+            <div class="timeline-body"><p>I was also very, very confused by this. Right now, the documentation gives me the expectation that I can run:</p>
+<pre><code class="language-shell">uv tool install mypy # optional
+uv tool run mypy .
+</code></pre>
+<p>This tells you to run <code>mypy --install-types</code>, which works but does nothing.</p>
+<p>But it seems I need to run:</p>
+<pre><code class="language-shell">uv add --dev mypy
+uv tool run mypy .
+</code></pre>
+<p>It would be really nice for the documentation to spell this out, and to explicitly mention this for <code>mypy</code>.</p>
+<p>(Even greater would be if <code>uv</code> could somehow abstract this kind of unhermetic ickiness and add a mechanism for <code>uv tool run mypy .</code> to work. At this point, I'd be happy even if it's just a hack for <code>mypy</code> explicitly. A caution message to the effect of &quot;hey, we're running an abstraction layer to do what you probably do want, here's a link if you want the gnarly deets&quot; would be more than enough for me. I'd much rather have my tools do the right things out of the box to contain <code>mypy</code>'s abstraction leakage, than to keep track of ecosystem quirks by hand. 😅)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "type stub packages (a documentation request)" to "Add documentation for type stub packages and mypy invocation" by @zanieb on 2025-01-07 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 20:16</div>
+            <div class="timeline-body"><p>I think we could add a mypy integration guide that covers proper usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-09-22 10:20</div>
+            <div class="timeline-body"><p>Side note: there's also https://docs.astral.sh/uv/guides/tools/#requesting-extras with uses examples like</p>
+<blockquote>
+<pre><code>uvx --from 'mypy[faster-cache,reports]' mypy --xml-report mypy_report
+</code></pre>
+</blockquote>
+<p>I get that it's just an example, but people like to copy examples and that will lead to them ending up with using <code>uvx</code> for invoking <code>mypy</code> exactly as not recommended.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:37 UTC
+    </footer>
+</body>
+</html>

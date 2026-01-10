@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Less concise simplification of markers in uv 0.2.35 - astral-sh/uv #6295</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Less concise simplification of markers in uv 0.2.35</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6295">#6295</a>
+        opened by <a href="https://github.com/A5rocks">@A5rocks</a>
+        on 2024-08-21 02:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/A5rocks">@A5rocks</a> on 2024-08-21 02:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Noticed in https://github.com/python-trio/trio/pull/3068, I haven't tried to get a smaller case. The command is <code>uv pip compile --universal --python-version=3.8 test-requirements.in -o test-requirements.txt</code>. Platform is Ubuntu, <code>uv</code> is version 0.3.0 but we didn't run <code>uv --version</code>.</p>
+<p>uv 0.3.0 tries to make this change:</p>
+<pre><code class="language-diff">-colorama==0.4.6 ; sys_platform == 'win32' or (implementation_name == 'cpython' and platform_system == 'Windows')
++colorama==0.4.6 ; (implementation_name != 'cpython' and sys_platform == 'win32') or (platform_system != 'Windows' and sys_platform == 'win32') or (implementation_name == 'cpython' and platform_system == 'Windows')
+</code></pre>
+<p>This might mean https://github.com/astral-sh/uv/pull/5898 doesn't simplify in this case as well. Maybe it's missing some necessary case?</p>
+<p>Why is <code>(implementation_name != 'cpython' and sys_platform == 'win32') or (platform_system != 'Windows' and sys_platform == 'win32') or (implementation_name == 'cpython' and platform_system == 'Windows')</code> equivalent? (just to show the previous result wasn't just a bug and since it was a bit confusing to me)</p>
+<p>| markers | why is this equivalent |
+|--------|--------|
+| <code>(implementation_name != 'cpython' and sys_platform == 'win32') or (platform_system != 'Windows' and sys_platform == 'win32') or (implementation_name == 'cpython' and platform_system == 'Windows')</code> | its what we start with |
+| <code>(sys_platform == 'win32' and (implementation_name != 'cpython' or platform_system != 'Windows')) or (implementation_name == 'cpython' and platform_system == 'Windows')</code> | distribution |
+| <code>((implementation_name == 'cpython' and platform_system == 'Windows') or (sys_platform == 'win32')) and ((implementation_name == 'cpython' and platform_system == 'Windows') or (implementation_name != 'cpython' or platform_system != 'Windows'))</code> | distribution |
+| <code>((implementation_name == 'cpython' and platform_system == 'Windows') or (sys_platform == 'win32')) and ((implementation_name == 'cpython' and platform_system == 'Windows') or NOT (implementation_name == 'cpython' and platform_system == 'Windows'))</code> | demorgan's law |
+| <code>((implementation_name == 'cpython' and platform_system == 'Windows') or (sys_platform == 'win32')) and TRUE</code> | negation |
+| <code>(implementation_name == 'cpython' and platform_system == 'Windows') or (sys_platform == 'win32')</code> | identity |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/A5rocks">@A5rocks</a> on 2024-08-21 02:37</div>
+            <div class="timeline-body"><p>Minimal reproduction:</p>
+<p><code>x.in</code>:</p>
+<pre><code>pytest &gt;= 5.0
+black; implementation_name == &quot;cpython&quot;
+</code></pre>
+<p>Then run <code>uv pip compile x.in --no-strip-markers</code>. I can reproduce this in 0.2.35 and not in 0.2.34. <code>uv --version</code>: <code>uv 0.2.35 (e097f948c 2024-08-09)</code>, reproducing on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Less concise simplification in uv 0.3.0's pip-compile universal mode" to "Less concise simplification of markers in uv 0.2.35" by @A5rocks on 2024-08-21 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-21 02:39</div>
+            <div class="timeline-body"><p>I believe this is because we simplify to DNF as a normalized representation. In some cases, though, CNF would be more concise. I think this can be merged into https://github.com/astral-sh/uv/issues/5992, but let me know if you disagree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/A5rocks">@A5rocks</a> on 2024-08-21 02:44</div>
+            <div class="timeline-body"><p>I don't think so, because the simpler version only has <code>or</code> at the top level. But maybe that's preventing one of the simplification steps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2024-08-21 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-21 13:46</div>
+            <div class="timeline-body"><p>Here's a comment from our code for DNF simplification:</p>
+<pre><code>/// Simplifies a DNF expression.
+///
+/// A decision diagram is canonical, but only for a given variable order. Depending on the
+/// pre-defined order, the DNF expression produced by a decision tree can still be further
+/// simplified.
+///
+/// For example, the decision diagram for the expression `A or B` will be represented as
+/// `A or (not A and B)` or `B or (not B and A)`, depending on the variable order. In both
+/// cases, the negation in the second clause is redundant.
+///
+/// Completely simplifying a DNF expression is NP-hard and amounts to the set cover problem.
+/// Additionally, marker expressions can contain complex expressions involving version ranges
+/// that are not trivial to simplify. Instead, we choose to simplify at the boolean variable
+/// level without any truth table expansion. Combined with the normalization applied by decision
+/// trees, this seems to be sufficient in practice.
+///
+/// Note: This function has quadratic time complexity. However, it is not applied on every marker
+/// operation, only to user facing output, which are typically very simple.
+</code></pre>
+<p>The main issue here is that DNF on its own isn't actually unique. And full simplification might not be feasible. But I think this might require more investigation. But I think this can be safely folded into #5992, which is, I think, the same problem that is reported here: the marker is correct but not as simple as it could be.</p>
+<p>It is really important though that we have something approach a canonical representation for markers, otherwise the lock file might not be stable. This may come at the cost of concise markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2024-08-21 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-21 13:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

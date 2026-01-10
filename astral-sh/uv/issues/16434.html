@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`requires-python` comparison in `uv python find` rejects 3.13t - astral-sh/uv #16434</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`requires-python` comparison in `uv python find` rejects 3.13t</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16434">#16434</a>
+        opened by <a href="https://github.com/lmmx">@lmmx</a>
+        on 2025-10-24 09:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-24 09:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<ul>
+<li>Opening this as a more specific version of #16428 which should be easier to repro</li>
+</ul>
+<p>The bug appears to stem from the handling of <code>PythonVariant::Default</code> <a href="https://github.com/astral-sh/uv/blob/17181fef07326707ca6921aba28d1dbdd1e6ce83/crates/uv-python/src/discovery.rs#L1669-L1689">in <code>uv-python</code>'s discovery module</a> rejecting interpreters where <code>interpreter.gil_disabled()</code> is true (free-threaded builds like 3.13t), even though the version number satisfies the <code>requires-python</code> range.</p>
+<p>The skip is within a parent routine that emits this line</p>
+<blockquote>
+<p>DEBUG Using Python request <code>&gt;=3.12</code> from <code>requires-python</code> metadata</p>
+</blockquote>
+<p>I think it ought be considered a bug if <code>uv python find</code> accepts 3.13t but not if <code>requires-python</code> (with a <em>version</em> specifier) rejects based on the <em>variant</em> specifier. That is, the behaviour is not rejecting 3.13t outright as experimental but only when filtered as being above some lower version (which is surely illogical).</p>
+<h2>Solution: treat requires-python parsing differently?</h2>
+<p>I was initially not sure whether there is anything to be actioned here as the comment says it is intentional, but on reading more closely I supect that the comment is referring to the separate scenario of <em>creating</em> a Python venv rather than selecting from available ones?</p>
+<p>https://github.com/astral-sh/uv/blob/17181fef07326707ca6921aba28d1dbdd1e6ce83/crates/uv-python/src/discovery.rs#L1680-L1681</p>
+<p>I would defer to @zanieb's judgement (thanks for initial triage!).</p>
+<p>I don't see a way to opt in here though is the problem for me, to say that free-threading is accepted</p>
+<p>There is no <code>uv python find</code> flag that would let me &quot;opt in&quot; to free threading explicitly (it is in CI and just being picked up automatically from the uv python version env var after the setup-uv action creates it from the matrix string &quot;3.13t&quot;)</p>
+<p>I asked Claude if the comment here means it is intended behaviour and it suggests that this behaviour should not apply when parsing requires-python (as opposed to <code>--python</code>), i.e. when a user is trying to get a new version of python, not when checking whether to use or skip the available versions available on the PATH</p>
+<details>
+<summary>Click to show Claude review of what should be done here</summary>
+
+<blockquote>
+<p>Let me re-read that comment more carefully:</p>
+<pre><code class="language-rust">fn matches_interpreter(self, interpreter: &amp;Interpreter) -&gt; bool {
+    match self {
+        Self::Default =&gt; {
+            if (interpreter.python_major(), interpreter.python_minor()) &gt;= (3, 14) {
+                // For Python 3.14+, the free-threaded build is not considered experimental
+                // and can satisfy the default variant without opt-in
+                true
+            } else {
+                // In Python 3.13 and earlier, the free-threaded build is considered
+                // experimental and requires explicit opt-in
+                !interpreter.gil_disabled()
+            }
+        }
+</code></pre>
+<p>So the code is <strong>intentionally</strong> rejecting free-threaded Python 3.13 without explicit opt-in. The comment says &quot;requires explicit opt-in&quot; for 3.13t.</p>
+<p>But here's the bug: <strong>This policy is being applied to <code>requires-python</code> constraints, which is wrong.</strong></p>
+<p>The issue is that <code>requires-python = &quot;&gt;=3.12&quot;</code> gets parsed as a <code>Range</code> with <code>PythonVariant::Default</code>. This is semantically saying &quot;I need Python &gt;= 3.12 with the default (non-free-threaded) variant.&quot;</p>
+<p>But <code>requires-python</code> in a <code>pyproject.toml</code> is meant to specify the <strong>minimum Python version</strong>, not the variant. It's a <strong>version constraint</strong>, not a <strong>variant constraint</strong>.</p>
+<p>The bug is that when parsing a version range from <code>requires-python</code>, it shouldn't be attaching <code>PythonVariant::Default</code> to it. Looking at the parsing code:</p>
+<pre><code class="language-rust">fn parse_version_specifiers_request(
+    s: &amp;str,
+    variant: PythonVariant,
+) -&gt; Result&lt;VersionRequest, Error&gt; {
+    let Ok(specifiers) = VersionSpecifiers::from_str(s) else {
+        return Err(Error::InvalidVersionRequest(s.to_string()));
+    };
+    if specifiers.is_empty() {
+        return Err(Error::InvalidVersionRequest(s.to_string()));
+    }
+    Ok(VersionRequest::Range(specifiers, variant))
+}
+</code></pre>
+<p>The <code>variant</code> parameter comes from the earlier parsing which defaults to <code>PythonVariant::Default</code> when no variant suffix is present.</p>
+<p><strong>The real bug</strong>: When <code>requires-python</code> metadata is used (not a user <code>--python</code> flag), the version request should probably use a variant that accepts any variant for version-only constraints. The source of the version request matters - it should distinguish between &quot;user requested Python 3.12 (default)&quot; vs &quot;project requires Python &gt;= 3.12 (any variant)&quot;.</p>
+</blockquote>
+</details>
+
+<h2>Demo</h2>
+<h3>3.13t</h3>
+<p>Use <code>uv init</code> to create a new project, it will automatically be given a requires-python</p>
+<pre><code class="language-toml">[project]
+name = &quot;nogil&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+</code></pre>
+<p>Then create a venv with</p>
+<pre><code class="language-sh">uv venv --python=3.13t
+</code></pre>
+<p><code>uv python find</code> gives the incorrect location because it rejects the venv python at comparison</p>
+<details>
+<summary>Click to show verbose uv python find logs</summary>
+
+<pre><code>louis 🚶 ~/lab/nogil $ uv python find -vv
+DEBUG uv 0.9.2
+TRACE Checking shared lock for `/home/louis/.cache/uv` at `/home/louis/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/home/louis/.cache/uv`
+DEBUG Found project root: `/home/louis/lab/nogil`
+DEBUG No workspace root found, using project root
+DEBUG No Python version file found in workspace: /home/louis/lab/nogil
+DEBUG Using Python request `&gt;=3.12` from `requires-python` metadata
+DEBUG Searching for Python &gt;=3.12 in virtual environments, managed installations, or search path
+TRACE Found cached interpreter info for Python 3.13.8, skipping query of: .venv/bin/python3
+DEBUG Found `cpython-3.13.8+freethreaded-linux-x86_64-gnu` at `/home/louis/lab/nogil/.venv/bin/python3` (virtual environment)
+DEBUG Skipping interpreter at `.venv/bin/python3` from virtual environment: does not satisfy request `&gt;=3.12`
+DEBUG Searching for managed installations at `/home/louis/.local/share/uv/python`
+TRACE Found `ld` path: /lib64/ld-linux-x86-64.so.2
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help' for more information.\n&quot;
+TRACE Tried to find musl version by running `&quot;/lib64/ld-linux-x86-64.so.2&quot;`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
+TRACE Tried to find libc version from possible symlink at &quot;/lib64/ld-linux-x86-64.so.2&quot;, but failed: Failed to find glibc version in the filename of linker: `/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2`
+TRACE stdout output from `ld.so --version`: &quot;ld.so (Ubuntu GLIBC 2.35-0ubuntu3.8) stable release version 2.35.\nCopyright (C) 2022 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n&quot;
+TRACE Found manylinux 2.35 in stdout of ld.so version
+DEBUG Found managed installation `cpython-3.13.8+freethreaded-linux-x86_64-gnu`
+TRACE Found cached interpreter info for Python 3.13.8, skipping query of: /home/louis/.local/share/uv/python/cpython-3.13.8+freethreaded-linux-x86_64-gnu/bin/python3.13t
+DEBUG Found `cpython-3.13.8+freethreaded-linux-x86_64-gnu` at `/home/louis/.local/share/uv/python/cpython-3.13.8+freethreaded-linux-x86_64-gnu/bin/python3.13t` (managed installations)
+DEBUG Skipping interpreter at `/home/louis/.local/share/uv/python/cpython-3.13.8+freethreaded-linux-x86_64-gnu/bin/python3.13t` from managed installations: does not satisfy request `&gt;=3.12`
+DEBUG Found managed installation `cpython-3.12.6-linux-x86_64-gnu`
+TRACE Found cached interpreter info for Python 3.12.6, skipping query of: /home/louis/.local/share/uv/python/cpython-3.12.6-linux-x86_64-gnu/bin/python3.12
+DEBUG Found `cpython-3.12.6-linux-x86_64-gnu` at `/home/louis/.local/share/uv/python/cpython-3.12.6-linux-x86_64-gnu/bin/python3.12` (managed installations)
+/home/louis/.local/share/uv/python/cpython-3.12.6-linux-x86_64-gnu/bin/python3.12
+DEBUG Released lock at `/home/louis/.cache/uv/.lock`
+</code></pre>
+</details>
+
+<blockquote>
+<p>DEBUG Skipping interpreter at <code>.venv/bin/python3</code> from virtual environment: does not satisfy request <code>&gt;=3.12</code></p>
+</blockquote>
+<blockquote>
+<p>DEBUG Skipping interpreter at <code>/home/louis/.local/share/uv/python/cpython-3.13.8+freethreaded-linux-x86_64-gnu/bin/python3.13t</code> from managed installations: does not satisfy request <code>&gt;=3.12</code></p>
+</blockquote>
+<p>If you make one without a <code>requires-python</code> key</p>
+<pre><code class="language-toml">[project]
+name = &quot;nogil2&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+</code></pre>
+<p>and again <code>uv venv --python=3.13t</code> and <code>uv python find</code> you will now get it</p>
+<pre><code class="language-sh">/home/louis/lab/nogil2/.venv/bin/python3
+</code></pre>
+<details>
+<summary>Click to show verbose uv python find logs</summary>
+
+<pre><code>DEBUG uv 0.9.2
+TRACE Checking shared lock for `/home/louis/.cache/uv` at `/home/louis/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/home/louis/.cache/uv`
+DEBUG Found project root: `/home/louis/lab/nogil2`
+DEBUG No workspace root found, using project root
+DEBUG No Python version file found in workspace: /home/louis/lab/nogil2
+DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
+TRACE Found cached interpreter info for Python 3.13.8, skipping query of: .venv/bin/python3
+DEBUG Found `cpython-3.13.8+freethreaded-linux-x86_64-gnu` at `/home/louis/lab/nogil2/.venv/bin/python3` (virtual environment)
+/home/louis/lab/nogil2/.venv/bin/python3
+DEBUG Released lock at `/home/louis/.cache/uv/.lock`
+</code></pre>
+</details>
+
+<h3>3.14t</h3>
+<p><strong>EDIT</strong> unable to repro, going back to CI repro case to try to isolate what caused that</p>
+<p>I also see this on 3.14t and include the logs here for completeness (and since the code appears to distinguish the 2 scenarios, treating 3.14t as no longer experimental)</p>
+<details>
+<summary>Click to show verbose logs for uv python find</summary>
+
+<p>First with no requires-python:</p>
+<pre><code class="language-toml">[project]
+name = &quot;nogil3&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+</code></pre>
+<p>Without requires-python it is found OK</p>
+<pre><code class="language-sh">louis 🚶 ~/lab/nogil3 $ uv venv --python=3.14t
+Using CPython 3.14.0
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+louis 🚶 ~/lab/nogil3 $ uv python find
+/home/louis/lab/nogil3/.venv/bin/python3
+</code></pre>
+<p>With requires-python added it is... also found</p>
+<pre><code class="language-toml">[project]
+name = &quot;nogil3&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<pre><code>louis 🚶 ~/lab/nogil3 $ uv venv --python=3.14t
+Using CPython 3.14.0
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+louis 🚶 ~/lab/nogil3 $ uv python find
+/home/louis/lab/nogil3/.venv/bin/python3
+</code></pre>
+</details>
+
+<h3>Platform</h3>
+<p>Linux Mint (seen on CI with ubuntu-latest too)</p>
+<h3>Version</h3>
+<p>0.9.2</p>
+<h3>Python version</h3>
+<p>3.13t (also seen on 3.14t)</p>
+<h2>Cause</h2>
+<p>The error about skipping the interpreter is one of 2 files and the part about &quot;does not satisfy request&quot; is unique to <code>crates/uv-python/src/discovery.rs</code> so it must be down to the logic there.</p>
+<details>
+<summary>Click to show AI summary</summary>
+
+<blockquote>
+<p>Note: Claude generated this root cause dissection, I'm reviewing it myself now but posting with full disclosure! I think it gets the wrong idea, I think the comments say quite clearly this is deliberately this way so as discussed above there is nothing to do about this (but I defer to your judgement)</p>
+</blockquote>
+<p>The cause is how <code>VersionRequest</code> matches against interpreters with the <code>PythonVariant</code> handling.</p>
+<ol>
+<li>When <code>requires-python = &quot;&gt;=3.12&quot;</code> is parsed, it becomes a <code>VersionRequest::Range</code> with <code>PythonVariant::Default</code></li>
+<li>The code has a <code>matches_interpreter</code> method that checks if an interpreter satisfies the version request</li>
+<li>For <code>Range</code> variants, it calls <code>variant.matches_interpreter(interpreter)</code></li>
+</ol>
+<p>Here's the bug - in the <code>PythonVariant::matches_interpreter</code> method:</p>
+<p>https://github.com/astral-sh/uv/blob/17181fef07326707ca6921aba28d1dbdd1e6ce83/crates/uv-python/src/discovery.rs#L1669-L1689</p>
+<ul>
+<li><code>requires-python = &quot;&gt;=3.12&quot;</code> creates a <code>Range</code> with <code>PythonVariant::Default</code>.</li>
+<li>For Python 3.13t, <code>interpreter.gil_disabled()</code> returns <code>true</code>, so the condition <code>!interpreter.gil_disabled()</code> returns <code>false</code>, causing the match to fail.</li>
+</ul>
+<p>I suspect this is the design flaw: the code treats free-threaded Python 3.13 as requiring explicit opt-in and rejects it when matching against <code>PythonVariant::Default</code>, even though the version number itself (<code>3.13.8</code>) clearly satisfies <code>&gt;=3.12</code>.</p>
+<p>The problem is then compounded by this logic in <code>matches_interpreter</code>:</p>
+<pre><code class="language-rust">Self::Range(specifiers, variant) =&gt; {
+    // version check logic...
+    specifiers.contains(&amp;version) &amp;&amp; variant.matches_interpreter(interpreter)
+}
+</code></pre>
+<p>Even though <code>3.13.8</code> satisfies <code>&gt;=3.12</code> in the specifiers check, the <code>&amp;&amp; variant.matches_interpreter(interpreter)</code> part fails because the variant is <code>Default</code> and the interpreter is free-threaded.</p>
+<p><strong>The fix should be</strong>: When parsing <code>requires-python</code> without explicit variant markers (like <code>t</code> suffix), it should either:</p>
+<ol>
+<li>Use <code>PythonVariant::Any</code> instead of <code>PythonVariant::Default</code> for range specifiers, OR</li>
+<li>Modify <code>PythonVariant::Default::matches_interpreter</code> to accept free-threaded builds when the version satisfies the requirement (treating the variant as a build detail, not a version constraint)</li>
+</ol>
+<p>The second approach aligns better with PEP 440's treatment of local version identifiers - they shouldn't affect version ordering or specifier satisfaction.</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lmmx on 2025-10-24 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16428.html">astral-sh/uv#16428</a> on 2025-10-24 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`requires-python` comparison in `uv python find` rejects free-threaded CPython versions" to "`requires-python` comparison in `uv python find` rejects 3.13t" by @lmmx on 2025-10-24 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thqq479">@thqq479</a> on 2025-10-30 03:05</div>
+            <div class="timeline-body"><p>same as me
+Skipping interpreter at <code>/usr/local/bin/python3.13t</code> from search path: does not satisfy request <code>&gt;=3.11</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16507.html">astral-sh/uv#16507</a> on 2025-10-30 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thqq479">@thqq479</a> on 2025-10-30 13:52</div>
+            <div class="timeline-body"><p>So, how should we solve this problem? Do you have any suggestions? @charliermarsh @lmmx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-30 14:01</div>
+            <div class="timeline-body"><p>The relevant reviewer here is @zanieb to decide on as far as I know. I did say &quot;no rush&quot; because I worked around it by hardcoding .venv/bin/python in my CI workflow rather than <code>$(uv python find)</code>. I would still like to see it supported.</p>
+<p>The fix would be to not reject the 3.13t variant <strong>in version comparisons</strong> for venv selection, and continue to reject in venv creation.</p>
+<p>Sorry it has left my mental cache, please refer to thread above</p>
+<blockquote>
+<p>the scenario of creating a Python venv rather than selecting between them</p>
+</blockquote>
+<p>The comparison should not reject 3.13t when looking for a Python 3.X (if we already made a 3.13t venv it should be an accepted choice) but when creating a new venv it is fine to not pick it unless explicitly specified</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 13:38</div>
+            <div class="timeline-body"><p>Do I read the original issue correctly, that this works with 3.14t? In that case I think the easiest solution is updating to 3.14t, which unlike 3.13t, doesn't treat the freethreading builds as experimental. The experimental label on it made things a bit odd, because the build does exist, but it also shouldn't be used in regular settings, which the stabilization in 3.14 resolves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2025-12-17 11:54</div>
+            <div class="timeline-body"><p>No it wasn't that I was looking for a free-threaded Python version, it's that I wanted to test on a matrix of [3,12,3.13,3.14] + [with/without FT] and because <code>uv python find</code> conflates &quot;version not suitable for venv creation&quot; with &quot;version not suitable for venv selection&quot; then there is the incorrect behaviour in the situation where you deliberately opted in to download Python 3.13t but then cannot use it with <code>uv python find</code> (it silently punts on 3.13t and gives you instead the base Python)</p>
+<ul>
+<li>When I say my workaround was &quot;hardcoding&quot; I meant I had to just point to <code>.venv/bin/python</code> as I recall.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

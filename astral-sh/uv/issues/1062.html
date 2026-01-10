@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensure that uv works with `conda` Python distributions - astral-sh/uv #1062</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ensure that uv works with `conda` Python distributions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1062">#1062</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-23 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-23 15:00</div>
+            <div class="timeline-body"><p>This probably already works, but I've never tested it. It's worth testing manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-01-23 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-24 00:35</div>
+            <div class="timeline-body"><p>This isn't polished at all but I threw together some code to download distributions https://github.com/astral-sh/puffin/commit/07d247efd1edebe862551a738d04d62766a41423</p>
+<pre><code>❯ python3.12 scripts/bootstrap install conda@3.11.2
+2024-01-23 18:36:02 INFO Using version metadata from bootstrap/self/versions.json
+2024-01-23 18:36:02 INFO Using system macos-aarch64
+2024-01-23 18:36:02 INFO Searching for compatible Python version conda@3.11.2
+2024-01-23 18:36:02 INFO Downloading conda@3.11.2
+2024-01-23 18:36:03 INFO Verifying hash...
+2024-01-23 18:36:06 INFO Installed to bootstrap/bin/python3.11.2
+❯ bootstrap/bin/python3.11.2 --version
+Python 3.11.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-24 00:52</div>
+            <div class="timeline-body"><p>That looks cool. I mostly want to make sure it works when installed through whatever their recommended method is though, so still worth testing I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-24 02:08</div>
+            <div class="timeline-body"><p>I'm not sure you'll end up with different Python distributions by managing them directly from e.g. <code>conda</code> but yeah we should probably test it. I'm not sure if this is critical to do before release though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-02-01 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 19:25</div>
+            <div class="timeline-body"><p>@konstin - Did you have a chance to look at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-11 19:51</div>
+            <div class="timeline-body"><p>I didn't get to it unfortunately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ensure that Puffin works with `conda` Python distributions" to "Ensure that uv works with `conda` Python distributions" by @zanieb on 2024-02-15 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drewbitt">@drewbitt</a> on 2024-02-15 21:40</div>
+            <div class="timeline-body"><p>Works for me with miniforge installed through brew
+<code>Using Python 3.12.1 interpreter at /opt/homebrew/Caskroom/miniforge/base/bin/python3.12</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-15 21:51</div>
+            <div class="timeline-body"><p>You're awesome, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shughes-uk">@shughes-uk</a> on 2024-02-15 22:05</div>
+            <div class="timeline-body"><p>This might be for a seperate ticket but we ran into this while testing out <code>uv</code> in conda environments.</p>
+<pre><code>uv pip install chardet                                                    (coiled)  ✘ 2
+error: Failed to list installed packages
+  Caused by: Found duplicate package in environment: wheel (/opt/homebrew/Caskroom/mambaforge/base/envs/coiled/lib/python3.11/site-packages/wheel-0.42.0.dist-info vs. /opt/homebrew/Caskroom/mambaforge/base/envs/coiled/lib/python3.11/site-packages/wheel-0.40.0.dist-info)
+</code></pre>
+<p>Duplicate dist-info's are pretty common in our experience with conda. We have to do some shenanigans to figure out what the real installed &quot;active&quot; version is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-15 22:10</div>
+            <div class="timeline-body"><p>That's interesting... We can probably support it, though would need to map out how various operations work. What does <code>pip uninstall wheel</code> do in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shughes-uk">@shughes-uk</a> on 2024-02-15 22:30</div>
+            <div class="timeline-body"><p>It seems to just remove the <code>dist-info</code> of whatever version pip installed.</p>
+<p>Generally this seems to happens when you install a package via pip/conda and then install it again with the other package manager, files don't get cleaned up properly.</p>
+<p>It's not super recommended to mix pip/conda, but every conda user i've met will do this pretty often.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntessore">@ntessore</a> on 2024-02-15 23:02</div>
+            <div class="timeline-body"><p>Not sure if I'm ignorant about a fundamental difference between build isolation in <code>pip</code> and <code>uv pip</code>, but simply trying out <code>uv pip install .</code> on a local project fails where <code>pip install .</code> succeeds. That happens in a conda environment where all dependencies are installed, but <code>uv pip</code> tries to download and build a package that cannot be compiled on my machine (but is installed in the conda env).</p>
+<p>Edit: It looks like uv will try and build a local package against a newer version of a dependency from pip than the one currently installed in the conda environment. <a href="https://github.com/ntessore/uv-conda-test">Reproducer</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-02-20 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1848.html">astral-sh/uv#1848</a> on 2024-02-22 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-31 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-01 14:35</div>
+            <div class="timeline-body"><p>@ntessore fwiw I think that should be resolved by #2596</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Altering editable sources when building a docker image - astral-sh/uv #12681</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Altering editable sources when building a docker image</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12681">#12681</a>
+        opened by <a href="https://github.com/gibsondan">@gibsondan</a>
+        on 2025-04-04 20:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gibsondan">@gibsondan</a> on 2025-04-04 20:32</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm trying to build a Docker image using uv that incorporates other packages from elsewhere in a monorepo, installing them editably. These packages are not part of the Docker context where the build command is being run.</p>
+<p>The way that I would have done this before with pip is pretty gross, but worked:</p>
+<ul>
+<li>Copy in all the packages from elsewhere into the repo into the folder with the Dockerfile</li>
+<li>pip install them all together editably</li>
+</ul>
+<p>I'm struggling to map that pattern onto the Dockerfile in the uv docker example: https://github.com/astral-sh/uv-docker-example which uses uv sync and relies on tool.uv.sources to locate the editable packages.</p>
+<p>Specifically I have a pyproject.toml that looks like this:</p>
+<pre><code>[tool.uv.sources]
+dagster-test = { path = '/Users/dgibson/dagster/python_modules/dagster-test', editable = true }
+dagster-graphql = { path = '/Users/dgibson/dagster/python_modules/dagster-graphql', editable = true }
+</code></pre>
+<p>referencing paths outside of the Docker context.</p>
+<p>The only option I can think of is modifying the contents of the pyproject.toml during the build to reference the new editable location after I copy it into the final folder with the Docker context.</p>
+<p>Curious if this has come up before or if you have any other suggestions on how we might approach this. I could imagine heavy solutions like having different 'profiles' available for tool.uv.sources and being able to switch between them, but that seems like a lot.</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @gibsondan on 2025-04-04 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gibsondan">@gibsondan</a> on 2025-04-04 20:33</div>
+            <div class="timeline-body"><p>Altering the Dockerfile is also entirely fair game here, but ideally it would still be using uv sync under the hood. I wouldn't be opposed to manually passing in a long list of editable overrides to the tool.uv.sources values into the uv sync command, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-04 23:47</div>
+            <div class="timeline-body"><p>Can you use relative paths instead of absolute paths?</p>
+<p>Perhaps you could use a symlinked directory to the absolute paths outside the container then replace the symlink with a real directory with the packages copied in when inside the container?</p>
+<p>Do you still need them to be editable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heathkh-recursion">@heathkh-recursion</a> on 2025-04-18 18:29</div>
+            <div class="timeline-body"><p>I'm also struggling with this.  I was able to use relative paths for tools.uv.sources... and set the docker build context to include them. But I get back to a situation where a code change in the editable packages invalidates the uv sync layer meant to just install remote packages.   Seems we need a way to have uv sync filter down to just install the remote deps in one layer, the local / editable packages in a subsequent layer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-18 18:31</div>
+            <div class="timeline-body"><p>You mean something like <code>--no-install-workspace</code>, but for <code>path</code> sources?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 20:48</div>
+            <div class="timeline-body"><p>If what Charlie suggests, that'd be like https://github.com/astral-sh/uv/issues/12845, e.g., <code>--no-install-source path</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9258.html">astral-sh/uv#9258</a> on 2025-04-23 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13073.html">astral-sh/uv#13073</a> on 2025-04-23 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JuR-0">@JuR-0</a> on 2025-04-28 08:44</div>
+            <div class="timeline-body"><p>Just to be sure I understood what you all said above. As of right now, the only way to build a dockerfile for a project referencing local packages (that are not part of the same workspace), would be to include all of these packages in the docker context when running export --frozen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-28 13:10</div>
+            <div class="timeline-body"><p>No, if you're using <code>--frozen</code>, you don't need to include anything other than the root <code>pyproject.toml</code> and <code>uv.lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JuR-0">@JuR-0</a> on 2025-04-28 15:31</div>
+            <div class="timeline-body"><blockquote>
+<p>No, if you're using <code>--frozen</code>, you don't need to include anything other than the root <code>pyproject.toml</code> and <code>uv.lock</code>.</p>
+</blockquote>
+<p>I was getting an error of distribution not found for the local dependency.
+I solved it by copying the pyproject.toml, lock of all the local dependencies with the same folder structure. Not sure if it's the best though?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

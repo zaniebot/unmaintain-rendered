@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failing `uv build` still creates sdist/wheel - astral-sh/uv #17232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failing `uv build` still creates sdist/wheel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17232">#17232</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2025-12-23 23:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-12-23 23:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>uv build</code>, if the build fails, a distribution is still created under <code>dist</code> directory.</p>
+<h2>Minimal reproducer</h2>
+<p>Create a new directory that only contains the following <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.0.1&quot;
+
+[build-system]
+requires = [&quot;uv_build&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+<pre><code class="language-console">$ uv build
+Building source distribution...
+Error: Expected a Python module at: src/foo/__init__.py
+  × Failed to build `&lt;REDACTED&gt;/foo`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `uv_build.build_sdist` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>The build fails as expected, but an sdist that contains <code>PKG-INFO</code> is still created:</p>
+<pre><code class="language-console">$ tar -tzf dist/foo-0.0.1.tar.gz
+foo-0.0.1/PKG-INFO
+</code></pre>
+<p>A similar thing happens for wheels, where running <code>uv build --wheel</code> will create an empty wheel:</p>
+<pre><code class="language-console">$ uv build --wheel
+Building wheel...
+Error: Expected a Python module at: src/foo/__init__.py
+  × Failed to build `&lt;REDACTED&gt;/foo`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `uv_build.build_wheel` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build environment.
+
+$ unzip -l dist/foo-0.0.1-py3-none-any.whl
+Archive:  dist/foo-0.0.1-py3-none-any.whl
+warning [dist/foo-0.0.1-py3-none-any.whl]:  zipfile is empty
+</code></pre>
+<h2>Expected behaviour</h2>
+<p>No sdist or wheel is created when <code>uv build</code> fails. It's a minor thing TBH, but in a CI, if the return code is not properly handled, it could lead to trying to publish a faulty sdist or wheel to PyPI.</p>
+<h3>Platform</h3>
+<p>macOS 26 arm64</p>
+<h3>Version</h3>
+<p>uv 0.9.18 (Homebrew 2025-12-16)</p>
+<h3>Python version</h3>
+<p>Python 3.14.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mkniewallner on 2025-12-23 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Failing `uv build` still create sdist/wheel" to "Failing `uv build` still creates sdist/wheel" by @mkniewallner on 2025-12-23 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ValdonVitija">@ValdonVitija</a> on 2025-12-25 20:12</div>
+            <div class="timeline-body"><p>Can anyone confirm if this is the 'desired' behavior. If yes, I would give this one a try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bybrooks">@bybrooks</a> on 2025-12-27 11:58</div>
+            <div class="timeline-body"><p>@ValdonVitija</p>
+<p>Hi, I'm looking to make my first OSS contribution and investigated this issue.</p>
+<p><strong>Root Cause Analysis:</strong></p>
+<p>In <code>crates/uv-build-backend/src/source_dist.rs</code> and <code>crates/uv-build-backend/src/wheel.rs</code>, the build process follows these steps:</p>
+<ol>
+<li><code>TarGzWriter::new()</code> / <code>File::create()</code> → Creates the output file <strong>first</strong>（<a href="https://github.com/astral-sh/uv/blob/main/crates/uv-build-backend/src/source_dist.rs#L36">Code</a>）</li>
+<li>Writes PKG-INFO / WHEEL metadata</li>
+<li><code>find_roots()</code> validates the Python module structure ← <strong>Error occurs here</strong></li>
+<li>Writes module files</li>
+</ol>
+<p>The problem is that when an error occurs in step 3, the file created in step 1 is not cleaned up.</p>
+<p><strong>Proposed Fix:</strong></p>
+<p>Add cleanup logic in <code>build_source_dist()</code> and <code>build_wheel()</code> to remove the created file when <code>write_source_dist()</code> / <code>write_wheel()</code> returns an error:</p>
+<pre><code class="language-rs">// Example fix for build_source_dist()
+let writer = TarGzWriter::new(&amp;source_dist_path)?;
+if let Err(err) = write_source_dist(source_tree, writer, uv_version, show_warnings) {
+    let _ = fs_err::remove_file(&amp;source_dist_path);  // Add cleanup
+    return Err(err);
+}The same fix should be applied to `build_wheel()` and `build_editable()`.
+</code></pre>
+<p>If this approach looks good, I'd be happy to submit a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-29 15:46</div>
+            <div class="timeline-body"><p>@bybrooks I believe the more robust approach here would be to use a <a href="https://docs.rs/tempfile/latest/tempfile/struct.NamedTempFile.html">named temporary file</a> and persist it once we're certain we have succeeded in writing it. You will need to use <code>new_in</code> to put it in the right directory (you don't want it in the normal temp location because then you can't atomically rename it (or rename it at all really) if it happens to be on a different filesystem).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17276.html">astral-sh/uv#17276</a> on 2025-12-31 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2026-01-06 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

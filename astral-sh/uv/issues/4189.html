@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Toolchain::find_all` unwrap can panic - astral-sh/uv #4189</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Toolchain::find_all` unwrap can panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4189">#4189</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-06-10 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-06-10 08:04</div>
+            <div class="timeline-body"><p>The following unwrap in toolchain discovery can panic:</p>
+<p>https://github.com/astral-sh/uv/blob/53035d65a14503769c9749e9ce60e4c22a72af1c/crates/uv-toolchain/src/managed.rs#L104</p>
+<pre><code>thread 'seed' panicked at crates/uv-toolchain/src/managed.rs:104:55:
+called `Result::unwrap()` on an `Err` value: NameError(&quot;not enough `-`-separated values&quot;)
+stack backtrace:
+   0: rust_begin_unwind
+   1: core::panicking::panic_fmt
+   2: core::result::unwrap_failed
+   3: uv_toolchain::managed::InstalledToolchains::find_all::{{closure}}
+   4: core::iter::adapters::map::map_try_fold::{{closure}}
+   5: core::iter::traits::double_ended::DoubleEndedIterator::try_rfold
+   6: &lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::double_ended::DoubleEndedIterator&gt;::try_rfold
+   7: &lt;core::iter::adapters::rev::Rev&lt;I&gt; as core::iter::traits::iterator::Iterator&gt;::try_fold
+   8: &lt;core::iter::adapters::filter::Filter&lt;I,P&gt; as core::iter::traits::iterator::Iterator&gt;::try_fold
+   9: core::iter::traits::iterator::Iterator::find
+  10: &lt;core::iter::adapters::filter::Filter&lt;I,P&gt; as core::iter::traits::iterator::Iterator&gt;::next
+  11: &lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::next
+  12: alloc::vec::Vec&lt;T,A&gt;::extend_desugared
+  13: &lt;alloc::vec::Vec&lt;T,A&gt; as alloc::vec::spec_extend::SpecExtend&lt;T,I&gt;&gt;::spec_extend
+  14: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+  15: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter::SpecFromIter&lt;T,I&gt;&gt;::from_iter
+  16: &lt;alloc::vec::Vec&lt;T&gt; as core::iter::traits::collect::FromIterator&lt;T&gt;&gt;::from_iter
+  17: core::iter::traits::iterator::Iterator::collect
+  18: venv::common::python_path_with_versions::{{closure}}::{{closure}}
+  19: core::result::Result&lt;T,E&gt;::map
+  20: venv::common::python_path_with_versions::{{closure}}
+  21: core::ops::function::impls::&lt;impl core::ops::function::FnOnce&lt;A&gt; for &amp;mut F&gt;::call_once
+  22: &lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::next
+  23: &lt;core::iter::adapters::fuse::Fuse&lt;I&gt; as core::iter::adapters::fuse::FuseImpl&lt;I&gt;&gt;::next
+  24: &lt;core::iter::adapters::flatten::FlattenCompat&lt;I,U&gt; as core::iter::traits::iterator::Iterator&gt;::next
+  25: &lt;core::iter::adapters::flatten::FlatMap&lt;I,U,F&gt; as core::iter::traits::iterator::Iterator&gt;::next
+  26: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+  27: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter::SpecFromIter&lt;T,I&gt;&gt;::from_iter
+  28: &lt;alloc::vec::Vec&lt;T&gt; as core::iter::traits::collect::FromIterator&lt;T&gt;&gt;::from_iter
+  29: core::iter::traits::iterator::Iterator::collect
+  30: venv::common::python_path_with_versions
+  31: venv::VenvTestContext::new
+  32: venv::seed
+  33: venv::seed::{{closure}}
+  34: core::ops::function::FnOnce::call_once
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-06-10 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-10 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-10 13:46</div>
+            <div class="timeline-body"><p>I've fixed this already in one of the upcoming pull requests to productionize toolchain management.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4172.html">astral-sh/uv#4172</a> on 2024-06-10 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-10 13:46</div>
+            <div class="timeline-body"><p>Is this panic user-accessible on <code>main</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-10 13:47</div>
+            <div class="timeline-body"><p>(Do we need to fix it prior to today's release?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-10 13:49</div>
+            <div class="timeline-body"><p>I think it's from the downloaded toolchains, so a preview feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-10 14:03</div>
+            <div class="timeline-body"><p>This has been accessible on main for a while now. It's only relevant if you are using managed toolchains and pollute the toolchain directory. I could fix it separately from my stack if you want though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4163.html">astral-sh/uv#4163</a> on 2024-06-10 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-10 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

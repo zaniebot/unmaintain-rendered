@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace wheel file cannot be installed if more than one workspace subpackage dependencies are specified - astral-sh/uv #11587</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace wheel file cannot be installed if more than one workspace subpackage dependencies are specified</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11587">#11587</a>
+        opened by <a href="https://github.com/boccileonardo">@boccileonardo</a>
+        on 2025-02-18 06:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/boccileonardo">@boccileonardo</a> on 2025-02-18 06:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a workspace package, the wheel resulting from uv build can be installed if only one sub-package is defined.
+However, from 2 subpackage workspace dependencies, the wheel dependencies cannot be resolved, failing with error:</p>
+<p>No solution found when resolving dependencies:
+╰─▶ Because packtwo was not found in the package registry and uv-pack==0.1.0 depends on packtwo, we can conclude that
+uv-pack==0.1.0 cannot be used.
+And because only uv-pack==0.1.0 is available and your project depends on uv-pack, we can conclude that your project's
+requirements are unsatisfiable.</p>
+<p>MRE:</p>
+<pre><code>~$ mkdir uv_pack
+~$ cd uv_pack
+~/uv_pack $ uv init --package
+~/uv_pack $ mkdir packages &amp;&amp; mkdir packages/packone &amp;&amp; cd packages/packone
+~/uv_pack/packages/packone $ uv init --package
+~/uv_pack/packages/packone $ cd ../../
+~/uv_pack $ mkdir packages/packtwo &amp;&amp; cd packages/packtwo
+~/uv_pack/packages/packtwo $ uv init --package
+~/uv_pack/packages/packone $ cd ../../
+</code></pre>
+<pre><code>#~uv_pack/pyproject.toml
+...
+dependencies = [
+    &quot;packone&quot;,
+    &quot;packtwo&quot;,
+]
+
+[tool.uv.sources]
+packone = { workspace = true }
+packtwo = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+...
+</code></pre>
+<pre><code>~/uv_pack $ uv build --wheel
+</code></pre>
+<p>The resulting wheel installed in a different env causes the error above, but running this command in the same env produces no errors:
+uv run --with uv_pack --no-project -- python -c &quot;import uv_pack&quot;</p>
+<h3>Platform</h3>
+<p>Ubuntu on WSL</p>
+<h3>Version</h3>
+<p>uv 0.6.1</p>
+<h3>Python version</h3>
+<p>3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @boccileonardo on 2025-02-18 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-18 14:26</div>
+            <div class="timeline-body"><p>The wheel built by <code>uv build</code> does not include <code>tool.uv.sources</code> -- it only includes the standards-based metadata in the <code>[project]</code> table. So if you try to install that built wheel later, you would need to provide the command with some way to understand where it should get <code>packone</code>, <code>packtwo</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-18 14:28</div>
+            <div class="timeline-body"><p>I believe it's a duplicate of https://github.com/astral-sh/uv/issues/10602 which we're tracking in https://github.com/astral-sh/uv/issues/8729.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-18 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-02-18 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/boccileonardo">@boccileonardo</a> on 2025-02-19 13:56</div>
+            <div class="timeline-body"><p>I don't quite understand why it works with just one workspace package though, and not with 2.
+If I understood the linked issue correctly, you would expect workspace packages to never be installed when a wheel is built? This doesn't seem right to me, as I would not see a point of ever building and distributing the top-level package then.</p>
+<p>For this specific case, I just checked again in a clean env that as long as there is only one workspace dependency, it installs just fine:</p>
+<pre><code>leo@5CG2145M95-W10:~/exploration$ uv add uv_pack-0.1.0-py3-none-any.whl
+Resolved 3 packages in 11ms
+Installed 2 packages in 13ms
+ + packone==0.1
+ + uv-pack==0.1.0 (from file:///home/leo/exploration/uv_pack-0.1.0-py3-none-any.whl)
+</code></pre>
+<p>It only fails if the second workspace dependency is added, which is why this seems like a bug to me.</p>
+<pre><code>leo@5CG2145M95-W10:~/exploration$ uv add uv_pack-0.1.0-py3-none-any.whl
+  × No solution found when resolving dependencies:
+  ╰─▶ Because packtwo was not found in the package registry and uv-pack==0.1.0 depends on packtwo, we can conclude that
+      uv-pack==0.1.0 cannot be used.
+      And because only uv-pack==0.1.0 is available and your project depends on uv-pack, we can conclude that your project's
+      requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/boccileonardo">@boccileonardo</a> on 2025-02-19 13:57</div>
+            <div class="timeline-body"><p>Or, if you meant that the installation is expected to fail if one tries to use other installation methods that are not UV, then I understand, but it's then not related to this case, since I'm adding the wheel using uv</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

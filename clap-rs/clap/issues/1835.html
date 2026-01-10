@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environment variable fallback is in fact not a fallback but an additional source for values - clap-rs/clap #1835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Environment variable fallback is in fact not a fallback but an additional source for values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1835">#1835</a>
+        opened by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a>
+        on 2020-04-16 15:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-16 15:10</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closes issues</li>
+</ul>
+<h3>Code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    std::env::set_var(&quot;ENV_VAR&quot;, &quot;val_env&quot;);
+    
+    let m = App::new(&quot;app&quot;)
+        .arg(
+            Arg::with_name(&quot;test&quot;)
+                .env(&quot;ENV_VAR&quot;) 
+                .min_values(0)
+        )
+        .get_matches_from(&amp;[&quot;test&quot;, &quot;val1&quot;, &quot;val2&quot;]);
+    
+    let values =  m.values_of(&quot;test&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;();
+    assert_eq!(values, &amp;[&quot;val1&quot;, &quot;val2&quot;, &quot;val_env&quot;]);
+}
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<p>cargo run</p>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: 1.42</li>
+<li><strong>Clap</strong>: 2.33 and master</li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p>It passes, effectively appending the value from environment to command line values.</p>
+<h3>Expected Behavior Summary</h3>
+<p>It should panic, because the args from the command line must <strong>override</strong> environment variable.</p>
+<h3>Additional context</h3>
+<p>In fact, we don't even need multiple values, <em>this also miraculously passes</em>:</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    std::env::set_var(&quot;ENV_VAR&quot;, &quot;val_env&quot;);
+    
+    let m = App::new(&quot;app&quot;)
+        .arg(
+            Arg::with_name(&quot;test&quot;)
+                .env(&quot;ENV_VAR&quot;)
+        )
+        .get_matches_from(&amp;[&quot;test&quot;, &quot;val1&quot;]);
+        
+    
+    // note: this should return only ONE value because
+    // we didn't specify that it takes multiple values
+    let values = m.values_of(&quot;test&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;();
+    assert_eq!(values, &amp;[&quot;val1&quot;, &quot;val_env&quot;]);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-04-16 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-04-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: environment variable</span> added by @CreepySkeleton on 2020-04-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @CreepySkeleton on 2020-04-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-04-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @CreepySkeleton on 2020-04-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-04-16 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-04-16 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1850.html">clap-rs/clap#1850</a> on 2020-04-22 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-04-22 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-04-22 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kentik/ksynth/pulls/4.html">kentik/ksynth#4</a> on 2022-10-21 00:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:12 UTC
+    </footer>
+</body>
+</html>

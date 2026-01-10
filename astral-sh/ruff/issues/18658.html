@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[BUG][Formatter] `ruff format` does not respect `# fmt: {on,off,skip}` in `.pyi` stub files - astral-sh/ruff #18658</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[BUG][Formatter] `ruff format` does not respect `# fmt: {on,off,skip}` in `.pyi` stub files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18658">#18658</a>
+        opened by <a href="https://github.com/XuehaiPan">@XuehaiPan</a>
+        on 2025-06-13 09:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2025-06-13 09:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As per the issue title.</p>
+<p>Related CI failure:</p>
+<ul>
+<li>https://github.com/pytorch/pytorch/actions/runs/15630997368/job/44035153534?pr=144552</li>
+</ul>
+<p>Minimal reproduce:</p>
+<pre><code class="language-python"># test.pyi
+
+from typing import Union
+
+def func1(
+    # fmt: off
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+    # fmt: on
+) -&gt; None: ...
+# fmt: off
+def func2(
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+) -&gt; None: ...
+# fmt: on
+def func3(
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],  # fmt: skip
+) -&gt; None: ...
+def func4(  # fmt: skip
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+) -&gt; None: ...
+def func5(
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+) -&gt; None: ...  # fmt: skip
+</code></pre>
+<p>Output with <code>ruff format test.pyi</code>:</p>
+<pre><code class="language-python"># test.pyi
+
+from typing import Union
+
+def func1(
+    # fmt: off
+    a: Union[
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+    ],
+    # fmt: on
+) -&gt; None: ...
+
+# fmt: off
+def func2(
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+) -&gt; None: ...
+# fmt: on
+def func3(
+    a: Union[
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+    ],  # fmt: skip
+) -&gt; None: ...
+def func4(  # fmt: skip
+    a: Union[
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+    ],
+) -&gt; None: ...
+def func5(
+    a: Union[
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+    ],
+) -&gt; None: ...  # fmt: skip
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-06-13 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-13 11:40</div>
+            <div class="timeline-body"><p>Hi.</p>
+<p>Ruff only supports suppression comments at the statement level as documented <a href="https://docs.astral.sh/ruff/formatter/#format-suppression">here</a> and RUF 028 should warn you about invalid suppression comments (<a href="https://play.ruff.rs/b63e101e-3b77-40af-87e3-97e294a03770">playground</a>).</p>
+<p>Now, there's a bug with compound statements when the body is <code>...</code>. In this case, Ruff should disable formatting but it currently doesn't. See https://github.com/astral-sh/ruff/issues/11216</p>
+<p>For now, use</p>
+<pre><code class="language-py"># fmt: off
+def func1(
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+) -&gt; None: ...
+# fmt: on
+</code></pre>
+<p>or</p>
+<pre><code class="language-py">def func5(
+    a: Union[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int],
+) -&gt; None:   # fmt: skip
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @AlexWaygood on 2025-06-13 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2025-06-13 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/pulls/155909.html">pytorch/pytorch#155909</a> on 2025-06-13 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2025-06-13 13:29</div>
+            <div class="timeline-body"><p>Thanks for the context. I want to note that the issue was raised because the <code>.pyi</code> files are autogenerated. I updated the signature generation rule if the argument is too long with:</p>
+<pre><code class="language-python">def function_name(
+    arg1: long_annotation,
+    arg2: long_annotation,
+) -&gt; return_annotation:  # fmt: skip
+    ...
+</code></pre>
+<ul>
+<li>pytorch/pytorch#155909</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2025-06-13 13:29</div>
+            <div class="timeline-body"><p>Please feel free to close this if it is a duplicate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-13 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

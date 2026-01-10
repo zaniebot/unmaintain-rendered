@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should `uv add` allow overwriting previous version specifiers? - astral-sh/uv #5505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should `uv add` allow overwriting previous version specifiers?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5505">#5505</a>
+        opened by <a href="https://github.com/eth3lbert">@eth3lbert</a>
+        on 2024-07-27 03:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-27 03:00</div>
+            <div class="timeline-body"><p>Let consider the following process:</p>
+<p>After running <code>uv init</code>, perform the following actions:</p>
+<ul>
+<li>Add a package with a <code>git URL</code> and <code>tag</code>.</li>
+<li>Add the same package but with a <code>version specifier</code>.</li>
+<li>Add the same package again using only the <code>git URL</code> (the <code>version specifier</code> is retained, and the <code>tag</code> is removed from the source).</li>
+</ul>
+<p>In the end, the previously added <code>version specifier</code> is <em>retained</em>, and there's currently no way to overwrite it without manually editing the file or removing and re-adding the package.</p>
+<pre><code class="language-shell">+ : mre
++ uv add 'httpx @ git+https://github.com/encode/httpx' --tag 0.24.1
+warning: `uv add` is experimental and may change without warning
+⠙ Resolving dependencies...                                                                         warning: `uv.sources` is experimental and may change without warning
+ Updated https://github.com/encode/httpx (fcf1bc7)
+Resolved 8 packages in 2.53s
+   Built mre @ file:///private/tmp/mre
+Prepared 2 packages in 846ms
+Uninstalled 3 packages in 5ms
+Installed 3 packages in 14ms
+ - httpcore==1.0.5
+ + httpcore==0.17.3
+ - httpx==0.27.0 (from git+https://github.com/encode/httpx@7c0cda153d301bde9a011e1dd7157d7e2b20889d)
+ + httpx==0.24.1 (from git+https://github.com/encode/httpx@fcf1bc73dbe13bc61d18a6e998237a5021d3341c?tag=0.24.1#fcf1bc73dbe13bc61d18a6e998237a5021d3341c)
+ - mre==0.1.0 (from file:///private/tmp/mre)
+ + mre==0.1.0 (from file:///private/tmp/mre)
++ :
++ :
++ :
++ cat pyproject.toml
+[project]
+name = &quot;mre&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;httpx&quot;,
+]
+
+[tool.uv.sources]
+httpx = { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.24.1&quot; }
++ :
++ :
++ :
++ uv add 'httpx &lt; 0.24.1'
+warning: `uv add` is experimental and may change without warning
+⠙ Resolving dependencies...                                                                         warning: `uv.sources` is experimental and may change without warning
+Resolved 8 packages in 38ms
+   Built mre @ file:///private/tmp/mre
+Prepared 1 package in 770ms
+Uninstalled 1 package in 0.68ms
+Installed 1 package in 1ms
+ - mre==0.1.0 (from file:///private/tmp/mre)
+ + mre==0.1.0 (from file:///private/tmp/mre)
++ :
++ :
++ :
++ cat pyproject.toml
+[project]
+name = &quot;mre&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;httpx&lt;0.24.1&quot;,
+]
+
+[tool.uv.sources]
+httpx = { git = &quot;https://github.com/encode/httpx&quot;, tag = &quot;0.24.1&quot; }
++ :
++ :
++ :
++ uv add 'httpx @ git+https://github.com/encode/httpx'
+warning: `uv add` is experimental and may change without warning
+⠙ Resolving dependencies...                                                                         warning: `uv.sources` is experimental and may change without warning
+ Updated https://github.com/encode/httpx (7c0cda1)
+Resolved 8 packages in 3.78s
+   Built mre @ file:///private/tmp/mre
+Prepared 2 packages in 770ms
+Uninstalled 3 packages in 4ms
+Installed 3 packages in 15ms
+ - httpcore==0.17.3
+ + httpcore==1.0.5
+ - httpx==0.24.1 (from git+https://github.com/encode/httpx@fcf1bc73dbe13bc61d18a6e998237a5021d3341c)
+ + httpx==0.27.0 (from git+https://github.com/encode/httpx@7c0cda153d301bde9a011e1dd7157d7e2b20889d#7c0cda153d301bde9a011e1dd7157d7e2b20889d)
+ - mre==0.1.0 (from file:///private/tmp/mre)
+ + mre==0.1.0 (from file:///private/tmp/mre)
++ :
++ :
++ :
++ cat pyproject.toml
+[project]
+name = &quot;mre&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;httpx&lt;0.24.1&quot;,
+]
+
+[tool.uv.sources]
+httpx = { git = &quot;https://github.com/encode/httpx&quot; }
++ :
+</code></pre>
+<p>I'm not sure if this behavior is intentional or a bug.</p>
+<p>Related #5339</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-27 12:26</div>
+            <div class="timeline-body"><p>I believe this was added intentionally (per https://github.com/astral-sh/uv/issues/5339). Maybe what we need is a way to provide &quot;no version specifier&quot; on the command-line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-07-27 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-27 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-07-27 14:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe this was added intentionally (per #5339). Maybe what we need is a way to provide &quot;no version specifier&quot; on the command-line?</p>
+</blockquote>
+<p>Yes, that should work as well. I don't have a preference.</p>
+<hr />
+<p>Here are some of my findings and thoughts that make sense to me:</p>
+<ol>
+<li><p>Git source might better not specify a version and the actual version should be determined after resolving it?</p>
+<ul>
+<li>Since <code>uv pip install &quot;httpx &lt; 0.24.1 @ git+https://github.com/encode/httpx&quot;</code> are already disallowed, it makes more sense to simply use the version resolved from the provided git source. Additionally, other package managers seem to work similarly, using the resolved version from the provided git source.</li>
+<li>https://github.com/astral-sh/uv/issues/4604#issuecomment-2195751972</li>
+</ul>
+</li>
+<li><p>In the second step, <code>uv add &quot;httpx &lt; 0.24.1&quot;</code> adds a version specifier onto an existing git source package. Perhaps we should consider converting it to a normal package with a version specifier, no longer treating it as a git source?</p>
+<ul>
+<li>This behavior aligns with <code>cargo</code>, <code>poetry</code>, and <code>pdm</code>.</li>
+</ul>
+</li>
+<li><p>If we already added a package with a version specifier, for example, <code>httpx &lt; 0.24.1</code>, and then run <code>uv add &quot;httpx&quot;</code>, what should happen? This behavior differs between package managers and requires further discussion. (This also applies to git source.)</p>
+<ul>
+<li><code>poetry</code> would inform you that you already have it installed.</li>
+<li><code>pdm</code> would update it to the latest version using <code>&gt;=</code>.</li>
+<li><code>cargo</code> would keep the existing version, although it might display <code>cargo add</code> but its the the same version constraint.</li>
+</ul>
+</li>
+</ol>
+<p>What are your thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

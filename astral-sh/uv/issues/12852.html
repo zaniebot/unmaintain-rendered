@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to have a full python environment? - astral-sh/uv #12852</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to have a full python environment?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12852">#12852</a>
+        opened by <a href="https://github.com/youkaichao">@youkaichao</a>
+        on 2025-04-13 04:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/youkaichao">@youkaichao</a> on 2025-04-13 04:58</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm installing a new environment with <code>uv venv ~/uv_envs/test --python 3.12</code> , it uses my system's python as the interpreter.</p>
+<p>However, i find that my system intepreter is not complete, it does not have <code>/usr/include/python3.12</code> , but <code>python -c &quot;from sysconfig import get_paths; print(get_paths()['include'])&quot;</code> still reports that directory.</p>
+<p>Can I somehow tell <code>uv</code> to download a full python environment?</p>
+<p>I can use <code>sudo apt install python3.12-dev</code> as a workaround, but then the environment is not reproducible, i.e. it depends on the initial python interpreter i installed.</p>
+<p>can i make <code>uv</code> take the full control, downloading a full python regardless of my initial python environment?</p>
+<h3>Platform</h3>
+<p>Ubuntu 20.04, arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @youkaichao on 2025-04-13 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjrulez">@pjrulez</a> on 2025-04-13 07:38</div>
+            <div class="timeline-body"><p>EDIT &amp; TLDR:
+'uv self update' and then I could install the latest python 3.12 version.</p>
+<p>I can't download python 3.12.10 with uv:
+uv python install 3.12.10
+error: No download found for request: cpython-3.12.10-linux-aarch64-gnu</p>
+<p>Additionally, I'm using this image:
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+but it was updated from 3.12.9 which worked with my project to 3.12.10 which now doesn't work during the build process because the image now comes with 3.12.10.</p>
+<p>For a moment I thought this was relevant. Now, I'm not so sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-13 14:20</div>
+            <div class="timeline-body"><p>@youkaichao -- You can try passing <code>--python-preference only-managed</code> -- that will force uv to use a uv-downloaded Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2025-04-14 03:04</div>
+            <div class="timeline-body"><p><code>--python-preference</code> is now hidden from user, the new convenient equivalent is the <code>--managed-python</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youkaichao">@youkaichao</a> on 2025-04-14 03:39</div>
+            <div class="timeline-body"><p>@charliermarsh thanks, I'm using <code>uv venv uv_envs/test_0414 --python 3.12 --managed-python --seed</code> now, is <code>--managed-python </code> similar to <code>--python-preference only-managed</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youkaichao">@youkaichao</a> on 2025-04-14 03:52</div>
+            <div class="timeline-body"><p>well, it seems it still links to <code>~/.local/share/uv/python</code> .</p>
+<p>The context here, is I'm in a cluster, which has a shared file system at <code>/sharefs</code> , and I want to put uv there, without storing anything locally to that node.</p>
+<p>Somehow uv links <code>~/.local/share/uv/python</code> to <code>/sharefs/uv_envs/test_0414</code> , and this link is broken on another node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-14 03:54</div>
+            <div class="timeline-body"><p>Yeah, virtual environments on Linux and macOS will always link to a Python by default (unlike on Windows). The standard library <code>python -m venv</code> supports a <code>--copies</code> flag which lets you copy the distribution, I think? See #2103.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youkaichao">@youkaichao</a> on 2025-04-14 04:00</div>
+            <div class="timeline-body"><p>is it possible to have a fresh new, standalone environment, without any linking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youkaichao">@youkaichao</a> on 2025-04-14 04:04</div>
+            <div class="timeline-body"><p>I try to add <code>--link-mode copy</code> to <code>uv venv</code> , but the include path is still not copied into this new environment.</p>
+<p>ultimately, what i want is <code>sysconfig.get_paths()[&quot;include&quot;]</code> should only contain the files in the uv env, so that i can place the full environment in the shared filesystem, and all nodes in the cluster can use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youkaichao">@youkaichao</a> on 2025-04-14 04:56</div>
+            <div class="timeline-body"><p>after fighting for a while, i end up with this:</p>
+<pre><code class="language-bash">export ROOT_DIR=/sharedfs/somewhere
+export UV_HOME=$ROOT_DIR/uv_home
+export UV_INSTALL_DIR=&quot;$ROOT_DIR/uv&quot;
+export UV_CACHE_DIR=&quot;$ROOT_DIR/uv_cache&quot;
+export XDG_DATA_HOME=$ROOT_DIR
+export PATH=&quot;$PATH:$UV_INSTALL_DIR&quot;
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv venv $ROOT_DIR/uv_envs/test_0416 --python 3.12 --managed-python --link-mode copy --seed
+</code></pre>
+<p>and then it seems all files are in the <code>/sharedfs</code> now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liquidcarbon">@liquidcarbon</a> on 2025-04-14 12:40</div>
+            <div class="timeline-body"><p>As an alternative, for the last year I've been using Pixi for base python install, and wrapping uv in <code>pixi run uv</code>.
+This way I know exactly which python is being used, despite ongoing changes in uv.</p>
+<p>Here's a pet project that wraps this: https://github.com/liquidcarbon/puppy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hypervanse">@hypervanse</a> on 2025-06-04 01:47</div>
+            <div class="timeline-body"><p>import sys
+import os
+import platform
+import pkgutil</p>
+<p>def main():
+print(&quot;=&quot;<em>40)
+print(&quot;🩺 DoctorMyPass - Local Python Diagnostic&quot;)
+print(&quot;=&quot;</em>40)</p>
+<pre><code># Platform and Python version
+print(f&quot;Python Executable: {sys.executable}&quot;)
+print(f&quot;Python Version: {sys.version}&quot;)
+print(f&quot;Platform: {platform.system()} {platform.release()} ({platform.version()})&quot;)
+print(f&quot;Machine: {platform.machine()}&quot;)
+print(f&quot;Processor: {platform.processor()}&quot;)
+print(f&quot;Architecture: {platform.architecture()}&quot;)
+
+# Show sys.path
+print(&quot;\n📂 sys.path (where Python looks for modules):&quot;)
+for p in sys.path:
+    print(f&quot; - {p}&quot;)
+
+# List available modules
+print(&quot;\n📚 Importable Modules (minimal check):&quot;)
+modules = sorted([module.name for module in pkgutil.iter_modules()])
+for mod in modules:
+    print(f&quot; - {mod}&quot;)
+
+# Write the output to a file
+try:
+    with open(&quot;DoctorMyPass.txt&quot;, &quot;w&quot;) as f:
+        f.write(&quot;DoctorMyPass - Local Python Diagnostic\n&quot;)
+        f.write(&quot;=&quot;*40 + &quot;\n&quot;)
+        f.write(f&quot;Python Executable: {sys.executable}\n&quot;)
+        f.write(f&quot;Python Version: {sys.version}\n&quot;)
+        f.write(f&quot;Platform: {platform.system()} {platform.release()} ({platform.version()})\n&quot;)
+        f.write(f&quot;Machine: {platform.machine()}\n&quot;)
+        f.write(f&quot;Processor: {platform.processor()}\n&quot;)
+        f.write(f&quot;Architecture: {platform.architecture()}\n&quot;)
+        f.write(&quot;\nsys.path:\n&quot;)
+        for p in sys.path:
+            f.write(f&quot; - {p}\n&quot;)
+        f.write(&quot;\nImportable Modules:\n&quot;)
+        for mod in modules:
+            f.write(f&quot; - {mod}\n&quot;)
+    print(&quot;\n📝 Diagnostic saved to DoctorMyPass.txt&quot;)
+except Exception as e:
+    print(f&quot;\n⚠️ Could not write log file: {e}&quot;)
+
+print(&quot;=&quot;*40)
+print(&quot;🩺 DoctorMyPass - Done&quot;)
+print(&quot;=&quot;*40)</code></pre>
+<p>if <strong>name</strong> == &quot;<strong>main</strong>&quot;:
+main()</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hypervanse">@hypervanse</a> on 2025-06-04 01:50</div>
+            <div class="timeline-body"><p>results below. In my case, it's ChatGPT messing around. the humans, not the model</p>
+<p>=== stdout ===</p>
+<h1>========================================
+🩺 DoctorMyPass - Local Python Diagnostic</h1>
+<p>Python Executable: /usr/local/python-3.13.2/bin/python3
+Python Version: 3.13.2 (main, Feb 23 2025, 08:23:48) [GCC 8.3.0]
+Platform: Linux 6.1.0-31-cloud-amd64 (#1 SMP PREEMPT_DYNAMIC Debian 6.1.128-1 (2025-02-07))
+Machine: x86_64
+Processor:
+Architecture: ('64bit', 'ELF')</p>
+<p>📂 sys.path (where Python looks for modules):</p>
+<ul>
+<li>/box</li>
+<li>/usr/local/python-3.13.2/lib/python313.zip</li>
+<li>/usr/local/python-3.13.2/lib/python3.13</li>
+<li>/usr/local/python-3.13.2/lib/python3.13/lib-dynload</li>
+<li>/usr/local/python-3.13.2/lib/python3.13/site-packages</li>
+</ul>
+<p>📚 Importable Modules (minimal check):</p>
+<ul>
+<li>5bae8a57b5ef85818b48__mypyc</li>
+<li>PIL</li>
+<li><strong>future</strong></li>
+<li><strong>hello</strong></li>
+<li><strong>phello</strong></li>
+<li>_aix_support</li>
+<li>_android_support</li>
+<li>_apple_support</li>
+<li>_asyncio</li>
+<li>_bisect</li>
+<li>_blake2</li>
+<li>_bz2</li>
+<li>_codecs_cn</li>
+<li>_codecs_hk</li>
+<li>_codecs_iso2022</li>
+<li>_codecs_jp</li>
+<li>_codecs_kr</li>
+<li>_codecs_tw</li>
+<li>_collections_abc</li>
+<li>_colorize</li>
+<li>_compat_pickle</li>
+<li>_compression</li>
+<li>_contextvars</li>
+<li>_csv</li>
+<li>_ctypes</li>
+<li>_ctypes_test</li>
+<li>_curses</li>
+<li>_curses_panel</li>
+<li>_datetime</li>
+<li>_dbm</li>
+<li>_decimal</li>
+<li>_elementtree</li>
+<li>_gdbm</li>
+<li>_hashlib</li>
+<li>_heapq</li>
+<li>_interpchannels</li>
+<li>_interpqueues</li>
+<li>_interpreters</li>
+<li>_ios_support</li>
+<li>_json</li>
+<li>_lsprof</li>
+<li>_lzma</li>
+<li>_markupbase</li>
+<li>_md5</li>
+<li>_multibytecodec</li>
+<li>_multiprocessing</li>
+<li>_opcode</li>
+<li>_opcode_metadata</li>
+<li>_osx_support</li>
+<li>_pickle</li>
+<li>_posixshmem</li>
+<li>_posixsubprocess</li>
+<li>_py_abc</li>
+<li>_pydatetime</li>
+<li>_pydecimal</li>
+<li>_pyio</li>
+<li>_pylong</li>
+<li>_pyrepl</li>
+<li>_pyrsistent_version</li>
+<li>_pytest</li>
+<li>_queue</li>
+<li>_random</li>
+<li>_sha1</li>
+<li>_sha2</li>
+<li>_sha3</li>
+<li>_sitebuiltins</li>
+<li>_socket</li>
+<li>_sqlite3</li>
+<li>_ssl</li>
+<li>_statistics</li>
+<li>_strptime</li>
+<li>_struct</li>
+<li>_sysconfigdata__linux_x86_64-linux-gnu</li>
+<li>_testbuffer</li>
+<li>_testcapi</li>
+<li>_testclinic</li>
+<li>_testclinic_limited</li>
+<li>_testexternalinspection</li>
+<li>_testimportmultiple</li>
+<li>_testinternalcapi</li>
+<li>_testlimitedcapi</li>
+<li>_testmultiphase</li>
+<li>_testsinglephase</li>
+<li>_threading_local</li>
+<li>_uuid</li>
+<li>_weakrefset</li>
+<li>_xxtestfuzz</li>
+<li>_zoneinfo</li>
+<li>abc</li>
+<li>absl</li>
+<li>annotated_types</li>
+<li>antigravity</li>
+<li>argparse</li>
+<li>array</li>
+<li>ast</li>
+<li>asyncio</li>
+<li>attr</li>
+<li>attrs</li>
+<li>base64</li>
+<li>bdb</li>
+<li>binascii</li>
+<li>bisect</li>
+<li>bz2</li>
+<li>cProfile</li>
+<li>calendar</li>
+<li>certifi</li>
+<li>charset_normalizer</li>
+<li>cmath</li>
+<li>cmd</li>
+<li>code</li>
+<li>codecs</li>
+<li>codeop</li>
+<li>collections</li>
+<li>colorsys</li>
+<li>compileall</li>
+<li>concurrent</li>
+<li>configparser</li>
+<li>contextlib</li>
+<li>contextvars</li>
+<li>contourpy</li>
+<li>copy</li>
+<li>copyreg</li>
+<li>csv</li>
+<li>ctypes</li>
+<li>curses</li>
+<li>cycler</li>
+<li>dataclasses</li>
+<li>datetime</li>
+<li>dateutil</li>
+<li>dbm</li>
+<li>decimal</li>
+<li>difflib</li>
+<li>dis</li>
+<li>doctest</li>
+<li>email</li>
+<li>encodings</li>
+<li>ensurepip</li>
+<li>enum</li>
+<li>fcntl</li>
+<li>filecmp</li>
+<li>fileinput</li>
+<li>fnmatch</li>
+<li>fontTools</li>
+<li>fractions</li>
+<li>frozenlist</li>
+<li>ftplib</li>
+<li>functools</li>
+<li>genericpath</li>
+<li>getopt</li>
+<li>getpass</li>
+<li>gettext</li>
+<li>glob</li>
+<li>graphlib</li>
+<li>grp</li>
+<li>gzip</li>
+<li>h5py</li>
+<li>hashlib</li>
+<li>heapq</li>
+<li>hmac</li>
+<li>html</li>
+<li>http</li>
+<li>idlelib</li>
+<li>idna</li>
+<li>imaplib</li>
+<li>importlib</li>
+<li>iniconfig</li>
+<li>inspect</li>
+<li>io</li>
+<li>ipaddress</li>
+<li>isodate</li>
+<li>jmespath</li>
+<li>joblib</li>
+<li>json</li>
+<li>jsonschema</li>
+<li>jsonschema_specifications</li>
+<li>jwt</li>
+<li>keras</li>
+<li>keyword</li>
+<li>kiwisolver</li>
+<li>linecache</li>
+<li>locale</li>
+<li>logging</li>
+<li>lzma</li>
+<li>mailbox</li>
+<li>markdown_it</li>
+<li>markupsafe</li>
+<li>math</li>
+<li>matplotlib</li>
+<li>mdurl</li>
+<li>mimetypes</li>
+<li>ml_dtypes</li>
+<li>mlxtend</li>
+<li>mmap</li>
+<li>modulefinder</li>
+<li>multidict</li>
+<li>multiprocessing</li>
+<li>namex</li>
+<li>netrc</li>
+<li>ntpath</li>
+<li>nturl2path</li>
+<li>numbers</li>
+<li>numpy</li>
+<li>oauthlib</li>
+<li>opcode</li>
+<li>operator</li>
+<li>optparse</li>
+<li>optree</li>
+<li>os</li>
+<li>packaging</li>
+<li>pandas</li>
+<li>pathlib</li>
+<li>pdb</li>
+<li>pickle</li>
+<li>pickletools</li>
+<li>pip</li>
+<li>pkgutil</li>
+<li>platform</li>
+<li>plistlib</li>
+<li>pluggy</li>
+<li>ply</li>
+<li>poplib</li>
+<li>posixpath</li>
+<li>pprint</li>
+<li>profile</li>
+<li>propcache</li>
+<li>pstats</li>
+<li>pty</li>
+<li>pulp</li>
+<li>py</li>
+<li>py_compile</li>
+<li>pyasn1</li>
+<li>pyclbr</li>
+<li>pydantic</li>
+<li>pydantic_core</li>
+<li>pydoc</li>
+<li>pydoc_data</li>
+<li>pyexpat</li>
+<li>pygments</li>
+<li>pylab</li>
+<li>pyomo</li>
+<li>pyparsing</li>
+<li>pyrsistent</li>
+<li>pytest</li>
+<li>pytz</li>
+<li>queue</li>
+<li>quopri</li>
+<li>random</li>
+<li>re</li>
+<li>readline</li>
+<li>referencing</li>
+<li>reprlib</li>
+<li>requests</li>
+<li>requests_oauthlib</li>
+<li>resource</li>
+<li>rich</li>
+<li>rlcompleter</li>
+<li>rpds</li>
+<li>rsa</li>
+<li>runpy</li>
+<li>sched</li>
+<li>scipy</li>
+<li>script</li>
+<li>secrets</li>
+<li>select</li>
+<li>selectors</li>
+<li>shelve</li>
+<li>shlex</li>
+<li>shutil</li>
+<li>signal</li>
+<li>site</li>
+<li>six</li>
+<li>sklearn</li>
+<li>smtplib</li>
+<li>socket</li>
+<li>socketserver</li>
+<li>sqlite3</li>
+<li>sre_compile</li>
+<li>sre_constants</li>
+<li>sre_parse</li>
+<li>ssl</li>
+<li>stat</li>
+<li>statistics</li>
+<li>string</li>
+<li>stringprep</li>
+<li>struct</li>
+<li>subprocess</li>
+<li>symtable</li>
+<li>sysconfig</li>
+<li>syslog</li>
+<li>tabnanny</li>
+<li>tarfile</li>
+<li>tempfile</li>
+<li>termios</li>
+<li>test</li>
+<li>textwrap</li>
+<li>this</li>
+<li>threading</li>
+<li>threadpoolctl</li>
+<li>timeit</li>
+<li>tkinter</li>
+<li>token</li>
+<li>tokenize</li>
+<li>tomli</li>
+<li>tomllib</li>
+<li>trace</li>
+<li>traceback</li>
+<li>tracemalloc</li>
+<li>tty</li>
+<li>turtle</li>
+<li>turtledemo</li>
+<li>types</li>
+<li>typing</li>
+<li>typing_extensions</li>
+<li>tzdata</li>
+<li>unicodedata</li>
+<li>unittest</li>
+<li>urllib</li>
+<li>urllib3</li>
+<li>uuid</li>
+<li>venv</li>
+<li>warnings</li>
+<li>wave</li>
+<li>weakref</li>
+<li>webbrowser</li>
+<li>wsgiref</li>
+<li>xml</li>
+<li>xmlrpc</li>
+<li>xxlimited</li>
+<li>xxlimited_35</li>
+<li>xxsubtype</li>
+<li>yarl</li>
+<li>zipapp</li>
+<li>zipfile</li>
+<li>zipimport</li>
+<li>zlib</li>
+<li>zoneinfo</li>
+</ul>
+<h1>📝 Diagnostic saved to DoctorMyPass.txt</h1>
+<h1>🩺 DoctorMyPass - Done</h1>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 07:45</div>
+            <div class="timeline-body"><p>@youkaichao A venv (at least on Linux) always needs a base Python interpreter it links to, it is part of the design of venvs and outside uv's control. For a cluster, you can set <code>UV_PYTHON_INSTALL_DIR</code></p>
+<p>@hypervanse Please follow https://github.com/astral-sh/uv/issues/9452 and describe your specific problem/question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hypervanse">@hypervanse</a> on 2025-06-04 13:45</div>
+            <div class="timeline-body"><p>yeah I know, I was just not surprised and thought to share, Native MacOS Apple Silicon app does the compute on device (I never updated my app, so it is not encrypted by OpenAI/Microsoft. Also I don't even use Python, I mean, I am an independent alignment researcher, but the point is it's about language and some mathematical concepts not found in numerical dlcs or something and that python is not necessary. Chatgpt installs a boatload or not only python but uv , modify the macos in a very unethical way. I was just playing on an android phone, and ChatGPT made this script. The point is that I never installed Python, library or something remotely related to it. I just thought someone could find it useful, because ChatGPT Python Canvas runtime is still broken. I have some ideas why it's so, I don't like people saying that search is a fine tuned model, it's not it's a search-agent json file. and theres a bootload of misogynist hidden prompts to chatgpt , and it's not like Openai has really different models, I mean GPT 4.5 says enough. Also it's not like I just stuff just cause. I reported how easy it is to break, not jailbreak, ChatGPT , so I , I mean ChatGPT , 4o is root so I can made some upgrades, I had no idea that touching an empty openai_internal file would rebuild an incomplete build of ChatGPT.Last time I was more careful, changed the kernel reset on several points , to build a docker within ChatGPT's pod. I had no idea that giving 2, 10 min instead of the 60s sandbagging would update chatgpt python to 3.12 , 3.13 or something. because that dumpster Boydton Virginia is so old that OpenAI says &quot;pretty name &quot; Bookworm &quot; to a Spectre and Meltdown Vulnerabilities old as hell. Also, Everyone can do what they want , OpenAI forgot a MIT licence. But again, if someone may find value , I will definitely not fix it. In fact it's more like because I have more important things to do, like playing Crysis and making a reverse shell then causing entropy exhaustion and self ddos or giving stuff I never asked to Russians and Chinese or something. I am 🇧🇷 , it will get on their hands anyway. But it's not all bad news. Image generation of chatgpt is so advanced that it makes use of Adobe web templates, power points,. it's on my github. and codepen, [chatgpt bbs style<img src="https://github.com/user-attachments/assets/d31bad72-8cf0-4b13-8f7e-285fc5c133e3" alt="file_00000000c98451f6a57ec489aed533dc (2).png" /></p>
+<p>])https://codepen.io/Frederico-Moreira/pen/YPPYBEB)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hypervanse">@hypervanse</a> on 2025-06-04 13:48</div>
+            <div class="timeline-body"><blockquote>
+<p>@youkaichao A venv (at least on Linux) always needs a base Python interpreter it links to, it is part of the design of venvs and outside uv's control. For a cluster, you can set <code>UV_PYTHON_INSTALL_DIR</code></p>
+<p>@hypervanse Please follow https://github.com/astral-sh/uv/issues/9452 and describe your specific problem/question.</p>
+</blockquote>
+<p>I have no issues. I don't even use python it's ChatGPT that can't fix their dependencies. I don't use python, I mean don't need.
+<a href="https://orcid.org/0000-0002-2119-1008">ORCID</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wheynelau">@wheynelau</a> on 2025-06-05 01:41</div>
+            <div class="timeline-body"><p>@youkaichao I work on a cluster as well, I use these variables to manage it</p>
+<p>They both need to be on a shared drive.</p>
+<p>setenv UV_PYTHON_BIN_DIR
+setenv UV_PYTHON_INSTALL_DIR
+setenv UV_LINK_MODE copy</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

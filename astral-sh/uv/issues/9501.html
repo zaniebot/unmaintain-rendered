@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate from Poetry to UV - astral-sh/uv #9501</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate from Poetry to UV</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9501">#9501</a>
+        opened by <a href="https://github.com/lluisCM">@lluisCM</a>
+        on 2024-11-28 12:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lluisCM">@lluisCM</a> on 2024-11-28 12:43</div>
+            <div class="timeline-body"><p>Hello, I'm not sure if this is the place to post a question, but I would like to get some feedback/experience on relation of replacing poetry to uv.</p>
+<p>I'm looking to migrate from Poetry to UV. But my only concern is that UV seems to not provide a build backend, so what is the recommended way to structure the pyproject.toml file? Should I still install poetry, pdm or hatchling as a build systems? In that case, isn't a better option to just use poetry (for example) to manage the project and uv for venv etc... but not for the pyproject.toml file?</p>
+<p>I'm specifically referring to this section:</p>
+<p>[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;</p>
+<p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-28 13:08</div>
+            <div class="timeline-body"><p>UV currently doesn't have a backend built, so it should be difficult to handle functions that require a backend.</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8779</li>
+</ul>
+<p>However, besides build backend, there are still many replaceable functions, so it depends on whether the functions you need require a backend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lluisCM">@lluisCM</a> on 2024-11-28 14:21</div>
+            <div class="timeline-body"><p>Be able to generate the .whl file, building and install the current project and probably prepare it to publish to PyPi requires a backend, right?
+So what is the recommended way to proceed? which backend is recommended/supported to use?
+Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-28 14:30</div>
+            <div class="timeline-body"><p>Until uv has its own backend, you can use hatchling or the pdm backend:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;pdm-backend&quot;]
+build-backend = &quot;pdm.backend&quot;
+</code></pre>
+<p>uv works with all of them, you can use the backend you like best. For new projects, <code>uv init</code> has a <code>--build-backend</code> option, the default is hatchling, which should cover most use cases (also coming from poetry).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-11-28 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laudmt">@laudmt</a> on 2024-11-29 17:25</div>
+            <div class="timeline-body"><p>Having personally passed a few projects from poetry to uv, I encountered an issue with hatchling, which had trouble to find the correct compiler.</p>
+<p>Adding this fixed it:</p>
+<pre><code class="language-bash">export CC=gcc 
+export AR=ar
+</code></pre>
+<p>I believe it is related to this issue : https://github.com/astral-sh/uv/issues/8429</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lluisCM">@lluisCM</a> on 2024-12-02 08:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Until uv has its own backend, you can use hatchling or the pdm backend:</p>
+<p>[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+[build-system]
+requires = [&quot;pdm-backend&quot;]
+build-backend = &quot;pdm.backend&quot;
+uv works with all of them, you can use the backend you like best. For new projects, <code>uv init</code> has a <code>--build-backend</code> option, the default is hatchling, which should cover most use cases (also coming from poetry).</p>
+</blockquote>
+<p>Thank you for the clarification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-02 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qiuxiaomu">@qiuxiaomu</a> on 2025-05-15 17:48</div>
+            <div class="timeline-body"><p>Hope uv's build system is on the schedule!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-15 17:50</div>
+            <div class="timeline-body"><p>We're working on it!</p>
+<ul>
+<li>#8779</li>
+<li>#3957</li>
+<li>#12804</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:40 UTC
+    </footer>
+</body>
+</html>

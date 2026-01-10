@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spurious PLE1300 error with 0.0.283 - astral-sh/ruff #6442</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Spurious PLE1300 error with 0.0.283</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6442">#6442</a>
+        opened by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a>
+        on 2023-08-09 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2023-08-09 09:03</div>
+            <div class="timeline-body"><p>~~After upgrading v0.0.281 → v0.0.282 (https://github.com/codespell-project/codespell/pull/3011)~~ we see what we think is a spurious PLE1300 error:</p>
+<ul>
+<li>Minimal code snippet:<pre><code class="language-python">s = &quot;{0}{1:{width}}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=15)
+</code></pre>
+</li>
+<li>The command invoked:<pre><code>$ ruff --select PLE file.py 
+file.py:1:5: PLE1300 Unsupported format character '}'
+Found 1 error.
+$ 
+</code></pre>
+</li>
+<li>The current Ruff settings: no <code>pyproject.toml</code> file</li>
+<li>The current Ruff version:<pre><code>$ ruff --version
+ruff 0.0.283
+$ 
+</code></pre>
+</li>
+</ul>
+<p>The <a href="https://docs.python.org/3/library/string.html#format-string-syntax">Format String Syntax</a> documentation states:</p>
+<blockquote>
+<p>A <em>format_spec</em> field can also include nested replacement fields within it. These nested replacement fields may contain a field name, conversion flag and format specification, but deeper nesting is not allowed.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../codespell-project/codespell/issues/3014.html">codespell-project/codespell#3014</a> on 2023-08-09 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-09 09:08</div>
+            <div class="timeline-body"><p>This is probably related to #6171</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-08-09 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/intgr">@intgr</a> on 2023-08-09 09:08</div>
+            <div class="timeline-body"><p>I believe this occurred with the 0.0.282 -&gt; 0.0.283 update, at least that's what caused it for me, not 0.0.281 → 0.0.282.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2023-08-09 09:11</div>
+            <div class="timeline-body"><p>Perhaps I don't understand how pre-commit checks work. Our <code>.pre-commit-config.yaml</code>  contains:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.282
+    hooks:
+      - id: ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2023-08-09 09:18</div>
+            <div class="timeline-body"><p>But yes, you're right about it, it's specific to 0.0.283:</p>
+<pre><code>$ pip install --force-reinstall --user ruff==0.0.281
+Collecting ruff==0.0.281
+  Downloading ruff-0.0.281-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.6/5.6 MB 11.0 MB/s eta 0:00:00
+Installing collected packages: ruff
+  Attempting uninstall: ruff
+    Found existing installation: ruff 0.0.283
+    Uninstalling ruff-0.0.283:
+      Successfully uninstalled ruff-0.0.283
+Successfully installed ruff-0.0.281
+
+[notice] A new release of pip is available: 23.1.2 -&gt; 23.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+$ 
+$ ruff --select PLE file.py 
+$ 
+$ pip install --force-reinstall --user ruff==0.0.282
+Collecting ruff==0.0.282
+  Downloading ruff-0.0.282-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.6/5.6 MB 12.6 MB/s eta 0:00:00
+Installing collected packages: ruff
+  Attempting uninstall: ruff
+    Found existing installation: ruff 0.0.281
+    Uninstalling ruff-0.0.281:
+      Successfully uninstalled ruff-0.0.281
+Successfully installed ruff-0.0.282
+
+[notice] A new release of pip is available: 23.1.2 -&gt; 23.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+$ 
+$ ruff --select PLE file.py 
+$ 
+$ pip install --force-reinstall --user ruff==0.0.283
+Collecting ruff==0.0.283
+  Using cached ruff-0.0.283-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.7 MB)
+Installing collected packages: ruff
+  Attempting uninstall: ruff
+    Found existing installation: ruff 0.0.282
+    Uninstalling ruff-0.0.282:
+      Successfully uninstalled ruff-0.0.282
+Successfully installed ruff-0.0.283
+
+[notice] A new release of pip is available: 23.1.2 -&gt; 23.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+$ 
+$ ruff --select PLE file.py 
+file.py:1:5: PLE1300 Unsupported format character '}'
+Found 1 error.
+$ 
+</code></pre>
+<p>I'm not a fan or pre-commit, it keeps annoying me, whether in CI jobs or on my own computer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Spurious PLE1300 error with 0.0.282" to "Spurious PLE1300 error with 0.0.283" by @DimitriPapadopoulos on 2023-08-09 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurtmckee">@kurtmckee</a> on 2023-08-09 12:13</div>
+            <div class="timeline-body"><blockquote>
+<p>pre-commit</p>
+</blockquote>
+<p>ruff v0.0.283 is getting picked up by an unpinned ruff dev dependency running in a separate CI job. pre-commit is running v0.0.282 as specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 15:35</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look at the format string parser. I wonder if we were silently parsing this incorrectly the whole time, and the rule just brought it to light, or if the changes to the parser from https://github.com/astral-sh/ruff/pull/6171 were erroneous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-09 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-09 20:46</div>
+            <div class="timeline-body"><p>I think the parser doesn't quite support this, it'll need to be improved. (The rule was new in v0.0.283.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6522.html">astral-sh/ruff#6522</a> on 2023-08-12 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2023-08-14 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2023-08-14 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6616.html">astral-sh/ruff#6616</a> on 2023-08-16 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-08-17 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2023-08-21 14:27</div>
+            <div class="timeline-body"><p>This is still broken unfortunately. <code>test.py</code>:</p>
+<pre><code class="language-py">import sys
+
+number = 1234.56
+print(&quot;{0:.{prec}g}&quot;.format(number, prec=sys.float_info.dig))
+</code></pre>
+<p>Ruff output:</p>
+<pre><code>$ ruff --select PLE1300 --isolated test.py
+test.py:4:7: PLE1300 Unsupported format character 'g'
+Found 1 error.
+</code></pre>
+<p>Ruff version:</p>
+<pre><code>$ ruff --version
+ruff 0.0.285
+</code></pre>
+<p>There is a <a href="https://gist.github.com/tdulcet/19b89559f6b4f2cc2434547cc7528379#file-gimps_status-py-L336-L366">full example here</a> that triggers two erroneous errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2023-08-22 09:57</div>
+            <div class="timeline-body"><p>@tdulcet Perhaps you should open a new issue, since this one has been automatically closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6767.html">astral-sh/ruff#6767</a> on 2023-08-22 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitriPapadopoulos">@DimitriPapadopoulos</a> on 2023-08-22 10:20</div>
+            <div class="timeline-body"><p>I have opened #6767 as a follow-up to this ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6773.html">astral-sh/ruff#6773</a> on 2023-08-24 09:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

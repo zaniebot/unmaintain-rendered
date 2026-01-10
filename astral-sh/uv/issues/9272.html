@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv ...` not recognizing system-installed python - astral-sh/uv #9272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv ...` not recognizing system-installed python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9272">#9272</a>
+        opened by <a href="https://github.com/birkin">@birkin</a>
+        on 2024-11-20 11:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/birkin">@birkin</a> on 2024-11-20 11:26</div>
+            <div class="timeline-body"><p>I'm trying to run the command:</p>
+<p><code>uv venv ./venv_2024-11-20 --python 3.8 --native-tls --python-preference only-system</code></p>
+<p>...to ensure I'm using a version of python already installed by our sys-admin. This yields the message:</p>
+<p><code>  × No interpreter found for Python 3.8 in search path</code></p>
+<p>The system-version of python 3.8 I'm trying to install does exist an an /opt/local/... path. How can I pass its path to <code>uv venv ...</code> or otherwise make <code>uv venv ...</code> recognize this system-installed version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-20 12:11</div>
+            <div class="timeline-body"><p>Is your Python located in the path specified by the PATH environment variable or the UV_PYTHON_INSTALL_DIR environment variable?
+https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions</p>
+<p>What is your uv version? And what is the result of <code>uv python list</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birkin">@birkin</a> on 2024-11-20 13:32</div>
+            <div class="timeline-body"><p>@FishAlchemist</p>
+<p>no success yet...</p>
+<p>Info:</p>
+<ul>
+<li>I'm using <code>uv 0.5.3</code>.</li>
+<li>The version of python I want to use is not in the <code>PATH</code> environmental-variable.</li>
+<li>The python I want to use is at <code>/opt/local/python3.8.10/bin/python3</code>.</li>
+<li>I did not have the <code>UV_PYTHON_INSTALL_DIR</code> environmental-variable set.</li>
+<li>After setting the <code>UV_PYTHON_INSTALL_DIR</code> envar (see below), running <code>uv python list</code> yields:</li>
+</ul>
+<pre><code>cpython-3.13.0+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.12.7-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.11.10-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.10.15-linux-x86_64-gnu                &lt;download available&gt;
+cpython-3.9.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                  &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                   &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                    &lt;download available&gt;
+</code></pre>
+<hr />
+<p>Recently tried:</p>
+<ul>
+<li>I set the envar via <code>export UV_PYTHON_INSTALL_DIR=&quot;/opt/local/python3.8.10/bin&quot;</code>.</li>
+<li>I confirmed that via <code>env | sort</code>.</li>
+<li>I re-ran the <code>uv venv ./venv_2024-11-20 --python 3.8 --native-tls --python-preference only-system</code> command and got the same <code>  × No interpreter found for Python 3.8 in search path</code> message.</li>
+<li>I set the <code>UV_PYTHON_INSTALL_DIR</code> envar to a variety of other sub-directories of <code>/opt/local/python3.8.10/</code>; all yielded the same <code>  × No interpreter found for Python 3.8 in search path</code> message.</li>
+</ul>
+<p>Thanks for your response, though; willing to try other things!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-20 14:08</div>
+            <div class="timeline-body"><p>@birkin
+If there is no need to specify the installation path for the hosted Python, there is no need to specify <strong>UV_PYTHON_INSTALL_DIR</strong>.
+<strong>UV_PYTHON_INSTALL_DIR</strong>: Specifies the directory for storing managed Python installations.</p>
+<p>However, if UV cannot find Python in the PATH and you don't plan to add this Python to the PATH, then   specify the direct path to the Python interpreter.</p>
+<pre><code>--python /opt/local/python3.8.10/bin/
+</code></pre>
+<pre><code>  -p, --python &lt;PYTHON&gt;                        The Python interpreter to use for the virtual environment. [env: UV_PYTHON=]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birkin">@birkin</a> on 2024-11-20 14:31</div>
+            <div class="timeline-body"><p>@FishAlchemist -- Thanks; passing that path works! That <em>must</em> be in the documentation, but I'd missed it, so much appreciated. I'll close this issue.</p>
+<p>For reference, this works:</p>
+<pre><code>uv venv ./venv_2024-11-20 --python &quot;/opt/local/python3.8.10/bin/python3&quot; --native-tls --python-preference only-system
+</code></pre>
+<ul>
+<li><p>I'm thinking I probably don't need the <code>--native tls</code>. I had added that when I thought I'd possibly use a uv-installed version of python, and I'd heard that doing so might embed some open-ssh-stuff within the uv-compiled version of python (which is good) -- but then central-IT updates to any open-ssh security-vulnerabilities wouldn't be used by that uv-installed version of python. I may have mis-understood something; regardless, the flag shouldn't hurt anything if I'm pointing to a local version of python.</p>
+</li>
+<li><p>Similarly, I'm thinking the <code>--python-preference only-system</code> isn't necessary if I'm pointing to a local version of python, but again, shouldn't cause any problem.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @birkin on 2024-11-20 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-20 14:33</div>
+            <div class="timeline-body"><p>Just to clarify, <code>UV_PYTHON_INSTALL_DIR</code> is where <em>we</em> install Python distributions to — we won't discover interpreters we do not manage in that directory.</p>
+<p>It sounds like <code>/opt/local/python3.8.10/bin/</code> isn't on your <code>PATH</code>. Specifying it manually is totally reasonable too though.</p>
+<p>It's documented at https://docs.astral.sh/uv/concepts/python-versions/#requesting-a-version</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:35 UTC
+    </footer>
+</body>
+</html>

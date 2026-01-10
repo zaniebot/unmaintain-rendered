@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLR6201` fix not equivalent when comparing `numpy.dtype` with numpy scalar types - astral-sh/ruff #18406</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLR6201` fix not equivalent when comparing `numpy.dtype` with numpy scalar types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18406">#18406</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-05-31 22:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-31 22:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For example:</p>
+<pre><code class="language-py">import numpy as np
+
+dtype = np.dtype(np.float64)
+_ = dtype == np.float64 or dtype == np.float32
+</code></pre>
+<p>reports</p>
+<pre><code>Consider merging multiple comparisons: `dtype in (np.float64, np.float128)`. Use a `set` if the elements are hashable. (PLR1714) [Ln 4, Col 5]
+</code></pre>
+<p><a href="https://play.ruff.rs/a5f7a81e-563d-4edf-9e67-ee871178addf">ruff play</a></p>
+<p>But doing so would lead to different outcomes, because</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; np.dtype(np.float64) == np.float64
+True
+&gt;&gt;&gt; np.dtype(np.float64) in {np.float64}
+False
+</code></pre>
+<p>Personally, I'm not a big fan of this numpy behavior. But it's not something that is easy to change, unfortunately. So perhaps an exception could be made for this in ruff?</p>
+<p>See https://github.com/numpy/numpy/issues/17864 for a discussion of this behavior</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../numpy/numpy/issues/7242.html">numpy/numpy#7242</a> on 2025-06-01 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rkern">@rkern</a> on 2025-06-01 17:28</div>
+            <div class="timeline-body"><p><code>PLR1714</code> seems to be working fine in this case. The quick-fix'll make it the <code>tuple</code> version, not the <code>set</code>, which works fine.</p>
+<p>It's the subsequent <code>PLR6201</code> that converts it to a set that's dodgy. But <code>PLR6201</code> makes the <code>set</code> recommendation inappropriately in other places, too, and I'm not sure that's 100% fixable. Other than certain simple cases with builtin types, it can't really know whether or not an object is going to be appropriate for a <code>set</code> (and even within builtin types, there are corner cases like <code>([],)</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`PLR1714` fix not equivalent when comparing `numpy.dtype` with numpy scalar types" to "`PLR6201` fix not equivalent when comparing `numpy.dtype` with numpy scalar types" by @jorenham on 2025-06-01 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-06-01 18:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Other than certain simple cases with builtin types, it can't really know whether or not an object is going to be appropriate for a <code>set</code> (and even within builtin types, there are corner cases like <code>([],)</code>).</p>
+</blockquote>
+<p>Perhaps at some point <code>ty</code>'s inference could be used to determine whether the type of LHS matches that of the RHS values?</p>
+<p>Otherwise, maybe <code>PLR6201</code> could have a configurable ignore-list of types, that by default contains <code>numpy.dtype</code> and scalar types like <code>numpy.float64</code> (subtypes of <code>numpy.generic</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rkern">@rkern</a> on 2025-06-01 20:36</div>
+            <div class="timeline-body"><p>Personally, I don't think it's worth chasing any farther. It'll likely never be a 100% safe fix to apply blind (and even when safe, quite likely not desirable; a tuple is a great option for 2 items), but it's just worded as a &quot;Consider ...&quot;, which is perfectly fine. It's good for it to highlight opportunities, and trying to be 100% safe would mean less real opportunities get spotted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-06-02 01:22</div>
+            <div class="timeline-body"><p>I understand that a 100% safe fix is not realistic, and it's not what I was trying to ask. My motivation for opening this issue, is that I have seen this go wrong in a very specific situation. So that's when a numpy dtype instances are compared with &quot;dtype-likes&quot; with different hash values, which I explained in description of this issue. Here's an example of this going wrong in the wild: https://github.com/numpy/numpy/pull/28755#discussion_r2049543299.</p>
+<p>It's also worth pointing out that the different outcome that's caused by this fix, is very easy to miss. I'm guessing that the majority of numpy users wouldn't know about this <code>__eq__</code> and <code>__hash__</code> incompatibility. And if you later discover a new bug in your codebase, I can imagine that debugging it could be pretty difficult.</p>
+<p>And as far as I'm concerned, I think it would be a lot better to fix it on our side. But because that would be a backwards-incompatible change, we would have to deprecate it first. In the most optimistic scenario, it would take two years until we can actually fix this.</p>
+<p>So given all of those beautiful numpy-specific rules that are already in <code>ruff</code>, I was hoping that you might be willing to special-case this specific scenario :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-02 12:59</div>
+            <div class="timeline-body"><p>Thanks for the report and for this discussion, it was helpful for me to read!</p>
+<p>I wouldn't be opposed to adding a special case or at least a configuration option here, but I'm worried it might be a bit difficult to implement a reliable type check, so it may require ty's type inference, as you said.</p>
+<p>The fix for PLR6201 should already be marked as unsafe, and it's also a preview rule, so this is useful feedback that might prevent its stabiliization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-02 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @ntBre on 2025-06-02 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

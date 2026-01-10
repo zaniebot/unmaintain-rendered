@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't add space before new function on top of cell - astral-sh/ruff #9696</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't add space before new function on top of cell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9696">#9696</a>
+        opened by <a href="https://github.com/yasirroni">@yasirroni</a>
+        on 2024-01-30 04:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 04:19</div>
+            <div class="timeline-body"><p>Consider <code>ipynb</code> file.</p>
+<pre><code class="language-py"># some code here, `.py` cell
+
+# %% change cell
+
+## Markdown cell
+
+# %% change cell
+
+# comment describing a function
+def foo():
+    pass
+</code></pre>
+<p>Ruff will add two new line between the comment and foo function.</p>
+<hr />
+<p>Here is the <code>.ipynb</code> example, look at the new <code>\n</code> before <code>def foo3</code>,</p>
+<p>before</p>
+<pre><code class="language-ipynb">{
+ &quot;cells&quot;: [
+  {
+   &quot;cell_type&quot;: &quot;markdown&quot;,
+   &quot;metadata&quot;: {},
+   &quot;source&quot;: [
+    &quot;# Hello&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;def foo():\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;def foo2():\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;# comment\n&quot;,
+    &quot;def foo3():\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: []
+  }
+ ],
+ &quot;metadata&quot;: {
+  &quot;language_info&quot;: {
+   &quot;name&quot;: &quot;python&quot;
+  }
+ },
+ &quot;nbformat&quot;: 4,
+ &quot;nbformat_minor&quot;: 2
+}
+</code></pre>
+<p>after</p>
+<pre><code class="language-ipynb">{
+ &quot;cells&quot;: [
+  {
+   &quot;cell_type&quot;: &quot;markdown&quot;,
+   &quot;metadata&quot;: {},
+   &quot;source&quot;: [
+    &quot;# Hello&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;def foo():\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;def foo2():\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;# comment\n&quot;,
+    &quot;\n&quot;,
+    &quot;\n&quot;,
+    &quot;def foo3():\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: []
+  }
+ ],
+ &quot;metadata&quot;: {
+  &quot;language_info&quot;: {
+   &quot;name&quot;: &quot;python&quot;
+  }
+ },
+ &quot;nbformat&quot;: 4,
+ &quot;nbformat_minor&quot;: 2
+}
+</code></pre>
+<hr />
+<p>My setting:
+<code>pre-commit run --all-files</code></p>
+<pre><code>  # autofix using ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.15
+    hooks:
+      # Run the linter.
+      - id: ruff
+      # Run the formatter.
+      - id: ruff-format
+</code></pre>
+<pre><code>[tool.ruff]
+fix = true
+line-length = 147
+indent-width = 4
+select = [
+    &quot;E&quot;,  # pycodestyle errors
+    &quot;W&quot;,  # pycodestyle warnings
+    &quot;F&quot;,  # pyflakes
+    &quot;I&quot;,  # isort
+    &quot;C&quot;,  # flake8-comprehensions
+    &quot;B&quot;,  # flake8-bugbear
+]
+ignore = [
+    &quot;B90&quot;,  # support &lt;3.10
+    &quot;E402&quot;,  # module level import not at top of file
+    &quot;E741&quot;,  # ambiguous variable name
+    &quot;F403&quot;,  # 'from module import *' used; unable to detect undefined names
+    &quot;C901&quot;,  # function is too complex (TEMPORARILY IGNORE)
+    &quot;B006&quot;,  # use mutable data structures for argument defaults (TEMPORARILY IGNORE)
+]
+extend-include = [&quot;*.ipynb&quot;]
+
+[tool.ruff.format]
+quote-style = &quot;single&quot;
+indent-style = &quot;space&quot;
+line-ending = &quot;auto&quot;
+</code></pre>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @MichaReiser on 2024-01-30 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-30 07:10</div>
+            <div class="timeline-body"><p>The difference that I see comparing <em>before</em> and <em>after</em> is that there are two blank lines between the comment and <code>foo3</code> where there was no blank line before.</p>
+<p>This looks incorrect to me. Leading comments of a function should not be separated by blank lines. @dhruvmanila do you have an idea why this is happening?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-01-30 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 07:26</div>
+            <div class="timeline-body"><p>Hmm, I don't know why, but this bug suddenly disappear. I can;t reproduce again (even though I was able to reproduce it multiple times before reporting the issue here).</p>
+<p>Maybe should close it right now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-30 07:36</div>
+            <div class="timeline-body"><p>Oh no, I'm sure there's a bug somewhere... I'll close the issue for now but please comment here if you're able to reproduce or open a new issue if you face the problem again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-30 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 07:38</div>
+            <div class="timeline-body"><p>Okay, after further testing, it sometimes appears (yeah it back) and sometimes disappear. What happen exactly, I still don't know. I can manually fix the bug, and ruff did not cause the bug again. I'm truly confused here. I will give further report if I found it again.</p>
+<p>I'm only using ruff and nbqa. I will remove nbqa and check from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-01-30 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-30 07:41</div>
+            <div class="timeline-body"><p>Okay. Let's keep this open. Maybe @dhruvmanila has an idea of what's happening. He's our notebook expert.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 07:43</div>
+            <div class="timeline-body"><p>Added context.</p>
+<p>Here is the full pre-commit</p>
+<pre><code>default_stages: [commit]
+
+repos:
+  # check yaml and end of file fixer
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+        exclude: LICENSE
+
+  # nbqa autopep8 and ruff
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.7.1
+    hooks:
+    - id: nbqa-ruff
+      additional_dependencies: [ruff==0.1.15]
+
+  # autofix using ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.15
+    hooks:
+      # Run the linter.
+      - id: ruff
+      # Run the formatter.
+      - id: ruff-format
+</code></pre>
+<p>Currently working notebook:</p>
+<pre><code>{
+ &quot;cells&quot;: [
+  {
+   &quot;cell_type&quot;: &quot;markdown&quot;,
+   &quot;metadata&quot;: {},
+   &quot;source&quot;: [
+    &quot;# Hello&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;def foo(bar):\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;def foo2(bar):\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {
+    &quot;lines_to_next_cell&quot;: 2
+   },
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;# comment\n&quot;,
+    &quot;def foo3(bar):\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: []
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;# comment\n&quot;,
+    &quot;def foo3(bar):\n&quot;,
+    &quot;    return bar&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: []
+  }
+ ],
+ &quot;metadata&quot;: {
+  &quot;jupytext&quot;: {
+   &quot;formats&quot;: &quot;notebooks//ipynb,scripts//py:percent&quot;,
+   &quot;main_language&quot;: &quot;python&quot;
+  },
+  &quot;language_info&quot;: {
+   &quot;name&quot;: &quot;python&quot;
+  }
+ },
+ &quot;nbformat&quot;: 4,
+ &quot;nbformat_minor&quot;: 2
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 07:49</div>
+            <div class="timeline-body"><p><code>ruff format .</code>: no bug
+<code>pre-commit run --all-files</code>: bug</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 07:53</div>
+            <div class="timeline-body"><p>If I did not use nbqa on pre-commit:</p>
+<p><code>ruff format .</code>: fixing all
+<code>pre-commit run --all-files</code>: ruff didn't check any notebooks (weird)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-01-30 07:58</div>
+            <div class="timeline-body"><p>Solution: Change pre-commit to also target notebook.</p>
+<pre><code>  # autofix using ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.1.15
+    hooks:
+      # Run the linter.
+      - id: ruff
+        types_or: [ python, pyi, jupyter ]
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi, jupyter ]
+</code></pre>
+<p>It's weird that it requires <code>types_or: [ python, pyi, jupyter ]</code> when I already set it on toml <code>extend-include = [&quot;*.ipynb&quot;]</code></p>
+<p>I will close this issue. Maybe this is due to nbqa and ruff interaction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @yasirroni on 2024-01-30 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-01-30 10:01</div>
+            <div class="timeline-body"><p>Hey, thanks for providing a lot of context on the issue.</p>
+<p>So, the way <code>pre-commit</code> works is by invoking the command on the file directly i.e., pre-commit is responsible for finding all the configured files (<code>types_or</code>) and pass it to Ruff. Now, if the Ruff command is invoked directly with the file path, it won't try to find some other files (<code>.ipynb</code> in your case) which is why you need to add the <code>jupyter</code> for pre-commit to pass the notebook files to Ruff.</p>
+<p>For example, suppose you have <code>test.py</code>, <code>test.ipynb</code> in the current folder. Without the <code>jupyter</code> entry in pre-commit, it'll invoke Ruff only with <code>test.py</code>:</p>
+<pre><code class="language-console">$ ruff check test.py
+</code></pre>
+<p>So, you need to add the <code>jupyter</code> entry which will make pre-commit include <code>test.ipynb</code> as well:</p>
+<pre><code class="language-console">$ ruff check test.py test.ipynb
+</code></pre>
+<p>Now, I'm not exactly sure about the semantics of how pre-commit passes the file - does it pass them all at once or does it pass them one at a time? But, nevertheless you'll need to configure pre-commit for it to find notebook files.</p>
+<p>That said, you don't necessarily need to update your <code>pyproject.toml</code> file if you're using Ruff only through pre-commit because it takes care of finding all the files. But, if you use Ruff from the CLI / editor with notebooks, then you need to update your <code>pyproject.toml</code> file as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-pre-commit/issues/54.html">astral-sh/ruff-pre-commit#54</a> on 2024-01-30 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NIvo172">@NIvo172</a> on 2024-07-11 19:40</div>
+            <div class="timeline-body"><p>I had the same problem and it was solved by your comment at <a href="https://github.com/astral-sh/ruff-pre-commit/issues/54#issuecomment-1916561394">astral-sh/ruff#54 (comment)</a>.
+Maybe not the right place for my question, but if what you write here about pre-commit is true,
+why does it work with nbQA, since I wouldn't specify the types_or parameter or the pass_filenames there either?</p>
+<p>If you are right and pre-commit decides which files are called, noQA should not work without the parameter either.
+And shouldn't <code>pre-commit run --all-files</code> just invoke all files and therefore Ruff should run on the Notebooks?</p>
+<p>The answer to how pre-commit passes files is:
+<code>pre-commit run</code> -&gt; All <strong>staged</strong> files.
+<code>pre-commit run --all-files</code> -&gt; All <strong>tracked</strong> files.</p>
+<p>I took a look into the pre-commit code and found:</p>
+<pre><code class="language-python">def get_all_files() -&gt; list[str]:
+    return zsplit(cmd_output('git', 'ls-files', '-z')[1])
+</code></pre>
+<p>If I run <code>git ls-files</code> I can clearly see, that the Notebook is passed without to adjust any parameters in the pre-commit config.</p>
+<p>This is a Bug in my opinion in the Ruff hook.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatal internal error when running with some incorrect options - clap-rs/clap #1461</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fatal internal error when running with some incorrect options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1461">#1461</a>
+        opened by <a href="https://github.com/agyx">@agyx</a>
+        on 2019-04-29 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/agyx">@agyx</a> on 2019-04-29 11:20</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<pre><code>rustc 1.34.1 (fc50f328b 2019-04-24)
+</code></pre>
+<h3>Affected Version of clap</h3>
+<pre><code>&quot;clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)&quot;,
+&quot;checksum clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)&quot; = &quot;b957d88f4b6a63b9d70d5f454ac8011819c6efa7727858f458ab71c756ce2d3e&quot;
+</code></pre>
+<h3>Bug or Feature Request Summary</h3>
+<p>Fatal internal error, systematically, when running with some incorrect options.</p>
+<h3>Expected Behavior Summary</h3>
+<p>No crash, error message to the user about unsupported options and possibly print help.</p>
+<h3>Actual Behavior Summary</h3>
+<pre><code>Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', src/libcore/option.rs:1038:5
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>run program with command:</p>
+<pre><code>cargo run --color=always --package xxx --bin xxx -- --command shutdown --target_addr 127.0.0.1 --target_port 5000
+</code></pre>
+<p><strong>Note that it does not match well with available options.</strong></p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">    pub fn main() -&gt; Result&lt;()&gt; {
+        #[allow(clippy::needless_pass_by_value)]
+        fn instance_validator(v: String) -&gt; result::Result&lt;(), String&gt; {
+            if v.parse::&lt;u32&gt;().is_ok() {
+                Ok(())
+            } else {
+                Err(&quot;instance/target number should be an integer value&quot;.to_string())
+            }
+        }
+
+        let matches = App::new(env!(&quot;CARGO_PKG_NAME&quot;))
+            .version(env!(&quot;CARGO_PKG_VERSION&quot;))
+            .author(env!(&quot;CARGO_PKG_AUTHORS&quot;))
+            .about(&quot;Xxx backend executable&quot;)
+            .arg(
+                Arg::with_name(&quot;mode&quot;)
+                    .short(&quot;m&quot;)
+                    .long(&quot;mode&quot;)
+                    .value_name(&quot;MODE&quot;)
+                    .possible_values(&amp;[&quot;server&quot;, &quot;client&quot;, &quot;proxy&quot;, &quot;none&quot;])
+                    .default_value(&quot;none&quot;)
+                    .help(&quot;Defines execution mode&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;instance&quot;)
+                    .short(&quot;i&quot;)
+                    .long(&quot;instance&quot;)
+                    .value_name(&quot;SERVER_INSTANCE_NUMBER&quot;)
+                    .validator(instance_validator)
+                    .help(&quot;Sets the server instance number in server/proxy mode&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;target address&quot;)
+                    .long(&quot;target_addr&quot;)
+                    .value_name(&quot;TARGET_ADDR&quot;)
+                    .help(&quot;Defines the targeted server address in client mode&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;stream&quot;)
+                    .long(&quot;stream&quot;)
+                    .value_name(&quot;STREAM&quot;)
+                    .possible_values(&amp;exchange::ExchangeId::all_names())
+                    .requires_if(&quot;mode&quot;, &quot;server&quot;)
+                    .help(&quot;Adds a data stream from specified exchange. Requires server mode&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;services&quot;)
+                    .short(&quot;s&quot;)
+                    .long(&quot;service&quot;)
+                    .multiple(true)
+                    .value_name(&quot;SERVICES&quot;)
+                    .possible_values(ServiceId::all_names())
+                    //.requires_if(&quot;mode&quot;, &quot;server&quot;) // for proxy mode also
+                    .help(&quot;Adds the specified service for running. Requires server mode&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;params&quot;)
+                    .short(&quot;p&quot;)
+                    .long(&quot;param&quot;)
+                    .multiple(true)
+                    .value_name(&quot;PARAMS&quot;)
+                    .requires_if(&quot;mode&quot;, &quot;client&quot;)
+                    .help(&quot;Specifies parameters for streaming request in client mode&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;command&quot;)
+                    .short(&quot;c&quot;)
+                    .long(&quot;command&quot;)
+                    .value_name(&quot;COMMAND&quot;)
+                    .possible_values(&amp;[&quot;shutdown&quot;, &quot;reload&quot;])
+                    .requires_if(&quot;mode&quot;, &quot;none&quot;)
+                    //.requires(&quot;target addr&quot;)
+                    //.requires(&quot;target port&quot;)
+                    .help(&quot;Defines admin command for immediate execution&quot;),
+            )
+            .arg(
+                Arg::with_name(&quot;build proto&quot;)
+                    .long(&quot;buildproto&quot;)
+                    .hidden(true)
+                    .help(&quot;Builds Rust wrapper sources from .proto files&quot;),
+            )
+            .get_matches();
+</code></pre>
+<h3>Debug output</h3>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>/Users/bertrand/.cargo/bin/cargo run --color=always --package xxx --bin xxx -- --command shutdown --target_addr 127.0.0.1 --target_port 5000
+Finished dev [unoptimized + debuginfo] target(s) in 0.23s
+Running <code>target/debug/xxx --command shutdown --target_addr 127.0.0.1 --target_port 5000</code>
+DEBUG:clap:Parser::propagate_settings: self=xxx, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--command&quot;' ([45, 45, 99, 111, 109, 109, 97, 110, 100])
+DEBUG:clap:Parser::is_new_arg:&quot;--command&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--command&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:command
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--command <COMMAND>'
+DEBUG:clap:Parser::parse_opt; opt=command, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=command
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=command
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;command&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;shutdown&quot;' ([115, 104, 117, 116, 100, 111, 119, 110])
+DEBUG:clap:Parser::is_new_arg:&quot;shutdown&quot;:Opt(&quot;command&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=command, val=&quot;shutdown&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;shutdown&quot;
+DEBUG:clap:Parser::groups_for_arg: name=command
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=command
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--target_addr&quot;' ([45, 45, 116, 97, 114, 103, 101, 116, 95, 97, 100, 100, 114])
+DEBUG:clap:Parser::is_new_arg:&quot;--target_addr&quot;:ValuesDone
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--target_addr&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;command&quot;);
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:target address
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--target_addr &lt;TARGET_ADDR&gt;'
+DEBUG:clap:Parser::parse_opt; opt=target address, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=target address
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=target address
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;target address&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;127.0.0.1&quot;' ([49, 50, 55, 46, 48, 46, 48, 46, 49])
+DEBUG:clap:Parser::is_new_arg:&quot;127.0.0.1&quot;:Opt(&quot;target address&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=target address, val=&quot;127.0.0.1&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;127.0.0.1&quot;
+DEBUG:clap:Parser::groups_for_arg: name=target address
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=target address
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--target_port&quot;' ([45, 45, 116, 97, 114, 103, 101, 116, 95, 112, 111, 114, 116])
+DEBUG:clap:Parser::is_new_arg:&quot;--target_port&quot;:ValuesDone
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--target_port&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;target address&quot;);
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Didn't match anything
+DEBUG:clap:Parser::groups_for_arg: name=target address
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::smart_usage;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;target address&quot;, &quot;command&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from:iter:command: adding arg req=&quot;none&quot;
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[&quot;none&quot;]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;command&quot;, &quot;none&quot;, &quot;target address&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:command:
+DEBUG:clap:OptBuilder::fmt:command
+DEBUG:clap:usage::get_required_usage_from:iter:none:
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', src/libcore/option.rs:1038:5
+stack backtrace:
+0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+at src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:39
+1: std::sys_common::backtrace::_print
+at src/libstd/sys_common/backtrace.rs:70
+2: std::panicking::default_hook::{{closure}}
+at src/libstd/sys_common/backtrace.rs:58
+at src/libstd/panicking.rs:200
+3: std::panicking::default_hook
+at src/libstd/panicking.rs:215
+4: &lt;std::panicking::begin_panic::PanicPayload<A> as core::panic::BoxMeUp&gt;::get
+at src/libstd/panicking.rs:478
+5: std::panicking::continue_panic_fmt
+at src/libstd/panicking.rs:385
+6: std::panicking::try::do_call
+at src/libstd/panicking.rs:312
+7: <T as core::any::Any>::type_id
+at src/libcore/panicking.rs:85
+8: <T as core::any::Any>::type_id
+at src/libcore/option.rs:1038
+9: &lt;clap::args::arg_builder::option::OptBuilder&lt;'n, 'e&gt; as core::clone::Clone&gt;::clone
+at /rustc/fc50f328b0353b285421b8ff5d4100966387a997/src/libcore/option.rs:312
+10: clap::app::usage::get_required_usage_from::{{closure}}
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/usage.rs:457
+11: &lt;clap::args::arg_builder::option::OptBuilder&lt;'n, 'e&gt; as core::clone::Clone&gt;::clone
+at /rustc/fc50f328b0353b285421b8ff5d4100966387a997/src/libcore/option.rs:386
+12: clap::app::usage::needs_flags_tag::{{closure}}
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/usage.rs:454
+13: clap::app::usage::create_smart_usage
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/usage.rs:172
+14: clap::app::usage::create_usage_no_title
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/usage.rs:55
+15: clap::app::usage::create_usage_with_title
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/usage.rs:17
+16: clap::app::usage::create_usage_with_title
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/usage.rs:44
+17: clap::app::parser::Parser::did_you_mean_error
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:1896
+18: clap::app::parser::Parser::_version
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:1617
+19: clap::app::parser::Parser::is_new_arg::{{closure}}
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/parser.rs:931
+20: clap::app::App::get_matches_from::{{closure}}
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/mod.rs:1633
+21: &lt;std::ffi::os_str::OsStr as core::cmp::PartialEq&lt;std::ffi::os_str::OsString&gt;&gt;::eq
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/mod.rs:1513
+22: &lt;std::ffi::os_str::OsStr as core::cmp::PartialEq&lt;std::ffi::os_str::OsString&gt;&gt;::eq
+at /Users/bertrand/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.32.0/src/app/mod.rs:1455
+23: xxx::application::Application::main
+at src/application.rs:201
+24: xxx::main
+at src/main.rs:38
+25: std::rt::lang_start::{{closure}}
+at /rustc/fc50f328b0353b285421b8ff5d4100966387a997/src/libstd/rt.rs:64
+26: std::panicking::try::do_call
+at src/libstd/rt.rs:49
+at src/libstd/panicking.rs:297
+27: panic_unwind::dwarf::eh::read_encoded_pointer
+at src/libpanic_unwind/lib.rs:87
+28: std::panicking::update_count_then_panic
+at src/libstd/panicking.rs:276
+at src/libstd/panic.rs:388
+at src/libstd/rt.rs:48
+29: std::rt::lang_start
+at /rustc/fc50f328b0353b285421b8ff5d4100966387a997/src/libstd/rt.rs:64
+30: xxx::main</p>
+<p>Process finished with exit code 101</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: panic</span> added by @CreepySkeleton on 2020-02-01 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-02-01 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-01 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-01 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-26 10:14</div>
+            <div class="timeline-body"><p>Turns out this is another instance of &quot;indescriptive panics in 2.x suck&quot;. The example is incorrect because <code>requires_if</code> takes the expected value of the arg <em>first</em>, and the name of the arg <em>second</em>. After I corrected it, if worked as expected:</p>
+<pre><code>error: Found argument '--target_port' which wasn't expected, or isn't valid in this context
+
+If you tried to supply `--target_port` as a PATTERN use `-- --target_port`
+
+USAGE:
+    probe.exe --command &lt;COMMAND&gt; --target_addr &lt;TARGET_ADDR&gt;
+
+For more information try --help
+</code></pre>
+<p>Sidenote: this order of arguments in <code>requires/required*</code> is non-intuitive. Perhaps we should change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-04-26 10:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:58 UTC
+    </footer>
+</body>
+</html>

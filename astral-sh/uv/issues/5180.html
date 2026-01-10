@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instability with preferences and forks: Lockfile changes on the second run - astral-sh/uv #5180</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Instability with preferences and forks: Lockfile changes on the second run</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5180">#5180</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-18 09:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-18 09:50</div>
+            <div class="timeline-body"><p>The lockfile can change on the second <code>uv lock</code>, collapsing previously forking dependencies into a single one. I believe this due to how preferences are handled.</p>
+<p>Minimal example:</p>
+<pre><code>[project]
+name = &quot;transformers&quot;
+version = &quot;4.39.0.dev0&quot;
+requires-python = &quot;&gt;=3.9.0&quot;
+dependencies = [
+  &quot;datasets&quot;,
+  &quot;librosa&quot;,
+  &quot;onnxruntime&quot;,
+]
+</code></pre>
+<pre><code>$ rm -f uv.lock &amp;&amp; cargo run -q lock --preview &amp;&amp; wc -l uv.lock &amp;&amp; cargo run -q lock --preview &amp;&amp; wc -l uv.lock &amp;&amp; cargo run -q lock --preview &amp;&amp; wc -l uv.lock
+Resolved 60 packages in 169ms
+1462 uv.lock
+Resolved 58 packages in 33ms
+1375 uv.lock
+Resolved 58 packages in 28ms
+1375 uv.lock
+</code></pre>
+<p>We have 3 different forkings until it converges:</p>
+<pre><code>$ rm -f uv.lock &amp;&amp; cargo run -q lock --preview -v 2&gt;&amp;1 | rg -i split
+DEBUG Adding split to cover possibly incomplete markers: python_version &gt;= '3.11' and python_version != '3.11' and python_version &lt; '3.12'
+DEBUG Splitting resolution on pandas==2.2.2 over numpy
+DEBUG Pre-fork split universal took 0.007s
+DEBUG Solving split python_version &gt;= '3.12' (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version &gt;= '3.12') resolution took 0.003s
+DEBUG Solving split python_version == '3.11' (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version == '3.11') resolution took 0.001s
+DEBUG Solving split python_version &lt; '3.11' (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version &lt; '3.11') resolution took 0.001s
+DEBUG Solving split python_version &lt; '3.12' and python_version &gt;= '3.11' and (python_version &lt; '3.11' or python_version &gt; '3.11') (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version &lt; '3.12' and python_version &gt;= '3.11' and (python_version &lt; '3.11' or python_version &gt; '3.11')) resolution took 0.002s
+$ cargo run -q lock --preview -v 2&gt;&amp;1 | rg -i split
+DEBUG Adding split to cover possibly incomplete markers: python_version &gt; '3.11' and python_version &lt; '3.12'
+DEBUG Splitting resolution on pandas==2.2.2 over numpy
+DEBUG Pre-fork split universal took 0.001s
+DEBUG Solving split python_version &gt;= '3.12' (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version &gt;= '3.12') resolution took 0.001s
+DEBUG Solving split python_version &lt;= '3.11' (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version &lt;= '3.11') resolution took 0.001s
+DEBUG Solving split python_version &lt; '3.12' and python_version &gt; '3.11' (requires-python: python_version &gt;= '3.9' and python_full_version &gt;= '3.9.0')
+DEBUG Split (python_version &lt; '3.12' and python_version &gt; '3.11') resolution took 0.001s
+$ cargo run -q lock --preview -v 2&gt;&amp;1 | rg -i split
+DEBUG Split universal resolution took 0.002s
+$ cargo run -q lock --preview -v 2&gt;&amp;1 | rg -i split
+DEBUG Split universal resolution took 0.002s
+</code></pre>
+<p>I think we need #4926 (to not create duplicate dependencies in the first run) and we need to marker- or fork-tag preferences if that heuristic fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-18 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-18 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-07-24 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-24 11:42</div>
+            <div class="timeline-body"><p>A detailed write-up on the problem can be found in https://github.com/astral-sh/packse/pull/203.</p>
+<p>My plan to solve this is to:</p>
+<ul>
+<li>[x] Merge forks with identical resolutions so we have as few forks as possible in the end</li>
+<li>[x] Solve https://github.com/astral-sh/uv/issues/4926 as a follow-up so we have diverging forks less often</li>
+<li>[x] When we still have diverging versions, preserve the fork markers from the resolution and for packages with diverging versions in the lockfile</li>
+<li>[x] When resolving from an existing lockfile, start already forked into the forks from the lockfile</li>
+<li>[x] Change the preferences so that we only use those applicable to the current fork. When we use the preserved forks, this will be a 1-to-1 mapping, what we do otherwise TBD</li>
+<li>[x] Add https://github.com/astral-sh/packse/pull/203 to the test suite</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5479.html">astral-sh/uv#5479</a> on 2024-07-26 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5480.html">astral-sh/uv#5480</a> on 2024-07-26 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5481.html">astral-sh/uv#5481</a> on 2024-07-26 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-26 13:48</div>
+            <div class="timeline-body"><p>Background reading: https://github.com/astral-sh/packse/pull/203</p>
+<p>The root problem is that preferences can influence which fork points we get and thereby which forks we have in the eventual merge resolution.</p>
+<p>In the worst case we could have a bistable system that flip-flops for every <code>uv lock</code> invocation: We start with preference I for lockfile I. These contain <code>foo==1</code>, and starting with <code>foo==1</code> causes us to fork on <code>python_version</code>. The two <code>python_version</code> forks both end up rejecting <code>foo==1</code> and we write lockfile II with <code>foo==2</code>. In the next <code>uv lock</code> invocation, we read preferences II from lockfile II with <code>foo==2</code>. Starting with <code>foo==2</code> causes us to fork on <code>sys_platform</code> instead. With those forks, we end up rejecting <code>foo==2</code> and write lockfile I with <code>foo==1</code> instead; we're back in the other state, switching on every <code>uv lock</code>.</p>
+<p>The solution is to lock store the forks in the lockfile and to start the resolution with the locked forks. For simplicity and to make it easier to understand for users why there are multiple versions per package in their lockfile, for each package with multiple versions, we write write the forks a version belongs to next to the fork. When we resolve, in each fork, we will find exactly one matching preference, the one that is the result in the fork in the previous resolution. This way, we get a stable resolution.</p>
+<p>We need to both start the resolution with the locked forks, because we may not see the same fork points again with preferences that skip over them (diverging or not), and have per-fork preferences to ensure that in each fork, we're doing the same resolution as before</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Lockfile changes on the second run" to "Instability with preferences and forks: Lockfile changes on the second run" by @konstin on 2024-07-26 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5441.html">astral-sh/uv#5441</a> on 2024-07-26 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5485.html">astral-sh/uv#5485</a> on 2024-07-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-31 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-31 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding uv-install-wheel as dependency results in cargo build error on Windows - astral-sh/uv #16836</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding uv-install-wheel as dependency results in cargo build error on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16836">#16836</a>
+        opened by <a href="https://github.com/pavelzw">@pavelzw</a>
+        on 2025-11-24 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pavelzw">@pavelzw</a> on 2025-11-24 16:49</div>
+            <div class="timeline-body"><pre><code class="language-toml"># Cargo.toml
+[package]
+name = &quot;uv-bug&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2024&quot;
+
+[dependencies]
+uv-install-wheel = &quot;0.0.1&quot;
+</code></pre>
+<pre><code class="language-rs">// main.rs
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>building this on Windows results in the following error:</p>
+<pre><code>   Compiling uv-trampoline-builder v0.0.1
+error: couldn't read `C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\uv-trampoline-builder-0.0.1\src\../../uv-trampoline/trampolines/uv-trampoline-x86_64-gui.exe`: The system cannot find the path specified. (os error 3)
+  --&gt; C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\uv-trampoline-builder-0.0.1\src\lib.rs:18:5
+   |
+18 |     include_bytes!(&quot;../../uv-trampoline/trampolines/uv-trampoline-x86_64-gui.exe&quot;);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\uv-trampoline-builder-0.0.1\src\../../uv-trampoline/trampolines/uv-trampoline-x86_64-console.exe`: The system cannot find the path specified. (os error 3)
+  --&gt; C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\uv-trampoline-builder-0.0.1\src\lib.rs:22:5
+   |
+22 |     include_bytes!(&quot;../../uv-trampoline/trampolines/uv-trampoline-x86_64-console.exe&quot;);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `uv-trampoline-builder` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+</code></pre>
+<p>this is because the binaries referenced in https://github.com/astral-sh/uv/blob/4b92f4fde442ee64c1ad2fc17182ef02cd32de49/crates/uv-trampoline-builder/src/lib.rs#L20-L22</p>
+<p>are not part of the <code>uv-trampoline-builder</code> crate</p>
+<p>@zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Quantco/pixi-pack/pulls/243.html">Quantco/pixi-pack#243</a> on 2025-11-24 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../conda/rattler/pulls/1866.html">conda/rattler#1866</a> on 2025-11-24 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Adding uv-install-wheel/ results in cargo build error on Windows" to "Adding uv-install-wheel as dependency results in cargo build error on Windows" by @pavelzw on 2025-11-24 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 16:54</div>
+            <div class="timeline-body"><p>I'm not sure what the best way to fix this is as I'm sort of a Rust packaging beginner :)</p>
+<p>It's unfortunate that we need to include these binary blobs in the crate, but I don't think there's a feasible alternative.</p>
+<p>cc @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-01 16:57</div>
+            <div class="timeline-body"><p>We could copy the file to <code>uv-trampoline-builder</code> instead of <code>uv-trampoline</code>, and make sure the cargo include mention the build trampoline directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-12-01 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2025-12-01 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-12-01 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16922.html">astral-sh/uv#16922</a> on 2025-12-02 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-02 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dzbarsky/rules_rs/issues/6.html">dzbarsky/rules_rs#6</a> on 2025-12-08 11:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't `uv self update` via ssh - astral-sh/uv #9250</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't `uv self update` via ssh</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9250">#9250</a>
+        opened by <a href="https://github.com/dedebenui">@dedebenui</a>
+        on 2024-11-19 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dedebenui">@dedebenui</a> on 2024-11-19 21:26</div>
+            <div class="timeline-body"><p>I want to manage a remote server with ansible and use <code>uv</code>, but the <code>self update</code> command doesn't work. I narrowed down the problem to running the command over ssh:</p>
+<pre><code>ssh remote 'uv --verbose self update'
+</code></pre>
+<p>I get the following error:</p>
+<pre><code>DEBUG uv 0.5.3
+DEBUG receipt is not for this executable; assuming uv was installed via a package manager
+warning: Self-update is only available for uv binaries installed via the standalone installation scripts.
+
+If you installed uv with pip, brew, or another package manager, update uv with `pip install --upgrade`, `brew upgrade`, or similar.
+</code></pre>
+<p>It's the same with <code>ssh -t</code></p>
+<p>However, if I first connect to the remote server and then run <code>uv self update</code>, it works. Is this a known limitation/bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-19 22:10</div>
+            <div class="timeline-body"><p>I'm not sure why this is. The function that's used to determine if the receipt is valid is at</p>
+<p>https://github.com/axodotdev/axoupdater/blob/39a6d215c4e4e8f4b8d4c30840019f6b9e0186f7/axoupdater/src/receipt.rs#L81-L109</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-11-20 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/duckinator">@duckinator</a> on 2024-11-20 16:14</div>
+            <div class="timeline-body"><p>Hi, sorry you're running into this! I work on the upstream software @zanieb mentioned.</p>
+<p>When you connect to a system via <code>ssh</code>, ssh uses a hard-coded PATH by default unless an interactive shell is run. If you do <code>ssh remote some-command</code>, you're not running an interactive shell, so it'll use that default PATH.</p>
+<p>My suspicion is you have a second copy of <code>uv</code>, and <code>ssh remote uv ...</code> is running that version. I installed <code>uv</code> via the installer, and I get &quot;command not found&quot; instead when I try updating via <code>ssh localhost uv --verbose self update</code> (see the screenshot below).</p>
+<p>On the system where you had the problem, can you connect normally (in a session where <code>uv self update</code> works), then run both <code>which uv</code> and <code>ssh localhost 'which uv'</code>?</p>
+<p><img src="https://github.com/user-attachments/assets/173b4120-fa7b-469f-b29b-e97fd7e6938e" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dedebenui">@dedebenui</a> on 2024-11-20 18:54</div>
+            <div class="timeline-body"><p>Thank you for the detailed reply and the trouble shooting steps. I found that I had some old <code>uv</code> binary that I forgot about from when I tried to install it for all user in <code>/usr/local/bin</code>. With your explanation on <code>PATH</code>, it makes sense that by doing <code>ssh 'uv self update'</code>, it ran the binary in <code>/usr/local/bin</code> creating conflict with the more recent installation in <code>~/.local/bin</code>.</p>
+<p>I haven't done more testing, but is that a general problem that can occur when 2 or more different <code>uv</code> are installed? Anyway, that was definitely a mistake on my end, thank you again for the help. This specific issue has been solved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dedebenui on 2024-11-20 18:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:34 UTC
+    </footer>
+</body>
+</html>

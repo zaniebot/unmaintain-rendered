@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to ignore conflicts in transitive dependencies when publishing to PyPI? - astral-sh/uv #10848</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to ignore conflicts in transitive dependencies when publishing to PyPI?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10848">#10848</a>
+        opened by <a href="https://github.com/cthoyt">@cthoyt</a>
+        on 2025-01-22 10:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-01-22 10:17</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm running into the issue where I know that a transitive dependency of my project, <code>gilda</code>, has unnecessarily strict version pins to <code>scikit-learn&lt;1.5</code>.</p>
+<pre><code class="language-console">$ uv init --package test_reqs
+Initialized project `test-reqs` at `/Users/cthoyt/Desktop/test_reqs`
+$ cd test_reqs
+$ uv add &quot;scikit-learn&gt;=1.6.0&quot;
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Resolved 6 packages in 844ms
+   Built test-reqs @ file:///Users/cthoyt/Desktop/test_reqs
+Prepared 6 packages in 3.50s
+Installed 6 packages in 28ms
+ + joblib==1.4.2
+ + numpy==2.2.2
+ + scikit-learn==1.6.1
+ + scipy==1.15.1
+ + test-reqs==0.1.0 (from file:///Users/cthoyt/Desktop/test_reqs)
+ + threadpoolctl==3.5.
+$ uv add &quot;gilda&gt;=1.4.0&quot;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only gilda&lt;=1.4.0 is available and gilda==1.4.0 depends on scikit-learn&lt;1.5, we can conclude that gilda&gt;=1.4.0
+      depends on scikit-learn&lt;1.5.
+      And because your project depends on gilda&gt;=1.4.0 and scikit-learn&gt;=1.6.0, we can conclude that your project's requirements
+      are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and
+        syncing.
+</code></pre>
+<p>First, kudos on this being a super helpful resolution message. As suggested, for my local project, I can use <code>--frozen</code> to tell the resolver I know what I'm doing and am sure I want to override its default behavior.</p>
+<p><strong>My goal</strong> is that I want to publish to PyPI, and make sure that downstream users of my package get <code>gilda</code> but don't run into the same issue. I'm under the impression that the <code>uv.lock</code> solution with <code>--frozen</code> only works for users who download the source code and install it with uv.</p>
+<p>My question is - is there a solution to my issue that will work directly from PyPI? I.e., if I publish <code>test_reqs</code> to PyPI, is there a way for anyone using <code>pip install test_reqs</code> (or equivalent, whether with uv or not) to get the information about the surgery I did on the requirements?</p>
+<p>A few alternatives I've considered:</p>
+<ul>
+<li>Making a fork of this repo, fixing the requirements, and using <code>[tool.uv.sources]</code> in my <code>pyproject.toml</code> following https://docs.astral.sh/uv/concepts/projects/dependencies/#git</li>
+<li>Not pinning gilda to <code>&gt;=1.4</code>. Resolution will &quot;work&quot; and get version 1.2, where there is no scikit-learn pin, but I need the most recent features, so this isn't a realistic option</li>
+</ul>
+<h3>Platform</h3>
+<p>Darwin 24.2.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.22 (4574ced37 2025-01-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @cthoyt on 2025-01-22 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-22 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>My question is - is there a solution to my issue that will work directly from PyPI?</p>
+</blockquote>
+<p>Unfortunately, no. pypi doesn't allow influencing the metadata of other packages. You can only document to users what workarounds exists with different packaging tools.</p>
+<blockquote>
+<p>Making a fork of this repo, fixing the requirements, and using [tool.uv.sources] in my pyproject.toml following https://docs.astral.sh/uv/concepts/projects/dependencies/#git</p>
+</blockquote>
+<p>pypi doesn't allow URL or path dependencies and <code>[tool.uv.sources]</code> is not published for that reason. You would need to publish forks under different names for the whole dependency chain to gilda.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-01-22 12:30</div>
+            <div class="timeline-body"><p>@konstin thanks for confirming what I was thinking. I hope this issue is valuable in case someone else has a similar question :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cthoyt on 2025-01-22 12:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

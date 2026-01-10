@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] TC004 is too strict for SQLAlchemy's `Mapped` - astral-sh/ruff #16412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[`flake8-type-checking`] TC004 is too strict for SQLAlchemy's `Mapped`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16412">#16412</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-02-27 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-27 10:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given something like:</p>
+<p>https://play.ruff.rs/da4c76c4-92d0-4083-99c1-022152398a50</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from sqlalchemy.orm import BaseModel, Mapped, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .bar import Bar
+
+class Foo(BaseModel):
+    id: Mapped[int]
+    bar_id: Mapped[int | None]
+    bar: Mapped[Bar | None] = relationship()
+</code></pre>
+<p>Ruff will flag the import inside the <code>TYPE_CHECKING</code> block, which very well may be required, due to circular dependencies between the two models.</p>
+<p>Additionally <code>runtime-required-base-classes</code> is technically too strict for <code>sqlalchemy.orm.BaseModel</code>, since only the annotations that use a <code>Mapped</code> class are runtime required and furthermore only non-model types are runtime required, any forward references to other models can be resolved during mapping.</p>
+<p>We could handle the latter using an additional setting <code>runtime-required-generic-subscripts</code>. But the former would still be a problem.</p>
+<p>To handle the former we would need something like <code>runtime-ambiguous</code> instead of <code>runtime-required</code>, so we emit neither <code>TC001-003</code> nor <code>TC004</code> for uses in that context, since the use will have to be considered neither runtime-only nor typing-only.</p>
+<p>But turning two settings, into six settings doesn't seem particularly elegant either. Maybe someone can think of a more elegant way to structure these settings.</p>
+<p>I think this is the final major hurdle for covering all the use-cases the flake8 plugin currently covers (beyond implementing the currently still missing <code>TC009</code> rule).</p>
+<p>Eventually type inference could let us do something more targeted for SQLAlchemy that knows exactly which symbols aren't runtime-required, but that's still a long way off and not as flexible for other libraries that may do something similar.</p>
+<h3>Version</h3>
+<p>0.9.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-27 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14140.html">astral-sh/ruff#14140</a> on 2025-03-18 21:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

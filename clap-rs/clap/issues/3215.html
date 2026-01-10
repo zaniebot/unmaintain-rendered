@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>long_help() output includes output from long_version() instead of short_version() - clap-rs/clap #3215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>long_help() output includes output from long_version() instead of short_version()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3215">#3215</a>
+        opened by <a href="https://github.com/ducaale">@ducaale</a>
+        on 2021-12-24 09:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ducaale">@ducaale</a> on 2021-12-24 09:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.56.0 (09c42c458 2021-10-18)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-rc.8</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn long_version() -&gt; &amp;'static str {
+    concat!(env!(&quot;CARGO_PKG_VERSION&quot;), &quot;\n&quot;, &quot;+native-tls&quot;)
+}
+
+/// Simple program to greet a person
+///
+/// longer description
+#[derive(Parser, Debug)]
+#[clap(about, version, author, long_version = long_version())]
+struct Args {
+    /// Name of the person to greet
+    #[clap(short, long)]
+    name: String,
+
+    /// Number of times to greet
+    #[clap(short, long, default_value_t = 1)]
+    count: u8,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    for _ in 0..args.count {
+        println!(&quot;Hello {}!&quot;, args.name)
+    }
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- --help
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Help output includes <code>+native-tls</code> because it uses the output from <code>--version</code> rather than <code>-V</code></p>
+<pre><code>temp-clap 0.1.0
++native-tls
+Simple program to greet a person
+
+longer description
+
+USAGE:
+    temp-clap [OPTIONS] --name &lt;NAME&gt;
+
+OPTIONS:
+    -c, --count &lt;COUNT&gt;
+            Number of times to greet
+
+            [default: 1]
+
+    -h, --help
+            Print help information
+
+    -n, --name &lt;NAME&gt;
+            Name of the person to greet
+
+    -V, --version
+            Print version information
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>temp-clap 0.1.0
+Simple program to greet a person
+
+longer description
+
+USAGE:
+    temp-clap [OPTIONS] --name &lt;NAME&gt;
+
+OPTIONS:
+    -c, --count &lt;COUNT&gt;
+            Number of times to greet
+
+            [default: 1]
+
+    -h, --help
+            Print help information
+
+    -n, --name &lt;NAME&gt;
+            Name of the person to greet
+
+    -V, --version
+            Print version information
+</code></pre>
+<h3>Additional Context</h3>
+<p>~This bug only occurs when I set the long description for Clap.~ It happens every time the long help is outputted.</p>
+<h3>Debug Output</h3>
+<p>No response</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ducaale on 2021-12-24 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-24 11:56</div>
+            <div class="timeline-body"><p>Could you expand on why you consider it a bug for us to  show the long version when we also show the long help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2021-12-24 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-24 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ducaale">@ducaale</a> on 2021-12-24 12:29</div>
+            <div class="timeline-body"><p>Some CLI apps i.e ripgrep, include more output such as &quot;enabled features&quot; in the long version. And because Clap 2.x used the short version everywhere, there weren't any issues with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Setting long description causes long_version() to be used in --help output" to "long_version() to be used in long_help() output" by @ducaale on 2021-12-24 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "long_version() to be used in long_help() output" to "long_help() output includes output from long_version() instead of short_version()" by @ducaale on 2021-12-24 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-24 18:05</div>
+            <div class="timeline-body"><p>Ok, so this was a change of behavior from clap2 that you are concerned about.</p>
+<p>Looks like this changed in #2369 without any direct acknowledgement (even says &quot;version output is unchanged&quot;).  A reviewer did comment on it, just saying &quot;Nice catch, adding a regression test would be great.&quot;.</p>
+<p>@ldm0 any further background on why you were thinking its good for <code>--help</code> to show long version instead of the short version?</p>
+<p>Still unsure of my thoughts.  I wonder if this might be a case similar to #3193.  In that, we only show short subcommand help, deferring to the subcommand's help for more details.  Here, it might make sense for us to show the short version, deferring to the long version for more details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-27 16:32</div>
+            <div class="timeline-body"><p>@BurntSushi as someone who uses long-version, what are your thoughts on long help (<code>--help</code>) showing the long-version (&quot;because its showing other long info&quot;, well, except subcommands) or showing the short version (delegating to <code>--version</code>)?</p>
+<p>During clap3, <code>--help</code> was changed from showing the short version to showing the long version.  There doesn't seem to have been any documented motivation behind the change.  Trying to weigh out the different perspectives before making a decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-12-27 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3232.html">clap-rs/clap#3232</a> on 2021-12-30 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-30 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ducaale/xh/pulls/216.html">ducaale/xh#216</a> on 2022-01-01 18:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:49 UTC
+    </footer>
+</body>
+</html>

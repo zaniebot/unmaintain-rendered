@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`default_value_factory` - clap-rs/clap #4761</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`default_value_factory`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4761">#4761</a>
+        opened by <a href="https://github.com/Jasha10">@Jasha10</a>
+        on 2023-03-14 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jasha10">@Jasha10</a> on 2023-03-14 20:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.1.8</p>
+<h3>Describe your use case</h3>
+<p>I'd like to supply a <em>factory</em> that creates a default value for a given Cli argument.
+Compared with the existing methods for specifying a default value, e.g. <code>#[arg(default_value_t = 2020)]</code>, being able to pass a callback <code>#[arg(default_value_factory = || 2020)]</code> would enable more complex use-cases such as reading a default value from disk or performing some computation to produce the default value.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Here is a demo of the API that I have in mind:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+struct Cli {
+    #[arg(default_value_factory = get_default_port)]
+    port: u16,
+}
+fn get_default_port() -&gt; u16 {
+    123
+}
+</code></pre>
+<p>I would think that, in general, <code>default_value_factory</code> should accept something that implements <code>Fn() -&gt; u16</code> or perhaps <code>Fn() -&gt; Result&lt;u16&gt;</code>. (I'm not sure which would be more consistent with the existing API).</p>
+<h3>Alternatives, if applicable</h3>
+<p>The alternative I've used involves <code>Option&lt;u16&gt;</code>:</p>
+<pre><code class="language-rust">#[derive(Parser)]
+struct Cli {
+    maybe_port: u16,
+}
+fn get_default_port() -&gt; u16 {
+    123
+}
+
+fn main() {
+    let Cli { maybe_port } = Cli::parse();
+    let port: u16 = maybe_port.unwrap_or_else(get_default_port);
+    println!(&quot;{}&quot;, port);
+}
+</code></pre>
+<h3>Additional Context</h3>
+<p>This feature request is inspired by Python's <a href="https://docs.python.org/3/library/dataclasses.html">dataclasses</a>, which support using a <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field"><code>default_factory</code> </a> to compute the default value of a dataclass field:</p>
+<pre><code class="language-python">&gt;&gt;&gt; from dataclasses import dataclass, field
+&gt;&gt;&gt; @dataclass
+... class Cli:
+...     port: int = field(default_factory=lambda: 123)
+...
+&gt;&gt;&gt; Cli()
+Cli(port=123)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @Jasha10 on 2023-03-14 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-15 01:15</div>
+            <div class="timeline-body"><p>Our primary focus in providing a default value is for showing it in the help.  As you mentioned, you can handle this on your side by making the field and <code>Option</code> and using an <code>unwrap_or_else</code> on it to call your factory.  Frequently, I wrap this behavior in my applications in a function on my <code>Args</code> which is what I then use to access it.</p>
+<p>Unless a strong enough motivating case is provided, I lean towards rejecting this.  We are trying to balance the features we provide with our binary size and compile times and this feels it'll just be responsible for more bloat.</p>
+<p>Note: If you weren't aware, you can have the attribute be initialized with a function call.  That doesn't help in all situations but it can be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jasha10">@Jasha10</a> on 2023-03-15 02:50</div>
+            <div class="timeline-body"><p>Thanks for the reply @epage. I understand you explanation and will close this feature request as out of scope.</p>
+<blockquote>
+<p>Note: If you weren't aware, you can have the attribute be initialized with a function call.</p>
+</blockquote>
+<p>Not sure what you mean by this. Could you please point me to the relevant part of the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Jasha10 on 2023-03-15 02:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:21 UTC
+    </footer>
+</body>
+</html>

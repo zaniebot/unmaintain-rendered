@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate `Fix` for suppressing violations - astral-sh/ruff #4307</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate `Fix` for suppressing violations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4307">#4307</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-05-09 12:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-09 12:58</div>
+            <div class="timeline-body"><p>This is not fully-fledged, it's more a description of an idea that I would like to explore.</p>
+<p>Currently, Ruff serializes the <code>noqa_row</code> as part of the JSON messages and the VS code plugin uses that row number to insert the <code>noqa</code> comment at the right place. The issue that I have with the <code>noqa_row</code> is that it leaks internal details and complicates the LSP because it has to know how to correctly add a <code>noqa</code> comment.</p>
+<p>What if ruff would instead generate a second <code>Fix</code> to add the <code>noqa</code> suppression comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-05-09 14:38</div>
+            <div class="timeline-body"><p>I had the same thought: https://github.com/charliermarsh/ruff-lsp/pull/76#issuecomment-1454257946</p>
+<p>It does feel much cleaner, however these are not regular fixes (+ it makes every lint &quot;fixable&quot;...) so should be distinguished in some way - how to do it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-05-09 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-09 16:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I had the same thought: https://github.com/charliermarsh/ruff-lsp/pull/76#issuecomment-1454257946</p>
+</blockquote>
+<p>Oh nice, I didn't know about this. Thanks for cross-referencing!</p>
+<blockquote>
+<p>It does feel much cleaner, however these are not regular fixes (+ it makes every lint &quot;fixable&quot;...) so should be distinguished in some way - how to do it?</p>
+</blockquote>
+<p>Hmm, that's a good point. I guess we could either:</p>
+<ul>
+<li>Use the newly introduced <code>Fix::applicability</code> and only show violations as <em>fixable</em> if they have at least one non-manual fix.</li>
+<li>This would be harder to do in Ruff today because it doesn't support this capability, but we could provide this as a code action if the cursor is positioned in a range with a violation.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-05-10 09:44</div>
+            <div class="timeline-body"><p>I was thinking, since this is not useful for regular cli usage, but only for LSP-like scenarios, that the LSP should just tell Ruff &quot;please generate these&quot;, in one way or another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-01-04 04:36</div>
+            <div class="timeline-body"><p>Since it'd be used mostly by LSP, I'd recommend hidden CLI option <code>--suggest-noqa</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 05:41</div>
+            <div class="timeline-body"><p>\cc @snowsignal You might be interested in this as it would easier to implement in the native LSP implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-30 09:10</div>
+            <div class="timeline-body"><p>@snowsignal do you think this issue is still relevant after your new LSP implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-02 14:33</div>
+            <div class="timeline-body"><p>@MichaReiser I think this is still relevant because we still need to support noqa suppression comments in the new extension, which calls into <code>ruff_linter</code> directly. We'll still need to figure out how to generate fixes for noqa comments, though it would probably be a separate method called after the linter is run.</p>
+<p>Re: https://github.com/astral-sh/ruff/issues/4307#issuecomment-1540490537</p>
+<blockquote>
+<p>This would be harder to do in Ruff today because it doesn't support this capability, but we could provide this as a code action if the cursor is positioned in a range with a violation.</p>
+</blockquote>
+<p>With the new Ruff LSP, we should be able to support this, though it will require the implementation of diagnostic caching first.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

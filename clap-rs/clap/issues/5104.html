@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A version of `Parser::parse_from` that reads a mock of the environment, for use in testing - clap-rs/clap #5104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A version of `Parser::parse_from` that reads a mock of the environment, for use in testing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5104">#5104</a>
+        opened by <a href="https://github.com/cbeck88">@cbeck88</a>
+        on 2023-08-30 19:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cbeck88">@cbeck88</a> on 2023-08-30 19:21</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.3</p>
+<h3>Describe your use case</h3>
+<p>I have been using clap for years, and I love it, thank you.</p>
+<p>Frequently the pattern with which I use it looks something like this:</p>
+<pre><code class="language-rust">#[derive(Clone, Debug, Parser, Serialize)]
+pub struct Config {
+    #[clap(long, env, default_value = &quot;60&quot;, value_parser = parse_duration_in_seconds)]
+    pub postgres_idle_timeout: Duration,
+
+    #[clap(long, env, default_value = &quot;120&quot;, value_parser = parse_duration_in_seconds)]
+    pub postgres_max_lifetime: Duration,
+
+    #[clap(long, env, default_value = &quot;5&quot;, value_parser = parse_duration_in_seconds)]
+    pub postgres_connection_timeout: Duration,
+
+    #[clap(long, env, default_value = &quot;3&quot;)]
+    pub postgres_max_connections: u32,
+}
+
+impl Default for SqlConnectionConfig {
+    fn default() -&gt; Self {
+        Self {
+            postgres_idle_timeout: Duration::from_secs(60),
+            postgres_max_lifetime: Duration::from_secs(120),
+            postgres_connection_timeout: Duration::from_secs(5),
+            postgres_max_connections: 3,
+        }
+    }
+}
+</code></pre>
+<p>That is, I usually derive <code>Parser</code> and specify defaults for everything, and then separately implement <code>Default</code> myself.</p>
+<p>Then, in tests that require the config, I usually use <code>Default</code> to create the test object, or I use the <code>..Default::default()</code> syntax:</p>
+<pre><code class="language-rust">Config {
+  postgres_max_connections: 1,
+  ..Default::default()
+}
+</code></pre>
+<p>This helps me avoid touching all the tests when a new option is added which doesn't affect most of them.</p>
+<p>This is less DRY than skipping <code>impl Default</code> and just using <code>Parser::parse_from</code> in these tests to get default or nearly default configs. But that has the problem that it reads from the environment, and so if a developer sets one of these vars and then runs <code>cargo test</code>, the test may run differently or fail, which can be hard to track down.</p>
+<p>When I skip the <code>Parser</code> machinery and use <code>Default::default</code>, then I can write tests that are isolated from the enviornment.
+However, it is not very dry that I usually end up writing all the defaults out twice, once in <code>derive(Parser)</code> and once in <code>impl Default</code>, so that feels a bit silly.</p>
+<p>In another case I ran into, I really did want to write tests of argument parsing:</p>
+<pre><code class="language-rust">        // Should work
+        Config::try_parse_from([
+            &quot;&quot;,
+            &quot;--smtp-host=smtp.gmail.com&quot;,
+            &quot;--smtp-username=alice&quot;,
+            &quot;--smtp-password=hunter42&quot;,
+        ])
+        .unwrap();
+        // Should fail because of group requirements
+        assert!(Config::try_parse_from([
+            &quot;&quot;,
+            &quot;--smtp-host=smtp.gmail.com&quot;,
+            &quot;--smtp-username=alice&quot;,
+        ])
+        .is_err());
+</code></pre>
+<p>In this case, I do want to test that I set up the config group properly and it works as expected, but afaict there's no way for me to test this in a way that's isolated from the environment. And so these tests can start failing if one of these env is set, which a developer might easily do for local testing.</p>
+<p>This can be worked around of course by unsetting env before parsing:</p>
+<pre><code class="language-rust">        // Prevent env from messing with us
+        std::env::remove_var(&quot;SMTP_HOST&quot;);
+        std::env::remove_var(&quot;SMTP_USERNAME&quot;);
+        std::env::remove_var(&quot;SMTP_PASSWORD&quot;);
+        std::env::remove_var(&quot;DEV_CONFIG&quot;);
+</code></pre>
+<p>But this feels dirty, because now I'm manipulating global state in a bunch of tests that are running in parallel, and conceivably they could conflict with eachother. (In my actual use-cases, that is unlikely and this is a fine work around.)</p>
+<h3>Describe the solution you'd like</h3>
+<p>One solution that would solve all my problems would be if there were a new function in <code>trait Parser</code>, something like</p>
+<pre><code class="language-rust">parse_from_with_env&lt;I, T&gt;(iter: I, env: HashMap&lt;OsString, String&gt;) - Self
+    where I: ...,
+          T: ...
+</code></pre>
+<p>which would work like <code>parse_from</code>, but refer to my hashmap instead of calling <code>std::env::var</code>.</p>
+<p>Then I could write tests that don't implicitly read a bunch of environment variables that I care about.</p>
+<p>If this existed, I would also likely stop implementing <code>Default</code> on my parsers, and just use <code>parse_from_with_env([&quot;&quot;, &quot;my-test&quot;, &quot;--param=foo&quot;], Default::default())</code> when I need to construct configs in tests.</p>
+<h3>Alternatives, if applicable</h3>
+<p>Another approach, which wouldn't solve all of my problems, but would help me be more DRY, would be:</p>
+<p>Make a way to use <code>clap-derive</code> to derive <code>Default</code>, based on the <code>default-value</code> that are set.</p>
+<p>For example it would be cool if this worked:</p>
+<pre><code class="language-rust">#[derive(Clone, Debug, Parser, Serialize)]
+#[clap(DeriveDefault)]
+pub struct Config {
+    #[clap(long, env, default_value = &quot;60&quot;, value_parser = parse_duration_in_seconds)]
+    pub postgres_idle_timeout: Duration,
+
+    #[clap(long, env, default_value = &quot;120&quot;, value_parser = parse_duration_in_seconds)]
+    pub postgres_max_lifetime: Duration,
+
+    #[clap(long, env, default_value = &quot;5&quot;, value_parser = parse_duration_in_seconds)]
+    pub postgres_connection_timeout: Duration,
+
+    #[clap(long, env, default_value = &quot;3&quot;)]
+    pub postgres_max_connections: u32,
+}
+</code></pre>
+<p>and produced the impl of <code>Default</code> for <code>Config</code> that I was going to write, which was based on taking the <code>default_value</code> for each parameter, and running it through the <code>value_parser</code>. (Ideally it wouldn't also look at the os environment.)</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @cbeck88 on 2023-08-30 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-30 19:57</div>
+            <div class="timeline-body"><p>Looks like we have #4607 for providing a new source of environment variables.  While the use case there is for systems without and environment (wasm), I think enough applies that I'm going to go ahead and close this.</p>
+<p>Feel free to add any extra notes you want to that issue to explain your use case!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-08-30 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbeck88">@cbeck88</a> on 2023-08-30 19:58</div>
+            <div class="timeline-body"><p>thank you, I missed that ticket</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-30 20:00</div>
+            <div class="timeline-body"><p>Easy to do when we have as many as we do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4607.html">clap-rs/clap#4607</a> on 2023-11-07 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5569.html">clap-rs/clap#5569</a> on 2024-07-07 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:29 UTC
+    </footer>
+</body>
+</html>

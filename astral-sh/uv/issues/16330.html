@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`UV_PYTHON_INSTALL_MIRROR` variable is removed after 0.9.0 - astral-sh/uv #16330</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`UV_PYTHON_INSTALL_MIRROR` variable is removed after 0.9.0</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16330">#16330</a>
+        opened by <a href="https://github.com/birnevogel11">@birnevogel11</a>
+        on 2025-10-16 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/birnevogel11">@birnevogel11</a> on 2025-10-16 16:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Sorry to interrupt you. I check the env <code>UV_PYTHON_INSTALL_MIRROR</code>. It exists in 0.8.x, but it's removed in 0.9.x</p>
+<pre><code>$ uvx --from uv==0.8.0 uv python install --help | grep mirror -A2 | head -2
+      --mirror &lt;MIRROR&gt;
+          Set the URL to use as the source for downloading Python installations [env: UV_PYTHON_INSTALL_MIRROR=]
+</code></pre>
+<pre><code>$ uvx --from uv==0.9.0 uv python install --help | grep mirror -A2 | head -2
+      --mirror &lt;MIRROR&gt;                                        Set the URL to use as the source for downloading Python installations
+      --pypy-mirror &lt;PYPY_MIRROR&gt;                              Set the URL to use as the source for downloading PyPy installations
+</code></pre>
+<p>But the document still provides the env var https://docs.astral.sh/uv/reference/environment/#uv_python_install_mirror.</p>
+<p>Do you have a plan to keep it or to remove it? Thanks.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>0.9.3</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @birnevogel11 on 2025-10-16 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-16 16:24</div>
+            <div class="timeline-body"><p>It actually is still supported, it's just no longer in the <code>--help</code>. I think we need to fix the <code>--help</code>. We have no plan to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birnevogel11">@birnevogel11</a> on 2025-10-16 16:33</div>
+            <div class="timeline-body"><p>@charliermarsh  Thanks for the quick reply. I try to use it in this situation. For example, the command works in 0.8.x but not for 0.9.x</p>
+<pre><code class="language-bash">UV_PYTHON_INSTALL_MIRROR=&lt;internal-mirror-for-python-build-standalone-repo&gt;
+
+uv tool run -p 3.12 --from black black --help
+</code></pre>
+<p>Then it still tries to download from public GitHub. Can you help to check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-16 16:34</div>
+            <div class="timeline-body"><p>I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-16 16:37</div>
+            <div class="timeline-body"><p>Above, I think you need <code>export UV_PYTHON_INSTALL_MIRROR=&lt;internal-mirror-for-python-build-standalone-repo&gt;</code>? Just confirming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-16 16:41</div>
+            <div class="timeline-body"><p>This appears to be working for me:</p>
+<pre><code>❯ UV_PYTHON_INSTALL_MIRROR=https://example.com cargo run -- python install 3.14  -v
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/uv python install 3.14 -v`
+DEBUG uv 0.9.3+4 (0a2b16040 2025-10-16)
+DEBUG Acquired lock for `/Users/crmarsh/.local/share/uv/python`
+DEBUG No installation found for request `3.14 (cpython-3.14-macos-aarch64-none)`
+DEBUG Found download `cpython-3.14.0-macos-aarch64-none` for request `3.14 (cpython-3.14-macos-aarch64-none)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.14.0-20251014-aarch64-apple-darwin-install_only_stripped.tar.gz to temporary location: /Users/crmarsh/.local/share/uv/python/.temp/.tmpqXolD1
+DEBUG No netrc file found
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `/Users/crmarsh/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG No credentials file found at /Users/crmarsh/.local/share/uv/credentials/credentials.toml
+error: Failed to install cpython-3.14.0-macos-aarch64-none
+  Caused by: Failed to download https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz
+  Caused by: HTTP status client error (404 Not Found) for url (https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz)
+DEBUG Released lock at `/Users/crmarsh/.local/share/uv/python/.lock`
+</code></pre>
+<pre><code>❯ UV_PYTHON_INSTALL_MIRROR=https://example.com cargo run -- tool run -p 3.14 --from black black --help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target/debug/uv tool run -p 3.14 --from black black --help`
+error: Failed to download https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz
+  Caused by: HTTP status client error (404 Not Found) for url (https://example.com/20251014/cpython-3.14.0%2B20251014-aarch64-apple-darwin-install_only_stripped.tar.gz)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-16 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-10-16 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birnevogel11">@birnevogel11</a> on 2025-10-16 17:27</div>
+            <div class="timeline-body"><p>I did not try in this way. Thank you. Let me try to run in this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birnevogel11">@birnevogel11</a> on 2025-10-16 17:36</div>
+            <div class="timeline-body"><p>It works with <code>export UV_PYTHON_INSTALL_MIRROR</code>. Sorry for the stupid error. I will close the ticket. Thanks for the support!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @birnevogel11 on 2025-10-16 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

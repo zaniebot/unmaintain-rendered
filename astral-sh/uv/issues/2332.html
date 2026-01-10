@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive when checking that venv activation script is being sourced - astral-sh/uv #2332</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive when checking that venv activation script is being sourced</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2332">#2332</a>
+        opened by <a href="https://github.com/astoff">@astoff</a>
+        on 2024-03-10 12:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/astoff">@astoff</a> on 2024-03-10 12:02</div>
+            <div class="timeline-body"><p>Suppose the user is not physically typing <code>source .venv/bin/activate</code> in an interactive shell, but instead has some automation in place which runs <code>bash -c 'source &quot;$0&quot; &amp;&amp; env' .venv/bin/activate</code> and parses the output of that process.  Then the following check will trigger an error:</p>
+<p>https://github.com/astral-sh/uv/blame/6dcd00e0315c0b4ef743d7609c517b90fa607962/crates/uv-virtualenv/src/activator/activate#L26-L29</p>
+<p>Perhaps it would make more sense to replace the test with <code>if [ -z &quot;${BASH_SOURCE-}&quot; ]; then ...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 12:23</div>
+            <div class="timeline-body"><p>I think this script is just identical to that used in other virtualenv creators: https://github.com/pypa/virtualenv/blob/abe2c998bf8c7593a3a3ed2c19b3ebd55675c818/src/virtualenv/activation/bash/activate.sh#L5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 12:47</div>
+            <div class="timeline-body"><p>I would be hesitant to modify it without also seeing that modification in virtualenv. Can you see if there have ever been similar requests there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-03-10 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astoff">@astoff</a> on 2024-03-10 13:01</div>
+            <div class="timeline-body"><p>Actually I wrote this issue because those lines seem to have been added in uv, compare with https://github.com/python/cpython/blob/main/Lib/venv/scripts/common/activate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 13:30</div>
+            <div class="timeline-body"><p>I saw that! But since it exists in virtualenv, I'd want to understand why and how it was tested in virtualenv before making any changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astoff">@astoff</a> on 2024-03-10 17:30</div>
+            <div class="timeline-body"><p>Okay, digging a bit more, I found the following clarification in the bash manpage:</p>
+<blockquote>
+<p>If the -c option is present, then commands are read from the
+first non-option argument command_string.  If there are
+arguments after the command_string, the <strong>first argument is
+assigned to $0</strong> and any remaining arguments are assigned to
+the positional parameters.  <strong>The assignment to $0 sets the
+name of the shell, which is used in warning and error
+messages.</strong></p>
+</blockquote>
+<p>So I'd say that the check in the activate script is sane, and my original code example is flawed (one should use <code>bash -c 'source &quot;$1&quot; &amp;&amp; env' bash .venv/bin/activate</code> or something similar). So I'll close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @astoff on 2024-03-10 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 18:48</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get `Consider setting a lower bound` warning from root package - astral-sh/uv #8155</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Get `Consider setting a lower bound` warning from root package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8155">#8155</a>
+        opened by <a href="https://github.com/DanielYang59">@DanielYang59</a>
+        on 2024-10-13 04:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-10-13 04:16</div>
+            <div class="timeline-body"><p>Presumably a partial duplicate of #5227, getting the following warning for the root package itself both <a href="https://github.com/materialsproject/pymatgen/actions/runs/11311329412/job/31457441329?pr=4073">inside the Github workflow environment</a> (could also recreate in my MacOS machine), with <a href="https://github.com/materialsproject/pymatgen/blob/4d5a319f300949ac345475f0d800653d32e95646/pyproject.toml#L92-L113">all dependencies in <code>ci,optional</code> have a lower bound</a>:</p>
+<pre><code>warning: The direct dependency `pymatgen` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pymatgen[ci]` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+warning: The direct dependency `pymatgen[optional]` is unpinned. Consider setting a lower bound when using `--resolution-strategy lowest` to avoid using outdated versions.
+</code></pre>
+<p>With the following command in <code>test.yml</code> (could also recreate in MacOS command line):</p>
+<pre><code>uv pip install dist/pymatgen-2024.10.3.tar.gz
+uv pip install pymatgen[ci,optional] --resolution=lowest
+</code></pre>
+<p>uv version: <code>uv-0.4.20</code></p>
+<hr />
+<p>Perhaps I was using the command incorrectly (Intend to install from sdist with extras)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DanielYang59 on 2024-10-13 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @DanielYang59 on 2024-10-13 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../materialsproject/pymatgen/pulls/4073.html">materialsproject/pymatgen#4073</a> on 2024-10-13 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-10-13 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9497.html">astral-sh/uv#9497</a> on 2024-11-28 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-28 12:33</div>
+            <div class="timeline-body"><p>The warnings for the extras were a bug, fixed in #9497. For the resolution lowest test, can you do the following:</p>
+<pre><code>uv pip install dist/pymatgen-2024.10.3.tar.gz pymatgen[ci,optional] --resolution=lowest
+</code></pre>
+<p>Separate <code>uv pip install</code> invocations don't know about each other. With a regular (highest) resolution, we try to keep the versions also installed by treating them as preferred in the resolver. But with the lowest resolution, we are simulation the &quot;worst case&quot; of a user with lots of conflicting requirements that force old dependency versions. If you place both the file and the in one command, the resolver pins pymatgen to 2024.10.3 (we need to install the package, we can pick some other version form somewhere else), so we know that everything about <code>pymatgen[ci,optional]</code> is constrained.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../materialsproject/pymatgen/pulls/4210.html">materialsproject/pymatgen#4210</a> on 2024-11-30 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-11-30 12:50</div>
+            <div class="timeline-body"><p>Thanks a lot for the timely fix and for providing the additional context, I would update the install command :) I cannot appreciate more!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DanielYang59 on 2024-11-30 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-11-30 13:53</div>
+            <div class="timeline-body"><p>Update: I just build the <code>uv</code> from source to test the patch (with <code>cargo install --git https://github.com/astral-sh/uv uv</code>), looks like the warnings for extras are indeed gone, but I'm still getting the warning for the root package for some reason? Can you help me double check if I was using the wrong command?</p>
+<pre><code>uv pip install dist/pymatgen-2024.11.13-cp312-cp312-macosx_15_0_arm64.whl 'pymatgen[ci,optional]' --resolution=lowest
+
+# Got the same warning installing from sdist
+uv pip install dist/pymatgen-2024.11.13.tar.gz 'pymatgen[ci,optional]' --resolution=lowest
+</code></pre>
+<p>Gives:</p>
+<pre><code>Using Python 3.12.7 environment at: venv312
+⠙ Resolving dependencies...                                                                                                                         
+warning: The direct dependency `pymatgen` is unpinned. Consider setting a lower bound when using `--resolution lowest` to avoid using outdated versions.
+Resolved 171 packages in 2.55s
+Installed 1 package in 15ms
+ + pymatgen==2024.11.13 (from file:///Users/yang/developer/pymatgen/dist/pymatgen-2024.11.13-cp312-cp312-macosx_15_0_arm64.whl)
+
+warning: The transitive dependency `isoduration` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `pure-eval` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `scikit-learn` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `pytorch-lightning` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `vapory` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `filelock` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `symfc` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `tinycss2` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `aiohttp` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `nest-asyncio` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `notebook` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `stack-data` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `decorator` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `beautifulsoup4` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `uri-template` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `jupyterlab-pygments` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `rfc3339-validator` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `pydantic` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `wcwidth` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `cftime` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `iniconfig` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `pycparser` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `argon2-cffi-bindings` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `fqdn` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `defusedxml` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `bleach` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `lightning` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+warning: The transitive dependency `appnope` is unpinned. Consider setting a lower bound with a constraint when using `--resolution lowest` to avoid using outdated versions.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @DanielYang59 on 2024-11-30 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-30 14:41</div>
+            <div class="timeline-body"><p>I think that should <em>arguably</em> not error but what you want is:</p>
+<pre><code>uv pip install &quot;dist/pymatgen-2024.11.13-cp311-cp311-macosx_11_0_arm64.whl[ci,optional]&quot; --resolution=lowest
+</code></pre>
+<p>Right now, it's as if you provided two dependencies: the URL, alongside an unpinned <code>pymatgen</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-30 14:53</div>
+            <div class="timeline-body"><p>It would also be solved by https://github.com/astral-sh/uv/pull/9540.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-12-01 03:52</div>
+            <div class="timeline-body"><p>Thanks for the input and for the fix :) I would correct my <code>uv pip install</code> usage.</p>
+<p>Also cheers for the wonderful tool</p>
+<p>I could confirm I'm not getting that unpinned warning (though another <code>failed to uninstall package </code> warning popped up as I'm not installing in a &quot;clean env&quot; but reinstall in a previous env, but I guess it's not related to current issue):</p>
+<pre><code>&gt;&gt;&gt; uv pip install dist/pymatgen-2024.11.13.tar.gz[ci,optional] --resolution=lowest
+
+Using Python 3.12.7 environment at: venv312
+Resolved 181 packages in 2.57s
+   Built pymatgen @ file:///home/yang/developer/pymatgen/dist/pymatgen-2024.11.13.tar.gz
+Prepared 3 packages in 21.92s
+warning: Failed to uninstall package at venv312/lib/python3.12/site-packages/uncertainties.egg-info due to missing `top-level.txt` file. Installation may result in an incomplete environment.
+Uninstalled 3 packages in 3ms
+Installed 3 packages in 8ms
+ - netcdf4==1.7.2
+ + netcdf4==1.6.5
+ + pymatgen==2024.11.13 (from file:///home/yang/developer/pymatgen/dist/pymatgen-2024.11.13.tar.gz)
+ - uncertainties==2.4.4
+ ~ uncertainties==3.1.4
+</code></pre>
+<hr />
+<p>And finally some off-topic comment in case it might be helpful, but I found the <code>--quiet</code> option for <code>uv build</code> too strong, i.e. it suppressed all output (<a href="https://docs.astral.sh/uv/reference/cli/#uv-build">which agrees with the documentation</a>), perhaps at least show warnings and the final built finished like <code>Successfully built pymatgen-2024.11.13.tar.gz</code>)?</p>
+<blockquote>
+<p>--quiet, -q
+Do not print any output</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DanielYang59 on 2024-12-01 05:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:57</div>
+            <div class="timeline-body"><p>@DanielYang59 there's a secret <code>--no-build-logs</code> flag, does that get you what you want output-wise?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-12-04 02:32</div>
+            <div class="timeline-body"><p>Hi @zanieb thanks for letting me know, this looks much rational, just wondering is it stable enough to be used in production (i.e. would it be renamed/removed at some point)?</p>
+<pre><code>&gt;&gt;&gt; uv build --sdist --no-build-logs
+
+Building source distribution...
+Successfully built dist/pymatgen-2024.11.13.tar.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-04 17:29</div>
+            <div class="timeline-body"><p>It's stable, we're using it in our tests. I can unhide it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9644.html">astral-sh/uv#9644</a> on 2024-12-04 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-12-05 01:59</div>
+            <div class="timeline-body"><p>Thanks a lot for the input and for the additional work :) Really appreciate that!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:08 UTC
+    </footer>
+</body>
+</html>

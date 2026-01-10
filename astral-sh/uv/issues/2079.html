@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-platform support - astral-sh/uv #2079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cross-platform support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2079">#2079</a>
+        opened by <a href="https://github.com/michaelboyd2">@michaelboyd2</a>
+        on 2024-02-29 11:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michaelboyd2">@michaelboyd2</a> on 2024-02-29 11:25</div>
+            <div class="timeline-body"><p>My goal is to support building OCI (docker) images for a platform other than the host platform.</p>
+<p>For reasons related to our tooling (we use Bazel and want hermetic builds), we do not want to do this via running <code>pip install</code> commands on the image itself (as would be normal in a Dockerfile).</p>
+<p>The solution we have now is to download wheels for different platforms using <code>pip download --platform</code>. We can then pass the appropriate target depending on which platform we are building for. This method has the downside that we need appropriate wheels to exist for the packages we want to use (this sometimes involves creating our own).</p>
+<p>Is there any way to achieve my goal with uv? Support for <code>uv pip download --platform</code> would be sufficient, but it would be ideal to be able to not need the wheels. <code>uv pip install --platform</code> or similar would be even better (no idea if this is at all feasible).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-03-01 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2142.html">astral-sh/uv#2142</a> on 2024-03-03 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fullerzz">@fullerzz</a> on 2024-04-18 00:31</div>
+            <div class="timeline-body"><p>I would definitely use <code>uv pip install --platform</code> if implemented! My current use case involves downloading python dependencies  with <code>pip install -r requirements.txt --platform manylinux2014_aarch64</code>.</p>
+<p>These deps are then zipped and uploaded to AWS as a lambda layer. The lambdas using the layer run on the AWS managed Python 3.11 runtime with ARM architecture.</p>
+<p>One of my dependencies is <a href="https://github.com/lxml/lxml">lxml</a> which is what required me to add the <code>--platform manylinux2014_aarch64</code> option initially.</p>
+<p>I'm a big fan of Ruff, so I'm hoping I can start to make use of uv more too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-19 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3154.html">astral-sh/uv#3154</a> on 2024-04-20 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-22 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ah-quant">@ah-quant</a> on 2025-04-02 10:10</div>
+            <div class="timeline-body"><p>@michaelboyd2 sorry for reviving this ancient issue just for a request, but ... do you have any public repo combining uv (best case using it from a recent rules_python) with rules_oci? I'd soooo love to see one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michaelboyd2">@michaelboyd2</a> on 2025-04-03 08:17</div>
+            <div class="timeline-body"><p>@ah-quant I don't have anything public sorry. I think I understand what you want, but I am not sure we have a really good solution to this although maybe we could eventually create one if needed. Here are some resources I gathered that might be slightly helpful?</p>
+<p>https://github.com/theoremlp/rules_uv?tab=readme-ov-file#multi-platform-setup
+https://rules-python.readthedocs.io/en/latest/pypi-dependencies.html#bazel-downloader-and-multi-platform-wheel-hub-repository</p>
+<p>Here are some slightly outdated docs that we have - no longer sure that this the best solution:</p>
+<h1>Cross-Platform Support for Python</h1>
+<p>rules_py relies on pip under the hood to manage 3rd party dependencies. Pip doesn't deal with
+cross-platform builds by default. This macro adds support by providing multiple pip repositories
+(one per platform/architecture) to choose from when building the artifacts (such as oci images). The
+logic is:</p>
+<ul>
+<li>For each platform you need to support, define a pip repository in <em>WORKSPACE</em> similar to below:</li>
+</ul>
+<pre><code class="language-starlark">load(&quot;@python//3.11:defs.bzl&quot;, python_3_11_interpreter = &quot;interpreter&quot;)
+
+# Download explicit x86_64 Linux wheels for dependencies that are not cross-platform
+load(&quot;@rules_python//python:pip.bzl&quot;, &quot;pip_parse&quot;)
+
+pip_parse(
+    name = &quot;pip_linux_amd64&quot;,
+    download_only = True,
+    extra_pip_args = [
+        &quot;--platform&quot;,
+        &quot;manylinux2014_x86_64&quot;,
+    ],
+    python_interpreter_target = python_3_11_interpreter,
+    requirements_lock = &quot;//third-party-deps/python:requirements_lock.txt&quot;,
+)
+
+load(&quot;@pip_linux_amd64//:requirements.bzl&quot;, &quot;install_deps&quot;)
+
+install_deps()
+
+</code></pre>
+<blockquote>
+<p>[CAUTION] Make sure you point to a valid <code>python_interpreter_target</code> and update
+<code>requirements_lock</code> according to your repo setup</p>
+</blockquote>
+<ul>
+<li>In <em>root</em> BUILD file, call the macro specifying which pip_repository to use per platform. example:</li>
+</ul>
+<pre><code class="language-starlark">load(&quot;@bp_bazel//prelude/python/crossplatform:python_cross_platform.bzl&quot;, &quot;generate_py_cross_platform_aliases&quot;)
+
+generate_py_cross_platform_aliases(
+    name = &quot;cross_platform_aliases&quot;,
+    platforms = {
+        &quot;@bp_bazel//prelude/platforms:is_linux_amd64&quot;: &quot;pip_linux_amd64&quot;,
+        &quot;@bp_bazel//prelude/platforms:is_linux_arm64&quot;: &quot;third_party_python_deps&quot;,
+        &quot;@bp_bazel//prelude/platforms:is_darwin_amd64&quot;: &quot;third_party_python_deps&quot;,
+        &quot;@bp_bazel//prelude/platforms:is_darwin_arm64&quot;: &quot;third_party_python_deps&quot;,
+    },
+)
+</code></pre>
+<p>So when building for linux_amd64, pip_linux_amd64 repo would be used to reference dependencies...</p>
+<blockquote>
+<p>[CAUTION] by default, the macro expects to be called from root BUILD file</p>
+</blockquote>
+<ul>
+<li>Add the below gazelle directives to your root BUILD file to use the new py_library and py_binary
+macros generated</li>
+</ul>
+<pre><code class="language-starlark"># gazelle:map_kind py_binary py_binary @bp_bazel//prelude/python/crossplatform:python_cross_platform.bzl
+# gazelle:map_kind py_library py_library @bp_bazel//prelude/python/crossplatform:python_cross_platform.bzl
+</code></pre>
+<ul>
+<li>Add below flags to .bazelrc, otherwise OCI image will fail to build</li>
+</ul>
+<pre><code class="language-starlark"># this is flipped by default in bazel 7 but causes issues with OCI tarball
+common --noincompatible_enable_cc_toolchain_resolution
+</code></pre>
+<h2>Wheels</h2>
+<p>Wheels are the standard binary packaging format for Python. Almost every package provides wheels,
+and you can check by browsing to PyPI and checking the &quot;Built Distribution&quot; section under Download
+files. <a href="https://pypi.org/project/requests/#files">Example</a>.</p>
+<p>Sadly, there is a tiny minority of packages that do not provide wheels, and only publish a source
+distribution (a <code>.tar.gz</code> file) that needs to be compiled on the host. This will make our
+cross-platform pip repository fail, because we explicitly request a binary compatible with Linux
+x64. A list of known dependencies without wheels is below:</p>
+<ul>
+<li>pdpyras (PagerDuty SDK)</li>
+<li>pendulum</li>
+<li>pypika</li>
+</ul>
+<p><strong>Please DO NOT add new dependencies (or transitive dependencies) without wheels available.</strong> This
+is an indication of a poorly maintained package and is simply a pain to deal with. If you really
+have no alternative, please use the guidance below to build and mirror the package to Artifactory.</p>
+<h3>Mirroring a Wheel to Artifactory</h3>
+<p>This will need to be done every time the package version or Python version is upgraded. If you're
+upgrading the package version, check and see if the author has already published some wheels. If
+they have, no action is required.</p>
+<h4>Building the Wheel</h4>
+<p>To create the wheel for a package, run <code>pip wheel</code> with the package name and version like so:</p>
+<pre><code class="language-bash">(.venv) ➜  accelerate-monorepo git:(bazel-macos) ✗ pip wheel --wheel-dir=/tmp pdpyras==5.1.3
+Collecting pdpyras==5.1.3
+  Downloading pdpyras-5.1.3.tar.gz (25 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+</code></pre>
+<p>This will create a <code>.whl</code> file in the directory specified by <code>--wheel-dir</code> which should look
+something like this:</p>
+<pre><code class="language-bash">Created wheel for pdpyras: filename=pdpyras-5.1.3-py3-none-any.whl size=24227 sha256=ba74a956864426dc2e789a6da0c56a6f7bbd004e6e71f598474aa174f599202c
+</code></pre>
+<p>If your <code>.whl</code> ends in <code>none-any.whl</code>, proceed to the next step to upload it. If your wheel contains
+a bunch of OS-specific metadata instead of <code>none-any.whl</code>, you'll need to build a wheel for each
+platform.</p>
+<p>Here's an example:</p>
+<pre><code class="language-bash">Created wheel for pendulum: filename=pendulum-2.1.2-cp311-cp311-macosx_14_0_arm64.whl size=127373 sha256=575e5cf1ef5c1ec3c09e0789e577e6cfcf3ea0fb4a953954984a1042be861d37
+</code></pre>
+<p>In this case, we've built a macOS wheel for Python 3.11 on Apple Silicon. But we're running
+containers for Linux x64, so we need to build a wheel for that platform as well. Someone on a Linux
+machine (or you can use a Docker container) will need to run the command again to build a wheel for
+Linux x64.</p>
+<pre><code class="language-bash">Created wheel for pendulum: filename=pendulum-2.1.2-cp311-cp311-manylinux_2_35_x86_64.whl ...
+</code></pre>
+<p>For Linux wheels, they must be renamed manually to indicate that they support <code>manylinux2014</code> (the
+<code>--platform</code> we pass to pip). To do this, rename the wheel to include <code>manylinux2014_x86_64</code> before
+the <code>.whl</code> extension:</p>
+<pre><code class="language-bash">mv pendulum-2.1.2-cp311-cp311-manylinux_2_35_x86_64.whl pendulum-2.1.2-cp311-cp311-manylinux_2_35_x86_64.manylinux2014_x86_64.whl
+</code></pre>
+<p>Finally, proceed to the next step.</p>
+<h4>Mirror the Wheel to DML</h4>
+<p>Specific to DML.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ah-quant">@ah-quant</a> on 2025-04-03 10:24</div>
+            <div class="timeline-body"><p>Thanks @michaelboyd2 - I already have something, it's just too convoluted for my taste :-/
+I'll try to modernize and distill it and link it here...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

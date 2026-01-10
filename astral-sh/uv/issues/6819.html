@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple indexes without ssl verification - astral-sh/uv #6819</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiple indexes without ssl verification</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6819">#6819</a>
+        opened by <a href="https://github.com/jbevi">@jbevi</a>
+        on 2024-08-29 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbevi">@jbevi</a> on 2024-08-29 16:12</div>
+            <div class="timeline-body"><p>uv platform:  ubuntu 20
+uv version: 0.4.0</p>
+<p>Hello, I tell you my case.
+I currently work with pipenv as a manager of virtual environments in projects.</p>
+<p>In my company there is a pypi proxy and other indexes that the different areas use to upload their libraries.</p>
+<p>With pipenv I can configure the indexes where to search for the project's libraries and disable ssl validation, as follows.</p>
+<pre><code>[pipenv]
+install_search_all_sources = true
+
+[[source]]
+url = &quot;https://nexus.cloudint.com/nexus/repository/pypi-proxy/simple&quot;
+verify_ssl = false
+name = &quot;pypi-proxy&quot;
+
+[[source]]
+url = &quot;https://nexus.cloudint.comr/nexus/repository/infraestructura-pypi/simple&quot;
+verify_ssl = false
+name = &quot;infra&quot;
+
+[packages]
+fastapi = &quot;==0.111.0&quot;
+pyownsecurity = {version = &quot;==2.0.6&quot;, index = &quot;infra&quot;}
+...
+</code></pre>
+<p>When installing the libraries of a project by doing: pipenv install</p>
+<p>It is capable of installing them by searching the configured indexes.</p>
+<p>Is there something similar in uv, for example configuring pyproject.toml ?
+I have tried adding:</p>
+<pre><code>[tool.uv]
+index-url = &quot;https://nexus.cloudint.com/nexus/repository/pypi-proxy/simple/&quot;
+extra-index-url = [&quot;https://nexus.cloudint.com/nexus/repository/infrastructure-pypi/simple/&quot;]
+</code></pre>
+<p>When doing <strong>uv add uvicorn</strong> for example, it tries to search for the library in the extra-index-url, but not in index-url, which is where it is located, and it gives an ssl validation error. Log extract:</p>
+<p>retrying: error sending request for url (https://nexus.cloudint.com/nexus/repository/infraestructura-pypi/simple/uvicorn/)
+Caused by: client error (Connect)
+Caused by: received fatal alert: HandshakeFailure
+error: Request failed after 3 retries
+Caused by: error sending request for url (https://nexus.cloudint.com/nexus/repository/infraestructura-pypi/simple/uvicorn/)
+Caused by: client error (Connect)
+Caused by: received fatal alert: HandshakeFailure</p>
+<p>Thanks in advance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-29 16:18</div>
+            <div class="timeline-body"><p>Hi! Do you mind reading these to see if they address your questions?</p>
+<ul>
+<li>https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes</li>
+<li>https://docs.astral.sh/uv/reference/settings/#index-strategy</li>
+<li>https://docs.astral.sh/uv/configuration/authentication/#custom-ca-certificates</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-29 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2024-08-29 17:42</div>
+            <div class="timeline-body"><p>I tried adding to pyproject.toml:</p>
+<p>[tool.uv]
+allow-insecure-host = [&quot;nexus.cloudint.com&quot;]</p>
+<p>but it seems to have no effect and the handshake error continues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 17:47</div>
+            <div class="timeline-body"><p>Can you run a command with <code>--show-settings</code>, and see if the setting is being picked up properly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2024-08-29 18:05</div>
+            <div class="timeline-body"><pre><code>uv add uvicorn --show-settings
+GlobalSettings {
+    quiet: false,
+    verbose: 0,
+    color: Auto,
+    native_tls: false,
+    concurrency: Concurrency {
+        downloads: 50,
+        builds: 8,
+        installs: 8,
+    },
+    connectivity: Online,
+    show_settings: true,
+    preview: Disabled,
+    python_preference: Managed,
+    python_downloads: Automatic,
+    no_progress: false,
+}
+CacheSettings {
+    no_cache: false,
+    cache_dir: None,
+}
+AddSettings {
+    locked: false,
+    frozen: false,
+    no_sync: false,
+    packages: [
+        &quot;uvicorn&quot;,
+    ],
+    requirements: [],
+    dependency_type: Production,
+    editable: None,
+    extras: [],
+    raw_sources: false,
+    rev: None,
+    tag: None,
+    branch: None,
+    package: None,
+    script: None,
+    python: None,
+    refresh: None(
+        Timestamp(
+            SystemTime {
+                tv_sec: 1724954621,
+                tv_nsec: 41840693,
+            },
+        ),
+    ),
+    settings: ResolverInstallerSettings {
+        index_locations: IndexLocations {
+            index: None,
+            extra_index: [
+                Url(
+                    VerbatimUrl {
+                        url: Url {
+                            scheme: &quot;https&quot;,
+                            cannot_be_a_base: false,
+                            username: &quot;&quot;,
+                            password: None,
+                            host: Some(
+                                Domain(
+                                    &quot;nexus.cloudint.com&quot;,
+                                ),
+                            ),
+                            port: None,
+                            path: &quot;/nexus/repository/pypi-proxy/simple&quot;,
+                            query: None,
+                            fragment: None,
+                        },
+                        given: Some(
+                            &quot;https://nexus.cloudint.com/nexus/repository/pypi-proxy/simple&quot;,
+                        ),
+                    },
+                ),
+                Url(
+                    VerbatimUrl {
+                        url: Url {
+                            scheme: &quot;https&quot;,
+                            cannot_be_a_base: false,
+                            username: &quot;&quot;,
+                            password: None,
+                            host: Some(
+                                Domain(
+                                    &quot;nexus.cloudint.com&quot;,
+                                ),
+                            ),
+                            port: None,
+                            path: &quot;/nexus/repository/infraestructura-pypi/simple/&quot;,
+                            query: None,
+                            fragment: None,
+                        },
+                        given: Some(
+                            &quot;https://nexus.cloudint.com/nexus/repository/infraestructura-pypi/simple/&quot;,
+                        ),
+                    },
+                ),
+            ],
+            flat_index: [],
+            no_index: false,
+        },
+        index_strategy: FirstIndex,
+        keyring_provider: Disabled,
+        allow_insecure_host: [
+            TrustedHost {
+                scheme: Some(
+                    &quot;https&quot;,
+                ),
+                host: &quot;nexus.cloudint.com&quot;,
+                port: None,
+            },
+        ],
+        resolution: Highest,
+        prerelease: IfNecessaryOrExplicit,
+        config_setting: ConfigSettings(
+            {},
+        ),
+        no_build_isolation: false,
+        no_build_isolation_package: [],
+        exclude_newer: None,
+        link_mode: Hardlink,
+        compile_bytecode: false,
+        sources: Enabled,
+        upgrade: None,
+        reinstall: None,
+        build_options: BuildOptions {
+            no_binary: None,
+            no_build: None,
+        },
+    },
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-29 18:08</div>
+            <div class="timeline-body"><p>Interesting, that all looks correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 19:35</div>
+            <div class="timeline-body"><p>I suspect that your server is misconfigured in some other way... When the certificate is invalid, you tend to get <code>invalid peer certificate</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/djc">@djc</a> on 2024-08-30 13:30</div>
+            <div class="timeline-body"><p>Do you know what software is being used to run the PyPI proxy? I tried to connect to <code>nexus.cloudint.com</code> but I suppose that it is internal only. A packet capture might help a little but we'd probably need to setup <code>SSLKEYLOGFILE</code> support which I guess <code>uv</code> might not support out of the box.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctz">@ctz</a> on 2024-08-30 13:32</div>
+            <div class="timeline-body"><p>This is unlikely to be related to the server certificate. Instead, the server does not have any overlap with the client's TLS settings, so it sends a TLS alert saying a handshake is impossible. That is the &quot;received fatal alert: HandshakeFailure&quot; output; the client doesn't get any more information than this.</p>
+<p>Suggest running a local tool like <code>sslscan</code> against the host to see what TLS versions and cipher suites it does support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2024-08-30 14:02</div>
+            <div class="timeline-body"><p>Thanks for the quick responses.
+I don't have the option to run sslscan on the server.
+My main doubt is why this error occurs with UV, but not with pipenv, pip, or even curl.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/djc">@djc</a> on 2024-08-30 14:03</div>
+            <div class="timeline-body"><p>No, you'd run <code>sslscan</code> on the client, against the server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2024-08-30 14:14</div>
+            <div class="timeline-body"><p>I'm not allowed to do that.
+But I can run curl using the index url:</p>
+<p><code>curl https://nexus.cloudint.com/nexus/repository/pypi-proxy/simple/uvicorn/ -v</code></p>
+<p>I write the log extracts:</p>
+<pre><code>...
+Connected to nexus.cloudint.com port 443 (#0)
+...
+SSL connection using TLSv1.2
+...
+HTTP/1.1 200 OK
+...
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;&lt;title&gt;Links for uvicor&lt;/title&gt;
+  &lt;meta name=&quot;api-version&quot; value=&quot;2&quot;/&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;h1&gt;Links for uvicor&lt;/h1&gt;
+        &lt;a href=&quot;../../packages/uvicorn/0.0.1/uvicorn-0.0.1.tar.gz#sha256=a88750101a094e293ed543f750e78be9fa00594966d32a7805b9d93fa0f9cdd5&quot; rel=&quot;internal&quot;&gt;uvicorn-0.0.1.tar.gz&lt;/a&gt;&lt;br/&gt;
+....
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-10-21 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2024-11-13 13:28</div>
+            <div class="timeline-body"><p>With pipenv I can disable ssl verification with verify_ssl = false on each index (see configuration in the first comment), is it possible to do this in uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 13:52</div>
+            <div class="timeline-body"><p>You can add each URL to <a href="https://docs.astral.sh/uv/reference/settings/#allow-insecure-host"><code>allow-insecure-host</code></a>. It's not a property of the index because it applies to arbitrary URLs, not just indexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2024-11-13 18:46</div>
+            <div class="timeline-body"><p>Unfortunately that didn't work (see previous comments). Neither in v0.5.1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbevi">@jbevi</a> on 2025-04-04 13:52</div>
+            <div class="timeline-body"><p>Hi, has there been some progress on this issue? Still, with the latest version of uv, I can't contact the internal index service without certificates.
+(I haven't tried doing it with certificates either.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-04 17:04</div>
+            <div class="timeline-body"><p>As a note, we could probably expose this option in the <code>[index]</code> API if we wanted, but it'd be good to see more need for it first since it's generally discouraged. cc @jtfmumm for visibility.</p>
+<p>@jbevi I don't know what's wrong with your setup; unfortunately it's not something we can make progress on without a reproduction to debug or more details (as djc requested). I'd recommend setting up certificates if that's an option? Disabling SSL should not be a long-term strategy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dgethings">@dgethings</a> on 2025-04-25 18:25</div>
+            <div class="timeline-body"><p>I'm facing the same (similar?) issue. I've heavily redacted the following output to spare the ~guilty~ innocent. I'm not SSL expert but I think the <code>sslscan</code> output is telling me there is no valid ciphers (from the server) which is why this is failing. But given I have <code>allow-insecure-host</code> set this should not be a problem.</p>
+<pre><code class="language-bash">❯ uv add &quot;typer[all]&quot;
+⠴ my-app==0.1.0                                                                                                       
+error: Failed to fetch: https://xxx/pypi/pypi-all/simple/atlassian-python-api/
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://xxx/pypi/pypi-all/simple/typer/)
+  Caused by: client error (Connect)
+  Caused by: received fatal alert: HandshakeFailure
+ 
+❯ uv add &quot;typer[all]&quot; --show-settings
+GlobalSettings {
+    required_version: None,
+    quiet: 0,
+    verbose: 0,
+    color: Auto,
+    network_settings: NetworkSettings {
+        connectivity: Online,
+        native_tls: false,
+        allow_insecure_host: [
+            Host {
+                scheme: None,
+                host: &quot;xxx&quot;,
+                port: None,
+            },
+            Host {
+                scheme: Some(
+                    &quot;https&quot;,
+                ),
+                host: &quot;xxx&quot;,
+                port: None,
+            },
+            Host {
+                scheme: None,
+                host: &quot;xxx&quot;,
+                port: Some(
+                    443,
+                ),
+            },
+            Host {
+                scheme: Some(
+                    &quot;https&quot;,
+                ),
+                host: &quot;xxx&quot;,
+                port: Some(
+                    443,
+                ),
+            },
+        ],
+    },
+    concurrency: Concurrency {
+        downloads: 50,
+        builds: 11,
+        installs: 11,
+    },
+    show_settings: true,
+    preview: Disabled,
+    python_preference: Managed,
+    python_downloads: Automatic,
+    no_progress: false,
+    installer_metadata: true,
+}
+CacheSettings {
+    no_cache: false,
+    cache_dir: None,
+}
+AddSettings {
+    locked: false,
+    frozen: false,
+    active: None,
+    no_sync: false,
+    packages: [
+        &quot;typer[all]&quot;,
+    ],
+    requirements: [],
+    constraints: [],
+    marker: None,
+    dependency_type: Production,
+    editable: None,
+    extras: [],
+    raw_sources: false,
+    rev: None,
+    tag: None,
+    branch: None,
+    package: None,
+    script: None,
+    python: None,
+    install_mirrors: PythonInstallMirrors {
+        python_install_mirror: None,
+        pypy_install_mirror: None,
+    },
+    refresh: None(
+        Timestamp(
+            SystemTime {
+                tv_sec: 1745583901,
+                tv_nsec: 690955000,
+            },
+        ),
+    ),
+    indexes: [],
+    settings: ResolverInstallerSettings {
+        resolver: ResolverSettings {
+            build_options: BuildOptions {
+                no_binary: None,
+                no_build: None,
+            },
+            config_setting: ConfigSettings(
+                {},
+            ),
+            dependency_metadata: DependencyMetadata(
+                {},
+            ),
+            exclude_newer: None,
+            fork_strategy: RequiresPython,
+            index_locations: IndexLocations {
+                indexes: [
+                    Index {
+                        name: Some(
+                            IndexName(
+                                &quot;xxx&quot;,
+                            ),
+                        ),
+                        url: Url(
+                            VerbatimUrl {
+                                url: Url {
+                                    scheme: &quot;https&quot;,
+                                    cannot_be_a_base: false,
+                                    username: &quot;me&quot;,
+                                    password: Some(
+                                        &quot;password&quot;,
+                                    ),
+                                    host: Some(
+                                        Domain(
+                                            &quot;xxx&quot;,
+                                        ),
+                                    ),
+                                    port: None,
+                                    path: &quot;/pypi/pypi-all/simple&quot;,
+                                    query: None,
+                                    fragment: None,
+                                },
+                                given: Some(
+                                    https://me:password@xxx/pypi/pypi-all/simple,
+                                ),
+                            },
+                        ),
+                        explicit: false,
+                        default: true,
+                        origin: None,
+                        format: Simple,
+                        publish_url: None,
+                        authenticate: Auto,
+                    },
+                ],
+                flat_index: [],
+                no_index: false,
+            },
+            index_strategy: FirstIndex,
+            keyring_provider: Disabled,
+            link_mode: Clone,
+            no_build_isolation: false,
+            no_build_isolation_package: [],
+            prerelease: IfNecessaryOrExplicit,
+            resolution: Highest,
+            sources: Enabled,
+            upgrade: None,
+        },
+        compile_bytecode: false,
+        reinstall: None,
+    },
+}
+❯ sslscan --certs=/path/to/pem  https://xxx/
+Version: 2.1.6
+OpenSSL 3.4.1 11 Feb 2025
+ 
+Connected to xxx
+ 
+Testing SSL server xxx on port 443 using SNI name xxx
+ 
+  SSL/TLS Protocols:
+SSLv2     disabled
+SSLv3     disabled
+TLSv1.0   enabled
+TLSv1.1   enabled
+TLSv1.2   enabled
+TLSv1.3   disabled
+ 
+  TLS Fallback SCSV:
+    Private key does not match certificate.
+  TLS renegotiation:
+    Private key does not match certificate.
+Session renegotiation not supported
+ 
+  TLS Compression:
+    Private key does not match certificate.
+  Heartbleed:
+TLSv1.2 not vulnerable to heartbleed
+TLSv1.1 not vulnerable to heartbleed
+TLSv1.0 not vulnerable to heartbleed
+ 
+  Supported Server Cipher(s):
+    Private key does not match certificate.
+    Private key does not match certificate.
+    Private key does not match certificate.
+ 
+  Server Key Exchange Group(s):
+TLSv1.2  128 bits  secp256r1 (NIST P-256)
+TLSv1.2  192 bits  secp384r1 (NIST P-384)
+TLSv1.2  128 bits  x25519
+    Private key does not match certificate.
+    Private key does not match certificate.
+ 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dgethings">@dgethings</a> on 2025-05-25 22:38</div>
+            <div class="timeline-body"><p>@zanieb @jtfmumm I've included output from <code>sslscan</code> which I replicates the issue. Does that help move this issue forward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 12:22</div>
+            <div class="timeline-body"><p>Unfortunately the problem is probably upstream of us, in the Rust network stack. There's not a great way for us to dig into this ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/djc">@djc</a> on 2025-07-31 14:02</div>
+            <div class="timeline-body"><p>If we can pare this down to a reproducer outside of uv we can probably find a way to make progress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 14:56</div>
+            <div class="timeline-body"><p>I hacked together a minimal project with an LLM, let's see if you can reproduce with that @dgethings? https://github.com/zanieb/uv-insecure-host-mre</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctz">@ctz</a> on 2025-07-31 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm facing the same (similar?) issue. I've heavily redacted the following output to spare the ~guilty~ innocent. I'm not SSL expert but I think the <code>sslscan</code> output is telling me there is no valid ciphers (from the server) which is why this is failing.</p>
+</blockquote>
+<p>The &quot;<code>Private key does not match certificate</code>&quot; output is saying you have supplied client authentication certificates, but no private key.  If the host needs client auth then you need to provide the private key with the <code>--pk</code> option. Otherwise, omit the <code>--certs</code> parameter entirely.</p>
+<blockquote>
+<p>But given I have <code>allow-insecure-host</code> set this should not be a problem.</p>
+</blockquote>
+<p><code>allow-insecure-host</code> disables verification of the server's certificate by the client. A server that -- for example -- only supports obsolete TLS versions won't get that far. This is what I suspect is the case here.</p>
+<blockquote>
+<p>Caused by: received fatal alert: HandshakeFailure</p>
+</blockquote>
+<p>This is the first message received from the server and terminates the handshake. So there is no opportunity for <code>allow-insecure-host</code> to have any effect.</p>
+<blockquote>
+<p>Supported Server Cipher(s):
+Private key does not match certificate.
+Private key does not match certificate.
+Private key does not match certificate.</p>
+</blockquote>
+<p>This is where the interesting parts will be once sslscan works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 15:30</div>
+            <div class="timeline-body"><p>Thank you for the insights!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:35 UTC
+    </footer>
+</body>
+</html>

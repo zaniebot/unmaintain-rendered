@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv cache size limit - astral-sh/uv #5731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv cache size limit</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5731">#5731</a>
+        opened by <a href="https://github.com/FrancescElies">@FrancescElies</a>
+        on 2024-08-02 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2024-08-02 16:53</div>
+            <div class="timeline-body"><p>Unless I missed it, I think currently there is no way to limit the cache size.</p>
+<p>I think this would be valuable in ci self-hosted runners where the cache can grow pretty big due to the need to support many python versions packages downloads, we have seen it growing up to ~40GB.</p>
+<p>E.g. sccache has a <a href="https://github.com/mozilla/sccache/blob/0e6656243102299844cf344136b5e76f42a5a8ab/docs/Configuration.md#disk-local"><code>SCCACHE_CACHE_SIZE</code></a> that sets a maximum size of the cache.</p>
+<p>At the moment, if it grows to big you run <code>uv cache clean</code> and start over the game again, but with a cache size limit one wouldn't have to worry.</p>
+<p>What do you think?</p>
+<p>PS.: thanks for making pip installs great again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 16:57</div>
+            <div class="timeline-body"><p>Interesting idea. Would the cache be cleaned up on some sort of LRU basis?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2024-08-02 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2024-08-02 18:03</div>
+            <div class="timeline-body"><p>That would be my first naive choice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-03 00:41</div>
+            <div class="timeline-body"><p>Interesting, I've been using <code>UV_CACHE_DIR</code> instead to be relative to the github workspace and cleaning the workspace at the end of a run using a <code>ACTIONS_RUNNER_HOOK_JOB_COMPLETED</code> (for self hosted runners).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-03 21:42</div>
+            <div class="timeline-body"><p>@samypr100 do you think we should document that <a href="https://docs.astral.sh/uv/guides/integration/github/#caching">here</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-03 23:48</div>
+            <div class="timeline-body"><p>I think it makes sense if we want to include details for self hosted github runners caching. I can take a initial stab</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5757.html">astral-sh/uv#5757</a> on 2024-08-04 04:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FrancescElies">@FrancescElies</a> on 2024-08-06 16:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, I've been using <code>UV_CACHE_DIR</code> instead to be relative to the github workspace and cleaning the workspace at the end of a run using a <code>ACTIONS_RUNNER_HOOK_JOB_COMPLETED</code> (for self hosted runners).</p>
+</blockquote>
+<p>Doesn't cleaning the cache after each job defeat the purpose of using the cache? wouldn't in that case be the same as running <code>uv pip install</code> with  <code>--no-cache</code> flag?</p>
+<p>Currently we took the approach of randomly calling <code>uv cache clean</code> 10% of the time, 10% of the jobs are slower but the cache won't grow wild.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-06 16:50</div>
+            <div class="timeline-body"><p>I think what's non obvious in my statement is that you could arguably store the cache in between using actions cache instead of relying on the runner to hold it for you and slowly filling up the disk. To clarify, I don't do that right now (saving it in actions/cache), so it's just an idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-12-29 20:33</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/uv/issues/9790 - we have robots that automatically upgrade our packages every week, so our caches constantly fill up with older packages versions that are never used.</p>
+<p>Being able to say &quot;The cache has a maximum size of 4GB&quot; and an LRU scheme that evicted cold entries would work very well for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-01-07 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-01-07 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-01-07 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11432.html">astral-sh/uv#11432</a> on 2025-02-12 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8908.html">astral-sh/uv#8908</a> on 2025-05-13 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13431.html">astral-sh/uv#13431</a> on 2025-05-13 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/axellpadilla">@axellpadilla</a> on 2025-06-20 15:06</div>
+            <div class="timeline-body"><p>I think aside from cache prune, a configurable soft approximate limit would be the best, even a default one, to avoid unlimited growing cache problems by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-06-20 15:21</div>
+            <div class="timeline-body"><p>Between this issue and https://github.com/astral-sh/uv/issues/3518, we simply disable the uv cache fully on our dedicated test-runner PCs, and remind ourselves to regularly obliterate the uv caches on our workstations. We have a dependabot-like system that upgrades us to the latest versions of our third-party package dependencies every week, which is the worst case for uv's caching system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SZubarev">@SZubarev</a> on 2025-07-31 13:13</div>
+            <div class="timeline-body"><p>Just pruned 60GB of cache. It would be great to be able to setup size limit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jkobject">@jkobject</a> on 2025-08-12 15:32</div>
+            <div class="timeline-body"><p>would be great also to select where the cache gets stored</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-08-12 15:44</div>
+            <div class="timeline-body"><blockquote>
+<p>would be great also to select where the cache gets stored</p>
+</blockquote>
+<p>You can. See https://docs.astral.sh/uv/concepts/cache/#cache-directory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liamjones-pw">@liamjones-pw</a> on 2025-09-12 03:22</div>
+            <div class="timeline-body"><p>I have no idea how, but uv cache on my machine was taking up ~300GB. I only found when I started getting warnings about running out of disk. <code>uv cache clean</code> is slowly clawing it back.</p>
+<p>~~I'm not even actively using uv day to day so, this feels very, very odd.~~ MCP servers running in background are likely the cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-09-12 12:31</div>
+            <div class="timeline-body"><p>The fact that this has been the cache behavior since the launch of uv makes me wonder if I'm just using it incorrectly. Every 1-2 weeks I manually clear my uv cache and see ~1GB get deleted, and it grows unbounded if I don't.</p>
+<p>Is this what everyone does? Do people have tricks like scheduled prunes etc? It's not the worst price to pay for all of the benefits, but it's extremely surprising that the product is built on a grow-only unlimited caching system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-12 15:04</div>
+            <div class="timeline-body"><p>Hmm, I don't think it's particularly unusual to have an unbounded cache. Most tools I'm familiar with that cache to disk operate this way (I'm sure there are exceptions, or maybe it's different in other areas of software), though I of course agree that it would be nice to have a GC for it (like Cargo added recently) or an ability to bound it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/axellpadilla">@axellpadilla</a> on 2025-09-12 15:05</div>
+            <div class="timeline-body"><p>@charlesnicholson  It looks like it is, i think uv should at least run <code>uv cache prune</code> automatically after a certain space used ending a new sync for example, this clean a little at least and should be safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-09-12 15:41</div>
+            <div class="timeline-body"><p>We have a script in our project root that runs the git-sandboxed uv for us, so I'm just going to throw in a bit that looks at the cache size and prunes it if it's over 800MB or whatever. That way any time we run uv through our wrapper, it'll prune on size.</p>
+<p>@charliermarsh maybe consider a stopgap where uv informs the user every now and then that their cache is &gt; 2GB or something? It's clearly surprising at least a few users, even if it's working as intended :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-09-14 01:14</div>
+            <div class="timeline-body"><p>I filed https://github.com/astral-sh/uv/issues/15821 requesting that uv provides <code>uv cache size</code> to make it easier to tool external cache pruning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16761.html">astral-sh/uv#16761</a> on 2025-11-17 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucharo">@lucharo</a> on 2025-12-16 12:41</div>
+            <div class="timeline-body"><p>Hi, I'd be keen to see this implemented as I've ended up with a 99GB cache which crashed my laptop, auto clean up based on the last time a cached object was used/downloaded would be handy. I can of course set  cron jobs locally but <code>uv</code> handling this itself would be extra useful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17211.html">astral-sh/uv#17211</a> on 2025-12-21 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TrevorBurnham">@TrevorBurnham</a> on 2025-12-21 23:47</div>
+            <div class="timeline-body"><p>I've submitted a PR to add autopruning: https://github.com/astral-sh/uv/pull/17211</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

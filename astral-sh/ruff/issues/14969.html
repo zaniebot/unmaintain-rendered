@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checking file with rule PERF401 cause panic - astral-sh/ruff #14969</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Checking file with rule PERF401 cause panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14969">#14969</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2024-12-14 08:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2024-12-14 08:48</div>
+            <div class="timeline-body"><p>ruff 0.8.3+1608 (224c8438b 2024-12-13)</p>
+<p>probably regression from https://github.com/astral-sh/ruff/pull/14369
+CC @w0nder1ng</p>
+<pre><code>ruff check *.py --select PERF401 --no-cache  --preview --output-format concise --isolated
+</code></pre>
+<p>file content(at the bottom should be attached raw, not formatted file - github removes some non-printable characters, so copying from here may not work):</p>
+<pre><code>def n():
+ for x in c:l.append(())
+l=[]
+</code></pre>
+<p>error</p>
+<pre><code>All checks passed!
+
+error: Panicked while linting /tmp/tmp_folder/data/7775264315287514819.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at /home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw &lt;= end.raw
+Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
+             at ./ruff/crates/ruff/src/panic.rs:31:25
+   1: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/alloc/src/boxed.rs:1984:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:825:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:683:13
+   4: std::sys::backtrace::__rust_end_short_backtrace
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/sys/backtrace.rs:168:18
+   5: rust_begin_unwind
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:681:5
+   6: core::panicking::panic_fmt
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/core/src/panicking.rs:75:14
+   7: core::panicking::panic
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/core/src/panicking.rs:145:5
+   8: ruff_text_size::range::TextRange::new
+             at ./ruff/crates/ruff_text_size/src/range.rs:48:9
+   9: ruff_linter::rules::perflint::rules::manual_list_comprehension::manual_list_comprehension::{{closure}}
+             at ./ruff/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs:309:35
+  10: core::option::Option&lt;T&gt;::is_some_and
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:631:24
+  11: ruff_linter::rules::perflint::rules::manual_list_comprehension::manual_list_comprehension
+             at ./ruff/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs:308:52
+  12: ruff_linter::checkers::ast::analyze::deferred_for_loops::deferred_for_loops
+             at ./ruff/crates/ruff_linter/src/checkers/ast/analyze/deferred_for_loops.rs:39:17
+  13: ruff_linter::checkers::ast::check_ast
+             at ./ruff/crates/ruff_linter/src/checkers/ast/mod.rs:2618:5
+  14: ruff_linter::linter::check_path
+             at ./ruff/crates/ruff_linter/src/linter.rs:148:36
+  15: ruff_linter::linter::lint_only
+             at ./ruff/crates/ruff_linter/src/linter.rs:411:23
+  16: ruff::diagnostics::lint_path
+             at ./ruff/crates/ruff/src/diagnostics.rs:322:22
+  17: ruff::commands::check::lint_path::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:195:9
+  18: std::panicking::try::do_call
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:573:40
+  19: __rust_try
+  20: std::panicking::try
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:536:19
+  21: std::panic::catch_unwind
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358:14
+  22: ruff::panic::catch_unwind
+             at ./ruff/crates/ruff/src/panic.rs:40:18
+  23: ruff::commands::check::lint_path
+             at ./ruff/crates/ruff/src/commands/check.rs:194:18
+  24: ruff::commands::check::check::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:96:17
+  25: &lt;rayon::iter::filter_map::FilterMapFolder&lt;C,P&gt; as rayon::iter::plumbing::Folder&lt;T&gt;&gt;::consume
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:123:36
+  26: rayon::iter::plumbing::Folder::consume_iter
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:178:20
+  27: rayon::iter::plumbing::Producer::fold_with
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:109:9
+  28: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:437:13
+  29: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:396:12
+  30: &lt;rayon::iter::plumbing::bridge::Callback&lt;C&gt; as rayon::iter::plumbing::ProducerCallback&lt;I&gt;&gt;::callback
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:372:13
+  31: &lt;rayon::slice::Iter&lt;T&gt; as rayon::iter::IndexedParallelIterator&gt;::with_producer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:826:9
+  32: rayon::iter::plumbing::bridge
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:356:12
+  33: &lt;rayon::slice::Iter&lt;T&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:802:9
+  34: &lt;rayon::iter::filter_map::FilterMap&lt;I,P&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:46:9
+  35: &lt;rayon::iter::fold::Fold&lt;I,ID,F&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/fold.rs:59:9
+  36: rayon::iter::reduce::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/reduce.rs:15:5
+  37: rayon::iter::ParallelIterator::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/mod.rs:998:9
+  38: ruff::commands::check::check
+             at ./ruff/crates/ruff/src/commands/check.rs:166:10
+  39: ruff::check
+             at ./ruff/crates/ruff/src/lib.rs:424:13
+  40: ruff::run
+             at ./ruff/crates/ruff/src/lib.rs:196:33
+  41: ruff::main
+             at ./ruff/crates/ruff/src/main.rs:44:11
+  42: core::ops::function::FnOnce::call_once
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  43: std::sys::backtrace::__rust_begin_short_backtrace
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152:18
+  44: std::rt::lang_start::{{closure}}
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:195:18
+  45: core::ops::function::impls::&lt;impl core::ops::function::FnOnce&lt;A&gt; for &amp;F&gt;::call_once
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/core/src/ops/function.rs:284:13
+  46: std::panicking::try::do_call
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:573:40
+  47: std::panicking::try
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:536:19
+  48: std::panic::catch_unwind
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panic.rs:358:14
+  49: std::rt::lang_start_internal::{{closure}}
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/rt.rs:174:48
+  50: std::panicking::try::do_call
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:573:40
+  51: std::panicking::try
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panicking.rs:536:19
+  52: std::panic::catch_unwind
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/panic.rs:358:14
+  53: std::rt::lang_start_internal
+             at /rustc/327c7ee4367ea587a49eff1d4715f462ab6db5f0/library/std/src/rt.rs:174:20
+  54: std::rt::lang_start
+             at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:194:17
+  55: &lt;unknown&gt;
+  56: __libc_start_main
+  57: _start
+
+</code></pre>
+<p>Ruff build, that was used to reproduce problem(compiled on Ubuntu 22.04 with relase mode + debug symbols + debug assertions + overflow checks) - https://github.com/qarmin/Automated-Fuzzer/releases/download/Nightly/ruff.7z</p>
+<p><a href="https://github.com/user-attachments/files/18135159/python_compressed.zip">python_compressed.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-14 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-12-14 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14971.html">astral-sh/ruff#14971</a> on 2024-12-14 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-15 15:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

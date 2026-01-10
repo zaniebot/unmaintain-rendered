@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optional flag argument conflicts with required subcommand - clap-rs/clap #5455</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optional flag argument conflicts with required subcommand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5455">#5455</a>
+        opened by <a href="https://github.com/domenkozar">@domenkozar</a>
+        on 2024-04-15 11:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/domenkozar">@domenkozar</a> on 2024-04-15 11:32</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.76</p>
+<h3>Clap Version</h3>
+<p>4.5.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">
+use clap::{Parser, Subcommand};
+
+
+#[derive(Parser, Debug)]
+#[command(subcommand_required = true)]
+struct Cli {
+    #[arg(
+        short,
+        long,
+        value_delimiter = ',',
+    )]
+    arg: Option&lt;Vec&lt;String&gt;&gt;,
+
+    #[command(subcommand)]
+    command: Subcommands,
+}
+
+
+#[derive(Subcommand, Clone, Debug)]
+enum Subcommands {
+    #[command()]
+    Subcommand { },
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!(&quot;{:?}&quot;, cli);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>❯ cargo run -- --arg subcommand
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/clap-arg-subcommand --arg subcommand`
+error: 'clap-arg-subcommand' requires a subcommand but one was not provided
+  [subcommands: subcommand, help]
+
+Usage: clap-arg-subcommand [OPTIONS] &lt;COMMAND&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>--arg consumed <code>subcommand</code> as an arg and then complains about missing subcommand</p>
+<h3>Expected Behaviour</h3>
+<pre><code>❯ cargo run -- --arg subcommand
+Cli { arg: Some([]), command: Subcommand }
+
+❯ cargo run -- subcommand
+Cli { arg: None, command: Subcommand }
+
+❯ cargo run -- --arg arg1 subcommand
+Cli { arg: Some([&quot;arg1&quot;]), command: Subcommand }
+
+❯ cargo run -- --arg arg1,arg2 subcommand
+Cli { arg: Some([&quot;arg1&quot;, &quot;arg2&quot;]), command: Subcommand }
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @domenkozar on 2024-04-15 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-04-15 14:21</div>
+            <div class="timeline-body"><p>Try enabling <code>#[command(subcommand_precedence_over_arg = true)]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/domenkozar">@domenkozar</a> on 2024-04-17 11:38</div>
+            <div class="timeline-body"><p>Thanks, I assume there's a good reason it's not on by default :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @domenkozar on 2024-04-17 11:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:35 UTC
+    </footer>
+</body>
+</html>

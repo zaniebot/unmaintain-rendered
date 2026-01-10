@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to provide publish credentials for an alternative (named) package index? - astral-sh/uv #10193</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to provide publish credentials for an alternative (named) package index?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10193">#10193</a>
+        opened by <a href="https://github.com/menzenski">@menzenski</a>
+        on 2024-12-27 14:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/menzenski">@menzenski</a> on 2024-12-27 14:15</div>
+            <div class="timeline-body"><p>The documentation on <a href="https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes">Package indexes</a> specifies how to provide credentials via environment variables for installing packages from a named index. The documentation on <a href="https://docs.astral.sh/uv/guides/publish/#publishing-your-package">Publishing packages</a> specifies how to provide credentials via environment variables for publishing via PyPI.</p>
+<p>In my opinion the documentation seems to have a gap, in that it's not clear how to provide credentials via environment variables for publishing to an alternative (named) package index (e.g. a private Artifactory registry).</p>
+<p>For example, given an index definition named <code>my_artifactory</code> in <code>pyproject.toml</code> (which defines a <code>publish-url</code> per the <a href="https://docs.astral.sh/uv/guides/publish/#publishing-your-package">docs</a>):</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;my_artifactory&quot;
+url = &quot;https://myorg.jfrog.io/artifactory/api/pypi/pypi/simple&quot;
+publish-url = &quot;https://myorg.jfrog.io/artifactory/api/pypi/pypi-local&quot;
+explicit = true
+</code></pre>
+<p>Do I use the same <code>UV_INDEX_MY_ARTIFACTORY_USERNAME</code> / <code>UV_INDEX_MY_ARTIFACTORY_PASSWORD</code> environment variable names for publishing to the <code>publish-url</code> that I would for installing dependencies from the index's <code>url</code> ? Or should I expect to use environment variables that have <code>PUBLISH</code> in the name? (Or something else?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menzenski">@menzenski</a> on 2024-12-30 16:31</div>
+            <div class="timeline-body"><p>I tried using the same <code>UV_INDEX_MY_ARTIFACTORY_USERNAM</code>E / <code>UV_INDEX_MY_ARTIFACTORY_PASSWORD</code> environment variable names, but get a credentials error.</p>
+<p>Here's the relevant part of my GitHub Actions <code>publish</code> job definition:</p>
+<pre><code class="language-yaml">      - name: Build python package
+        run: |
+          uv build
+      - name: Publish python package
+        env:
+          UV_INDEX_MY_ARTIFACTORY_USERNAME: ${{ secrets.PUBLISH_USERNAME }}
+          UV_INDEX_MY_ARTIFACTORY_PASSWORD: ${{ secrets.PUBLISH_PASSWORD }}
+        run: |
+          uv publish --index my_artifactory
+</code></pre>
+<p>Here's the error:</p>
+<pre><code>Run uv publish --index my_artifactory
+  uv publish --index my_artifactory
+  shell: /usr/bin/bash -e {0}
+  env:
+    UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+    pythonLocation: /opt/hostedtoolcache/Python/3.12.8/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.8/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.8/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.8/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.8/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.8/x64/lib
+    UV_INDEX_MY_ARTIFACTORY_USERNAME: ***
+    UV_INDEX_MY_ARTIFACTORY_PASSWORD: ***
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://myorg.jfrog.io/artifactory/api/pypi/pypi-local
+Note: Neither credentials nor keyring are configured, and there was an error fetching the trusted publishing token. If you don't want to use trusted publishing, you can ignore this error, but you need to provide credentials.
+Trusted publishing error: Environment variable ACTIONS_ID_TOKEN_REQUEST_TOKEN not set, is the `id-token: write` permission missing?
+Uploading my_package-0.2.1-py3-none-any.whl (2.5KiB)
+error: Failed to publish `dist/my_package-0.2.1-py3-none-any.whl` to https://myorg.jfrog.io/artifactory/api/pypi/pypi-local
+  Caused by: Failed to send POST request
+  Caused by: Missing credentials for https://myorg.jfrog.io/artifactory/api/pypi/pypi-local
+Error: Process completed with exit code 2.
+</code></pre>
+<p>For what it's worth, we publish to the same Artifactory registry using the same credentials in other Python projects with Poetry, so I'm pretty confident that the credentials and the URL are correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-30 16:41</div>
+            <div class="timeline-body"><p>Thanks for all the details!</p>
+<p>Is this a duplicate of https://github.com/astral-sh/uv/issues/9845 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menzenski">@menzenski</a> on 2024-12-30 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this a duplicate of <a href="https://github.com/astral-sh/uv/issues/9845">#9845</a> ?</p>
+</blockquote>
+<p>Yes, I think it's the same issue - no objections to closing this as a duplicate of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-30 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-12-30 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-30 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14253.html">astral-sh/uv#14253</a> on 2025-06-25 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menzenski">@menzenski</a> on 2025-11-04 14:34</div>
+            <div class="timeline-body"><p>In case anyone finds this issue via search in the future, the documentation added in https://github.com/astral-sh/uv/pull/14253 provides instructions on publishing to Artifactory : https://docs.astral.sh/uv/guides/integration/alternative-indexes/#publishing-packages-to-jfrog-artifactory</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:56 UTC
+    </footer>
+</body>
+</html>

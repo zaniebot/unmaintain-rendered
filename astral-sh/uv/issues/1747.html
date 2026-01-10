@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uv doesn't support index-url fallback as pip - astral-sh/uv #1747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Uv doesn't support index-url fallback as pip</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1747">#1747</a>
+        opened by <a href="https://github.com/kkpattern">@kkpattern</a>
+        on 2024-02-20 11:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kkpattern">@kkpattern</a> on 2024-02-20 11:40</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Thanks for this awesome tool.</p>
+<p>In our project, we have a <a href="https://pypi.org/project/pypiserver/"><code>pypiserver</code></a> set up to host our internal packages. For the public packages, <code>pypiserver</code> will fallback to pypi.org with a <code>303</code> http response. For example, when we install <code>wheel</code>, this is the log from <code>pip install</code>:</p>
+<pre><code class="language-bash">Looking in indexes: http://our.internal.pypiserver/simple/
+1 location(s) to search for versions of wheel:
+* http://our.internal.pypiserver/simple/wheel/
+Fetching project page and analyzing links: http://our.internal.pypiserver/simple/wheel/
+Getting page http://our.internal.pypiserver/simple/wheel/
+Found index url http://our.internal.pypiserver/simple/
+Looking up &quot;http://our.internal.pypiserver/simple/wheel/&quot; in the cache
+Request header has &quot;max_age&quot; as 0, cache bypassed
+Starting new HTTP connection (1): our.internal.pypiserver:80
+http://our.internal.pypiserver:80 &quot;GET /simple/wheel/ HTTP/1.1&quot; 303 0
+Status code 303 not in (200, 203, 300, 301, 308)
+Starting new HTTP connection (1): pypi.python.org:80
+</code></pre>
+<p>When we use <code>UV_INDEX_URL</code> with uv, uv will fail to install the public packages:</p>
+<pre><code class="language-bash">error: Failed to download: wheel==0.42.0
+  Caused by: HTTP status client error (404 Not Found) for url (http://our.internal.pypiserver/simple/wheel/wheel-0.42.0-py3-none-any.whl)
+</code></pre>
+<p>The difference seems to be that <code>pip</code> will first look at <code>/simple/wheel/</code> and <code>uv</code> will look at <code>simple/wheel/wheel-0.42.0-py3-none-any.whl</code> directly. Maybe <code>pypiserver</code> should return <code>303</code> in the case too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 14:56</div>
+            <div class="timeline-body"><p>Just to double-check, do you run this with <code>--index-url</code> or <code>--extra-index-url</code>? (We might not be following the rediret or something.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-20 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-02-20 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2024-02-20 14:57</div>
+            <div class="timeline-body"><p>I ran this with <code>UV_INDEX_URL</code>, no <code>--index-url</code> or <code>--extra-index-url</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 15:02</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 19:02</div>
+            <div class="timeline-body"><p>Unfortunately this &quot;just worked&quot; for me when testing locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 19:05</div>
+            <div class="timeline-body"><p>Is there anything you can share about how you've configured <code>pypiserver</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 19:05</div>
+            <div class="timeline-body"><p>E.g., this works without error: <code>echo &quot;mypy&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2024-02-21 02:13</div>
+            <div class="timeline-body"><p>I found it's related to the fallback url configuration of <code>pypiserver</code>, we put a cache proxy before pypi.org.</p>
+<p>I can reproduce this locally with the following instructions:</p>
+<pre><code class="language-bash"># first setup a proxpi cache proxy
+pip install proxpi gunicorn
+gunicorn proxpi.server:app --bind 0.0.0.0:8000
+
+# then setup a pypiserver
+pypi-server run -p 8080 /tmp/packages --fallback-url &quot;http://localhost:8000/index&quot;
+</code></pre>
+<p>Then uv will fail to install the packages through the <code>pypiserver</code>:</p>
+<pre><code class="language-bash">(.venv) ☁  uv  echo &quot;wheel&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
+ uv::requirements::from_source source=-
+    0.001565s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /home/user/test/uv/.venv
+    0.001743s DEBUG uv_interpreter::interpreter Detecting markers for: /home/user/test/uv/.venv/bin/python
+    0.032706s DEBUG uv::commands::pip_compile Using Python 3.11.3 interpreter at /home/user/test/uv/.venv/bin/python for builds
+    0.033791s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.036118s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.11.3
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.036313s   0ms DEBUG uv_resolver::resolver Adding direct dependency: wheel*
+   uv_resolver::resolver::choose_version package=wheel
+     uv_resolver::resolver::package_wait package_name=wheel
+ uv_resolver::resolver::process_request request=Versions wheel
+   uv_client::registry_client::simple_api package=wheel
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpV8O0o8/simple-v1/c043adf7183e3e19/wheel.rkyv
+ uv_resolver::resolver::process_request request=Prefetch wheel *
+          0.037140s   0ms DEBUG uv_client::cached_client No cache entry for: http://localhost:8080/simple/wheel/
+       uv_client::cached_client::fresh_request url=&quot;http://localhost:8080/simple/wheel/&quot;
+       uv_client::cached_client::new_cache file=/tmp/.tmpV8O0o8/simple-v1/c043adf7183e3e19/wheel.rkyv
+       uv_client::registry_client::parse_simple_api package=wheel
+ uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=wheel==0.42.0
+     uv_client::registry_client::wheel_metadata built_dist=wheel==0.42.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpV8O0o8/wheels-v0/index/c043adf7183e3e19/wheel/wheel-0.42.0-py3-none-any.msgpack
+        0.118153s  81ms DEBUG uv_resolver::resolver Searching for a compatible version of wheel (*)
+        0.118176s  81ms DEBUG uv_resolver::resolver Selecting: wheel==0.42.0 (wheel-0.42.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=wheel, version=0.42.0
+     uv_resolver::resolver::distributions_wait package_id=wheel-0.42.0
+              0.118255s   0ms DEBUG uv_client::cached_client No cache entry for: http://localhost:8080/simple/wheel/wheel-0.42.0-py3-none-any.whl
+           uv_client::cached_client::fresh_request url=&quot;http://localhost:8080/simple/wheel/wheel-0.42.0-py3-none-any.whl&quot;
+error: Failed to download: wheel==0.42.0
+  Caused by: HTTP status client error (404 Not Found) for url (http://localhost:8080/simple/wheel/wheel-0.42.0-py3-none-any.whl)
+</code></pre>
+<p>Pip can install the package successfully in this case:</p>
+<pre><code class="language-bash">pip install --index-url http://localhost:8080/simple wheel -vv 
+Using pip 22.3.1 from /home/user/test/uv/.venv/lib/python3.11/site-packages/pip (python 3.11)
+Non-user install because user site-packages disabled
+Created temporary directory: /tmp/pip-build-tracker-y2f89g7m
+Initialized build tracking at /tmp/pip-build-tracker-y2f89g7m
+Created build tracker: /tmp/pip-build-tracker-y2f89g7m
+Entered build tracker: /tmp/pip-build-tracker-y2f89g7m
+Created temporary directory: /tmp/pip-install-11ixfkuq
+Created temporary directory: /tmp/pip-ephem-wheel-cache-a9_gzlyv
+Looking in indexes: http://localhost:8080/simple
+1 location(s) to search for versions of wheel:
+* http://localhost:8080/simple/wheel/
+Fetching project page and analyzing links: http://localhost:8080/simple/wheel/
+Getting page http://localhost:8080/simple/wheel/
+Found index url http://localhost:8080/simple
+Starting new HTTP connection (1): localhost:8080
+http://localhost:8080 &quot;GET /simple/wheel/ HTTP/1.1&quot; 303 0
+Starting new HTTP connection (1): localhost:8000
+http://localhost:8000 &quot;GET /index/wheel/ HTTP/1.1&quot; 200 6758
+Fetched page http://localhost:8080/simple/wheel/ as application/vnd.pypi.simple.v1+json
+  ...
+  Found link http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl (from http://localhost:8000/index/wheel/) (requires-python:&gt;=3.7), version: 0.42.0
+  Found link http://localhost:8000/index/wheel/wheel-0.42.0.tar.gz (from http://localhost:8000/index/wheel/) (requires-python:&gt;=3.7), version: 0.42.0
+Skipping link: not a file: http://localhost:8080/simple/wheel/
+Given no hashes to check 130 links for project 'wheel': discarding no candidates
+Collecting wheel
+  Created temporary directory: /tmp/pip-unpack-p982xpms
+  Resetting dropped connection: localhost
+  http://localhost:8000 &quot;GET /index/wheel/wheel-0.42.0-py3-none-any.whl HTTP/1.1&quot; 200 65375
+  Downloading http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl (65 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.4/65.4 kB 201.8 MB/s eta 0:00:00
+  Added wheel from http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl to build tracker '/tmp/pip-build-tracker-y2f89g7m'
+  Removed wheel from http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl from build tracker '/tmp/pip-build-tracker-y2f89g7m'
+Created temporary directory: /tmp/pip-unpack-givexmn1
+Installing collected packages: wheel
+
+  changing mode of /home/user/test/uv/.venv/bin/wheel to 755
+Successfully installed wheel-0.42.0
+Remote version of pip: 24.0
+Local version of pip:  22.3.1
+Was pip installed by pip? True
+Removed build tracker: '/tmp/pip-build-tracker-y2f89g7m'
+</code></pre>
+<p>Interestingly, if I set the fallback url to pypi.org:</p>
+<pre><code class="language-bash">pypi-server run -p 8080 /tmp/packages --fallback-url &quot;https://pypi.python.org/simple&quot;
+</code></pre>
+<p>Then uv will install the package successfully:</p>
+<pre><code class="language-bash">(.venv) ☁  uv  echo &quot;wheel&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
+ uv::requirements::from_source source=-
+    0.001598s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /home/user/test/uv/.venv
+    0.001756s DEBUG uv_interpreter::interpreter Detecting markers for: /home/user/test/uv/.venv/bin/python
+    0.045794s DEBUG uv::commands::pip_compile Using Python 3.11.3 interpreter at /home/user/test/uv/.venv/bin/python for builds
+    0.046657s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.048157s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.11.3
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.048241s   0ms DEBUG uv_resolver::resolver Adding direct dependency: wheel*
+   uv_resolver::resolver::choose_version package=wheel
+     uv_resolver::resolver::package_wait package_name=wheel
+ uv_resolver::resolver::process_request request=Versions wheel
+   uv_client::registry_client::simple_api package=wheel
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpKlb0dx/simple-v1/c043adf7183e3e19/wheel.rkyv
+ uv_resolver::resolver::process_request request=Prefetch wheel *
+          0.048914s   0ms DEBUG uv_client::cached_client No cache entry for: http://localhost:8080/simple/wheel/
+       uv_client::cached_client::fresh_request url=&quot;http://localhost:8080/simple/wheel/&quot;
+       uv_client::cached_client::new_cache file=/tmp/.tmpKlb0dx/simple-v1/c043adf7183e3e19/wheel.rkyv
+       uv_client::registry_client::parse_simple_api package=wheel
+ uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=wheel==0.42.0
+     uv_client::registry_client::wheel_metadata built_dist=wheel==0.42.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpKlb0dx/wheels-v0/index/c043adf7183e3e19/wheel/wheel-0.42.0-py3-none-any.msgpack
+        0.841446s 793ms DEBUG uv_resolver::resolver Searching for a compatible version of wheel (*)
+        0.841462s 793ms DEBUG uv_resolver::resolver Selecting: wheel==0.42.0 (wheel-0.42.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=wheel, version=0.42.0
+     uv_resolver::resolver::distributions_wait package_id=wheel-0.42.0
+              0.841534s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/c7/c3/55076fc728723ef927521abaa1955213d094933dc36d4a2008d5101e1af5/wheel-0.42.0-py3-none-any.whl
+           uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/c7/c3/55076fc728723ef927521abaa1955213d094933dc36d4a2008d5101e1af5/wheel-0.42.0-py3-none-any.whl&quot;
+           uv_client::cached_client::new_cache file=/tmp/.tmpKlb0dx/wheels-v0/index/c043adf7183e3e19/wheel/wheel-0.42.0-py3-none-any.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=wheel-0.42.0-py3-none-any.whl
+Resolved 1 package in 1.10s
+# This file was autogenerated by uv via the following command:
+#    uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
+wheel==0.42.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:41</div>
+            <div class="timeline-body"><p>Thanks, I'll give this another try tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-21 05:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 14:50</div>
+            <div class="timeline-body"><p>Thanks, reproduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1816.html">astral-sh/uv#1816</a> on 2024-02-21 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-21 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 15:11</div>
+            <div class="timeline-body"><p>Should work in the next release!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2024-02-21 15:37</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 05:00</div>
+            <div class="timeline-body"><p>Should be fixed in v0.1.7 (out now).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

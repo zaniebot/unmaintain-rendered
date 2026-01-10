@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_derive: Merge/inherit `ValueEnum` (sharing enum variants in `ValueEnum`) - clap-rs/clap #3911</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_derive: Merge/inherit `ValueEnum` (sharing enum variants in `ValueEnum`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3911">#3911</a>
+        opened by <a href="https://github.com/KSXGitHub">@KSXGitHub</a>
+        on 2022-07-12 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KSXGitHub">@KSXGitHub</a> on 2022-07-12 14:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.18</p>
+<h3>Describe your use case</h3>
+<p>I have multiple flags that use various <code>value_enum</code>. These <code>value_enum</code>s share some of their variants.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Allow including one <code>value_enum</code> in the other. Like so:</p>
+<pre><code class="language-rust">#[derive(Clone, ValueEnum)]
+enum Serde {
+    Json,
+    Yaml,
+    Toml,
+}
+
+#[derive(Clone, ValueEnum)]
+enum SerdePlain {
+    Plain,
+    #[clap(flatten)]
+    Serde(Serde),
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @KSXGitHub on 2022-07-12 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-07-12 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-07-12 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-12 14:45</div>
+            <div class="timeline-body"><p>The main limitation is the current trait design</p>
+<pre><code class="language-rust">pub trait ValueEnum: Sized + Clone {
+    fn value_variants&lt;'a&gt;() -&gt; &amp;'a [Self];
+    fn from_str(input: &amp;str, ignore_case: bool) -&gt; Result&lt;Self, String&gt; {
+        ...
+    }
+    fn to_possible_value&lt;'a&gt;(&amp;self) -&gt; Option&lt;PossibleValue&lt;'a&gt;&gt;;
+}
+</code></pre>
+<p><code>value_variants</code> requires a fixed size at the moment.</p>
+<p>#2799 discussed a different part of the API but had a similar aspect of &quot;should we allocate as part of <code>value_variants</code>?&quot;.</p>
+<p>If we could support <code>impl Trait</code> in return position in traits, then we could have <code>value_variants</code> return that and chain the flatten calls together.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:05 UTC
+    </footer>
+</body>
+</html>

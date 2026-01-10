@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirements contain conflicting indexes for package `torch` error when using extra markers in both the project and a dependency - astral-sh/uv #9942</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Requirements contain conflicting indexes for package `torch` error when using extra markers in both the project and a dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9942">#9942</a>
+        opened by <a href="https://github.com/reuben">@reuben</a>
+        on 2024-12-16 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/reuben">@reuben</a> on 2024-12-16 17:32</div>
+            <div class="timeline-body"><p>I have the following setup in a monorepo:</p>
+<ul>
+<li>projects/lib -&gt; helper library which wraps PyTorch, with two extras torch-v1 and torch-v2</li>
+<li>projects/app -&gt; app which uses the lib and also PyTorch directly, with the same two extras torch-v1 and torch-v2</li>
+</ul>
+<p>I tried to set up both projects with the markers, and the app -&gt; lib dependency is also only encoded in the optional dependencies of <code>app</code>. E.g. in app/pyproject.toml:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+torch-v1 = [
+    &quot;torch==1.12.1&quot;,
+    &quot;torchaudio==0.12.1&quot;,
+    &quot;lib[torch-v1]&quot;,
+]
+torch-v2 = [
+    &quot;torch~=2.3.1&quot;,
+    &quot;torchaudio~=2.3.1&quot;,
+    &quot;lib[torch-v2]&quot;,
+]
+[tool.uv]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu113&quot;
+url = &quot;https://download.pytorch.org/whl/cu113/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu121&quot;
+url = &quot;https://download.pytorch.org/whl/cu121/&quot;
+explicit = true
+
+[tool.uv.sources]
+lib = { path = &quot;../lib&quot;, editable = true }
+torch = [
+  { index = &quot;pytorch-cu113&quot;, extra = &quot;torch-v1&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+  { index = &quot;pytorch-cu121&quot;, extra = &quot;torch-v2&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+torchaudio = [
+  { index = &quot;pytorch-cu113&quot;, extra = &quot;torch-v1&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+  { index = &quot;pytorch-cu121&quot;, extra = &quot;torch-v2&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+</code></pre>
+<p><code>lib/pyproject.toml</code> looks identical except for the <code>lib</code> dependency.</p>
+<p>When I then try to sync <code>app</code>, I get:</p>
+<pre><code class="language-bash">$ uv sync --extra torch-v1
+error: Requirements contain conflicting indexes for package `torch` in split `platform_system != 'Darwin'`:
+- https://download.pytorch.org/whl/cu113/
+- https://download.pytorch.org/whl/cu121/
+</code></pre>
+<p>I've uploaded a repro here: https://github.com/reuben/uv-pytorch-dep-bug-repro</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-16 22:11</div>
+            <div class="timeline-body"><p>Does it work if you remove the dependency on <code>lib[torch-v1]</code> and <code>lib[torch-v2]</code>? I think you have to also mark those as conflicting here but @BurntSushi would know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-16 22:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2024-12-16 22:17</div>
+            <div class="timeline-body"><p>Isn't it already marked as conflicting? The lib dep only appears inside the optional extras which are marked as conflicting. In the <a href="https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies">docs</a> I understand that only extras and groups can be marked as conflicting, not dependencies directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2024-12-17 07:51</div>
+            <div class="timeline-body"><p>Oh, sorry, forgot to answer the first question: yes, it does work without the <code>lib</code> dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-12-17 16:11</div>
+            <div class="timeline-body"><p>Does it work if you add this to your <code>pyproject.toml</code> for <code>lib</code> as well? (In addition to what you have in your root <code>pyproject.toml</code>.)</p>
+<pre><code class="language-toml">conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+]
+</code></pre>
+<p>Basically, if you have those extras defined on <code>lib</code> as well, then those are separate extras from what's in your root <code>pyproject.toml</code>, and you need to tell uv that those conflict as well.</p>
+<p>It's hard to say without an MRE though. Another thought is more of a hammer (and I guess this uses an undocumented feature), but to put this in your root <code>pyproject.toml</code> (and only this):</p>
+<pre><code class="language-toml">conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v1&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v2&quot; },
+    ],
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2024-12-17 16:13</div>
+            <div class="timeline-body"><p>@BurntSushi there's no &quot;root&quot; pyproject.toml, I'm not using a workspace, just two projects that reference each other as path dependencies. <code>lib</code> already has the conflicts declared, see here: https://github.com/reuben/uv-pytorch-dep-bug-repro/blob/main/projects/lib/pyproject.toml</p>
+<p>I'll try with the <code>package</code> conflict and report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2024-12-17 16:19</div>
+            <div class="timeline-body"><p>With the <code>package</code> conflict declared I get a different error:</p>
+<pre><code>$ uv sync --extra torch-v1
+error: Found conflicting extra `torch-v1` unconditionally enabled in `lib[torch-v1] @ file:///Users/reubenn/dev/personal/uv-pytorch-dep-bug-repro/projects/lib ; extra == 'torch-v1'`
+</code></pre>
+<p>This repo should be a MRE btw:  https://github.com/reuben/uv-pytorch-dep-bug-repro</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-12-17 16:20</div>
+            <div class="timeline-body"><p>Hmmm okay, but from what I can tell, you have the <code>pyproject.toml</code> that you shared and <em>also</em> another <code>pyproject.toml</code> for <code>lib</code> right? And <em>both</em> of those define <code>torch-v1</code> and <code>torch-v2</code> extras right? Those extras are technically distinct and uv needs to be taught that they are conflicting.</p>
+<p>Also, the &quot;hammer&quot; I mentioned in my previous comment should be this (not what I wrote, which is wrong):</p>
+<pre><code class="language-toml">conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+    [
+      { package = &quot;lib&quot;, extra = &quot;torch-v1&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v2&quot; },
+    ],
+    [
+      { extra = &quot;torch-v1&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v2&quot; },
+    ],
+    [
+      { extra = &quot;torch-v2&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v1&quot; },
+    ],
+]
+</code></pre>
+<p>Basically, you have to tell uv about <em>all</em> of the different conflicting interactions. For example, without the above, uv doesn't know that <code>app[torch-v1]</code> and <code>lib[torch-v2]</code> can't be combined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2024-12-17 16:30</div>
+            <div class="timeline-body"><p>With the corrected hammer I still get the new error:</p>
+<pre><code>$ uv sync --extra torch-v2
+error: Found conflicting extra `torch-v1` unconditionally enabled in `lib[torch-v1] @ file:///Users/reubenn/dev/personal/uv-pytorch-dep-bug-repro/projects/lib ; extra == 'torch-v1'`
+</code></pre>
+<p>I can always re-export torch from <code>lib</code>, so I've reduced the test case even further by eliminating the <code>app -&gt; torch</code> dependency. It's pushed to this branch here: https://github.com/reuben/uv-pytorch-dep-bug-repro/tree/more-minimaler</p>
+<p>This is what I have:</p>
+<pre><code>.
+├── README.md
+└── projects
+    ├── app
+    │   └── pyproject.toml
+    └── lib
+        └── pyproject.toml
+</code></pre>
+<p>app/pyproject.toml is:</p>
+<pre><code class="language-toml">[project]
+name = &quot;app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.15&quot;
+dependencies = []
+
+[project.optional-dependencies]
+torch-v1 = [
+    &quot;lib[torch-v1]&quot;,
+]
+torch-v2 = [
+    &quot;lib[torch-v2]&quot;,
+]
+
+[tool.uv]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+]
+[tool.uv.sources]
+lib = { path = &quot;../lib&quot;, editable = true }
+</code></pre>
+<p>and lib/pyproject.toml is:</p>
+<pre><code class="language-toml">[project]
+name = &quot;lib&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.15&quot;
+dependencies = []
+
+[project.optional-dependencies]
+torch-v1 = [
+    &quot;torch==1.12.1&quot;,
+    &quot;torchaudio==0.12.1&quot;,
+]
+torch-v2 = [
+    &quot;torch~=2.3.1&quot;,
+    &quot;torchaudio~=2.3.1&quot;,
+]
+
+[tool.uv]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu113&quot;
+url = &quot;https://download.pytorch.org/whl/cu113/&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu121&quot;
+url = &quot;https://download.pytorch.org/whl/cu121/&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu113&quot;, extra = &quot;torch-v1&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+  { index = &quot;pytorch-cu121&quot;, extra = &quot;torch-v2&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+torchaudio = [
+  { index = &quot;pytorch-cu113&quot;, extra = &quot;torch-v1&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+  { index = &quot;pytorch-cu121&quot;, extra = &quot;torch-v2&quot;, marker = &quot;platform_system != 'Darwin'&quot;},
+]
+</code></pre>
+<p><code>uv sync</code> in <code>lib</code> works fine, but when I try to <code>uv sync --extra torch-v1</code> in <code>app</code>, I get the original error:</p>
+<pre><code>$ uv sync --extra torch-v1
+error: Requirements contain conflicting indexes for package `torch` in split `platform_system != 'Darwin'`:
+- https://download.pytorch.org/whl/cu113/
+- https://download.pytorch.org/whl/cu121/
+- ```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2024-12-17 16:59</div>
+            <div class="timeline-body"><p>OK I was finally able to get something working by using the global PyTorch index and using local version specifiers to narrow down to a specific CUDA version, and limiting resolution to Linux environments only. It's not super clean but it works:</p>
+<p>lib/pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;lib&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.15&quot;
+dependencies = []
+
+[project.optional-dependencies]
+torch-v1 = [
+    &quot;torch==1.12.1+cu113&quot;,
+    &quot;torchaudio==0.12.1+cu113&quot;,
+]
+torch-v2 = [
+    &quot;torch==2.3.1+cu121&quot;,
+    &quot;torchaudio==2.3.1+cu121&quot;,
+]
+
+[tool.uv]
+environments = [&quot;platform_system == 'Linux'&quot;]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-all&quot;
+url = &quot;https://download.pytorch.org/whl/&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-all&quot; },
+]
+torchaudio = [
+  { index = &quot;pytorch-all&quot; },
+]
+</code></pre>
+<p>app/pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.15&quot;
+dependencies = []
+
+[project.optional-dependencies]
+torch-v1 = [
+    &quot;lib[torch-v1]&quot;,
+    &quot;torch==1.12.1+cu113&quot;,
+    &quot;torchaudio==0.12.1+cu113&quot;,
+]
+torch-v2 = [
+    &quot;lib[torch-v2]&quot;,
+    &quot;torch==2.3.1+cu121&quot;,
+    &quot;torchaudio==2.3.1+cu121&quot;,
+]
+
+[tool.uv]
+environments = [&quot;platform_system == 'Linux'&quot;]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-all&quot;
+url = &quot;https://download.pytorch.org/whl/&quot;
+explicit = true
+
+[tool.uv.sources]
+lib = { path = &quot;../lib&quot;, editable = true }
+torch = [
+  { index = &quot;pytorch-all&quot; },
+]
+torchaudio = [
+  { index = &quot;pytorch-all&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-12-22 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-22 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 22:44</div>
+            <div class="timeline-body"><p>Agree that there's a bug here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 23:00</div>
+            <div class="timeline-body"><p>Maybe multiple bugs? Not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10590.html">astral-sh/uv#10590</a> on 2025-01-14 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sh1man999">@sh1man999</a> on 2025-01-21 14:23</div>
+            <div class="timeline-body"><p>Yeah, I had the same error.
+https://github.com/astral-sh/uv/issues/10590  It's a duplicate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10875.html">astral-sh/uv#10875</a> on 2025-01-22 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-22 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/herebebeasties">@herebebeasties</a> on 2025-02-20 22:39</div>
+            <div class="timeline-body"><p>This now works for me with @BurntSushi's suggestion of adding the explicit conflicts for the lib to the top-level app. Thanks Andrew. 👍🏻</p>
+<pre><code>[tool.uv]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v1&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v2&quot; },
+    ],
+]
+</code></pre>
+<p>Note that his subsequent comment about needing all possible combinations doesn't seem to be required, at least on the latest 0.6.2 build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leoll2">@leoll2</a> on 2025-11-03 12:05</div>
+            <div class="timeline-body"><p>The above solution by herebebeasties does not work for me: <code>uv lock</code> does not raise any error, but for some reason the generated <code>uv.lock</code> does not contain any of the torch subdependencies.</p>
+<p>However, a very similar solution does the trick:</p>
+<pre><code class="language-toml">[tool.uv]
+conflicts = [
+    [
+      { extra = &quot;torch-v1&quot; },
+      { extra = &quot;torch-v2&quot; },
+    ],
+    [
+      { package = &quot;lib&quot;, extra = &quot;torch-v1&quot; },
+      { package = &quot;lib&quot;, extra = &quot;torch-v2&quot; },
+    ],
+]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:51 UTC
+    </footer>
+</body>
+</html>

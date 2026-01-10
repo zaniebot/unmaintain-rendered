@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive's case conversion removes non-ASCII BMP char - clap-rs/clap #3948</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive's case conversion removes non-ASCII BMP char</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3948">#3948</a>
+        opened by <a href="https://github.com/Rudxain">@Rudxain</a>
+        on 2022-07-19 07:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Rudxain">@Rudxain</a> on 2022-07-19 07:49</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>3.2.12</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+#[clap()]
+struct Cli {
+	#[clap(long, action)]
+	olé: bool,
+	#[clap(long = &quot;olé!&quot;, action)]
+	olé1: bool,
+	#[clap(long, action)]
+	olé2: bool
+}
+
+fn main() {
+	let cli = Cli::parse();
+	println!(&quot;{} {} {}&quot;, cli.olé, cli.olé1, cli.olé2);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-sh">cargo run -- --olé2
+cargo run -- -h
+cargo run -- --olé
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p><code>cargo run -- -h</code> output:</p>
+<pre><code>clap_bug 
+
+USAGE:
+    clap_bug [OPTIONS]
+
+OPTIONS:
+    -h, --help    Print help information
+        --ol      
+        --ol-2    
+        --olé!
+</code></pre>
+<p>It affects both the <code>help</code> and the argument recognition. <code>--ol</code> is recognized, but not <code>--olé</code>, same happens to <code>--olé2</code></p>
+<h3>Expected Behaviour</h3>
+<p><code>--olé</code>, <code>--olé!</code>, and <code>--olé2</code>should be recognized as-is</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Rudxain on 2022-07-19 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-07-19 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Non-ASCII BMP char disappears if not followed by another char" to "Derive's case conversion removes non-ASCII BMP char" by @epage on 2022-07-19 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-19 14:30</div>
+            <div class="timeline-body"><p>Whats happening is that the derive will implicitly convert field names from snake_case to kebab-case.  This is what is dropping the characters and is why an explicit <code>long</code> works.</p>
+<p>For example, the following works for me</p>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;3.2.8&quot;, features = [&quot;derive&quot;] }
+//! ```
+
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(rename_all = &quot;verbatim&quot;)]
+struct Cli {
+    #[clap(long, action)]
+    olé: bool,
+    #[clap(long = &quot;olé!&quot;, action)]
+    olé1: bool,
+    #[clap(long, action)]
+    olé2: bool,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!(&quot;{} {} {}&quot;, cli.olé, cli.olé1, cli.olé2);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-07-19 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:06 UTC
+    </footer>
+</body>
+</html>

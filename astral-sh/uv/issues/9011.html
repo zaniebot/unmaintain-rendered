@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question: What’s the difference between `optional-dependencies` and `dependency-groups` in `pyproject.toml`? - astral-sh/uv #9011</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question: What’s the difference between `optional-dependencies` and `dependency-groups` in `pyproject.toml`?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9011">#9011</a>
+        opened by <a href="https://github.com/pplmx">@pplmx</a>
+        on 2024-11-11 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pplmx">@pplmx</a> on 2024-11-11 09:54</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I have a question regarding the configuration of dependencies in <code>pyproject.toml</code>.</p>
+<p>I’ve noticed that both <code>optional-dependencies</code> and <code>dependency-groups</code> seem to handle optional dependencies in a similar way, so I'm a bit confused about how they differ and when each should be used. Could you clarify the following points?</p>
+<ul>
+<li><p><strong>Purpose</strong>: What is the intended purpose of <code>optional-dependencies</code> versus <code>dependency-groups</code>?</p>
+</li>
+<li><p><strong>Usage Scenarios</strong>: In what specific scenarios would it make sense to use one over the other?</p>
+</li>
+</ul>
+<p>Any insights or examples you could provide would be really helpful.</p>
+<p>Thanks in advance for your time and assistance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PRFina">@PRFina</a> on 2024-11-11 11:33</div>
+            <div class="timeline-body"><p>I was wondering about the same today, looking for some insights here. From my understanding:</p>
+<ul>
+<li><p><code>optional-dependencies</code> (aka package's extras) are meant to be shipped with your code. However, installing them is optional as they provide &quot;extra&quot; features of your package, maybe supporting a smaller set of users. Think about how pandas handle them. Most users want to work with their core API, ie, with <code>Dataframe</code> or <code>Series</code> data structures with some locally stored csv/parquet files. However, some user wants to have extra features to read/write the data from/to some remote storage. To fulfill this purpose they provide <code>pip install pandas[aws,gcp,fss]</code></p>
+</li>
+<li><p><code>dependencies-groups</code> are still optional dependencies, but are not meant to be shipped with your package. I'm thinking about all those dependencies that help to support your package development activities (testing, linting, formatting, QA, etc,). Indeed they're called dev dependencies <a href="https://docs.astral.sh/uv/concepts/dependencies/#development-dependencies">in the doc</a>. For example, I know that the data scientist who works with me like to prototype some code in Jupyter Notebooks first, and then move their code snippets in some py module. Therefore, I'm adding Jupyter as a <code>dependencies-groups</code> dependency since it's not part of the package itself, just the dev workflow.</p>
+</li>
+</ul>
+<p>I think it's more about what ends up in the published package than how they are handled by uv. In theory, you can move all your <code>optional-dependencies</code> into the <code>optional-dependencies</code> table and vice-versa, ending up with the same amount of resolved/installed packages in your venv.</p>
+<p>Moreover <code>optional-dependencies</code> are part of the <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table">the pep 621 standard specification</a> while <code>dependencies-groups</code> is uv specific. Therefore, the former also works with other pep 621 compliant tools (eg. pip) while the latter only with uv.</p>
+<p>I'm new to uv, so they are just considerations. Probably some contributor could shed more light on the rationale behind this feature :smiley:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ravencentric">@Ravencentric</a> on 2024-11-11 12:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Moreover optional-dependencies are part of the the pep 621 standard specification while dependencies-groups is uv specific. Therefore, the former also works with other pep 621 compliant tools (eg. pip) while the latter only with uv.</p>
+</blockquote>
+<p>They are not uv specific but a fairly new packaging standard defined by <a href="https://peps.python.org/pep-0735/">PEP 735 – Dependency Groups in pyproject.toml</a>.</p>
+<p><code>project.optional-dependencies</code> are part of your published package and can be installed by the end user via <code>pip install your-package[some-extra]</code> while dependency groups are not published with your package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PRFina">@PRFina</a> on 2024-11-11 13:37</div>
+            <div class="timeline-body"><p>Thanks for pointing it out @Ravencentric, I was not aware of it :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2024-11-11 13:43</div>
+            <div class="timeline-body"><p>@PRFina Thanks for your response; it was really helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-11 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 13:48</div>
+            <div class="timeline-body"><p>See also: https://github.com/astral-sh/uv/issues/8981#issuecomment-2466787211.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-11 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/majidaldo">@majidaldo</a> on 2025-01-02 16:36</div>
+            <div class="timeline-body"><p>Wouldn't this violate DRY? If I'm working on an optional user feature, how do I specify the deps as a <code>dependency-group</code> as well as a <code>project.optional-dependencies </code> without repeating?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-02 17:39</div>
+            <div class="timeline-body"><p>If it's a user feature, use <code>project.optional-dependencies</code> instead of <code>dependency-group</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-02 17:43</div>
+            <div class="timeline-body"><p>uv does support this though</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+
+❯ cd example
+❯ uv add --optional feat anyio
+Using CPython 3.12.8 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 5 packages in 114ms
+Prepared 4 packages in 97ms
+Installed 4 packages in 2ms
+ + anyio==4.7.0
+ + idna==3.10
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+
+❯ uv add --group feat 'example[feat]'
+Resolved 5 packages in 2ms
+Audited 4 packages in 0.00ms
+
+❯ cat pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+feat = [
+    &quot;anyio&gt;=4.7.0&quot;,
+]
+
+[dependency-groups]
+feat = [
+    &quot;example[feat]&quot;,
+]
+
+❯ uv sync --group feat
+Resolved 5 packages in 1ms
+Installed 4 packages in 6ms
+ + anyio==4.7.0
+ + idna==3.10
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/majidaldo">@majidaldo</a> on 2025-01-02 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>uv does support this though</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+
+❯ cd example
+❯ uv add --optional feat anyio
+Using CPython 3.12.8 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 5 packages in 114ms
+Prepared 4 packages in 97ms
+Installed 4 packages in 2ms
+ + anyio==4.7.0
+ + idna==3.10
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+
+❯ uv add --group feat 'example[feat]'
+Resolved 5 packages in 2ms
+Audited 4 packages in 0.00ms
+
+❯ cat pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+feat = [
+    &quot;anyio&gt;=4.7.0&quot;,
+]
+
+[dependency-groups]
+feat = [
+    &quot;example[feat]&quot;,
+]
+
+❯ uv sync --group feat
+Resolved 5 packages in 1ms
+Installed 4 packages in 6ms
+ + anyio==4.7.0
+ + idna==3.10
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+</code></pre>
+</blockquote>
+<p>oh ok! b/c i can refer to the package that i'm developing. thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-02 18:03</div>
+            <div class="timeline-body"><p>I'm not sure if other tools will accept that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../matplotlib/matplotlib/pulls/29752.html">matplotlib/matplotlib#29752</a> on 2025-03-16 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DeiC-HPC/cotainr/pulls/126.html">DeiC-HPC/cotainr#126</a> on 2025-03-17 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucharo">@lucharo</a> on 2025-03-31 09:52</div>
+            <div class="timeline-body"><p>can i use dependency groups with <code>uv pip</code>? if so what's the pip compatible syntax?</p>
+<p>My use case is dev dependencies so based on what I've read in this thread dependency group seem better suited but I often will install my package and all of it's dependencies via editable installs (<code>uv pip install -e .[dev]</code> - in the optional dependency syntax - my understand is that editable installs are not yet support in <code>uv</code>'s native API, is it?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 21:34</div>
+            <div class="timeline-body"><p>@lucharo you can install groups with <code>uv pip install --group dev</code>. In the native API, we use editable installs by default for the project (and any workspace members) in <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucharo">@lucharo</a> on 2025-04-02 06:17</div>
+            <div class="timeline-body"><p>Ah that's great!! Thanks @zanieb</p>
+<p>I'll move away from <code>pip install -e &quot;.[dev]&quot;</code> then</p>
+<p>And you're saying that <code>uv sync</code> does editable installs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 14:16</div>
+            <div class="timeline-body"><p>Yeah <code>uv sync</code> does editable installs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucharo">@lucharo</a> on 2025-04-03 06:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah <code>uv sync</code> does editable installs.</p>
+</blockquote>
+<p>Fantastic! How do you handle optional and group dependencies with <code>uv sync</code>?</p>
+<p>If <code>uv sync</code> is equivalent to <code>pip install -e .</code></p>
+<p>What's the command to do <code>pip install -e .[extra]</code> or <code>pip install -e . --group dev</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucharo">@lucharo</a> on 2025-04-03 07:39</div>
+            <div class="timeline-body"><p>my bad, it's in the help:</p>
+<p>I use <code>uv sync --all-extras</code></p>
+<pre><code class="language-sh">$ uv sync --help   
+Update the project's environment
+
+Usage: uv sync [OPTIONS]
+
+Options:
+      --extra &lt;EXTRA&gt;                            Include optional dependencies from the specified extra name
+      --all-extras                               Include all optional dependencies
+      --no-extra &lt;NO_EXTRA&gt;                      Exclude the specified optional dependencies, if `--all-extras` is supplied
+      --no-dev                                   Disable the development dependency group
+      --only-dev                                 Only include the development dependency group
+      --group &lt;GROUP&gt;                            Include dependencies from the specified dependency group
+      --no-group &lt;NO_GROUP&gt;                      Disable the specified dependency group
+      --no-default-groups                        Ignore the default dependency groups
+      --only-group &lt;ONLY_GROUP&gt;                  Only include dependencies from the specified dependency group
+      --all-groups                               Include dependencies from all dependency groups
+      --no-editable                              Install any editable dependencies, including the project and any workspace
+                                                 members, as non-editable
+      --inexact                                  Do not remove extraneous packages present in the environment
+      --active                                   Sync dependencies to the active virtual environment
+      --no-install-project                       Do not install the current project
+      --no-install-workspace                     Do not install any workspace members, including the root project
+      --no-install-package &lt;NO_INSTALL_PACKAGE&gt;  Do not install the given package(s)
+      --locked                                   Assert that the `uv.lock` will remain unchanged [env: UV_LOCKED=]
+      --frozen                                   Sync without updating the `uv.lock` file [env: UV_FROZEN=]
+      --dry-run                                  Perform a dry run, without writing the lockfile or modifying the project
+                                                 environment
+      --all-packages                             Sync all packages in the workspace
+      --package &lt;PACKAGE&gt;                        Sync for a specific package in the workspace
+      --script &lt;SCRIPT&gt;                          Sync the environment for a Python script, rather than the current project
+      --check                                    Check if the Python environment is synchronized with the project
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kedro-org/kedro/issues/4648.html">kedro-org/kedro#4648</a> on 2025-04-08 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alex-ley-scrub">@Alex-ley-scrub</a> on 2025-05-02 00:09</div>
+            <div class="timeline-body"><p>you can also use this (which allows install into current active conda env for example and doesn't force venv to be created):</p>
+<pre><code>uv pip install -e . --all-extras -r pyproject.toml
+</code></pre>
+<p>these all seems to force the creation of a venv, which I personally don't want:</p>
+<pre><code>uv sync --all-extras --active
+uv sync --all-extras --active --system # system no longer an option? https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments
+uv sync --all-extras --active --python $(which python)
+</code></pre>
+<p>I'd love to be wrong and/or to learn how I could use <code>uv sync</code> without it creating a new venv and just installing into the current active env:</p>
+<p><img width="594" alt="Image" src="https://github.com/user-attachments/assets/18e1055e-60dc-4a29-a35c-2748fa353505" /></p>
+<p><img width="458" alt="Image" src="https://github.com/user-attachments/assets/bebd0f93-7bf4-4f57-acfd-9a8895084488" /></p>
+<p><img width="577" alt="Image" src="https://github.com/user-attachments/assets/9c89d571-38af-460f-b0d3-09bd492bb4c4" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pypae">@pypae</a> on 2025-06-17 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>uv does support this though</p>
+<pre><code>❯ uv init example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+
+❯ cd example
+❯ uv add --optional feat anyio
+Using CPython 3.12.8 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 5 packages in 114ms
+Prepared 4 packages in 97ms
+Installed 4 packages in 2ms
+ + anyio==4.7.0
+ + idna==3.10
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+
+❯ uv add --group feat 'example[feat]'
+Resolved 5 packages in 2ms
+Audited 4 packages in 0.00ms
+
+❯ cat pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+feat = [
+    &quot;anyio&gt;=4.7.0&quot;,
+]
+
+[dependency-groups]
+feat = [
+    &quot;example[feat]&quot;,
+]
+
+❯ uv sync --group feat
+Resolved 5 packages in 1ms
+Installed 4 packages in 6ms
+ + anyio==4.7.0
+ + idna==3.10
+ + sniffio==1.3.1
+ + typing-extensions==4.12.2
+</code></pre>
+</blockquote>
+<p>That's exactly what I was looking for, but took me quite a while to figure out.</p>
+<p>I combined the above with</p>
+<pre><code>[tool.uv]
+default-groups = &quot;all&quot;
+</code></pre>
+<p>So I don't have to type <code>uv sync --all-extras</code> during development.</p>
+<p>Maybe adding a small note to https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups or https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies would help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pamelafox/mcp-python-demo/pulls/1.html">pamelafox/mcp-python-demo#1</a> on 2025-06-23 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../UCL-ARC/python-tooling/pulls/563.html">UCL-ARC/python-tooling#563</a> on 2025-07-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../glass-dev/glass/issues/633.html">glass-dev/glass#633</a> on 2025-07-16 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astro-informatics/sleplet/pulls/462.html">astro-informatics/sleplet#462</a> on 2025-07-16 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../crytic/slither/pulls/2786.html">crytic/slither#2786</a> on 2025-08-30 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NetHack-LE/nle/pulls/63.html">NetHack-LE/nle#63</a> on 2025-09-02 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../collective/icalendar/issues/906.html">collective/icalendar#906</a> on 2025-10-05 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15141.html">astral-sh/uv#15141</a> on 2025-10-30 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ImperialCollegeLondon/rojak/pulls/76.html">ImperialCollegeLondon/rojak#76</a> on 2025-10-31 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kornia/kornia/pulls/3356.html">kornia/kornia#3356</a> on 2025-11-23 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opendatateam/udata/pulls/3560.html">opendatateam/udata#3560</a> on 2025-12-05 12:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:29 UTC
+    </footer>
+</body>
+</html>

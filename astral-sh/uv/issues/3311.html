@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Control parallelism of downloads, sdist builds, and installs - astral-sh/uv #3311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Control parallelism of downloads, sdist builds, and installs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3311">#3311</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2024-04-29 14:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-04-29 14:36</div>
+            <div class="timeline-body"><p>Not significantly high priority but I would like to be able to control how many parallel downloads, sdist builds, and installs uv runs, three main reasons:</p>
+<ol>
+<li>I've had a couple of recent errors in WSL2 when running uv that the device is not ready yet (I will capture it if I see it again and make a separate issue) and it appeared to be from uv running too much against the filesystem at once</li>
+<li>I may wish uv to use less resources and don't mind if it takes longer to run, e.g. on a low power device with other things running and building the Python environment isn't latency sensitive</li>
+<li>I would like to be able to do more specific benchmarks compared to pip, and it's difficult to measure in a full install where uv is actually more efficient, or where it is doing things in parallel</li>
+</ol>
+<p>There is an open PR (https://github.com/pypa/pip/pull/12388) on pip side that will expose the number of downloads at once via &quot;--parallel_downloads&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-29 14:39</div>
+            <div class="timeline-body"><p>I think we should support this. I'd prefer environment variables to command line flags though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-04-29 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-02 19:19</div>
+            <div class="timeline-body"><p>Does <code>--parallel-downloads</code> set the number of threads used to download in parallel, or the maximum number of inflight concurrent downloads? We run most downloads on the main thread so we could probably only expose the latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-02 20:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Does <code>--parallel-downloads</code> set the number of threads used to download in parallel, or the maximum number of inflight concurrent downloads? We run most downloads on the main thread so we could probably only expose the latter.</p>
+</blockquote>
+<p>The pip PR adds the feature to use multiple threads, and the feature controls the number of threads.</p>
+<p>But for my use case at least I was wanting to set one download at a time, I wasn't too concerned with whether things are technically parallel or concurrent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3493.html">astral-sh/uv#3493</a> on 2024-05-09 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-10 16:24</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/3493 gives you a way to manage network and build concurrency limits. We might still want a way to limit installs, and limit the size of the blocking threadpool if you want to limit fs operations. Maybe those could be combined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-10 16:34</div>
+            <div class="timeline-body"><p>Oh wow, looks amazing. I'm quite sure this covers my use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-10 16:38</div>
+            <div class="timeline-body"><p>It doesn't completely fulfill your 3rd point of benchmarking against pip. However, serializing all uv operations would be quite difficult if not impossible and I don't think something worth doing. I think the best we can do is expose concurrency limits on specific operations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-10 16:47</div>
+            <div class="timeline-body"><p>That makes sense, however, installing time is easy to seperate out from the other numbers when benchmarking, and if needs be I can always test installing one package at a time with no dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-10 16:55</div>
+            <div class="timeline-body"><p>I was more referring to other fs operations, like reading from the cache, that could still occur concurrently during downloads. However, during a cold download you should be fine. I'll look into adding an install concurrency limit in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-18 03:14</div>
+            <div class="timeline-body"><p>Resolved by https://github.com/astral-sh/uv/pull/3493 and https://github.com/astral-sh/uv/pull/3646.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-05-18 03:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

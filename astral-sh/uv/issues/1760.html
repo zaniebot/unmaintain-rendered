@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question about space efficiency of the git cache - astral-sh/uv #1760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question about space efficiency of the git cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1760">#1760</a>
+        opened by <a href="https://github.com/sbidoul">@sbidoul</a>
+        on 2024-02-20 15:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-02-20 15:10</div>
+            <div class="timeline-body"><p>If I understand correctly, installing from git URL creates the following in the uv cache:</p>
+<ol>
+<li>the git objects in <code>git-v0/db</code></li>
+<li>a git checkout in <code>git-v0/checkouts</code> (with hardlinks to the git objects but copies of the source files)</li>
+<li>the built wheel in <code>wheels-v0</code></li>
+<li>an extract of the built wheel <code>archive-v0</code>, from which the installed files are hard linked (or CoW'ed)</li>
+</ol>
+<p>My question is: is it important to keep (2) when we have (3), and maybe (3) when we have (4)?
+Are there situations where checkouts (2) are actually read again in subsequent installs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-20 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 15:13</div>
+            <div class="timeline-body"><p>I'm the right person to answer this but I need to think a bit on some of the questions (and am trying to prioritize correctness issues). My initial reaction is that (3) is <em>probably</em> not necessary (but we tend to avoid trying to delete from the cache to prevent against concurrency issues).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-02-20 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2024-02-20 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-02-21 17:09</div>
+            <div class="timeline-body"><blockquote>
+<p>My initial reaction is that (3) is probably not necessary</p>
+</blockquote>
+<p>In connection with <code>pip wheel</code> (#1681), I think (3) is useful, probably more than (2).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 20:10</div>
+            <div class="timeline-body"><p>Is this still something we should be considering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2025-01-09 17:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this still something we should be considering?</p>
+</blockquote>
+<p>For folks working with several different git refs to a big repo, this is relevant, even though disk space is cheap.</p>
+<p>My understanding is that the checkouts in <code>/git-v0/checkouts</code> are used during the build but never accessed again afterwards, since the resulting build for the corresponding commit is cached. This assumption may be incorrect, but if it is, discarding the checkouts after build might be a quick win.</p>
+<p>If you are ready to download ~5GB, you can try with</p>
+<pre><code>uv pip install --cache-dir ./cache --no-deps git+https://github.com/oca/ocb@17.0
+uv pip install --cache-dir ./cache --no-deps git+https://github.com/oca/ocb@18.0
+</code></pre>
+<p>and see the space used by the git checkouts. When I switch between dozens of projects each pinning a different commit of that repo, disk space usage starts to grow significantly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-01-09 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2025-01-09 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Policy Blocks UV Tool from Accessing Python Interpreter - astral-sh/uv #6584</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Group Policy Blocks UV Tool from Accessing Python Interpreter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6584">#6584</a>
+        opened by <a href="https://github.com/IliasAarab">@IliasAarab</a>
+        on 2024-08-24 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IliasAarab">@IliasAarab</a> on 2024-08-24 14:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><strong>Description:</strong></p>
+<p>I am encountering a persistent issue with the UV tool where it fails to access the Python interpreter due to a group policy restriction. This problem occurs not only when adding packages but also when running scripts.</p>
+<p><strong>Error Details:</strong></p>
+<ul>
+<li><p><strong>Command:</strong>
+<code>uv add faker</code> and  <code>uv run src/uv_prj/__init__.py</code></p>
+</li>
+<li><p><strong>Error Message:</strong></p>
+<pre><code>error: Failed to query Python interpreter at `\\?\C:\Users\aarabil\Desktop\quick_runs\uv_prj\.venv\Scripts\python.exe`
+  Caused by: This program is blocked by group policy. For more information, contact your system administrator. (os error 1260)
+</code></pre>
+</li>
+</ul>
+<p><strong>Steps to Reproduce:</strong></p>
+<ol>
+<li>Create a new virtual environment using <code>uv</code>.</li>
+<li>Attempt to add a package using <code>uv add faker</code>.</li>
+<li>Attempt to run a script using <code>uv run src/uv_prj/__init__.py</code>.</li>
+</ol>
+<p><strong>Expected Behavior:</strong></p>
+<p>The UV tool should be able to add packages and run scripts without encountering errors related to the Python interpreter.</p>
+<p><strong>Actual Behavior:</strong></p>
+<p>Both operations fail with an error indicating that the Python interpreter is blocked by group policy.</p>
+<p><strong>Environment:</strong></p>
+<ul>
+<li><strong>OS:</strong> Windows</li>
+<li><strong>UV Tool Version:</strong>  0.3.2 (c5440001c 2024-08-23) (installed with pip within a Conda env)</li>
+<li><strong>Python Version:</strong>  3.12 (within a Conda env)</li>
+<li><strong>Virtual Environment Location:</strong> <code>C:\Users\aarabil\Desktop\quick_runs\uv_prj\.venv\</code></li>
+</ul>
+<p><strong>Additional Information:</strong></p>
+<p>The error suggests that the group policy settings on the system are preventing the UV tool from accessing the Python interpreter. I am wondering how others deal with this issue within a corporate environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-08-25 02:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-25 22:34</div>
+            <div class="timeline-body"><p>Do you happen to know what is the group policy in effect (e.g. is it a built-in to gpedit.exe) and how it's configured? I could tinker with <code>gpedit.exe</code>, but it's hard to reproduce without knowing the exact configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IliasAarab">@IliasAarab</a> on 2024-08-25 23:34</div>
+            <div class="timeline-body"><p>@samypr100 thank you for the quick response. Unfortunately, I don't know any of the inner details of the policy. What I do know is that is seems that executables can not be executed when they are stored in <code>c/users/&lt;username&gt;/</code>. In contrast, I can run <code>uv</code> when i create a new project in <code>c/conda/envs</code> (although this is obviously not the right place to initialize projects).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-25 23:43</div>
+            <div class="timeline-body"><p>Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like <code>gpresult /h %USERPROFILE%\gp.html</code> and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/contang0">@contang0</a> on 2024-09-04 11:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like <code>gpresult /h %USERPROFILE%\gp.html</code> and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.</p>
+</blockquote>
+<p>I have the same issue and you're correct. If, for example, uv created the environment<strong>s</strong> in <code>C:\Mambaforge\envs</code>, I believe it would work. I thought setting <code>UV_PROJECT_ENVIRONMENT</code> to  <code>C:\Mambaforge\envs</code> might work, but unfortunately it still creates the .venv folder next to the project files.</p>
+<pre><code>C:\Users\user\Desktop\Projects\test&gt;echo %UV_PROJECT_ENVIRONMENT%
+C:\Mambaforge\envs
+
+C:\Users\user\Desktop\Projects\test&gt;uv init
+Initialized project `test`
+
+C:\Users\user\Desktop\Projects\test&gt;uv run hello.py
+Using Python 3.9.7 interpreter at: C:\Mambaforge\python.exe
+Creating virtualenv at: .venv
+error: Failed to spawn: `python`
+  Caused by: This program is blocked by group policy. For more information, contact your system administrator. (os error 1260)
+
+C:\Users\user\Desktop\Projects\test&gt;dir
+ Volume in drive C is Windows
+
+ Directory of C:\Users\user\Desktop\Projects\test
+
+04/09/2024  02:03 PM    &lt;DIR&gt;          .
+12/08/2024  05:29 PM    &lt;DIR&gt;          ..
+04/09/2024  02:03 PM    &lt;DIR&gt;          .venv
+04/09/2024  02:03 PM                82 hello.py
+04/09/2024  02:03 PM               149 pyproject.toml
+04/09/2024  02:03 PM                 0 README.md
+04/09/2024  02:03 PM               110 uv.lock
+               4 File(s)            341 bytes
+               3 Dir(s)  292,483,772,416 bytes free
+
+</code></pre>
+<p>@zanieb is this the expected behavior once <code>UV_PROJECT_ENVIRONMENT</code> is set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 13:40</div>
+            <div class="timeline-body"><p>@contang0 I couldn't reproduce that on my machine</p>
+<pre><code>❯ uv init --no-workspace example
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ ls
+README.md	hello.py	pyproject.toml
+❯ UV_PROJECT_ENVIRONMENT=/tmp/foo uv run hello.py
+Using Python 3.11.7
+Creating virtualenv at: /tmp/foo
+Hello from example!
+❯ ls -lah
+total 32
+drwxr-xr-x   7 zb  staff   224B Sep  4 08:40 .
+drwxr-xr-x  57 zb  staff   1.8K Sep  4 08:39 ..
+-rw-r--r--   1 zb  staff     4B Sep  4 08:39 .python-version
+-rw-r--r--   1 zb  staff     0B Sep  4 08:39 README.md
+-rw-r--r--   1 zb  staff    85B Sep  4 08:39 hello.py
+-rw-r--r--   1 zb  staff   153B Sep  4 08:39 pyproject.toml
+-rw-r--r--   1 zb  staff   114B Sep  4 08:40 uv.lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/contang0">@contang0</a> on 2024-09-04 14:01</div>
+            <div class="timeline-body"><p>It seems like this is a Windows-specific issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 14:07</div>
+            <div class="timeline-body"><p>While I agree for the policy part, that doesn't make sense for the <code>UV_PROJECT_ENVIRONMENT</code> behavior — path determination for the environment should not be platform specific (and is tested on Windows in CI).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/contang0">@contang0</a> on 2024-09-04 14:28</div>
+            <div class="timeline-body"><p>I upgraded to the latest version (0.4.4) and now I see slightly different things.</p>
+<p>Looks like I misunderstood how <code>UV_PROJECT_ENVIRONMENT</code> works. It defines one venv for all projects, whereas I need a way to specify the root directory where <strong>separate</strong> venvs for each of my projects will reside. Unless there's a smarter way to get around this group policy.</p>
+<pre><code>C:\Users\user\Desktop\Projects\test2&gt;uv --version
+uv 0.4.4 (3d75df6ab 2024-09-04)
+
+C:\Users\user\Desktop\Projects\test2&gt;echo %UV_PROJECT_ENVIRONMENT%
+C:\Mambaforge\envs
+
+C:\Users\user\Desktop\Projects\test2&gt;uv init
+Initialized project `test2`
+
+C:\Users\user\Desktop\Projects\test2&gt;uv run hello.py
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: C:\Mambaforge\envs\Scripts\python.exe
+Using Python 3.9.7 interpreter at: C:\Mambaforge\python.exe
+error: failed to remove directory `C:\Mambaforge\envs`
+  Caused by: Access is denied. (os error 5)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 14:34</div>
+            <div class="timeline-body"><p>@contang0 that is explicitly not supported, please see https://github.com/astral-sh/uv/pull/6834 and #1495 — let's stop talking about unrelated questions in this issue though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IliasAarab">@IliasAarab</a> on 2024-09-06 00:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe the policy only allows certain locations for executables? The best bet is to look at the policy yourself e.g. via command prompt running something like <code>gpresult /h %USERPROFILE%\gp.html</code> and see if there's something in there that matches what you're seeing. Note, DO NOT attach that file here.</p>
+</blockquote>
+<p>Thanks! I cannot fully understand the output, but can understand that the policy is blocking executables on certain drives and certain locations. The easiest solution for me, currently, is to constraint new projects that are initialized with <code>uv</code> to live within the permitted policy locations. #1495 is an interesting proposal, and as far as I understand, would mimic the current behaviour of <code>conda</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14401.html">astral-sh/uv#14401</a> on 2025-07-01 18:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

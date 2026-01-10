@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python version constraint is not observed when building non-workspace package that depends on workspace packages - astral-sh/uv #9832</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python version constraint is not observed when building non-workspace package that depends on workspace packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9832">#9832</a>
+        opened by <a href="https://github.com/imrehg">@imrehg</a>
+        on 2024-12-12 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/imrehg">@imrehg</a> on 2024-12-12 07:08</div>
+            <div class="timeline-body"><p>I'm trying a setup, when the workspace has a <code>requires-python</code> value while a non-workspace has a different (more loose) constraints, but requires a package from the workspace. It seems like when I installing that latter, non-workspace package, the workspace <code>requires-python</code> is not being observed.</p>
+<p>I've set up a project pretty much exactly as it's described in the <a href="https://docs.astral.sh/uv/concepts/projects/workspaces/">workspace documentation</a>:</p>
+<ul>
+<li><code>albatros</code> is root</li>
+<li><code>bird-feeder</code> is a workspace package`,</li>
+<li><code>seeds</code> is an excluded package, but it depends on <code>bird-feeder</code></li>
+</ul>
+<p>This latter is set up like this</p>
+<pre><code class="language-toml"># ... snip
+dependencies = [&quot;bird-feeder&quot;]
+
+[tool.uv.sources]
+bird-feeder = { workspace = true }
+</code></pre>
+<p>Then:</p>
+<ul>
+<li><code>albartros</code> sets <code>requires-python = '&gt;=3.13'</code>; this applies to <code>bird-feeder</code> as well</li>
+<li><code>seeds</code> sets <code>requires-python = '&gt;=3.10'</code> and is not part of the workspace</li>
+</ul>
+<p>Here's the test setup as a repo: https://github.com/imrehg/uv-workspace-debug</p>
+<h2>Expected behaviour</h2>
+<p><code>seeds</code> wouldn't install with Python 3.10/11/12, only with 3.13, due to the <code>bird-feeder</code> requirement, that should force the workspace's 3.13 Python requirements</p>
+<h2>Observed behaviour</h2>
+<p><code>seeds</code> happily installs with 3.10, including</p>
+<pre><code class="language-shell">❯ cd packages/seeds
+❯ uv sync --python 3.10
+Resolved 2 packages in 565ms
+   Built bird-feeder @ file:///Users/gergely/prog/uvworkspace/albatros/packages/bird-feeder
+   Built seeds @ file:///Users/gergely/prog/uvworkspace/albatros/packages/seeds
+Prepared 2 packages in 578ms
+Uninstalled 2 packages in 3ms
+Installed 2 packages in 3ms
+ ~ bird-feeder==0.1.1.dev2+g59d56f9.d20241212 (from file:///Users/gergely/prog/uvworkspace/albatros/packages/bird-feeder)
+ ~ seeds==0.1.0 (from file:///Users/gergely/prog/uvworkspace/albatros/packages/seeds)
+</code></pre>
+<p>While going into <code>bird-feeder</code> folder to install just that:</p>
+<pre><code class="language-shell">❯ cd ../bird-feeder
+❯ uv sync --python 3.10
+Using CPython 3.10.15
+error: The requested interpreter resolved to Python 3.10.15, which is incompatible with the project's Python requirement: `&gt;=3.13`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 14:32</div>
+            <div class="timeline-body"><p>So after cloning that repo, in <code>packages/seeds</code>, I do see the failure:</p>
+<pre><code>❯ uv sync --python 3.10
+Using CPython 3.10.15
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the current Python version (3.10.15) does not satisfy Python&gt;=3.13 and bird-feeder==0.1.dev4+ge5c6435 depends on Python&gt;=3.13, we can conclude that bird-feeder==0.1.dev4+ge5c6435 cannot be used.
+      And because only bird-feeder==0.1.dev4+ge5c6435 is available and your project depends on bird-feeder, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>That seems right. You're seeing different behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 14:32</div>
+            <div class="timeline-body"><p>Honestly, I'm surprised that this works:</p>
+<pre><code class="language-toml">[project]
+name = &quot;seeds&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;Gergely Imreh&quot;, email = &quot;gergely.imreh@faculty.ai&quot; }
+]
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [&quot;bird-feeder&quot;]
+
+[tool.uv.sources]
+bird-feeder = { workspace = true }
+
+[project.scripts]
+seeds = &quot;seeds:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>I think you should get an error there because you're asking for <code>bird-feeder = { workspace = true }</code>, but that's intended for dependences in the <em>same workspace</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 14:37</div>
+            <div class="timeline-body"><p>(I think there's at least a bug here that <code>seeds</code> is being considered part of the workspace. But I'm not able to reproduce your successful sync above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-12 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-12 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9848.html">astral-sh/uv#9848</a> on 2024-12-12 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-12 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-12 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imrehg">@imrehg</a> on 2024-12-13 03:19</div>
+            <div class="timeline-body"><blockquote>
+<p>(I think there's at least a bug here that <code>seeds</code> is being considered part of the workspace. But I'm not able to reproduce your successful sync above.)</p>
+</blockquote>
+<p>Yeah, that workspace I needed to add, to my surprise too, as otherwise <code>seeds</code> was just failing some other wasys (not finding some of the other packages). I think the workspaces example doc is not fully flashed out (in this area of &quot;package excluded from the workspace but still need to use packages from the workspace&quot; config).</p>
+<p>Thanks for the feedback, gonna try out the changes!
+I'm the first one making use of <code>uv</code> workspaces in our org, so trailblazing it is... :D</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:48 UTC
+    </footer>
+</body>
+</html>

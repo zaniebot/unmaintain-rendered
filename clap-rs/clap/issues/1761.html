@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow positional arguments from ArgGroup take value separately - clap-rs/clap #1761</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow positional arguments from ArgGroup take value separately</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1761">#1761</a>
+        opened by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a>
+        on 2020-03-25 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2020-03-25 17:37</div>
+            <div class="timeline-body"><h3>What are you trying to do?</h3>
+<p>I'm trying to create positional command line arguments that are exclusive, you can either set one or the other. I'd like to be able to use clap_derive with this so that they are boiled down to a single <code>expiration: std::time::Duration</code> field in an opt struct.</p>
+<p>set expiration to 60 seconds</p>
+<pre><code class="language-bash">$ app set key value EX 60
+</code></pre>
+<p>set expiration to 6000 milliseconds</p>
+<pre><code class="language-bash">$ app set key value PX 6000
+</code></pre>
+<h3>What have you tried already?</h3>
+<p>I haven't been sure what to try or if this is even supported :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @EverlastingBugstopper on 2020-03-25 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tokio-rs/mini-redis/pulls/11.html">tokio-rs/mini-redis#11</a> on 2020-03-25 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-25 21:10</div>
+            <div class="timeline-body"><p>You can use <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.conflicts_with">conflicts</a> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-03-25 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-26 07:48</div>
+            <div class="timeline-body"><p>I'm under impression that <code>conflicts</code> is not what he was asking about.</p>
+<p>This is pretty interesting question. What he's asking for (or so I get it) is:</p>
+<ul>
+<li><p>Allow one of the given set of options: <code>PX, EX</code>. Only one of them can be present at a time.</p>
+<p>These two conditions can be implemented via <a href="https://docs.rs/clap/2.33.0/clap/struct.ArgGroup.html"><code>ArgGroup</code></a>.</p>
+</li>
+<li><p>Each of them takes value. <strong>This cannot be implemented via <code>ArgGroup</code></strong>.</p>
+<pre><code class="language-rust">use clap::{App, ArgGroup, Arg};
+
+fn main() {
+    let m = App::new(&quot;app&quot;)
+        .arg(Arg::with_name(&quot;PX&quot;).takes_value(true))
+        .arg(Arg::with_name(&quot;EX&quot;).takes_value(true))
+        .group(ArgGroup::with_name(&quot;expiration&quot;).args(&amp;[&quot;PX&quot;, &quot;EX&quot;]))
+        .get_matches();
+
+    println!(&quot;{:?}&quot;, m.value_of(&quot;EX&quot;));
+}
+</code></pre>
+<pre><code>$ cargo run -- EX 666
+   Compiling probe v0.2.0 (D:\workspace\probe)
+    Finished dev [unoptimized + debuginfo] target(s) in 10.46s
+     Running `target\debug\probe.exe EX 666`
+error: The argument '&lt;EX&gt;' cannot be used with one or more of the other specified arguments
+
+USAGE:
+    probe.exe &lt;PX|EX&gt;
+
+For more information try --help
+error: process didn't exit successfully: `target\debug\probe.exe EX 666` (exit code: 1)
+</code></pre>
+<p>This could be implemented if <code>EX</code> and <code>PX</code> were <em>non-positional</em> options:</p>
+<pre><code class="language-rust">use clap::{App, ArgGroup, Arg};
+
+fn main() {
+    let m = App::new(&quot;app&quot;)
+        .arg(Arg::with_name(&quot;PX&quot;).takes_value(true).long(&quot;PX&quot;))
+        .arg(Arg::with_name(&quot;EX&quot;).takes_value(true).long(&quot;EX&quot;))
+        .group(ArgGroup::with_name(&quot;expiration&quot;).args(&amp;[&quot;PX&quot;, &quot;EX&quot;]))
+        .get_matches();
+
+    println!(&quot;{:?}&quot;, m.value_of(&quot;EX&quot;));
+}
+</code></pre>
+<pre><code>$ cargo run -- --EX 600
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target\debug\probe.exe --EX 600`
+Some(&quot;600&quot;)
+</code></pre>
+</li>
+</ul>
+<p>But non-positional options must start with <code>-</code>.</p>
+<p>I'll take liberty to rename this issue, transforming it into feature request.</p>
+<p>Until the, @EverlastingBugstopper , you can make use of subcommands:</p>
+<pre><code class="language-rust">use clap::{App, Arg, SubCommand};
+
+fn main() {
+    let m = App::new(&quot;app&quot;)
+        .subcommand(SubCommand::with_name(&quot;PX&quot;)
+          .arg(Arg::with_name(&quot;value&quot;).takes_value(true).required(true)))
+        .subcommand(SubCommand::with_name(&quot;EX&quot;)
+          .arg(Arg::with_name(&quot;value&quot;).takes_value(true).required(true)))
+        .get_matches();
+
+    println!(&quot;{:#?}&quot;, m);
+}
+</code></pre>
+<pre><code>$ cargo run -- EX 600
+   Compiling probe v0.2.0 (D:\workspace\probe)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.77s
+     Running `target\debug\probe.exe EX 600`
+ArgMatches {
+    args: {},
+    subcommand: Some(
+        SubCommand {
+            name: &quot;EX&quot;,
+            matches: ArgMatches {
+                args: {
+                    &quot;value&quot;: MatchedArg {
+                        occurs: 1,
+                        indices: [
+                            1,
+                        ],
+                        vals: [
+                            &quot;600&quot;,
+                        ],
+                    },
+                },
+                subcommand: None,
+                usage: Some(
+                    &quot;USAGE:\n    probe.exe EX &lt;value&gt;&quot;,
+                ),
+            },
+        },
+    ),
+    usage: Some(
+        &quot;USAGE:\n    probe.exe [SUBCOMMAND]&quot;,
+    ),
+}
+</code></pre>
+<p>The only thing is that the error message might not appear what you want:</p>
+<pre><code>$ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+     Running `target\debug\probe.exe --help`
+app
+
+USAGE:
+    probe.exe [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    EX
+    PX
+    help    Prints this message or the help of the given subcommand(s)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @CreepySkeleton on 2020-03-26 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Exclusive or argument? usage: [expiration EX seconds|PX milliseconds]" to "Allow positional arguments from ArgGroup take value separately" by @CreepySkeleton on 2020-03-26 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @CreepySkeleton on 2020-03-26 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @CreepySkeleton on 2020-03-26 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-03-26 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-03-26 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @CreepySkeleton on 2020-03-26 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2020-03-26 15:06</div>
+            <div class="timeline-body"><p>Hey @CreepySkeleton - thanks for the thoughtful response!</p>
+<p>When y'all implement new features like this is it automatically provided in <code>clap_derive</code> or does that require extra work as well? My mental model of how <code>clap_derive</code> actually works is a bit shaky, it seems like most things are supported but the patterns aren't always obvious to me (how would I go about creating an ArgGroup in <code>clap_derive</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-26 17:06</div>
+            <div class="timeline-body"><blockquote>
+<p>(how would I go about creating an ArgGroup in clap_derive?</p>
+</blockquote>
+<p><a href="https://github.com/clap-rs/clap/blob/master/clap_derive/examples/group.rs">Example</a></p>
+<blockquote>
+<p>When y'all implement new features like this is it automatically provided in clap_derive or does that require extra work as well?</p>
+</blockquote>
+<p>Most things are immediately available through <code>#[clap(method = value)]</code> attributes. Some things, like subcommands, require dedicated features.</p>
+<p>I am inclined to remind you that <code>clap_derive</code> is still in alpha stage and API may change. You can play with it, but expect sudden breakages. For production, use <code>structopt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2020-03-26 18:37</div>
+            <div class="timeline-body"><p>Awesome! Yeah - this is something I'm working on the side, not released or intended to be released soon so it's ok that it's still in alpha. Thanks for the help :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/145.html">epage/clapng#145</a> on 2021-12-06 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> removed by @epage on 2021-12-09 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2021-12-09 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-13 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-13 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:44</div>
+            <div class="timeline-body"><p>#1334 would be one way to improve the subcommand help output.</p>
+<p>@EverlastingBugstopper The thing that isn't too clear to me is what in the example commands are meant to be literals vs place holders.</p>
+<pre><code class="language-console">$ app set key value EX 60
+</code></pre>
+<p>One workaround discussed earlier was subcommands which means <code>EX</code> and <code>PX</code> are literals.  A proposed way of this working was using a <code>EX</code> and <code>PX</code> positional argument but that would have different behavior unless we also limited them with possible values to being just the literals <code>EX</code> and <code>PX</code>.  At that point, someone can define a single positional argument with <code>EX</code> and <code>PX</code> possible values.  The value name could be set to <code>EX|PX</code> to make it display nicely.</p>
+<p>If this is about skipping them based on values, this reminds me of</p>
+<ul>
+<li>#2122</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2022-11-08 16:16</div>
+            <div class="timeline-body"><p>I opened this issue a while back when I was working on <a href="https://github.com/tokio-rs/mini-redis"><code>mini-redis</code></a>. Upon looking at this again a few years later, I don't think I would ever want to design a CLI with usage like this 😆</p>
+<p>It looks like when they implemented support for setting expiration that it's just a number and there's no way to specify a difference between seconds and milliseconds. (I'd probably implement this today using something like <a href="https://docs.rs/humantime/latest/humantime/">humantime</a> to parse the length of time rather than archaic EX/PX literals that the <a href="https://redis.io/commands/set/">actual redis implementation uses</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2022-11-08 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-11-08 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-08 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-08 17:21</div>
+            <div class="timeline-body"><p>Thanks for the reply!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:09 UTC
+    </footer>
+</body>
+</html>

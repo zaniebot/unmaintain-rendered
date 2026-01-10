@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N804 and N805 apply `ignore-names` to function, rather than parameter names (`self`, `cls`) - astral-sh/ruff #12465</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N804 and N805 apply `ignore-names` to function, rather than parameter names (`self`, `cls`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12465">#12465</a>
+        opened by <a href="https://github.com/njzjz">@njzjz</a>
+        on 2024-07-22 21:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/njzjz">@njzjz</a> on 2024-07-22 21:15</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I want to use <a href="https://docs.astral.sh/ruff/rules/invalid-first-argument-name-for-class-method/"><code>N804</code></a> to correct <code>def setUpClass(self):</code> in my repository. However, I found that when the class method name is <code>setUpClass</code>, no error is reported.</p>
+<p>ruff v0.5.4
+https://play.ruff.rs/f96de0de-0667-4e6b-88c1-fe229ad7ca5a</p>
+<pre><code class="language-py">import unittest
+
+class TestXXX(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        # no error reported
+        pass
+
+
+class TestXXX:
+    @classmethod
+    def setUpClss(self):
+        # N804: First argument of a class method should be named `cls`
+        pass
+</code></pre>
+<p>I don't understand why N804 ignores <code>setUpClass</code>. There is no documentation for this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-07-22 21:24</div>
+            <div class="timeline-body"><p>Oh, I just understand that the default <a href="https://docs.astral.sh/ruff/settings/#lint_pep8-naming_ignore-names">ignore-names</a> contains <code>setUpClass</code>. However, N804 does not rename <code>setUpClass</code>. It just renames <code>self</code> to <code>cls</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 21:30</div>
+            <div class="timeline-body"><p>Is the request that <code>setUpClass</code> be renamed to <code>set_up_class</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-07-22 21:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the request that <code>setUpClass</code> be renamed to <code>set_up_class</code>?</p>
+</blockquote>
+<p>No, N804 should just rename</p>
+<pre><code class="language-py">@classmethod
+def setUpClass(self):
+</code></pre>
+<p>to</p>
+<pre><code class="language-py">@classmethod
+def setUpClass(cls):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 22:31</div>
+            <div class="timeline-body"><p>Ok, I think I understand what you're saying: <code>setUpClass</code> should <em>not</em> be ignored by N804 despite being in <code>ignore-names</code>, because the rule is about the parameter (<code>self</code>) rather than the function (<code>setUpClass</code>). We've had this behavior from the start (#2855), so it may not even be intentional.</p>
+<p>It'd be reasonable to change, but it also means that there's no way to ignore methods that <em>do</em> deviate from the pattern in that way.</p>
+<p>I'd be nice to get more opinions on this. Maybe @AlexWaygood? What behavior would you expect here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-07-22 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "N804 ignores `setUpClass` methods" to "N804 and N805 apply `ignore-names` to function, rather than parameter names (`self`, `cls`)" by @charliermarsh on 2024-07-22 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-23 14:11</div>
+            <div class="timeline-body"><p>This is an interesting question! I'd be curious to see the ecosystem results on an experimental PR that ignored <code>ignore-names</code> for N804. I don't feel like I have any sense of how many users might be overriding <code>ignore-names</code> in their config to systematically ignore all N804 violations for all methods that have a specific name across a codebase.</p>
+<p>It <em>does</em> feel a bit silly to me that we ignore N804 violations by default if the method is called <code>setUpClass</code>, because that's <em>obviously</em> not the motivation for including that entry in the <code>ignore-names</code> default list. But I can also see @charliermarsh's point that if N804 just ignores the <code>ignore-names</code> setting entirely then there's no setting available to users that they can use to tweak how N804 works.</p>
+<p>Possibly we could start ignoring the setting for N804 in preview mode only, and see if anybody complains. If we do get any complaints, we could add a new dedicated setting that could be separately configured for determining the behaviour of rules like N804 that complain about parameter names rather than class or method names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 15:58</div>
+            <div class="timeline-body"><p>Yeah the current behavior is strange. Though it's also strange to imagine putting <code>self</code> or <code>cls</code> in <code>ignore-names</code>, since it's effectively disabling the rules. We should change it though and see if the ecosystem checks look good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-23 16:02</div>
+            <div class="timeline-body"><p>Right, I don't think it makes sense to have N804 be disabled if N804 sees <code>cls</code> or <code>self</code> in <code>ignore-names</code> either. What would make sense to me would be if we had a separate setting -- <code>ignore-weird-parameter-names-for-these-methods</code> (bikeshedding permitted, I thought about it for 0 seconds ;) -- that could be used to configure N804 separately to the <code>N*</code> rules that are configured via <code>ignore-names</code>. But I just don't really know if users actually need to configure N804 in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-24 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12497.html">astral-sh/ruff#12497</a> on 2024-07-24 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-24 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

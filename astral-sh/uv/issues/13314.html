@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Are seed packages enough to build package in offline mode? - astral-sh/uv #13314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Are seed packages enough to build package in offline mode?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13314">#13314</a>
+        opened by <a href="https://github.com/czechnology">@czechnology</a>
+        on 2025-05-06 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-06 11:28</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>In our current setup, we run checks, tests, packaging etc. in Docker.</p>
+<p>During Docker build, we first create a virtualenv including seed packages using <code>uv venv --seed</code>. We have network connectivity in this step, so all gets fetched and installed correctly, <em>including</em> the seed packages. We don't include the complete codebase of our app here, on purpose, so that it gets cached in a Docker layer, no matter changes in our code base (except pyproject.toml or lock files).</p>
+<blockquote>
+<p>#16 0.498 uv venv --seed
+#16 0.617 Using CPython 3.11.10 interpreter at: /var/lang/bin/python3.11
+#16 0.617 Creating virtual environment with seed packages at: .venv
+#16 17.25  + pip==25.1.1
+#16 17.25  + setuptools==80.3.1
+#16 17.25  + wheel==0.45.1
+#16 17.25 uv sync --frozen
+#16 17.31    Building my-app @ file:///app
+#16 18.13       Built my-app @ file:///app
+#16 18.20 Downloading botocore (10.7MiB)
+...lots of packages...
+#16 93.86 Prepared 80 packages in 1m 16s
+#16 94.07 Installed 80 packages in 207ms
+#16 94.07  + botocore==1.31.53
+...lots of packages...
+#16 DONE 94.3s</p>
+</blockquote>
+<p>Only then do we copy the whole codebase to the image.</p>
+<p>Then, when running the container (without network access), we try to perform actions on the code, such as linting or testing. However, as <code>uv</code> attempts to build our app, it fails on missing setuptools, despite being installed as part of the seed packages earlier.</p>
+<blockquote>
+<p>uv run --frozen --verbose pylint -j0 --max-line-length=120 myapp
+DEBUG uv 0.7.2
+DEBUG Found project root: <code>/app</code>
+DEBUG No workspace root found, using project root
+DEBUG Discovered project <code>my-app</code> at: /app
+DEBUG Acquired lock for <code>/app</code>
+DEBUG Using Python request <code>3.11</code> from explicit request
+DEBUG Checking for Python environment at <code>.venv</code>
+DEBUG The virtual environment's Python version satisfies the request: <code>Python 3.11</code>
+DEBUG Released lock at <code>/tmp/uv-1c83b73deef05048.lock</code>
+DEBUG Using request timeout of 30s
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1746529986, tv_nsec: 426798308 })), None, None, {}, {&quot;src&quot;: None}
+DEBUG Requirement installed, but not fresh: my-app==1.0.0 (from file:///app)
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1746529986, tv_nsec: 426798308 })), None, None, {}, {&quot;src&quot;: None}
+DEBUG Identified uncached distribution: my-app @ file:///app
+DEBUG Requirement already installed: botocore==1.31.53
+...lots of packages...
+DEBUG Preserving seed package: pip==25.1.1
+DEBUG Preserving seed package: setuptools==80.3.1
+DEBUG Preserving seed package: wheel==0.45.1
+DEBUG Acquired lock for <code>/tmp/cache/sdists-v9/editable/df64fc0b914aef95</code>
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1746529986, tv_nsec: 426798308 })), None, None, {}, {&quot;src&quot;: None}
+Building my-app @ file:///app
+DEBUG Building: my-app @ file:///app
+DEBUG No workspace root found, using project root
+DEBUG Using base executable for virtual environment: /var/lang/bin/python3.11
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.11.10
+DEBUG Solving with target Python version: &gt;=3.11.10
+DEBUG Adding direct dependency: setuptools&gt;=80.3, &lt;81.dev0
+DEBUG No cache entry for: ...our artifactory...
+DEBUG Searching for a compatible version of setuptools (&gt;=80.3, &lt;81.dev0)
+DEBUG No compatible version found for: setuptools
+DEBUG Released lock at <code>/tmp/cache/sdists-v9/editable/df64fc0b914aef95/.lock</code>
+× Failed to build <code>my-app @ file:///app</code>
+├─▶ Failed to resolve requirements from <code>build-system.requires</code>
+├─▶ No solution found when resolving: <code>setuptools~=80.3</code>
+╰─▶ Because setuptools was not found in the cache and you require
+setuptools&gt;=80.3,&lt;81.dev0, we can conclude that your requirements are
+unsatisfiable.</p>
+<p>hint: Packages were unavailable because the network was disabled. When
+the network is disabled, registry packages may only be read from the
+cache.</p>
+</blockquote>
+<p>I am trying out various solutions to get around this issue but my main question is about the seed packages - are the seed packages not enough, even if installed? Am I misunderstanding what the seed packages are for?</p>
+<h3>Platform</h3>
+<p>WSL2, Docker</p>
+<h3>Version</h3>
+<p>uv 0.7.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @czechnology on 2025-05-06 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 14:36</div>
+            <div class="timeline-body"><p>Build packages are installed in separate environments, so uv needs a source where it can install them from, either from the network, from the uv cache or from a <code>--find-links</code> directory. The seed packages are disconnected from that, and more recent Python version, setuptools isn't part of those packages anymore (since pip also builds with isolation by default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/czechnology">@czechnology</a> on 2025-05-06 15:30</div>
+            <div class="timeline-body"><p>Okay, so it seems like I've misunderstood how the seeding works. I've adapted my process to <code>sync</code> with the app package while network is available, so the operations work fine when later running the container without network.<br />
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-06 16:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluding a file from non-editable installs with uv sync --no-editable - astral-sh/uv #10391</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Excluding a file from non-editable installs with uv sync --no-editable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10391">#10391</a>
+        opened by <a href="https://github.com/mjpieters">@mjpieters</a>
+        on 2025-01-08 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-08 12:56</div>
+            <div class="timeline-body"><p>I have a packaged app project with a docker image, built with <code>uv</code>:</p>
+<pre><code class="language-Dockerfile">RUN --mount=from=ghcr.io/astral-sh/uv:0.5.14@sha256:f0786ad49e2e684c18d38697facb229f538a6f5e374c56f54125aabe7d14b3f7,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=src/,target=src/ \
+    uv sync --no-group dev --no-editable
+</code></pre>
+<p>The project uses hatch as the build backend, and excludes a single file that is only used during development (a third-party tool needs to be able to import it)</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling==1.27.0&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    &quot;src/project_name/_dev_support_plugin.py&quot;,
+]
+</code></pre>
+<p>When I run <code>uv build</code> and inspect the sdist and wheel, the plugin file is not packaged, as intended:</p>
+<pre><code class="language-sh">% rm -rf dist/
+% uv build
+# ...
+% tar tzvf dist/*.tar.gz | grep plugin 
+# no output
+% zipinfo dist/*.whl | grep plugin
+# no output
+</code></pre>
+<p>However, the docker image does include the file, the <code>.venv/lib/python3.13/site-packages/project_name/_dev_support_plugin.py</code> exists and is importable.</p>
+<p>I expected that uv would have used the build backend to create the source distribution for such installs, but that's apparently not the case.</p>
+<p>To simplify and debug, I next used <code>uv sync</code> locally to verify this isn't specific to docker:</p>
+<pre><code class="language-sh">% uv sync --no-group dev --no-editable
+...
+% ls .venv/lib/python3.13/site-packages/project_name/ | grep plugin
+_dev_support_plugin.py
+</code></pre>
+<p>I then also tried to run the above with <code>--reinstall</code> and <code>--no-cache</code> with the same results. I also tried excluding the file by adding a <code>[tool.hatch.build.targets.wheel]</code> section with the same <code>exclude</code> configuration, but this makes no difference either.</p>
+<p>Is there any way I can exclude files from being installed when using <code>--no-editable</code> or should I relocate the plugin to some other place and add that to the import path for the 3rd-party tool to import?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 14:36</div>
+            <div class="timeline-body"><p>We do use the same build frontend to build the distribution for such installs, so I would expect the file to be excluded there too. Can you provide a full reproduction, like a Git repo that I can clone and run? It's a fairly bespoke setup so it's a lot of work for me to reproduce it myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-08 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-08 16:33</div>
+            <div class="timeline-body"><blockquote>
+<p>We do use the same build frontend to build the distribution for such installs, so I would expect the file to be excluded there too. Can you provide a full reproduction, like a Git repo that I can clone and run? It's a fairly bespoke setup so it's a lot of work for me to reproduce it myself.</p>
+</blockquote>
+<p>It's an open source project but I haven't committed the work for this yet (I'm dithering on a GraphQL dev pipeline, the plugin is for a code generator): https://github.com/mjpieters/pyright-analysis-action. So, not yet?</p>
+<p>But, I found it easy enough to create a stand-alone test for this; here is the reproducer, with bash functions to do test the issue:</p>
+<pre><code class="language-sh">mkdir /tmp/reproducer
+cd /tmp/reproducer
+uv init --vcs none --python 3.13 --package --name reproducer
+&gt;&gt;pyproject.toml cat &lt;&lt; EOF
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    &quot;src/reproducer/dontinclude.py&quot;,
+]
+EOF
+touch src/reproducer/dontinclude.py
+function test_dists {
+    rm -rf dist/; uv build
+    if tar tzvf dist/reproducer-0.1.0.tar.gz| grep -q dontinclude; then echo -e '\033[1;31mFAILED\033[0m'; return; fi
+    if zipinfo dist/reproducer-0.1.0-py3-none-any.whl| grep -q dontinclude; then echo -e '\033[1;31mFAILED\033[0m'; return; fi
+    echo -e '\033[1;32mSUCCESS\033[0m'
+}
+function test_uv_sync {
+    rm -rf .venv
+    uv sync --no-editable --no-cache
+    if [ -f .venv/lib/python3.13/site-packages/reproducer/dontinclude.py ]; then echo -e '\033[1;31mFAILED\033[0m'; return; fi
+    echo -e '\033[1;32mSUCCESS\033[0m'
+}
+</code></pre>
+<p>You can then verify that <code>dontinclude.py</code> is not part of the sdist or wheel artefacts by invoking the <code>test_dists</code> function:</p>
+<pre><code class="language-sh">% test_dists
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/reproducer-0.1.0.tar.gz
+Successfully built dist/reproducer-0.1.0-py3-none-any.whl
+SUCCESS
+</code></pre>
+<p>and finally, verify that <code>uv sync --no-editable</code> <em>does</em> include the file with the <code>test_uv_sync</code> function:</p>
+<pre><code class="language-sh">% test_uv_sync
+Creating virtual environment at: .venv
+Resolved 1 package in 4ms
+   Built reproducer @ file:///private/tmp/reproducer
+Prepared 1 package in 706ms
+Installed 1 package in 2ms
+ + reproducer==0.1.0 (from file:///private/tmp/reproducer)
+FAILED
+</code></pre>
+<p>And, as this probably matters, here's my current uv version, OS version and platform architecture:</p>
+<pre><code>% uv --version
+uv 0.5.15 (Homebrew 2025-01-07)
+% sw_vers
+ProductName:		macOS
+ProductVersion:		14.7.2
+BuildVersion:		23H311
+% arch
+arm64
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-08 16:57</div>
+            <div class="timeline-body"><p>I note that the same issue also applies to <code>uv run --with .</code>, as shown by the following test command run in the same <code>/tmp/reproducer</code> directory:</p>
+<pre><code class="language-sh">% uv run --with . python -c 'import reproducer, os; print(&quot;\x1b[1;31mFAILED\x1b[0m&quot; if &quot;dontinclude.py&quot; in os.listdir(os.path.dirname(reproducer.__file__)) else &quot;\x1b[1;32mSUCCESS\x1b[0m&quot;)'
+FAILED
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-12 21:31</div>
+            <div class="timeline-body"><p>@charliermarsh is there anything else needed to move this forward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-12 21:32</div>
+            <div class="timeline-body"><p>No, sorry, I just need to find time to prioritize it. I will test it when I can!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-13 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 17:20</div>
+            <div class="timeline-body"><p>Great, thanks, I reproduced with the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 17:27</div>
+            <div class="timeline-body"><p>I think this might be a hatchling issue? This also fails:</p>
+<pre><code>function test_dists {
+    rm -rf dist/; uv build --wheel
+    if zipinfo dist/reproducer-0.1.0-py3-none-any.whl| grep -q dontinclude; then echo -e '\033[1;31mFAILED\033[0m'; return; fi
+    echo -e '\033[1;32mSUCCESS\033[0m'
+}
+</code></pre>
+<p>So it's something about building the wheel directly (which we do in <code>uv sync</code>), as opposed to building an sdist, then building the wheel from the sdist (as in <code>uv build</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 17:28</div>
+            <div class="timeline-body"><p>It also fails with <code>python -m build</code> which is effectively the &quot;canonical&quot; implementation, so I think this is a problem for the build backend -- sorry!</p>
+<pre><code>function test_dists {
+    rm -rf dist/; python -m build --wheel
+    if zipinfo dist/reproducer-0.1.0-py3-none-any.whl| grep -q dontinclude; then echo -e '\033[1;31mFAILED\033[0m'; return; fi
+    echo -e '\033[1;32mSUCCESS\033[0m'
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-01-13 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2025-01-13 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 18:25</div>
+            <div class="timeline-body"><p>cc @ofek</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2025-01-13 20:47</div>
+            <div class="timeline-body"><blockquote>
+<p>So it's something about building the wheel directly (which we do in <code>uv sync</code>), as opposed to building an sdist, then building the wheel from the sdist (as in <code>uv build</code>).</p>
+</blockquote>
+<blockquote>
+<p>[tool.hatch.build.targets.sdist]
+exclude = [
+&quot;src/project_name/_dev_support_plugin.py&quot;,
+]</p>
+</blockquote>
+<p>This seems like there is no bug. Configuration dictates that source distributions ignore that file and so if you build a wheel from that then it also will be excluded, however building the wheel directly would include the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-14 08:26</div>
+            <div class="timeline-body"><p>Right, so it was <code>uv build</code> that tripped me up here; since the result of <code>uv build</code>  was a wheel with that file omitted I made the assumption that hatchling was responsible for this behaviour.</p>
+<p>That said, uv is then being inconsistent about how it builds the project. Either treat the sdist as the source for wheels everywhere <em>or</em> always build the wheel directly. The latter would be preferred, to be honest. If uv also has an option to sanity check builds (a la <code>twine check</code>) that then verifies that building a wheel from the sdist results in the same output as building a wheel directly then that’s great too.</p>
+<p>For an example why the current <code>uv build</code> behaviour is unhelpful: I thought I had tried configuring excluding the file from the wheel build but if I <em>only</em> set wheel build exclusions then the file would have still been present in the wheel built from the sdist output and so I’d have assumed I misunderstood something about hatch. It certainly had not occurred to me that <code>uv build</code> is, in essence, ignoring the project configuration on how to build a wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-14 15:51</div>
+            <div class="timeline-body"><p>@mjpieters -- I think this is working as intended, and it matches <code>pypa/build</code>. <code>uv build</code> by default builds the source distribution from source, then the wheel from the source distribution. <code>uv build --wheel</code> builds the wheel directly from source. (And <code>uv build --sdist</code> builds <em>just</em> the source distribution.) This is all documented. It's just a question of what the <em>default</em> is, and I think our choice is correct (and, as I said, matches <code>pypa/build</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-29 16:15</div>
+            <div class="timeline-body"><p>Okidoki, so it is surprising-behaviour-compatible with <code>pypa/build</code>!</p>
+<blockquote>
+<p>This is all documented</p>
+</blockquote>
+<p>See, I <em>try</em> to read all documentation, but.. you know.. :-)</p>
+<p>Right, I'll close this issue then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mjpieters on 2025-01-29 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 16:18</div>
+            <div class="timeline-body"><p>It's okay, I know it's complicated and a lot to sift through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/micolous">@micolous</a> on 2025-01-30 00:26</div>
+            <div class="timeline-body"><p>This issue can also manifest when <em>including</em> a file (from a parent directory) with <code>force-include</code>: it only gets collected correctly when building a <code>wheel</code> from <code>sdist</code>, not <code>uv sync</code>.</p>
+<p>https://github.com/pypa/hatch/issues/1230#issuecomment-1922254244 seems to suggest that this is a product of Hatch's behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11557.html">astral-sh/uv#11557</a> on 2025-02-16 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:01 UTC
+    </footer>
+</body>
+</html>

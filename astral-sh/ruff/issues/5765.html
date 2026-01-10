@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix for RET503 breaks RET505 (in one case) - astral-sh/ruff #5765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix for RET503 breaks RET505 (in one case)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5765">#5765</a>
+        opened by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a>
+        on 2023-07-14 19:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a> on 2023-07-14 19:15</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>On the latest version of <code>ruff</code> (0.0.278) this fails on the following code:</p>
+<pre><code class="language-sh">ruff --select RET503,RET505 test.py --fix --isolated
+# test.py:11:9: RET505 Unnecessary `else` after `return` statement
+</code></pre>
+<pre><code class="language-python">def main(value: str) -&gt; int | None:
+    if value == &quot;one&quot;:
+        return 1
+
+    if value.startswith(&quot;do_stuff&quot;):
+        print(&quot;doing stuff&quot;)
+
+        if value.endswith(&quot;haha&quot;):
+            print(&quot;haha&quot;)
+        else:
+            print(&quot;Instruction unclear.&quot;)
+    else:
+        print(&quot;Doing nothing.&quot;)
+</code></pre>
+<p>That is because the autofix for RET503 inserts <code>return None</code> in all three
+branches of the if/else tree:</p>
+<pre><code class="language-diff">--- test.py
++++ test.py
+@@ -7,7 +7,10 @@
+ 
+         if value.endswith(&quot;haha&quot;):
+             print(&quot;haha&quot;)
++            return None
+         else:
+             print(&quot;Instruction unclear.&quot;)
++            return None
+     else:
+         print(&quot;Doing nothing.&quot;)
++        return None
+</code></pre>
+<p>But that is not compliant with RET505.</p>
+<p>The fix in this case is to insert <code>return None</code> at the end of the function instead of in each branch in the if/else tree.</p>
+<pre><code class="language-python">def main(value: str) -&gt; int | None:
+    if value == &quot;one&quot;:
+        return 1
+
+    if value.startswith(&quot;do_stuff&quot;):
+        print(&quot;doing stuff&quot;)
+
+        if value.endswith(&quot;haha&quot;):
+            print(&quot;haha&quot;)
+        else:
+            print(&quot;Instruction unclear.&quot;)
+    else:
+        print(&quot;Doing nothing.&quot;)
+    return None
+</code></pre>
+<p>Not sure it is worth the effort to update behavior of the <code>RET503</code> autofix for this case. But I thought I should report it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-14 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-07-14 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2023-08-20 07:39</div>
+            <div class="timeline-body"><p>Using Ruff 0.0.285, it also just looks pretty silly to have a chain of <code>return None</code> statements added:</p>
+<pre><code class="language-shell">ruff --isolated --fix-only t.py --select=RET503
+</code></pre>
+<pre><code class="language-diff">  def f():
+      if ...:
+          return True
+      if ...:
+          pass
++         return None
++     return None
+</code></pre>
+<p>It's not a big deal for me since I don't mind skipping this cosmetic check, but with such a small repro it seemed worth reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2024-04-21 14:24</div>
+            <div class="timeline-body"><p>Should <code>RET503</code> be simplified to only add <code>return None</code> at the end of the function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11074.html">astral-sh/ruff#11074</a> on 2024-04-21 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-14 07:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

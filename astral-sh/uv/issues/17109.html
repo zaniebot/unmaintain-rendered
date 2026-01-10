@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to find wheel for split index/dependency - astral-sh/uv #17109</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to find wheel for split index/dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17109">#17109</a>
+        opened by <a href="https://github.com/michael-o">@michael-o</a>
+        on 2025-12-12 19:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michael-o">@michael-o</a> on 2025-12-12 19:06</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I am trying to implement split index for several dependencies which have native components, we target multiple OSes (Windows, macOS, GNU/Linux, FreeBSD). The first three are available from PyPI and the last one I host myself in a custom index. Now, to have a decent lock file I have created a simple project:</p>
+<pre><code>$ cat pyproject.toml
+[project]
+name = &quot;split-index-test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+
+dependencies = [
+    &quot;numpy==2.2.6&quot;,
+]
+
+[tool.uv]
+required-environments = [
+    &quot;sys_platform == 'freebsd13'&quot;,
+    &quot;sys_platform != 'freebsd13'&quot;
+]
+
+[tool.uv.sources]
+numpy = [
+  { index = &quot;freebsd-wheels&quot;, marker = &quot;sys_platform == 'freebsd13'&quot; },
+  { index = &quot;pypi&quot;, marker = &quot;sys_platform != 'freebsd13'&quot; }
+]
+
+[[tool.uv.index]]
+name = &quot;freebsd-wheels&quot;
+url  = &quot;https://dw-eng-rsc.innomotics.net/FreeBSD/python-wheels/FreeBSD:13:amd64/simple&quot;
+[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+</code></pre>
+<p>According to pip I have:</p>
+<pre><code>$ pip debug --verbose | grep freebsd
+WARNING: This command is only meant for debugging. Do not use this with automation for parsing and getting these details, since the output and options of this command may change without notice.
+sys.platform: freebsd13
+  cp310-cp310-freebsd_13_5_release_p7_amd64
+  cp310-abi3-freebsd_13_5_release_p7_amd64
+  cp310-none-freebsd_13_5_release_p7_amd64
+  cp39-abi3-freebsd_13_5_release_p7_amd64
+  cp38-abi3-freebsd_13_5_release_p7_amd64
+  cp37-abi3-freebsd_13_5_release_p7_amd64
+  cp36-abi3-freebsd_13_5_release_p7_amd64
+  cp35-abi3-freebsd_13_5_release_p7_amd64
+  cp34-abi3-freebsd_13_5_release_p7_amd64
+  cp33-abi3-freebsd_13_5_release_p7_amd64
+  cp32-abi3-freebsd_13_5_release_p7_amd64
+  py310-none-freebsd_13_5_release_p7_amd64
+  py3-none-freebsd_13_5_release_p7_amd64
+  py39-none-freebsd_13_5_release_p7_amd64
+  py38-none-freebsd_13_5_release_p7_amd64
+  py37-none-freebsd_13_5_release_p7_amd64
+  py36-none-freebsd_13_5_release_p7_amd64
+  py35-none-freebsd_13_5_release_p7_amd64
+  py34-none-freebsd_13_5_release_p7_amd64
+  py33-none-freebsd_13_5_release_p7_amd64
+  py32-none-freebsd_13_5_release_p7_amd64
+  py31-none-freebsd_13_5_release_p7_amd64
+  py30-none-freebsd_13_5_release_p7_amd64
+</code></pre>
+<p>and the wheel in question:</p>
+<pre><code>$ curl https://dw-eng-rsc.innomotics.net/FreeBSD/python-wheels/FreeBSD:13:amd64/simple/numpy/
+&lt;a href='numpy-2.2.6-cp310-cp310-freebsd_13_5_release_p5_amd64.freebsd_13_5_release_p6_amd64.freebsd_13_5_release_p7_amd64.whl'&gt;numpy-2.2.6-cp310-cp310-freebsd_13_5_release_p5_amd64.freebsd_13_5_release_p6_amd64.freebsd_13_5_release_p7_amd64.whl&lt;/a&gt;&lt;br /&gt;
+</code></pre>
+<p>so uv should be able to satisfy the dependency, but fails repeatedly:</p>
+<pre><code>$ ~/uv/target/debug/uv sync -v --cache-dir=cache
+DEBUG uv 0.9.17+10 (38ae41468 2025-12-11)
+DEBUG Acquired shared lock for `cache`
+DEBUG Found project root: `/usr/home/cafe-custom-uis/split-index-test`
+DEBUG No workspace root found, using project root
+DEBUG Acquired exclusive lock for `/usr/home/cafe-custom-uis/split-index-test`
+DEBUG Reading Python requests from version file at `/usr/home/cafe-custom-uis/split-index-test/.python-version`
+DEBUG Using Python request `3.10` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.10`
+DEBUG Released lock at `/tmp/uv-c5b4c843a001806f.lock`
+DEBUG Acquired exclusive lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: split-index-test @ file:///usr/home/cafe-custom-uis/split-index-test
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.10.19
+DEBUG Solving with target Python version: &gt;=3.10
+DEBUG Adding direct dependency: split-index-test*
+DEBUG Searching for a compatible version of split-index-test @ file:///usr/home/cafe-custom-uis/split-index-test (*)
+DEBUG Pre-fork all marker environments took 0.001s
+DEBUG Splitting resolution on split-index-test==0.1.0 over numpy into 2 resolutions with separate markers
+DEBUG Adding direct dependency: numpy{sys_platform != 'freebsd13'}&gt;=2.2.6, &lt;2.2.6+
+DEBUG Adding direct dependency: numpy{sys_platform == 'freebsd13'}&gt;=2.2.6, &lt;2.2.6+
+DEBUG Solving split (markers: sys_platform == 'freebsd13') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.10&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.10&quot;)), UpperBound(Unbounded)) })
+DEBUG No cache entry for: https://pypi.org/simple/numpy/
+DEBUG No cache entry for: https://dw-eng-rsc.innomotics.net/FreeBSD/python-wheels/FreeBSD:13:amd64/simple/numpy/
+DEBUG Searching for a compatible version of numpy{sys_platform == 'freebsd13'} (&gt;=2.2.6, &lt;2.2.6+)
+DEBUG Unknown platform tag in wheel tag: freebsd_13_5_release_p5_amd64
+DEBUG Unknown platform tag in wheel tag: freebsd_13_5_release_p6_amd64
+DEBUG Unknown platform tag in wheel tag: freebsd_13_5_release_p7_amd64
+DEBUG Searching for a compatible version of numpy{sys_platform == 'freebsd13'} (&gt;2.2.6, &lt;2.2.6+)
+DEBUG No compatible version found for: numpy{sys_platform == 'freebsd13'}
+DEBUG Recording unit propagation conflict of numpy{sys_platform == 'freebsd13'} from incompatibility of (split-index-test)
+DEBUG Searching for a compatible version of split-index-test @ file:///usr/home/cafe-custom-uis/split-index-test (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: split-index-test
+WARN Skipping file for numpy: numpy-1.0.1.dev3460.win32-py2.4.exe
+WARN Skipping file for numpy: numpy-1.3.0.win32-py2.5.exe
+WARN Skipping file for numpy: numpy-1.5.0.win32-py2.6.exe
+WARN Skipping file for numpy: numpy-1.5.1.win32-py2.5-nosse.exe
+WARN Skipping file for numpy: numpy-1.5.1.win32-py2.6-nosse.exe
+WARN Skipping file for numpy: numpy-1.5.1.win32-py2.7-nosse.exe
+WARN Skipping file for numpy: numpy-1.5.1.win32-py3.1-nosse.exe
+WARN Skipping file for numpy: numpy-1.6.0.win32-py2.5.exe
+WARN Skipping file for numpy: numpy-1.6.0.win32-py2.6.exe
+WARN Skipping file for numpy: numpy-1.6.0.win32-py2.7.exe
+WARN Skipping file for numpy: numpy-1.6.0.win32-py3.1.exe
+WARN Skipping file for numpy: numpy-1.6.0.win32-py3.2.exe
+WARN Skipping file for numpy: numpy-1.6.1.win32-py2.5.exe
+WARN Skipping file for numpy: numpy-1.6.1.win32-py2.6.exe
+WARN Skipping file for numpy: numpy-1.6.1.win32-py2.7.exe
+WARN Skipping file for numpy: numpy-1.6.1.win32-py3.1.exe
+WARN Skipping file for numpy: numpy-1.6.1.win32-py3.2.exe
+WARN Skipping file for numpy: numpy-1.6.2.win32-py2.5.exe
+WARN Skipping file for numpy: numpy-1.6.2.win32-py2.6.exe
+WARN Skipping file for numpy: numpy-1.6.2.win32-py2.7.exe
+WARN Skipping file for numpy: numpy-1.6.2.win32-py3.1.exe
+WARN Skipping file for numpy: numpy-1.6.2.win32-py3.2.exe
+WARN Skipping file for numpy: numpy-1.7.0.win32-py2.5.exe
+WARN Skipping file for numpy: numpy-1.7.0.win32-py2.6.exe
+WARN Skipping file for numpy: numpy-1.7.0.win32-py2.7.exe
+WARN Skipping file for numpy: numpy-1.7.0.win32-py3.1.exe
+WARN Skipping file for numpy: numpy-1.7.0.win32-py3.2.exe
+WARN Skipping file for numpy: numpy-1.7.0.win32-py3.3.exe
+WARN Skipping file for numpy: numpy-1.7.1.win32-py2.5.exe
+WARN Skipping file for numpy: numpy-1.7.1.win32-py2.6.exe
+WARN Skipping file for numpy: numpy-1.7.1.win32-py2.7.exe
+WARN Skipping file for numpy: numpy-1.7.1.win32-py3.1.exe
+WARN Skipping file for numpy: numpy-1.7.1.win32-py3.2.exe
+WARN Skipping file for numpy: numpy-1.7.1.win32-py3.3.exe
+  × No solution found when resolving dependencies for split (markers: sys_platform == 'freebsd13'):
+  ╰─▶ Because numpy{sys_platform == 'freebsd13'}==2.2.6 has no `sys_platform == 'freebsd13'`-compatible wheels and your project
+      depends on numpy{sys_platform == 'freebsd13'}==2.2.6, we can conclude that your project's requirements are unsatisfiable.
+DEBUG Released lock at `/usr/home/cafe-custom-uis/split-index-test/.venv/.lock`
+DEBUG Released lock at `cache/.lock`
+</code></pre>
+<p>I have tried to rename the wheel according to the <code>sys_platform</code> and tried variations, but I fail to satisfy what uv expects to see.</p>
+<p>Is it me being too stupid or is it a PEP 508 issue and therfore the markers don't work? I can see in the access log of HTTPd that only the index is retrieved, but not the wheel.</p>
+<p>As soon as I remove <code>required-environments</code> it seems to work on one platform, but not the other.</p>
+<p>I am basically trying to tell uv use this index for FreeBSD only. At worst, I have to pin indexes on a per-dependency basis, but it is very tedious.</p>
+<h3>Platform</h3>
+<p>FreeBSD 13.5-RELEASE-p7 amd64</p>
+<h3>Version</h3>
+<p>uv 0.9.17+10 (38ae41468 2025-12-11)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @michael-o on 2025-12-12 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16242.html">astral-sh/uv#16242</a> on 2025-12-13 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-12-18 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-18 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 17:21</div>
+            <div class="timeline-body"><p>uv at the moment only knows what the <code>required-environments</code> markers mean for windows, linux and mac at the moment, as we have to manually map the markers to tags manually. We can add those mapping for more platforms.</p>
+<p>By using <code>tool.uv.environments</code> we shouldn't error for now, though that may change with https://github.com/astral-sh/uv/pull/17118.</p>
+<p>From uv's perspective, the ideal thing would be the freebsd index mirror the non-freebsd for its builds, so uv can operate on a unified index.</p>
+<p>You may also want to make freebsd-wheels an explicit index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michael-o">@michael-o</a> on 2025-12-19 16:32</div>
+            <div class="timeline-body"><blockquote>
+<p>uv at the moment only knows what the <code>required-environments</code> markers mean for windows, linux and mac at the moment, as we have to manually map the markers to tags manually. We can add those mapping for more platforms.</p>
+</blockquote>
+<p>I almost thought this, but it should be documented. It wasn't clear and I was banging my head against the monitor. What does it take to add them?</p>
+<blockquote>
+<p>By using <code>tool.uv.environments</code> we shouldn't error for now, though that may change with <a href="https://github.com/astral-sh/uv/pull/17118">#17118</a>.</p>
+</blockquote>
+<p>I have tried ust <code>too.uv.environments</code> as well. There was no remedy actually.</p>
+<blockquote>
+<p>From uv's perspective, the ideal thing would be the freebsd index mirror the non-freebsd for its builds, so uv can operate on a unified index.</p>
+</blockquote>
+<p>This I noticed as well and went for a band-aid solution with proxpi, but I don't see a reason why uv should not work with split situations and the docs don't tell that this is not a supported approach.</p>
+<blockquote>
+<p>You may also want to make freebsd-wheels an explicit index.</p>
+</blockquote>
+<p>I have tried and this does not work for two reasons:</p>
+<ul>
+<li>I have to list the source of every single dependency: tedious, error-prone, incomplete</li>
+<li>It ignores transitive dependencies and there are some which are being rebuilt and I refuse to promote them to direct dependencies just to satify the the explicit flag for uv.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-19 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I almost thought this, but it should be documented. It wasn't clear and I was banging my head against the monitor. What does it take to add them?</p>
+</blockquote>
+<p>It the code at https://github.com/astral-sh/uv/blob/f122387f898bca32ead6ffe461e8e3b3fa8c487d/crates/uv-distribution-types/src/prioritized_distribution.rs#L819</p>
+<p>I agree this should be documented in the required-environments docstring.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

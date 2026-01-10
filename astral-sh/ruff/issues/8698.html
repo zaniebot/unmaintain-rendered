@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing pyupgrade errors (UP006, UP035) - astral-sh/ruff #8698</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing pyupgrade errors (UP006, UP035)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8698">#8698</a>
+        opened by <a href="https://github.com/rademacher-p">@rademacher-p</a>
+        on 2023-11-15 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rademacher-p">@rademacher-p</a> on 2023-11-15 17:29</div>
+            <div class="timeline-body"><p>Hi, I seem to be missing pyupgrade errors for Python 3.11 and Ruff 0.1.5. Reproduce w/ <code>ruff --isolated --select UP file.py</code> on a fresh <code>venv</code>. This is all from the CLI, no <code>pyproject.toml</code>.</p>
+<pre><code># file.py
+from typing import Type
+
+foo = Type[list]
+</code></pre>
+<p>I ❤️ <code>ruff</code>, thanks in advance for any help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-15 17:36</div>
+            <div class="timeline-body"><p>Thank you for the kind words!</p>
+<p>I think this is a result of https://github.com/astral-sh/ruff/issues/3215 -- we stopped rewriting annotations that are used at runtime (roughly, on the right-hand side of an expression) because it can change behavior. https://github.com/astral-sh/ruff/issues/4843 has some more information. I think we actually <em>can</em> rewrite these in some but not all scenarios. In other words, our current approach is probably too conservative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-11-15 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-15 18:13</div>
+            <div class="timeline-body"><p>I think it's always safe to perform these rewrites for UP006 (like <code>List</code> to <code>list</code>, assuming you're on a supported Python version).</p>
+<p>It's probably <em>not</em> always safe to perform these rewrites for UP007 (which converts <code>Union[int, str]</code> to <code>int | str</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-15 19:27</div>
+            <div class="timeline-body"><p>I think you should write this as a type alias:</p>
+<pre><code class="language-python">foo: TypeAlias = Type[list]  # Python &lt; 3.12
+type foo = type[list]  # Python &gt;= 3.12
+</code></pre>
+<p>And then would it be possible for Ruff to make the transformation?  Are right-hand-sides of type aliases okay?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rademacher-p">@rademacher-p</a> on 2023-11-15 21:35</div>
+            <div class="timeline-body"><p>Aside from the issues with autofix, is there a reason not to provide the deprecation inspection?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-15 23:23</div>
+            <div class="timeline-body"><p>The only reason is to ensure we're not introducing false positives. So it'd be nice to make sure we have a sense for where this is and isn't safe prior to enabling the check for runtime annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-16 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-16 01:10</div>
+            <div class="timeline-body"><p>Oh hmm, I'm actually noticing that if your Python version is set correctly, we <em>do</em> flag and fix this: https://play.ruff.rs/526e6c64-b8da-4cd5-8dcd-68ee71a6f886</p>
+<p>Do you have your <code>--target-version</code> configured to Python 3.11?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rademacher-p">@rademacher-p</a> on 2023-11-16 01:50</div>
+            <div class="timeline-body"><p>@charliermarsh No, I did not! Should have had that in my config (actually, should just up my <code>project.requires-python</code>) 😮 Adding this option gives me the pyupgrade errors - feel free to close, if you're ready 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-16 01:53</div>
+            <div class="timeline-body"><p>Awesome, thanks @rademacher-p! Sorry for the confusion but glad to resolve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-16 01:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

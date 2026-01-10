@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETRC environment variable ignored for git installs - astral-sh/uv #9576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>NETRC environment variable ignored for git installs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9576">#9576</a>
+        opened by <a href="https://github.com/remidebette">@remidebette</a>
+        on 2024-12-02 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/remidebette">@remidebette</a> on 2024-12-02 14:13</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>Thank you for the nice tool.</p>
+<p>I have been testing <code>.netrc</code> support to implement installs from private packages.
+I also need NETRC env var support to be able to inject the <code>.netrc</code> file in various Docker contexts without having to worry where is the home folder in each case (debian, alpine, ...)</p>
+<p>The error is that this works for private pypi packages, but not for <code>git+https://</code> packages.</p>
+<p>In my dockerfiles:</p>
+<pre><code class="language-dockerfile">RUN --mount=type=secret,id=netrc \
+  NETRC=/run/secrets/netrc \
+  uv sync
+</code></pre>
+<p>In my <code>pyproject.toml</code>, if I set</p>
+<pre><code class="language-toml">[tool.uv]
+extra-index-url = [&quot;https://&lt;my private pypi index&gt;&quot;]
+</code></pre>
+<p>Everything is fine, specific packages coming from the extra index get installed (if I pass the secret properly at build time)</p>
+<p>But now, for libraries that are installed from git pull do not work:</p>
+<pre><code class="language-toml">dependencies = [
+  &quot;something @ git+https://github.com/something&quot;,
+]
+</code></pre>
+<p>in the case <code>something</code> is a private repo only accessible with a github token with enough rights</p>
+<p>The failure logs:</p>
+<pre><code class="language-bash">#28 0.334 Using CPython 3.10.12 interpreter at: /usr/local/bin/python3
+#28 0.334 Creating virtual environment at: .venv
+#28 0.374 Resolved 305 packages in 2ms
+#28 0.971   × Failed to download and build `&lt;EDITED&gt; @
+#28 0.971   │ git+[https://github.com/&lt;EDITED&gt;@&lt;EDITED&gt;`](https://github.com/&lt;EDITED&gt;@&lt;EDITED&gt;%60)
+#28 0.971   ├─▶ Git operation failed
+#28 0.971   ├─▶ failed to clone into: /root/.cache/uv/git-v0/db/456d050564230643
+#28 0.971   ├─▶ failed to fetch commit `&lt;EDITED&gt;`
+#28 0.971   ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force
+#28 0.971       --update-head-ok 'https://github.com/&lt;EDITED&gt;'
+#28 0.971       '+&lt;EDITED&gt;:refs/remotes/origin/HEAD'`
+#28 0.971       (exit status: 128)
+#28 0.971       --- stderr
+#28 0.971       fatal: could not read Username for 'https://github.com/': No such device
+#28 0.971       or address
+</code></pre>
+<p>My guess is that the git binary is doing the authentication in that case, and might not get the env var content.</p>
+<p>Alternately, When forcing <code>.netrc</code> to be in the home, it then works ; but it goes against good practice not to copy build secrets in the image layers.</p>
+<pre><code class="language-dockerfile">RUN --mount=type=secret,id=netrc \
+  cp /run/secrets/netrc ~/.netrc &amp;&amp; \
+  uv sync &amp;&amp; \
+  rm ~/.netrc
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "NETRC environment variables ignored for git installs" to "NETRC environment variable ignored for git installs" by @remidebette on 2024-12-02 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 15:48</div>
+            <div class="timeline-body"><p>Yeah we call into the <code>git</code> CLI. Perhaps it does not support the <code>NETRC</code> environment variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 01:12</div>
+            <div class="timeline-body"><p>Hmm yeah, that's a good guess... Looking at the docs, it looks like Git does respect <code>~/.netrc</code>, but doesn't provide any way to set it to a custom path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remidebette">@remidebette</a> on 2024-12-03 08:40</div>
+            <div class="timeline-body"><p>Hi,
+I could not find a mention of NETRC on the online git SCM documentation. I sent an email to the git mailing list to ask if there is an alternative.</p>
+<p>Is this env var a standard or was it created for uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 14:16</div>
+            <div class="timeline-body"><p>Some historical context in https://github.com/pypa/pip/issues/11023</p>
+<p>It's supported in the netrc crate we use https://github.com/gribouille/netrc/blob/f8b614440a8d45cae8a5bd90a43266d8f487b93b/src/lib.rs#L85-L105</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-06 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-12-06 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remidebette">@remidebette</a> on 2024-12-10 08:28</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I have been a bit slow, I don't understand how to get the responses of the git mailing lists.</p>
+<p>Anyway the answer can be seen here:</p>
+<p>https://lore.kernel.org/git/20241202211156.GG776185@coredump.intra.peff.net/</p>
+<p>Would you think it is better to get support from git or libcurl?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 14:09</div>
+            <div class="timeline-body"><p>It seems like support in curl makes sense? I'd be curious to hear what they say at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remidebette">@remidebette</a> on 2024-12-10 23:13</div>
+            <div class="timeline-body"><p>Asked: https://github.com/curl/curl/discussions/15713</p>
+<p>According to this doc https://curl.se/libcurl/c/libcurl-env.html, they might accept <code>HOME</code> (will test it)
+But it could have side effects in some situations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-11 00:33</div>
+            <div class="timeline-body"><p>A good effort, thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remidebette">@remidebette</a> on 2024-12-11 10:04</div>
+            <div class="timeline-body"><p>So at the very least <code>HOME</code> works with git dependencies, but the file has to be named <code>.netrc</code></p>
+<pre><code class="language-Dockerfile">RUN --mount=type=secret,id=netrc,dst=/run/secrets/.netrc \
+  HOME=/run/secrets \
+  uv sync
+</code></pre>
+<p>but again, I worry of the side effects, and I guess <code>NETRC</code> still has to be set for usual python packages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11342.html">astral-sh/uv#11342</a> on 2025-06-04 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-04 03:55</div>
+            <div class="timeline-body"><p>There's some discussion of alternatives to <code>~/.netrc</code> here: https://github.com/astral-sh/uv/issues/11342#issuecomment-2938352842</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`resolution=lowest[-direct]` reports dependency as missing a lower bound when it actually has one - astral-sh/uv #16148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`resolution=lowest[-direct]` reports dependency as missing a lower bound when it actually has one</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16148">#16148</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2025-10-07 08:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-10-07 08:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's an mre <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+  &quot;coverage[toml] ; python_version &lt; '3.11'&quot;,
+  &quot;coverage &gt;= 7.10.0&quot;,
+]
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.8.23,&lt;0.9.0&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+<p>running <code>uv sync</code> with a <code>lowest-direct</code> resolution produces a warning</p>
+<pre><code>❯ uv sync --resolution=lowest-direct
+⠙ test==0.1.0
+warning: The direct dependency `coverage` is unpinned. Consider setting a lower bound when using `--resolution lowest` or `--resolution lowest-direct` to avoid using outdated versions.
+Resolved 3 packages in 61ms
+      Built test @ file:///private/tmp/test
+Prepared 2 packages in 158ms
+Installed 2 packages in 2ms
+ + coverage==7.10.0
+ + test==0.1.0 (from file:///private/tmp/test)
+</code></pre>
+<p>I think in this instance the warning is misleading (incorrect ?), because there exists no scenario where <code>coverage</code> would be resolved without a lower bound, but I figure the warning is the result of a sanity check that runs on single requirements, rather than on a &quot;merged&quot; view (for lack of a better word). I understand this could be tricky to fix because one would need to (partially) resolve the dependency tree ahead running this sanity check, which can easily turn into a chicken VS egg problem. It's a really minor thing however, and can easily be worked around on the user side by merely duplicating the lower bound; I just thought I might raise awareness on this quirk before resorting to that.</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>0.8.23 (00d3aa378 2025-10-04)</p>
+<h3>Python version</h3>
+<p>I don't think that's relevant, but I saw this on 3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @neutrinoceros on 2025-10-07 08:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2025-10-07 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "BUG: `resolution=lowest[-direct]` reports dependency as missing a lower bound when it actually has one" to "`resolution=lowest[-direct]` reports dependency as missing a lower bound when it actually has one" by @konstin on 2025-10-07 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-07 08:40</div>
+            <div class="timeline-body"><p>Thank you for the clear MRE! Fixing in https://github.com/astral-sh/uv/pull/16149</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-10-07 08:45</div>
+            <div class="timeline-body"><p>wow. It'll never cease to amaze me how reactive you guys can be. Thanks a lot @konstin !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-10-07 16:49</div>
+            <div class="timeline-body"><p>closing as completed with #16149 merged. Thanks again !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @neutrinoceros on 2025-10-07 16:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

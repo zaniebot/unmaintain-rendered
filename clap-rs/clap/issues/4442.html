@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Built-in default subcommand support - clap-rs/clap #4442</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Built-in default subcommand support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4442">#4442</a>
+        opened by <a href="https://github.com/9999years">@9999years</a>
+        on 2022-11-02 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/9999years">@9999years</a> on 2022-11-02 14:11</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.18</p>
+<h3>Describe your use case</h3>
+<p>I have a command which supports subcommands for different operations, but also has a sensible 'default' operation which I'd like to run if a subcommand is omitted. Ideally, I'd like to be able to specify arguments for the default command as well.</p>
+<ul>
+<li>See <a href="https://github.com/clap-rs/clap/discussions/4134">discussion #4134</a> for some workarounds</li>
+<li><a href="https://github.com/clap-rs/clap/pull/4350">PR #4350</a> added support for <code>Option</code> when flattening; I'm not entirely sure how this relates but supposedly it helps a bit</li>
+<li><a href="https://github.com/clap-rs/clap/pull/3570">PR #3570</a> shows how to use default subcommands with the <code>git</code>-like example, but still requires some manual juggling instead of remaining within the <code>#[derive(...)]</code> API</li>
+<li>#3857</li>
+</ul>
+<h3>Describe the solution you'd like</h3>
+<p>I think my ideal solution looks something like this, with a command attribute like <code>#[command(default)]</code> to declare the default variant to use for parsing:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, Parser)]
+pub struct Opts {
+    #[command(subcommand)]
+    pub command: Command,
+}
+
+#[derive(Debug, Clone, clap::Subcommand)]
+pub enum Command {
+    /// This will be run for `my-exe my-default-command` and also `my-exe`.
+    #[command(default)]
+    MyDefaultCommand,
+
+    /// This will be run for `my-exe other-command`.
+    OtherCommand,
+}
+</code></pre>
+<h3>Additional context</h3>
+<p>Following the directions in <a href="https://github.com/clap-rs/clap/discussions/4134">discussion #4134</a>, I produced the following solution:</p>
+<pre><code class="language-rust">/// Produce this value with `ParserOpts::parse().into()`. This abstracts over
+/// the internal parser to always provide a value for the `command` field.
+#[derive(Debug, Clone)]
+pub struct Opts {
+    pub common: CommonOpts,
+    pub command: Command,
+}
+
+impl From&lt;ParserOpts&gt; for Opts {
+    fn from(opts: ParserOpts) -&gt; Self {
+        Self {
+            common: opts.common,
+            command: opts.command.unwrap_or(Command::DefaultCommand(opts.default_command)),
+        }
+    }
+}
+
+/// Here is the actual parser struct.
+#[derive(Debug, Clone, clap::Parser)]
+#[command(args_conflicts_with_subcommands = true)]
+pub struct ParserOpts {
+    /// Options common to all subcommands.
+    #[command(flatten)]
+    pub common: CommonOpts,
+
+    /// An optional subcommand.
+    #[command(subcommand)]
+    pub command: Option&lt;Command&gt;,
+
+    /// Arguments for the default subcommand.
+    #[command(flatten)]
+    pub default_command: DefaultOpts,
+}
+
+/// Options valid for any subcommand.
+#[derive(Debug, Clone, clap::Args)]
+pub struct CommonOpts {
+    #[arg(long, default_value = &quot;info&quot;)]
+    pub tracing_filter: String,
+}
+
+/// A subcommand.
+#[derive(Debug, Clone, clap::Subcommand)]
+pub enum Command {
+    DefaultCommand(DefaultOpts),
+
+    OtherCommand,
+}
+
+/// Options for the default subcommand.
+#[derive(Debug, Clone, clap::Args)]
+pub struct DefaultOpts {
+    #[arg(long)]
+    pub default_arg: Option&lt;String&gt;,
+}
+</code></pre>
+<p>This workaround has the following deficiencies, most of which I suspect relate to the necessary <code>args_conflicts_with_subcommands</code> call:</p>
+<ol>
+<li><p>The <code>--help</code> text prints like this:</p>
+<pre><code>Usage: my-exe [OPTIONS]
+       my-exe &lt;COMMAND&gt;
+</code></pre>
+<p>I would prefer <code>Usage: my-exe [OPTIONS] [COMMAND]</code> to reflect that the options can always be given and that the command is optional.</p>
+</li>
+<li><p><code>my-exe default-command --help</code> doesn't display the common options, even though they (should be) valid.</p>
+</li>
+<li><p>Arguments before the subcommand fail to parse:</p>
+<pre><code class="language-ShellSession">$ my-exe --tracing-filter=trace default-command --default-arg foo
+error: The subcommand 'default-command' wasn't recognized
+
+  Did you mean 'default-command'?
+
+  If you believe you received this message in error, try re-running with 'my-exe -- default-command'
+
+Usage: my-exe [OPTIONS]
+       my-exe &lt;COMMAND&gt;
+
+For more information try '--help'
+</code></pre>
+<p>Note the weird message that suggests the command we typed. Following the suggestion to add <code>--</code> before the subcommand name gives the same message.</p>
+</li>
+<li><p>Arguments common to all subcommands can't be mixed before/after the subcommand name.</p>
+<p><code>my-exe default-command --tracing-filter=trace</code> gives an error saying that <code>--tracing-filter</code> is not expected/invalid in this context.</p>
+</li>
+<li><p>It's unwieldy. Defining a wrapper type, using <code>flatten</code> like this, and needing to convert between types or <code>unwrap_or</code> fields manually all feels rather janky.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @9999years on 2022-11-02 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Tracking issue: default subcommands" to "Default subcommands support" by @epage on 2022-11-02 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-02 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>https://github.com/clap-rs/clap/pull/4350 added support for Option when flattening; I'm not entirely sure how this relates but supposedly it helps a bit</p>
+</blockquote>
+<p>This helps when there are required arguments. Instead of making them <code>Option</code> and explicitly setting <code>required</code>, you can just make the entire group only present when mentioned.</p>
+<blockquote>
+<p>The --help text prints like this:</p>
+<p>I would prefer Usage: my-exe [OPTIONS] [COMMAND] to reflect that the options can always be given and that the command is optional.</p>
+</blockquote>
+<p>The usage that clap is generating is more accurate.  It is saying you can specify a subcommand or specify the arguments directly.</p>
+<blockquote>
+<p>my-exe default-command --help doesn't display the common options, even though they (should be) valid.</p>
+<p>Arguments common to all subcommands can't be mixed before/after the subcommand name.</p>
+</blockquote>
+<p>This seems unrelated to default subcommands.  If they aren't defined on the subcommand, then they won't show up.  Should these be marked <code>#[arg(global = true)]</code>?</p>
+<blockquote>
+<p>Arguments before the subcommand fail to parse:</p>
+</blockquote>
+<p>https://github.com/clap-rs/clap/issues/3135 m might be relevant for this</p>
+<blockquote>
+<p>Note the weird message that suggests the command we typed. Following the suggestion to add -- before the subcommand name gives the same message.</p>
+</blockquote>
+<p>Feel free to create a separate issue for the error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Default subcommands support" to "Built-in default subcommand support" by @epage on 2022-11-02 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-02 15:22</div>
+            <div class="timeline-body"><blockquote>
+<p>It's unwieldy. Defining a wrapper type, using flatten like this, and needing to convert between types or unwrap_or fields manually all feels rather janky.</p>
+</blockquote>
+<p>For how uncommon default subcommands seem to be, the level of machinery seems to be a fair match.  We are trying to balance with ease of use with binary size / build times.  We do this by providing lower level building blocks that allow people to build what they need while providing an easy-to-use path for the common cases.</p>
+<p>If there seems to be enough interest and someone creates a plan for this, then it can move forward.  This is unlikely to be a focus area for maintainers.</p>
+<p>In coming up with a plan, keep in mind that the derive API delegates all of the important machinery to the builder API, so we'll need a proposal that works at the builder level.  It will need to analyze the different cases to make sure they work well with each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-02 15:25</div>
+            <div class="timeline-body"><p>Closing in favor of #3857 so we keep the conversation in one place.  We can re-open if there is a design and interst.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-02 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-duplicate</span> added by @epage on 2022-11-02 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9999years">@9999years</a> on 2022-11-02 15:26</div>
+            <div class="timeline-body"><p>Thanks, I didn't see https://github.com/clap-rs/clap/issues/3857 when searching</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:15 UTC
+    </footer>
+</body>
+</html>

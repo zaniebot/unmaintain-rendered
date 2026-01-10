@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM222 false positive in `[*iterable] or [another list]` - astral-sh/ruff #14237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM222 false positive in `[*iterable] or [another list]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14237">#14237</a>
+        opened by <a href="https://github.com/rdaysky">@rdaysky</a>
+        on 2024-11-10 01:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rdaysky">@rdaysky</a> on 2024-11-10 01:56</div>
+            <div class="timeline-body"><p>Suppose I want to run some code for each element in an iterable, but if there are none, run once for the value of None. However, the natural code</p>
+<pre><code>def f(some_iterable):
+    for x in [*some_iterable] or [None]:
+        do_something(x)
+</code></pre>
+<p>fails SIM222, which wants to remove the <code>or [None]</code> part, presumably thinking the list will always be truthy. Similarly to https://github.com/astral-sh/ruff/issues/9479, the rule needs to take into account that a list/set/dict literal containing only *-elements can still end up empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SIM222 false positive in `if [*iterable] or [another list]`" to "SIM222 false positive in `[*iterable] or [another list]`" by @rdaysky on 2024-11-10 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-10 04:34</div>
+            <div class="timeline-body"><p>The same holds for other literal iterables as well (<a href="https://play.ruff.rs/7e566313-3d07-472e-b4f3-ef99c9a43c55">playground</a>):</p>
+<pre><code class="language-py">[*a] or ...
+[*a, *b] or ...
+{*a} or ...
+{*a, *b} or ...
+(*a,) or ...
+(*a, *b) or ...
+{**a} or ...
+{**a, **b} or ...
+</code></pre>
+<p>I'll work on a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-10 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14263.html">astral-sh/ruff#14263</a> on 2024-11-11 05:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-11 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-11 20:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

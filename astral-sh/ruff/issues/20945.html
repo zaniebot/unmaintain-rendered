@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FAST001` false positive for undefined names - astral-sh/ruff #20945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`FAST001` false positive for undefined names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20945">#20945</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-10-17 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-17 18:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We give a lint here for FAST001 here when probably we should abort because neither <code>Item</code> nor <code>Foo</code> are defined.</p>
+<p>Example:</p>
+<pre><code class="language-python">from __future__ import annotations
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+@app.post(&quot;/items/&quot;, response_model=Foo) # false positive FAST001
+async def create_item(item: Item) -&gt; Item:
+    return item
+</code></pre>
+<p><a href="https://play.ruff.rs/edd92ea7-8e60-4d36-98e3-4577f00d7e0b">Playground</a></p>
+<p>This is because we check that two resolved names are equal - but <code>.resolve_name</code> returns an <code>Option</code> and in this case resolving both <code>Foo</code> and <code>Item</code> gives <code>None</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/6e7ff0706564cb938c154b5a5f9993c1118085e0/crates/ruff_linter/src/rules/fastapi/rules/fastapi_redundant_response_model.rs#L124-L125</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-10-17 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-10-17 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20750.html">astral-sh/ruff#20750</a> on 2025-10-17 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-22 17:23</div>
+            <div class="timeline-body"><p>Hii @dylwil3<br />
+Does this approach look correct?</p>
+<pre><code>if let (Some(response_model_id), Some(return_value_id)) = (
+    semantic.resolve_name(response_mode_name_expr),
+    semantic.resolve_name(return_value_name_expr),
+) {
+    return response_model_id == return_value_id;
+}
+return false;
+
+</code></pre>
+<p>only returns true if both names resolve successfully ,. If either is undefined, it returns false</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

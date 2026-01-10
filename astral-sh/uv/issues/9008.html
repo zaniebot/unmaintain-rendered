@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[BUG] can not use private pypi repo to install package(same as offical pypi package) - astral-sh/uv #9008</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[BUG] can not use private pypi repo to install package(same as offical pypi package)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9008">#9008</a>
+        opened by <a href="https://github.com/Sube-py">@Sube-py</a>
+        on 2024-11-11 08:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Sube-py">@Sube-py</a> on 2024-11-11 08:16</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<pre><code>uv add utensils --extra-index-url https://user:password@100.64.0.1:8000/simple --allow-insecure-host=100.64.0.1                                                                                                                 
+warning: Indexes specified via `--extra-index-url` will not be persisted to the `pyproject.toml` file; use `--index` instead.
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of utensils and your project depends on utensils, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: `utensils` was found on https://user:password@100.64.0.1:8000/simple, but not at the requested version (all versions of utensils). A compatible version may be available on a subsequent index (e.g., https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple).
+      By default, uv will only consider versions that are published on the first index that contains a given package, to avoid dependency confusion attacks. If all indexes are equally trusted, use `--index-strategy unsafe-best-match` to consider all versions from all
+      indexes, regardless of the order in which they were defined.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>The package name in the private repository is the same as in the official source, which makes it impossible for me to specify the package to install in the private repository.</p>
+<ul>
+<li>uv 0.5.0 (Homebrew 2024-11-07)</li>
+<li>macos 15.0.1</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 13:46</div>
+            <div class="timeline-body"><p>Sorry, are you trying to install utensils from <code>https://user:password@100.64.0.1:8000/simple</code> or from <code>https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-11 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sube-py">@Sube-py</a> on 2024-11-12 04:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry, are you trying to install utensils from <code>https://user:password@100.64.0.1:8000/simple</code> or from <code>https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple</code>?</p>
+</blockquote>
+<p>from my private repo(https://user:password@100.64.0.1:8000/simple), I tried three strategies(first match, unsafe...), but not working, it still install it from index-url(https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 14:41</div>
+            <div class="timeline-body"><p>Can you include the full logs with <code>--verbose</code>? I'm not sure how to help, by default uv will always choose the version in your private repo if it exists. It must be failing to use your registry due to some misconfiguration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-11-14 02:05</div>
+            <div class="timeline-body"><p>I'm getting a similar issue, with the following script metadata:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#   &quot;lagrange&gt;=6.27.0&quot;
+# ]
+# [[tool.uv.index]]
+# name = &quot;internal&quot;
+# url = &quot;https://internal-pypi-url/api/pypi/my-index/simple&quot;
+# ///
+</code></pre>
+<p>And the full log from <code>uv</code>:</p>
+<pre><code>❯ uv run -vv script.py
+    0.000310s DEBUG uv uv 0.5.1 (Homebrew 2024-11-08)
+Reading inline script metadata from `script.py`
+    0.000674s DEBUG uv::commands::project Using Python request Python &gt;=3.12 from `requires-python` metadata
+    0.000731s DEBUG uv_python::discovery Searching for Python &gt;=3.12 in virtual environments, managed installations, or search path
+    0.001094s DEBUG uv_python::discovery Found `cpython-3.11.4-macos-aarch64-none` at `/opt/homebrew/Caskroom/miniconda/base/bin/python3` (conda prefix)
+    0.001142s DEBUG uv_python::discovery Skipping interpreter at `/opt/homebrew/Caskroom/miniconda/base/bin/python3` from conda prefix: does not satisfy request `&gt;=3.12`
+    0.001176s DEBUG uv_python::discovery Searching for managed installations at `/Users/jedumas/.local/share/uv/python`
+    0.002000s DEBUG uv_python::discovery Found `cpython-3.11.4-macos-aarch64-none` at `/opt/homebrew/Caskroom/miniconda/base/bin/python` (search path)
+    0.002038s DEBUG uv_python::discovery Skipping interpreter at `/opt/homebrew/Caskroom/miniconda/base/bin/python` from search path: does not satisfy request `&gt;=3.12`
+    0.002174s DEBUG uv_python::discovery Found `cpython-3.11.4-macos-aarch64-none` at `/opt/homebrew/Caskroom/miniconda/base/bin/python3` (search path)
+    0.002182s DEBUG uv_python::discovery Skipping interpreter at `/opt/homebrew/Caskroom/miniconda/base/bin/python3` from search path: does not satisfy request `&gt;=3.12`
+    0.003304s DEBUG uv_python::discovery Found `cpython-3.11.9-macos-aarch64-none` at `/Users/jedumas/.local/share/mise/installs/python/3.11.9/bin/python` (search path)
+    0.003321s DEBUG uv_python::discovery Skipping interpreter at `/Users/jedumas/.local/share/mise/installs/python/3.11.9/bin/python` from search path: does not satisfy request `&gt;=3.12`
+    0.003484s DEBUG uv_python::discovery Found `cpython-3.11.9-macos-aarch64-none` at `/Users/jedumas/.local/share/mise/installs/python/3.11.9/bin/python3` (search path)
+    0.003490s DEBUG uv_python::discovery Skipping interpreter at `/Users/jedumas/.local/share/mise/installs/python/3.11.9/bin/python3` from search path: does not satisfy request `&gt;=3.12`
+    0.004514s DEBUG uv_python::discovery Found `cpython-3.13.0-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+    0.004572s DEBUG uv::commands::project::environment Caching via interpreter: `/opt/homebrew/opt/python@3.13/bin/python3.13`
+ uv_client::linehaul::linehaul
+    0.004743s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_resolver::resolver::solve
+    0.005005s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.13.0
+    0.005012s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.13.0
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.005076s   0ms DEBUG uv_resolver::resolver Adding direct dependency: lagrange&gt;=6.27.0
+   uv_resolver::resolver::choose_version package=lagrange
+ uv_resolver::resolver::process_request request=Versions lagrange
+   uv_client::registry_client::simple_api package=lagrange
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/Users/jedumas/Library/Caches/uv/simple-v14/index/beff05de2a86bfd4/lagrange.rkyv
+ uv_resolver::resolver::process_request request=Prefetch lagrange &gt;=6.27.0
+ uv_client::cached_client::from_path_sync path=&quot;/Users/jedumas/Library/Caches/uv/simple-v14/index/beff05de2a86bfd4/lagrange.rkyv&quot;
+        0.005272s   0ms DEBUG uv_client::cached_client Found fresh response for: https://internal-pypi-url/api/pypi/my-index/simple/lagrange/
+   uv_resolver::version_map::from_metadata
+      0.005324s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of lagrange (&gt;=6.27.0)
+    0.005334s   0ms DEBUG uv_resolver::resolver No compatible version found for: lagrange
+  × No solution found when resolving script dependencies:
+  ╰─▶ Because only lagrange&lt;=2.1.0 is available and you require lagrange&gt;=6.27.0, we can conclude that your requirements are unsatisfiable.
+
+      hint: `lagrange` was found on https://internal-pypi-url/api/pypi/my-index/simple, but not at the requested version (lagrange&gt;=6.27.0). A compatible version may
+      be available on a subsequent index (e.g., https://pypi.org/simple). By default, uv will only consider versions that are published on the first index that contains a given package, to avoid dependency
+      confusion attacks. If all indexes are equally trusted, use `--index-strategy unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they were defined.
+</code></pre>
+<p>It is a bit hard to see what version does <code>uv</code> see (related to https://github.com/astral-sh/uv/issues/2111), but a regular <code>pip index version &lt;mypackage&gt; --index &lt;internal-pypi-url&gt;</code> shows the correct expected version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 02:13</div>
+            <div class="timeline-body"><p>What are you trying to do? Do you want <code>lagrange</code> to come from PyPI, or <code>https://internal-pypi-url/api/pypi/my-index/simple</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-11-14 05:20</div>
+            <div class="timeline-body"><p>From the internal index (there is a public pypi package with the same name but it's at version 2.x, while our internal package is at version 6.x).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schussda">@schussda</a> on 2024-11-19 07:23</div>
+            <div class="timeline-body"><p>same for me
+<code>uv tool run</code> always tries to connect to pypi.org insted of the given --default-index or --index
+the wanted package only exist on the private index</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schussda">@schussda</a> on 2024-11-25 11:01</div>
+            <div class="timeline-body"><p>workaround for me is to use environment variable UV_INDEX</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 23:07</div>
+            <div class="timeline-body"><p>@schussda that sounds like a separate issue, please open a new one instead of replying here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 23:09</div>
+            <div class="timeline-body"><p>@Sube-py / @jdumas — this can happen if your index is not authenticated correctly, e.g. as discussed in https://github.com/astral-sh/uv/issues/9331#issuecomment-2492071055</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-11-26 00:31</div>
+            <div class="timeline-body"><p>@zanieb how can I test authentication with <code>uv</code>? I have no problem installing the same package via <code>pip install lagrange -i &lt;my_index&gt;</code>, but <code>uv run myscript.py</code> would fail. I'm pretty sure the .netrc in my home folder is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 00:34</div>
+            <div class="timeline-body"><p>There are detailed instructions in the linked issue, including how to read the logs. The simplest thing to do is include the username in the index URL and we will force credential retrieval from a netrc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-11-26 00:46</div>
+            <div class="timeline-body"><p>Thanks. I tried the following command:</p>
+<pre><code>❯ RUST_LOG=uv=trace uv add --index https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple 'lagrange&gt;=6.27.0' -vn
+DEBUG uv 0.5.4 (Homebrew 2024-11-20)
+DEBUG Found project root: `/Users/jedumas/sandbox/uvlog`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/Users/jedumas/sandbox/uvlog/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Searching for Python 3.11 in managed installations or search path
+TRACE Querying interpreter executable at /opt/homebrew/Caskroom/miniconda/base/bin/python3
+DEBUG Found `cpython-3.11.4-macos-aarch64-none` at `/opt/homebrew/Caskroom/miniconda/base/bin/python3` (conda prefix)
+Using CPython 3.11.4 interpreter at: /opt/homebrew/Caskroom/miniconda/base/bin/python3
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uvlog @ file:///Users/jedumas/sandbox/uvlog
+DEBUG No workspace root found, using project root
+TRACE Performing lookahead for uvlog @ file:///Users/jedumas/sandbox/uvlog
+DEBUG Solving with installed Python version: 3.11.4
+DEBUG Solving with target Python version: &gt;=3.11
+DEBUG Adding direct dependency: uvlog*
+DEBUG Searching for a compatible version of uvlog @ file:///Users/jedumas/sandbox/uvlog (*)
+DEBUG Adding transitive dependency for uvlog==0.1.0: lagrange&gt;=6.27.0
+TRACE Fetching metadata for lagrange from https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE No cache entry exists for /var/folders/_d/n30mgrzx0933r_7bpbgb1q640000gq/T/.tmpTiGwqP/simple-v14/index/beff05de2a86bfd4/lagrange.rkyv
+DEBUG No cache entry for: https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Sending fresh GET request for https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Handling request for https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Request for https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Attempting unauthenticated request for https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE cached request https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ is storable because its response has an 'max-age' cache-control directive
+TRACE Received package metadata for: lagrange
+TRACE Selecting candidate for lagrange with range &gt;=6.27.0 with 8 remote versions
+DEBUG Searching for a compatible version of lagrange (&gt;=6.27.0)
+TRACE Selecting candidate for lagrange with range &gt;=6.27.0 with 8 remote versions
+TRACE Exhausted all candidates for package lagrange with range &gt;=6.27.0 after 8 steps
+DEBUG No compatible version found for: lagrange
+TRACE Exhausted all candidates for package lagrange with range &gt;=6.27.0 after 8 steps
+DEBUG Searching for a compatible version of uvlog @ file:///Users/jedumas/sandbox/uvlog (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: uvlog
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Removing `uv.lock`
+  × No solution found when resolving dependencies:
+TRACE Resolver derivation tree before reduction
+  root==0a0.dev0 depends on uvlog*
+      uvlog==0.1.0 depends on lagrange&gt;=6.27.0
+      no versions of lagrange&gt;=6.27.0
+    no versions of uvlog&lt;0.1.0 | &gt;0.1.0
+TRACE Resolver derivation tree after reduction
+  uvlog==0.1.0 depends on lagrange&gt;=6.27.0
+  no versions of lagrange&gt;=6.27.0
+  ╰─▶ Because only lagrange&lt;=2.1.0 is available and your project depends on lagrange&gt;=6.27.0, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: `lagrange` was found on https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple, but not at the requested version
+      (lagrange&gt;=6.27.0). A compatible version may be available on a subsequent index (e.g., https://pypi.org/simple). By default, uv will only consider versions that
+      are published on the first index that contains a given package, to avoid dependency confusion attacks. If all indexes are equally trusted, use `--index-strategy
+      unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they were defined.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>And indeed if I add <code>&lt;username&gt;@</code> in the URL the command succeeds instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 01:14</div>
+            <div class="timeline-body"><p>Yeah so this is the same behavior as described in the link — where the index returns a 404 instead of a 401 and we assume the package really does not exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schussda">@schussda</a> on 2024-11-26 05:23</div>
+            <div class="timeline-body"><blockquote>
+<p>@schussda that sounds like a separate issue, please open a new one instead of replying here.</p>
+</blockquote>
+<p>Im sorry i invoked uv the wrong way,
+Usage: uv tool run [OPTIONS] [COMMAND]</p>
+<p>What i did was
+uv tool run [COMMAND] --index XYZ
+Now it works!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-26 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-12-26 17:53</div>
+            <div class="timeline-body"><p>@charliermarsh you marked this as completed, but I don't see a resolution in #9331. Are you just closing the duplicate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 19:03</div>
+            <div class="timeline-body"><p>I closed because there's been no follow-up from the author on the originating issue, so there's nothing actionable to work on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-12-26 20:16</div>
+            <div class="timeline-body"><p>I believe it's the same issue as described #9331. I've observed exactly the same behavior when trying to download a package from a private PyPI repo whose name conflicts with an open-source one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-26 20:41</div>
+            <div class="timeline-body"><p>Someone corrected me on https://github.com/astral-sh/uv/issues/9008#issuecomment-2499354557 in another thread — we do retry on a 404 per https://github.com/astral-sh/uv/blob/d08bfee718372fc2a271a87e4c5b673874068554/crates/uv-auth/src/middleware.rs#L265-L270</p>
+<p>Some discussion in https://github.com/astral-sh/uv/pull/9583/files#r1867934283</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 20:42</div>
+            <div class="timeline-body"><p>Ok, I’ll mark this as a duplicate then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2024-12-28 01:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok, I’ll mark this as a duplicate then?</p>
+</blockquote>
+<p>Sounds good. But when fixing #9331 I'd also make a note to test this specific scenario if possible (package in private pypi repo shares the same as a public PyPI package), as well as the scenario described in #9331 (using a private gitlab index). The cause seems to be the same, but the usage is slightly different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rivershah">@rivershah</a> on 2025-01-04 17:54</div>
+            <div class="timeline-body"><p>When executing the following command to install the <code>dockyard</code> package from a private repository:</p>
+<pre><code class="language-bash">uv pip install --system --upgrade dockyard --default-index dockyard=https://&lt;token&gt;@gitlab.com/api/v4/projects/&lt;project_id&gt;/packages/pypi/simple
+Using Python 3.12.8 environment at: /usr/local
+Resolved 11 packages in 540ms
+Prepared 1 package in 1ms
+Installed 1 package in 32ms
+ + dockyard==0.2
+</code></pre>
+<p>The installation unexpectedly resolves to PyPI instead of the specified private repository. This is definitely a public package.</p>
+<p>Now I update to use --index</p>
+<pre><code>uv pip install --system --upgrade dockyard --index dockyard=https://&lt;token&gt;@gitlab.com/api/v4/projects/&lt;project_id&gt;/packages/pypi/simple
+Using Python 3.12.8 environment at: /usr/local
+Resolved 4 packages in 692ms
+Prepared 1 package in 239ms
+Uninstalled 1 package in 1ms
+Installed 1 package in 32ms
+ - dockyard==0.2
+ + dockyard==x.x.x (now this is the correct private package)
+</code></pre>
+<p>Now we resolve to private package. Lastly if I corrupt private credentials, uv still falls back to installing from public sources without any error. Can we please raise errors.</p>
+<p>Can we please review index pinning as we don't want to use public packages and would rather fail than let unexpected packages in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 17:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Can we please review index pinning as we don't want to use public packages and would rather fail than let unexpected packages in.</p>
+</blockquote>
+<p>There is index pinning in projects, can you use that interface?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-01-06 17:55</div>
+            <div class="timeline-body"><blockquote>
+<p>There is index pinning in projects, can you use that interface?</p>
+</blockquote>
+<p>That doesn't work for inline script metadata though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 17:57</div>
+            <div class="timeline-body"><p>It does, you can pin indexes in scripts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-01-06 18:29</div>
+            <div class="timeline-body"><p>But that's what I tried in <a href="https://github.com/astral-sh/uv/issues/9008#issuecomment-2475211191">this message</a> and yet it tried to resolve the public PyPI index first. I also tried to add a <code>[tool.uv.sources]</code> entry to the inline metadata but it didn't change anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 19:21</div>
+            <div class="timeline-body"><p>Yeah, you need to add a <code>tool.uv.sources</code> with:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#   &quot;lagrange&gt;=6.27.0&quot;
+# ]
+#
+# [[tool.uv.index]]
+# name = &quot;internal&quot;
+# url = &quot;https://internal-pypi-url/api/pypi/my-index/simple&quot;
+# explicit = true
+#
+# [tool.uv.sources]
+# lagrange = { index = &quot;internal&quot; }
+# ///
+</code></pre>
+<p>I just tested this myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-01-06 19:31</div>
+            <div class="timeline-body"><p>Tried that, and it doesn't work:</p>
+<pre><code>Reading inline script metadata from `hello.py`
+  × No solution found when resolving script dependencies:
+  ╰─▶ Because only lagrange&lt;=3.0.1 is available and you require lagrange&gt;=6.27.0, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>It only finds <a href="https://pypi.org/project/lagrange/">lagrange</a> from PyPI (&lt;=3.0.1), not my internal <code>lagrange</code> package (which has version &gt;=6.27.0).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 20:26</div>
+            <div class="timeline-body"><p>Do you know what uv version you're on? I'm not quite sure how to explain that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-01-06 21:07</div>
+            <div class="timeline-body"><p>This was with uv 0.5.11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 21:47</div>
+            <div class="timeline-body"><p>Are you able to together something I can use to reproduce this? Because I can't reproduce this as described. For example, this works:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#   &quot;idna&quot;
+# ]
+#
+# [[tool.uv.index]]
+# name = &quot;internal&quot;
+# url = &quot;https://test.pypi.org/simple&quot;
+# explicit = true
+#
+# [tool.uv.sources]
+# idna = { index = &quot;internal&quot; }
+# ///
+</code></pre>
+<p><code>uv run --verbose --script foo.py</code> correctly indicates that the package was selected from Test PyPI:</p>
+<pre><code>DEBUG uv 0.5.14 (9f1ba2b96 2025-01-02)
+Reading inline script metadata from `foo.py`
+DEBUG Reading Python requests from version file at `/Users/crmarsh/workspace/uv/.python-versions`
+DEBUG Using Python request `3.13.0` from version file at `.python-versions`
+DEBUG Using Python request Python 3.13.0 from version file at `.python-versions`
+DEBUG Searching for Python 3.13.0 in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.13.0-macos-aarch64-none` at `/Users/crmarsh/workspace/uv/.venv/bin/python3` (virtual environment)
+DEBUG Caching via base interpreter: `/Users/crmarsh/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.13
+DEBUG Solving with target Python version: &gt;=3.13
+DEBUG Adding direct dependency: idna*
+DEBUG Found fresh response for: https://test.pypi.org/simple/idna/
+DEBUG Searching for a compatible version of idna (*)
+DEBUG Selecting: idna==2.7 [compatible] (idna-2.7-py2.py3-none-any.whl)
+DEBUG Found fresh response for: https://test-files.pythonhosted.org/packages/4b/2a/0276479a4b3caeb8a8c1af2f8e4355746a97fab05a372e4a2c6a6b876165/idna-2.7-py2.py3-none-any.whl.metadata
+DEBUG Tried 1 versions: idna 1
+DEBUG marker environment resolution took 0.001s
+Resolved 1 package in 2ms
+DEBUG Using Python 3.13.0 interpreter at: /Users/crmarsh/.cache/uv/archive-v0/C5vjSoLH-LPoSABjS7TlA/bin/python3
+DEBUG Running `python foo.py`
+DEBUG Command exited with code: 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 21:48</div>
+            <div class="timeline-body"><p>Similarly, this (correctly) fails:</p>
+<pre><code># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#   &quot;ruff&quot;
+# ]
+#
+# [[tool.uv.index]]
+# name = &quot;internal&quot;
+# url = &quot;https://test.pypi.org/simple&quot;
+# explicit = true
+#
+# [tool.uv.sources]
+# ruff = { index = &quot;internal&quot; }
+# ///
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-01-06 23:06</div>
+            <div class="timeline-body"><p>If I run it with <code>RUST_LOG=uv=trace uv run hello.py</code> (as in <a href="https://github.com/astral-sh/uv/issues/9008#issuecomment-2499326669">this post</a> above), I get the following output:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#   &quot;lagrange&gt;=6.27.0&quot;
+# ]
+#
+# [[tool.uv.index]]
+# name = &quot;internal&quot;
+# url = &quot;https://artifactory.internal-url.com/artifactory/api/pypi/pypi-lagrange-python-release/simple&quot;
+# explicit = true
+#
+# [tool.uv.sources]
+# lagrange = { index = &quot;internal&quot; }
+# ///
+</code></pre>
+<pre><code>❯ RUST_LOG=uv=trace  uv run hello.py
+DEBUG uv 0.5.11 (Homebrew 2024-12-20)
+Reading inline script metadata from `hello.py`
+DEBUG Using Python request Python &gt;=3.12 from `requires-python` metadata
+DEBUG Searching for Python &gt;=3.12 in virtual environments, managed installations, or search path
+DEBUG Searching for managed installations at `/Users/jedumas/.local/share/uv/python`
+TRACE Searching PATH for executables: python3, python
+TRACE Checking `PATH` directory for interpreters: /opt/homebrew/Caskroom/miniconda/base/condabin
+TRACE Checking `PATH` directory for interpreters: /opt/homebrew/bin
+TRACE Found possible Python executable: /opt/homebrew/bin/python3
+TRACE Cached interpreter info for Python 3.13.0, skipping probing: /opt/homebrew/bin/python3
+DEBUG Found `cpython-3.13.0-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+DEBUG Caching via interpreter: `/opt/homebrew/opt/python@3.13/bin/python3.13`
+DEBUG Using request timeout of 30s
+⠙ Resolving dependencies...
+DEBUG Solving with installed Python version: 3.13
+DEBUG Solving with target Python version: &gt;=3.13
+TRACE assigned packages:
+TRACE Chose package for decision: root. remaining choices:
+DEBUG Adding direct dependency: lagrange&gt;=6.27.0
+TRACE assigned packages: root==0a0.dev0
+TRACE Chose package for decision: lagrange. remaining choices:
+TRACE Fetching metadata for lagrange from https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE cached request https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ is storable because its response has an 'max-age' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 60s
+TRACE cached request https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ has a cached response that does not allow staleness
+TRACE request https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ does not have a fresh cache because its age is 313 seconds, it is greater than the freshness lifetime of 60 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+DEBUG Sending revalidation request for: https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Handling request for https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Request for https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE Attempting unauthenticated request for https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+⠹ Resolving dependencies...
+TRACE is modified because status is 200 and not 304
+DEBUG Found modified response for: https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/
+TRACE cached request https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple/lagrange/ is storable because its response has an 'max-age' cache-control directive
+TRACE Received package metadata for: lagrange
+DEBUG Searching for a compatible version of lagrange (&gt;=6.27.0)
+TRACE Selecting candidate for lagrange with range &gt;=6.27.0 with 9 remote versions
+TRACE Exhausted all candidates for package lagrange with range &gt;=6.27.0 after 9 steps
+DEBUG No compatible version found for: lagrange
+TRACE Resolver derivation tree before reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on lagrange&gt;=6.27.0
+  no versions of lagrange&gt;=6.27.0
+TRACE Resolver derivation tree after reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on lagrange&gt;=6.27.0
+  no versions of lagrange&gt;=6.27.0
+  × No solution found when resolving script dependencies:
+  ╰─▶ Because only lagrange&lt;=3.0.1 is available and you require lagrange&gt;=6.27.0, we can conclude that your requirements are unsatisfiable
+</code></pre>
+<p>So it's not finding <code>lagrange&gt;=6.27.0</code> because it's first attempting unauthenticated connection to my private artifactory repo (same issue as #9331). But what I don't understand is why it would then fallback to saying that <code>lagrange&lt;=3.0.1</code> is available (that one is obviously coming from pypi.org).</p>
+<p>To reproduce I wonder if you could run the above with any <em>private</em> PyPI repository, even if it doesn't contain any package named <code>lagrange</code>. Unauthenticated connection should fail due to #9331, and you should end up with the same issue as above? Do you have e.g. a private GitLab PyPI repo you could use to try that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 23:32</div>
+            <div class="timeline-body"><p>Is that the complete logging? Don't understand where <code>lagrange&lt;=3.0.1</code> would be from either if there's no PyPI logging anyway. Does your registry like... proxy PyPI when authentication fails?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 23:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Does your registry like... proxy PyPI when authentication fails?</p>
+</blockquote>
+<p>Just as a note, this seems pretty common. I think Artifactory does that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-01-06 23:46</div>
+            <div class="timeline-body"><p>Ah, it could be... that would certainly explain this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 23:47</div>
+            <div class="timeline-body"><p>I think the fix might be to attach a username to your artifactory URL to force authentication?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 23:49</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/uv/pull/9583#discussion_r1867845379 / https://github.com/astral-sh/uv/issues/9331#issuecomment-2499221075</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12444.html">astral-sh/uv#12444</a> on 2025-03-24 17:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:28 UTC
+    </footer>
+</body>
+</html>

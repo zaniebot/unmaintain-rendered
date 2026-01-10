@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add IsExternalSubcommand setting - clap-rs/clap #1846</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add IsExternalSubcommand setting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1846">#1846</a>
+        opened by <a href="https://github.com/pksunkara">@pksunkara</a>
+        on 2020-04-21 08:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-21 08:01</div>
+            <div class="timeline-body"><p>We need to perfect the external subcommand story. Let's take an example of <code>cargo</code> and its plugin <code>cargo-sample</code>. We have support for building <code>cargo</code> but we don't have proper support for building <code>cargo-sample</code>.</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Debug, Clap)]
+struct Opt {
+    #[clap(short, long)]
+    debug: bool,
+}
+
+#[derive(Debug, Clap)]
+#[clap(name = &quot;cargo-sample&quot;, bin_name = &quot;cargo&quot;)]
+enum Cargo {
+    #[clap(name = &quot;sample&quot;)]
+    Sample(Opt),
+}
+
+fn main() {
+    let Cargo::Sample(opt) = Cargo::from_args();
+    println!(&quot;{:?}&quot;, opt);
+}
+</code></pre>
+<p>That is how the external subcommands are built. This is okay if we call using <code>cargo</code>.</p>
+<pre><code>→ cargo ws --help
+cargo-sample 0.1.0
+
+USAGE:
+    cargo sample [FLAGS]
+
+FLAGS:
+    -d, --debug      
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<p>But, if we call the binary directly:</p>
+<pre><code>→ cargo-sample --help
+cargo-sample 0.1.0
+
+USAGE:
+    cargo &lt;SUBCOMMAND&gt;
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    help          Prints this message or the help of the given subcommand(s)
+    sample
+</code></pre>
+<p>We should add a setting such that when we call the binary directly, it should behave as if it was called by the <code>cargo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @pksunkara on 2020-04-21 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @pksunkara on 2020-04-21 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-21 08:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-21 09:15</div>
+            <div class="timeline-body"><p>@pksunkara Could you please describe the semantics of <code>IsExternalSubcommand</code>. How does it work and what does it do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-21 09:51</div>
+            <div class="timeline-body"><p>I haven't figured out that implementation but I described the behaviour above. I am not sure why you were asking about what it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-21 10:00</div>
+            <div class="timeline-body"><p>Because you described the problem at hand you've been having (different help from bare <code>cargo</code> and <code>cargo-sample</code>), and then you concluded that it can be resolved via some new setting. But what does this setting should do to solve your problem - this is what unclear to me?</p>
+<p>An example of a program with this setting and without it - along with description of behavior differences - would probably help.</p>
+<p>I must admit, I don't fully understand what problem is about: the <code>cargo</code> and the plugin are two different binaries, different help is pretty much expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-21 10:08</div>
+            <div class="timeline-body"><p>One way of solving your problem is <code>cargo bloat</code> way https://github.com/RazrFalcon/cargo-bloat/blob/bb8c5b10644ed185533b5e4536a996ff6b720fe3/src/main.rs#L137-L140</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-22 09:16</div>
+            <div class="timeline-body"><blockquote>
+<p>different help from bare cargo and cargo-sample</p>
+</blockquote>
+<p>It's not just help. The binaries behaviour is different. <code>cargo-sample sample</code> is now same behaviour as <code>cargo sample</code>. What I want is a setting such that <code>cargo-sample</code> is the same behaviour as <code>cargo sample</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-22 09:33</div>
+            <div class="timeline-body"><p>Than you can simply check</p>
+<pre><code class="language-rust">std::env::var(&quot;RUSTUP_TOOLCHAIN&quot;).is_ok()
+</code></pre>
+<p>cargo always sets this variable, see https://github.com/rust-lang/cargo/issues/7976#issuecomment-596236762</p>
+<p>If detected, proceed as normal. If not, apply <a href="https://docs.rs/clap/2.33.0/clap/enum.AppSettings.html#variant.NoBinaryName"><code>AppSettings::NoBinaryName</code></a> and proceed.</p>
+<p>I see no need for a yet another option to be honest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-22 09:35</div>
+            <div class="timeline-body"><p>That got me thinking: <code>cargo sample args...</code> is supposed to be transformed to <code>cargo-sample args...</code> by cargo automatically.</p>
+<p>From doc: https://github.com/rust-lang/cargo/wiki/Third-party-cargo-subcommands</p>
+<blockquote>
+<p>Cargo is designed to be extensible with new subcommands without having to modify Cargo itself. This is achieved by translating a cargo invocation of the form cargo (?<command>[^ ]+) into an invocation of an external tool cargo-${command} that then needs to be present in one of the user's $PATH directories.</p>
+</blockquote>
+<p>Are you really encountering this problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-22 09:46</div>
+            <div class="timeline-body"><p>OK, I was wrong, the env var won't let to to differentiate between the invocations since it's always set.</p>
+<p>But what do you think about this (adapted from cargo bloat)</p>
+<pre><code class="language-rust">    let mut args = std::env::args().skip(1).collect();
+    if args.get(0).and_then(|s| s.to_str()) == Some(&quot;bloat&quot;) {
+        args.remove(0);
+    }
+    // Apply NoBinaryName
+    App::get_matches::from(&amp;args);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 03:22</div>
+            <div class="timeline-body"><p>This is how 2.x worked as well. There was an issue (I can't seem to find right now) that asked for &quot;default subcommands&quot; which is more in line with what you're asking for. Basically it said that not calling any subcommand would default as if a particular one was called, in this case <code>sample</code>.</p>
+<p>The only thing that a default subcommand wouldn't do is allow one to let arguments &quot;fall through&quot; i.e. <code>cargo-sample --foo</code> being equiv to <code>cargo-sample sample --foo</code>.</p>
+<p>I'd also caution against leaning too heavily into this particular instance (how cargo handles subcommands) because it's not how all CLIs do.</p>
+<p>The problem stems from cargo passing the subcommand/plugin to the binary itself instead of stripping it. Other CLIs (most?) strip that name before passing it to the other binary. For instance <code>cargo foo --bar</code> in these other CLIs would end up calling <code>cargo-foo --bar</code>, but in cargo's instance it calls <code>cargo-foo foo --bar</code>.</p>
+<p>Not to get into a bike shedding debate, but I'd maybe lean towards a term like <code>Facade</code> instead of <code>IsExternalSubcommand</code> because we already have the term <code>ExternalSubcommand</code> used in a different context. In this context (issue 1846) External just means &quot;further down the hierarchy), whereas in the <code>AppSettings</code> variant we have it means &quot;external binary entirely&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @kbknapp on 2020-04-29 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @kbknapp on 2020-04-29 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 03:24</div>
+            <div class="timeline-body"><p>I changed the milestone as this isn't required for a 3.x release, and wouldn't be a breaking change so could happen any time after 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-05 23:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd also caution against leaning too heavily into this particular instance (how cargo handles subcommands) because it's not how all CLIs do.</p>
+</blockquote>
+<p>It's been my concern too, but after giving it some thinking, I feel like we may consider this feature to help cargo plugins work &quot;out-of-box&quot;. Cargo plugins are pretty common case in Rust world.</p>
+<p>The idea is to add <code>App::cargo_plugin</code> method that takes the name of the plugin:</p>
+<pre><code class="language-rust">fn cargo_plugin(name: &amp;str);
+</code></pre>
+<p>By using this method, user signals that the app is cargo plugin.</p>
+<p>When we start the pasing, we check for this name. If it's present, we look at the second CL argument (or the first if <code>NoBinaryName</code> was set), and if it matches the plugin's name, we assume it was called as <code>cargo plugin_name</code> and simply skip it.</p>
+<p>Help messages can also be adjusted.</p>
+<p>This would allow people to design their CLI as if the plugin was always called via <code>cargo-plugin_name</code>, without the <code>cargo</code> as a mediator.</p>
+<p>@pksunkara Based on your explanation, I believe this is exactly what you want, right?
+@kbknapp Any thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-06 05:44</div>
+            <div class="timeline-body"><p>Yeah, that is behaviour I want but your proposal is too specific to <code>cargo</code>. I would lean towards more abstraction. Normal binaries works if the external command works like <code>git</code>. It's only <code>cargo</code> like external commands that have an issue. We should fix this by enabling the binaries to ignore some args at the beginning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 09:54</div>
+            <div class="timeline-body"><p>And now I  need to write a cargo plugin, too.</p>
+<blockquote>
+<p>Yeah, that is behaviour I want but your proposal is too specific to cargo. I would lean towards more abstraction.</p>
+</blockquote>
+<p>But right then you noticed that</p>
+<blockquote>
+<p>Normal binaries works if the external command works like git. It's only cargo like external commands that have an issue</p>
+</blockquote>
+<p>So the <code>cargo_plugin</code> method I described should serve for... about every real use case out there. We may need to have it take <code>&amp;[&amp;str]</code> because some people alias the plugin name (<code>cargo workspaces &amp; ws</code>), but otherwise I see no reason in generalizing it further.</p>
+<p>Also, the <code>cargo_plugin</code> name is so <em>fitting</em>, it basically makes cargo plugins first-class citizens which should help people create cargo plugins. Rust newcomers would find the feature especially useful since they wouldn't have to puzzle over plugin's args...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Walther">@Walther</a> on 2020-09-18 16:26</div>
+            <div class="timeline-body"><p>Any updates on workarounds for this?</p>
+<p>Tried the method listed in the first message here</p>
+<pre><code class="language-rust">#[derive(Debug, Clap)]
+struct Opts {
+    /// Prints more verbose information used for debugging.
+    #[clap(short, long)]
+    debug: bool,
+}
+
+#[derive(Debug, Clap)]
+#[clap(version = &quot;0.1.2&quot;, name = &quot;cargo-tips&quot;, bin_name = &quot;cargo&quot;)]
+enum Cargo {
+    #[clap(name = &quot;tips&quot;)]
+    Tips(Opts),
+}
+
+// snip
+
+fn main() {
+    let Cargo::Tips(opts) = Cargo::from_args();
+
+</code></pre>
+<p>and getting</p>
+<pre><code>error[E0599]: no variant or associated item named `from_args` found for enum `Cargo` in the current scope
+  --&gt; src\main.rs:26:36
+   |
+13 | enum Cargo {
+   | ---------- variant or associated item `from_args` not found here
+...
+26 |     let Cargo::Tips(opts) = Cargo::from_args();
+   |                                    ^^^^^^^^^ variant or associated item not found in `Cargo`
+
+error: aborting due to previous error
+</code></pre>
+<p>both on <code>clap = { git = &quot;https://github.com/clap-rs/clap/&quot;}</code> as well as <code>clap = &quot;3.0.0-beta.1&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Walther">@Walther</a> on 2020-09-18 16:32</div>
+            <div class="timeline-body"><p>Aha, figured it out, it just needs to be</p>
+<pre><code class="language-rust">let Cargo::Tips(opts) = Cargo::parse();
+</code></pre>
+<p>instead of <code>from_args</code> :D my bad!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-16 21:47</div>
+            <div class="timeline-body"><p>@fishface60 Do you think we can use Multicall for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-16 22:43</div>
+            <div class="timeline-body"><p>Deja vu.  There is a discussion similar to this somewhere else, I wish I could remember where.</p>
+<p>On one hand, cargo binaries are a bit of a special case when it comes to external subcommands.  I've not seen another system like it.  On the other hand, Cargo being in Rust and for Rust and Clap being for Rust, the interests overlap.  Does this justify adding another configuration flag to support it or do we use workarounds to implement this?</p>
+<p>Is there even an expectation for cargo subcommands to be called directly?  It looks like <code>cargo bloat</code>, <code>cargo release</code>, and all of <code>cargo-edit</code> require <code>cargo-add add</code>, ie do not support the ahortcut for direct invocation.</p>
+<p>Personally, I think this is too specialized that the workarounds are sufficient for getting buy compared to baking yet another feature into clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-17 00:51</div>
+            <div class="timeline-body"><blockquote>
+<p>cargo binaries are a bit of a special case when it comes to external subcommands</p>
+</blockquote>
+<p>Yeah, they went against the convention completely here.</p>
+<p>I am going to close this issue because <code>AppSettings::Multicall</code> does resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-10-17 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/58.html">TeXitoi/structopt#58</a> on 2021-10-25 17:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:13 UTC
+    </footer>
+</body>
+</html>

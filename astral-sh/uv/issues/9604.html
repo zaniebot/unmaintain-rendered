@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` with `--branch` and a subdiretory doesn't check out the branch before checking the subdirectory - astral-sh/uv #9604</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` with `--branch` and a subdiretory doesn't check out the branch before checking the subdirectory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9604">#9604</a>
+        opened by <a href="https://github.com/m-o-leary">@m-o-leary</a>
+        on 2024-12-03 11:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-o-leary">@m-o-leary</a> on 2024-12-03 11:11</div>
+            <div class="timeline-body"><p>I run the following command:</p>
+<pre><code class="language-bash">uv add git+https://gitlab.com/my_internal_repo#subdirectory=path/to/package --branch=my_feature_branch -v
+</code></pre>
+<p>Ouput:</p>
+<pre><code class="language-bash">DEBUG uv 0.4.7
+DEBUG Found project root: `/Users/martin/dev/python_playground/my_test_project`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `/Users/martin/dev/python_playground/my_test_project/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.11`
+DEBUG Using request timeout of 30s
+DEBUG Fetching source distribution from Git: https://gitlab.com/my_internal_repo
+DEBUG Acquired lock for `https://gitlab.com/my_internal_repo`
+DEBUG Updating Git source `https://gitlab.com/my_internal_repo`
+DEBUG Performing a Git fetch for: https://gitlab.com/my_internal_repo
+DEBUG Released lock at `/Users/martin/Library/Caches/uv/git-v0/locks/c39373a30072b8c1`
+DEBUG Acquired lock for `/Users/martin/Library/Caches/uv/built-wheels-v3/git/eca3f73aa66e62d1/4956502d077fb38a`
+DEBUG No static `pyproject.toml` available for: git+https://gitlab.com/my_internal_repo#subdirectory=path/to/package (MissingPyprojectToml)
+DEBUG No static `PKG-INFO` available for: git+https://gitlab.com/my_internal_repo#subdirectory=path/to/package (MissingPkgInfo)
+DEBUG Released lock at `/Users/martin/Library/Caches/uv/built-wheels-v3/git/eca3f73aa66e62d1/4956502d077fb38a/.lock`
+error: Failed to read from the distribution cache
+  Caused by: failed to read directory `/Users/martin/Library/Caches/uv/git-v0/checkouts/c39373a30072b8c1/4956502d/path/to/package`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>I would expect that the branch would be checked out first before checking for the pyproject.toml which would avoid the <code>MissingPyprojectToml</code> error.</p>
+<p>If I change the url to include the branch:</p>
+<pre><code class="language-bash">uv add git+https://gitlab.com/my_internal_repo@my_feature_branch#subdirectory=path/to/package
+</code></pre>
+<p>The install works as expected</p>
+<p>Relevant Docs: https://docs.astral.sh/uv/concepts/projects/dependencies/#git</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-12-03 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-12-03 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 14:27</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-12-03 17:13</div>
+            <div class="timeline-body"><p>This works for me though.</p>
+<pre><code class="language-sh">❯ cat pyproject.toml
+[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+❯ uv add git+https://github.com/blueraft/branch-subdir-repo#subdirectory=a --branch=feat
+Using CPython 3.12.1
+Creating virtual environment at: .venv
+ Updated https://github.com/blueraft/branch-subdir-repo (b87fd2f)
+Resolved 2 packages in 3ms
+Installed 1 package in 3ms
+ + a==0.1.0 (from git+https://github.com/blueraft/branch-subdir-repo@b87fd2fc75ca79f416542d9050c6df7714f8e03a#subdirectory=a)
+
+❯ cat pyproject.toml
+[project]
+name = &quot;uv-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;a&quot;,
+]
+
+[tool.uv.sources]
+a = { git = &quot;https://github.com/blueraft/branch-subdir-repo&quot;, subdirectory = &quot;a&quot;, branch = &quot;feat&quot; }
+</code></pre>
+<p>The <code>pyproject.toml</code> file only exists in the <code>feat</code> <a href="https://github.com/blueraft/branch-subdir-repo/tree/feat/a">branch</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 22:36</div>
+            <div class="timeline-body"><p>Interesting. @m-o-leary, are you able to provide a reproduction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-o-leary">@m-o-leary</a> on 2024-12-04 08:17</div>
+            <div class="timeline-body"><p>I'll work on it today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-o-leary">@m-o-leary</a> on 2024-12-04 13:42</div>
+            <div class="timeline-body"><p>Ah my bad.</p>
+<p>I was on <code>0.4.7</code> -&gt; running <code>uv self update</code> and retrying solves it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @m-o-leary on 2024-12-04 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tmux-python/tmuxp/pulls/955.html">tmux-python/tmuxp#955</a> on 2024-12-24 16:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:43 UTC
+    </footer>
+</body>
+</html>

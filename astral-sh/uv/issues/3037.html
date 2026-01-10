@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bug: uv with vs code terminal - astral-sh/uv #3037</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>bug: uv with vs code terminal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3037">#3037</a>
+        opened by <a href="https://github.com/TylerHillery">@TylerHillery</a>
+        on 2024-04-15 16:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TylerHillery">@TylerHillery</a> on 2024-04-15 16:55</div>
+            <div class="timeline-body"><p>There are two bugs with using uv venv with the VS Code terminal</p>
+<ul>
+<li>I can't deactivate my environment &quot;permission denied&quot;</li>
+<li>Command prompt gets messed up with the python venv name</li>
+</ul>
+<p>System Versions:</p>
+<pre><code class="language-bash"># uv --version
+uv 0.1.29 (365cb16fd 2024-04-04)
+
+# code --version
+1.88.1
+e170252f762678dec6ca2cc69aba1570769a5d39
+arm64
+
+# zsh --version
+zsh 5.9 (x86_64-apple-darwin23.0)
+
+# neofetch
+OS: macOS 14.4 23E214 arm64
+Host: Mac15,3
+Kernel: 23.4.0
+Shell: zsh 5.9
+Terminal: iTerm2
+CPU: Apple M3
+GPU: Apple M3
+</code></pre>
+<h2>Expected Behavior</h2>
+<p>Everything works fine if I don't use VSCode's integrated terminal.</p>
+<pre><code class="language-bash">➜  uv-vscode-mre git:(main) ✗ uv venv
+Using Python 3.9.16 interpreter at: /Users/tyler/.pyenv/versions/3.9.16/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+➜  uv-vscode-mre git:(main) ✗ source .venv/bin/activate
+(uv-vscode-mre) ➜  uv-vscode-mre git:(main) ✗ deactivate
+➜  uv-vscode-mre git:(main) ✗
+</code></pre>
+<h2>What happens when using vs code terminal</h2>
+<p>After <code>.venv</code> has already been created you can tell VS Code to select python
+interpreter by using the command pallet:</p>
+<p>(CMD + Shift + P) --&gt; Python: Select Interpreter --&gt; Select .venv/bin/python (which was created by uv)</p>
+<p>Now when you open up a new terminal session in vs code you get this</p>
+<pre><code class="language-bash">uv-vscode-mre➜  uv-vscode-mre git:(main) ✗
+</code></pre>
+<p>You can see the python venv name isn't property formatted as <code>(uv-vscode-mre) ➜  uv-vscode-mre git:(main) ✗</code></p>
+<p>Also when you type deactivate you get:</p>
+<pre><code>uv-vscode-mre➜  uv-vscode-mre git:(main) ✗ deactivate
+zsh: permission denied: deactivate
+</code></pre>
+<h2>Steps to Reproduce the Error with GitHub Codespaces</h2>
+<ol>
+<li>Navigate to this <a href="https://github.com/TylerHillery/uv-vscode-mre/tree/main">GitHub Repo</a></li>
+<li>Click the Green Code Button</li>
+<li>Hit Codespaces</li>
+<li>Create codespace on main<ol>
+<li>This will take a little bit to spin up your codespace</li>
+</ol>
+</li>
+<li>Run <code>uv venv</code> in the terminal</li>
+</ol>
+<pre><code class="language-bash">root@codespaces-5159f8:/workspaces/uv-vscode-mre# uv venv
+Using Python 3.12.3 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<ol start="6">
+<li>Open the command pallet -&gt; Python: Select Interpreter -&gt;<ol>
+<li>You may need to wait for the python extension to install</li>
+</ol>
+</li>
+<li>Open a new terminal session (CTRL + SHIFT + `) or the ➕ in top right corner of terminal</li>
+<li>Run <code>deactivate</code></li>
+</ol>
+<pre><code class="language-bash">uv-vscode-mreroot@codespaces-5159f8:/workspaces/uv-vscode-mre# deactivate
+bash: /root/.vscode-remote/extensions/ms-python.python-2024.4.1/python_files/deactivate/bash/deactivate: Permission denied
+</code></pre>
+<p>You can see the python venv name is still formatted wrong and still getting permission denied</p>
+<h2>Conclusion</h2>
+<p>Not sure if this is uv error or vs code error. uv works fine outside of vs code terminal and vs code terminal works fine if I use <code>python -m venv .venv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 13:24</div>
+            <div class="timeline-body"><p>Thanks for reporting! Appreciate the clear issue. (Not immediately clear to me either if it's a VS Code thing or a uv thing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-16 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-23 22:26</div>
+            <div class="timeline-body"><p>Looks like a VSCode issue: https://github.com/microsoft/vscode-python/issues/23195</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TylerHillery">@TylerHillery</a> on 2024-06-29 18:16</div>
+            <div class="timeline-body"><p>VS Code fixed it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TylerHillery on 2024-06-29 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-29 18:35</div>
+            <div class="timeline-body"><p>Let's go!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8006.html">astral-sh/uv#8006</a> on 2024-10-08 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help subcommand argument should not have ellipsis - clap-rs/clap #4100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help subcommand argument should not have ellipsis</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4100">#4100</a>
+        opened by <a href="https://github.com/patrick-gu">@patrick-gu</a>
+        on 2022-08-20 18:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patrick-gu">@patrick-gu</a> on 2022-08-20 18:58</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>3.2.17</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    let app = clap::Command::new(&quot;app&quot;).subcommand(clap::Command::new(&quot;sub&quot;));
+
+    app.get_matches_from([&quot;program&quot;, &quot;help&quot;, &quot;help&quot;]);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>The output is:</p>
+<pre><code>program-help 
+Print this message or the help of the given subcommand(s)
+
+USAGE:
+    program help [SUBCOMMAND]...
+
+ARGS:
+    &lt;SUBCOMMAND&gt;...    The subcommand whose help message to display
+</code></pre>
+<p>I believe it is incorrect to have the ellipsis after <code>[SUBCOMMAND]</code> and <code>&lt;SUBCOMMAND&gt;</code> because the value for the <code>help</code> subcommand can be specified at most once.</p>
+<h3>Expected Behaviour</h3>
+<p>The output should be:</p>
+<pre><code>program-help 
+Print this message or the help of the given subcommand(s)
+
+USAGE:
+    program help [SUBCOMMAND]
+
+ARGS:
+    &lt;SUBCOMMAND&gt;    The subcommand whose help message to display
+</code></pre>
+<h3>Additional Context</h3>
+<p>I have a prepared a fix <a href="https://github.com/patrick-gu/clap">here</a>.</p>
+<h3>Debug Output</h3>
+<pre><code>[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;app&quot;
+[      clap::builder::command]  Command::_propagate:app
+[      clap::builder::command]  Command::_check_help_and_version: app
+[      clap::builder::command]  Command::_check_help_and_version: Removing generated version     
+[      clap::builder::command]  Command::_check_help_and_version: Building help subcommand       
+[      clap::builder::command]  Command::_propagate_global_args:app
+[      clap::builder::command]  Command::_propagate removing sub's help
+[      clap::builder::command]  Command::_propagate pushing help to sub
+[      clap::builder::command]  Command::_propagate removing help's help
+[      clap::builder::command]  Command::_propagate pushing help to help
+[      clap::builder::command]  Command::_derive_display_order:app
+[      clap::builder::command]  Command::_derive_display_order:sub
+[      clap::builder::command]  Command::_derive_display_order:help
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;help&quot;)' ([104, 101, 108, 112])
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;help&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=Some(&quot;help&quot;)
+[        clap::parser::parser]  Parser::parse_help_subcommand
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val={}
+[      clap::builder::command]  Command::_build_subcommand Setting bin_name of help to &quot;program help&quot;
+[      clap::builder::command]  Command::_build_subcommand Setting display_name of help to &quot;app-help&quot;
+[      clap::builder::command]  Command::_build: name=&quot;help&quot;
+[      clap::builder::command]  Command::_propagate:help
+[      clap::builder::command]  Command::_check_help_and_version: help
+[      clap::builder::command]  Command::_check_help_and_version: Removing generated help        
+[      clap::builder::command]  Command::_check_help_and_version: Removing generated version     
+[      clap::builder::command]  Command::_propagate_global_args:help
+[      clap::builder::command]  Command::_derive_display_order:help
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:subcommand
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[      clap::builder::command]  Command::use_long_help
+[      clap::builder::command]  Parser::write_help_err: use_long=false, stream=Stdout
+[      clap::builder::command]  Command::use_long_help
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+[          clap::output::help]  Help::new cmd=help, use_long=false
+[          clap::output::help]  Help::write_help
+[          clap::output::help]  should_show_arg: use_long=false, arg=subcommand
+[          clap::output::help]  Help::write_templated_help
+[          clap::output::help]  Help::write_before_help
+[          clap::output::help]  Help::write_bin_name
+[         clap::output::usage]  Usage::create_usage_no_title
+[         clap::output::usage]  Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val={}
+[         clap::output::usage]  Usage::needs_options_tag
+[         clap::output::usage]  Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage]  Usage::get_args_tag; incl_reqs = true
+[         clap::output::usage]  Usage::get_args_tag:iter:subcommand
+[      clap::builder::command]  Command::groups_for_arg: id=subcommand
+[         clap::output::usage]  Usage::get_args_tag:iter: 1 Args not required or hidden
+[      clap::builder::command]  Command::groups_for_arg: id=subcommand
+[         clap::output::usage]  Usage::get_args_tag:iter: Exactly one, returning 'subcommand'    
+[          clap::builder::arg]  Arg::name_no_brackets:subcommand
+[          clap::builder::arg]  Arg::name_no_brackets: val_names=[
+    &quot;SUBCOMMAND&quot;,
+]
+[         clap::output::usage]  Usage::create_help_usage: usage=program help [SUBCOMMAND]...     
+[          clap::output::help]  Help::write_all_args
+[          clap::output::help]  should_show_arg: use_long=false, arg=subcommand
+[          clap::output::help]  Help::write_args_unsorted
+[          clap::output::help]  should_show_arg: use_long=false, arg=subcommand
+[          clap::output::help]  Help::write_args_unsorted: arg=&quot;subcommand&quot; longest=15
+[          clap::output::help]  should_show_arg: use_long=false, arg=subcommand
+[          clap::output::help]  Help::spec_vals: a=&lt;SUBCOMMAND&gt;...
+[          clap::output::help]  Help::spec_vals: a=&lt;SUBCOMMAND&gt;...
+[          clap::output::help]  Help::short
+[          clap::output::help]  Help::long
+[          clap::output::help]  Help::val: arg=subcommand
+[          clap::output::help]  Help::align_to_about: arg=subcommand, next_line_help=false, longest=15
+[          clap::output::help]  Help::align_to_about: positional=true arg_len=15, spaces=4       
+[          clap::output::help]  Help::help
+[          clap::output::help]  Help::help: Next Line...false
+[          clap::output::help]  Help::help: Too long...
+[          clap::output::help]  No
+[          clap::output::help]  Help::write_after_help
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+program-help
+Print this message or the help of the given subcommand(s)
+
+USAGE:
+    program help [SUBCOMMAND]...
+
+ARGS:
+    &lt;SUBCOMMAND&gt;...    The subcommand whose help message to display
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @patrick-gu on 2022-08-20 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4101.html">clap-rs/clap#4101</a> on 2022-08-20 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-20 19:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe it is incorrect to have the ellipsis after [SUBCOMMAND] and <SUBCOMMAND> because the value for the help subcommand can be specified at most once.</p>
+</blockquote>
+<p>You can specify as many subcommands as you want.</p>
+<p>See https://github.com/clap-rs/clap/blob/master/tests/builder/help.rs#L76 for an example</p>
+<p>Now, the question may be whether the application has any more subcommands to do nesting.  Unfortunately, the cost of calculating the depth of nested subcommands isn't worth it.  The cost of making this configurable is also unlikely to be worth it.</p>
+<p>So the only question remaining is which direction should it be biased for.  I think the fact that this issue was opened helped to fulfill its purpose.  Without <code>...</code> it wouldn;'t have even come up on whether multiple are allowed or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-gu">@patrick-gu</a> on 2022-08-20 19:20</div>
+            <div class="timeline-body"><p>I didn't realize it was possible to get help for nested subcommands. To me, the description <code>Print this message or the help of the given subcommand(s)</code> made it appear that you can, for example, get help for both <code>program help</code> and <code>program sub</code> at the same time, when in reality you can only specify one, but it may be nested, like <code>program sub1 sub2</code>. However, that might just be my interpretation.</p>
+<p>I think the ability to get help for nested subcommands is useful. It just wasn't obvious to me that that was the purpose of the ellipsis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-20 23:42</div>
+            <div class="timeline-body"><p>Some things that would help is completion support for those using it, see https://github.com/clap-rs/clap/issues/2315</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-20 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4342.html">clap-rs/clap#4342</a> on 2022-10-04 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevlarr">@kevlarr</a> on 2023-04-01 02:44</div>
+            <div class="timeline-body"><p>@epage I like having the <code>help</code> sub-command baked in by default but I wish I could either edit its description <em>or</em> hide it from the &quot;subcommands&quot; list completely and add my own description &amp; usage example of it elsewhere, without changing the functionality or having to define it myself.</p>
+<p>Take <code>git</code> as an example - <code>help</code> is only mentioned as a distinct command in what amounts to the 'after help' (to use <code>clap</code> terminology) block. There's a certain logic to excluding it from sub-command lists, too, since it's not a 'real' sub-command in the sense that it's not used to perform any actual operation.</p>
+<p>Being able to edit the description (and possibly location of description) for the <code>help</code> sub-command could help to avoid the confusion on how to use it, especially because it could open up the opportunity to show some good examples of using <code>help</code> with nested sub-commands specific to an individual project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-03 14:44</div>
+            <div class="timeline-body"><p>In terms of this issue, my priority would be on improving things centrally so everyone benefits.</p>
+<p>In terms of wider feature support, we have talked about Command actions, similar to <code>ArgAction</code>.   Like with <code>--help</code>, this would allow disabling the built-in command while still getting a command to have the built-in behavior.  This talk has been vague enough that I don't even think we have an issue for it yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:07 UTC
+    </footer>
+</body>
+</html>

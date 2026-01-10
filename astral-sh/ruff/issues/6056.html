@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF401 (use-list-comprehension) with walrus operator - astral-sh/ruff #6056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF401 (use-list-comprehension) with walrus operator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6056">#6056</a>
+        opened by <a href="https://github.com/fabien-michel">@fabien-michel</a>
+        on 2023-07-25 07:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fabien-michel">@fabien-michel</a> on 2023-07-25 07:56</div>
+            <div class="timeline-body"><p>I'm not sure the PERF401 should trigger when a walrus operator is implied in the condition.</p>
+<p>The warning appear for this code.</p>
+<pre><code class="language-python">def odd_only(a):
+    if a % 2:
+        return a
+    return False
+
+filtered = []
+for a in range(1, 5):
+    if b := odd_only(a):
+        filtered.append(b)
+</code></pre>
+<p>Which should be changed to</p>
+<pre><code class="language-python">filtered = [b for a in range(1, 5) if (b := odd_only(a))]
+</code></pre>
+<p>I'm found this kind of code not clear, because of the walrus operator.</p>
+<p>The workaround is to not use the walrus operator:</p>
+<pre><code class="language-python">filtered = []
+for a in range(1, 5):
+    b = odd_only(a)
+    if b:
+        filtered.append(b)
+</code></pre>
+<p>So, as there is an equivalence, and the warn is not triggered, it should also not warn when a walrus operator is used.</p>
+<p>The same behavior occur with perflint, I submitted the same bug: https://github.com/tonybaloney/perflint/issues/43</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-07-25 10:35</div>
+            <div class="timeline-body"><p>I am not sure <code>use-list-comprehension</code> should ignore the walrus operator; my understanding of <a href="https://peps.python.org/pep-0572/">PEP 572</a> is that use in comprehensions is an explicit motivation for the assignment operator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabien-michel">@fabien-michel</a> on 2023-07-25 10:47</div>
+            <div class="timeline-body"><p>You are true, sorry for the noise. Personally, I find this type of writing difficult to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fabien-michel on 2023-07-25 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-07-25 10:56</div>
+            <div class="timeline-body"><p>No need to apologise! Many Python developers don't like the walrus operator, so I think the issue is entirely reasonable. Personally, I like them. However, there's probably a compelling reason to implement something like <a href="https://github.com/asottile/flake8-walrus">flake8-walrus</a> in a hypothetical Ruff category that prevents the use of language and library features (similar to <code>clippy::restriction</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7418.html">astral-sh/ruff#7418</a> on 2024-10-03 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13621.html">astral-sh/ruff#13621</a> on 2024-10-03 23:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

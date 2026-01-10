@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't show flags in native completion that are already present - clap-rs/clap #5515</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't show flags in native completion that are already present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5515">#5515</a>
+        opened by <a href="https://github.com/HKalbasi">@HKalbasi</a>
+        on 2024-06-01 17:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/HKalbasi">@HKalbasi</a> on 2024-06-01 17:48</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.76</p>
+<h3>Clap Version</h3>
+<p>4.5.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser, ValueEnum};
+
+#[derive(Debug, Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    /// What mode to run the program in
+    #[arg(short, long, value_enum)]
+    mode: Mode,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum Mode {
+    /// Run swiftly
+    Fast,
+    /// Crawl slowly but steadily
+    ///
+    /// This paragraph is ignored because there is no long help text for possible values.
+    Slow,
+}
+fn main() {
+    let mut cmd = Cli::command();
+    let args = std::env::args_os().collect::&lt;Vec&lt;_&gt;&gt;();
+    let arg_index = args.len() - 1;
+    let r = clap_complete::dynamic::complete(&amp;mut cmd, args, arg_index, None).unwrap();
+    dbg!(r);
+}}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- --mode fast --mo
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>[src/main.rs:25:5] r = [
+    (
+        &quot;--mode&quot;,
+        Some(
+            StyledStr(
+                &quot;What mode to run the program in&quot;,
+            ),
+        ),
+    ),
+]
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>[src/main.rs:25:5] r = []
+</code></pre>
+<h3>Additional Context</h3>
+<p>Using <code>--mode</code> is invalid, so we should not complete it. Obviously flags that accept multiple values should keep the existing behavior.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @HKalbasi on 2024-06-01 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-06-02 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2024-06-02 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-02 01:03</div>
+            <div class="timeline-body"><p>There is a little more to it. We should only do this if the ArgAction prevenhs it and if we don't override ourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5784.html">clap-rs/clap#5784</a> on 2024-10-21 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> removed by @epage on 2024-10-23 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> added by @epage on 2024-10-23 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-10-23 01:56</div>
+            <div class="timeline-body"><p>I changed the difficulty of this is I'm a bit unsure how much we need to get into correctness of the parser to track this state.  Currently, we are pretty sloppy which we can get away with because its fine to generate more options than reasonable.  If we start removing options, we'll need to be more accurate.</p>
+<p>We might even want to block this on other efforts, like supporting for <code>allow_hyphen_values</code> and other settings that deal with correctness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5884.html">clap-rs/clap#5884</a> on 2025-01-20 15:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:36 UTC
+    </footer>
+</body>
+</html>

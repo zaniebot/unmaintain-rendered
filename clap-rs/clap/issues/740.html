@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>what is the policy around minimum supported version of Rust? - clap-rs/clap #740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>what is the policy around minimum supported version of Rust?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/740">#740</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-11-12 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-12 15:34</div>
+            <div class="timeline-body"><p>When clap gets an addition that requires a newer version of Rust, what is the policy regarding semver updates?</p>
+<p>For example, PR #737 increased the minimum Rust version required to build clap from 1.11.0 (which can compile clap 2.18.0) to 1.13.0 (which is required because of the <code>questionmark</code> feature being recently stabilized).</p>
+<p>This is a problem in practice for folks that need or want to support older versions of the Rust compiler specifically because <code>cargo update</code> will cause builds to break. e.g., <code>cargo update</code> will do a semver upgrade from clap <code>2.18.0</code> to clap <code>2.19.0</code> (once it's released), but this will break every single build on Rust 1.11 and Rust 1.12. There are solutions to the problem, such as adding a version constraint like <code>&lt;= 2.18.0</code> to one's Cargo.toml. Typically, this can be a particularly nasty problem when the issue lies in a transitive dependency. In clap's case at least, it's likely to not be a transitive dependency, which probably makes it a little easier to deal with.</p>
+<p>Note that this has been a contentious issue discussed at length. Some people think it qualifies as a breaking change, and therefore requires a semver version bump (in clap's case, a major version bump). Others think the constraints it places on projects are too onerous and will be hard to live up to in practice. See https://github.com/rust-lang/rfcs/pull/1619 for more discussion. See also: https://users.rust-lang.org/t/cargo-lock-libraries-and-ci/7698 --- Either way, I think it's important to establish a policy. One way to be proactive about it is (regardless of which side you come down on) is to put a specific Rust version in your CI testing. That way, you'll at least know when it happens, because it can otherwise be very tricky to keep track of!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-12 17:04</div>
+            <div class="timeline-body"><p>This is a good question, thanks for bringing it up! It's also one I was thinking about while pushing that particular PR. When pushing that PR I had that odd feeling in the pit of my stomach too, which should have been a sign!</p>
+<p>As part of that PR my thought process was obviously <em>at least</em> bump the minor because I regularly use <code>&quot;~2.18.0&quot;</code> styles in my <code>Cargo.toml</code> in order to <em>not</em> automatically bump minors for cases like this. I also forgo that many people use <code>&quot;2&quot;</code> (or similar) in theirs.</p>
+<p>While no official policy is in place, I think it may be time to adopt one. I went through and read those RFCs you linked to, and had seen them briefly in the past. I can see how this can be contentious, and personally I'm seeing myself leaning more towards the major version bump side of things, although it <em>does</em> scare me to think of making multiple major version bumps relatively rapidly. In my mind, the more people bump the major version and only provide extremely small breaking changes you're conditioning the users of your library to expect small breaking changes, if any. Then one day you break everything for what should truly be a major version bump, and it'll throw people off.</p>
+<h3>Moving Forward</h3>
+<p>Here's my plan moving forward. I'm going to roll back #737 and use the Stable-2 approach for officially supported. And <em>for the time being</em> at least until Rust decides an official best practices policy. I will make bumping the minimum version of <code>rustc</code> a <em>minor</em> version bump <strong>but</strong> will also very clearly dictate the &quot;stable-2, and use <code>&quot;~major.minor.patch&quot;</code> in your <code>Cargo.toml</code> to avoid being caught off guard&quot; in the readme and docs, as well as make it clear in the changelog when the minimum version of <code>rustc</code> has been bumped.</p>
+<p>This to me seems the best approach for this project at this time. My reasoning is the way this project is structured, one typically doesn't <em>need</em> to bump the minor version unless you're using one of the newer features released in said minor. It's true that there are bug fixes in future minors that aren't back-ported (because I don't have enough man power to do so), but unless you're affected by one of these bugs which in most cases is a small percentage of users anyways, you really don't have a reason to bump the minor.</p>
+<p>All this meaning, bumping the minor could, and perhaps should, be a conscious decision.</p>
+<p>Thoughts? I'm open to any and all suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-11-12 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-11-12 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-12 17:24</div>
+            <div class="timeline-body"><p>@kbknapp That seems like a good compromise to me! Thanks for taking the time. :-)</p>
+<p>(Loving clap so far btw!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-12 20:35</div>
+            <div class="timeline-body"><p>Thanks! :smile:</p>
+<p>TODO:</p>
+<ul>
+<li>[x] Revert #737</li>
+<li>[x] Update README.md with new policy</li>
+<li>[x] Add 1.11.0 to <code>.travis.yml</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/752.html">clap-rs/clap#752</a> on 2016-11-16 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-16 12:07</div>
+            <div class="timeline-body"><p>@kbknapp One thing to consider adding to your TODO list is to put a specific Rust version in your <code>.travis.yml</code>. <a href="https://github.com/rust-lang-nursery/regex/blob/master/.travis.yml#L3">Example.</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthiasbeyer">@matthiasbeyer</a> on 2016-11-16 12:33</div>
+            <div class="timeline-body"><p>@BurntSushi :+1: on putting a specific compiler into <code>.travis.yml</code>! I'd suggest at least one compiler that does not support the <code>?</code> syntax, at least for the next few weeks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-16 14:29</div>
+            <div class="timeline-body"><p>Yep, I've got a local branch where I'm working on some of these fixes and that was one of the first things I did :smile: I should have the PR in today or tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-11-21 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/issues/271.html">BurntSushi/ripgrep#271</a> on 2016-12-06 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/115.html">TeXitoi/structopt#115</a> on 2018-06-06 10:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:20 UTC
+    </footer>
+</body>
+</html>

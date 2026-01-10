@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadowed variable incorrect report - F821 Undefined name - astral-sh/ruff #5250</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Shadowed variable incorrect report - F821 Undefined name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5250">#5250</a>
+        opened by <a href="https://github.com/eddyashton">@eddyashton</a>
+        on 2023-06-21 12:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eddyashton">@eddyashton</a> on 2023-06-21 12:53</div>
+            <div class="timeline-body"><p>Started getting a ruff failure from <code>0.0.273</code> (still present in <code>0.0.274</code>), which wasn't present in <code>0.0.272</code>. Believe the source is valid (though ugly) Python, and the ruff failure is incorrect.</p>
+<p>Given this file:</p>
+<pre><code class="language-python"># tmp.py
+list = [1, 2, 3]
+
+for e in list:
+    if e % 2 == 0:
+        try:
+            pass
+        except Exception as e:
+            pass
+    else:
+        print(e)
+</code></pre>
+<p>Old:</p>
+<pre><code>$ pip install ruff==0.0.272
+...
+
+$ ruff check tmp.py
+
+$ echo $?
+0
+</code></pre>
+<p>New:</p>
+<pre><code>$ pip install ruff==0.0.273
+...
+
+$ ruff check tmp.py
+tmp.py:10:15: F821 Undefined name `e`
+Found 1 error.
+
+$ echo $?
+1
+</code></pre>
+<p>The shadowing/reuse of <code>e</code> is risky, but (afaict) <code>e</code> is unambiguously defined at the line where <code>ruff</code> complains.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eddyashton">@eddyashton</a> on 2023-06-21 12:54</div>
+            <div class="timeline-body"><p>Looks like this is also reported in #5249 - feel free to close this as dupe if its tracked there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 14:00</div>
+            <div class="timeline-body"><p>Thanks — gonna close as a dupe, but appreciate the clear issue and example.</p>
+<p>(I do recommend against shadowing variable names with caught exceptions but agree we shouldn’t flag this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-21 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-21 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5256.html">astral-sh/ruff#5256</a> on 2023-06-21 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-21 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

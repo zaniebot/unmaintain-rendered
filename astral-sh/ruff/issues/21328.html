@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unclear error if line-length goes beyond u16 boundaries - astral-sh/ruff #21328</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unclear error if line-length goes beyond u16 boundaries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21328">#21328</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-11-07 22:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-11-07 22:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Refs https://github.com/astral-sh/ruff/issues/20823</p>
+<p>ruff.toml:</p>
+<pre><code class="language-toml">line-length = 99_999
+</code></pre>
+<pre><code>❯ ruff check
+ruff failed                                                                                                                                           
+  Cause: Failed to load configuration `...`
+  Cause: Failed to parse ...
+  Cause: TOML parse error at line 3, column 15
+  |
+3 | line-length = 99_999
+  |               ^^^^^^
+invalid value: integer `99999`, expected u16
+</code></pre>
+<p>From <a href="https://toml.io/en/v1.0.0#integer">TOML spec</a>:</p>
+<blockquote>
+<p>Arbitrary 64-bit signed integers (from −2^63 to 2^63−1) should be accepted and handled losslessly. If an integer cannot be represented losslessly, an error must be thrown.</p>
+</blockquote>
+<pre><code class="language-shell">❯ bat ruff.toml                                                                                                                                       
+───────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: ruff.toml
+───────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ target-version = &quot;py310&quot;
+   2   │ 
+   3 ~ │ line-length = 65535
+───────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ ruff check
+ruff failed                                                                                                                                           
+  Cause: Failed to load configuration `...`
+  Cause: Failed to parse ...
+  Cause: TOML parse error at line 3, column 15
+  |
+3 | line-length = 65535
+  |               ^^^^^
+line-length must be between 1 and 320 (got 65535)
+</code></pre>
+<p>and</p>
+<pre><code class="language-shell">❯ bat ruff.toml                                                                                                                                       
+───────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: ruff.toml
+───────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ target-version = &quot;py310&quot;
+   2   │ 
+   3 ~ │ line-length = 65536
+───────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ ruff check
+ruff failed                                                                                                                                           
+  Cause: Failed to load configuration `...`
+  Cause: Failed to parse ...
+  Cause: TOML parse error at line 3, column 15
+  |
+3 | line-length = 65536
+  |               ^^^^^
+invalid value: integer `65536`, expected u16
+</code></pre>
+<h3>Version</h3>
+<p><code>ruff 0.14.4 (c7ff9826d 2025-11-06)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2025-11-07 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-11-07 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21329.html">astral-sh/ruff#21329</a> on 2025-11-07 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-10 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

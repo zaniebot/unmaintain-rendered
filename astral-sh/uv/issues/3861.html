@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI (Github Actions): Installed uv script does not detect any Python interpreters - astral-sh/uv #3861</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>CI (Github Actions): Installed uv script does not detect any Python interpreters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3861">#3861</a>
+        opened by <a href="https://github.com/jenisys">@jenisys</a>
+        on 2024-05-27 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jenisys">@jenisys</a> on 2024-05-27 09:14</div>
+            <div class="timeline-body"><p>I try using <code>uv</code> to speed up Python package installations in the CI (concrete: Github Actions).</p>
+<h2>SYNDROME:</h2>
+<p>When I use the following <code>workflow</code> snippet, I run into a problem that <code>uv</code> cannot find any Python interpreters.</p>
+<pre><code class="language-yaml"># -- CI WORKFLOW SNIPPET: With Python3
+  ...
+  - name: &quot;Install Python package dependencies (with: uv)&quot;
+    run: |
+      python -m pip install -U uv
+      # -- FAILURE-POINT: On next line
+      uv pip install -U pip setuptools wheel 
+</code></pre>
+<p>Running Github Actions CI causes errors on <code>ubuntu-latest</code> (hint: <code>windows</code> works fine):</p>
+<pre><code>...
+Installing collected packages: uv
+Successfully installed uv-0.2.4
+error: No Python interpreters found in virtual environments
+Error: Process completed with exit code 2.
+</code></pre>
+<p>SEE ALSO:</p>
+<ul>
+<li>https://github.com/jenisys/parse_type/actions/runs/9252100544</li>
+</ul>
+<h2>WORK-AROUND</h2>
+<p>Use <code>uv</code> as python module to run <code>uv</code>, like:</p>
+<pre><code class="language-yaml"># -- CI WORKFLOW SNIPPET:
+  - name: &quot;Install Python package dependencies (with: uv)&quot;
+    run: |
+      python -m pip install -U uv
+      python -m uv pip install -U pip setuptools wheel
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2024-05-27 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-27 09:51</div>
+            <div class="timeline-body"><p><code>uv pip install --system</code> should also work for you (https://github.com/konstin/parse_type/actions/runs/9252778300/job/25451090432?pr=1). Improving the confusing error message here is covered by https://github.com/astral-sh/uv/issues/3841</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 14:22</div>
+            <div class="timeline-body"><p>Yeah you need the system flag. By default, uv only installs into virtual environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-27 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/korhojoa">@korhojoa</a> on 2024-05-27 15:35</div>
+            <div class="timeline-body"><p>I get this even if using a virtual environment.</p>
+<p>Calling uv via <code>bin/uv</code> fails, but using <code>bin/python -m uv</code> works.</p>
+<pre><code>$ make devel
+python3 -m venv venv
+cp pip.conf venv/
+venv/bin/python -m pip install --upgrade pip setuptools setuptools_scm wheel build uv
+Looking in indexes: &lt;snip&gt;
+Requirement already satisfied: pip in ./venv/lib/python3.11/site-packages (24.0)
+Requirement already satisfied: setuptools in ./venv/lib/python3.11/site-packages (65.5.0)
+Collecting setuptools
+  Using cached &lt;snip&gt;/setuptools-70.0.0-py3-none-any.whl (863 kB)
+Collecting setuptools_scm
+  Using cached &lt;snip&gt;/setuptools_scm-8.1.0-py3-none-any.whl (43 kB)
+Collecting wheel
+  Using cached &lt;snip&gt;/wheel-0.43.0-py3-none-any.whl (65 kB)
+Collecting build
+  Using cached &lt;snip&gt;/build-1.2.1-py3-none-any.whl (21 kB)
+Collecting uv
+  Using cached &lt;snip&gt;/uv-0.2.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.9 MB)
+Collecting packaging&gt;=20 (from setuptools_scm)
+  Using cached &lt;snip&gt;/packaging-24.0-py3-none-any.whl (53 kB)
+Collecting pyproject_hooks (from build)
+  Using cached &lt;snip&gt;/pyproject_hooks-1.1.0-py3-none-any.whl (9.2 kB)
+Installing collected packages: wheel, uv, setuptools, pyproject_hooks, packaging, setuptools_scm, build
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 65.5.0
+    Uninstalling setuptools-65.5.0:
+      Successfully uninstalled setuptools-65.5.0
+Successfully installed build-1.2.1 packaging-24.0 pyproject_hooks-1.1.0 setuptools-70.0.0 setuptools_scm-8.1.0 uv-0.2.4 wheel-0.43.0
+touch venv/bin/activate
+venv/bin/uv  pip install --upgrade pip-tools
+error: No Python interpreters found in virtual environments
+make: *** [makefile:87: venv/bin/pip-sync] Error 2
+</code></pre>
+<p>versus calling the via the module</p>
+<pre><code>$ make devel
+python3 -m venv venv
+cp pip.conf venv/
+venv/bin/python -m pip install --upgrade pip setuptools setuptools_scm wheel build uv
+Looking in indexes: &lt;snip&gt;
+Requirement already satisfied: pip in ./venv/lib/python3.11/site-packages (24.0)
+Requirement already satisfied: setuptools in ./venv/lib/python3.11/site-packages (65.5.0)
+Collecting setuptools
+  Using cached &lt;snip&gt;/setuptools-70.0.0-py3-none-any.whl (863 kB)
+Collecting setuptools_scm
+  Using cached &lt;snip&gt;/setuptools_scm-8.1.0-py3-none-any.whl (43 kB)
+Collecting wheel
+  Using cached &lt;snip&gt;/wheel-0.43.0-py3-none-any.whl (65 kB)
+Collecting build
+  Using cached &lt;snip&gt;/build-1.2.1-py3-none-any.whl (21 kB)
+Collecting uv
+  Using cached &lt;snip&gt;/uv-0.2.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.9 MB)
+Collecting packaging&gt;=20 (from setuptools_scm)
+  Using cached &lt;snip&gt;/packaging-24.0-py3-none-any.whl (53 kB)
+Collecting pyproject_hooks (from build)
+  Using cached &lt;snip&gt;/pyproject_hooks-1.1.0-py3-none-any.whl (9.2 kB)
+Installing collected packages: wheel, uv, setuptools, pyproject_hooks, packaging, setuptools_scm, build
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 65.5.0
+    Uninstalling setuptools-65.5.0:
+      Successfully uninstalled setuptools-65.5.0
+Successfully installed build-1.2.1 packaging-24.0 pyproject_hooks-1.1.0 setuptools-70.0.0 setuptools_scm-8.1.0 uv-0.2.4 wheel-0.43.0
+touch venv/bin/activate
+venv/bin/python -m uv    pip install --upgrade pip-tools
+Resolved 8 packages in 795ms
+Installed 2 packages in 4ms
+ + click==8.1.7
+ + pip-tools==7.4.1
+touch venv/bin/pip-sync
+venv/bin/python -m uv    pip sync requirements.txt requirements-test.txt
+Resolved 55 packages in 5.81s
+Uninstalled 5 packages in 6ms
+Installed 54 packages in 57ms
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:31</div>
+            <div class="timeline-body"><p>You need to activate the virtual environment above -- you seem to have <code>touch venv/bin/activate</code>, but that should be <code>source venv/bin/activate</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/korhojoa">@korhojoa</a> on 2024-05-28 04:58</div>
+            <div class="timeline-body"><blockquote>
+<p>You need to activate the virtual environment above -- you seem to have <code>touch venv/bin/activate</code>, but that should be <code>source venv/bin/activate</code>, right?</p>
+</blockquote>
+<p>This is intentional, the touch is done for makefile rule purposes, it sets the last modified time of the file so the make target doesn't need to run. We don't <code>source venv/bin/activate</code> when running commands in the venv.</p>
+<p>Tools/binaries/scripts can be run directly (at least according to <a href="https://docs.python.org/3/library/venv.html">documentation</a>) by specifying their path within the venv. I understand that as it's a binary, there's no shebang to add/modify, so probably some handling of this case is necessary unless this is something where drop-in compatibility is not wished for.</p>
+<p>Example:</p>
+<pre><code>$ python3 -m venv demo
+$ demo/bin/pip install uv
+Looking in indexes: &lt;snip&gt;
+Collecting uv
+  Using cached &lt;snip&gt;/uv-0.2.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.9 MB)
+Installing collected packages: uv
+Successfully installed uv-0.2.4
+$ demo/bin/uv pip list
+Package    Version
+---------- -------
+pip        24.0
+setuptools 65.5.0
+uv         0.2.4
+$ demo/bin/uv pip install -U uv
+error: No Python interpreters found in virtual environments
+$ demo/bin/python -m uv pip install -U uv
+⠼ Resolving dependencies...
+^C
+</code></pre>
+<p>edit: specifying python manually also works:</p>
+<pre><code>$ UV_PYTHON=demo/bin/python demo/bin/uv pip install -U uv
+⠧ Resolving dependencies...
+^C
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-28 13:13</div>
+            <div class="timeline-body"><p>You need some way to tell uv which Python to use. If you’re just running the binary directly, we won’t discover the environment interpreter. So yeah, you can either use —python, or activate your environment, or if you name your virtualenv .venv we will discover it automatically.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

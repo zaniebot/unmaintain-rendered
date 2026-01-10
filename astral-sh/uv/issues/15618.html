@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv publish: create attestations - astral-sh/uv #15618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv publish: create attestations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15618">#15618</a>
+        opened by <a href="https://github.com/alex">@alex</a>
+        on 2025-09-01 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alex">@alex</a> on 2025-09-01 11:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It'd be useful if <code>uv publish</code> was able to create attestations (PEP 740) when uploading to PyPI.</p>
+<p>We currently create them with https://github.com/pypa/gh-action-pypi-publish/blob/unstable/v1/attestations.py (as part of their action), but it'd be nice to let <code>uv</code> handle them.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @alex on 2025-09-01 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyca/cryptography/issues/11548.html">pyca/cryptography#11548</a> on 2025-09-01 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-01 14:34</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/9122</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-09-01 14:36</div>
+            <div class="timeline-body"><p>Indeed (also filed by me :-)), despite the open ended name that one focuses
+on the install side, rather than upload</p>
+<p>All that is necessary for evil to succeed is for good people to do nothing.</p>
+<p>On Mon, Sep 1, 2025, 10:34 AM Zanie Blue <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p><em>zanieb</em> left a comment (astral-sh/uv#15618)
+<a href="https://github.com/astral-sh/uv/issues/15618#issuecomment-3242596413">https://github.com/astral-sh/uv/issues/15618#issuecomment-3242596413</a></p>
+<p>See also #9122 <a href="https://github.com/astral-sh/uv/issues/9122">https://github.com/astral-sh/uv/issues/9122</a></p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/15618#issuecomment-3242596413">https://github.com/astral-sh/uv/issues/15618#issuecomment-3242596413</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAAAGBACWQANIXUM42VNBH33QRKP3AVCNFSM6AAAAACFKFQMN2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTENBSGU4TMNBRGM">https://github.com/notifications/unsubscribe-auth/AAAAGBACWQANIXUM42VNBH33QRKP3AVCNFSM6AAAAACFKFQMN2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTENBSGU4TMNBRGM</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-01 14:40</div>
+            <div class="timeline-body"><p>We intend to support this, it's just not trivial and we want to do something security-sensitive properly...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-01 14:43</div>
+            <div class="timeline-body"><p>CC @woodruffw who has the most knowledge here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-09-01 20:29</div>
+            <div class="timeline-body"><p>Thanks for the ping!</p>
+<p>Yeah, this is something we should support directly within uv (and with <code>uv publish</code> directly), but it's unfortunately nontrivial in its &quot;ideal&quot; form:</p>
+<ol>
+<li>We'll need a stable-enough Rust implementation of Sigstore;</li>
+<li>We'll need a Rust equivalent of the Python <code>pypi-attestations</code> package;</li>
+<li>We'll need the equivalent of twine's <code>--attestations</code> flag.</li>
+</ol>
+<p>(1) in particular is pretty heavy, since Sigstore is a somewhat hefty spec that builds on top of equally hefty specs (RFC 5280, RFC 6962).</p>
+<p>A stop-gap solution that might be acceptable in the mean time:</p>
+<ul>
+<li>Tell users to invoke <code>actions/attest</code> or <code>sigstore/gh-action-sigstore-python</code> in their CI/CD</li>
+<li>Write an &quot;adaptor&quot; action that takes the outputs from above and turns them into the appropriate PEP 740 shape</li>
+<li>Implement <code>--attestations</code> per (3) above</li>
+</ul>
+<p>That would make <code>uv publish</code> feature-consistent with <code>twine</code>, but would push the bulk of the actual Sigstore/PEP 740 implementation outside of uv itself (similar to how <code>twine</code> keeps it outside and relies on <code>gh-action-pypi-publish</code> to do it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-09-01 20:38</div>
+            <div class="timeline-body"><p>FWIW, from my perspective, if there were a documented and clearly supported way to externally attest things and then upload with <code>uv</code>, that'd be a great start. Not as good as all in one, but a start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @woodruffw by @woodruffw on 2025-11-12 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-12 22:58</div>
+            <div class="timeline-body"><blockquote>
+<p>FWIW, from my perspective, if there were a documented and clearly supported way to externally attest things and then upload with <code>uv</code>, that'd be a great start. Not as good as all in one, but a start.</p>
+</blockquote>
+<p>Yeah, for this I'm thinking that <code>uv publish</code> should probably support <code>--attestations</code>, similarly to how <code>twine upload</code> does. I'll be poking at that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16731.html">astral-sh/uv#16731</a> on 2025-11-13 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

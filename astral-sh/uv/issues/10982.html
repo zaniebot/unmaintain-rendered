@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv workspace doesn't include files in members's include key - astral-sh/uv #10982</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv workspace doesn't include files in members's include key</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10982">#10982</a>
+        opened by <a href="https://github.com/ClementWalter">@ClementWalter</a>
+        on 2025-01-27 10:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ClementWalter">@ClementWalter</a> on 2025-01-27 10:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>What</h2>
+<p>When a workspace member uses the <code>include</code> directive in its <code>pyproject.toml</code> file, these files are actually not available because <code>uv</code> only creates a <code>*.dist-info</code> folder in the <code>site-packages</code> directory.</p>
+<p>This consequently doesn't put the included files (in my case non python files) in the expected location in the <code>site-packages/&lt;package_name&gt;/*</code>.</p>
+<p>As a matter of fact, just doing a simple <code>pip install &lt;workspace member path&gt;</code> at the root of the project actually adds the file.</p>
+<p>This is kinda blocking for me now. As I'm not an expert of python packaging, I don't know how to solve this best though.</p>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.9 (0652800cb 2024-12-13)</p>
+<h3>Python version</h3>
+<p>Python 3.10.15</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ClementWalter on 2025-01-27 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 14:02</div>
+            <div class="timeline-body"><p>Sorry, I don't fully understand the issue you're describing. I would need a minimal reproduction (e.g., a sample Git repo with commands I can run) to reproduce. Note, though, that <code>include</code> is not a uv concept.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-01-27 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-27 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ClementWalter">@ClementWalter</a> on 2025-01-27 18:13</div>
+            <div class="timeline-body"><p>See https://github.com/ClementWalter/uv-workspace-include</p>
+<p>thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 00:12</div>
+            <div class="timeline-body"><p>Hm -- I don't see any difference:</p>
+<pre><code>❯ cd uv-workspace-include
+
+❯ python -m venv .venv
+
+❯ source .venv/bin/activate
+
+❯ pip install python/member-a
+Processing ./python/member-a
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: member-a
+  Building wheel for member-a (pyproject.toml) ... done
+  Created wheel for member-a: filename=member_a-0.1.0-py3-none-any.whl size=1227 sha256=aa273ac33907b40c67161ce3a03c9c9e5f602b18c62735a3b5cd78b5cb7b6086
+  Stored in directory: /Users/crmarsh/Library/Caches/pip/wheels/c8/32/1a/e7d84e2ad1e2f73e2b1caef816c1f54b8e16448398a2dc4bff
+Successfully built member-a
+Installing collected packages: member-a
+Successfully installed member-a-0.1.0
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 25.0
+[notice] To update, run: pip install --upgrade pip
+
+❯ python hello.py
+Hello from uv-workspace-mwe!
+Hello from member-a!
+Traceback (most recent call last):
+  File &quot;/Users/crmarsh/workspace/puffin/uv-workspace-include/hello.py&quot;, line 13, in &lt;module&gt;
+    main()
+  File &quot;/Users/crmarsh/workspace/puffin/uv-workspace-include/hello.py&quot;, line 9, in main
+    print(Path(&quot;.venv/lib/python3.10/site-packages/member_a/dummy_file_a.txt&quot;).read_text())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py&quot;, line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py&quot;, line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '.venv/lib/python3.10/site-packages/member_a/dummy_file_a.txt'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ClementWalter">@ClementWalter</a> on 2025-01-28 03:18</div>
+            <div class="timeline-body"><p>uhmm, not where it breaks but see these screenshot this is really what I do.</p>
+<p><img width="1091" alt="Image" src="https://github.com/user-attachments/assets/ab81f95d-3fd7-4eb1-9f78-0835f3126fc5" /></p>
+<p><img width="616" alt="Image" src="https://github.com/user-attachments/assets/9c985753-8609-4c59-af60-0de174fe6452" /></p>
+<p><img width="684" alt="Image" src="https://github.com/user-attachments/assets/f63fa2af-2a52-43a4-a745-909243cbf871" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 14:46</div>
+            <div class="timeline-body"><p>By default, uv performs an editable installation, where it only links the files (<code>_member_a.pth</code>), so when you edit files in your repo and run your code, the code uses the updated files without a reinstall. If you need to read files from a package, i recommend <a href="https://docs.python.org/3/library/importlib.resources.html"><code>importlib.resources</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ClementWalter on 2025-02-06 22:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isort I001 conflicts with pylint C0411 - astral-sh/ruff #4672</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isort I001 conflicts with pylint C0411</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4672">#4672</a>
+        opened by <a href="https://github.com/sansmoraxz">@sansmoraxz</a>
+        on 2023-05-26 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-26 18:49</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Take the following code block as an example:</p>
+<pre><code class="language-py">import numpy as np
+from lamdacust.handler import lambda_handler
+from moto import mock_s3, mock_sqs
+</code></pre>
+<p>Here <code>lamdacust</code> is the user defined module</p>
+<p>The above order is valid according to ruff's rule I001, but not according to pylint C0411 which says to follow the order of standard imports first, then third-party libraries, then local imports.</p>
+<p>Ruff version: 0.0.269
+Editor: VSCode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-26 18:51</div>
+            <div class="timeline-body"><p>I'm guessing that Ruff isn't picking up lambdacust as first-party. Can you share your directory structure and configuration file? E.g., are you using a <code>src</code> directory or something like that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-26 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-26 19:01</div>
+            <div class="timeline-body"><p>No not using src</p>
+<p>Here's the structure</p>
+<pre><code>.
+├── lamdacust
+│   ├── handler.py
+│   ├── __init__.py
+│   └── loaders.py
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+└── tests
+    ├── data
+    │   └── text.txt
+    ├── __init__.py
+    ├── pyproject.toml
+    └── test_handler.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-26 19:02</div>
+            <div class="timeline-body"><p>The config I addopted from somewhere not sure where from</p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;lamdacust&quot;
+version = &quot;0.1.0&quot;
+readme = &quot;README.md&quot;
+
+[tool.poetry.dependencies]
+python = &quot;^3.10&quot;
+numpy = &quot;^1.24.3&quot;
+pillow = &quot;^9.5.0&quot;
+
+[tool.poetry.group.dev.dependencies]
+boto3 = &quot;^1.26.135&quot;
+botocore = &quot;^1.29.135&quot;
+jupyter = &quot;^1.0.0&quot;
+boto3-stubs = {version = &quot;^1.26.135&quot;, extras = [&quot;s3&quot;, &quot;sqs&quot;]}
+moto = {extras = [&quot;s3&quot;,&quot;sqs&quot;], version = &quot;^4.1.9&quot;}
+pytest = &quot;^7.3.1&quot;
+pytest-cov = &quot;^4.0.0&quot;
+ruff = &quot;*&quot;
+ruff-lsp = &quot;*&quot;
+pylint = &quot;^2.17.4&quot;
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+
+[tool.pytest.ini_options]
+testpaths = [&quot;tests&quot;]
+
+[tool.black]
+skip-string-normalization = 1
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+select = [&quot;ALL&quot;]
+
+[tool.black]
+skip-string-normalization = 1
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+select = [&quot;ALL&quot;]
+
+
+ignore = [&quot;INP001&quot;, # implicit-namespace-package
+          &quot;ANN&quot;,    # type annotations
+          &quot;T20&quot;,    # flake8-print (warns when there are print statements)
+          &quot;ARG001&quot;, # unused-argument
+
+          &quot;D212&quot;, # See https://github.com/charliermarsh/ruff/issues/2281
+
+          &quot;D211&quot;, # See https://github.com/charliermarsh/ruff/issues/2281
+]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.hg&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;venv&quot;,
+]
+per-file-ignores = {}
+
+# Same as black.
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+# Assume Python 3.10.
+target-version = &quot;py310&quot;
+
+# Enumerate all fixed violations.
+show-fixes = true
+# Show source code for each violation.
+show-source = true
+
+# This is how you tell Q000 errors to prefer single quotes
+[tool.ruff.flake8-quotes]
+inline-quotes = &quot;single&quot;
+
+[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;  # Or &quot;numpy&quot;, or &quot;pep257&quot; or &quot;google&quot;
+
+</code></pre>
+<p>Edit: Forgot to add moto mock sqs dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-26 19:04</div>
+            <div class="timeline-body"><p>For the tests I disabled S101 but other than that that's the entire config</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-26 21:38</div>
+            <div class="timeline-body"><p>This works correctly for me:</p>
+<pre><code class="language-py">❯ cargo run -p ruff_cli -- check bar.py --select I -n --fix
+    Finished dev [unoptimized + debuginfo] target(s) in 0.15s
+     Running `/Users/crmarsh/workspace/staging/target/debug/ruff check bar.py --select I -n --fix`
+
+Fixed 1 error:
+- bar.py:
+    1 × I001 (unsorted-imports)
+
+Found 1 error (1 fixed, 0 remaining)
+</code></pre>
+<p>And <code>bar.py</code> now contains:</p>
+<pre><code class="language-py">import numpy as np
+from moto import mock_s3, mock_sqs
+
+from lamdacust.handler import lambda_handler
+</code></pre>
+<p>I'm happy to take another look if you're able to produce a repro, maybe something that works with <code>--isolated</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-27 13:49</div>
+            <div class="timeline-body"><p>OK I figured it out. It works for code inside that module or at root level</p>
+<p>The issue was coming from tests, maybe because it assumed it as a root module because of the nested pyproject.toml.</p>
+<p>This was the entire content in it</p>
+<pre><code>[tool.ruff]
+extend = &quot;../pyproject.toml&quot;
+ignore = [&quot;S101&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-27 13:53</div>
+            <div class="timeline-body"><p>Seems similar to #4674 .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 19:19</div>
+            <div class="timeline-body"><p>Yeah I think it's roughly the same issue. You could add <code>src = [&quot;../&quot;]</code> to the nested configuration, or <code>src= [&quot;.&quot;]</code> to the top-level configuration -- I <em>think</em> either would solve the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sansmoraxz">@sansmoraxz</a> on 2023-05-28 07:16</div>
+            <div class="timeline-body"><p>Yeah that fixed it. Thanks,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sansmoraxz on 2023-05-28 07:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

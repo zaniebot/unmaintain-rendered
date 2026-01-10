@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv export` breaks with local dev sources unlike `poetry export` - astral-sh/uv #13100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv export` breaks with local dev sources unlike `poetry export`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13100">#13100</a>
+        opened by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a>
+        on 2025-04-25 06:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-04-25 06:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have issues with cases where pyproject dev dependencies are using various locally existing sources. Following used to work with <code>poetry export</code> but it breaks with <code>uv export</code> giving errors like:</p>
+<pre><code>0.357 error: Failed to generate package metadata for `xxx==1.0.0 @ editable+../xxx`
+0.357   Caused by: Distribution not found at: file:///xyz/xxx
+</code></pre>
+<p>Here is a stripped down example of pyproject and Dockerfile (its heavily simplified example of the issue and not something that is actually used):</p>
+<p>Dockerfile</p>
+<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:0.6.5-python3.13-bookworm-slim
+
+# Not copying the dev local sources to the image
+COPY pyproject.toml uv.lock ./
+
+# This used to work with Poetry-pyproject:
+# RUN poetry export --without-hashes --without-urls &gt; tmp-requirements.txt
+# But uv export fails with errors:
+RUN uv export --no-dev --no-editable --no-emit-project --no-hashes &gt; tmp-requirements.txt
+
+# Various other things happening etc...
+
+# Install via the exported requirements file to some target(s)
+RUN uv pip install --requirement tmp-requirements.txt --target .
+</code></pre>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;==3.13.*&quot;
+
+dependencies = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+
+[dependency-groups]
+dev = [&quot;xxx&quot;, &quot;yyy&quot;, &quot;zzz&quot;]
+
+[tool.uv.sources]
+# Various editable dev sources which are not copied in Dockerfile
+xxx = { path = &quot;../xxx&quot;, editable = true }
+yyy = { path = &quot;../yyy&quot;, editable = true }
+zzz = { path = &quot;../zzz&quot;, editable = true }
+# Can also include some custom indexes
+c = { index = &quot;some_pypi&quot; }
+</code></pre>
+<p>I have tried various different parameters for <code>uv export</code> but it always fails and does not respect the <code>no-dev</code> or <code>no-editable</code> flags. I dont understand why it tries to look into the layer paths that do not exist in built docker image eventhough they are omitted in export command.</p>
+<p>Thanks for the great work here!</p>
+<h3>Platform</h3>
+<p>Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>0.6.5</p>
+<h3>Python version</h3>
+<p>3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MarkusSintonen on 2025-04-25 06:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-25 07:58</div>
+            <div class="timeline-body"><p>Are you looking for <code>--no-sources</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-04-25 08:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you looking for <code>--no-sources</code>?</p>
+</blockquote>
+<p>We need sources still with index dependencies (<code>{ index = &quot;some_pypi&quot; }</code>). Also it seems to be not working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-25 08:15</div>
+            <div class="timeline-body"><p>uv generally needs access to all declared packages to ensure metadata consistency, so atm exports will only work if the other packages are also available in the docker container.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-25 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-25 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-04-25 10:14</div>
+            <div class="timeline-body"><p>Figured a hacky workaround to <code>uv remove</code> all path based dev deps before running any other uv commands in Dockerfile. But annoyingly need to list every path dev dep separately for the <code>remove</code> command in Dockerfile 😕 It also feels weird and kinda wrong to do such manipulation of the project file first before running the <code>export</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 12:34</div>
+            <div class="timeline-body"><p>I think you want <code>--frozen</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kostiantyn-Salnykov">@Kostiantyn-Salnykov</a> on 2025-04-25 12:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you want <code>--frozen</code>?</p>
+</blockquote>
+<p>I have the similar issue,
+I have custom sources (index gitlab package), also have a local editable (development) package that I need to install as non editable in Docker file and result build.</p>
+<p>As I see uv always install the package as a reference but not include the modules (different from distribution of .tar.gz and .whl)</p>
+<p>Nothing helped, really.</p>
+<p>I think there are really missing documentation about how to handle such cases to meet all requirements:</p>
+<ul>
+<li>Custom index package(s);</li>
+<li>Local package(s) with local editable;</li>
+<li>Local package(s) installed in docker as non-editable and can be found in site-package of the python environment (not a related links);</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-04-26 09:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you want <code>--frozen</code>?</p>
+</blockquote>
+<p>Oh nice! <code>uv export --frozen ...</code> seems to work! Maybe the error message could have hint about using the &quot;frozen&quot; mode when exporting fails. Or something else in the docs about hinting this behaviour when using <code>sources</code> etc problematic 🤔</p>
+<p>Thanks a lot @charliermarsh !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-26 14:07</div>
+            <div class="timeline-body"><p>Yeah <code>--frozen</code> generally means: just use the file without trying to validate or refresh it. When in a Docker context, you almost always want <code>--frozen</code> :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-26 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-04-26 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-04-27 14:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah <code>--frozen</code> generally means: just use the file without trying to validate or refresh it. When in a Docker context, you almost always want <code>--frozen</code> :)</p>
+</blockquote>
+<p>Yes thanks! Some how I didn't notice <code>--frozen</code> was a thing for <code>export</code> 😄</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

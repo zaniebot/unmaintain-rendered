@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default value seems to be cached, resulting in wrong default - clap-rs/clap #5127</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Default value seems to be cached, resulting in wrong default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5127">#5127</a>
+        opened by <a href="https://github.com/ctron">@ctron</a>
+        on 2023-09-15 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ctron">@ctron</a> on 2023-09-15 09:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.72.0 (5680fa18f 2023-08-23)</p>
+<h3>Clap Version</h3>
+<p>4.4.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+use std::marker::PhantomData;
+
+trait Provider {
+    const VALUE: usize;
+}
+
+#[derive(Clone, Debug)]
+struct A;
+
+impl Provider for A {
+    const VALUE: usize = 1;
+}
+
+#[derive(Clone, Debug)]
+struct B;
+
+impl Provider for B {
+    const VALUE: usize = 2;
+}
+
+#[derive(Clone, Debug, clap::Args)]
+struct Example&lt;T: Provider&gt; {
+    #[arg(default_value_t = T::VALUE)]
+    pub value: usize,
+
+    #[arg(skip)]
+    _marker: PhantomData&lt;T&gt;,
+}
+
+#[derive(Clone, Debug, clap::Parser)]
+enum Cli {
+    A(Example&lt;A&gt;),
+    B(Example&lt;B&gt;),
+}
+
+fn main() {
+    // prints 1, as expected
+    //Cli::parse_from([&quot;example&quot;, &quot;a&quot;, &quot;--help&quot;]);
+    // prints 2, bug!
+    Cli::parse_from([&quot;example&quot;, &quot;b&quot;, &quot;--help&quot;]);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the above example.</p>
+<p>Important is that you have the same structure, where a type argument provides the default value, in more than one branch.</p>
+<h3>Actual Behaviour</h3>
+<p>Initializes with the wrong default value. Shown in help and used as value.</p>
+<h3>Expected Behaviour</h3>
+<p>Use the correct the default value.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ctron on 2023-09-15 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctron">@ctron</a> on 2023-09-15 09:50</div>
+            <div class="timeline-body"><p>Here's a test for this:</p>
+<pre><code class="language-rust">#[test]
+fn default_values_type_arg() {
+    trait DefaultProvider {
+        const VALUE: usize;
+    }
+
+    #[derive(PartialEq, Debug)]
+    struct A;
+    #[derive(PartialEq, Debug)]
+    struct B;
+
+    impl DefaultProvider for A {
+        const VALUE: usize = 1;
+    }
+
+    impl DefaultProvider for B {
+        const VALUE: usize = 2;
+    }
+
+    #[derive(Args, PartialEq, Debug)]
+    struct Example&lt;T: DefaultProvider&gt; {
+        #[arg(default_value_t = T::VALUE)]
+        value: usize,
+
+        #[arg(skip)]
+        _marker: PhantomData&lt;T&gt;,
+    }
+
+    #[derive(Parser, PartialEq, Debug)]
+    enum Cli {
+        A(Example&lt;A&gt;),
+        B(Example&lt;B&gt;),
+    }
+
+    impl Cli {
+        fn value(&amp;self) -&gt; usize {
+            match self {
+                Cli::A(args) =&gt; args.value,
+                Cli::B(args) =&gt; args.value,
+            }
+        }
+    }
+
+    assert_eq!(
+        A::VALUE,
+        Cli::try_parse_from([&quot;test&quot;, &quot;a&quot;]).unwrap().value()
+    );
+    assert_eq!(
+        B::VALUE,
+        Cli::try_parse_from([&quot;test&quot;, &quot;b&quot;]).unwrap().value()
+    );
+
+    let help_a = utils::get_subcommand_long_help::&lt;Cli&gt;(&quot;a&quot;);
+    assert!(help_a.contains(&quot;[default: 1]&quot;));
+    let help_b = utils::get_subcommand_long_help::&lt;Cli&gt;(&quot;b&quot;);
+    assert!(help_b.contains(&quot;[default: 2]&quot;));
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctron">@ctron</a> on 2023-09-15 09:51</div>
+            <div class="timeline-body"><p>I think the issue is that default values are created with a static <code>OnceLock</code>. Which of course will initialize only once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctron">@ctron</a> on 2023-09-15 10:18</div>
+            <div class="timeline-body"><p>Looks like that's why: https://github.com/rust-lang/rust/issues/22991</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-09-15 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2023-09-15 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../autonomys/subspace/pulls/3572.html">autonomys/subspace#3572</a> on 2025-06-10 10:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:30 UTC
+    </footer>
+</body>
+</html>

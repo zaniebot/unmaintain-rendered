@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF055 ignores backslashes in the `repl` argument of `re.sub` - astral-sh/ruff #14757</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF055 ignores backslashes in the `repl` argument of `re.sub`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14757">#14757</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-12-03 13:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-12-03 13:46</div>
+            <div class="timeline-body"><p>In Ruff 0.8.1, <a href="https://docs.astral.sh/ruff/rules/unnecessary-regular-expression/"><code>unnecessary-regular-expression</code> (RUF055)</a> reports a false positive for <code>re.sub</code> when the replacement string contains a backslash.</p>
+<pre><code class="language-console">$ cat ruf055.py
+import re
+print(re.sub(&quot; &quot;, r&quot;\n&quot;, &quot;a b&quot;))
+
+$ python ruf055.py
+a
+b
+
+$ ruff check --isolated --preview --select RUF055 ruf055.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf055.py
+import re
+print(&quot;a b&quot;.replace(&quot; &quot;, &quot;\\n&quot;))
+
+$ python ruf055.py
+a\nb
+</code></pre>
+<p>This issue was mentioned in https://github.com/astral-sh/ruff/pull/14679#discussion_r1863802187 with the example of <code>\g&lt;0&gt;</code>, which was deemed acceptably implausible. Because a replacement string can also include character escapes, this issue is plausible.</p>
+<p>Alternatively, this could be considered a true positive, in which case the fix needs to interpret escape sequences in the replacement string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 14:00</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<p>Okay, so the part that we overlooked from the specification is:</p>
+<blockquote>
+<p>if it is a string, any backslash escapes in it are processed. That is, \n is converted to a single newline character, \r is converted to a carriage return, and so forth.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-03 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-12-03 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 14:07</div>
+            <div class="timeline-body"><p>@AlexWaygood pointed out that this could be addressed by https://github.com/astral-sh/ruff/pull/14679</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-12-03 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14679.html">astral-sh/ruff#14679</a> on 2024-12-03 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-03 15:18</div>
+            <div class="timeline-body"><p>Thanks @dscorbett, as ever! You were quite right that #14679 would not have fixed this in its earlier form. I pushed some updates to it, so I <em>think</em> it now handles everything correctly, though. Let us know if you see any other issues with the check!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-12-03 15:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

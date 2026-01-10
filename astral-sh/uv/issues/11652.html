@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build creates dist/.gitignore; doesn't play nice with PYPI trusted publishing - astral-sh/uv #11652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build creates dist/.gitignore; doesn't play nice with PYPI trusted publishing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11652">#11652</a>
+        opened by <a href="https://github.com/dimaqq">@dimaqq</a>
+        on 2025-02-20 05:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-02-20 05:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A fresh project <code>mkdir hack; cd hack; uv init; uv build</code> creates a <code>.gitignore</code> file under <code>dist/</code>.</p>
+<p>It is the <code>uv build</code> step that does it. Doesn't seem to depend on the build backend.</p>
+<p>The issue with this file is that PYPI trusted publishing will try to upload everything under <code>dist/</code>, including the <code>.gitignore</code> file, which will be rejected, and the user is left in total confusion.</p>
+<p>Typically users don't have access to the ephemeral GHA runners (hacks exist), and users can't run trusted publishing from the local checkout either.</p>
+<p>I've only figured this out by adding <code>ls -halt dist/</code> to the workflow, as I suspected I've messed something up.</p>
+<p>uv 0.6.1</p>
+<h3>Platform</h3>
+<p>any (tested: macos, linux)</p>
+<h3>Version</h3>
+<p>0.6.1</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dimaqq on 2025-02-20 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 08:43</div>
+            <div class="timeline-body"><p>What trusted publishing setup are you using? <code>uv publish</code> supports trusted publishing and ignores the <code>.gitignore</code> file (and all other unknown files).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-20 20:00</div>
+            <div class="timeline-body"><p>@konstin -- It looks like they're using the GitHub Action? You can see here: https://github.com/dimaqq/otlp-test-data/commit/24d5b31411dd5d124d5b0cac2fd7441960cb5c4a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2025-02-20 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-02-22 06:35</div>
+            <div class="timeline-body"><p>Yes the pypa gh action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 10:01</div>
+            <div class="timeline-body"><p>It's unfortunate that <code>pypa/gh-action-pypi-publish</code> does not handle <code>.gitginore</code> files automatically. You can either remove the gitignore file (as you are doing) or try <code>uv publish</code>, which also supports trusted publishing but also skip unknown files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-02-26 11:26</div>
+            <div class="timeline-body"><p>I’ll try that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ivan-kleshnin">@ivan-kleshnin</a> on 2025-03-05 15:31</div>
+            <div class="timeline-body"><p>Yeah, why this extra file. Wouldn't <code>dist/</code> line in the root/project-level <code>.gitignore</code> work? 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-05 16:01</div>
+            <div class="timeline-body"><p>Yes, the top-level <code>.gitignore</code> can also be used. We use a <code>.gitignore</code> with <code>*</code> for all our directories that we consider ephemeral (that includes e.g. <code>.venv</code> and all other virtual environments created with <code>uv venv</code>) so that the user doesn't need to handle the excludes manually, while also don't edit the user's top-level <code>.gitignore</code> unnecessarily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/djcopley">@djcopley</a> on 2025-03-28 21:08</div>
+            <div class="timeline-body"><p>I understand why it's there, but I'd like an option to disable the production of a .gitignore. I have a pipeline that produces artifacts for external consumption and I'd rather not need to add an additional script action to delete the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-03-29 04:16</div>
+            <div class="timeline-body"><p>Given that:</p>
+<ul>
+<li>uv already generates a top-level ignore file that includes dist</li>
+<li>other build tools don’t create helper files in dist (that’s on purpose!)</li>
+</ul>
+<p>My vote is that uv shouldn’t produce this file.</p>
+<p>Current behaviour is hard to teach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 13:19</div>
+            <div class="timeline-body"><p>I tried to reproduce this, but in my test everything passes with pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc (#12742, https://github.com/astral-sh/uv/actions/runs/14334239283/job/40177272548?pr=12742)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-08 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-04-08 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-04-08 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-04-09 00:48</div>
+            <div class="timeline-body"><p>it's a bit hard to see what's going on in logs... would you mind adding something like <code>find .</code> or equivalent step to check if there is in fact a <code>dist/.gitignore</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12742.html">astral-sh/uv#12742</a> on 2025-04-09 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-06-05 04:47</div>
+            <div class="timeline-body"><p>Confirming that at a high level it's no longer an issue.</p>
+<p>Attestation is still includes the newly minted <code>.gitignore</code> file:</p>
+<p>Edit: I guess not the attestation, rather the verbose log of the action. Clearly the attestation cannot include itself.</p>
+<pre><code>2025-06-05T04:43:58.2451206Z Transparency log entry created with index: 230061262
+2025-06-05T04:43:58.3724525Z Showing hash values of files to be uploaded:
+2025-06-05T04:43:58.3725604Z /github/workspace/dist/otlp_json-1.0.0-py3-none-any.whl
+2025-06-05T04:43:58.3726179Z 
+2025-06-05T04:43:58.3726718Z SHA256: 4997fb35aec43279d1d3a753fd74a6bd3ea6743d5345c824d89cd220a17aef37
+2025-06-05T04:43:58.3727867Z MD5: 09f7b3bc412d0597452e5cfc2af81406
+2025-06-05T04:43:58.3728821Z BLAKE2-256: 368f3a4f5087b7bd96acb4c6db47a66183c354e2ee5285a9c59a1aca19fefb27
+2025-06-05T04:43:58.3729606Z 
+2025-06-05T04:43:58.3729901Z /github/workspace/dist/otlp_json-1.0.0.tar.gz
+2025-06-05T04:43:58.3730386Z 
+2025-06-05T04:43:58.3730841Z SHA256: ab000a0d291a03357691e897a766dbaaa1d54ef3ed363b0c5cd8d436f44eea91
+2025-06-05T04:43:58.3731748Z MD5: 8cf1539c8ac045355719f066fa733b31
+2025-06-05T04:43:58.3732685Z BLAKE2-256: bbf0e2c3aea9687a37a9fd30ad30145ee292e02a93df9130bce0b5aed740a7b1
+2025-06-05T04:43:58.3733304Z 
+2025-06-05T04:43:58.3733744Z /github/workspace/dist/otlp_json-1.0.0-py3-none-any.whl.publish.attestation
+2025-06-05T04:43:58.3734364Z 
+2025-06-05T04:43:58.3734755Z SHA256: 6eeb33a6970b61e044c840eba6574dffea1ac024eb36410a03d09803ab72adfc
+2025-06-05T04:43:58.3735489Z MD5: bef6db4819972c705e19656822f1fa9f
+2025-06-05T04:43:58.3736205Z BLAKE2-256: 7e6f120085d5527755eafee378df429ce4adeb0e4713959dc259146f0ea3521d
+2025-06-05T04:43:58.3736785Z 
+2025-06-05T04:43:58.3737137Z /github/workspace/dist/otlp_json-1.0.0.tar.gz.publish.attestation
+2025-06-05T04:43:58.3737759Z 
+2025-06-05T04:43:58.3737989Z SHA256: d0100bbf6d311f373025864f3c3c5300146276ff2374919454a7766ac3bc9b4f
+2025-06-05T04:43:58.3738450Z MD5: c9b3851b5ba4293294587b348feb436e
+2025-06-05T04:43:58.3738906Z BLAKE2-256: 162075a27c4833455f6e886e2f3bafc320187c5ce69d3a5ffe117799ee006a02
+2025-06-05T04:43:58.3739545Z 
+2025-06-05T04:43:58.3739669Z /github/workspace/dist/.gitignore
+2025-06-05T04:43:58.3739872Z 
+2025-06-05T04:43:58.3740119Z SHA256: 684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1
+2025-06-05T04:43:58.3740571Z MD5: 3389dae361af79b04c9c8e7057f60cc6
+2025-06-05T04:43:58.3741021Z BLAKE2-256: 395a122eb1402bf256d86e3fa44764cf9acc559017a00b2b9ee12498e73ef2b5
+2025-06-05T04:43:58.3741395Z 
+</code></pre>
+<p>However, the action doesn't attempt to push it to PYPI, and thus doesn't trip on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dimaqq on 2025-06-05 04:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--python-preference only-system` uses managed interpreter if present in virtual environment - astral-sh/uv #5144</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--python-preference only-system` uses managed interpreter if present in virtual environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5144">#5144</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-17 12:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-17 12:57</div>
+            <div class="timeline-body"><p>When a venv from a managed toolchain exists, uv ignores <code>--python-preference only-system</code>.</p>
+<p>To reproduce, take a system without <code>python3.11</code> on path:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;1&quot;
+requires-python = &quot;==3.11.*&quot;
+dependencies = [
+    &quot;tqdm&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Create a managed venv, then sync again with <code>--python-preference only-system</code>. The venv is still managed python, which we can confirm by trying to recreate the venv:</p>
+<pre><code class="language-console">$ uv sync
+Using Python 3.11.9 interpreter at: /home/konsti/.local/share/uv/python/cpython-3.11.9-linux-x86_64-gnu/bin/python3
+Creating virtualenv at: .venv
+Resolved 3 packages in 5ms
+   Built foo @ file:///home/konsti/projects/foo
+Prepared 1 package in 120ms
+Installed 2 packages in 1ms
+ + foo==1 (from file:///home/konsti/projects/foo)
+ + tqdm==4.66.4
+$ uv sync --python-preference only-system
+Resolved 3 packages in 4ms
+Audited 2 packages in 0.10ms
+$ rm -r .venv
+$ uv sync --python-preference only-system
+error: No interpreter found for Python &gt;=3.11, &lt;3.12 in system path
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-17 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-17 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-17 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-17 14:35</div>
+            <div class="timeline-body"><p>Can you share verbose and trace logs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-17 14:37</div>
+            <div class="timeline-body"><p>Oh wait.. you're creating the virtual environment with the managed Python then requesting <code>only-system</code> in subsequent syncs? We don't perform discovery of an interpreter again since the environment already exists — this would only affect behavior if you also requested a new Python version.</p>
+<p>I'm uncertain this should change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`--python-preference only-system` uses managed interpreter if existing" to "`--python-preference only-system` uses managed interpreter if present in virtual environment" by @zanieb on 2024-07-17 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7934.html">astral-sh/uv#7934</a> on 2024-10-04 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10282.html">astral-sh/uv#10282</a> on 2025-01-03 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10766.html">astral-sh/uv#10766</a> on 2025-01-20 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11497.html">astral-sh/uv#11497</a> on 2025-02-13 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12246.html">astral-sh/uv#12246</a> on 2025-03-17 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-17 22:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

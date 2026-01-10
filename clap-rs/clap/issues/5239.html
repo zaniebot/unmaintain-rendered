@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_complete: File path is completed too early in bash - clap-rs/clap #5239</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_complete: File path is completed too early in bash</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5239">#5239</a>
+        opened by <a href="https://github.com/sudotac">@sudotac</a>
+        on 2023-12-03 06:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sudotac">@sudotac</a> on 2023-12-03 06:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.74.0 (79e9716c9 2023-11-13)</p>
+<h3>Clap Version</h3>
+<p>clap 4.4.10 (clap_complete 4.4.4)</p>
+<h3>Minimal reproducible code</h3>
+<p>build.rs</p>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser, ValueHint};
+use clap_complete::Shell;
+use std::env;
+use std::path::PathBuf;
+
+#[derive(Parser)]
+struct Args {
+    #[arg(long, value_hint = ValueHint::FilePath)]
+    file: PathBuf,
+}
+
+fn main() {
+    let mut cmd = Args::command();
+    let out_dir = env::var(&quot;OUT_DIR&quot;).unwrap();
+    clap_complete::generate_to(Shell::Bash, &amp;mut cmd, &quot;clap_path_compl&quot;, out_dir).unwrap();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-sh">cargo new clap_path_compl
+cd clap_path_compl
+cargo add clap --build -F derive
+cargo add --build clap_complete
+vim build.rs # Enter the code as above
+cargo build
+source target/debug/build/clap_path_compl-*/out/clap_path_compl.bash
+</code></pre>
+<p>Enter <code>./target/debug/clap_path_compl --file </code> and press TAB to start completion.</p>
+<h3>Actual Behaviour</h3>
+<pre><code># If user enters as follows:
+./target/debug/clap_path_compl --file /us&lt;TAB&gt;
+
+# `/usr ` is completed and move to next argument
+./target/debug/clap_path_compl --file /usr 
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code># If user enters as follows:
+./target/debug/clap_path_compl --file /us&lt;TAB&gt;
+
+# `/usr/` should be completed
+# because `/usr` is a directory, not a file.
+./target/debug/clap_path_compl --file /usr/
+</code></pre>
+<h3>Additional Context</h3>
+<p>A possible solution is to use <code>compopt</code>.</p>
+<p>This issue can be fixed by patching out the completion script as follows:</p>
+<pre><code class="language-diff">--- target/debug/build/clap_path_compl-55b9c400b2155aaf/out/clap_path_compl.bash.orig
++++ target/debug/build/clap_path_compl-55b9c400b2155aaf/out/clap_path_compl.bash
+@@ -27,6 +27,7 @@
+             case &quot;${prev}&quot; in
+                 --file)
+                     COMPREPLY=($(compgen -f &quot;${cur}&quot;))
++                    compopt -o filenames
+                     return 0
+                     ;;
+                 *)
+</code></pre>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @sudotac on 2023-12-03 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sudotac">@sudotac</a> on 2023-12-03 06:44</div>
+            <div class="timeline-body"><p>By the way, I think it's possible to improve support of other variants of ValueHint with <code>compopt</code>, like <code>-o plusdirs</code> for <code>ValueHint::DirPath</code> or <code>-o nospace</code> for <code>ValueHint::Other</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5240.html">clap-rs/clap#5240</a> on 2023-12-03 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-01-22 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Anomalocaridid/handlr-regex/issues/89.html">Anomalocaridid/handlr-regex#89</a> on 2024-12-19 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5981.html">clap-rs/clap#5981</a> on 2025-04-28 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:32 UTC
+    </footer>
+</body>
+</html>

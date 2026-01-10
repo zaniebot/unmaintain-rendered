@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markers for Glibc/manylinux version - astral-sh/uv #12597</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Markers for Glibc/manylinux version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12597">#12597</a>
+        opened by <a href="https://github.com/PhilipVinc">@PhilipVinc</a>
+        on 2025-04-01 09:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-04-01 09:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am trying to install <code>jax[cuda12]</code> on a system with an older GLIBC version 2.17.</p>
+<p>Until a few months ago, this was all good, however recent <code>jax[cuda12]</code> versions have a lower bound requirement on <code>nvidia-cublas-cu12</code> (and many other cuda packages) which require glibc 2.27.</p>
+<p>In short, on this machine installing with uv <code>jax[cuda12]</code> will fail with the error below:</p>
+<pre><code class="language-bash">(base) [filippo.vicentini@cholesky-login02 test]$ uv init --bare
+Initialized project `test`
+(base) [filippo.vicentini@cholesky-login02 test]$ uv add 'jax[cuda12]&gt;=0.4.35'
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+Resolved 19 packages in 597ms
+error: Distribution `nvidia-cublas-cu12==12.8.4.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_17_x86_64`), but `nvidia-cublas-cu12` (v12.8.4.1) only has wheels for the following platforms: `manylinux_2_27_aarch64`, `manylinux_2_27_x86_64`, `win_amd64`
+</code></pre>
+<p>(verbose output at <a href="https://gist.github.com/PhilipVinc/408c84fa53ee8843aa65f77a54b9502c">this gist</a> )</p>
+<p>However, I would have expected uv to manually to some backtracking and find a valid version.
+Indeed, if I do it by hand, I was able to identify this set of valid dependency constraints:</p>
+<pre><code class="language-bash">uv add 'jax[cuda12]&gt;=0.4.35' 'nvidia-cublas-cu12&lt;=12.6.3.3' 'nvidia-cudnn-cu12&lt;9.5.1.17' 'nvidia-cusolver-cu12&lt;=11.7.1.2'
+</code></pre>
+<p>--</p>
+<p>If I understand correctly, uv is locking the environment correctly, but then it cannot sync/install the locked dependencies because of the old glibc version.</p>
+<p>While this seems from one point of view reasonable especially if ran as <code>uv add --no-sync</code>, I suspect that <code>uv add</code> could behave differently when used directly as <code>uv add</code>, and attempt to resolve for an older glibc.</p>
+<p>I also suspect that uv has options to automatically use the good platform, but could not find this information in the documentation.
+Moreover, while I can understand the error and that it stems from glibc, some of my 'less knowledgeable' colleagues where puzzled and had no idea how to solve this (for example the need to manually look for working versions).</p>
+<p>I suspect a better more explicative error message might help</p>
+<h3>Platform</h3>
+<p>Linux 3.10.0-1062.el7.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.10</p>
+<h3>Python version</h3>
+<p>Python 3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @PhilipVinc on 2025-04-01 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Failed resolution" to "UV and GlibC requirement, unexpected error and no backtracking" by @PhilipVinc on 2025-04-01 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 12:53</div>
+            <div class="timeline-body"><p>There's a fairly extensive write-up on &quot;packages without a source distribution&quot; here: https://docs.astral.sh/uv/concepts/resolution/#required-environments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-04-01 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-04-01 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-04-03 08:17</div>
+            <div class="timeline-body"><p>Sorry, I don't understand how to specify in the pyproject.toml a 'platform marker' that requires <code>manylinux_2_17</code>/<code>manylinux2014</code>.</p>
+<p>I see that I can require a given OS or other <a href="https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers">environment markers</a> but I don't understand how to require a specific manylinux version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-24 13:44</div>
+            <div class="timeline-body"><p>Currently, we don't have a way to force backtracking for glibc (or musl) versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-10-24 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-10-24 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wheelnext/pep_xxx_wheel_variants/issues/96.html">wheelnext/pep_xxx_wheel_variants#96</a> on 2025-10-28 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "UV and GlibC requirement, unexpected error and no backtracking" to "Markers for Glibc/manylinux version" by @konstin on 2025-10-28 14:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

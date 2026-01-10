@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLC0414` false positive for stubs - astral-sh/ruff #3734</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLC0414` false positive for stubs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3734">#3734</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2023-03-25 22:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2023-03-25 22:02</div>
+            <div class="timeline-body"><p><code>PLC0414</code> should not be applied to <code>.pyi</code>. Explicit re-exports are a valid convention to indicate that a type is meant to be exposed as re-exported, and isn't just used in the stub for typing reference.</p>
+<p>https://github.com/python/typeshed/blob/main/CONTRIBUTING.md#conventions</p>
+<blockquote>
+<p>Imports in stubs are considered private (not part of the exported API) unless:</p>
+<ul>
+<li>they use the form from library import name as name (sic, using explicit as even if the name stays the same); or</li>
+<li>they use the form from library import * which means all names from that library are exported.</li>
+</ul>
+</blockquote>
+<p>For example:</p>
+<pre><code class="language-py">from ._modules import controller as controller, event as event, gui as gui, memory as memory, savestate as savestate
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-25 22:38</div>
+            <div class="timeline-body"><p>It looks like Pylint <em>does</em> flag these in <code>.pyi</code> files so this would be a deviation.</p>
+<p>I'm actually kind of surprised this rule exists at all any more. Isn't explicit re-export part of the de facto public / private standard used by type checkers? E.g., see <a href="https://github.com/microsoft/pyright/blob/main/docs/typed-libraries.md#library-interface">Pyright</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-25 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-03-25 22:53</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like Pylint does flag these in .pyi files so this would be a deviation.</p>
+</blockquote>
+<p>Pylint does not (officially) support type stubs: https://github.com/PyCQA/pylint/issues/4987 Any pylint errors in <code>.pyi</code> files are to be taken with a grain of salt. It just happens to work because they're technically valid python files.</p>
+<blockquote>
+<p>Isn't explicit re-export part of the de facto public / private standard used by type checkers</p>
+</blockquote>
+<p>Yeah fair point. typeshed outlines the same convention, but it's scoped to stubs. I didn't even think the convention was also for regular python file. Makes that rule a bit weird, maybe it's just a strict rule to try and warn about a potential accidental re-export (keeping in mind pylint originally has many violation levels and a soft-cap pointing system). In that case it might make more sense to just keep the rule as-is and for me to disable it. Relevant conversation about severity levels https://github.com/charliermarsh/ruff/issues/1256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-25 23:24</div>
+            <div class="timeline-body"><p>Ah yeah. I mean, we definitely could disable this rule in <code>.pyi</code> files. It's just that the logic could also apply to <code>.py</code> files. But if no one would ever want this enforced in a <code>.pyi</code> file (but some <em>would</em> want it enforced in <code>.pyi</code> files), then I'd err on the side of disabling it in <code>.pyi</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3761.html">astral-sh/ruff#3761</a> on 2023-03-27 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-27 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-27 18:39</div>
+            <div class="timeline-body"><p>Figured why not fix, better than flagging the <code>.pyi</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5698.html">astral-sh/ruff#5698</a> on 2023-07-11 23:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

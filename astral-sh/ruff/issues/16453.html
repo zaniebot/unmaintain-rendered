@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Many fixes change behavior when applied in `case` patterns - astral-sh/ruff #16453</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Many fixes change behavior when applied in `case` patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16453">#16453</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-03-01 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-03-01 19:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Many rules’ fixes change behavior when applied in <code>case</code> patterns. The examples below are all about syntax errors but it is also possible to make examples where runtime behavior changes. It might be helpful to add a new <code>SemanticModel</code> method for whether the model is in a pattern.</p>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/"><code>f-string-missing-placeholders</code> (F541)</a> can change a syntax error into no error. The fix should be marked unsafe in that context.</p>
+<pre><code class="language-console">$ cat &gt;f541.py &lt;&lt;'# EOF'
+match &quot;x&quot;:
+    case f&quot;x&quot;: ...
+# EOF
+
+$ python f541.py
+  File &quot;f541.py&quot;, line 2
+    case f&quot;x&quot;: ...
+         ^^^^
+SyntaxError: patterns may only match literals and attribute lookups
+
+$ ruff --isolated check --select F541 f541.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat f541.py
+match &quot;x&quot;:
+    case &quot;x&quot;: ...
+
+$ python f541.py
+</code></pre>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/missing-f-string-syntax/"><code>missing-f-string-syntax</code> (RUF027)</a> can introduce a syntax error. No fix should be provided but the rule should still report a violation.</p>
+<pre><code class="language-console">$ cat &gt;ruf027.py &lt;&lt;'# EOF'
+x = 1
+match f&quot;{x}&quot;:
+    case &quot;{x}&quot;: ...
+# EOF
+
+$ python ruf027.py
+
+$ ruff --isolated check --target-version py310 --preview --select RUF027 ruf027.py --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruf027.py
+x = 1
+match f&quot;{x}&quot;:
+    case f&quot;{x}&quot;: ...
+
+$ python ruf027.py
+  File &quot;ruf027.py&quot;, line 3
+    case f&quot;{x}&quot;: ...
+         ^^^^^^
+SyntaxError: patterns may only match literals and attribute lookups
+</code></pre>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/numpy-deprecated-type-alias/"><code>numpy-deprecated-type-alias</code> (NPY001)</a> can also introduce a syntax error. The fix could import  <code>builtins</code> and refer to the replacement type with attribute syntax, e.g. <code>case builtins.int</code> instead of <code>case int</code>.</p>
+<pre><code class="language-console">$ cat &gt;npy001.py &lt;&lt;'# EOF'
+import numpy as np
+match int:
+    case np.int: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --select NPY001 npy001.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat npy001.py
+import numpy as np
+match int:
+    case int: ...
+    case _: ...
+
+$ python npy001.py
+  File &quot;npy001.py&quot;, line 3
+    case int: ...
+         ^^^
+SyntaxError: name capture 'int' makes remaining patterns unreachable
+</code></pre>
+<p>If a NumPy function is imported, the fix for <a href="https://docs.astral.sh/ruff/rules/numpy-deprecated-function/"><code>numpy-deprecated-function</code> (NPY003)</a> can introduce a syntax error when replacing a deprecated function with it. The fix could refer to the replacement function with attribute syntax, e.g. <code>case np.prod</code> instead of <code>case prod</code> even if <code>prod</code> is already imported.</p>
+<pre><code class="language-console">$ cat &gt;npy003.py &lt;&lt;'# EOF'
+import numpy as np
+from numpy import prod
+match prod:
+    case np.product: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --select NPY003 npy003.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat npy003.py
+import numpy as np
+from numpy import prod
+match prod:
+    case prod: ...
+    case _: ...
+
+$ python npy003.py
+  File &quot;npy003.py&quot;, line 4
+    case prod: ...
+         ^^^^
+SyntaxError: name capture 'prod' makes remaining patterns unreachable
+</code></pre>
+<p><a href="https://docs.astral.sh/ruff/rules/numpy2-deprecation/"><code>numpy2-deprecation</code> (NPY201)</a> is similar. The fix in this example should use <code>case np.inf</code> instead of <code>case inf</code>.</p>
+<pre><code class="language-console">$ cat &gt;npy201.py &lt;&lt;'# EOF'
+import numpy as np
+from numpy import inf
+match inf:
+    case np.Infinity: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --select NPY201 npy201.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat npy201.py
+import numpy as np
+from numpy import inf
+match inf:
+    case inf: ...
+    case _: ...
+
+$ python npy201.py
+  File &quot;npy201.py&quot;, line 4
+    case inf: ...
+         ^^^
+SyntaxError: name capture 'inf' makes remaining patterns unreachable
+</code></pre>
+<p><a href="https://docs.astral.sh/ruff/rules/math-constant/"><code>math-constant</code> (FURB152)</a> is similar. The fix in this example should use <code>case math.pi</code> instead of <code>case pi</code>.</p>
+<pre><code class="language-console">$ cat &gt;furb152.py &lt;&lt;'# EOF'
+from math import pi
+match pi:
+    case 3.14159: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --target-version py310 --preview --select FURB152 furb152.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb152.py
+from math import pi
+match pi:
+    case pi: ...
+    case _: ...
+
+$ python furb152.py
+  File &quot;furb152.py&quot;, line 3
+    case pi: ...
+         ^^
+SyntaxError: name capture 'pi' makes remaining patterns unreachable
+</code></pre>
+<p><a href="https://docs.astral.sh/ruff/rules/hardcoded-string-charset/"><code>hardcoded-string-charset</code> (FURB156)</a> is similar. The fix in this example should use <code>case string.octdigits</code> instead of <code>case octdigits</code>.</p>
+<pre><code class="language-console">$ cat &gt;furb156.py &lt;&lt;'# EOF'
+from string import octdigits
+match octdigits:
+    case &quot;01234567&quot;: ...
+    case _: ...
+# EOF
+
+$ ruff --isolated check --target-version py310 --preview --select FURB156 furb156.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb156.py
+from string import octdigits
+match octdigits:
+    case octdigits: ...
+    case _: ...
+
+$ python furb156.py
+  File &quot;furb156.py&quot;, line 3
+    case octdigits: ...
+         ^^^^^^^^^
+SyntaxError: name capture 'octdigits' makes remaining patterns unreachable
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.9.9 (091d0af2a 2025-02-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-03-01 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-02 17:02</div>
+            <div class="timeline-body"><p>The <code>F541</code> error shouldn't even be emitted in the first place, considering that f-strings are not allowed as patterns, and <a href="https://peps.python.org/pep-0634/#literal-patterns">have never been</a> ever since PEP 634 (cc @ntBre).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

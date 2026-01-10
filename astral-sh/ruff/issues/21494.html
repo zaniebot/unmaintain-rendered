@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`F821`: Declared only variables - astral-sh/ruff #21494</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`F821`: Declared only variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21494">#21494</a>
+        opened by <a href="https://github.com/eltoder">@eltoder</a>
+        on 2025-11-17 02:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eltoder">@eltoder</a> on 2025-11-17 02:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Local variable annotations make annotated variables local even if there is no direct assignment. This is useful to create a local variable without an initial value. Ruff appears to not understand this usage. For example:</p>
+<pre><code class="language-python">from typing import Callable
+
+def make_cell() -&gt; tuple[Callable[[], int], Callable[[int], None]]:
+    x: int
+
+    def getter() -&gt; int:
+        return x
+
+    def setter(xx: int) -&gt; None:
+        nonlocal x
+        x = xx
+
+    return getter, setter
+
+getter, setter = make_cell()
+setter(123)
+print(getter())
+</code></pre>
+<p>(playground link: https://play.ruff.rs/3bd90cac-2c87-48b0-9cb4-64fe2a53bf72)</p>
+<p>This runs fine and passes mypy, however ruff produces a <code>F821</code>:</p>
+<pre><code>$ ruff check --isolated t.py
+F821 Undefined name `x`
+ --&gt; t.py:7:16
+  |
+6 |     def getter() -&gt; int:
+7 |         return x
+  |                ^
+8 |
+9 |     def setter(xx: int) -&gt; None:
+</code></pre>
+<h3>Version</h3>
+<p>0.14.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff doesn't handle local variable annotations" to "`F821`: Declared only variables" by @MichaReiser on 2025-11-17 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-17 07:17</div>
+            <div class="timeline-body"><p>Thank you. Yeah, this is a bug. A variable that is declared by using an annotated assignment without a value shouldn't raise an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-11-17 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-11-17 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ruchir28">@Ruchir28</a> on 2025-11-19 15:42</div>
+            <div class="timeline-body"><p>How should this be handled?</p>
+<p>While looking into the code, it seems we could suppress this by checking
+if the annotation-only binding is inside a function and then returning
+<code>ReadResult::Resolved(binding_id)</code>. But I'm not sure if returning Resolved
+is the correct behavior here, since the variable may still be unassigned.</p>
+<p>https://github.com/astral-sh/ruff/blob/fffbe5a879af0c1b36e44b65219257bcd7e54483/crates/ruff_python_semantic/src/model.rs#L467-L485</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eltoder">@eltoder</a> on 2025-11-19 15:47</div>
+            <div class="timeline-body"><p>@Ruchir28 it's not any different than</p>
+<pre><code class="language-python">if False:
+    name = something
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-19 18:25</div>
+            <div class="timeline-body"><p>@Ruchir28, from a very quick look, that seems like a reasonable place to mark the binding as resolved. Do other things break when you do that?</p>
+<p>I'm also curious about the <code>BindingKind::Nonlocal</code> branch in <code>resolve_load</code>. It seems like <code>x</code> should possibly be marked as resolved after the <code>nonlocal</code> statement in <code>setter</code>, but I might be misunderstanding without playing with the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21540.html">astral-sh/ruff#21540</a> on 2025-11-20 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ruchir28">@Ruchir28</a> on 2025-11-20 15:50</div>
+            <div class="timeline-body"><p>@ntBre No it doesn't break anything - and looks like it does resolve the issue</p>
+<p>and I checked the <code>BindingKind::Nonlocal</code> branch ,and from what i understand it is indeed marking x as resolved in setter function.</p>
+<p>Although not related to the fix, after fixing this, the below code won't fire F821
+but still there should be F823 / UnboundLocalError right (which it doesn't currently)?
+Should this be addressed separately or in this issue?</p>
+<pre><code class="language-python">def annotated_local_function():
+    x: int
+    print(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eltoder">@eltoder</a> on 2025-11-20 16:31</div>
+            <div class="timeline-body"><p>@Ruchir28 <code>nonlocal</code> does not appear to mark <code>x</code> as resolved:</p>
+<pre><code class="language-python">def make_cell():
+    def setter():
+        nonlocal x
+        print(x)
+</code></pre>
+<p>This produces F821. I think it would make sense to mark it as resolved, but it also does not materially change anything, because a variable declared as <code>nonlocal</code> must be already visible in the current scope (#21495).</p>
+<p>For the F823 / UnboundLocalError -- it appears to be raised only in a very specific pattern. For example, this does not raise it:</p>
+<pre><code class="language-python">def annotated_local_function():
+    if False:
+        x = 1
+    print(x)
+</code></pre>
+<p>My impression is that F823 is only raised when the issue is evident from a single statement like <code>+=</code> and does not require any control flow analysis. For the local annotation neither of the statements are wrong. You need some control flow analysis to discover that there is no assignment between the declaration and the print.</p>
+<p>I suppose you can keep a state per variable of whether it is only declared or assigned, so you will report F823 on</p>
+<pre><code class="language-python">def annotated_local_function():
+    x: int
+    print(x)
+</code></pre>
+<p>but not on</p>
+<pre><code class="language-python">def annotated_local_function():
+    x: int
+    print(x)
+    x = 1
+</code></pre>
+<p>I'm not sure how useful this is, but it is probably easy to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ruchir28">@Ruchir28</a> on 2025-11-20 17:59</div>
+            <div class="timeline-body"><p>Interesting looking at the code it looks like it's marking the nonlocal as resolved , but this is weird https://github.com/astral-sh/ruff/issues/21495
+https://github.com/astral-sh/ruff/blob/78ce17ce8f068eb9ef42e3b992aa23a880722d09/crates/ruff_python_semantic/src/model.rs#L566-L581</p>
+<p>Also regarding F823 i am not so sure about it and it's implemenation details rn but looks like it can be reported in both the cases here even in the second one [as the load reference will be attached to the initial BindingKind::Annotation id] so it can be detected there too</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

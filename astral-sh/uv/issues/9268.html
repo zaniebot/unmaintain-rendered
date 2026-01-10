@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python conditional package dependencies for `psycopg[c]` on `==armv7` | `psycopg[binary]` on `!=armv7` - astral-sh/uv #9268</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python conditional package dependencies for `psycopg[c]` on `==armv7` | `psycopg[binary]` on `!=armv7`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9268">#9268</a>
+        opened by <a href="https://github.com/zarch">@zarch</a>
+        on 2024-11-20 10:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zarch">@zarch</a> on 2024-11-20 10:00</div>
+            <div class="timeline-body"><p>Hi all,</p>
+<p>I'm working on a project that is using <code>psycopg</code>, unfortunately I need to support different platform and architectures.
+In particular when I'm on <code>armv7</code> I need to install <code>psycopg[c]</code> to properly compile the package for the specific architecture of the host, while for the other platform that I've tested it is fine to install <code>psycopg[binary]</code>.</p>
+<p>I tried to follow the documentation example on <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">pytorch</a>, but still I was not able to get a working <code>pyproject.toml</code> configuration file. This is my attempt:</p>
+<pre><code class="language-toml">[project]
+name = &quot;pg&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;Zarch&quot;, email = &quot;zarch@email.com&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;psycpg&quot;]
+
+[project.optional-dependencies]
+pg = [
+  &quot;psycopg[binary]&gt;=3.2.3&quot;,
+]
+pg_armv7 = [
+  &quot;psycopg[c]&gt;=3.2.3&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;pg&quot; },
+    { extra = &quot;pg_armv7&quot; },
+  ],
+]
+
+[tool.uv.sources]
+psycpg = [
+    {index = &quot;psycopg[binary]&gt;=3.2.3&quot;, extra=&quot;pg&quot;, marker=&quot;platform_machine != 'armv7'&quot;},
+    {index = &quot;psycopg[c]&gt;=3.2.3&quot;, extra=&quot;pg_armv7&quot;, marker=&quot;platform_machine == 'armv7'&quot;},
+]
+
+[project.scripts]
+pg = &quot;pg:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>If I try to sync I got:</p>
+<pre><code class="language-bash">❯ uv sync --all-packages
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 30, column 14
+   |
+30 |     {index = &quot;psycopg[binary]&gt;=3.2.3&quot;, extra=&quot;pg&quot;, marker=&quot;platform_machine != 'armv7'&quot;},
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+Index names may only contain letters, digits, hyphens, underscores, and periods, but found unsupported character (`[`) in: `psycopg[binary]&gt;=3.2.3`
+</code></pre>
+<p>Should the index names also allow <code>[]</code> characters?
+Am I using the correct approach?</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-20 10:07</div>
+            <div class="timeline-body"><p>For this, you don't need to declare the index (it's all pypi), but you can use markers in dependencies:</p>
+<pre><code>dependencies = [
+    &quot;psycopg[binary]&gt;=3.2.3; platform_machine != 'armv7'&quot;,
+    &quot;psycopg[c]&gt;=3.2.3; platform_machine == 'armv7'&quot;,
+    ...
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-11-20 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zarch">@zarch</a> on 2024-11-20 11:37</div>
+            <div class="timeline-body"><p>@konstin thank you for your answer, I've missed your point and I lost myself on the uv source and index management :-)</p>
+<p>I changed the <code>pyproject.toml</code> to:</p>
+<pre><code class="language-toml">[project]
+name = &quot;pg&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;Zarch&quot;, email = &quot;zarch@email.com&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;psycopg[binary]&gt;=3.2.3; platform_machine == 'x86_64'&quot;,
+    &quot;psycopg[c]&gt;=3.2.3; platform_machine == 'armv7l'&quot;,
+]
+
+[project.scripts]
+pg = &quot;pg:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>on linux <code>x86_64</code> if I comment the second line (<code>&quot;psycopg[c]&gt;=3.2.3; platform_machine == 'armv7l'&quot;,</code>) I'm able to sync:</p>
+<pre><code class="language-bash">❯ uv sync
+Resolved 5 packages in 6ms
+   Built pg @ file:///data/src/syn/test/testpsycopg
+Prepared 3 packages in 4.15s
+Installed 4 packages in 9ms
+ + pg==0.1.0 (from file:///data/src/syn/test/testpsycopg)
+ + psycopg==3.2.3
+ + psycopg-binary==3.2.3
+ + typing-extensions==4.12.2
+</code></pre>
+<p>However, if I let both the lines and I execute again the sync I get:</p>
+<pre><code class="language-bash">❯ uv sync
+  × Failed to download and build `psycopg-c==3.2.3`
+  ╰─▶ Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` (exit status: 1)
+
+      [stdout]
+      running dist_info
+      creating /home/zarch/.cache/uv/builds-v0/.tmpnA0zrK/metadata_directory/psycopg_c.egg-info
+      writing /home/zarch/.cache/uv/builds-v0/.tmpnA0zrK/metadata_directory/psycopg_c.egg-info/PKG-INFO
+      writing dependency_links to /home/zarch/.cache/uv/builds-v0/.tmpnA0zrK/metadata_directory/psycopg_c.egg-info/dependency_links.txt
+      writing top-level names to /home/zarch/.cache/uv/builds-v0/.tmpnA0zrK/metadata_directory/psycopg_c.egg-info/top_level.txt
+      writing manifest file '/home/zarch/.cache/uv/builds-v0/.tmpnA0zrK/metadata_directory/psycopg_c.egg-info/SOURCES.txt'
+
+      [stderr]
+      couldn't run 'pg_config' --includedir: [Errno 2] No such file or directory: 'pg_config'
+      error: [Errno 2] No such file or directory: 'pg_config'
+
+  help: `psycopg-c` was included because `pg==0.1.0` depends on `psycopg==3.2.3` which depends on `psycopg-c==3.2.3` which depends on
+        `psycopg-c`
+</code></pre>
+<p>So it seems that <code>uv</code> tried to install <code>psycopg[c]</code> even if the <code>system_platform</code> condition is not satisfied.</p>
+<p>I've noticed that the function <a href="https://github.com/astral-sh/uv/blob/ccc0962cbd01777a53aa2dec8ff2b8f0f7de3a70/crates/uv-configuration/src/target_triple.rs#L404">platform_machine</a> defined in <code>uv-configuration</code> does not return <code>armv7l</code> pip allow archs seems to be, <a href="https://github.com/pypa/pip/blob/fe0925b3c00bf8956a0d33408df692ac364217d4/src/pip/_vendor/packaging/_manylinux.py#L55">see</a>:</p>
+<ul>
+<li><code>armv7l</code></li>
+<li><code>i686</code></li>
+<li><code>x86_64</code></li>
+<li><code>aarch64</code></li>
+<li><code>ppc64</code></li>
+<li><code>ppc64le</code></li>
+<li><code>s390x</code></li>
+<li><code>loongarch64</code></li>
+<li><code>riscv64</code></li>
+</ul>
+<p>few of them seems to be not defined / supported by uv, perhaps actually they are not supported by <code>rust</code>... anyway... I'm not sure if this is link to the issue that I'm experimenting.</p>
+<p>I report the full verbose log to give you better context informations</p>
+<pre><code class="language-bash">❯ RUST_LOG=trace uv sync --verbose
+DEBUG uv 0.5.2
+DEBUG Found project root: `/data/src/syn/test/testpsycopg`
+DEBUG No workspace root found, using project root
+DEBUG Reading Python requests from version file at `/data/src/syn/test/testpsycopg/.python-version`
+DEBUG Using Python request `3.12` from version file at `.python-version`
+TRACE Cached interpreter info for Python 3.12.7, skipping probing: .venv/bin/python3
+DEBUG The virtual environment's Python version satisfies `3.12`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: pg @ file:///data/src/syn/test/testpsycopg
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched `requires-dist` for: `pg==0.1.0`
+  Expected: {Requirement { name: PackageName(&quot;psycopg&quot;), extras: [ExtraName(&quot;binary&quot;)], marker: platform_machine == 'x86_64', source: Registry { sp
+  Actual: {Requirement { name: PackageName(&quot;psycopg&quot;), extras: [ExtraName(&quot;binary&quot;)], marker: platform_machine == 'x86_64', source: Registry { spec
+TRACE Performing lookahead for pg @ file:///data/src/syn/test/testpsycopg
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Narrowed `requires-python` bound to: &gt;=3.12
+DEBUG Narrowed `requires-python` bound to: &gt;=3.12
+DEBUG Solving split (platform_machine == 'x86_64' and python_full_version &gt;= '3.12') (requires-python: RequiresPython { specifiers: VersionSpecifie
+DEBUG Adding direct dependency: pg*
+INFO add_decision: root @ 0a0.dev0 without checking dependencies
+DEBUG Searching for a compatible version of pg @ file:///data/src/syn/test/testpsycopg (*)
+TRACE skipping psycopg[c]&gt;=3.2.3 ; platform_machine == 'armv7l' because of split `platform_machine == 'x86_64' and python_full_version &gt;= '3.12'`
+DEBUG Adding transitive dependency for pg==0.1.0: psycopg{platform_machine == 'x86_64'}&gt;=3.2.3
+DEBUG Adding transitive dependency for pg==0.1.0: psycopg[binary]&gt;=3.2.3
+INFO add_decision: pg @ 0.1.0 without checking dependencies
+TRACE Fetching metadata for psycopg from https://pypi.org/simple/psycopg/
+TRACE cached request https://pypi.org/simple/psycopg/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/psycopg/
+TRACE Received package metadata for: psycopg
+DEBUG Searching for a compatible version of psycopg[binary] (&gt;=3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg[binary]==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg{platform_machine == 'x86_64'}==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg[binary]{platform_machine == 'x86_64'}==3.2.3
+INFO add_decision: psycopg[binary] @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg[binary]{platform_machine == 'x86_64'} (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE Using preference psycopg 3.2.3
+TRACE cached request https://files.pythonhosted.org/packages/ce/21/534b8f5bd9734b7a2fcd3a16b1ee82ef6cad81a4796e95ebf4e0c6a24119/psycopg-3.2.3-py3-n
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ce/21/534b8f5bd9734b7a2fcd3a16b1ee82ef6cad81a4796e95ebf4e0c6a24119/psycopg-
+TRACE Received built distribution metadata for: psycopg==3.2.3
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg-binary{implementation_name != 'pypy'}&gt;=3.2.3, &lt;3.2.3+
+INFO add_decision: psycopg[binary]{platform_machine == 'x86_64'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+TRACE Fetching metadata for psycopg-binary from https://pypi.org/simple/psycopg-binary/
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+DEBUG Adding transitive dependency for psycopg==3.2.3: typing-extensions{python_full_version &lt; '3.13'}&gt;=4.6
+DEBUG Adding transitive dependency for psycopg==3.2.3: tzdata{sys_platform == 'win32'}*
+INFO add_decision: psycopg @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg[binary] (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE Fetching metadata for typing-extensions from https://pypi.org/simple/typing-extensions/
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg-binary{implementation_name != 'pypy'}&gt;=3.2.3, &lt;3.2.3+
+INFO add_decision: psycopg[binary] @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg{platform_machine == 'x86_64'} (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+TRACE Fetching metadata for tzdata from https://pypi.org/simple/tzdata/
+DEBUG Adding transitive dependency for psycopg==3.2.3: typing-extensions{python_full_version &lt; '3.13'}&gt;=4.6
+DEBUG Adding transitive dependency for psycopg==3.2.3: tzdata{sys_platform == 'win32'}*
+INFO add_decision: psycopg{platform_machine == 'x86_64'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg{platform_machine == 'x86_64'} (&gt;=3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg{platform_machine == 'x86_64'}==3.2.3
+INFO add_decision: psycopg{platform_machine == 'x86_64'} @ 3.2.3 without checking dependencies
+TRACE cached request https://pypi.org/simple/typing-extensions/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/typing-extensions/
+TRACE Received package metadata for: typing-extensions
+TRACE cached request https://pypi.org/simple/tzdata/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/tzdata/
+TRACE Received package metadata for: tzdata
+TRACE cached request https://pypi.org/simple/psycopg-binary/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/psycopg-binary/
+TRACE Received package metadata for: psycopg-binary
+DEBUG Searching for a compatible version of psycopg-binary{implementation_name != 'pypy'} (&gt;=3.2.3, &lt;3.2.3+)
+TRACE Using preference psycopg-binary 3.2.3
+DEBUG Selecting: psycopg-binary==3.2.3 [preference] (psycopg_binary-3.2.3-cp312-cp312-macosx_12_0_x86_64.whl)
+DEBUG Adding transitive dependency for psycopg-binary==3.2.3: psycopg-binary==3.2.3
+DEBUG Adding transitive dependency for psycopg-binary==3.2.3: psycopg-binary{implementation_name != 'pypy'}==3.2.3
+INFO add_decision: psycopg-binary{implementation_name != 'pypy'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg-binary{implementation_name != 'pypy'} (==3.2.3)
+TRACE Using preference psycopg-binary 3.2.3
+DEBUG Selecting: psycopg-binary==3.2.3 [preference] (psycopg_binary-3.2.3-cp312-cp312-macosx_12_0_x86_64.whl)
+TRACE Using preference psycopg-binary 3.2.3
+TRACE cached request https://files.pythonhosted.org/packages/55/6b/9805a5c743c1d54dcd035bd5c069202fde21b4cf69857ca40c2a55e69f8c/psycopg_binary-3.2.
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/55/6b/9805a5c743c1d54dcd035bd5c069202fde21b4cf69857ca40c2a55e69f8c/psycopg_
+TRACE Received built distribution metadata for: psycopg-binary==3.2.3
+INFO add_decision: psycopg-binary{implementation_name != 'pypy'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg-binary (==3.2.3)
+TRACE Using preference psycopg-binary 3.2.3
+DEBUG Selecting: psycopg-binary==3.2.3 [preference] (psycopg_binary-3.2.3-cp312-cp312-macosx_12_0_x86_64.whl)
+INFO add_decision: psycopg-binary @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of typing-extensions{python_full_version &lt; '3.13'} (&gt;=4.6)
+TRACE Using preference typing-extensions 4.12.2
+DEBUG Selecting: typing-extensions==4.12.2 [preference] (typing_extensions-4.12.2-py3-none-any.whl)
+DEBUG Adding transitive dependency for typing-extensions==4.12.2: typing-extensions==4.12.2
+DEBUG Adding transitive dependency for typing-extensions==4.12.2: typing-extensions{python_full_version &lt; '3.13'}==4.12.2
+INFO add_decision: typing-extensions{python_full_version &lt; '3.13'} @ 4.12.2 without checking dependencies
+DEBUG Searching for a compatible version of typing-extensions{python_full_version &lt; '3.13'} (==4.12.2)
+TRACE Using preference typing-extensions 4.12.2
+DEBUG Selecting: typing-extensions==4.12.2 [preference] (typing_extensions-4.12.2-py3-none-any.whl)
+TRACE Using preference typing-extensions 4.12.2
+TRACE cached request https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_e
+TRACE Received built distribution metadata for: typing-extensions==4.12.2
+INFO add_decision: typing-extensions{python_full_version &lt; '3.13'} @ 4.12.2 without checking dependencies
+DEBUG Searching for a compatible version of typing-extensions (==4.12.2)
+TRACE Using preference typing-extensions 4.12.2
+DEBUG Selecting: typing-extensions==4.12.2 [preference] (typing_extensions-4.12.2-py3-none-any.whl)
+INFO add_decision: typing-extensions @ 4.12.2 without checking dependencies
+DEBUG Searching for a compatible version of tzdata{sys_platform == 'win32'} (*)
+TRACE Using preference tzdata 2024.2
+DEBUG Selecting: tzdata==2024.2 [preference] (tzdata-2024.2-py2.py3-none-any.whl)
+DEBUG Adding transitive dependency for tzdata==2024.2: tzdata==2024.2
+DEBUG Adding transitive dependency for tzdata==2024.2: tzdata{sys_platform == 'win32'}==2024.2
+INFO add_decision: tzdata{sys_platform == 'win32'} @ 2024.2 without checking dependencies
+DEBUG Searching for a compatible version of tzdata{sys_platform == 'win32'} (==2024.2)
+TRACE Using preference tzdata 2024.2
+DEBUG Selecting: tzdata==2024.2 [preference] (tzdata-2024.2-py2.py3-none-any.whl)
+TRACE Using preference tzdata 2024.2
+TRACE cached request https://files.pythonhosted.org/packages/a6/ab/7e5f53c3b9d14972843a647d8d7a853969a58aecc7559cb3267302c94774/tzdata-2024.2-py2.p
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/a6/ab/7e5f53c3b9d14972843a647d8d7a853969a58aecc7559cb3267302c94774/tzdata-2
+TRACE Received built distribution metadata for: tzdata==2024.2
+INFO add_decision: tzdata{sys_platform == 'win32'} @ 2024.2 without checking dependencies
+DEBUG Searching for a compatible version of tzdata (==2024.2)
+TRACE Using preference tzdata 2024.2
+DEBUG Selecting: tzdata==2024.2 [preference] (tzdata-2024.2-py2.py3-none-any.whl)
+INFO add_decision: tzdata @ 2024.2 without checking dependencies
+DEBUG Tried 5 versions: pg 1, psycopg 1, psycopg-binary 1, typing-extensions 1, tzdata 1
+DEBUG split `platform_machine == 'x86_64' and python_full_version &gt;= '3.12'` resolution took 0.005s
+DEBUG Solving split (platform_machine != 'x86_64' and python_full_version &gt;= '3.12') (requires-python: RequiresPython { specifiers: VersionSpecifie
+DEBUG Adding direct dependency: pg*
+INFO add_decision: root @ 0a0.dev0 without checking dependencies
+DEBUG Searching for a compatible version of pg @ file:///data/src/syn/test/testpsycopg (*)
+TRACE skipping psycopg[binary]&gt;=3.2.3 ; platform_machine == 'x86_64' because of split `platform_machine != 'x86_64' and python_full_version &gt;= '3.1
+DEBUG Pre-fork split `platform_machine != 'x86_64' and python_full_version &gt;= '3.12'` took 0.000s
+DEBUG Splitting resolution on pg==0.1.0 over psycopg into 2 resolution with separate markers
+DEBUG Narrowed `requires-python` bound to: &gt;=3.12
+INFO add_decision: pg @ 0.1.0 without checking dependencies
+DEBUG Narrowed `requires-python` bound to: &gt;=3.12
+DEBUG Adding transitive dependency for pg==0.1.0: psycopg{platform_machine == 'armv7l'}&gt;=3.2.3
+DEBUG Adding transitive dependency for pg==0.1.0: psycopg[c]&gt;=3.2.3
+INFO add_decision: pg @ 0.1.0 without checking dependencies
+DEBUG Solving split (platform_machine == 'armv7l' and python_full_version &gt;= '3.12') (requires-python: RequiresPython { specifiers: VersionSpecifie
+DEBUG Searching for a compatible version of psycopg[c] (&gt;=3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg[c]==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg{platform_machine == 'armv7l'}==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg[c]{platform_machine == 'armv7l'}==3.2.3
+INFO add_decision: psycopg[c] @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg[c]{platform_machine == 'armv7l'} (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE Using preference psycopg 3.2.3
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg-c{implementation_name != 'pypy'}&gt;=3.2.3, &lt;3.2.3+
+INFO add_decision: psycopg[c]{platform_machine == 'armv7l'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE Fetching metadata for psycopg-c from https://pypi.org/simple/psycopg-c/
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+DEBUG Adding transitive dependency for psycopg==3.2.3: typing-extensions{python_full_version &lt; '3.13'}&gt;=4.6
+DEBUG Adding transitive dependency for psycopg==3.2.3: tzdata{sys_platform == 'win32'}*
+INFO add_decision: psycopg @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg[c] (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg-c{implementation_name != 'pypy'}&gt;=3.2.3, &lt;3.2.3+
+INFO add_decision: psycopg[c] @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg{platform_machine == 'armv7l'} (==3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE skipping backports-zoneinfo&gt;=0.2.0 ; python_full_version &lt; '3.9' because of Requires-Python: &gt;=3.12
+TRACE cached request https://pypi.org/simple/psycopg-c/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/psycopg-c/
+DEBUG Adding transitive dependency for psycopg==3.2.3: typing-extensions{python_full_version &lt; '3.13'}&gt;=4.6
+DEBUG Adding transitive dependency for psycopg==3.2.3: tzdata{sys_platform == 'win32'}*
+INFO add_decision: psycopg{platform_machine == 'armv7l'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg{platform_machine == 'armv7l'} (&gt;=3.2.3)
+TRACE Using preference psycopg 3.2.3
+DEBUG Selecting: psycopg==3.2.3 [preference] (psycopg-3.2.3-py3-none-any.whl)
+TRACE Received package metadata for: psycopg-c
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg==3.2.3
+DEBUG Adding transitive dependency for psycopg==3.2.3: psycopg{platform_machine == 'armv7l'}==3.2.3
+INFO add_decision: psycopg{platform_machine == 'armv7l'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg-c{implementation_name != 'pypy'} (&gt;=3.2.3, &lt;3.2.3+)
+TRACE Selecting candidate for psycopg-c with range &gt;=3.2.3, &lt;3.2.3+ with 45 remote versions
+TRACE Found candidate for package psycopg-c with range &gt;=3.2.3, &lt;3.2.3+ after 1 steps: 3.2.3 version
+TRACE Returning candidate for package psycopg-c with range &gt;=3.2.3, &lt;3.2.3+ after 1 steps
+DEBUG Selecting: psycopg-c==3.2.3 [compatible] (psycopg_c-3.2.3.tar.gz)
+DEBUG Adding transitive dependency for psycopg-c==3.2.3: psycopg-c==3.2.3
+DEBUG Adding transitive dependency for psycopg-c==3.2.3: psycopg-c{implementation_name != 'pypy'}==3.2.3
+INFO add_decision: psycopg-c{implementation_name != 'pypy'} @ 3.2.3 without checking dependencies
+DEBUG Searching for a compatible version of psycopg-c{implementation_name != 'pypy'} (==3.2.3)
+TRACE Selecting candidate for psycopg-c with range ==3.2.3 with 45 remote versions
+TRACE Found candidate for package psycopg-c with range ==3.2.3 after 1 steps: 3.2.3 version
+TRACE Returning candidate for package psycopg-c with range ==3.2.3 after 1 steps
+DEBUG Selecting: psycopg-c==3.2.3 [compatible] (psycopg_c-3.2.3.tar.gz)
+TRACE Selecting candidate for psycopg-c with range ==3.2.3 with 45 remote versions
+TRACE Found candidate for package psycopg-c with range ==3.2.3 after 1 steps: 3.2.3 version
+TRACE Returning candidate for package psycopg-c with range ==3.2.3 after 1 steps
+TRACE Checking lock for `/home/zarch/.cache/uv/sdists-v6/pypi/psycopg-c/3.2.3` at `/home/zarch/.cache/uv/sdists-v6/pypi/psycopg-c/3.2.3/.lock`
+DEBUG Acquired lock for `/home/zarch/.cache/uv/sdists-v6/pypi/psycopg-c/3.2.3`
+TRACE cached request https://files.pythonhosted.org/packages/53/ba/74caf4eab78d95a173e65cb81507a589365aeafb1d9c84f374002b51dc53/psycopg_c-3.2.3.tar
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/53/ba/74caf4eab78d95a173e65cb81507a589365aeafb1d9c84f374002b51dc53/psycopg_
+DEBUG No static `pyproject.toml` available for: psycopg-c==3.2.3 (PyprojectToml(FieldNotFound(&quot;project&quot;)))
+DEBUG No static `PKG-INFO` available for: psycopg-c==3.2.3 (PkgInfo(UnsupportedMetadataVersion(&quot;2.1&quot;)))
+DEBUG No static `egg-info` available for: psycopg-c==3.2.3 (MissingRequiresTxt)
+DEBUG Preparing metadata for: psycopg-c==3.2.3
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12.7
+TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
+DEBUG Adding direct dependency: setuptools&gt;=49.2.0
+DEBUG Adding direct dependency: wheel&gt;=0.37
+INFO add_decision: root @ 0a0.dev0 without checking dependencies
+TRACE Fetching metadata for setuptools from https://pypi.org/simple/setuptools/
+TRACE Fetching metadata for wheel from https://pypi.org/simple/wheel/
+TRACE cached request https://pypi.org/simple/wheel/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/wheel/
+TRACE Received package metadata for: wheel
+TRACE Selecting candidate for wheel with range &gt;=0.37 with 77 remote versions
+TRACE Found candidate for package wheel with range &gt;=0.37 after 1 steps: 0.45.0 version
+TRACE Returning candidate for package wheel with range &gt;=0.37 after 1 steps
+TRACE cached request https://files.pythonhosted.org/packages/92/81/65ae90d584a73ca976d8f1eb83e2f58447a4055a9fb3ae69b28721070bdf/wheel-0.45.0-py3-no
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/92/81/65ae90d584a73ca976d8f1eb83e2f58447a4055a9fb3ae69b28721070bdf/wheel-0.
+TRACE Received built distribution metadata for: wheel==0.45.0
+TRACE cached request https://pypi.org/simple/setuptools/ is storable because its response has a 'public' cache-control directive
+TRACE freshness lifetime found via cache-control max age setting: 600s
+DEBUG Found fresh response for: https://pypi.org/simple/setuptools/
+TRACE Received package metadata for: setuptools
+TRACE Selecting candidate for setuptools with range &gt;=49.2.0 with 584 remote versions
+DEBUG Searching for a compatible version of setuptools (&gt;=49.2.0)
+TRACE Selecting candidate for setuptools with range &gt;=49.2.0 with 584 remote versions
+TRACE Found candidate for package setuptools with range &gt;=49.2.0 after 1 steps: 75.5.0 version
+TRACE Found candidate for package setuptools with range &gt;=49.2.0 after 1 steps: 75.5.0 version
+TRACE Returning candidate for package setuptools with range &gt;=49.2.0 after 1 steps
+TRACE Returning candidate for package setuptools with range &gt;=49.2.0 after 1 steps
+DEBUG Selecting: setuptools==75.5.0 [compatible] (setuptools-75.5.0-py3-none-any.whl)
+TRACE cached request https://files.pythonhosted.org/packages/fe/df/88ccbee85aefbca071db004fdc8f8d2507d55d5a9dc27ebb93c92edb1bd8/setuptools-75.5.0-p
+TRACE freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/fe/df/88ccbee85aefbca071db004fdc8f8d2507d55d5a9dc27ebb93c92edb1bd8/setuptoo
+TRACE Received built distribution metadata for: setuptools==75.5.0
+TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; '3.10' and extra == 'core' because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; '3.11' and extra == 'core' because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; '3.10' and extra == 'type' because of Requires-Python: &gt;=3.12.7
+INFO add_decision: setuptools @ 75.5.0 without checking dependencies
+DEBUG Searching for a compatible version of wheel (&gt;=0.37)
+TRACE Selecting candidate for wheel with range &gt;=0.37 with 77 remote versions
+TRACE Found candidate for package wheel with range &gt;=0.37 after 1 steps: 0.45.0 version
+TRACE Returning candidate for package wheel with range &gt;=0.37 after 1 steps
+DEBUG Selecting: wheel==0.45.0 [compatible] (wheel-0.45.0-py3-none-any.whl)
+INFO add_decision: wheel @ 0.45.0 without checking dependencies
+DEBUG Tried 2 versions: setuptools 1, wheel 1
+DEBUG marker environment resolution took 0.002s
+TRACE Resolution: ResolverEnvironment { kind: Specific { marker_env: ResolverMarkerEnvironment(MarkerEnvironment { inner: MarkerEnvironmentInner {
+TRACE Resolution edge: ROOT -&gt; wheel
+TRACE Resolution edge:     0a0.dev0 -&gt; 0.45.0
+TRACE Resolution edge: ROOT -&gt; setuptools
+TRACE Resolution edge:     0a0.dev0 -&gt; 75.5.0
+DEBUG Installing in wheel==0.45.0, setuptools==75.5.0 in /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T
+DEBUG Requirement already cached: wheel==0.45.0
+DEBUG Requirement already cached: setuptools==75.5.0
+DEBUG Installing build requirements: wheel==0.45.0, setuptools==75.5.0
+TRACE Extracting file name=PackageName(&quot;wheel&quot;)
+TRACE Extracting file name=PackageName(&quot;setuptools&quot;)
+TRACE Extracted 37 files name=PackageName(&quot;wheel&quot;)
+TRACE Writing entrypoints name=PackageName(&quot;wheel&quot;)
+TRACE No data name=PackageName(&quot;wheel&quot;)
+TRACE Writing extra metadata name=PackageName(&quot;wheel&quot;)
+TRACE Writing record name=PackageName(&quot;wheel&quot;)
+TRACE Extracted 504 files name=PackageName(&quot;setuptools&quot;)
+TRACE No entrypoints name=PackageName(&quot;setuptools&quot;)
+TRACE No data name=PackageName(&quot;setuptools&quot;)
+TRACE Writing extra metadata name=PackageName(&quot;setuptools&quot;)
+TRACE Writing record name=PackageName(&quot;setuptools&quot;)
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `cython_backend.get_requires_for_build_wheel()`
+DEBUG Calling `cython_backend.prepare_metadata_for_build_wheel()`
+DEBUG running dist_info
+DEBUG creating /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info
+DEBUG writing /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/PKG-INFO
+DEBUG writing dependency_links to /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/dependency_links.txt
+DEBUG writing top-level names to /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/top_level.txt
+DEBUG writing manifest file '/home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/SOURCES.txt'
+DEBUG couldn't run 'pg_config' --includedir: [Errno 2] No such file or directory: 'pg_config'
+DEBUG error: [Errno 2] No such file or directory: 'pg_config'
+DEBUG Released lock at `/home/zarch/.cache/uv/sdists-v6/pypi/psycopg-c/3.2.3/.lock`
+TRACE Received source distribution metadata for: psycopg-c==3.2.3
+  × Failed to download and build `psycopg-c==3.2.3`
+  ╰─▶ Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` (exit status: 1)
+
+      [stdout]
+      running dist_info
+      creating /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info
+      writing /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/PKG-INFO
+      writing dependency_links to /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/dependency_links.txt
+      writing top-level names to /home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/top_level.txt
+      writing manifest file '/home/zarch/.cache/uv/builds-v0/.tmpDv3v5T/metadata_directory/psycopg_c.egg-info/SOURCES.txt'
+
+      [stderr]
+      couldn't run 'pg_config' --includedir: [Errno 2] No such file or directory: 'pg_config'
+      error: [Errno 2] No such file or directory: 'pg_config'
+
+  help: `psycopg-c` was included because `pg==0.1.0` depends on `psycopg==3.2.3` which depends on `psycopg-c==3.2.3` which depends on
+        `psycopg-c`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-20 12:40</div>
+            <div class="timeline-body"><p>uv tries to build a universal resolution that works on all targets, so it needs to know the dependencies of psycopg-c to lock only packages that are compatible on armv7l. In this case, we need to build because psycopg-c has only a source distribution, and this specific source distribution doesn't tell us dependency metadata without a build. There are some options for this:</p>
+<ul>
+<li>Installing the postgres headers on your dev machine (they don't need to exist on x86_64 target machines)</li>
+<li>psycopg-c updates their build backend to publish a source distribution with Metadata-Version 2.2 or higher. Currently, the source distribution has Metadata-Version 2.1, which uv can't use for resolution (https://peps.python.org/pep-0643/)</li>
+<li>Specify an override https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata</li>
+</ul>
+<hr />
+<blockquote>
+<pre><code class="language-toml">dependencies = [
+   &quot;psycopg[binary]&gt;=3.2.3; platform_machine == 'x86_64'&quot;,
+   &quot;psycopg[c]&gt;=3.2.3; platform_machine == 'armv7l'&quot;,
+]
+</code></pre>
+</blockquote>
+<p>Note that you're now not installing psycopg at all on other architectures. If you're only interested in those two architectures, you can set <code>tool.uv.environments</code> to those two.</p>
+<hr />
+<blockquote>
+<p>I've noticed that the function <a href="https://github.com/astral-sh/uv/blob/ccc0962cbd01777a53aa2dec8ff2b8f0f7de3a70/crates/uv-configuration/src/target_triple.rs#L404">platform_machine</a> defined in uv-configuration does not return armv7l pip allow archs seems to be, <a href="https://github.com/pypa/pip/blob/fe0925b3c00bf8956a0d33408df692ac364217d4/src/pip/_vendor/packaging/_manylinux.py#L55">see</a></p>
+</blockquote>
+<p>These are only used for downloading pre-built python interpreters (because we don't have a python interpreter yet as reference), which have a limited list of supported platforms. When resolving or installing, we're asking the real python interpreter for its values for the environment markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zarch">@zarch</a> on 2024-11-20 14:58</div>
+            <div class="timeline-body"><p>Hi @konstin,</p>
+<p>thank you for the support!</p>
+<blockquote>
+<p>Installing the postgres headers on your dev machine (they don't need to exist on x86_64 target machines)</p>
+</blockquote>
+<p>I confirm that installing on my <code>x86_64</code> machine the <code>libpq-dev</code> fix the issues, <code>uv</code> is able to sync without compiling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zarch on 2024-11-20 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:34 UTC
+    </footer>
+</body>
+</html>

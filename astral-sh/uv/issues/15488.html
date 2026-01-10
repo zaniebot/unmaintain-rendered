@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMake `find_package(Python ...)` Failed with `uv` (Or, python-dev is not installed) - astral-sh/uv #15488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>CMake `find_package(Python ...)` Failed with `uv` (Or, python-dev is not installed)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15488">#15488</a>
+        opened by <a href="https://github.com/jamesnulliu">@jamesnulliu</a>
+        on 2025-08-24 18:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesnulliu">@jamesnulliu</a> on 2025-08-24 18:20</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I am moving from <code>conda</code> to <code>uv</code>, but meet a problem when building a python project (specifically, <a href="https://github.com/vllm-project/vllm">vllm</a>), which contains cmake build.</p>
+<p>The key error shows that:</p>
+<pre><code>-- The CXX compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Build type: RelWithDebInfo
+-- Target device: cuda
+-- Could NOT find Python (missing: Python_INCLUDE_DIRS Interpreter Development.Module Development.SABIModule)
+-- Configuring incomplete, errors occurred!
+
+[stderr]
+/home/james/Projects/vllm/.venv/lib/python3.12/site-packages/setuptools_scm/git.py:202: UserWarning: &quot;/home/james/Projects/vllm&quot; is
+shallow and may cause errors
+  warnings.warn(f'&quot;{wd.path}&quot; is shallow and may cause errors')
+/home/james/Projects/vllm/.venv/lib/python3.12/site-packages/setuptools_scm/_integration/version_inference.py:51: UserWarning: version
+of None already set
+  warnings.warn(self.message)
+CMake Error at cmake/utils.cmake:10 (message):
+  Unable to find python matching:
+  /home/james/Projects/vllm/.venv/bin/python3.
+Call Stack (most recent call first):
+  CMakeLists.txt:58 (find_python_from_executable)
+</code></pre>
+<p>Which is actually caused by <code>find_package(Python ...)</code> in:</p>
+<pre><code>macro (find_python_from_executable EXECUTABLE SUPPORTED_VERSIONS)
+  file(REAL_PATH ${EXECUTABLE} EXECUTABLE)
+  set(Python_EXECUTABLE ${EXECUTABLE})
+  find_package(Python COMPONENTS Interpreter Development.Module Development.SABIModule)
+  if (NOT Python_FOUND)
+    message(FATAL_ERROR &quot;Unable to find python matching: ${EXECUTABLE}.&quot;)
+  endif()
+  set(_VER &quot;${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}&quot;)
+  set(_SUPPORTED_VERSIONS_LIST ${SUPPORTED_VERSIONS} ${ARGN})
+  if (NOT _VER IN_LIST _SUPPORTED_VERSIONS_LIST)
+    message(FATAL_ERROR
+      &quot;Python version (${_VER}) is not one of the supported versions: &quot;
+      &quot;${_SUPPORTED_VERSIONS_LIST}.&quot;)
+  endif()
+  message(STATUS &quot;Found python matching: ${EXECUTABLE}.&quot;)
+endmacro()
+</code></pre>
+<p><strong>I believe the key problem is that <code>uv</code> does not install the headers and lib (which includes cmake configs), and that prevents me from python &amp; C++ development.</strong></p>
+<p>What should I do to install python dev-pack with <code>uv</code>?</p>
+<p><strong>NOTE</strong>: Currently, this problem can be solved by running <code>apt-get install python3.12-dev</code>, but I don't want to install it with <code>apt</code> cuz one of the reasons I use <code>uv</code> is to keep my system env clean.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.8.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jamesnulliu on 2025-08-24 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "CMake `find_package(Python ...)` Failed when Using `uv` (Or, python-dev is not installed)" to "CMake `find_package(Python ...)` Failed with `uv` (Or, python-dev is not installed)" by @jamesnulliu on 2025-08-24 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-25 13:08</div>
+            <div class="timeline-body"><p>CC @geofft</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-08-25 15:08</div>
+            <div class="timeline-body"><p>I suspect that the cause here is that you're using your system version of Python, not the version we provide, and so it is correct to install <code>python3.12-dev</code> to build things from source using that Python. uv defaults to using your system Python if it's usable.</p>
+<p>Are you manually creating a venv? If you don't want to use the system-provided Python version, can you try using <code>--managed-python</code> and see if that works out of the box without installing anything from apt?</p>
+<p>For reference, I cannot reproduce this with our managed versions of Python, and we do install the development components by default. (I'm also on Ubuntu 24.04, which has Python 3.12, and specifically the fact that you have python3.12 in your paths makes me suspect you're using the Ubuntu-provided version of Python.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesnulliu">@jamesnulliu</a> on 2025-08-25 22:56</div>
+            <div class="timeline-body"><blockquote>
+<p>For reference, I cannot reproduce this with our managed versions of Python, and we do install the development components by default.</p>
+</blockquote>
+<p>@geofft Thank you for your response. I found the problem is that &quot;<strong>I am indeed using the system python</strong>&quot;, by checking target of python in my venv (which should be a symbolic link) :</p>
+<pre><code>$ source .venv/bin/activate
+$ ll $(which python)
+&gt; lrwxrwxrwx 1 root root 76 Aug 25 22:25 /home/james/Projects/vllm/.venv/bin/python -&gt; /usr/bin/python3
+</code></pre>
+<p><strong>THE REASON IS THAT</strong> when I created my venv with command:</p>
+<pre><code>$ uv venv -p 3.12
+</code></pre>
+<p>uv would first check if there has been a python in the system, just like the <a href="https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment">doc</a> says:</p>
+<blockquote>
+<p>Note this requires the requested Python version to be available on the system. However, if unavailable, uv will download Python for you.</p>
+</blockquote>
+<p>I fixed this by removing my system python and then creating venv again:</p>
+<pre><code>$ apt remove python python3 python3.12 python-dev &amp;&amp; apt autoremove
+$ rm -rf .venv
+$ uv venv -p 3.12
+&gt; Using CPython 3.12.11
+&gt; Creating virtual environment at: .venv
+&gt; Activate with: source .venv/bin/activate
+$ source .venv/bin/activate
+$ ll $(which python)
+$ lrwxrwxrwx 1 root root 76 Aug 25 15:42 /root/vllm/.venv/bin/python -&gt; /root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/bin/python3.12*
+</code></pre>
+<p>This time we can see that I am using the python downloaded by uv correctly.</p>
+<p>Moreover, under &quot;/root/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu&quot;, I found the &quot;include&quot; and &quot;lib&quot; dirs which are exactly what I need to build vllm.</p>
+<p>Thank you for your response again. Now I can build cuda kernels in vllm properly.</p>
+<p><strong>HOWEVER, I AM STILL WONDERED THAT:</strong></p>
+<ol>
+<li>Instead of removing the system python, is there a way to force uv to download python instead of checking the system python when creating venv?</li>
+<li>Which environment variable controls the downloaded python path (which is by default &quot;~/.local/share/uv/&quot;)? Can I change it to a public directory?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-25 23:10</div>
+            <div class="timeline-body"><ol>
+<li>Yep! <code>--managed-python</code>. See https://docs.astral.sh/uv/concepts/python-versions/#requiring-or-disabling-managed-python-versions</li>
+<li>We respect the XDG variables, or you can use <code>UV_PYTHON_INSTALL_DIR</code> https://docs.astral.sh/uv/reference/environment/#uv_python_install_dir</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesnulliu">@jamesnulliu</a> on 2025-08-25 23:13</div>
+            <div class="timeline-body"><blockquote>
+<ol>
+<li><p>Yep! <code>--managed-python</code>. See https://docs.astral.sh/uv/concepts/python-versions/#requiring-or-disabling-managed-python-versions</p>
+</li>
+<li><p>We respect the XDG variables, or you can use <code>UV_PYTHON_INSTALL_DIR</code> https://docs.astral.sh/uv/reference/environment/#uv_python_install_dir</p>
+</li>
+</ol>
+</blockquote>
+<p>@zanieb Thank you for the references. I would check the doc right away!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jamesnulliu on 2025-08-25 23:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

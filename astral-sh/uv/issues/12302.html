@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python list: don't list system interpreters twice when directories are symlinked - astral-sh/uv #12302</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>python list: don't list system interpreters twice when directories are symlinked</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12302">#12302</a>
+        opened by <a href="https://github.com/gotmax23">@gotmax23</a>
+        on 2025-03-18 22:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gotmax23">@gotmax23</a> on 2025-03-18 22:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-console">$ cpython-3.13.2-linux-x86_64-gnu     /usr/bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu     /bin/python3.13
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python3.12
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python3 -&gt; python3.12
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python -&gt; ./python3
+cpython-3.12.9-linux-x86_64-gnu     /bin/python3.12
+cpython-3.12.9-linux-x86_64-gnu     /bin/python3 -&gt; python3.12
+cpython-3.12.9-linux-x86_64-gnu     /bin/python -&gt; ./python3
+cpython-3.11.11-linux-x86_64-gnu    /usr/bin/python3.11
+cpython-3.11.11-linux-x86_64-gnu    /bin/python3.11
+cpython-3.10.16-linux-x86_64-gnu    /usr/bin/python3.10
+cpython-3.10.16-linux-x86_64-gnu    /bin/python3.10
+cpython-3.9.21-linux-x86_64-gnu     /usr/bin/python3.9
+cpython-3.9.21-linux-x86_64-gnu     /bin/python3.9
+cpython-3.8.20-linux-x86_64-gnu     /usr/bin/python3.8
+cpython-3.8.20-linux-x86_64-gnu     /bin/python3.8
+cpython-3.7.9-linux-x86_64-gnu      .local/share/uv/python/cpython-3.7.9-linux-x86_64-gnu/bin/python3.7 -&gt; python3.7m
+pypy-3.10.16-linux-x86_64-gnu       /usr/bin/pypy3 -&gt; pypy3.10
+pypy-3.10.16-linux-x86_64-gnu       /bin/pypy3 -&gt; pypy3.10
+$ ls -ald /bin
+lrwxrwxrwx. 1 root root 7 Jan 23  2024 /bin -&gt; usr/bin
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.13.6-100.fc40.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.4</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @gotmax23 on 2025-03-18 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 23:07</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/5308</li>
+<li>https://github.com/astral-sh/uv/issues/6690#issuecomment-2312752199</li>
+</ul>
+<p>This is intentional, though this duplicate directory case is a fairly compelling one to de-duplicate (or a case to change the default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-03-18 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gotmax23">@gotmax23</a> on 2025-03-18 23:23</div>
+            <div class="timeline-body"><p>Got it. Not that on some distributions <code>/bin</code>, <code>/sbin</code>, and <code>/usr/sbin</code> are all symlinks to <code>/usr/bin</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 23:29</div>
+            <div class="timeline-body"><p>Yeah that seems far too noisy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gotmax23">@gotmax23</a> on 2025-03-20 23:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah that seems far too noisy.</p>
+</blockquote>
+<p>Yup. For the record, this is what it looks like in a Fedora Rawhide container (that has the bin-sbin merge) with all the available Pythons installed:</p>
+<pre><code>cpython-3.14.0a6-linux-x86_64-gnu    /usr/sbin/python3.14
+cpython-3.14.0a6-linux-x86_64-gnu    /usr/bin/python3.14
+cpython-3.14.0a6-linux-x86_64-gnu    /sbin/python3.14
+cpython-3.14.0a6-linux-x86_64-gnu    /bin/python3.14
+cpython-3.13.2-linux-x86_64-gnu      /usr/sbin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/sbin/python3 -&gt; python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/sbin/python -&gt; ./python3
+cpython-3.13.2-linux-x86_64-gnu      /usr/bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/bin/python3 -&gt; python3.13
+cpython-3.13.2-linux-x86_64-gnu      /usr/bin/python -&gt; ./python3
+cpython-3.13.2-linux-x86_64-gnu      /sbin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /sbin/python3 -&gt; python3.13
+cpython-3.13.2-linux-x86_64-gnu      /sbin/python -&gt; ./python3
+cpython-3.13.2-linux-x86_64-gnu      /bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu      /bin/python3 -&gt; python3.13
+cpython-3.13.2-linux-x86_64-gnu      /bin/python -&gt; ./python3
+cpython-3.12.9-linux-x86_64-gnu      /usr/sbin/python3.12
+cpython-3.12.9-linux-x86_64-gnu      /usr/bin/python3.12
+cpython-3.12.9-linux-x86_64-gnu      /sbin/python3.12
+cpython-3.12.9-linux-x86_64-gnu      /bin/python3.12
+cpython-3.11.11-linux-x86_64-gnu     /usr/sbin/python3.11
+cpython-3.11.11-linux-x86_64-gnu     /usr/bin/python3.11
+cpython-3.11.11-linux-x86_64-gnu     /sbin/python3.11
+cpython-3.11.11-linux-x86_64-gnu     /bin/python3.11
+cpython-3.10.16-linux-x86_64-gnu     /usr/sbin/python3.10
+cpython-3.10.16-linux-x86_64-gnu     /usr/bin/python3.10
+cpython-3.10.16-linux-x86_64-gnu     /sbin/python3.10
+cpython-3.10.16-linux-x86_64-gnu     /bin/python3.10
+cpython-3.9.21-linux-x86_64-gnu      /usr/sbin/python3.9
+cpython-3.9.21-linux-x86_64-gnu      /usr/bin/python3.9
+cpython-3.9.21-linux-x86_64-gnu      /sbin/python3.9
+cpython-3.9.21-linux-x86_64-gnu      /bin/python3.9
+pypy-3.11.11-linux-x86_64-gnu        /usr/sbin/pypy3 -&gt; pypy3.11
+pypy-3.11.11-linux-x86_64-gnu        /usr/bin/pypy3 -&gt; pypy3.11
+pypy-3.11.11-linux-x86_64-gnu        /sbin/pypy3 -&gt; pypy3.11
+pypy-3.11.11-linux-x86_64-gnu        /bin/pypy3 -&gt; pypy3.11
+</code></pre>
+<p>Indeed very noisy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 23:08</div>
+            <div class="timeline-body"><p>I think we can handle this with <code>is_same_file</code> on directories during <code>PATH</code> iteration — that's quadratic though 🤔. I can't think of why we'd want to discover these all as separate interpreters in <em>any</em> case?</p>
+<p>@BurntSushi random but perhaps you have an intuition for how to do that well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-03-21 11:58</div>
+            <div class="timeline-body"><p>@zanieb If I'm understanding correctly here, I believe that's where <a href="https://docs.rs/same-file/latest/same_file/struct.Handle.html"><code>same-file::Handle</code></a> should come in handy. You can get one of those for each path you want to consider and stuff them in a <code>HashSet</code>. This would avoid needing to do pairwise equality checks for all pairs of paths.</p>
+<p>The downside is that they all need to be open file handles. Depending on how many you have, this can run afoul of max open file descriptor limits (which will vary from system to system).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 13:42</div>
+            <div class="timeline-body"><p>Cool thanks, that's exactly the kind of thing I was looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12367.html">astral-sh/uv#12367</a> on 2025-03-21 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-03 16:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

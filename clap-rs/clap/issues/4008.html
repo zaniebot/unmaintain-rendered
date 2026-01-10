@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add ability to override default naming convention for ValueEnum variants - clap-rs/clap #4008</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add ability to override default naming convention for ValueEnum variants</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4008">#4008</a>
+        opened by <a href="https://github.com/mfreeborn">@mfreeborn</a>
+        on 2022-07-31 10:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mfreeborn">@mfreeborn</a> on 2022-07-31 10:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.2.16</p>
+<h3>Describe your use case</h3>
+<p>I'm deriving <code>ValueEnum</code> to parse values for one of the command line options into a set of discrete values. The default derive macro converts enum variants into kebab-case possible values, but I would like to override that and have them in snake_case. Here's some code:</p>
+<pre><code class="language-rust">#[derive(Clone, clap::ValueEnum)]
+enum EventName {
+    Sunrise,
+    CivilDawn,
+    CustomAM,
+}
+
+// ValueEnum provides the following string values which are allowed when passed over the command line: [sunrise, civil-dawn, custom-am]
+
+// But I would like the values to be snake_case, so I have to implement `ValueEnum` directly:
+
+#[derive(Clone)]
+enum EventName {
+    Sunrise,
+    CivilDawn,
+    CustomAM,
+}
+
+impl clap::ValueEnum for EventName {
+    fn value_variants&lt;'a&gt;() -&gt; &amp;'a [Self] {
+        &amp;[
+            Self::Sunrise,
+            Self::CivilDawn,
+            Self::CustomAM,
+        ]
+    }
+
+    fn to_possible_value&lt;'a&gt;(&amp;self) -&gt; ::std::option::Option&lt;clap::PossibleValue&lt;'a&gt;&gt; {
+        match self {
+            Self::Sunrise =&gt; Some(clap::PossibleValue::new(&quot;sunrise&quot;)),
+            Self::CivilDawn =&gt; Some(clap::PossibleValue::new(&quot;civil_dawn&quot;)),
+            Self::CustomAM =&gt; Some(clap::PossibleValue::new(&quot;custom_am&quot;)),
+        }
+    }
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Taking inspiration from <code>serde</code>, it should be possible to rename the variants using a macro. <code>serde</code> either lets you <a href="https://serde.rs/container-attrs.html#rename_all">annotate the whole <code>enum</code></a> and set the case e.g.:</p>
+<pre><code class="language-rust">#[derive(Clone, clap::ValueEnum)]
+#[clap(rename_all = &quot;kebab_case&quot;)]
+enum EventName {
+    Sunrise,
+    CivilDawn,
+    CustomAM,
+}
+</code></pre>
+<p>or allows <a href="https://serde.rs/variant-attrs.html#rename">annotating individual variants</a>, e.g.:</p>
+<pre><code class="language-rust">#[derive(Clone, clap::ValueEnum)]
+enum EventName {
+    Sunrise,
+    #[clap(rename = &quot;civil_dawn&quot;)]
+    CivilDawn,
+    #[clap(rename = &quot;custom_am&quot;)]
+    CustomAM,
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @mfreeborn on 2022-07-31 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-01 17:06</div>
+            <div class="timeline-body"><p>What about the existing <a href="https://docs.rs/clap/latest/clap/_derive/index.html#value-enum-attributes">rename_all attribute</a>.  I don't know if we have any examples but we do have <a href="https://github.com/clap-rs/clap/blob/master/tests/derive/value_enum.rs#L214">some tests</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfreeborn">@mfreeborn</a> on 2022-08-01 17:58</div>
+            <div class="timeline-body"><p>Yes that's exactly what I was looking for. I see that one can also use #[clap(name = &quot;anything you like&quot;)] to rename individual variants. The problem was that I was looking in the wrong place, here: https://docs.rs/clap/latest/clap/trait.ValueEnum.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-01 18:04</div>
+            <div class="timeline-body"><p>There is enough overlapping derive documentation that we haven't put it all on each trait's documentation.  We do call out there being documentation for attributes though items like that can easily be missed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfreeborn">@mfreeborn</a> on 2022-08-01 18:11</div>
+            <div class="timeline-body"><p>Ah hah, and the contents item 2.4 on the derive reference page uses the deprecated Arg Enum naming, so the link doesn't work when you click on it. It should all be much simpler when the docs get updated to fix #4009</p>
+<hr />
+<p>From: Ed Page <em><strong>@</strong></em>.<em><strong>&gt;
+Sent: Monday, August 1, 2022 7:04:22 PM
+To: clap-rs/clap ***@</strong></em>.<em><strong>&gt;
+Cc: Michael Freeborn ***@</strong></em>.<em><strong>&gt;; Author ***@</strong></em>.***&gt;
+Subject: Re: [clap-rs/clap] Add ability to override default naming convention for ValueEnum variants (Issue #4008)</p>
+<p>There is enough overlapping derive documentation that we haven't put it all on each trait's documentation. We do call out there being documentation for attributes though items like that can easily be missed.</p>
+<p>—
+Reply to this email directly, view it on GitHub<a href="https://github.com/clap-rs/clap/issues/4008#issuecomment-1201534698">https://github.com/clap-rs/clap/issues/4008#issuecomment-1201534698</a>, or unsubscribe<a href="https://github.com/notifications/unsubscribe-auth/AHSVKWH4LDIK5O2U4XDFBOTVXAGSNANCNFSM55EVISLQ">https://github.com/notifications/unsubscribe-auth/AHSVKWH4LDIK5O2U4XDFBOTVXAGSNANCNFSM55EVISLQ</a>.
+You are receiving this because you authored the thread.Message ID: <em><strong>@</strong></em>.***&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4015.html">clap-rs/clap#4015</a> on 2022-08-01 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-01 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4016.html">clap-rs/clap#4016</a> on 2022-08-01 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-01 20:56</div>
+            <div class="timeline-body"><p>Good catch.  Fixed</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:07 UTC
+    </footer>
+</body>
+</html>

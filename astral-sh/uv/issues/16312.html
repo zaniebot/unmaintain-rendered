@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv`-installed Python fails on  macOS `arm64` runners: `Argument list too long` - astral-sh/uv #16312</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv`-installed Python fails on  macOS `arm64` runners: `Argument list too long`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16312">#16312</a>
+        opened by <a href="https://github.com/kdeldycke">@kdeldycke</a>
+        on 2025-10-15 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-10-15 12:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Tl;Dr: Python installed by <code>actions/setup-python</code> are working but not the Python installed by <code>uv</code>.</p>
+<p>A project demonstrate this issue is available at: https://github.com/kdeldycke/nuitka-test/actions/runs/18527824631</p>
+<h3>Failure on <code>macos-26</code> runner</h3>
+<p>This project is a simple <em>Hello World</em> CLI compiled with Nuitka on all major platforms (Ubuntu, macOS and Windows) and 2 different architectures (<code>x86_64</code> and <code>arm64</code>).</p>
+<p>This is performed by a GitHub workflow available at: https://github.com/kdeldycke/nuitka-test/blob/main/.github/workflows/build.yaml</p>
+<p>The process <a href="https://github.com/kdeldycke/nuitka-test/actions/runs/18527824631">works perfectly on all platforms and architectures</a>, but fail for <code>arm64</code> macOS build that relies on a Python installed by <code>uv</code>:</p>
+<p><img width="293" height="429" alt="Image" src="https://github.com/user-attachments/assets/caae1b34-470e-45f4-934f-cbf6d8f0dfdb" /></p>
+<p>We get the following error:</p>
+<pre><code class="language-pytb">Traceback (most recent call last):
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/__main__.py&quot;, line 209, in &lt;module&gt;
+    main()
+    ~~~~^^
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/__main__.py&quot;, line 191, in main
+    MainControl.main()
+    ~~~~~~~~~~~~~~~~^^
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/MainControl.py&quot;, line 1214, in main
+    _main()
+    ~~~~~^^
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/MainControl.py&quot;, line 1078, in _main
+    detectUsedDLLs(
+    ~~~~~~~~~~~~~~^
+        standalone_entry_points=getStandaloneEntryPoints(),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...&lt;2 lines&gt;...
+        ),
+        ^^
+    )
+    ^
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/freezer/Standalone.py&quot;, line 514, in detectUsedDLLs
+    _detectUsedDLLs(
+    ~~~~~~~~~~~~~~~^
+        standalone_entry_point=standalone_entry_point, source_dir=source_dir
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/freezer/Standalone.py&quot;, line 396, in _detectUsedDLLs
+    used_dll_paths = _detectBinaryDLLs(
+        is_main_executable=standalone_entry_point.kind == &quot;executable&quot;,
+    ...&lt;6 lines&gt;...
+        update_cache=not shallNotStoreDependsExeCachedResults(),
+    )
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/freezer/Standalone.py&quot;, line 168, in _detectBinaryDLLs
+    return detectBinaryPathDLLsMacOS(
+        original_dir=os.path.dirname(original_filename),
+    ...&lt;3 lines&gt;...
+        recursive=True,
+    )
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/freezer/DllDependenciesMacOS.py&quot;, line 105, in detectBinaryPathDLLsMacOS
+    stdout = getOtoolDependencyOutput(
+        filename=binary_filename,
+        package_specific_dirs=package_specific_dirs,
+    )
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/utils/SharedLibraries.py&quot;, line 364, in getOtoolDependencyOutput
+    return _getOToolCommandOutput(&quot;-L&quot;, filename, cached=True)
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/utils/SharedLibraries.py&quot;, line 348, in _getOToolCommandOutput
+    _otool_output_cache[cache_key] = executeToolChecked(
+                                     ~~~~~~~~~~~~~~~~~~^
+        logger=postprocessing_logger,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...&lt;2 lines&gt;...
+        absence_message=&quot;The 'otool' is used to analyze dependencies on macOS and required to be found.&quot;,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File &quot;/Users/runner/work/nuitka-test/nuitka-test/.venv/lib/python3.13/site-packages/nuitka/utils/Execution.py&quot;, line 428, in executeToolChecked
+    process = subprocess.Popen(
+        command,
+    ...&lt;3 lines&gt;...
+        shell=False,
+    )
+  File &quot;/opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py&quot;, line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...&lt;5 lines&gt;...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py&quot;, line 1972, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+OSError: [Errno 7] Argument list too long: '/usr/bin/otool'
+</code></pre>
+<p>As you can see above, switching from <code>astral-sh/setup-uv</code> (<code>uv</code>-provided Python) to <code>actions/setup-python</code> (GitHub-sanctioned Python), solves the issue.</p>
+<h3>Regression search: older macOS</h3>
+<p><a href="https://github.com/kdeldycke/nuitka-test/actions/runs/18455997835">Switching the runner image from <code>macos-26</code> (<code>arm64</code>) to <code>macos-15</code> (<code>arm64</code>)</a> does not solve the issue:</p>
+<p><img width="247" height="265" alt="Image" src="https://github.com/user-attachments/assets/f5672194-57ff-44d6-a040-39fe48b406cf" /></p>
+<p>The issue is still the same, so it is not a regression introduced by a new macOS version.</p>
+<h3>Regression search: different architecture</h3>
+<p><a href="https://github.com/kdeldycke/nuitka-test/actions/runs/18443331287">Runs on <code>macos-15-intel</code> (<code>x86_64</code>) do not fail</a>, but all other <code>arm64</code> macOS version fails:</p>
+<p><img width="238" height="167" alt="Image" src="https://github.com/user-attachments/assets/e014165c-1486-4cd6-baca-e52762eabdfc" /></p>
+<p>So the issue affects all macOS <code>arm64</code>.</p>
+<h3>Regression search: older <code>uv</code></h3>
+<p>I tried to run the same workflow against <a href="https://github.com/kdeldycke/nuitka-test/actions/runs/18497296250">different random version of <code>uv</code></a>  (i.e. <code>0.9.2</code>, <code>0.8.24</code>, <code>0.8.8</code>, <code>0.7.22</code>):</p>
+<p><img width="244" height="430" alt="Image" src="https://github.com/user-attachments/assets/46d833ad-137e-4989-bb5c-89afd504fdf6" /></p>
+<p>But again: all fail on <code>arm64</code> version of macOS, but not on <code>x86_64</code>.</p>
+<h3>Context</h3>
+<p>All dependencies have been pinned down to:</p>
+<ul>
+<li>Latest <code>nuitka</code>: 8.2.1</li>
+<li>Latest <code>uv</code>: 0.9.2</li>
+<li>Latest Python (supported by Nuitka): 3.13</li>
+<li>Latest <code>actions/setup-python</code>: 6.0.0</li>
+<li>Latest <code>astral-sh/setup-uv</code>: 7.0.0</li>
+</ul>
+<p>This issue has also been reported at: https://github.com/Nuitka/Nuitka/issues/3637 , where other users are reporting the same behavior with other variation of the same message on arm64 macOS.</p>
+<p><a href="https://github.com/Nuitka/Nuitka/issues/3637#issuecomment-3396388704">Like</a>:</p>
+<pre><code class="language-pytb">FATAL: Error, call to 'install_name_tool' failed: ['/usr/bin/install_name_tool', '-add_rpath', '$ORIGIN/../..:$ORIGIN/..:$ORIGIN', 'build/WLEDVideoSync.app/Contents/MacOS/Quartz/CoreGraphics/_inlines.so'] -&gt; b&quot;error: /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/install_name_tool: changing install names or rpaths can't be redone for: build/WLEDVideoSync.app/Contents/MacOS/Quartz/CoreGraphics/_inlines.so (for architecture x86_64) because larger updated load commands do not fit (the program must be relinked, and you may need to use -headerpad or -headerpad_max_install_names)&quot;.
+</code></pre>
+<pre><code class="language-pytb">FATAL: Error, call to 'otool' failed, command line was too long: ['/usr/bin/otool', '-arch', 'arm64', '-L', '/Users/runner/work/nuitka-test/nuitka-test/__main__.dist/cli.bin']
+</code></pre>
+<p>CC @kayhayen, @ravizhan, @zak-45, @Kyu</p>
+<h3>Platform</h3>
+<p>macOS <code>arm64</code> - v13 / v14 / v15 / v26</p>
+<h3>Version</h3>
+<p>uv 0.9.2</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kdeldycke on 2025-10-15 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Nuitka/Nuitka/issues/3637.html">Nuitka/Nuitka#3637</a> on 2025-10-15 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv`-installed Python fails on  macOS `arm64` runners" to "`uv`-installed Python fails on  macOS `arm64` runners: `Argument list too long`" by @kdeldycke on 2025-10-15 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-10-15 12:34</div>
+            <div class="timeline-body"><p>Is it possible that this issue be related to: https://github.com/astral-sh/python-build-standalone/issues/783 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/issues/783.html">astral-sh/python-build-standalone#783</a> on 2025-10-15 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-15 20:51</div>
+            <div class="timeline-body"><p>To clarify... you're using Homebrew Python according to the error traceback? So specifically the problem is that uv is invoking Python? I think I'll need a more minimal example, something succinct that captures the relevant invocation, before I can help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-15 20:53</div>
+            <div class="timeline-body"><p>Can you share verbose logs for your uv invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-10-16 05:41</div>
+            <div class="timeline-body"><p>OK we are trying to isolate the issue even more with the Nuitka community.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-10-16 22:05</div>
+            <div class="timeline-body"><p>I will look in more detail tomorrow, but on a quick glance, I see that the code in question is</p>
+<pre><code class="language-py">def getOtoolDependencyOutput(filename, package_specific_dirs):
+    with withEnvironmentPathAdded(&quot;DYLD_LIBRARY_PATH&quot;, *package_specific_dirs):
+        return _getOToolCommandOutput(&quot;-L&quot;, filename, cached=True)
+</code></pre>
+<p>The &quot;Argument list too long&quot; error can happen in two cases: either the actual argument list is too long, or the environment block is too big. In this particular case it looks like the argument list is pretty small (it's in your output) but there is an environment variable being set in the call. Can you find what <code>package_specific_dirs</code> is set to? If it's overly long we should figure out why.</p>
+<pre><code>$ DYLD_LIBRARY_PATH=$(python3 -c 'print(&quot;x&quot; * 1048576)') otool -L /bin/cat
+-bash: /usr/bin/otool: Argument list too long
+</code></pre>
+<p>(Also, I'm pretty sure <code>otool</code>'s behavior does not change with <code>DYLD_LIBRARY_PATH</code>, so maybe this line of code can just be removed, although of course that doesn't answer the question of why the variable is unreasonably big. I know <code>ldd</code>'s behavior changes with <code>LD_LIBRARY_PATH</code>, maybe this code was patterned off of that but not updated?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kayhayen">@kayhayen</a> on 2025-10-17 14:35</div>
+            <div class="timeline-body"><p>That totally rings a bell, sorry for needing you to point that out, I can take it from there. Indeed with Homebrew, I recently made a change where I just added all its directories for rpath resolution. Apparently not a good idea.</p>
+<p>And indeed, I was trying to mimic what LD_LIBRARY_PATH does on other OSes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kayhayen">@kayhayen</a> on 2025-10-17 14:36</div>
+            <div class="timeline-body"><p>I think the difference may just be that for uv-Python there is a few more such directories than for CPython, or longer paths for them, so it's really just a stupid coincidence of being at the edge of the limit and going over it for very unrelated reasons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-10-17 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-10-18 14:19</div>
+            <div class="timeline-body"><p>Issue has been fixed upstream in Nuitka and the fix will be available in 2.8.2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kdeldycke on 2025-10-18 14:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

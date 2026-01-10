@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flake8-datetimez (DTZ) should check datetime.combine - astral-sh/ruff #2089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>flake8-datetimez (DTZ) should check datetime.combine</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2089">#2089</a>
+        opened by <a href="https://github.com/hofrob">@hofrob</a>
+        on 2023-01-22 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hofrob">@hofrob</a> on 2023-01-22 17:26</div>
+            <div class="timeline-body"><p>One thing upfront, this is already missing in the <code>flake8</code> plugin. The <a href="https://docs.python.org/3.11/library/datetime.html?highlight=combine#datetime.datetime.combine"><code>datetime.combine</code></a> method accepts a timezone as an optional third parameter. It would make sense to create a rule that checks if that parameter is used, just like the other <code>flake8-datetimez</code> rules.</p>
+<p>I'm aware that ruff is trying to copy the behavior of those plugins first. And there might be more methods that have an optional timezone parameter.</p>
+<p>The point of this issue is to:</p>
+<ul>
+<li>decide if you want to expand the DTZ rules</li>
+<li>and if yes if you first want someone to do more research to collect all <code>datetime</code> methods that should be checked</li>
+<li>or if you preferred me first creating an issue/PR for the <code>flake8</code> plugin</li>
+</ul>
+<h1>the actual rule</h1>
+<pre><code class="language-py">import datetime
+import zoneinfo
+
+# Wrong:
+offset_naive = datetime.datetime.combine(
+    datetime.date(2023, 1, 22), datetime.datetime.min.time()
+)
+# this will create an offset-naive datetime
+
+# Correct:
+offset_aware = datetime.datetime.combine(
+    datetime.date(2023, 1, 22),
+    datetime.datetime.min.time(),
+    zoneinfo.ZoneInfo(&quot;Europe/Vienna&quot;),
+)
+# this will create an offset-aware datetime
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-22 18:32</div>
+            <div class="timeline-body"><p>My general philosophy is that I'm happy to deviate from plugins in cases that are clearly wrong (false positives or false negatives), and/or in cases where the original behavior of the plugin can be restored via changes in settings. (For example, we changed Pylint's &quot;magic constant&quot; rule to ignore strings by default, but users can change that as a setting.)</p>
+<p>In this case, it feels like a reasonable spot to add a new rule, regardless of the upstream behavior, since this is a false-negative. The main question for me is whether it should be in <code>DTZ</code>, or <code>RUF</code>. It's obviously more at-home in <code>DTZ</code>, but if we pick some rule code (like <code>DTZ008</code>), and then the plugin expands to include some other rule under that prefix, we'd be in a weird spot. (I guess this isn't that likely, given that their last release was in 2020.)</p>
+<p>Perhaps we can find some pragmatic solution, like <code>DTZ901</code>? (Some plugins use the <code>9XX</code> range to indicate experimental or opinionated rules.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-01-22 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-01-23 08:44</div>
+            <div class="timeline-body"><p>The suggested rule is not always applicable without type information, which ruff doesn't have. If the time (2nd) argument to <code>datetime.combine</code> is tz-aware, then the result is tz-aware, and the lint shouldn't fire.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hofrob">@hofrob</a> on 2023-01-23 09:12</div>
+            <div class="timeline-body"><p>Ok, thanks for this! I wasn't aware(ha!) that you can have times with offset.</p>
+<p>As much as I'd still want explicit timezone information in my code base, I know this might be too opinionated for ruff. So I'm fine with closing this issue if there are no other ideas!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 00:12</div>
+            <div class="timeline-body"><p>Ah ok. Yeah, that's gonna be hard to enforce reliably right now. Gonna close out for the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-24 00:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

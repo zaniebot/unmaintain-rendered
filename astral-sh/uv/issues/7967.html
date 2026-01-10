@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indirect Dependency Authentication Issue - astral-sh/uv #7967</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Indirect Dependency Authentication Issue</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7967">#7967</a>
+        opened by <a href="https://github.com/alfman99">@alfman99</a>
+        on 2024-10-07 11:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alfman99">@alfman99</a> on 2024-10-07 11:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Bug Report: Indirect Dependency Authentication Issue</h2>
+<h3>Minimal Code Snippet</h3>
+<p>I am using a private package (<code>a</code>) that depends on another private package (<code>b</code>). The <code>b</code> package is not being fetched correctly when I run <code>uv sync</code> because it appears that authentication credentials are not being passed for indirect dependencies and the token isn't being fetched from the <code>pyproject.toml</code> instead its being checked on the lock file where there is no token.</p>
+<h3>Command Invoked</h3>
+<p>The command I invoked was:</p>
+<pre><code class="language-bash">uv sync --frozen --no-install-project --no-dev
+</code></pre>
+<h3>Current uv Platform</h3>
+<ul>
+<li><strong>Platform</strong>: Docker</li>
+<li><strong>Docker Image</strong>: <code>ubuntu:noble</code></li>
+<li><code>uv</code> installed through <code>COPY --from=ghcr.io/astral-sh/uv:0.4.18 /uv /bin/uv</code></li>
+</ul>
+<h3>Current uv Version</h3>
+<p>Version: <strong>0.4.18</strong></p>
+<h3>Error Message</h3>
+<p>The output of the command includes the following error:</p>
+<pre><code>error: Failed to prepare distributions
+Caused by: Failed to fetch wheel: b @ git+https://gitlab.com/&lt;redacted&gt;/backend/b.git@&lt;commit_hash&gt;
+Caused by: Git operation failed
+Caused by: failed to clone into: /root/.cache/uv/git-v0/db/&lt;some_id&gt;
+Caused by: failed to fetch commit &lt;commit_hash&gt;
+Caused by: process didn't exit successfully: `git fetch --force --update-head-ok 'https://gitlab.com/&lt;redacted&gt;/backend/b.git' '+&lt;commit_hash&gt;:refs/remotes/origin/HEAD'` (exit status: 128)
+fatal: could not read Username for 'https://gitlab.com': No such device or address
+</code></pre>
+<h3>Additional Context</h3>
+<ul>
+<li>The <code>a</code> package is correctly set up to include the credentials in its <code>pyproject.toml</code>, but these credentials do not seem to propagate to the <code>b</code> dependency during the <code>uv sync</code> process.</li>
+<li>I have verified that the credentials are correct and are functioning when manually installed.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-08 22:42</div>
+            <div class="timeline-body"><p>Are you able to put together a more complete reproduction? Like something I can Git clone or copy-paste to get into this same error state? Would help a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-10-08 22:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alfman99">@alfman99</a> on 2024-10-09 09:37</div>
+            <div class="timeline-body"><p>Sure, here you go:</p>
+<p>There are 3 repos:</p>
+<ul>
+<li><a href="https://github.com/alfman99/repo-main.git">repo-main</a></li>
+<li><a href="https://github.com/alfman99/private-repo-a.git">private-repo-a</a></li>
+<li><a href="https://github.com/alfman99/private-repo-b.git">private-repo-b</a></li>
+</ul>
+<p><code>repo-main</code> is public so you will have to clone it. This would be our &quot;application&quot;. This application has one direct dependency, <code>private-repo-a</code>, and one indirect dependency, <code>private-repo-b</code>.</p>
+<p><code>repo-main</code> has in its <code>pyproject.toml</code> an access token to access the <code>private-repo-a</code>, and <code>private-repo-a</code> has an access token to access <code>private-repo-b</code>. Whenever you try to <code>uv sync</code> to run the &quot;application&quot;, you will find that <code>private-repo-b</code> isn't possible to clone because of the error: <code>fatal: could not read Username for 'https://github.com': No such device or address</code></p>
+<p>It works alright if you are logged in with an account that has access to both repos, but whenever you try to do this in an environment like Docker, where it relies purely on the access token, it does not work.</p>
+<p>Let me know if you need anything further.</p>
+<p><strong>Note:</strong> The access token was specifically generated for this demo and only has access to both private repositories with read-only permissions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 09:57</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-10-09 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-09 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-09 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alfman99">@alfman99</a> on 2024-11-06 09:43</div>
+            <div class="timeline-body"><p>Is there an ETA for this? Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bhughes339">@bhughes339</a> on 2024-11-20 14:45</div>
+            <div class="timeline-body"><p>I'm having the same issue, and I'd like to add that the <a href="https://docs.astral.sh/uv/configuration/indexes/#providing-credentials">environment variable method</a> (using <code>UV_INDEX_&lt;INDEX_NAME&gt;_USERNAME</code> and <code>UV_INDEX_&lt;INDEX_NAME&gt;_PASSWORD</code>) does not seem to work either. Presumably because it is not reading <code>pyproject.toml</code> to extract the index name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyaoj">@zyaoj</a> on 2025-01-31 15:30</div>
+            <div class="timeline-body"><p>Same issue here. Looking for an update. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 15:32</div>
+            <div class="timeline-body"><p>To clarify, <code>repo-a</code> has an access token hard-coded in the <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyaoj">@zyaoj</a> on 2025-01-31 16:21</div>
+            <div class="timeline-body"><p>In our case, we were running <code>uv sync</code> in the github ci action within our internal organization, with a dependency to <code>repo-a</code> which is another internal repo. No access token is hard-coded anywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 17:41</div>
+            <div class="timeline-body"><p>Sorry, how is the access token provided?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zyaoj">@zyaoj</a> on 2025-02-03 11:05</div>
+            <div class="timeline-body"><p>Thank you for the quick reply!</p>
+<p>Since the failure comes from github actions (ci), the way we can provide access token is using <code>secrets.GITHUB_TOKEN</code> (<a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication">ref</a>). What would be the best way for us to pass this to uv so that we can resolve the internal github repo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-03 17:55</div>
+            <div class="timeline-body"><p>So in some sense, this isn't uv-specific, right? You would need an access token that has access to a repo other than the repo that you're currently running in? Or am I misunderstanding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alfman99">@alfman99</a> on 2025-02-04 12:01</div>
+            <div class="timeline-body"><p>Hey everyone, just to clarify: the issue we are facing happens on local Docker setups, not in GitHub Actions. When running uv sync in Docker, indirect dependencies fail to authenticate because the credentials from pyproject.toml aren’t making it through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alfman99">@alfman99</a> on 2025-02-06 11:50</div>
+            <div class="timeline-body"><blockquote>
+<p>To clarify, <code>repo-a</code> has an access token hard-coded in the <code>pyproject.toml</code>?</p>
+</blockquote>
+<p>Sorry for late reply, just saw it. Yes, <code>repo-a</code> has a token hard-coded in the <code>pyproject.toml</code>, just like in the example (you can download it through here: <code>https://demo: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@github.com/alfman99/private-repo-a.git</code>. If there is anything else let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-02-19 07:44</div>
+            <div class="timeline-body"><p>We are in a really similar situation: There is a tree of 10+ private (<code>gitLab.com</code>) package registries involved, so it's not <code>a</code> and <code>b</code>, but <code>a</code> through <code>h</code> (or whatever); the basic issue is the same, though.</p>
+<p>This has been one major source of pain in our company since at least 2018 - no matter if old-school <code>pip</code> or <code>poetry</code> or whatever other tool - it seems none of them get even close to supporting this properly: It would be funny how much extra scripting we've had to do to get this to work, but we stopped laughing a couple of years ago 😖</p>
+<p>With <code>uv</code>, we see a tool for the first time with the potential to fix this.</p>
+<p>We are therefore happy to help with this issue wherever we can.</p>
+<p>Thank you @alfman99 for going through the effort of setting up sample repos 👍</p>
+<p>On a side note: Maybe we should call them <em>package registries</em> (or just <em>registries</em>) to prevent confusion ? <em>repository</em> usually refers to <em>source code</em>, not <em>packages</em>, doesn't it ?</p>
+<p>A few points regarding the issue:</p>
+<ul>
+<li><p>Hardcoding credentials in <code>pyproject.toml</code> is not an option for us (and probably shouldn't for anybody) - that file is under version control, can't leak secrets that way.</p>
+</li>
+<li><p>We've started using <code>uv</code> only a couple of days ago, so not a lot of experience yet. In terms of authentication, the only truly viable option for us seems to be <code>keyring</code> with a 1Password backend - which obviously doesn't concern <code>uv</code>, but is third party. We are in the process of evaluating things here as I write this; mixed result thus far.</p>
+</li>
+<li><p>We are currently migrating all our projects to <code>uv</code>; we've used <code>poetry</code> for a couple of years before that. Package registry authentication there is done using a <code>~/Library/Application Support/pypoetry/auth.toml</code> file with contents like e.g.</p>
+<pre><code>[http-basic]
+[http-basic.&lt;self-chosen name for package registry&gt;]
+username = &quot;&lt;not shown here&gt;&quot;
+password = &quot;&lt;not shown here&gt;&quot;
+</code></pre>
+<p>While we are happy to move away from <code>poetry</code> for countless reasons, that part was somewhat ok and the <code>gitlab.com</code> side of things is known to work here - which might help in getting registry auth with <code>uv</code> / <code>keyring</code> / whatever to work.</p>
+</li>
+<li><p>We have a rather strict corporate policy to rotate any secrets at least once a month - and that policy (along with the secrets) is externally audited periodically. Whatever solution we end up implementing, it should not require changing any source code, but configuration only. Just mentioning this because it's been an issue in the past...</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arkodoescode">@arkodoescode</a> on 2025-02-24 03:58</div>
+            <div class="timeline-body"><p>I am having a similar auth issue but not with indirect dependencies, rather a singe direct private dependency. Seems to me the bug is related to the <code>--frozen</code> CLI option. If this option is set the client reports <code>401 Unauthorized</code>. However not using the frozen option seems to resolve this, I am manually locking all package versions in <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:02 UTC
+    </footer>
+</body>
+</html>

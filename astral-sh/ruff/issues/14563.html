@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to increase converge iter times - astral-sh/ruff #14563</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to increase converge iter times</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14563">#14563</a>
+        opened by <a href="https://github.com/yanyongyu">@yanyongyu</a>
+        on 2024-11-24 04:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-11-24 04:56</div>
+            <div class="timeline-body"><p>I'm trying to migrate to ruff to lint and format generated codes. But, i have encountered infinity loop error when using <code>ruff check --fix</code>. rule codes <code>F401, F811, I001</code>.</p>
+<p>In the generated code, there are many duplicated and unsorted imports (F811, I001, etc. about 600 errors per file). Every time running the check command, <strong>part of the errors will be fixed</strong> with the infinity loop error <code>failed to converge after 100 iterations.</code>. Running <code>ruff check --fix</code> <strong>three times</strong> will fix all error.</p>
+<p>Can i increase the converge iter times to fix all the errors by running ruff single time?</p>
+<p>As a workaround, ruff check is executed successfully after running isort fix first. Isort will fix most of the errors and ruff will not encounter the converge iter limit.</p>
+<p>ruff version: 0.8.0
+ruff config:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 88
+target-version = &quot;py39&quot;
+
+[tool.ruff.format]
+line-ending = &quot;lf&quot;
+
+[tool.ruff.lint]
+select = [
+  &quot;F&quot;,     # Pyflakes
+  &quot;W&quot;,     # pycodestyle warnings
+  &quot;E&quot;,     # pycodestyle errors
+  &quot;I&quot;,     # isort
+  &quot;UP&quot;,    # pyupgrade
+  &quot;ASYNC&quot;, # flake8-async
+  &quot;C4&quot;,    # flake8-comprehensions
+  &quot;T10&quot;,   # flake8-debugger
+  &quot;T20&quot;,   # flake8-print
+  &quot;PYI&quot;,   # flake8-pyi
+  &quot;PT&quot;,    # flake8-pytest-style
+  &quot;Q&quot;,     # flake8-quotes
+  &quot;TID&quot;,   # flake8-tidy-imports
+  &quot;RUF&quot;,   # Ruff-specific rules
+]
+ignore = [
+  &quot;E402&quot;,   # module-import-not-at-top-of-file
+  &quot;UP037&quot;,  # quoted-annotation
+  &quot;RUF001&quot;, # ambiguous-unicode-character-string
+  &quot;RUF002&quot;, # ambiguous-unicode-character-docstring
+  &quot;RUF003&quot;, # ambiguous-unicode-character-comment
+]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+extra-standard-library = [&quot;typing_extensions&quot;]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-24 14:09</div>
+            <div class="timeline-body"><p>At the moment I don't think this is configurable by the user (it's set as a constant).</p>
+<p>I'd be curious to know how often this comes up. If you're generating the code and linting programmatically, is there a difference in ease of use between applying the isort lints first vs, say, setting an environment variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2024-11-24 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-11-24 14:58</div>
+            <div class="timeline-body"><p>Using isort before ruff lint will need to install another tool, and, ruff is much faster than isort. This is also why I tried to migrate from isort to ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-24 15:12</div>
+            <div class="timeline-body"><p>Sorry, to clarify I meant: does it work if you run <code>ruff check . --select I --select TID</code> and then <code>ruff check</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-11-24 15:20</div>
+            <div class="timeline-body"><p>I have tried to only select the Isort rule to lint single file. <code>ruff check --select I path/to/file</code>.</p>
+<p>but this also reports <code>error: Failed to converge after 100 iterations.</code> Under the error log, ruff also reports the remain unfixed error (something like 123 fixed, 456 remain, 456 auto fixable). I re-run the ruff check and the error nums will decrease util there is no error remain. Every time i run the ruff check, part of the errors will be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-24 15:39</div>
+            <div class="timeline-body"><p>Ok that makes sense, thank you! I'm sort of interested to understand better why <code>isort</code> completes the lint here but ruff doesn't... If you're able to give a minimal reproducible example in a separate issue that would be super useful!</p>
+<p>But I realize that doesn't address your immediate question: I don't see an obvious reason <em>not</em> to make the max number of iterations configurable... but this may need a few other folks to weigh in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @dylwil3 on 2024-11-24 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @dylwil3 on 2024-11-24 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2024-11-24 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-24 20:50</div>
+            <div class="timeline-body"><blockquote>
+<p>But I realize that doesn't address your immediate question: I don't see an obvious reason not to make the max number of iterations configurable... but this may need a few other folks to weigh in</p>
+</blockquote>
+<p>I'm somewhat hesitant about doing that because the iteration count is mainly a safety guard against infinite loops; consider it an implementation detail. Ruff not converging is often a bug or a case where Ruff generates overlapping fixes (for whatever reason).</p>
+<p>@yanyongyu could you share one of your problematic files. Having a concrete file could help us reproduce the problem and fix its root cause</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-24 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-11-24 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yanyongyu">@yanyongyu</a> on 2024-11-25 04:20</div>
+            <div class="timeline-body"><blockquote>
+<p>why isort completes the lint here but ruff doesn't...</p>
+</blockquote>
+<p>@dylwil3 I made a mistake here. I select both F and I to lint the single file. This will cause error. Without selecting F rules (I only), it's OK now.</p>
+<p>I'm also trying to prevent the converge limit at the generation step. Reducing the error count before ruff lint is effective.</p>
+<p>And, here is a generated file example with the lint log:</p>
+<p><a href="https://github.com/user-attachments/files/17897030/example.zip">example.zip</a></p>
+<p>the log is the output of the command: <code>ruff check --select I --select F --fix actions.py 2&gt;&amp;1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2024-11-25 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-25 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 07:32</div>
+            <div class="timeline-body"><p>I haven't looked at what's causing the slow-convergence but I suspect that it might be helpful to prioritize isort higher than other fixes... or in a more general sense: Give fixes with a larger text range a higher priority than more local changes. I'm unsure if we want to limit it to only do so if the ranges overlap.</p>
+<p>The fix sorting is implemented here https://github.com/astral-sh/ruff/blob/9f3a38d408f473df7a6b3574c5d1389bef303dd5/crates/ruff_linter/src/fix/mod.rs#L130-L157</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> removed by @MichaReiser on 2024-11-25 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-25 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 09:01</div>
+            <div class="timeline-body"><p>Okay. I think the main issue here isn't about sorting, but that there are too many <code>RedefinedWhileUnused</code> fixes and most of them have the same <code>isolation_level</code> (preventing Ruff from applying more than one fix per iteration. Fixing this requires to come up with a narrower isolation range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 02:57</div>
+            <div class="timeline-body"><p>Yeah, it <em>is</em> possible to hit the iteration limit naturally. We could consider making it larger...? Like, 1000 would not be totally unreasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15182.html">astral-sh/ruff#15182</a> on 2024-12-30 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-18 20:51</div>
+            <div class="timeline-body"><p>I'm not sure if this helps, but I’ve reduced the complexity of mcve.py by narrowing down the imports from pyside6 to a much smaller set, and the issue can still be reproduced with this reduced complexity. I’ll continue performing a binary search to see if I can isolate an even smaller example that highlights more easily this bug</p>
+<pre><code class="language-mcve.py">
+
+
+from PySide6.QtCore import (
+    ClassInfo,
+    MetaFunction,
+    MetaSignal,
+    Property,
+    PyClassProperty,
+    QAbstractAnimation,
+    QAbstractAnimation,
+    QAbstractEventDispatcher,
+    QAbstractEventDispatcher,
+    QAbstractItemModel,
+    QAbstractItemModel,
+    QAbstractListModel,
+    QAbstractListModel,
+    QAbstractNativeEventFilter,
+    QAbstractNativeEventFilter,
+    QAbstractProxyModel,
+    QAbstractProxyModel,
+    QAbstractTableModel,
+    QAbstractTableModel,
+    QAnimationGroup,
+    QAnimationGroup,
+    QBasicMutex,
+    QBasicMutex,
+    QBasicTimer,
+    QBasicTimer,
+    QBitArray,
+    QBitArray,
+    QBluetoothPermission,
+    QBluetoothPermission,
+    QBuffer,
+    QBuffer,
+    QByteArray,
+    QByteArray,
+    QByteArrayMatcher,
+    QByteArrayMatcher,
+    QCalendar,
+    QCalendar,
+    QCalendarPermission,
+    QCalendarPermission,
+    QCameraPermission,
+    QCameraPermission,
+    QCborArray,
+    QCborArray,
+    QCborError,
+    QCborError,
+    QCborKnownTags,
+    QCborMap,
+    QCborMap,
+    QCborParserError,
+    QCborParserError,
+    QCborSimpleType,
+    QCborStreamReader,
+    QCborStreamReader,
+    QCborStreamWriter,
+    QCborStreamWriter,
+    QCborStringResultByteArray,
+    QCborStringResultByteArray,
+    QCborStringResultString,
+    QCborStringResultString,
+    QCborTag,
+    QCborValue,
+    QCborValue,
+    QChildEvent,
+    QChildEvent,
+    QCollator,
+    QCollator,
+    QCollatorSortKey,
+    QCollatorSortKey,
+    QCommandLineOption,
+    QCommandLineOption,
+    QCommandLineParser,
+    QCommandLineParser,
+    QConcatenateTablesProxyModel,
+    QConcatenateTablesProxyModel,
+    QContactsPermission,
+    QContactsPermission,
+    QCoreApplication,
+    QCoreApplication,
+    QCryptographicHash,
+    QCryptographicHash,
+    QDataStream,
+    QDataStream,
+    QDate,
+    QDate,
+    QDateTime,
+    QDateTime,
+    QDeadlineTimer,
+    QDeadlineTimer,
+    QDir,
+    QDir,
+    QDirIterator,
+    QDirIterator,
+    QDynamicPropertyChangeEvent,
+    QDynamicPropertyChangeEvent,
+    QEasingCurve,
+    QEasingCurve,
+    QElapsedTimer,
+    QElapsedTimer,
+    QEnum,
+    QEvent,
+    QEvent,
+    QEventLoop,
+    QEventLoop,
+    QFactoryInterface,
+    QFactoryInterface,
+    QFile,
+    QFile,
+    QFileDevice,
+    QFileDevice,
+    QFileInfo,
+    QFileInfo,
+    QFileSelector,
+    QFileSelector,
+    QFileSystemWatcher,
+    QFileSystemWatcher,
+    QFlag,
+    QFutureInterfaceBase,
+    QFutureInterfaceBase,
+    QGenericArgument,
+    QGenericArgument,
+    QGenericArgumentHolder,
+    QGenericArgumentHolder,
+    QGenericReturnArgument,
+    QGenericReturnArgument,
+    QGenericReturnArgumentHolder,
+    QGenericReturnArgumentHolder,
+    QHashSeed,
+    QHashSeed,
+    QIODevice,
+    QIODevice,
+    QIODeviceBase,
+    QIODeviceBase,
+    QIOPipe,
+    QIOPipe,
+    QIdentityProxyModel,
+    QIdentityProxyModel,
+    QIntList,
+    QItemSelection,
+    QItemSelection,
+    QItemSelectionModel,
+    QItemSelectionModel,
+    QItemSelectionRange,
+    QItemSelectionRange,
+    QJsonArray,
+    QJsonArray,
+    QJsonDocument,
+    QJsonDocument,
+    QJsonParseError,
+    QJsonParseError,
+    QJsonValue,
+    QJsonValue,
+    QKeyCombination,
+    QKeyCombination,
+    QLibrary,
+    QLibrary,
+    QLibraryInfo,
+    QLibraryInfo,
+    QLine,
+    QLine,
+    QLineF,
+    QLineF,
+    QLocale,
+    QLocale,
+    QLocationPermission,
+    QLocationPermission,
+    QLockFile,
+    QLockFile,
+    QLoggingCategory,
+    QLoggingCategory,
+    QMargins,
+    QMargins,
+    QMarginsF,
+    QMarginsF,
+    QMessageAuthenticationCode,
+    QMessageAuthenticationCode,
+    QMessageLogContext,
+    QMessageLogContext,
+    QMetaClassInfo,
+    QMetaClassInfo,
+    QMetaEnum,
+    QMetaEnum,
+    QMetaMethod,
+    QMetaMethod,
+    QMetaObject,
+    QMetaObject,
+    QMetaProperty,
+    QMetaProperty,
+    QMetaType,
+    QMetaType,
+    QMicrophonePermission,
+    QMicrophonePermission,
+    QMimeData,
+    QMimeData,
+    QMimeDatabase,
+    QMimeDatabase,
+    QMimeType,
+    QMimeType,
+    QModelIndex,
+    QModelIndex,
+    QModelRoleData,
+    QModelRoleData,
+    QMutex,
+    QMutex,
+    QMutexLocker,
+    QMutexLocker,
+    QNativeIpcKey,
+    QNativeIpcKey,
+    QObject,
+    QObject,
+    QOperatingSystemVersion,
+    QOperatingSystemVersion,
+    QOperatingSystemVersionBase,
+    QOperatingSystemVersionBase,
+
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-18 21:07</div>
+            <div class="timeline-body"><p>Alright, I’ve continued my research a bit. I started testing mcve.py, which initially contained all imports from pyside6 along with some duplicates. After systematically trimming it down through commits and discards in a Git repository, I’ve managed to isolate what seems to be a fairly minimal and clear test case.</p>
+<pre><code class="language-python">from a import (
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+    b,
+)
+</code></pre>
+<p>It's a simple file with just 103 lines. As soon as you remove another repeated import, you'll encounter the error: error: Failed to converge after 100 iterations. It seems that the issue occurs regardless of whether the duplicates come from the same imports or not. I hope this helps the experts come up with a good strategy to tackle this issue gracefully. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-18 21:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, it <em>is</em> possible to hit the iteration limit naturally. We could consider making it larger...? Like, 1000 would not be totally unreasonable.</p>
+</blockquote>
+<p>Btw... just for fun... i've just created another test case with 100000 duplicated imports and when using autoflake...</p>
+<pre><code>ptime autoflake --remove-unused-variables --in-place --remove-all-unused-imports mcve.py
+
+Execution time: 0.738 s
+</code></pre>
+<p>Just saying... 😋</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-18 21:37</div>
+            <div class="timeline-body"><p>Right. Changing the prioritization to run the unused imports fix should make that case instant (700ms would be an eternity, I think).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-18 21:42</div>
+            <div class="timeline-body"><pre><code>import os
+
+
+def generate_files(directory, num_files, template_generator):
+    os.makedirs(directory, exist_ok=True)
+
+    for i in range(num_files):
+        file_name = f&quot;file_{i + 1}.py&quot;
+        file_path = os.path.join(directory, file_name)
+        with open(file_path, &quot;w&quot;) as f:
+            f.write(template_generator())
+        print(f&quot;Generated: {file_path}&quot;)
+
+    print(f&quot;\nSuccessfully generated {num_files} Python files in '{directory}'.&quot;)
+
+
+def gen_case1(directory, num_files, num_imports):
+    def template_generator():
+        return &quot;\n&quot;.join([&quot;import b&quot;] * num_imports)
+
+    generate_files(directory, num_files, template_generator)
+
+
+def gen_case2(directory, num_files, num_imports):
+    def template_generator():
+        imports = [f&quot;b&quot; for i in range(num_imports)]
+        return f&quot;from a import ({', '.join(imports)})&quot;
+
+    generate_files(directory, num_files, template_generator)
+
+
+if __name__ == &quot;__main__&quot;:
+    num_files = 10
+    num_imports = 10000
+    gen_case1(&quot;case1&quot;, num_files, num_imports)
+    gen_case2(&quot;case2&quot;, num_files, num_imports)
+
+</code></pre>
+<p>I tried with the above autogenerated craash cases with ruff and for these ones process will hang forever (i've just tried with 1 of those autogenerated files of case2, I had to kill the ruff process)... but when i try with autoflake...</p>
+<pre><code>ptime autoflake --remove-unused-variables --in-place --remove-all-unused-imports file_1.py file_2.py file_3.py file_4.py file_5.py file_6.py file_7.py file_8.py file_9.py file_10.py
+
+
+Execution time: 0.604 s
+</code></pre>
+<p>No issue or whatsoever, autoflake will clean up the whole chunk of code without any struggle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-18 23:06</div>
+            <div class="timeline-body"><p>I cannot get autoflake to complete on <code>case1</code> -- it hangs for me.</p>
+<p>Regardless, after recent PRs, Ruff is under 100ms in each case, so going to close this:</p>
+<pre><code>❯ hyperfine &quot;./target/release/ruff check --fix --no-cache case1&quot; --prepare &quot;python gen.py&quot; --runs 20 --warmup 10
+Benchmark 1: ./target/release/ruff check --fix --no-cache case1
+  Time (mean ± σ):      90.7 ms ±   2.0 ms    [User: 728.3 ms, System: 49.3 ms]
+  Range (min … max):    88.7 ms …  95.2 ms    20 runs
+
+❯ hyperfine &quot;./target/release/ruff check --fix --no-cache case2&quot; --prepare &quot;python gen.py&quot; --runs 20 --warmup 10
+Benchmark 1: ./target/release/ruff check --fix --no-cache case2
+  Time (mean ± σ):      46.6 ms ±   4.3 ms    [User: 267.7 ms, System: 58.3 ms]
+  Range (min … max):    43.0 ms …  60.5 ms    20 runs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-18 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-19 05:34</div>
+            <div class="timeline-body"><p>@charliermarsh Sorry, I just saw this one now, rebased my commit on top of latest origin/main with both your commits at</p>
+<p>6004c8c003ee619319f0b07594d1f873d9c8f871
+b8e5b95423f3506efd9250d373548b04b7e1deec</p>
+<p>and they worked very well... I've decided to spend more time on this one and it holds now on extra scenarios, here's the script I've used:</p>
+<pre><code>from pathlib import Path
+
+
+def generate_files(directory, num_files, template_generator):
+    # Create directory (and parents if needed) using Path
+    directory_path = Path(directory)
+    directory_path.mkdir(parents=True, exist_ok=True)
+
+    for i in range(num_files):
+        file_name = f&quot;file_{i + 1}.py&quot;
+        file_path = directory_path / file_name
+        with file_path.open(&quot;w&quot;) as f:
+            f.write(template_generator())
+        print(f&quot;Generated: {file_path}&quot;)
+
+    print(f&quot;\nSuccessfully generated {num_files} Python files in '{directory}'.&quot;)
+
+
+def gen_case1(directory, num_files, num_imports):
+    def template_generator():
+        return &quot;\n&quot;.join([&quot;import b&quot;] * num_imports)
+
+    generate_files(directory, num_files, template_generator)
+
+
+def gen_case2(directory, num_files, num_imports):
+    def template_generator():
+        imports = [&quot;b&quot; for _ in range(num_imports)]
+        return f&quot;from a import ({', '.join(imports)})&quot;
+
+    generate_files(directory, num_files, template_generator)
+
+
+def gen_case3(directory, num_files, num_imports, blob_path):
+    # Read the blob content from the provided file path
+    blob = blob_path.read_text()
+
+    def template_generator():
+        return &quot;\n&quot;.join([blob] * num_imports)
+
+    generate_files(directory, num_files, template_generator)
+
+
+if __name__ == &quot;__main__&quot;:
+    num_files = 10
+    num_imports1 = 10000
+    num_imports2 = 10000
+    working_dir = Path(__file__).parent  # Get the directory of the current script
+    data_dir = working_dir / &quot;data&quot;
+
+    # Ensure the data directory exists
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    # Generate files for each case
+    gen_case1(&quot;case1&quot;, num_files, num_imports1)
+    gen_case2(&quot;case2&quot;, num_files, num_imports1)
+    gen_case3(&quot;case3&quot;, num_files, num_imports2, data_dir / &quot;pyside6_imports.py&quot;)
+
+</code></pre>
+<p>Added a new case3 where you can insert blobs of huge import chunks, the one I've used was the one provided in the other related issue containing a real case with all pyside6 imports and here's the results:</p>
+<ul>
+<li>case1: OK</li>
+<li>case2: OK</li>
+<li>case3: OK
+num_imports=10 / (1.89mb of source code) -&gt; 0.17ms
+num_imports = 100 / (18.9mb of source code) -&gt; 0.83ms
+num_imports = 1000 / (189mb of source code) -&gt; 8.77s
+num_imports (BEAST MODE) = 10000 / (1.84gb of source code) -&gt; system inestable, cpu overloaded, ~2min, had to kill the process</li>
+</ul>
+<p>So... the only thing i'd complain (which is not a real complain) is ruff making my system unstable but that was just a very unrealistic scenario won't happen, i mean, only real cases i saw with python source code of few dozen of mbs are precompiled chunks of qt blob data but those would be the case where you'd ignore them and exclude them from linting so yeah... good job!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brupelo">@brupelo</a> on 2025-01-19 16:39</div>
+            <div class="timeline-body"><p>@charliermarsh I was using the new closed feature happily and I've noticed something strange... performance wise it's better than ever, no complaints about that but take a look to below case</p>
+<pre><code>from PySide6.QtWidgets import (
+    QSlider,
+)
+
+from PySide6.QtCore import (
+    Qt,
+    Qt,
+)
+
+
+class TimeSliderControl(QSlider):
+    def __init__(self, parent=None):
+        super().__init__(Qt.Horizontal, parent)
+        self.setMinimum(0)
+        self.setMaximum(100)
+        self.setValue(0)
+</code></pre>
+<p>Try to lint it, you'll end up with a wrong fix, ie: look at the Qt import being used in the constructor... but you'll notice it'll get removed. Now, if I make sure it's only imported once</p>
+<pre><code>from PySide6.QtWidgets import (
+    QSlider,
+)
+
+from PySide6.QtCore import (
+    Qt,
+)
+
+
+class TimeSliderControl(QSlider):
+    def __init__(self, parent=None):
+        super().__init__(Qt.Horizontal, parent)
+        self.setMinimum(0)
+        self.setMaximum(100)
+        self.setValue(0)
+</code></pre>
+<p>The fix will be correct and it will be kept... I hope this little one will be a low-hanging fruit and we don't come back to square 1 performance wise, cos right now it's being really fast.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-19 16:43</div>
+            <div class="timeline-body"><p>Please file a separate issue with a reproduction.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

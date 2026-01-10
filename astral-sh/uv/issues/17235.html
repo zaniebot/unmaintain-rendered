@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The term 'package' is problematically overloaded - astral-sh/uv #17235</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The term 'package' is problematically overloaded</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17235">#17235</a>
+        opened by <a href="https://github.com/amluto">@amluto</a>
+        on 2025-12-24 14:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amluto">@amluto</a> on 2025-12-24 14:39</div>
+            <div class="timeline-body"><p>I've been using Python for many years, but I only started doing anything involving modern Python packages recently.  And I wasted a whole bunch of time being rather confused, and I think almost all of the confusion stems from the following issue that I would argue is a substantial defect in the entire Python packaging system:</p>
+<p>A) The noun &quot;package&quot; obviously means the thing that the Python language means by a package: a directory that contains <code>__init__.py</code> and that can be imported (or, because it's the modern world, a &quot;namespace package&quot; that does not contain <code>__init__.py</code>).  This is fairly ingrained: It's <a href="https://docs.python.org/3/tutorial/modules.html#packages">in the tutorial</a>, there's a mechanism called <code>__package__</code>, etc.</p>
+<p>B) The noun &quot;package&quot; sometimes means a unit of Python packaging, which is, in the modern world, something that contains a <code>pyproject.toml</code>, can be uploaded to the (sigh) Python <em>package</em> index, can be built into a wheel, etc.</p>
+<p>The latter is variously called a &quot;project&quot; or a &quot;package&quot;, and it kind of seems like the entire Python packaging community is confused as to what it's called.  And it causes a lot of confusion.  For example, it's very common for packages (A) to have underscores in their names (and the obviously can't contain hyphens), but it's also very common for projects on PyPI to have hyphens in their names, and underscores seem to be discouraged.  I wasted a bunch of time trying to figure out what the relationship was between the <code>name =</code> thing in <code>pyproject.toml</code> and the name of the package that I'm packaging.</p>
+<p>To be fair to uv, uv inherited this mess from everything that came before.  But uv seems to be trying to make Python packaging excellent, and I think it could do better.</p>
+<p>uv <em>mostly</em> uses the term &quot;project&quot; to describe the thing that is defined by a <code>pyproject.toml</code>, but even uv's docs and the CLI itself perpetuate the problem a bit.  For example, <a href="https://docs.astral.sh/uv/guides/projects/#managing-dependencies">the project guide</a> says:</p>
+<blockquote>
+<p>To remove a package, you can use uv remove:</p>
+<p>$ uv remove requests
+To upgrade a package, run uv lock with the --upgrade-package flag:</p>
+<p>$ uv lock --upgrade-package requests
+The --upgrade-package flag will attempt to update the specified package to the latest compatible version, while keeping the rest of the lockfile intact.</p>
+</blockquote>
+<p>Oof.  I mostly read the uv docs while getting started in the modern world, and I don't blame myself for getting confused. After all, I was writing a new package called <code>lutron_integration</code>, but I saw that the everyone seems to name their project with hyphens, so I typed <code>name = &quot;lutron-integration&quot;</code>, but here are the docs effectively telling me that, if another project wanted to upgrade the <em>package</em>, they would type, well, not <code>uv lock --upgrade-package requests</code> because this thing isn't called <code>requests</code>, but what do they type?  Is it <code>uv lock --upgrade-package lutron_integration</code> (hint: doesn't work) or is it <code>uv lock --upgrade-package lutron-integration</code>?  But the <em>package is not and cannot be called lutron-integration</em>.  This gets really confusing when working with abominations like <a href="https://pypi.org/project/pycryptodomex/">pycryptodomex</a>, which does not contain a Python package with a name that particularly resembles &quot;pycryptodomex&quot;.</p>
+<p>Amusingly, my attempts to get a major LLM to explain what's going on failed -- I think they're confused too.</p>
+<p>So here's my request to the uv team: please try to make this better.</p>
+<p>Perhaps you could consistently call the units of packaging something other than &quot;package.&quot;  &quot;project&quot; might be a good choice.  Maybe improve the docs to very clearly state that <code>name =</code> in <code>pyproject.toml</code> is the name of the <em>project</em>, which may or may not be the name of any particular package.  Workspace projects that don't contain any packages except in subprojects have names (because the existing specs require it), but maybe the docs could clarify that you need to name the <em>project</em> even if it contains no packages.</p>
+<p>And here's the painful part: maybe consider deprecating everything in the CLI that contains the word &quot;package&quot;?  Because <code>uv lock --upgrade-package</code> may or may not upgrade a package, but if it upgrades a package, that's purely a side effect of upgrading a thing that the current project depends on, and those things are not <em>packages</em>.  If I do <code>uv lock --upgrade-package lutron-integration</code>, I am upgrading my depedency and I am only indirectly upgrading the package <code>lutron_integration</code>.  Maybe it could be spelled <code>uv lock --upgrade-dependency</code> or <code>uv lock --upgrade-project</code>?</p>
+<p>(As an aside, I assume that uv's dependency solver does not gracefully handle the case where two differently-named dependencies each provide non-namespace packages with the same name and thus provide identically-named <code>__init__.py</code> or other files.  I admit I have not tested this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[DOC ISSUE *and* CLI ISSUE] The term 'package' is problematically overload" to "[DOC ISSUE *and* CLI ISSUE] The term 'package' is problematically overloaded" by @amluto on 2025-12-24 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amluto">@amluto</a> on 2025-12-25 03:08</div>
+            <div class="timeline-body"><p>I found an article about this:</p>
+<p>https://packaging.python.org/en/latest/discussions/distribution-package-vs-import-package/</p>
+<p>If that’s the current winning terminology (which is kind of verbose, but whatever), then uv could probably improve its end with just documentation changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-25 18:23</div>
+            <div class="timeline-body"><p>Yeah, this is a place where Python's packaging terminology is unfortunately overloaded. Here is the taxonomy as I normally see it:</p>
+<ol>
+<li>A &quot;package&quot; is something that Python's import machinery considers importable. In other words, <em>inside</em> of a packaging context, a &quot;package&quot; is an &quot;import package,&quot; whereas outside it's just a &quot;package.&quot;</li>
+<li>A &quot;distribution&quot; is a bundling of one (or more) import packages into a standard distribution container (namely an sdist or bdist). PyPUG calls this a &quot;distribution package&quot; for disambiguation, but <em>inside</em> of a packaging context these also get called &quot;packages.&quot;</li>
+<li>A &quot;project&quot; is (roughly) a directory containing a <code>pyproject.toml</code> file. Projects <em>might</em> contain import packages, or they could just be a collection of dependencies and scripts. Projects <em>might</em> also be convertible into distributions, but this isn't a hard requirement either.</li>
+</ol>
+<p>In other words: both (1) and (2) are &quot;packages,&quot; just in different contexts.</p>
+<p>uv is in the business of managing all three of these, and users often interact with them in overlapping ways (e.g. there are lots of things that users do that are logically <em>project</em> management, but are done towards the end of manipulating an import package or distribution).</p>
+<blockquote>
+<p>Is it <code>uv lock --upgrade-package lutron_integration</code> (hint: doesn't work) or is it <code>uv lock --upgrade-package lutron-integration</code>? But the <em>package is not and cannot be called lutron-integration</em>. This gets really confusing when working with abominations like <a href="https://pypi.org/project/pycryptodomex/">pycryptodomex</a>, which does not contain a Python package with a name that particularly resembles &quot;pycryptodomex&quot;.</p>
+</blockquote>
+<p>I think there are two things here:</p>
+<ol>
+<li><code>--upgrade-package lutron_integration</code> probably <em>should</em> work, since there are <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization">name normalization</a> rules that define that as being equivalent to <code>lutron-integration</code>. There might be a good reason why we don't do that at the moment (maybe @zanieb or @konstin has opinions on that?), but in general I'd expect us to normalize/unify package names like that.</li>
+<li>More generally, this is an example of uv using &quot;package&quot; to mean &quot;distribution package,&quot; rather than &quot;import package.&quot; This use is context sensitive, but consistent: &quot;import packages&quot; aren't something that can be upgraded, because they don't carry distribution metadata like distribution packages do.</li>
+</ol>
+<blockquote>
+<p>(As an aside, I assume that uv's dependency solver does not gracefully handle the case where two differently-named dependencies each provide non-namespace packages with the same name and thus provide identically-named <strong>init</strong>.py or other files. I admit I have not tested this.)</p>
+</blockquote>
+<p>Can you provide an example of what you mean? As a rule, import package names do not affect dependency resolution whatsoever (in uv, pip, poetry, and all other Python package installs). The only package name that affects resolution/solving is the distribution package name, which can always diverge from the import package name (as you've observed with <code>pycryptodomex</code>).</p>
+<p>(More generally, dependency resolution doesn't actually look at <code>__init__.py</code> or any source files at all! Dependency resolution only sees distribution metadata, with the nuance that sometimes distribution metadata is generated on-the-fly by a source distribution's build backend.)</p>
+<p>Overall, I agree we can probably make this clearer in the uv documentation. We could probably do that by linking to that disambiguation page on PyPUG in more places. However, the fundamental overloading of the term &quot;package&quot; probably isn't something uv can address; it's baked into how all Python packaging tools use &quot;package&quot; context-sensitively to refer to either distributions or importable packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @woodruffw on 2025-12-26 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[DOC ISSUE *and* CLI ISSUE] The term 'package' is problematically overloaded" to "The term 'package' is problematically overloaded" by @woodruffw on 2025-12-26 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-26 16:18</div>
+            <div class="timeline-body"><p>Triage: #8178 has some more context on terminology.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/violenz">@violenz</a> on 2025-12-29 03:58</div>
+            <div class="timeline-body"><p>uv is undeniably a vast improvement from everything that has come prior for python package management.It's astonishing just how good it actually is if you stop and consider the price tag on pythons technical debt.</p>
+<p>That being said, my inability to provide a script reference such as &quot;build&quot; or &quot;test&quot; to a package but not have it coexist categorically across all workspaces is mind-blowing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-29 04:40</div>
+            <div class="timeline-body"><blockquote>
+<p>There might be a good reason why we don't do that at the moment (maybe @zanieb or @konstin has opinions on that?), but in general I'd expect us to normalize/unify package names like that.</p>
+</blockquote>
+<p>As far as I know, we immediately normalize all package names and always do comparisons with the normalized name per the spec. I can't think of a reason it wouldn't work.</p>
+<blockquote>
+<p>That being said, my inability to provide a script reference such as &quot;build&quot; or &quot;test&quot; to a package but not have it coexist categorically across all workspaces is mind-blowing.</p>
+</blockquote>
+<p>Can you explain what you mean here?</p>
+<blockquote>
+<p>A &quot;package&quot; is something that Python's import machinery considers importable.</p>
+</blockquote>
+<p>Generally, I think we should just refer to &quot;import packages&quot; as &quot;modules&quot;. I don't see any value in overloading the term &quot;package&quot; for this purpose. Maybe there's a good reason I'm not remembering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-29 06:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Generally, I think we should just refer to &quot;import packages&quot; as &quot;modules&quot;. I don't see any value in overloading the term &quot;package&quot; for this purpose. Maybe there's a good reason I'm not remembering?</p>
+</blockquote>
+<p>Not sure if it's a <em>good</em> reason or not, but module is probably also a little imprecise: <code>foo.py</code> is a module but not a package, while <code>foo/__init__.py</code> is a package (and a module).</p>
+<p>Then there's <code>foo/</code> (with no <code>__init__.py</code>), which (I think) is a package but <em>not</em> a module, since it's an implicit namespace package. But that's stretching my memory 😅</p>
+<p>Edit: never mind, an empty directory is a module (just one that's also an implicit namespace):</p>
+<pre><code class="language-bash">mkdir notamod
+PYTHONPATH=. uv run python
+
+&gt;&gt;&gt; import notamod
+&gt;&gt;&gt; notamod
+&lt;module 'notamod' (namespace) from ['/Users/william/tmp/notamod', '/Users/william/tmp/notamod']&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amluto">@amluto</a> on 2025-12-30 03:19</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>(As an aside, I assume that uv's dependency solver does not gracefully handle the case where two differently-named dependencies each provide non-namespace packages with the same name and thus provide identically-named <strong>init</strong>.py or other files. I admit I have not tested this.)</p>
+</blockquote>
+<p>Can you provide an example of what you mean? As a rule, import package names do not affect dependency resolution whatsoever (in uv, pip, poetry, and all other Python package installs). The only package name that affects resolution/solving is the distribution package name, which can always diverge from the import package name (as you've observed with <code>pycryptodomex</code>).</p>
+</blockquote>
+<p>https://github.com/amluto/pathological_python_packages</p>
+<p>In editable mode, I don't really expect intelligent behavior, since, as far as I know, <code>uv</code> isn't contemplating the installed Python files.</p>
+<p>But it's easy enough to force non-editable mode. Check this out somewhere, then <code>uv init</code> a brand new project outside it and <code>uv add</code> the two subprojects from pathological_python_packages manually so you end with with a consumer project like so:</p>
+<pre><code class="language-toml">[project]
+...
+dependencies = [
+    &quot;dist-package-1&quot;,
+    &quot;dist-package-2&quot;,
+]
+
+[tool.uv.sources]
+dist-package-1 = { path = &quot;../pathological_python_packages/packages/dist_package_1&quot; }
+dist-package-2 = { path = &quot;../pathological_python_packages/packages/dist_package_2&quot; }
+</code></pre>
+<p>Now <code>uv sync</code> (optional) then <code>uv run python3</code>.  No errors are reported.  When I tried it, package #1 won:</p>
+<pre><code>&gt;&gt;&gt; import import_package
+&gt;&gt;&gt; import_package.hello()
+'Hello from dist-package-1!'
+</code></pre>
+<p>I was hoping for at least a warning from <code>uv sync</code>.</p>
+<p>For added fun, I commented out the <code>dist-package-1</code> dependency in <code>pyproject.toml</code> and did <code>uv run python3</code> and package #1 was still there?!?  Maybe I misunderstand exactly what uv run does.  So I manually did <code>uv sync</code>:</p>
+<pre><code>Resolved 2 packages in 5ms
+Uninstalled 1 package in 1ms
+ - dist-package-1==0.1.0 (from file:///.../pathological_python_packages/packages/dist_package_1)
+</code></pre>
+<p>Okay, but what actually happened?</p>
+<pre><code>&gt;&gt;&gt; import import_package
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'import_package'
+</code></pre>
+<p>Err, that's not right.  <code>uv sync --reinstall</code> forces the issue and:</p>
+<pre><code>&gt;&gt;&gt; import_package.hello()
+'Hello from dist-package-2!'
+</code></pre>
+<p>I'm not sure exactly what <code>uv</code> should do with this kind of poor input, but giving no warnings and giving weird possibly-nondeterminstic and path-dependent behavior here seems impolite.  I assume the wheel installer and uninstaller are nice modern Rust code in <code>uv</code> somewhere, and the <code>.dist-info</code> directories in <code>.venv</code> proudly announce <code>uv</code> as the <code>INSTALLER</code>.  But maybe there is literally no data structure that maps from filename to the distribution package from which it came?  But even given that this mapping does not exist, the filesystem itself should notice when <code>uv</code> tries to create <code>.venv/lib/python3.12/site-packages/import_package/__init__.py</code>.</p>
+<p>In any case, this is a deliberately silly toy example.  But I think you can make a regrettable non-toy example:</p>
+<pre><code>uv add pycrypto # eww, ancient unmaintaned source of Crypto, but somehow uv can still install it even on arm64
+uv add pycryptodome # more modern source of Crypto
+</code></pre>
+<p>and the result can't possibly be good.  And I can imagine innocently picking something like this up via transitive dependencies and getting quite confused as to what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 17:19</div>
+            <div class="timeline-body"><p>Python's definition of a package is ancient, and predates packaging and packaging tooling. The <a href="https://docs.python.org/3/tutorial/modules.html#packages">tutorial</a> you mentioned was added in 1998 (https://github.com/python/cpython/commit/108943c2163193e13f0c9969cd87276083fd34a0) - That's before the first actual packaging tool, distutils, was started at the end of 1998 (https://web.archive.org/web/20240304172212/https://gerg.ca/blog/post/2013/distutils-history/). distutils was added to the Python standard library in 2000, and setuptools/easy_install were released in 2004.</p>
+<p>We use the modern definition of &quot;module&quot; and &quot;package&quot;: If you <code>import</code> it, it's a module, if you install it, it's package. Where possible, you opt for widely used, cross-ecosystem terminology that provides more clarity.</p>
+<p>See also https://github.com/astral-sh/uv/issues/15890</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

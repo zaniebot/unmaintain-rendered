@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arg_matches.is_present(&quot;foo&quot;) can be ambiguous if there are an arg and a subcommand named foo - clap-rs/clap #2494</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>arg_matches.is_present(&quot;foo&quot;) can be ambiguous if there are an arg and a subcommand named foo</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2494">#2494</a>
+        opened by <a href="https://github.com/felipesere">@felipesere</a>
+        on 2021-05-20 17:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/felipesere">@felipesere</a> on 2021-05-20 17:54</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.51.0 (2fd73fabe 2021-03-23)</p>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[test]
+fn global_args_are_weird_felipe() {
+    let app = App::new(&quot;opt&quot;)
+        .arg(Arg::new(&quot;global&quot;).global(true).long(&quot;global&quot;))
+        .subcommand(App::new(&quot;global&quot;));
+
+    let m = app.clone().get_matches_from(&amp;[&quot;opt&quot;, &quot;global&quot;, &quot;--global&quot;]);
+    assert!(m.is_present(&quot;global&quot;)); // flag and subcommand are present...
+    assert!(m.subcommand_matches(&quot;global&quot;).unwrap().is_present(&quot;global&quot;));
+
+    let m = app.clone().get_matches_from(&amp;[&quot;opt&quot;, &quot;--global&quot;]);
+    assert!(m.is_present(&quot;global&quot;)); // this should be the flag right now
+    assert!(m.subcommand_matches(&quot;global&quot;).is_none());
+
+    let m = app.get_matches_from(&amp;[&quot;opt&quot;, &quot;global&quot;]);
+    assert!(!m.subcommand_matches(&quot;global&quot;).unwrap().is_present(&quot;global&quot;));
+    assert!(!m.is_present(&quot;global&quot;)); // if this is the flag, it should be false
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>The test above passes w</p>
+<h3>Actual Behaviour</h3>
+<p><code>arg_matches.is_present(&quot;foo&quot;)</code> can't tell the difference between &quot;foo&quot; as an argument or &quot;foo&quot; as subcommand being present.</p>
+<h3>Expected Behaviour</h3>
+<p>Possibly, there should be two methods</p>
+<pre><code>is_arg_present(&quot;...&quot;)
+// and
+is_subcommand_present(&quot;...&quot;)
+</code></pre>
+<p>That way we can consistently check for the right presence.</p>
+<h3>Additional Context</h3>
+<p>This surfaced when working on <code>from_global</code>.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @felipesere on 2021-05-20 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2026.html">clap-rs/clap#2026</a> on 2021-05-20 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @pksunkara on 2021-05-20 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-05-20 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-05-25 23:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:29 UTC
+    </footer>
+</body>
+</html>

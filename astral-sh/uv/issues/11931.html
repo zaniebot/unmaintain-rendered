@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot define two conflicting extras that differ by &quot;+cpu&quot; - astral-sh/uv #11931</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot define two conflicting extras that differ by &quot;+cpu&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11931">#11931</a>
+        opened by <a href="https://github.com/vmarkovtsev">@vmarkovtsev</a>
+        on 2025-03-03 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vmarkovtsev">@vmarkovtsev</a> on 2025-03-03 18:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given the following <code>pyproject.toml</code>, which tries to support <code>pip install project[cuda]</code> XOR <code>pip install project[cpu]</code>, <code>uv lock</code> fails.</p>
+<pre><code>[project]
+name = &quot;project&quot;
+requires-python = &quot;&gt;= 3.10&quot;
+dependencies = [
+    &quot;vllm==0.7.3&quot;,
+]
+version = &quot;1.0.0&quot;
+
+[project.optional-dependencies]
+cuda = [
+    &quot;torch==2.5.1&quot;,
+]
+cpu = [
+    &quot;torch==2.5.1+cpu&quot;,
+]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = &quot;cuda&quot; },
+        { extra = &quot;cpu&quot; },
+    ],
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;torch-gpu&quot;, extra = &quot;cuda&quot; },
+    { index = &quot;torch-cpu&quot;, extra = &quot;cpu&quot; },
+]
+</code></pre>
+<p>Message from <code>uv lock</code>:</p>
+<pre><code>Using CPython 3.12.8
+  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.12'):
+  ╰─▶ Because there is no version of torch==2.5.1 and project[cuda] depends on torch==2.5.1, we can conclude that project[cuda]'s requirements are unsatisfiable.
+      And because your project requires project[cuda], we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<pre><code>
+### Platform
+
+Ubuntu 22.04
+
+### Version
+
+0.6.3
+
+### Python version
+
+3.10
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vmarkovtsev on 2025-03-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-03 18:26</div>
+            <div class="timeline-body"><p>It looks like 2.5.1 does not exist on the cu126 index: https://download.pytorch.org/whl/cu126/torch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-03 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-03 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vmarkovtsev">@vmarkovtsev</a> on 2025-03-03 18:34</div>
+            <div class="timeline-body"><p>I don't believe that was so stupid 🤦 Thank you so much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vmarkovtsev on 2025-03-03 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

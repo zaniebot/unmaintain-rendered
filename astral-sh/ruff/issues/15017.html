@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule idea: warn about unsafe usage of `$` in regular expressions - astral-sh/ruff #15017</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule idea: warn about unsafe usage of `$` in regular expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15017">#15017</a>
+        opened by <a href="https://github.com/bustbr">@bustbr</a>
+        on 2024-12-16 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bustbr">@bustbr</a> on 2024-12-16 10:09</div>
+            <div class="timeline-body"><p>In Python's implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.
+There's <a href="https://best.openssf.org/Correctly-Using-Regular-Expressions">an article by the OpenSSF about this issue</a> suggesting to use <code>\Z</code> instead, or prefer the <code>fullmatch</code> function.</p>
+<p>An example of the issue:</p>
+<pre><code>&gt;&gt;&gt; re.search(r'cat$', 'cat\n')
+&lt;re.Match object; span=(0, 3), match='cat'&gt;
+</code></pre>
+<p>Using <code>\Z</code> fixes this:</p>
+<pre><code>&gt;&gt;&gt; re.search(r'cat\Z', 'cat\n')  # no match
+&gt;&gt;&gt; re.search(r'cat\Z', 'cat')
+&lt;re.Match object; span=(0, 3), match='cat'&gt;
+</code></pre>
+<p>Or using <code>fullmatch</code>:</p>
+<pre><code>&gt;&gt;&gt; re.fullmatch('cat', 'cat\n')  # no match
+&gt;&gt;&gt; re.fullmatch('cat', 'cat')
+&lt;re.Match object; span=(0, 3), match='cat'&gt;
+</code></pre>
+<p>Should Ruff warn about using <code>$</code> with <code>search</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-12-16 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-12-16 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14738.html">astral-sh/ruff#14738</a> on 2024-12-16 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-17 09:35</div>
+            <div class="timeline-body"><blockquote>
+<p>In Python's implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.</p>
+</blockquote>
+<p>This is incorrect. In non-multiline mode, <code>$</code> matches either the end of the entire input or the position right before the trailing newline (only <code>\n</code>, not <code>\r\n</code>). It is similar to PCRE's <code>\Z</code>, whereas Python's <code>\Z</code> resembles PCRE's <code>\z</code>:</p>
+<pre><code><a href="https://www.pcre.org/current/doc/html/pcre2syntax.html#TOC1">ANCHORS AND SIMPLE ASSERTIONS</a>
+
+  \b          word boundary
+  \B          not a word boundary
+  ^           start of subject
+                also after an internal newline in multiline mode
+                (after any newline if PCRE2_ALT_CIRCUMFLEX is set)
+  \A          start of subject
+  $           end of subject
+                also before newline at end of subject
+                also before internal newline in multiline mode
+  \Z          end of subject
+                also before newline at end of subject
+  \z          end of subject
+  \G          first matching position in subject
+</code></pre>
+
+<pre><code class="language-pycon">&gt;&gt;&gt; import re
+&gt;&gt;&gt; [*re.finditer(r'$', 'foo\nbar\r\n')]
+[&lt;re.Match object; span=(8, 8), match=''&gt;, &lt;re.Match object; span=(9, 9), match=''&gt;]
+&gt;&gt;&gt; [*re.finditer(r'\Z', 'foo\nbar\r\n')]
+[&lt;re.Match object; span=(9, 9), match=''&gt;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bustbr">@bustbr</a> on 2024-12-17 10:13</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>In Python's implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.</p>
+</blockquote>
+<p>This is incorrect. In non-multiline mode, <code>$</code> matches either the end of the entire input or the position right before the trailing newline (only <code>\n</code>, not <code>\r\n</code>). It is similar to PCRE's <code>\Z</code>, whereas Python's <code>\Z</code> resembles PCRE's <code>\z</code>:</p>
+</blockquote>
+<p>Thank you for the clarification.
+Based on your example here's a series of calls to highlight the specific behavior of <code>$</code>:</p>
+<pre><code class="language-python-console">&gt;&gt;&gt; re.search(r'$', 'foo\nbar')
+&lt;re.Match object; span=(7, 7), match=''&gt;
+&gt;&gt;&gt; re.search(r'$', 'foo\nbar\n')
+&lt;re.Match object; span=(7, 7), match=''&gt;    # still matches at pos 7, before the final new line
+&gt;&gt;&gt; re.search(r'$', 'foo\nbar\n\n')
+&lt;re.Match object; span=(8, 8), match=''&gt;    # matches at pos 8, before the final new line
+
+&gt;&gt;&gt; re.search(r'\Z', 'foo\nbar')
+&lt;re.Match object; span=(7, 7), match=''&gt;
+&gt;&gt;&gt; re.search(r'\Z', 'foo\nbar\n')
+&lt;re.Match object; span=(8, 8), match=''&gt;
+&gt;&gt;&gt; re.search(r'\Z', 'foo\nbar\n\n')
+&lt;re.Match object; span=(9, 9), match=''&gt;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

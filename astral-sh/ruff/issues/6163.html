@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM118 fixes a case in __contains__ which was using self, causing recusrion - astral-sh/ruff #6163</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM118 fixes a case in __contains__ which was using self, causing recusrion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6163">#6163</a>
+        opened by <a href="https://github.com/HexDecimal">@HexDecimal</a>
+        on 2023-07-28 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/HexDecimal">@HexDecimal</a> on 2023-07-28 23:46</div>
+            <div class="timeline-body"><p>An issue similar to #4481, Ruff incorrectly marks a case of <a href="https://beta.ruff.rs/docs/rules/in-dict-keys/">SIM118</a> as an error and as fixable when neither is the case.</p>
+<pre><code class="language-py">from typing import KeysView
+
+
+class Foo:
+    def keys() -&gt; KeysView[object]:
+        ...
+
+    def __contains__(self, key: object) -&gt; bool:
+        return key in self.keys()  # SIM118 replaces this with `return key in self`
+</code></pre>
+<p>The above is a likely pattern when writing a subclass of <code>collections.abc.Mapping</code>.</p>
+<p>Command: <code>ruff example.py --select SIM --fix</code>
+Version: <code>ruff 0.0.280</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-29 00:02</div>
+            <div class="timeline-body"><p>We can make the rule ignore self.keys which will almost always be wrong, but that’s probably the best we can do at present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-29 00:04</div>
+            <div class="timeline-body"><p>Or ignoring this rule in <strong>contains</strong> would also be reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HexDecimal">@HexDecimal</a> on 2023-07-29 00:08</div>
+            <div class="timeline-body"><p>I'm not in a hurry. I'm already ignoring these manually and checked to see if there was a issue for this.</p>
+<p>Ignoring <code>self.keys()</code> in <code>__contains__</code> might work.  Since this issue is very specific.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-29 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-29 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6165.html">astral-sh/ruff#6165</a> on 2023-07-29 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-29 03:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate packages with conflicting extras - astral-sh/uv #11133</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate packages with conflicting extras</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11133">#11133</a>
+        opened by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a>
+        on 2025-01-31 13:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a> on 2025-01-31 13:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have three dependencies, which all require PyTorch:</p>
+<ul>
+<li><code>mace-torch</code>, which requires <code>torch&gt;=1.12</code> in their <a href="https://github.com/ACEsuit/mace/blob/v0.3.9/setup.cfg#L17">tagged release</a></li>
+<li><code>chgnet</code>, which requires <code>torch&gt;=2.4.1</code> in their <a href="https://github.com/CederGroupHub/chgnet/blob/v0.4.0/pyproject.toml#L15">tagged release</a></li>
+<li><code>matgl</code> (labelled <code>m3nget</code>), which requires any <code>torch</code> in their <a href="https://github.com/materialsvirtuallab/matgl/blob/v1.1.3/pyproject.toml#L56">tagged release</a>, but in most cases we need to require <code>torch&lt;=2.2.1</code> (and <code>&quot;dgl==2.1&quot;</code>)</li>
+</ul>
+<p>A (relatively) minimal pyproject.toml for this, with the conflict between <code>chgnet</code> and <code>m3gnet</code> specified:</p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;mace-torch==0.3.9&quot;,
+]
+
+[project.optional-dependencies]
+chgnet = [
+    &quot;chgnet == 0.4.0&quot;,
+]
+
+m3gnet = [
+    &quot;matgl == 1.1.3&quot;,
+    &quot;torch == 2.2.1&quot;,
+    &quot;torchdata == 0.7.1&quot;,
+]
+
+[tool.uv]
+constraint-dependencies = [
+    &quot;dgl==2.1&quot;,
+    &quot;torch&lt;2.6&quot;,
+]
+conflicts = [
+    [
+      { extra = &quot;chgnet&quot; },
+      { extra = &quot;m3gnet&quot; },
+    ],
+]
+</code></pre>
+<p>However, if I run <code>uv sync -p 312</code> with this, followed by <code>uv pip list</code>, two versions of <code>torch</code> are installed:</p>
+<pre><code>torch                2.2.1
+torch                2.5.1
+</code></pre>
+<p>Strangely, we swap out <code>matgl</code> for <code>alignn</code> (which only explicitly depends on <code>torch&gt;=2.0.0</code> in their <a href="https://github.com/usnistgov/alignn/blob/v2024.5.27/setup.py#L21">tagged release</a>):</p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;mace-torch==0.3.9&quot;,
+]
+
+[project.optional-dependencies]
+chgnet = [
+    &quot;chgnet == 0.4.0&quot;,
+]
+
+alignn = [
+    &quot;alignn == 2024.5.27&quot;,
+    &quot;torch == 2.2.1&quot;,
+    &quot;torchdata == 0.7.1&quot;,
+]
+
+[tool.uv]
+constraint-dependencies = [
+    &quot;dgl==2.1&quot;,
+    &quot;torch&lt;2.6&quot;,
+]
+conflicts = [
+    [
+      { extra = &quot;chgnet&quot; },
+      { extra = &quot;alignn&quot; },
+    ],
+]
+</code></pre>
+<p>then, when running <code>uv sync -p 312</code>, only torch 2.5.1 is installed.</p>
+<p>May be related to https://github.com/astral-sh/uv/issues/10985.</p>
+<h3>Platform</h3>
+<p>macOS 15.2 arm64</p>
+<h3>Version</h3>
+<p>0.5.26</p>
+<h3>Python version</h3>
+<p>3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ElliottKasoar on 2025-01-31 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @konstin on 2025-01-31 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-31 14:33</div>
+            <div class="timeline-body"><p>I think the intended behavior here is that only <code>torch==2.5.1</code> is installed, right?</p>
+<p>If I look at the lock file, I see this for <code>torchmetrics</code>:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;torchmetrics&quot;
+version = &quot;1.6.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;lightning-utilities&quot; },
+    { name = &quot;numpy&quot; },
+    { name = &quot;packaging&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.2.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+    { name = &quot;torch&quot;, version = &quot;2.5.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-chgnet' or extra != 'extra-4-test-m3gnet'&quot; },
+]
+</code></pre>
+<p>Notice that both <code>2.2.1</code> and <code>2.5.1</code> will be used when there are no extras enabled (or even just when <code>chgnet</code> is enabled). Other dependencies on <code>torch</code> in the lock file look like this:</p>
+<pre><code class="language-toml">dependencies = [
+    { name = &quot;torch&quot;, version = &quot;2.2.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-m3gnet'&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.5.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-chgnet' or extra != 'extra-4-test-m3gnet'&quot; },
+]
+</code></pre>
+<p>Which is correct. Those markers are disjoint.</p>
+<p>So I think this is a bug in resolution or possibly conflict marker simplification. This requires more investigation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a> on 2025-01-31 15:01</div>
+            <div class="timeline-body"><p>Thanks for the quick response!</p>
+<blockquote>
+<p>I think the intended behavior here is that only <code>torch==2.5.1</code> is installed, right?</p>
+</blockquote>
+<p>Yes, that was my expectation.</p>
+<p>This isn't directly related to the bug, but can I also ask a related question: is there a convenient way of specifying conflicting sets of extras?</p>
+<p>I know conflict groups are possible, but in this case, I'd like to be able to <code>m3gnet</code> and <code>alignn</code> both conflict with <code>chgnet</code> and potentially others, while still being install each individually as an extra.</p>
+<p>Is it currently necessary to specify each conflicting pair?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-31 15:45</div>
+            <div class="timeline-body"><p>Your sets of conflicts can be of arbitrary length. If I'm understanding you correctly, then I think you just want this:</p>
+<pre><code class="language-toml">conflicts = [
+    [
+      { extra = &quot;chgnet&quot; },
+      { extra = &quot;alignn&quot; },
+      { extra = &quot;m3gnet&quot; },
+    ],
+]
+</code></pre>
+<p>And that will make all of them conflict with one another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a> on 2025-01-31 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Your sets of conflicts can be of arbitrary length. If I'm understanding you correctly, then I think you just want this:</p>
+<p>conflicts = [
+[
+{ extra = &quot;chgnet&quot; },
+{ extra = &quot;alignn&quot; },
+{ extra = &quot;m3gnet&quot; },
+],
+]
+And that will make all of them conflict with one another.</p>
+</blockquote>
+<p>Sorry, no I wasn't quite clear enough. For the above three, I would like to say that <code>chgnet</code> conflicts with both <code>alignn</code> and <code>m3gnet</code>, but <code>alignn</code> and <code>m3gnet</code> do not conflict with each other (we may want to install both).</p>
+<p>More generally, I would like one set of non-conflicting extras that are all able to use something like <code>torch==2.5.1</code>, and another non-conflicting set which still require <code>torch==2.2.1</code>, while retaining the ability to install each individually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-31 16:07</div>
+            <div class="timeline-body"><p>Yeah you have to explicitly specify the conflicts. Like this:</p>
+<pre><code class="language-toml">conflicts = [
+    [
+      { extra = &quot;chgnet&quot; },
+      { extra = &quot;alignn&quot; },
+    ],
+    [
+      { extra = &quot;chgnet&quot; },
+      { extra = &quot;m3gnet&quot; },
+    ],
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElliottKasoar">@ElliottKasoar</a> on 2025-01-31 16:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah you have to explicitly specify the conflicts. Like this:</p>
+<p>conflicts = [
+[
+{ extra = &quot;chgnet&quot; },
+{ extra = &quot;alignn&quot; },
+],
+[
+{ extra = &quot;chgnet&quot; },
+{ extra = &quot;m3gnet&quot; },
+],
+]</p>
+</blockquote>
+<p>Ok yep, thanks for clarifying! The number of pairs grows quite quickly as the two sets grow, but it's also quite a niche problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-31 16:20</div>
+            <div class="timeline-body"><p>Yeah if you want to open a new issue with a more complete view of what you're trying to do, and also what your full <code>pyproject.toml</code> looks like with all the conflicts, then I think that would let us consider the UX here a bit more holistically. There is definitely somewhat of an assumption that the number of conflicts is overall small, and I think that influenced the current UX. Your specific issue might be niche, but it might be common enough to consider improving the UX. I'm honestly not sure.</p>
+<p>One thing to consider here is that every conflict you define leads to a fork in the resolver. So like, if you have a crazy number of conflicts, there is definitely a potential there for slower resolutions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11323.html">astral-sh/uv#11323</a> on 2025-02-07 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-10 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11479.html">astral-sh/uv#11479</a> on 2025-02-13 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

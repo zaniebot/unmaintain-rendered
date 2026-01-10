@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An error occurs when switching to the commit - astral-sh/uv #12341</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>An error occurs when switching to the commit</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12341">#12341</a>
+        opened by <a href="https://github.com/Wintreist">@Wintreist</a>
+        on 2025-03-20 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Wintreist">@Wintreist</a> on 2025-03-20 15:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>PS E:\ROBO\Repositories\my_repo\tc_hub&gt; uv add -U git+ssh://git@host/qa/my_repo.git#subdirectory=vm_hub --branch=my_branch
+   Updating ssh://git@host/qa/my_repo.git (my_branch)
+error: Git operation failed
+  Caused by: process didn't exit successfully: `C:\Program Files\Git\cmd\git.exe reset --hard 9868272c464ec2f075aa0a08bf1badf364cfd969` (exit code: 128)
+--- stderr
+warning: unable to access 'tc_hub/src/tc_hub/server/queue_manager/pyqt_client/main_window/tab/tests_selector_widget/product_templates/win10_devx_template/.gitattributes': Filename too long
+warning: unable to access 'tc_hub/src/tc_hub/server/queue_manager/pyqt_client/main_window/tab/tests_selector_widget/product_templates/win10_hotfix_release_template/.gitattributes': Filename too long
+fatal: cannot create directory at 'tc_hub/src/tc_hub/server/queue_manager/pyqt_client/main_window/tab/tests_selector_widget/product_templates/win10__prestable_new_template': Filename too long
+</code></pre>
+<p>I'm trying to add a dependency for my project.
+I'm in tc_hub, and I'm in the my_branch branch.
+For some reason, when the queue reaches vm_hub dependency, an error occurs.
+I looked that the problem is in the cache:
+<code>C:\Users\wintreist\AppData\Local\uv\cache\git-v0\checkouts\e551289a4868813a\9868272c4\tc_hub\src\tc_hub\server\queue_manager\pyqt_client\main_window\tab\tests_selector_widget\product_templates</code>
+The transition to the commit stops here.
+I cloned my repository to another location, and did a <code>git.exe reset --hard 9868272c464ec2f075aa0a08bf1badf364cfd969</code> there, and I succeeded. So I think there's some kind of UV problem here.
+At the same time, if my project is already added as a dependency, then everything is fine (even if I manually enter the vm_hub I need into pyproject.toml)</p>
+<h3>Platform</h3>
+<p>Windows 10 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.8</p>
+<h3>Python version</h3>
+<p>Python 3.12.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Wintreist on 2025-03-20 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-03-20 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 16:06</div>
+            <div class="timeline-body"><p>Unfortunately Windows has a very low path length limit. It's likely that the uv cache directory is just introducing a longer initial path than when you check it out elsewhere? I'd recommend using <code>UV_CACHE_DIR</code> to move the uv cache to <code>C:\uv-cache</code> to see if that gets you below the limit? We're exploring solutions to this, but it's hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wintreist">@Wintreist</a> on 2025-03-20 16:23</div>
+            <div class="timeline-body"><p>Yes, it really helped me. Thanks! It's a pity that Windows does this.</p>
+<p>Do I need to close the task?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 16:31</div>
+            <div class="timeline-body"><p>I can close it; thanks!</p>
+<p>Related #2410</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-20 16:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

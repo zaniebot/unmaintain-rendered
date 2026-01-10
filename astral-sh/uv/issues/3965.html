@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock: relative sdist for relative path dependencies - astral-sh/uv #3965</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock: relative sdist for relative path dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3965">#3965</a>
+        opened by <a href="https://github.com/considerate">@considerate</a>
+        on 2024-06-02 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/considerate">@considerate</a> on 2024-06-02 12:28</div>
+            <div class="timeline-body"><p>Given a <code>requirements.txt</code> file that includes a relative path to a directory containing a distribution:</p>
+<pre><code>../my-package
+</code></pre>
+<p>With <code>uv pip compile --unstable-uv-lock-file requirements.txt</code> the generated lock has the package resolved to absolute paths like the following:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;my-package&quot;
+version = &quot;0.1.0&quot;
+source = &quot;directory+file:///home/me/path/to/my-package&quot;
+
+[distribution.sdist]
+url = &quot;file:///home/me/path/to/my-package&quot;
+</code></pre>
+<p>This is not ideal since I want to commit the lock file to a git repo shared with other people and they won't have the same directory structure I have.</p>
+<ol>
+<li>Is it possible to update the lock files to instead retain the relative path that was specified in the requirements.txt file?</li>
+<li>Is there any other way to declare relative path dependencies that would not have this absolute path resolution?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/considerate">@considerate</a> on 2024-06-02 12:40</div>
+            <div class="timeline-body"><p>Note:
+Specifying the dependency as <code>file:../my-package</code> results in the same output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/considerate">@considerate</a> on 2024-06-02 12:52</div>
+            <div class="timeline-body"><p>Possibly related to https://github.com/astral-sh/uv/issues/3506</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/considerate">@considerate</a> on 2024-06-02 12:56</div>
+            <div class="timeline-body"><p>For reference, poetry with a <code>my-package = {path = &quot;../my-package&quot;}</code> dependency resolves to:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;my-package&quot;
+version = &quot;0.1.0&quot;
+
+...
+
+[package.source]
+type = &quot;directory&quot;
+url = &quot;../my-package&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-02 16:47</div>
+            <div class="timeline-body"><p>👍 Yeah this will certainly change. I am going to merge into https://github.com/astral-sh/uv/issues/3506 since it's meant to cover the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-02 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-02 16:48</div>
+            <div class="timeline-body"><p>I don't believe there's any way around this with the lockfile right now. (It's not really intended for public use yet.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>linter shows errors for local file imports after switching from poetry to uv - astral-sh/uv #12321</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>linter shows errors for local file imports after switching from poetry to uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12321">#12321</a>
+        opened by <a href="https://github.com/hem9984">@hem9984</a>
+        on 2025-03-19 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hem9984">@hem9984</a> on 2025-03-19 18:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After switching, the linter shows these errors which all pertain to local file imports. And when I switch back to the poetry environment, they go away. What am I doing wrong? why are local file imports coming up as lint errors?</p>
+<p>here is my current pyproject.toml:</p>
+<pre><code class="language-#">
+[project]
+name = &quot;azlon&quot;
+version = &quot;0.0.1&quot;
+description = &quot;autonomous coding project solver&quot;
+readme = &quot;readme.md&quot;
+authors = [
+    { name = &quot;Harrison E. Muchnic&quot;, email = &quot;hem9984@nyu.edu&quot; },
+]
+requires-python = &quot;&gt;=3.10,&lt;4.0&quot;
+dependencies = [
+    &quot;restack-ai &gt;=0.0.85, &lt;1.0.0&quot;,
+    &quot;pydantic &gt;=2.10.3, &lt;3.0.0&quot;,
+    &quot;fastapi==0.115.4&quot;,
+    &quot;uvicorn &gt;=0.22.0, &lt;1.0.0&quot;,
+    &quot;baml-py &gt;=0.78.0, &lt;1.0.0&quot;,
+    &quot;kaggle &gt;=1.6.17, &lt;2.0.0&quot;,
+    &quot;mem0ai &gt;=0.1.56, &lt;1.0.0&quot;,
+    &quot;e2b &gt;=1.1.0, &lt;2.0.0&quot;,
+    &quot;boto3 &gt;=1.37.6, &lt;2.0.0&quot;,
+    &quot;python-multipart &gt;=0.0.20, &lt;1.0.0&quot;,
+    &quot;python-dotenv&quot;,
+    &quot;botocore&gt;=1.37.15&quot;,
+    &quot;pytest&gt;=7.4.4&quot;,
+]
+
+[project.scripts]
+services = &quot;src.services:run_services&quot;
+schedule = &quot;schedule_workflow:run_schedule_workflow&quot;
+
+[dependency-groups]
+dev = [
+    &quot;pytest &gt;=7.0.0, &lt;8.0.0&quot;,
+    &quot;pytest-asyncio &gt;=0.21.1, &lt;1.0.0&quot;,
+    &quot;pytest-cov &gt;=4.1.0, &lt;5.0.0&quot;,
+    &quot;autoflake &gt;=2.2.1, &lt;3.0.0&quot;,
+    &quot;black &gt;=23.7.0, &lt;24.0.0&quot;,
+    &quot;isort &gt;=5.12.0, &lt;6.0.0&quot;,
+    &quot;mypy &gt;=1.5.1, &lt;2.0.0&quot;,
+]
+
+[build-system]
+requires = [&quot;setuptools&gt;=61.0&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+# Configure setuptools to use the &quot;src&quot; directory for package discovery.
+[tool.setuptools]
+package-dir = { &quot;&quot; = &quot;src&quot; }
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+
+[tool.uv]
+default-groups = []
+
+# Code style tools configuration
+[tool.autoflake]
+remove-all-unused-imports = true
+remove-unused-variables = true
+remove-duplicate-keys = true
+in-place = true
+recursive = true
+expand-star-imports = true
+check = false
+
+[tool.black]
+line-length = 100
+target-version = [&quot;py310&quot;]
+
+[tool.isort]
+profile = &quot;black&quot;
+line_length = 100
+
+[tool.pytest.ini_options]
+asyncio_mode = &quot;auto&quot;
+</code></pre>
+<h3>Here is the linter error for local imports:</h3>
+<p>[{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/agents/main_agent.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.workflows.workflow&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 9,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 9,
+&quot;endColumn&quot;: 28
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/agents/main_agent.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.functions.cloud_storage_functions&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 14,
+&quot;startColumn&quot;: 10,
+&quot;endLineNumber&quot;: 14,
+&quot;endColumn&quot;: 47
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/functions/functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.baml_client.async_client&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 8,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 8,
+&quot;endColumn&quot;: 34
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/functions/functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.baml_client.types&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 9,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 9,
+&quot;endColumn&quot;: 27
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/functions/functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.functions.cloud_storage_functions&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 15,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 15,
+&quot;endColumn&quot;: 43
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/functions/functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.utils.e2b_functions&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 16,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 16,
+&quot;endColumn&quot;: 29
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/functions/functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.utils.file_handling&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 17,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 17,
+&quot;endColumn&quot;: 29
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/functions/functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.utils.memory_manager&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 18,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 18,
+&quot;endColumn&quot;: 30
+},{
+&quot;resource&quot;: &quot;/home/harrison/AzlonBackend/backend/src/utils/e2b_functions.py&quot;,
+&quot;owner&quot;: &quot;python&quot;,
+&quot;code&quot;: {
+&quot;value&quot;: &quot;reportMissingImports&quot;,
+&quot;target&quot;: {
+&quot;$mid&quot;: 1,
+&quot;path&quot;: &quot;/v1.28.0/configuration/config-files/&quot;,
+&quot;scheme&quot;: &quot;https&quot;,
+&quot;authority&quot;: &quot;docs.basedpyright.com&quot;,
+&quot;fragment&quot;: &quot;reportMissingImports&quot;
+}
+},
+&quot;severity&quot;: 8,
+&quot;message&quot;: &quot;Import &quot;src.functions.cloud_storage_functions&quot; could not be resolved&quot;,
+&quot;source&quot;: &quot;windsurfPyright&quot;,
+&quot;startLineNumber&quot;: 14,
+&quot;startColumn&quot;: 6,
+&quot;endLineNumber&quot;: 14,
+&quot;endColumn&quot;: 43
+}]</p>
+<h3>Platform</h3>
+<p>Ubuntu 24</p>
+<h3>Version</h3>
+<p>0.68</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+<p>.
+├── backend
+│   ├── baml_src
+│   │   ├── clients.baml
+│   │   ├── generate_code.baml
+│   │   ├── generators.baml
+│   │   ├── resume.baml
+│   │   ├── schema.baml
+│   │   └── validate_output.baml
+│   ├── dist
+│   │   ├── azlon-0.0.1-py3-none-any.whl
+│   │   └── azlon-0.0.1.tar.gz
+│   ├── Dockerfile
+│   ├── <strong>init</strong>.py
+│   ├── LICENSE
+│   ├── main.py
+│   ├── Makefile
+│   ├── <strong>pycache</strong>
+│   │   ├── <strong>init</strong>.cpython-311.pyc
+│   │   ├── <strong>init</strong>.cpython-312.pyc
+│   │   ├── main.cpython-312.pyc
+│   │   └── schedule_workflow.cpython-312.pyc
+│   ├── pyproject.toml
+│   ├── readme.md
+│   ├── schedule_workflow.py
+│   ├── src
+│   │   ├── agents
+│   │   │   ├── <strong>init</strong>.py
+│   │   │   └── main_agent.py
+│   │   ├── azlon.egg-info
+│   │   │   ├── dependency_links.txt
+│   │   │   ├── entry_points.txt
+│   │   │   ├── PKG-INFO
+│   │   │   ├── requires.txt
+│   │   │   ├── SOURCES.txt
+│   │   │   └── top_level.txt
+│   │   ├── baml_client
+│   │   │   ├── async_client.py
+│   │   │   ├── globals.py
+│   │   │   ├── <strong>init</strong>.py
+│   │   │   ├── inlinedbaml.py
+│   │   │   ├── partial_types.py
+│   │   │   ├── <strong>pycache</strong>
+│   │   │   │   ├── async_client.cpython-311.pyc
+│   │   │   │   ├── async_client.cpython-312.pyc
+│   │   │   │   ├── globals.cpython-311.pyc
+│   │   │   │   ├── globals.cpython-312.pyc
+│   │   │   │   ├── <strong>init</strong>.cpython-311.pyc
+│   │   │   │   ├── <strong>init</strong>.cpython-312.pyc
+│   │   │   │   ├── inlinedbaml.cpython-311.pyc
+│   │   │   │   ├── inlinedbaml.cpython-312.pyc
+│   │   │   │   ├── partial_types.cpython-311.pyc
+│   │   │   │   ├── partial_types.cpython-312.pyc
+│   │   │   │   ├── tracing.cpython-311.pyc
+│   │   │   │   ├── tracing.cpython-312.pyc
+│   │   │   │   ├── type_builder.cpython-311.pyc
+│   │   │   │   ├── type_builder.cpython-312.pyc
+│   │   │   │   ├── types.cpython-311.pyc
+│   │   │   │   └── types.cpython-312.pyc
+│   │   │   ├── sync_client.py
+│   │   │   ├── tracing.py
+│   │   │   ├── type_builder.py
+│   │   │   └── types.py
+│   │   ├── client.py
+│   │   ├── functions
+│   │   │   ├── cloud_storage_functions.py
+│   │   │   ├── functions.py
+│   │   │   ├── <strong>init</strong>.py
+│   │   │   └── <strong>pycache</strong>
+│   │   │       ├── cloud_storage_functions.cpython-311.pyc
+│   │   │       ├── cloud_storage_functions.cpython-312.pyc
+│   │   │       ├── functions.cpython-311.pyc
+│   │   │       ├── functions.cpython-312.pyc
+│   │   │       ├── <strong>init</strong>.cpython-311.pyc
+│   │   │       ├── <strong>init</strong>.cpython-312.pyc
+│   │   │       └── minio_functions.cpython-312.pyc
+│   │   ├── <strong>init</strong>.py
+│   │   ├── <strong>pycache</strong>
+│   │   │   ├── client.cpython-311.pyc
+│   │   │   ├── client.cpython-312.pyc
+│   │   │   ├── e2b_functions.cpython-312.pyc
+│   │   │   ├── file_server.cpython-312.pyc
+│   │   │   ├── <strong>init</strong>.cpython-311.pyc
+│   │   │   ├── <strong>init</strong>.cpython-312.pyc
+│   │   │   ├── memory_manager.cpython-311.pyc
+│   │   │   ├── memory_manager.cpython-312.pyc
+│   │   │   └── prompts.cpython-312.pyc
+│   │   ├── services.py
+│   │   ├── utils
+│   │   │   ├── e2b_functions.py
+│   │   │   ├── file_handling.py
+│   │   │   ├── file_handling.py.bak
+│   │   │   ├── <strong>init</strong>.py
+│   │   │   ├── memory_manager.py
+│   │   │   └── <strong>pycache</strong>
+│   │   │       ├── e2b_functions.cpython-311.pyc
+│   │   │       ├── e2b_functions.cpython-312.pyc
+│   │   │       ├── file_handling.cpython-311.pyc
+│   │   │       ├── file_handling.cpython-312.pyc
+│   │   │       ├── <strong>init</strong>.cpython-311.pyc
+│   │   │       ├── <strong>init</strong>.cpython-312.pyc
+│   │   │       ├── memory_manager.cpython-311.pyc
+│   │   │       └── memory_manager.cpython-312.pyc
+│   │   └── workflows
+│   │       ├── <strong>init</strong>.py
+│   │       ├── <strong>pycache</strong>
+│   │       │   ├── <strong>init</strong>.cpython-311.pyc
+│   │       │   ├── <strong>init</strong>.cpython-312.pyc
+│   │       │   ├── workflow.cpython-311.pyc
+│   │       │   └── workflow.cpython-312.pyc
+│   │       └── workflow.py
+│   ├── tests
+│   │   ├── conftest.py
+│   │   ├── kaggle
+│   │   │   └── scrape_kaggle.py
+│   │   ├── <strong>pycache</strong>
+│   │   │   ├── conftest.cpython-311-pytest-8.3.5.pyc
+│   │   │   ├── conftest.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── minio_config_tester.cpython-312.pyc
+│   │   │   ├── tailscale_diagnostics.cpython-312.pyc
+│   │   │   ├── tailscale_funnel_config.cpython-312.pyc
+│   │   │   ├── test_cloud_storage_functions.cpython-311-pytest-8.3.5.pyc
+│   │   │   ├── test_cloud_storage_functions.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_direct_s3.cpython-312.pyc
+│   │   │   ├── test_e2b_functions.cpython-311-pytest-8.3.5.pyc
+│   │   │   ├── test_e2b_functions.cpython-312.pyc
+│   │   │   ├── test_e2b_functions.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_file_handling.cpython-311-pytest-8.3.5.pyc
+│   │   │   ├── test_file_handling.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_file_server.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_functions.cpython-311-pytest-8.3.5.pyc
+│   │   │   ├── test_functions.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_live_gcs.cpython-311-pytest-8.3.5.pyc
+│   │   │   ├── test_live_gcs.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_live_minio.cpython-312.pyc
+│   │   │   ├── test_main.cpython-312-pytest-7.4.4.pyc
+│   │   │   ├── test_tailscale_minio.cpython-312.pyc
+│   │   │   ├── test_workflow.cpython-311-pytest-8.3.5.pyc
+│   │   │   └── test_workflow.cpython-312-pytest-7.4.4.pyc
+│   │   ├── test_cloud_storage_functions.py
+│   │   ├── test_e2b_functions.py
+│   │   ├── test_file_handling.py
+│   │   ├── test_functions.py
+│   │   ├── test_live_gcs.py
+│   │   └── test_workflow.py
+│   └── uv.lock
+├── cleanup.sh
+├── docker-compose.yml
+├── <strong>init</strong>.py
+├── LICENSE
+├── llm-output
+│   ├── test-local
+│   └── test-local-direct
+├── old_README.md
+├── plan.md
+├── <strong>pycache</strong>
+│   └── <strong>init</strong>.cpython-311.pyc
+├── simple_test.sh
+└── start_server.sh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @hem9984 on 2025-03-19 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-19 18:32</div>
+            <div class="timeline-body"><p>Could you use backticks for code blocks (```)?</p>
+<p>It would also be helpful to minimize your example as discussed in #9452 / https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hem9984">@hem9984</a> on 2025-03-19 18:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you use backticks for code blocks (```)?</p>
+<p>It would also be helpful to minimize your example as discussed in <a href="https://github.com/astral-sh/uv/issues/9452">#9452</a> / https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/</p>
+</blockquote>
+<p>I revised the markdown formatting as requested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-19 18:37</div>
+            <div class="timeline-body"><p>How are you invoking the linter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hem9984">@hem9984</a> on 2025-03-19 18:38</div>
+            <div class="timeline-body"><blockquote>
+<p>How are you invoking the linter?</p>
+</blockquote>
+<p>uv sync. Vscode is just showing it under &quot;problems&quot;. when I switch back to poetry env they go away. when I switch back to uv env they come back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-19 18:50</div>
+            <div class="timeline-body"><p>Are you changing VSCode to use the uv <code>.venv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hem9984">@hem9984</a> on 2025-03-19 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you changing VSCode to use the uv <code>.venv</code>?</p>
+</blockquote>
+<p>yes. as stated in my previous comment, it only happens when I change to the uv venv. I am suspecting now that it is because the venv is not in the root directory (see directory tree). Would that be the issue? then why does it work in poetry but not uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-19 19:00</div>
+            <div class="timeline-body"><p>Ah, that'd be a case of #9637 which seems like a VS Code bug. I think VS Code has &quot;special&quot; support for Poetry? The linked issue has some workarounds I think. It's unclear to me when the VS Code team will fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-03-19 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-03-19 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hem9984">@hem9984</a> on 2025-03-20 15:11</div>
+            <div class="timeline-body"><p>conclusion is that the uv venv needs to be in root directory for linter to work properly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hem9984 on 2025-03-20 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

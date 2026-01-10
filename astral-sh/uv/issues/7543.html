@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.4.12 failing to read distribution cache in github actions - astral-sh/uv #7543</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.4.12 failing to read distribution cache in github actions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7543">#7543</a>
+        opened by <a href="https://github.com/nijel">@nijel</a>
+        on 2024-09-19 11:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nijel">@nijel</a> on 2024-09-19 11:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>This seems almost like https://github.com/astral-sh/uv/issues/7485, but I still see it happen with 0.4.12:</p>
+<pre><code> error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: mercurial==6.8.1
+  Caused by: /home/runner/work/_temp/setup-uv-cache/built-wheels-v3/pypi/mercurial/6.8.1/kYDLbz0owpJdwyMLRFXvG/mercurial-6.8.1.tar.gz does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` are present in the directory
+</code></pre>
+<p>The cache was created by 0.4.12 as uv version is in GitHub cache key:</p>
+<pre><code> uv cache restored from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-0.4.12
+-dc3406fd913fe4622566cb4edc384b2e3b933f9767e05f304e1f3ec73a14f457
+</code></pre>
+<p>When executed without a cache, it runs just fine.</p>
+<p>PS: Action log can be seen here: https://github.com/WeblateOrg/weblate/actions/runs/10940191066/job/30372045488</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-19 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2024-09-19 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 12:13</div>
+            <div class="timeline-body"><p>At least on a first pass I can't reproduce that locally, but I'll keep trying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 12:20</div>
+            <div class="timeline-body"><p>Actually, I think I have an idea as to how this could happen if you're sharing that cache between multiple Python versions. Is that possible? I reproduced with some manual cache editing:</p>
+<pre><code>error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: mercurial==6.8.1
+  Caused by: /Users/crmarsh/.cache/uv/built-wheels-v3/pypi/mercurial/6.8.1/bZrFqUG39NkQoZTpIu0WD/mercurial-6.8.1.tar.gz does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` are present in the directory
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-19 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2024-09-19 12:20</div>
+            <div class="timeline-body"><p>Ah, that is most likely it. We use multiple Python versions, and I didn't realize that the cache key doesn't include it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 12:21</div>
+            <div class="timeline-body"><p>I feel like the cache <em>should</em> be robust to multiple Python versions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 12:21</div>
+            <div class="timeline-body"><p>Yeah it should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 12:22</div>
+            <div class="timeline-body"><p>In general it <em>is</em> robust to multiple Python versions, platforms, etc. But there's a bug here whereby if you run <code>uv cache prune --ci</code> (which runs via the GitHub Action), we perform some modifications that break assumptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 12:25</div>
+            <div class="timeline-body"><p>I'll fix this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2024-09-19 12:30</div>
+            <div class="timeline-body"><p>In our case, the GitHub cache really should be per Python version, so I've just changed that. Without that, it is not really useful as compiled wheels are not compatible across Python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7559.html">astral-sh/uv#7559</a> on 2024-09-19 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-19 20:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:52 UTC
+    </footer>
+</body>
+</html>

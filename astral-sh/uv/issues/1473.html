@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>environment variable references in requirements files are not resolved - astral-sh/uv #1473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>environment variable references in requirements files are not resolved</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1473">#1473</a>
+        opened by <a href="https://github.com/detlefla">@detlefla</a>
+        on 2024-02-16 10:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/detlefla">@detlefla</a> on 2024-02-16 10:18</div>
+            <div class="timeline-body"><p>If a requirements file contains a line <code>-r ${OTHERPKG}/requirements/dev.in</code>, pip-compile tries to replace <code>${OTHERPKG}</code> with the contents of an environment variable OTHERPKG. uv, however, uses the string literally and fails to find the location of the file to be included.</p>
+<p>Maybe this is a feature uv has not implemented yet; I apologize if it's a documented restriction and I just didn't find it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @MichaReiser on 2024-02-16 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 14:56</div>
+            <div class="timeline-body"><p>Ah, we actually do support this, but not for paths to requirements files, only for dependency specifiers (like <code>-e ${OTHER_PKG}/..</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-02-17 19:55</div>
+            <div class="timeline-body"><p>@charliermarsh  I am not sure this issue from @detlefla is the same I have, but I believe uv doesn't support environment variables inside of requirements.txt file as described here: https://pip.pypa.io/en/stable/reference/requirements-file-format/#using-environment-variables</p>
+<p>My txt file has the following:</p>
+<pre><code>mod-wsgi==${MOD_WSGI_WINDOWS_VERSION} ; sys_platform=='win32' and platform_machine=='AMD64'
+</code></pre>
+<p>But uv fails with</p>
+<pre><code>error: Couldn't parse requirement in `.\requirements\pip-deploy.txt` at position 276
+  Caused by: expected version to start with a number, but no leading ASCII digits were found
+mod-wsgi==${MOD_WSGI_WINDOWS_VERSION} ; sys_platform=='win32' and platform_machine=='AMD64'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 19:58</div>
+            <div class="timeline-body"><p>@inoa-jboliveira - It's similar! We support environment variables in URLs, but not in arbitrary locations like in a version specifier, so that's something we'd have to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1618.html">astral-sh/uv#1618</a> on 2024-02-17 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-02-17 23:38</div>
+            <div class="timeline-body"><p>Added support for both cases in the PR above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2143.html">astral-sh/uv#2143</a> on 2024-03-03 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-03 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-03 23:47</div>
+            <div class="timeline-body"><p>The originating issue here (supporting environment variables in <code>-r</code> and <code>-c</code> paths, within requirements files) is now fixed by https://github.com/astral-sh/uv/pull/2143. If folks want environment variable expansion for other parts of the file (like version specifiers), we need to handle those on a case-by-case basis, so feel free to open a new issue to track it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4592.html">astral-sh/uv#4592</a> on 2024-06-27 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:21 UTC
+    </footer>
+</body>
+</html>

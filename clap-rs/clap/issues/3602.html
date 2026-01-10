@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>write_long_help is wonky on get_subcommands_mut values - clap-rs/clap #3602</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>write_long_help is wonky on get_subcommands_mut values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3602">#3602</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2022-04-02 02:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2022-04-02 02:49</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.61.0-nightly (458262b13 2022-03-09)</p>
+<h3>Clap Version</h3>
+<p>3.1.8</p>
+<h3>Minimal reproducible code</h3>
+<p>The main thing is just:</p>
+<pre><code class="language-rust">    // Cli is derive(Parser)
+    let mut full_command = Cli::command();
+    let mut todo = vec![&amp;mut full_command];
+
+    while let Some(command) = todo.pop() {
+        // Get the long help for this (sub)command
+        let mut help_buf = Vec::new();
+        command.write_long_help(&amp;mut help_buf).unwrap();
+
+        // print help_buf...
+
+        // Add subcommands to working queue
+        todo.extend(command.get_subcommands_mut());
+    }
+</code></pre>
+<p>But the &quot;complete&quot; program is all of this:</p>
+<pre><code class="language-rust">
+use std::{io::Write, error::Error};
+
+use clap::{CommandFactory, Parser, Subcommand};
+
+#[derive(Parser)]
+#[clap(version, about, long_about = None)]
+#[clap(propagate_version = true)]
+struct Cli {
+    // Subcommands
+    #[clap(subcommand)]
+    command: Option&lt;Commands&gt;,
+
+    // Some random flags 
+    #[clap(long)]
+    locked: bool,
+    #[clap(long)]
+    log_file: Option&lt;String&gt;,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// initialize buggyhelp for your project
+    #[clap(disable_version_flag = true)]
+    Init(InitArgs),
+
+    /// Fetch the source of `$crate $version`
+    #[clap(disable_version_flag = true)]
+    Fetch(FetchArgs),
+
+    /// Print --help as markdown (for generating docs)
+    #[clap(disable_version_flag = true)]
+    #[clap(hide = true)]
+    HelpMarkdown(HelpMarkdownArgs),
+}
+
+#[derive(clap::Args)]
+struct InitArgs {}
+
+#[derive(clap::Args)]
+struct FetchArgs {
+    krate: String,
+    version: String,
+}
+
+#[derive(clap::Args)]
+struct HelpMarkdownArgs {}
+
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;  {
+    let cli = Cli::parse();
+
+    match &amp;cli.command {
+        Some(Commands::HelpMarkdown(..)) =&gt; cmd_help_markdown()?,
+        _ =&gt; unimplemented!(),
+    }
+
+    Ok(())
+}
+
+fn cmd_help_markdown() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let mut full_command = Cli::command();
+    let mut todo = vec![&amp;mut full_command];
+
+    while let Some(command) = todo.pop() {
+        let mut help_buf = Vec::new();
+
+        command.write_long_help(&amp;mut help_buf).unwrap();
+        let help = String::from_utf8(help_buf).unwrap();
+        println!(&quot;{}&quot;, help);
+
+        todo.extend(command.get_subcommands_mut());
+    }
+
+    Ok(())
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- help-markdown
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The long_help outputs for the subcommands are weirdly different from <code>myapp subcommand --help</code>:</p>
+<ul>
+<li>USAGE is <code>subcommand ...</code> instead of <code>myapp subcommand ...</code></li>
+<li>ARGS have weird amounts of padding</li>
+</ul>
+<pre><code>fetch 0.1.0
+Fetch the source of `$crate $version`
+
+USAGE:
+    fetch &lt;KRATE&gt; &lt;VERSION&gt;
+
+ARGS:
+    &lt;KRATE&gt;
+
+
+    &lt;VERSION&gt;
+
+
+OPTIONS:
+    -h, --help
+            Print help information
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>It's not obvious why this would produce substantially different output from the &quot;normal&quot; way to get --help on the CLI.</p>
+<h3>Additional Context</h3>
+<p>The reason I am doing these crimes is that I have a secret command that mangles the --help output into a usable markdown form to add to the end of a README.md: https://gist.github.com/Gankra/349dcf6732262ed33b2aa216243a75be</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Gankra on 2022-04-02 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-03 01:10</div>
+            <div class="timeline-body"><p>This is  most likely due to an under-developed part of clap.  To work around it, you should call <code>full_command._build_all();</code> before doing anything else.</p>
+<p>https://github.com/clap-rs/clap/issues/2911 is the issue for improving this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-19 14:53</div>
+            <div class="timeline-body"><p>Without any activity on this, I'm assuming the solution provided is sufficient.  If not, let us know and we can re-open!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-04-19 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2022-04-19 14:59</div>
+            <div class="timeline-body"><p>oh yes sorry, I patched around the issue by just &quot;expecting&quot; the wonky output, I haven't had a chance to look at <code>_build_all()</code> (leading underscore has me suspicious that this is no better than me hacking around it...).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3642.html">clap-rs/clap#3642</a> on 2022-04-19 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-19 15:33</div>
+            <div class="timeline-body"><p>I've released v3.1.10 with <code>Command::build</code> so people don't have to feel bad for using it until we've replaced it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:58 UTC
+    </footer>
+</body>
+</html>

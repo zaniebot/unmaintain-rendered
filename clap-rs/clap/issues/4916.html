@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completions shouldn't suggest options unless the current token starts with a `-` - clap-rs/clap #4916</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Completions shouldn't suggest options unless the current token starts with a `-`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4916">#4916</a>
+        opened by <a href="https://github.com/jthulhu">@jthulhu</a>
+        on 2023-05-18 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jthulhu">@jthulhu</a> on 2023-05-18 15:07</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p><code>4</code> in <code>Cargo.toml</code>, the actual version is <code>4.2.1</code></p>
+<h3>Describe your use case</h3>
+<p>I am trying to provide shell completions for my program. As it uses <code>clap</code>, I'd like to leverage the (very cool) <code>clap-generate</code>. Unfortunately, <code>clap-generate</code> currently has an undesirable which is (as far as I've found out) not configurable: it will generate <em>every</em> possible completions, which is usually not what I'd like it to do. For instance, options (eg. <code>--help</code>) shouldn't be shown to the user unless the user has already started typing a dash, in which case only the options should be shown.</p>
+<p>In general, I'd like the shell completions to follow the behavior of <code>git</code>, which I think has some very good shell completions.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'd like <code>clap-generate</code> to be more configurable. The following settings should be available: whether to hide options unless they're the option completion possible, and whether to sort completion alphabetically or by order in which the subcommands are defined (if applicable).
+Optionally, allow <code>clap-generate</code> to be &quot;smarter&quot;: allow for some &quot;folded&quot; options (ie. when trying to complete <code>git clone --</code>, it will propose, among other suggestions, <code>git clone --no-...</code>; when trying to complete <code>git clone --no-</code>, only then it will show all the options that start with <code>--no-</code>).
+Optionally, allow <code>clap-generate</code> to hide short options (one letter options): git hides them, so I guess it's ok not to show them.</p>
+<h3>Alternatives, if applicable</h3>
+<p>Do not make it configurable, just make the asked behavior the only available behavior.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @jthulhu on 2023-05-18 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-18 15:49</div>
+            <div class="timeline-body"><p>So I'm not a completion expert and most of it is more community maintained (though #3166 would fix most of that) but I believe we are just registering completions with the shell and the shell is deciding what options to show (which would also change with #3166).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jthulhu">@jthulhu</a> on 2023-05-18 15:59</div>
+            <div class="timeline-body"><p>#3166 looks most promising, so it'll probably solve this issue.</p>
+<p>Besides, I think that <code>clap-generate</code> is indeed just passing every completion to the shell, but that's precisely what I am asking it not to do: it would fit my use-case better if <code>clap-generate</code> filtered some completions, because showing everything is a bit overwhelming, even with very few options.</p>
+<p>(this hasn't much to do with this issue, but I don't know where else to say this: great job with this library, it's quite amazing!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-18 16:19</div>
+            <div class="timeline-body"><p>So instead you don't want some arguments completed?</p>
+<p>In the new completion system, we were looking at having hidden arguments completed only if there was nothing better to complete but I assume you wouldn't want to generally hide these.</p>
+<p>We have been working on a plugin system that would allow <code>ValueHint</code> to be exclusively defined in <code>clap_complete</code>.  We could use this to allow arguments to be hidden from completions as well</p>
+<p>I would be concerned about usability of not completing things for people though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jthulhu">@jthulhu</a> on 2023-05-18 16:22</div>
+            <div class="timeline-body"><p>Indeed, I don't want them to be completed <em>unless</em> the current word the user is typing starts with <code>--</code>, in which case I'd want them to be completed. I want the same behavior as git: if I try to complete <code>git |</code> (where <code>|</code> is the point), I get all subcommands but no option, and if I try to complete <code>git --|</code> I get all options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-18 17:32</div>
+            <div class="timeline-body"><p>If you have concrete suggestions on how to do that today, I would be open to it.  If not, this is likely reserved for the dynamic completions.</p>
+<p>I was curious and it looks like argcomplete make this configurable</p>
+<pre><code>    :param always_complete_options:
+        Controls the autocompletion of option strings if an option string opening character (normally ``-``) has not
+        been entered. If ``True`` (default), both short (``-x``) and long (``--x``) option strings will be
+        suggested. If ``False``, no option strings will be suggested. If ``long``, long options and short options
+        with no long variant will be suggested. If ``short``, short options and long options with no short variant
+        will be suggested.</code></pre>
+<p>https://github.com/kislyuk/argcomplete/blob/develop/argcomplete/finders.py#L78</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jthulhu">@jthulhu</a> on 2023-05-18 18:01</div>
+            <div class="timeline-body"><p>I know how to do that for bash (I guess this would be similar for other shells?). First of all, you'd have to do some bookkeeping to distinguish between options and arguments/subcommands. Then, in the generated script, in each function responsible for generating the completions, there should be</p>
+<pre><code class="language-bash">if [[ &quot;$cur&quot; == -* ]]; then
+    COMPREPLY=(`compgen -W '&lt;here should go the options&gt;' -- $cur)
+    return
+fi
+
+if [[ $COMP_CWORD -eq &lt;position&gt; ]]; then
+  COMPREPLY=(`compgen -W '&lt;here should go the subcommands&gt;' -- $cur)
+  return
+fi
+</code></pre>
+<p>as opposed to how it is currently generated</p>
+<pre><code class="language-bash">if [[ $cur == -* || $COMP_CWORD -eq &lt;position&gt; ]]; then
+  COMPREPLY=(`compgen -W '&lt;here go both options and subcommands&gt;' -- $cur)
+  return
+fi
+</code></pre>
+<p>Unfortunately, I am not familiar with <code>clap</code> source code, so I can't provide more specific details on how to do the bookkeeping (that must already happen somewhere, since options and arguments are already distinguished in <code>clap</code>), nor do I realize exactly how much work does that entail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-05-18 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-10 00:47</div>
+            <div class="timeline-body"><p>As I believe this is resolved with the native completions, I'm going to close this.  If this was incorrect, let us know!  I would recommend creating specific issues for each of what is missing.</p>
+<p>You can track stabilization at #3166</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-08-10 00:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:24 UTC
+    </footer>
+</body>
+</html>

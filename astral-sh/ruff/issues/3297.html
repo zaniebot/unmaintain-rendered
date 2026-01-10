@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use itertools.pairwise instead of zipping a sequence against itself - astral-sh/ruff #3297</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use itertools.pairwise instead of zipping a sequence against itself</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3297">#3297</a>
+        opened by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a>
+        on 2023-03-02 03:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jeremiah-England">@Jeremiah-England</a> on 2023-03-02 03:55</div>
+            <div class="timeline-body"><p>Tonight I discovered <a href="https://docs.python.org/3/library/itertools.html#itertools.pairwise"><code>itertools.pairwise</code></a> (new in 3.10) and replaced 6 lines like this in a ~10,000 line codebase:</p>
+<pre><code class="language-python"># Before:
+for first, second in zip(my_sequence, my_sequence[1:], strict=False):
+    ...
+
+# After:
+for first, second in pairwise(my_sequence):
+    ...
+</code></pre>
+<p>I have no idea how easy this would be. But if it is easy it might make a nice rule!</p>
+<p>And in addition to being less verbose, <code>pairwise</code> is also faster on my machine.</p>
+<pre><code class="language-python">import timeit
+from itertools import pairwise
+
+short = [0] * 10
+medium = [0] * 1_000
+long = [0] * 1_000_000
+
+print(timeit.timeit(&quot;list(pairwise(short))&quot;, globals=globals()))
+print(timeit.timeit(&quot;list(zip(short, short[1:], strict=False))&quot;, globals=globals()))
+# 0.5838822979985707
+# 1.1156816439997783
+
+print(timeit.timeit(&quot;list(pairwise(medium))&quot;, globals=globals(), number=10_000))
+print(timeit.timeit(&quot;list(zip(medium, medium[1:], strict=False))&quot;, globals=globals(), number=10_000))
+# 0.36417481299940846
+# 0.4547197800002323
+
+print(timeit.timeit(&quot;list(pairwise(long))&quot;, globals=globals(), number=10))
+print(timeit.timeit(&quot;list(zip(long, long[1:], strict=False))&quot;, globals=globals(), number=10))
+# 1.0911181840001518
+# 1.499006936999649
+</code></pre>
+<p>Another common idiom for this uses indexes. But my gut tells me linting this would be much more difficult and error prone.</p>
+<pre><code class="language-python">for i in range(len(my_sequence) - 2):
+    first, second = my_sequence[i], my_sequence[i + 1]
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-02 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 04:30</div>
+            <div class="timeline-body"><p>That's neat, would make for a good rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-03-04 21:48</div>
+            <div class="timeline-body"><p>@charliermarsh i can take this if you don't think it's too difficult for a newbie - new to Rust, so may take a bit though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-05 16:20</div>
+            <div class="timeline-body"><p>@evanrittenhouse - Go for it! We can make it a rule under the <code>RUF</code> category.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-03-12 17:05</div>
+            <div class="timeline-body"><p>@charliermarsh I've been working on this but am having a bit of trouble. It seems like there are a few <code>ExprKinds</code> that would come up (<code>Name</code>, <code>Constant</code>, come to mind). I think you'd want to ensure that all <code>Name.ids</code> are unique in a call to <code>zip()</code>, or that all <code>Constant.values</code> are subsets of the longest <code>value</code>. I was thinking about writing a <code>match</code> for it, but I think I'd have to cover each <code>ExprKind</code> which doesn't seem very ergonomic.</p>
+<p>I feel like there's a helper function to find this information - is that the case? Do you have any advice for how to get those values from the different <code>ExprKinds</code>? Are there any rules that I can check out for an example? I haven't found either the function or any applicable rules after looking for a few days, so reaching out for help if that's alright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 23:12</div>
+            <div class="timeline-body"><p>@evanrittenhouse - I think we probably want to check that the first arg is <code>ExprKind::Name</code>, and the second arg is <code>ExprKind::Subscript</code> with a <code>value</code> of <code>ExprKind::Name</code>, and the same name, etc.</p>
+<p>You might find it useful to take the snippet you're trying to match against, put it in a file, and run <code>cargo dev print-ast foo.py</code> to see the AST. We can probably keep this check scoped to a pretty narrow case as defined above.</p>
+<p>So e.g.:</p>
+<pre><code>let ExprKind::Name { id: first_id, .. } = &amp;first_arg.node else {
+  return;
+}
+
+let ExprKind::Subscript { value, .. } = &amp;second_arg.node else {
+  return;
+}
+
+let ExprKind::Name { id: second_id, .. } = &amp;value.node else {
+  return;
+}
+
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3501.html">astral-sh/ruff#3501</a> on 2023-03-14 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-17 03:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

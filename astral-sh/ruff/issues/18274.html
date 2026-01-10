@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Infinite loop] I001 Import block is un-sorted or un-formatted - astral-sh/ruff #18274</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Infinite loop] I001 Import block is un-sorted or un-formatted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18274">#18274</a>
+        opened by <a href="https://github.com/moszajca-sonatus">@moszajca-sonatus</a>
+        on 2025-05-23 11:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/moszajca-sonatus">@moszajca-sonatus</a> on 2025-05-23 11:51</div>
+            <div class="timeline-body"><p>Comments are causing infinite loop.</p>
+<pre><code>error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `zzza.py`, the rule codes I001, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+zzza.py:1:1: I001 Import block is un-sorted or un-formatted
+  |
+1 | / from test_framework.test import executor
+2 | | from test_framework.test.api import port, test
+  | |______________________________________________^ I001
+  |
+  = help: Organize imports
+
+
+
+</code></pre>
+<p>Test code:</p>
+<pre><code>from test_framework.test import executor
+from test_framework.test.api import port, test
+
+
+# Comment
+
+# Comment
+@test.Case(1)
+class C1(port.Port):
+    def __init__(self):
+        super().__init__(
+            case_id=1
+        )
+
+
+if __name__ == &quot;__main__&quot;:
+    executor.run([C1])
+</code></pre>
+<p>ruff.toml:</p>
+<pre><code># Configure isort settings within Ruff
+[lint.isort]
+force-single-line = false
+known-first-party = [&quot;test_framework&quot;]
+</code></pre>
+<p>Ruff 0.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 13:08</div>
+            <div class="timeline-body"><p>Thanks for reporting.</p>
+<p>I'm unable to reproduce this on its own when using:</p>
+<pre><code class="language-shell">uvx ruff check lib.py --select I001 --no-cache --fix --unsafe-fixes --preview --output-format concise --isolated --config &quot;lint.isort.force-single-line = false&quot; --config 'lint.isort.known-first-party = [&quot;test_framework&quot;]'
+</code></pre>
+<p>Any chance you have <code>E302</code> enabled as well? I can then reproduce the error, which is the same as https://github.com/astral-sh/ruff/issues/12611</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-05-23 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moszajca-sonatus">@moszajca-sonatus</a> on 2025-05-23 13:26</div>
+            <div class="timeline-body"><pre><code># ruff.toml
+
+line-length = 132
+indent-width = 4
+
+# Specify the file patterns to include in the analysis
+include = [&quot;*.py&quot;]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+lint.fixable = [&quot;ALL&quot;]
+
+# Optionally, you can disable automatic fixing for these specific rules or in general
+# fix = false
+
+# Assume Python 3.10
+target-version = &quot;py310&quot;
+
+# Specify which error/warning codes should be checked
+lint.select = [
+    &quot;E&quot;,  # All errors
+    &quot;W&quot;,  # All warnings
+    &quot;PIE&quot;,  # All flake8-pie
+    &quot;RET&quot;,  # All flake8-return
+    &quot;PLE&quot;,  # All Errors from Pylint
+    &quot;F401&quot;,  # unused-import
+    &quot;F541&quot;,  # f-string-missing-placeholders
+    &quot;F841&quot;,  # unused-variable
+    &quot;I001&quot;,  # isort: unsorted-imports
+    &quot;I002&quot;,  # isort: missing-required-import
+    ]
+lint.ignore = [  # Ruff cannot automatically fix these. Should be fixed manually before remove from below list.
+    &quot;E266&quot;,  # multiple-leading-hashes-for-block-comment. We use this for headers.
+    &quot;E402&quot;,  # module-import-not-at-top-of-file
+    &quot;E501&quot;,  # line-too-long
+    &quot;E712&quot;,  # true-false-comparison
+    &quot;E701&quot;,  # multiple-statements-on-one-line-colon
+    &quot;E711&quot;,  # none-comparison
+    &quot;E721&quot;,  # type-comparison
+    &quot;E722&quot;,  # bare-except
+    &quot;E731&quot;,  # lambda-assignment
+    &quot;E741&quot;,  # ambiguous-variable-name
+    ]
+
+[format]
+# Like Black, indent with spaces, rather than tabs.
+indent-style = &quot;space&quot;
+
+# Configure isort settings within Ruff
+[lint.isort]
+force-single-line = false
+known-first-party = [&quot;test_framework&quot;]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 13:42</div>
+            <div class="timeline-body"><p>Thanks. Yes, you have <code>E302</code> enabled. So this is a duplicate of</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-23 13:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

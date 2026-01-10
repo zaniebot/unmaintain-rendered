@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ArgAction::Count` starts from `0` rather than `default_value` - clap-rs/clap #5483</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ArgAction::Count` starts from `0` rather than `default_value`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5483">#5483</a>
+        opened by <a href="https://github.com/eirnym">@eirnym</a>
+        on 2024-05-03 12:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eirnym">@eirnym</a> on 2024-05-03 12:48</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.78.0 (9b00956e5 2024-04-29)</p>
+<h3>Clap Version</h3>
+<p>4.5.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{ArgAction, Parser};
+
+#[derive(Debug, Clone, Parser)]
+pub struct CliArgs {
+    #[clap(short = 'v', action = ArgAction::Count, default_value_t=5)]
+    pub verbose: u8,
+}
+fn main() {
+    let args = CliArgs::parse();
+    println!(&quot;verbose count: {}&quot;, args.verbose);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-shell">$ cargo run -- -vvv
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p><code>default_value_t</code> is not taken into consideration for the starting point of <code>Count</code></p>
+<p>output:</p>
+<pre><code class="language-shell">$ cargo run 
+verbose count: 5
+$ cargo run -- -vvv
+verbose count: 3
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><code>default_value_t</code> is taken into consideration for the starting point of <code>Count</code></p>
+<p>output:</p>
+<pre><code class="language-shell">$ cargo run 
+verbose count: 5
+$ cargo run -- -vvv
+verbose count: 8
+</code></pre>
+<h3>Additional Context</h3>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @eirnym on 2024-05-03 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ArgAction::Count doesn't " to "ArgAction::Count doesn't recognize default_value_t" by @eirnym on 2024-05-03 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ArgAction::Count doesn't recognize default_value_t" to "`ArgAction::Count` doesn't recognize `default_value_t`" by @eirnym on 2024-05-03 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-05-03 15:13</div>
+            <div class="timeline-body"><p>I am seeing the same behavior for both <code>default_value</code> and <code>default_value_t</code> and the behavior is correct.</p>
+<p>Could you give more details, like copies of the output that is expected and unexpected?</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = { path = &quot;../clap&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::{ArgAction, Parser};
+
+#[derive(Debug, Clone, Parser)]
+pub struct CliArgs {
+    #[arg(short = 'v', action = ArgAction::Count, default_value_t=5)]
+    pub verbose: u8,
+}
+fn main() {
+    let args = CliArgs::parse();
+    println!(&quot;verbose count: {}&quot;, args.verbose);
+}
+</code></pre>
+<pre><code class="language-console">$ ./clap-5483.rs
+verbose count: 5
+$ ./clap-5483.rs -vvv
+verbose count: 3
+</code></pre>
+<p>Running</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = { path = &quot;../clap&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::{ArgAction, Parser};
+
+#[derive(Debug, Clone, Parser)]
+pub struct CliArgs {
+    #[arg(short = 'v', action = ArgAction::Count, default_value=&quot;5&quot;)]
+    pub verbose: u8,
+}
+fn main() {
+    let args = CliArgs::parse();
+    println!(&quot;verbose count: {}&quot;, args.verbose);
+}
+</code></pre>
+<pre><code class="language-console">$ ./clap-5483.rs
+verbose count: 5
+$ ./clap-5483.rs -vvv
+verbose count: 3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-05-03 15:26</div>
+            <div class="timeline-body"><p>@epage Thank you for your reply. I updated my comment above. TL;DR I expect, that <code>ArgAction::Count</code> will start count starting at given value. From documentation this action sets <code>default_value</code> to 0 if not provided, so I assumed, that it will start counting at <code>default_value</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-05-03 15:33</div>
+            <div class="timeline-body"><p>In all ways within clap, <code>default_value</code> is assigned if nothing else is used.  iirc Python's argparse has the same behavior and I've run into the same frustration :).</p>
+<p>This means that your application needs to take this into account.  https://github.com/clap-rs/clap-verbosity-flag is a crate that encodes all of this for that one specific use case.</p>
+<p>I'm hesitant to change it and inclined to close this but I have just enough doubt that I think I'll leave this open to see what additional insights it might generate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ArgAction::Count` doesn't recognize `default_value_t`" to "`ArgAction::Count` starts from `0` rather than `default_value`" by @epage on 2024-05-03 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-05-03 15:36</div>
+            <div class="timeline-body"><p>I've updated the Issue to reflect the latest clarification.  To be clear, there is no difference in behavior between <code>default_value</code> and <code>default_value_t</code>.  If you are seeing some, we'd need a reproduction case to better understand it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-05-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2024-05-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2024-05-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eirnym">@eirnym</a> on 2024-05-03 15:41</div>
+            <div class="timeline-body"><p>It could be a different action if there's no way to change this one. At least clarification for this action is required.</p>
+<p>Example could be found in my recently published <a href="https://github.com/eirtools/sqlgrep">tool</a> I'd like to start my verbose level with 2 (Info). <code>-q</code> is an opposite of <code>-v</code> and then I calculate actual verbosity level. (beginning of main.rs and args.rs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-05-03 16:01</div>
+            <div class="timeline-body"><p>Added a clarification in 11ff6ccb0d6d06280f1c6e60b056bfb6e5487ef2</p>
+<p>There is a cost for everything we add to the API.   I'd be hesitant to add a variant that changes the default behavior especially when this can be worked around.  I'd be more inclined towards the custom Actions that I've been considering.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Underscores in Git dependencies and [tool.uv.sources] - astral-sh/uv #8328</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Underscores in Git dependencies and [tool.uv.sources]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8328">#8328</a>
+        opened by <a href="https://github.com/cgravill">@cgravill</a>
+        on 2024-10-18 13:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cgravill">@cgravill</a> on 2024-10-18 13:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>This is reproduced from a private repository.</p>
+<p>https://github.com/cgravill/example_python_library
+https://github.com/cgravill/example_python_app</p>
+<p>We've some packages that are named with underscores then referenced as git dependencies. Some of the dependencies are hand written so match the exact names like this:</p>
+<p>https://github.com/cgravill/example_python_app/blob/24b446b856475297785d5d240a3dc08086fa51b5/pyproject.toml#L7-L12</p>
+<p>In general use this all works, we can use <code>uv run</code>, <code>uv lock</code> and others. What goes wrong is if we try use management commands:</p>
+<pre><code>uv remove https://github.com/cgravill/example_python_library.git --verbose
+error: invalid value 'https://github.com/cgravill/example_python_library.git' for '&lt;PACKAGES&gt;...': Not a valid package or extra name: &quot;https://github.com/cgravill/example_python_library.git&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+
+For more information, try '--help'.
+</code></pre>
+<p>I think what's happening is that you folks are applying normalization prior commands: https://peps.python.org/pep-0503/#normalized-names which is totally reasonable. I'm mainly reporting as the behaviour caused quite a lot of confusion in the project (migrated from Poetry) and it might be possible to adjust the errors to lead folks down better paths.</p>
+<p>There are also various other surprises if you say use <code> uv add https://github.com/cgravill/example_python_library.git</code> as you'll then get conflicting TOML parsing with the overlapping entries.</p>
+<p>Personally I think we're doing something ill-advised, though it's permitted by https://peps.python.org/pep-0503 so we're planning to just move all our project-names over to <code>-</code> as it'll just be simpler that way.</p>
+<p>Also to note if everything is done with <code>uv add</code> and <code>uv remove</code> it works as the normalized names are written to pyproject.toml.</p>
+<p>uv 0.4.24 (b9cd54913 2024-10-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2024-10-18 14:23</div>
+            <div class="timeline-body"><p>Another example of an &quot;other suprise&quot; that we came across:</p>
+<pre><code class="language-bash">gh repo clone cgravill/example_python_app
+cd example_python_app
+uv remove example_python_lib
+git diff pyproject.toml
+</code></pre>
+<p>we see:</p>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index 71c2ebc..b043916 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -4,9 +4,7 @@ version = &quot;0.1.0&quot;
+ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.13&quot;
+-dependencies = [
+-    &quot;example_python_library&quot;,
+-]
++dependencies = []
+
+ [tool.uv.sources]
+ example_python_library = { git = &quot;https://github.com/cgravill/example_python_library.git&quot; }
+</code></pre>
+<p>i.e. it has removed the dependency from <code>[project.dependencies]</code>, but not the source entry from <code>[tool.uv.sources]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8330.html">astral-sh/uv#8330</a> on 2024-10-18 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 16:32</div>
+            <div class="timeline-body"><p>Hmm, I think <code>uv remove</code> requires a package name and not a dependency specifier (i.e., <code>uv remove https://github.com/cgravill/example_python_library.git</code> isn't accepted, but <code>uv remove example_python_library</code> is). Does that seem wrong to you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-18 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cgravill">@cgravill</a> on 2024-10-18 20:24</div>
+            <div class="timeline-body"><p>@charliermarsh you're right I've confused the issue with that, I got into that when debugging around the issue @tpgillam more clearly reported (and has been extracted as <a href="#8330">separate issue</a>). Since I've mentioned that though: I do somewhat expect symmetry between <code>add</code> and <code>remove</code> but that would be a different request. What I'd actually go for in that case is detecting special cases like GitHub repositories and erroring inviting people to <code>uv remove example_python_library</code> or <code>presumably uv remove example-python-library</code> for clarity</p>
+<p>The other issue of adding the dependency again:</p>
+<pre><code> uv add https://github.com/cgravill/example_python_library.git
+ Updated https://github.com/cgravill/example_python_library.git (2ada4bd)
+error: Failed to parse `pyproject.toml`
+  Caused by: TOML parse error at line 11, column 1
+   |
+11 | [tool.uv.sources]
+   | ^^^^^^^^^^^^^^^^^
+duplicate sources for package `example-python-library`
+</code></pre>
+<p>and</p>
+<pre><code class="language-diff">git diff pyproject.toml
+diff --git a/pyproject.toml b/pyproject.toml
+index 71c2ebc..33d2eb3 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -5,8 +5,9 @@ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.13&quot;
+ dependencies = [
+-    &quot;example_python_library&quot;,
++    &quot;example-python-library&quot;,
+ ]
+
+ [tool.uv.sources]
+ example_python_library = { git = &quot;https://github.com/cgravill/example_python_library.git&quot; }
++example-python-library = { git = &quot;https://github.com/cgravill/example_python_library.git&quot; }
+</code></pre>
+<p>is also an annoyance. The slightly more involved context that comes from is we also specify git <code>rev</code> so I was trying to update the handwritten entry. The failure made me incorrectly conclude that <code>uv</code> couldn't handle updates at all. Depending how the fix for #8330 goes it might also fix this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8359.html">astral-sh/uv#8359</a> on 2024-10-19 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-19 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cgravill">@cgravill</a> on 2024-10-19 14:18</div>
+            <div class="timeline-body"><p>Thanks all!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:12 UTC
+    </footer>
+</body>
+</html>

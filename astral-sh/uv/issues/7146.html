@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` does not install a new workspace member in an editable workspace (appears to mistakenly put it in a `.venv` and miss the active conda env) - astral-sh/uv #7146</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` does not install a new workspace member in an editable workspace (appears to mistakenly put it in a `.venv` and miss the active conda env)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7146">#7146</a>
+        opened by <a href="https://github.com/lmmx">@lmmx</a>
+        on 2024-09-06 22:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmmx">@lmmx</a> on 2024-09-06 22:55</div>
+            <div class="timeline-body"><p>I encountered this on the 25th of August and reported it, but didn't catch Charlie's reply asking for further details on Discord. I said that if it happened again I'd open a bug ticket, so here I am :-)</p>
+<p>I was in the terminal at the time (reproducing a different bug, now resolved for my needs thanks to the Discord chat), so I have the bug red-handed in terminal logs:</p>
+<p>Firstly I made a new directory, and ran <code>uv init --app --package</code> which Charlie said was the best way to set a workspace member up so uv understands it's a package that should be build as editable:</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ cd packages/                                                                      (uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified/packages $ mkdir foo                                                           
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified/packages $ cd foo                                                              
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified/packages/foo $ uv init --app --package
+Project `foo` is already a member of workspace `/home/louis/lab/uv/editable-ws-dep-bug-simplified`
+Initialized project `foo` 
+</code></pre>
+<p>So far so good.</p>
+<p>I wanted to copy the main module over from the existing workspace member package, from <code>packages/demo_cli/src/demo_cli/main.py</code>:</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ cp packages/demo_cli/src/demo_cli/main.py packages/foo/src/foo/main.py                                                                                              
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ vim packages/demo_cli/pyproject.toml                                                                                                                                
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ vim packages/foo/src/foo/                                                                                                                                           
+__init__.py  main.py                                                                                                                                                                                                                          
+</code></pre>
+<p>I wondered if <code>pip list</code> would show it as installed now:</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ pip list                                                                                                                                                            
+Package               Version Editable project location                                                                                                                                                                                       
+--------------------- ------- -------------------------------------------------------------------                                                                                                                                             
+demo-cli              0.1.0   /home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/demo_cli                                                                                                                                             
+pip                   24.2                                                                                                                                                                                                                    
+setuptools            72.1.0                                                                                                                                                                                                                  
+wheel                 0.43.0                                                                                                                                                                                                                  
+ws_editable_dep_repro 0.0.1   /home/louis/lab/uv/editable-ws-dep-bug-simplified                                                                                                                                                               
+</code></pre>
+<p>The new workspace member <code>foo</code> was not there! :open_mouth: But then I recalled the thread (<a href="https://discord.com/channels/1039017663004942429/1080933313704886385/threads/1277304269845958719">1277304269845958719</a>)</p>
+<blockquote>
+<p>uv add does resolve and install into the environment. Are you seeing otherwise?</p>
+</blockquote>
+<p>I think here I reviewed the root workspace <code>pyproject.toml</code> and saw that foo hadn't been added as a root workspace dependency: &quot;right, so I just need to <code>uv add foo</code> I thought...</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ vim pyproject.toml                                                                                                                                                  
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ uv add foo                                                                                                                                                          
+Using Python 3.12.4 interpreter at: /home/louis/miniconda3/envs/uv-ws-edit-dep-repro/bin/python3                                                                                                                                              
+Creating virtualenv at: .venv                                                                                                                                                                                                                 
+Resolved 3 packages in 4ms                                                                                                                                                                                                                    
+   Built foo @ file:///home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/foo                                                                                                                                                          
+   Built ws-editable-dep-repro @ file:///home/louis/lab/uv/editable-ws-dep-bug-simplified                                                                                                                                                     
+Prepared 2 packages in 271ms                                                                                                                                                                                                                  
+Installed 3 packages in 1ms                                                                                                                                                                                                                   
+ + demo-cli==0.1.0 (from file:///home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/demo_cli)                                                                                                                                          
+ + foo==0.1.0 (from file:///home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/foo)                                                                                                                                                    
+ + ws-editable-dep-repro==0.0.1 (from file:///home/louis/lab/uv/editable-ws-dep-bug-simplified)                                                                                                                                               
+</code></pre>
+<p>It looks like it <strong>made a <code>.venv</code></strong> and ignored the conda env I was in? :monocle_face: Maybe that's the source of this bug</p>
+<p>Maybe it is prioritising a <code>.venv</code> install for a new workspace member...</p>
+<p>I didn't notice that at the time and ran <code>pip list</code> again, and was surprised to see <code>foo</code> still not in the list of installed packages:</p>
+<pre><code>(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ pip list                                                                                                                                                            
+Package               Version Editable project location                                                                                                                                                                                       
+--------------------- ------- -------------------------------------------------------------------                                                                                                                                             
+demo-cli              0.1.0   /home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/demo_cli                                                                                                                                             
+pip                   24.2
+setuptools            72.1.0
+wheel                 0.43.0
+ws_editable_dep_repro 0.0.1   /home/louis/lab/uv/editable-ws-dep-bug-simplified
+</code></pre>
+<p>I then opened a Python REPL and confirmed</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ python -q
+&gt;&gt;&gt; import foo
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'foo'
+&gt;&gt;&gt; 
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ 
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ view pyproject.toml 
+</code></pre>
+<p>I then thought maybe I need to reinstall the workspace with <code>uv pip install -e .</code>:</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ uv pip install -e .
+Resolved 3 packages in 3ms
+Uninstalled 1 package in 0.48ms
+Installed 2 packages in 3ms
+ + foo==0.1.0 (from file:///home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/foo)
+ ~ ws-editable-dep-repro==0.0.1 (from file:///home/louis/lab/uv/editable-ws-dep-bug-simplified)
+(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ pip list
+Package               Version Editable project location
+--------------------- ------- -------------------------------------------------------------------
+demo-cli              0.1.0   /home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/demo_cli
+foo                   0.1.0   /home/louis/lab/uv/editable-ws-dep-bug-simplified/packages/foo
+pip                   24.2
+setuptools            72.1.0
+wheel                 0.43.0
+ws_editable_dep_repro 0.0.1   /home/louis/lab/uv/editable-ws-dep-bug-simplified
+</code></pre>
+<p>I then finally got <code>foo</code>!</p>
+<p>Reviewing these terminal logs I think the bug occurred here:</p>
+<pre><code class="language-sh">(uv-ws-edit-dep-repro) louis 🚶 ~/lab/uv/editable-ws-dep-bug-simplified $ uv add foo                                                                                                                                                          
+Using Python 3.12.4 interpreter at: /home/louis/miniconda3/envs/uv-ws-edit-dep-repro/bin/python3                                                                                                                                              
+Creating virtualenv at: .venv
+</code></pre>
+<p>The context for this was a minimal repro already: <a href="https://github.com/lmmx/editable-ws-dep-bug-simplified/tree/fb3fd3aba04ee636df3286c2219f8647cc27d7ac">repo link</a> (at <code>fb3fd3a</code>)</p>
+<ul>
+<li>uv version 0.4.6</li>
+<li>platform: Linux Mint 21.3</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv add` does not install a new workspace member in an editable workspace" to "`uv add` does not install a new workspace member in an editable workspace (appears to mistakenly put it in a `.venv` and miss the active conda env)" by @lmmx on 2024-09-06 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 23:22</div>
+            <div class="timeline-body"><p>So, I think this is intended, in that the &quot;project APIs&quot; (<code>uv sync</code>, <code>uv run</code>, <code>uv lock</code>, <code>uv add</code>) always operate in a virtual environment located at <code>.venv</code> within the project root. That's an intentional decision and differs from the <code>uv pip</code> APIs, where you can kind of do whatever you want.</p>
+<p>You <em>can</em> configure the path via <code>UV_PROJECT_ENVIRONMENT</code> (https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path), but that's mostly intended for deployments.</p>
+<p>In general, we don't recommend using the project APIs if you need to integrate with an existing workflow or environment (like with Conda) -- in that case, you're generally better off with the <code>uv pip</code> APIs.</p>
+<p>Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-06 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2024-09-07 00:13</div>
+            <div class="timeline-body"><p>Hmmm yeah that makes sense, so you're saying workspaces prefer to be managed in their own <code>.venv</code>... If that's the standard approach I'll give it a go!</p>
+<p>I'm only really tied to conda when I'm using non-Python env deps like CUDA or ffmpeg, I'll try out different options, thanks :-)</p>
+<p>The other alternative here is to just to be aware of this default behaviour and run <code>uv pip install -e packages/*</code> (etc), which doesn't unduly bother me TBH.</p>
+<p>(FWIW I tried changing all the build backends to uv's default one <code>hatchling</code> and workspace install failed said &quot;error: Failed to prepare distributions&quot; and suggested that I'd included a directory called <code>uv-ws</code>, which I hadn't, so I reverted to PDM build backend which I know is robust)</p>
+<p>Closing this thanks for covering it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lmmx on 2024-09-07 00:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:42 UTC
+    </footer>
+</body>
+</html>

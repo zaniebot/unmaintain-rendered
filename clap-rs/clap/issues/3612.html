@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parser: unable to get multiple required fields using use_value_delimiter - clap-rs/clap #3612</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parser: unable to get multiple required fields using use_value_delimiter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3612">#3612</a>
+        opened by <a href="https://github.com/samueltardieu">@samueltardieu</a>
+        on 2022-04-05 13:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samueltardieu">@samueltardieu</a> on 2022-04-05 13:24</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.61.0-nightly (76d770ac2 2022-04-02)</p>
+<h3>Clap Version</h3>
+<p>clap 3.1.8</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    #[clap(use_value_delimiter(true), required(true))]
+    hosts: Vec&lt;String&gt;,
+    #[clap(use_value_delimiter(true), required(true))]
+    ports: Vec&lt;u16&gt;,
+}
+
+fn main() {
+  let _args = Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<h1>Command 1 should give the help message</h1>
+<p>cargo run</p>
+<h1>Command 2 should parse correctly</h1>
+<p>cargo run -- google.com,yahoo.com 80,443</p>
+<h3>Actual Behaviour</h3>
+<p>In both commands, I get:</p>
+<pre><code>thread 'main' panicked at 'Only one positional argument with .multiple_values(true) set is allowed per command, unless the second one also has .last(true) set', /home/sam/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.8/src/build/debug_asserts.rs:494:9
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Since we use <code>use_value_delimiter(true)</code> and <code>required(true)</code>, there is no ambiguity in parsing the command line. We should get the help info on command 1, and nothing on command 2 since it should parse correctly.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[        clap::build::command] 	App::_do_parse
+[        clap::build::command] 	App::_build
+[        clap::build::command] 	App::_propagate:xx
+[        clap::build::command] 	App::_check_help_and_version: xx
+[        clap::build::command] 	App::_check_help_and_version: Removing generated version
+[        clap::build::command] 	App::_propagate_global_args:xx
+[        clap::build::command] 	App::_derive_display_order:xx
+[  clap::build::debug_asserts] 	Command::_debug_asserts
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:help
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:hosts
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:ports
+[  clap::build::debug_asserts] 	Command::_verify_positionals
+thread 'main' panicked at 'Only one positional argument with .multiple_values(true) set is allowed per command, unless the second one also has .last(true) set', /home/sam/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.1.8/src/build/debug_asserts.rs:494:9
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @samueltardieu on 2022-04-05 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-04-05 14:03</div>
+            <div class="timeline-body"><p>The more complete example to have no ambiguity is</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    #[clap(
+        use_value_delimiter = true,
+        require_value_delimiter = true,
+        required = true,
+        multiple_occurrences = false,
+        multiple_values = true
+    )]
+    hosts: Vec&lt;String&gt;,
+    #[clap(
+        use_value_delimiter = true,
+        require_value_delimiter = true,
+        required = true,
+        multiple_occurrences = false,
+        multiple_values = true
+    )]
+    ports: Vec&lt;u16&gt;,
+}
+
+fn main() {
+    let _args = Args::parse();
+}
+</code></pre>
+<ul>
+<li><code>Vec</code> defaults to <code>multiple_occurrences</code>, so we need to switch it to <code>multiple_values</code></li>
+<li>We need to not just allow using value delimiters but require it</li>
+</ul>
+<p>And yes, this could be supported.  We'll need to double check that not just the debug asserts support this but that the parser won't get confused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-04-05 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-04-05 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-04 18:15</div>
+            <div class="timeline-body"><p>I just ran the unambiguous version and it fully works.  Going ahead and closing this out.  If there is something else I missed in this issue, let me know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-04 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:58 UTC
+    </footer>
+</body>
+</html>

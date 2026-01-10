@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test fails when upgrading from 0.3.0 to 0.3.2 - astral-sh/ruff #10319</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Test fails when upgrading from 0.3.0 to 0.3.2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10319">#10319</a>
+        opened by <a href="https://github.com/eli-schwartz">@eli-schwartz</a>
+        on 2024-03-10 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-03-10 08:04</div>
+            <div class="timeline-body"><p>I tried to bump the version of ruff and rebuild it for Gentoo. Running the tests failed:</p>
+<pre><code>running 22 tests
+test helpers::tests::any_over_stmt_type_alias ... ok
+test helpers::tests::any_over_type_param_type_var_tuple ... ok
+test helpers::tests::any_over_type_param_param_spec ... ok
+test helpers::tests::resolve_import ... ok
+test identifier::tests::extract_global_names ... ok
+test helpers::tests::any_over_type_param_type_var ... ok
+test name::tests::empty_vec ... ok
+test name::tests::extend_from_slice_heap ... ok
+test name::tests::extend_from_slice_stack ... ok
+test name::tests::extend_from_slice_stack_spill ... ok
+test name::tests::extend_heap ... ok
+test name::tests::extend_stack ... ok
+test name::tests::extend_stack_spilled ... ok
+test name::tests::from_slice_heap ... ok
+test name::tests::from_slice_stack ... ok
+test name::tests::from_slice_stack_capacity ... ok
+test name::tests::pop_heap ... ok
+test name::tests::pop_stack ... ok
+test name::tests::push_stack ... ok
+test name::tests::push_stack_spill ... ok
+test nodes::tests::size ... FAILED
+test str::tests::prefix_uniqueness ... ok
+
+failures:
+
+---- nodes::tests::size stdout ----
+thread 'nodes::tests::size' panicked at crates/ruff_python_ast/src/nodes.rs:4151:9:
+assertion `left == right` failed
+  left: 56
+ right: 48
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    nodes::tests::size
+
+test result: FAILED. 21 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ruff_python_ast --lib`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 16:12</div>
+            <div class="timeline-body"><p>Do you know what version of Rust you're compiling with?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-03-10 16:17</div>
+            <div class="timeline-body"><pre><code>$ rustc --version
+rustc 1.74.1 (a28077b28 2023-12-04) (gentoo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 18:59</div>
+            <div class="timeline-body"><p>I think those tests effectively require <code>1.76</code> (our <code>rust-toolchain.tml</code>), since Rust's enum layout improved. We may want to gate them on Rust version or something similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-11 03:00</div>
+            <div class="timeline-body"><p>We do have a case where it tests against 2 values although not gated by anything. I think we can just use that pattern for any other types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-03-11 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 16:52</div>
+            <div class="timeline-body"><p>@dhruvmanila can you link to that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-03-11 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-11 17:00</div>
+            <div class="timeline-body"><p>Huh, I thought I pasted the link but nevertheless:</p>
+<p>https://github.com/astral-sh/ruff/blob/ad84eedc18e1af2de1f297ab307e7cb8548335ed/crates/ruff_python_ast/src/nodes.rs#L4136-L4137</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-12 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 19:30</div>
+            <div class="timeline-body"><p>It's a bit of a shame because it doesn't really test the same thing. We <em>could</em> regress size there and not notice it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10371.html">astral-sh/ruff#10371</a> on 2024-03-12 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-12 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 19:46</div>
+            <div class="timeline-body"><p>Should be fixed in the next release (or on <code>main</code>, since you're building from source).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-03-12 21:11</div>
+            <div class="timeline-body"><p>Thanks, I can backport the commit.</p>
+<blockquote>
+<p>It's a bit of a shame because it doesn't really test the same thing. We <em>could</em> regress size there and not notice it.</p>
+</blockquote>
+<p>The obvious and straightforward answer here is to use a cfg for checking the compiler version and deciding whether to compile that test assertion. However my understanding is that there is no builtin cfg for it so you'll have to write and compile a rust program that then runs rustc --version, parses the output, and prints cfg flags to stdout for cargo...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

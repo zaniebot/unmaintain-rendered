@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow collecting/capturing 'raw' arguments - clap-rs/clap #987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow collecting/capturing 'raw' arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/987">#987</a>
+        opened by <a href="https://github.com/Aaron1011">@Aaron1011</a>
+        on 2017-06-11 18:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Aaron1011">@Aaron1011</a> on 2017-06-11 18:47</div>
+            <div class="timeline-body"><p>Issue https://github.com/kbknapp/clap-rs/issues/484 describes how to use clap to capture all arguments after a <code>--</code> delimiter. However, these arguments are still parsed by clap, which can lead to issues when creating a program which wraps a command-line tool.</p>
+<p>For example, clap will condense multiple usages of a single argument (e.g. <code>-v -v -v</code>) into a single argument with multiple usages. However, this behavior is undesirable when wrapping another program, as the user normally intends to pass all arguments exactly as-is to the other program (which will perform its own argument parsing).</p>
+<p>It would be useful if <code>clap::Arg</code> were to have a 'raw' option (which would require 'last' to be set). When enabled, this option would disable all parsing for the captured text, returning it to the API consumer as a single string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 15:41</div>
+            <div class="timeline-body"><p>Using a combination of <a href="https://docs.rs/clap/2.24.2/clap/struct.Arg.html#method.last"><code>Arg::last</code></a>, <a href="https://docs.rs/clap/2.24.2/clap/struct.Arg.html#method.multiple"><code>Arg::multiple</code></a>, and <a href="https://docs.rs/clap/2.24.2/clap/struct.Arg.html#method.allow_hyphen_values"><code>Arg::allow_hyphen_values</code></a> you should be able to achieve what you're looking for. I'd also be OK with something like <code>Arg::raw(true)</code> which implicitly sets all the above settings for you as a convenience setting. But this will also be pretty low on the priority list as there are workarounds already, and I have quite a few other issues which are pressing 😉</p>
+<blockquote>
+<p>returning it to the API consumer as a single string.</p>
+</blockquote>
+<p>This the only part I'd be leary of. It's very easy to collect and join into a <code>String</code>, so I'd rather leave that to user code as once it's done it's done. Leaving it as an iterator of <code>Values</code> lets the consumer do with it as they will (iterate, collect, etc.).</p>
+<p>If someone wants to take a swing at it, I'll be willing to mentor!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2017-06-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-06-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2017-06-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-06-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-06-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-06-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aaron1011">@Aaron1011</a> on 2017-06-16 16:28</div>
+            <div class="timeline-body"><p>@kbknapp: It's my understanding the <code>Arg::multiple</code> would require the user to manually expand out the condensed string (e.g. changing 3 captured occurrences of <code>-v</code> back into <code>-v -v -v</code>). It's certainly doable, but it adds additional boilerplate to the process of wrapping a process.</p>
+<blockquote>
+<p>This the only part I'd be leary of. It's very easy to collect and join into a String,</p>
+</blockquote>
+<p>That sounds fine to me - I just think that it should be possible to get such an iterator without needing to undo any processing done by clap (effectively getting a slice into <code>argv</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 20:18</div>
+            <div class="timeline-body"><blockquote>
+<p>It's my understanding the Arg::multiple would require the user to manually expand out the condensed string (e.g. changing 3 captured occurrences of -v back into -v -v -v).</p>
+</blockquote>
+<p>Nope, it'll happily accept multiples without parsing them:</p>
+<pre><code>kevin@spawn: ~/Projects/raw_test
+➜ cat src/main.rs
+extern crate clap;
+
+use clap::{App, Arg};
+
+fn main() {
+    let m = App::new(&quot;raw_test&quot;)
+        .arg(Arg::from_usage(&quot;--foo [val] 'just some opt'&quot;))
+        .arg(Arg::from_usage(&quot;-b, --bar 'just some flag'&quot;).multiple(true))
+        .arg(Arg::from_usage(&quot;[raw] 'wraps raw args'&quot;)
+            .multiple(true)
+            .allow_hyphen_values(true)
+            .last(true))
+        .get_matches();
+    
+    println!(&quot;foo: {:?}&quot;, m.value_of(&quot;foo&quot;));
+    println!(&quot;bar: {:?}&quot;, m.is_present(&quot;bar&quot;));
+    println!(&quot;raw args: {:?}&quot;, m.values_of(&quot;raw&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;().join(&quot; &quot;));
+}
+
+kevin@spawn: ~/Projects/raw_test
+➜ ./target/debug/raw_test --foo something -- -v -v -v -b -b -b --baz -q -u -x
+foo: Some(&quot;something&quot;)
+bar: false
+raw args: &quot;-v -v -v -b -b -b --baz -q -u -x&quot;
+</code></pre>
+<p>Notice after the <code>--</code> it didn't try to parse <code>-b</code> even though that's a valid arg for this test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1188.html">clap-rs/clap#1188</a> on 2018-02-19 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-23 21:00</div>
+            <div class="timeline-body"><p>Closed with #1191</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-23 21:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:34 UTC
+    </footer>
+</body>
+</html>

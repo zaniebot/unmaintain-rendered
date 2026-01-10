@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install -e .` Editable install at src/ level, not project root - astral-sh/uv #8602</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install -e .` Editable install at src/ level, not project root</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8602">#8602</a>
+        opened by <a href="https://github.com/mychiffonn">@mychiffonn</a>
+        on 2024-10-27 05:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mychiffonn">@mychiffonn</a> on 2024-10-27 05:07</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Probably a question, since I'm new to <code>uv</code> moving from <code>pip</code>.</p>
+<p>Usually I do <code>pip install -e .</code> so that I could import things across modules. <code>pip</code> install <code>.egg-info</code> at the project root. However, <code>uv pip install -e.</code> installs at <code>src/</code> level. I need access to folders with Python code that are sibling-level with <code>src</code> for modules inside <code>src</code></p>
+<p>My issue would be resolved if either of the following is achieved:</p>
+<ul>
+<li>A way to mirror <code>pip</code> behavior to install at the project root</li>
+<li>A way to access sibling directories of <code>src</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-27 13:58</div>
+            <div class="timeline-body"><p><code>uv pip install -e .</code> and <code>pip install -e .</code> should be equivalent. Can you provide a bit more context on your situation? Like, are you creating a new project or working on some existing project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-27 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mychiffonn">@mychiffonn</a> on 2024-10-27 23:01</div>
+            <div class="timeline-body"><p>I'm working on a project <a href="https://github.com/chiffonng/capstone">here</a>, but a minimum example would be:</p>
+<ol>
+<li>Working on an existing project (with .python-version, pyproject.toml and <code>src/</code>; <code>uv</code> is installed globally)</li>
+<li>This workflow was executed at the project root</li>
+</ol>
+<pre><code class="language-bash">uv venv
+source .venv/bin/activate
+uv pip install -r pyproject.toml -e .
+uv sync
+</code></pre>
+<p>and <code>uv</code> install <code>.egg-info</code> inside <code>src/</code>. I confirmed that <code>pip</code> install <code>.egg-info</code> at project root level.</p>
+<h2>Project structure:</h2>
+<pre><code>project/
+------ data/
+------ src/
+----------- dir1/
+------------------ module1.py
+----------- module2.py
+------ pyproject.toml
+------ .python-version
+------ uv.lock
+</code></pre>
+<p>With the current status with <code>uv</code>, <code>src</code> is not available as a path/dir to import. For example, in module2, I have to do <code>from dir1.module1 import ....</code> instead of  <code>from src.dir1.module1 import ....</code></p>
+<h2>Other information</h2>
+<ul>
+<li>OS: MacOS Sonoma 14.7</li>
+<li>uv: 0.4.27 (36b729e92 2024-10-25)</li>
+<li><code>project/src/project-egg.info/SOURCES.txt</code> includes <code>src/</code> paths</li>
+</ul>
+<pre><code>LICENSE
+README.md
+pyproject.toml
+src/__init__.py
+src/module2.py
+src/dir1/__init__.py
+src/dir1/module1.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-28 00:48</div>
+            <div class="timeline-body"><p>I believe <code>uv sync</code> will remove the installation you did with <code>uv pip install</code> because your project is not setup to be &quot;packaged&quot; by uv. You should define a build system or set <code>tool.uv.package = true</code> per https://docs.astral.sh/uv/concepts/projects/#build-systems</p>
+<p>Generally, I would not recommend mixing <code>uv sync</code> and <code>uv pip install</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uvx git+.. failing when trying to run a package from a subfolder. - astral-sh/uv #12713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uvx git+.. failing when trying to run a package from a subfolder.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12713">#12713</a>
+        opened by <a href="https://github.com/RonanKMcGovern">@RonanKMcGovern</a>
+        on 2025-04-07 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RonanKMcGovern">@RonanKMcGovern</a> on 2025-04-07 12:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Try to run a package from a subfolder with:</p>
+<pre><code class="language-bash">uvx git+https://github.com/RonanKMcGovern/uv-subfolder#subfolder=subfolder-test
+</code></pre>
+<p>See https://github.com/RonanKMcGovern/uv-subfolder for the minimal repro example.</p>
+<p>Error:</p>
+<pre><code>uvx git+https://github.com/RonanKMcGovern/uv-subfolder#subfolder-test
+
+    Updated https://github.com/RonanKMcGovern/uv-subfolder (cd481f4bcf717
+  × Failed to resolve `--with` requirement
+  ╰─▶ /Users/ronanmcgovern/.cache/uv/git-v0/checkouts/536243fbda2870a9/cd481f4
+      does not appear to be a Python project, as neither
+      `pyproject.toml` nor `setup.py` are present in the directory
+</code></pre>
+<p>Note: I ran <code>uv clean</code> before running the command.</p>
+<p>Other notes:</p>
+<ul>
+<li>I'm also running a more complex private example and getting this error:</li>
+</ul>
+<pre><code>× Failed to resolve `--with` requirement
+  ╰─▶ Git operation failed
+</code></pre>
+<p>but not getting the note on the toml or setup.py not being present.</p>
+<h3>Platform</h3>
+<p>Darwin 24.3.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.12 (Homebrew 2025-04-02)</p>
+<h3>Python version</h3>
+<p>Python 3.12.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @RonanKMcGovern on 2025-04-07 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 14:40</div>
+            <div class="timeline-body"><p>I think there might be a more general bug here whereby we're treating <code>#subfolder=subfolder-test</code> as a comment in some cases? You can put this in a <code>requirements.txt</code> and <code>uv pip install -r requirements.txt</code> will show the same error:</p>
+<pre><code>git+https://github.com/RonanKMcGovern/uv-subfolder#subfolder=subfolder-test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-04-07 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 14:42</div>
+            <div class="timeline-body"><p>Oh sorry. You want <code>subdirectory=subfolder-test</code>. I think that's just a typo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 14:42</div>
+            <div class="timeline-body"><p><code>uvx git+https://github.com/RonanKMcGovern/uv-subfolder#subdirectory=subfolder-test</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonanKMcGovern">@RonanKMcGovern</a> on 2025-04-07 15:56</div>
+            <div class="timeline-body"><p>Thanks very much @charliermarsh - bad typo on my part. Yes, I can run that repro now.</p>
+<p>I've expanded the repro (more complex repro <a href="https://github.com/RonanKMcGovern/doc-convert">here</a>) to try and get to my core issue, and this more complex repo works correctly (I've tried adding in parallel subfolders with toml files to see if that could cause an issue, but that doesn't seem to break things). So I need to dig more on what is causing the issue in my private repo:</p>
+<pre><code>uvx git+https://github.com/TrelisResearch/ADVANCED-inference@doc-mcp#subdirectory=trelis-mcp/doc-convert 
+   Updating https://github.com/TrelisResearch/ADVANCED-inference (doc-mcp)                                                                                 × Failed to resolve `--with` requirement
+  ╰─▶ Git operation failed
+</code></pre>
+<p>I'll reopen another issue if I'm able to repro a specific problem. Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @RonanKMcGovern on 2025-04-07 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonanKMcGovern">@RonanKMcGovern</a> on 2025-04-08 07:58</div>
+            <div class="timeline-body"><p>Hi @charliermarsh , I went fresh-brain on the problem this morning.</p>
+<p>Problem was that I had <a href="https://github.com/modelcontextprotocol/servers">this repo</a> cloned in a subdirectory, and that was causing interference with uvx.</p>
+<p>Thanks for the help earlier. Appreciated it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-08 12:16</div>
+            <div class="timeline-body"><p>No worries, thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonanKMcGovern">@RonanKMcGovern</a> on 2025-05-01 17:16</div>
+            <div class="timeline-body"><p>Howdy @charliermarsh , this is quite an edge case, and you know much better the right standards here, but just a heads up that if a git repo has got any kind of submodule (e.g. another GitHub repo in it) that seems to make it hard for uvx to find packages. Probably is bad practise sometimes have a repo in a repo, but can happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oraios/serena/issues/296.html">oraios/serena#296</a> on 2025-07-11 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-aciek">@m-aciek</a> on 2025-10-14 09:16</div>
+            <div class="timeline-body"><p>For me it happens when I try to install from private GitHub repository. Switching to SSH solves the problem. It would be nice if the error message would be more descriptive for this case. Debug log:</p>
+<pre><code>DEBUG Updating Git source `https://github.com/company/repo`
+   Updating https://github.com/company/repo (HEAD)
+DEBUG Attempting GitHub fast path for: https://api.github.com/repos/company/repo/commits/HEAD
+DEBUG Failed to check GitHub HTTP status client error (404 Not Found) for url (https://api.github.com/repos/company/repo/commits/HEAD)
+DEBUG Performing a Git fetch for: https://github.com/company/repo
+DEBUG Released lock at `/Users/m-aciek/.cache/uv/git-v0/locks/33b3bb97da73f80e`
+  × Failed to resolve `--with` requirement
+  ╰─▶ Git operation failed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-14 10:31</div>
+            <div class="timeline-body"><p>@m-aciek This is a different problem, please open a new issue for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16303.html">astral-sh/uv#16303</a> on 2025-10-14 21:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

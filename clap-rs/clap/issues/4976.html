@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default display for `String` is awkward, ie `[default: ]` - clap-rs/clap #4976</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Default display for `String` is awkward, ie `[default: ]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4976">#4976</a>
+        opened by <a href="https://github.com/nathan-at-least">@nathan-at-least</a>
+        on 2023-06-19 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nathan-at-least">@nathan-at-least</a> on 2023-06-19 19:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.69.0 (84c898d65 2023-04-16)</p>
+<h3>Clap Version</h3>
+<p>4.3.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Opts {
+    #[clap(long, default_value_t)]
+    text: String,
+}
+
+fn main() {
+    Opts::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>$ cargo run -- --help
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>Usage: foo [OPTIONS]
+
+Options:
+      --text &lt;TEXT&gt;  [default: ]
+  -h, --help         Print help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>I do not think this &quot;should&quot; happen given the current release, but IMO it would be more ideal:</p>
+<pre><code>Usage: foo [OPTIONS]
+
+Options:
+      --text &lt;TEXT&gt;  [default: '']
+  -h, --help         Print help
+</code></pre>
+<p>In this proposed feature enhancement, all <code>Display</code> values would be disambiguated via single quote <code>'</code>, so some examples:</p>
+<ul>
+<li>field type <code>String</code> displays <code>[default '']</code></li>
+<li>field type <code>i64</code> displays <code>[default '0']</code></li>
+<li>field type <code>bool</code> displays <code>[default 'false']</code></li>
+</ul>
+<h3>Additional Context</h3>
+<p>The display of <code>default_value_t</code> defaults just literally uses <code>Display</code>, which can be confusing for a variety of defaults:</p>
+<ul>
+<li>empty string (like in this example)</li>
+<li>strings containing ']' or other symbols.</li>
+</ul>
+<p>unlikely / pathological cases:</p>
+<ul>
+<li>newlines</li>
+</ul>
+<p>In my &quot;expected behavior&quot; I'm imagining consistent shell-like escaping. This need not be literal shell syntax (especially because users can vary which shells they use and across platforms), but only &quot;unambiguous to typical commandline users&quot;.</p>
+<p>Simply surrounding the <code>Display</code> value with single ticks <code>'</code> handles the empty string case, but introduces an escaping problem with <code>Display</code> values that contain <code>'</code>. So this complication would make this feature improvement a bit more messy.</p>
+<p>Perhaps <code>\'</code>-style escapes would be simple enough?</p>
+<pre><code>#[clap(long, default_value = &quot;val: 'blah'&quot;)]
+text: String,
+</code></pre>
+<p>-would produce:</p>
+<pre><code>[default: 'val: \'blah\'']
+</code></pre>
+<h3>Debug Output</h3>
+<p>n/a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nathan-at-least on 2023-06-19 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathan-at-least">@nathan-at-least</a> on 2023-06-19 19:35</div>
+            <div class="timeline-body"><p>I filed this as a bug, because I consider UX issues which may cause confusion to users as bugs. I could also see categorizing this as a feature/enhancement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-19 19:50</div>
+            <div class="timeline-body"><p>Currently, we only check for <code> </code> to decide if we should use quoting.  When we quote, we are currently using Rust's debug representation of a string.</p>
+<p>I think checking for empty string and quoting in that case is reasonable.</p>
+<p>We also have the code spread out a bit.  We should probably consolidate these before quoting for empty strings.</p>
+<p>See</p>
+<ul>
+<li>https://github.com/clap-rs/clap/blob/e1152433694b253bc1fe048b5b2eda96aff79aa0/clap_builder/src/output/help_template.rs#L796-L800</li>
+<li>https://github.com/clap-rs/clap/blob/e1152433694b253bc1fe048b5b2eda96aff79aa0/clap_builder/src/builder/possible_value.rs#L187-L197</li>
+<li>https://github.com/clap-rs/clap/blob/e1152433694b253bc1fe048b5b2eda96aff79aa0/clap_builder/src/error/format.rs#L495-L505</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2023-06-19 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-06-19 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1695.html">clap-rs/clap#1695</a> on 2023-10-25 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zippy-dice">@zippy-dice</a> on 2024-04-21 13:43</div>
+            <div class="timeline-body"><p>Is it ideal to quote for String that is empty or contain spaces?
+As a solution, I suggest creating a function to wrap a string by <code>''</code> or <code>&quot;&quot;</code> and use it in help_template.rs and possible_value.rs.
+In that case, I believe there would be no need to change format.rs, as it will always enclose a string by <code>''</code>, regardless of whitespace or empty strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6204.html">clap-rs/clap#6204</a> on 2025-12-31 14:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:26 UTC
+    </footer>
+</body>
+</html>

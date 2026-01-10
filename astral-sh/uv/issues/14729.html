@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv 0.8.0 --with behaviour not finding current project - astral-sh/uv #14729</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv 0.8.0 --with behaviour not finding current project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14729">#14729</a>
+        opened by <a href="https://github.com/Zaloog">@Zaloog</a>
+        on 2025-07-18 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-18 15:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ive build a tool (ayu) which utilizes the <code>--with</code> feature to install itself as a pytest plugin to be used as an independent TUI for a project to execute tests interactively, this is accomplished by executing subprocesses  that runs commands  like: <code>uv run --with ayu pytest --collect-only</code>.</p>
+<p>With the upgrade to 0.8.0 I am unable to import the project itself from the <code>conftest.py</code>.
+i.e. I get <code>ModuleNotFoundError, no module named X</code>, it also doesnt find the dev dependencies and throws an error if I have coverage arguments declared.</p>
+<ol>
+<li>So if I run <code>uv run -w ayu pytest --collect-only</code> in my project <code>X</code>, I get a <code>ModeleNotFoundError, no module named X</code>.</li>
+<li>When I run <code>uv run -w ayu python</code> and then <code>import  X</code> it works fine.</li>
+<li><code>Running uv run -w ayu,. pytest --collect-only</code> installs <code>X</code> also (though without dev dependencies as expected) and I do not get an import error.</li>
+</ol>
+<p>Is the situation in 1. intended, to raise a module not found error for the current project working on?
+Or is this one of the cases where the note from the release notes applies?</p>
+<blockquote>
+<p>This should only cause breakage in cases where the environment is being inspected at runtime.</p>
+</blockquote>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.0 (Homebrew 2025-07-17)</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Zaloog on 2025-07-18 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 15:55</div>
+            <div class="timeline-body"><p>Thanks for the report! I'll take a look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 16:00</div>
+            <div class="timeline-body"><p>It looks like imports in general are fine</p>
+<pre><code>❯ uv self version
+uv 0.8.0 (0b2357294 2025-07-17)
+❯ uv init --package example
+Initialized project `example` at `/private/tmp/example`
+❯ cd example
+❯ uv run --with anyio python -c &quot;import example&quot;
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+      Built example @ file:///private/tmp/example
+Installed 1 package in 4ms
+Installed 3 packages in 4ms
+</code></pre>
+<p>and via pytest</p>
+<pre><code>❯ uv add --dev pytest
+Resolved 7 packages in 125ms
+      Built example @ file:///private/tmp/example
+Prepared 1 package in 6ms
+Uninstalled 1 package in 0.93ms
+Installed 6 packages in 10ms
+ ~ example==0.1.0 (from file:///private/tmp/example)
+ + iniconfig==2.1.0
+ + packaging==25.0
+ + pluggy==1.6.0
+ + pygments==2.19.2
+ + pytest==8.4.1
+❯ echo &quot;import example&quot; &gt; conftest.py
+❯ uv run --with anyio pytest
+============================================================================================================================= test session starts =============================================================================================================================
+platform darwin -- Python 3.13.2, pytest-8.4.1, pluggy-1.6.0
+rootdir: /private/tmp/example
+configfile: pyproject.toml
+collected 0 items                                                                                                                                                                                                                                                             
+
+============================================================================================================================ no tests ran in 0.00s ============================================================================================================================
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 16:00</div>
+            <div class="timeline-body"><p>Can you provide a minimal reproduction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 16:02</div>
+            <div class="timeline-body"><p>I can reproduce with <code>ayu</code></p>
+<pre><code>❯ uv run --with ayu pytest
+Installed 48 packages in 40ms
+ImportError while loading conftest '/private/tmp/example/test/conftest.py'.
+test/conftest.py:1: in &lt;module&gt;
+    import example
+E   ModuleNotFoundError: No module named 'example'
+</code></pre>
+<p>I presume you're doing something unusual?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-18 16:38</div>
+            <div class="timeline-body"><p>Hi @zanieb  thanks for the quick response.</p>
+<p>I also was unable to reproduce it with other packages.
+Hmm i am not aware of something unusual, the idea behind <code>ayu</code> was to install itself on the fly before invoking pytest, to act as a plugin and send test data to a websocket server which is started by the ayu TUI part.</p>
+<p>So if you do <code>uvx ayu</code> it starts the TUI.
+On start it executes <code>uv run -w ayu pytest --co</code> to send the test tree to the TUI to be displayed.</p>
+<p>I am not sure how the new v0.8.0 release changed the ephemeral virtual env structure, but I would expect that
+it would contain the project+project_dependencies +ayu+ayu_dependencies.</p>
+<p>Heres the <a href="https://github.com/Zaloog/ayu/blob/main/pyproject.toml">pyproject.toml</a> of my project.
+Can you spot anything unusual there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 16:47</div>
+            <div class="timeline-body"><p>I don't see anything unusual there. I presume it's an interaction with the pytest plugin / collection system? I think I'd have to go pretty deep to give more advice.</p>
+<p>All we did was add another layer, so instead of <code>project -&gt; with requirements</code> it's <code>project -&gt; with requirements -&gt; empty</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-18 21:29</div>
+            <div class="timeline-body"><p>Ye my understanding from the layer was pretty much that. But the way you wrote the sequence makes it even more clear.</p>
+<p>Hmm but how does the extra layer mess this up? It worked well before... I wouldnt expect a change in functionality there...</p>
+<p>If you have time and want to dig deeper, Id be very thankful and if you need more information on my part, I am happy to support, but I can also understand if you have more important things to do.
+Ill add a note for now to m project, that it doesnt work under uv&gt;=0.8.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Zaloog/ayu/issues/1.html">Zaloog/ayu#1</a> on 2025-07-18 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-19 00:58</div>
+            <div class="timeline-body"><p>If you can get some sort of verbose logs or traceback from Python prior to</p>
+<pre><code>ImportError while loading conftest '/private/tmp/example/test/conftest.py'.
+test/conftest.py:1: in &lt;module&gt;
+    import example
+E   ModuleNotFoundError: No module named 'example'
+</code></pre>
+<p>it might help us understand how conftest is being loaded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-21 08:20</div>
+            <div class="timeline-body"><p>You mean like the output of
+<code>uv run --with ayu pytest</code> prior to the new uv version 0.8.0? Will do that after work.</p>
+<p>One more thing I observed is, that the dev dependencies for in your case<code>example</code> also are not detected when running pytest.
+I.e. I have arguments for <code>pytest-cov</code> and <code>pytest-xdist</code> defined in the pytproject.toml, but get notified, that the arguments are unknown.</p>
+<p>If I add the mentioned above pytest plugins as part of the <code>--with</code> part, they get installed correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 12:31</div>
+            <div class="timeline-body"><p>I think we've identified that this is causing more breakage https://github.com/astral-sh/uv/issues/14749</p>
+<p>I think it's the same root problem as https://github.com/astral-sh/uv/issues/13327</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14788.html">astral-sh/uv#14788</a> on 2025-07-21 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14790.html">astral-sh/uv#14790</a> on 2025-07-21 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-22 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zaloog">@Zaloog</a> on 2025-07-22 12:13</div>
+            <div class="timeline-body"><p>Thanks a lot @zanieb for the blazing fast support</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filename truncated during https tar stream - astral-sh/uv #5450</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filename truncated during https tar stream</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5450">#5450</a>
+        opened by <a href="https://github.com/WH-2099">@WH-2099</a>
+        on 2024-07-25 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WH-2099">@WH-2099</a> on 2024-07-25 15:44</div>
+            <div class="timeline-body"><p>When a specific https <code>index-url</code> is used, a specific filename is <strong>truncated</strong>.</p>
+<p>Here's a summary of a very stable reproduction I've made.</p>
+<p><code>uv 0.2.29 (39be71f40 2024-07-24)</code></p>
+<pre><code class="language-bash">uv cache clean
+uv pip -v install --reinstall aliyun-python-sdk-core==2.15.1 -i https://pypi.tuna.tsinghua.edu.cn/simple/ 2&gt;&amp;1 | tee log
+
+# The `uv cache clean` `tee log` `-v` `--reinstall` 
+# are just to make it easier to reproduce the scene
+# they are not directly related to the problem.
+# Here's the problem file
+cache_dir=$(dirname $(grep -oP 'build_wheel\(&quot;\K[^&quot;]+' log))
+echo $cache_dir
+ls -al $cache_dir/aliyun-python-sdk-core-2.15.1.tar.gz/aliyunsdkcore/vendored/requests/packages/urllib3/contrib/_appengine_en
+</code></pre>
+<p>This filename here should have been <code>_appengine_environ.py</code>, but is now truncated to <code>_appengine_en</code>.</p>
+<p>Specific file content can be reviewed by manually downloading the corresponding source file.
+https://pypi.tuna.tsinghua.edu.cn/packages/3a/e6/f579e8a5e26ef1066f6fb11074cedc9f668cb5f722c85cf7adc0f7e2e23e/aliyun-python-sdk-core-2.15.1.tar.gz</p>
+<p>If you switch to using the http version of this mirror source <code>http://pypi.tuna.tsinghua.edu.cn/simple/</code>, this problem does not occur.</p>
+<p>If you switch to any other <code>index-url</code>, such as <code>https://pypi.org/simple/</code> you won't have this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WH-2099">@WH-2099</a> on 2024-07-25 15:50</div>
+            <div class="timeline-body"><p>I think this is a bug of concern because it causes silent filename changes and ultimately missing files for installed packages.</p>
+<p>Considering that longer <code>index-url</code> is not uncommon in private environments, this could have an impact on production level environments and be very difficult to track down. <em>(I'm actually an example of this myself 🤣)</em></p>
+<p>I'll keep following up on this, so feel free to contact me if there's anything I can do to help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 15:53</div>
+            <div class="timeline-body"><p>Is your <em>filesystem</em> silently truncating filenames that exceed a certain length?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WH-2099">@WH-2099</a> on 2024-07-25 15:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Is your <em>filesystem</em> silently truncating filenames that exceed a certain length?</p>
+</blockquote>
+<p>Pretty sure it's not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 16:13</div>
+            <div class="timeline-body"><p>I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 17:16</div>
+            <div class="timeline-body"><p>This appears to be a problem during the unpacking of the tar file. We see that truncated filename as soon as we ask the tar crate for the entries (<code>aliyun-python-sdk-core-2.15.1/aliyunsdkcore/vendored/requests/packages/urllib3/contrib/_appengine_en</code>).</p>
+<p>I think there must be something going wrong in the index itself, honestly. If I download the file to disk, then install it, it works correctly. Similarly, if I install from PyPI, I get the right result (and I confirmed that the zip files are identical between the two indexes). But if I stream and uncompress from the aliyun index, I get the wrong result. It's really hard for me to find any root cause for that. My guess is that there's an incorrect header somewhere that's causing the streamed decompression to fail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-07-25 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-25 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WH-2099">@WH-2099</a> on 2024-07-26 01:29</div>
+            <div class="timeline-body"><p>Thanks for following up, I will modify the problem description accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WH-2099">@WH-2099</a> on 2024-07-26 01:35</div>
+            <div class="timeline-body"><p>I also found that switching to the <strong>http</strong> version that uses this mirror source does not cause this problem.</p>
+<p>This also meant having to decrypt tls traffic, I tried the traditional environment variable <code>SSLKEYLOGFILE</code> to no avail.</p>
+<p>I'm still new to rust, can you point me in the right direction as to how to get the tls key here in order to decrypt the session traffic for locating the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Long path was unexpectedly truncated" to "Filename truncated during https tar stream" by @WH-2099 on 2024-07-26 01:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-08-10 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/failable">@failable</a> on 2024-08-25 12:35</div>
+            <div class="timeline-body"><p>@WH-2099 Have you figured out a way to fix this issue? I am facing this issue when using the Aliyun OSS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @zanieb on 2024-08-26 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2024-11-04 19:06</div>
+            <div class="timeline-body"><p>I have a case where uv build created a package where the <code>.tar.gz</code> file is all fine, but one of the filenames in the <code>.whl</code> file is truncated. A retry of the CI job did not reproduce the issue.</p>
+<p>uv 0.4.29</p>
+<p>It's not a package I can share but I can hopefully give some details:</p>
+<ul>
+<li>There are longer filenames in the archive which weren't truncated</li>
+<li>The file contents are correct</li>
+</ul>
+<p>The output of uv build looks like this:</p>
+<pre><code>$ uv build
+Building source distribution...
+...
+copying mypkg1234/migrations/versions/31320cf96165_lorem_ipsum_dolor_sit_amet_con.py -&gt; mypkg1234-24.11.2.dev0+743a1c8/mypkg1234/migrations/versions
+...
+Creating tar archive
+Building wheel from source distribution...
+...
+copying mypkg1234/migrations/versions/31320cf96165_lorem_ipsum_dolor_sit_amet -&gt; build/lib/mypkg1234/migrations/versions
+# ---------------------------------------------------------------- truncated^
+</code></pre>
+<p>(the obfuscated filenames are length accurate in case that's relevant)</p>
+<p>I came across https://github.com/alexcrichton/tar-rs/issues/369 which might be relevant? My archive contains 720 files with a path longer than 100 characters, only one of which was truncated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2024-11-04 23:41</div>
+            <div class="timeline-body"><p><code>uv build --wheel mysdist.tar.gz</code> consistently reproduces, it's not the tar-rs issue I linked. I still need to diff the sdists but the issue when it truncates is a PAX header for the full path not being read (I can see it's there in the .tar file but krata-tokio-tar doesn't load it).</p>
+<p>(I'm using a clone of <code>krata-tokio-tar</code> and building uv with it to debug)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2024-11-05 01:54</div>
+            <div class="timeline-body"><p>Ok found the problem</p>
+<p>https://github.com/edera-dev/tokio-tar/blob/4ee357285b5053e6bfada7f117e530b4da94b74a/src/archive.rs#L317</p>
+<pre><code class="language-rust">            if is_recognized_header &amp;&amp; entry.header().entry_type().is_pax_local_extensions() {
+                if self.pax_extensions.is_some() {
+                    return Poll::Ready(Some(Err(other(
+                        &quot;two pax extensions entries describing \
+                         the same member&quot;,
+                    ))));
+                }
+                let mut ef = EntryFields::from(entry);
+                let val = ready_err!(Pin::new(&amp;mut ef).poll_read_all(cx));
+                self.pax_extensions = Some(val);
+                continue;
+            }
+</code></pre>
+<p>if <code>Pin::new(&amp;mut ef).poll_read_all(cx)</code> is <code>Poll::Pending</code> then <code>ready_err!</code> returns it, so the Pax extension is lost. The same would apply to a pending poll that occurs while a longlink or longname is being prepared. When <code>poll_next</code> is called again the next entry header is parsed.</p>
+<p>I assume this is much more likely to happen if streaming from the network to unpack a tar than in <code>uv build</code>, but it can happen. I assume I managed to get a pax extension header split across the default chunk boundary.</p>
+<p>@charliermarsh do you happen to know the maintainer of this fork? There's only an issue tracker on the original repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../edera-dev/tokio-tar/pulls/3.html">edera-dev/tokio-tar#3</a> on 2024-11-05 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2024-11-09 02:34</div>
+            <div class="timeline-body"><p>And here's a direct reproduction in uv:</p>
+<pre><code class="language-bash">git clone https://github.com/RazerM/uv-cannot-install-this.git
+cd uv-cannot-install-this
+uv build --sdist
+uv build --wheel dist/uv_cannot_install_this-1.0.tar.gz
+uvx --from=dist/uv_cannot_install_this-1.0-py3-none-any.whl --python 3.12 --refresh uv-cannot-install-this
+</code></pre>
+<p>(these steps are a wee bit more explicit than they need to be, the important part is that uv builds the wheel <em>from</em> the sdist, since it's the tar extraction that's broken).</p>
+<pre><code>Missing: data/PmwTDwPvyfFkMzuJjMYZGwVcaFXUvXXwGcRIgaLroLunLYwqTHqwsDyuxyrMwlClMPzIYvVWEqCDQlCLrGeVrmiNgsQzVsMohMbx
+Found:   data/PmwTDwPvyfFkMzuJjMYZGwVcaFXUvXXwGcRIgaLro
+
+Missing: data/BqMlnKrLJFRUBYGNkhkzSwTbVJCIUoiHEnzKiKLADIHROEqVxEWYAsCusUAJKcXYLBZmxYhKncZsXLEjjhctJVXbcvBuSYjkiEnu
+Found:   data/BqMlnKrLJFRUBYGNkhkzSwTbVJCIUoiHEnzKiKLAD
+
+Missing: data/WRDWdZSTLeOixzwhUBDuWyktTYmXLkDuJpJvPxxWxjiHuwqxovuwRwgQwxpxVBTgvUkvwnBDEuRTXJpaJsEWwLwlYTGaqRBbFbZN
+Found:   data/WRDWdZSTLeOixzwhUBDuWyktTYmXLkDuJpJvPxxWx
+
+Missing: data/cvpYHXtnEbfJmnflwYwRUneJnWoAswvXjJfxxnoQsRoWLbmjhGUDDxlXnPGTRLgXxXXlehxbDHmPzOoqKQxQAshPTTFtstwVaDOz
+Found:   data/cvpYHXtnEbfJmnflwYwRUneJnWoAswvXjJfxxnoQs
+
+Missing: data/jhDgXQPnsxYXugmltiBRzrwPualmsjTEjyCQPIXNoEYEOKBaCGtobkgisEyGkFXAovuciJOegxGjwKScJuVujEWntxTdPUeFWKiC
+Found:   data/jhDgXQPnsxYXugmltiBRzrwPualmsjTEjyCQPIXNo
+
+Missing: data/IpjXpmbssCRJYzwCMUFAXrQJKFGUZjlBxYDlOnxclVVOBfxOfDDeTcVlpHQocAMejwdRourDpgcxEDROcgYtpRcGNxwjJpKfMQIg
+Found:   data/IpjXpmbssCRJYzwCMUFAXrQJKFGUZjlBxYDlOnxcl
+
+Missing: data/tEjeOXVVZtJYcOdIjItoRTYnCFDcjAdoMJbholfRiRkesWDLYxGbQHRwyzIJFaDxdfleUsDPKftreQLyArliSyTmPqMJJKygqivC
+Found:   data/tEjeOXVVZtJYcOdIjItoRTYnCFDcjAdoMJbholfRi
+
+9993 files ok, 7 missing
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:36</div>
+            <div class="timeline-body"><p>Thanks for digging in here. I don't know the maintainer of the fork, no... But we could try PRing or a fix? Alternatively, they have some contact info on their GitHub profile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2024-12-07 21:21</div>
+            <div class="timeline-body"><p>this issue can have the network label removed and bug label added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> removed by @charliermarsh on 2024-12-07 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-07 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 22:04</div>
+            <div class="timeline-body"><p>Honestly might need to fork it ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 01:57</div>
+            <div class="timeline-body"><p>You can PR your change here: https://github.com/astral-sh/tokio-tar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hynek/build-and-inspect-python-package/issues/155.html">hynek/build-and-inspect-python-package#155</a> on 2024-12-11 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../RazerM/tokio-tar/pulls/1.html">RazerM/tokio-tar#1</a> on 2024-12-13 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/tokio-tar/pulls/1.html">astral-sh/tokio-tar#1</a> on 2024-12-13 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/effigies">@effigies</a> on 2024-12-19 17:53</div>
+            <div class="timeline-body"><p>Hi all, this is just a note that I've got a package I can't build with <code>uv</code> because data filenames get truncated between the sdist and the wheel. If there's anything I can do to help this along, with testing for example, please let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/endbr64">@endbr64</a> on 2024-12-24 19:12</div>
+            <div class="timeline-body"><p>Potential fix here https://github.com/dignifiedquire/async-tar/pull/55</p>
+<p>Needs to be adapted to <code>tokio-tar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-02-18 15:46</div>
+            <div class="timeline-body"><p>As this was fixed by https://github.com/astral-sh/tokio-tar/pull/40 I think the issue can be closed. Thanks @charliermarsh!</p>
+<p>Looking good since v0.5.30:</p>
+<pre><code>❯ uvx --from uv@0.5.30 uv build --wheel dist/uv_cannot_install_this-1.0.tar.gz &amp;&amp; uvx --from uv@0.5.30 uvx --from=dist/uv_cannot_install_this-1.0-py3-none-any.whl --python 3.12 --refresh uv-cannot-install-this
+Installed 1 package in 29ms
+Building wheel from source distribution...
+Successfully built dist/uv_cannot_install_this-1.0-py3-none-any.whl
+Installed 1 package in 202ms
+10000 files ok, 0 missing
+</code></pre>
+<p>0.5.29:</p>
+<pre><code>❯ uvx --from uv@0.5.29 uv build --wheel dist/uv_cannot_install_this-1.0.tar.gz &amp;&amp; uvx --from uv@0.5.29 uvx --from=dist/uv_cannot_install_this-1.0-py3-none-any.whl --python 3.12 --refresh uv-cannot-install-this
+Installed 1 package in 39ms
+Building wheel from source distribution...
+Successfully built dist/uv_cannot_install_this-1.0-py3-none-any.whl
+Installed 1 package in 224ms
+Missing: data/NkbKvvahyQwrBJVUsPkegCdmwhptRWvNuDadTWqLjzYNGjuxirGNALBnxIZCvqxSIouVMTJYIaKFhapdQANMFWsjjPRzfYDcphbU
+Found:   data/NkbKvvahyQwrBJVUsPkegCdmwhptRWvNuDadTWqLj
+
+Missing: data/GeobqXuLuHmLzJpgdjvFPmzIGmSWiveKpHcYFndHFoKqdGnhMIwSLjclQlRANEmszVRVAJkrttIVuMIWacdApsiplseFLOdErLJv
+Found:   data/GeobqXuLuHmLzJpgdjvFPmzIGmSWiveKpHcYFndHF
+
+Missing: data/UYTpMfjdTXiCjFywDosEvUQVvzwycelDQpEKyIGlvfOsHKaLixTBMYkTnDFirxayysdaXIHZtOsEmhjHoRaeDlDrNGGFAusFGKBU
+Found:   data/UYTpMfjdTXiCjFywDosEvUQVvzwycelDQpEKyIGlv
+
+Missing: data/yLrjNfQTNMCTztbRnRAjLQyiXgNGrwEeTiKHQzrWAQZyCekuGsgOhuHIhPmAombzFATFVkGjDZTcvzGKzZqKXGDTyaoEABLPPrOU
+Found:   data/yLrjNfQTNMCTztbRnRAjLQyiXgNGrwEeTiKHQzrWA
+
+Missing: data/oWtoaAaDvAmyrMlDBGuAHukSZswAhAEPfhBKQJRHRUTyuTxPFziwbMkXRZsDNSfPmwuIEdcMiJolRVgWVRMfpKBiUKPnoQCIUfjP
+Found:   data/oWtoaAaDvAmyrMlDBGuAHukSZswAhAEPfhBKQJRHR
+
+Missing: data/audRmvqqZuPqaKJewWasJRmOaEXwxXXbxcXrQDiizcWPuWVMmemdHcTjgNIoPAmCCnzvhNEFsIBVcfOQeZfGECiwjlRwwDhkvTFn
+Found:   data/audRmvqqZuPqaKJewWasJRmOaEXwxXXbxcXrQDiiz
+
+Missing: data/hlYNCGAqHrGZmUTRghgSWDmWKcRrmRWSdTjoyPjHOLvrOTNouKaGkiyHaCLXFgnNDTNNmpQDUBrCEmByFoVQQSUSpzTQVtpbrQgj
+Found:   data/hlYNCGAqHrGZmUTRghgSWDmWKcRrmRWSdTjoyPjHO
+
+9993 files ok, 7 missing
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nipreps/smriprep/pulls/466.html">nipreps/smriprep#466</a> on 2025-02-18 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> removed by @konstin on 2025-02-18 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/effigies">@effigies</a> on 2025-02-18 16:32</div>
+            <div class="timeline-body"><p>I can confirm this is resolved for my case as well.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support reading project dependency metadata - astral-sh/uv #12749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support reading project dependency metadata</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12749">#12749</a>
+        opened by <a href="https://github.com/kevinli1993">@kevinli1993</a>
+        on 2025-04-08 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kevinli1993">@kevinli1993</a> on 2025-04-08 16:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I would like a command that reports whether a package <code>X</code> is specified in the pyproject.toml of a project.</p>
+<p>In its basic form, it might look something like this:</p>
+<pre><code>$ uv some-magic-command X
+$ echo $?   # 0 for &quot;yes&quot;  1 for &quot;no&quot;
+</code></pre>
+<p>Conceptually, this is reading and parsing <code>pyproject.toml</code>, but with all the corner cases that <code>uv</code> handles:</p>
+<ul>
+<li>platform dependence</li>
+<li><code>uv</code> niceties such as <code>uv --directory</code>, <code>uv --package</code>, and other <code>UV_*</code> environment variables.</li>
+</ul>
+<p>The exact semantics could be defined like this:</p>
+<pre><code>uv some-magic-command dependency
+</code></pre>
+<p>and the return code would be</p>
+<ul>
+<li><code>0</code> if the project has<code>dependency</code> in its pyproject.toml and would be satisfied by the version specified</li>
+<li><code>1</code> if the project has <code>dependency</code> in its pyproject.toml and would <em>not</em> be satisfied by the version specified</li>
+<li><code>2</code> if the project <em>does not</em> have  <code>dependency</code> in its pyproject.toml</li>
+</ul>
+<h4>Some examples</h4>
+<p>(See example section.)</p>
+<hr />
+<p>In some ways, this request is spiritually a generalization of the <a href="https://github.com/astral-sh/uv/issues/6298">popular version request</a>, in that I'm hoping to expose some of UV's internal logic to the end-user.</p>
+<p>The use-case is in using <code>uv</code> in CLI scripts.</p>
+<h3>Example</h3>
+<pre><code>uv some-magic-command numpy&gt;=1.2
+</code></pre>
+<p>Result:</p>
+<ul>
+<li><code>0</code>: if the project has <code>numpy</code> in its pyproject.toml, and <code>numpy==X</code> would satisfy it for some version <code>X&gt;=1.2</code></li>
+<li><code>1</code>: if the project has <code>numpy</code> in its pyproject.toml, but is incompatible with <code>numpy&gt;=1.2</code></li>
+<li><code>2</code>: if the project does not specify <code>numpy</code> in its pyproject.toml</li>
+</ul>
+<pre><code>uv some-magic-command numpy==1.2.26
+</code></pre>
+<p>Result:</p>
+<ul>
+<li><code>0</code>: if the project has <code>numpy</code> in its pyproject.toml, and <code>numpy==1.2.26</code> would satisfy it</li>
+<li><code>1</code>: if the project has <code>numpy</code> in its pyproject.toml, but is incompatible with <code>numpy==1.2.26</code></li>
+<li><code>2</code>: if the project does not specify <code>numpy</code> in its pyproject.toml</li>
+</ul>
+<pre><code>uv some-magic-command numpy
+</code></pre>
+<p>Result:</p>
+<ul>
+<li><code>0</code>: if the project has <code>numpy</code> in its pyproject.toml, and <code>numpy==X</code> would satisfy it for some <code>X</code>. (Basically, not putting a specifier means <code>==*</code>.)</li>
+<li><code>1</code>: if the project has <code>numpy</code> in its pyproject.toml, but no version of <code>numpy</code> can satisfy it. (In this case, it implies that the project cannot be successfully resolved)</li>
+<li><code>2</code>: if the project does not specify <code>numpy</code> in its pyproject.toml</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @kevinli1993 on 2025-04-08 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:27</div>
+            <div class="timeline-body"><p>What's the use-case for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2025-04-08 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinli1993">@kevinli1993</a> on 2025-04-08 17:51</div>
+            <div class="timeline-body"><p>I maintain a set of (private) packages <code>A</code>, <code>B</code>, <code>C</code>, ..., and need to do some shell scripting to know who depends on who, either directly or transitively.</p>
+<p>The set of dependencies forms a DAG, and I want to do more computations over this DAG; unfortunately can't share details , but the idea is that I want to compute this DAG in the first place, and I would like to use <code>uv</code> for that (e.g. instead of parsing by hand).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 18:07</div>
+            <div class="timeline-body"><p>Can you use <code>uv tree</code> / <code>uv pip tree</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinli1993">@kevinli1993</a> on 2025-04-08 18:12</div>
+            <div class="timeline-body"><p><code>uv tree</code> is &quot;kind-of&quot; what I want, but not quite.  This is because <code>uv tree</code> requires the lockfile <code>uv.lock</code> to exist, and creating that might require Internet/intranet access (to get meta information from some index).</p>
+<p>I have a use-case where <code>uv.lock</code> is not yet created or not up to date, and I don't have network access; so the source of truth should be the <code>pyproject.toml</code>.</p>
+<p>Put another way, for this use-case, I want <code>pyproject.toml</code> to be (the only) source of truth, and not <code>uv.lock</code>.</p>
+<p>(So what I want is kind of like <code>uv tree --depth 1</code>, except that <code>--depth 1</code> still uses <code>uv.lock</code>, not <code>pyproject.toml</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I have a use-case where uv.lock is not yet created or not up to date, and I don't have network access; so the source of truth should be the pyproject.toml.</p>
+</blockquote>
+<p>This probably isn't something we'll support tbh. It adds a lot of complexity. We can consider it if there are more asks though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinli1993">@kevinli1993</a> on 2025-04-08 18:25</div>
+            <div class="timeline-body"><p>Got it - I just figured the underlying logic must be in <code>uv</code> somewhere (the logic is required to resolve and generate <code>uv.lock</code> to begin with), but I understand the added complexity and maintenance burden if <code>uv</code> were to expose it.</p>
+<p>Anyway, thanks and I appreciate your thoughts - will keep this issue open for others to find/search for.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing xarray[accel] uv fails - astral-sh/uv #7830</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing xarray[accel] uv fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7830">#7830</a>
+        opened by <a href="https://github.com/NathanCummings">@NathanCummings</a>
+        on 2024-10-01 08:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NathanCummings">@NathanCummings</a> on 2024-10-01 08:50</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>When installing xarray with the optional &quot;accel&quot; dependencies, this fails with a uv-generated venv. With a venv created with a python install I had on my system (from homebrew in this case) I was able to pip install ok.</p>
+<p>Both were python version 3.12.6.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 18:52</div>
+            <div class="timeline-body"><p>This runs without issue for me:</p>
+<pre><code>❯ uv pip install &quot;xarray[accel]&quot;
+Resolved 17 packages in 176ms
+Prepared 8 packages in 2.12s
+Installed 17 packages in 99ms
+ + bottleneck==1.4.1
+ + flox==0.9.10
+ + llvmlite==0.43.0
+ + numba==0.60.0
+ + numbagg==0.8.2
+ + numpy==2.0.2
+ + numpy-groupies==0.11.2
+ + opt-einsum==3.4.0
+ + packaging==24.1
+ + pandas==2.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2024.2
+ + scipy==1.13.1
+ + six==1.16.0
+ + toolz==1.0.0
+ + tzdata==2024.2
+ + xarray==2024.7.0
+</code></pre>
+<p>We'd need a reproduction in order to help out here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-10-16 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NathanCummings">@NathanCummings</a> on 2024-10-16 19:50</div>
+            <div class="timeline-body"><p>Thanks for getting back to me on this.</p>
+<p>This is with macOS 15.0.1 (24A348)</p>
+<p>I tried with uv-generated venvs using python versions:</p>
+<ul>
+<li>3.12.7 (I have it on my system via Homebrew so uv used that)</li>
+<li>3.11.9 (uv downloaded)</li>
+<li>3.10.15 (uv downloaded)
+All of which failed as they tried to use numba==0.53.1 which caused:</li>
+</ul>
+<pre><code>RuntimeError: Cannot install on Python version 3.10.15; only versions &gt;=3.6,&lt;3.10 are supported.
+</code></pre>
+<p>When I created the venv just using the Homebrew-installed python3.12 directly, it used numba==0.60.0 and worked.</p>
+<pre><code>❯ python3.12 -m venv venv
+❯ source venv/bin/activate
+❯ pip install &quot;xarray[accel]&quot;
+Collecting xarray[accel]
+  Using cached xarray-2024.9.0-py3-none-any.whl.metadata (11 kB)
+Collecting numpy&gt;=1.24 (from xarray[accel])
+  Downloading numpy-2.1.2-cp312-cp312-macosx_14_0_arm64.whl.metadata (60 kB)
+Collecting packaging&gt;=23.1 (from xarray[accel])
+  Using cached packaging-24.1-py3-none-any.whl.metadata (3.2 kB)
+Collecting pandas&gt;=2.1 (from xarray[accel])
+  Using cached pandas-2.2.3-cp312-cp312-macosx_11_0_arm64.whl.metadata (89 kB)
+Collecting scipy (from xarray[accel])
+  Using cached scipy-1.14.1-cp312-cp312-macosx_14_0_arm64.whl.metadata (60 kB)
+Collecting bottleneck (from xarray[accel])
+  Downloading Bottleneck-1.4.1-cp312-cp312-macosx_11_0_arm64.whl.metadata (7.9 kB)
+Collecting numbagg (from xarray[accel])
+  Using cached numbagg-0.8.2-py3-none-any.whl.metadata (47 kB)
+Collecting flox (from xarray[accel])
+  Using cached flox-0.9.13-py3-none-any.whl.metadata (17 kB)
+Collecting opt-einsum (from xarray[accel])
+  Using cached opt_einsum-3.4.0-py3-none-any.whl.metadata (6.3 kB)
+Collecting python-dateutil&gt;=2.8.2 (from pandas&gt;=2.1-&gt;xarray[accel])
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting pytz&gt;=2020.1 (from pandas&gt;=2.1-&gt;xarray[accel])
+  Using cached pytz-2024.2-py2.py3-none-any.whl.metadata (22 kB)
+Collecting tzdata&gt;=2022.7 (from pandas&gt;=2.1-&gt;xarray[accel])
+  Using cached tzdata-2024.2-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting numpy-groupies&gt;=0.9.19 (from flox-&gt;xarray[accel])
+  Using cached numpy_groupies-0.11.2-py3-none-any.whl.metadata (18 kB)
+Collecting toolz (from flox-&gt;xarray[accel])
+  Downloading toolz-1.0.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting numba (from numbagg-&gt;xarray[accel])
+  Using cached numba-0.60.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (2.7 kB)
+Collecting six&gt;=1.5 (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=2.1-&gt;xarray[accel])
+  Using cached six-1.16.0-py2.py3-none-any.whl.metadata (1.8 kB)
+Collecting llvmlite&lt;0.44,&gt;=0.43.0dev0 (from numba-&gt;numbagg-&gt;xarray[accel])
+  Using cached llvmlite-0.43.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (4.8 kB)
+Collecting numpy&gt;=1.24 (from xarray[accel])
+  Using cached numpy-2.0.2-cp312-cp312-macosx_14_0_arm64.whl.metadata (60 kB)
+Using cached packaging-24.1-py3-none-any.whl (53 kB)
+Using cached pandas-2.2.3-cp312-cp312-macosx_11_0_arm64.whl (11.4 MB)
+Downloading Bottleneck-1.4.1-cp312-cp312-macosx_11_0_arm64.whl (98 kB)
+Using cached flox-0.9.13-py3-none-any.whl (70 kB)
+Using cached scipy-1.14.1-cp312-cp312-macosx_14_0_arm64.whl (23.1 MB)
+Using cached numbagg-0.8.2-py3-none-any.whl (49 kB)
+Using cached opt_einsum-3.4.0-py3-none-any.whl (71 kB)
+Using cached xarray-2024.9.0-py3-none-any.whl (1.2 MB)
+Using cached numpy_groupies-0.11.2-py3-none-any.whl (40 kB)
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Using cached pytz-2024.2-py2.py3-none-any.whl (508 kB)
+Using cached tzdata-2024.2-py2.py3-none-any.whl (346 kB)
+Using cached numba-0.60.0-cp312-cp312-macosx_11_0_arm64.whl (2.7 MB)
+Using cached numpy-2.0.2-cp312-cp312-macosx_14_0_arm64.whl (5.0 MB)
+Downloading toolz-1.0.0-py3-none-any.whl (56 kB)
+Using cached llvmlite-0.43.0-cp312-cp312-macosx_11_0_arm64.whl (28.8 MB)
+Using cached six-1.16.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, tzdata, toolz, six, packaging, opt-einsum, numpy, llvmlite, scipy, python-dateutil, numpy-groupies, numba, bottleneck, pandas, numbagg, xarray, flox
+Successfully installed bottleneck-1.4.1 flox-0.9.13 llvmlite-0.43.0 numba-0.60.0 numbagg-0.8.2 numpy-2.0.2 numpy-groupies-0.11.2 opt-einsum-3.4.0 packaging-24.1 pandas-2.2.3 python-dateutil-2.9.0.post0 pytz-2024.2 scipy-1.14.1 six-1.16.0 toolz-1.0.0 tzdata-2024.2 xarray-2024.9.0
+</code></pre>
+<p>Is there any more information I can provide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 20:02</div>
+            <div class="timeline-body"><p>I think this is specific to <code>numba</code> and <code>numpy</code> -- there's a thorough write-up of the problem here: https://github.com/astral-sh/uv/issues/8157. The issue is that Numba sets an upper-bound that excludes the latest NumPy, so if we solve for the latest NumPy, we give you an old version of Numba. It's a completely valid install, but fails at runtime.</p>
+<p>I'd suggest adding <code>numba&gt;=0.60.0</code> as a constraint the install for now, though we're working on heuristics to get solves that are more intuitive here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 20:02</div>
+            <div class="timeline-body"><p>(Or <code>numpy&lt;2.1</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 20:05</div>
+            <div class="timeline-body"><p>I'm going to close this as a case of https://github.com/astral-sh/uv/issues/8157, but I do want to fix that soon. Let me know if you have follow-up questions about the workaround I suggested here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-16 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NathanCummings">@NathanCummings</a> on 2024-10-16 20:12</div>
+            <div class="timeline-body"><pre><code>❯ uv pip install &quot;xarray[accel]&quot; &quot;numba&gt;=0.60.0&quot;
+Resolved 17 packages in 360ms
+Prepared 5 packages in 5.41s
+Installed 17 packages in 461ms
+ + bottleneck==1.4.1
+ + flox==0.9.13
+ + llvmlite==0.43.0
+ + numba==0.60.0
+ + numbagg==0.8.2
+ + numpy==2.0.2
+ + numpy-groupies==0.11.2
+ + opt-einsum==3.4.0
+ + packaging==24.1
+ + pandas==2.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2024.2
+ + scipy==1.14.1
+ + six==1.16.0
+ + toolz==1.0.0
+ + tzdata==2024.2
+ + xarray==2024.9.0
+</code></pre>
+<p>Thank you @charliermarsh , leaving the explicit solution here for future googlers. <code>uv</code> is excellent btw and has made things a lot easier!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 20:24</div>
+            <div class="timeline-body"><p>Thank you so much! Sorry about this specific pain point. It's been bothering me a lot 😅 But we have a plan to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8157.html">astral-sh/uv#8157</a> on 2024-10-17 09:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:58 UTC
+    </footer>
+</body>
+</html>

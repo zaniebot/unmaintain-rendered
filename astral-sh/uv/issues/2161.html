@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile` does not respect unsafe packages defined in `pyproject.toml` - astral-sh/uv #2161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile` does not respect unsafe packages defined in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2161">#2161</a>
+        opened by <a href="https://github.com/silv-io">@silv-io</a>
+        on 2024-03-04 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/silv-io">@silv-io</a> on 2024-03-04 16:05</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h1>Expected behavior</h1>
+<p><code>pip-compile</code> has the feature to define &quot;unsafe packages&quot; which should not be pinned. This is useful when you want to make sure to always use the latest version of a specific package, regardless of the pin.</p>
+<p><code>uv</code> supports this feature, but only in the command line with the <code>--unsafe-package</code> option. However, <code>pip-tools</code> also scan the <code>pyproject.toml</code> section <code>tools.pip-tools</code> for the key <code>unsafe-package</code>.</p>
+<p>It looks something like this:</p>
+<pre><code>[tool.pip-tools]
+unsafe-package = [&quot;some-package&quot;, &quot;pip&quot;, &quot;setuptools&quot;, &quot;distribute&quot;] # packages that should not be pinned
+</code></pre>
+<h1>Bug</h1>
+<p><code>uv</code> does not read this section of the TOML and therefore produces different output on the same project. It should ideally read this section to offer drop-in replace-ability. Since this is in general a useful feature (not only for feature parity reasons), reading the equivalent key in &quot;tools.uv&quot;, might be an option for the future as well.</p>
+<h1>Platform</h1>
+<ul>
+<li>Linux AMD64</li>
+<li><code>uv</code> version: <code>0.1.13</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-04 17:01</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>I don't think we're willing to read another tool's configuration. We're still formalizing a policy around this though.</p>
+<p>We can also consider adding our own configuration section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-03-04 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silv-io">@silv-io</a> on 2024-03-05 08:44</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>That's understandable.</p>
+<p>But as mentioned, it would be nice in general to have a way to set some parameters directly in the <code>pyproject.toml</code>.
+<a href="https://github.com/jazzband/pip-tools?tab=readme-ov-file#configuration">Here's</a> the documentation section from <code>pip-tools</code> about that.</p>
+<p>Not having this is kind of blocking adoption for the tool because setting these manually on every call of <code>uv pip compile</code> can be error-prone. What this also allows for is auxiliary tooling, like a <a href="https://github.com/localstack/pre-commit-hooks">pre-commit hook which checks if the lock file is still compatible with the project file</a>.
+That said, does <code>uv</code> plan to have pre-commit hooks like that? Would be an awesome addition!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-05 15:11</div>
+            <div class="timeline-body"><p>Yeah we'll have our own persistent configuration eventually, we're still determining what that will look like though.</p>
+<p>And yeah a pre-commit hook is of interest to us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silv-io">@silv-io</a> on 2024-03-25 13:54</div>
+            <div class="timeline-body"><p>@zanieb Do you have any update on when such a configuration will be available, or is there an official roadmap for that?
+This is basically the only thing seriously blocking us from adopting <code>uv</code> now and we'd love to use it as it is so much faster :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silv-io">@silv-io</a> on 2024-05-08 12:54</div>
+            <div class="timeline-body"><p>@zanieb, @charliermarsh Any updates regarding persistent configuration? I see in https://github.com/astral-sh/uv/blob/main/docs/specifying_dependencies.md that you have some kind of configuration already in the <code>pyproject.toml</code>. I don't see however, whether there is support for setting something like this:</p>
+<pre><code>[tool.uv.pip.compile]
+unsafe-package = [&quot;some-package&quot;, &quot;pip&quot;, &quot;setuptools&quot;, &quot;distribute&quot;] # packages that should not be pinned
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-08 13:37</div>
+            <div class="timeline-body"><p>We are building persistent configuration right now, e.g. https://github.com/astral-sh/uv/pull/3007</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silv-io">@silv-io</a> on 2024-05-14 06:49</div>
+            <div class="timeline-body"><p>@zanieb Looking through the toml schema, I found the possibility to define <code>no-emit-package</code> in the <code>pyproject.toml</code>.
+This essentially does the same thing.</p>
+<pre><code>[tool.uv.pip]
+no-emit-package = [&quot;some-package&quot;, &quot;pip&quot;, &quot;setuptools&quot;, &quot;distribute&quot;] # packages that should not be pinned
+</code></pre>
+<p>I think this can be closed now! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @silv-io on 2024-05-14 06:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

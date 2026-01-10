@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLR1730 fix for `&lt;=` and `&gt;=` orders equal arguments wrong - astral-sh/ruff #16040</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLR1730 fix for `&lt;=` and `&gt;=` orders equal arguments wrong</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16040">#16040</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-08 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-08 16:39</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/if-stmt-min-max/"><code>if-stmt-min-max</code> (PLR1730)</a> in Ruff 0.9.5 changes the program’s behavior when the operator is <code>&lt;=</code> or <code>&gt;=</code> and the values are equal. Of the following four examples, the first two were broken by #15930, and the last two were already incorrect.</p>
+<pre><code class="language-console">$ cat &gt;plr1730.py &lt;&lt;'# EOF'
+t, c = [], []
+if t &gt;= c: t = c
+print(t is c)
+
+t, c = [], []
+if t &lt;= c: t = c
+print(t is c)
+
+t, c = [], []
+if c &lt;= t: t = c
+print(t is c)
+
+t, c = [], []
+if c &gt;= t: t = c
+print(t is c)
+# EOF
+
+$ python plr1730.py
+True
+True
+True
+True
+
+$ ruff --isolated check --preview --select PLR1730 plr1730.py --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ cat plr1730.py
+t, c = [], []
+t = min(t, c)
+print(t is c)
+
+t, c = [], []
+t = max(t, c)
+print(t is c)
+
+t, c = [], []
+t = min(t, c)
+print(t is c)
+
+t, c = [], []
+t = max(t, c)
+print(t is c)
+
+$ python plr1730.py
+False
+False
+False
+False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-08 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-08 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-02-08 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-08 17:07</div>
+            <div class="timeline-body"><p>Oh sorry... This is my fault 🙈</p>
+<p>Can I re-fix it? Now I understand better the problem, and I would like to remediate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-08 17:45</div>
+            <div class="timeline-body"><p>@VascoSch92 of course!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @VascoSch92 by @AlexWaygood on 2025-02-08 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-08 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh sorry... This is my fault 🙈</p>
+</blockquote>
+<p>Don't worry. This is really on me. I should have caught that during the review. Thanks for taking another try at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16080.html">astral-sh/ruff#16080</a> on 2025-02-10 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-12 09:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

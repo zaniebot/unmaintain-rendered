@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`dbm.gnu` not available - astral-sh/uv #7197</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`dbm.gnu` not available</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7197">#7197</a>
+        opened by <a href="https://github.com/suomela">@suomela</a>
+        on 2024-09-08 19:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/suomela">@suomela</a> on 2024-09-08 19:41</div>
+            <div class="timeline-body"><p>My system Python defaults to using <code>dbm.gnu</code> when I use the <code>dbm</code> module (macOS, Homebrew, installed <code>python@3.12</code> and <code>python-gdbm@3.12</code>.</p>
+<p>However, Python from <code>uv</code> apparently does not provide <code>dbm.gnu</code>, and hence cannot open files created with my system Python.</p>
+<p>Steps to reproduce:</p>
+<pre><code>brew install python python-gdbm
+uv init --python-preference=only-managed foo
+cd foo
+python3 -c 'import dbm; dbm.open(&quot;test&quot;, &quot;c&quot;)'
+python3 -c 'import dbm; dbm.open(&quot;test&quot;, &quot;r&quot;)'
+uv run python -c 'import dbm; dbm.open(&quot;test&quot;, &quot;r&quot;)'
+</code></pre>
+<p>The final command fails with:</p>
+<pre><code>Using Python 3.12.5
+Creating virtualenv at: .venv
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/Users/.../.local/share/uv/python/cpython-3.12.5-macos-x86_64-none/lib/python3.12/dbm/__init__.py&quot;, line 91, in open
+    raise error[0](&quot;db type is {0}, but the module is not &quot;
+dbm.error: db type is dbm.gnu, but the module is not available
+</code></pre>
+<p>It is not clear to me how do I tell <code>uv</code> that I would like to get a Python that supports <code>dbm.gnu</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2024-09-09 06:18</div>
+            <div class="timeline-body"><p>Probably related to this: https://gregoryszorc.com/docs/python-build-standalone/main/technotes.html?highlight=dbm#dbm -- if yes there isn't much uv can do. You can either build your own managed python (not sure if you can use that with uv though) or use the system python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-09-16 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ikks">@ikks</a> on 2024-10-30 20:31</div>
+            <div class="timeline-body"><p>I do not understand clearly if uv depends on python-build-standalone, if this is the case, uv can do nothing about this issue, in other case, is it possible that uv can enable the gdbm module to be available?  I would love to continue using uv in cases that gdbm is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f-reinsch">@f-reinsch</a> on 2025-07-16 19:00</div>
+            <div class="timeline-body"><p>Hi all,</p>
+<p>is there any news on this?
+I encountered the same issue today while updating one of my projects to python 3.13.5.
+I get this error only because of celery, which is kind of dependent on dbm.gnu at least for the state db´s it creates for the worker and beat processes.</p>
+<p>My current workaround would be to also have to install pyenv to install the working python interpreter and let uv use this as the base intepreter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 01:06</div>
+            <div class="timeline-body"><p>We do maintain <code>python-build-standalone</code>, and use it for our managed Python distributions.</p>
+<p>I don't know what's to be done about the <code>dbm.gnu</code> problem though. As described in the link, it's not included because it's GPL licensed and we avoid such dependencies in the <code>python-build-standalone</code>.</p>
+<p>The easiest way to work around this with uv is to set <code>--no-managed-python</code> or <code>UV_PYTHON_PREFERENCE=system</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 01:14</div>
+            <div class="timeline-body"><p>Can you share more about why / how Celery depends specifically on <code>dbm.gnu</code>? It looks like that's only the case if an existing state file created by a different Python version is being read? If you're using a consistent Python distribution, i.e., uv's, then it should be self-compatible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f-reinsch">@f-reinsch</a> on 2025-07-17 12:00</div>
+            <div class="timeline-body"><p>Hi @zanieb,</p>
+<p>thank you for your input. I just double checked if your approach by deleting and recreating the state-db works with an uv managed python installation and voila it works! Insane support, love to see it!!</p>
+<p>Keep up the great work you do at astral by revolutionizing the python ecosystem 👍🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 12:28</div>
+            <div class="timeline-body"><p>I'm going to close this as this is as-designed, but feel free to comment if you have a use-case that this blocks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-17 12:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:44 UTC
+    </footer>
+</body>
+</html>

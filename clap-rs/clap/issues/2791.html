@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strings with a backslash before the ending quote results in a quote being included in the final arg value - clap-rs/clap #2791</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strings with a backslash before the ending quote results in a quote being included in the final arg value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2791">#2791</a>
+        opened by <a href="https://github.com/avborup">@avborup</a>
+        on 2021-09-26 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/avborup">@avborup</a> on 2021-09-26 08:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0 (a178d0322 2021-07-26)</p>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(r&quot;Minimum Working Example for \'&quot;)
+        .arg(Arg::with_name(&quot;PATH&quot;).required(true))
+        .get_matches();
+
+    println!(&quot;{}&quot;, matches.value_of(&quot;PATH&quot;).unwrap());
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- '.\foo bar\baz\'
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The following is printed:</p>
+<pre><code>.\foo bar\baz&quot;
+</code></pre>
+<p>Notice the trailing <code>&quot;</code> - there was not even a direct <code>&quot;</code> in the original input.</p>
+<h3>Expected Behaviour</h3>
+<p>Either of the two:</p>
+<ol>
+<li>The straight content of the string should be returned: <code>.\foo bar\baz\</code>.</li>
+<li>If the trailing <code>'</code> is meant to be escaped by <code>\</code>, a parse error saying no end <code>'</code> was found.</li>
+</ol>
+<h3>Additional Context</h3>
+<p>This is on Windows and is particularly an issue with paths. Assume you have the following directory tree:</p>
+<pre><code>.
+└── foo bar
+    └── baz
+</code></pre>
+<p>If you autocomplete in PowerShell, the path will be <code>'.\foo bar\baz\'</code> (including the quotes because of the space).</p>
+<p>I saw the discussion at #2654, but I'm not sure it's the same issue.</p>
+<h3>Debug Output</h3>
+<pre><code>$ cargo run -- '.\foo bar\baz\'
+    Blocking waiting for file lock on build directory
+   Compiling clap v2.33.3
+   Compiling clap-mwe-backslash-quote v0.1.0 (C:\Users\Adrian\coding\testing\clap-mwe-backslash-quote)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.57s
+     Running `target\debug\clap-mwe-backslash-quote.exe &quot;.\foo bar\baz\&quot;&quot;`      
+DEBUG:clap:Parser::propagate_settings: self=Minimum Working Example for \', g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;.\\foo bar\\baz\&quot;&quot;' ([46, 92, 102, 111, 111, 32, 98, 97, 114, 92, 98, 97, 122, 34])
+DEBUG:clap:Parser::is_new_arg:&quot;.\\foo bar\\baz\&quot;&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;.\\foo bar\\baz\&quot;&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::get_matches_with: Positional counter...1
+DEBUG:clap:Parser::get_matches_with: Low index multiples...false
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::add_val_to_arg; arg=PATH, val=&quot;.\\foo bar\\baz\&quot;&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;.\\foo bar\\baz\&quot;&quot;      
+DEBUG:clap:Parser::groups_for_arg: name=PATH
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=PATH
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=PATH
+DEBUG:clap:Parser::groups_for_arg: name=PATH
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;PATH&quot;);
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:PATH: doesn't have conditional defaults    
+DEBUG:clap:Parser::add_defaults:iter:PATH: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:PATH;
+DEBUG:clap:Parser::groups_for_arg: name=PATH
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_required: required=[&quot;PATH&quot;];
+DEBUG:clap:Validator::validate_required:iter:PATH:
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:PATH: vals=[
+    &quot;.\\foo bar\\baz\&quot;&quot;,
+]
+DEBUG:clap:Validator::validate_arg_num_vals:PATH
+DEBUG:clap:Validator::validate_arg_num_occurs: a=PATH;
+DEBUG:clap:Validator::validate_arg_values: arg=&quot;PATH&quot;
+DEBUG:clap:Validator::validate_arg_requires:PATH;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;PATH&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;PATH&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=clap-mwe-backslash-quote.exe &lt;PATH&gt;  
+DEBUG:clap:ArgMatcher::get_global_values: global_arg_vec=[]
+.\foo bar\baz&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @avborup on 2021-09-26 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-09-26 11:54</div>
+            <div class="timeline-body"><p>What does rust's <code>env::arg_os</code> print?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avborup">@avborup</a> on 2021-09-26 17:12</div>
+            <div class="timeline-body"><pre><code class="language-rs">dbg!(env::args_os());
+</code></pre>
+<p>prints</p>
+<pre><code>[src\main.rs:5] env::args_os() = ArgsOs {
+    inner: [
+        &quot;target\\debug\\clap-mwe-backslash-quote.exe&quot;,
+        &quot;.\\foo bar\\baz\&quot;&quot;,
+    ],
+}
+</code></pre>
+<p>In clean form, that would indeed be <code>.\foo bar\baz&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-09-26 18:30</div>
+            <div class="timeline-body"><p>Yup, So it looks like some kind of rust or most probably a shell issue. We can't do anything on our side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-09-26 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-09-27 13:16</div>
+            <div class="timeline-body"><p>Unsure how relevant this is but Rust 1.56 came with this compatibility note:</p>
+<blockquote>
+<p><a href="https://github.com/rust-lang/rust/pull/87580">Update to new argument parsing rules on Windows.</a> This adjusts Rust's standard library to match the behavior of the standard libraries for C/C++. The rules have changed slightly over time, and this PR brings us to the latest set of rules (changed in 2008).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-09-27 15:09</div>
+            <div class="timeline-body"><p>I am interested in what happens when you try 1.56 instead of 1.54.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avborup">@avborup</a> on 2021-09-27 15:55</div>
+            <div class="timeline-body"><p>I just tried on rust version <code>1.56.0-beta.3 (deef86610 2021-09-17)</code>:</p>
+<pre><code class="language-powershell">$ rustc -V
+rustc 1.56.0-beta.3 (deef86610 2021-09-17)
+
+$ cargo run -- '.\foo bar\baz\'
+   Compiling clap v2.33.3
+   Compiling clap-mwe-backslash-quote v0.1.0 (C:\Users\Adrian\coding\testing\clap-mwe-backslash-quote)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.45s
+     Running `target\debug\clap-mwe-backslash-quote.exe &quot;.\foo bar\baz\&quot;&quot;`       
+[src\main.rs:5] env::args_os() = ArgsOs {
+    inner: [
+        &quot;target\\debug\\clap-mwe-backslash-quote.exe&quot;,
+        &quot;.\\foo bar\\baz\&quot;&quot;,
+    ],
+}
+.\foo bar\baz&quot;
+</code></pre>
+<p>Doesn't seem to have changed anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Yamato-Security/hayabusa/issues/1166.html">Yamato-Security/hayabusa#1166</a> on 2023-08-24 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timptner">@timptner</a> on 2025-12-17 09:03</div>
+            <div class="timeline-body"><p>For anyone following: https://github.com/rust-lang/rust/issues/72653</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:37 UTC
+    </footer>
+</body>
+</html>

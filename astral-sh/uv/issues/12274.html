@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync fails due to invalid cache - astral-sh/uv #12274</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync fails due to invalid cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12274">#12274</a>
+        opened by <a href="https://github.com/vlaci">@vlaci</a>
+        on 2025-03-18 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vlaci">@vlaci</a> on 2025-03-18 11:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It started happening right after upgrading from 0.6.5 to 0.6.6.</p>
+<p>In our environment, <code>~/.cache/uv</code> is cached between CI runs. My theory is that for some time uv 0.6.5 ran alternating with 0.6.6 on different branches sharing the same cache, as the issue did not happen when 0.6.6 was first introduced.</p>
+<p>The error itself is very similar to the one fixed in https://github.com/astral-sh/uv/pull/11105, but it comes from a different place:</p>
+<pre><code>$ uv sync --frozen --no-dev --extra xyz
+error: Failed to determine installation plan
+Caused by: Failed to deserialize cache entry
+Caused by: array had incorrect length, expected 4
+</code></pre>
+<p>After a cursory glance at the code of <code>Planner.build()</code>, it looks like caching didn't get the same treatment in <code>{Http,Local}ArchivePointer::read_from()</code> as <code>SourceDistributionBuilder::url_metadata()</code> got in https://github.com/astral-sh/uv/pull/11105</p>
+<h3>Platform</h3>
+<p>Debian 12 (bookworm)</p>
+<h3>Version</h3>
+<p>uv 0.6.6</p>
+<h3>Python version</h3>
+<p>CPython 3.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vlaci on 2025-03-18 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 13:47</div>
+            <div class="timeline-body"><p>Tagging @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @charliermarsh on 2025-03-18 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12281.html">astral-sh/uv#12281</a> on 2025-03-18 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-03-18 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-03-18 15:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

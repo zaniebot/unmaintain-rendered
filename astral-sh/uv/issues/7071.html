@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace exclusion does not work - astral-sh/uv #7071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace exclusion does not work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7071">#7071</a>
+        opened by <a href="https://github.com/blinkseb">@blinkseb</a>
+        on 2024-09-05 06:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/blinkseb">@blinkseb</a> on 2024-09-05 06:55</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>uv platform: Fedora 40
+uv version: <code>uv 0.4.5</code></p>
+<p>Hello,</p>
+<p>First of all, thanks a lot for <code>uv</code>, it's an awesome tool!</p>
+<p>I'm trying to migrate my current project from <code>poetry</code> to <code>uv</code> by leveraging the workspace functionality. I have the following projects structure:</p>
+<pre><code>.
+├── projects
+│   ├── a
+│   │   ├── hello.py
+│   │   ├── pyproject.toml
+│   │   └── README.md
+│   ├── b
+│   │   ├── ba
+│   │   │   ├── hello.py
+│   │   │   ├── pyproject.toml
+│   │   │   └── README.md
+│   │   └── bb
+│   │       ├── hello.py
+│   │       ├── pyproject.toml
+│   │       └── README.md
+│   └── c
+│       ├── hello.py
+│       ├── pyproject.toml
+│       └── README.md
+├── pyproject.toml
+</code></pre>
+<p>The root <code>pyproject.toml</code>, the workspace root, is defined as:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [&quot;projects/*&quot;, &quot;projects/b/*&quot;]
+exclude = [&quot;projects/b&quot;]
+</code></pre>
+<p>However, <code>uv lock</code> (or basically any <code>uv</code> command) fails this the following error message:</p>
+<pre><code>❯ uv lock
+error: Workspace member `/home/sbrochet/uv-test/workspace/projects/b` is missing a `pyproject.toml` (matches: `projects/*`)
+</code></pre>
+<p>even if <code>projects/b</code> is explicitly excluded.</p>
+<p>I've also tried to remove the members entry <code>projects/b/*</code>, but it fails with the same error message.</p>
+<p>Thanks a lot again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 13:17</div>
+            <div class="timeline-body"><p>Thanks, this looks like a bug. I'll take a look today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-05 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-05 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 13:20</div>
+            <div class="timeline-body"><p>To clarify, do you want <code>projects/a/ba</code> to be included? Or everything under <code>projects/b</code> should be excluded?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blinkseb">@blinkseb</a> on 2024-09-05 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks, this looks like a bug. I'll take a look today.</p>
+</blockquote>
+<p>Awesome thanks a lot!</p>
+<blockquote>
+<p>To clarify, do you want <code>projects/a/ba</code> to be included? Or everything under <code>projects/b</code> should be excluded?</p>
+</blockquote>
+<p>Ideally I'd like to have <code>projects/b/ba</code> included in the workspace since only <code>projects/b</code> is excluded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 14:42</div>
+            <div class="timeline-body"><p>No prob. Is <code>projects/b</code> a project? Like does <code>projects/b/pyproject.toml</code> exist? Or it's just a directory that contains other projects? (I assume you also want <code>projects/b/bb</code> to be included?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blinkseb">@blinkseb</a> on 2024-09-06 06:38</div>
+            <div class="timeline-body"><p>I'm sorry, I see how my example can be confusing. We have a monorepo where we have multiple projects stored in the <code>projects</code> folder. We then sub-categorize the projects per product, each into their own sub-folder. We also have cross-product project which sit at the root of the <code>projects</code> folder. So a more realistic layout would be the following</p>
+<pre><code>.
+├── projects
+│   ├── product-a
+│   │   └── project
+│   │       └── pyproject.toml
+│   ├── product-b
+│   │   └── project
+│   │       └── pyproject.toml
+│   └── project-a
+│       └── pyproject.toml
+├── pyproject.toml
+</code></pre>
+<p>Here <code>product-a</code> and <code>product-b</code> are only used to group projects together, they are not python project and do no have a <code>pyproject.toml</code> file. So I would except that the following <code>uv</code> <code>pyproject.toml</code> to work:</p>
+<pre><code>[tool.uv.workspace]
+members = [&quot;projects/*&quot;, &quot;projects/product-a/*&quot;, &quot;projects/product-b/*&quot;]
+exclude = [&quot;projects/product-a&quot;, &quot;projects/product-b&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 00:30</div>
+            <div class="timeline-body"><p>Ok thank you, I think I follow now. I just tested and it looks like Cargo (which we modeled our workspace discovery after) doesn't support this kind of interaction either. It makes sense that it doesn't work if you consider that excludes are applied after member discovery, and we discover by walking over directories. Though I'd argue that the error message is wrong:</p>
+<pre><code>error: Workspace member `/Users/crmarsh/workspace/uv/projects/projects/product-a` is missing a `pyproject.toml` (matches: `projects/*`)
+</code></pre>
+<p>It should instead say that we can't find a workspace member for <code>product-a</code> if it's referenced somewhere else, or similar. We shouldn't be trying to find a project in <code>projects/product-a</code>, since it's excluded.</p>
+<p>I think you'll need a slightly different structure to make this work...</p>
+<p>One option is to avoid including <code>&quot;projects/*&quot;</code>, like you could do:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [&quot;projects/project-a&quot;, &quot;projects/product-a/*&quot;, &quot;projects/product-b/*&quot;]
+</code></pre>
+<p>Or:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [&quot;projects/project-*&quot;, &quot;projects/product-a/*&quot;, &quot;projects/product-b/*&quot;]
+</code></pre>
+<p>(I assume they don't actually follow that pattern.)</p>
+<p>Or you could put all the projects in a subdirectory of their own, like <code>projects/projects/project-a</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-07 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7175.html">astral-sh/uv#7175</a> on 2024-09-07 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 18:33</div>
+            <div class="timeline-body"><p>Ok, this layout actually works after #7175:</p>
+<pre><code class="language-toml">[project]
+name = &quot;projects&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [&quot;projects/*&quot;, &quot;projects/product-a/*&quot;, &quot;projects/product-b/*&quot;]
+exclude = [&quot;projects/product-a&quot;, &quot;projects/product-b&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-09-07 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 16:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:41 UTC
+    </footer>
+</body>
+</html>

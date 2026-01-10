@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip compile` not searching across multiple `extra-index-urls` if version match is not found in initial `extra-index-url` - astral-sh/uv #6975</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip compile` not searching across multiple `extra-index-urls` if version match is not found in initial `extra-index-url`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6975">#6975</a>
+        opened by <a href="https://github.com/masonkirchner">@masonkirchner</a>
+        on 2024-09-03 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/masonkirchner">@masonkirchner</a> on 2024-09-03 18:43</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hey team,</p>
+<p>I have noticed that <code>uv pip compile requirements.in -o requirements.txt</code> does not search for the same library across multiple <code>extra-index-urls</code> if the library is discovered in one <code>extra-index-url</code> and does not find a matching version in that initial <code>extra-index-url</code>.</p>
+<p>Noticed this issue while using <code>uv==0.2.28</code>, and also recreated it using the latest <code>uv==0.4.3</code>.</p>
+<h3>More Context</h3>
+<p>My team has a number of private libraries that are stored in a production Artifactory PyPi. Our dev workflow on these private libraries requires pushing dev versions to a development Artifactory PyPi, then a given project can import that dev version of the library for use in dev.</p>
+<p>For example, we might have a project with a <code>requirements.in</code> file that looks like this in production:</p>
+<pre><code>internal-library==0.0.1       # located in https://employer.jfrog.io/artifactory/api/pypi/prod/
+other-internal-library==0.0.1 # located in https://employer.jfrog.io/artifactory/api/pypi/prod/
+</code></pre>
+<p>But during development of new features in that internal library, the <code>requirements.in</code> might shift to look like this</p>
+<pre><code>internal-library==0.0.1.dev0+masonkirchner.1  # located in https://employer.jfrog.io/artifactory/api/pypi/dev/
+other-internal-library==0.0.1                 # located in https://employer.jfrog.io/artifactory/api/pypi/prod/
+</code></pre>
+<h3>Details</h3>
+<p>I have an environment variable set for <code>UV_EXTRA_INDEX_URL</code> as well as the <code>extra-index-url</code> set in <code>~/.config/uv/uv.toml</code>. What I've noticed in testing is that <code>UV_EXTRA_INDEX_URL</code> overwrites the value set in <code>~/.config/uv/uv.toml</code>, so I'll stick with sharing what I've tried with <code>UV_EXTRA_INDEX_URL</code>. These examples share what occurs when the <code>requirements.in</code> file looks like this:</p>
+<pre><code>internal-library==0.0.1.dev0+masonkirchner.1  # located in https://employer.jfrog.io/artifactory/api/pypi/dev/
+other-internal-library==0.0.1                 # located in https://employer.jfrog.io/artifactory/api/pypi/prod/
+</code></pre>
+<p>When I have the <code>UV_EXTRA_INDEX_URL</code> set to have the dev Artifactory PyPi listed first (<code>UV_EXTRA_INDEX_URL=&quot;https://employer.jfrog.io/artifactory/api/pypi/dev/simple https://employer.jfrog.io/artifactory/api/pypi/prod/simple&quot;</code>), and I run <code>uv pip compile --verbose requirements.in -o requirements.txt</code>, we see that it's able to find the dev <code>internal-library</code>, but is unable to find the prod <code>other-internal-library</code> because it found the dev <code>other-internal-library</code> in dev Artifactory, but didn't match on the version. Here's a censored gist of the output: https://gist.github.com/masonkirchner/9a1e4a7dd6f66ec97283193a7ca98c45</p>
+<p>However, when I have <code>UV_EXTRA_INDEX_URL</code> set to have the prod Artifactory PyPi listed first (<code>UV_EXTRA_INDEX_URL=&quot;https://employer.jfrog.io/artifactory/api/pypi/prod/simple https://employer.jfrog.io/artifactory/api/pypi/dev/simple&quot;</code>), and I run <code>uv pip compile --verbose requirements.in -o requirements.txt</code>, we see that it can resolve the prod <code>other-internal-library</code>, but unable to resolve the dev <code>internal-library</code> because it found <code>internal-library</code> in prod Artifactory but couldn't find the matching version there. Here's a censored gist of the output: https://gist.github.com/masonkirchner/69bd5bf6d10964094aea6c41423d33b5</p>
+<hr />
+<p>Not sure if this behavior is intentional, but it would be of great help to our team if this could be implemented. Let me know if you have any additional questions for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 18:45</div>
+            <div class="timeline-body"><p>You can pass <code>--index-strategy unsafe-best-match</code> or <code>--index-strategy unsafe-first-match</code> to get this behavior. It's described here in the docs: https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-03 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/masonkirchner">@masonkirchner</a> on 2024-09-03 19:11</div>
+            <div class="timeline-body"><p>@charliermarsh nice, thanks for sharing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @masonkirchner on 2024-09-03 19:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:38 UTC
+    </footer>
+</body>
+</html>

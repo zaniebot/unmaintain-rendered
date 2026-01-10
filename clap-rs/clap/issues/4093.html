@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change visibility of some structures and functions for config-rs integration - clap-rs/clap #4093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Change visibility of some structures and functions for config-rs integration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4093">#4093</a>
+        opened by <a href="https://github.com/jgerrish">@jgerrish</a>
+        on 2022-08-19 04:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jgerrish">@jgerrish</a> on 2022-08-19 04:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>I'm writing a source for the config-rs crate to integrate clap command line parsing options.</p>
+<p>The config crate provides a wrapper to manage configuration variables from TOML, environment variables and other sources.  I added clap as a source so that command line arguments can be retrieved like other configuration variables.</p>
+<p>To achieve this, I needed to make some crate visible structures and functions visible to the public.</p>
+<p>Thank you.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'd like to make some more structures and functions visible to the public, specifically MatchedArg, the type_id functions, and a new function to list all the command line arguments.</p>
+<p>Here's the code that shows the use case:
+https://github.com/jgerrish/config-rs/blob/clap-config-source/src/clap/source.rs</p>
+<p>Here is my branch of clap with the proposed changes:
+https://github.com/clap-rs/clap/compare/master...jgerrish:clap:public-get-keys</p>
+<h3>Alternatives, if applicable</h3>
+<p>Instead of making those structures visible, you could provide additional public functions to access the functionality.  I'm open to an alternative solution if you think the visibility change is too lenient.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @jgerrish on 2022-08-19 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-19 13:25</div>
+            <div class="timeline-body"><p>In general, see also https://github.com/clap-rs/clap/discussions/2763</p>
+<blockquote>
+<p>MatchedArg</p>
+</blockquote>
+<p>Can you say what making this public would offer over what the current API provides?</p>
+<blockquote>
+<p>type_id</p>
+</blockquote>
+<p>Again, what is it that this helps with?</p>
+<blockquote>
+<p>new function to list all the command line arguments</p>
+</blockquote>
+<p>This was tracked in https://github.com/clap-rs/clap/issues/1206.  It was blocked on a clap v4 change but now is resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgerrish">@jgerrish</a> on 2022-08-20 04:24</div>
+            <div class="timeline-body"><p>@epage</p>
+<blockquote>
+<p>type_id</p>
+</blockquote>
+<blockquote>
+<p>Again, what is it that this helps with?</p>
+</blockquote>
+<p>Thank you for asking, I'll give the high-level reason and the tech reason here:</p>
+<p>clap is a great library for command line parsing, and the config crate let's developers integrate environment and config data into their application.  To support both config files and command line argument overrides (or vice versa), I'm integrating them both into a common pipeline that can offer flexible rules for priorities, defaults, etc.  For example, I want configuration settings to normally come from config files, but if I run a service manually with command line parameters, I want it overridden with worrying about that program logic in every app I write.</p>
+<p>config-rs, like clap, has type information for configuration settings.  For example, debug may be a boolean variable and asset path or some thing might be a string.</p>
+<p>To use clap as a source, we need to map clap's types to config-rs types, with some optional custom mangling if needed.</p>
+<p>For example, if I have a --tag command line parameter that is ArgAction::Append, I may need to call get_many on it.  But for something like --verbose, get_one is appropriate.  I also need to include the type parameter when I make those calls.</p>
+<p>This information isn't known to the config-rs application without a type_id or exposing some other API.  I may be missing some API features, if so please let me know and I can use them.</p>
+<p>Thank you again for your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-20 16:13</div>
+            <div class="timeline-body"><p>@jgerrish is accessing <code>AnyValueId</code> sufficient or does it have to be <code>TypeId</code>?  If so, why?</p>
+<p>While not the cleanest, would getting it via a <code>MatchesError::Downcast</code> be sufficient?  For example, you could just do a <code>get_many::&lt;()&gt;</code>, get the error, and then do the <code>get_many</code> with the right type.</p>
+<p>I don't say this as an ideal API but</p>
+<ul>
+<li>This allows access immediately, not being blocked on any API discussions</li>
+<li>We tend to focus cleaner APIs for parts commonly used by end users and everyone else gets primitives to build the solution they need</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgerrish">@jgerrish</a> on 2022-08-21 01:25</div>
+            <div class="timeline-body"><p>@epage</p>
+<blockquote>
+<p>@jgerrish is accessing AnyValueId sufficient or does it have to be TypeId ? If so, why?</p>
+</blockquote>
+<p>AnyValueId has private structure members, and I just need the type info.  I was following what I thought were practices in your code base of providing a getter there, but down below I see you mention different approaches for users and developers.</p>
+<blockquote>
+<p>While not the cleanest, would getting it via a MatchesError::Downcast be sufficient? For example, you could just do a get_many::&lt;()&gt; , get the error, and then do the get_many with the right type.</p>
+</blockquote>
+<p>I don't say this as an ideal API but</p>
+<p>• This allows access immediately, not being blocked on any API discussions</p>
+<p>You're right, it's not clean.  But thank you for the pointer to Error::Downcast.  Errors are one of those Rust features that I should get more comfortable with.  The ? and matches operator and all it entails make development wonderful.</p>
+<p>It sounds like you need to go through more API discussions.  I'll keep my code pointed to a fork and check back periodically.  That shouldn't change any cost benefit analysis anywhere, since I'm the only current user.</p>
+<p>Feel free to close this issue, and thank you for taking the time for feedback.  It's appreciated and have a good weekend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-21 01:42</div>
+            <div class="timeline-body"><blockquote>
+<p>AnyValueId has private structure members, and I just need the type info.</p>
+</blockquote>
+<p><code>AnyValueId</code> is a form of type info.  What I'm trying to understand is why it won't work for within your design.</p>
+<p>Oh, <code>of</code> isn't public.  Would that being public be enough?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgerrish">@jgerrish</a> on 2022-08-24 21:12</div>
+            <div class="timeline-body"><p>Not enough, but thank you.  I assume if there is need others will ask.  If not, your closed practices are best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jgerrish on 2022-08-24 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgerrish">@jgerrish</a> on 2022-08-24 21:13</div>
+            <div class="timeline-body"><p>Thank you for the review and time.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:07 UTC
+    </footer>
+</body>
+</html>

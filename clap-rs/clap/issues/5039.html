@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `last` take precedence over `allow_hyphen_values` - clap-rs/clap #5039</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make `last` take precedence over `allow_hyphen_values`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5039">#5039</a>
+        opened by <a href="https://github.com/mamekoro">@mamekoro</a>
+        on 2023-07-22 15:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mamekoro">@mamekoro</a> on 2023-07-22 15:06</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.3.19</p>
+<h3>Describe your use case</h3>
+<p>former discussion: https://github.com/clap-rs/clap/discussions/4960</p>
+<p>My program needs 2 kinds of command line arguments.
+One is the options for the program itself (called <code>opts</code>), and the other is the command and its arguments passed to an external program (called <code>cmdline</code>).</p>
+<p>I'd like to distinguish between <code>opts</code> and <code>cmdline</code> by separating them with a double hyphen <code>--</code>. However, it does not work because <code>allow_hyphen_values</code> has higher precedence than <code>last</code>.</p>
+<p>Here is an example:</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Clone, Debug, Parser)]
+pub struct Args {
+    #[arg(allow_hyphen_values = true)]
+    pub opts: Vec&lt;String&gt;,
+
+    #[arg(allow_hyphen_values = true, last = true)]
+    pub cmdline: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+}
+</code></pre>
+<p>Run it in Bash.</p>
+<pre><code class="language-bash">alias run='cargo run --quiet --'
+
+# The following two are bugged.
+
+run --name xyz -- ls -l
+# Expected: opts = [&quot;--name&quot;, &quot;xyz&quot;],                   cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+#   Actual: opts = [&quot;--name&quot;, &quot;xyz&quot;, &quot;--&quot;, &quot;ls&quot;, &quot;-l&quot;], cmdline = []
+
+run --name xyz --
+# Expected: opts = [&quot;--name&quot;, &quot;xyz&quot;],       cmdline = []
+#   Actual: opts = [&quot;--name&quot;, &quot;xyz&quot;, &quot;--&quot;], cmdline = []
+
+# The following work correctly.
+
+run --name xyz
+# Expected: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = []
+#   Actual: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = []
+
+run -- ls -l
+# Expected: opts = [], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+#   Actual: opts = [], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+
+run --
+# Expected: opts = [], cmdline = []
+#   Actual: opts = [], cmdline = []
+
+run
+# Expected: opts = [], cmdline = []
+#   Actual: opts = [], cmdline = []
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p><code>last</code> should take precedence over <code>allow_hyphen_values</code>.</p>
+<h3>Alternatives, if applicable</h3>
+<p><code>value_terminator = &quot;--&quot;</code> would be an alternative, but it is ambiguous when the arguments does not contain the terminator <code>--</code>. (see comparison below)</p>
+<p>On the other hand, <code>last</code> <strong>requires</strong> the terminator in the arguments.
+This is why I prefer <code>last = true</code> to <code>value_terminator = &quot;--&quot;</code>; <code>last</code> is less confusing.</p>
+<details>
+<summary>comparison of <code>value_terminator = "--"</code> and <code>last = true</code></summary>
+
+<pre><code class="language-rust">use clap::Parser;
+
+// This uses `value_terminator = &quot;--&quot;`.
+#[derive(Clone, Debug, Parser)]
+pub struct ValueTerminator {
+    #[arg(allow_hyphen_values = true, value_terminator = &quot;--&quot;)]
+    pub opts: Vec&lt;String&gt;,
+
+    #[arg(allow_hyphen_values = true)]
+    pub cmdline: Vec&lt;String&gt;,
+}
+
+// This uses `last = true`.
+#[derive(Clone, Debug, Parser)]
+pub struct Last {
+    #[arg(allow_hyphen_values = true)]
+    pub opts: Vec&lt;String&gt;,
+
+    #[arg(allow_hyphen_values = true, last = true)]
+    pub cmdline: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = ValueTerminator::parse_from([&quot;program&quot;, &quot;--name&quot;, &quot;xyz&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = []
+    //   Actual: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = []
+
+    let args = ValueTerminator::parse_from([&quot;program&quot;, &quot;--&quot;, &quot;ls&quot;, &quot;-l&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+    //   Actual: opts = [&quot;ls&quot;, &quot;-l&quot;], cmdline = []
+    //
+    // This is a bug of `value_terminator` and is outside the scope of this issue.
+    // See #5040 (value_terminator has no effect when it is the first argument).
+
+    let args = ValueTerminator::parse_from([&quot;program&quot;, &quot;ls&quot;, &quot;-l&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: ?
+    //   I don't know what to expect.
+    //   The terminator &quot;--&quot; is not passed to the arguments,
+    //   so it is ambiguous whether [&quot;ls&quot;, &quot;-l&quot;] is opt or cmdline.
+    //   This is why I prefer `last = true` to `value_terminator = &quot;--&quot;`.
+    //   `value_terminator = &quot;--&quot;` is ambiguous when no terminator is passed.
+    // Actual: opts = [&quot;ls&quot;, &quot;-l&quot;], cmdline = []
+
+    let args = ValueTerminator::parse_from([&quot;program&quot;, &quot;--name&quot;, &quot;xyz&quot;, &quot;--&quot;, &quot;ls&quot;, &quot;-l&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [&quot;--name&quot;, &quot;-xyz&quot;], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+    //   Actual: opts = [&quot;--name&quot;, &quot;-xyz&quot;], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+
+
+    let args = Last::parse_from([&quot;program&quot;, &quot;--name&quot;, &quot;xyz&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = []
+    //   Actual: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = []
+
+    let args = Last::parse_from([&quot;program&quot;, &quot;--&quot;, &quot;ls&quot;, &quot;-l&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+    //   Actual: opts = [], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+
+    let args = Last::parse_from([&quot;program&quot;, &quot;ls&quot;, &quot;-l&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [&quot;ls&quot;, &quot;-l&quot;], cmdline = []
+    //   Actual: opts = [&quot;ls&quot;, &quot;-l&quot;], cmdline = []
+    //
+    // `[&quot;ls&quot;, &quot;-l&quot;]` is parsed as `opts` in this case,
+    // but this is correct because the terminator `--` is not passed.
+
+    let args = Last::parse_from([&quot;program&quot;, &quot;--name&quot;, &quot;xyz&quot;, &quot;--&quot;, &quot;ls&quot;, &quot;-l&quot;]);
+    println!(&quot;opts = {:?}, cmdline = {:?}&quot;, args.opts, args.cmdline);
+    // Expected: opts = [&quot;--name&quot;, &quot;xyz&quot;], cmdline = [&quot;ls&quot;, &quot;-l&quot;]
+    //   Actual: opts = [&quot;--name&quot;, &quot;xyz&quot;, &quot;--&quot;, &quot;ls&quot;, &quot;-l&quot;], cmdline = []
+    // This is the bug that this issue points to.
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @mamekoro on 2023-07-22 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-07-24 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2023-07-24 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:27 UTC
+    </footer>
+</body>
+</html>

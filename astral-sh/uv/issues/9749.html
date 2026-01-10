@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_CACHE_DIR not used for Python installation - astral-sh/uv #9749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_CACHE_DIR not used for Python installation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9749">#9749</a>
+        opened by <a href="https://github.com/jheiselman">@jheiselman</a>
+        on 2024-12-09 20:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jheiselman">@jheiselman</a> on 2024-12-09 20:50</div>
+            <div class="timeline-body"><p>On Windows, when running a <code>uv python install</code> while having UV_CACHE_DIR set, does not result in uv using that cache location. It instead uses the default location %APPDATA%\uv\python.cache.</p>
+<p><code>uv python install</code> should respect UV_CACHE_DIR. This is especially useful when using a DevDrive and have security tools set to either ignore or be more lenient with DevDrives.</p>
+<p>Platform: Windows 10
+uv version: 0.5.7</p>
+<p>Debug log attached. It doesn't show it, but my UV_CACHE_DIR is set to E:\Cache\uv</p>
+<p><a href="https://github.com/user-attachments/files/18067883/uv-debug.log">uv-debug.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 22:20</div>
+            <div class="timeline-body"><p>@zanieb -- Should I change this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-12-09 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-09 23:06</div>
+            <div class="timeline-body"><p>We changed this in https://github.com/astral-sh/uv/pull/6043 because of #6036</p>
+<p>We don't really cache installs right now, this is just the location we download to to ensure the install is idempotent. Can you explain a bit more why this matters to you?</p>
+<p>I would like to cache downloads anyway (per https://github.com/astral-sh/uv/issues/8025) in which we'd use the <code>UV_CACHE_DIR</code> but then we'd also presumably need to switch to hardlinking and a copy fallback rather than renaming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 23:46</div>
+            <div class="timeline-body"><p>Totally forgot about that change, whoops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jheiselman">@jheiselman</a> on 2024-12-09 23:56</div>
+            <div class="timeline-body"><p>It matters for two reasons.</p>
+<ol>
+<li>As already stated, with DevDrives being a thing, cache location is becoming important for security tool configuration.</li>
+<li>As a matter of the tool acting in an intuitive manner, I assumed, and figure others might as well, that if I set the cache directory it is used for any and all caching. It is counterintuitive, to me at least, that should not be respected and caused me some troubleshooting time tracking down what I may have done wrong.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 00:07</div>
+            <div class="timeline-body"><p>It's not a cache though, we are just downloading the file there and moving it into the install location. There is no persistence or caching. It's a misnomer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 00:08</div>
+            <div class="timeline-body"><p>Yeah it's more like a scratch directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9756.html">astral-sh/uv#9756</a> on 2024-12-10 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 00:17</div>
+            <div class="timeline-body"><p>Regardless, can you expand on</p>
+<blockquote>
+<p>cache location is becoming important for security tool configuration</p>
+</blockquote>
+<p>I still don't follow what precise issue you're talking about here. Why is it important? What happens?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jheiselman">@jheiselman</a> on 2024-12-10 01:18</div>
+            <div class="timeline-body"><p>I’m not sure how familiar you are with the concept of DevDrives has Microsoft had defined them, but they are mountable volume within Windows where you would keep code caches, git repo clones, and other things that may trigger a lot of churn with enterprise security tools (AV, heuristic scanners, IDS, etc…). They are then pitching to desktop security teams to have all developers keep things isolated to these DevDrives so that they can simplify exceptions and whatnot to these locations.</p>
+<p>Since uv downloads a copy of python, it may be a good fit to have it also use the DevDrives system. Maybe not. In either case, the confusion of having it named cache is what threw me off. If it’s not really a cache, then perhaps this issue should become about changing the name of the directory to avoid confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 02:57</div>
+            <div class="timeline-body"><p>Yep we're familiar with DevDrives (we use them in CI to improve the GitHub Actions perf!)</p>
+<blockquote>
+<p>Since uv downloads a copy of python, it may be a good fit to have it also use the DevDrives system.</p>
+</blockquote>
+<p>Makes sense, I think you want to change <a href="https://docs.astral.sh/uv/configuration/environment/#uv_python_install_dir"><code>UV_PYTHON_INSTALL_DIR</code></a> instead.</p>
+<p>I've changed the name of the directory in #9756</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jheiselman">@jheiselman</a> on 2024-12-10 03:23</div>
+            <div class="timeline-body"><p>Excellent! Thank you. I’ll give it a try tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jheiselman">@jheiselman</a> on 2024-12-10 19:19</div>
+            <div class="timeline-body"><p>This works for me. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-10 19:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:47 UTC
+    </footer>
+</body>
+</html>

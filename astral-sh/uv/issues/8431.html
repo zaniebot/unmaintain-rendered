@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended way to install tool for all users on system - astral-sh/uv #8431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recommended way to install tool for all users on system</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8431">#8431</a>
+        opened by <a href="https://github.com/lambda674">@lambda674</a>
+        on 2024-10-21 22:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lambda674">@lambda674</a> on 2024-10-21 22:41</div>
+            <div class="timeline-body"><p>I have CLI package <code>foo</code> that is published to PyPi. At work, we have a few servers that many users use for one off tasks. I want to distribute <code>foo</code> on these servers.</p>
+<p>The <a href="https://docs.astral.sh/uv/guides/tools/">tools section of the docs</a> seems to be uv's answer for this, but I'm not sure how to install a tool system wide. For my use case, all it would take is allowing <code>uv tool install</code> to install to <code>/usr/local/bin</code>.</p>
+<p>A workaround for now is to manually manage a script in <code>/usr/local/bin</code> called <code>foo</code>:</p>
+<pre><code>#!/usr/bin/env bash
+
+uv pipx foo &quot;$@&quot;
+</code></pre>
+<p>However, the CLI will be run many times and upgraded only once a day. The docs indicate that <code>uv pipx</code> isn't good for a tool run many times.</p>
+<p>Any suggestions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 22:49</div>
+            <div class="timeline-body"><p>So you can do this with</p>
+<pre><code>UV_TOOL_BIN_DIR=/usr/local/bin uv tool install foo
+</code></pre>
+<p>For most purposes <code>uvx foo</code> is probably fine too. The overhead is maybe 10ms</p>
+<pre><code>❯ time black -q
+...
+black -q  0.09s user 0.02s system 91% cpu 0.119 total
+❯ time uvx black -q
+...
+uvx black -q  0.09s user 0.03s system 92% cpu 0.127 total
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-21 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8435.html">astral-sh/uv#8435</a> on 2024-10-22 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda674">@lambda674</a> on 2024-10-22 14:21</div>
+            <div class="timeline-body"><p><code>UV_TOOL_BIN_DIR=/usr/local/bin uv tool install foo</code> didn't quite work because the executable added to <code>/usr/local/bin</code> is a symlink to <code>$ROOT_HOME/.local/share/uv/tools/&lt;package&gt;</code>, but <code>$ROOT_HOME</code> isn't accessible to non-root users.</p>
+<p>Seems like <code>uvx</code> is the best option here, this seems to work for my purpose. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 14:39</div>
+            <div class="timeline-body"><p>You can set <code>UV_TOOL_DIR</code> to change the storage directory too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-10-23 12:08</div>
+            <div class="timeline-body"><p>@lambda674 Look at my comment here https://github.com/astral-sh/uv/issues/8435#issuecomment-2428240406 using those 2 variables seems to work. I was able to test this in a python container.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-26 16:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:14 UTC
+    </footer>
+</body>
+</html>

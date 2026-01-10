@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install regex` reports installation success but library cannot be imported (pip works) - astral-sh/uv #8865</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install regex` reports installation success but library cannot be imported (pip works)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8865">#8865</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2024-11-06 16:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-11-06 16:08</div>
+            <div class="timeline-body"><p>Apparently MacOS specific issues:</p>
+<pre><code>uv --version
+uv 0.4.30
+
+&gt; python3.12 -m uv pip install --force-reinstall regex
+...
+&gt; python3.12 -c &quot;import regex&quot;
+ModuleNotFoundError: No module named 'regex._regex'
+</code></pre>
+<ul>
+<li>[ ] python3.13t broken, fail to import</li>
+<li>[ ] python3.13 broken, fail to import</li>
+<li>[ ] python3.12 broken, fail to import</li>
+<li>[ ] python3.11 broken, fail to import</li>
+<li>[ ] python3.10 works!</li>
+</ul>
+<p>If the package is reinstalled using pip itself, it will work.</p>
+<p>References: https://github.com/mrabarnett/mrab-regex/issues/547</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 16:21</div>
+            <div class="timeline-body"><p>I cannot reproduce this</p>
+<pre><code>❯ uv run --python 3.12 --with regex==2024.9.11 python -c &quot;import regex; print(regex)&quot;
+&lt;module 'regex' from '/Users/zb/Library/Caches/uv/archive-v0/7fA06VFYeGmOUsVkY2G6i/lib/python3.12/site-packages/regex/__init__.py'&gt;
+❯ uv venv
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install regex==2024.9.11
+Resolved 1 package in 3ms
+Installed 1 package in 0.89ms
+ + regex==2024.9.11
+❯ .venv/bin/python -c &quot;import regex&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-11-06 16:28</div>
+            <div class="timeline-body"><p>Update: while I initially suspected this to be specific to macos-arm64, it seems to no to be true as I seen the exact same error on linux with intel architectures at https://github.com/ansible/tox-ansible/actions/runs/11705926832/job/32601848111?pr=389#step:9:91</p>
+<p>So, it can happen on both arm64 and amd64, linux and macos and multiple versions of python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "macos: `uv pip install regex` reports installation success but library cannot be imported (pip works)" to "`uv pip install regex` reports installation success but library cannot be imported (pip works)" by @ssbarnea on 2024-11-06 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-11-06 16:37</div>
+            <div class="timeline-body"><p>@zanieb Thanks for the very fast reply. Apparently that failure is caused by something else. For sure is not a specific local setup issue because I was able to reproduce it on my macos and but also on the github runners.</p>
+<p>I suspect it might be related to how python was compiled?</p>
+<p>Using uv provided pythons seems to be working, by I am currently using asdf ones on mac and on github runners, I am not sure where github is taking the pythons from.</p>
+<p>Any ideas about what else to invetigate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-11-07 11:58</div>
+            <div class="timeline-body"><p>I was able to find that uv installs wrong binary for regex. While using py312, I found that the installed package had <code>_regex.cpython-310-darwin.so</code>... so that is why python failed to import it... and found it:</p>
+<pre><code class="language-toml">[tool.uv.pip]
+annotation-style = &quot;line&quot;
+custom-compile-command = &quot;tox run deps&quot;
+python-version = &quot;3.10&quot;
+</code></pre>
+<p>The last line makes uv install the wrong wheel, even if documentation states that it should do something different:</p>
+<pre><code> --python-version &lt;PYTHON_VERSION&gt;      The minimum Python version that should be supported by the requirements (e.g., `3.7` or `3.7.9`)
+</code></pre>
+<p>I tried to use this config option in order to produce predictable lock file using <code>uv pip compile</code> but the side effect is that once you configure it, uv will start installing wrong binary wheel all the time.</p>
+<p>This makes be believe that this is related to https://github.com/astral-sh/uv/issues/3883</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-11-07 12:45</div>
+            <div class="timeline-body"><p>Closing is as it seems to caused by #3883</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ssbarnea on 2024-11-07 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 20:23</div>
+            <div class="timeline-body"><p>Thank you for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../squidfunk/mkdocs-material/issues/7676.html">squidfunk/mkdocs-material#7676</a> on 2024-11-08 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3883.html">astral-sh/uv#3883</a> on 2025-01-29 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:24 UTC
+    </footer>
+</body>
+</html>

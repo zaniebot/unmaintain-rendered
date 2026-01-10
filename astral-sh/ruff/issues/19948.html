@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP045 fixes `typing.Optional[collections.namedtuple]` to `collections.namedtuple | None` - astral-sh/ruff #19948</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP045 fixes `typing.Optional[collections.namedtuple]` to `collections.namedtuple | None`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19948">#19948</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-08-17 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-17 14:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ruff.rs/9b94e50a-11d8-4c21-b3d5-7a5312e242d5">Playground*</a></p>
+<pre><code class="language-python">import collections
+import typing
+
+
+def x(_: typing.Optional[collections.namedtuple]): # =&gt; def x(_: collections.namedtuple | None):
+    ...
+</code></pre>
+<pre><code>Traceback (most recent call last):
+  File &quot;...&quot;, line 5, in &lt;module&gt;
+    def x(_: collections.namedtuple | None):
+             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+TypeError: unsupported operand type(s) for |: 'function' and 'NoneType'
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.9 (ef422460d 2025-08-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2025-08-17 14:33</div>
+            <div class="timeline-body"><p>Works as intended.
+Use <code>from __future__ import annotations</code> on top or set Ruff's target version to less than <code>py310</code> to avoid the runtime error. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-17 15:02</div>
+            <div class="timeline-body"><p>Yes -- thanks for the report, but I don't think we need to make any changes here. Mypy, pyright, pyrefly and ty all reject <code>Optional[collections.namedtuple]</code> as a type annotation, so this is just a case of &quot;garbage in, garbage out&quot;. There's an unlimited number of invalid type annotations that might work by accident with <code>typing.Optional</code> but fail if you use PEP-604 syntax; it would be infeasible for this lint to attempt to account for all of them.</p>
+<p>If there was a type checker that accepted this as a valid type annotation, then that would be a different question -- but there isn't, so I can't see any practical use case for writing this code to begin with, and it seems very unlikely that it would come up in handwritten or generated code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-08-17 15:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>If default_value is specified then zero values are treated as one value - clap-rs/clap #2757</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>If default_value is specified then zero values are treated as one value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2757">#2757</a>
+        opened by <a href="https://github.com/egrimley-arm">@egrimley-arm</a>
+        on 2021-09-07 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/egrimley-arm">@egrimley-arm</a> on 2021-09-07 12:50</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0 (a178d0322 2021-07-26)</p>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::with_name(&quot;a&quot;)
+                .short(&quot;a&quot;)
+                .default_value(&quot;a_default&quot;),
+        )
+        .arg(
+            Arg::with_name(&quot;b&quot;)
+                .short(&quot;b&quot;)
+                .number_of_values(2)
+                .default_value(&quot;b_default&quot;),
+        )
+        .get_matches();
+    println!(&quot;a: {:?}&quot;, matches.value_of(&quot;a&quot;).unwrap());
+    println!(&quot;b: {:?}&quot;, matches.value_of(&quot;b&quot;).unwrap());
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- -a -b 1 2
+cargo run -- -a 1 -b
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>$ cargo run -- -a -b 1 2
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/prog -a -b 1 2`
+a: &quot;a_default&quot;
+b: &quot;1&quot;
+$ cargo run -- -a 1 -b
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/prog -a 1 -b`
+error: The argument '-b &lt;b&gt; &lt;b&gt;' requires 2 values, but 1 was provided
+
+USAGE:
+    prog -a &lt;a&gt; -b &lt;b&gt; &lt;b&gt;
+
+For more information try --help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>In the first case it should be an error that no value was provided for <code>-a</code>.</p>
+<p>In the second case the error message should not claim that 1 value was provided for <code>-b</code> when no values were provided.</p>
+<h3>Additional Context</h3>
+<p>The work-around is not to use <code>default_value</code>: use <code>unwrap_or</code> instead.</p>
+<p>A minimal fix would be to modify the documentation for <code>default_value</code> to say: don't use this because it's broken.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @egrimley-arm on 2021-09-07 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ldm0 by @ldm0 on 2021-09-07 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-09-08 09:20</div>
+            <div class="timeline-body"><p>@ldm0 If you are looking at this, can you paste what's happening with current master?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-09-08 12:55</div>
+            <div class="timeline-body"><p>Current master:</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let matches = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::new(&quot;a&quot;)
+                .short('a')
+                .default_value(&quot;a_default&quot;),
+        )
+        .arg(
+            Arg::new(&quot;b&quot;)
+                .short('b')
+                .number_of_values(2)
+                .default_value(&quot;b_default&quot;),
+        )
+        .get_matches();
+    println!(&quot;a: {:?}&quot;, matches.value_of(&quot;a&quot;).unwrap());
+    println!(&quot;b: {:?}&quot;, matches.value_of(&quot;b&quot;).unwrap());
+}
+</code></pre>
+<pre><code class="language-bash">% cargo run -- -a -b 1 2
+   Compiling rust_test2 v0.1.0 (/Users/bytedance/code/rust_test2)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.76s
+     Running `target/debug/rust_test2 -a -b 1 2`
+error: The argument '-a &lt;a&gt;' requires a value but none was supplied
+
+USAGE:
+    rust_test2 [OPTIONS]
+
+For more information try --help
+% cargo run -- -a 1 -b
+
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/rust_test2 -a 1 -b`
+error: The argument '-b &lt;b&gt; &lt;b&gt;' requires a value but none was supplied
+
+USAGE:
+    rust_test2 [OPTIONS]
+
+For more information try --help
+</code></pre>
+<p>This has already been fixed on current master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ldm0 on 2021-09-08 12:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:36 UTC
+    </footer>
+</body>
+</html>

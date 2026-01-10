@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent terminal width expectations between `built_by_uv_editable-2` and help tests - astral-sh/uv #9336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent terminal width expectations between `built_by_uv_editable-2` and help tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9336">#9336</a>
+        opened by <a href="https://github.com/mgorny">@mgorny</a>
+        on 2024-11-21 20:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgorny">@mgorny</a> on 2024-11-21 20:34</div>
+            <div class="timeline-body"><p>Hit it with 0.5.4 and a513301b7a0a5d1dd840868ccfb82f49cbdbcd48.</p>
+<p>There's a bunch of help tests in uv that assume a 100 character wide terminal. To make them pass in the past, I've started using <code>COLUMNS=100</code> to run the test suite. However, the most recent release introduced <code>built_by_uv_editable-2</code> that actually assumes a 80-character wide terminal. Hence, whichever <code>COLUMNS</code> value I use, some tests fail.</p>
+<pre><code class="language-console">$ COLUMNS=80 cargo test --test it --no-default-features
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.23s
+     Running tests/it/main.rs (target/debug/deps/it-a93b0d5fb81fa362)
+
+running 108 tests
+[…]
+   53    61 │           Allow insecure connections to a host [env: UV_INSECURE_HOST=]
+┈┈┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+   57    65 │           Change to the given directory prior to running the command
+   58    66 │       --project &lt;PROJECT&gt;
+   59    67 │           Run the command within the given project directory
+   60    68 │       --config-file &lt;CONFIG_FILE&gt;
+   61       │-          The path to a `uv.toml` file to use for configuration [env: UV_CONFIG_FILE=]
+         69 │+          The path to a `uv.toml` file to use for configuration [env:
+         70 │+          UV_CONFIG_FILE=]
+   62    71 │       --no-config
+   63       │-          Avoid discovering configuration files (`pyproject.toml`, `uv.toml`) [env: UV_NO_CONFIG=]
+         72 │+          Avoid discovering configuration files (`pyproject.toml`, `uv.toml`)
+         73 │+          [env: UV_NO_CONFIG=]
+   64    74 │   -h, --help
+   65    75 │           Display the concise help for this command
+   66    76 │   -V, --version
+   67    77 │           Display the uv version
+────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+thread 'help::help_with_no_pager' panicked at /home/mgorny/.cargo/registry/src/index.crates.io-6f17d22bba15001f/insta-1.41.1/src/runtime.rs:680:13:
+snapshot assertion for 'help_with_no_pager' failed in line 999
+
+
+failures:
+    help::help
+    help::help_flag
+    help::help_flag_subcommand
+    help::help_flag_subsubcommand
+    help::help_short_flag
+    help::help_subcommand
+    help::help_subsubcommand
+    help::help_with_global_option
+    help::help_with_no_pager
+
+test result: FAILED. 99 passed; 9 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.53s
+
+error: test failed, to rerun pass `-p uv --test it`
+$ COLUMNS=100 cargo test --test it --no-default-features -F python
+   Compiling uv v0.5.4 (/home/mgorny/git/uv/crates/uv)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 42.46s
+     Running tests/it/main.rs (target/debug/deps/it-bed166d36b75cf3e)
+
+running 147 tests
+[…]
+failures:
+
+---- build_backend::built_by_uv_editable stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+built_by_uv-0.1.0-py3-none-any.whl
+
+----- stderr -----
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+..                                                                                           [100%]
+2 passed in 0.01s
+
+----- stderr -----
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: built_by_uv_editable-2
+Source: crates/uv/tests/it/build_backend.rs:189
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    0     0 │ success: true
+    1     1 │ exit_code: 0
+    2     2 │ ----- stdout -----
+    3       │-..                                                                       [100%]
+          3 │+..                                                                                           [100%]
+    4     4 │ 2 passed in [TIME]
+    5     5 │ 
+    6     6 │ ----- stderr -----
+────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+thread 'build_backend::built_by_uv_editable' panicked at /home/mgorny/.cargo/registry/src/index.crates.io-6f17d22bba15001f/insta-1.41.1/src/runtime.rs:680:13:
+snapshot assertion for 'built_by_uv_editable-2' failed in line 189
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    build_backend::built_by_uv_editable
+
+test result: FAILED. 146 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 32.34s
+
+error: test failed, to rerun pass `-p uv --test it`
+</code></pre>
+<p>My guess would be that uv uses terminal width since it's &quot;outer&quot;, while pytest defaults to 80 since it's run with piped stdout. The former implies we need to use <code>COLUMNS</code> if we don't have exactly the same terminal width as CI, but <code>COLUMNS</code> leaks into pytest and modifies its output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-21 22:34</div>
+            <div class="timeline-body"><p>Sorry about that. We'll figure out something else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @charliermarsh on 2024-11-21 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-21 22:35</div>
+            <div class="timeline-body"><p>\cc @konstin in case you have ideas</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-21 22:51</div>
+            <div class="timeline-body"><p>We're capturing pytest's behavior here, not uv's. We can set <code>COLUMNS</code> for the pytest invocations, but it's probably better to filter out that line entirely and only keep the <code>2 passed in</code> line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9436.html">astral-sh/uv#9436</a> on 2024-11-26 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-26 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2024-11-26 10:07</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11588.html">astral-sh/uv#11588</a> on 2025-02-18 07:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:36 UTC
+    </footer>
+</body>
+</html>

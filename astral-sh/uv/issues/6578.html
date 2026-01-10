@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--no-install-*` to `add`/`remove`/`run` and add env vars - astral-sh/uv #6578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `--no-install-*` to `add`/`remove`/`run` and add env vars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6578">#6578</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2024-08-24 11:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-08-24 11:59</div>
+            <div class="timeline-body"><p>Some options were added in https://github.com/astral-sh/uv/issues/4028 to avoid the installation of some packages, including the project itself. Taking <code>--no-install-project</code> as an example, it works great when running <code>uv sync --no-install-project</code>, but as soon as we want to run a script/entrypoint through <code>uv run</code> later on, we'll still end up installing the project at some point.</p>
+<p>For instance, if we want to build documentation for a project, running <code>uv run mkdocs build</code> will install the project itself, which could take some time if the project is using Rust.</p>
+<p>Current workaround I found is to use <code>uv run --no-project mkdocs build</code> to avoid project discovery (assuming that <code>uv sync --no-install-project</code> was run beforehand), but I wonder if the 3 options added to <code>uv sync</code> should not also:</p>
+<ul>
+<li>be added to other commands that call <code>do_sync</code> (<code>add</code>, <code>remove</code>, <code>run</code>)</li>
+<li>be configurable via environment variables (this could be really useful on CI workflows)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-08-24 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 13:46</div>
+            <div class="timeline-body"><p>Can you share more about the use-case here? We added <code>--no-install</code> for Docker image building and layer caching. It's not intended for you to maintain a partial environment long-term.</p>
+<p>I'm not necessarily opposed, but I think we should be careful here — we moved fast to deliver that feature because it's critical for Docker workflows but I'm not sure I understand this use-case as much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfgordon2">@jfgordon2</a> on 2024-08-26 15:36</div>
+            <div class="timeline-body"><p>I also need this feature.  Our use case is that we are frequently not creating python packages like this pattern assumes, but we are instead defining the dependencies using UV that are packaged alongside our source code which gets deployed into lambdas as part of serverless infrastructure.  The .egg-info file that gets created for the project is unnecessary, especially since the various lambdas that compose the service will each independently define their own entry points (a single &quot;handler&quot; function) within the same src folder.</p>
+<p>I'd also prefer to have the ability to set <code>no_install_project = true</code> in the <code>pyproject.toml</code> so that the project itself is never added regardless of uv command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 16:42</div>
+            <div class="timeline-body"><p>I don't think you're looking for <code>--no-install-project</code>. I mean, it might work for that use-case, but that isn't why it exists. You want something like #6585: the ability to mark projects as non-packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-26 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2024-08-26 17:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share more about the use-case here? We added <code>--no-install</code> for Docker image building and layer caching. It's not intended for you to maintain a partial environment long-term.</p>
+<p>I'm not necessarily opposed, but I think we should be careful here — we moved fast to deliver that feature because it's critical for Docker workflows but I'm not sure I understand this use-case as much.</p>
+</blockquote>
+<p>Yep agree with not providing too many options unless they really make sense.</p>
+<p>My use case is for https://github.com/fpgmaas/deptry, where we use <code>maturin</code> to build a project with a mix of Python and Rust. Building <code>deptry</code> itself takes quite some time, since we need to compile Rust.</p>
+<p>In the CI, we have <a href="https://github.com/fpgmaas/deptry/blob/2957beceb4e0e8cf185b7571ec10d7cead5b519b/.github/workflows/main.yml#L77-L89">a dedicated job</a> that validates documentation with <code>mkdocs</code>, that we set <a href="https://github.com/fpgmaas/deptry/blob/2957beceb4e0e8cf185b7571ec10d7cead5b519b/pyproject.toml#L35-L36">as a dev dependency</a>. The job only needs <code>mkdocs</code>, but dependencies installation is so fast with uv that we don't mind installing other dependencies as well (like <code>mypy</code> for instance).</p>
+<p>But when we run <code>uv run mkdocs</code>, we end up installing <code>deptry</code> itself, which takes quite some time, although we don't need to do that in this specific case.</p>
+<p>We technically have other options, so it's not a blocker at all. For instance I guess we could:</p>
+<ul>
+<li>move <code>uv run mkdocs</code> to another job that does require to install <code>deptry</code> itself</li>
+<li>set the documentation specific dependencies in <code>docs/requirements.in</code> and use <code>uv pip compile</code></li>
+<li>use workspaces?</li>
+<li>use the <code>--no-project</code> workaround that we currently use for now</li>
+<li>use <code>uvx mkdocs@1.6.0</code> (but we'd loose the ability to lock transitive dependencies)</li>
+<li>...or other things I might be missing?</li>
+</ul>
+<p>Of course, since <code>deptry</code> is a library, we cannot use virtual projects in this specific case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 17:49</div>
+            <div class="timeline-body"><p>Thanks for the details! We have the same problem here in the uv repository. We do</p>
+<pre><code>uvx --with-requirements docs/requirements.txt -- mkdocs serve -f mkdocs.public.yml
+</code></pre>
+<p>right now. Obviously this isn't ideal though. I think &quot;project-level&quot; tools is what you're looking for here (#3560) but we don't support that yet and need to do some design work first. I think <code>--no-project</code> is the &quot;correct&quot; workaround for now. This use-case is important, but I think <code>uv run --no-install-*</code> is probably not be a good long-term solution for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfgordon2">@jfgordon2</a> on 2024-08-27 02:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think you're looking for <code>--no-install-project</code>. I mean, it might work for that use-case, but that isn't why it exists. You want something like #6585: the ability to mark projects as non-packages.</p>
+</blockquote>
+<p>Ah! I think I'm just making some assumptions based on my unfamiliarity with the terminology in this project so far - thank you for pointing out that PR!  I'll just patiently wait for that one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 02:20</div>
+            <div class="timeline-body"><p>No prob, I mostly just think we can do a better job of solving your problem that way :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6585.html">astral-sh/uv#6585</a> on 2024-08-27 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 18:10</div>
+            <div class="timeline-body"><p>@jfgordon2 the alternate approach is available in <a href="https://github.com/astral-sh/uv/releases/tag/0.4.0">uv 0.4.0</a> now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddorian">@ddorian</a> on 2024-09-06 11:19</div>
+            <div class="timeline-body"><p>The change in uv 0.4.0 still doesn't fix the scenario when running <code>uv run</code> that will install all --dev dependencies that aren't installed usually in a container. You still need to do <code>uv run --no-project</code> everytime. (think ssh into a container to debug)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 12:38</div>
+            <div class="timeline-body"><p>There's <code>uv run --no-dev</code> as well. Might make sense to add <code>UV_NO_DEV</code> or <code>UV_NO_PROJECT</code> for containers. What happens if you delete the <code>pyproject.toml</code> and <code>uv.lock</code> after you setup the project? I presume we won't discover the additional dependencies then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddorian">@ddorian</a> on 2024-09-06 13:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I presume we won't discover the additional dependencies then.</p>
+</blockquote>
+<p>Yes, it runs normally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-06 14:13</div>
+            <div class="timeline-body"><p>There is --frozen but is there a uv run --no-sync? Just something to say don't do anything, just use the venv as it is (but it's not no-project, I'm running w.r.t the current project's workspace and virtualenv)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 14:39</div>
+            <div class="timeline-body"><p><code>uv run --frozen</code> should be effectively the same as <code>uv run --no-sync</code></p>
+<p>edit: The above is wrong, I misunderstood.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-06 15:54</div>
+            <div class="timeline-body"><p>I thought frozen would be it, but it installs packages if they are missing. To clarify I'm looking for a flag that makes uv run never modify the virtualenv.</p>
+<p>Here's a minimal reproducer. Yes I am deleting the venv -- making it empty -- in this example.</p>
+<pre><code class="language-shell">uv init --package testrun
+# Initialized project `testrun` at `/home/user/testrun`
+cd testrun/
+uv sync
+# Using Python 3.12.3
+# Creating virtualenv at: .venv
+# ...
+uv venv
+# Using Python 3.12.3
+# Creating virtualenv at: .venv
+# Activate with: source .venv/bin/activate
+uv run --frozen hello
+# Installed 1 package in 1ms
+# Hello from testrun!
+</code></pre>
+<p>It would install more (dev-deps, other missing deps) if those existed in the example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 15:55</div>
+            <div class="timeline-body"><p><code>uv run --frozen</code> just ensures that we don't update the lock. It still syncs the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryant1410">@bryant1410</a> on 2024-11-18 23:02</div>
+            <div class="timeline-body"><p>I want to add a use case. I have a project that's actually not virtual (I do want it to be an installable package). However, PyCharm becomes buggy when I have the package itself (maybe also because it's editable?) as a dependency of an SSH interpreter. So I want to add such a flag (<code>--no-install-*</code>) when I run some <code>uv</code> subcommand from this env.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2025-02-17 03:20</div>
+            <div class="timeline-body"><p><code>poetry</code> allows us to have a custom <code>build.py</code> build script that scripts how simple C-extension Python package is to be built. Even the <code>sckit-build-core</code> build backend allows for <code>CMakeList.txt</code> (i.e. the manifest file for <code>cmake</code>), essentially a build script for CMake. <code>uv</code>'s preferred build backend <code>hatch</code> allows for custom build hook with <code>hatch_build.py</code>.</p>
+<p>Both <code>poetry</code>'s <code>build.py</code> and <code>hatch</code>'s <code>hatch_build.py</code> require build dependencies to be installed when the <code>uv build</code> command is run, but I cannot do e.g. <code>uv add --group build hatching</code> without installing the project. But to install the project, I need to first install the build dependencies because of <code>uv</code> insistence on installing the current project when adding dependencies!</p>
+<p>Do you see the circle here? 😅</p>
+<p><code>uv</code> needs to allow us to add a dependency <strong>without</strong> installing the current project so that we can break this cycle (of course I can do <code>pip install hatchling</code> to sidestep this but it completely defeats the purpose of using <code>uv</code>, right?).</p>
+<p>There are many use cases for having a custom build script, for one, maybe you want to fetch a C header file as a dependency and generate Cython bindings at build time, using CMake would have been overkill but <code>uv</code> does not currently let us do this with ease either!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-17 14:53</div>
+            <div class="timeline-body"><p>@jymchng</p>
+<pre><code>uv add --group build hatchling --no-sync
+uv sync --only-group build
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jymchng">@jymchng</a> on 2025-02-21 03:22</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/jymchng">@jymchng</a></p>
+<pre><code>uv add --group build hatchling --no-sync
+uv sync --only-group build
+</code></pre>
+</blockquote>
+<p>Thank you for your reply.</p>
+<p>Is there a way to add <strong>and install</strong> a dependency without building the entire project in the process? Because in development, my build script may be failing because it is incompleted but I need the dependency to be install so I can run and test individual modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-01 17:51</div>
+            <div class="timeline-body"><p>I don't follow. I think you may need to open a new issue with a complete, minimal example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/y-nk">@y-nk</a> on 2025-04-04 09:27</div>
+            <div class="timeline-body"><p>i'm also interested in this. usecase is:</p>
+<ol>
+<li>project has deps and dev deps</li>
+<li>project is built and ran in docker</li>
+<li>ci builds the docker container and boots it, run pytest against it</li>
+</ol>
+<p>for this last part i need to install only pytest in the ci runner but exec of <code>uv run pytest tests/*</code> will download prod deps too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lorenzwalthert">@lorenzwalthert</a> on 2025-06-08 20:51</div>
+            <div class="timeline-body"><p>Another use case: Want to add a dependency to a project that is not installable on the developer platform like macOS, e.g. because missing binaries, built-time requirements etc. and the dependency is only needed in deployment (which is a linux environment and the dependency can be installed). In that case, I want to resolve all dependencies without installing them, in particular, I would like to add <a href="https://github.com/aws/sagemaker-training-toolkit/issues/225">sagemaker-training</a> to an optional deployment group.</p>
+<pre><code>uv add sagemaker-training --group deployment --no-install-deps-or-similar
+</code></pre>
+<p>and then commit the changes in the <code>uv.lock</code> so I can install that optional group later.</p>
+<p>At the moment, I do on my local dev environment:</p>
+<pre><code># 1. manually add dependency to `pyproject.toml`
+# 2. sync
+uv sync --all-groups --no-group deployment # this updates uv.lock`
+
+# 3. later in the deployment environment
+uv install # with some combination of --groups / --no-groups to include deployment group
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 20:08</div>
+            <div class="timeline-body"><p>@lorenzwalthert I think you should use a platform marker instead for that use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cavedon">@cavedon</a> on 2025-06-26 19:31</div>
+            <div class="timeline-body"><p>@zanieb , my use case is running a tool (and only that tool with its dependencies) in an isolated venv at a version locked in uv.lock.
+For example, the tool is bindep, in its own dependency group.
+I would like to run something like:</p>
+<pre><code>uv run --frozen --no-default-groups --group bindep --isolated --no-install-project bindep
+</code></pre>
+<p>I need to use the bindep tool to prepare the build environment, before I am actually able to build/install the actual project.</p>
+<p>This seems to be work-around, but not ideal...</p>
+<pre><code>uv sync --frozen --no-default-groups --group bindep --no-install-project
+uv run --no-sync bindep
+rm -r .venv
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

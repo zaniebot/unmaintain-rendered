@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`printf-string-formatting` (`UP031`) - fix should f-string instead of `str.format` - astral-sh/ruff #11332</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`printf-string-formatting` (`UP031`) - fix should f-string instead of `str.format`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11332">#11332</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-05-08 08:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-05-08 08:11</div>
+            <div class="timeline-body"><p>when both <code>UP031</code> and <code>UP032</code> are enabled, the fix for <code>UP031</code> causes <code>UP032</code>:</p>
+<pre><code class="language-py">foo = &quot;foo&quot;
+&quot;%s&quot; % (foo,) # error: UP031
+</code></pre>
+<p>after applying the quick fix:</p>
+<pre><code class="language-py">foo = &quot;foo&quot;
+&quot;{}&quot;.format(foo) # error: UP032
+</code></pre>
+<p>https://play.ruff.rs/c4a825b4-12e5-4479-9167-c0f4388a17c2</p>
+<p>this means i have to apply 2 fixes to get to the correct code. it would be nice if <code>UP031</code> suggested f strings instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-08 08:16</div>
+            <div class="timeline-body"><p>We iteratively apply fixes until the source code is stable so if you've select both <code>UP031</code> and <code>UP032</code>, the final diff should be the f-string code:</p>
+<pre><code class="language-console">$ ruff check --unsafe-fixes --fix --no-cache --diff --select=UP031,UP032 src/autofix.py
+--- src/autofix.py
++++ src/autofix.py
+@@ -1,2 +1,2 @@
+ foo = &quot;foo&quot;
+-&quot;%s&quot; % (foo,)
++f&quot;{foo}&quot;
+
+Would fix 2 errors.
+</code></pre>
+<p>Can you tell me how are you running <code>ruff</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-05-08 08:50</div>
+            <div class="timeline-body"><p>i meant when applying the quick fix from vscode (or in this case the playground):</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/57028336/4cfc2f16-d627-4568-8439-831442bc0f84" alt="image" /></p>
+<p>that only applies one quick fix at a time. IMO, since f strings are the preferred method of interpolating strings, i think <code>UP031</code>'s message and fix should be to change it to an f string</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-05-08 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-08 09:06</div>
+            <div class="timeline-body"><p>I think https://github.com/astral-sh/ruff-vscode/issues/451 is related.</p>
+<p>For this specific case, maybe we could prioritize <code>UP032</code> if both <code>UP031</code> and <code>UP032</code> are enabled similar to what @charliermarsh did in https://github.com/astral-sh/ruff/pull/11173.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-08 09:12</div>
+            <div class="timeline-body"><p>Oh, but that might not be possible because <code>UP032</code> isn't triggered until <code>UP031</code> is fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-08 14:23</div>
+            <div class="timeline-body"><p>Yeah this is roughly by design though I understand why it's not ideal in an editor. IIRC we only support translating <code>%</code> to <code>.format</code>, and <code>.format</code> to f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/autinerd">@autinerd</a> on 2024-05-09 19:58</div>
+            <div class="timeline-body"><p>Maybe it would be a good idea to merge UP031 and UP032. I don't know if ruff has a minimum version, but f-strings exist since Python 3.6 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-05-31 21:05</div>
+            <div class="timeline-body"><p>@autinerd <code>UP031</code> and <code>UP032</code> have different concerns. <code>.format</code> can still be used to avoid very long lines or multiline string concatenation (styling preferences).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-28 21:43</div>
+            <div class="timeline-body"><p>I'll quote my message from Discord:</p>
+<hr />
+<p>I've been having a hard time with <a href="https://docs.astral.sh/ruff/rules/printf-string-formatting/">printf-string-formatting (UP031)</a> + <a href="https://docs.astral.sh/ruff/rules/f-string/">f-string (UP032)</a></p>
+<p>I don't necessarily want to enforce changing <code>.format</code> to f-strings (using format can be very readable, sometimes moreso than f-strings). But when autofixing <code>UP031</code> I would prefer them to be autofixed as f-strings, not <code>.format</code>.</p>
+<p>Moreso, I can't really enable either on older projects because they catch <em>so many cases</em> that are not autofixable.</p>
+<p>Especially projects that may be wary of manual changes in older code.</p>
+<p>And I don't think that I can configure a specific rule to &quot;run autofixes, but don't fail otherwise&quot;.</p>
+<hr />
+<p>Being able to configure <code>UP031</code> to fix directly to f-string without passing by / having to enable <code>UP032</code> would be beneficial.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17696.html">astral-sh/ruff#17696</a> on 2025-04-28 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

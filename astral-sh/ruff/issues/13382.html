@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLF001 when using Django Model `_meta` API - astral-sh/ruff #13382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SLF001 when using Django Model `_meta` API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13382">#13382</a>
+        opened by <a href="https://github.com/bittner">@bittner</a>
+        on 2024-09-17 17:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bittner">@bittner</a> on 2024-09-17 17:06</div>
+            <div class="timeline-body"><p>In Django, there is the <a href="https://docs.djangoproject.com/en/stable/ref/models/meta/">Model <code>_meta</code> API</a>, an endorsed way to access internal information about a model.</p>
+<p>Example model:</p>
+<pre><code class="language-python">class MyModel(models.Model):
+
+    class Meta:
+        db_table = &quot;custom_table_name&quot;
+</code></pre>
+<p>Example usage:</p>
+<pre><code class="language-python">table_name = MyModel()._meta.db_table
+</code></pre>
+<p>The way the API is used is by the <code>_meta</code> member, which quite obviously triggers <a href="https://docs.astral.sh/ruff/rules/private-member-access/">SLF001</a> as a linter warning. (As of Ruff version <strong>0.6.4</strong>)</p>
+<p>There's no other way to access the members of this API, and as this is an official API of the Django framework it's not clear why code like this should be discouraged (unless it's about motivating the Django project to redesign this API).</p>
+<p>Is there any chance we could make Ruff consider this as an accepted pattern? -- Should this request be submitted to the <a href="https://github.com/rocioar/flake8-django">flake8-django</a> project, first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-18 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-09-18 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-18 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 02:34</div>
+            <div class="timeline-body"><p>I think I'd recommend adding this to <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-self_ignore-names"><code>ignore-names</code></a> -- does that work?</p>
+<p>E.g.:</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-self]
+ignore-names = [&quot;_meta&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bittner">@bittner</a> on 2024-09-18 07:58</div>
+            <div class="timeline-body"><p>That works, thank you! :+1:</p>
+<p>But shouldn't we make this a general rule, and more specific, just for Django Model classes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-19 07:35</div>
+            <div class="timeline-body"><blockquote>
+<p>But shouldn't we make this a general rule, and more specific, just for Django Model classes?</p>
+</blockquote>
+<p>That would be great, but Ruff must understand that <code>models.Model</code> inherits a Django model, something it currently doesn't understand because it lacks multifile analysis.</p>
+<p>An alternative is to default to ignoring <code>_meta</code> whenever there's a <code>django</code> import, but I don't even know if that's the case for this file. This has the risk of the rule missing <code>_meta</code> usages outside of a Django model.</p>
+<p>Overall, ignore names is a good explicit opt in for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-19 07:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

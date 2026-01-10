@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behavior of `uv run` depends on the app name - astral-sh/uv #9719</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Behavior of `uv run` depends on the app name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9719">#9719</a>
+        opened by <a href="https://github.com/fepegar">@fepegar</a>
+        on 2024-12-08 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fepegar">@fepegar</a> on 2024-12-08 14:41</div>
+            <div class="timeline-body"><p>Hello and thanks for this amazing project!</p>
+<p>I am trying to use an entry point of a local app from a local library without adding the app as a dependency, i.e., using <code>--with</code> or <code>--with-editable</code>. However, the flags seemingly make thins fali <strong>depending of the name of the app</strong>. I'm very confused by this behavior and thought I'd report just in case this is not expected.</p>
+<p>Am I doing anything obviously wrong?</p>
+<p>TLDR of what works or not:</p>
+<p>| App name | <code>--with</code> | <code>--with-editable</code> |
+| --- | --- | --- |
+| <code>cli</code> | ❌ | ✔️ |
+| <code>cli_app</code> | ❌ | ❌ |
+| <code>cli2</code> | ✔️ | ✔️ |</p>
+<p>Script to reproduce:</p>
+<pre><code class="language-bash">uv --version
+
+app_names=(cli cli_app cli2)
+for app_name in ${app_names[@]};
+do
+    echo
+    echo &quot;Testing $app_name&quot;
+    lib_name=&quot;lib&quot;
+
+    rm -rf $app_name $lib_name
+
+    set -x
+    uv init --app --package $app_name
+    uv init --lib $lib_name
+
+    uv run --with          ../$app_name --directory $lib_name $app_name
+    uv run --with-editable ../$app_name --directory $lib_name $app_name
+    set +x
+done
+
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-console">$ bash test_uv.sh
+uv 0.5.7 (3ca155ddd 2024-12-06)
+
+Testing cli
++ uv init --app --package cli
+Initialized project `cli` at `/private/tmp/cli`
++ uv init --lib lib
+Initialized project `lib` at `/private/tmp/lib`
++ uv run --with ../cli --directory lib cli
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+   Built lib @ file:///private/tmp/lib
+Installed 1 package in 0.91ms
+error: Failed to spawn: `cli`
+  Caused by: No such file or directory (os error 2)
++ uv run --with-editable ../cli --directory lib cli
+Hello from cli!
++ set +x
+
+Testing cli_app
++ uv init --app --package cli_app
+Initialized project `cli-app` at `/private/tmp/cli_app`
++ uv init --lib lib
+Initialized project `lib` at `/private/tmp/lib`
++ uv run --with ../cli_app --directory lib cli_app
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+   Built lib @ file:///private/tmp/lib
+Installed 1 package in 0.88ms
+error: Failed to spawn: `cli_app`
+  Caused by: No such file or directory (os error 2)
++ uv run --with-editable ../cli_app --directory lib cli_app
+error: Failed to spawn: `cli_app`
+  Caused by: No such file or directory (os error 2)
++ set +x
+
+Testing cli2
++ uv init --app --package cli2
+Initialized project `cli2` at `/private/tmp/cli2`
++ uv init --lib lib
+Initialized project `lib` at `/private/tmp/lib`
++ uv run --with ../cli2 --directory lib cli2
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+   Built lib @ file:///private/tmp/lib
+Installed 1 package in 0.80ms
+Hello from cli2!
++ uv run --with-editable ../cli2 --directory lib cli2
+Hello from cli2!
++ set +x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 15:05</div>
+            <div class="timeline-body"><p>Unfortunately I can't reproduce this:</p>
+<pre><code>❯ uv init --app --package cli
+Initialized project `cli` at `/Users/crmarsh/workspace/puffin/cli`
+
+❯ uv init --lib lib
+Initialized project `lib` at `/Users/crmarsh/workspace/puffin/lib`
+
+❯ uv run --with ../cli --directory lib cli
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+   Built lib @ file:///Users/crmarsh/workspace/puffin/lib
+Installed 1 package in 0.86ms
+Hello from cli!
+</code></pre>
+<p>(I think there almost certainly has to be something else going on here, I don't think we have any code that's sensitive to these names, but of course I could be wrong.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-08 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 15:07</div>
+            <div class="timeline-body"><p>I think the second piece is because the script name uses dashes:</p>
+<pre><code>❯ uv run --with ../cli --directory lib cli-app
+error: Failed to spawn: `cli-app`
+  Caused by: No such file or directory (os error 2)
+
+❯ uv run --with ../cli_app --directory lib cli-app
+Hello from cli-app!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 15:08</div>
+            <div class="timeline-body"><p>That part makes sense, I'm unsure whether we should change it... We're using the canonical package name for the script name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fepegar">@fepegar</a> on 2024-12-08 17:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately I can't reproduce this:</p>
+<pre><code>❯ uv init --app --package cli
+Initialized project `cli` at `/Users/crmarsh/workspace/puffin/cli`
+
+❯ uv init --lib lib
+Initialized project `lib` at `/Users/crmarsh/workspace/puffin/lib`
+
+❯ uv run --with ../cli --directory lib cli
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+   Built lib @ file:///Users/crmarsh/workspace/puffin/lib
+Installed 1 package in 0.86ms
+Hello from cli!
+</code></pre>
+<p>(I think there almost certainly has to be something else going on here, I don't think we have any code that's sensitive to these names, but of course I could be wrong.)</p>
+</blockquote>
+<p>In case it helps, that one works when I add <code>--python 3.10</code> to the <code>uv init</code> commands. It's very mysterious. I'm happy to share more context. These are my pythons:</p>
+<pre><code class="language-console">❯ uv python list
+cpython-3.13.1+freethreaded-macos-aarch64-none    &lt;download available&gt;
+cpython-3.13.1-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.13.0-macos-aarch64-none                 /opt/homebrew/opt/python@3.13/bin/python3.13 -&gt; ../Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.0-macos-aarch64-none                 /Users/fernando/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+cpython-3.12.8-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.12.7-macos-aarch64-none                 /opt/homebrew/opt/python@3.12/bin/python3.12 -&gt; ../Frameworks/Python.framework/Versions/3.12/bin/python3.12
+cpython-3.12.5-macos-aarch64-none                 /Users/fernando/.local/share/uv/python/cpython-3.12.5-macos-aarch64-none/bin/python3.12
+cpython-3.11.11-macos-aarch64-none                &lt;download available&gt;
+cpython-3.11.6-macos-aarch64-none                 /opt/homebrew/opt/python@3.11/bin/python3.11 -&gt; ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+cpython-3.10.16-macos-aarch64-none                &lt;download available&gt;
+cpython-3.10.15-macos-aarch64-none                /opt/homebrew/opt/python@3.10/bin/python3.10 -&gt; ../Frameworks/Python.framework/Versions/3.10/bin/python3.10
+cpython-3.10.15-macos-aarch64-none                /Users/fernando/.local/share/uv/python/cpython-3.10.15-macos-aarch64-none/bin/python3.10
+cpython-3.9.21-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.9.6-macos-aarch64-none                  /Library/Developer/CommandLineTools/usr/bin/python3 -&gt; ../../Library/Frameworks/Python3.framework/Versions/3.9/bin/python3
+cpython-3.8.20-macos-aarch64-none                 /Users/fernando/.local/share/uv/python/cpython-3.8.20-macos-aarch64-none/bin/python3.8
+pypy-3.10.14-macos-aarch64-none                   &lt;download available&gt;
+pypy-3.9.19-macos-aarch64-none                    &lt;download available&gt;
+pypy-3.8.16-macos-aarch64-none                    /Users/fernando/.local/share/uv/python/pypy-3.8.16-macos-aarch64-none/bin/pypy3.8 -&gt; pypy3
+</code></pre>
+<hr />
+<p>About the underscore vs dash, I guess it makes sense, although it was a bit surprising. Maybe a message mentioning the &quot;_&quot; -&gt; &quot;-&quot; replacement would be nice.</p>
+<hr />
+<p>My actual problem (which I tried to distill here but I think I've failed) might be related to the underscore/dash situation. I'll see if I can replicate that reliably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fepegar">@fepegar</a> on 2024-12-08 19:48</div>
+            <div class="timeline-body"><p>Ok I've created an example that looks more like my actual problem. Basically, <code>with</code> and <code>with-editable</code> don't work, but <code>uv add</code> and then <code>uv run</code> does. Happy to open a new issue with a better title if needed.</p>
+<p>Hopefully this makes sense:</p>
+<pre><code class="language-shell">set -x
+
+uv --version
+
+lib_name=&quot;my-lib&quot;
+module_name=${lib_name/-/_}
+app_name=&quot;app&quot;
+
+rm -rf $lib_name
+rm -rf $app_name
+
+uv init --app --package $app_name
+uv init --lib --package $lib_name
+
+old_statement=&quot;print(\&quot;Hello from $app_name!\&quot;)&quot;
+new_statement=&quot;from $module_name import hello; print(hello)&quot;
+sed -i '' &quot;s/$old_statement/$new_statement/g&quot; $app_name/src/$app_name/__init__.py
+
+uv run --with          ../$lib_name --directory $app_name $app_name
+uv run --with-editable ../$lib_name --directory $app_name $app_name
+
+uv add ../$lib_name --directory $app_name
+uv run --directory $app_name $app_name
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-python-traceback">+ uv --version
+uv 0.5.7 (3ca155ddd 2024-12-06)
++ lib_name=my-lib
++ module_name=my_lib
++ app_name=app
++ rm -rf my-lib
++ rm -rf app
++ uv init --app --package app
+Initialized project `app` at `/private/tmp/app`
++ uv init --lib --package my-lib
+Initialized project `my-lib` at `/private/tmp/my-lib`
++ old_statement='print(&quot;Hello from app!&quot;)'
++ new_statement='from my_lib import hello; print(hello)'
++ sed -i '' 's/print(&quot;Hello from app!&quot;)/from my_lib import hello; print(hello)/g' app/src/app/__init__.py
++ uv run --with ../my-lib --directory app app
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+   Built app @ file:///private/tmp/app
+Installed 1 package in 1ms
+Traceback (most recent call last):
+  File &quot;/private/tmp/app/.venv/bin/app&quot;, line 8, in &lt;module&gt;
+    sys.exit(main())
+             ~~~~^^
+  File &quot;/private/tmp/app/src/app/__init__.py&quot;, line 2, in main
+    from my_lib import hello; print(hello)
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'my_lib'
++ uv run --with-editable ../my-lib --directory app app
+Traceback (most recent call last):
+  File &quot;/private/tmp/app/.venv/bin/app&quot;, line 8, in &lt;module&gt;
+    sys.exit(main())
+             ~~~~^^
+  File &quot;/private/tmp/app/src/app/__init__.py&quot;, line 2, in main
+    from my_lib import hello; print(hello)
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'my_lib'
++ uv add ../my-lib --directory app
+Resolved 2 packages in 1ms
+   Built app @ file:///private/tmp/app
+   Built my-lib @ file:///private/tmp/my-lib
+Prepared 2 packages in 198ms
+Uninstalled 1 package in 0.40ms
+Installed 2 packages in 1ms
+ ~ app==0.1.0 (from file:///private/tmp/app)
+ + my-lib==0.1.0 (from file:///private/tmp/my-lib)
++ uv run --directory app app
+&lt;function hello at 0x10455cd60&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 19:54</div>
+            <div class="timeline-body"><p>I think this is an issue with how the environment layering works, but please do open a separate issue since it's unrelated to the dash vs. underscore thing above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-08 20:01</div>
+            <div class="timeline-body"><p>I see the problem though not obvious how to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9724.html">astral-sh/uv#9724</a> on 2024-12-08 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fepegar">@fepegar</a> on 2024-12-08 20:18</div>
+            <div class="timeline-body"><p>Thanks for your replies, @charliermarsh. New issue:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/9724</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fepegar">@fepegar</a> on 2025-01-27 23:04</div>
+            <div class="timeline-body"><p>Closing as I can't reproduce on 0.5.21.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fepegar on 2025-01-27 23:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:46 UTC
+    </footer>
+</body>
+</html>

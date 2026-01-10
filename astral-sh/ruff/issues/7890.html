@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Are isort configurations able to be skipped or just applicable in some files? - astral-sh/ruff #7890</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Are isort configurations able to be skipped or just applicable in some files?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7890">#7890</a>
+        opened by <a href="https://github.com/BT-rmartin">@BT-rmartin</a>
+        on 2023-10-10 09:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BT-rmartin">@BT-rmartin</a> on 2023-10-10 09:31</div>
+            <div class="timeline-body"><p>Hi, I would like to know if there is a way to skip the application of some isort checks for some specific files, or the other way round, to enforce the application of some isort configurations for specific files.</p>
+<p>Here you have an example.
+In general, I would like to have something like this in the files gathering imports
+<img src="https://github.com/astral-sh/ruff/assets/9987218/570a86f0-ee05-484c-9fb9-cc659272a6e2" alt="image" /></p>
+<p>However for the __init__py file, I would prefer the single line imports, but it's changed to gather imports
+<img src="https://github.com/astral-sh/ruff/assets/9987218/b868890f-d667-410a-9fcc-2d70ae317667" alt="image" /></p>
+<p>If I configure it like this, it keeps the format of <strong>init</strong>.py but splits the other imports of the other files.
+[tool.ruff.isort]
+force-single-line = true</p>
+<p>So I wonder if there is a way to apply different isort configurations for different files.</p>
+<p>If this option is not available, it would be super great if it could be added in the near future.
+Something similar to ignore some checks in particular files, but for isort configurations.
+[tool.ruff.per-file-ignores]
+&quot;<strong>init</strong>.py&quot; = [&quot;F401&quot;]
+&quot;<strong>manifest</strong>.py&quot; = [&quot;B018&quot;]
+&quot;**/tests/*.py&quot; = [&quot;S101&quot;]</p>
+<p>Thanks for the help in advance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-10 16:02</div>
+            <div class="timeline-body"><p>We don't support this kind of file-scoped configuration. The general request has come up a few times (e.g., https://github.com/astral-sh/ruff/issues/7696).</p>
+<p>That being said... if you use an <code>as</code> alias, Ruff will avoid merging them:</p>
+<pre><code class="language-python">from . import account_account as account_account
+</code></pre>
+<p>Ruff will also avoiding marking them as unused in this case. I believe this pattern is quite common -- Pyright treats these redundant aliases as public exports: https://github.com/python/typing/blob/master/docs/source/libraries.rst#library-interface-public-and-private-symbols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BT-rmartin">@BT-rmartin</a> on 2023-10-11 10:49</div>
+            <div class="timeline-body"><p>Thanks for the quick answer @charliermarsh
+I'm not so interested in using such aliases.
+Any plan to do that file-scope config in the near future or is it discarded?
+Any other potential workaround?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-11 13:36</div>
+            <div class="timeline-body"><p>Okay, got it. I do consider it a valid solution as it's the recommended mechanism in the typing community for marking imported symbols as public rather than private (and so if you're re-importing things in an <code>__init__.py</code> file for the purpose of re-exporting them, and you want re-exports to be formatted differently than other imports as above, it seems like an appropriate pattern to use). But hopefully we will support file-scoped configuration at some point. I expect that we <em>will</em> support it, though I doubt it will be within the next month or two.</p>
+<p>I'm going to merge into https://github.com/astral-sh/ruff/issues/7696 and make that issue more general to track the file-scoped configuration request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-11 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BT-rmartin">@BT-rmartin</a> on 2023-10-26 23:28</div>
+            <div class="timeline-body"><blockquote>
+<p>We don't support this kind of file-scoped configuration. The general request has come up a few times (e.g., #7696).</p>
+<p>That being said... if you use an <code>as</code> alias, Ruff will avoid merging them:</p>
+<pre><code class="language-python">from . import account_account as account_account
+</code></pre>
+<p>Ruff will also avoiding marking them as unused in this case. I believe this pattern is quite common -- Pyright treats these redundant aliases as public exports: https://github.com/python/typing/blob/master/docs/source/libraries.rst#library-interface-public-and-private-symbols.</p>
+</blockquote>
+<p>@charliermarsh I was by the way trying this approach and it continues being replaced
+For instance, from
+from . import test_crm_activity_report as test_crm_activity_report
+from . import test_crm_lead as test_crm_lead
+from . import test_disable_records as test_disable_records</p>
+<p>into
+from . import test_crm_activity_report, test_crm_lead, test_disable_records</p>
+<p>when running ruff check . --fix</p>
+<p>Any other solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-27 08:41</div>
+            <div class="timeline-body"><p>Hey, can you provide us with the config being used for this? I'm unable to reproduce this locally with <code>v0.1.3</code>. If I use aliases, then it keeps the imports separated and it'll only merge when I remove the aliases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BT-rmartin">@BT-rmartin</a> on 2023-11-02 22:56</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<p>Here it is. Maybe it was a version issue. I had ruff 0.0.278. Now with 0.1.3 it's respected but the imports are reordered</p>
+<p>My configuration was like this</p>
+<p>[tool.ruff]
+select = [&quot;E&quot;, &quot;F&quot;, &quot;I&quot;, &quot;PL&quot;, &quot;B&quot;, &quot;Q&quot;, &quot;D&quot;, &quot;N&quot;, &quot;S&quot;, &quot;G&quot;, &quot;RUF&quot;, &quot;W&quot;]
+ignore = [&quot;D100&quot;, &quot;D101&quot;, &quot;D104&quot;, &quot;D213&quot;, &quot;D203&quot;, &quot;RUF012&quot;]
+exclude = [&quot;**/ext/&quot;]</p>
+<p>line-length = 115</p>
+<p>[tool.ruff.per-file-ignores]
+&quot;<strong>init</strong>.py&quot; = [&quot;F401&quot;]
+&quot;<strong>manifest</strong>.py&quot; = [&quot;B018&quot;]
+&quot;**/tests/*.py&quot; = [&quot;S101&quot;]</p>
+<p>[tool.ruff.flake8-quotes]
+docstring-quotes = &quot;double&quot;
+inline-quotes = &quot;single&quot;
+multiline-quotes = &quot;double&quot;
+avoid-escape = false</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7696.html">astral-sh/ruff#7696</a> on 2024-01-11 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

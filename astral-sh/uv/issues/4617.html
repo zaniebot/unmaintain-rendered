@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>universal-lock: use resolution of a fork as input preferences to its child forks - astral-sh/uv #4617</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>universal-lock: use resolution of a fork as input preferences to its child forks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4617">#4617</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-28 13:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-28 13:49</div>
+            <div class="timeline-body"><p>@konstin brought this up as both a potential performance optimization <em>and</em> a more solid guarantee that resolutions between forks settle on consistent versions.</p>
+<p>At present, the forks in the universal resolver are completely independent. When a fork happens, one of them is run to completion and then the other is solved only after the first is finished. When all forks have finished, the resolutions output from each are merged into one.</p>
+<p>But we could make it so that once a fork finishes, its resolution is used as an input to all forks it created. This should help with ensuring we pick the same version of packages across forks whenever possible.</p>
+<p>I don't have a good sense of how common an issue this is in practice. I also don't have a test case yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @BurntSushi on 2024-06-28 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3347.html">astral-sh/uv#3347</a> on 2024-06-28 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-28 13:50</div>
+            <div class="timeline-body"><p>Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-28 14:16</div>
+            <div class="timeline-body"><p>As an example, i'm looking at transformers (https://github.com/konstin/transformers, 133e706e57e57776e4338eeab3c52c4400b3d947, pyproject.toml: https://gist.github.com/konstin/9a12dd0f8280e30746d22f3cc7949331). We have two forks (on opencv-python over numpy), but their resolution is the same since opencv-python has different minimal lower versions of numpy, but we're picking a more recent version anyway. Timinig wise, we spend:</p>
+<ul>
+<li>Pre-fork 33ms</li>
+<li>Split 1 57ms</li>
+<li>Split 2 39ms
+We could skip most or all of the split 2 work by reusing the solution in the first fork.</li>
+</ul>
+<p>Now transformers is an even more special case: We could infer that the solution we have fulfills all branches of opencv-python equally, so we can short-cut exit (the solution is compatible with the sibling too). So:</p>
+<ul>
+<li>In the general case, we should use the first sibling as preference for all others (and make sure the sibling order is arbitrary, but stable)</li>
+<li>In the specific case of non-disjoint requirements with conflicting markers, we may even infer that the solution we have fulfills all branches of the fork and skip the sibling fork since the current solution fulfills the sibling too (like the numpy version that fulfills opencv-python in both cases)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-28 14:56</div>
+            <div class="timeline-body"><p>Is it possible that once we do the first thing (preferences), the timing required to solve the second split goes to ~zero? Since it's all in-memory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-28 15:22</div>
+            <div class="timeline-body"><p>Possibly! We'll have to implement it and benchmark, i agree we should start with preferences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4662.html">astral-sh/uv#4662</a> on 2024-06-30 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 19:21</div>
+            <div class="timeline-body"><p>@konstin - do you want to try https://github.com/astral-sh/uv/pull/4662 on your example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-30 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-01 08:17</div>
+            <div class="timeline-body"><p>Nice work!</p>
+<pre><code>Benchmark 1: ~/projects/uv/uv-main lock
+  Time (mean ± σ):     202.3 ms ±   3.5 ms    [User: 178.9 ms, System: 112.7 ms]
+  Range (min … max):   198.3 ms … 210.4 ms    15 runs
+ 
+Benchmark 2: ~/projects/uv/uv-branch lock
+  Time (mean ± σ):     111.0 ms ±   3.3 ms    [User: 126.0 ms, System: 105.4 ms]
+  Range (min … max):   106.9 ms … 123.0 ms    26 runs
+ 
+Summary
+  ~/projects/uv/uv-branch lock ran
+    1.82 ± 0.06 times faster than ~/projects/uv/uv-main lock
+</code></pre>
+<p>main:</p>
+<pre><code>DEBUG Pre-fork split universal took 0.028s
+DEBUG Split python_version &gt;= '3.12' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux' took 0.044s
+DEBUG Split python_version == '3.9' and platform_machine == 'arm64' and platform_system == 'Darwin' took 0.034s
+</code></pre>
+<p>branch:</p>
+<pre><code>DEBUG Pre-fork split universal took 0.029s
+DEBUG Split python_version &gt;= '3.12' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux' took 0.044s
+DEBUG Split python_version == '3.9' and platform_machine == 'arm64' and platform_system == 'Darwin' took 0.004s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 11:55</div>
+            <div class="timeline-body"><p>Sweet, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-01 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-01 12:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

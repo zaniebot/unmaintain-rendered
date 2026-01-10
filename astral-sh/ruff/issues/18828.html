@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use the `LinterSettings` on `LintContext` instead of `Checker` - astral-sh/ruff #18828</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use the `LinterSettings` on `LintContext` instead of `Checker`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18828">#18828</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-20 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-20 18:10</div>
+            <div class="timeline-body"><p>There is currently a <code>&amp;'a LinterSettings</code> field on both <code>Checker</code> and <code>LintContext</code>, which is redundant because <code>Checker</code> also holds a <code>LintContext</code>. To remove the redundancy, we should replace uses of <code>Checker::settings</code> with <code>Checker::context.settings</code>, or, more likely, a <code>Checker::settings</code> method since the <code>context</code> field is private.</p>
+<p>This is a conceptually simple refactor, but when I started it briefly, I ran into some lifetime issues that might make this fairly tedious. For the most part, the compiler seemed to want me to add some explicit lifetimes to <code>Checker</code> in more places (e.g. <code>&amp;'a Checker&lt;'a&gt;</code> instead of just <code>&amp;Checker</code>), but it may also help to add a whole new lifetime parameter to <code>Checker</code> so that its <code>context</code> field can be <code>&amp;'a LintContext&lt;'b&gt;</code>.</p>
+<p>Ref. https://github.com/astral-sh/ruff/pull/18801#discussion_r2158266779</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-20 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-20 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-20 21:18</div>
+            <div class="timeline-body"><p>I can work on this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @LaBatata101 by @AlexWaygood on 2025-06-20 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-20 22:24</div>
+            <div class="timeline-body"><p>I've followed your suggestion of adding a new lifetime to <code>Checker</code>, but I'm getting this lifetime error that I don't know how to solve.</p>
+<pre><code>error: lifetime may not live long enough
+    --&gt; crates/ruff_linter/src/checkers/ast/mod.rs:2067:9
+     |
+760  | impl&lt;'a&gt; Visitor&lt;'a&gt; for Checker&lt;'a, '_&gt; {
+     |      -- lifetime `'a` defined here
+...
+2058 |     fn visit_parameters(&amp;mut self, parameters: &amp;'a Parameters) {
+     |                         - let's call the lifetime of this reference `'1`
+...
+2067 |         analyze::parameters(parameters, self);
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument requires that `'1` must outlive `'a`
+     |
+     = note: requirement occurs because of the type `Checker&lt;'_, '_&gt;`, which makes the generic argument `'_` invariant
+     = note: the struct `Checker&lt;'a, 'b&gt;` is invariant over the parameter `'a`
+     = help: see &lt;https://doc.rust-lang.org/nomicon/subtyping.html&gt; for more information about variance
+
+For more information about this error, try `rustc --explain E0107`.
+</code></pre>
+<p>It happens here:
+https://github.com/LaBatata101/ruff/blob/530db0d0e826c4e9de998738bd263b895549a6f0/crates/ruff_linter/src/checkers/ast/mod.rs#L2066-L2067</p>
+<p>The error shows up after I add the lifetime annotation to these two functions:
+https://github.com/LaBatata101/ruff/blob/530db0d0e826c4e9de998738bd263b895549a6f0/crates/ruff_linter/src/rules/flake8_bugbear/rules/function_call_in_argument_default.rs#L132-L135</p>
+<p>https://github.com/LaBatata101/ruff/blob/530db0d0e826c4e9de998738bd263b895549a6f0/crates/ruff_linter/src/checkers/ast/analyze/parameters.rs#L8</p>
+<p>I've also tested without adding the new lifetime to <code>Checker</code> and I get this error too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-21 01:31</div>
+            <div class="timeline-body"><p>Could you open a draft PR? I usually have to play with these lifetime errors to figure them out 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-21 02:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you open a draft PR? I usually have to play with these lifetime errors to figure them out 😅</p>
+</blockquote>
+<p>Here it is https://github.com/astral-sh/ruff/pull/18845</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18845.html">astral-sh/ruff#18845</a> on 2025-06-21 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-23 09:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

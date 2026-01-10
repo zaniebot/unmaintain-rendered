@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for arg stability attributes (unstable/deprecated) - clap-rs/clap #3321</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for arg stability attributes (unstable/deprecated)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3321">#3321</a>
+        opened by <a href="https://github.com/yaahc">@yaahc</a>
+        on 2022-01-20 01:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yaahc">@yaahc</a> on 2022-01-20 01:57</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.10</p>
+<h3>Describe your use case</h3>
+<p>I had this idea while I was reviewing @sunshowers's CLI recommendations on versioning: https://rust-cli-recommendations.sunshowers.io/versioning.html. In their book they recommend having a stability flag or environment variable for gating new experimental features being exposed in your CLI. This made me think it would be nice if clap provided some support out of the box for managing the stability of various subsets of an App's CLI.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'm imagining two new methods being added to <code>Arg</code></p>
+<pre><code class="language-rust">impl Arg {
+    /// Specifies that an argument is unstable.
+    ///
+    /// **Note**: Unstable arguments cannot be used except when the `--unstable-options` flag is also enabled
+    fn unstable(self, yes: bool) -&gt; Self;
+
+    /// Specifies that an argument is deprecated.
+    ///
+    /// **Note**: Using a deprecated argument will produce a warning unless the `--allow-deprecated` flag is also enabled
+    fn deprecated(self, yes: bool) -&gt; Self;
+}
+</code></pre>
+<p>I'd expect these flags to also affect the generated help text to somehow deprioritize unstable/deprecated arguments in the generated output and to make it clear that they are not intended for general use.</p>
+<h3>Alternatives, if applicable</h3>
+<p>@epage and @sunshowers have both also suggested adding general support for custom settings / attributes so that a feature like this could be experimented with out of tree rather than needing to bake it into clap directly.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @yaahc on 2022-01-20 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-20 15:32</div>
+            <div class="timeline-body"><p>This entails a lot of policy (flag names, whether they should be global or not, user messages, etc).  This would both lock us in to specific behavior but also leave a lot of room for it not quite meeting people needs and wanting customization of it.</p>
+<p>My proposal is we start an example that covers these cases. We then use this to explore how we could improve clap.</p>
+<p>For example, &quot;require an argument to be present with a value&quot; would go a long way towards a general solution to <code>unstable(yes)</code> but we don't have this.  We instead have &quot;when value is set, require another argument&quot; (as both <code>requires_if</code> and <code>required_if_eq</code>, depending on which side you want to express this relationship).</p>
+<p>My hope is we can move clap from a closed-form API to an open-form API where we don't
+need to bake all of the validation options directly into clap but allow users to create their own (https://github.com/clap-rs/clap/issues/3008).  This means we can add this new form of requires in a way that the compiler can trivially remove if unused, unlike the current validation logic.</p>
+<p>As another example of this open-form API design, yaahc mentioned in a PM wanting this relationship included in a hint in the help, like defaults, envs, and possible values.  I had two idea for this</p>
+<ul>
+<li>We expose a general hint mechanism (this would help with https://github.com/clap-rs/clap/issues/1695)</li>
+<li>Have a <code>hint(&amp;self, app &amp;App) -&gt; Option&lt;String&gt;</code> as part of the validation interface.  The &quot;require when other arg has value&quot; struct could then have a <code>show(self, yes: bool) -&gt; Self</code> function which will cause <code>hint</code> to report a &quot;[requires --<arg> <value>]` to be added to the help<ul>
+<li>This could still help us with #1695 if we are able to make custom defaulting logic into a trait as well</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-experimental</span> added by @epage on 2022-01-20 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-01-20 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-01-20 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1695.html">clap-rs/clap#1695</a> on 2022-01-20 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-20 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>experimented with out of tree rather than needing to bake it into clap directly.</p>
+</blockquote>
+<p>As a small clarification on my vague statements, we are looking at not having everything baked directly into <code>clap::App::get_matches</code> but allow passing in logic through trait objects.  These trait impls can be defined in-tree or out-of-tree. General ones, like what I talked about above, could be in the <code>clap</code> crate.  If someone wanted to customize things, like optimizing for this specific feature request, that would probably be kept out-of-tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3008.html">clap-rs/clap#3008</a> on 2022-01-24 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3935.html">clap-rs/clap#3935</a> on 2022-07-14 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4706.html">clap-rs/clap#4706</a> on 2023-02-13 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nrdxp/cfdyndns/pulls/15.html">nrdxp/cfdyndns#15</a> on 2023-09-11 01:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5486.html">clap-rs/clap#5486</a> on 2024-05-04 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fishrock123">@Fishrock123</a> on 2024-11-27 19:14</div>
+            <div class="timeline-body"><p>Now that <a href="https://doc.rust-lang.org/beta/reference/attributes/diagnostics.html#the-deprecated-attribute"><code>#[deprecated]</code></a> is available to 3rd-party crates, would it be possible for for <code>clap</code> to pick up the presence of that attribute for displaying this kind thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-13 20:11</div>
+            <div class="timeline-body"><p>That is an interesting idea to leverage <code>#[deprecated]</code>.  We'd have to work out how it affects the CLI (ie what builder calls does it make or how it changes existing builder calls)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../paritytech/polkadot-sdk/pulls/7719.html">paritytech/polkadot-sdk#7719</a> on 2025-03-13 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fidelicura">@fidelicura</a> on 2025-08-04 16:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Now that <a href="https://doc.rust-lang.org/beta/reference/attributes/diagnostics.html#the-deprecated-attribute"><code>#[deprecated]</code></a> is available to 3rd-party crates, would it be possible for for <code>clap</code> to pick up the presence of that attribute for displaying this kind thing?</p>
+</blockquote>
+<p>I was just searching for something similar in issues: my idea was that items marked with the <code>#[deprecated]</code> attribute should be hidden by default, or, when using the <code>--allow-deprecated</code> flag, shown to the user, but have some kind of note that the item was deprecated. I recently wrote a plugin for Cargo that parses the entire source code and finds <code>#[deprecated]</code> attributes, looks at their versions and matches them with the version from <code>Cargo.toml</code> of its crate to issue a warning that the item is deprecated and can be removed, if 1+ major version(-s) has passed since its removal. In my case, specifying the &quot;deprecated&quot; attribute would be very useful.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:52 UTC
+    </footer>
+</body>
+</html>

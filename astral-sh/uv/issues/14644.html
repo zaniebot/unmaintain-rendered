@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add git commit and `--tag` option to `uv version --bump` - astral-sh/uv #14644</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add git commit and `--tag` option to `uv version --bump`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14644">#14644</a>
+        opened by <a href="https://github.com/cthoyt">@cthoyt</a>
+        on 2025-07-16 00:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-07-16 00:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm very happy to see the movement forwards in improving uv's version bumping capabilities, especially with the inclusion of https://github.com/astral-sh/uv/pull/13578 in uv v0.7.21 earlier this week :)</p>
+<p>This request is for uv's <code>uv version --bump</code> interface to better resemble other version bumping workflows, such as <a href="https://pypi.org/project/bump-my-version/"><code>bump-my-version</code></a>. For context, <code>bump-my-version</code> is a fork of <a href="https://pypi.org/project/bump2version/"><code>bump2version</code></a>, which itself was a fork of <a href="https://pypi.org/project/bumpversion/"><code>bumpversion</code></a>.</p>
+<p>This request has two parts:</p>
+<ol>
+<li>to implement a way of making a git commit following a version bump</li>
+<li>to implement a way of adding a tag to that git commit (ideally, using a <code>--tag</code> flag)</li>
+</ol>
+<p>This would be valuable because it's currently a bit tricky to implement this in a portable way. The following shell commands can get the job done, but setting and reading variables is unreliable, e.g., in tools like <code>tox</code> where each command is executed in its own shell</p>
+<pre><code class="language-shell">$ version_str=`uv version --bump stable`
+$ git commit -am &quot;Released $(version_str)&quot;
+$ git tag -a &quot;v$(version_str)&quot; -m &quot;Released version $(version_str)&quot;
+</code></pre>
+<h4>Related suggestions and implementations</h4>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/13827#issuecomment-2967771683 suggested this feature in a comment on the issue, which itself was about including configuration of uv to bump version strings appearing in other files</li>
+<li>https://github.com/astral-sh/uv/issues/13657 suggested this feature as a part of a more generic GitHub Actions workflow</li>
+<li>https://github.com/alltuner/uv-version-bumper</li>
+</ul>
+<h3>Example</h3>
+<p>My current workflow uses <code>bump-my-version</code> in the following command:</p>
+<pre><code class="language-shell">$ bump-my-version bump release --tag
+</code></pre>
+<p>Part of this can already be translated to uv with</p>
+<pre><code class="language-shell">$ uv version --bump stable
+</code></pre>
+<p>However, <code>uv</code> does not make a commit like <code>bump-my-version</code>, an naturally there is therefore no possibility to create a tag. For a bit more context, I'm configuring <code>tox</code> like this:</p>
+<pre><code class="language-ini"># tox.ini
+
+[testenv:bumpversion-release]
+description = Remove the -dev tag from the version
+commands = bump-my-version bump release --tag
+skip_install = true
+passenv = HOME
+dependency_groups =
+    bump
+</code></pre>
+<p>For more context, you can see this in one of my repositories at https://github.com/cthoyt/ssslm/blob/9181570a397d7c5ca3e4b4314497bef08e5b1703/tox.ini#L183-L197.</p>
+<p>I would ultimately like to be able to replace this with the following, given that a uv can be extended to both make a commit and a tag when the <code>--tag</code> option is passed</p>
+<pre><code class="language-shell">$ uv version --bump stable --tag
+</code></pre>
+<h2>A few more considerations</h2>
+<ul>
+<li>while <code>bump-my-version</code> can be configured to make a commit by default, it probably makes sense to have a flag for just making a commit in uv that doesn't require making a tag</li>
+<li><code>bump-my-version</code> also enables configuring the commit message, but if uv picks a good one, then I'm sure most people would be happy with the default!</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @cthoyt on 2025-07-16 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `--tag` option to `uv version --bump`" to "Add git commit and `--tag` option to `uv version --bump`" by @cthoyt on 2025-07-16 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13657.html">astral-sh/uv#13657</a> on 2025-07-16 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2025-07-16 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-16 04:21</div>
+            <div class="timeline-body"><p>I think this is out of scope in the short-term, but is an interesting idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-07-16 12:08</div>
+            <div class="timeline-body"><p>@zanieb thanks for the consideration! if you do come back to this, I am happy to elaborate and help with the design</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rehborn/uv-version-bump-action/issues/3.html">rehborn/uv-version-bump-action#3</a> on 2025-08-05 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../boxed/mutmut/issues/453.html">boxed/mutmut#453</a> on 2025-11-26 21:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

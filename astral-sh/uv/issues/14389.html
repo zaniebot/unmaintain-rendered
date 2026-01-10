@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>If the folder has a pyproject that has `cache-dir=&quot;.venv/cache&quot;` uv venv always fails because the dir already exists - astral-sh/uv #14389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>If the folder has a pyproject that has `cache-dir=&quot;.venv/cache&quot;` uv venv always fails because the dir already exists</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14389">#14389</a>
+        opened by <a href="https://github.com/WilliamStam">@WilliamStam</a>
+        on 2025-07-01 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WilliamStam">@WilliamStam</a> on 2025-07-01 10:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>pyproject.toml</p>
+<pre><code>[project]
+name = &quot;testing&quot;
+
+[tool.uv]
+cache-dir=&quot;.venv/cache&quot;
+</code></pre>
+<p>have uv installed globally. when running uv we get this</p>
+<pre><code>W:\Temp\aa&gt;uv venv
+Using CPython 3.13.3 interpreter at: C:\Python\Python313\python.exe
+Creating virtual environment at: .venv
+uv::venv::creation
+
+  x Failed to create virtualenv
+  `-&gt; The directory `.venv` exists, but it's not a virtual environment
+
+W:\Temp\aa&gt;
+</code></pre>
+<p>looks like uv creates the folder for cache first then fails later on.</p>
+<p>this is very low priority but its had me scratching my head for a few weeks trying to figure out why i can never seem to use uv to create a project (copy paste pyproject.toml and edit the project stuff mostly)</p>
+<h3>Platform</h3>
+<p>windows 11</p>
+<h3>Version</h3>
+<p>uv 0.7.17 (41c218a89 2025-06-29)</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @WilliamStam on 2025-07-01 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-07-01 12:35</div>
+            <div class="timeline-body"><p>I can see how this could be surprising. For now, you can use <code>uv venv --allow-existing</code> for this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-01 12:56</div>
+            <div class="timeline-body"><p>We wouldn't recommend putting the cache in the virtual environment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-07-01 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-07-01 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-03 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WilliamStam">@WilliamStam</a> on 2025-07-03 13:34</div>
+            <div class="timeline-body"><p>yeah but no where does it actually say that (dont put the cache dir in the venv folder). and it comes as a &quot;surprise&quot; as was pointed out. as a developer surprises are bad.</p>
+<p>placing the cache in the venv isnt the worst idea ever if your filesystem is heavily restricted and you only have access to the project folder. alternatively you could pollute the root folder with a .cache folder or some such but that is purely meant for uv. so it makes sense to self contain as much as possible.</p>
+<p>whilst most of the time needing to set the cache folder is not needed, for the few cases where it is (to such a degree that there is even an option for it) then it shouldn't &quot;break&quot; other functionality when used like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 14:25</div>
+            <div class="timeline-body"><p>I'm sorry it caused you a problem and is surprising, but by putting it in the <code>.venv</code> directory you include <em>persistent</em> content in a directory that is intended to be disposable. We can't recreate a virtual environment with content from the cache if the cache is inside the virtual environment. Since the content you're adding to the virtual environment isn't a part of the expected structure for a virtual environment, we refuse to use the directory for safety reasons.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

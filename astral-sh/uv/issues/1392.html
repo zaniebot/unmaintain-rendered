@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installer does not work on Alpine Linux: no package for `aarch64-unknown-linux-musl-dynamic` - astral-sh/uv #1392</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installer does not work on Alpine Linux: no package for `aarch64-unknown-linux-musl-dynamic`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1392">#1392</a>
+        opened by <a href="https://github.com/mgasner">@mgasner</a>
+        on 2024-02-15 23:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgasner">@mgasner</a> on 2024-02-15 23:54</div>
+            <div class="timeline-body"><p>Are there plans to support Alpine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 23:57</div>
+            <div class="timeline-body"><p>Hi. I believe we do! What isn't working?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-15 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgasner">@mgasner</a> on 2024-02-16 00:09</div>
+            <div class="timeline-body"><p>It may be an architecture issue -- I am on an M1 and with the following minimal dockerfile:</p>
+<pre><code>FROM python:3.10.11-alpine
+
+RUN apk update &amp;&amp; apk add --no-cache \
+    build-base \
+    curl \
+    rust \
+    cargo
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+</code></pre>
+<p>Get this error:</p>
+<pre><code> &gt; [4/8] RUN curl -LsSf https://astral.sh/uv/install.sh | sh:
+#8 1.702 ERROR: there isn't a package for aarch64-unknown-linux-musl-dynamic```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 00:20</div>
+            <div class="timeline-body"><p>Thanks for the details! I wonder if you can pick the correct <code>musl</code> build from our <a href="https://github.com/astral-sh/uv/releases">releases page</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgasner">@mgasner</a> on 2024-02-16 00:29</div>
+            <div class="timeline-body"><p>Thanks, that works!</p>
+<pre><code>FROM python:3.12.2-alpine
+
+RUN apk update &amp;&amp; apk add --no-cache \
+    build-base \
+    curl \ 
+    rust \ 
+    cargo
+
+RUN curl --proto '=https' --tlsv1.2 -LsSfO https://github.com/astral-sh/uv/releases/download/0.1.1/uv-aarch64-unknown-linux-musl.tar.gz &amp;&amp; \
+    tar -xzvf uv-aarch64-unknown-linux-musl.tar.gz &amp;&amp; \
+    mv uv-aarch64-unknown-linux-musl/uv /bin/ &amp;&amp; \
+    rm -rfv uv-aarch64-unknown-linux-musl*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 00:33</div>
+            <div class="timeline-body"><p>We'll get the installer fixed. Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgasner">@mgasner</a> on 2024-02-16 00:36</div>
+            <div class="timeline-body"><p>There may be some further issues -- running <code>uv</code> works fine, but then attempting to run actual commands leads to more errors, e.g.:</p>
+<pre><code>/ # uv venv
+  × Failed to detect the operating system version: Couldn't detect either glibc
+  │ version nor musl libc version, at least one of which is required
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgasner">@mgasner</a> on 2024-02-16 00:45</div>
+            <div class="timeline-body"><p>Fwiw, this is the output of <code>ldd</code> within the container (and unlike #1395, <code>/bin/ls</code> does exist and contains the appropriate reference)</p>
+<pre><code>/ # ldd
+musl libc (aarch64)
+Version 1.2.4
+Dynamic Program Loader
+Usage: /lib/ld-musl-aarch64.so.1 [options] [--] pathname
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support alpine linux" to "Support alpine linux (on Apple Silicon)" by @mgasner on 2024-02-16 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1427.html">astral-sh/uv#1427</a> on 2024-02-16 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support alpine linux (on Apple Silicon)" to "Installer does not work on Alpine Linux: no package for `aarch64-unknown-linux-musl-dynamic`" by @zanieb on 2024-02-16 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 04:43</div>
+            <div class="timeline-body"><p>We'll track the installer here and the OS detection issue over in https://github.com/astral-sh/uv/issues/1427</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 08:50</div>
+            <div class="timeline-body"><p>I'm looking at the installer script and the <code>get_architecture</code> function has a branch to detect &quot;dynamic-musl&quot;</p>
+<pre><code class="language-sh">    if [ &quot;$_ostype&quot; = Linux ]; then
+        if [ &quot;$(uname -o)&quot; = Android ]; then
+            _ostype=Android
+        fi
+        if ldd --version 2&gt;&amp;1 | grep -q 'musl'; then
+            _clibtype=&quot;musl-dynamic&quot;
+        # glibc, but is it a compatible glibc?
+        else
+            # Parsing version out from line 1 like:
+            # ldd (Ubuntu GLIBC 2.35-0ubuntu3.1) 2.35
+            _local_glibc=&quot;$(ldd --version | awk -F' ' '{ if (FNR&lt;=1) print $NF }')&quot;
+
+            if [ &quot;$(echo &quot;${_local_glibc}&quot; | awk -F. '{ print $1 }')&quot; = $BUILDER_GLIBC_MAJOR ] &amp;&amp; [ &quot;$(echo &quot;${_local_glibc}&quot; | awk -F. '{ print $2 }')&quot; -ge $BUILDER_GLIBC_SERIES ]; then
+                _clibtype=&quot;gnu&quot;
+            else
+                say &quot;System glibc version (\`${_local_glibc}') is too old; using musl&quot; &gt;&amp;2
+                _clibtype=&quot;musl-static&quot;
+            fi
+        fi
+    fi
+</code></pre>
+<p>The script then matches over the architecture and fails to match because there's no branch for aarm64 (there is for x86) musl-dynamic:</p>
+<pre><code class="language-sh"># Lookup what to download/unpack based on platform
+    case &quot;$_arch&quot; in 
+        &quot;aarch64-apple-darwin&quot;)
+            _artifact_name=&quot;uv-aarch64-apple-darwin.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;aarch64-unknown-linux-gnu&quot;)
+            _artifact_name=&quot;uv-aarch64-unknown-linux-gnu.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;aarch64-unknown-linux-musl&quot;)
+            _artifact_name=&quot;uv-aarch64-unknown-linux-musl.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;armv7-unknown-linux-gnueabihf&quot;)
+            _artifact_name=&quot;uv-armv7-unknown-linux-gnueabihf.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;i686-unknown-linux-gnu&quot;)
+            _artifact_name=&quot;uv-i686-unknown-linux-gnu.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;i686-unknown-linux-musl&quot;)
+            _artifact_name=&quot;uv-i686-unknown-linux-musl.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;powerpc64-unknown-linux-gnu&quot;)
+            _artifact_name=&quot;uv-powerpc64-unknown-linux-gnu.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;powerpc64le-unknown-linux-gnu&quot;)
+            _artifact_name=&quot;uv-powerpc64le-unknown-linux-gnu.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;s390x-unknown-linux-gnu&quot;)
+            _artifact_name=&quot;uv-s390x-unknown-linux-gnu.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;x86_64-apple-darwin&quot;)
+            _artifact_name=&quot;uv-x86_64-apple-darwin.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;x86_64-unknown-linux-gnu&quot;)
+            _artifact_name=&quot;uv-x86_64-unknown-linux-gnu.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;x86_64-unknown-linux-musl-dynamic&quot;)
+            _artifact_name=&quot;uv-x86_64-unknown-linux-musl.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        &quot;x86_64-unknown-linux-musl-static&quot;)
+            _artifact_name=&quot;uv-x86_64-unknown-linux-musl.tar.gz&quot;
+            _zip_ext=&quot;.tar.gz&quot;
+            _bins=&quot;uv&quot;
+            ;;
+        *)
+            err &quot;there isn't a package for $_arch&quot;
+            ;;
+    esac
+</code></pre>
+<p>It's unclear to me why cargo-dist only generates a branch for aarm64 but not x86. @Gankra is musl-dynamic not yet supported by cargo-dist or is there a mistake in our configuration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 09:08</div>
+            <div class="timeline-body"><p>Okay it seems that <code>cargo-dist</code> has an explicit fallback for x86 but not for aarm64:</p>
+<p>https://github.com/axodotdev/cargo-dist/blob/475794eadae3f6c52b45a61b47d996692ecc20c8/cargo-dist/src/tasks.rs#L1649-L1654</p>
+<p>Might be related to https://github.com/axodotdev/cargo-dist/issues/518</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-02-16 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-16 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-02-16 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-02-16 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1635.html">astral-sh/uv#1635</a> on 2024-02-19 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">musl</span> added by @konstin on 2024-02-20 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1927.html">astral-sh/uv#1927</a> on 2024-02-23 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 20:04</div>
+            <div class="timeline-body"><p>This should be fixed by https://github.com/astral-sh/uv/pull/1929 that will be part of the next release</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-23 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-23 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2732.html">astral-sh/uv#2732</a> on 2024-03-30 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../acts-project/acts/pulls/4104.html">acts-project/acts#4104</a> on 2025-02-20 13:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:21 UTC
+    </footer>
+</body>
+</html>

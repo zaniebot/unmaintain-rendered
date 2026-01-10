@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to use different index url with `pyproject.toml` when using `uv pip compile` - astral-sh/uv #4173</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to use different index url with `pyproject.toml` when using `uv pip compile`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4173">#4173</a>
+        opened by <a href="https://github.com/SamComber">@SamComber</a>
+        on 2024-06-09 17:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SamComber">@SamComber</a> on 2024-06-09 17:43</div>
+            <div class="timeline-body"><p>I'm trying to convert my Pipfile to a pyproject.toml, so that I can run:</p>
+<p><code>uv pip compile pyproject.toml --generate-hashes -o requirements-lock.txt</code></p>
+<p>The issue is I have a package, torch, that uses a different index in my Pipfile</p>
+<pre><code>[dev-packages]
+torch = { index = &quot;pytorch_cpu&quot;}
+
+[[source]]
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+verify_ssl = true
+name = &quot;pytorch_cpu&quot;
+</code></pre>
+<p>How can I reproduce what my Pipfile is achieving here, and specify a different index url to install <code>torch</code> here? Ideally I'd like to keep this all contained within <code>pyproject.toml</code> - is this possible?</p>
+<p>P.S. loving the blazing speed of <code>uv</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-09 17:45</div>
+            <div class="timeline-body"><p>You should be able to do:</p>
+<pre><code class="language-toml">[tool.uv.pip]
+extra-index-url = [&quot;https://download.pytorch.org/whl/cpu&quot;]
+</code></pre>
+<p>...in your <code>pyproject.toml</code>. We don't support assigning a package to a specific index yet but it's on the roadmap (#171).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-06-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-09 17:52</div>
+            <div class="timeline-body"><p>If you need Torch to be an optional dependency, we don't yet support development dependencies like that though it's coming soon (and already supported in <code>preview</code> mode but not everywhere you'd need it). So you would need to use extras, like:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+dev = [&quot;torch&quot;]
+</code></pre>
+<p>And then <code>uv pip compile pyproject.toml --extra dev --generate-hashes -o requirements-lock.txt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamComber">@SamComber</a> on 2024-06-10 08:45</div>
+            <div class="timeline-body"><p>Thank you @charliermarsh, will give this a whirl.</p>
+<p>One last blocker if you would care to help me out..</p>
+<p>Would you know how to install your project in editable mode? Is this possible?</p>
+<pre><code>[dev-packages]
+my_project = {editable = true, path = &quot;.&quot;}
+</code></pre>
+<p>I've been trying</p>
+<pre><code>[dev-packages]
+&quot;my_project@file:///Users/sam.comber/Documents/kraken/my_project&quot;
+</code></pre>
+<p><code>uv pip compile pyproject.toml --extra dev --generate-hashes -o requirements-lock.txt</code></p>
+<p>But I can't see the project as editable inside the <code>requirements-lock.txt?</code></p>
+<p><code>uv pip install --compile-bytecode -r requirements.lock -e .</code> works for me, but i need my project inside the lock file, otherwise <code>uv pip sync requirements.lock</code> will remove it and ill need to reinstall each time. Is this possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2024-06-12 18:40</div>
+            <div class="timeline-body"><p>I can answer this one. You want <code>printf '-e .' | uv pip sync - requirements.lock</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 22:26</div>
+            <div class="timeline-body"><p>Thanks @patrick-kidger :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-24 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-24 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15132.html">astral-sh/uv#15132</a> on 2025-08-09 13:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

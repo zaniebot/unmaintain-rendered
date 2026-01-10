@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn about error being related to a deprecated rule - astral-sh/ruff #18349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn about error being related to a deprecated rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18349">#18349</a>
+        opened by <a href="https://github.com/Andrej730">@Andrej730</a>
+        on 2025-05-28 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-28 09:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My case - was trying out Ruff and enabled <code>UP</code>. Going through the log of found errors, I've found that <a href="https://docs.astral.sh/ruff/rules/non-pep604-isinstance/">UP038</a> from my point of view seems unreasonable, checking the documentation I've found that it's actually deprecated and will be removed soon.</p>
+<p>A suggestion - <code>ruff check</code> to warn that found error is related to a deprecated rule, so it will be possible to find deprecated rules just by using <code>ruff</code>, without checking documentation. This would improve rule deprecation discoverability.</p>
+<p>(I'm hope I'm not missing some option that already does that, but couldn't find anything related in https://docs.astral.sh/ruff/settings/)</p>
+<pre><code class="language-python">a = 25
+print(isinstance(25, (str, int)))
+# ruff check L:\1_test.py --select UP --target-version py311
+# UP038 Use `X | Y` in `isinstance` call instead of `(X, Y)`
+#   |
+# 2 | a = 25
+# 3 | print(isinstance(25, (str, int)))
+#   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^ UP038
+#   |
+#   = help: Convert to `X | Y`
+# 
+# Found 1 error.
+# No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 10:41</div>
+            <div class="timeline-body"><p>This should already be the case:</p>
+<pre><code class="language-shell">❯ uvx ruff@latest check --select=UP038 
+Installed 1 package in 2ms
+warning: Rule `UP038` is deprecated and will be removed in a future release.
+All checks passed!
+</code></pre>
+<p>What version of Ruff are you using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-05-28 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-28 11:11</div>
+            <div class="timeline-body"><p>ruff version:</p>
+<pre><code>PS L:\&gt; uvx ruff@latest --version                                                               
+Installed 1 package in 7ms
+ruff 0.11.11
+PS L:\&gt; uvx ruff@latest check L:\1_test.py --select UP --target-version py311
+Installed 1 package in 8ms
+1_test.py:2:7: UP038 Use `X | Y` in `isinstance` call instead of `(X, Y)`
+  |
+1 | a = 25
+2 | print(isinstance(25, (str, int)))
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^ UP038
+  |
+  = help: Convert to `X | Y`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>Oh, I see, it seems warning only occurs if you run deprecated rule directly.</p>
+<pre><code>PS L:\&gt; uvx ruff@latest check L:\1_test.py --select UP038 --target-version py311
+Installed 1 package in 8ms
+warning: Rule `UP038` is deprecated and will be removed in a future release.
+1_test.py:2:7: UP038 Use `X | Y` in `isinstance` call instead of `(X, Y)`
+  |
+1 | a = 25
+2 | print(isinstance(25, (str, int)))
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^ UP038
+  |
+  = help: Convert to `X | Y`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 16:27</div>
+            <div class="timeline-body"><p>Yeah, I'm somewhat surprise that we include deprecated rules in cases where there's no direct match</p>
+<p>This was implemented in https://github.com/astral-sh/ruff/pull/9689 but I couldn't find much rational to why we include deprecated rules when they're not explicitly selected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 16:34</div>
+            <div class="timeline-body"><p>It seems I raised this concern on an earlier PR https://github.com/astral-sh/ruff/pull/10497#issuecomment-2188376434</p>
+<p>I'd be interested to hear from more folks on what they think (also @zanieb as the author of our rule deprecation infrastructure)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-05-28 18:10</div>
+            <div class="timeline-body"><blockquote>
+<p>but I couldn't find much rational to why we include deprecated rules when they're not explicitly selected.</p>
+</blockquote>
+<p>I had the same thought meeting this, but it does make some sense - e.g. user is using <code>UP</code> and relying on all it's rules and maybe they find deprecated rule useful. So from their POV they might never know that rule is no longer working, if it will be just removed from <code>UP</code>, because it's just got deprecated.</p>
+<p>But it has the downside that when someone is just starting to use Ruff, like me, and when trying to select a group of rules to try out, they'll need to get some of those that are reasonably deprecated and they'll need to start excluding stuff, even though you just started and never met those rules before. No idea if there's some middle ground to satisfy both cases.</p>
+<p>Personally, I'd prefer getting all the rules when selecting the group, including the deprecated ones, but Ruff somehow communicating that the rule that just got triggered is deprecated and error should be taken with a grain of salt. But that's just me, generally new users would expect deprecated rules to be just excluded for a smoother starting experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-02 09:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I had the same thought meeting this, but it does make some sense - e.g. user is using UP and relying on all it's rules and maybe they find deprecated rule useful. So from their POV they might never know that rule is no longer working, if it will be just removed from UP, because it's just got deprecated.</p>
+</blockquote>
+<p>I can follow this reasoning. But the rule gets &quot;removed&quot; once we promote it from deprecated to removed. That means we only defer the point where users lose access to a rule.</p>
+<p>Given that we have a high bar for deprecating rules (they have to be harmful), I think it would be a better outcome to exclude them when they're deprecated. It avoids confusion for new users but also existing users that just haven't run into whatever rough edges the rule has (and is the reason why it gets removed).</p>
+<blockquote>
+<p>Personally, I'd prefer getting all the rules when selecting the group, including the deprecated ones, but Ruff somehow communicating that the rule that just got triggered is deprecated and error should be taken with a grain of salt.</p>
+</blockquote>
+<p>I think this would be annoying for users. Every user then starts seeing a deprecated warning and they then need to figure out how they can silence it. I'm not even sure if adding the rule to `ignore is sufficient to silence it.</p>
+<p>CC: @ntBre  @dylwil3 wdyt? this might be a smaller change that we could ship as part of the minor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-02 12:38</div>
+            <div class="timeline-body"><p>I think it makes sense to exclude the deprecated rules from selection with their group. It's also nice that we already have a warning for the direct match case, which the group exclusion would push users towards, if they <em>really</em> want the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-02 13:47</div>
+            <div class="timeline-body"><p>Agreed - deprecated rules should only be allowed to be deliberately, individually selected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-06-02 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-02 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-06-02 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.12" by @MichaReiser on 2025-06-02 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 18:51</div>
+            <div class="timeline-body"><p>I'm supportive of this change, but then we need to defer deprecations to breaking releases and I think I originally was optimizing for being able to perform deprecations in arbitrary releases (that's my general pattern, introducing warnings as early as possible).</p>
+<p>If the pitch is to remove selection of rules on deprecation in non-breaking releases, I'm strongly opposed.</p>
+<p>Another option is that we add <code>SoftDeprecated</code> and a <code>HardDeprecated</code> types, with these two different behaviors. I don't really think that's merited, but figure I'd throw it out there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-03 06:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm supportive of this change, but then we need to defer deprecations to breaking releases and I think I originally was optimizing for being able to perform deprecations in arbitrary releases (that's my general pattern, introducing warnings as early as possible).</p>
+</blockquote>
+<p>Oh, that makes sense. I don't think we ever did this because we considered breaking for users that explicitly opt in to the rule (you see a warning and there's nothing you can do about it). But it's a good call out that we should also update the versioning policy if we make this change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.12" by @ntBre on 2025-06-10 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.13" by @ntBre on 2025-06-10 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-08-23 19:56</div>
+            <div class="timeline-body"><p>Hi, what's the status of this?</p>
+<p>I found myself in the same situation as @Andrej730, which led me here.</p>
+<p>The issue is marked with &quot;help-wanted&quot;, so does this mean that nobody is working on it? I've never contributed to ruff and I have limited time, but if the effort is reasonnable and you provide me with some guidance, I can work on it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-25 16:45</div>
+            <div class="timeline-body"><p>Yeah, I don't think anyone has started working on this yet. From the thread here, it sounds like the changes that need to be done are:</p>
+<ul>
+<li>Requiring explicit selection of deprecated rules
+That should be a fairly simple change in this area, where #10497 also modified:
+https://github.com/astral-sh/ruff/blob/db423ee9789b3a045266665198c4b25f31a23b6f/crates/ruff_linter/src/rule_selector.rs#L213-L220</li>
+<li>Updating our versioning policy to make &quot;A rule is deprecated&quot; a minor version change
+https://github.com/astral-sh/ruff/blob/67200c966852fdc038be9c17a7578f80f5ddcd9d/docs/versioning.md?plain=1#L14-L22
+It looks like we don't currently have this listed anywhere in the versioning policy</li>
+</ul>
+<p>With the first of these, we'll probably also want a CLI test in this file: <a href="https://github.com/astral-sh/ruff/blob/67200c966852fdc038be9c17a7578f80f5ddcd9d/crates/ruff/tests/lint.rs"><code>lint.rs</code></a>. Although we might already have this covered in the tests around here:</p>
+<p>https://github.com/astral-sh/ruff/blob/67200c966852fdc038be9c17a7578f80f5ddcd9d/crates/ruff/tests/integration_test.rs#L1472-L1481</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20167.html">astral-sh/ruff#20167</a> on 2025-08-30 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-08 16:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

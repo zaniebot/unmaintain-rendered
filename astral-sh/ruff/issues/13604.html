@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-bandit/S506] Dont report violation when using BaseLoader - astral-sh/ruff #13604</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-bandit/S506] Dont report violation when using BaseLoader</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13604">#13604</a>
+        opened by <a href="https://github.com/mcmitch">@mcmitch</a>
+        on 2024-10-02 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mcmitch">@mcmitch</a> on 2024-10-02 12:20</div>
+            <div class="timeline-body"><p>From https://pyyaml.org/wiki/PyYAMLDocumentation</p>
+<ul>
+<li>Loader supports all predefined tags and may construct an arbitrary Python object. Therefore it is not safe to use Loader to load a document received from an untrusted source. By default, the functions scan, parse, compose, construct, and others use Loader.</li>
+<li>SafeLoader(stream) supports only standard YAML tags and thus it does not construct class instances and probably safe to use with documents received from an untrusted source. The functions safe_load and safe_load_all use SafeLoader to parse a stream.</li>
+<li>BaseLoader(stream) does not resolve or support any tags and construct only basic Python objects: lists, dictionaries and Unicode strings.</li>
+</ul>
+<p>For our project we are using the Baseloader, and do not want to use safeLoader, as this would not leave integer values as strings.  The baseloader is not the unsafe FullLoader, and should not be flagged as an exception to S506.</p>
+<p>Code to reproduce:</p>
+<pre><code class="language-python">with open('testfile.yaml') as fhandle:
+  loader_yaml = yaml.load(fhandle, Loader=yaml.Baseloader)
+</code></pre>
+<p>Ruff setting: [select = &quot;S506&quot;]
+Ruff version: 0.6.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-03 10:56</div>
+            <div class="timeline-body"><p>From my reading of the <code>pyyaml</code> docs, your rationale makes sense to me. I'm not a security expert, however, and it looks like we match bandit's original behaviour here (and it looks like they've had this behaviour for a long time).</p>
+<p>Digging into the source code for <code>pyyaml</code> a bit:</p>
+<ul>
+<li><code>BaseLoader</code> is defined <a href="https://github.com/yaml/pyyaml/blob/69c141adcf805c5ebdc9ba519927642ee5c7f639/lib/yaml/loader.py#L11-L19">here</a>, and <code>SafeLoader</code> <a href="https://github.com/yaml/pyyaml/blob/69c141adcf805c5ebdc9ba519927642ee5c7f639/lib/yaml/loader.py#L31C53-L39">here</a>. They're the same, except that <code>BaseLoader</code> has <code>BaseConstructor</code> and <code>BaseResolver</code> in its bases list, whereas <code>SafeLoader</code> has <code>SafeConstructor</code> and <code>Resolver</code> in its bases list.</li>
+<li><code>BaseConstructor</code> is <a href="https://github.com/yaml/pyyaml/blob/69c141adcf805c5ebdc9ba519927642ee5c7f639/lib/yaml/constructor.py#L19">here</a>, <code>BaseResolver</code> is <a href="https://github.com/yaml/pyyaml/blob/69c141adcf805c5ebdc9ba519927642ee5c7f639/lib/yaml/resolver.py#L12">here</a>, <code>SafeConstructor</code> is <a href="https://github.com/yaml/pyyaml/blob/69c141adcf805c5ebdc9ba519927642ee5c7f639/lib/yaml/constructor.py#L171">here</a>, <code>Resolver</code> is <a href="https://github.com/yaml/pyyaml/blob/69c141adcf805c5ebdc9ba519927642ee5c7f639/lib/yaml/resolver.py#L167">here</a>. <code>SafeConstructor</code> is a subclass of <code>BaseConstructor</code>; <code>Resolver</code> is a subclass of <code>BaseResolver</code>. <code>SafeConstructor</code> overrides many methods from <code>BaseConstructor</code>, but <code>Resolver</code> seems to be something of a pointless subclass that doesn't override anything from <code>BaseResolver</code>.</li>
+<li>From what I can <em>tell</em>, the methods overridden in <code>SafeConstructor</code> seem mainly to <em>extend</em> the capabilities provided in the <code>BaseConstructor</code> superclass, rather than overriding anything to make it <em>safer</em> --  i.e., exactly as you and the <code>pyyaml</code> docs state.</li>
+</ul>
+<p>@ericwb, sorry for the ping -- I don't suppose you'd be able to shed light on this behaviour from bandit, would you? Is there a reason why <code>SafeLoader</code> would be safer than <code>BaseLoader</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-10-03 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asears">@asears</a> on 2024-10-31 12:08</div>
+            <div class="timeline-body"><p>There's a SO post here with some useful info, though not much clarity in Bandit repo issues on the topic.</p>
+<p>https://stackoverflow.com/questions/73958193/are-there-any-cases-to-use-pyyaml-fullloader-or-baseloader-instead-of-safeloader</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

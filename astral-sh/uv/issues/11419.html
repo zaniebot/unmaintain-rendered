@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependencies with custom indexes lead to lockfile always being outdated - astral-sh/uv #11419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dependencies with custom indexes lead to lockfile always being outdated</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11419">#11419</a>
+        opened by <a href="https://github.com/ew-pallon">@ew-pallon</a>
+        on 2025-02-11 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ew-pallon">@ew-pallon</a> on 2025-02-11 12:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a setup with two packages, both using dependencies from custom indexes, the lockfile always appears outdated.</p>
+<h1>Reproduction</h1>
+<p><code>pkg_a/pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;pkg-a&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;torch==2.1.2&quot;
+]
+
+[[tool.uv.index]]
+name = &quot;torch-index&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = { index = &quot;torch-index&quot; }
+</code></pre>
+<p><code>pkg_b/pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;pkg-b&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;pkg-a&quot;,
+    &quot;cchttpserver&quot;
+]
+
+[tool.uv.sources]
+pkg-a = { path = &quot;../pkg_a/&quot;, editable = true }
+chttpserver = { index = &quot;hpk-index&quot; }
+
+[[tool.uv.index]]
+name = &quot;hpk-index&quot;
+url = &quot;https://m.devpi.net/hpk/dev/&quot;
+explicit = true
+</code></pre>
+<p>Then, run:</p>
+<pre><code>pkg_b $ uv lock
+Resolved 20 packages in 181ms
+pkg_b $ uv lock --check
+Resolved 20 packages in 526ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+<p>Subsequent executions of <code>uv lock</code> or <code>uv sync</code> do not make any changes to the lockfile, yet uv claims the lockfile is outdated.</p>
+<p>The issue only occurs when depencies with a custom index source exist in both <code>pkg_a</code> and <code>pkg_b</code>. If either one is removed, there is no problem.</p>
+<h1>Workaround</h1>
+<p>Adding the <code>[[tool.uv.index]]</code> section for <code>torch-index</code> to <code>pkg_b/pyproject.toml</code> works around the issue.</p>
+<h3>Platform</h3>
+<p>Darwin 24.2.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.30 (Homebrew 2025-02-10)</p>
+<h3>Python version</h3>
+<p>Python 3.10.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ew-pallon on 2025-02-11 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 13:26</div>
+            <div class="timeline-body"><p>Thanks, will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-11 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2025-02-11 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 14:14</div>
+            <div class="timeline-body"><p>The problem here is that this snippet from the validation step:</p>
+<pre><code class="language-rust">// If the lockfile references an index that was not provided, we can't validate it.
+if let Source::Registry(index) = &amp;package.id.source {
+    match index {
+        RegistrySource::Url(url) =&gt; {
+            if remotes
+                .as_ref()
+                .is_some_and(|remotes| !remotes.contains(url))
+            {
+                let name = &amp;package.id.name;
+                let version = &amp;package
+                    .id
+                    .version
+                    .as_ref()
+                    .expect(&quot;version for registry source&quot;);
+                return Ok(SatisfiesResult::MissingRemoteIndex(name, version, url));
+            }
+        }
+        RegistrySource::Path(path) =&gt; {
+            if locals.as_ref().is_some_and(|locals| !locals.contains(path)) {
+                let name = &amp;package.id.name;
+                let version = &amp;package
+                    .id
+                    .version
+                    .as_ref()
+                    .expect(&quot;version for registry source&quot;);
+                return Ok(SatisfiesResult::MissingLocalIndex(name, version, path));
+            }
+        }
+    };
+}
+</code></pre>
+<p>Only looks at indexes provided in the root <code>pyproject.toml</code>. But when resolving, we respect explicit indexes defined in arbitrary path and Git projects. So there's a mismatch. I don't quite know how to solve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ew-pallon">@ew-pallon</a> on 2025-02-12 10:36</div>
+            <div class="timeline-body"><p>Thank you for looking into it! I'm fine with the workaround for now, but resolving this issue (or providing a useful error message) might help others in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Dependecies with custom indexes lead to lockfile always being outdated" to "Dependencies with custom indexes lead to lockfile always being outdated" by @ew-pallon on 2025-02-12 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 18:20</div>
+            <div class="timeline-body"><p>👍 Yeah we should definitely fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HenriBlacksmith">@HenriBlacksmith</a> on 2025-02-17 13:35</div>
+            <div class="timeline-body"><p>Not sure wether it is related, but when adding or removing an index via <code>[[tool.uv.index]]</code> in <code>pyproject.toml</code> with <code>uv==0.6.0</code> has no effect on <code>uv.lock</code>:</p>
+<pre><code class="language-shell">uv lock --check
+Resolved 62 packages in 0.59ms
+</code></pre>
+<p>Adding or removing an index in <code>pyproject.toml</code> should cause the lockfile to be outdated (all the references are targeting the default or the removed index).</p>
+<p>The workaround being:</p>
+<pre><code class="language-shell">rm uv.lock
+uv lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 15:20</div>
+            <div class="timeline-body"><p>Do you mind creating a separate issue with a minimal reproduction (i.e., the exact commands you ran, the contents of the <code>pyproject.toml</code> before and after, etc.)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-17 15:21</div>
+            <div class="timeline-body"><p>(see https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HenriBlacksmith">@HenriBlacksmith</a> on 2025-02-18 13:05</div>
+            <div class="timeline-body"><p>Here is the new issue with an MRE (I found a PyPI mirror for the MRE): https://github.com/astral-sh/uv/issues/11596#issue-2860388118</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12116.html">astral-sh/uv#12116</a> on 2025-03-14 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rayanramoul">@rayanramoul</a> on 2025-05-20 17:20</div>
+            <div class="timeline-body"><p>Hello!
+Just checking in to see if there’s been any update on this. We’re still running into this issue (that i also described <a href="https://github.com/astral-sh/uv/issues/12116">here</a>) in our projects, and it’s proving to be a blocker. Appreciate any insights—thanks! 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-21 12:08</div>
+            <div class="timeline-body"><p>I'll try to take another look soon, sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-06-11 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14003.html">astral-sh/uv#14003</a> on 2025-06-12 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14876.html">astral-sh/uv#14876</a> on 2025-07-24 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-25 12:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

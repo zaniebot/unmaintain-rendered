@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be more explicit about inability to resolve workspace `requires-python` - astral-sh/uv #10835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Be more explicit about inability to resolve workspace `requires-python`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10835">#10835</a>
+        opened by <a href="https://github.com/alex-debrecht-kcftech">@alex-debrecht-kcftech</a>
+        on 2025-01-22 01:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alex-debrecht-kcftech">@alex-debrecht-kcftech</a> on 2025-01-22 01:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When attempting to resolve dependencies in a workspace where the <code>requires-python</code> is set with a lower bound in the root and in each project, but the versions are incompatible, something like the following is printed:</p>
+<pre><code>warning: The workspace `requires-python` value (``) does not contain a lower bound. Add a lower bound to indicate the minimum compatible Python version (e.g., `&gt;=3.12`).
+⠼ Resolving dependencies...                                                                                                                                                                                                                  
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version () does not satisfy Python&gt;=3.12 and your workspace requires some-package:dev, we can conclude that your workspace's requirements are unsatisfiable.
+</code></pre>
+<p>This is misleading because the workspace <code>requires-python</code> is non-empty and does include a lower bound. Perhaps more appropriate behavior would be to error earlier on an empty resolved <code>requires-python</code>?</p>
+<p>Note the example structure instead prints:</p>
+<pre><code>warning: The workspace `requires-python` value (``) does not contain a lower bound. Add a lower bound to indicate the minimum compatible Python version (e.g., `&gt;=3.12`).
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version () does not satisfy Python&gt;=3.10 and albatross depends on Python&gt;=3.10, we can conclude that albatross's requirements are unsatisfiable.
+      And because your workspace requires albatross, we can conclude that your workspace's requirements are unsatisfiable.
+
+      hint: The `requires-python` value () includes Python versions that are not supported by your dependencies (e.g., albatross==0.1.0 only supports &gt;=3.10). Consider using a more restrictive `requires-python` value (like &gt;=3.10).
+</code></pre>
+<p>I'm not easily able to reproduce the exact behavior in the first example.</p>
+<h3>Example</h3>
+<p>Using the repo structure from the docs:</p>
+<pre><code>albatross
+├── packages
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   └── seeds
+│       ├── pyproject.toml
+├── pyproject.toml
+</code></pre>
+<p>pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+</code></pre>
+<p>packages/bird-feeder/pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;bird-feeder&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.10&quot;
+</code></pre>
+<p>packages/seeds/pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;seeds&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @alex-debrecht-kcftech on 2025-01-22 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 01:07</div>
+            <div class="timeline-body"><p>In case it's helpful, your Python requirements are disjoint. There is no version that can possibly satisfy both <code>==3.10</code> and <code>&gt;=3.12</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-01-22 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-01-22 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex-debrecht-kcftech">@alex-debrecht-kcftech</a> on 2025-01-22 01:13</div>
+            <div class="timeline-body"><p>Yep, my suggestion was just to be more explicit about that fact in the output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-22 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10841.html">astral-sh/uv#10841</a> on 2025-01-22 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-22 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-22 17:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv.lock does not stay synced with pyproject.toml requirements - astral-sh/uv #9923</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv.lock does not stay synced with pyproject.toml requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9923">#9923</a>
+        opened by <a href="https://github.com/zackees">@zackees</a>
+        on 2024-12-15 23:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zackees">@zackees</a> on 2024-12-15 23:44</div>
+            <div class="timeline-body"><p>Hi there, I'm using <code>uv</code> for a large open source library https://github.com/fastled/fastled</p>
+<p>First of all, GREAT TOOL!!!! You eliminated my own duct-taped solution for boot strapping and venv creation.</p>
+<p>I've been tracking down an issue where when updating one of the side dependencies that I control, it was difficult to update. You'll see in the pyproject.toml file I have a dependency called <code>fastled</code> which lives in another repo, because reasons.</p>
+<p>I would bump the dep to the next version on pypi, update the dep in the pyproject.toml to match, then get an error from uv saying that the program couldn't run because the results were unsatisfiable because of this <code>fastled</code> dependency version number.</p>
+<p>I was pretty lost at what was causing this and it seemed like black magic was needed to get uv to run again.</p>
+<p>I finally tracked the issue down to the uv.lock file. It does not re-sync with changes in the pyproject.toml file. But it will detect that the changes exist.</p>
+<p>I'm sure you have a lot of bugs and features on your plate so I wanted to offer a humble suggestion to avoid this really bad foot gun: simply issue a warning that the dependencies are out of sync with what's in the uv.lock file. Just this informative warning alone would give developers the hint they need to simply delete the uv.lock file and move on.</p>
+<p>Again, thank you very much for this tool. You guys ROCK!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-16 01:03</div>
+            <div class="timeline-body"><p>We usually update the lockfile automatically, so perhaps this is a bug? Can you share a reproducible example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-16 01:03</div>
+            <div class="timeline-body"><p>(Also great to hear you like the tool &lt;3)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-16 19:52</div>
+            <div class="timeline-body"><p>It's tricky to reproduce.</p>
+<p>The dependency is here: https://github.com/zackees/fastled-wasm</p>
+<p>And the target manifesting the bug is the repo in my original post.</p>
+<p>What I have to do is:</p>
+<ol>
+<li>Update the dependency, bump it to the next revision. Then I sit back and let the builder push to pypi.</li>
+<li>Then I go to the target repo (github.com/fastled/fastled), bump up the dep in pyproject.</li>
+<li>Then I run <code>./test</code> which will invoke uv on a bunch of things.</li>
+<li>uv attempts to load the pyproject.toml, then tells me the deps requirements are unsatisfiable.</li>
+</ol>
+<p>I can't progress until I delete uv.lock, or do a rain dance and invoking ./clean and ./install over and over again. It will just start working.</p>
+<p>If I get a reproducable case Ill post here.</p>
+<p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-16 20:14</div>
+            <div class="timeline-body"><p>It sounds like the 10 minutes PyPI cache, perhaps use <code>--refresh-package fastled-wasm</code> to avoid caching that dependency during this update? When you do (2) you should update the lockfile too, do you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-16 23:41</div>
+            <div class="timeline-body"><p>I do not update the cache. However I do enter into the environment via .venv/Scripts/activate (I'm on git-bash on windows FYI) and force the update, which does indeed install fastled to the new version. I then deactivate the environment the run <code>./test</code> which will then invoke uv run on the linters, then tests. uv fails immediately as soon as it's called.</p>
+<p>I'll try and archive the repo as soon as it happens again and see if you can repro it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-16 23:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I do not update the cache.</p>
+</blockquote>
+<p>I'm not sure what you mean by this? uv will cache dependency metadata for 10 minutes. If you upload a new version, it can take up to 10 minutes for uv to invalidate the cached local metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-17 05:33</div>
+            <div class="timeline-body"><p>Nope.</p>
+<p>I was iterating on one project for hours trying to get code signing to work via github actions. There were like 40 revisions. It wouldn't update to any of them. I could absolutely enter into the venv environment though, pip would install it just fine. UV wouldn't.</p>
+<p>As soon as a I remove the uv.lock file it succeeded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-12-17 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-31 04:10</div>
+            <div class="timeline-body"><p>Just had it happen again</p>
+<p>Attached is a full archive of the FastLED repo when it happens</p>
+<pre><code>Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled (master)
+$ ./install
+Using CPython 3.11.5
+Creating virtual environment at: .venv
+Activate with: .venv\Scripts\activate
+  × No solution found when resolving
+  │ dependencies:
+  ╰─▶ Because only fastled&lt;=1.2.10 is
+      available and ci==0.1.0 depends on
+      fastled&gt;=1.2.11, we can conclude that
+      ci==0.1.0 cannot be used.
+      And because only ci==0.1.0 is
+      available and you require ci, we can
+      conclude that your requirements are
+      unsatisfiable.
+
+Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled (master)
+$ pip install fastled==1.2.11
+WARNING: Ignoring invalid distribution ~dvanced-aicode (C:\Users\niteris\AppData\Local\Programs\Python\Python311\Lib\site-packages)       
+Requirement already satisfied: fastled==1.2.11 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (1.2.11)     
+Requirement already satisfied: docker&gt;=7.1.0 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (7.1.0)
+Requirement already satisfied: httpx&gt;=0.28.1 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (0.28.1)
+Requirement already satisfied: watchdog&gt;=6.0.0 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (6.0.0)
+Requirement already satisfied: download&gt;=0.3.5 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (0.3.5)
+Requirement already satisfied: filelock&gt;=3.16.1 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (3.16.1)
+Requirement already satisfied: disklru&gt;=2.0.1 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (2.0.1)
+Requirement already satisfied: appdirs&gt;=1.4.4 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (1.4.4)
+Requirement already satisfied: rapidfuzz&gt;=3.10.1 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (3.10.1)
+Requirement already satisfied: progress&gt;=1.6 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (1.6)
+Requirement already satisfied: nodejs-bin[cmd] in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from fastled==1.2.11) (18.4.0a4)
+Requirement already satisfied: pywin32&gt;=304 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from docker&gt;=7.1.0-&gt;fastled==1.2.11) (306)
+Requirement already satisfied: requests&gt;=2.26.0 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from docker&gt;=7.1.0-&gt;fastled==1.2.11) (2.32.3)
+Requirement already satisfied: urllib3&gt;=1.26.0 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from docker&gt;=7.1.0-&gt;fastled==1.2.11) (2.2.3)
+Requirement already satisfied: tqdm in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from download&gt;=0.3.5-&gt;fastled==1.2.11) (4.66.5)
+Requirement already satisfied: six in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from download&gt;=0.3.5-&gt;fastled==1.2.11) (1.16.0)
+Requirement already satisfied: anyio in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from httpx&gt;=0.28.1-&gt;fastled==1.2.11) (3.7.1)
+Requirement already satisfied: certifi in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from httpx&gt;=0.28.1-&gt;fastled==1.2.11) (2024.7.4)
+Requirement already satisfied: httpcore==1.* in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from httpx&gt;=0.28.1-&gt;fastled==1.2.11) (1.0.5)
+Requirement already satisfied: idna in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from httpx&gt;=0.28.1-&gt;fastled==1.2.11) (2.8)
+Requirement already satisfied: h11&lt;0.15,&gt;=0.13 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from httpcore==1.*-&gt;httpx&gt;=0.28.1-&gt;fastled==1.2.11) (0.14.0)
+Requirement already satisfied: nodejs-cmd in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from nodejs-bin[cmd]-&gt;fastled==1.2.11) (0.0.1a0)
+Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from requests&gt;=2.26.0-&gt;docker&gt;=7.1.0-&gt;fastled==1.2.11) (3.3.2)
+Requirement already satisfied: sniffio&gt;=1.1 in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from anyio-&gt;httpx&gt;=0.28.1-&gt;fastled==1.2.11) (1.3.1)
+Requirement already satisfied: colorama in c:\users\niteris\appdata\local\programs\python\python311\lib\site-packages (from tqdm-&gt;download&gt;=0.3.5-&gt;fastled==1.2.11) (0.4.6)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-31 04:12</div>
+            <div class="timeline-body"><p>It's about a 1gb so far to large for github.</p>
+<p>However, I've put this on a private server for you to download. I'll keep it open for 24 hours:</p>
+<p>https://5a97-98-97-26-124.ngrok-free.app</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-31 04:13</div>
+            <div class="timeline-body"><p>It also just resolved itself, so the 5 min limit on a the pypi cache seems like it's a good bet that this is what is happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-31 06:20</div>
+            <div class="timeline-body"><p>I think you just need to add <code>--refresh-package</code> to your <code>uv pip install .</code> invocation then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2024-12-31 19:03</div>
+            <div class="timeline-body"><p>I know that pypi does NOT reflect versions immediately available.</p>
+<p>I just saw this same error propagate through our test chain, we test lots of devices for FastLED.</p>
+<p>So what I think is happening is this:</p>
+<ul>
+<li>New fastled package get's uploaded to pypi</li>
+<li>The first pip install fastled==XX will fail, pretty much guaranteed even minutes after it's uploaded<ul>
+<li>However, immediate repeated pip install fastled==YYYY will make it come online faster</li>
+</ul>
+</li>
+</ul>
+<p>What this means is then</p>
+<ul>
+<li>pypi has a poisoned cache until second or 3rd pip install...</li>
+<li>uv's cache get's poisoned when it's the first caller to pip install..<ul>
+<li>Now uv's cache will remain poisoned for the next 5 mins</li>
+</ul>
+</li>
+</ul>
+<h3>Work around</h3>
+<p>does this work</p>
+<p><code>uv run --refresh script.py</code></p>
+<h3>Work around to prevent cache poisoning</h3>
+<p>Since github actions does the pypi publishing, after the artifact is posted, i'm going to run the folllowing:</p>
+<pre><code class="language-python">for i in range(10):
+  os.system(f&quot;pip install fastled=={version}&quot;)
+  time.sleep(1)
+</code></pre>
+<p>Hopefully this will force the dependency to become immediately available and prevent the uv cache from becoming poisoned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2025-01-01 00:58</div>
+            <div class="timeline-body"><p>Yeah, just hit this again while doing <code>uv sync</code></p>
+<p>Now I have to wait for some timeout to happen. Output:</p>
+<pre><code class="language-bash">Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only static-npm&lt;=1.0.4 is available and your project depends on static-npm&gt;=1.0.5, we can conclude that     
+      your project's requirements are unsatisfiable.
+
+Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ pip install static-npm==1.0.5
+ERROR: Could not find a version that satisfies the requirement static-npm==1.0.5 (from versions: 1.0.0, 1.0.1, 1.0.2, 1.0.3, 1.0.4)
+ERROR: No matching distribution found for static-npm==1.0.5
+
+Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ pip install static-npm==1.0.5
+Collecting static-npm==1.0.5
+  Downloading static_npm-1.0.5-py2.py3-none-any.whl.metadata (2.2 kB)
+Requirement already satisfied: download in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from static-npm==1.0.5) (0.3.5)
+Requirement already satisfied: appdirs in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from static-npm==1.0.5) (1.4.4)
+Requirement already satisfied: filelock in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from static-npm==1.0.5) (3.16.1)
+Requirement already satisfied: tqdm in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from download-&gt;static-npm==1.0.5) (4.66.6)
+Requirement already satisfied: six in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from download-&gt;static-npm==1.0.5) (1.16.0)
+Requirement already satisfied: requests in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from download-&gt;static-npm==1.0.5) (2.31.0)
+Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from requests-&gt;download-&gt;static-npm==1.0.5) (3.4.0)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from requests-&gt;download-&gt;static-npm==1.0.5) (3.10)
+Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from requests-&gt;download-&gt;static-npm==1.0.5) (2.0.7)
+Requirement already satisfied: certifi&gt;=2017.4.17 in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from requests-&gt;download-&gt;static-npm==1.0.5) (2024.8.30)
+Requirement already satisfied: colorama in c:\users\niteris\dev\fastled-wasm\.venv\lib\site-packages (from tqdm-&gt;download-&gt;static-npm==1.0.5) (0.4.6)
+Downloading static_npm-1.0.5-py2.py3-none-any.whl (9.0 kB)
+Installing collected packages: static-npm
+  Attempting uninstall: static-npm
+    Found existing installation: static_npm 1.0.4
+    Uninstalling static_npm-1.0.4:
+      Successfully uninstalled static_npm-1.0.4
+Successfully installed static-npm-1.0.5
+
+Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only static-npm&lt;=1.0.4 is available and your project depends on static-npm&gt;=1.0.5, we can conclude that     
+      your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2025-01-01 01:00</div>
+            <div class="timeline-body"><p>I can even uv pip install it, but uv sync then fails.</p>
+<pre><code class="language-bash">Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ uv pip install static-npm==1.0.5
+Audited 1 package in 98ms
+
+Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ uv pip install static-npm==1.0.5 --refresh
+Audited 1 package in 93ms
+
+Zach Vorhies@DESKTOP-I3718DO MINGW64 ~/dev/fastled-wasm (main)
+$ uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only static-npm&lt;=1.0.4 is available and your project depends on static-npm&gt;=1.0.5, we can conclude that     
+      your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackees">@zackees</a> on 2025-01-01 01:10</div>
+            <div class="timeline-body"><p>Oh I see, other's are reporting the problem too:</p>
+<p>https://github.com/astral-sh/uv/issues/2538</p>
+<p>Can you just make uv sync break through the cache on initial failure?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:51 UTC
+    </footer>
+</body>
+</html>

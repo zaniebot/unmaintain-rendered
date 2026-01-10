@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce CI time - astral-sh/uv #5713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce CI time</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5713">#5713</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-01 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-01 20:41</div>
+            <div class="timeline-body"><p>Running tests in CI is now &gt;8 minutes (and was previously &lt;1 minute). We've done a lot to optimize this previously, e.g.:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/889</li>
+<li>https://github.com/astral-sh/uv/pull/3044</li>
+<li>https://github.com/astral-sh/uv/pull/875</li>
+<li>https://github.com/astral-sh/uv/pull/887</li>
+<li>#3508</li>
+<li>https://github.com/astral-sh/uv/pull/1830</li>
+<li>#1832</li>
+<li>#2933</li>
+<li>... more examples coming</li>
+</ul>
+<p>But, CI time is always growing as we add more features and coverage. This is a tracking issue to improve the situation and discuss sources of slowness.</p>
+<p>See also:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/5711</li>
+<li>#878</li>
+<li>https://github.com/astral-sh/uv/pull/2628#issuecomment-2017694750</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2024-08-01 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracking</span> added by @zanieb on 2024-08-01 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-01 22:11</div>
+            <div class="timeline-body"><p>Would it be absurd to introduce &quot;CI&quot; time regression checks in CI like the CodSpeed benches? Unfortunately the GitHub Runner performance is super noisy so it might not work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2024-08-01 22:16</div>
+            <div class="timeline-body"><p>Wonder if <a href="https://dagger.io">Dagger</a> could help here 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-01 22:29</div>
+            <div class="timeline-body"><p>Arguably self-hosted runners could possibly help here too, but the maintenance/security/cost burden is likely too large</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-01 22:31</div>
+            <div class="timeline-body"><p>I strongly considered self-hosted runners, but it seemed painful to orchestrate Windows runners in particular.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5714.html">astral-sh/uv#5714</a> on 2024-08-01 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5715.html">astral-sh/uv#5715</a> on 2024-08-01 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5717.html">astral-sh/uv#5717</a> on 2024-08-01 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-02 01:03</div>
+            <div class="timeline-body"><p>I also very much want to look into something like https://github.com/astral-sh/uv/pull/609 again to cache our network traffic — I think that'd help a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-02 01:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I also very much want to look into something like #609 again to cache our network traffic — I think that'd help a lot.</p>
+</blockquote>
+<p>At least for python, maybe worth using something like https://github.com/hauntsaninja/nginx_pypi_cache and saving a copy of the cache as a github cache and reloading it. I actually use it locally a lot to speed up tests. Not sure how it would perform in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 02:00</div>
+            <div class="timeline-body"><p>That strikes me as a good idea...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-02 02:13</div>
+            <div class="timeline-body"><p>Ah that might be easier than using mitmproxy or rolling our own proxy in Rust. Thanks for the link!</p>
+<p>edit: I created a published image at https://github.com/astral-sh/nginx_pypi_cache/pkgs/container/nginx_pypi_cache we can use in our jobs if someone wants to trial it in Ubuntu (or locally even, to start)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5726.html">astral-sh/uv#5726</a> on 2024-08-02 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 20:07</div>
+            <div class="timeline-body"><p>Some progress with:</p>
+<ul>
+<li>#5874</li>
+<li>#5883</li>
+<li>#5873</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 20:08</div>
+            <div class="timeline-body"><p>Linux is acceptably fast now. We're at the limit for macOS machine size without going to alternative runner providers. There are larger Windows runners, maybe I should test one (#5890). Cost may be a problem at some point, alternative runner providers may be cheaper (often saying things like a 2x cost reduction).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5890.html">astral-sh/uv#5890</a> on 2024-08-07 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5891.html">astral-sh/uv#5891</a> on 2024-08-07 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5892.html">astral-sh/uv#5892</a> on 2024-08-07 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-09 04:12</div>
+            <div class="timeline-body"><p>have we considered using https://bazel.build/? (correct me if i'm wrong but <code>cargo test</code> doesn't seem to skip the tests when none of their dependencies changed)</p>
+<p>admittedly adding bazel would significantly increase the complexity though 🙀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-08-09 07:43</div>
+            <div class="timeline-body"><p>Yes, I've heard a lot about complaints regarding bazel's complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-09 19:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, I've heard a lot about complaints regarding bazel's complexity.</p>
+</blockquote>
+<p>this is definitely true - i've seen it improving the CI time drastically at the same time though so maybe something to consider down the line if there's no other option...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6680.html">astral-sh/uv#6680</a> on 2024-09-05 00:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

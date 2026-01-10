@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a project type that uses `[dependency-groups]` only and doesn't define a `[project]` table? Sync `dependency-groups.main` by default? - astral-sh/uv #8582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a project type that uses `[dependency-groups]` only and doesn't define a `[project]` table? Sync `dependency-groups.main` by default?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8582">#8582</a>
+        opened by <a href="https://github.com/matterhorn103">@matterhorn103</a>
+        on 2024-10-25 23:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-10-25 23:43</div>
+            <div class="timeline-body"><p>Amazing to see PEP-735 so fast! And cool of you to adopt it immediately for dev dependencies. You are doing great things 🙂</p>
+<p>One of the motivating use-cases for the PEP was science/data science projects that need to specify dependencies but aren't packages. One reason being that a <code>[project]</code> table needs a name and a version which can is a bit weird in that context. Another was the attitude of some of the Python devs that <code>project.dependencies]</code> should only be used by things that get packaged and not as an alternative to <code>requirements.txt</code>.</p>
+<p>The PEP <a href="https://peps.python.org/pep-0735/#data-science-projects">envisages</a> for this use-case that the <code>pyproject.toml</code> file wouldn't contain a <code>[project]</code> table at all but instead just a <code>[dependency-groups]</code> one containing a <code>main</code> group.</p>
+<p>I'm curious - have you guys considered supporting this exact scenario? By this I mean doing the following:</p>
+<ol>
+<li><p>Syncing a <code>dependency-groups.main</code> by default if present, i.e. special casing it in the same way as you have decided to do for <code>dependency-groups.dev</code> (which is a nice move by the way)</p>
+</li>
+<li><p>Adding a dependency to <code>dependency-groups.main</code> if <code>uv add</code> is run on a project whose <code>pyproject.toml</code> doesn't contain a <code>[project]</code> table</p>
+</li>
+<li><p>Creating a <code>pyproject.toml</code> that matches this setup for some new kind of project distinct from <code>--app</code>, <code>--lib</code>, and <code>--package</code></p>
+</li>
+</ol>
+<p>This new project type would also be very much applicable to e.g. a folder of random scripts where the user wants to maintain a common set of installed packages and nothing more (this is something I'd use it for, on top of for scientific projects). At the moment this is still best managed  using <code>uv venv</code> and <code>uv pip</code>.</p>
+<p>I don't know what this new project type would be called. &quot;Workspace&quot; would have been fitting but now has a different meaning. &quot;Environment&quot; is honestly not wrong as a way of describing the concept but has so much baggage (<code>uvenv</code> anybody? Lol). Maybe a &quot;directory&quot;. My best suggestion would be &quot;minimal&quot; or &quot;bare&quot;, the latter of which I particularly like. But no idea really.</p>
+<p>The closest project type currently is <code>--app</code> but neither its behaviour nor its name quite feel like a good fit for the science use-case or the other I mentioned.  So this would help with that too perhaps.</p>
+<p>If you were to implement something like this, I also think it'd be worth making &quot;bare&quot; the default project type of <code>uv init</code> without flags, as I think the people who are most likely to want this kind of minimal behaviour are also probably the ones least knowledgeable about Python project management. But that's a separate point tbh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-25 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 23:48</div>
+            <div class="timeline-body"><p>I'll return to this, but in brief we're pretty interested in supporting this use case and, more generally, we'll be able to support dependency groups without a <code>[project]</code> section soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlcinsky">@vlcinsky</a> on 2024-10-26 21:24</div>
+            <div class="timeline-body"><p>The PEP735 names this type of project &quot;non-package&quot;. But this sounds too close to already taken &quot;--no-package&quot; option.</p>
+<p>I like the <code>--bare</code> proposal.</p>
+<p>Btw: I am amazed by the speed it resolves, installs and syncs the packages. It is so fast it is hard to believe it did anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 12:47</div>
+            <div class="timeline-body"><p>You can already do something like this with:</p>
+<pre><code class="language-toml">[dependency-groups]
+test = [&quot;pytest&quot;]
+
+[tool.uv.workspace]  # Must be present, but can be empty.
+</code></pre>
+<p>But that structure (no <code>[project]</code> table) is considered legacy in uv right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-28 14:15</div>
+            <div class="timeline-body"><p>PEP735 talks about non-package, but there's no way to actually designate something as that, is there? (In PEP terms). (Mainly thinking about how no build-system == build me with setuptools, so everything with a pyproject.toml becomes a buildable.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-28 14:27</div>
+            <div class="timeline-body"><p>As far as the PEP is concerned, you designate something as non-packaged by omitting a <code>[project]</code> table entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8594.html">astral-sh/uv#8594</a> on 2024-10-29 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../conda/conda/issues/10633.html">conda/conda#10633</a> on 2024-11-21 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2025-09-18 22:51</div>
+            <div class="timeline-body"><p>The ability to have a <code>pyproject.toml</code> file without a <code>[project]</code> section is now possible since uv 0.8.18 and the merge of #14113. This does not, however support locking an environment without a project and requires the use of <code>managed = false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 23:54</div>
+            <div class="timeline-body"><p>Oh, <code>uv lock</code> should support that imo. I think that might just be an oversight as it's not in the list at https://github.com/astral-sh/uv/pull/14113#issuecomment-2981324244. cc @Gankra ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2025-09-19 01:06</div>
+            <div class="timeline-body"><p>I've only just seen #14113, it's really nice to see you guys implement better support for &quot;project-less&quot; projects!</p>
+<p>As far as I can tell, other than the mentioned <code>uv lock</code>, the one other thing that hasn't actually been implemented by #14113 is a way to actually create a project with <code>uv init</code> that is missing a <code>[project]</code> table? While <code>uv init --bare</code> was added a while back by #11192 (and I have indeed used it several times), it still creates a <code>[project]</code> table.</p>
+<p>I'm curious to know if you guys have had any further ideas or concrete plans for the non-versioned/scientific project type. The &quot;Note&quot; box at the top of <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/">the dependency docs page</a> reads a little like you're waiting to see how adoption of <code>dependency-groups</code> pans out and whether the community instead just decides to ignore the original pyproject PEP and co-opt <code>[project.dependencies]</code> for non-packages too?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:18 UTC
+    </footer>
+</body>
+</html>

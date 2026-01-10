@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-fix for SIM103 could be improved or add a new SIM rule? - astral-sh/ruff #6184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-fix for SIM103 could be improved or add a new SIM rule?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6184">#6184</a>
+        opened by <a href="https://github.com/klistwan">@klistwan</a>
+        on 2023-07-31 08:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/klistwan">@klistwan</a> on 2023-07-31 08:31</div>
+            <div class="timeline-body"><p>I came across this code on a project:</p>
+<pre><code class="language-python">if not condition_a and condition_b:
+    return True
+elif condition_a and condition_b:
+    return True
+else:
+    return False
+</code></pre>
+<p><code>condition_a</code> is redundant and this entire snippet should be simplified to:</p>
+<pre><code class="language-python">return bool(condition_b)
+</code></pre>
+<p>However, this is what ruff produced using <code>ruff --select=&quot;SIM103&quot; example.py --fix --isolated</code>:</p>
+<pre><code class="language-python">if not condition_a and condition_b:
+  return True
+return bool(condition_a and condition_b)
+</code></pre>
+<p>I think this is correct reading the <a href="https://beta.ruff.rs/docs/rules/needless-bool/">rule docs</a> but I thought there could be some improvement here either within this rule or a new rule.</p>
+<p>Ruff version is 0.0.280 and config:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+select = [
+  &quot;D3&quot;,  # pydocstyle
+  &quot;D40&quot;, # pydocstyle
+  &quot;DTZ&quot;, # flake8-datetimez
+  &quot;FLY&quot;, # flynt
+  &quot;I&quot;,   # isort
+  &quot;INT&quot;, # flake8-gettext
+  &quot;PIE&quot;, # flake8-pie
+  &quot;PLC&quot;, # pylint
+  &quot;PLE&quot;, # pylint
+  &quot;RSE&quot;, # flake8-raise
+  &quot;SIM2&quot;, # flake8-simplify
+  &quot;SIM3&quot;, # flake8-simplify
+  &quot;TCH&quot;, # flake8-type-checking
+  &quot;W&quot;,   # pycodestyle
+  &quot;YTT&quot;, # flake8-2020
+]
+target-version = &quot;py37&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-04 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-04 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-06-01 15:43</div>
+            <div class="timeline-body"><p>here's another example of an un-pleasing suggestion from SIM103.  I wavered over whether to raise this separately but decided is is related enough: easy to split things apart later if desired.</p>
+<pre><code class="language-python">def foo(num: int) -&gt; bool:
+    if not 10 &lt; num &lt; 100:
+        return False
+
+    return True
+</code></pre>
+<pre><code>foo.py:2:5: SIM103 Return the condition `not not 10 &lt; num &lt; 100` directly
+  |
+1 |   def foo(num: int) -&gt; bool:
+2 |       if not 10 &lt; num &lt; 100:
+  |  _____^
+3 | |         return False
+4 | |
+5 | |     return True
+  | |_______________^ SIM103
+  |
+  = help: Replace with `return not not 10 &lt; num &lt; 100`
+</code></pre>
+<p><code>not not</code>? yuk!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-01 17:46</div>
+            <div class="timeline-body"><p>These both look like things we can fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2024-06-01 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-06-01 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2024-06-01 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11684.html">astral-sh/ruff#11684</a> on 2024-06-01 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11685.html">astral-sh/ruff#11685</a> on 2024-06-01 23:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-01 23:22</div>
+            <div class="timeline-body"><p>Fixed @dimbleby issue quickly in https://github.com/astral-sh/ruff/pull/11684.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2025-01-08 21:10</div>
+            <div class="timeline-body"><p>Here is another example of a double negative introduced by SIM103:</p>
+<pre><code class="language-diff">-	if &quot;admin&quot; not in privs: return False
+-	return True
++	return not &quot;admin&quot; not in privs
+</code></pre>
+<p>and E713 (not-in-test) does not catch this. See the full example here: https://github.com/mail-in-a-box/mailinabox/pull/2473/commits/b2428eab153a78b2c3261a11f154133df43d17ad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15562.html">astral-sh/ruff#15562</a> on 2025-01-18 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-03-31 08:08</div>
+            <div class="timeline-body"><p>For the following code, <code>SIM103</code> detects only the if-block last case.</p>
+<pre><code class="language-python">if foo:
+   return True
+if bar:
+   return True
+if baz:
+    return True
+return False
+</code></pre>
+<p>but in theory the whole block has that issue.
+So a nicer fix would be:
+<code>return bool(foo or bar or baz)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-03-31 08:09</div>
+            <div class="timeline-body"><pre><code class="language-python">if not search():
+    return False
+return True
+</code></pre>
+<p>is transformed into:
+<code>return search()</code>
+but should be:
+<code>return bool(search())</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

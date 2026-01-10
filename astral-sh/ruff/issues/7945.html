@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH false positive to generic runtime base classes - astral-sh/ruff #7945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH false positive to generic runtime base classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7945">#7945</a>
+        opened by <a href="https://github.com/iurisilvio">@iurisilvio</a>
+        on 2023-10-13 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/iurisilvio">@iurisilvio</a> on 2023-10-13 14:29</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>My branch with a broken example: https://github.com/astral-sh/ruff/compare/main...iurisilvio:test-7945</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from pathlib import Path
+from collections import Sequence
+
+
+class A(Sequence[int]):
+    path: Path
+
+# This works as expected
+# class A(Sequence):
+#     path: Path
+</code></pre>
+<pre><code>[tool.ruff.flake8-type-checking]
+runtime-evaluated-base-classes = [&quot;collections.Sequence&quot;]
+</code></pre>
+<p>Running master ruff with <code>ruff check --select TCH file.py</code> give me a <code>TCH003</code>:</p>
+<pre><code class="language-console">file.py:3:21: TCH003 Move standard library import `pathlib.Path` into a type-checking block
+</code></pre>
+<p>It is a false positive because ruff don't understand the base class is <code>collections.Sequence</code>. Removing the generics part <code>[int]</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iurisilvio">@iurisilvio</a> on 2023-10-13 15:25</div>
+            <div class="timeline-body"><p>I did some investigation but was unable to fix for now. The <code>semantic.resolve_call_path(...)</code> for the <code>Sequence</code> node returns <code>None</code> instead of <code>collections.Sequence</code> and this is probably the reason it doesn't work.</p>
+<p>https://github.com/astral-sh/ruff/blob/8255e4ed6c6dbd2eefb14160ef88fc7753649866/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L43</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-13 19:31</div>
+            <div class="timeline-body"><p>Ah yup, makes sense -- thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7954.html">astral-sh/ruff#7954</a> on 2023-10-13 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-13 19:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

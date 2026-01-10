@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regression: authentication stopped working in uv 0.1.36 - astral-sh/uv #3923</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>regression: authentication stopped working in uv 0.1.36</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3923">#3923</a>
+        opened by <a href="https://github.com/morotti">@morotti</a>
+        on 2024-05-30 09:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/morotti">@morotti</a> on 2024-05-30 09:38</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>Authentication stopped working in uv 0.1.36, it's no longer able to install packages that requires authentication.</p>
+<p>For context, we use a netrc to set credentials to access artifactory.
+Artifactory, nexus, and probably all the hosted equivalent in azure/aws/google do permissions depending on the user.</p>
+<ul>
+<li>When a query to the index doesn't have credentials, it can only view and list packages and versions that are &quot;public&quot;.</li>
+<li>When a query to the index has credentials, it will also be able to list and view packages and versions that are accessible to these credentials.</li>
+</ul>
+<p>The index can have very fine grained permissions. The doom of my existence is packages that changed in permissions, getting reassigned to some organizations or becoming publicly visible to the whole company or not.</p>
+<p>By the way if you have logic to do a first query to &quot;test&quot; the index and only do a second query with credentials on 401/403, this doesn't actually work because the first query will succeed but return (incomplete) content with only packages that are accessible without credentials. All queries must be authenticated.</p>
+<p>DEBUG LOGS:</p>
+<pre><code>[root@f93fa297ed91 default-venv]# uv --version
+uv 0.1.35
+[root@f93fa297ed91 default-venv]# NETRC=~/.pypinetrc uv pip install --dry-run --native-tls --index-url https://example.com/artifactory/api/pypi/internalrepo-311/simple/ mypackage --no-deps --no-cache
+Resolved 1 package in 632ms
+Would download 1 package
+Would install 1 package
+ + mypackage==202405300929
+
+[root@f93fa297ed91 default-venv]# uv --version
+uv 0.1.36
+[root@f93fa297ed91 default-venv]#
+[root@f93fa297ed91 default-venv]#
+[root@f93fa297ed91 default-venv]# NETRC=~/.pypinetrc uv pip install --dry-run --native-tls --index-url https://example.com/artifactory/api/pypi/internalrepo-311/simple/ mypackage --no-deps --no-cache
+Resolved 1 package in 451ms
+Would download 1 package
+Would install 1 package
+ + mypackage==202003180941
+</code></pre>
+<p>this one is a package that was previously publicly accessible in the repo and became restricted at some point.</p>
+<p>the version 2020 is the last that was published and is accessible without authentication. uv can only see and install that one, which implies it did not pass credentials when making HTTP queries to the index.</p>
+<p>I suspected a caching issue but setting <code>--no-cache</code> doesn't help. I think authentication is not passed at all.</p>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 13:30</div>
+            <div class="timeline-body"><p>Can you include the logs with the verbose flag on the latest version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-05-30 13:43</div>
+            <div class="timeline-body"><p>full logs on latest version</p>
+<img width="1519" alt="image" src="https://github.com/astral-sh/uv/assets/13528994/b9abdcbc-85d4-44d6-833f-c0b5d55d0a24">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 17:46</div>
+            <div class="timeline-body"><p>Sorry, can you run again with <code>RUST_LOG=trace</code> <em>and</em> <code>--verbose</code>? I forgot the auth logging is at the tracing level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 17:46</div>
+            <div class="timeline-body"><p>I think we didn't used to &quot;try the request before adding auth&quot;, but we had to change it to do that for some reason? And that it matches pip? I can't remember the details. Zanie would know when they're back from vacation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 17:48</div>
+            <div class="timeline-body"><p>There are a lot of details in #3130.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 17:49</div>
+            <div class="timeline-body"><p>Perhaps we should <em>not</em> apply that logic to netrc. IDK.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @charliermarsh on 2024-05-30 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-30 17:49</div>
+            <div class="timeline-body"><p>\cc @zanieb for when you get back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-06-03 14:34</div>
+            <div class="timeline-body"><p>Submitting the debug logs with trace. Sorry for delay.</p>
+<p>Note I am just sending the top of the logs, should be enough for this bug. The full log is very long and not sure the content is safe to share online.</p>
+<p>on buggy version 0.1.42
+<img width="1773" alt="image" src="https://github.com/astral-sh/uv/assets/13528994/b9a58b27-1c3f-4fbe-ad80-3514f4a86501"></p>
+<p>on previous version that worked 0.1.33
+<img width="1047" alt="image" src="https://github.com/astral-sh/uv/assets/13528994/ff0f8ce0-8150-4ef7-b142-a56f51667cf9"></p>
+<p>You can see uv is making unauthenticated requests in the more recent versions.
+It shouldn't make unauthenticated requests when authentication is configured.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-06-03 14:44</div>
+            <div class="timeline-body"><p>For more info, there are a few ways to pass authentication I can think of:</p>
+<ul>
+<li>can pass credentials with a netrc file, it only supports granularity at the domain level. I think credentials should always be passed to all requests to that domain.</li>
+</ul>
+<p>example netrc file</p>
+<pre><code>machine pypi.example.com
+login login
+password password
+</code></pre>
+<ul>
+<li>can pass credentials directly in the url like <code>--index-url https://login:password@pypi.example.com</code>. That's granularity at the index level. It's possible to have different credentials for different indexes on the same domain. I think credentials should always be passed to all requests to that index.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-06-04 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 13:31</div>
+            <div class="timeline-body"><p>Sorry you're having problems with this! Apparently it's very very hard to satisfy all of the desired authentication schemes. I'll look into this we'll need to be very careful not to break the things we fixed in #3130.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fersarr">@fersarr</a> on 2024-08-22 16:55</div>
+            <div class="timeline-body"><p>Hi! totally understand this &quot;Apparently it's very very hard to satisfy all of the desired authentication schemes&quot;. So just wanted to ask if you were able to find a way for this, but totally understand it might not be simple. Is there any extra information we could provide to help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 17:09</div>
+            <div class="timeline-body"><p>I think this is mostly a matter of doing something like #4583 so we can use credentials more aggressively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11600.html">astral-sh/uv#11600</a> on 2025-02-18 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-18 15:26</div>
+            <div class="timeline-body"><p>I think https://github.com/astral-sh/uv/issues/11600 should help with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2025-02-18 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-12 00:34</div>
+            <div class="timeline-body"><p>I'm sorry this took so long to fix. In 0.6.6, this can be solved by setting <code>authenticate = &quot;always&quot;</code> for your <a href="https://docs.astral.sh/uv/configuration/indexes/#defining-an-index"><code>[index]</code></a>. There's not an equivalent CLI option though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-12 00:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

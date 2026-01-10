@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Override hardcode package-dependency? - astral-sh/uv #9713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Override hardcode package-dependency?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9713">#9713</a>
+        opened by <a href="https://github.com/woutervh">@woutervh</a>
+        on 2024-12-08 03:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woutervh">@woutervh</a> on 2024-12-08 03:34</div>
+            <div class="timeline-body"><p>I'm trying to find a simple solution for this problem:</p>
+<p>the package pyautogui is quite old and has  this in setup.py:</p>
+<pre><code> 'python3-Xlib;platform_system==&quot;Linux&quot; and python_version&gt;=&quot;3.0&quot;',
+ 'python-xlib;platform_system==&quot;Linux&quot; and python_version&lt;&quot;3.0&quot;',
+</code></pre>
+<p>see https://github.com/asweigart/pyautogui/blob/master/setup.py</p>
+<p>Many years later the python3-fork is now unmaintained and the original library now has proper python3-support</p>
+<p>see https://stackoverflow.com/questions/74716030/what-is-the-difference-between-python-xlib-python3-xlib-pyxlib-and-xlib-in-pyt</p>
+<p>Problem:
+we want to use <strong>python-Xlib</strong>,
+but <strong>python3-Xlib</strong> gets installed as a dependency of <strong>pyautogui</strong>.</p>
+<p>I agree this problem should be fixed at package-level, but releases are glacial.</p>
+<p>Is there currently a workaround or quick fix available,  idealy in pyproject.toml
+that we don't loose whenever we do  &quot;uv sync&quot;</p>
+<p>Both packages install an Xlib -pythonmodule,
+so we want to override the Xlib-module installed by <strong>python3-Xlib</strong>, with the one provided by <strong>python-Xlib</strong>,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-08 03:45</div>
+            <div class="timeline-body"><p>Is this the same as https://github.com/astral-sh/uv/issues/4422? (there's a solution there, I believe)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-12-08 04:02</div>
+            <div class="timeline-body"><p>@zanieb  Amazing.  I never saw sys_platform == 'never'  before</p>
+<p>Nice elegant solution with:</p>
+<pre><code>[project]
+name = &quot;demo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;pyautogui&gt;=0.9.54&quot;,
+    &quot;python-xlib&gt;=0.33&quot;,
+]
+
+[tool.uv]
+override-dependencies = [
+    &quot;python3-xlib; sys_platform == 'never'&quot;,
+]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @woutervh on 2024-12-08 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-08 04:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-31 14:19</div>
+            <div class="timeline-body"><p>We just added support for excluding dependencies entirely by name: https://github.com/astral-sh/uv/pull/16528 (available in the next release)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:46 UTC
+    </footer>
+</body>
+</html>

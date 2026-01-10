@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect suggestion to replace == True with is True for pandas dataframe - astral-sh/ruff #17009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect suggestion to replace == True with is True for pandas dataframe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17009">#17009</a>
+        opened by <a href="https://github.com/unknown-eps">@unknown-eps</a>
+        on 2025-03-27 08:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/unknown-eps">@unknown-eps</a> on 2025-03-27 08:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ruff.rs/c4303e07-49f1-456d-b48c-6a6a9b9bfcd5</p>
+<p>import pandas as pd</p>
+<p>temp =pd.DataFrame({'a':[1,2,3],'b':['True','True','False']})</p>
+<p>filter_temp = temp[temp['b'] == True] #Correct</p>
+<p>ruff_suggested = temp[temp['b'] is True] # Will give error on running</p>
+<p>Ruff suggests the second one</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-27 09:14</div>
+            <div class="timeline-body"><p>This requires type inference and multi-file analysis, both of which are a little ways off still.</p>
+<p>This boils down to, that the rule should not trigger when <code>x == True</code> returns something other than <code>bool</code>.</p>
+<p>I tend to use <code>.eq(True)</code> instead of <code>== True</code> in pandas, it reads better and won't trigger this rule. Usually you don't even really need that though and can just directly use <code>temp['b']</code> as the filter, since <code>eq(True)</code> just gives you back the same series, if all the values are already boolean, so you only need it when you have mixed values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-27 10:56</div>
+            <div class="timeline-body"><p>Sorry you ran into this! This is a known issue, and it's why the rule auto-fix is marked as unsafe (see the <a href="https://docs.astral.sh/ruff/rules/true-false-comparison/#fix-safety">documentation for the rule</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-03-27 10:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

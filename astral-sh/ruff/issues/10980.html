@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF029 (unneeded async) needs nuance for class methods - astral-sh/ruff #10980</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF029 (unneeded async) needs nuance for class methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10980">#10980</a>
+        opened by <a href="https://github.com/plredmond">@plredmond</a>
+        on 2024-04-16 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-16 17:29</div>
+            <div class="timeline-body"><p>Issue #9951 lead to PR #9966 where we check for functions that are declared async, but do not use any async features, and flag them. However, this caused several false positives (e.g. for class methods implemented as <code>pass</code> intending to be overridden).</p>
+<details>
+<summary>Context discussing false positives</summary>
+
+<p>https://github.com/astral-sh/ruff/pull/9966#issuecomment-1939945102</p>
+<blockquote>
+<p>The <code>rasa</code> ecosystem checks look like a bunch of false positives due to methods that are overriding an <a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/actions/action.py#L241-L263">abstract method which must be async</a>. This common enough that we should attempt to avoid it, but it requires multifile analysis in most cases which we do not yet support yet. There are some other issues like this, but I can't recall them — perhaps @charliermarsh knows. We could consider just not applying this to methods in classes with base classes for now?</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/pull/9966#issuecomment-1939953539</p>
+<blockquote>
+<p>Ah yeah, the thing we often do there (at the very least) is check if the method has an <code>@override</code> decorator (can grep for <code>is_override</code>), since that's used to hint to static analysis tools that the method doesn't have control over its own signature. So users at least have a way to opt-out of these kinds of rules entirely for methods that override a parent method. I would be fine omitting this entirely for classes with base classes though (or even classes at all?).</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/pull/9966#issuecomment-1939957783</p>
+<blockquote>
+<p>Here's another interesting edge-case false positive <a href="https://github.com/zulip/zulip/blob/35098f49597895718343091881fbd6198bd2022d/zerver/tornado/views.py#L35%C2%A0%E2%80%94">https://github.com/zulip/zulip/blob/35098f49597895718343091881fbd6198bd2022d/zerver/tornado/views.py#L35 —</a> this one I'm less sure we can/should do anything about.</p>
+</blockquote>
+</details>
+
+<p>In #9966 we opted for the simplest solution: The rule is disabled for methods of a class. However, we need to decide on a policy for them because the rule is still useful there (as https://github.com/astral-sh/ruff/pull/9966#issuecomment-2058667155 indicates).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2024-04-19 04:16</div>
+            <div class="timeline-body"><p>When testing this rule to see if this rule should be enabled for my own projects, the current implementation of this rule needs more nuance that just classmethods. I understand that this is the point of preview rules, but there are too many cases where functions are async due to interaction with other code due to function coloring.</p>
+<p>Some simple examples of this included</p>
+<ul>
+<li>async functions that were decorated, turning those functions into route handlers (The decorator only takes async functions, but the route in question has static content)</li>
+<li>async functions passed to a scheduler expecting async functions</li>
+<li>async functions that fit a protocol, but could otherwise have been synchronous in some cases (ie. sqlite vs asyncpg)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 04:19</div>
+            <div class="timeline-body"><p>Thanks, that's really helpful -- getting this kind of feedback is definitely one of the goals of <code>--preview</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jyggen">@jyggen</a> on 2024-04-19 08:30</div>
+            <div class="timeline-body"><p>Another false positive example is functions/methods that are passed as callables to other functions/methods. E.g.</p>
+<pre><code class="language-python">import asyncio
+from collections.abc import Awaitable, Callable
+
+
+async def foo() -&gt; str:  # RUF029 Function `foo` is declared `async`, but doesn't `await` or use `async` features.
+    return &quot;foo&quot;
+
+
+async def foobar(foo_impl: Callable[[], Awaitable[str]]) -&gt; str:
+    return await foo_impl() + &quot;bar&quot;
+
+
+async def print_foobar() -&gt; None:
+    print(await foobar(foo))
+
+
+asyncio.run(print_foobar())
+</code></pre>
+<p>It doesn't handle <code>@overload</code> either:</p>
+<pre><code>@overload
+async def foobar(foo: str) -&gt; str:  # RUF029 Function `foobar` is declared `async`, but doesn't `await` or use `async` features.
+    pass
+
+
+@overload
+async def foobar(foo: bytes) -&gt; bytes:  # RUF029 Function `foobar` is declared `async`, but doesn't `await` or use `async` features.
+    pass
+
+
+@overload
+async def foobar(foo: str | bytes) -&gt; str | bytes:  # RUF029 Function `foobar` is declared `async`, but doesn't `await` or use `async` features.
+    pass
+
+
+async def foobar(foo: str | bytes) -&gt; str | bytes:
+    return await do_something(foo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jc-louis">@jc-louis</a> on 2024-04-19 08:30</div>
+            <div class="timeline-body"><blockquote>
+<p>async functions that were decorated, turning those functions into route handlers (The decorator only takes async functions, but the route in question has static content)</p>
+</blockquote>
+<p>In addition, FastAPI recommends using unneeded async (unless blocking I/O) because not using async tells FastAPI to run the route handler inside a thread (assuming blocking I/O).</p>
+<blockquote>
+<p><a href="https://fastapi.tiangolo.com/async/#asynchronous-code">If your application (somehow) doesn't have to communicate with anything else and wait for it to respond, use async def.</a></p>
+</blockquote>
+<p>=&gt; Being able to ignore decorated fonctions would be nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @plredmond by @plredmond on 2024-04-22 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2024-07-10 05:49</div>
+            <div class="timeline-body"><p>The summary of this PR says that it's about class methods, but the conversation has already expanded to mention decorators, so I'll add my cases here.  I'm happy to open a new issue if that's more appropriate.</p>
+<p>Two more cases where we hit this:</p>
+<ul>
+<li>aiohttp requires you to use <code>async def</code> for code like this:</li>
+</ul>
+<pre><code class="language-python">@routes.get(r'/favicon.ico')
+async def favicon_ico(request: web.Request) -&gt; web.FileResponse:
+    return web.FileResponse('src/branding/default/favicon.ico')
+</code></pre>
+<ul>
+<li>(possibly slightly more questionable, but a real issue for us): some of our pytest test cases do stuff like:</li>
+</ul>
+<pre><code class="language-python">@pytest.mark.asyncio
+async def test_immediate_shutdown(rule):  # noqa: RUF029
+    peer = rule.apply_rule({'payload': 'test'})
+    assert peer is not None
+    peer.close()
+</code></pre>
+<p>where <code>apply_rule</code> schedules a task on the currently running asyncio event loop (and the point of the test is exactly to make sure we can immediately cancel that task, without any interleaving <code>await</code>).</p>
+<p>I feel like a good heuristic might be &quot;disable rule on decorated functions&quot;.</p>
+<p>But note: we mark our async pytest test cases with the <code>@pytest.mark.asyncio</code> decorator only for reasons of backwards compatibility with extremely old pytest versions.  Newer versions of pytest allow you to set an &quot;automatic&quot; option whereby you can omit the decorator.  Our need for <code>async def</code> would be equally valid in that case, so although &quot;disable rule on decorated functions&quot; would help, it wouldn't be sufficient to capture that case.  This could be treated as a peculiarity of the way pytest works, though, scooping up all of the functions inside of a module...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allisonkarlitskaya">@allisonkarlitskaya</a> on 2024-07-10 06:03</div>
+            <div class="timeline-body"><p>...and one counter-example to the &quot;decorator&quot; heuristic.  This rule just found a <code>@contextlib.asynccontextmanager</code> that should have been a non-async context manager.  That was really helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @plredmond by @MichaReiser on 2024-07-10 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-10 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-10-30 12:47</div>
+            <div class="timeline-body"><p>Further feedback on RUF029 not specific to class methods, if a test relies on an async fixture it needs to be async. Raising an error about this is extra bad because async pytest plugins are currently inconsistent in how they handle it https://github.com/pytest-dev/pytest/issues/10839, https://github.com/agronholm/anyio/issues/803
+fixtures depending on other async fixtures has a similar problem.</p>
+<p>I started attempting to <a href="https://github.com/python-trio/flake8-async/pull/309">add this to flake8-async</a> before I found RUF029, and there I'm opting to disable the check if a function is called <code>test_xxx</code> and takes a parameter (since that param could be an async fixture). For fixtures I look for <code>@pytest.fixture</code> + any parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-trio/flake8-async/pulls/309.html">python-trio/flake8-async#309</a> on 2024-10-30 12:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`interpreter_request_from_str` fails in subdirectory - astral-sh/uv #11016</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`interpreter_request_from_str` fails in subdirectory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11016">#11016</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-28 10:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 10:27</div>
+            <div class="timeline-body"><p>In my terminal (ubuntu 24.04), <code>interpreter_request_from_str</code> fails when run in a subdirectory:</p>
+<pre><code>$ cargo nextest run -E &quot;test(discovery::tests::interpreter_request_from_str)&quot;
+[...]
+thread 'discovery::tests::interpreter_request_from_str' panicked at crates/uv-python/src/discovery.rs:2712:9:
+assertion `left == right` failed: A string with a file system separator is treated as a file
+  left: Directory(&quot;/home/konsti/projects/uv/debug/./foo&quot;)
+ right: File(&quot;./foo&quot;)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[...]
+</code></pre>
+<p>The test output seems to depend on the current directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-01-28 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 14:21</div>
+            <div class="timeline-body"><p>Does the <code>foo</code> directory exist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 14:22</div>
+            <div class="timeline-body"><p>Maybe this is a bug with</p>
+<p>https://github.com/astral-sh/uv/blob/db4ab9dc8aecd9c4deaffd6036304aae70d93791/crates/uv-python/src/discovery.rs#L1361-L1376</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 14:27</div>
+            <div class="timeline-body"><p>Yes, I had a <code>foo</code> subdirectory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 14:29</div>
+            <div class="timeline-body"><p>Ah okay. I don't think we isolate these tests from state by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 14:31</div>
+            <div class="timeline-body"><p>I don't see how we could without moving the test into a subprocess, unfortunately.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

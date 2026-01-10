@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markers of splits in universal bluejay resolution are wrong - astral-sh/uv #4687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Markers of splits in universal bluejay resolution are wrong</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4687">#4687</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-01 11:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-01 11:17</div>
+            <div class="timeline-body"><p>When resolving transformers, the marker expressions on the forks are non-sensical:</p>
+<pre><code>DEBUG Splitting resolution on opencv-python over numpy
+DEBUG Pre-fork split universal took 0.017s
+DEBUG Solving split python_version &gt;= '3.12' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux'
+DEBUG Split python_version &gt;= '3.12' and platform_machine == 'aarch64' and platform_system == 'Darwin' and platform_system == 'Linux' took 1.075s
+DEBUG Solving split python_version == '3.9' and platform_machine == 'arm64' and platform_system == 'Darwin'
+DEBUG Split python_version == '3.9' and platform_machine == 'arm64' and platform_system == 'Darwin' took 0.270s
+</code></pre>
+<p><code>platform_system == 'Darwin' and platform_system == 'Linux'</code> is ∅, i.e. those split can never be reached, and the union of the splits is not universal.</p>
+<p>I've tried to minimize is a bit, but the problem did not occur when using <code>uv pip install --universal</code> or when using direct dependencies with `tool.uv.source, i.e. i think it needs some previous (dummy?) splits, and hence the half-done MRE:</p>
+<p>Use this <a href="https://gist.github.com/konstin/c74566bbe4bd83be711f231ba894e5e7">pyproject.toml</a>, edit the overrides to point to two dummy projects. <code>opencv-python</code> splits, <code>foo</code> is our reporter.</p>
+<pre><code class="language-toml">[project]
+name = &quot;opencv-python&quot;
+version = &quot;4.10.0.84&quot;
+description = &quot;Default template for PDM package&quot;
+authors = [
+    {name = &quot;konstin&quot;, email = &quot;konstin@mailbox.org&quot;},
+]
+dependencies = [
+    &quot;cmake&gt;=3.1&quot;,
+    'numpy &gt;=1.13.3 ; python_version &lt; &quot;3.7&quot;',
+    'numpy &gt;=1.21.0 ; python_version &lt;= &quot;3.9&quot; and platform_system == &quot;Darwin&quot; and platform_machine == &quot;arm64&quot;',
+    'numpy &gt;=1.21.2 ; python_version &gt;= &quot;3.10&quot;',
+    'numpy &gt;=1.21.4 ; python_version &gt;= &quot;3.10&quot; and platform_system == &quot;Darwin&quot;',
+    'numpy &gt;=1.23.5 ; python_version &gt;= &quot;3.11&quot;',
+    'numpy &gt;=1.26.0 ; python_version &gt;= &quot;3.12&quot;',
+    'numpy &gt;=1.19.3 ; python_version &gt;= &quot;3.6&quot; and platform_system == &quot;Linux&quot; and platform_machine == &quot;aarch64&quot;',
+    'numpy &gt;=1.17.0 ; python_version &gt;= &quot;3.7&quot;',
+    'numpy &gt;=1.17.3 ; python_version &gt;= &quot;3.8&quot;',
+    'numpy &gt;=1.19.3 ; python_version &gt;= &quot;3.9&quot;',
+    &quot;foo&quot;
+]
+requires-python = &quot;&gt;=3.9&quot;
+license = {text = &quot;MIT&quot;}
+</code></pre>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Default template for PDM package&quot;
+authors = [
+    {name = &quot;konstin&quot;, email = &quot;konstin@mailbox.org&quot;},
+]
+dependencies = [
+    &quot;anyio==4.3.0; platform_machine == 'x86_64'&quot;,
+    &quot;maturin&gt;=1,&lt;2&quot;
+]
+requires-python = &quot;&gt;=3.9&quot;
+license = {text = &quot;MIT&quot;}
+</code></pre>
+<p>Run this on a 64-bit x86 machine or edit the marker to something else that's your machine but excluded in the lock markers. Run <code>uv lock -v</code>. In the lockfile we find</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+source = { directory = &quot;/home/konsti/projects/transformers/foo&quot; }
+dependencies = [
+    { name = &quot;maturin&quot; },
+]
+</code></pre>
+<p>and anyio 4.4.0, missing our constraint! It looks like we're only solving for a subset of markers in this case.</p>
+<p>The marker on opencv-python -&gt; numpy also looks wrong:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;opencv-python&quot;
+version = &quot;4.10.0.84&quot;
+source = { directory = &quot;/home/konsti/projects/transformers/opencv-python&quot; }
+dependencies = [
+    { name = &quot;cmake&quot; },
+    { name = &quot;foo&quot; },
+    { name = &quot;numpy&quot;, marker = &quot;python_version &gt;= '3.7' or (python_version &lt;= '3.9' and platform_machine == 'arm64' and platform_system == 'Darwin') or (python_version &gt;= '3.6' and platform_machine == 'aarch64' and platform_system == 'Linux')&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-01 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 11:50</div>
+            <div class="timeline-body"><p>Can you break this down a bit? It seems like you’re reporting multiple issues here - or am I misreading?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-01 11:51</div>
+            <div class="timeline-body"><p>No i think this is one issue where we accumulate the wrong markers and then everything downstream is wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 12:19</div>
+            <div class="timeline-body"><p>Do you want to look into it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-07-01 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 02:11</div>
+            <div class="timeline-body"><p>My guess is... maybe we aren't checking if the fork is disjoint with the <em>parent</em> fork? Like, after we fork, we do:</p>
+<pre><code class="language-rust">forked_state.markers.and(fork.markers);
+forked_state.markers = normalize(forked_state.markers)
+    .unwrap_or(MarkerTree::And(Vec::new()));
+</code></pre>
+<p>But <em>that</em> expression could be <code>∅</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 02:16</div>
+            <div class="timeline-body"><p>Although in theory we filter out deps with <code>possible_to_satisfy_markers</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4732.html">astral-sh/uv#4732</a> on 2024-07-02 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-07-08 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-08 12:09</div>
+            <div class="timeline-body"><p>Solving this should also fix the following entry in the transformers lockfile:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;orbax-checkpoint&quot;
+version = &quot;0.5.16&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/05/f3/39988acde4fa04b0017b8dec1c2cc4429c4d54830f418c80574ff6f6ff9b/orbax_checkpoint-0.5.16.tar.gz&quot;, hash = &quot;sha256:c64d2a3ba6dd7e41330c3efd2bb669743480e62ad242eac5517e67369c26a38e&quot;, size = 160749 }
+dependencies = [
+    { name = &quot;absl-py&quot; },
+    { name = &quot;etils&quot;, version = &quot;1.5.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+    { name = &quot;etils&quot;, version = &quot;1.5.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, extra = &quot;epath&quot; },
+    { name = &quot;etils&quot;, version = &quot;1.5.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, extra = &quot;epy&quot; },
+    { name = &quot;etils&quot;, version = &quot;1.9.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+    { name = &quot;etils&quot;, version = &quot;1.9.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, extra = &quot;epath&quot; },
+    { name = &quot;etils&quot;, version = &quot;1.9.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, extra = &quot;epy&quot; },
+    { name = &quot;jax&quot; },
+    { name = &quot;jaxlib&quot; },
+    { name = &quot;msgpack&quot; },
+    { name = &quot;nest-asyncio&quot; },
+    { name = &quot;numpy&quot; },
+    { name = &quot;protobuf&quot; },
+    { name = &quot;pyyaml&quot; },
+    { name = &quot;tensorstore&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/50/00/95794fe517d705c06b1918c4d32372d7476f81a2bfc6ed44f850bbe71ee2/orbax_checkpoint-0.5.16-py3-none-any.whl&quot;, hash = &quot;sha256:1b4329ff477c59e061ac15bc09eea34a248f2048b1c5b43eae9b530e068e5974&quot;, size = 217032 },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-07-08 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4996.html">astral-sh/uv#4996</a> on 2024-07-11 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5074.html">astral-sh/uv#5074</a> on 2024-07-15 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-15 17:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

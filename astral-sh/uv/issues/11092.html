@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>automatically deactivate the current virtual environment when switching python versions - astral-sh/uv #11092</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>automatically deactivate the current virtual environment when switching python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11092">#11092</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-01-30 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-30 12:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>currently if you switch python versions while the venv is activated, uv will fail to delete it and the venv will become corrupted, forcing the user to have to manually delete the <code>.venv</code> directory before it can be recreated.</p>
+<p>it would be nice if uv detected whether the venv it needs to delete is active, then deactivate it first before attempting to delete the directory</p>
+<h3>Example</h3>
+<pre><code>PS C:\Users\user\project&gt; .venv/Scripts/Activate.ps1
+(project) PS C:\Users\user\project&gt; uv sync
+Resolved 88 packages in 1ms
+Audited 75 packages in 0.52ms
+(project) PS C:\Users\user\project&gt; python --version
+Python 3.8.20
+(project) PS C:\Users\user\project&gt; uv python pin 3.13
+Updated `.python-version` from `3.8` -&gt; `3.13`
+(project) PS C:\Users\user\project&gt; uv sync
+Using CPython 3.13.0 interpreter at: C:\Program Files\Python313\python.exe
+error: failed to remove directory `C:\Users\user\project\.venv`: Access is denied. (os error 5)
+(project) PS C:\Users\user\project&gt; deactivate
+PS C:\Users\user\project&gt; uv sync
+Using CPython 3.13.0 interpreter at: C:\Program Files\Python313\python.exe
+error: Project virtual environment directory `C:\Users\user\project\.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+</code></pre>
+<p>some additional context: i always run uv from inside vscode which conveniently automatically activates the venv when a terminal is opened, so it's very easy to accidentally cause this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @DetachHead on 2025-01-30 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "automatically deactivate the current virtyual environment when switching python versions" to "automatically deactivate the current virtual environment when switching python versions" by @DetachHead on 2025-01-30 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 14:15</div>
+            <div class="timeline-body"><p>Interesting, why does it fail to remove it? I feel like that should work. (I don't think we can &quot;deactivate&quot; it; that has to happen in the shell, just like how we can't &quot;activate&quot; it for you.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2025-01-30 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 14:32</div>
+            <div class="timeline-body"><p>Is uv installed in the environment itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-30 15:19</div>
+            <div class="timeline-body"><p>nope it's installed in a separate envionmemt with pyprojectx (the same setup i used in https://github.com/detachhead/uv-issue-repro). i assume having the venv activated locks some of the files inside it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-30 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>i assume having the venv activated locks some of the files inside it</p>
+</blockquote>
+<p>This doesn't really make sense, I think it basically just exports some variables? Perhaps it's because your editor is using the interpreter to power functionality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdsteed">@rdsteed</a> on 2025-01-30 18:08</div>
+            <div class="timeline-body"><p>The &quot;os error 5&quot; suggests the user executing the uv sync command may not be the owner of the .venv directory.  Does the error occur when the example is run as an admin?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 18:09</div>
+            <div class="timeline-body"><p>Yeah I can't repro in my initial attempt. Is it possible that there's an interpreter open somewhere (like in the editor)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-31 00:16</div>
+            <div class="timeline-body"><p>ok yeah it's because the ruff vscode extension was locking the venv because the ruff language server was running, my bad. i didn't think that was the cause because usually when that happens it mentions the ruff executable not just the <code>.venv</code> folder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2025-01-31 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-01-31 11:11</div>
+            <div class="timeline-body"><p>I'm also running into this issue which happens when I switch python versions (<code>.python-version</code> file changes). For example, if I switch from 3.12 to 3.13 I get</p>
+<pre><code>$ uv run foobar.py 
+Using CPython 3.13.1
+error: failed to remove directory `C:\Users\my1e5\foo\.venv`: Access is denied. (os error 5)
+</code></pre>
+<p>And then if I switch <code>.python-version</code> back to 3.12, it builds but then I get a 'No pyvenv.cfg file'?</p>
+<pre><code>$ uv run foobar.py 
+   Built foo @ file:///C:/Users/my1e5/foo
+Installed 76 packages in 48.78s
+No pyvenv.cfg file
+</code></pre>
+<p>Manually deleting the <code>.venv</code> and starting afresh fixes everything. @DetachHead - I am also running the ruff vscode extension. Is that the root cause? Is there anything more that can be done to avoid this bug (apart from disabling the extension)?</p>
+<pre><code>uv 0.5.26 (5ef3d5139 2025-01-30)
+Windows 10
+</code></pre>
+<p>I can try set up a fully reproducible example and see if the vscode ruff extension is the root cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-31 11:15</div>
+            <div class="timeline-body"><p>i noticed it also kept happening when i disabled the ruff extension, it might even be the vscode python extension locking the currently active environment but im not sure</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

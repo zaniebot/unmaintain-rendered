@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` picks wrong candidate when version is present on multiple indexes - astral-sh/uv #14000</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` picks wrong candidate when version is present on multiple indexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14000">#14000</a>
+        opened by <a href="https://github.com/fabi125">@fabi125</a>
+        on 2025-06-12 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fabi125">@fabi125</a> on 2025-06-12 15:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We run an internal pypi server to serve some internal packages as well as pre-compiled public packages, e.g. of python-ldap. When a given version of a package exists on both the default index as well as on an extra index (default index has source package, extra index has wheel), <code>uv pip install</code> will only consider the candidates from the extra index despite an explicit hash for the source package being provided and when <code>unsafe-best-match</code> is used. In this case this results in uv trying to install the wheel, but then failing because the hash doesn't match despite the correct candidate being available to uv.</p>
+<p>To reproduce this, first grab the source package from https://pypi.org/project/python-ldap and build it as a wheel, then put them in a directory layout like this:</p>
+<pre><code>fabi@fabi1:/tmp/uv
+╚&gt;$ tree
+.
+├── private_pypi
+│   └── python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl
+└── public_pypi
+    └── python-ldap-3.4.4.tar.gz
+
+2 directories, 2 files
+</code></pre>
+<p>Calculate the sha256 hashes (the one for your wheel will probably be different, but that doesn't matter here):</p>
+<pre><code>fabi@fabi1:/tmp/uv
+╚&gt;$ sha256sum public_pypi/python-ldap-3.4.4.tar.gz private_pypi/python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl
+7edb0accec4e037797705f3a05cbf36a9fde50d08c8f67f2aef99a2628fab828  public_pypi/python-ldap-3.4.4.tar.gz
+a77a46fb277f85d50cc78cda9e1ac9a3f1660620bdd12542c5c53abcc668985c  private_pypi/python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl
+</code></pre>
+<p>Next set up a venv with pypiserver so we can emulate both the public and internal pypi server and then start them up:</p>
+<pre><code>fabi@fabi1:/tmp/uv
+╚&gt;$ uv venv venv.pypi
+Using CPython 3.9.2 interpreter at: /usr/local/bin/python3
+Creating virtual environment at: venv.pypi
+Activate with: source venv.pypi/bin/activate
+
+fabi@fabi1:/tmp/uv
+╚&gt;$ source venv.pypi/bin/activate
+
+(venv.pypi) fabi@fabi1:/tmp/uv
+╚&gt;$ uv pip install pypiserver
+Using Python 3.9.2 environment at: venv.pypi
+Resolved 5 packages in 220ms
+Prepared 4 packages in 85ms
+Installed 5 packages in 8ms
+ + importlib-resources==6.5.2
+ + packaging==25.0
+ + pip==25.1.1
+ + pypiserver==2.3.2
+ + zipp==3.23.0
+
+fabi@fabi1:/tmp/uv
+╚&gt;$ venv.pypi/bin/pypi-server run -p 8081 /tmp/uv/public_pypi/
+
+fabi@fabi1:/tmp/uv
+╚&gt;$ venv.pypi/bin/pypi-server run -p 8082 /tmp/uv/private_pypi/
+</code></pre>
+<p>To install the package with a hash, <code>uv pip install</code> requires a <code>requirements.txt</code> file:</p>
+<pre><code>fabi@fabi1:/tmp/uv
+╚&gt;$ cat requirements.txt 
+python-ldap==3.4.4 \
+    --hash=sha256:7edb0accec4e037797705f3a05cbf36a9fde50d08c8f67f2aef99a2628fab828
+</code></pre>
+<p>Finally create the test venv and try to install the package:</p>
+<pre><code>fabi@fabi1:/tmp/uv
+╚&gt;$ UV_NO_CONFIG=1 uv venv -p python3.12
+Using CPython 3.12.10 interpreter at: /usr/local/bin/python3.12
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+fabi@fabi1:/tmp/uv
+╚&gt;$ source .venv/bin/activate
+
+(uv) fabi@fabi1:/tmp/uv
+╚&gt;$ UV_NO_CONFIG=1 uv pip install --verbose  --default-index http://localhost:8081/simple --index http://localhost:8082/simple --index-strategy unsafe-best-match --no-deps --requirements requirements.txt
+DEBUG uv 0.7.12
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.12.10-linux-x86_64-gnu` at `/tmp/uv/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.12.10 environment at: .venv
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: python-ldap==3.4.4
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.10
+DEBUG Solving with target Python version: &gt;=3.12.10
+DEBUG Adding direct dependency: python-ldap&gt;=3.4.4, &lt;3.4.4+
+DEBUG No cache entry for: http://localhost:8082/simple/python-ldap/
+DEBUG No cache entry for: http://localhost:8081/simple/python-ldap/
+DEBUG Searching for a compatible version of python-ldap (&gt;=3.4.4, &lt;3.4.4+)
+DEBUG Selecting: python-ldap==3.4.4 [compatible] (python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl)
+DEBUG Tried 1 versions: python-ldap 1
+DEBUG marker environment resolution took 0.004s
+Resolved 1 package in 4ms
+DEBUG Identified uncached distribution: python-ldap==3.4.4
+DEBUG Found stale response for: http://localhost:8082/packages/python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl
+DEBUG Sending revalidation request for: http://localhost:8082/packages/python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl
+DEBUG Found not-modified response for: http://localhost:8082/packages/python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl
+  x Failed to download `python-ldap==3.4.4`
+  `-&gt; Hash mismatch for `python-ldap==3.4.4`
+
+      Expected:
+        sha256:7edb0accec4e037797705f3a05cbf36a9fde50d08c8f67f2aef99a2628fab828
+
+      Computed:
+        sha256:a77a46fb277f85d50cc78cda9e1ac9a3f1660620bdd12542c5c53abcc668985c
+DEBUG Released lock at `/tmp/uv/.venv/.lock`
+</code></pre>
+<p>We can see that uv fetched both indexes, but then only considered the wheel and then (thankfully!) failed to install it because the hash does not match. Installing the package without the extra <code>--index</code> works as expected, but that is not a good solution for us because we need to have the extra index present for other packages to be correctly installed.</p>
+<p>Note that this works correctly with pip (sorry for the long compilation output, I didn't want to omit anything):</p>
+<pre><code>fabi@fabi1:/tmp/uv
+╚&gt;$ python3.12 -m venv --upgrade-deps pip.venv
+
+fabi@fabi1:/tmp/uv
+╚&gt;$ source pip.venv/bin/activate
+
+((pip.venv) ) fabi@fabi1:/tmp/uv
+╚&gt;$ ╚&gt;$ PIP_CONFIG_FILE=/dev/null pip install --index-url http://localhost:8081/simple --extra-index-url http://localhost:8082/simple --no-deps --verbose -r requirements.txt
+Using pip 25.1.1 from /tmp/uv/pip.venv/lib/python3.12/site-packages/pip (python 3.12)
+Looking in indexes: http://localhost:8081/simple, http://localhost:8082/simple
+Collecting python-ldap==3.4.4 (from -r requirements.txt (line 1))
+  Downloading http://localhost:8081/packages/python-ldap-3.4.4.tar.gz (377 kB)
+  Installing build dependencies: started
+  Running command pip subprocess to install build dependencies
+  Using pip 25.1.1 from /tmp/uv/pip.venv/lib/python3.12/site-packages/pip (python 3.12)
+  Looking in indexes: http://localhost:8081/simple, http://localhost:8082/simple
+  Collecting setuptools&gt;=40.8.0
+    Obtaining dependency information for setuptools&gt;=40.8.0 from https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl.metadata
+    Downloading setuptools-80.9.0-py3-none-any.whl.metadata (6.6 kB)
+  Downloading setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 56.1 MB/s eta 0:00:00
+  Installing collected packages: setuptools
+  Successfully installed setuptools-80.9.0
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Running command Getting requirements to build wheel
+  /usr/tmp/pip-build-env-u_wghrm4/overlay/lib/python3.12/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'test_suite'
+    warnings.warn(msg)
+  /usr/tmp/pip-build-env-u_wghrm4/overlay/lib/python3.12/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: Python Software Foundation License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  running egg_info
+  writing Lib/python_ldap.egg-info/PKG-INFO
+  writing dependency_links to Lib/python_ldap.egg-info/dependency_links.txt
+  writing requirements to Lib/python_ldap.egg-info/requires.txt
+  writing top-level names to Lib/python_ldap.egg-info/top_level.txt
+  reading manifest file 'Lib/python_ldap.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  no previously-included directories found matching 'Doc/.build'
+  adding license file 'LICENCE'
+  writing manifest file 'Lib/python_ldap.egg-info/SOURCES.txt'
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Running command Preparing metadata (pyproject.toml)
+  /usr/tmp/pip-build-env-u_wghrm4/overlay/lib/python3.12/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'test_suite'
+    warnings.warn(msg)
+  /usr/tmp/pip-build-env-u_wghrm4/overlay/lib/python3.12/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: Python Software Foundation License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  running dist_info
+  creating /usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info
+  writing /usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/PKG-INFO
+  writing dependency_links to /usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/dependency_links.txt
+  writing requirements to /usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/requires.txt
+  writing top-level names to /usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/top_level.txt
+  writing manifest file '/usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/SOURCES.txt'
+  reading manifest file '/usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  no previously-included directories found matching 'Doc/.build'
+  adding license file 'LICENCE'
+  writing manifest file '/usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap.egg-info/SOURCES.txt'
+  creating '/usr/tmp/pip-modern-metadata-vhhjpzoj/python_ldap-3.4.4.dist-info'
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: python-ldap
+  Building wheel for python-ldap (pyproject.toml): started
+  Running command Building wheel for python-ldap (pyproject.toml)
+  /usr/tmp/pip-build-env-u_wghrm4/overlay/lib/python3.12/site-packages/setuptools/_distutils/dist.py:289: UserWarning: Unknown distribution option: 'test_suite'
+    warnings.warn(msg)
+  /usr/tmp/pip-build-env-u_wghrm4/overlay/lib/python3.12/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: Python Software Foundation License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  running bdist_wheel
+  running build
+  running build_py
+  creating build/lib.linux-x86_64-cpython-312
+  copying Lib/ldapurl.py -&gt; build/lib.linux-x86_64-cpython-312
+  copying Lib/ldif.py -&gt; build/lib.linux-x86_64-cpython-312
+  creating build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/functions.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/dn.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/compat.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/modlist.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/sasl.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/ldapobject.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/asyncsearch.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/filter.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/__init__.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/resiter.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/cidict.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/syncrepl.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/logger.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/constants.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/async.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  copying Lib/ldap/pkginfo.py -&gt; build/lib.linux-x86_64-cpython-312/ldap
+  creating build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/pwdpolicy.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/deref.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/pagedresults.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/psearch.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/sessiontrack.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/libldap.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/vlv.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/simple.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/sss.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/readentry.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/__init__.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/ppolicy.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  copying Lib/ldap/controls/openldap.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/controls
+  creating build/lib.linux-x86_64-cpython-312/ldap/extop
+  copying Lib/ldap/extop/dds.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/extop
+  copying Lib/ldap/extop/passwd.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/extop
+  copying Lib/ldap/extop/__init__.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/extop
+  creating build/lib.linux-x86_64-cpython-312/ldap/schema
+  copying Lib/ldap/schema/models.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/schema
+  copying Lib/ldap/schema/tokenizer.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/schema
+  copying Lib/ldap/schema/subentry.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/schema
+  copying Lib/ldap/schema/__init__.py -&gt; build/lib.linux-x86_64-cpython-312/ldap/schema
+  creating build/lib.linux-x86_64-cpython-312/slapdtest
+  copying Lib/slapdtest/_slapdtest.py -&gt; build/lib.linux-x86_64-cpython-312/slapdtest
+  copying Lib/slapdtest/__init__.py -&gt; build/lib.linux-x86_64-cpython-312/slapdtest
+  running egg_info
+  writing Lib/python_ldap.egg-info/PKG-INFO
+  writing dependency_links to Lib/python_ldap.egg-info/dependency_links.txt
+  writing requirements to Lib/python_ldap.egg-info/requires.txt
+  writing top-level names to Lib/python_ldap.egg-info/top_level.txt
+  reading manifest file 'Lib/python_ldap.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  no previously-included directories found matching 'Doc/.build'
+  adding license file 'LICENCE'
+  writing manifest file 'Lib/python_ldap.egg-info/SOURCES.txt'
+  creating build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/README -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/ca.conf -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/ca.pem -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/client.conf -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/client.key -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/client.pem -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/gencerts.sh -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/gennssdb.sh -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/server.conf -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/server.key -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  copying Lib/slapdtest/certs/server.pem -&gt; build/lib.linux-x86_64-cpython-312/slapdtest/certs
+  running build_ext
+  building '_ldap' extension
+  creating build/temp.linux-x86_64-cpython-312/Modules
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/LDAPObject.c -o build/temp.linux-x86_64-cpython-312/Modules/LDAPObject.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/berval.c -o build/temp.linux-x86_64-cpython-312/Modules/berval.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/common.c -o build/temp.linux-x86_64-cpython-312/Modules/common.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/constants.c -o build/temp.linux-x86_64-cpython-312/Modules/constants.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/functions.c -o build/temp.linux-x86_64-cpython-312/Modules/functions.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/ldapcontrol.c -o build/temp.linux-x86_64-cpython-312/Modules/ldapcontrol.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/ldapmodule.c -o build/temp.linux-x86_64-cpython-312/Modules/ldapmodule.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/message.c -o build/temp.linux-x86_64-cpython-312/Modules/message.o
+  gcc -pthread -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -fPIC -DHAVE_SASL -DHAVE_TLS -DLDAPMODULE_VERSION=3.4.4 &quot;-DLDAPMODULE_AUTHOR=python-ldap project&quot; &quot;-DLDAPMODULE_LICENSE=Python style&quot; -IModules -I/tmp/uv/pip.venv/include -I/opt/hrt/hrtpython-3.12/include/python3.12 -c Modules/options.c -o build/temp.linux-x86_64-cpython-312/Modules/options.o
+  gcc -pthread -shared build/temp.linux-x86_64-cpython-312/Modules/LDAPObject.o build/temp.linux-x86_64-cpython-312/Modules/berval.o build/temp.linux-x86_64-cpython-312/Modules/common.o build/temp.linux-x86_64-cpython-312/Modules/constants.o build/temp.linux-x86_64-cpython-312/Modules/functions.o build/temp.linux-x86_64-cpython-312/Modules/ldapcontrol.o build/temp.linux-x86_64-cpython-312/Modules/ldapmodule.o build/temp.linux-x86_64-cpython-312/Modules/message.o build/temp.linux-x86_64-cpython-312/Modules/options.o -L/opt/hrt/hrtpython-3.12/lib -lldap -llber -o build/lib.linux-x86_64-cpython-312/_ldap.cpython-312-x86_64-linux-gnu.so
+  installing to build/bdist.linux-x86_64/wheel
+  running install
+  running install_lib
+  creating build/bdist.linux-x86_64/wheel
+  copying build/lib.linux-x86_64-cpython-312/ldapurl.py -&gt; build/bdist.linux-x86_64/wheel/.
+  copying build/lib.linux-x86_64-cpython-312/_ldap.cpython-312-x86_64-linux-gnu.so -&gt; build/bdist.linux-x86_64/wheel/.
+  copying build/lib.linux-x86_64-cpython-312/ldif.py -&gt; build/bdist.linux-x86_64/wheel/.
+  creating build/bdist.linux-x86_64/wheel/ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/functions.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/dn.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/compat.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/modlist.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/sasl.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/ldapobject.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/asyncsearch.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/filter.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  creating build/bdist.linux-x86_64/wheel/ldap/schema
+  copying build/lib.linux-x86_64-cpython-312/ldap/schema/models.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/schema
+  copying build/lib.linux-x86_64-cpython-312/ldap/schema/tokenizer.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/schema
+  copying build/lib.linux-x86_64-cpython-312/ldap/schema/subentry.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/schema
+  copying build/lib.linux-x86_64-cpython-312/ldap/schema/__init__.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/schema
+  copying build/lib.linux-x86_64-cpython-312/ldap/__init__.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/resiter.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/cidict.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/syncrepl.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/logger.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/constants.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  copying build/lib.linux-x86_64-cpython-312/ldap/async.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  creating build/bdist.linux-x86_64/wheel/ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/pwdpolicy.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/deref.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/pagedresults.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/psearch.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/sessiontrack.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/libldap.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/vlv.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/simple.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/sss.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/readentry.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/__init__.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/ppolicy.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  copying build/lib.linux-x86_64-cpython-312/ldap/controls/openldap.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/controls
+  creating build/bdist.linux-x86_64/wheel/ldap/extop
+  copying build/lib.linux-x86_64-cpython-312/ldap/extop/dds.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/extop
+  copying build/lib.linux-x86_64-cpython-312/ldap/extop/passwd.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/extop
+  copying build/lib.linux-x86_64-cpython-312/ldap/extop/__init__.py -&gt; build/bdist.linux-x86_64/wheel/./ldap/extop
+  copying build/lib.linux-x86_64-cpython-312/ldap/pkginfo.py -&gt; build/bdist.linux-x86_64/wheel/./ldap
+  creating build/bdist.linux-x86_64/wheel/slapdtest
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/_slapdtest.py -&gt; build/bdist.linux-x86_64/wheel/./slapdtest
+  creating build/bdist.linux-x86_64/wheel/slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/server.conf -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/gencerts.sh -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/README -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/client.conf -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/gennssdb.sh -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/server.key -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/server.pem -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/client.key -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/ca.pem -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/client.pem -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/certs/ca.conf -&gt; build/bdist.linux-x86_64/wheel/./slapdtest/certs
+  copying build/lib.linux-x86_64-cpython-312/slapdtest/__init__.py -&gt; build/bdist.linux-x86_64/wheel/./slapdtest
+  writing byte-compilation script '/usr/tmp/tmpvc8ka275.py'
+  /tmp/uv/pip.venv/bin/python3.12 /usr/tmp/tmpvc8ka275.py
+  removing /usr/tmp/tmpvc8ka275.py
+  running install_egg_info
+  Copying Lib/python_ldap.egg-info to build/bdist.linux-x86_64/wheel/./python_ldap-3.4.4-py3.12.egg-info
+  running install_scripts
+  creating build/bdist.linux-x86_64/wheel/python_ldap-3.4.4.dist-info/WHEEL
+  creating '/usr/tmp/pip-wheel-nfhox7xx/.tmp-s0s4tkxc/python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  adding '_ldap.cpython-312-x86_64-linux-gnu.so'
+  adding 'ldapurl.py'
+  adding 'ldif.py'
+  adding '__pycache__/ldapurl.cpython-312.opt-1.pyc'
+  adding '__pycache__/ldif.cpython-312.opt-1.pyc'
+  adding 'ldap/__init__.py'
+  adding 'ldap/async.py'
+  adding 'ldap/asyncsearch.py'
+  adding 'ldap/cidict.py'
+  adding 'ldap/compat.py'
+  adding 'ldap/constants.py'
+  adding 'ldap/dn.py'
+  adding 'ldap/filter.py'
+  adding 'ldap/functions.py'
+  adding 'ldap/ldapobject.py'
+  adding 'ldap/logger.py'
+  adding 'ldap/modlist.py'
+  adding 'ldap/pkginfo.py'
+  adding 'ldap/resiter.py'
+  adding 'ldap/sasl.py'
+  adding 'ldap/syncrepl.py'
+  adding 'ldap/__pycache__/__init__.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/async.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/asyncsearch.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/cidict.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/compat.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/constants.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/dn.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/filter.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/functions.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/ldapobject.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/logger.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/modlist.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/pkginfo.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/resiter.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/sasl.cpython-312.opt-1.pyc'
+  adding 'ldap/__pycache__/syncrepl.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__init__.py'
+  adding 'ldap/controls/deref.py'
+  adding 'ldap/controls/libldap.py'
+  adding 'ldap/controls/openldap.py'
+  adding 'ldap/controls/pagedresults.py'
+  adding 'ldap/controls/ppolicy.py'
+  adding 'ldap/controls/psearch.py'
+  adding 'ldap/controls/pwdpolicy.py'
+  adding 'ldap/controls/readentry.py'
+  adding 'ldap/controls/sessiontrack.py'
+  adding 'ldap/controls/simple.py'
+  adding 'ldap/controls/sss.py'
+  adding 'ldap/controls/vlv.py'
+  adding 'ldap/controls/__pycache__/__init__.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/deref.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/libldap.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/openldap.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/pagedresults.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/ppolicy.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/psearch.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/pwdpolicy.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/readentry.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/sessiontrack.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/simple.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/sss.cpython-312.opt-1.pyc'
+  adding 'ldap/controls/__pycache__/vlv.cpython-312.opt-1.pyc'
+  adding 'ldap/extop/__init__.py'
+  adding 'ldap/extop/dds.py'
+  adding 'ldap/extop/passwd.py'
+  adding 'ldap/extop/__pycache__/__init__.cpython-312.opt-1.pyc'
+  adding 'ldap/extop/__pycache__/dds.cpython-312.opt-1.pyc'
+  adding 'ldap/extop/__pycache__/passwd.cpython-312.opt-1.pyc'
+  adding 'ldap/schema/__init__.py'
+  adding 'ldap/schema/models.py'
+  adding 'ldap/schema/subentry.py'
+  adding 'ldap/schema/tokenizer.py'
+  adding 'ldap/schema/__pycache__/__init__.cpython-312.opt-1.pyc'
+  adding 'ldap/schema/__pycache__/models.cpython-312.opt-1.pyc'
+  adding 'ldap/schema/__pycache__/subentry.cpython-312.opt-1.pyc'
+  adding 'ldap/schema/__pycache__/tokenizer.cpython-312.opt-1.pyc'
+  adding 'python_ldap-3.4.4.dist-info/licenses/LICENCE'
+  adding 'slapdtest/__init__.py'
+  adding 'slapdtest/_slapdtest.py'
+  adding 'slapdtest/__pycache__/__init__.cpython-312.opt-1.pyc'
+  adding 'slapdtest/__pycache__/_slapdtest.cpython-312.opt-1.pyc'
+  adding 'slapdtest/certs/README'
+  adding 'slapdtest/certs/ca.conf'
+  adding 'slapdtest/certs/ca.pem'
+  adding 'slapdtest/certs/client.conf'
+  adding 'slapdtest/certs/client.key'
+  adding 'slapdtest/certs/client.pem'
+  adding 'slapdtest/certs/gencerts.sh'
+  adding 'slapdtest/certs/gennssdb.sh'
+  adding 'slapdtest/certs/server.conf'
+  adding 'slapdtest/certs/server.key'
+  adding 'slapdtest/certs/server.pem'
+  adding 'python_ldap-3.4.4.dist-info/METADATA'
+  adding 'python_ldap-3.4.4.dist-info/WHEEL'
+  adding 'python_ldap-3.4.4.dist-info/top_level.txt'
+  adding 'python_ldap-3.4.4.dist-info/RECORD'
+  removing build/bdist.linux-x86_64/wheel
+  Building wheel for python-ldap (pyproject.toml): finished with status 'done'
+  Created wheel for python-ldap: filename=python_ldap-3.4.4-cp312-cp312-linux_x86_64.whl size=370839 sha256=883335e73ef6ae18a83c346345d90e0bc501aad8325e2e401c7e37fdce893903
+  Stored in directory: /usr/scratch/fabi/.cache/pip/wheels/18/51/2d/0931d84b42e6be547ad795da4fe0f97ad22610d84f67418909
+Successfully built python-ldap
+Installing collected packages: python-ldap
+Successfully installed python-ldap-3.4.4
+</code></pre>
+<h3>Platform</h3>
+<p>Debian Bullseye amd64</p>
+<h3>Version</h3>
+<p>uv 0.7.12</p>
+<h3>Python version</h3>
+<p>Python 3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @fabi125 on 2025-06-12 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-12 16:45</div>
+            <div class="timeline-body"><p>Just to confirm, what you want is for a wheel in the first index to be ignored in favor of a wheel with the same name but a different hash in the second index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabi125">@fabi125</a> on 2025-06-12 16:51</div>
+            <div class="timeline-body"><p>I have two candidates of the same package of the same version (python-ldap 3.4.4). One as a source package on the default index, one as a wheel on an additional index. Given my hash and version constraints, the only matching candidate is the source package from the default index. I would like uv to install that candidate.</p>
+<p>uv seems to ignore the source package of the same version of the default index because the same version is also present as a wheel on an additional index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabi125">@fabi125</a> on 2025-07-25 23:09</div>
+            <div class="timeline-body"><p>Any chance someone could take a look at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabi125">@fabi125</a> on 2025-09-19 15:58</div>
+            <div class="timeline-body"><p>@zanieb Do you have any guidance on when someone would be able to look at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-09-19 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-19 18:42</div>
+            <div class="timeline-body"><p>I'm sorry, it looks hard to fix and we have to focus on problems that are affecting more users. I'm not sure when we'll be able to get to it.</p>
+<p>I do really appreciate the write-up and reproduction though, it's really helpful.</p>
+<p>I think what you need is for us to skip packages with mismatched hashes during resolution, but we don't support that right now. We only support checking hashes <em>after</em> resolution.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

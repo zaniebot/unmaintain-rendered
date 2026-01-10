@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` fails with conflicting URLs with Git workspace - astral-sh/uv #8087</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` fails with conflicting URLs with Git workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8087">#8087</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-10 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 12:17</div>
+            <div class="timeline-body"><p>Here is an example:</p>
+<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;autogen-core==0.4.0dev0&quot;,
+    &quot;autogen-agentchat==0.4.0dev0&quot;,
+    &quot;autogen-ext==0.4.0dev0&quot;
+]
+
+[tool.uv.sources]
+autogen-core = { git = &quot;https://github.com/microsoft/autogen.git&quot;, branch = &quot;staging&quot;, subdirectory = &quot;python/packages/autogen-core&quot; }
+autogen-agentchat = { git = &quot;https://github.com/microsoft/autogen.git&quot;, branch = &quot;staging&quot;, subdirectory = &quot;python/packages/autogen-agentchat&quot; }
+autogen-ext = { git = &quot;https://github.com/microsoft/autogen.git&quot;, branch = &quot;staging&quot;, subdirectory = &quot;python/packages/autogen-ext&quot; }
+</code></pre>
+<p>as I had the same issue while trying to load an un-published package from Git:</p>
+<pre><code>error: Requirements contain conflicting URLs for package `autogen-core` in split `python_full_version == '3.12.*'`:
+</code></pre>
+<p>(note that you'll need to run <code>GIT_LFS_SKIP_SMUDGE=1 uv sync --verbose</code> to reproduce, as there's a different and unrelated error about LFS when uv tries to use git to check the repo out, but that's an issue for another ticket)</p>
+<p><em>Originally posted by @jasongill in https://github.com/astral-sh/uv/issues/6041#issuecomment-2402555793</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 12:19</div>
+            <div class="timeline-body"><p>This is an interesting issue. The final error is like:</p>
+<pre><code>error: Requirements contain conflicting URLs for package `autogen-core`:
+- file:///Users/crmarsh/.cache/uv/git-v0/checkouts/2b1782d8bf4da9cf/4084a9f3/python/packages/autogen-core
+- git+https://github.com/microsoft/autogen.git@staging#subdirectory=python/packages/autogen-core
+</code></pre>
+<p><code>autogen</code> actually uses uv workspaces itself, which is the source of the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-10 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasongill">@jasongill</a> on 2024-10-10 12:52</div>
+            <div class="timeline-body"><p>Thanks for opening this ticket @charliermarsh . I realized after reporting in the other thread that there was an issue which I couldn't figure out if it was user error (by me), an issue in the autogen repo, or an actual bug so I hesitated to report it further.</p>
+<p>But I noticed in the autogen-core pyproject.toml the version is specified as 0.4.0dev0, and when I try to install that package alone it works. However, when I try to install one of its dependencies like autogen-ext or autogen-autochat, the failure appears to be because the uv resolver is trying to find autogen-core 0.4.0.dev0 - note the extra period before dev0.</p>
+<p>Again, not sure if this is a uv bug or just I am doing it wrong, but it was odd that the version string was not matching up which appears to be causing this error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-10-10 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 13:03</div>
+            <div class="timeline-body"><p>Assigning to @konstin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8665.html">astral-sh/uv#8665</a> on 2024-10-29 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-30 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-30 19:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:06 UTC
+    </footer>
+</body>
+</html>

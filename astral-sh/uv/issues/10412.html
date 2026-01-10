@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG: Invalid trimmed path is passed to clang when space character is in installation path - astral-sh/uv #10412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG: Invalid trimmed path is passed to clang when space character is in installation path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10412">#10412</a>
+        opened by <a href="https://github.com/saada">@saada</a>
+        on 2025-01-08 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/saada">@saada</a> on 2025-01-08 21:54</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>Hey there!</p>
+<p>An obscure error appears on pip install (more details to reproduce below)</p>
+<pre><code class="language-sh">clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+</code></pre>
+<h2>Hypothesis</h2>
+<p>I think it's not handling the space character correctly that exists under <code>/Users/mahmoud.saada/Library/Application Support/...</code> directory. It's only taking the last part after <code>Support/...</code></p>
+<h2>Steps to reproduce</h2>
+<pre><code class="language-sh">❯ uv version
+uv 0.5.16 (Homebrew 2025-01-08)
+
+❯ uv python list
+...
+cpython-3.11.11-macos-aarch64-none                  /Users/mahmoud.saada/Library/Application Support/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+</code></pre>
+<p>Here's how I setup my venv</p>
+<pre><code class="language-sh">❯ uv venv -p 3.11
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+
+❯ source .venv/bin/activate.fish
+</code></pre>
+<p>Here's the error</p>
+<pre><code class="language-sh">❯ uv pip install -r requirements.txt
+
+Resolved 475 packages in 4.33s
+  × Failed to build `uwsgi==2.0.22`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_py
+      copying uwsgidecorators.py -&gt; build/lib
+      installing to build/bdist.macosx-11.0-arm64/wheel
+      running install
+
+      [stderr]
+      /Users/mahmoud.saada/Library/Caches/uv/builds-v0/.tmpaIzGpL/lib/python3.11/site-packages/setuptools/_distutils/dist.py:270:
+      UserWarning: Unknown distribution option: 'descriptions'
+        warnings.warn(msg)
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+      clang: error: no such file or directory: 'Support/uv/python/cpython-3.11.11-macos-aarch64-none/include/python3.11'
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>Happy to provide any further info</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "BUG: Invalid path passed to clang when space character is used" to "BUG: Invalid trimmed path is passed to clang when space character is in installation path" by @saada on 2025-01-08 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-08 21:58</div>
+            <div class="timeline-body"><p>Hi! We're not passing things to clang in this context — that's whatever the build system of that package (<code>uwsgi</code>) is up to.</p>
+<p>Fwiw, if you delete your Python installs and reinstall, we moved the installations from <code>Application Support</code> to <code>~/.local/share/uv/python</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-08 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saada">@saada</a> on 2025-01-08 22:19</div>
+            <div class="timeline-body"><p>Thanks for the response. Uninstalling and reinstalling seems to use the same path?</p>
+<pre><code class="language-sh">❯ uv python install 3.11.10
+Installed Python 3.11.10 in 1.36s
+ + cpython-3.11.10-macos-aarch64-none
+
+❯ uv python install 3.11 --no-cache -r -f
+Installed Python 3.11.11 in 1.45s
+ + cpython-3.11.11-macos-aarch64-none
+
+❯ uv python list | grep Support
+cpython-3.11.11-macos-aarch64-none                  /Users/mahmoud.saada/Library/Application Support/uv/python/cpython-3.11.11-macos-aarch64-none/bin/python3.11
+cpython-3.11.10-macos-aarch64-none                  /Users/mahmoud.saada/Library/Application Support/uv/python/cpython-3.11.10-macos-aarch64-none/bin/python3.11
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 22:28</div>
+            <div class="timeline-body"><p>You need to delete the folder completely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saada">@saada</a> on 2025-01-08 22:37</div>
+            <div class="timeline-body"><p>These steps worked!</p>
+<pre><code class="language-sh">rm -rf ~/Library/Application\ Support/uv
+uv python uninstall --all
+uv python install 3.11
+uv venv
+uv pip install -r requirements.txt
+</code></pre>
+<p>Thank you for the prompt response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @saada on 2025-01-08 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13495.html">astral-sh/uv#13495</a> on 2025-08-01 14:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:02 UTC
+    </footer>
+</body>
+</html>

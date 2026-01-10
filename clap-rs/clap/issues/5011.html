@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated bash completion script not work in POSIX mode - clap-rs/clap #5011</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generated bash completion script not work in POSIX mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5011">#5011</a>
+        opened by <a href="https://github.com/hehaoqian">@hehaoqian</a>
+        on 2023-07-15 09:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hehaoqian">@hehaoqian</a> on 2023-07-15 09:50</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.70.0</p>
+<h3>Clap Version</h3>
+<p>4.3.11</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">// build.rs
+
+use clap::{CommandFactory, Parser};
+use clap_complete::{generate_to, Shell};
+
+#[derive(Parser)]
+pub struct Args {
+    pub input_file: String,
+}
+
+fn main() {
+    let mut cmd = Args::command();
+    let out_dir = std::env::var(&quot;OUT_DIR&quot;).unwrap();
+    generate_to(Shell::Bash, &amp;mut cmd, &quot;hello-world&quot;, out_dir).unwrap();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>cd into output directory</li>
+<li>run the generated script in bash posix mode</li>
+</ol>
+<pre><code>bash --posix -c &quot;source ./hello-world.bash&quot;
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The shell errors with the following message, with non-zero return code</p>
+<p>./hello-world.bash: line 36: `_hello-world': not a valid identifier</p>
+<h3>Expected Behaviour</h3>
+<p>The script should work in bash posix mode.</p>
+<p>I want to emphasize that this issue report,
+does NOT request to make the script work in non-bash, POSIX only &quot;sh&quot; shell,
+such as <code>/bin/sh</code> in ubuntu.
+Only requesting to make the script work in POSIX mode of <code>/bin/bash</code></p>
+<p>Bash doc <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-POSIX-Mode.html">https://www.gnu.org/software/bash/manual/html_node/Bash-POSIX-Mode.html</a> says</p>
+<blockquote>
+<p>Function names must be valid shell names.
+That is, they may not contain characters other than letters, digits, and underscores, and may not start with a digit.
+Declaring a function with an invalid name causes a fatal syntax error in non-interactive shells.</p>
+</blockquote>
+<p>In my example, the function name of generated script is <code>_hello-world</code>, which is invalid in POSIX mode</p>
+<p>This should be simple to fix, if dash character is properly escaped</p>
+<p>The simplest way would be replacing <code>-</code> by <code>_</code>,
+but it would cause conflict if generating completion script for both <code>hello-world</code> and <code>hello_world</code>
+Maybe a more complex escape is needed for robustness.
+Also, additional escape needed to satisfy <code>they may not contain characters other than letters, digits, and underscores, and may not start with a digit</code> requirement</p>
+<h3>Additional Context</h3>
+<p>There are several ways to enter bash in posix mode:</p>
+<ol>
+<li>If bash is compiled with <code>--enable-strict-posix-default</code>, then posix mode is the default</li>
+<li>Environment variable POSIXLY_CORRECT is set when bash is invoked</li>
+<li>Shell variable POSIXLY_CORRECT  is set in bash script</li>
+<li>bash is invoked with &quot;bash --posix&quot;</li>
+<li>bash is invoked with &quot;sh&quot;, such as invoking <code>/bin/sh</code> in CentOS7, which symlinks <code>/bin/sh</code> to <code>/bin/bash</code></li>
+</ol>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @hehaoqian on 2023-07-15 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-18 02:19</div>
+            <div class="timeline-body"><p>My first question is how much do we care about posix mode but then I saw</p>
+<blockquote>
+<p>bash is invoked with &quot;sh&quot;, such as invoking /bin/sh in CentOS7, which symlinks /bin/sh to /bin/bash</p>
+</blockquote>
+<p>I'm fine with someone going in and fixing this with a reasonable level of care taken to avoid name conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2023-07-18 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-07-18 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5240.html">clap-rs/clap#5240</a> on 2024-01-04 12:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:26 UTC
+    </footer>
+</body>
+</html>

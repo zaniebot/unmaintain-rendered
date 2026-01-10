@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserWarning: Attempting to work in a virtualenv. If you encounter problems, please install IPython inside the virtualenv - astral-sh/uv #7466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UserWarning: Attempting to work in a virtualenv. If you encounter problems, please install IPython inside the virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7466">#7466</a>
+        opened by <a href="https://github.com/kdheepak">@kdheepak</a>
+        on 2024-09-17 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kdheepak">@kdheepak</a> on 2024-09-17 15:16</div>
+            <div class="timeline-body"><p>On Windows, after running the following:</p>
+<pre><code>$ uv init --lib
+$ uv add ipython --dev
+$ source .venv/Scripts/activate
+$ ipython
+</code></pre>
+<p>I get a warning:</p>
+<pre><code>$ ipython
+C:\Users\USERNAME\gitrepos\project-foo\.venv\Lib\site-packages\IPython\core\interactiveshell.py:937: UserWarning: Attempting to work in a virtualenv. If you encounter problems, please install IPython inside the virtualenv.
+  warn(
+Python 3.12.5 (main, Aug 14 2024, 04:23:18) [MSC v.1929 64 bit (AMD64)]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 8.27.0 -- An enhanced Interactive Python. Type '?' for help.
+</code></pre>
+<p>This is with the latest version of <code>uv</code>:</p>
+<pre><code>$ uv --version
+uv 0.4.10 (690716484 2024-09-13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 15:29</div>
+            <div class="timeline-body"><p>Hmm, that's a surprising one. What does <code>where ipython</code> return?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdheepak">@kdheepak</a> on 2024-09-17 15:35</div>
+            <div class="timeline-body"><p>Here's the output of <code>where ipython</code>:</p>
+<pre><code>$ where ipython
+C:\Users\USERNAME\gitrepos\project-foo\.venv\Scripts\ipython.exe
+C:\Users\USERNAME\miniforge3\Scripts\ipython.exe
+</code></pre>
+<p>fwiw, I'm using git bash. And <code>which ipython</code> returns the <code>path/to/.venv/Scripts/ipython</code> as well.</p>
+<p>Oddly enough, <code>uv run ipython</code> doesn't give the warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-09-21 22:03</div>
+            <div class="timeline-body"><p>I verified that this doesn't happen on Linux.</p>
+<p>@kdheepak you could try to debug the issue by putting some print statements into
+<code>C:\Users\USERNAME\gitrepos\project-foo\.venv\Lib\site-packages\IPython\core\interactiveshell.py</code></p>
+<p>Specifically, it would be interesting to print out the value of variables <code>paths</code> and <code>p_env</code> in function <code>init_virtualenv</code> to find out why do following condition evaluates to <code>False</code> instead of <code>True</code> as it should.</p>
+<pre><code class="language-python">  if any(p_venv == p.parents[1] for p in paths):                                                                             
+     # Our exe is inside or has access to the virtualenv, don't need to do anything.
+     return
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdheepak">@kdheepak</a> on 2024-09-22 01:43</div>
+            <div class="timeline-body"><p>I added the following print functions:</p>
+<pre><code class="language-python">        print(f&quot;{p_venv = }&quot;)
+        print(f&quot;{p.parents[1] = }&quot;)
+        print(f&quot;{p.parents = }&quot;)
+        print(f&quot;{paths = }&quot;)
+        if any(p_venv == p.parents[1] for p in paths):
+            # Our exe is inside or has access to the virtualenv, don't need to do anything.
+            return
+</code></pre>
+<p>Here's the output:</p>
+<pre><code>p_venv = WindowsPath('/c/Users/USERNAME/gitrepos/project-foo/.venv')
+p.parents[1] = WindowsPath('C:/Users/USERNAME/gitrepos/project-foo/.venv')
+p.parents = &lt;WindowsPath.parents&gt;
+paths = [WindowsPath('C:/Users/USERNAME/gitrepos/project-foo/.venv/Scripts/python.exe')]
+</code></pre>
+<p>The issue is because of Unix paths and Windows paths being compared. Adding a <code>.resolve()</code> doesn't appear like it'll solve it:</p>
+<img width="560" alt="image" src="https://github.com/user-attachments/assets/84255bd8-5119-4909-8bb5-17641f3fa942">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/cpython/issues/124312.html">python/cpython#124312</a> on 2024-09-22 05:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/y5c4l3">@y5c4l3</a> on 2024-09-22 11:08</div>
+            <div class="timeline-body"><p>Cannot reproduce on Git Bash with version below:</p>
+<pre><code>$ uname -a
+MINGW64_NT-10.0-19045 DESKTOP-14RM0I9 3.4.10-87d57229.x86_64 2024-02-14 20:17 UTC x86_64 Msys
+</code></pre>
+<p>Could you give more details in your virtualenv? Seems that your MSYS2 in Git Bash does not <a href="https://www.msys2.org/docs/filesystem-paths/">convert file paths presented in environment variables</a>, where it should by default. Local result:</p>
+<pre><code class="language-console">(testuv) ~/Documents/testuv
+$ echo $VIRTUAL_ENV
+/c/Users/y5/Documents/testuv/.venv
+(testuv) ~/Documents/testuv
+$ python -c 'import os; print(os.environ[&quot;VIRTUAL_ENV&quot;])'
+C:/Users/y5/Documents/testuv/.venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kdheepak">@kdheepak</a> on 2024-09-22 14:08</div>
+            <div class="timeline-body"><p>Mine does the same thing:</p>
+<pre><code>$ echo $VIRTUAL_ENV
+/c/Users/USERNAME/gitrepos/project-foo/.venv
+
+$ python -c 'import os; print(os.environ[&quot;VIRTUAL_ENV&quot;])'
+C:/Users/USERNAME/gitrepos/project-foo/.venv
+
+$ uname -a
+MINGW64_NT-10.0-19045 XXXXXXX 3.4.10-2e2ef940.x86_64 2024-07-09 21:35 UTC x86_64 Msys
+
+$ which uv
+/c/Users/USERNAME/.cargo/bin/uv
+
+$ deactivate
+
+$ which python
+/c/Users/USERNAME/miniforge3/python
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:50 UTC
+    </footer>
+</body>
+</html>

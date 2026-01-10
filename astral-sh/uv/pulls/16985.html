@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor `pip::operations::install` - astral-sh/uv #16985</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor `pip::operations::install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16985">#16985</a>
+        opened by <a href="https://github.com/EliteTK">@EliteTK</a>
+        on 2025-12-04 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-04 19:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Move the planning stage to a separate function.</p>
+<p>Also a small refactor of <code>report_dry_run</code>.</p>
+<p>I don't think this is necessarily worth it. I think a better approach is just to return the plan from install either always or when dry running (currently it returns an empty change-log instead).</p>
+<h2>Test Plan</h2>
+<p>Test suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @EliteTK on 2025-12-04 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @EliteTK on 2025-12-04 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 20:06</div>
+            <div class="timeline-body"><p>Regarding whether it's worth it... I think returning a different type (e.g., using <code>Either</code>) based on <code>DryRun</code> feels like an anti-pattern? I'm sure why it'd be better to always return <code>Plan</code> and <code>Changelog</code> when the <code>DryRun::is_enabled()</code> case just returns an empty <code>Changelog::default()</code> immediately? It feels like <code>install</code> just shouldn't be called when dry-run is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-05 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Regarding whether it's worth it... I think returning a different type (e.g., using <code>Either</code>) based on <code>DryRun</code> feels like an anti-pattern?</p>
+</blockquote>
+<p>After sleeping on it, I think I agree but I also think that the alternative of making every install call site require an identical preparation step seems sub-optimal.</p>
+<p>Also, the <code>Plan</code> seems more like an implementation detail of the install function. The <code>Resolution</code> seems more like the <code>Plan</code> and in that sense I don't think it necessarily would be bad to have a function like <code>install</code> and a function like <code>dry_run_install</code> and they both take a <code>Resolution</code> among other things and return a changelog of some sort. If we go down the route of splitting them, I think that might be the most sensible approach.</p>
+<p>But, regardless of the option, I think fundamentally, Changelog seems like something which could be returned from either function. I will explain more in #16981.</p>
+<blockquote>
+<p>It feels like install just shouldn't be called when dry-run is enabled.</p>
+</blockquote>
+<p>I mean, there is this way to look at it: the command that initiates this is <code>uv sync --dry-run</code> and not <code>uv dry-run-sync</code> so I feel like it's not entirely unusual for install to take a dry-run parameter.</p>
+<p>I agree that it not returning a changelog in the dry-run case is weird, but I will explain more in the other PR.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff logging core dump messages in the system journal - astral-sh/ruff #12545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff logging core dump messages in the system journal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12545">#12545</a>
+        opened by <a href="https://github.com/Fissium">@Fissium</a>
+        on 2024-07-27 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Fissium">@Fissium</a> on 2024-07-27 17:46</div>
+            <div class="timeline-body"><p>I've noticed that ruff continues to run, but there are frequent core dump messages logged in the system journal. Below are the details from the most recent log entry:</p>
+<pre><code>PID: 4280 (ruff)
+UID: 1000 (fissium)
+GID: 1000 (fissium)
+Signal: 6 (ABRT)
+Timestamp: Sat 2024-07-27 20:31:43 MSK (1min 31s ago)
+Command Line: /home/fissium/.local/share/nvim/mason/bin/ruff server
+Executable: /home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff
+Control Group: /user.slice/user-1000.slice/user@1000.service/app.slice/kitty-2546-0.scope
+Unit: user@1000.service
+User Unit: kitty-2546-0.scope
+Slice: user-1000.slice
+Owner UID: 1000 (fissium)
+Boot ID: 37f1ef78ff7a449faf604ccbdf1e3943
+Machine ID: 830b850f950448748db101e10b137d6b
+Hostname: archlinux
+Storage: /var/lib/systemd/coredump/core.ruff.1000.37f1ef78ff7a449faf604ccbdf1e3943.4280.1722101503000000.zst (present)
+Size on Disk: 377K
+Message: Process 4280 (ruff) of user 1000 dumped core.
+                
+    Stack trace of thread 4280:
+    #0  0x00007c96eafde3f4 n/a (libc.so.6 + 0x963f4)
+    #1  0x00007c96eaf85120 raise (libc.so.6 + 0x3d120)
+    #2  0x00007c96eaf6c4c3 abort (libc.so.6 + 0x244c3)
+    #3  0x00006023b6fe820a n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xf7820a)
+    #4  0x00006023b6fe29c1 n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xf729c1)
+    #5  0x00006023b6fe2574 n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xf72574)
+    #6  0x00006023b6fe12a9 n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xf712a9)
+    #7  0x00006023b6fe22c7 n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xf722c7)
+    #8  0x00006023b616a323 n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xfa323)
+    #9  0x00006023b6fdd09a n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xf6d09a)
+    #10 0x00006023b6de94ab n/a (/home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff + 0xd794ab)
+    ELF object binary architecture: AMD x86-64
+</code></pre>
+<p>ruff version: <code>0.5.5</code></p>
+<p>system: <code>Arch Linux</code></p>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[tool.ruff]
+exclude = [
+  &quot;.bzr&quot;,
+  &quot;.direnv&quot;,
+  &quot;.eggs&quot;,
+  &quot;.git&quot;,
+  &quot;.git-rewrite&quot;,
+  &quot;.hg&quot;,
+  &quot;.ipynb_checkpoints&quot;,
+  &quot;.mypy_cache&quot;,
+  &quot;.nox&quot;,
+  &quot;.pants.d&quot;,
+  &quot;.pyenv&quot;,
+  &quot;.pytest_cache&quot;,
+  &quot;.pytype&quot;,
+  &quot;.ruff_cache&quot;,
+  &quot;.svn&quot;,
+  &quot;.tox&quot;,
+  &quot;.venv&quot;,
+  &quot;.vscode&quot;,
+  &quot;__pypackages__&quot;,
+  &quot;_build&quot;,
+  &quot;buck-out&quot;,
+  &quot;build&quot;,
+  &quot;dist&quot;,
+  &quot;node_modules&quot;,
+  &quot;site-packages&quot;,
+  &quot;venv&quot;,
+]
+
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = [&quot;ARG&quot;, &quot;F&quot;, &quot;E&quot;, &quot;I&quot;, &quot;W&quot;, &quot;B&quot;, &quot;C4&quot;, &quot;UP&quot;, &quot;RUF&quot;]
+fixable = [&quot;I&quot;]
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+skip-magic-trailing-comma = false
+line-ending = &quot;auto&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff logging core dump messages in the system journal" to "Ruff logging core dump messages in the system journal" by @Fissium on 2024-07-27 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-07-28 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-07-28 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-28 13:40</div>
+            <div class="timeline-body"><p>Thanks for reporting. It will probably be difficult for us to fix this without additional information. What I see from the log is that the failing command is <code>ruff server</code>.</p>
+<p>Have you ever noticed any VS Code error dialog telling you that it restarted the Ruff server because it crashed? If so, would you mind sharing the logs (<a href="https://github.com/astral-sh/ruff-vscode?tab=readme-ov-file#troubleshooting">see troubleshooting section</a>) with us? That would greatly help in getting to the bottom of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fissium">@Fissium</a> on 2024-07-28 14:57</div>
+            <div class="timeline-body"><p>@MichaReiser I've enabled logging for Neovim as described <a href="https://docs.astral.sh/ruff/editors/setup/#neovim">here</a>.</p>
+<p>Here is the output of <code>lsp.log</code>:</p>
+<pre><code>[START][2024-07-28 17:48:43] LSP logging initiated
+[ERROR][2024-07-28 17:48:43] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   0.002060162s DEBUG ThreadId(04) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /projects/hoff/qa/locust/.ruff_cache\n   0.002255498s DEBUG ThreadId(04) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /projects/hoff/qa/locust/.git\n&quot;
+[ERROR][2024-07-28 17:48:43] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   0.008470822s  WARN ruff:main ruff_server::server: LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n   0.008610409s DEBUG ruff:worker:0 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/shapes.py\n&quot;
+[WARN][2024-07-28 17:48:43] ...lsp/handlers.lua:135	&quot;The language server copilot triggers a registerCapability handler for workspace/didChangeWorkspaceFolders despite dynamicRegistration set to false. Report upstream, this warning is harmless&quot;
+[ERROR][2024-07-28 17:48:46] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   3.324471758s DEBUG ruff:worker:1 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/shapes.py\n&quot;
+[ERROR][2024-07-28 17:48:46] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   3.647401371s DEBUG ruff:worker:3 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/shapes.py\n&quot;
+[ERROR][2024-07-28 17:48:47] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   3.775587620s DEBUG ruff:worker:4 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/shapes.py\n&quot;
+[ERROR][2024-07-28 17:48:48] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   4.975728581s DEBUG ruff:worker:2 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/shapes.py\n&quot;
+[ERROR][2024-07-28 17:48:49] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   5.988686776s DEBUG ruff:worker:5 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/shapes.py\n&quot;
+[START][2024-07-28 17:49:07] LSP logging initiated
+[ERROR][2024-07-28 17:49:07] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   0.002190494s DEBUG ThreadId(04) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /projects/hoff/qa/locust/.ruff_cache\n   0.002365530s DEBUG ThreadId(04) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /projects/hoff/qa/locust/.git\n   0.006834485s  WARN ruff:main ruff_server::server: LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n   0.006959741s DEBUG ruff:worker:0 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[WARN][2024-07-28 17:49:08] ...lsp/handlers.lua:135	&quot;The language server copilot triggers a registerCapability handler for workspace/didChangeWorkspaceFolders despite dynamicRegistration set to false. Report upstream, this warning is harmless&quot;
+[ERROR][2024-07-28 17:49:13] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   5.497319727s DEBUG ruff:worker:1 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:13] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   5.700150891s DEBUG ruff:worker:2 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:13] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   6.021996261s DEBUG ruff:worker:4 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:13] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;   6.022822469s DEBUG ruff:worker:3 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:20] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  13.279885122s DEBUG ruff:worker:5 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:21] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  13.421045496s DEBUG ruff:worker:6 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:22] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  14.528148095s DEBUG ruff:worker:8 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:22] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  14.743507416s DEBUG ruff:worker:9 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:22] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  14.828157864s DEBUG ruff:worker:7 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:22] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  15.002252569s DEBUG ruff:worker:10 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:23] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  16.006754048s DEBUG ruff:worker:15 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:23] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  16.251673924s DEBUG ruff:worker:12 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n  16.251757062s DEBUG  ruff:worker:0 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:38] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  30.459387541s DEBUG ruff:worker:13 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:38] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  30.459731552s DEBUG ruff:worker:14 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:38] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  30.766225537s DEBUG ruff:worker:11 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:38] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  30.964531576s DEBUG ruff:worker:16 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:38] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  31.087091472s DEBUG ruff:worker:17 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:47] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  40.227910493s DEBUG ruff:worker:18 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:49:51] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  43.431315731s DEBUG ruff:worker:19 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.527510086s DEBUG ruff:worker:20 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.811270187s DEBUG ruff:worker:21 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.850078309s DEBUG ruff:worker:22 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.880653541s DEBUG ruff:worker:23 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.898032891s DEBUG  ruff:worker:1 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.927953674s DEBUG  ruff:worker:2 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.965888320s DEBUG  ruff:worker:4 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  54.988297012s DEBUG  ruff:worker:3 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  55.018931472s DEBUG  ruff:worker:5 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  55.048670740s DEBUG  ruff:worker:6 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  55.093019078s DEBUG  ruff:worker:8 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:02] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  55.124206983s DEBUG  ruff:worker:9 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:03] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  55.359379598s DEBUG  ruff:worker:7 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+[ERROR][2024-07-28 17:50:03] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/home/fissium/.local/share/nvim/mason/bin/ruff&quot;	&quot;stderr&quot;	&quot;  55.921421891s DEBUG ruff:worker:10 ruff_server::resolve: Included path via `include`: /projects/hoff/qa/locust/src/users.py\n&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-29 05:42</div>
+            <div class="timeline-body"><p>Are there any indications in the editor that the server crashed (notifications?) because there's none in the provided logs? Do you still see the diagnostics and are they being refreshed when you change the buffer content after the crash?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fissium">@Fissium</a> on 2024-07-29 06:53</div>
+            <div class="timeline-body"><p>There are no notifications in the editor indicating that the server has crashed. And I still see the diagnostics, and they are being refreshed when I change the buffer content even after the crash.</p>
+<p>Here is a backtrace that I hope will help in identifying the issue:</p>
+<pre><code>Reading symbols from /home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff...
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  &lt;https://debuginfod.archlinux.org&gt;
+Enable debuginfod for this session? (y or [n]) y
+Debuginfod has been enabled.
+To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+Downloading separate debug info for /home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff
+(No debugging symbols found in /home/fissium/.local/share/nvim/mason/packages/ruff/venv/bin/ruff)                                                                           
+[New LWP 5765]
+Downloading separate debug info for /usr/lib/libpthread.so.0
+Downloading separate debug info for /usr/lib/librt.so.1                                                                                                                     
+Downloading separate debug info for /usr/lib/libm.so.6                                                                                                                      
+Downloading separate debug info for /usr/lib/libdl.so.2                                                                                                                     
+Downloading separate debug info for /usr/lib/libc.so.6                                                                                                                      
+Downloading separate debug info for /lib64/ld-linux-x86-64.so.2                                                                                                             
+Downloading separate debug info for system-supplied DSO at 0x7526370f5000                                                                                                   
+[Thread debugging using libthread_db enabled]                                                                                                                               
+Using host libthread_db library &quot;/usr/lib/libthread_db.so.1&quot;.
+Core was generated by `/home/fissium/.local/share/nvim/mason/bin/ruff server'.
+Program terminated with signal SIGABRT, Aborted.
+Downloading source file /usr/src/debug/glibc/glibc/nptl/pthread_kill.c
+#0  __pthread_kill_implementation (threadid=&lt;optimized out&gt;, signo=signo@entry=6, no_tid=no_tid@entry=0) at pthread_kill.c:44                                               
+44	     return INTERNAL_SYSCALL_ERROR_P (ret) ? INTERNAL_SYSCALL_ERRNO (ret) : 0;
+(gdb) bt
+#0  __pthread_kill_implementation (threadid=&lt;optimized out&gt;, signo=signo@entry=6, no_tid=no_tid@entry=0) at pthread_kill.c:44
+#1  0x0000752636e48463 in __pthread_kill_internal (threadid=&lt;optimized out&gt;, signo=6) at pthread_kill.c:78
+#2  0x0000752636def120 in __GI_raise (sig=sig@entry=6) at ../sysdeps/posix/raise.c:26
+#3  0x0000752636dd64c3 in __GI_abort () at abort.c:79
+#4  0x00005cc3894cf20a in std::sys::pal::unix::abort_internal ()
+#5  0x00005cc3894c99c1 in std::panicking::rust_panic_with_hook ()
+#6  0x00005cc3894c9574 in std::panicking::begin_panic_handler::{{closure}} ()
+#7  0x00005cc3894c82a9 in std::sys_common::backtrace::__rust_end_short_backtrace ()
+#8  0x00005cc3894c92c7 in rust_begin_unwind ()
+#9  0x00005cc388651323 in core::panicking::panic_fmt ()
+#10 0x00005cc3894c409a in std::io::stdio::_eprint ()
+#11 0x00005cc3892d04ab in ruff_server::message::init_messenger::{{closure}} ()
+#12 0x00005cc3894c97b8 in std::panicking::rust_panic_with_hook ()
+#13 0x00005cc3894c9574 in std::panicking::begin_panic_handler::{{closure}} ()
+#14 0x00005cc3894c82a9 in std::sys_common::backtrace::__rust_end_short_backtrace ()
+#15 0x00005cc3894c92c7 in rust_begin_unwind ()
+#16 0x00005cc388651323 in core::panicking::panic_fmt ()
+#17 0x00005cc3894c409a in std::io::stdio::_eprint ()
+#18 0x00005cc388c0c9b0 in ruff::main ()
+#19 0x00005cc388c10b23 in std::sys_common::backtrace::__rust_begin_short_backtrace ()
+#20 0x00005cc388c0fa19 in std::rt::lang_start::{{closure}} ()
+#21 0x00005cc3894ba1d6 in std::rt::lang_start_internal ()
+#22 0x00005cc388c0d0d5 in main ()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-30 06:35</div>
+            <div class="timeline-body"><p>Thanks for sharing the backtrace.</p>
+<p>Looking at the code it seems to me that we panic inside the <code>eprintln</code> that we use to print a catcher panic (oh well...) But tracing should have recorded the error already.</p>
+<p>https://github.com/astral-sh/ruff/blob/507f5c1137d18a30057ce4708ba6fc0656570dac/crates/ruff_server/src/message.rs#L36-L41</p>
+<p>Maybe we should change the server code to use <code>log::error!</code> instead of the eprintln. @dhruvmanila what do you think?</p>
+<p>@Fissium could you try setting the <a href="https://docs.astral.sh/ruff/editors/settings/#logfile"><code>logFile</code></a> setting. Maybe we can find the panic cause in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-30 07:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Looking at the code it seems to me that we panic inside the <code>eprintln</code> that we use to print a catcher panic (oh well...) But tracing should have recorded the error already.</p>
+</blockquote>
+<p>Shouldn't it also have notified the user about the panic via notification? It didn't in this case (https://github.com/astral-sh/ruff/issues/12545#issuecomment-2255080592) which is weird because the messenger is set in the <code>init_messenger</code> function itself at the start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-30 07:14</div>
+            <div class="timeline-body"><p>Possibly. It may have failed. We ignore the return type. What I suspect is happening is that the stderr stream gets closed by neovim (e.g. when exiting the editor?). We then try to write a message which panics and so will <code>eprintln</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-30 07:22</div>
+            <div class="timeline-body"><p>Hmm, that's interesting because the author mentioned that the server keeps running (or is it being restarted by the editor?) and it even refreshes the existing diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fissium">@Fissium</a> on 2024-07-30 07:45</div>
+            <div class="timeline-body"><p>@MichaReiser Here is the log file:
+<a href="https://github.com/user-attachments/files/16424047/ruff.log">ruff.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-30 08:17</div>
+            <div class="timeline-body"><p>Thanks @Fissium this is very helpful!</p>
+<pre><code>   3.944361632s  INFO     ruff:main ruff_server::server::connection: Shutdown request received. Waiting for an exit notification...
+   3.955358848s ERROR          main ruff_server::message: panicked at library/std/src/io/stdio.rs:1118:9:
+failed printing to stderr: Broken pipe (os error 32)
+   0: ruff_server::message::init_messenger::{{closure}}
+   1: std::panicking::rust_panic_with_hook
+   2: std::panicking::begin_panic_handler::{{closure}}
+   3: std::sys_common::backtrace::__rust_end_short_backtrace
+   4: rust_begin_unwind
+   5: core::panicking::panic_fmt
+   6: std::io::stdio::_eprint
+   7: ruff::main
+   8: std::sys_common::backtrace::__rust_begin_short_backtrace
+   9: std::rt::lang_start::{{closure}}
+  10: std::rt::lang_start_internal
+  11: main
+  12: &lt;unknown&gt;
+  13: __libc_start_main
+  14: &lt;unknown&gt;
+</code></pre>
+<p>It does seem that the server panics after receiving the exit message, because of a broken pipe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2024-07-30 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-07-30 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 11:03</div>
+            <div class="timeline-body"><p>I tried to reproduce this error with the following neovim configuration but without success</p>
+<pre><code class="language-lua">local lspconfig = require 'lspconfig'
+
+vim.lsp.set_log_level(vim.env.NVIM_LSP_LOG_LEVEL or vim.lsp.log_levels.DEBUG)
+require('vim.lsp.log').set_format_func(vim.inspect)
+
+lspconfig.ruff.setup {
+  cmd = { &quot;/home/micha/astral/ruff/release/debug/ruff&quot;, &quot;server&quot; },
+  cmd_env = { RUFF_TRACE = &quot;verbose&quot; },
+  init_options = {
+    settings = {
+      logLevel = &quot;trace&quot;,
+      logFile = &quot;~/ruff.log&quot;,
+    }
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12610.html">astral-sh/ruff#12610</a> on 2024-08-01 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-02 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-08-02 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-02 10:11</div>
+            <div class="timeline-body"><p>I merged a fix for the panic. Let me know if you keep seeing the core dump messages after upgrading.</p>
+<p>And thanks again for all your help with providing crash reports!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-02 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fissium">@Fissium</a> on 2024-08-03 12:09</div>
+            <div class="timeline-body"><p>@MichaReiser After upgrading to 0.5.6, I don't see any core dump messages. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-08-07 02:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

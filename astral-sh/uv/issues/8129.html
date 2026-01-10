@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to use `uv` with Cookiecutter templates - astral-sh/uv #8129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to use `uv` with Cookiecutter templates</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8129">#8129</a>
+        opened by <a href="https://github.com/yakimka">@yakimka</a>
+        on 2024-10-11 19:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yakimka">@yakimka</a> on 2024-10-11 19:02</div>
+            <div class="timeline-body"><p>I have a Cookiecutter project template that I am trying to migrate from using Poetry to <code>uv</code>. However, I encountered an issue with the strict <code>uv</code> validation of <code>pyproject.toml</code>.</p>
+<p>Poetry is able to read this <a href="https://github.com/yakimka/cookiecutter-pyproject/blob/af7c7be7a0d99c376bba88b471d791e953cfe7a0/%7B%7Bcookiecutter.project_name%7D%7D/pyproject.toml">pyproject.toml</a>, handle dependencies, upgrade, etc. However, when I try to run the <code>uv</code> command, I get an error related to reading the config:</p>
+<pre><code>╰─ uv add mypy pre-commit
+  Caused by: TOML parse error at line 6, column 8
+  |
+6 | name = &quot;{{ cookiecutter.project_name }}&quot;
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Not a valid package or extra name: &quot;{{ cookiecutter.project_name }}&quot;. Names must start and end with a letter or digit and may only contain -, _, ., and alphanumeric characters.
+</code></pre>
+<p>Even when I replace <code>{{ cookiecutter.project_name }}</code> with a valid project name, I encounter an error while reading <code>setup.cfg</code>:</p>
+<pre><code>configparser.ParsingError: Source contains parsing errors: 'setup.cfg'
+	[line 47]: '{% if cookiecutter.fastapi_support.startswith(&quot;y&quot;) %}\n'
+	[line 50]: '{% endif %}\n'
+</code></pre>
+<p>Additionally, because of these errors, GitHub's Dependabot cannot process this <code>pyproject.toml</code> file.</p>
+<p>Would it be possible for <code>uv</code> to implement a <code>--no-validation</code> flag that disables validation, allowing <code>uv</code> to be used with Cookiecutter templates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-13 13:17</div>
+            <div class="timeline-body"><p>Unless I'm missing something, you'd have to render the cookiecutter first into an actual valid project using <a href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a></p>
+<p>e.g. <code>uvx cookiecutter gh:audreyfeldroy/cookiecutter-pypackage</code></p>
+<p>or in your case, something like <code>uvx cookiecutter gh:yakimka/cookiecutter-pyproject</code></p>
+<hr />
+<p>Or are you asking to allow uv to process (not validating) expressions like <code>{{ cookiecutter.project_name }}</code> and <code>{% if cookiecutter.fastapi_support.startswith(&quot;y&quot;) %}</code>?</p>
+<p>What would the project name be in such case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakimka">@yakimka</a> on 2024-10-20 13:47</div>
+            <div class="timeline-body"><p>@samypr100</p>
+<blockquote>
+<p>you'd have to render the cookiecutter first into an actual valid project using</p>
+</blockquote>
+<p>If I want to create a new project from the cookiecutter template, then yes, I need to render it first.</p>
+<p>But for managing and updating dependencies of the template itself, I don't need to, and now it is working perfectly with Poetry. I can just navigate to <code>cookiecutter-pyproject/{{cookiecutter.project_name}}</code>, run <code>poetry install</code>, <code>poetry update</code>, or <code>poetry add some-package</code>, and it works perfectly fine because the <code>pyproject.toml</code> in my template is valid. For managing dependencies, Poetry doesn't need to validate the project name or load <code>setup.cfg</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../yakimka/picodi/pulls/127.html">yakimka/picodi#127</a> on 2024-10-24 17:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:07 UTC
+    </footer>
+</body>
+</html>

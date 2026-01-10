@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard against deletion of the current environment - astral-sh/uv #1327</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Guard against deletion of the current environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1327">#1327</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-15 19:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-15 19:10</div>
+            <div class="timeline-body"><p>For example, <code>uv venv</code> will happily clear the current virtual environment.</p>
+<p>This is most notably an issue when <code>uv</code> is installed in that environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-15 19:20</div>
+            <div class="timeline-body"><p>This also an issue on Windows where the operation fails.</p>
+<pre><code>uv venv
+Using Python 3.12.2 interpreter at C:\Users\Micha\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtualenv at: .venv
+uv::venv::creation
+
+  × Failed to create virtualenv
+  ├─▶ failed to remove directory `.venv`
+  ╰─▶ Access is denied. (os error 5)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-15 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-02-15 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1368.html">astral-sh/uv#1368</a> on 2024-02-15 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 14:48</div>
+            <div class="timeline-body"><p>@gaborbernat -- just curious, do <code>virtualenv</code> do anything special here (e.g., if you try to create a virtualenv with <code>--clear</code>, and the <code>virtualenv.exe</code> you're running is in the directory that needs to be removed)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-03-04 15:55</div>
+            <div class="timeline-body"><p>Nothing at all: https://github.com/pypa/virtualenv/blob/5cd543f/src/virtualenv/create/creator.py#L155-L157</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 15:56</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2248.html">astral-sh/uv#2248</a> on 2024-03-08 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3339.html">astral-sh/uv#3339</a> on 2024-05-02 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2024-10-14 19:26</div>
+            <div class="timeline-body"><p>Here's another/similar issue regarding <code>uv</code> trying to delete the current environment. I think the main issue is the mismatch between some leftover <code>.python-version</code> that I had and the (new) <code>.venv</code>. But ideally, <code>uv</code> would be smart enough to detect that it is currently running from said <code>.venv</code>, and should not try deleting it.</p>
+<p><code>bug.bat</code>:</p>
+<pre><code>@echo off
+if not exist c:\ws\bug mkdir c:\ws\bug
+pushd c:\ws\bug
+
+if exist .venv rmdir .venv /s/q
+echo 3.12.3 &gt; .python-version
+echo [project] &gt; pyproject.toml
+echo name = &quot;Bug&quot; &gt;&gt; pyproject.toml
+echo version = &quot;1&quot; &gt;&gt; pyproject.toml
+
+python -m venv .venv
+call .venv\scripts\activate
+
+pip install uv
+uv sync --verbose
+
+pause
+</code></pre>
+<p>Output:</p>
+<pre><code>Collecting uv
+  Using cached uv-0.4.20-py3-none-win_amd64.whl.metadata (11 kB)
+Using cached uv-0.4.20-py3-none-win_amd64.whl (14.2 MB)
+Installing collected packages: uv
+Successfully installed uv-0.4.20
+DEBUG uv 0.4.20
+DEBUG Found project root: `c:\ws\bug`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `c:\ws\bug\.python-version`
+DEBUG The virtual environment's Python version does not satisfy `Python 3.12.3`
+DEBUG Searching for Python 3.12.3 in managed installations, system path, or `py` launcher
+DEBUG Searching for managed installations at `C:\Users\bers\AppData\Roaming\uv\python`
+DEBUG Found managed installation `cpython-3.12.3-windows-x86_64-none`
+DEBUG Found `cpython-3.12.3-windows-x86_64-none` at `C:\Users\bers\AppData\Roaming\uv\python\cpython-3.12.3-windows-x86_64-none\python.exe` (managed installations)
+Using CPython 3.12.3
+error: failed to remove directory `c:\ws\bug\.venv`
+  Caused by: Access is denied. (os error 5)
+Press any key to continue . . .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arden13">@arden13</a> on 2024-12-17 13:13</div>
+            <div class="timeline-body"><p>Hey All,</p>
+<p>I've been testing out uv for my work and am hitting what seems a related issue to this one. Running on a windows 11 machine I'm generating some base python environments and I hit this same error (os error 5) when running</p>
+<p><code>uv venv py311 --native-tls --python 3.11</code></p>
+<p>running this one time it fails. Running it a second time it succeeds.</p>
+<pre><code>(nipals_uv) PS C:\Users\username\git_repos\open_nipals&gt; uv venv py311 --native-tls --python 3.11
+  × Failed to copy to:
+  │ C:\Users\username\AppData\Roaming\uv\python\cpython-3.11.11-windows-x86_64-none
+  ╰─▶ failed to rename file from C:\Users\username\AppData\Roaming\uv\python\.temp\.tmpu6Kxca\python
+      to C:\Users\username\AppData\Roaming\uv\python\cpython-3.11.11-windows-x86_64-none: Access    
+      is denied. (os error 5)
+(nipals_uv) PS C:\Users\username\git_repos\open_nipals&gt; uv venv py311 --native-tls --python 3.11
+Using CPython 3.11.11
+Creating virtual environment at: py311
+Activate with: py311\Scripts\activate
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-27 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10206.html">astral-sh/uv#10206</a> on 2024-12-27 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-29 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-29 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/i-esin">@i-esin</a> on 2025-01-22 11:11</div>
+            <div class="timeline-body"><p>Hi all,</p>
+<p>I am having the similar issue. Could this be due to an antivirus?</p>
+<pre><code>$ uv add open-interpreter[local]
+Resolved 184 packages in 482ms
+  × Failed to download `torch==2.3.1`
+  ├─▶ Failed to read from the distribution cache
+  ╰─▶ failed to rename file from C:\Users\iesin\AppData\Local\uv\cache\.tmpr85ZTV to C:\Users\iesin\AppData\Local\uv\cache\archive-v0\7jAiiCuwwfNRLg1bifo55: Access is denied. (os error 5)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 13:28</div>
+            <div class="timeline-body"><p>Yes, most likely.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

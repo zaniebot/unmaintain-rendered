@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implicit concatenated string formatting - astral-sh/ruff #9457</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implicit concatenated string formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9457">#9457</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-01-10 14:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-10 14:34</div>
+            <div class="timeline-body"><p>This is a proposal for changing our implicit concatenated string formatting to solve https://github.com/astral-sh/ruff/issues/8272</p>
+<p>The problem in the mentioned issue is that <code>ISC001</code> is incompatible with the formatter because the formatter might format an implicit concatenated string on a single line, which triggers <code>ISC001</code></p>
+<pre><code class="language-python"># Input
+a = (
+	&quot;bbbbbbb&quot;
+	&quot;ccccccc&quot;
+)
+
+## Formatted
+a = &quot;bbbbbbb&quot; &quot;ccccccc&quot;
+</code></pre>
+<p>Which triggers <code>ISC001</code>.</p>
+<h2>Today</h2>
+<p>We either format all parts of an implicit concatenated string or a single line or format each part on its own line, if necessary:</p>
+<pre><code class="language-python"># If it fits
+
+a = &quot;bbbbbbb&quot; &quot;ccccccc&quot;
+
+# If it exceeds the line width
+a = (
+    &quot;aaaaaaaaa&quot;
+    &quot;bbbbbbbbbbbbbbbbbbbbb&quot;
+    &quot;ccccccccccccccccccccccccccccccccccccccccccccccccccccccc&quot;
+)
+
+</code></pre>
+<h2>Proposal</h2>
+<p>I propose to implement a subset of Black's <a href="https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-string-processing">improved string processing</a> by automatically joining implicit concatenated strings into a single string if the joined string fits on a single line:</p>
+<pre><code class="language-python"># If it fits
+
+a = &quot;bbbbbbbccccccc&quot;  # Note that it's now a single string. 
+
+# If it exceeds the line width
+a = (
+    &quot;aaaaaaaaa&quot;
+    &quot;bbbbbbbbbbbbbbbbbbbbb&quot;
+    &quot;ccccccccccccccccccccccccccccccccccccccccccccccccccccccc&quot;
+)
+
+</code></pre>
+<p>The motivation behind it is that, to my knowledge, there's no real reason for using an implicit concatenated string if it fits on a single line. The primary use case for implicit concatenated strings is to make a string fit into the desired line length by splitting it over multiple lines.</p>
+<h2>Considerations</h2>
+<p>The main downside is that joining the strings is non-reversible. <a href="https://prettier.io/docs/en/rationale.html#%EF%B8%8F-a-note-on-formatting-reversibility">Reversability</a> is a desired property (Ruff's formatting tends to be reversible except for the trailing comma insertion) because it ensures that if you get the same formatting after making changes to the code and then undoing them again (without using revert, but by manually undoing your changes).</p>
+<p>For example, let's say you shorten a sentence in a string that makes the implicit concatenated string fit. Ruff would join it. But Ruff wouldn't split it if you extended the sentence by the same number of characters you previously removed, likely resulting in a string that now exceeds the configured line width.</p>
+<p>That's probably why Black's improved string processing automatically joins and splits strings.</p>
+<p>I'm undecided about whether we should accept the non-reversibility. Still, I think it solves an actual problem and is less involved than implementing Black's entire improved string processing formatting. Meaning it's an opportunity to provide value today. In other words. It's a first step towards automatically splitting strings and we accept non-reversability until we get there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-01-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2024-01-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8272.html">astral-sh/ruff#8272</a> on 2024-01-10 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-01-10 15:50</div>
+            <div class="timeline-body"><p>I am in favor of this proposal. I don't want implicit string concatenation ever, whether it's on a single line or multiple, so anything that helps avoid it is good by me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2024-01-11 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2024-01-13 18:35</div>
+            <div class="timeline-body"><p>Thank you for this detailed proposal! I'm in In favor as well: I like the feature and I don't see why anyone would want this kind of string staying around in the code. This would satisfy my need reported in https://github.com/astral-sh/ruff/issues/8272.</p>
+<p>I don't mind if this proposal becomes the default behavior or is behind a config option, but imo the argument of reversibility is not that much of a blocker, for two main reasons:</p>
+<ul>
+<li>Version control (git, etc) diminish the need for reversibility, in the sense that big formatting changes are expected to modify the code quite a bit (especially when ran on a non-formatted code base).</li>
+<li>As you pointed out <em>Ruff's formatting <strong>tends</strong> to be reversible</em>. I feel like it's already too late to have full reversibility (you mentioned the comma insertion example) and it add a strong constraint on the formatter behavior, possibly leading to a lot of work.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WieeRd">@WieeRd</a> on 2024-01-18 13:05</div>
+            <div class="timeline-body"><p>I, too, would prefer making this as the default behavior of the Ruff formatter.
+It's hard to imagine someone intentionally doing <code>&quot;foo&quot; &quot;bar&quot;</code>, and if they were to, <code># fmt: skip</code> can be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9965.html">astral-sh/ruff#9965</a> on 2024-02-12 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-13 13:13</div>
+            <div class="timeline-body"><p>Two challenges need careful handling:</p>
+<ul>
+<li>Concatenating a raw string with a regular string: <code>r&quot;a\b\\n&quot; &quot;bcd&quot;</code>. It's unclear how this should be handled because converting the regular string to a raw string isn't an option if it uses any escape sequences. Converting a raw string to a regular string could be an option but sounds scary, I remember how confused I was last time when I tried to understand how raw strings work.</li>
+<li>Concatenating a single and a triple quoted string: <code>&quot;abcd&quot; &quot;&quot;&quot;single line but triple quoted string&quot;&quot;&quot;</code></li>
+</ul>
+<p>We don't need to handle multiline strings because they always expand on multiple lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-13 13:21</div>
+            <div class="timeline-body"><p>Regarding your first point, what would happen if there's a newline in the second string (<code>r&quot;a\b\\n&quot; &quot;b\ncd&quot;</code>)? We don't want to convert the latter into a raw string.</p>
+<p>Python is converting it to normal strings by escaping the content in the raw string:</p>
+<pre><code>In [1]: r&quot;a\b\\n&quot; &quot;bc\nd&quot;
+Out[1]: 'a\\b\\\\nbc\nd'
+
+In [2]: r&quot;a\b\\n&quot; r&quot;bc\nd&quot;
+Out[2]: 'a\\b\\\\nbc\\nd'
+</code></pre>
+<p>It's more prominent when you print it out:</p>
+<pre><code>In [3]: print(r&quot;a\b\\n&quot; &quot;bc\nd&quot;)
+a\b\\nbc
+d
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-13 13:22</div>
+            <div class="timeline-body"><p>yeah, I just realized that myself. There's also the issue that raw strings don't support escapes. So we might need to convert the other way round but I'm scarred doing this because I remember how confused I was last time when I tried to understand raw strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-02-13 15:33</div>
+            <div class="timeline-body"><p>I believe in you @MichaReiser 😃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-13 15:33</div>
+            <div class="timeline-body"><p>Me too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-13 15:57</div>
+            <div class="timeline-body"><p>I remain sceptical ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-03-14 13:12</div>
+            <div class="timeline-body"><p>I view this proposal as a pragmatic step forward for Ruff. <code>ISC001</code> is a helpful lint that catches real mistakes. Right now our team has to disable <code>ISC001</code> since we can't have a large warning printed every time we format our code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/95.html">johnthagen/python-blueprint#95</a> on 2024-03-14 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/pulls/217.html">johnthagen/python-blueprint#217</a> on 2024-03-14 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nipreps/fmriprep/pulls/3280.html">nipreps/fmriprep#3280</a> on 2024-05-04 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JacobHayes">@JacobHayes</a> on 2024-06-17 20:44</div>
+            <div class="timeline-body"><p>I'd expect <code>r</code> strings to be relatively rare overall, but might make up a disproportionate number of <em>desired</em> implicit concatenations. For the sake of 80:20 here on value:effort, perhaps:</p>
+<ul>
+<li><code>ISC001</code> could be adjusted to tolerate implicit concatenation with <code>r</code> and non-<code>r</code> strings[1] (as those may actually be desired)</li>
+<li><code>ruff format</code> could join implicit concatenations, except those mixing <code>r</code> and non-<code>r</code> strings (as those are non-trivial to rewrite automatically)</li>
+</ul>
+<p>Those changes should remove the <code>ISC001</code> conflict with <code>ruff format</code>, supporting the majority of otherwise affected users.</p>
+<p>Only (the few?) users with <code>r</code> and non-<code>r</code> strings that also want to avoid implicit string concatenation would be affected with unreported warnings. If it's important to cover that last subset of users (at least until implementing <code>r</code> concatenation), perhaps a new <code>ISC</code> (or other namespace) rule could be introduced that does not tolerate <code>r</code> and non-<code>r</code> implicit concatenation, which could instead be added to the conflict list.</p>
+<hr />
+<p>1: <code>ISC001</code> already does not support fixing concatenations with <code>r</code> and non-<code>r</code> strings, perhaps for the same reasons it's challenging here(?):</p>
+<pre><code>$ cat x.py
+print(&quot;a&quot; &quot;b&quot;)
+print(&quot;a&quot; r&quot;b&quot;)
+print(&quot;a\n&quot; r&quot;b\n&quot;)
+print(r&quot;a\n&quot; r&quot;b\n&quot;)
+$ ruff check --extend-select=&quot;ISC001&quot; --isolated x.py
+x.py:1:7: ISC001 [*] Implicitly concatenated string literals on one line
+x.py:2:7: ISC001 Implicitly concatenated string literals on one line
+x.py:3:7: ISC001 Implicitly concatenated string literals on one line
+x.py:4:7: ISC001 [*] Implicitly concatenated string literals on one line
+Found 4 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6936.html">astral-sh/ruff#6936</a> on 2024-06-27 05:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12608.html">astral-sh/ruff#12608</a> on 2024-08-01 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13031.html">astral-sh/ruff#13031</a> on 2024-08-22 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2024-09-27 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13663.html">astral-sh/ruff#13663</a> on 2024-10-16 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../psf/black/issues/4501.html">psf/black#4501</a> on 2024-10-23 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 11:14</div>
+            <div class="timeline-body"><p>This is now available in preview mode, see https://github.com/astral-sh/ruff/pull/13663</p>
+<p>Please give it a try and let me know if you run into any problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-25 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/issues/242.html">johnthagen/python-blueprint#242</a> on 2024-10-28 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reitzig">@reitzig</a> on 2024-12-16 12:06</div>
+            <div class="timeline-body"><p>FWIW: Ran into this issue with stable mode today and found this issue. With <code>--preview</code>, I get the overall better result, subjectively. Thanks!</p>
+<p>That said, I'm unsure how to <em>force</em> something like</p>
+<pre><code class="language-python">foo = (
+    &quot;a&quot;
+    &quot;b&quot;
+    &quot;c&quot;
+)
+</code></pre>
+<p>to remain multi-line. I use this in test code and <code>a</code> changes more rarely while the tests differ in <code>b</code> and <code>c</code> so I like the visual guidance -- even though in some cases, everything fits in one line. (Example: <a href="https://github.com/reitzig/espanso-nice-dev-refs/blob/main/test/test_bitbucket.py">reitzig/espanso-nice-dev-refs:test/test_bitbucket.py</a>)
+I mention this because preview mode seems to be more aggressive in this regard than stable; probably because with this issue fixed, a few more cases fit into a single line than before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-16 12:11</div>
+            <div class="timeline-body"><p>@reitzig if it's a one-off use case, then I suggest using a suppression comment</p>
+<pre><code class="language-python">foo = (
+    &quot;a&quot;
+    &quot;b&quot;
+    &quot;c&quot;
+)  # fmt: skip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-12-16 18:05</div>
+            <div class="timeline-body"><p>@reitzig, without knowing more context about your codebase, that seems like a code smell. You should instead create a helper function with the shared values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reitzig">@reitzig</a> on 2024-12-17 16:49</div>
+            <div class="timeline-body"><p>@tylerlaprade One can always discuss code style, but in this case your proposal would only shift the issue to another rule: I would then want to force method arguments onto separate lines even though they'd (sometimes) fit into one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reitzig">@reitzig</a> on 2024-12-17 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I suggest using a suppression comment</p>
+</blockquote>
+<p>Works, thanks! Well, kinda. Now, <em>no</em> formatting happens within those parentheses. 🤔 Seems I'll have to choose <em>some</em> poison, don't I?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-12-17 18:34</div>
+            <div class="timeline-body"><blockquote>
+<p>One can always discuss code style, but in this case your proposal would only shift the issue to another rule: I would then want to force method arguments onto separate lines even though they'd (sometimes) fit into one.</p>
+</blockquote>
+<p>@reitzig</p>
+<p>The shared strings wouldn't need to be passed to the function, so the function inputs would only need to be the changing values. You therefore wouldn't need multi-line formatting.</p>
+<p>Just curious, how long have you been working in codebases that enforce the use of an auto-formatter (any language)? I find that after some time, I no longer care about formatting and accept whatever the formatter's output is. It might sound jarring at first, but it's actually quite freeing to cross off an entire category of issue to think about.</p>
+<blockquote>
+<p>By using Black, you agree to cede control over minutiae of hand-formatting. In return, Black gives you speed, determinism, and freedom from pycodestyle nagging about formatting. You will save time and mental energy for more important matters.
+Black makes code review faster by producing the smallest diffs possible. Blackened code looks the same regardless of the project you’re reading. Formatting becomes transparent after a while and you can focus on the content instead.</p>
+</blockquote>
+<p>-https://black.readthedocs.io/en/stable/index.html</p>
+<blockquote>
+<p>What usually happens once people are using Prettier is that they realize that they actually spend a lot of time and mental energy formatting their code. With Prettier editor integration, you can just press that magic key binding and poof, the code is formatted. This is an eye opening experience if anything else.</p>
+</blockquote>
+<p>-https://prettier.io/docs/en/why-prettier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/203745.html">Homebrew/homebrew-core#203745</a> on 2025-01-09 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/135256.html">home-assistant/core#135256</a> on 2025-01-10 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/135261.html">home-assistant/core#135261</a> on 2025-01-10 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/135267.html">home-assistant/core#135267</a> on 2025-01-10 08:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

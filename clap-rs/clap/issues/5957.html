@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive options should work even when a required one is not present - clap-rs/clap #5957</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclusive options should work even when a required one is not present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5957">#5957</a>
+        opened by <a href="https://github.com/jaskij">@jaskij</a>
+        on 2025-03-25 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaskij">@jaskij</a> on 2025-03-25 19:59</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.85.1 (4eb161250 2025-03-15)</p>
+<h3>Clap Version</h3>
+<p>4.5.32</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Config {
+    #[arg(long, exclusive(true))]
+    pub(crate) build_details: bool,
+
+    #[arg(short, long, required(true))]
+    pub foo: i16,
+}
+
+fn main() {
+    let config = Config::parse();
+    println!(&quot;{}&quot;, config.build_details);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- --build-details
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>error: The following required argument was not provided: foo
+
+Usage: clap-repro [OPTIONS] --foo &lt;FOO&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><code>true</code> is printed</p>
+<h3>Additional Context</h3>
+<p>The docs for <code>exclusive()</code> state:</p>
+<blockquote>
+<p>Setting an exclusive argument and having any other arguments present at runtime is an error.</p>
+</blockquote>
+<p>This would imply that other arguments, which are otherwise required, no longer are, and should not be present.</p>
+<p>In fact, using an exclusive argument and a second, required, argument in the same CLI makes using the exclusive argument impossible.</p>
+<p>Similar issues is also present with subcomannds, although there using <code>command subcommand --build-details</code> works.</p>
+<hr />
+<p>Default features are disabled, and <code>clap</code> is added to the project with:</p>
+<pre><code class="language-toml">clap = { version = &quot;4.0.28&quot;, default-features = false, features = [&quot;color&quot;, &quot;derive&quot;, &quot;env&quot;, &quot;error-context&quot;, &quot;help&quot;, &quot;string&quot;, &quot;unicode&quot;, &quot;usage&quot;, &quot;std&quot;, &quot;suggestions&quot;, &quot;wrap_help&quot;] }
+</code></pre>
+<hr />
+<p>I do remember this working as expected in the past.</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-repro&quot;
+[clap_builder::builder::command]Command::_propagate:clap-repro
+[clap_builder::builder::command]Command::_check_help_and_version:clap-repro expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-repro
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:build_details
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--build-details&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--build-details&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--build-details'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;build-details&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;build_details&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;build_details&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;build_details&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Config&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `--build-details`
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--foo &lt;FOO&gt;`
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--help`
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:build_details:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:build_details: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:build_details: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:foo:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:foo: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;build_details&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;build_details&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Config&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;build_details&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;build_details&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;foo&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;build_details&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Config&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Config&quot;:group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=true
+[clap_builder::parser::validator]Validator::validate_required:iter:aog=&quot;foo&quot;
+[clap_builder::parser::validator]Validator::validate_required:iter: This is an arg
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+[clap_builder::builder::command]Command::_build: name=&quot;clap-repro&quot;
+[clap_builder::builder::command]Command::_propagate:clap-repro
+[clap_builder::builder::command]Command::_check_help_and_version:clap-repro expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-repro
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:build_details
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:foo
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build: name=&quot;clap-repro&quot;
+[clap_builder::builder::command]Command::_build: already built
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::write_help_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=build_details
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;build_details&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter:iter: grp_s=&quot;Config&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: [OPTIONS] required
+[ clap_builder::output::usage]Usage::write_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;foo&quot;]
+[ clap_builder::output::usage]Usage::write_subcommand_usage
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: clap-repro [OPTIONS] --foo &lt;FOO&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: The following required argument was not provided: foo
+
+Usage: clap-repro [OPTIONS] --foo &lt;FOO&gt;
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @jaskij on 2025-03-25 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaskij">@jaskij</a> on 2025-03-25 20:01</div>
+            <div class="timeline-body"><p>Having looked a little further, this behavior is also wrong according to the current (4.5.32) documentation for <code>conflicts_with()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-03-25 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-25 20:33</div>
+            <div class="timeline-body"><p>The parser is working correctly.  The problem is when taking the parsed results and populating <code>Config</code> because there isn't a valid value to put in <code>Config::foo</code>.  If you change it to <code>Option&lt;_&gt;</code>, it works</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;] }
+---
+
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Config {
+    #[arg(long, exclusive(true))]
+    pub(crate) build_details: bool,
+
+    #[arg(short, long, required(true))]
+    pub foo: Option&lt;i16&gt;,
+}
+
+fn main() {
+    let config = Config::parse();
+    println!(&quot;{}&quot;, config.build_details);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaskij">@jaskij</a> on 2025-03-25 22:22</div>
+            <div class="timeline-body"><p>I see, and understand. In this case, having any non-<code>Option</code> required argument when <code>exclusive()</code> is used elsewhere is clearly a bug in user code, and the current output is, to me, confusing. It is the same output that would normally be used when the application user passed wrong arguments.</p>
+<p>It's been quite a while since I had actually done anything more involved with clap, but it used to be that at least some errors in user code would trigger a different message, and the program would exit before usage validation. Maybe something like that would be possible here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-26 14:32</div>
+            <div class="timeline-body"><p>We do have debug asserts.  Those operate at the builder level.  The problem is we have &quot;required but can be overriden&quot; (<code>required = true</code>) and &quot;required but fail if something may override this&quot; (<code>i64</code>).  The debug asserts only know about the first and not the second.</p>
+<p>I had considered making this case a panic (or maybe it originally was?).  I was concerned that it could be easy to miss until it gets into a users hands.  The question then was what provided a better user experience and I erred on the side of reporting it as a &quot;required argument&quot; error.</p>
+<p>We could have the derive identify when <code>exclusive</code>, <code>conflicts_with</code>, etc are used and handle report a compilation error.  Some cases of this can't be detected and we have to deal with whether a partial solution helps enough users vs builds a false confidence making the trickier cases harder to debug.  This would also require duplicating more logic into the derive and keeping them in sync which gets messier.</p>
+<p>It looks like we don't have this case documented.  If nothing else,  we should at least do that though I recognize documentation is a solution of last resort because people are unlikely to read it until they have a problem and matching users expectations for where to read something is difficult.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaskij">@jaskij</a> on 2025-03-27 02:08</div>
+            <div class="timeline-body"><p>TLDR: my experience so far with clap has been panics on programmer errors, and the current behavior breaks the pattern, and hence the principle of least surprise. Instead of a panic, I get an almost-functional CLI.</p>
+<hr />
+<blockquote>
+<p>I had considered making this case a panic (or maybe it originally was?). I was concerned that it could be easy to miss until it gets into a users hands. The question then was what provided a better user experience and I erred on the side of reporting it as a &quot;required argument&quot; error.</p>
+</blockquote>
+<p>While that would be a sound argument, <em>if</em> clap didn't panic on other programmer errors. As is, as clap's user, I <em>expect</em> it to generate a panic if I made a mistake building the CLI, and a different error is both confusing (hence this issue), and may not be caught for months if someone has weak tests (as I do).</p>
+<blockquote>
+<p>The question then was what provided a better user experience and I erred on the side of reporting it as a &quot;required argument&quot; error.</p>
+</blockquote>
+<p>That's a difficult question, because being a user interface library, you have two types of user experience to juggle: the programmer using clap, and the end-user.</p>
+<blockquote>
+<p>and matching users expectations for where to read something is difficult.</p>
+</blockquote>
+<p>Hard agree here, especially with two API surfaces, and <code>docs.rs</code> format not being entirely conductive to guide-style documentation.</p>
+<p>While on the topic: the documentation for <code>Args::exclusive()</code> does not directly mention <code>Args::conflicts_with()</code>. It can be inferred, especially if someone knows of <code>conflicts_with()</code>, but is not mentioned nor linked directly.</p>
+<hr />
+<p>And continuing on documentation, personally I found <a href="https://docs.divio.com/documentation-system/">this documentation system</a> a good read, at the very least in terms of mental framework and the fact that there <em>are</em> multiple types of documentations which go together, but are separate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2025-03-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2025-03-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-28 17:36</div>
+            <div class="timeline-body"><blockquote>
+<p>TLDR: my experience so far with clap has been panics on programmer errors, and the current behavior breaks the pattern, and hence the principle of least surprise. Instead of a panic, I get an almost-functional CLI.</p>
+</blockquote>
+<p>Yes.  We do this for</p>
+<ul>
+<li>debug asserts for commands being parsed<ul>
+<li>we offer a way to do this in tests across all commands</li>
+</ul>
+</li>
+<li>on access of a field with <code>ArgMatches</code></li>
+</ul>
+<p>Those are a little easier to test for as you mostly need to run your parser and the problem is caught.  Here, its not just that you need to run your parser but you need very specific argument combinations.</p>
+<p>It is worth reconsidering though with the confusion this has caused people.</p>
+<blockquote>
+<p>And continuing on documentation, personally I found <a href="https://docs.divio.com/documentation-system/">this documentation system</a> a good read, at the very least in terms of mental framework and the fact that there are multiple types of documentations which go together, but are separate.</p>
+</blockquote>
+<p>We offer</p>
+<ul>
+<li>Tutorial</li>
+<li>Refernece</li>
+<li>Cookbook (which is meant to fill the How To Guide role)</li>
+</ul>
+<p>If you have concrete ideas on how to improve that organization, I'd be open.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:44 UTC
+    </footer>
+</body>
+</html>

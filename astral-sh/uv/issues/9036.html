@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>macos pytorch install broken since 0.5.0 - astral-sh/uv #9036</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>macos pytorch install broken since 0.5.0</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9036">#9036</a>
+        opened by <a href="https://github.com/vvuk">@vvuk</a>
+        on 2024-11-12 01:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vvuk">@vvuk</a> on 2024-11-12 01:26</div>
+            <div class="timeline-body"><p>Given workspace pyproject.toml:</p>
+<pre><code>[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;platform_system == 'Darwin'&quot; },
+]
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = ...
+explicit = true
+# similar for cu124
+</code></pre>
+<p>And a workspace member project's pyproject:</p>
+<pre><code>dependencies = [
+  &quot;torch==2.5.1+cu124 ; platform_system != 'Darwin'&quot;,
+  &quot;torch==2.5.1 ; platform_system == 'Darwin'&quot;,
+]
+</code></pre>
+<p>On MacOS, with 0.5.0 (and 0.5.1), the following error occurs:</p>
+<pre><code>error: Distribution `torch==2.5.1+cpu @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>In that registry, the following files exist (I've removed all but the python 3.12 ones)</p>
+<pre><code>torch-2.5.1+cpu-cp312-cp312-linux_x86_64.whl
+torch-2.5.1+cpu-cp312-cp312-win_amd64.whl
+torch-2.5.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+torch-2.5.1-cp312-none-macosx_11_0_arm64.whl
+</code></pre>
+<p>Note that x64 linux and windows have <code>+cpu</code>, whereas the macOS wheels do not. Also, in case it matters, the <code>+cpu</code> wheels come before the macos one in the registry listing. This worked fine with 0.4, so I'm guessing this broke with the local version work from @ericmarkmartin.</p>
+<p>(Man, pytorch really is the gift that keeps on giving... ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 01:33</div>
+            <div class="timeline-body"><p>I think this is actually <em>right</em>, but you might need to do <code>torch==2.5.1, !=2.5.1+cpu ; platform_system == 'Darwin'</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vvuk">@vvuk</a> on 2024-11-12 01:52</div>
+            <div class="timeline-body"><p>That does indeed fix it; I couldn't figure out how to constrain to &quot;without local version&quot;, makes perfect sense to just constrain to &quot;not the +cpu&quot; one. But man this is such a mess in pytorch. If this resolution behaviour is correct, then I guess pytorch should fix how they're publishing packages? Either move the things without +cpu to another registry dir, or make them all have +cpu... Gah.</p>
+<p>Thanks for the fix suggestion. Works on both 0.4.30 and 0.5.1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vvuk on 2024-11-12 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 01:54</div>
+            <div class="timeline-body"><p>Yeah I'm really confused about why (above) the macOS versions <em>don't</em> have +cpu but the others do. Presumedly they're all CPU distributions? It's annoying because this has come up before :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vvuk">@vvuk</a> on 2024-11-12 01:57</div>
+            <div class="timeline-body"><p>I think it's because on macos, there are no multiple-local-version wheels; there's just the single torch package. There is support for the Metal Performance Shaders hw accel framework, but it's all integrated into a single package. So I guess they omitted the +cpu because it's technically not just +cpu. Or something. :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2024-11-12 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is actually <em>right</em>, but you might need to do <code>torch==2.5.1, !=2.5.1+cpu ; platform_system == 'Darwin'</code>?</p>
+</blockquote>
+<p><code>torch===2.5.1, platform_system == 'Darwin'</code> should work as well I think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daeh">@daeh</a> on 2024-11-12 22:09</div>
+            <div class="timeline-body"><p>On my setup, it needs <code>&quot;torch==2.5.1, !=2.5.1+cpu ; platform_system == 'Darwin'&quot;</code>.</p>
+<p><code>&quot;torch==2.5.1 ; platform_system == 'Darwin'&quot;</code> fails:</p>
+<pre><code>error: Distribution `torch==2.5.1+cpu @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>(<code>&quot;torch===2.5.1, platform_system == 'Darwin'&quot;</code> offends PEP's formatting rules)</p>
+<p>MacOS 14.7.1 ARM (M2 Pro)
+Python 3.12
+uv 0.5.1 (Homebrew 2024-11-08)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8930.html">astral-sh/uv#8930</a> on 2024-11-13 15:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:29 UTC
+    </footer>
+</body>
+</html>

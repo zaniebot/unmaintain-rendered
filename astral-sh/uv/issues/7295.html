@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR: add support for `uv pip install &lt;PyPI package&gt; --all-extras` - astral-sh/uv #7295</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FR: add support for `uv pip install &lt;PyPI package&gt; --all-extras`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7295">#7295</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-09-11 15:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-09-11 15:52</div>
+            <div class="timeline-body"><p>I know of a couple packages with so many optional dependencies that they implement a shorthand to get all of them as, for instance <code>pip install 'pkg[all]'</code> or something similar. Problem is that this is hardly discoverable for end users, must be documented, and not every package chooses the same <code>extra</code> name so it's hard to remember.</p>
+<p><code>uv pip install &lt;PyPI package&gt; --all-extras</code> would seem like a natural solution here but currently (as of uv 0.4.9) doesn't support this:</p>
+<pre><code class="language-shell">$ uv pip install astropy --all-extras
+error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.
+</code></pre>
+<p>Is it something that could be considered in the future ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-11 16:39</div>
+            <div class="timeline-body"><p>Would <code>--all-extras</code> also apply to all the dependencies and transitive dependencies? Or would it be per-package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-09-11 16:46</div>
+            <div class="timeline-body"><p>I think per-package makes more sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-09-11 18:09</div>
+            <div class="timeline-body"><p>Actually I'm not 100% I get what you mean by per-package. What I'd like to happen is that everything from the requested package's optional dependencies is installed, ignoring existing <em>their</em> extras. IIUC that would be the same behavior as installing a package from a path with <code>--all-extras</code>.</p>
+<p>Does this make sense ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-11 18:57</div>
+            <div class="timeline-body"><p>For example, let's say I had a requirements file:</p>
+<pre><code>Aaa
+Bbb
+Ccc
+</code></pre>
+<p>And a constraints file:</p>
+<pre><code>Ccc[extra]==1
+Ddd==1
+</code></pre>
+<p>And I ran: <code>uv pip install Eee -r requirements.txt -c constraints.txt --all-extras</code></p>
+<p>Which packages out of Aaa, Bbb, Ccc, Ddd, Eee, should have requested all extras?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-09-11 19:09</div>
+            <div class="timeline-body"><p>I'd say <code>Eee</code> for sure but not sure about the rest. I rarely ever encounter or use constraint files, I'm not sure how to interpret <code>Ccc[extra]==1</code> as a constraint. I'm guessing it means that <code>Ccc</code> can only be installed at version <code>1</code> with extras <code>[extra]</code> or not at all ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-11 22:54</div>
+            <div class="timeline-body"><p>Yeah, ignore the constraints, they don't work well with extras anyway, I was trying to think of unusual edge cases.</p>
+<p>IMO the only sensible approach would be to include all user provided requirements, all those provided over the CLI, and all those provided in requirements file, having a flag depend on how you provided non-local requirements would be susprising and not fit with any existing flag I think?</p>
+<p>I think <code>--all-extras</code> comes from the pip-tools and Poetry world, uv would make it need a decide if this consistently and logically works for them.</p>
+<p>It might also be a breaking change with the way users currently use it currently? E.g. would this affect <code>echo -e {local_package}\n{non_local_package} | pip compile - -all-extras</code>?</p>
+<p>A similiar topic has been on my mind this last week, hence the questions, <a href="https://discuss.python.org/t/idea-allow-optional-dependencies-to-specify-other-optional-dependencies/63652">my idea</a> is about making this easier to define in the <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-09-12 05:41</div>
+            <div class="timeline-body"><blockquote>
+<p>IMO the only sensible approach would be to include all user provided requirements, all those provided over the CLI, and all those provided in requirements file, having a flag depend on how you provided non-local requirements would be susprising and not fit with any existing flag I think?</p>
+</blockquote>
+<p>Agreed. Anything else would be both more surprising and less maintainable.</p>
+<blockquote>
+<p>would this affect <code>echo -e {local_package}\n{non_local_package} | pip compile - -all-extras?</code></p>
+</blockquote>
+<p>Oof, this made me realize I don't know what <code>--all-extras</code> means for a requirement file. The only way I know how to define the code extras is through pyproject.toml, so, I really don't know.</p>
+<blockquote>
+<p>my idea is about making this easier to define in the pyproject.toml</p>
+</blockquote>
+<p>I didn't know self referential extras weren't documented. This is actually what the packages I have in mind (yt and astropy) already use !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astropy/astropy-APEs/pulls/86.html">astropy/astropy-APEs#86</a> on 2024-09-24 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/12963.html">pypa/pip#12963</a> on 2024-10-26 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:46 UTC
+    </footer>
+</body>
+</html>

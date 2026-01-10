@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slower startup time compared to using pip in Docker - astral-sh/uv #16378</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Slower startup time compared to using pip in Docker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16378">#16378</a>
+        opened by <a href="https://github.com/dyens">@dyens</a>
+        on 2025-10-20 23:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dyens">@dyens</a> on 2025-10-20 23:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I created project with only one dependency: fastapi==0.119.0</p>
+<p>I have Dockerfile using UV:</p>
+<pre><code class="language-Dockerfile">FROM python:3.13.6
+
+COPY --from=docker.io/astral/uv:latest /uv /uvx /bin/
+
+ARG APP_HOME=&quot;/app&quot;
+WORKDIR ${APP_HOME}
+
+COPY uv.lock pyproject.toml /app/
+
+RUN uv sync --frozen --no-cache --no-dev --no-install-project --no-editable --link-mode=copy --compile-bytecode
+ENV PATH=&quot;${APP_HOME}/.venv/bin:$PATH&quot;
+</code></pre>
+<p>And Dockerfile using pip</p>
+<pre><code class="language-Dockerfile">FROM python:3.13.6
+RUN pip install &quot;fastapi==0.119.0&quot;
+</code></pre>
+<pre><code class="language-bash">time docker run --rm -it --cpus=&quot;0.2&quot; pip-variant:local python -c &quot;import fastapi&quot; 
+0.01s user 0.01s system 0% cpu 3.399 total
+
+time docker run --rm -it --cpus=&quot;0.2&quot; uv-variant:local python -c &quot;import fastapi&quot;
+0.02s user 0.02s system 0% cpu 6.073 total
+</code></pre>
+<p>I assume there is some problem with the <code>bytecode</code> files. Maybe some <code>.pyc</code> files are missing or need to be recompiled.</p>
+<p>Python tries to compile bytecode and create <code>.pyc</code> files, but on a stripped-down CPU this process is slow. If the filesystem is read-only and the user is not root, the slowdown will be even more significant.</p>
+<h3>Platform</h3>
+<p>Linux 6.16.12-200.fc42.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.11</p>
+<h3>Python version</h3>
+<p>python:3.13.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dyens on 2025-10-20 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-21 00:02</div>
+            <div class="timeline-body"><p>Ah interesting, this appears to be entirely due to bytecode compilation of the Python standard library, not the installed packages.</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-21 00:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2025-10-21 00:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-21 08:54</div>
+            <div class="timeline-body"><p>That's an interesting performance problem!</p>
+<p>The reason why the pip version starts faster is that running pip itself import the standard library. The difference disappears when running pip without bytecode compilation:</p>
+<pre><code>FROM python:3.13.6
+RUN python -B -m pip install &quot;fastapi==0.119.0&quot;
+</code></pre>
+<p>Similarly, the uv version becomes fast when using:</p>
+<pre><code>RUN python -m compileall /usr/local/lib/python3.13
+</code></pre>
+<p>We could try to compile the standard library with <code>--compile-bytecode</code>, but <code>/usr/local/lib/python3.13</code> is owned by root and usually we're not root, so we'd only be triggering a lot of permission errors, or have a surprisingly faster startup with uv when running as root (which we don't want to encourage). For example, this version is as slow as uv:</p>
+<pre><code>FROM python:3.13.6
+
+RUN useradd -m -u 1000 appuser
+
+USER appuser
+WORKDIR /home/appuser
+
+RUN python -m venv /home/appuser/venv
+
+ENV PATH=&quot;/home/appuser/venv/bin:$PATH&quot;
+
+RUN pip install &quot;fastapi==0.119.0&quot;
+</code></pre>
+<p>My Ubuntu system Python does have <code>/usr/lib/python3.12/__pycache__/</code> with std compiled, while the official <code>python:3.13</code> image has an intentionally empty <code>/usr/local/lib/python3.13/__pycache__/</code> to save image size: https://github.com/docker-library/python/issues/615#issuecomment-842692129.</p>
+<p>A different case are PBS Python builds, we know that those are managed by uv, and can bytecode compile the standard library. This does not help with <code>FROM python:3.13.6</code>, but it also doesn't clash with that image's design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-10-21 11:14</div>
+            <div class="timeline-body"><p>One of the reasons the <code>.pyc</code> files generated by CPython's default <code>make install</code> target end up being ~30MB is that it by default generates them for all three optimisation levels (standard, -O and -OO), when 99% of users will only use the standard mode. As a compromise for Heroku's Python archives (which are downloaded from S3 during the build) we do ship the <code>.pyc</code> files to aid app boot times, but only for the standard optimisation level to reduce the size impact of both the Python archive download, and the resultant output app image transfer times.</p>
+<p>https://github.com/heroku/heroku-buildpack-python/blob/088bce0d919e018ae6bf44767d13aecb0f70336a/builds/build_python_runtime.sh#L192-L215</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-21 11:34</div>
+            <div class="timeline-body"><p>I've ran some numbers when not restricting the CPUs:</p>
+<pre><code>$ hyperfine 'docker run --rm pip-variant:local python -c &quot;import fastapi&quot;' 'docker run --rm uv-variant:local python -c &quot;import fastapi&quot;'
+Benchmark 1: docker run --rm pip-variant:local python -c &quot;import fastapi&quot;
+  Time (mean ± σ):     612.8 ms ±  13.9 ms    [User: 6.6 ms, System: 5.9 ms]
+  Range (min … max):   590.2 ms … 637.9 ms    10 runs
+ 
+Benchmark 2: docker run --rm uv-variant:local python -c &quot;import fastapi&quot;
+  Time (mean ± σ):     900.6 ms ±  14.0 ms    [User: 6.5 ms, System: 5.4 ms]
+  Range (min … max):   883.1 ms … 918.8 ms    10 runs
+ 
+Summary
+  docker run --rm pip-variant:local python -c &quot;import fastapi&quot; ran
+    1.47 ± 0.04 times faster than docker run --rm uv-variant:local python -c &quot;import fastapi&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-21 11:36</div>
+            <div class="timeline-body"><p>We can also show that invoking <code>pip</code> only compiles a subset of std, by comparing it with uv with an extra <code>RUN python -m compileall /usr/local/lib/python3.13</code>:</p>
+<pre><code>$ hyperfine 'docker run --rm uv2-variant:local python -c &quot;import fastapi&quot;' 'docker run --rm pip-variant:local python -c &quot;import fastapi&quot;' --warmup 1
+Benchmark 1: docker run --rm uv2-variant:local python -c &quot;import fastapi&quot;
+  Time (mean ± σ):     513.0 ms ±  15.2 ms    [User: 6.4 ms, System: 6.3 ms]
+  Range (min … max):   485.7 ms … 543.6 ms    10 runs
+ 
+Benchmark 2: docker run --rm pip-variant:local python -c &quot;import fastapi&quot;
+  Time (mean ± σ):     613.5 ms ±  29.1 ms    [User: 6.2 ms, System: 5.8 ms]
+  Range (min … max):   591.0 ms … 686.3 ms    10 runs
+ 
+Summary
+  docker run --rm uv2-variant:local python -c &quot;import fastapi&quot; ran
+    1.20 ± 0.07 times faster than docker run --rm pip-variant:local python -c &quot;import fastapi&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dyens">@dyens</a> on 2025-10-21 19:48</div>
+            <div class="timeline-body"><p>Thank you! I think the mystery is solved. ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dyens on 2025-10-22 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16408.html">astral-sh/uv#16408</a> on 2025-10-22 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-22 11:29</div>
+            <div class="timeline-body"><p>Following up in: https://github.com/astral-sh/uv/issues/16408</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

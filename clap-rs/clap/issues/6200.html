@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parsing two var args separated by `--` - clap-rs/clap #6200</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parsing two var args separated by `--`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6200">#6200</a>
+        opened by <a href="https://github.com/mkovaxx">@mkovaxx</a>
+        on 2025-12-20 10:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkovaxx">@mkovaxx</a> on 2025-12-20 10:54</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.90.0 (1159e78c4 2025-09-14)</p>
+<h3>Clap Version</h3>
+<p>4.5.53</p>
+<h3>Minimal reproducible code</h3>
+<p>repo: https://github.com/mkovaxx/repro-clap-two-varargs</p>
+<pre><code class="language-rust">use clap::Parser;
+
+fn main() {
+    let args = CliWithTwoVarArgs::parse_from(std::env::args());
+    println!(&quot;BEFORE: {:?}&quot;, args.before);
+    println!(&quot;AFTER: {:?}&quot;, args.after);
+}
+
+#[derive(Clone, Debug, Parser)]
+pub struct CliWithTwoVarArgs {
+    #[arg(
+        value_name = &quot;ARGS_BEFORE&quot;,
+        num_args = 0..,
+        allow_hyphen_values = true,
+        help = &quot;Options before `--`&quot;,
+    )]
+    pub before: Vec&lt;String&gt;,
+
+    #[arg(
+        value_name = &quot;ARGS_AFTER&quot;,
+        last = true,
+        num_args = 0..,
+        allow_hyphen_values = true,
+        help = &quot;Options after `--`&quot;,
+    )]
+    pub after: Vec&lt;String&gt;,
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    const BIN_NAME: &amp;str = &quot;main&quot;;
+
+    #[test]
+    fn parse_some_stuff() {
+        let args = CliWithTwoVarArgs::parse_from([
+            BIN_NAME,
+            &quot;--release&quot;,
+            &quot;--&quot;,
+            &quot;--expand-errors&quot;,
+            &quot;--rlimit=100&quot;,
+        ]);
+
+        assert_eq!(args.before, vec![&quot;--release&quot;.to_owned()]);
+        assert_eq!(
+            args.after,
+            vec![&quot;--expand-errors&quot;.to_owned(), &quot;--rlimit=100&quot;.to_owned()]
+        );
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo test</p>
+<h3>Actual Behaviour</h3>
+<p>All arguments, including the <code>--</code>, are in the <code>before</code> field, and <code>after</code> is empty.</p>
+<h3>Expected Behaviour</h3>
+<p>Arguments before the <code>--</code> marker should be in the <code>before</code> field, and arguments after in the <code>after</code> field.</p>
+<h3>Additional Context</h3>
+<p>The expectation above is informed by the output of <code>--help</code>:</p>
+<pre><code>Usage: repro-clap-two-varargs [ARGS_BEFORE]... [-- [ARGS_AFTER]...]
+
+Arguments:
+  [ARGS_BEFORE]...  Options before `--`
+  [ARGS_AFTER]...   Options after `--`
+
+Options:
+  -h, --help  Print help
+</code></pre>
+<h3>Debug Output</h3>
+<p>running 1 test
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;repro-clap-two-varargs&quot;
+[clap_builder::builder::command]Command::_propagate:repro-clap-two-varargs
+[clap_builder::builder::command]Command::_check_help_and_version:repro-clap-two-varargs expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:repro-clap-two-varargs
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:before
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:after
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--release&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--release&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::possible_long_flag_subcommand: arg=&quot;release&quot;
+[clap_builder::parser::parser]Parser::parse_long_args: positional at 1 allows hyphens
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg MaybeHyphenValue
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--expand-errors&quot;'
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: prior arg accepts hyphenated values
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg MaybeHyphenValue
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--rlimit=100&quot;'
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: prior arg accepts hyphenated values
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg MaybeHyphenValue
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;before&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;before&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;before&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;before&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;CliWithTwoVarArgs&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;--release&quot;, &quot;--&quot;, &quot;--expand-errors&quot;, &quot;--rlimit=100&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=before, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0.., actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:before:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:before: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:after:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:after: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;before&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;before&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;CliWithTwoVarArgs&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;before&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;before&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;before&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;CliWithTwoVarArgs&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;CliWithTwoVarArgs&quot;:group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+test test::parse_some_stuff ... FAILED</p>
+<p>failures:</p>
+<p>---- test::parse_some_stuff stdout ----</p>
+<p>thread 'test::parse_some_stuff' panicked at src/main.rs:45:9:
+assertion <code>left == right</code> failed
+left: [&quot;--release&quot;, &quot;--&quot;, &quot;--expand-errors&quot;, &quot;--rlimit=100&quot;]
+right: [&quot;--release&quot;]
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace</p>
+<p>failures:
+test::parse_some_stuff</p>
+<p>test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s</p>
+<p>error: test failed, to rerun pass <code>--bin repro-clap-two-varargs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mkovaxx on 2025-12-20 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @mkovaxx on 2025-12-20 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../verus-lang/verus/pulls/2050.html">verus-lang/verus#2050</a> on 2025-12-20 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2025-12-26 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-12-26 22:03</div>
+            <div class="timeline-body"><p>You can parse two arguments separated by a <code>--</code> but the problem is that by using <code>allow_hyphen_values</code>, you are telling clap to accept <code>-flag</code>, <code>--flag</code>, and even <code>--</code>.</p>
+<p>One workaround is to have just one positional argument and to do the splitting yourself after the fact.</p>
+<p>Adding a flag to specialize the behavior of <code>allow_hyphen_values</code> seems to specialized, especially in light of there being a workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bsdinis">@bsdinis</a> on 2025-12-30 01:10</div>
+            <div class="timeline-body"><p>One relevant issue with the workaround is that it removes the helpful message on the generated cli help.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

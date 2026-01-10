@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to set different source paths for linux and windows - astral-sh/uv #15232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to set different source paths for linux and windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15232">#15232</a>
+        opened by <a href="https://github.com/dmanikhine">@dmanikhine</a>
+        on 2025-08-12 08:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dmanikhine">@dmanikhine</a> on 2025-08-12 08:22</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have pyproject.toml</p>
+<p>[project]</p>
+<p>name = &quot;dma&quot;</p>
+<p>dependencies = [</p>
+<pre><code>&quot;dma_win ; sys_platform == 'windows'&quot;,
+
+&quot;dma_lin ; sys_platform == 'linux'&quot;,</code></pre>
+<p>]</p>
+<p>[tool.uv.sources]</p>
+<p>dma_win = { path = &quot;C:/PCKG/dma_win-0.0.4744-cp312-cp312-win_amd64.whl&quot;, marker = &quot;sys_platform == 'windows'&quot; }</p>
+<p>dma_lin = { path = &quot;/app/pckg/dma_lin-0.0.4742-cp312-cp312-linux_x86_64.whl&quot;, marker = &quot;sys_platform == 'linux'&quot;  }</p>
+<p>Unfortunately this configuration not working.</p>
+<p>In linux i call: uv sync, and have ERROR:</p>
+<p>error: Distribution not found at: file:///app/test/C:/dma_win-0.0.4744-cp312-cp312-win_amd64.whl</p>
+<p>I read that checking absolutely all paths, regardless of operating system markers, is a design feature.</p>
+<p>How can I resolve this problem?</p>
+<h3>Platform</h3>
+<p>Windows and RHEL 8</p>
+<h3>Version</h3>
+<p>uv 0.8.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dmanikhine on 2025-08-12 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-12 13:50</div>
+            <div class="timeline-body"><p>You need to perform the lock on a system with all of the wheels available. We can read those wheels despite it not being the platform you want to install on. So... I'd recommend just having them both available? Otherwise, you can have them both available for <code>uv lock</code> then on subsequent operations use the <code>--frozen</code> flag, e.g., <code>uv sync --frozen</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmanikhine">@dmanikhine</a> on 2025-08-18 13:30</div>
+            <div class="timeline-body"><p>@zanieb
+I had hopes of using something like:</p>
+<p>[project]
+dependencies = [&quot;torch&quot;]</p>
+<p>[tool.uv.sources]
+torch = [
+{ index = &quot;torch-cpu&quot;, marker = &quot;platform_system == 'Darwin'&quot;},
+{ index = &quot;torch-gpu&quot;, marker = &quot;platform_system == 'Linux'&quot;},
+]</p>
+<p>But unfortunately it doesn't work in my case.</p>
+<p>Do you possibly have any other ideas?
+I wish to use only the configuration settings from pyproject.toml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-18 16:24</div>
+            <div class="timeline-body"><p>Sorry that's kind of vague, what didn't work about it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmanikhine">@dmanikhine</a> on 2025-08-19 08:17</div>
+            <div class="timeline-body"><p>Sorry.
+I hope to find something like this.</p>
+<p>`[project]</p>
+<p>name = &quot;dma&quot;</p>
+<p>dependencies = [
+&quot;dma_win ; sys_platform == 'Windows'&quot;,
+&quot;dma_lin ; sys_platform == 'Linux'&quot;,
+]</p>
+<p>[tool.uv.sources]
+dma_win = { path = &quot;c:\my_win_packages&quot;, marker = &quot;sys_platform == 'Windows'&quot; }
+dma_lin = { path = &quot;/app/my_lin_packages&quot;, marker = &quot;sys_platform == 'Linux'&quot; }
+`</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-19 08:22</div>
+            <div class="timeline-body"><p>Is it possible for you to use a relative path to a directory with all wheels, and use a flat index to configure the package? https://docs.astral.sh/uv/concepts/indexes/#flat-indexes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmanikhine">@dmanikhine</a> on 2025-08-19 08:33</div>
+            <div class="timeline-body"><p>@konstin Could you give some examples please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmanikhine">@dmanikhine</a> on 2025-08-25 09:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it possible for you to use a relative path to a directory with all wheels, and use a flat index to configure the package? https://docs.astral.sh/uv/concepts/indexes/#flat-indexes</p>
+</blockquote>
+<p>@konstin
+I can use a flat index, but unfortunately, the relative path must be the same for both Windows and Linux. UV checks all paths, regardless of which OS is active at the moment, and that is the main problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-25 10:26</div>
+            <div class="timeline-body"><p>Windows also support forward slashes (it's just not the default path separator), so you can use a relative path to a directory with both the Windows and Linux wheels using forward slashes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

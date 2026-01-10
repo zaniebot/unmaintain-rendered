@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand hijacks parent's about - clap-rs/clap #3129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand hijacks parent's about</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3129">#3129</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:33</div>
+            <div class="timeline-body"><p><a href="https://github.com/CodeSandwich"><img src="https://avatars.githubusercontent.com/u/26183680?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/CodeSandwich">CodeSandwich</a></strong>
+<em>Thursday May 14, 2020 at 09:35 GMT</em>
+<em>Originally opened as https://github.com/TeXitoi/structopt/issues/391</em></p>
+<hr />
+<p>I have a simple program:</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+/// The main thing
+#[derive(StructOpt)]
+struct Main {
+    #[structopt(subcommand)]
+    subcommand: Subcommand,
+}
+
+/// The subcommand
+#[derive(StructOpt)]
+enum Subcommand {
+    A{}
+}
+
+fn main() {
+    Main::from_args();
+}
+</code></pre>
+<p>When I run it with <code>cargo run -- --help</code>, I get the following output:</p>
+<pre><code>poligon 0.1.0
+The subcommand
+
+USAGE:
+    poligon &lt;SUBCOMMAND&gt;
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    a       
+    help    Prints this message or the help of the given subcommand(s)
+</code></pre>
+<p>The app description should be <code>The main thing</code>, not <code>The subcommand</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:34</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Friday May 15, 2020 at 06:55 GMT</em></p>
+<hr />
+<p>Thanks for the clear report.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:34</div>
+            <div class="timeline-body"><p><a href="https://github.com/pizzamig"><img src="https://avatars.githubusercontent.com/u/57148?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/pizzamig">pizzamig</a></strong>
+<em>Monday Jul 20, 2020 at 21:41 GMT</em></p>
+<hr />
+<p>This also prevents flattening of struct with their own rustdoc:</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+#[structopt(name = &quot;structopt-bug&quot;, about = &quot;Show a bug in Structopt&quot;)]
+struct Opt {
+    #[structopt(flatten)]
+    v: Verbose,
+}
+
+/// Re-usable Verbose flag
+#[derive(Debug, StructOpt)]
+struct Verbose {
+    /// Enable the verbosity messages
+    #[structopt(short)]
+    verbose: bool,
+}
+fn main() {
+    let opt = Opt::from_args();
+    println!(&quot;{:?}&quot;, opt);
+}
+</code></pre>
+<p>The <code>cargo run -- -h</code> shows:</p>
+<pre><code>structopt-bug 0.1.0
+Re-usable Verbose flag
+
+USAGE:
+    structopt-bug [FLAGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v               Enable the verbosity messages
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2021-12-09 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:36</div>
+            <div class="timeline-body"><p>Is this a dup of #3127 ?  Is it already fixed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-10 01:42</div>
+            <div class="timeline-body"><p>Yeah, that's what I was wondering. Didn't you already fix this and #3127?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 20:04</div>
+            <div class="timeline-body"><p>Confirmed, this is fixed</p>
+<pre><code class="language-rust">use clap::StructOpt;
+
+/// The main thing
+#[derive(StructOpt)]
+struct Main {
+    #[structopt(subcommand)]
+    subcommand: Subcommand,
+}
+
+/// The subcommand
+#[derive(StructOpt)]
+enum Subcommand {
+    A {},
+}
+
+fn main() {
+    Main::from_args();
+}
+</code></pre>
+<pre><code>test-clap 
+
+The main thing
+
+USAGE:
+    test-clap &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help    Print help information
+
+SUBCOMMANDS:
+    a       
+    help    Print this message or the help of the given subcommand(s)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-10 20:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:46 UTC
+    </footer>
+</body>
+</html>

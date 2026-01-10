@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>multiple=True for an option-type argument also sets max_values &gt; 1? - clap-rs/clap #415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>multiple=True for an option-type argument also sets max_values &gt; 1?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/415">#415</a>
+        opened by <a href="https://github.com/birkenfeld">@birkenfeld</a>
+        on 2016-02-04 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/birkenfeld">@birkenfeld</a> on 2016-02-04 16:49</div>
+            <div class="timeline-body"><p>Here is a small demo for the issue. Take this code:</p>
+<pre><code>extern crate clap;
+
+use clap::{App, Arg, ArgMatches};
+
+fn get_arguments&lt;'a&gt;() -&gt; ArgMatches&lt;'a&gt; {
+    App::new(&quot;app&quot;)
+        .version(&quot;1.0&quot;)
+        .arg(Arg::with_name(&quot;option&quot;)
+                 .takes_value(true)
+                 //.multiple(true)
+                 //.max_values(1)
+                 .short(&quot;O&quot;))
+        .arg(Arg::with_name(&quot;positional&quot;)
+                 .takes_value(true)
+                 .required(true))
+        .get_matches()
+}
+
+fn main() {
+    let arguments = get_arguments();
+}
+</code></pre>
+<p>which should run fine with arguments <code>-O x pos</code>.
+When you uncomment the <code>multiple(true)</code>, it should behave the same (I assume from the docs), but instead it complains that the positional arg is not given, which leads me to believe that the option now accepts multiple values. And indeed, also uncommenting the <code>max_values(1)</code> makes it behave again.</p>
+<p>I hope this isn't expected behavior -- max_values &gt; 1 arguments are thoroughly confusing in my opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-02-04 20:35</div>
+            <div class="timeline-body"><p>@birkenfeld This is expected behavior and should be corrected in the documentation if it's unclear, which sadly is hard to tell from my optic because I'm familiar with all the internals so I take a lot of that knowledge for granted.</p>
+<p>Just to ensure we're speaking about the same thing. You'd like <code>multiple(true)</code> to only mean, <code>-O val1 -O val2</code> is allowed, but stop parsing for values after the first value (per occurrence of <code>-O</code>), and continue along not the parsing chain <em>not</em> assuming another value to <code>-O</code> is coming next? If that's the case, you have to set <code>number_of_values(1)</code> to get that effect.</p>
+<p>Explanation below. Bare with me here, explaining multiples gets hairy :)</p>
+<hr />
+<p>First, just to make sure we're understanding the same things I'll regress back a bit for terminology sake. When setting an <strong>option</strong> to <code>multiple(true)</code>  you're allowing <code>-O</code> to receive multiple values. (For <strong>flags</strong> it just allows them to occur multiple times).</p>
+<p>What I think is the confusing part is that there are two ways to specify multiple values for an option. The way I believe you're thinking of, where each occurrence of that option is followed by a single (and only a single) value, such as <code>-O val1 -O val2</code> etc. There is also a shorthand way, because some CLIs expect to be able to pass multiple values without having to re-pass the flag, i.e. these two being equivalent</p>
+<pre><code>$ program -o val1 val2
+$ program -o val1 -o val2
+</code></pre>
+<p>When you tell <code>clap</code> and option is <code>.multiple(true)</code> the <em>only</em> thing you're telling it is &quot;this thing can have &gt; 1 values.&quot; That's it. The important part is what still has <em>not</em> been specified, such as how many values are possible, or what range, or even even how many values per occurrence of the option. So literally the only thing <code>clap</code> knows is keep parsing values for <code>-O</code> until it hits one of these three conditions:</p>
+<ol>
+<li>It runs into another flag or special character <code>-f</code>, <code>--</code>, subcommand, etc.</li>
+<li>It reaches the upper limit for max values (i.e. when you set <code>.max_values(1)</code>)</li>
+<li>It reaches a specific number of values per occurrence (i.e. such as would be set by <code>number_of_values(1)</code>).</li>
+</ol>
+<p>So you might ask, what's the difference between <code>number_of_values</code> and <code>max_values</code> and <code>multiple</code>?</p>
+<p><code>number_of_values</code> looks for a specific number of values per instance of said option. i.e. you set it to <code>2</code> and it will look for <code>-O val1 val2</code> then quit parsing values for <code>-O</code>, but this <em>also</em> means <code>-O val2</code> or <code>-O val1 val2 val3</code> is an error.</p>
+<p><code>max_values</code> on the otherhand just sets an upper bound on the number of values allowed, and again will continue parsing values until one of those three conditions above is met.</p>
+<p>Hopefully this is more clear, please let me know if it's not, or where you found the documentation lacking. If everything I explained was already understood and you mean something different let me know, cause then it may be a bug. Also, if something I said is instead wrong (logically, not programatically) please let me know and we can find a way to correct it.</p>
+<p>Thanks for taking the time to file this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-02-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-02-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2016-02-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-02-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-02-04 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-02-04 20:46</div>
+            <div class="timeline-body"><p>This did in fact point out a bug! Everything I said above is still true, just there is a current bug not respecting <code>number_of_values</code> :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-02-04 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @kbknapp on 2016-02-04 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-02-04 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-02-04 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @kbknapp on 2016-02-04 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/417.html">clap-rs/clap#417</a> on 2016-02-04 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-02-04 21:46</div>
+            <div class="timeline-body"><p>#417 fixes the issue I was talking about...once that merges everything I said above will be for real :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/birkenfeld">@birkenfeld</a> on 2016-02-04 22:01</div>
+            <div class="timeline-body"><p>Ah, so I should have been using <code>number_of_values</code> and not <code>max_values</code>. Makes sense - although I still think that it should be 1 by default - but as long as I can set this I'm happy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-02-05 07:32</div>
+            <div class="timeline-body"><p>Yeah looking back, this is one other slightly breaking change I wish I'd made during the bump to 2.x because I agree the largest source of confusion is that it's <em>not</em> 1 by default (well except those that expect that). But going the other way around (opt in to &gt; 1) has less potential for confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-02-05 07:33</div>
+            <div class="timeline-body"><p>Also #417  is about to merge, so I'll put out 2.0.5 right after that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-02-05 08:16</div>
+            <div class="timeline-body"><p>2.0.5 is out on crates.io. I'm going to leave this issue open until I re-do the docs for these parts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-02-05 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @kbknapp on 2016-02-05 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> removed by @kbknapp on 2016-02-05 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> removed by @kbknapp on 2016-02-05 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @kbknapp on 2016-02-05 08:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-02-14 11:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync in a Docker container doesn't copy the project - astral-sh/uv #7126</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync in a Docker container doesn't copy the project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7126">#7126</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2024-09-06 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2024-09-06 13:33</div>
+            <div class="timeline-body"><p>Sorry for the opaque title, but since you mentioned on Discord you couldn't reproduce, so I'm just describing what I'm seeing.</p>
+<p>I've created a minimal repro for you at https://github.com/hynek/uv-reproducer – you can start the build by running <code>just</code> if you've installed it.</p>
+<p>Due to the <code>/app/bin/python -Ic 'import tc'</code> at the end, the build fails.</p>
+<p>The ls on the line before looks like this:</p>
+<pre><code>#17 0.188 drwxr-xr-x 1 root root  192 Sep  6 13:18 .
+#17 0.188 drwxr-xr-x 1 root root   26 Sep  6 13:17 ..
+#17 0.188 drwxr-xr-x 1 root root   54 Sep  6 13:17 __pycache__
+#17 0.188 -rw-r--r-- 1 root root    8 Sep  6 13:18 _tc.pth
+#17 0.188 -rw-r--r-- 1 root root   18 Sep  6 13:17 _virtualenv.pth
+#17 0.188 -rw-r--r-- 1 root root 4342 Sep  6 13:17 _virtualenv.py
+#17 0.188 drwxr-xr-x 1 root root  560 Sep  6 13:17 attr
+#17 0.188 drwxr-xr-x 1 root root  202 Sep  6 13:17 attrs
+#17 0.188 drwxr-xr-x 1 root root   90 Sep  6 13:17 attrs-24.2.0.dist-info
+#17 0.188 drwxr-xr-x 1 root root  104 Sep  6 13:18 tc-0.1.0.dist-info
+</code></pre>
+<p>So the deps sync works, but from the app pkg there's just dist-info.</p>
+<hr />
+<p>If I replace:</p>
+<pre><code>cd /src
+uv sync --frozen --no-dev
+</code></pre>
+<p>by</p>
+<pre><code>uv pip install \
+     --python=$UV_PROJECT_ENVIRONMENT \
+     --no-deps \
+     /src
+</code></pre>
+<p>it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 13:37</div>
+            <div class="timeline-body"><p>My first guess is that this is because you're doing something weird with your <code>pyproject.toml</code>? What is the output for the final sync?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-06 13:38</div>
+            <div class="timeline-body"><p>this is the default pyproject that uv created + build-system. It's all in the repo: https://github.com/hynek/uv-reproducer/blob/main/pyproject.toml</p>
+<pre><code>#15 [build 7/7] RUN --mount=type=cache,target=/root/.cache &lt;&lt;EOT (cd /src...)
+#15 0.101 + cd /src
+#15 0.101 + uv sync --frozen --no-dev
+#15 0.813 Prepared 1 package in 605ms
+#15 0.815 Installed 1 package in 1ms
+#15 0.977 Bytecode compiled 20 files in 162ms
+#15 0.978  + tc==0.1.0 (from file:///src)
+#15 DONE 1.0s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 13:52</div>
+            <div class="timeline-body"><p>By weird, I meant that you were copying it into a <code>_lock</code> directory but I guess that's actually undone at <code>COPY . /src</code>. I now suspect that hatchling is at fault, it has some peculiar behaviors around package source detection and will happily build an empty distribution. I can look into it later using the reproduction (thanks!) but have some other priorities at this moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-06 14:17</div>
+            <div class="timeline-body"><p>FWIW, switching <code>[build-system]</code> to</p>
+<pre><code>[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>or</p>
+<pre><code>[build-system]
+requires = [&quot;flit_core&quot;]
+build-backend = &quot;flit_core.buildapi&quot;
+</code></pre>
+<p>doesn't help either.</p>
+<p>Interestingly, the former adds a <code>/app/lib/python3.12/site-packages/__editable__.tc-0.1.0.pth</code> containing:</p>
+<pre><code>/src/src
+</code></pre>
+<p>and flit creates a <code>/app/lib/python3.12/site-packages/tc.pth</code> containing the same, I think except without a trailing <code>\n</code>.</p>
+<p>I've also just noticed that the <code>ls</code> output in my first post was truncated (Docker…) so I've updated it: Hatchling creates a <code>_tc.pth</code> too and it also contains <code>/src/src</code>.</p>
+<p>These all look like editable installs to me.</p>
+<hr />
+<p>To be clear: adding <code>/app/bin/python -Ic 'import tc'</code> behind <code>uv sync --frozen --no-dev</code> <em>does</em> work.</p>
+<p>HTH when this becomes a priority. The workaround is easy enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 15:01</div>
+            <div class="timeline-body"><p>🤦 I didn't scroll down and see that there's a second layer. It looks like you're not copying the source code into the final image layer? That's why it doesn't work, since we're doing an editable install. The <code>uv pip</code> command you share that works doesn't use an editable install.</p>
+<p>We're interested in adding non-editable install support (#5792) but I don't think this is intended to work as written today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-06 15:20</div>
+            <div class="timeline-body"><p>heh yeah that’s what I’ve been trying to say in discord already but my English is still limited 🙈</p>
+<p>given there’s https://github.com/astral-sh/uv/issues/5792 and it was all just a miscommunication, I guess we can close this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 19:03</div>
+            <div class="timeline-body"><p>Yeah haha let's track there. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-06 19:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D102 vs pylint counterpart C0116 (undocumented-public-method) - astral-sh/ruff #9149</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>D102 vs pylint counterpart C0116 (undocumented-public-method)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9149">#9149</a>
+        opened by <a href="https://github.com/sigma67">@sigma67</a>
+        on 2023-12-15 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sigma67">@sigma67</a> on 2023-12-15 11:58</div>
+            <div class="timeline-body"><p>As noted in https://github.com/astral-sh/ruff/issues/970#issuecomment-1341901539 , in #970 D102 is different from its pylint counterpart C0116.</p>
+<p>It only requires that a function has docstring in the class hierarchy and does not require the overriding method to have a docstring (only the base method).</p>
+<pre><code class="language-python">class Foo:
+  def validate(self):
+    &quot;&quot;&quot;Doc.&quot;&quot;&quot;
+    ...
+
+class Bar(Foo):
+  def validate(self):
+    ...
+</code></pre>
+<p>I'm creating a separate issue to give this topic some visibility and to discuss it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "D103 vs pylint counterpart C0116 (undocumented-public-function)" to "D102 vs pylint counterpart C0116 (undocumented-public-method)" by @sigma67 on 2023-12-15 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigma67">@sigma67</a> on 2023-12-15 12:04</div>
+            <div class="timeline-body"><p>The same applies to <code>D105</code> when overriding a base class' magic method, which already has a docstring. In pylint <code>C0116</code> this is ok, in <code>D105</code> it's not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigma67">@sigma67</a> on 2023-12-18 12:14</div>
+            <div class="timeline-body"><p>@charliermarsh Perhaps you can comment if this is intended or could be changed? This would not be a breaking change, more of a &quot;softening&quot; of the rule to be more compatible with repositories moving to ruff from pylint.</p>
+<p>CC @hmc-cs-mdrissi original report</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 16:44</div>
+            <div class="timeline-body"><p>@sigma67 - The challenge here is that, unlike Pylint, Ruff doesn't do analysis <em>across</em> files right now. So we could support this <em>within</em> a file, but we wouldn't be able to detect that the <code>validate</code> on <code>Bar</code> is an implementation of a parent interface if <code>Foo</code> is defined in another file.</p>
+<p>One valid solution here is that we do ignore <code>D102</code> if you mark the method with <code>typing.override</code> or <code>typing_extensions.override</code>, which signals to type checkers that the method is intended to override a parent method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigma67">@sigma67</a> on 2023-12-18 19:09</div>
+            <div class="timeline-body"><p>@charliermarsh  I see, thanks for the clarification and the hint regarding <code>typing.override</code>, that's quite helpful.</p>
+<p>Are there future plans for cross-file analysis?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 19:12</div>
+            <div class="timeline-body"><p>@sigma67 -- Yes, it will absolutely be part of Ruff in the future. It's a big project though so will take some time :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2024-07-26 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-07-26 01:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

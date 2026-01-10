@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Very large lockfile and clean up - astral-sh/uv #9735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Very large lockfile and clean up</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9735">#9735</a>
+        opened by <a href="https://github.com/jbcdnr">@jbcdnr</a>
+        on 2024-12-09 09:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-09 09:50</div>
+            <div class="timeline-body"><p>We noticed that our <code>uv.lock</code> file grows in size, up to 2.5MB and 35k lines with a lot of <code>resolution-markers</code> and the time to <code>uv lock</code> explodes to more than 30 min and sometimes OOM. We have a pretty bad hygien for our <code>pyproject.toml</code> with  a lot of <code>*</code> versions and some conflicts so the resolver might have a hard time.</p>
+<p>We came up with a simple script to extract all the versions from the lockfile and copy paste them into pyproject.toml, then rerun <code>lock</code> and revert pyproject right after. This speeds up the follow up <code>lock</code> calls and make the lock file only 0.4MB big. Is it expected behavior? Is our cleanup script actually something that exists as part of the <code>uv</code> command?</p>
+<pre><code class="language-python">import pathlib
+import re
+
+content = pathlib.Path(&quot;uv.lock&quot;).read_text()
+
+print(&quot;dependencies = [&quot;)
+for package_version_match in re.finditer(
+    r'name = &quot;([^&quot;]+)&quot;\nversion = &quot;([\d\.]+)&quot;', content
+):
+    package_name, package_version = package_version_match.groups()
+    print(f'    &quot;{package_name}=={package_version}&quot;,')
+print(&quot;]&quot;)
+</code></pre>
+<p>Thank you for your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-09 09:54</div>
+            <div class="timeline-body"><p>It's hard to say without the input pyproject.toml; A lot of <code>resolution-markers</code> sounds like there's a lot of resolver forking that resolves multiple versions that you don't need. One option would be pinning those packages that appear multiple times in the lockfile (to coerce them into a single version) or to set <a href="https://docs.astral.sh/uv/concepts/projects/config/#limited-resolution-environments"><code>tool.uv.environments</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-09 15:44</div>
+            <div class="timeline-body"><p>Unfortunately I cannot share the whole pyproject.toml. Thanks for the pointer at environments, most of the lockfile resolution-markers entries were for darwin/linux, so resolving only for linux should avoid that this happens again.</p>
+<p>I am still curious if there could be a way to clean up the lockfile like we did but in <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 18:17</div>
+            <div class="timeline-body"><p>Does <code>resolution-markers</code> contain duplicates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 22:32</div>
+            <div class="timeline-body"><p>My guess is that <code>resolution-markers</code> somehow grows exponentially over time... Are you able to share, like, a subset of the <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 22:40</div>
+            <div class="timeline-body"><p>Separately, do you have any <code>conflicts</code> defined in your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-09 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-12 09:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Does <code>resolution-markers</code> contain duplicates?</p>
+</blockquote>
+<p>Yes, it was containing many lines like</p>
+<pre><code>resolution-markers = [
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform != 'darwin' and sys_platform != 'linux'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'darwin'&quot;,
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-12 09:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Separately, do you have any conflicts defined in your pyproject.toml?</p>
+</blockquote>
+<p>Yes, we have a conflict defined between two extra, <code>torch-cpu</code> and <code>torch-gpu</code> that follow the PyTorch guide. We also had a hack for to support PyTorch dependency https://github.com/astral-sh/uv/issues/9734 but this is fixed in <code>0.5.8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-12 09:15</div>
+            <div class="timeline-body"><blockquote>
+<p>My guess is that resolution-markers somehow grows exponentially over time... Are you able to share, like, a subset of the pyproject.toml?</p>
+</blockquote>
+<p>Unfortunately I cannot, but I can run what you want on our project. Even though I am not sure I can reproduce the growing lock file again, I would have to add some random package to force resolution a couple of times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-12 09:33</div>
+            <div class="timeline-body"><p>@charliermarsh it looks like bumping to 0.5.8 and deleting our hack for accelerate https://github.com/astral-sh/uv/issues/9734 also simplifies the resolution markers in our uv.lock file. So maybe this issue is non reproducible at main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluepichu">@bluepichu</a> on 2025-02-06 04:19</div>
+            <div class="timeline-body"><p>I'm also running into this issue on 0.5.27, and I think I have a fairly minimal reproduction consisting of only the PyTorch setup on an otherwise-empty project:</p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;resolution-markers-for-days&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+    &quot;torch&gt;=2.6.0&quot;
+]
+cu124 = [
+    &quot;torch&gt;=2.6.0&quot;
+]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = &quot;cpu&quot; },
+        { extra = &quot;cu124&quot; },
+    ],
+]
+
+[tool.uv.sources]
+torch = [
+    { extra = &quot;cpu&quot;, index = &quot;pytorch-cpu&quot; },
+    { extra = &quot;cu124&quot;, index = &quot;pytorch-cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>If I run <code>uv lock</code>, the resulting <code>uv.lock</code> starts with the following:</p>
+<pre><code>version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;extra != 'extra-27-resolution-markers-for-days-cpu' and extra == 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;sys_platform != 'darwin' and extra == 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;sys_platform == 'darwin' and extra == 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;extra != 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+]
+conflicts = [[
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cpu&quot; },
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cu124&quot; },
+]]
+</code></pre>
+<p>If I change anything about this file (e.g., set version to <code>0.1.1</code>) and run <code>uv sync --extra cpu</code>, then the start becomes:</p>
+<pre><code>version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;extra != 'extra-27-resolution-markers-for-days-cpu' and extra == 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;sys_platform != 'darwin' and extra == 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;sys_platform == 'darwin' and extra == 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;extra != 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+]
+conflicts = [[
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cpu&quot; },
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cu124&quot; },
+]]
+</code></pre>
+<p>If I do it again (bump version and run <code>uv sync --extra cpu</code>), then the <code>&quot;python_version &lt; '0'&quot;</code> markers keep duplicating:</p>
+<pre><code>version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;extra != 'extra-27-resolution-markers-for-days-cpu' and extra == 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;sys_platform != 'darwin' and extra == 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;sys_platform == 'darwin' and extra == 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;python_version &lt; '0'&quot;,
+    &quot;extra != 'extra-27-resolution-markers-for-days-cpu' and extra != 'extra-27-resolution-markers-for-days-cu124'&quot;,
+]
+conflicts = [[
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cpu&quot; },
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cu124&quot; },
+]]
+</code></pre>
+<p>Every run adds an additional 10 <code>python_version</code> markers.</p>
+<p>Notably, setting <code>tool.uv.environments</code> to restrict the platform to Linux causes all of them to go away:</p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-diff">  [tool.uv]
+  conflicts = [
+      [
+          { extra = &quot;cpu&quot; },
+          { extra = &quot;cu124&quot; },
+      ],
+  ]
++ environments = [
++     &quot;sys_platform == 'linux'&quot;,
++ ]
+  
+  [tool.uv.sources]
+  torch = [
+      { extra = &quot;cpu&quot;, index = &quot;pytorch-cpu&quot; },
+      { extra = &quot;cu124&quot;, index = &quot;pytorch-cu124&quot; },
+  ]
+</code></pre>
+<p>Beginning of resulting <code>uv.lock</code>:</p>
+<pre><code>version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;sys_platform == 'linux'&quot;,
+]
+supported-markers = [
+    &quot;sys_platform == 'linux'&quot;,
+]
+conflicts = [[
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cpu&quot; },
+    { package = &quot;resolution-markers-for-days&quot;, extra = &quot;cu124&quot; },
+]]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 13:05</div>
+            <div class="timeline-body"><p>Thank you for the reproduction!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-02-06 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-02-06 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @konstin on 2025-02-06 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11293.html">astral-sh/uv#11293</a> on 2025-02-06 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-18 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:46 UTC
+    </footer>
+</body>
+</html>

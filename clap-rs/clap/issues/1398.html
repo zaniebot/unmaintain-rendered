@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better looking visible aliases for subcommands - clap-rs/clap #1398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better looking visible aliases for subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1398">#1398</a>
+        opened by <a href="https://github.com/sondr3">@sondr3</a>
+        on 2018-12-18 23:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sondr3">@sondr3</a> on 2018-12-18 23:15</div>
+            <div class="timeline-body"><p>Right now when you create a visible alias for a subcommand it appears in brackets after the help message, so when I first added some visible aliases I thought it didn't work. I like how Jekyll for example does it:</p>
+<pre><code class="language-text">❯ jekyll --help
+jekyll 3.8.4 -- Jekyll is a blog-aware, static site generator in Ruby
+
+[snip]
+
+Subcommands:
+  build, b              Build your site
+  serve, server, s      Serve your site locally
+</code></pre>
+<p>as opposed to Clap:</p>
+<pre><code class="language-text">❯ ./target/debug/blug --help
+
+[snip]
+
+SUBCOMMANDS:
+    build     Build your blug without serving it. [aliases: b]
+    create    Create a post, page, draft etc [aliases: c]
+    init      Initialize a new blug [aliases: i]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: alias</span> added by @CreepySkeleton on 2020-02-01 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @CreepySkeleton on 2020-02-01 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-02-01 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @CreepySkeleton on 2020-02-01 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-02-01 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-01 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sondr3">@sondr3</a> on 2020-05-04 20:01</div>
+            <div class="timeline-body"><p>After having used Rust for a while now I think this is something I might be able to implement myself, are there any thoughts on how this should work? Should I create a <code>AppSetting::MergedAliases</code> for example or just outright change how aliases are displayed? @pksunkara @CreepySkeleton</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-04 21:59</div>
+            <div class="timeline-body"><p>Outright change is probably not a good idea. A setting sounds good but I am wondering if we are taking this too far. What if people want it in a different kind of way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sondr3">@sondr3</a> on 2020-05-05 16:11</div>
+            <div class="timeline-body"><p>Any suggestions for how you'd approach this in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-05 17:37</div>
+            <div class="timeline-body"><p>I am honestly stumped regarding the design here. @kbknapp What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-05 18:08</div>
+            <div class="timeline-body"><p>I personally like this one more</p>
+<pre><code>  build, b              Build your site
+  serve, server, s      Serve your site locally
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-05 18:17</div>
+            <div class="timeline-body"><p>I don't think we should be defaulting to that. But I too like it, which is why I am saying that we should come up with a way to allow users to format the help messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-05-05 19:24</div>
+            <div class="timeline-body"><p>The difference between the two versions is aesthetic only and not structural, so I'd prefer to have one way to display it and stick to that. I don't think it's worth the overhead to provide an option to switch between whichever way is the default and the other way.</p>
+<p>The same could be argued for options/flags, however the average <code>long</code> flag (and especially options) take up far more room than subcommand names, hence placing them at the <em>back</em> of the help message where they can easily be wrapped if required without throwing off the aligned of all other options/flags. Of course this doesn't apply as much to multi-line help messages (<code>long_help</code>), but those aren't the default.</p>
+<p>The only aesthetic <code>AppSetting</code> we have is similar to this proposal is <code>UnifiedHelpMessage</code>, but I'd argue that's a whole different category and provides a common format used by a lot of CLIs.</p>
+<p>As for which version I prefer? I don't have super strong feelings about either. I could be convinced that the new way looks a little better. But it also suffers from the alignment issue described above. Since this change only affects subcommands, I'd be fine accepting it. My only other concern is then the request to do the same for flags/options would become a request which I would be more against for the alignment issues.</p>
+<p>Maybe it'd be worth a look through github and grep.app to see average length of subcommands/aliases because when combined with #1891 if we lowered the default term width to 100, I'd want to make sure we didn't end up with help messages like this (exaggerated just for example):</p>
+<pre><code>    build, b            build your
+                        site
+    serve, server, s    serve your
+                        site
+                        locally
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-05-05 20:25</div>
+            <div class="timeline-body"><blockquote>
+<p>But it also suffers from the alignment issue described above.</p>
+</blockquote>
+<p>It is the main reason I prefer not to change the current way of showing aliases.</p>
+<p>But, we can allow a <code>help_generate</code> hook which could be filled by individual clap programs if they want a different aesthetic. This could work similar to <code>clap_generate</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/110.html">epage/clapng#110</a> on 2021-12-06 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: alias</span> removed by @epage on 2021-12-08 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-08 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> removed by @epage on 2021-12-08 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> removed by @epage on 2021-12-08 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 19:29</div>
+            <div class="timeline-body"><p>I think https://github.com/clap-rs/clap/issues/962 could be useful which might come at odds with showing the aliases first.</p>
+<p>Thoughts on how these two might interact?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-09 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> removed by @epage on 2021-12-09 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2021-12-09 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-10 14:22</div>
+            <div class="timeline-body"><p>How do we show the aliases in args? I think we print them as <code>[alias: s]</code> etc at the end of the help, right? Maybe we could follow a similar pattern in order to not conflict with #962.</p>
+<p>But I think #2914 should actually solve this and #962</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 16:33</div>
+            <div class="timeline-body"><p>Yes, I believe subcommands are currently rendered like args, with a trailing <code>[alias: s]</code>, so &quot;doing nothing&quot; makes it so we don't conflict with #962.</p>
+<p>The big question is how much logic should be built-in and how much should we punt to people doing it themselves with #2914.  I lean towards closing this in favor of #2914 but keeping #962 open. I'd like to try it out on some commands to see how well it works to give an idea for how universally useful it would be which could bump its prioritization for being built-in.</p>
+<p>One idea I had for #2963 was to experiment with making all parenthetical information dimmed, giving it a different visual than the <code>about</code>, making it easier to scan for one vs the other.  In terms of scanning, that would also help improve things here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it possible to avoid re-checking direct URL dependencies each command? - astral-sh/uv #10088</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is it possible to avoid re-checking direct URL dependencies each command?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10088">#10088</a>
+        opened by <a href="https://github.com/MrNaif2018">@MrNaif2018</a>
+        on 2024-12-21 23:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-21 23:16</div>
+            <div class="timeline-body"><p>Hi! Basically the package I want to install is not being updated on PyPI anymore, and I tried adding it using git url:
+If I try to install a package via git, it fails because the package's .gitmodules dependends on some enterprise packages I have no access to (there is an open issue in pip about similar thing, but from what I understand it is not yet implemented anywhere in packaging standards to fix this issue)</p>
+<pre><code>$ uv add &quot;karrio @ git+https://github.com/karrioapi/karrio@v2024.12rc9#subdirectory=modules/sdk&quot;
+Updating https://github.com/karrioapi/karrio (v2024.12rc9)                                                                                                                                                                       × Failed to download and build `karrio @ git+https://github.com/karrioapi/karrio@v2024.12rc9#subdirectory=modules/sdk`
+  ├─▶ Git operation failed
+  ╰─▶ process didn't exit successfully: `/opt/homebrew/bin/git submodule update --recursive --init` (exit status: 1)
+      --- stderr
+      Submodule 'insiders' (git@github.com:karrioapi/karrio-insiders.git) registered for path 'ee/insiders'
+      Submodule 'ee/platform' (git@github.com:karrioapi/karrio-platform.git) registered for path 'ee/platform'
+      Cloning into '/Users/alex/.cache/uv/git-v0/checkouts/06471d48525cdc12/00aef3669/ee/insiders'...
+      ERROR: Repository not found.
+      fatal: Could not read from remote repository.
+
+      Please make sure you have the correct access rights
+      and the repository exists.
+      fatal: clone of 'git@github.com:karrioapi/karrio-insiders.git' into submodule path '/Users/alex/.cache/uv/git-v0/checkouts/06471d48525cdc12/00aef3669/ee/insiders' failed
+      Failed to clone 'ee/insiders'. Retry scheduled
+      Cloning into '/Users/alex/.cache/uv/git-v0/checkouts/06471d48525cdc12/00aef3669/ee/platform'...
+      ERROR: Repository not found.
+      fatal: Could not read from remote repository.
+
+      Please make sure you have the correct access rights
+      and the repository exists.
+      fatal: clone of 'git@github.com:karrioapi/karrio-platform.git' into submodule path '/Users/alex/.cache/uv/git-v0/checkouts/06471d48525cdc12/00aef3669/ee/platform' failed
+      Failed to clone 'ee/platform'. Retry scheduled
+      Cloning into '/Users/alex/.cache/uv/git-v0/checkouts/06471d48525cdc12/00aef3669/ee/insiders'...
+      ERROR: Repository not found.
+      fatal: Could not read from remote repository.
+
+      Please make sure you have the correct access rights
+      and the repository exists.
+      fatal: clone of 'git@github.com:karrioapi/karrio-insiders.git' into submodule path '/Users/alex/.cache/uv/git-v0/checkouts/06471d48525cdc12/00aef3669/ee/insiders' failed
+      Failed to clone 'ee/insiders' a second time, aborting
+</code></pre>
+<p>So I tried installing the usual workaround way:
+Btw uv add seems to not support this, but I manually edited pyproject.toml and ran uv sync:</p>
+<pre><code>$ uv add &quot;karrio @ https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk&quot;
+  × Failed to build `redacted @ file:///Users/alex/stuff/myproject`
+  ├─▶ Failed to parse entry: `karrio`
+  ╰─▶ Fragments are not allowed in URLs: `https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk`
+</code></pre>
+<pre><code>$ uv sync
+Resolved 99 packages in 648ms
+Uninstalled 2 packages in 12ms
+Installed 2 packages in 4ms
+ ~ karrio==2024.12rc3 (from https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk)
+</code></pre>
+<p>But the problem is, each time I run any uv command, e.g. uv run, it tries to re-check the dependency</p>
+<pre><code>$ uv run task api
+Uninstalled 2 packages in 13ms
+Installed 2 packages in 4ms
+INFO:     Uvicorn running on http://127.0.0.1:8002 (Press CTRL+C to quit)
+</code></pre>
+<p>Is there any way to fix this? I tried adding metadata to pyproject.toml so that uv doesn't resolve it each time, like this:</p>
+<pre><code>[[tool.uv.dependency-metadata]]
+name = &quot;karrio&quot;
+version = &quot;2024.12rc3&quot;
+requires-dist = [
+    &quot;jstruct&quot;,
+    &quot;xmltodict&quot;,
+    &quot;lxml&quot;,
+    &quot;lxml-stubs&quot;,
+    &quot;py-soap&quot;,
+    &quot;Pillow&quot;,
+    &quot;phonenumbers&quot;,
+    &quot;python-barcode&quot;,
+    &quot;PyPDF2&quot;,
+]
+</code></pre>
+<p>But I get another error:</p>
+<pre><code>$ uv sync
+Resolved 99 packages in 710ms
+error: Since the package `karrio==2024.12rc3 @ direct+https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip` comes from a direct dependency, a hash was expected but one was not found for direct URL source distribution
+</code></pre>
+<p>Is there a simpler way to &quot;cache&quot; the dependency? Thanks in advance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-21 23:46</div>
+            <div class="timeline-body"><p>This is a bug that I just fixed in #10068. It's actually so weird that you filed this now, since this bug has existed ~forever and never come up! Anyway, in the next release we should avoid that &quot;re-check&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-21 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-21 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-21 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-21 23:50</div>
+            <div class="timeline-body"><p>Love this rapid development, haha! Kudos to your work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-22 00:03</div>
+            <div class="timeline-body"><p>@charliermarsh Just to confirm, if I installed uv from main like this:
+<code>cargo install --git https://github.com/astral-sh/uv uv </code>
+And then in my project used:
+<code>/Users/alex/.cargo/bin/uv sync</code>
+It should have ran the version with the fix already?
+Because it still seems to be rechecking the package each time</p>
+<pre><code>/Users/alex/.cargo/bin/uv sync
+Resolved 99 packages in 639ms
+Uninstalled 2 packages in 10ms
+Installed 2 packages in 4ms
+ ~ karrio==2024.12rc3 (from https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk)
+ ~ karrio-canadapost==2024.6.7 (from https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/connectors/canadapost)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 00:27</div>
+            <div class="timeline-body"><p>Yeah. The fix hasn't shipped -- it's merged into main, but not in the latest release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-22 00:28</div>
+            <div class="timeline-body"><p>Yeah, but I mean I installed uv from main and still get same issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 00:32</div>
+            <div class="timeline-body"><p>I don't know if that will be the correct uv. Is your project public?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-22 00:34</div>
+            <div class="timeline-body"><p>It is not, but this minimal pyproject.toml would work:</p>
+<pre><code>[project]
+name = &quot;testbug&quot;
+version = &quot;1.0.0&quot;
+description = &quot;Test&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;karrio @ https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk&quot;,
+    &quot;karrio-canadapost @ https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/connectors/canadapost&quot;
+]
+</code></pre>
+<p>P.S.
+The version seems to refer to commit you made like 1 hour ago:</p>
+<pre><code>$ /Users/alex/.cargo/bin/uv version 
+uv 0.5.11 (ad92aaf18 2024-12-21)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 00:37</div>
+            <div class="timeline-body"><p>I'm seeing the same thing, so must be something different than what I fixed. I'll take a look, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-12-22 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10093.html">astral-sh/uv#10093</a> on 2024-12-22 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-22 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-22 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-22 14:19</div>
+            <div class="timeline-body"><p>Thanks, this now works!
+Last question, in the logs it still tells:
+Found stale response for: https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk
+DEBUG Sending revalidation request for</p>
+<p>Does it mean that github doesn't set HTTP cache headers?</p>
+<p>P.S. As a side note, adding such direct URL dependency with a URL fragment is not supported in uv add still, but maybe I should open another issue:</p>
+<pre><code>$ /Users/alex/.cargo/bin/uv add &quot;karrio @ https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk&quot;
+error: Failed to generate package metadata for `testbug==1.0.0 @ virtual+.`
+  Caused by: Failed to parse entry: `karrio`
+  Caused by: Fragments are not allowed in URLs: `https://github.com/karrioapi/karrio/archive/v2024.12rc9.zip#subdirectory=modules/sdk`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Does it mean that github doesn't set HTTP cache headers?</p>
+</blockquote>
+<p>Yes I believe so. It looks like they return <code>cache-control: max-age=0, private</code>, so we have to revalidate every time.</p>
+<blockquote>
+<p>As a side note, adding such direct URL dependency with a URL fragment is not supported in uv add still.</p>
+</blockquote>
+<p>Yeah feel free to open a separate issue for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10094.html">astral-sh/uv#10094</a> on 2024-12-22 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrNaif2018">@MrNaif2018</a> on 2024-12-22 14:54</div>
+            <div class="timeline-body"><p>Opened in #10094, thanks again!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:55 UTC
+    </footer>
+</body>
+</html>

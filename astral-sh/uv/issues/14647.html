@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--torch-backend=auto` fails on systems with multiple GPUs and without `/proc/driver/nvidia/version` - astral-sh/uv #14647</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--torch-backend=auto` fails on systems with multiple GPUs and without `/proc/driver/nvidia/version`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14647">#14647</a>
+        opened by <a href="https://github.com/coezbek">@coezbek</a>
+        on 2025-07-16 10:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/coezbek">@coezbek</a> on 2025-07-16 10:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This only affects systems which don't have <code>/sys/module/nvidia/version</code> or <code>/proc/driver/nvidia/version</code>, i.e. for instance on WSL2.</p>
+<p>When running <code>uv pip install</code> with the new <code>--torch-backend=auto</code> on such a system with multiple GPUs, the detection will fallback to using <code>nvidia-smi</code>. Unfortunately, nvidia-smi will return a separate line for each graphics card which isn't considered in the code:</p>
+<pre><code>$ nvidia-smi --query-gpu=driver_version --format=csv,noheader
+572.60
+572.60
+</code></pre>
+<p>This will make <code>uv pip install with --torch-backend=auto</code> fail with the following error:</p>
+<pre><code>uv pip install -U &quot;vllm[audio]&quot; --torch-backend=auto
+error: after parsing `572.60
+`, found `572.60
+`, which is not part of a valid version
+</code></pre>
+<p><code>nvidia-smi</code> does not respect NVIDIA_VISIBLE_DEVICES, so there is no way from the outside to use <code>--torch-backend=auto</code> with two graphics cards at the moment.</p>
+<p>Workaround is to run nvidia-smi, identify CUDA version there and run with <code>--torch-backend=cuXXX</code> as indicated by <code>nvidia-smi</code>.</p>
+<p>I think the wrongly implemented line of code is the one I marked in this pullrequestreview:</p>
+<p>https://github.com/astral-sh/uv/pull/12070#pullrequestreview-3024148877</p>
+<p>Or in the current code base:</p>
+<p>https://github.com/astral-sh/uv/blob/8d6d0678a71d86020caaf20107b1e81af29f471d/crates/uv-torch/src/accelerator.rs#L129</p>
+<p>The easiest fix would be to take just the first line of the output of nvidia-smi. More elaborate would be a way to select the device to query or respecting NVIDIA_VISIBLE_DEVICE environment variable.</p>
+<h3>Platform</h3>
+<p>Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.21</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @coezbek on 2025-07-16 10:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-16 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 15:51</div>
+            <div class="timeline-body"><p>Sorry, I thought I fixed this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15460.html">astral-sh/uv#15460</a> on 2025-08-22 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-02 21:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

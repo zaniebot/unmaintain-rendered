@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accidental edits in .venv carry over to other projects using the same dependency - astral-sh/uv #10896</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Accidental edits in .venv carry over to other projects using the same dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10896">#10896</a>
+        opened by <a href="https://github.com/thorbenk">@thorbenk</a>
+        on 2025-01-23 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thorbenk">@thorbenk</a> on 2025-01-23 13:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Sometimes, I use go to definition in my editor and end up in a file in my project's <code>.venv</code>, make some edits and do not realize what I have done.</p>
+<p>With package managers other than uv, this would be easily solved by deleting the <code>.venv</code> directory of that project and starting over.</p>
+<p>However, due to the hardlinking going on with uv, my accidental change is now visible in all other projects I am working on. For people who do not know about uv's caching, this is hard to debug. To start over, the best way is probably to run <code>uv cache clean</code>.</p>
+<p>Would it be possible to make the files read-only to prevent this scenario?</p>
+<p>I verified the behavior with the following script:</p>
+<p>It creates a library <code>venv_issue_dep</code> and publishes it as a wheel (using a local index on localhost).
+It then creates two projects <code>project_a</code> and <code>project_b</code>, which use that dependency.
+Finally, it makes an edit via <code>project_a</code>'s <code>.venv</code> and demonstrates that the change is visible also in <code>project_b</code>.</p>
+<pre><code class="language-bash">#!/bin/bash
+
+# remove &quot;issue&quot; directory if it exists
+# before running this script again!
+
+mkdir issue
+cd issue
+
+mkdir project_a
+cd project_a
+uv init --python 3.12
+
+cd ..
+
+mkdir project_b
+cd project_b
+uv init --python 3.12
+
+cd ..
+
+mkdir venv_issue_dep
+cd venv_issue_dep
+uv init --lib --python 3.12
+uv build
+
+cd ..
+
+mkdir -p local_index/venv-issue-dep
+cp venv_issue_dep/dist/*.whl local_index/venv-issue-dep
+
+cd local_index
+nohup python3 -m http.server 9000 2&gt;&amp;1 &amp;
+PID=$!
+cd ..
+
+cd project_a
+uv add --index local=http://127.0.0.1:9000 &quot;venv_issue_dep==0.1.0&quot;
+echo &quot;import venv_issue_dep; print('A', venv_issue_dep.hello())&quot; &gt; hello.py
+cd ..
+
+cd project_b
+uv add --index local=http://127.0.0.1:9000 &quot;venv_issue_dep==0.1.0&quot;
+echo &quot;import venv_issue_dep; print('B', venv_issue_dep.hello())&quot; &gt; hello.py
+cd ..
+
+cd project_a
+echo $PWD
+uv run hello.py
+# Prints &quot;A Hello from venv-issue-dep!&quot;
+cd ..
+
+cd project_b
+echo $PWD
+uv run hello.py
+# Prints &quot;B Hello from venv-issue-dep!&quot;
+cd ..
+
+# Do an accidental edit
+# Make sure not to destroy the hardlink.
+# We just append a new version of hello()
+echo &quot;def hello(): return 'Hello World'&quot; &gt;&gt; project_a/.venv/lib/python3.12/site-packages/venv_issue_dep/__init__.py
+
+cd project_a
+echo $PWD
+uv run hello.py
+cd ..
+# prints &quot;A Hello World&quot;
+
+cd project_b
+echo $PWD
+uv run hello.py
+# prints &quot;B Hello World&quot;
+#
+# This is unexpected if you are unaware of the hard-linking going on.
+
+kill $PID
+
+find `uv cache dir` -path '*/venv_issue_dep/__init__.py' | xargs cat
+# Shows that the new implementation is now in the cache.
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.5.23</p>
+<h3>Python version</h3>
+<p>Python 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @thorbenk on 2025-01-23 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-23 13:56</div>
+            <div class="timeline-body"><p>No, unfrotunately I don't think we can prevent this kind of manual cache poisoning if you're using hard-links. We use copy-on-write links on macOS for this reason, but they're not as readily available on Linux (it varies by filesystem). Making these files read-only would almost certainly break some expectations for packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-01-23 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-23 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thorbenk">@thorbenk</a> on 2025-01-23 14:31</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh , I didn't know about copy-on-write links.</p>
+<p>Can you expand on why read-only would break things? A package's files are read-only for a user if they are installed by a Linux system package manager, so I would have expected read-only would also work within virtual environments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonaslb">@jonaslb</a> on 2025-01-23 16:36</div>
+            <div class="timeline-body"><p>I think the Rust reimplementation of the <code>cp</code> utility (which does <code>--reflink=auto</code> by default) could be a source of inspiration for how to attempt reflinking with a fallback on Linux, if someone ever wants to give it a go for <code>uv</code> (and if the maintainers don't see an issue with that impl, of course) :) Can be found here: https://github.com/uutils/coreutils/tree/main/src/uu/cp</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-23 16:41</div>
+            <div class="timeline-body"><p>(Nice, thank you for sharing that! I believe you can also set <code>--link-mode=clone</code> on Linux, and it <em>should</em> work if they're supported.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-23 19:16</div>
+            <div class="timeline-body"><p>@thorbenk -- Totally. I'm not referring to any <em>specific</em> breakage that I know of; it's more that it would be a significant deviation from / incompatibility with all other virtual environment-creators, and I'm very confident that it would lead to errors in some cases given the diversity in the ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 19:07</div>
+            <div class="timeline-body"><p>I'm going to close this as I think we're unlikely to change this. Perhaps we can use copy-on-write more as a default in the future though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-01 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

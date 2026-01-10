@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title: Ruff 0.11.10 Fails to Detect F-string SyntaxError with target-version = &quot;py39&quot; - astral-sh/ruff #18194</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Title: Ruff 0.11.10 Fails to Detect F-string SyntaxError with target-version = &quot;py39&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18194">#18194</a>
+        opened by <a href="https://github.com/tmarquart">@tmarquart</a>
+        on 2025-05-19 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmarquart">@tmarquart</a> on 2025-05-19 13:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ruff Version: 0.11.10
+Python Runtime Causing Error: Python 3.11.x (Error also occurs on 3.9.x)
+Operating System: Windows
+Bug Description:
+Ruff does not flag an f-string that reuses the same outer quote character for an inner string literal (e.g., f'...{dict['key']}...'), which is a SyntaxError before Python 3.12. This occurs even when target-version = &quot;py39&quot; is set and standard syntax error rules (like E902 ParseError) are enabled.</p>
+<p>To Reproduce:</p>
+<p>TOML:</p>
+<pre><code class="language-toml">target-version = &quot;py39&quot;
+</code></pre>
+<h1>test_fstring.py</h1>
+<pre><code class="language-py">base_type = &quot;sometype&quot;
+class DummyType:
+    def __init__(self, length=None):
+        if length is not None:
+            self.length = length
+col_props = {'type': DummyType(length=10)}
+# Problematic line:
+final_type = f'{base_type}({col_props['type'].length})' if hasattr(col_props['type'], 'length') else base_type
+# print(f&quot;Final type: {final_type}&quot;) # Optional: for running the file
+</code></pre>
+<pre><code>Runtime Error:
+  File &quot;&lt;string&gt;&quot;, line 14
+    final_type = f'{base_type}({col_props['type'].length})' if hasattr(col_props['type'], 'length') else base_type
+                                           ^^^^
+SyntaxError: f-string: unmatched '['
+</code></pre>
+<p>Behavior confirmed on playground:</p>
+<p>Everything is looking good!</p>
+<p>Expected Ruff Behavior:
+Ruff should report a syntax error (e.g., E902 ParseError or E999 SyntaxError) for the problematic f-string line, consistent with target-version = &quot;py39&quot;.</p>
+<h3>Version</h3>
+<p>0.11.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-19 13:39</div>
+            <div class="timeline-body"><p>Do you have preview enabled? It looks like we flag this on the  playground with preview enabled:</p>
+<p>https://play.ruff.rs/318057d1-6880-470f-af3d-2ace989b698b</p>
+<p>Our syntax error detection has been expanded recently and thus is still in preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-05-19 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmarquart">@tmarquart</a> on 2025-05-19 13:58</div>
+            <div class="timeline-body"><p>Perfect, that is exactly what I needed, I added preview=true and it caught it. I truly appreciate the lightning quick response, thanks so much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tmarquart on 2025-05-19 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

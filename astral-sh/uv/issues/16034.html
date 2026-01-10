@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows: uv run hg fails with abort: failed to load Python DLL python312.dll while uv run python -m mercurial works - astral-sh/uv #16034</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows: uv run hg fails with abort: failed to load Python DLL python312.dll while uv run python -m mercurial works</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16034">#16034</a>
+        opened by <a href="https://github.com/Stefanhg">@Stefanhg</a>
+        on 2025-09-26 07:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Stefanhg">@Stefanhg</a> on 2025-09-26 07:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello, after a long debug session with ChatGpt I have hopefully been able to narrow down the root cause of the issue. Note i made ChatGpt generate bug report so if something is wrong or missing please let me know!</p>
+<p><strong>Summary</strong></p>
+<p>On Windows 11, installing Mercurial into a uv venv results in an hg.exe that immediately aborts:</p>
+<p>abort: failed to load Python DLL python312.dll</p>
+<p>The same environment runs Mercurial fine when invoked as a module:</p>
+<p>uv run python -m mercurial --version   # works
+uv run hg --version                    # fails</p>
+<p>This does not reproduce in a “normal” venv on other machines.</p>
+<p><strong>Environment</strong></p>
+<p>Python in venv: 3.12.11 (managed by uv)
+Native Python: 3.10.6</p>
+<p>Mercurial: 7.0.2 (from uv logs)</p>
+<p>Other packages present: distlib==0.3.8, setuptools==80.9.0, wheel==0.45.1</p>
+<p>Index: internal mirror of PyPI (<redacted>)</p>
+<p><strong>Steps to reproduce (cmd.exe)</strong>
+:: in a new empty directory
+uv venv --python 3.12
+uv pip install mercurial</p>
+<p>uv run python -m mercurial --version    :: ✅ works
+uv -v -v run hg --version               :: ❌ abort: failed to load Python DLL python312.dll</p>
+<p><strong>Actual result (key log lines)</strong>
+DEBUG Using Python 3.12.11 interpreter at: D:\temp\test_uv.venv\Scripts\python.exe
+DEBUG Running <code>hg --version</code>
+abort: failed to load Python DLL python312.dll
+DEBUG Command exited with code: 255</p>
+<p>where (from the same shell) shows a global TortoiseHg present, but uv’s log clearly indicates it runs the venv copy:</p>
+<p>where hg
+C:\Program Files\TortoiseHg\hg.exe</p>
+<p>where hg.exe
+C:\Program Files\TortoiseHg\hg.exe</p>
+<p>Venv Scripts contents include both small hg.exe and a text hg:</p>
+<p>...
+1,516  hg
+14,336 hg.exe
+257,536 python.exe
+245,760 pythonw.exe
+41,443 wheel.exe
+...</p>
+<p><strong>Diagnostics</strong></p>
+<p>The venv hg.exe contains strings typical of a frozen Windows bootstrapper, not a distlib console-script wrapper:</p>
+<p>\hg-python\python312.dll
+failed to load private Python DLL python312.dll
+Py_SetPythonHome
+Py_Main
+python313.dll</p>
+<p>A ProcMon trace shows DLL lookup attempts against unrelated PATH entries (e.g., C:\Program Files (x86)\Nmap\python313.dll → NAME NOT FOUND) before aborting — suggesting the exe calls LoadLibrary(&quot;python3xx.dll&quot;) without a full path and relies on the Windows loader search order.</p>
+<p>Importantly, invoking as a module always works:</p>
+<p>uv run python -m mercurial --version   :: OK</p>
+<p><strong>Expected</strong></p>
+<p>uv run hg … should use the venv interpreter (same behavior as python -m mercurial), not rely on a PE bootstrapper that looks for python3xx.dll via PATH.</p>
+<p><strong>Workarounds tried (uv-only)</strong></p>
+<p>Prepending the real Python …\Python312 and …\DLLs to PATH → still fails.</p>
+<p>Removing third-party PATH segments for the session → still fails.</p>
+<p>uv cache clean + reinstall (including --no-binary mercurial --no-cache) → still fails on this machine.</p>
+<p>Replacing hg.exe with a .cmd that runs python -m mercurial → works (manual per-venv workaround).</p>
+<p><strong>Probable cause (from reading uv’s behavior &amp; docs)</strong></p>
+<p>On Windows, uv copies executables provided by a wheel into the venv Scripts directory; it does not regenerate or wrap arbitrary .exe launchers. Special handling exists for legacy script files (.cmd/.bat/.ps1), but not for PE bootstrappers.</p>
+<p>Mercurial’s Windows wheel ships a custom hg.exe bootstrapper that tries to LoadLibrary(&quot;python3xx.dll&quot;). When that DLL isn’t co-located, the OS loader searches PATH; if it can’t find a suitable DLL (or finds the wrong one), the exe aborts before Python starts.</p>
+<p>Because uv installed (copied) that PE into ..venv\Scripts, uv run hg executes it directly, triggering the early abort. Meanwhile uv run python -m mercurial bypasses the exe and succeeds.</p>
+<p><strong>Proposed changes / requests</strong></p>
+<p>Prefer console-script entry points on Windows (when available):
+If a wheel provides both entry points and a same-name .exe, generate a standard console-script wrapper targeting the venv’s python.exe, and either do not install the PE or make the wrapper take precedence.</p>
+<p>Guardrail for PE bootstrappers:
+When installing a .exe into Scripts, detect likely Python bootstrapper patterns (embedded python3..dll, Py_SetPythonHome, etc.) and:</p>
+<p>emit a warning that the exe depends on PATH/DLL search, and/or</p>
+<p>auto-generate a sibling *.cmd that runs python -m <module> and make uv run prefer that wrapper.</p>
+<p><strong>Diagnostics:</strong>
+Enhance uv -vv run to explicitly state whether the resolved “hg” is a copied PE or a generated console script, and print the full file path being executed. This would help users and maintainers triage PATH/DLL loader issues quickly.</p>
+<p><strong>Documentation note:</strong>
+Call out that wheels shipping Windows PE launchers may be sensitive to PATH/DLL layout; suggest python -m … or a uv option (e.g., prefer-console-scripts=true) as a mitigation.</p>
+<p><strong>Additional data available on request</strong></p>
+<p>Full uv -v -v run hg --version output (included above).</p>
+<p>strings/hex dump of ..venv\Scripts\hg.exe (shows python3xx.dll references).</p>
+<p>Minimal ProcMon trace demonstrating the DLL lookup attempts.</p>
+<p>uv.lock and directory listing of ..venv\Scripts.</p>
+<p>uv -v -v run hg --version
+DEBUG Using Python 3.12.11 interpreter at: D:\temp\test_uv.venv\Scripts\python.exe
+DEBUG Running <code>hg --version</code>
+abort: failed to load Python DLL python312.dll
+DEBUG Command exited with code: 255</p>
+<p>where hg
+C:\Program Files\TortoiseHg\hg.exe</p>
+<p>where hg.exe
+C:\Program Files\TortoiseHg\hg.exe</p>
+<p>Directory of D:\temp\test_uv.venv\Scripts
+...
+25/09/2025  17.16           1,516  hg
+25/09/2025  17.01          14,336  hg.exe
+08/08/2025  08.19         257,536  python.exe
+08/08/2025  08.19         245,760  pythonw.exe
+25/09/2025  17.16          41,443  wheel.exe
+...</p>
+<h3>Platform</h3>
+<p>Windows 11 Enterprise 10.0.26100 (Build 26100)</p>
+<h3>Version</h3>
+<p>uv 0.8.22 (ade2bdbd2 2025-09-23)</p>
+<h3>Python version</h3>
+<p>Python 3.10.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Stefanhg on 2025-09-26 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 13:04</div>
+            <div class="timeline-body"><p>This seems to be an upstream bug: https://foss.heptapod.net/mercurial/mercurial-devel/-/issues/6635.</p>
+<p>Probably the same as #13408.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-09-26 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Stefanhg">@Stefanhg</a> on 2025-09-29 07:02</div>
+            <div class="timeline-body"><p>@konstin Thank you for this, I was searching around with no luck to find anything that relates.
+I'll close the issue here and hope mercurial resolves it, but seems like a issue that will never get resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Stefanhg on 2025-09-29 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/misery">@misery</a> on 2025-12-16 15:06</div>
+            <div class="timeline-body"><p>Is it really a mercurial problem? If we add that &quot;work-around&quot; to the <code>.dll</code> file it works.</p>
+<pre><code>uv venv $env:VIRTUAL_ENV --python 3.12
+'&amp; &quot;$env:VIRTUAL_ENV/Scripts/activate.ps1&quot;'
+uv pip install mercurial==7.1.2
+$env:PATH = &quot;$env:PATH;$env:VIRTUAL_ENV/Lib/site-packages&quot;
+hg clone ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 16:00</div>
+            <div class="timeline-body"><p>Yes, this only happens with mercurial and is tracked in https://foss.heptapod.net/mercurial/mercurial-devel/-/issues/6635</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

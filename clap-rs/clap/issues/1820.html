@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow accepting an argument by position and by flag - clap-rs/clap #1820</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow accepting an argument by position and by flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1820">#1820</a>
+        opened by <a href="https://github.com/casey">@casey</a>
+        on 2020-04-13 23:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/casey">@casey</a> on 2020-04-13 23:41</div>
+            <div class="timeline-body"><p>It would be nice to allow CLIs to a single argument both by position, and by flag.</p>
+<p>A possible API for this would be to add <code>Arg::positional(bool)</code>, that when passed <code>true</code> makes an arg be accepted by position, even if it already has a long or short flag.</p>
+<p>The reason this came up is that wrote a CLI with Clap that takes all of it arguments by flag. After releasing the binary, it's clear that one of the flags is always going to be present, so I'd like to &quot;promote&quot; it to a positional argument, so the flag isn't required. However, I'd like to avoid breaking existing usage, so it would be ideal to make it both a flag and a positional argument.</p>
+<p>Allowing seamless promotion from flag to flag + positional would have the nice bonus of encouraging conservative design of CLIs.</p>
+<p>Positional arguments are the most scarce, since using more than two or three becomes unwieldy. Short flags are the next most scarce, since there are &lt; 100 possible short flags. Long flags are essentially unlimited. So it would nice to enable the pattern of giving everything long flags initially, and then &quot;upgradiing&quot; commonly used arguments to short flags and positional over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @casey on 2020-04-13 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../casey/intermodal/issues/375.html">casey/intermodal#375</a> on 2020-04-13 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-13 23:58</div>
+            <div class="timeline-body"><p>I am really hesitant about making this part of clap itself. Clap gives users the tools to do this themselves and I think that is enough for the scope of Clap.</p>
+<p>Relevant discussion in #1818</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-14 00:11</div>
+            <div class="timeline-body"><p>I'll go ahead an close this because the described use case is already possible - and not too complicated - with two args and <code>required_unless</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-04-14 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-04-14 00:15</div>
+            <div class="timeline-body"><p>I don't see why this can't be a part of clap. Keeping it open for future exploration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @Dylan-DPC-zz on 2020-04-14 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-14 00:27</div>
+            <div class="timeline-body"><p>If I get it right, this snipped is exactly what @casey wants:</p>
+<pre><code class="language-rust">App::new(&quot;app&quot;)
+    .arg(
+        // deprecated optional option
+        Arg::with_name(&quot;input_opt&quot;)
+            .hidden(true)
+            .long(&quot;--input&quot;)
+            .takes_value(true)
+    )
+    .arg(
+        // new positional arg
+        Arg::with_name(&quot;input_pos&quot;)
+            .takes_value(true)
+            .required_unless(&quot;input_pos&quot;)
+    )
+</code></pre>
+<p>This is done already, what's left to explore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-14 05:23</div>
+            <div class="timeline-body"><p>Thanks for the workaround, I'll do that for now. I'm not so much thinking of it as deprecating the option for the positional, since options can be more readable, for example in shell scripts.</p>
+<p>There are some negatives to using two args. One is that because I'm calling a number of additional methods, those need to be duplicated. Using structopt, but would likely be similar with clap-derive:</p>
+<pre><code>  #[structopt(
+    long = &quot;input&quot;,
+    short = &quot;i&quot;,
+    value_name = &quot;PATH&quot;,
+    empty_values = false,
+    parse(try_from_os_str = InputTarget::try_from_os_str),
+    help = INPUT_HELP,
+  )]
+  input_option: Option&lt;InputTarget&gt;,
+  #[structopt(
+    value_name = &quot;PATH&quot;,
+    empty_values = false,
+    required_unless = &quot;input-option&quot;,
+    conflicts_with = &quot;input-option&quot;,
+    parse(try_from_os_str = InputTarget::try_from_os_str),
+    help = INPUT_HELP,
+  )]
+  input_arg: Option&lt;InputTarget&gt;,
+</code></pre>
+<p>I had to factor out the help message into a constant, <code>INPUT_HELP</code>. I decided to not use <code>hidden</code>, since I think it's slightly more understandable if the argument shows in the help message in the options section, and in the args section at the bottom.</p>
+<p>Also, I have <code>required_if</code> constraints on two other arguments on the &quot;input&quot; argument, so I had to modify them to be:</p>
+<pre><code>    required_if(&quot;input-arg&quot;, &quot;-&quot;),
+    required_if(&quot;input-option&quot;, &quot;-&quot;),
+</code></pre>
+<p>And then to actually access the value, since it's now an <code>Option</code>, I'm doing:</p>
+<pre><code>    self
+      .input_arg
+      .as_ref()
+      .xor(self.input_option.as_ref())
+      .ok_or_else(|| Error::internal(&quot;Expected `input_arg` or `input_flag` to be set&quot;))
+</code></pre>
+<p>All in all this isn't too bad, since I'm able to get the CLI that I wanted, but it could be made a little less verbose if it was supported directly.</p>
+<p>Edit: Actually, using <code>.xor</code> is more correct, which I missed the first time around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-14 08:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, I have required_if constraints on two other arguments on the &quot;input&quot; argument, so I had to modify them to be:</p>
+</blockquote>
+<p>You can use an arg group for that.</p>
+<blockquote>
+<p>One is that because I'm calling a number of additional methods, those need to be duplicated.</p>
+</blockquote>
+<p>You would be adding just one more condition to check if the argument is present or not. You wouldn't be needing anymore duplication. Please give some example if I am wrong.</p>
+<p>I am still not convinced that this is needed to be handled by clap. Let's leave this open and see if more people ask for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-04-14 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @pksunkara on 2020-04-14 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-14 09:10</div>
+            <div class="timeline-body"><blockquote>
+<p>You would be adding just one more condition to check if the argument is present or not. You wouldn't be needing anymore duplication. Please give some example if I am wrong.</p>
+</blockquote>
+<p>I should have been more clear, what I was referring to was the additional configuration of each arg that needs to be duplicated and now kept in sync, in this case <code>empty_values = false</code> and <code>parse(try_from_os_str = InputTarget::try_from_os_str)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-14 20:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I had to factor out the help message into a constant, INPUT_HELP.</p>
+</blockquote>
+<p>This is totally expected when you want to use the same message for different args. For example, consider this <code>clap</code>-unrelated code:</p>
+<pre><code class="language-rust">// we want to pass the very same value to multiple fns
+
+// Option 1 - duplicate
+func1(&amp;get_val());
+func2(&amp;get_val());
+
+// Option 2 - factor out
+let val = get_val;
+func1(&amp;val);
+func2(&amp;val);
+</code></pre>
+<p><code>clap</code> is no different here.</p>
+<blockquote>
+<p>And then to actually access the value, since it's now an Option, I'm doing:</p>
+</blockquote>
+<p>Yeah, <code>structopt</code> isn't that handy when it comes to <code>requires_if*</code>; this is a <a href="https://github.com/TeXitoi/structopt/issues/104">known problem</a>. So far, nobody has been able to propose a design that unambiguous <em>and</em> easy to use <em>and</em> considerably easy to implement, but this is a problem with derive, not with clap itself. Your suggestions/help are welcome there!</p>
+<blockquote>
+<p>I was referring to was the additional configuration of each arg that needs to be duplicated and now kept in sync [...]</p>
+</blockquote>
+<p>I believe this is intentional design of <code>clap</code>/<code>structopt</code> (I may be wrong here). Every arg requires you to configure it explicitly so anyone could tell it's properties just from the look of it, no need to look somewhere else. Code is much more read than written after all.</p>
+<p>Keeping args in sync might be a problem indeed, but you current proposal is pretty much irrelevant here, no offense.</p>
+<hr />
+<p>I'd like to get back to your proposal - <code>positional(bool)</code>. In clap, an argument is either positional or not (has long/short options) <em>by definition</em>, they can't be both at the same time. If you want to see it ever implemented, we will need a detailed explanation of the semantic properties backed with unambiguous examples. Thanks for your understanding.</p>
+<p>Personally I think that the only real problem here is keeping args in sync, but I also think that <code>requires_if(name)</code> hints developer about dependencies and connections rather well, the state of affairs is &quot;good enough&quot;. Everything else here is just a bikeshedding if you ask me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-14 21:43</div>
+            <div class="timeline-body"><p>Can he do <code>flatten</code> to reuse the defined arg?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-14 21:45</div>
+            <div class="timeline-body"><p>He can't since the flags are not <em>the same</em>. And even if he could, I hardly see a point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-15 00:32</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I had to factor out the help message into a constant, INPUT_HELP.</p>
+</blockquote>
+<p>This is totally expected when you want to use the same message for different args. For example, consider this <code>clap</code>-unrelated code:</p>
+</blockquote>
+<p>Right, but with access to <code>positional(true)</code>, they wouldn't need to be two different args, they could be the same arg, and be configured in a single place.</p>
+<blockquote>
+<blockquote>
+<p>I was referring to was the additional configuration of each arg that needs to be duplicated and now kept in sync [...]</p>
+</blockquote>
+<p>I believe this is intentional design of <code>clap</code>/<code>structopt</code> (I may be wrong here). Every arg requires you to configure it explicitly so anyone could tell it's properties just from the look of it, no need to look somewhere else. Code is much more read than written after all.</p>
+<p>Keeping args in sync might be a problem indeed, but you current proposal is pretty much irrelevant here, no offense.</p>
+</blockquote>
+<p>None taken! I think the proposal is relevant, because if you could do <code>positional(true)</code> the somewhat error prone duplication could be avoided, and done in a single place.</p>
+<blockquote>
+<p>I'd like to get back to your proposal - <code>positional(bool)</code>. In clap, an argument is either positional or not (has long/short options) <em>by definition</em>, they can't be both at the same time. If you want to see it ever implemented, we will need a detailed explanation of the semantic properties backed with unambiguous examples. Thanks for your understanding.</p>
+</blockquote>
+<p>Here's a concrete example:</p>
+<pre><code>let arg = Arg::with_name(&quot;input&quot;)
+  .long(&quot;input&quot;)
+  .positional(true)
+  .takes_value(true);
+
+let app = App::new(&quot;app&quot;)
+.arg(arg);
+</code></pre>
+<p>Then, the following would both be the same, giving the arg <code>input</code> the value <code>foo</code>:</p>
+<pre><code>$ app --input foo
+$ app foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-17 01:20</div>
+            <div class="timeline-body"><p>@casey Sorry for the delay.</p>
+<p>The whole point of &quot;different types - different arg&quot; is that we want to keep it <em>simple</em>. In clap, an arg defines one entity, whether it's an option or a positional arg. Your proposal introduces a magical switch that goes against this unspoken policy (I repeat, I might have got it wrong), and what's more, a switch for a thing that does something that is already doable with a combination of existing switches.</p>
+<p>I see you called <code>required_unless</code> a workaround, but it's pretty much the intended way to do it. It is intentional - I believe - that when you need two separate entities, you create two separate args and specify their mutual relations via <code>requires*</code>, <code>conflicts*</code>, <code>ArgGroup</code>, whatever. This is a difference between &quot;a god option that does multiple (quite unrelated) things&quot; and &quot;a few smaller options that relate to each other somehow&quot;.</p>
+<p>My opinion is that your CLI is suffering from &quot;multiple ways to do the same thing&quot; syndrome. You probably don't need it, and if you believe you do, be ready to embrace the complexity it brings in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-18 00:41</div>
+            <div class="timeline-body"><blockquote>
+<p>@casey Sorry for the delay.</p>
+</blockquote>
+<p>No worries!</p>
+<blockquote>
+<p>The whole point of &quot;different types - different arg&quot; is that we want to keep it <em>simple</em>. In clap, an arg defines one entity, whether it's an option or a positional arg. Your proposal introduces a magical switch that goes against this unspoken policy</p>
+</blockquote>
+<p>I think that part of the issue is that that's not how my mental model of clap works. I think of args as being the same kind of thing, whether by position, by long flag, or by short flag, and that in the same way that the same arg can have both a long flag and a short flag, they should also be able to be positional as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 03:25</div>
+            <div class="timeline-body"><p>Our mental models of clap - and perhaps mindsets - are different, indeed. Let me try to explain it to you (and let's hope you're into math 🙏 ).</p>
+<p>A developer comes up with a set of command line options (<code>X</code>) at his fancy. <code>clap</code> needs to <em>map</em> these options to a set of <code>Arg</code>s (<code>Y</code>). What does this <em>mapping</em> look like?</p>
+<p>Your mental model is <em>surjective mapping</em>:</p>
+<p><img src="https://user-images.githubusercontent.com/50968528/79626400-99666e00-8138-11ea-8ebb-dd467289a287.png" alt="image" /></p>
+<p>My mental model is <em>bijective mapping</em>:</p>
+<p><img src="https://user-images.githubusercontent.com/50968528/79626425-cca8fd00-8138-11ea-807e-641238e4d9b0.png" alt="image" /></p>
+<p>The reasons I prefer bijection over everything else:</p>
+<ul>
+<li><p>It's easy to implement.</p>
+</li>
+<li><p>It's easy to understand. Also, most people comprehend it the same way, which is a priceless property.</p>
+</li>
+<li><p>It's easy to teach. Currently, all I need to explain the difference between &quot;positional arg&quot; and &quot;option&quot; to a newcomer is: &quot;It's positional unless you call <code>Arg::short/long</code>&quot;. Dead easy.</p>
+<p>With your proposal in mind, I would have to add &quot;... but if you call <code>Arg::positional</code>, your arg may become both positional and not positional. To understand what this means exactly, please go read that part of documentation&quot;.</p>
+</li>
+</ul>
+<p>Anyway, I really don't think this option has any value. The thing you want to do is doable with current <code>clap</code>, the problems with keeping multiple options in sync come from redundancy of your CLI - in my opinion, this is a very edge case that is not worthy of it's own dedicated method. Please don't take the later statement as offense or something, I'm just noticing that the very fact that you are the only one who ever came here with such a request so far (IIRC) it very telling.</p>
+<p>If many people come here with similar requests I might become open to it, but until then, I'm totally against the inconsistency the proposed option drags along.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-20 03:22</div>
+            <div class="timeline-body"><p>I think it's mostly a matter of perspective: Clap already supports mapping short flags, long flags, and aliases, which could be be considered to be a surjective mapping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 19:22</div>
+            <div class="timeline-body"><p>@casey I'm sympathetic to your situation, but I'm afraid it will create some additional confusion and complicate the parsing rules for what subjectively is a niche problem set.</p>
+<p>I can see where you come from about all arguments being simply &quot;arguments&quot; and the way they're accessed (via short, long, or position) is just an implementation detail. I'd submit that both you and @CreepySkeleton are correct in your assumptions. All arguments are just arguments, and can pretty easily float between the ways they're accessed (short, long, position, etc.) depending on configuration, however @CreepySkeleton is correct in that internally clap handles these as very distinct types, which allows certain optimizations and rule simplification when parsing. The three &quot;types&quot; for clap are:</p>
+<ul>
+<li>positional (no short or long, essentially just a value)</li>
+<li>flag (a short or long, but no value)</li>
+<li>option (a short or long and associated value)</li>
+</ul>
+<p>Clap makes the determination as to which type an argument is early on based on the supplied configuration. Having one argument be multiple types could be rather large internal change.</p>
+<p>Also, aliases are not related to this discussion as they're just additional shorts/longs and don't change the base type of the argument. I.e. they're not additional arguments from claps point of view (even if it appears so from the users point of view).</p>
+<hr />
+<p>To solve your case, I would suggest two things and I know they're not exactly what you're looking for but in the long run I think its a better solution:</p>
+<ul>
+<li>Set your old option to hidden (i.e. don't show it in the help message)</li>
+<li>Use required_unless for the new positional argument</li>
+</ul>
+<p>Reason being, you are essentially phasing out the old argument. Then on next major version release, you can remove the old option. If you want to go the extra mile, you could first set the option's help message to a deprecation warning, and hide later, or even print a deprecation warning manually if they use the old option.</p>
+<p>Essentially you're trying to move your CLI to something more consistent in the future instead of fixing the problem for now but leaving it complicated indefinitely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-30 00:25</div>
+            <div class="timeline-body"><p>That all makes sense, although even considering the maintenance burden of keeping two arguments in sync, I think I probably won't deprecate the option:</p>
+<ul>
+<li><p>If all arguments can be passed by option, then the user doesn't need to remember which arguments are passed by position.</p>
+</li>
+<li><p>I personally sometimes find it hard to remember what positional arguments do, and find options easier to remember.</p>
+</li>
+<li><p>For scripts, using options can serve as a form of documentation.</p>
+</li>
+</ul>
+<p>I'm not sure that deprecating the option would benefit the end user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-30 01:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I personally sometimes find it hard to remember what positional arguments do, and find options easier to remember.</p>
+</blockquote>
+<p>100% agree. A good general rule of thumb is to have no more than two positional arguments per command or subcommand for exactly that reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2940.html">clap-rs/clap#2940</a> on 2021-10-25 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-25 14:16</div>
+            <div class="timeline-body"><p>Here's a somewhat minimal (was too lazy to remove some glif2svg options lol) example of how you can hack this together with clap 2.3x despite developers not wanting to add it: https://gist.github.com/ctrlcctrlv/bd0ba2d2a9eb638eec5b5f9dd0ec671e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ctrlcctrlv">@ctrlcctrlv</a> on 2021-10-25 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Currently, all I need to explain the difference between &quot;positional arg&quot; and &quot;option&quot; to a newcomer is: &quot;It's positional unless you call <code>Arg::short/long</code>&quot;. Dead easy.</p>
+</blockquote>
+<p>So don't implement it that way. Implement it as <code>also_long(&amp;str)</code> and <code>also_short(&amp;str)</code>. If you call either on a positional argument, or both, then it becomes also optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/154.html">epage/clapng#154</a> on 2021-12-06 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3146.html">clap-rs/clap#3146</a> on 2021-12-10 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 21:36</div>
+            <div class="timeline-body"><p>I think at this point, this is too specialized to have native support in clap but instead we offer the tools to be able to do it.</p>
+<p>I have created #3146  to track experiments with multiple arguments mapping to one <code>MatchedArg</code>.  Likely it won't work out but I do want to see what it can offer.</p>
+<p>I'm going to go ahead and close this.  If there are any concerns that are remaining, feel free to speak up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-10 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wezterm/wezterm/issues/4523.html">wezterm/wezterm#4523</a> on 2023-11-05 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../containers/podlet/pulls/89.html">containers/podlet#89</a> on 2024-07-08 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../r0gue-io/pop-cli/pulls/361.html">r0gue-io/pop-cli#361</a> on 2024-12-06 09:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:12 UTC
+    </footer>
+</body>
+</html>

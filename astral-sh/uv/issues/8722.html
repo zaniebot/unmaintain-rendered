@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync groups from workspace member packages in a virtual workspace - astral-sh/uv #8722</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync groups from workspace member packages in a virtual workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8722">#8722</a>
+        opened by <a href="https://github.com/drmason13">@drmason13</a>
+        on 2024-10-31 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/drmason13">@drmason13</a> on 2024-10-31 12:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>uv 0.4.29</p>
+<p>I have a virtual workspace. I want to install a union of all my members' dependencies <em>including</em> development dependencies.</p>
+<p>With dependency-groups I had hoped this would now be easy:</p>
+<pre><code>uv sync --group dev
+error: Group `dev` is not defined in the project's `dependency-group` table
+</code></pre>
+<p>but this simply complained saying that no group <code>dev</code> existed <em>in the workspace root</em> (which is true, but I do have a dependency-group named dev in one of my members).</p>
+<p>I've tried two approaches to workaround this:</p>
+<ol>
+<li>Move all dev dependencies into the workspace root</li>
+<li>Duplicate all dev dependencies in workspace root and each member package</li>
+</ol>
+<p>Both have downsides, in the case of 1. (moving), my packages can no longer be tested independently since they lack their own development dependencies. In the case of 2. (duplicating), that is its own downside. To add development dependencies I am editing multiple pyproject.toml files, which is the kind of thing I hoped to avoid by using a virtual workspace.</p>
+<h1>Suggested solution</h1>
+<p>Within a virtual workspace, I want <code>uv sync</code> to have visibility of each members' dependency-groups specified within pyproject.toml, as well as their dependencies.</p>
+<p>How to request that those groups be included or not could go one of two ways:</p>
+<h2>1. Implicit</h2>
+<ul>
+<li>Have <code>uv sync --group dev</code> include dependencies from all members' dependency groups, and the root.</li>
+</ul>
+<h2>2. Explicit</h2>
+<ul>
+<li>Have <code>uv sync --group dev</code> only see groups in the root project (behaviour unchanged).</li>
+<li>Have <code>uv sync --group dev --include-dependency-groups-of-all-workspace-members</code> include dependencies from all members' dependency groups, and the root. Same as in the implicit case.</li>
+</ul>
+<p><code>--include-dependency-groups-of-all-workspace-members</code> is obviously too long, pending a suitable alternative. I don't have a strong opinion on the name of the option. It could also/instead be a config file option.</p>
+<p>With 2. it would be natural to extend the request to list specific members to include the group from, though that's harder to think of syntax for. i.e. I want group <code>dev</code> from members <code>foo</code> and <code>bar</code> where <code>foo</code> and <code>bar</code> are the package names of an arbitrary subset of my workspace members. I don't have a good use case for this myself though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drmason13">@drmason13</a> on 2024-10-31 14:33</div>
+            <div class="timeline-body"><p>Actually, I have discovered another workaround to improve 1. Move all dev dependencies into the workspace root</p>
+<p>I first <code>uv sync --only-group dev</code> to get all the development dependencies</p>
+<p><em>because I have it so they are all listed in the virtual workspace pyproject.toml instead of the members. No members list any dev dependencies, which avoids duplication.</em></p>
+<p>Then, <code>uv run --package foo pytest</code> which will <em>additionally install</em> <code>foo</code> and its dependencies but does not uninstall any dev dependencies. Previously this was a problem because I wanted to not have every other member installed while testing <code>foo</code>, but the <code>--only-group dev</code> option to uv sync fixes this 🙂</p>
+<p>When testing the next package, I can <code>uv sync --only-group dev</code> again to effectively uninstall foo and its dependencies and revert back to just having dev dependencies. Then I <code>uv run --package bar pytest</code> and so on.</p>
+<p>Note: running <code>uv sync --package foo</code> would lose all the root dev dependencies, so I can't ever do that (while testing) but when <em>building</em>, I will do exactly that and everything should work out great.</p>
+<p>I think that removes the need for this feature, for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-31 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-31 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 19:49</div>
+            <div class="timeline-body"><p>Sorry yeah -- this is a bug. I actually just noticed it in a separate context. Will fix it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8734.html">astral-sh/uv#8734</a> on 2024-10-31 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-31 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-31 20:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:21 UTC
+    </footer>
+</body>
+</html>

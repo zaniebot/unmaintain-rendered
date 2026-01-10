@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement B028 rule from bugbear - astral-sh/ruff #1893</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement B028 rule from bugbear</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1893">#1893</a>
+        opened by <a href="https://github.com/LefterisJP">@LefterisJP</a>
+        on 2023-01-15 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-15 11:53</div>
+            <div class="timeline-body"><p>flake8-bugbear just released an update to add an interesting rule: https://pypi.org/project/flake8-bugbear/</p>
+<blockquote>
+<p>B028: Consider replacing f&quot;'{foo}'&quot; with f&quot;{foo!r}&quot; which is both easier to read and will escape quotes inside foo if that would appear. The check tries to filter out any format specs that are invalid together with !r. If you’re using other conversion flags then e.g. f&quot;'{foo!a}'&quot; can be replaced with f&quot;{ascii(foo)!r}&quot;. Not currently implemented for python&lt;3.8 or str.format() calls.</p>
+</blockquote>
+<p>It hits in some places in rotki's codebase but I am not gonna go change them all manually :smile:</p>
+<p>It would be great if ruff also detects it and auto-fixes it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-15 12:03</div>
+            <div class="timeline-body"><p>Hmm okay now that I am looking at it with a closer look though I think this rule may not be as smart as its definition makes it out to be. Take the following code for example:</p>
+<pre><code class="language-python">class Person:
+
+    def __init__(self, name: str, age: int) -&gt; None:
+        self.name = name
+        self.age = age
+
+    def __str__(self) -&gt; str:
+        return f'{self.name} who is {self.age} years old'
+
+    def __repr__(self) -&gt; str:
+        return f'{id(self)}'
+
+
+john = Person('John', 24)
+print(f'&quot;{john}&quot;')
+print(f'{john!r}')
+</code></pre>
+<p>Since <code>__repr__</code> is implemented, the <code>!r</code> version is different.</p>
+<pre><code>&quot;John who is 24 years old&quot;
+140039984729776
+</code></pre>
+<p>Running flake8 with that bugbear rule active still seems to advice to change it:</p>
+<pre><code>test.py:17:7: B028 'john' is manually surrounded by quotes, consider using the `!r` conversion flag.
+</code></pre>
+<p>And doing so would be a bug.</p>
+<p>I wonder if it would be possible to only make it warn you if str == repr for the variable in question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterjc">@peterjc</a> on 2023-01-16 14:05</div>
+            <div class="timeline-body"><p>@LefterisJP interesting test case, even numeric types have a problem - see https://github.com/PyCQA/flake8-bugbear/issues/329 and also https://github.com/PyCQA/flake8-bugbear/issues/332 - it looks likely the B028 check will be disabled by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-01-16 15:24</div>
+            <div class="timeline-body"><blockquote>
+<p>@LefterisJP interesting test case, even numeric types have a problem - see <a href="https://github.com/PyCQA/flake8-bugbear/issues/329">PyCQA/flake8-bugbear#329</a> and also <a href="https://github.com/PyCQA/flake8-bugbear/issues/332">PyCQA/flake8-bugbear#332</a> - it looks likely the B028 check will be disabled by default</p>
+</blockquote>
+<p>Yeah I think this rule may not be a good idea at all. I will leave it to @charliermarsh to decide but feel free to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-01-16 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 17:24</div>
+            <div class="timeline-body"><p>Ah yeah, ok, looks like it's being renamed to <a href="https://github.com/PyCQA/flake8-bugbear/pull/333">B907</a>, so lets close for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-16 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11977.html">astral-sh/ruff#11977</a> on 2024-06-21 21:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

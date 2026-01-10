@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Many C4 rules’ fixes should be safe when no comments are deleted - astral-sh/ruff #19714</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Many C4 rules’ fixes should be safe when no comments are deleted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19714">#19714</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-03 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-03 19:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Many C4 rules’ fixes are marked unsafe with this rationale:</p>
+<blockquote>
+<p>This rule's fix is marked as unsafe, as it may occasionally drop comments when rewriting the call. In most cases, though, comments will be preserved.</p>
+</blockquote>
+<p>The fixes should be marked safe when no comments are dropped. This affects:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-generator-list/"><code>unnecessary-generator-list</code> (C400)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-generator-set/"><code>unnecessary-generator-set</code> (C401)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-generator-dict/"><code>unnecessary-generator-dict</code> (C402)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-set/"><code>unnecessary-literal-set</code> (C405)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-dict/"><code>unnecessary-literal-dict</code> (C406)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-collection-call/"><code>unnecessary-collection-call</code> (C408)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-tuple-call/"><code>unnecessary-literal-within-tuple-call</code> (C409)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-list-call/"><code>unnecessary-literal-within-list-call</code> (C410)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-list-call/"><code>unnecessary-list-call</code> (C411)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-map/"><code>unnecessary-map</code> (C417)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-dict-call/"><code>unnecessary-literal-within-dict-call</code> (C418)</a></li>
+</ul>
+<p><a href="https://play.ruff.rs/a9f18534-0333-4b7a-8dfe-a785854af535">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;c4.py &lt;&lt;'# EOF'
+list(int(x) for x in &quot;12&quot;)
+set(int(x) for x in &quot;12&quot;)
+dict((x, int(x)) for x in &quot;12&quot;)
+set([1, 2])
+dict([(1, 2), (3, 4)])
+dict()
+tuple([1, 2])
+list([1, 2])
+list([int(x) for x in &quot;12&quot;])
+map(lambda x: x + 1, (1, 2))
+dict({})
+# EOF
+
+$ ruff --isolated check c4.py --select C4 --output-format concise
+c4.py:1:1: C400 Unnecessary generator (rewrite as a list comprehension)
+c4.py:2:1: C401 Unnecessary generator (rewrite as a set comprehension)
+c4.py:3:1: C402 Unnecessary generator (rewrite as a dict comprehension)
+c4.py:4:1: C405 Unnecessary list literal (rewrite as a set literal)
+c4.py:5:1: C406 Unnecessary list literal (rewrite as a dict literal)
+c4.py:6:1: C408 Unnecessary `dict()` call (rewrite as a literal)
+c4.py:7:1: C409 Unnecessary list literal passed to `tuple()` (rewrite as a tuple literal)
+c4.py:8:1: C410 Unnecessary list literal passed to `list()` (remove the outer call to `list()`)
+c4.py:9:1: C411 Unnecessary `list()` call (remove the outer call to `list()`)
+c4.py:10:1: C417 Unnecessary `map()` usage (rewrite using a generator expression)
+c4.py:11:1: C418 Unnecessary dict literal passed to `dict()` (remove the outer call to `dict()`)
+Found 11 errors.
+No fixes available (11 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>If any of these rules has another reason to always be marked unsafe, it should be documented.</p>
+<h3>Version</h3>
+<p>ruff 0.12.7 (c5ac99889 2025-07-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-04 22:48</div>
+            <div class="timeline-body"><p>Thanks! We should double check these in line with https://github.com/astral-sh/ruff/issues/15584 to make sure there are no other reasons for unsafety, and then we can promote the fixes to safe under <code>preview</code>, if we don't find any.</p>
+<p>To anyone looking into these, I'd suggest breaking PRs up with one per rule, unless they look really small. There are usually still a fair number of changes with adding a new <code>preview</code> function, new preview tests, and the actual rule change to make the fix conditionally safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-04 22:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-08-04 22:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

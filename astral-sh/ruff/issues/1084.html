@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[bug?] Questionable docstring first line fix (`D205`) - astral-sh/ruff #1084</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[bug?] Questionable docstring first line fix (`D205`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1084">#1084</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2022-12-05 22:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 22:51</div>
+            <div class="timeline-body"><p>I ran <code>ruff --fix</code> (with <code>D205</code> selected) to format our docstrings and it did this to docstrings with leading paragraphs:</p>
+<pre><code>### Before
+
+def get_class_definitions(name: str, schema: dict) -&gt; Dict[str, Dict[str, SchemaType]]:
+    &quot;&quot;&quot;
+    Parses an Airbyte source or destination schema, turning it into a representation of the
+    corresponding Python class structure - a dictionary mapping class names with the fields
+    that the new classes should have.
+
+### After
+
+def get_class_definitions(name: str, schema: dict) -&gt; Dict[str, Dict[str, SchemaType]]:
+    &quot;&quot;&quot;
+    Parses an Airbyte source or destination schema, turning it into a representation of the
+
+    corresponding Python class structure - a dictionary mapping class names with the fields
+    that the new classes should have.
+</code></pre>
+<p>These leading paragraphs are indeed violations of Google style, where the summary is supposed to fit on one line. But I don't think the behavior of <code>--fix</code> here makes sense, as it assumes a multiline leading paragraph is really a one-line summary followed by a second paragraph, when in most cases it's probably just a paragraph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 23:54</div>
+            <div class="timeline-body"><p>Yeah this has come up before, and I'm not happy with the current behavior. Not sure this should even be fixable because of false positives like this. Maybe if there's <em>more</em> than one line between the summary and description? Or perhaps if the summary line appears on the first line? But that could still be a multi-line summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 23:57</div>
+            <div class="timeline-body"><p>IMO it should not be fixable. The only thing that would make sense to me is if the first line ends with a period, but that would still produce the occasional false positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1091.html">astral-sh/ruff#1091</a> on 2022-12-06 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 00:01</div>
+            <div class="timeline-body"><p>Yeah, what <em>can</em> be safely fixed is this:</p>
+<pre><code class="language-py">def get_class_definitions(name: str, schema: dict) -&gt; Dict[str, Dict[str, SchemaType]]:
+    &quot;&quot;&quot;
+    Here's the summary line followed by two empty lines (instead of one).
+
+
+    Parses an Airbyte source or destination schema, turning it into a representation of the
+    corresponding Python class structure - a dictionary mapping class names with the fields
+    that the new classes should have.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-06 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1672.html">astral-sh/ruff#1672</a> on 2023-01-06 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-03-10 20:49</div>
+            <div class="timeline-body"><p>To follow up on this-- we have many multiline docstring summaries, but would still like a variant of this rule to work. I realize that if the summary is on multiple lines, it can be hard to determine where it actually ends-- but have you considered detecting e.g. section starts, rst directives, or bulleted lists?</p>
+<p>So this:</p>
+<pre><code>def foo():
+&quot;&quot;&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque adipiscing faucibus
+felis, ac ullamcorper nisl commodo ac. Etiam fermentum, urna nec viverra euismod, massa
+ dui lobortis urna, ac porttitor elit nisl vel lacus. Suspendisse commodo sapien vel nibh aliquet semper. 
+Args:
+</code></pre>
+<p>Becomes:</p>
+<pre><code>def foo():
+&quot;&quot;&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque adipiscing faucibus
+felis, ac ullamcorper nisl commodo ac. Etiam fermentum, urna nec viverra euismod, massa
+ dui lobortis urna, ac porttitor elit nisl vel lacus. Suspendisse commodo sapien vel nibh aliquet semper. 
+
+Args:
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

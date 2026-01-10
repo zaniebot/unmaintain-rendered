@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_derive parsing of PathBuf with default_value of empty string still requires it to be specified on command line - clap-rs/clap #5368</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_derive parsing of PathBuf with default_value of empty string still requires it to be specified on command line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5368">#5368</a>
+        opened by <a href="https://github.com/akanalytics">@akanalytics</a>
+        on 2024-02-18 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/akanalytics">@akanalytics</a> on 2024-02-18 12:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.75.0 (82e1608df 2023-12-21)</p>
+<h3>Clap Version</h3>
+<p>4.5.1</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+#[derive(Debug, clap::Parser)]
+struct MyStruct {
+    #[arg(short, long, default_value=&quot;&quot;)]
+    path: PathBuf,
+}
+
+let cli = clap::Parser::parse_from(args());
+println!(&quot;{cli:#?}&quot;);
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>Despite a default_value being specified, it is still required on the comamnd line
+error: a value is required for '--path <PATH>' but none was supplied
+An empty PathBuf is a valid PathBuf and should be allowed as a default.</p>
+<h3>Expected Behaviour</h3>
+<p>When path is not specified on the command line I expect PathBuf to default to &quot;&quot; (the empty pathbuf)</p>
+<h3>Additional Context</h3>
+<p>Deafulting to &quot;somefile&quot; etc all works as expected - just empty string fails</p>
+<h3>Debug Output</h3>
+<p>[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:path
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:path:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:path: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:path: wasn't used
+[clap_builder::parser::parser]Parser::react action=Set, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;path&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: a value is required for '--path <PATH>' but none was supplied</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @akanalytics on 2024-02-18 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akanalytics">@akanalytics</a> on 2024-02-18 12:21</div>
+            <div class="timeline-body"><p>Sorry - this is a duplicate of #4746. But I think this is still a bug, that seems to trip people up.
+Paths are such a common command line parameter.</p>
+<p>Usecase: lots of code can use an empty pathbuf as an alternative to Option<PathBuf>. Rust explicitly offers a new() constructor which does exactly this, and it reduces the boilerplate in many places.</p>
+<p>Using &quot;.&quot; does not have the same meaning. (ls . and ls '' give different results on my linux system).</p>
+<p>Although personally Im not a fan of empty PathBufs, Rust clearly does support them, and command line tools such as the Linux 'ls' command does distinguish between empty paths and &quot;.&quot; paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-19 18:25</div>
+            <div class="timeline-body"><p>Let's move the conversation to #4746 to keep it all in one place</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-02-19 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4746.html">clap-rs/clap#4746</a> on 2024-02-19 18:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:33 UTC
+    </footer>
+</body>
+</html>

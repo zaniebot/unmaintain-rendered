@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start search for projects and virtual environments at script directory (instead of cwd) - astral-sh/uv #11302</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Start search for projects and virtual environments at script directory (instead of cwd)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11302">#11302</a>
+        opened by <a href="https://github.com/jdumas">@jdumas</a>
+        on 2025-02-07 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jdumas">@jdumas</a> on 2025-02-07 00:19</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Consider a project with the following folder structure:</p>
+<pre><code>.
+├── foo
+│   ├── hello.py
+│   └── pyproject.toml
+└── pyproject.toml
+</code></pre>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-nested&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+
+[tool.uv.workspace]
+members = [&quot;foo&quot;]
+</code></pre>
+<p><strong>foo/pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [&quot;rich&quot;]
+</code></pre>
+<p><strong>foo/hello.py</strong></p>
+<pre><code class="language-python">from rich import print
+
+
+def main():
+    print(&quot;Hello from foo!&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<ol>
+<li><p>Now try to run <code>foo/hello.py</code>:</p>
+<pre><code>❯ uv run foo/hello.py
+Using CPython 3.11.11
+Creating virtual environment at: .venv
+Traceback (most recent call last):
+  File &quot;/Users/jedumas/sandbox/uv_nested/foo/hello.py&quot;, line 1, in &lt;module&gt;
+    from rich import print
+ModuleNotFoundError: No module named 'rich'
+</code></pre>
+</li>
+<li><p>If you cd in the subfolder, it runs correctly:</p>
+<pre><code>❯ pushd foo; uv run foo/hello.py; popd
+Hello from foo!
+</code></pre>
+</li>
+<li><p>And now that we have a <code>foo/.venv</code>, calling <code>uv run</code> from the root folder will work!</p>
+<pre><code>❯ uv run foo/hello.py
+Hello from foo!
+</code></pre>
+</li>
+</ol>
+<p>So my question is: is this expected behavior? I would expect that when calling <code>uv run</code> on a script, <code>uv</code> would use the most nested <code>pyproject.toml</code> to setup the venv and execute a given script.</p>
+<h3>Platform</h3>
+<p>macOS 14.5</p>
+<h3>Version</h3>
+<p>uv 5.29.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jdumas on 2025-02-07 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-07 00:38</div>
+            <div class="timeline-body"><p>So I can reproduce this</p>
+<pre><code>❯ uv init example --bare
+Initialized project `example` at `/Users/zb/workspace/uv/example`
+❯ cd example
+❯ uv init foo
+Adding `foo` as member of workspace `/Users/zb/workspace/uv/example`
+Initialized project `foo` at `/Users/zb/workspace/uv/example/foo`
+❯ uv add --package foo rich
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 6 packages in 187ms
+Prepared 4 packages in 197ms
+Installed 4 packages in 6ms
+ + markdown-it-py==3.0.0
+ + mdurl==0.1.2
+ + pygments==2.19.1
+ + rich==13.9.4
+❯ echo &quot;import rich&quot; &gt; foo/hello.py
+
+# Remove the implicit sync of `foo` from `uv add`
+❯ rm -rf .venv
+❯ uv run foo/hello.py
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Traceback (most recent call last):
+  File &quot;/Users/zb/workspace/uv/example/foo/hello.py&quot;, line 1, in &lt;module&gt;
+    import rich
+ModuleNotFoundError: No module named 'rich'
+</code></pre>
+<p>What you're missing is a dependency on <code>foo</code> from your workspace root project</p>
+<pre><code>❯ uv add ./foo
+Resolved 6 packages in 2ms
+Installed 4 packages in 10ms
+ + markdown-it-py==3.0.0
+ + mdurl==0.1.2
+ + pygments==2.19.1
+ + rich==13.9.4
+❯ uv run foo/hello.py
+❯ cat pyproject.toml
+[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;foo&quot;,
+]
+
+[tool.uv.workspace]
+members = [&quot;foo&quot;]
+
+[tool.uv.sources]
+foo = { workspace = true }
+</code></pre>
+<p>If you want <code>foo</code> to be available by default. Otherwise, you'd need to target that workspace member, e.g.:</p>
+<pre><code>❯ uv run --package foo foo/hello.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-02-07 01:01</div>
+            <div class="timeline-body"><p>Ok but my root project does not depend on <code>foo</code>. In fact the two are pretty much independent. I would argue that pyproject lookup should be done from the bottom-up, so if the script I want to run is in <code>foo/</code>, then <code>uv run</code> should pick <code>foo/pyproject.toml</code> rather than <code>./pyproject.toml</code> to setup the .venv I need.</p>
+<p>Also, why would the second <code>uv run foo/hello.py</code> work? It seems uv is picking up the <code>foo/.venv</code> environment to run <code>foo/hello.py</code>, despite being run from the root folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-03-06 23:58</div>
+            <div class="timeline-body"><p>Hi. I'd like to bump this topic again. I still do think it's a bug in uv, or at least a behavior that is worth changing.</p>
+<p>To be a bit more concrete, in my root repository I have a <code>pyproject.toml</code> that builds Python bindings for a C++ project. This means long build time on a fresh clone, etc. Then I have a subfolder called <code>scripts/</code> with a bunch of Python files used for CI/CD (e.g. apply formatting/linting on my C++ files, update licensing headers, etc.). I would like to maintain a single <code>scripts/pyproject.toml</code> file for all my CI/CD files, without having to build the C++ project itself (which is time consuming).</p>
+<p>For this reason, I would like <code>uv run scripts/foo.py</code> to pick-up the most nested <code>pyproject.toml</code> to setup and run the venv for my script files. I am currently using inline metadata in my various scripts. But since I have a lot of entry points, it creates a lot of redundant information.</p>
+<p>Finally, I think that <code>uv run foo/hello.py</code> picking the <code>foo/.venv</code> and not the root <code>.venv</code> (on the 2nd try), but creating a <code>.venv</code> in the root folder (on the 1st try) still doesn't make sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2025-03-23 01:16</div>
+            <div class="timeline-body"><ul>
+<li>Related: #12193</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2025-04-01 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Pyproject and venv lookup for nested packages." to "Start search for projects and virtual environments at script directory (instead of cwd)" by @zanieb on 2025-04-01 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-04-01 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12193.html">astral-sh/uv#12193</a> on 2025-04-01 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:42</div>
+            <div class="timeline-body"><p>We can consider this. I think it's probably reasonable, but it is breaking and it will be hard to assess how many people rely on the existing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karnigen">@karnigen</a> on 2025-04-01 20:46</div>
+            <div class="timeline-body"><p>It is certainly important to have the ability to run scripts with <code>.venv</code> in the current working directory (cwd), at least for testing different versions and libraries, and this is the default behavior. From a user's perspective, it's also essential to have the option to use <code>.venv</code> from the directory where the script is installed, which is addressed by the <code>--project</code> flag. Both scenarios seem to be resolved, or am I missing something?</p>
+<p>The only thing that could be improved is that the<code> --project &lt;path&gt;</code> flag is a bit cumbersome. It would be sufficient to introduce <code>--script-project</code> without specifying <code>&lt;path&gt;</code>, and it would automatically find where the script is located and use the appropriate <code>.venv</code>.</p>
+<p>Searching for <code>.venv</code> directories from the bottom up is already done by <code>uv</code> now, or at least it's working correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-04-01 22:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Searching for .venv directories from the bottom up is already done by uv now, or at least it's working correctly.</p>
+</blockquote>
+<p>That's not what I observe. In the example I shared above, <code>uv run foo/hello.py</code> is creating a <code>.venv</code> from the root <code>pyproject.toml</code>, not the <code>foo/pyproject.toml</code>.</p>
+<p>EDIT: Ok so to be more clear, if the nested <code>foo/.venv</code> exists, then <code>uv run foo/hello.py</code> will work indeed. So it is surprising that when starting fresh, <code>uv run foo/hello.py</code> will first attempt to create the outermost <code>./.venv</code> instead of the nested <code>foo/.venv</code> environment. That seems inconsistent behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karnigen">@karnigen</a> on 2025-04-02 06:37</div>
+            <div class="timeline-body"><p>Just to clarify what we want:</p>
+<ol>
+<li>When there is a <code>.venv</code> in the current directory, we always want <code>uv run</code> to use the current one.</li>
+<li>If <code>--project &lt;path&gt;</code> is used, we want it to look for <code>.venv</code> in <code>&lt;path&gt;</code> or directories upwards.</li>
+</ol>
+<p>If I use <code>uv run &lt;path&gt;/script.py</code> and there is no <code>.venv</code> in the current directory (case 1), it automatically uses case 2, which <code>uv</code> doesn't normally do; the script cannot be run, which is probably correct.</p>
+<p>If I use a workspace (your case), it seems the situation changes again. However, the question now is what has higher priority: to preserve steps 1 and 2 regardless of the workspace, or to create different rules for the workspace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-04-02 14:38</div>
+            <div class="timeline-body"><p>Actually it doesn't matter whether I have the <code>tool.uv.workspace</code> defined or not. If <code>foo/.venv</code> exists, then <code>uv run foo/hello.py</code> will use it.</p>
+<p>What I'm trying to argue is that (1) the result of running <code>uv run &lt;something&gt;.py</code> should <em>not</em> depend on the current working directory, and (2) search order should be from local to global, i.e. inline metadata &gt; local folder &gt; any parent folder.</p>
+<p>Now, if we have inline metadata, it's pretty clear we should always use the associated tmp .venv to run the code. So why not have a similar non-cwd dependent behavior to find the closest pyproject.toml and associated .venv? There are two possible situations:</p>
+<ol>
+<li>We are trying to call <code>uv run ../&lt;something&gt;.py</code>, where <code>&lt;something&gt;.py</code> is <em>outside</em> of the cwd and its descendants. In this case this file is clearly not part of the current dir's <code>pyproject.toml</code>. Search for a matching <code>pyproject.toml</code> can proceed to parent folders. If no ascendant pyproject.toml is found then we should return an error (even if the cwd has a pyproject.toml).</li>
+<li>We are trying to call <code>uv run foo/&lt;something&gt;.py</code> where both the cwd and <code>foo/</code> have their own <code>pyproject.toml</code>. In this case I'd expect <code>&lt;something&gt;.py</code> to be able to run in the immediate <code>foo/.venv</code> (otherwise why put it in <code>foo/</code> in the first place?). But should we expect <code>&lt;something&gt;.py</code> to run differently when executed in the context of the cwd <code>pyproject.toml</code>? To me it's not clear that it's ever the intended usage.</li>
+</ol>
+<p>With the local-to-global search for <code>pyproject.toml</code>, I'm not sure we'd even need a <code>--project &lt;&gt;</code> flag to be honest. Ok I can see some use case where you'd want to be able to test a script in multiple environments where the <code>--project &lt;&gt;</code> flag would be needed.</p>
+<p>In any case I agree it would be a breaking change, but since uv hasn't reached 1.0 yet I think it's worth discussing whether this makes sense as the default behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karnigen">@karnigen</a> on 2025-04-02 15:18</div>
+            <div class="timeline-body"><p>It seems an old version of <code>uv</code> was used; it behaves differently now (version 0.6.11)
+Same structure as above, and <code>uv run foo/hello.py</code>:</p>
+<pre><code>uv run foo/hello.py
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Traceback (most recent call last):
+  File &quot;foo/hello.py&quot;, line 1, in &lt;module&gt;
+    from rich import print
+ModuleNotFoundError: No module named 'rich'
+</code></pre>
+<pre><code>uv self update 
+info: Checking for updates...
+success: You're on the latest version of uv (v0.6.11)
+</code></pre>
+<p>I would, of course, also welcome it if <code>uv</code> would by default search for <code>.venv</code> in the directory where the script is located, and if someone needed a different directory, they could use a flag. It also annoys me.
+I personally use a script that reverses <code>uv</code>'s behavior, always defaulting to searching from the script's directory. But of course, it would be better if <code>uv</code> did this itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-04-02 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems an old version of uv was used; it behaves differently now (version 0.6.11)
+Same structure as above, and uv run foo/hello.py:</p>
+</blockquote>
+<p>If you run <code>uv run hello.py</code> in the <code>foo/</code> folder to create <code>foo/.venv</code>, and then later run <code>uv run foo/hello.py</code> from the parent directory, it will use <code>foo/.venv</code> to execute <code>hello.py</code>. (That's with v0.6.11.). I think that behavior should be considered a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karnigen">@karnigen</a> on 2025-04-03 22:39</div>
+            <div class="timeline-body"><p><code>uv</code> version 0.6.12 appears to be exhibiting different behavior. As a temporary solution, I've implemented a script that always resolves the script path and uses the corresponding virtual environment. The link is provided for those who may find it useful: <a href="https://github.com/karnigen/uvr">uvr</a>. Hopefully, it meets the expectations outlined here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12876.html">astral-sh/uv#12876</a> on 2025-04-14 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2025-06-24 21:50</div>
+            <div class="timeline-body"><p>This issue (specifically, its consequence #12193) is blocking Zulip from shedding its reliance on the system Python version and switching to uv’s Python binaries.</p>
+<p>uvr has broken argument parsing that the author won’t fix (karnigen/uvr#4), plus it’s an obscure third-party tool that would need to be installed separately before any scripts can run, so it’s not a satisfactory solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.9.0" by @zanieb on 2025-08-07 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.9.0" by @zanieb on 2025-10-12 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.10.0" by @zanieb on 2025-10-12 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv ignores universal wheels - astral-sh/uv #3503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv ignores universal wheels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3503">#3503</a>
+        opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a>
+        on 2024-05-10 09:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-05-10 09:19</div>
+            <div class="timeline-body"><p>while working on a pinning script for internal packages,
+i observed uv ignore any package using a universal wheel instead of a python3 only wheel</p>
+<p>this happend because the afflicted packages where using hach without declaring requires_python
+in turn hatch created a universal wheel ( <code>internal_redacted_plugin-24.5.9.0-py2.py3-none-any.whl</code>)</p>
+<p>i believe uv should consider universal wheel (and warn about them, as these days seeing them indicates a packaging mistake)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-05-10 09:26</div>
+            <div class="timeline-body"><p>i just took note that this is expedited by any codebase that still is depending on the cached-property package</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-05-10 11:10</div>
+            <div class="timeline-body"><pre><code>$  uv pip install &lt;redacted&gt;==2024.5.10.0 --index-url=&lt;redacted&gt; --native-tls --no-deps -v
+INFO Found a virtualenv through VIRTUAL_ENV at: &lt;redacted&gt;
+DEBUG Cached interpreter info for Python 3.9.19, skipping probing: &lt;redacted&gt;
+DEBUG Using Python 3.9.19 environment at &lt;redacted&gt;
+DEBUG Trying to lock if free: &lt;redacted&gt;
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.9.19
+DEBUG Adding direct dependency: &lt;redacted&gt;==2024.5.10.0
+DEBUG Found fresh response for: https://repository.&lt;redacted&gt;/simple/&lt;redacted&gt;
+DEBUG Searching for a compatible version of &lt;redacted&gt; (==2024.5.10.0)
+DEBUG No compatible version found for: &lt;redacted&gt;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of &lt;redacted&gt;==2024.5.10.0 and you require &lt;redacted&gt;==2024.5.10.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>vs</p>
+<pre><code>$  pip install &lt;redacted&gt;==2024.5.10.0 --index-url='https://&lt;redacted&gt;/nexus/repository/&lt;redacted&gt;/simple' --no-deps -v
+Using pip 24.0 from &lt;redacted&gt;site-packages/pip (python 3.9)
+Looking in indexes: https://&lt;redacted&gt;/nexus/repository/&lt;redacted&gt;/simple
+Collecting &lt;redacted&gt;==2024.5.10.0
+  Downloading https://&lt;redacted&gt;/nexus/repository/&lt;redacted&gt;/packages/&lt;redacted&gt;/2024.5.10.0/&lt;redacted&gt;-2024.5.10.0-py3-none-any.whl (346 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 346.9/346.9 kB 400.9 kB/s eta 0:00:00
+Installing collected packages: &lt;redacted&gt;
+Successfully installed &lt;redacted&gt;-2024.5.10.0
+</code></pre>
+<p>it seems i just observed the same using a non-universal wheel</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-05-10 11:13</div>
+            <div class="timeline-body"><p>i need to reevaluate the actual reason - in initial testing i did observe a error for cached_property among other dependencies, however currently when trying in isolation it seems to work fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-05-10 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-05-10 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-05-10 11:17</div>
+            <div class="timeline-body"><p>i can no longer observe the issue after clearing the uv cache - i suspect i suffered a corrupt cache, its not clear how i got into that but once i started rerunning again, it started to work again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-05-10 11:22</div>
+            <div class="timeline-body"><p>before the behaviour started, i ran a <code>uv pip compile</code> across a matrix of several python platforms and python version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:16</div>
+            <div class="timeline-body"><p>It may be that you needed to run with <code>--refresh</code> to force a refresh of the simple API response. We respect the caching headers (10 minutes).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:20</div>
+            <div class="timeline-body"><p>I'm going to close as I don't know if there's anything actionable here now, but happy to revisit if it comes up again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-10 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

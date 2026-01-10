@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unused_braces warning for default_value_t - clap-rs/clap #3245</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unused_braces warning for default_value_t</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3245">#3245</a>
+        opened by <a href="https://github.com/href">@href</a>
+        on 2022-01-03 08:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/href">@href</a> on 2022-01-03 08:49</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.57.0 (f1edd0429 2021-11-29)</p>
+<h3>Clap Version</h3>
+<p>3.0.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{ArgEnum, Parser, Subcommand};
+
+#[derive(Parser)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
+}
+
+#[derive(Debug, ArgEnum, Clone)]
+enum DisplayFormat {
+    List,
+}
+
+impl Default for DisplayFormat {
+    fn default() -&gt; Self { DisplayFormat::List }
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    Hosts {
+        #[clap(short, long, arg_enum, default_value_t)]
+        format: DisplayFormat,
+    },
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    match &amp;cli.command {
+        Commands::Hosts { format } =&gt; {
+            println!(&quot;Format: {:?}&quot;, format);
+        }
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo check</p>
+<h3>Actual Behaviour</h3>
+<pre><code>warning: unnecessary braces around method argument
+  --&gt; src/main.rs:21:39
+   |
+21 |         #[clap(short, long, arg_enum, default_value_t)]
+   |                                       ^              ^
+   |
+   = note: `#[warn(unused_braces)]` on by default
+help: remove these braces
+   |
+21 -         #[clap(short, long, arg_enum, default_value_t)]
+21 +         #[clap(short, long, arg_enum, default_value_t)]
+   |
+
+warning: `hello` (bin &quot;hello&quot;) generated 1 warning
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>There should be no warning</p>
+<h3>Additional Context</h3>
+<p>Pretty inexperienced in Rust and new to Clap, so hopefully I'm not doing something wrong.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @href on 2022-01-03 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3246.html">clap-rs/clap#3246</a> on 2022-01-03 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-01-03 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-01-03 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/href">@href</a> on 2022-01-03 18:11</div>
+            <div class="timeline-body"><p>Thank you! That was very quick 😌</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-03 18:13</div>
+            <div class="timeline-body"><p>v3.0.1 is now released with the fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/href">@href</a> on 2022-01-03 21:18</div>
+            <div class="timeline-body"><p>I still seem to be getting the error with 3.0.1:</p>
+<pre><code>cargo check
+    Checking clap v3.0.1
+    Checking hello v0.1.0 (/Users/denis/Code/hello)
+warning: unnecessary braces around method argument
+  --&gt; src/main.rs:21:39
+   |
+21 |         #[clap(short, long, arg_enum, default_value_t)]
+   |                                       ^              ^
+   |
+   = note: `#[warn(unused_braces)]` on by default
+help: remove these braces
+   |
+21 -         #[clap(short, long, arg_enum, default_value_t)]
+21 +         #[clap(short, long, arg_enum, default_value_t)]
+   |
+
+warning: `hello` (bin &quot;hello&quot;) generated 1 warning
+    Finished dev [unoptimized + debuginfo] target(s) in 2.18s
+</code></pre>
+<p>Same code, just with 3.0.1 in Cargo.toml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 00:53</div>
+            <div class="timeline-body"><p>Sorry, forgot to mark <code>clap_derive</code> for being released.  It should be now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/href">@href</a> on 2022-01-04 07:39</div>
+            <div class="timeline-body"><p>Does this mean it will be fixed in 3.0.2, since I already have 3.0.1?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-04 13:04</div>
+            <div class="timeline-body"><p>It is fixed in <code>clap_derive</code> 3.0.1.  Run <code>cargo update -p clap_derive</code> and you should have the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/href">@href</a> on 2022-01-04 13:38</div>
+            <div class="timeline-body"><p>That did it, thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:50 UTC
+    </footer>
+</body>
+</html>

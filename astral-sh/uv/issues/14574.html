@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support target aarch64-linux-android - astral-sh/uv #14574</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support target aarch64-linux-android</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14574">#14574</a>
+        opened by <a href="https://github.com/mokeyish">@mokeyish</a>
+        on 2025-07-12 07:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mokeyish">@mokeyish</a> on 2025-07-12 07:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Support target aarch64-linux-android on Termux https://termux.dev/en/</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @mokeyish on 2025-07-12 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/criticalthoughtdevelopers">@criticalthoughtdevelopers</a> on 2025-08-27 13:11</div>
+            <div class="timeline-body"><h2>Successful Build from Source on aarch64-linux-android with Workarounds</h2>
+<p>The target aarch64-linux-android is buildable from source with several workarounds. Below is a summary of the build failures encountered and their corresponding resolutions.</p>
+<h3>System Specifications</h3>
+<pre><code>Phone: Pixel 9 Pro
+Android: v16
+Total Ram: 15Gig
+TERMUX_API_VERSION=0.52.0
+TERMUX_VERSION=0.118.3
+Rust: 1.89.0
+</code></pre>
+<h3>Build Failures &amp; Resolutions</h3>
+<h4>sys-info Crate Compilation Failure</h4>
+<ul>
+<li>Error: Fails to compile C code due to an undeclared function index().</li>
+<li>Resolution: Pass -Dindex=strchr to the C compiler via the CFLAGS environment variable.</li>
+</ul>
+<h4>tikv-jemalloc-sys Linker Failure</h4>
+<ul>
+<li>Error: Linker fails with error: unable to find library -lgcc.</li>
+<li>Diagnosis: The Termux ndk-sysroot package does not provide libgcc.a. The functional equivalent provided by the LLVM toolchain is libunwind.a. The jemalloc build script does not account for this substitution.</li>
+<li>Resolution: Create a symbolic link to satisfy the linker: ln -s $PREFIX/lib/libunwind.a $PREFIX/lib/rustlib/aarch64-linux-android/lib/libgcc.a.</li>
+</ul>
+<h4>Resource Exhaustion During Final Link</h4>
+<ul>
+<li>Error: The rustc process is terminated by the kernel (SIGKILL), indicating an Out-Of-Memory condition.</li>
+<li>Resolution: Disable Link-Time Optimization (LTO) and restrict the build to a single job. export RUSTFLAGS=&quot;-C lto=off&quot; and cargo install --jobs 1.</li>
+</ul>
+<p><strong>Note</strong>: On devices with less RAM, a swap file may still be necessary even with LTO disabled.</p>
+<h3>Complete Working Command Sequence</h3>
+<p>The following sequence of commands produces a successful build:</p>
+<pre><code class="language-shell"># Install required build dependencies
+pkg install binutils gcc
+
+# (Optional, for low-memory devices) Setup swap file
+# fallocate -l 2G ~/swapfile
+# chmod 600 ~/swapfile
+# mkswap ~/swapfile
+# swapon ~/swapfile
+
+# Create symbolic link to satisfy linker requirement for libgcc.a
+ln -s $PREFIX/lib/libunwind.a $PREFIX/lib/rustlib/aarch64-linux-android/lib/libgcc.a
+
+# Set environment variables for the build
+export RUSTFLAGS=&quot;-C lto=off -C link-arg=-L$PREFIX/lib/rustlib/aarch64-linux-android/lib&quot;
+export AR=aarch64-linux-android-ar
+export RANLIB=aarch64-linux-android-ranlib
+export CFLAGS=&quot;-Dindex=strchr&quot;
+
+# Build and install
+cargo install --locked --path crates/uv --jobs 1
+
+# Cleanup
+# swapoff ~/swapfile &amp;&amp; rm ~/swapfile
+rm $PREFIX/lib/rustlib/aarch64-linux-android/lib/libgcc.a
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16413.html">astral-sh/uv#16413</a> on 2025-10-22 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jobians">@Jobians</a> on 2025-11-24 21:00</div>
+            <div class="timeline-body"><p>No updates?</p>
+<p>$ curl -LsSf https://astral.sh/uv/install.sh | sh</p>
+<p>ERROR: there isn't a download for your platform aarch64-linux-android</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 15:56</div>
+            <div class="timeline-body"><p>We don't provide binary installs for the android target at this point, but we accepted patches that help with building from source for aarch64-linux-android.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jobians">@Jobians</a> on 2025-11-26 16:12</div>
+            <div class="timeline-body"><p>I managed to install it on Termux using</p>
+<pre><code class="language-shell">pkg install uv
+</code></pre>
+<p>https://github.com/termux/termux-packages/tree/master/packages/uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/o-murphy">@o-murphy</a> on 2025-11-27 08:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I managed to install it on Termux using</p>
+<p>pkg install uv
+https://github.com/termux/termux-packages/tree/master/packages/uv</p>
+</blockquote>
+<p>Yes it works but since python&gt;=3.13 supports android as a 3-tier platform it could be great to have possibility to install uv as <a href="https://docs.astral.sh/uv/getting-started/installation/">described in uv docs</a> and have precompiled python builds in <a href="https://github.com/astral-sh/python-build-standalone">python-build-standalone</a></p>
+<p>It also can be usefull not only for termux, also for the chroots running over <a href="https://github.com/CypherpunkArmory/UserLAnd">Userland</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/issues/895.html">astral-sh/python-build-standalone#895</a> on 2025-11-27 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinfall">@Vinfall</a> on 2025-12-07 06:49</div>
+            <div class="timeline-body"><blockquote>
+<p>since python&gt;=3.13 supports android as a 3-tier platform</p>
+</blockquote>
+<p>FYI: <a href="https://www.python.org/downloads/android/">python releases for android</a> are available on www.python.org for 3.14+ (including 3.14.0rc and 3.15.0a). This should make it easier to support 3.14+ at least. 3.13 support in particular could a bit tricky though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/o-murphy">@o-murphy</a> on 2025-12-08 08:01</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>since python&gt;=3.13 supports android as a 3-tier platform</p>
+</blockquote>
+<p>FYI: <a href="https://www.python.org/downloads/android/">python releases for android</a> are available on <a href="http://www.python.org">www.python.org</a> for 3.14+ (including 3.14.0rc and 3.15.0a). This should make it easier to support 3.14+ at least. 3.13 support in particular could a bit tricky though.</p>
+</blockquote>
+<p>I doubt that embedded builds for android will be able to run arbitrary code, including compiled extensions without rebuilding the application where it is used <em>(although <a href="https://github.com/kivy/python-for-android">kivy/python-for-android</a> able, if you have root access)</em>, it is still not system-wide python. So the most reliable methods to get common and well-known python env still remain chroot environments via UserLAnd and termux.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

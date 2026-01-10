@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dynamic completions: register as external subcommand - clap-rs/clap #6173</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>dynamic completions: register as external subcommand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6173">#6173</a>
+        opened by <a href="https://github.com/jakobhellermann">@jakobhellermann</a>
+        on 2025-11-01 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jakobhellermann">@jakobhellermann</a> on 2025-11-01 19:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.51</p>
+<h3>Describe your use case</h3>
+<p>I was looking into adding dynamic completions (<code>COMPLETE=shell</code>) support for <a href="https://github.com/rust-fuzz/cargo-fuzz"><code>cargo fuzz</code></a>. So I'd like to have it complete <code>cargo fuzz &lt;tab&gt;</code>.</p>
+<p>By default, clap generates something like this on fish:</p>
+<pre><code class="language-fish">complete --keep-order --exclusive --command cargo-fuzz --arguments &quot;(COMPLETE=fish &quot;/path/to/cargo-fuzz&quot; -- (commandline --current-process --tokenize --cut-at-cursor) (commandline --current-token))&quot;
+</code></pre>
+<p>Changing that to <code>--command 'cargo' -n '__fish_seen_subcommand_from fuzz'</code> would make it complete <code>cargo fuzz &lt;tab&gt;</code> as well. I'm not sure if the other supported shells support something like this aswell though.</p>
+<hr />
+<p>I also tried to do</p>
+<pre><code class="language-rs">#[derive(Parser)]
+enum CargoArgs {
+    Fuzz(CargoFuzzSubcommand),
+}
+
+#[derive(clap::Args)]
+struct CargoFuzzSubcommand {
+    #[clap(subcommand)]
+    subcommand: Command,
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    CompleteEnv::with_factory(CargoArgs::command)
+        .bin(&quot;cargo&quot;)
+        .complete();
+}
+</code></pre>
+<p>which works on fish, but on bash it completely replaces the original completion instead of adding to it.</p>
+<h3>Describe the solution you'd like</h3>
+<p>If something like fishs <code>__fish_seen_subcommand_from</code> can be done on other shells, maybe it could be exposed as</p>
+<pre><code class="language-rs">    CompleteEnv::with_factory(Command::command)
+        .bin(&quot;cargo&quot;)
+        .only_complete_subcommand(&quot;fuzz&quot;)
+        .complete();
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>Now that I think about it, it's not <code>cargo-fuzz</code>s responsibility to register completions for cargo.</p>
+<p>Perhaps cargos completion script could instead complete unknown subcommands by letting the shell complete <code>cargo-&lt;subcommand&gt;</code> directly. On fish this is very easy with <code>complete --do-complete &quot;cargo-fuzz&quot;</code>, again I have no idea how other shells compare here.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @jakobhellermann on 2025-11-01 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @jakobhellermann on 2025-11-01 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-11-03 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-03 22:08</div>
+            <div class="timeline-body"><p>We have a note for this in rust-lang/cargo#14520 but I'm not seeing anything in this repo.  Probably because the assumption there is we'd make it part of <code>cargo</code>s completions, rather than having plugins register for their own completions.  If we did that and got alias to work, we'd then automatically get completions of alias for third-party subcommands, rather than nothing working for those.</p>
+<p>If we can have the plugins also register for <code>cargo</code>, we could move forward with that in parallel.</p>
+<p>Could you tell me why <code>-n '__fish_seen_subcommand_from fuzz'</code> is needed?  Oh, is it that we keep going if we see an unknown subcommand, trying to recover on a failure which in this case will instead flood the user with redundant <code>-h</code> and <code>-v</code> completions?  I wonder if we should have a built-in version of<code>__fish_seen_subcommand_from</code> that tells the completion parser to be strict about certain subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakobhellermann">@jakobhellermann</a> on 2025-11-05 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, is it that we keep going if we see an unknown subcommand, trying to recover on a failure which in this case will instead flood the user with redundant -h and -v completions?</p>
+</blockquote>
+<p>Yes, if you simply do <code>COMPLETE=fish cargo fuzz | source</code>, you'll have <code>cargo &lt;tab&gt;</code> complete <code>cargo tmin</code>, <code>cargo list</code> etc. which you only want for <code>cargo fuzz tmin</code>. <code>cargo-fuzz</code> doesn't have any options other than <code>-h</code> and <code>-V</code> but I suppose if it did, it would also complete them for <code>cargo build --options-from-cargo-fuzz</code>.</p>
+<hr />
+<p>I agree that ideally this would be handled by <code>cargo</code>, I'll look into how it does its completion and if it would be possible to implement for not just fish but the other supported shells as well.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

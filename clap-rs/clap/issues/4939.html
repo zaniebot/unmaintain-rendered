@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap 4.3: Implementation of `FnOnce` is not general enough - clap-rs/clap #4939</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap 4.3: Implementation of `FnOnce` is not general enough</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4939">#4939</a>
+        opened by <a href="https://github.com/lukesneeringer">@lukesneeringer</a>
+        on 2023-05-24 19:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lukesneeringer">@lukesneeringer</a> on 2023-05-24 19:46</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.69.0</p>
+<h3>Clap Version</h3>
+<p>4.3.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use anyhow::Result;
+use clap::Parser;
+
+#[derive(Clone, Debug)]
+struct Offset {}
+
+impl Offset {
+    pub fn parse(s: impl AsRef&lt;str&gt;) -&gt; Result&lt;Self&gt; {
+        Ok(Self {})
+    }
+}
+
+#[derive(Clone, Debug, Parser)]
+struct Command {
+    #[arg(long, value_parser = Offset::parse)]
+    pub offset: Offset,
+}
+
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo build
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>error: implementation of `FnOnce` is not general enough
+  --&gt; src/main.rs:13:24
+   |
+13 | #[derive(Clone, Debug, Parser)]
+   |                        ^^^^^^ implementation of `FnOnce` is not general enough
+   |
+   = note: `fn(&amp;'2 str) -&gt; Result&lt;Offset, anyhow::Error&gt; {Offset::parse::&lt;&amp;'2 str&gt;}` must implement `FnOnce&lt;(&amp;'1 str,)&gt;`, for any lifetime `'1`...
+   = note: ...but it actually implements `FnOnce&lt;(&amp;'2 str,)&gt;`, for some specific lifetime `'2`
+   = note: this error originates in the derive macro `Parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+   --&gt; src/main.rs:13:24
+    |
+13  | #[derive(Clone, Debug, Parser)]
+    |                        ^^^^^^ one type is more general than the other
+    |
+    = note: expected trait `for&lt;'a&gt; Fn&lt;(&amp;'a str,)&gt;`
+               found trait `Fn&lt;(&amp;str,)&gt;`
+note: the lifetime requirement is introduced here
+   --&gt; /Users/luke/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_builder-4.3.0/src/builder/arg.rs:975:48
+    |
+975 |     pub fn value_parser(mut self, parser: impl IntoResettable&lt;super::ValueParser&gt;) -&gt; Self {
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: this error originates in the derive macro `Parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Successful compilation.</p>
+<h3>Additional Context</h3>
+<p>This program compiled successfully with clap 4.2, and broke in clap 4.3.</p>
+<h3>Debug Output</h3>
+<p>Same as &quot;actual behavior&quot; above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @lukesneeringer on 2023-05-24 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-24 20:59</div>
+            <div class="timeline-body"><blockquote>
+<p>This program compiled successfully with clap 4.2, and broke in clap 4.3.</p>
+</blockquote>
+<p>I just ran with</p>
+<pre><code class="language-rust">#!/usr/bin/env rust-script
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;=4.2.0&quot;, features = [&quot;derive&quot;, &quot;debug&quot;] }
+//! anyhow = &quot;1&quot;
+//! ```
+
+use anyhow::Result;
+use clap::Parser;
+
+#[derive(Clone, Debug)]
+struct Offset {}
+
+impl Offset {
+    pub fn parse(s: impl AsRef&lt;str&gt;) -&gt; Result&lt;Self&gt; {
+        Ok(Self {})
+    }
+}
+
+#[derive(Clone, Debug, Parser)]
+struct Command {
+    #[arg(long, value_parser = Offset::parse)]
+    pub offset: Offset,
+}
+
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>and I'm seeing the failure</p>
+<p>even if I drop to</p>
+<pre><code class="language-rust">#!/usr/bin/env rust-script
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;=4.0.0&quot;, features = [&quot;derive&quot;, &quot;debug&quot;] }
+//! anyhow = &quot;1&quot;
+//! ```
+
+use anyhow::Result;
+use clap::Parser;
+
+#[derive(Clone, Debug)]
+struct Offset {}
+
+impl Offset {
+    pub fn parse(s: impl AsRef&lt;str&gt;) -&gt; Result&lt;Self&gt; {
+        Ok(Self {})
+    }
+}
+
+#[derive(Clone, Debug, Parser)]
+struct Command {
+    #[arg(long, value_parser = Offset::parse)]
+    pub offset: Offset,
+}
+
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>I see the failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkatychev">@mkatychev</a> on 2023-12-16 23:15</div>
+            <div class="timeline-body"><p>Rust Version: 1.74.1
+Clap Version: 4.4.11</p>
+<p>@epage @lukesneeringer  I did a bit of diving into the the problem since I ran into something similar on latest clap &amp; latest rust. I made the smallest reproducible example I could:</p>
+<h3>Problem</h3>
+<pre><code class="language-rust">#[derive(Clone)]
+struct Offset;
+
+pub fn offset_parse(_: impl AsRef&lt;str&gt;) -&gt; Result&lt;Offset, String&gt; {
+    Ok(Offset)
+}
+
+fn main() {
+    let arg = clapArg::new(&quot;offset&quot;).value_parser(offset_parse);
+    let _cmd = clap::Command::new(&quot;command&quot;).arg(arg);
+}
+</code></pre>
+<p>the compiler (nightly or stable) still seems to have a hard time at showing the actual origin of the problem when dealing with higher ranked trait bounds, the actual source of the error is the line below:
+https://github.com/clap-rs/clap/blob/d092896d61fd73a5467db85eac035a9ce2ddbc60/clap_builder/src/builder/value_parser.rs#L910</p>
+<h3>Partial solution</h3>
+<p>I found a reddit comment that touches very closely on the problem encountered in this issue and managed to reproduce most of the pattern:
+https://old.reddit.com/r/rust/comments/f1spyt/higher_kinded_lifetime_on_return_types/fh8n2b2/</p>
+<p>However, the last step in the post using the nested function that returns an <code>impl</code> still seems to be tricky to invoke:</p>
+<blockquote>
+<p>As it turns out, rustc is quite bad with type inference when it comes to HRTB - for some weird reason here it cannot &gt; prove that our closure is general enough, even though it is. Well, once again, we have to help the compiler:</p>
+<pre><code class="language-rust">fn fancy_copy_2(value: i32) -&gt; i32 {
+    fn build_callback(value: i32) -&gt; impl FnOnce(&amp;Source) -&gt; Ref {
+        move |s| {
+            s.new_ref(value)
+        }
+    }
+
+    call_2(build_callback(value))
+}
+</code></pre>
+</blockquote>
+<p>I've made a separate feature branch to test out the issue that includes the modified <code>impl&lt;F, T, E&gt; TypedValueParser for F</code>:
+https://github.com/clap-rs/clap/blob/9920bfaaa7b1488f7106d906c68dfbac74580063/clap_builder/src/builder/value_parser.rs#L908-L935</p>
+<p>As well as a unit test to reproduce the issue:
+https://github.com/clap-rs/clap/blob/9920bfaaa7b1488f7106d906c68dfbac74580063/clap_builder/src/builder/tests.rs#L58-L69</p>
+<p>There is still a compilation error but I do believe this is closer to being compiled:</p>
+<pre><code>$ cargo test
+
+error: implementation of `Callback` is not general enough
+  --&gt; clap_builder/src/builder/tests.rs:67:15
+   |
+67 |     let arg = Arg::new(&quot;offset&quot;).value_parser(offset_parse);
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ implementation of `Callback` is not general enough
+   |
+   = note: `fn(&amp;str) -&gt; std::result::Result&lt;Offset, String&gt; {offset_parse::&lt;&amp;str&gt;}` must implement `Callback&lt;'0&gt;`, for any lifetime `'0`...
+   = note: ...but it actually implements `Callback&lt;'1&gt;`, for some specific lifetime `'1`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rust/issues/119045.html">rust-lang/rust#119045</a> on 2023-12-17 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Patryk27">@Patryk27</a> on 2023-12-17 12:05</div>
+            <div class="timeline-body"><p>I've experimented with this for a while now and I think this is some limitation in the compiler - I've reported it here, we'll see:
+https://github.com/rust-lang/rust/issues/119045</p>
+<p>I think the best solution for now is to use a closure, i.e.:</p>
+<pre><code class="language-rust">let arg = Arg::new(&quot;offset&quot;).value_parser(|a: &amp;str| offset_parse(a));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abhaysp95">@abhaysp95</a> on 2024-08-17 10:47</div>
+            <div class="timeline-body"><p>EDIT:
+rust: rustc 1.80.0 (051478957 2024-07-21)
+clap: 4.5.13</p>
+<p>I encountered the similar problem. I'm using clap with builder pattern.
+Minimal steps to reproduce:</p>
+<pre><code class="language-rs">#[derive(Clone)]
+pub enum ListColumn {
+    All,
+    Url,
+    Tag,
+    Desc,
+}
+
+// make command and this as arg
+                .arg(
+                    Arg::new(&quot;cols&quot;)
+                        .short('c')
+                        .long(&quot;cols&quot;)
+                        .default_value(&quot;all&quot;)
+                        .value_parser(|str| {
+                            return if str == &quot;all&quot; {
+                                Ok(ListColumn::All)
+                            } else if str == &quot;tags&quot; {
+                                Ok(ListColumn::Tag)
+                            } else {
+                                Err(clap::Error::new(clap::error::ErrorKind::InvalidValue))
+                            };
+                        })
+                        .help(&quot;List the specified cols&quot;)
+                )
+
+// after getting Argmatches
+    match matches.subcommand() {
+    // ...
+        Some((&quot;list&quot;, list_task)) =&gt; {
+                let column = list_task.get_one::&lt;ListColumn&gt;(&quot;cols&quot;).unwrap();
+                // ...
+        }
+        _ =&gt; {}
+    }
+</code></pre>
+<p>And I encountered the error like this:</p>
+<pre><code>rustc: implementation of `FnOnce` is not general enough
+closure with signature `fn(&amp;'2 str) -&gt; Result&lt;ListColumn, clap::error::Error&gt;` must implement `FnOnce&lt;(&amp;'1 str,)&gt;`, for any lifetime `'1`...
+...but it actually implements `FnOnce&lt;(&amp;'2 str,)&gt;`, for some specific lifetime `'2`
+rustc: implementation of `Fn` is not general enough
+closure with signature `fn(&amp;'2 str) -&gt; Result&lt;ListColumn, clap::error::Error&gt;` must implement `Fn&lt;(&amp;'1 str,)&gt;`, for any lifetime `'1`...
+...but it actually implements `Fn&lt;(&amp;'2 str,)&gt;`, for some specific lifetime `'2`
+</code></pre>
+<p>What I'm trying to do is to restrict the user to provide the value only supported by enum ListColumn and thus in value_parser() I've written a small sample logic to accept or throw error based on what is provided by user.</p>
+<p>Is there some better way to do this ? Or what I'm doing is correct and this is like a genuine error which needs to be fixed ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-19 14:12</div>
+            <div class="timeline-body"><p>@abhaysp95 I expect a workaround would be to split the closure out into a dedicated function.</p>
+<p>Also, using <code>clap::Error</code> might not have the best results.  Maybe thats something we can dynamic cast for an improve.</p>
+<p>You could also do</p>
+<pre><code class="language-rust">PossibleValuesParser::new([&quot;all&quot;, &quot;tags&quot;]).map(|s| {
+    match s {
+        &quot;all&quot; =&gt; ListColumn::All,
+        &quot;tags&quot; =&gt; ListColumn::AllTag,
+        _ =&gt; unimplemented!(&quot;PossibleValuesParser prevents getting there&quot;)
+    }
+})
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:25 UTC
+    </footer>
+</body>
+</html>

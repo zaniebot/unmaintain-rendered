@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to ensure indirect dependency is fetched from internal PyPI index? - astral-sh/uv #13035</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to ensure indirect dependency is fetched from internal PyPI index?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13035">#13035</a>
+        opened by <a href="https://github.com/LewisGaul">@LewisGaul</a>
+        on 2025-04-21 23:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LewisGaul">@LewisGaul</a> on 2025-04-21 23:38</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have an internal JFrog Artifactory PyPI instance set up, and am interested in avoiding cases of dependency confusion. I've read through and followed the instructions at https://docs.astral.sh/uv/configuration/indexes/#pinning-a-package-to-an-index. The docs and uv config provided are great, however I think there's a case that perhaps isn't fully catered for.</p>
+<p>Here's an example <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myorg-pkg&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    # Standard dependencies
+    &quot;typing_extensions&quot;,
+    # Internal dependencies
+    &quot;myorg-foo&quot;,
+]
+
+[[tool.uv.index]]
+# Set the env var UV_INDEX_MYORG_PASSWORD to use this index.
+name = &quot;myorg&quot;
+url = &quot;https://.../artifactory/api/pypi/myorg-local/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+myorg-foo = { index = &quot;myorg&quot; }
+</code></pre>
+<p>The problem is: what if a direct internal dependency depends on another internal dependency? In the example above <code>myorg-pkg</code> declares a direct dependency on <code>myorg-foo</code>, but that package could depend on <code>myorg-foo-core</code> as well.</p>
+<p>If <code>explicit = true</code> is removed from the <code>myorg</code> index config then this does achieve the desired behaviour, but <code>explicit = true</code> can be useful when you don't want the index to be favoured for all packages. This is the workaround I'm currently using/recommending internally.</p>
+<p>I thought maybe the top-level package could declare all internal dependencies (including indirect) in <code>tool.uv.sources</code>, even though not ideal since it breaks abstraction. However, it appears this doesn't work without also adding those indirect dependencies to the project's direct dependencies (only top-level packages are installed from an index with <code>explicit = true</code>). Should this work?</p>
+<p>I realise there's no way for <code>myorg-foo</code> to declare that some of its dependencies should be obtained from the same index (or explicitly specify the index), and that any uv project config it might have isn't available at install time... so I'm not sure what the solution should be here.</p>
+<p>Note that when dropping <code>explicit = true</code>, there can then in theory be the need to pin packages to public PyPI, e.g. with this config:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+# Set the env var UV_INDEX_MYORG_PASSWORD to use this index.
+name = &quot;myorg&quot;
+url = &quot;https://.../artifactory/api/pypi/myorg-local/simple&quot;
+
+[[tool.uv.index]]
+name = &quot;public&quot;
+url = &quot;https://pypi.org/simple&quot;
+default = true
+
+[tool.uv.sources]
+myorg-foo = { index = &quot;myorg&quot; }
+typing_extensions = { index = &quot;public&quot; }
+</code></pre>
+<p>Of course in practice it's best to just disallow the <code>typing_extensions</code> name on the internal PyPI. However, this isn't a solution in all cases - even if we only allow package names that aren't on public PyPI, they could still later be uploaded there (perhaps deliberately as part of a dependency confusion attack).</p>
+<p>Furthermore, this uv config has the same problem as above: the <code>tool.uv.sources</code> config only applies to direct dependencies! So if <code>myorg-foo</code> depended on a package that had a name clash across internal and public PyPI then this would be problematic (would need adding to the direct dependencies, or perhaps consider swapping the index priority order...).</p>
+<h3>Platform</h3>
+<p>Linux x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @LewisGaul on 2025-04-21 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-21 23:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought maybe the top-level package could declare all internal dependencies (including indirect) in tool.uv.sources, even though not ideal since it breaks abstraction. However, it appears this doesn't work without also adding those indirect dependencies to the project's direct dependencies (only top-level packages are installed from an index with explicit = true). Should this work?</p>
+</blockquote>
+<p>Yeah, this is the intended approach -- you need to mark them with sources <em>and</em> make them direct dependencies. There are some issues that discuss applying sources to transitive dependencies, but we don't support it today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LewisGaul">@LewisGaul</a> on 2025-04-21 23:44</div>
+            <div class="timeline-body"><p>The problem with this is that a direct dependency (e.g. <code>myorg-foo</code>) should be free to add a new internal dependency (e.g. <code>myorg-bar</code>), but then all users (e.g. <code>myorg-pkg</code>) would need to update their config to pick up that new dependency from the right place. I guess adding a new internal dependency just needs to be treated as a breaking change for users that use <code>explicit = true</code> on the internal index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LewisGaul">@LewisGaul</a> on 2025-04-21 23:56</div>
+            <div class="timeline-body"><p>Related/dupes (sorry, &quot;transitive&quot; was the word I should've been looking for):</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/10410</li>
+<li>https://github.com/astral-sh/uv/issues/8253</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @LewisGaul on 2025-04-21 23:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

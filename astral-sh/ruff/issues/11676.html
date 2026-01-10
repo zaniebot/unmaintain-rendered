@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single-line match-cases with Ellipsis (`...`) as body - astral-sh/ruff #11676</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Single-line match-cases with Ellipsis (`...`) as body</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11676">#11676</a>
+        opened by <a href="https://github.com/pfaion">@pfaion</a>
+        on 2024-06-01 08:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pfaion">@pfaion</a> on 2024-06-01 08:44</div>
+            <div class="timeline-body"><p>Thanks for the great work on ruff!</p>
+<p>Not sure if this a bug, probably rather a feature request. Curious to hear what you think about this:</p>
+<p>I work with complexly nested data and sometimes I want to extract a value from potentially different parts of the data, depending on the structure of the data. I realized that you can quite nicely use &quot;structural pattern matching&quot; for that, e.g. here's a simple example:</p>
+<pre><code class="language-python">class User(BaseModel):
+    global_name: str
+    # ...
+
+class Member(BaseModel):
+    nickname: Optional[str]
+    user: User
+    # ...
+
+name: str
+match member:
+    case Member(nickname=str(name)): ...
+    case Member(user=User(global_name=str(name))): ...
+    
+# Now `name` is bound, depending on which structure first &quot;resolved&quot;. If the member had
+# a nickname defined, we prefer using that. Otherwise we use the global_name.
+</code></pre>
+<p>I wrote the single-line case statements similar to how you can write single-line function signatures for e.g. Protocols (e.g. refer to https://github.com/astral-sh/ruff/issues/10026). However, ruff will always reformat them to:</p>
+<pre><code class="language-python">name: str
+match member:
+    case Member(nickname=str(name)):
+        ...
+    case Member(user=User(global_name=str(name))):
+        ...
+</code></pre>
+<p>I was wondering if case-statements should also allowed to be single-line if the body is an Ellipsis <code>...</code> for consistency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-06-01 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2024-06-01 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-01 09:30</div>
+            <div class="timeline-body"><p>I'm open to this but I don't think it should be specific to match cases. Instead, it is a more general question if <code>...</code> bodies should be collapsed in compound statements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfaion">@pfaion</a> on 2024-06-01 09:38</div>
+            <div class="timeline-body"><p>What other cases would there be? Any statement ending with a <code>:</code>?</p>
+<p>First brainstorm:</p>
+<pre><code class="language-python">if expr: ...
+elif expr: ...
+else: ...
+
+while expr: ...
+
+for val in expr: ...
+
+class Foo: ...
+
+def foo(): ...
+async def foo(): ...
+
+match expr: ...
+    case pattern: ...
+
+try: ...
+except: ...
+finally: ...
+
+with expr as val: ...
+async with expr as val: ...
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden subcommands shown when &quot;requires a subcommand but one was not provided&quot; - clap-rs/clap #5471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hidden subcommands shown when &quot;requires a subcommand but one was not provided&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5471">#5471</a>
+        opened by <a href="https://github.com/devjgm">@devjgm</a>
+        on 2024-04-22 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/devjgm">@devjgm</a> on 2024-04-22 21:22</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.74.0 (79e9716c9 2023-11-13)</p>
+<h3>Clap Version</h3>
+<p>4.5.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, Subcommand};
+
+#[derive(Parser, Debug)]
+#[clap(version, about)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Command,
+
+    #[clap(long)]
+    message: String,
+}
+
+#[derive(Subcommand, Debug)]
+enum Command {
+    Hello,
+    #[clap(hide = true)]
+    Secret,  // &lt;------ This subcommand is marked hidden and shouldn't be suggested to the user
+}
+
+fn main() {
+    let cli = Cli::parse();
+    match cli.command {
+        Command::Hello =&gt; println!(&quot;Hello {}&quot;, cli.message),
+        Command::Secret =&gt; println!(&quot;Secret {}&quot;, cli.message),
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-console">$ cargo run -- --message foo
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/clap-repro --message foo`
+error: 'clap-repro' requires a subcommand but one was not provided
+  [subcommands: hello, secret, help]
+
+Usage: clap-repro --message &lt;MESSAGE&gt; &lt;COMMAND&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The problem is that the <code>secret</code> subcommand is marked as hidden, yet it is suggested as one of the possible subcommands in the list <code>[subcommands: hello, secret, help]</code></p>
+<h3>Expected Behaviour</h3>
+<p>Since the <code>secret</code> subcommand is marked as hidden, it should not be suggested to the user in the list of possible subcommands. So
+Actual: <code>[subcommands: hello, secret, help]</code>
+Expected: <code>[subcommands: hello, help]</code></p>
+<h3>Additional Context</h3>
+<p>The <code>--message</code> flag in the repro case seems to be important. If I remove it and omit the subcommand, it sees that <em>no</em> arguments are provided and simply displays the normal help message, which correctly omits the hidden subcommand.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @devjgm on 2024-04-22 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2024-04-23 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-04-23 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-04-23 20:34</div>
+            <div class="timeline-body"><p>FYI #4853 is a different place hidden subcommands can show up in errors</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:35 UTC
+    </footer>
+</body>
+</html>

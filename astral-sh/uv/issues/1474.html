@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to run uv behind a corporate proxy? - astral-sh/uv #1474</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to run uv behind a corporate proxy?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1474">#1474</a>
+        opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a>
+        on 2024-02-16 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-02-16 10:20</div>
+            <div class="timeline-body"><p>Our corporate proxy inspects traffic and thus inserts its own certificate that has to be configured to trust across applications on the system. I do this by setting <code>REQUESTS_CA_BUNDLE</code> and <code>SSL_CERT_FILE</code>, etc. It seems that <code>uv</code> doesn't respect either of those. Is there another environment variable that it takes into account?</p>
+<pre><code>error: error sending request for url (https://pypi.org/simple/protobuf/): error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: invalid peer certificate: UnknownIssuer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nevoodoo">@nevoodoo</a> on 2024-02-16 13:28</div>
+            <div class="timeline-body"><p>Run into the same problem here, both those variables are not respected by <code>uv</code> but works fine with <code>pip</code>, <code>pipenv</code></p>
+<p>EDIT: I see the discussion is already open in #1339</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1503.html">astral-sh/uv#1503</a> on 2024-02-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kvelicka">@kvelicka</a> on 2024-02-16 15:44</div>
+            <div class="timeline-body"><p>#1339 seems like a near-duplicate but I think it's important to distinguish &quot;treat this host as trusted&quot; and &quot;verify the trustworthiness of this host, but using a user-specified certificate&quot;. For a corporate environment the latter option is much prefereable as we'd rather not compromise on security. Having said that, resolving #1339 would allow corporate users to at least <em>try</em> <code>uv</code> in earnest so it would be some progress!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-baker">@j-baker</a> on 2024-02-16 15:56</div>
+            <div class="timeline-body"><p>This might have a much simpler solution - basically, if you changed your <code>reqwest</code> feature flag from <code>rustls-tls</code> (which means <code>rustls-tls-webpki-roots</code>) to <code>rustls-tls-native-roots</code>, it'd use the operating system's truststore (which corporate certs are typically added to), as well as using <code>SSL_CERT_FILE</code> and other standard config mechanisms.</p>
+<p>https://github.com/seanmonstar/reqwest/blob/master/Cargo.toml#L44
+https://github.com/rustls/rustls-native-certs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:38</div>
+            <div class="timeline-body"><p>I actually made this exact change in https://github.com/astral-sh/uv/pull/609 but it didn't get merged, we'll reconsider.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1512.html">astral-sh/uv#1512</a> on 2024-02-16 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/c3pmark">@c3pmark</a> on 2024-02-16 16:50</div>
+            <div class="timeline-body"><p>This would be very useful for me too.  We don't have a proxy that intercepts HTTPS, but we do use an internal index with a certificate signed by our internal CA.  Having to specify <code>REQUESTS_CA_BUNDLE</code> everywhere is a huge pain point with <code>pip</code>, so if the system trust store could be used that would save a ton of hassle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-16 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1819.html">astral-sh/uv#1819</a> on 2024-02-21 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosjourdan">@carlosjourdan</a> on 2024-02-27 16:05</div>
+            <div class="timeline-body"><p>I'm still facing the same issue on version 0.1.11</p>
+<p>Corporate network with ssl inspection firewall, custom ca on every site. Root certificate is trusted by windows, and environment variables REQUESTS_CA_BUNDLE and SSL_CERT_FILE are setup. Python requests work fine. Pip install as well.  uv fails with error below.</p>
+<pre><code>error: error sending request for url (https://pypi.org/simple/zeep/): error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: invalid peer certificate: UnknownIssuer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2020.html">astral-sh/uv#2020</a> on 2024-02-27 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @zanieb on 2024-02-28 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-28 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1339.html">astral-sh/uv#1339</a> on 2024-03-04 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dorschw">@dorschw</a> on 2024-08-27 13:52</div>
+            <div class="timeline-body"><p>in WSL, running <a href="https://github.com/bayaro/windows-certs-2-wsl">windows-certs-2-wsl</a>, <code>update-ca-certificates</code>, then</p>
+<pre><code class="language-bash">export SSL_CERT_DIR=/etc/ssl/certs
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+</code></pre>
+<p>did the trick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a087861">@a087861</a> on 2024-09-06 12:52</div>
+            <div class="timeline-body"><p>Following as I am in a similar boat :-/</p>
+<p>On mac with apple silicon behind proxy.  Tried running <code>uv venv -p 3.8</code> which resulted in an 'invalid peer certificate' error.  I think this is due to the same thing that affects others in this discussion but certs aren't my forte so I may be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 13:11</div>
+            <div class="timeline-body"><p>@a087861 try using the <code>--native-tls</code> flag</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a087861">@a087861</a> on 2024-09-06 13:51</div>
+            <div class="timeline-body"><p>@zanieb that worked like a charm - thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gr3at">@Gr3at</a> on 2024-12-05 08:59</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/a087861">@a087861</a> try using the <code>--native-tls</code> flag</p>
+</blockquote>
+<h3>Concern</h3>
+<p>this might work for linux based systems (including wsl) but in Windows it greatly depends on several preconditions (such as the selected shell).</p>
+<h3>How i bypassed the issue</h3>
+<p>In my case i was able to install packages using the following on Windows 10 using git-bash as my shell of choice.</p>
+<pre><code class="language-bash">export HTTPS_PROXY=&lt;company-proxy-here&gt;
+uv add --allow-insecure-host pypi.org --allow-insecure-host files.pythonhosted.org &lt;package_name&gt;
+</code></pre>
+<h3>Suggested Permanent Solution</h3>
+<p>IMO a great flag addition similar to the <code>--native-tls</code> would be to introduce a <code>--custom-ca-file</code>.
+This would allow to specifically define what certs needs to be utilized to make any <code>uv</code> requests.</p>
+<p>Not sure how difficult this is to add.
+I would like to be able to do something like the following:</p>
+<pre><code class="language-bash">export HTTPS_PROXY=&lt;company-proxy-here&gt;
+uv add --custom-ca-file &lt;path to company internal root ca cert or bundle of certs&gt; &lt;package_name&gt;
+</code></pre>
+<h2>Update</h2>
+<p>As @zanieb mentioned there is already an env variable in place to provide the desired functionality.
+So now the following works like a charm</p>
+<pre><code class="language-bash">export HTTPS_PROXY=&lt;company-proxy-here&gt;
+export SSL_CERT_FILE=&lt;path to company internal root ca cert or bundle of certs&gt;
+uv add &lt;package_name&gt;
+</code></pre>
+<p>Thanks @zanieb for pointing this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 15:11</div>
+            <div class="timeline-body"><p>You can use the standard <a href="https://docs.astral.sh/uv/configuration/environment/#ssl_cert_file"><code>SSL_CERT_FILE</code> variable</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10724.html">astral-sh/uv#10724</a> on 2025-01-17 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bencherdev/bencher/issues/580.html">bencherdev/bencher#580</a> on 2025-02-14 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12265.html">astral-sh/uv#12265</a> on 2025-03-18 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/duygu-sahin">@duygu-sahin</a> on 2025-08-07 04:48</div>
+            <div class="timeline-body"><p>For those on Windows, here’s the equivalent workaround that worked for me:</p>
+<p>set HTTPS_PROXY=<company-proxy-here>
+uv pip install --allow-insecure-host pypi.org --allow-insecure-host files.pythonhosted.org &lt;package_name&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oguz-hanoglu">@oguz-hanoglu</a> on 2025-10-24 11:05</div>
+            <div class="timeline-body"><p>For github related downloads like new python installs
+<code>export UV_INSECURE_HOST=&quot;github.com raw.githubusercontent.com objects.githubusercontent.com&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oguz-hanoglu">@oguz-hanoglu</a> on 2025-10-24 11:59</div>
+            <div class="timeline-body"><p>export UV_NATIVE_TLS=true</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cloudquestor">@cloudquestor</a> on 2025-11-21 11:17</div>
+            <div class="timeline-body"><blockquote>
+<p>For github related downloads like new python installs <code>export UV_INSECURE_HOST=&quot;github.com raw.githubusercontent.com objects.githubusercontent.com&quot;</code></p>
+</blockquote>
+<p>This worked beautifully.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-installed PyPy versions take precedence over non-uv CPython versions - astral-sh/uv #7118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-installed PyPy versions take precedence over non-uv CPython versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7118">#7118</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2024-09-06 06:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2024-09-06 06:18</div>
+            <div class="timeline-body"><p><code>uv 0.4.6 (84f25e8cf 2024-09-05)</code></p>
+<p>I've been playing a bit with <code>uv python</code> and installed pypy3.9 with it and forgot about it.</p>
+<p>Now, whenever I run <code>uv venv --python python3.9</code> I get pypy3.9 instead. It just says <code>Using Python 3.9.19</code>.</p>
+<p>My guess is that uv-installed Pythons take hard precedence, because uninstalling it starts giving me my proper Python 3.9 from homebrew, despite the fact I still have a pyp3.9 installed, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv-installed PyPy versions take precedence over Python versions" to "uv-installed PyPy versions take precedence over non-uv CPython versions" by @hynek on 2024-09-06 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 13:21</div>
+            <div class="timeline-body"><p>Hm yeah we'll use a managed Python over an unmanaged one. You think we should prefer the system CPython in this case? You can do <code>--python cpython3.9</code> or <code>--python cp39</code> to avoid getting PyPy. You can also use <code>--python-preference system</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-06 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-06 13:25</div>
+            <div class="timeline-body"><p>Hmmm, fair enough for me, but kinda surprising. I would've never expected to get a PyPy when asking for &quot;Python 3.9&quot;. IDK, maybe I'm just set in my ways, by in my mind python3.9 is CPython and pypy3.9 is PyPy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 13:38</div>
+            <div class="timeline-body"><p>Yeah that makes sense. We should probably change the ordering, though it'll be a bit of a pain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-06 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2024-09-06 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-09-06 20:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I would've never expected to get a PyPy when asking for &quot;Python 3.9&quot;. IDK, maybe I'm just set in my ways, by in my mind python3.9 is CPython and pypy3.9 is PyPy.</p>
+</blockquote>
+<p>I've argued this before too. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7286.html">astral-sh/uv#7286</a> on 2024-09-12 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 15:17</div>
+            <div class="timeline-body"><p>Oh I might be fixing this by accident while working on #7286 haha</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-15 23:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7508.html">astral-sh/uv#7508</a> on 2024-09-18 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saucoide">@saucoide</a> on 2024-09-23 00:23</div>
+            <div class="timeline-body"><p>To add a datapoint, i'm just running into this and also found the behavior unexpected, especially because the output of a command depends on what other uv-managed pythons were previously installed</p>
+<pre><code class="language-sh">uv python install python3.8 pypy3.8
+uv venv --python python3.8 .venv  # venv created with cpython 3.8
+</code></pre>
+<p>vs</p>
+<pre><code class="language-sh">uv python install pypy3.8
+uv venv --python python3.8 .venv  # venv created with pypy 3.8
+</code></pre>
+<p>Also this produces different results whether run together or separately:</p>
+<pre><code class="language-sh">uv python install pypy3.8 python3.8  # installs both cpython &amp; pypy
+
+uv python install pypy3.8
+uv python install python3.8  # wont install anything -&gt; already found a 3.8 python pypy
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wntrblm/nox/pulls/842.html">wntrblm/nox#842</a> on 2024-09-23 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7650.html">astral-sh/uv#7650</a> on 2024-09-23 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-24 17:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:42 UTC
+    </footer>
+</body>
+</html>

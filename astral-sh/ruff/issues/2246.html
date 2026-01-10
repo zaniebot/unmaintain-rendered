@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question about TRY003 and built-in exceptions - astral-sh/ruff #2246</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question about TRY003 and built-in exceptions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2246">#2246</a>
+        opened by <a href="https://github.com/divaltor">@divaltor</a>
+        on 2023-01-27 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/divaltor">@divaltor</a> on 2023-01-27 10:09</div>
+            <div class="timeline-body"><p>Hello, thank you for great plugin! ❤️</p>
+<p>I have a question about TRY003 rule, because now it raise an error on built-in exceptions.</p>
+<pre><code class="language-python">len_str = 129
+
+if len_str &gt; 128:
+  raise ValueError(&quot;String must be lower than 128 chars&quot;)
+</code></pre>
+<p>Ruff output:</p>
+<pre><code class="language-bash">TRY003 Avoid specifying long messages outside the exception class
+</code></pre>
+<p>Should it be like this? If don't, should we add some optional rule in settings for ignoring built-in exceptions for this rule or not?</p>
+<p>Ruff version: 0.0.236</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-27 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 13:00</div>
+            <div class="timeline-body"><p>I think this is &quot;working as intended&quot;, although I find the rule to be a little strict. If you compare to <a href="https://github.com/guilatrova/tryceratops"><code>tryceratops</code></a>, they have the same behavior:</p>
+<pre><code>❯ flake8 bar.py --select TC
+bar.py:4:3: TC003 Avoid specifying long messages outside the exception class
+</code></pre>
+<p>I think what they want you to do is something like:</p>
+<pre><code class="language-py">class LongStringException(Exception):
+  def __init__(self, max_length: int) -&gt; None:
+    super().__init__(f&quot;String must be less than {max_length} characters&quot;)
+
+len_str = 129
+
+if len_str &gt; 128:
+  raise LongStringException(128)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/divaltor">@divaltor</a> on 2023-01-27 20:43</div>
+            <div class="timeline-body"><p>Okay, thank you for response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinhoyer">@martinhoyer</a> on 2023-03-07 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>If you compare to <a href="https://github.com/guilatrova/tryceratops">tryceratops</a>, they have the same behavior:</p>
+</blockquote>
+<p>@charliermarsh are you sure you tested it on built-in exceptions?</p>
+<pre><code>$ tryceratops iscsi.py 
+Done processing!
+Processed 1 files
+Everything clean!
+
+$ flake8 iscsi.py --select TC
+
+$ ruff iscsi.py 
+iscsi.py:74:19: TRY003 Avoid specifying long messages outside the exception class
+iscsi.py:81:23: TRY003 Avoid specifying long messages outside the exception class
+Found 2 errors.
+</code></pre>
+<pre><code>$ ruff -V
+ruff 0.0.254
+</code></pre>
+<p>ruff is complaining even when I have something as short as:<br />
+<code>raise ValueError(&quot;Invalid mode&quot;)</code></p>
+<p>Sorry if I'm missing something ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 14:59</div>
+            <div class="timeline-body"><p>@martinhoyer - Lemme take a look... I actually thought that <em>would</em> error in both Ruff and Tryceratops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 15:03</div>
+            <div class="timeline-body"><p>Yeah I think Ruff and Tryceratops <em>are</em> consistent here:</p>
+<pre><code>❯ flake8 foo.py --select TC
+foo.py:1:1: TC003 Avoid specifying long messages outside the exception class
+</code></pre>
+<p>The idea is that it wants you to define a custom exception class, e.g., something that takes <code>mode</code> as an argument, and formats the message within the exception class, rather than defining the message inline as part of <code>ValueError</code> -- so it is &quot;correct&quot;, from that perspective.</p>
+<p>That being said, the tryceratops rules tend to be quite strict, not always appropriate to enforce that IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinhoyer">@martinhoyer</a> on 2023-03-07 17:29</div>
+            <div class="timeline-body"><p>Thanks a lot for checking @charliermarsh !<br />
+I'm still puzzled why there is no error when I run flake8 or tryceratops directly, but I guess it's not worth spending time on this particular mystery :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../shap/shap/pulls/3356.html">shap/shap#3356</a> on 2023-10-23 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14398.html">astral-sh/ruff#14398</a> on 2024-11-17 13:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

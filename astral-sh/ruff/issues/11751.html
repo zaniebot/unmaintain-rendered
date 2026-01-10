@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`lint.per-file-ignores` option is ignored by the new language server - astral-sh/ruff #11751</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`lint.per-file-ignores` option is ignored by the new language server</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11751">#11751</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-06-05 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-06-05 12:21</div>
+            <div class="timeline-body"><p>when enabling the new <code>ruff.nativeServer</code> setting in vscode, it seems to ignore <code>tool.ruff.lint.per-file-ignores</code></p>
+<pre><code class="language-toml"># pyproject.toml
+
+[tool.ruff.lint]
+extend-select = [&quot;S101&quot;]
+[tool.ruff.lint.per-file-ignores]
+&quot;tests/**/.py&quot; = [&quot;S101&quot;]
+</code></pre>
+<pre><code class="language-jsonc">// .vscode/settings.json
+
+{
+  &quot;ruff.nativeServer&quot;: true
+}
+</code></pre>
+<p><img src="https://github.com/astral-sh/ruff/assets/57028336/b773846b-0b02-4f01-b41d-65baee0d2ebf" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-06-05 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-06-05 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 16:44</div>
+            <div class="timeline-body"><p>I think you have a typo: <code>&quot;tests/**/.py&quot;</code> should be `&quot;tests/**/*.py&quot;. Otherwise, it works in my testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-06-05 21:22</div>
+            <div class="timeline-body"><p>oh oops! weird though because the old language server and the cli both seem to work with that glob</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-06-06 06:49</div>
+            <div class="timeline-body"><p>fixing that typo doesn't seem to work for me. it seems that the new lsp is only seeing the name of the file, but not the full path. <code>&quot;foo.py&quot;</code> works but <code>&quot;tests/foo.py&quot;</code> doesn't</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-06 14:13</div>
+            <div class="timeline-body"><p>I'm not sure we can do. In the <code>ruff-vscode</code> repo, I added:</p>
+<pre><code class="language-toml">[tool.ruff.lint.per-file-ignores]
+&quot;tests/**/*.py&quot; = [&quot;F401&quot;]
+</code></pre>
+<p>And <code>F401</code> errors in <code>./tests/client/constants.py</code> are successfully ignored, as are errors in <code>./tests/test_server.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-06-07 00:13</div>
+            <div class="timeline-body"><p>i think it's because that repo does not use the new language server. adding the same thing to <code>pyproject.toml</code>, then adding <code>&quot;ruff.nativeServer&quot;: true</code> to <code>.vscode/settings.json</code> causes the error to appear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 00:27</div>
+            <div class="timeline-body"><p>Not for me... I have it enabled in my user settings, and I've verified that it's running via the logging. Could you be using an old Ruff version? There were some early versions of the native server that didn't support this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-06-07 00:32</div>
+            <div class="timeline-body"><p>according to the vscode extension log it's using 0.4.8:</p>
+<pre><code>2024-06-07 10:10:38.188 [info] Found ruff 0.4.8 at c:\Users\user\.vscode\extensions\charliermarsh.ruff-2024.26.0-win32-x64\bundled\libs\bin\ruff.exe
+</code></pre>
+<p>maybe it only happens on windows? i'm on windows 10, let me know if you need any more info</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:30</div>
+            <div class="timeline-body"><p>I will try it on Windows, perhaps there's a difference there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 17:31</div>
+            <div class="timeline-body"><p>Ok, I can successfully reproduce this on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-08 01:38</div>
+            <div class="timeline-body"><p>So the LSP file paths are now like:</p>
+<pre><code>/c%3A/Users/crmar/workspace/fastapi/tests/main.py
+</code></pre>
+<p>But the resolved ignore patterns are like:</p>
+<pre><code>c:\\Users\\crmar\\workspace\\fastapi\\tests\\**\\*.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11800.html">astral-sh/ruff#11800</a> on 2024-06-08 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-08 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-06-08 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14282.html">astral-sh/ruff#14282</a> on 2024-11-11 14:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

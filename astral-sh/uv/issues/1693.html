@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad error message when python query encounters python 2 - astral-sh/uv #1693</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bad error message when python query encounters python 2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1693">#1693</a>
+        opened by <a href="https://github.com/fervand1">@fervand1</a>
+        on 2024-02-19 14:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fervand1">@fervand1</a> on 2024-02-19 14:17</div>
+            <div class="timeline-body"><p>Steps to reproduce:</p>
+<ul>
+<li><p>Install uv using command - irm https://astral.sh/uv/install.ps1 | iex</p>
+</li>
+<li><p>Run command - uv venv. You will see error shown in the screenshot
+<img src="https://github.com/astral-sh/uv/assets/44014460/56b00d7f-89d0-4fad-83c8-97c333967b34" alt="image" /></p>
+</li>
+<li><p>The current uv platform - windows 10</p>
+</li>
+<li><p>uv version - 0.1.5</p>
+</li>
+</ul>
+<p>Note: In the windows path I only have path related to python 2. I also have python 3.10 and 3.12 installed but they can be ran using &quot;py&quot; command and are not added to the path. So something like <code>py -3.10 -m venv venv</code> creates python 3.10 env</p>
+<p>Since 'py' command is accepted norm on windows , I would expect the tool to run with the same and not consider python 2.7 path as a default python path.
+Also preferably during install it should prompt what python version he would expect to run uv from maybe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-19 14:24</div>
+            <div class="timeline-body"><p>For Python2.7 this is to be expected, as <code>base_prefix</code> was introduced in 3.3 <a href="https://docs.python.org/3/library/sys.html#sys.base_prefix">1</a></p>
+<p>What does <code>py -3.10 -m uv venv</code> output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fervand1">@fervand1</a> on 2024-02-19 14:30</div>
+            <div class="timeline-body"><p>@sbrugman I did not install the tool for python 3.10, so currently it raises following. I installed it globally with the powershell script mentioned in the pypi docs
+<img src="https://github.com/astral-sh/uv/assets/44014460/51bebf65-9e60-4dfc-b2ae-51ba38f0927c" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fervand1">@fervand1</a> on 2024-02-19 14:35</div>
+            <div class="timeline-body"><p>@sbrugman So I installed uv for python 3.10 and tried to create venv as you mentioned. The error is the same. It is taking Python 2 path into consideration.
+<img src="https://github.com/astral-sh/uv/assets/44014460/8ad8bb9a-68ac-4364-be51-52fd90bc145f" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 15:00</div>
+            <div class="timeline-body"><p>Sorry you're experiencing this. I'm currently looking into improving the python discovery on Windows see https://github.com/astral-sh/uv/issues/1310. I hope that this will fix your issue too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @MichaReiser on 2024-02-19 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-02-19 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fervand1">@fervand1</a> on 2024-02-19 15:06</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser for the quick response</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1698.html">astral-sh/uv#1698</a> on 2024-02-19 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fervand1">@fervand1</a> on 2024-02-19 15:19</div>
+            <div class="timeline-body"><p>@MichaReiser I created #1698 just as observation. It is possibly a side effect of the issue you are working on already but reported just in case it can help to improve the solution. thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-22 16:46</div>
+            <div class="timeline-body"><p>@fervand1 can you give it a try once https://github.com/astral-sh/uv/pull/1711/ is released?</p>
+<p>I suspect that this might solve your problem because it changes the precedence to first query <code>py</code> before searching PATH in accordance with <code>virtualenv</code>.</p>
+<p>The question that remains is if we should be more lenient when it comes to failures querying the python information and instead continue searching for other &quot;functioning&quot; installation. @konstin what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 19:33</div>
+            <div class="timeline-body"><p>We don't support python 2; We should check for python major != 3 and raise an error in the script we pass to python</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-02-22 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Error running uv venv command on windows 10" to "Bad error message when python query encounters python 2" by @konstin on 2024-02-22 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2024-02-22 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 19:35</div>
+            <div class="timeline-body"><blockquote>
+<p>The question that remains is if we should be more lenient when it comes to failures querying the python information and instead continue searching for other &quot;functioning&quot; installation. @konstin what do you think?</p>
+</blockquote>
+<p>We should special case python 2 (e.g. returns a specific json message), but otherwise it think we should at least for now show errors. If we encounter many unrelated errors, we can be more lenient later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1905.html">astral-sh/uv#1905</a> on 2024-02-23 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fervand1">@fervand1</a> on 2024-02-23 09:18</div>
+            <div class="timeline-body"><p>@MichaReiser I installed new version of uv via irm and it seems to be resolved.
+<img src="https://github.com/astral-sh/uv/assets/44014460/e0ec2083-f828-4afe-b489-05446c87e35d" alt="image" /></p>
+<p>Also I noticed we can pass <code>--python</code> param to specify which python we need. Passing 3.10 produced following
+<img src="https://github.com/astral-sh/uv/assets/44014460/bab9e77c-7b8c-477b-82bc-e482d0f6d086" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-02-23 10:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

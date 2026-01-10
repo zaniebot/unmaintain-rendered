@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap cannot parse PowerShell boolean value from environment variable - clap-rs/clap #6082</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap cannot parse PowerShell boolean value from environment variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6082">#6082</a>
+        opened by <a href="https://github.com/h1-yena">@h1-yena</a>
+        on 2025-07-31 19:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/h1-yena">@h1-yena</a> on 2025-07-31 19:10</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.88.0 (6b00bc388 2025-06-23)</p>
+<h3>Clap Version</h3>
+<p>4.5.42</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn main() {
+    let args = Args::parse();
+
+    println!(&quot;{}&quot;, args.foo);
+    println!(&quot;{}&quot;, args.bar);
+}
+#[derive(Parser, Debug)]
+struct Args {
+    #[arg(short)]
+    foo: String,
+    #[arg(short, env=&quot;BAR&quot;)]
+    bar: bool,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Under PowerShell 5:</p>
+<pre><code class="language-PowerShell">$Env:BAR=$true;
+cargo run -- -f &quot;Hello&quot;
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Output:</p>
+<pre><code> Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target\debug\ps_bug_test.exe -f Hello`
+error: invalid value 'True' for '-b'
+  [possible values: true, false]
+
+  tip: a similar value exists: 'true'
+
+For more information, try '--help'.
+error: process didn't exit successfully: `target\debug\ps_bug_test.exe -f Hello` (exit code: 2)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Output:</p>
+<pre><code>  Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target\debug\ps_bug_test.exe -f Hello`
+Hello
+true
+</code></pre>
+<h3>Additional Context</h3>
+<p>A possible workaround is that If the env-variable is set to &quot;true&quot;, it does indeed work.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @h1-yena on 2025-07-31 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-31 19:43</div>
+            <div class="timeline-body"><p>Is there a precedence for tools outside of the powershell ecosystem to accept <code>True</code>?</p>
+<p>What is <code>$false</code> and precedence for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-31 19:43</div>
+            <div class="timeline-body"><p>btw a way to workaround this is a custom value parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h1-yena">@h1-yena</a> on 2025-08-01 20:32</div>
+            <div class="timeline-body"><p>I am not sure about the precedence for tools outside of the powershell here, I only just started really using <code>clap</code> or even Rust for that matter so I was wondering why this behavior was happening!</p>
+<p>The same error happens with <code>$false</code> as well, though.</p>
+<p>Thank you for pointing out that work around! I did not know about that option!</p>
+<pre><code class="language-Rust">use clap::Parser;
+use std::str::ParseBoolError;
+
+fn main() {
+    let args = Args::parse();
+
+    println!(&quot;{}&quot;, args.foo);
+    println!(&quot;{}&quot;, args.bar);
+}
+#[derive(Parser, Debug)]
+struct Args {
+    #[arg(short)]
+    foo: String,
+    #[arg(short, env=&quot;BAR&quot;, value_parser=parse_ps_boolean)]
+    bar: bool,
+}
+
+
+fn parse_ps_boolean(arg: &amp;str) -&gt; Result&lt;bool,ParseBoolError&gt; {
+    arg.to_lowercase().parse()
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2025-08-04 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2025-08-04 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h1-yena">@h1-yena</a> on 2025-08-05 00:33</div>
+            <div class="timeline-body"><p>Hey @epage, just making sure, is there anything you need from me? I am always glad to help out and I would love for an opportunity to practice some more Rust :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-05 01:06</div>
+            <div class="timeline-body"><p>At this point, we need more information. Without any convincing cases on conventions, I'd be inclined to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h1-yena">@h1-yena</a> on 2025-08-05 01:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Without any convincing cases on conventions, I'd be inclined to close this.</p>
+</blockquote>
+<p>What kind of conventions do you mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlphaGit">@AlphaGit</a> on 2025-08-05 02:55</div>
+            <div class="timeline-body"><p>Hi there! I'd like to add on the topic that yes, Powershell does indeed have boolean values that it serializes as <code>True</code> (uppercase T) and <code>False</code>(uppercase F).</p>
+<p>https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_booleans?view=powershell-7.5</p>
+<p>Note that Powershell as a language allows for the parsing of multiple different values into boolean, as it can be seen on that same link. I would personally not go that route, having all those rules for a boolean parser seems like way out of scope for the purpose of this project.</p>
+<p>But as far as the boolean representation goes, yes, True and False (capitalized) are part of the PS conventions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h1-yena">@h1-yena</a> on 2025-08-05 12:22</div>
+            <div class="timeline-body"><p>I would also like to add that there is no such thing as a <code>true</code> in PowerShell 5. <code>true</code> evaluates to <code>True</code> and that is the value that the parser will find in the environment variable. Of course, one could also assign <code>&quot;true&quot;</code> (a string) to the variable, but that would go against data modelling principles and frankly feels kind of weird to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-05 18:21</div>
+            <div class="timeline-body"><p>Powershell breaks other conventions (iirc it uses <code>-</code> for long flags) and that is not something we support either.  My perception is Powershell does enough of their own thing that I feel like we shouldn't implicitly support its conventions but give people the flexibility to support them if desired.  So when I'm asking for conventions, I'm looking for what patterns appear within the more traditional Unix-like command environment (coreutils, git, docker, etc).</p>
+<p>Note that we may support a way to extend clap to allow for <code>-long</code> (#2468) but that would put flag styles in the same boat as we currently are with environment variable parsing (use <code>value_parser</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h1-yena">@h1-yena</a> on 2025-08-06 15:14</div>
+            <div class="timeline-body"><p>I understand where you are coming from! Yeah, it makes sense to me that this should be handled by a custom parser. Thanks for pointing out the possibility of adding a custom parser tho! :) I think the issue can be closed, then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-08-06 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

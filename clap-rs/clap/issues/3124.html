@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command-line and config file, both use-cases become possible with structopt? - clap-rs/clap #3124</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Command-line and config file, both use-cases become possible with structopt?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3124">#3124</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
+            <div class="timeline-body"><p><a href="https://github.com/SamuelMarks"><img src="https://avatars.githubusercontent.com/u/807580?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/SamuelMarks">SamuelMarks</a></strong>
+<em>Wednesday Jun 05, 2019 at 04:46 GMT</em>
+<em>Originally opened as https://github.com/TeXitoi/structopt/issues/197</em></p>
+<hr />
+<p>A few common use-cases:</p>
+<ul>
+<li>Accept input from config file</li>
+<li>Accept input from environment variables</li>
+<li>Accept input from command-line</li>
+</ul>
+<p>Then, overriding config file attributes with environment variable or command line.</p>
+<p>I'm not sure exactly how to represent this in Rust, but something like:</p>
+<pre><code class="language-rust">#[derive(StructOpt, Debug)]
+#[structopt(name = &quot;example&quot;, about = &quot;An example of StructOpt usage.&quot;)]
+struct Opt {
+    /// The config file
+    #[structopt(short = &quot;c&quot;, long = &quot;config&quot;, help = &quot;Config file&quot;)]
+    config_file: Option&lt;Config&gt;,
+
+    #[structopt(flatten, required_unless = &quot;config_file&quot;)
+    options: Option&lt;Config&gt;,
+}
+
+#[derive(StructOpt, Debug)]
+struct Config {
+    /// A flag, true if used in the command line.
+    #[structopt(short = &quot;d&quot;, long = &quot;debug&quot;, help = &quot;Activate debug mode&quot;)]
+    debug: bool,
+
+    /// An argument of type float, with a default value.
+    #[structopt(short = &quot;s&quot;, long = &quot;speed&quot;, help = &quot;Set speed&quot;, default_value = &quot;42&quot;)]
+    speed: f64,
+
+    /// Needed parameter, the first on the command line.
+    #[structopt(help = &quot;Input file&quot;)]
+    input: String,
+
+    /// An optional parameter, will be `None` if not present on the
+    /// command line.
+    #[structopt(help = &quot;Output file, stdout if not present&quot;)]
+    output: Option&lt;String&gt;,
+
+    /// An optional parameter with optional value, will be `None` if
+    /// not present on the command line, will be `Some(None)` if no
+    /// argument is provided (i.e. `--log`) and will be
+    /// `Some(Some(String))` if argument is provided (e.g. `--log
+    /// log.txt`).
+    #[structopt(
+        long = &quot;log&quot;,
+        help = &quot;Log file, stdout if no file, no logging if not present&quot;
+    )]
+    log: Option&lt;Option&lt;String&gt;&gt;,
+
+    /// An optional list of values, will be `None` if not present on
+    /// the command line, will be `Some(vec![])` if no argument is
+    /// provided (i.e. `--optv`) and will be `Some(Some(String))` if
+    /// argument list is provided (e.g. `--optv a b c`).
+    #[structopt(long = &quot;optv&quot;)]
+    optv: Option&lt;Vec&lt;String&gt;&gt;,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Wednesday Jun 05, 2019 at 09:15 GMT</em></p>
+<hr />
+<p>See also #72</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+<em>Wednesday Jun 05, 2019 at 09:41 GMT</em></p>
+<hr />
+<p>Note that clap support environment variable. You can use that:</p>
+<pre><code class="language-rust">#[derive(StructOpt, Debug)]
+struct Opt {
+    #[structopt(short, long, env = &quot;FILE&quot;, default_value = &quot;foo&quot;)]
+    file: String,
+}
+</code></pre>
+<p>if <code>-f</code> or <code>--file</code> is given on the command line, it is used, else if the environment variable <code>FILE</code> is setted, it is used, else the default value &quot;foo&quot; is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:29</div>
+            <div class="timeline-body"><p>I'm closing this in favor of #3113 to track config layering</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-09 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/197.html">TeXitoi/structopt#197</a> on 2022-01-18 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:46 UTC
+    </footer>
+</body>
+</html>

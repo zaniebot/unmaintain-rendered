@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add tool bin dir to PATH in uv's docker images - astral-sh/uv #13057</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add tool bin dir to PATH in uv's docker images</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13057">#13057</a>
+        opened by <a href="https://github.com/RazerM">@RazerM</a>
+        on 2025-04-22 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RazerM">@RazerM</a> on 2025-04-22 17:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If using a uv docker image such as <code>ghcr.io/astral-sh/uv:python3.13-bookworm</code>, installed tools are not on the <code>PATH</code>, which means tools cannot be used out of the box. E.g. in a GitLab CI job:</p>
+<pre><code class="language-yaml">job:
+  stage: deploy
+  image: ghcr.io/astral-sh/uv:python3.13-bookworm
+  before_script:
+    - uv tool install ...
+    - &lt;try to use tool&gt;
+</code></pre>
+<pre><code>warning: `/root/.local/bin` is not on your PATH. To use installed tools, add the directory to your PATH.
+</code></pre>
+<p>It would be nice if the docker images included <code>ENV PATH=/root/.local/bin:$PATH</code> so that this worked.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @RazerM on 2025-04-22 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-04-25 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-04-26 02:28</div>
+            <div class="timeline-body"><p>@RazerM this is generally a nice shortcut, although it comes with risks given this is a breaking change which may effectively break downstream consumers.</p>
+<p>Few immediate examples of this:</p>
+<ol>
+<li>There is no easy way to opt-out if this behavior on builds that inherit from this image besides re-overriding PATH at build time or patching it at runtime each time.</li>
+<li>Putting root in the path can be problematic for anyone that inherits from this image and uses a different user, likely causing permission issues. Using a different user will change what the tool path should be ultimately be. This is something that should be determined by the consumer not producer in our case.</li>
+<li>You'd introduce different behaviors across images as  /root is not portable. There may be no equivalent across all images. Since Docker does not expand env vars dynamically from a runtime shell-specific output, you'd still have a build limitation on achieving the proposed behavior.</li>
+</ol>
+<p>On your example, I would instead prefix PATH which what you need to accomplish the desired behavior.</p>
+<pre><code class="language-yaml">before_script:
+    - uv tool install ...
+    - PATH=/root/.local/bin:$PATH  &lt;try to use tool&gt;
+</code></pre>
+<p>edit: changed <code>permanently</code> to <code>effectively</code> to clarify intent and fixed wording on example 3 which was confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-04-26 21:28</div>
+            <div class="timeline-body"><p>@samypr100</p>
+<blockquote>
+<p>this is a breaking change which may permanently break downstream consumers.</p>
+</blockquote>
+<p>I think that may be a bit dramatic 😅</p>
+<p>To answer your examples point by point:</p>
+<ol>
+<li><p>I'm not sure why anyone would need an opt-out here. A user of the image is in control of what gets installed. Anyone running the image as root can do whatever they want, and anyone running as non-root isn't affected by it.</p>
+</li>
+<li><p>Inaccessible directories on PATH are ignored, they wouldn't cause &quot;permission issues&quot;.</p>
+<p>If I build on top of these images and use a different user, it's also on me to set up <code>PATH</code> if I want <code>uv tool install</code> to work for that user.</p>
+</li>
+<li><p>Obviously the correct directory would be used for each image that is built...</p>
+</li>
+<li><p>I'm not sure what you're trying to say here. <code>ENV</code> does expand <code>$PATH</code> at build time. You can have a look at <code>docker image inspect</code> on built images if you want to check this.</p>
+</li>
+</ol>
+<blockquote>
+<p>On your example, I would instead prefix PATH which what you need to accomplish the desired behavior.</p>
+</blockquote>
+<p>I'm using <code>UV_TOOL_BIN_DIR</code>, since I can set it globally:</p>
+<pre><code class="language-yaml">variables:
+  UV_TOOL_BIN_DIR: /usr/local/bin
+
+job:
+  stage: deploy
+  image: ghcr.io/astral-sh/uv:python3.13-bookworm
+  before_script:
+    - uv tool install ...
+    - &lt;try to use tool&gt;
+</code></pre>
+<p>I just thought it would be nice if <code>uv tool install</code> worked out of the box...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-04-26 21:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm using UV_TOOL_BIN_DIR, since I can set it globally</p>
+</blockquote>
+<p>Indeed, that's a good approach and something that seems quite reasonable to do on uv images by default over modifying PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13391.html">astral-sh/uv#13391</a> on 2025-05-12 01:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @RazerM on 2025-06-23 22:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

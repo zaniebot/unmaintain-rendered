@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip list --system | wc -l` is not the same as `python3 -m pip list | wc -l`, is this expected? - astral-sh/uv #16220</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip list --system | wc -l` is not the same as `python3 -m pip list | wc -l`, is this expected?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16220">#16220</a>
+        opened by <a href="https://github.com/pplmx">@pplmx</a>
+        on 2025-10-10 07:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pplmx">@pplmx</a> on 2025-10-10 07:35</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p><strong>Summary:</strong></p>
+<p><code>uv pip list --system | wc -l</code> reports significantly fewer packages than <code>python3 -m pip list | wc -l</code>, even though both point to the same Python installation.
+Is this expected behavior?</p>
+<hr />
+<h3>🔍 Steps to Reproduce</h3>
+<pre><code class="language-bash">root@userx:/var/tmp# uv self version
+uv 0.9.1
+
+root@userx:/var/tmp# uv python list --only-installed
+cpython-3.10.18-linux-x86_64-gnu    /usr/local/bin/python3.10
+cpython-3.10.18-linux-x86_64-gnu    /usr/local/bin/python3 -&gt; /usr/local/bin/python3.10
+
+root@userx:/var/tmp# command -v python3
+/usr/local/bin/python3
+
+root@userx:/var/tmp# uv pip list --system | wc -l
+Using Python 3.10.18 environment at: /usr/local
+45
+
+root@userx:/var/tmp# python3 -m pip list | wc -l
+202
+</code></pre>
+<hr />
+<h3>💡 Expected Behavior</h3>
+<p>Both commands should list the same set of installed packages, since <code>uv pip list --system</code> claims to use the same system Python environment (<code>/usr/local</code>).</p>
+<h3>Platform</h3>
+<p>Ubuntu 20.04.6 LTS</p>
+<h3>Version</h3>
+<p>uv 0.9.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @pplmx on 2025-10-10 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-14 12:17</div>
+            <div class="timeline-body"><p>Can you check which packages those are, and where they are installed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-10-15 02:58</div>
+            <div class="timeline-body"><p>I found something that might explain the issue:</p>
+<pre><code class="language-bash"># Compare outputs between pip and uv
+pip show vllm
+
+# ...
+Location: /usr/local/custom/lib64/python3/dist-packages
+# ...
+
+uv pip show vllm
+Using Python 3.10.18 environment at: /usr/local
+warning: Package(s) not found for: vllm
+
+# Check sys.path
+python3 -c &quot;import sys; from pprint import pprint; pprint(sys.path)&quot;
+['',
+ '/usr/local/custom/lib64/python3/dist-packages',
+ '/usr/local/lib/python310.zip',
+ '/usr/local/lib/python3.10',
+ '/usr/local/lib/python3.10/lib-dynload',
+ '/usr/local/lib/python3.10/site-packages']
+</code></pre>
+<p>It seems that <code>uv pip list</code> doesn’t include packages located in <code>/usr/local/custom/lib64/python3/dist-packages</code>.</p>
+<p>Could it be that this custom path isn’t being picked up in <code>sys.path</code> by <code>uv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-15 11:47</div>
+            <div class="timeline-body"><p><code>uv pip list</code> currently sees only the main site-packages directory, not all for <code>sys.path</code>, this is a known limitation (for now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-15 13:00</div>
+            <div class="timeline-body"><p>This is tracked in https://github.com/astral-sh/uv/issues/2500</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-10-15 13:23</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv pip list</code> currently sees only the main site-packages directory, not all for <code>sys.path</code>, this is a known limitation (for now).</p>
+</blockquote>
+<p>Thanks for your explanation. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily property test run failed on Sat Mar 22 2025 - astral-sh/ruff #16913</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Daily property test run failed on Sat Mar 22 2025</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16913">#16913</a>
+        opened by <a href="https://github.com/github-actions">@github-actions</a>
+        on 2025-03-22 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/github-actions">@github-actions</a> on 2025-03-22 12:12</div>
+            <div class="timeline-body"><p>Run listed here: https://github.com/astral-sh/ruff/actions/runs/14008386407</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @github-actions[bot] on 2025-03-22 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @github-actions[bot] on 2025-03-22 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @github-actions[bot] on 2025-03-22 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-24 14:57</div>
+            <div class="timeline-body"><p>The failure is:</p>
+<pre><code>---- types::property_tests::stable::negation_reverses_subtype_order stdout ----
+
+thread 'types::property_tests::stable::negation_reverses_subtype_order' panicked at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quickcheck-1.0.3/src/tester.rs:165:28:
+[quickcheck] TEST FAILED. Arguments: (AlwaysFalsy, Union([Intersection { pos: [], neg: [LiteralString] }, AlwaysFalsy]))
+</code></pre>
+<p>And I can also reproduce a similar issue locally with:</p>
+<pre><code>---- types::property_tests::stable::negation_reverses_subtype_order stdout ----
+
+thread 'types::property_tests::stable::negation_reverses_subtype_order' panicked at /Users/alexw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quickcheck-1.0.3/src/tester.rs:165:28:
+[quickcheck] TEST FAILED. Arguments: (AlwaysFalsy, Union([AlwaysFalsy, Intersection { pos: [], neg: [LiteralString] }]))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>We stabilised this property test in https://github.com/astral-sh/ruff/pull/16801, but it was obviously premature. I ran it for several million iterations locally before stabilising, but it's obviously still sometimes flaky.</p>
+<p>I'm not sure we should add more regression tests for <code>AlwaysTruthy</code>/<code>AlwaysFalsy</code> intersections because we have lots of failing tests already here: https://github.com/astral-sh/ruff/blob/2711e08eb8eb38d1ce323aae0517fede371cba15/crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md?plain=1#L276-L315</p>
+<p>But we should add a comment to the property test saying that we should not stabilise the test until those mdtests pass. The <code>AlwaysTruthy</code>/<code>AlwaysFalsy</code> flakes are obviously very rare on this property test, so we can't rely on local testing to be sure that this one can be stabilised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16951.html">astral-sh/ruff#16951</a> on 2025-03-24 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-24 15:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

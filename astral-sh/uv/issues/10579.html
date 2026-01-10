@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After modifying installed package, `uv pip install` re-installs the modified one - astral-sh/uv #10579</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>After modifying installed package, `uv pip install` re-installs the modified one</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10579">#10579</a>
+        opened by <a href="https://github.com/bersbersbers">@bersbersbers</a>
+        on 2025-01-13 21:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2025-01-13 21:21</div>
+            <div class="timeline-body"><p>I am unsure if this reproduces cleanly, but is not the first time I have experiences this. In short, I patched <code>_pytest\config\__init__.py</code> within my active <code>.venv</code> folder. In fact, I added a line <code>if any(&quot;::&quot; in arg for arg in args):</code> which does not belong there.</p>
+<p>Undoing this is surprisingly difficult with <code>uv</code>. While <code>uv pip uninstall</code> does delete the modified file, <code>uv pip install</code> brings back <em>the modified file</em>. <code>pip install</code> does it better:</p>
+<pre><code>(project) C:\Git\project&gt;grep &quot;arg in args&quot; .venv\Lib\site-packages\_pytest\config\__init__.py
+    if any(&quot;::&quot; in arg for arg in args):
+
+(project) C:\Git\project&gt;uv pip uninstall pytest
+Uninstalled 1 package in 76ms
+ - pytest==8.3.4
+
+(project) C:\Git\project&gt;grep &quot;arg in args&quot; .venv\Lib\site-packages\_pytest\config\__init__.py
+grep.exe: .venv\Lib\site-packages\_pytest\config\__init__.py: No such file or directory
+
+(project) C:\Git\project&gt;uv pip install pytest
+Resolved 5 packages in 101ms
+Installed 1 package in 217ms
+ + pytest==8.3.4
+
+(project) C:\Git\project&gt;grep &quot;arg in args&quot; .venv\Lib\site-packages\_pytest\config\__init__.py
+    if any(&quot;::&quot; in arg for arg in args):
+
+(project) C:\Git\project&gt;uv pip uninstall pytest
+Uninstalled 1 package in 39ms
+ - pytest==8.3.4
+
+(project) C:\Git\project&gt;pip install pytest
+Collecting pytest
+  Using cached pytest-8.3.4-py3-none-any.whl.metadata (7.5 kB)
+Requirement already satisfied: colorama in c:\git\project\.venv\lib\site-packages (from pytest) (0.4.6)
+Requirement already satisfied: iniconfig in c:\git\project\.venv\lib\site-packages (from pytest) (2.0.0)
+Requirement already satisfied: packaging in c:\git\project\.venv\lib\site-packages (from pytest) (24.2)
+Requirement already satisfied: pluggy&lt;2,&gt;=1.5 in c:\git\project\.venv\lib\site-packages (from pytest) (1.5.0)
+Using cached pytest-8.3.4-py3-none-any.whl (343 kB)
+Installing collected packages: pytest
+Successfully installed pytest-8.3.4
+
+(project) C:\Git\project&gt;grep &quot;arg in args&quot; .venv\Lib\site-packages\_pytest\config\__init__.py
+</code></pre>
+<p>uv 0.5.11 (c4d0caaee 2024-12-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 21:24</div>
+            <div class="timeline-body"><p>This is because we use hard links for the uv cache. If you modify the environment, it will be reflected back in the cache. I'd suggest either <code>uv cache clean pytest</code>, or using <code>uv pip install --link-mode=copies</code> if you intend to modify the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2025-01-13 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-13 21:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:05 UTC
+    </footer>
+</body>
+</html>

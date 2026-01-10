@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Always install the latest version in `uv tool install` - astral-sh/uv #15371</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Always install the latest version in `uv tool install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15371">#15371</a>
+        opened by <a href="https://github.com/varioustoxins">@varioustoxins</a>
+        on 2025-08-19 07:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/varioustoxins">@varioustoxins</a> on 2025-08-19 07:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>if I do</p>
+<pre><code class="language-bash">uv tool uninstall nef-pipelines
+uv tool install nef-pipelines --with rich  --python 3.11 --with streamfitter
+</code></pre>
+<p>this will install the latest version of <code>nef-pipelines</code></p>
+<p>then</p>
+<pre><code class="language-bash">uv tool install nef-pipelines=0.1.111 --with rich  --python 3.11
+</code></pre>
+<p>takes me back to an older version without the streamfitter module which has a bug</p>
+<pre><code class="language-bash">nef help about --version
+0.1.111
+
+nef
+
+....
+
+ModuleNotFoundError: No module named 'streamfitter'
+</code></pre>
+<p>However, if I now request what you would presume is the latest version again, it doesn't install it.  I still have the bug and the version is not the latest</p>
+<pre><code class="language-bash">uv tool install nef-pipelines --with rich  --python 3.11
+nef help about --version
+0.1.111
+...
+error output as before
+</code></pre>
+<p>I have to do</p>
+<pre><code class="language-bash">uv tool uninstall nef-pipelines
+uv tool install nef-pipelines --with rich  --python 3.11 
+</code></pre>
+<p>to get the latest version as shown by</p>
+<pre><code class="language-bash">nef help about --version
+0.1.112
+
+nef
+....
+output but no errors
+</code></pre>
+<p>is this correct, it seems unintuitive?</p>
+<h3>Platform</h3>
+<p>macOS Sonoma 14.2.1</p>
+<h3>Version</h3>
+<p>uv 0.8.12 (36151df0e 2025-08-18)</p>
+<h3>Python version</h3>
+<p>python 3.11 for the tool</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @varioustoxins on 2025-08-19 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 09:15</div>
+            <div class="timeline-body"><p>I think this is correct in that you already have a tool installed that satisfies the request (in other words, omitting the version doesn't count as &quot;latest&quot;). We could consider changing that, but we have a dedicated <code>@latest</code> tag for this:</p>
+<pre><code>uv tool install &quot;nef-pipelines@latest&quot; --python 3.11
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-19 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-19 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-19 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/varioustoxins">@varioustoxins</a> on 2025-08-19 19:34</div>
+            <div class="timeline-body"><p>Can I disagree? What I get out of an install shouldn't depend on my previous installs, it should be idempotent. This puts less mental burden on the user (and I think maybe what people expect?). Anyway whatever your decision is great work and I will add @latest to my bag of tricks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-19 19:58</div>
+            <div class="timeline-body"><p>I think we chose this model because it matches <code>pip install &lt;name&gt;</code></p>
+<pre><code>❯ uvx pip install anyio==4.9.0
+Installed 1 package in 9ms
+Collecting anyio==4.9.0
+  Using cached anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+Collecting idna&gt;=2.8 (from anyio==4.9.0)
+  Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+Collecting sniffio&gt;=1.1 (from anyio==4.9.0)
+  Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Using cached anyio-4.9.0-py3-none-any.whl (100 kB)
+Using cached idna-3.10-py3-none-any.whl (70 kB)
+Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+Installing collected packages: sniffio, idna, anyio
+Successfully installed anyio-4.9.0 idna-3.10 sniffio-1.3.1
+❯ uvx pip install anyio
+Requirement already satisfied: anyio in /private/tmp/example/cache/archive-v0/i6E4eerwUddLyN-rHEMwN/lib/python3.13/site-packages (4.9.0)
+Requirement already satisfied: idna&gt;=2.8 in /private/tmp/example/cache/archive-v0/i6E4eerwUddLyN-rHEMwN/lib/python3.13/site-packages (from anyio) (3.10)
+Requirement already satisfied: sniffio&gt;=1.1 in /private/tmp/example/cache/archive-v0/i6E4eerwUddLyN-rHEMwN/lib/python3.13/site-packages (from anyio) (1.3.1)
+</code></pre>
+<p>(<code>uv pip install</code> is the same)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-19 20:00</div>
+            <div class="timeline-body"><p>As a data point, I think <code>cargo install</code> has the behavior you want</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-19 21:12</div>
+            <div class="timeline-body"><p>I would be fine changing this for <code>uv tool install</code>, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv tool install without a version should always install the latest version?" to "Always install the latest version in `uv tool install`" by @zanieb on 2025-08-19 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-08-19 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-08-19 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2025-08-19 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-19 21:25</div>
+            <div class="timeline-body"><p>I think I would be too. It's inconsistent, but a pretty reasonable behavior. Let's consider it for 0.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.9.0" by @zanieb on 2025-08-19 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-08-20 16:04</div>
+            <div class="timeline-body"><p>What does the first <code>uv tool install ruff</code> do differently than the second? The second one gives <code>'ruff' is already installed</code>, which seems correct. Would this be solved by simply giving that message on the first install attempt?</p>
+<pre><code class="language-shell">&gt; uv tool install ruff@0.12.8
+Resolved 1 package in 11ms
+Installed 1 package in 32ms
+ + ruff==0.12.8
+Installed 1 executable: ruff
+
+&gt; ruff --version
+ruff 0.12.8
+
+&gt; uv tool install ruff
+Resolved 1 package in 10ms
+Audited 1 package in 0.04ms
+Installed 1 executable: ruff
+
+&gt; ruff --version
+ruff 0.12.8
+
+&gt; uv tool install ruff
+`ruff` is already installed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/varioustoxins">@varioustoxins</a> on 2025-08-21 09:37</div>
+            <div class="timeline-body"><p>Hi I think if you would want to go down this road you should phrase the message carefully</p>
+<p>If ruff is installed but not latest:</p>
+<p>ruff is already installed at version 0.12.8 to install he latest version use uv tool install with <em><strong>@</strong></em>.***</p>
+<p>If ruff is installed at latest</p>
+<p>ruff is already installed at version 0.12.8 (the latest version)</p>
+<p>regards
+Gary</p>
+<p>Dr Gary S Thompson NMR Facility Manager
+CCPN CoI &amp; Working Group Member
+Wellcome Trust Biomolecular NMR Facility
+School of Natural Sciences
+University of Kent,  Canterbury,  Kent,  England,  CT2 7NZ</p>
+<p>☎:01227 82 7117
+✉️: <em><strong>@</strong></em>.***
+orchid: orcid.org/0000-0001-9399-7636</p>
+<p>On 20 Aug 2025, at 17:04, powercoconola <em><strong>@</strong></em>.***&gt; wrote:</p>
+<p>[https://avatars.githubusercontent.com/u/185171681?s=20&amp;v=4]powercoconola left a comment (astral-sh/uv#15371)<a href="https://github.com/astral-sh/uv/issues/15371#issuecomment-3207004462">https://github.com/astral-sh/uv/issues/15371#issuecomment-3207004462</a></p>
+<p>What does the first uv tool install ruff do differently than the second? The second one gives 'ruff' is already installed, which seems correct. Would this be solved by simply giving that message on the first install attempt?</p>
+<ul>
+<li>ruff==0.12.8
+Installed 1 executable: ruff</li>
+</ul>
+<blockquote>
+<p>ruff --version
+ruff 0.12.8</p>
+</blockquote>
+<blockquote>
+<p>uv tool install <em><strong>@</strong></em>.***
+Resolved 1 package in 11ms
+Installed 1 package in 32ms</p>
+</blockquote>
+<blockquote>
+<p>uv tool install ruff
+Resolved 1 package in 10ms
+Audited 1 package in 0.04ms
+Installed 1 executable: ruff</p>
+</blockquote>
+<blockquote>
+<p>ruff --version
+ruff 0.12.8</p>
+</blockquote>
+<blockquote>
+<p>uv tool install ruff
+<code>ruff</code> is already installed</p>
+</blockquote>
+<p>—
+Reply to this email directly, view it on GitHub<a href="https://github.com/astral-sh/uv/issues/15371#issuecomment-3207004462">https://github.com/astral-sh/uv/issues/15371#issuecomment-3207004462</a>, or unsubscribe<a href="https://github.com/notifications/unsubscribe-auth/AA3UD6II5BTYFSWGADPL2N33OSMALAVCNFSM6AAAAACEHLL5OCVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBXGAYDINBWGI">https://github.com/notifications/unsubscribe-auth/AA3UD6II5BTYFSWGADPL2N33OSMALAVCNFSM6AAAAACEHLL5OCVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEMBXGAYDINBWGI</a>.
+You are receiving this because you authored the thread.Message ID: <em><strong>@</strong></em>.***&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-09-17 23:13</div>
+            <div class="timeline-body"><p>I think this change is very necessary — the current behavior is too counterintuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-09-17 23:17</div>
+            <div class="timeline-body"><p>If a version number is specified during installation, then even running <code>uv tool upgrade &lt;package&gt;</code> later won’t update the package. This design is quite strange.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-09-18 13:56</div>
+            <div class="timeline-body"><blockquote>
+<p>If a version number is specified during installation, then even running <code>uv tool upgrade &lt;package&gt;</code> later won’t update the package. This design is quite strange.</p>
+</blockquote>
+<p>I agree, it's hard to remember. The easiest thing to remember is <code>@latest</code> syntax, or basically always specifying the version I want using <code>install</code>. The <code>upgrade</code> command is not useful to remember because it has too many quirks of relying on how tools were previously installed.</p>
+<pre><code class="language-shell">&gt; uv tool install ruff@0.12
+Resolved 1 package in 152ms
+Downloading ruff (11.1MiB)
+ Downloading ruff
+Prepared 1 package in 1.43s
+Installed 1 package in 28ms
+ + ruff==0.12.0
+Installed 1 executable: ruff
+
+&gt; uv tool upgrade ruff
+Nothing to upgrade
+
+&gt; ruff --version
+ruff 0.12.0
+
+&gt; uv tool install ruff@latest
+Resolved 1 package in 162ms
+Prepared 1 package in 2ms
+Uninstalled 1 package in 10ms
+Installed 1 package in 33ms
+ - ruff==0.12.0
+ + ruff==0.13.0
+Installed 1 executable: ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.9.0" by @zanieb on 2025-10-12 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.10.0" by @zanieb on 2025-10-12 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

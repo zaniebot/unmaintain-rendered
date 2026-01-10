@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dist-info entry in site-packages for editable install - astral-sh/uv #6793</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>dist-info entry in site-packages for editable install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6793">#6793</a>
+        opened by <a href="https://github.com/letrec">@letrec</a>
+        on 2024-08-29 06:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/letrec">@letrec</a> on 2024-08-29 06:08</div>
+            <div class="timeline-body"><p><code>uv pip install -e</code> creates a dist-info entry in site-packages, which python -m pip does not seem to do.</p>
+<p>uv venv --python 3.10 --no-python-downloads --link-mode hardlink
+source .venv/bin/activate
+uv pip install -e ~/src/my_package</p>
+<p>% ls .venv/lib/python3.10/site-packages/ | grep my_package
+<strong>editable</strong>.my_package-0.5.0.16.pth
+__editable___my_package_0_5_0_16_finder.py
+my_package-0.5.0.16.dist-info</p>
+<p>% uv --version
+uv 0.4.0</p>
+<p>% uname -a
+24~22.04.1-Ubuntu SMP Thu Jul 18 10:43:12 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux</p>
+<p>I don't think it's a wrong behavior, but it's different from what pip does and it confuses Pylance.
+The packages is completely functional in Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/pylance-release/issues/6353.html">microsoft/pylance-release#6353</a> on 2024-09-05 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 18:22</div>
+            <div class="timeline-body"><p>I think you need <code>--config-setting editable_mode=compat</code> in order to get these working with Pylance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-08 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-08 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 18:22</div>
+            <div class="timeline-body"><p>I also chimed in on the Pylance issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-08 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/letrec">@letrec</a> on 2024-09-09 03:07</div>
+            <div class="timeline-body"><p>The suggested doesn't seem to work.
+When I install my package as <code>python -m pip install --config-settings editable_mode=compat -e ~/src/package</code>, Pylance is able to recognize it properly -- imports from it are not higligted as errors and go to definition is able to jump to the underlying code.
+But running <code>uv pip install --config-setting editable_mode=compat -e ~/src/package</code> results in Pylance reporting</p>
+<blockquote>
+<p>Import &quot;package&quot; could not be resolved</p>
+</blockquote>
+<p>I just checked it with uv 0.4.7, pip 24.2 and Pylance v2024.8.2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 03:11</div>
+            <div class="timeline-body"><p>Did you clear the cache first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/letrec">@letrec</a> on 2024-09-09 03:12</div>
+            <div class="timeline-body"><p>The cache of uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 03:16</div>
+            <div class="timeline-body"><p>Yeah. If you’ve built the package previously, we may not rebuild it even if you provide a config setting like that (there’s an open PR that fixes this). So just to verify, I’d suggest running with the —reinstall flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/letrec">@letrec</a> on 2024-09-09 03:27</div>
+            <div class="timeline-body"><p>Running <code>uv cache clean package</code> didn't seem to help, so I deleted the egg-info dir and run <code>uv pip install --reinstall --config-setting editable_mode=compat -e ~/src/package</code> and Pylance is happy now.
+Thank you very much!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:35 UTC
+    </footer>
+</body>
+</html>

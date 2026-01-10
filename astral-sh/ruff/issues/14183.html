@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: Unsafe fix for `custom-type-var-return-type`/`PYI019` - astral-sh/ruff #14183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: Unsafe fix for `custom-type-var-return-type`/`PYI019`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14183">#14183</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-11-08 00:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-08 00:48</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>https://docs.astral.sh/ruff/rules/custom-type-var-return-type/
+I feel like logically a fix for this rule should be feasible without too much complexity? (at least in pyi files and maybe py files above 3.10, see https://github.com/astral-sh/ruff/issues/9761). Useful to migrate codebases still using the old <code>TypeVar</code> way of typing <code>Self</code>. The fix should be unsafe as there's still edge-cases where using a <code>TypeVar</code> is needed (typeshed has some of those). Marking it unsafe may also simplify the logic to apply the fix (if <code>Self</code> already exists in scope)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14184.html">astral-sh/ruff#14184</a> on 2024-11-08 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/python-type-stubs/pulls/340.html">microsoft/python-type-stubs#340</a> on 2024-11-08 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-08 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14238.html">astral-sh/ruff#14238</a> on 2024-11-10 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-12 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 02:30</div>
+            <div class="timeline-body"><p>CC @InSyncWithFoo</p>
+<p>On v0.7.4 running <code>ruff check --select=PYI019 --fix --preview</code> on https://github.com/microsoft/python-type-stubs/ still leaves me with 9 errors. What's making it so these are not autofixable ? I can't find any difference between them and the one that gets fixed.</p>
+<pre><code>stubs\sklearn\calibration.pyi:89:10: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+87 |         y: ArrayLike,
+88 |         sample_weight: None | ArrayLike = None,
+89 |     ) -&gt; _SigmoidCalibration_Self: ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^ PYI019
+90 |     def predict(self, T: ArrayLike) -&gt; ndarray: ...
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\cross_decomposition\_pls.pyi:48:75: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+46 |         copy: bool = True,
+47 |     ) -&gt; None: ...
+48 |     def fit(self: _PLS_Self, X: MatrixLike, Y: MatrixLike | ArrayLike) -&gt; _PLS_Self: ...
+   |                                                                           ^^^^^^^^^ PYI019
+49 |     def transform(
+50 |         self, X: MatrixLike, Y: None | MatrixLike = None, copy: bool = True
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\decomposition\_nmf.pyi:71:89: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+69 |         verbose: int = 0,
+70 |     ) -&gt; None: ...
+71 |     def fit(self: _BaseNMF_Self, X: MatrixLike | ArrayLike, y: Any = None, **params) -&gt; _BaseNMF_Self: ...
+   |                                                                                         ^^^^^^^^^^^^^ PYI019
+72 |     def inverse_transform(self, W: MatrixLike) -&gt; ndarray | spmatrix: ...
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\ensemble\_hist_gradient_boosting\binning.pyi:40:62: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+38 |         n_threads: None | Int = None,
+39 |     ) -&gt; None: ...
+40 |     def fit(self: _BinMapper_Self, X: MatrixLike, y=None) -&gt; _BinMapper_Self: ...
+   |                                                              ^^^^^^^^^^^^^^^ PYI019
+41 |     def transform(self, X: MatrixLike) -&gt; ndarray: ...
+42 |     def make_known_categories_bitsets(self) -&gt; tuple[ndarray, ndarray]: ...
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\feature_selection\_univariate_selection.pyi:55:69: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+54 |     def __init__(self, score_func: Callable | MemorizedFunc) -&gt; None: ...
+55 |     def fit(self: _BaseFilter_Self, X: MatrixLike, y: ArrayLike) -&gt; _BaseFilter_Self: ...
+   |                                                                     ^^^^^^^^^^^^^^^^ PYI019
+56 |
+57 | ######################################################################
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\gaussian_process\_gpc.pyi:62:10: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+60 |         X: MatrixLike | ArrayLike,
+61 |         y: ArrayLike,
+62 |     ) -&gt; _BinaryGaussianProcessClassifierLaplace_Self: ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ PYI019
+63 |     def predict(self, X: MatrixLike | ArrayLike) -&gt; ndarray: ...
+64 |     def predict_proba(self, X: MatrixLike | ArrayLike) -&gt; ndarray: ...
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\linear_model\_glm\glm.pyi:55:10: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+   |
+53 |         y: ArrayLike,
+54 |         sample_weight: None | ArrayLike = None,
+55 |     ) -&gt; _GeneralizedLinearRegressor_Self: ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ PYI019
+56 |     def predict(self, X: MatrixLike | ArrayLike) -&gt; ndarray: ...
+57 |     def score(
+   |
+   = help: Replace with `Self`
+
+stubs\sklearn\linear_model\_ridge.pyi:201:10: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
+    |
+199 |         y: MatrixLike | ArrayLike,
+200 |         sample_weight: float | None | ArrayLike = None,
+201 |     ) -&gt; _RidgeGCV_Self: ...
+    |          ^^^^^^^^^^^^^^ PYI019
+202 |
+203 | class _BaseRidgeCV(LinearModel):
+    |
+    = help: Replace with `Self`
+
+stubs\sklearn\multioutput.pyi:55:10: PYI019 Methods like `partial_fit` should return `Self` instead of a custom `TypeVar`
+   |
+53 |         classes: Sequence[ArrayLike] | None = None,
+54 |         sample_weight: None | ArrayLike = None,
+55 |     ) -&gt; _MultiOutputEstimator_Self: ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ PYI019
+56 |     def fit(
+57 |         self: _MultiOutputEstimator_Self,
+   |
+   = help: Replace with `Self`
+
+Found 10 errors (1 fixed, 9 remaining).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-18 02:42</div>
+            <div class="timeline-body"><p>The autofix is marked as display-only when the method has &quot;complex&quot; annotations. As this was the initial implementation, I only handled the &quot;bare name&quot; cases.</p>
+<pre><code class="language-python"># Before
+def m(self: _S, other: _S, others: list[_S]) -&gt; _S: ...
+#                      ^^          ^^^^^^^^ This is not.
+#                      This is safe and simple to replace.
+
+# After
+def m(self, other: Self, others: list[_S]) -&gt; Self: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 02:53</div>
+            <div class="timeline-body"><p>They all seem to match what you're saying though, that's what I don't get.</p>
+<pre><code class="language-py">class _SigmoidCalibration(RegressorMixin, BaseEstimator):
+    def fit(
+        self: _SigmoidCalibration_Self,
+        X: ArrayLike,
+        y: ArrayLike,
+        sample_weight: None | ArrayLike = None,
+    ) -&gt; _SigmoidCalibration_Self: ...
+
+
+class _PLS(
+    ClassNamePrefixFeaturesOutMixin,
+    TransformerMixin,
+    RegressorMixin,
+    MultiOutputMixin,
+    BaseEstimator,
+    metaclass=ABCMeta,
+):
+    def fit(self: _PLS_Self, X: MatrixLike, Y: MatrixLike | ArrayLike) -&gt; _PLS_Self: ...
+
+
+class _BaseNMF(ClassNamePrefixFeaturesOutMixin, TransformerMixin, BaseEstimator, ABC):
+    def fit(self: _BaseNMF_Self, X: MatrixLike | ArrayLike, y: Any = None, **params) -&gt; _BaseNMF_Self: ...
+
+
+class _BinMapper(TransformerMixin, BaseEstimator):
+    def fit(self: _BinMapper_Self, X: MatrixLike, y=None) -&gt; _BinMapper_Self: ...
+
+
+class _BaseFilter(SelectorMixin, BaseEstimator):
+    def fit(self: _BaseFilter_Self, X: MatrixLike, y: ArrayLike) -&gt; _BaseFilter_Self: ...
+
+
+class _BinaryGaussianProcessClassifierLaplace(BaseEstimator):
+    def fit(
+        self: _BinaryGaussianProcessClassifierLaplace_Self,
+        X: MatrixLike | ArrayLike,
+        y: ArrayLike,
+    ) -&gt; _BinaryGaussianProcessClassifierLaplace_Self: ...
+
+
+class _GeneralizedLinearRegressor(RegressorMixin, BaseEstimator):
+    def fit(
+        self: _GeneralizedLinearRegressor_Self,
+        X: MatrixLike | ArrayLike,
+        y: ArrayLike,
+        sample_weight: None | ArrayLike = None,
+    ) -&gt; _GeneralizedLinearRegressor_Self: ...
+
+
+class _RidgeGCV(LinearModel):
+    def fit(
+        self: _RidgeGCV_Self,
+        X: MatrixLike,
+        y: MatrixLike | ArrayLike,
+        sample_weight: float | None | ArrayLike = None,
+    ) -&gt; _RidgeGCV_Self: ...
+
+
+class _MultiOutputEstimator(MetaEstimatorMixin, BaseEstimator, metaclass=ABCMeta):
+    def partial_fit(
+        self: _MultiOutputEstimator_Self,
+        X: MatrixLike | ArrayLike,
+        y: MatrixLike,
+        classes: Sequence[ArrayLike] | None = None,
+        sample_weight: None | ArrayLike = None,
+    ) -&gt; _MultiOutputEstimator_Self: ...
+</code></pre>
+<p>And the typevars are all <code>_SomeClass_Self = TypeVar(&quot;_SomeClass_Self &quot;, bound=&quot;_SomeClass&quot;)</code></p>
+<p>But this got autofixed:</p>
+<pre><code class="language-py">class _BaseHeterogeneousEnsemble(MetaEstimatorMixin, _BaseComposition, metaclass=ABCMeta):
+    def set_params(self: _BaseHeterogeneousEnsemble_Self, **params) -&gt; _BaseHeterogeneousEnsemble_Self: ...
+</code></pre>
+<p>Edit: Oh do you mean that no other param must be annotated? (because it's not yet checking if the TypeVar is reused)</p>
+<p>In any case, it sounds like there's a follow-up to your first pass (thanks for that). @MichaReiser could this issue be re-openned as it is not yet completed ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-01-28 20:49</div>
+            <div class="timeline-body"><p>Bump</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-28 21:33</div>
+            <div class="timeline-body"><p>@Avasam I think you are better off filing a new issue, as this one is already closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15798.html">astral-sh/ruff#15798</a> on 2025-01-28 23:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

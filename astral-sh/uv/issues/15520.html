@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>groups are not respected at sources' markers for `uv pip compile` - astral-sh/uv #15520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>groups are not respected at sources' markers for `uv pip compile`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15520">#15520</a>
+        opened by <a href="https://github.com/ZzEeKkAa">@ZzEeKkAa</a>
+        on 2025-08-25 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZzEeKkAa">@ZzEeKkAa</a> on 2025-08-25 18:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When setting up sources with markers that depends on <code>dependency-group</code>, <code>uv pip compile</code> does not respect it with <code>--group</code> argument. For example for this <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;uv_test&quot;
+version = &quot;0.0.1&quot;
+
+[dependency-groups]
+torch-cu118 = [&quot;torch&quot;]
+torch-cu126 = [&quot;torch&quot;]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu118&quot;, marker = &quot;'torch-cu118' in dependency_groups&quot;},
+  { index = &quot;pytorch-cu126&quot;, marker = &quot;'torch-cu118' not in dependency_groups&quot;},
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu126&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+</code></pre>
+<p>I compile two locks:</p>
+<pre><code class="language-shell">uv pip compile -o pylock.cu118.toml --group torch-cu118 pyproject.toml
+uv pip compile -o pylock.cu126.toml --group torch-cu126 pyproject.toml
+</code></pre>
+<p>But both environment locks to <code>pytorch-cu126</code> because passed <code>--group torch-cu*</code> is not considired in the <code>dependency_groups</code> marker, so for both cases <code>'torch-cu118' not in dependency_groups</code> condition is <code>True</code>.</p>
+<h3>Platform</h3>
+<p>n/a</p>
+<h3>Version</h3>
+<p>uv 0.8.13</p>
+<h3>Python version</h3>
+<p>python 3.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ZzEeKkAa on 2025-08-25 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-25 18:19</div>
+            <div class="timeline-body"><p>I think you're looking for:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu118&quot;, group = &quot;torch-cu118&quot;},
+  { index = &quot;pytorch-cu126&quot;, group = &quot;torch-cu126&quot;},
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { group = &quot;torch-cu118&quot; },
+    { group = &quot;torch-cu126&quot; },
+  ],
+]
+</code></pre>
+<p>We do <em>not</em> support <code>dependency_groups</code> there. <code>dependency_groups</code> is only a valid marker specifically in the context of a PEP 751 lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-25 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-25 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZzEeKkAa">@ZzEeKkAa</a> on 2025-08-25 18:22</div>
+            <div class="timeline-body"><p>Thank you @charliermarsh ! That's exactly what I was looking for!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ZzEeKkAa on 2025-08-25 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15619.html">astral-sh/uv#15619</a> on 2025-09-01 13:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

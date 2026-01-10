@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install packages system wide with sudo on Google Cloud Compute Engine - astral-sh/uv #11297</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install packages system wide with sudo on Google Cloud Compute Engine</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11297">#11297</a>
+        opened by <a href="https://github.com/Noobzik">@Noobzik</a>
+        on 2025-02-06 21:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Noobzik">@Noobzik</a> on 2025-02-06 21:02</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a use case about installing MLFlow system wide into a GCP Cloud Engine instance.
+So for my command where ;</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt install python3-pip -y
+sudo pip3 install mlflow google-cloud-storage --break-system-packages
+</code></pre>
+<p>So I have tried with UV</p>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env
+uv pip install mlflow google-cloud-storage --system
+</code></pre>
+<p>I have the following error :</p>
+<pre><code>To install Python packages system-wide, try apt install
+  python3-xyz, where xyz is the package you are trying to
+  install.
+
+  If you wish to install a non-Debian-packaged Python package,
+  create a virtual environment using python3 -m venv path/to/venv.
+  Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+  sure you have python3-full installed.
+
+  If you wish to install a non-Debian packaged Python application,
+  it may be easiest to use pipx install xyz, which will manage a
+  virtual environment for you. Make sure you have pipx installed.
+
+  See /usr/share/doc/python3.11/README.venv for more information.
+</code></pre>
+<p>Okay let's try with</p>
+<pre><code>uv pip install mlflow google-cloud-storage --break-system-packages --system
+
+Using Python 3.11.2 environment at: /usr
+Resolved 74 packages in 871ms
+      Built sqlalchemy==2.0.38
+Prepared 74 packages in 30.65s
+error: Failed to install: idna-3.10-py3-none-any.whl (idna==3.10)
+  Caused by: failed to create directory `/usr/local/lib/python3.11/dist-packages/idna`: Permission denied (os error 13)
+</code></pre>
+<p>It works ! But can't get past Permission denied.</p>
+<p>Any tips how to get past that ?
+UV is not available in sudo, even running the uv install command with sudo</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @Noobzik on 2025-02-06 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 21:05</div>
+            <div class="timeline-body"><p>See https://superuser.com/questions/927512/how-to-set-path-for-sudo-commands</p>
+<p>Basically <code>sudo $(which uv) pip install ...</code> should work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-02-06 23:12</div>
+            <div class="timeline-body"><p>BTW - why do you want to install it systemwide? The trouble with doing it systemwide (and the reason you have to say <code>--break-system-packages</code>) is that the things you're installing may have dependencies that conflict with Python code that's part of the operating system.</p>
+<p>Can you just create a venv and install into it? e.g. something like this:</p>
+<pre><code>uv venv
+source .venv/bin/activate
+uv pip install mlflow google-cloud-storage
+</code></pre>
+<p>Should have basically the same effect in practice - I'm curious if there's something that installing it systemwide does that this doesn't do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Noobzik">@Noobzik</a> on 2025-02-10 19:53</div>
+            <div class="timeline-body"><p>I wanted to create an mlflow service via Systemctl, so I don't have make it launch from a bash terminal</p>
+<p>So in order to do this (lets suppose MLFlow is installed system wide) all I had to do is :</p>
+<pre><code>sudo nano /etc/systemd/system/mlflow.service
+</code></pre>
+<p>Paste this content</p>
+<pre><code>[Unit]
+Description=MLflow
+After=network.target 
+
+[Service]
+Restart=on-failure
+RestartSec=30
+ExecStart=mlflow server --default-artifact-root gs://&lt;gcs_bucket_name_here&gt;/mlflow --backend-store-uri sqlite:///mlflow.db --host 0.0.0.0 --port 80
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>Followed by</p>
+<pre><code>sudo systemctl daemon-reload
+sudo systemctl enable mlflow
+</code></pre>
+<p>And let's start MLFlow</p>
+<pre><code>sudo systemctl start mlflow
+</code></pre>
+<p>With this configuration, I can restart my VM without having to start the service again from the ssh terminal.
+Note : I am in a CI/CD environment, in the documentation I have followed this instruction : https://docs.astral.sh/uv/reference/settings/#pip_system</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 20:04</div>
+            <div class="timeline-body"><p>I think you'd just change the <code>ExecStart</code> to use the full path to the <code>mlflow</code> executable in a virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Noobzik">@Noobzik</a> on 2025-02-13 20:13</div>
+            <div class="timeline-body"><p>Thank you for the tip, I really felt dumb about it</p>
+<p>Just for future reference if anyone lands here poking around uv with CI/CD environment on Compute Engine:</p>
+<pre><code>which mlflow
+(rakib_hernandez) rakib_hernandez@mlflow:~$ which mlflow
+/home/rakib_hernandez/.venv/bin/mlflow
+</code></pre>
+<p>At the <code>/etc/systemd/system/mlflow.service </code></p>
+<pre><code>[Unit]
+Description=MLflow
+After=network.target 
+
+[Service]
+Restart=on-failure
+RestartSec=30
+ExecStart=/home/rakib_hernandez/.venv/bin/mlflow server --default-artifact-root gs://&lt;gcs_bucket_name_here&gt;/mlflow --backend-store-uri sqlite:///mlflow.db --host 0.0.0.0 --port 80
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Noobzik on 2025-02-13 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

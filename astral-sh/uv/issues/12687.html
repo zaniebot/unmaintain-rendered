@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow using `--dry-run` with `--frozen` / `--locked` in `uv sync` - astral-sh/uv #12687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow using `--dry-run` with `--frozen` / `--locked` in `uv sync`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12687">#12687</a>
+        opened by <a href="https://github.com/aldanor">@aldanor</a>
+        on 2025-04-06 03:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aldanor">@aldanor</a> on 2025-04-06 03:24</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When attempting to do something like</p>
+<pre><code class="language-sh">&gt; uv sync --inexact --frozen --dry-run
+</code></pre>
+<p>to see what uv sync will do before it actually does it, it complains that dry run mode is mutually exclusive with frozen/locked mode:</p>
+<pre><code class="language-sh">error: the argument '--dry-run' cannot be used with '--frozen'
+</code></pre>
+<p>... so the only way to preview the changes to the environment is to actually run it?</p>
+<p>Thanks!</p>
+<h3>Platform</h3>
+<p>macOS</p>
+<h3>Version</h3>
+<p>0.6.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @aldanor on 2025-04-06 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2025-04-06 04:26</div>
+            <div class="timeline-body"><p><strong>--dry-run</strong>:</p>
+<blockquote>
+<p>In dry-run mode, uv will resolve the project’s dependencies and report on the resulting changes to both the lockfile and the project environment, but will not modify either.</p>
+</blockquote>
+<p><strong>--frozen</strong>:</p>
+<blockquote>
+<p>Instead of checking if the lockfile is up-to-date, uses the versions in the lockfile as the source of truth.</p>
+</blockquote>
+<p>(The above is a snippet from its documentation.)</p>
+<p>According to the documentation, <code>--dry-run</code> doesn't mean it skips checking if the lockfile is up-to-date. It just doesn't write the final changes to the file. And the act of checking the lockfile itself already conflicts with the <code>--frozen</code> option.</p>
+<p>Regarding whether to allow <code>--dry-run</code> to support <code>--frozen</code>, I think that's something we can discuss further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-04-06 05:19</div>
+            <div class="timeline-body"><p>@FishAlchemist Thanks for chiming in - the current docs seem to align with the current behaviour indeed.</p>
+<p>I guess my question was more about this</p>
+<blockquote>
+<p>Regarding whether to allow <code>--dry-run</code> to support <code>--frozen</code>, I think that's something we can discuss further.</p>
+</blockquote>
+<p>If you intend to use uv sync with <code>--frozen</code> enabled, currently there's no way of previewing the changes &quot;to the project environment&quot; because of the enforced mutual exclusivity of the flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-06 15:43</div>
+            <div class="timeline-body"><p>It seems fine to allow it to be used with <code>--frozen</code> and only perform the environment check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-04-06 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-04-06 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Why `--dry-run` in `uv sync` is mutually exclusive with `--frozen` (and `--locked`)?" to "Allow using `--dry-run` with `--frozen` / `--locked` in `uv sync`" by @zanieb on 2025-04-06 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-06 15:45</div>
+            <div class="timeline-body"><p>Similarly, <code>--locked</code> seems fine — we'd just exit with a non-zero code if the lockfile is out-of-date but (maybe) perform the environment check as described for <code>--frozen</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-04-07 00:06</div>
+            <div class="timeline-body"><p>@zanieb Yep, exactly (re: both).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-04-07 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-04-08 13:00</div>
+            <div class="timeline-body"><p>Mind if I take a stab at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 17:24</div>
+            <div class="timeline-body"><p>Go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12778.html">astral-sh/uv#12778</a> on 2025-04-09 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-14 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-14 13:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

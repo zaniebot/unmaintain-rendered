@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request for `uv.lock` to support different index urls across different developer machines and CI environments - astral-sh/uv #6349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request for `uv.lock` to support different index urls across different developer machines and CI environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6349">#6349</a>
+        opened by <a href="https://github.com/humanzz">@humanzz</a>
+        on 2024-08-21 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/humanzz">@humanzz</a> on 2024-08-21 16:10</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hello team,</p>
+<p>Many thanks for the awesome work you're doing, and the countless amounts of time you've saved everyone using <code>uv</code> (and <code>ruff</code>).</p>
+<p>I've seen the recent blog post about 0.3.0 and the accompanying documentation update, and from playing a bit to test commands like <code>uv lock</code> and <code>uv sync</code>, I actually have a question about <code>uv.lock</code>.</p>
+<p>I've described the setup I use in https://github.com/astral-sh/uv/issues/1710 (a proxy, and using <code>invoke</code>, etc.). That setup means that on different team member's machine's, each is likely to have a different <code>INDEX_URL</code> and even the CI/CD system we use would have a different one.</p>
+<p>I've generated the <code>uv.lock</code> file using <code>UV_INDEX_URL=... uv lock</code>, and the main thing I noticed is that the index url is included in the lock file e.g.</p>
+<pre><code>[[package]]
+name = &quot;aws-embedded-metrics&quot;
+version = &quot;3.2.0&quot;
+source = { registry = &quot;http://&lt;omitted&gt;/pypi/simple&quot; }
+dependencies = [
+    { name = &quot;aiohttp&quot; },
+]
+sdist = { url = &quot;http://&lt;omitted&gt;/pypi/simple/aws-embedded-metrics/3.2.0/aws-embedded-metrics-3.2.0.tar.gz&quot;, hash = &quot;sha256:f235f87ab25ff328f6f3afca1c6b3218e81eea6e96e6aee012d368bb813fae7b&quot; }
+wheels = [
+    { url = &quot;http://&lt;omitted&gt;/pypi/simple/aws-embedded-metrics/3.2.0/aws_embedded_metrics-3.2.0-py3-none-any.whl&quot;, hash = &quot;sha256:887b76d24914efa5fc42a7b77983e77fc670633e6e1195aac7653c425fee7399&quot; },
+]
+</code></pre>
+<p>I have not tried using that file across our different machines yet, but I suspect it's going to cause problems so I wanted to confirm with you folks</p>
+<ul>
+<li>What would happen if the index in the lock file is not available, and <code>UV_INDEX_URL</code>?</li>
+<li>Is there a way to not include the full index url in the lock file?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-08-24 12:12</div>
+            <div class="timeline-body"><p>I've tested it further and confirmed that <code>uv sync</code> would fail on the different machines given the <code>UV_INDEX_URL=</code> would be pointing to a different index url.</p>
+<p>With that that, I think this is a request to enable not writing the index url into the lock files via <code>uv lock</code>, and to enable <code>uv sync</code> - and other commands to use the lock file that does not have index urls as part of the lockfile</p>
+<p>and to be more specific, this is about</p>
+<ul>
+<li><code>source.registry</code></li>
+<li><code>sdist.url</code></li>
+<li><code>wheels.url</code></li>
+</ul>
+<p>fields</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Question about `uv.lock`, custom index urls, and its usage by the different commands" to "Request to enable `uv.lock` to not include the index url" by @humanzz on 2024-08-24 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2024-08-26 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgab">@mgab</a> on 2024-09-02 10:01</div>
+            <div class="timeline-body"><p>I discovered <code>uv</code> recently and I'm pretty excited about it! So even if we're discussing issues, thanks! 🫶</p>
+<p>Now, coming to the topic, I think this becomes important given the ability to setup <code>index-url</code> and <code>extra-index-url</code> as user-level configuration, and potentially as system-level configuration (#6742).</p>
+<p>Right now if you have a user-level config pointing at a package repository that acts as proxy to PyPI (that might add private pacakges on top) you will record that url in any lock file you generate. So if you want to work on some public project where <code>uv</code> is used as pacakge manager, either</p>
+<ol>
+<li>the project -that you might not control- specifically defines <code>index-url</code> and <code>extra-index-url</code> to point at <code>PyPI</code></li>
+<li>you disable the user-level config</li>
+<li>or you will generate lock files that people outside of your org will not be able to use</li>
+</ol>
+<p>Option 2 might not seem that bad, but then that defies the purpose of being able to define user-level or system-level configs. Plus, it might not be the ideal setup ideal to take advantage of <code>uvx</code> and <code>uv tool</code> using private packages that are only available in the private repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-09-04 10:54</div>
+            <div class="timeline-body"><p>Just adding a couple more comments</p>
+<ul>
+<li>I did see on some other issue/pr, a mention that thanks to including those full paths, <code>uv</code> wouldn't be doing any further resolutions, and it just goes ahead to install things - which would save some time which sounds great</li>
+<li>In the case of the setup we're using, I noticed something which might be useful to call out<ul>
+<li>when the index, is public pypi index i.e. <code>https://pypi.org/simple</code>, the package artifacts have <code>url</code>s with a prefix looking like <code>https://files.pythonhosted.org/packages/c1/08/1bb1f7392cd9c3a65c4571a7f7286056ec52b3cd3d432485ca2b9907e0f9/</code>. For example, for <code>aws-embedded-metrics</code>, it's <code>https://files.pythonhosted.org/packages/c1/08/1bb1f7392cd9c3a65c4571a7f7286056ec52b3cd3d432485ca2b9907e0f9/aws-embedded-metrics-3.2.0.tar.gz</code></li>
+<li>in my case, this custom index, which uses a local proxy on dev/ci machines i.e. <code>http://&lt;omitted&gt;/pypi/simple</code>, the package srtifacts <code>url</code>s follow a more deterministic url pattern e.g. <code>http://&lt;omitted&gt;/pypi/simple/&lt;package name&gt;/&lt;package version&gt;/</code>. The same <code>aws-embedded-metrics</code> would be <code>http://&lt;omitted&gt;/pypi/simple/aws-embedded-metrics/3.2.0/aws-embedded-metrics-3.2.0.tar.gz</code>.</li>
+</ul>
+</li>
+</ul>
+<p>This determinism, can actually lead to a simpler handling of this, where I tested with</p>
+<ol>
+<li>Generate the <code>uv.lock</code> with setting a <code>UV_INDEX_URL</code> to my custom index</li>
+<li>Used it in other machines, by running another small script, prior to <code>uv sync</code>, that modifies <code>uv.lock</code> to replace the index in <code>http://&lt;omitted&gt;/pypi/simple</code> with the content of <code>UV_INDEX_URL</code></li>
+</ol>
+<p>All of this, makes me wonder if there's some solution to cases like mine, along the lines of</p>
+<ul>
+<li>Executing commands like <code>uv lock</code>, to have a flag to indicate usage of placeholder index urls, where it would have a place holder for <code>UV_INDEX_URL</code> or the extra indices</li>
+<li>Executing commands like <code>uv sync</code> can take a similar flag, where it'd use the values passed through <code>UV_INDEX_URL</code> to resolve the placeholder values in <code>uv.lock</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smheidrich">@smheidrich</a> on 2024-09-21 00:14</div>
+            <div class="timeline-body"><p>What follows is a +1 comment you should all ignore, but I'm writing it to include some keywords in this issue so other people who run into this can find it more easily than I just did (took me a while):</p>
+<hr />
+<p>Having the same issue because I fetch all my PyPI packages through a local <a href="https://github.com/devpi/devpi">devpi</a><sup>(keyword 1)</sup> installation, so all <code>source.registry</code> and <code>sdist.url</code> URLs in <code>uv.lock</code> say <code>http://localhost:3141/...</code><sup>(keyword 2)</sup> and, needless to say, this results in <code>Connection refused</code><sup>(keyword 3)</sup> errors when trying to install the package elsewhere, e.g. CI systems such as <a href="https://github.com/smheidrich/demo-sphinx-paramlinks-sphinx-autoapi-compat/actions/runs/10967757294/job/30458100347">GitHub Actions</a><sup>(keyword 4)</sup> or GitLab CI/CD<sup>(keyword 5)</sup>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-09-21 12:57</div>
+            <div class="timeline-body"><p>The more comments this gets, the more I think there needs to be an option for the lock file to not include any index information.</p>
+<p>This way, all those use cases that use local proxies, different on developer machines from those in CI environments, and the likelihood that those different proxies having different conventions for their asset (wheel/sdist) URLs, that a general simple solution to exclude those index/asset URLs would be very useful and enable them to adopt <code>uv.lock</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tapetersen">@tapetersen</a> on 2024-09-23 19:46</div>
+            <div class="timeline-body"><p>We could really also use this to be able to have lock-files without disclosing internal urls.
+If not in the sync file then an option to the <code>export</code> subcommand to export a new uv.lock but with this or other things omitted would also be a good alternative</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 19:52</div>
+            <div class="timeline-body"><p>I'm not sure that a lockfile without URLs is a good idea. One of the goals of the lockfile is to be hermetic: you can install from <em>just</em> the lockfile without making any queries or relying on any external sources.</p>
+<p>If you're going to omit source information like that, why not just export to <code>requirements.txt</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tapetersen">@tapetersen</a> on 2024-09-23 20:10</div>
+            <div class="timeline-body"><p>@charliermarsh That may very well work for our requirements but it looks like the uv lockfile is richer (all the extras are declared). Otherwise it would just be a convenience to not have someone outside (that don't have access to internal dns-names) being able to use the lock-file without having to regenerate it from the requirements.txt (pardon me if I've missed a quicker way to handle that).</p>
+<p>Basically my thought was that the hashes should be enough to guarantee that it's indeed the same packages that are being installed even if the urll has to be found again.</p>
+<p>That said if it doesn't feel like the right way to do it and the recommended way is to manage that with requirements.txt exports we'll try that and raise a more specific issue or discussion if a showstopper or question regarding that comes up.</p>
+<p>(feel free to edit/move/hide post if it derails original thread)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-09-23 20:19</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>At the moment, I'm actually using <code>uv pip compile pyproject.toml...</code> and <code>uv pip install -r ...</code> to simulate having a lockfile.</p>
+<p>The main thing I don't like about it, is keeping the lockfile up to date with <code>pyproject.toml</code> dependencies is all manual. I didn't want to always call <code>uv pip compile</code>, then follow immediately by <code>uv pip install</code> as that would (1) be slower (2) force updating resolved dependencies that are declared via version ranges.</p>
+<p>So, I'd say that's not on par with the experience of something like <code>package.json</code> and <code>package-lock.json</code> for node, and I was hoping that <code>uv.lock</code> and the commands that maintain/use it are giving a better experience.</p>
+<p>The other thing I like about <code>uv.lock</code> is <code>uv.tool.dev-dependencies</code>. Without that, I end up declaring those dependencies as optional dependencies which is really not right, but ended up doing it this way, so I can declare all my dependencies in <code>pyproject.toml</code>, and then generate the current <code>requirements.txt</code> &quot;lockfile&quot;.</p>
+<p>Omitting the URLs is one potential solution - me thinking out loud.</p>
+<p>In the case of my proxy, given that the <code>sdist</code>/<code>wheel</code> URLs have a specific pattern with the index url being a prefix, I was able to run some code to manipulate the lock file before running <code>uv sync --all-extras --frozen</code> to install dependencies</p>
+<pre><code class="language-python">@task
+def update_lock_index_url(ctx):
+    &quot;&quot;&quot;
+    Workaround for `uv lock` writing the index url to the lock file.
+    Update `source` and `url` fields with values based on `UV_INDEX_URL` environment variable.
+    &quot;&quot;&quot;
+    with open(&quot;uv.lock&quot;, &quot;r+&quot;) as file:
+        contents = file.read()
+        pattern = r&quot;http://127.0.0.1:\d+/[^/]+/[^/]+/[^/]+/pypi/simple&quot;
+        replacement = os.environ.get(&quot;UV_INDEX_URL&quot;, &quot;NO_INDEX_OVERRIDE_SET&quot;)
+        new_contents = re.sub(pattern, replacement, contents)
+        file.seek(0)
+        file.truncate()
+        file.write(new_contents)
+</code></pre>
+<p>Downside for this, is that any dev on my team will end up having modifying <code>uv.lock</code>.
+2 thoughts I had about this</p>
+<ol>
+<li><code>uv</code> having this concept of a hook - some python code to execute to modify file content - before installing dependencies</li>
+<li>Ability to specify path to a lockfile, whereby I can run the hook myself, to generate a modified version of the lockfile, make sure it's in .gitignore, or in some tmp directory, and use <code>uv sync</code> while pointing to my modified version</li>
+</ol>
+<p>I thought the simplest of all of the above would be this whole omission of URLs from the file tbh.
+Moreover, generally when I think about what's uv story for supporting specifying index/extra index, and how that interacts with commands like <code>uv sync</code>, I think the strong assumption there is that the index URLs are not changing, which at least in my case is not true - whether across dev machines, or in the CI environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgab">@mgab</a> on 2024-09-30 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure that a lockfile without URLs is a good idea. One of the goals of the lockfile is to be hermetic: you can install from just the lockfile without making any queries or relying on any external sources.</p>
+<p>If you're going to omit source information like that, why not just export to requirements.txt?</p>
+</blockquote>
+<p>As far as I can see, poetry records the file name and the hash, which should be enough to ensure that you are getting exactly the same files without relying on external sources.</p>
+<p>On the other hand, by including the URLs you are coupling the lock file with the specific path of the package repository that you are using. And while this might remove the need of interacting with the package index, it also seems that adding a proxy package repository on the working environment should be transparent to the dependency specification of my project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 19:43</div>
+            <div class="timeline-body"><p>I consider it fairly critical that the lockfile includes the URLs directly and I suspect that the lockfile standard (should it be accepted) will do the same. We do have a plan to support these use-cases though. After #7481, we'll add something like:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;https://private.org/simple&quot;
+proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
+</code></pre>
+<p>So you can set the index URL (which will appear in the lockfile) and then the proxy separately. You'll also be able to set the proxy as an environment variable, like <code>UV_PRIVATE_PROXY_URL</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-10-04 08:44</div>
+            <div class="timeline-body"><p>Hey @charliermarsh,</p>
+<p>Just to make sure I understand this, and try to assess whether it'd work.</p>
+<ul>
+<li>The <code>url</code> in our case is not needed, though I dunno whether the intention is for it to be a valid index, or any url so maybe you can clarify that.</li>
+<li>I guess the <code>url</code> is what would be saved in index? and the <code>proxy</code> is kinda what replaces it when doing the actual resolving/downloads?</li>
+<li>for the package urls e.g. <code>sdist</code>, and <code>wheels</code>, how would that work with the <code>proxy</code>? In my earlier messages, I did see <code>https://pypi.org/simple</code> has <code>sdist</code> and <code>wheels</code> that don't have the index as part of their urls e.g. <code>https://files.pythonhosted.org/packages/c1/08/1bb1f7392cd9c3a65c4571a7f7286056ec52b3cd3d432485ca2b9907e0f9/aws-embedded-metrics-3.2.0.tar.gz</code> but in my case, it does have the index in the url e.g. <code>http://&lt;omitted&gt;/pypi/simple/aws-embedded-metrics/3.2.0/aws-embedded-metrics-3.2.0.tar.gz</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-04 10:45</div>
+            <div class="timeline-body"><ol>
+<li>Ideally it is a valid index and indicative of the actual locations of the files but that wouldn't be strictly required.</li>
+<li>Correct.</li>
+<li>Both the file URLs and the registry URLs would be &quot;replaced&quot; correctly as long as they're on the same domain. So this wouldn't work for PyPI but would work for your case.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-10-05 13:04</div>
+            <div class="timeline-body"><p>Great... then I look forwards to that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgab">@mgab</a> on 2024-10-10 09:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I consider it fairly critical that the lockfile includes the URLs directly and I suspect that the lockfile standard (should it be accepted) will do the same.</p>
+</blockquote>
+<p>Sorry! Actually, reading about the proposed standard I found <a href="https://discuss.python.org/t/pep-751-lock-files-again/59173/57">this comment</a> that properly describes what was my concern, and then the answer to it. The point that I was missing is in fact addressed in the <a href="https://peps.python.org/pep-0751/#packages-files-url">PEP draft</a>:</p>
+<blockquote>
+<ul>
+<li>Installers MUST NOT assume the URL will always work, but installers MAY use the URL if it happens to work.</li>
+</ul>
+</blockquote>
+<p>So yeah, I understood that URLs would be assumed to work, and that didn't seem a great idea. I see that's not the case, so nothing to object!</p>
+<p>What got me confused is that apparently <code>uv sync</code> does assume the URLs to work unless you explicitly configure a value for either <code>index-url</code> or <code>extra-index-url</code> somewhere. I reported it in #8076 and #8074, hope it's useful. In any case, that's just about keeping improving <code>uv</code> and not a design disagreement.</p>
+<p>Thanks for the answers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2024-10-17 16:15</div>
+            <div class="timeline-body"><p>I saw that the revamped index support got released in 0.4.23.</p>
+<p>Is there any separate issues to track the proxy/env variables support, or is this issue itself that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 16:41</div>
+            <div class="timeline-body"><p>I think it’s ok to track it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8262.html">astral-sh/uv#8262</a> on 2024-10-25 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Request to enable `uv.lock` to not include the index url" to "Request to support `uv.lock` to not include the index url" by @humanzz on 2024-10-28 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Request to support `uv.lock` to not include the index url" to "Request for `uv.lock` to support different index urls across different developer machines and CI environments" by @humanzz on 2024-10-28 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9056.html">astral-sh/uv#9056</a> on 2024-11-12 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rd-danny-fleer">@rd-danny-fleer</a> on 2024-12-02 09:23</div>
+            <div class="timeline-body"><p>May I ask what's the current status of the issue? What aspects remain unclear?</p>
+<p>Currently I use a workaround (Run <code>uv lock</code> once in the CICD pipeline with the alternative index URL and use the updated <code>uv.lock</code> file in the whole pipeline) to make CICD work with an alternative index. However, with this approach, you must be careful not to update any dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 13:30</div>
+            <div class="timeline-body"><p>I don't know if anything is unclear, it's more that it hasn't been prioritized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dariocurr">@dariocurr</a> on 2025-01-07 08:21</div>
+            <div class="timeline-body"><p>Any updates on this? This is critical for us to ship <code>uv</code> in our pipelines</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2025-02-10 14:38</div>
+            <div class="timeline-body"><p>I know it's already February, but it would still make a great New Year's present! 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11782.html">astral-sh/uv#11782</a> on 2025-02-25 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-02-25 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-26 14:49</div>
+            <div class="timeline-body"><p>I've <a href="https://github.com/astral-sh/uv/pull/11782">created a draft PR</a> for this issue. The current design adds a new command line arg (<code>--index-proxy-url &lt;index-name&gt;=&lt;proxy-url&gt;</code>) and env var (<code>UV_INDEX_PROXY_URL=&lt;index-name&gt;=&lt;proxy-url&gt;</code>).</p>
+<p>You define a canonical URL for an index by defining the index the normal way in <code>pyproject.toml</code>:</p>
+<pre><code> [[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;https://private.org/simple&quot;
+</code></pre>
+<p>When passing in a proxy URL for an index, that URL will be used for making calls to the registry. However, only the canonical URL will be written to the lockfile. If the canonical URL is also valid, then you can run commands like <code>uv sync</code> without a proxy URL. If it's not valid, you will need to pass in the proxy URL.</p>
+<p>This is supported for <code>uv run</code>, <code>uv add</code>, <code>uv sync</code>, and <code>uv lock</code>.</p>
+<p>One tricky aspect (<a href="https://github.com/astral-sh/uv/issues/6349#issuecomment-2393167729">mentioned above</a>) is that this will only work if your index uses its URL as the base URL for the source distributions and wheels. So as Charlie <a href="https://github.com/astral-sh/uv/issues/6349#issuecomment-2393409286">indicated</a>, this doesn't work for PyPi, for example.</p>
+<p>I'd be curious to hear any feedback about whether this addresses your concerns and whether the API makes sense. I'd also be curious if anyone would be interested in trying out my branch with their projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2025-02-26 15:20</div>
+            <div class="timeline-body"><p>Hi @jtfmumm, thank you for your work on this! Since you asked for feedback… ;)</p>
+<blockquote>
+<p>The current design adds a new command line arg (--index-proxy-url <index-name>=<proxy-url>) and env var (UV_INDEX_PROXY_URL=<index-name>=<proxy-url>).</p>
+</blockquote>
+<p>This works only for a single index if I understand the code correctly? I guess this will work for the majority of cases and at least <code>--index-proxy-url</code> could be specified multiple times. Not sure how that would work for <code>UV_INDEX_PROXY_URL</code> though.</p>
+<blockquote>
+<p>One tricky aspect (https://github.com/astral-sh/uv/issues/6349#issuecomment-2393167729) is that this will only work if your index uses its URL as the base URL for the source distributions and wheels. So as Charlie https://github.com/astral-sh/uv/issues/6349#issuecomment-2393409286, this doesn't work for PyPI, for example.</p>
+</blockquote>
+<p>That is the biggest downside for me. We usually try to mirror PyPI to save bandwidth (for PyPI). I wonder if supporting something like PDM has would make sense: https://pdm-project.org/latest/usage/lockfile/#static-urls -- PDM has an option to only store the filename in the lockfile which probably means more requests to the index at some point (?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-26 16:06</div>
+            <div class="timeline-body"><p>Hi @apollo13, thanks for the feedback!</p>
+<p>Currently you can specify <code>--index-proxy-url</code> multiple times. We're going to change the env var to be of the form <code>UV_INDEX_&lt;index-name&gt;_PROXY_URL</code>. That is how we currently handle username and password env vars for indexes.</p>
+<blockquote>
+<p>PDM has an option to only store the filename in the lockfile</p>
+</blockquote>
+<p>Charlie raises the concern <a href="https://github.com/astral-sh/uv/issues/6349#issuecomment-2392197432">above</a> that URLs may be required once the lockfile standards are accepted, so I'm not sure if this option is open to us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2025-02-26 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Charlie raises the concern <a href="https://github.com/astral-sh/uv/issues/6349#issuecomment-2392197432">above</a> that URLs may be required once the lockfile standards are accepted, so I'm not sure if this option is open to us.</p>
+</blockquote>
+<p>Understood, I wonder if we can come up with other creative ideas. Because using a proxy for PyPI in CI is the <em>one</em> situation where I see massive bandwidth savings for PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-26 17:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Understood, I wonder if we can come up with other creative ideas. Because using a proxy for PyPI in CI is the one situation where I see massive bandwidth savings for PyPI.</p>
+</blockquote>
+<p>When you proxy PyPI in this way, are you also proxying the returned file URLs? Or just the Simple index API? Either way, I think this should still be fine with the proposed API, since... if you're just using the file URLs returned by PyPI, they don't need authentication; and if you're proxying those, then in theory you can use a domain that's the same as the top-level Simple API domain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2025-02-26 17:58</div>
+            <div class="timeline-body"><p>The returned URLs are rewritten. Ie it is not a simple HTTP proxy but a repository manager like sonatype nexus, resulting in this download link for a package:</p>
+<pre><code>https://my_host/repository/pypi-proxy/packages/packaging/24.2/packaging-24.2-py3-none-any.whl
+</code></pre>
+<p>which makes the URL pretty much different from PyPI which has it at:</p>
+<pre><code>https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-26 18:01</div>
+            <div class="timeline-body"><p>But does <code>https://my_host/repository/pypi-proxy/packages/packaging/24.2/packaging-24.2-py3-none-any.whl</code> match the host of the registry itself, i.e., the thing you pass to <code>--index</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2025-02-26 18:07</div>
+            <div class="timeline-body"><p>I guess so, ie the simple index URL for the package <code>packaging</code> would be:</p>
+<pre><code>https://my_host/repository/pypi-proxy/simple/packaging
+</code></pre>
+<p>(my_host being the same as above). But I still don't understand why you think this would work. If I use the proxy to create the lockfile it would write package urls ala <code>.../packaging/24.2/packaging-24.2-py3-none-any.whl</code> into the lockfile and I don't think replacing that to the canonical URL would work.</p>
+<p>EDIT:// if we are going off-topic here just ping me on discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-26 18:17</div>
+            <div class="timeline-body"><p>Ah I see. So you want to use a proxy for your own development, but put public URLs in the lockfile itself. That seems much more challenging, since we'd need to query PyPI for every package to get those URLs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/humanzz">@humanzz</a> on 2025-03-03 21:41</div>
+            <div class="timeline-body"><p>Hi @jtfmumm!
+I have no clue how I missed this, but many thanks for starting to work on this.</p>
+<p>In my case, the <code>UV_INDEX_URL</code> is set to the proxy url, that <code>uv</code> uses. The value of that env variable will different between individual developers machines, and also on CI/CD environment. This means I cannot use a named index and a corresponding proxy index via <code>UV_INDEX_&lt;index-name&gt;_PROXY_URL</code>. I need to be able to use both <code>UV_INDEX_URL</code> and <code>UV_INDEX_PROXY_URL</code>.</p>
+<p>According to the description, if I understand this correctly, what is now set in <code>UV_INDEX_URL</code> should actually go to <code>UV_INDEX_PROXY_URL</code>, while <code>UV_INDEX_URL</code> should have the canonical url for use in lock file, correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12477.html">astral-sh/uv#12477</a> on 2025-04-01 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xbeastx">@xbeastx</a> on 2025-05-14 07:43</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb
+First of all, I want to thank you for building such an amazing tool as <strong>uv</strong>. It's genuinely fast — very impressive.</p>
+<p>However, I’d like to draw attention to some ideological aspects of the <code>uv.lock</code> file format that are presented as universally correct.</p>
+<p>It’s clear that the <strong>primary purpose</strong> of <code>uv.lock</code> is to ensure <strong>reproducibility</strong> of the package environment, so that behavior during testing and development remains stable. From an architectural standpoint, achieving this goal clearly requires controlling the list of packages being installed and their exact content — in other words, <strong>what</strong> is installed. That alone is entirely sufficient to guarantee consistent results.</p>
+<p>But <strong>where</strong> exactly these packages are fetched from does not necessarily need to be part of the lock file. They could come from a local folder, an AWS S3 bucket, PyPI, or anywhere else.</p>
+<p>In other words, the <strong>source location</strong> is more appropriately a property of the <strong>installation process</strong>, not the lock file itself. I suppose that including the URL might indeed help with &quot;not making some queries&quot;, but it blurs the boundaries of responsibility.
+That’s why we have to ask: is <code>uv.lock</code> meant to <strong>simplify using index</strong>, or to <strong>lock down state</strong>? From my point of view these are two very different goals.</p>
+<p>That said, if some users really <strong>want to lock with full URLs</strong>, perhaps there could be two uv lock &quot;modes&quot;:</p>
+<ul>
+<li><code>default</code>: no URLs are saved,</li>
+<li><code>source_locked</code>: URLs are saved.</li>
+</ul>
+<p>For more complex cases, where a package comes from a non-default repository, the lock file could include the name and URL of the index for that specific package.</p>
+<p>For example, a <code>uv.lock</code> might look like this:</p>
+<pre><code class="language-toml">[[source]]
+name = &quot;pytorch-cuda&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+
+[[package]]
+name = &quot;requests&quot;
+version = &quot;2.31.0&quot;
+sdist = { 
+    hash = &quot;sha256:abc123...&quot;,
+    size = 120000,
+    upload-time = &quot;2024-06-01T10:00:00Z&quot;
+}
+
+[[package]]
+name = &quot;torch&quot;
+version = &quot;2.2.0+cu121&quot;
+source = { index = &quot;pytorch-cuda&quot; }
+wheels = [
+    {
+        hash = &quot;sha256:xyz789...&quot;,
+        size = 250000000,
+        upload-time = &quot;2024-03-01T08:00:00Z&quot;
+    }
+]
+</code></pre>
+<p>In this example, the <code>requests</code> package would use the default index (either as configured explicitly, via <code>UV_DEFAULT_INDEX</code>, or just fall back to PyPI), while the torch package would be fetched from the <code>pytorch-cuda</code> index as specified in the lock file.</p>
+<p>With this design, it would also be easy to override sources at install time via environment variables or CLI options:</p>
+<pre><code class="language-bash">UV_DEFAULT_INDEX=https://internal-repo.com/ UV_INDEX=pytorch-cuda=https://another-repo.com/simple uv sync
+</code></pre>
+<p>In my opinion, this approach to using <code>uv.lock</code> would be both <strong>architecturally sound</strong> and <strong>highly flexible</strong>.</p>
+<p>In today’s world — where almost every company uses local mirrors of PyPI enriched with some internal packages — this actively blocks adoption of <code>uv</code>. And just URL inside lock file looks really strange...</p>
+<p><em>P.S. And let’s just imagine for a moment that every developer starts committing <code>uv.lock</code> files into their repos with entries like:
+<code>https://files.pythonhosted.org/packages/4d/f9/9a7ce600ebe7804daf90d4d48b1c0510a4561ddce43a596be46676f82343/...</code>
+What happens if PyPI ever decides to change their domain name or URL format? Does that mean all existing lock files will break? Or at least we must have some fall-back logic to reacquire this URL and still &quot;make some queries&quot;?</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14071.html">astral-sh/uv#14071</a> on 2025-06-16 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2025-06-30 16:26</div>
+            <div class="timeline-body"><p>I've bumped into this at work today, but with a slightly different scenario. We have a private repository and proxy/mirror for PyPI. These are provided for local development via a VPN <em>(on an &quot;internal&quot; URL)</em> and via mTLS for CI <em>(on an &quot;external&quot; URL)</em>. When accessing over the VPN we don't need to provide credentials for the repositories, but we do when accessing in CI over the external URL.</p>
+<p>A couple of options came to my mind initially regarding a solution for this:</p>
+<ol>
+<li><p>Provide an environment variable for the hostname</p>
+<ul>
+<li>This has the disadvantage that the environment variable would always have to be set, unless it were possible to provide a default, e.g. <code>${INDEX_HOST:-repo.example.net}</code>. This sort of shell-like expansion is supported, for example, in Dockerfile.</li>
+<li>And because that would need to be copied for every URL in the lock file it would quickly get messy...</li>
+<li>Would depend on #5734</li>
+</ul>
+</li>
+<li><p>Provide something like git's <a href="https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlbaseinsteadOf"><code>url.&lt;base&gt;.insteadOf</code></a></p>
+<ul>
+<li>This would make it possible to drop a configuration file in CI providing a mapping of the base URL</li>
+<li>It could also address the concerns around being able to provide a mapping for other URLs for source distributions and wheels</li>
+<li>The downside is that it would be hard/messy to be able to do this via environment variables, so may only be limited to configuration files</li>
+</ul>
+</li>
+</ol>
+<p>I then discussed this with some colleagues and was helpfully pointed to this issue. Having looked through, it seems that Charlie's <a href="https://github.com/astral-sh/uv/issues/6349#issuecomment-2392197432">original proposal</a> would have solved my issue, e.g. something like:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;mirror&quot;
+url = &quot;https://repo.corp.net/mirror/simple&quot;
+default = true
+
+[[tool.uv.index]]
+name = &quot;private&quot;
+url = &quot;https://repo.corp.net/private/simple&quot;
+</code></pre>
+<p>And then being able to override in CI with:</p>
+<pre><code class="language-sh">UV_MIRROR_PROXY_URL=&quot;https://repo.ext.corp.net/mirror/simple&quot;
+UV_PRIVATE_PROXY_URL=&quot;https://repo.ext.corp.net/private/simple&quot;
+</code></pre>
+<p>As for my other suggestion number two above, that could look something like:</p>
+<pre><code class="language-toml">[[tool.uv.index.remap]]
+&quot;https://repo.corp.net/&quot; = &quot;https://repo.ext.corp.net/&quot;
+
+# We can even remap URLs for hosted files:
+&quot;https://files.pythonhosted.org/&quot; = &quot;https://some.other.mirror/&quot;
+</code></pre>
+<p>(That's a rather rough example, but hopefully gets the point across.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArcticLampyrid">@ArcticLampyrid</a> on 2025-07-03 16:58</div>
+            <div class="timeline-body"><p><strong>FYI, here’s a summary of how another ecosystem—Poetry—handles this:</strong></p>
+<ol>
+<li>It does <em>not</em> include the concrete sdist/wheel URLs in the lockfile; it only uses the SHA‑256 checksum.</li>
+<li>It records the package <em>source</em>, unless it’s using the official PyPI source. If no source is recorded, it always defaults to PyPI’s official source.</li>
+<li>There’s a plugin called <a href="https://github.com/arcesium/poetry-plugin-pypi-mirror">poetry-plugin-pypi-mirror</a> that can replace the default source with a mirror at the project or user level (this replacement does <em>not</em> end up in the lockfile).</li>
+</ol>
+<hr />
+<p><strong>IMO</strong>, sdist/wheel URLs are <em>not</em> permanent—they’re internal implementation details of PyPI. You should always fetch the latest URL from the index file. For reproducibility and integrity checks, using the SHA‑256 checksum alone is sufficient.</p>
+<p>In ecosystems like NPM, URLs are recorded because they’re fully canonicalized:</p>
+<pre><code>https://registry.npmjs.org/typescript/-/typescript-5.4.3.tgz
+</code></pre>
+<p>But PyPI’s URLs are <em>not</em> like that; they look more like opaque object storage identifiers:</p>
+<pre><code>https://files.pythonhosted.org/packages/c1/08/1bb1f7392cd9c3a65c4571a7f7286056ec52b3cd3d432485ca2b9907e0f9/aws-embedded-metrics-3.2.0.tar.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-03 18:07</div>
+            <div class="timeline-body"><p>I'm not a fan of omitting the URLs. It makes the installation protocol more complicated (it has to implement the Simple API), and what we're doing here is much more aligned with the standardized <code>pylock.toml</code> format from PEP 751 (which also records URLs). Unless I'm misunderstanding, omitting the file URLs doesn't actually solve the problem in this issue anyway, since we still need to record the source, which is what's being modulated?</p>
+<p>(As an aside, PyPI's URLs are not exactly opaque identifiers; they're content-addressed locations. The segments comprise the Blake2 hash of the file.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArcticLampyrid">@ArcticLampyrid</a> on 2025-07-04 14:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless I'm misunderstanding, omitting the file URLs doesn't actually solve the problem in this issue anyway, since we still need to record the source, which is what's being modulated?</p>
+</blockquote>
+<p>Provide a option to add alternative URLs for sources are easy. But it's hard for sdist/wheel URLs:</p>
+<blockquote>
+<p>In the case of the setup we're using, I noticed something which might be useful to call out</p>
+<ul>
+<li>when the index, is public pypi index i.e. <code>https://pypi.org/simple</code>, the package artifacts have <code>url</code>s with a prefix looking like <code>https://files.pythonhosted.org/packages/c1/08/1bb1f7392cd9c3a65c4571a7f7286056ec52b3cd3d432485ca2b9907e0f9/</code>. For example, for <code>aws-embedded-metrics</code>, it's <code>https://files.pythonhosted.org/packages/c1/08/1bb1f7392cd9c3a65c4571a7f7286056ec52b3cd3d432485ca2b9907e0f9/aws-embedded-metrics-3.2.0.tar.gz</code></li>
+<li>in my case, this custom index, which uses a local proxy on dev/ci machines i.e. <code>http://&lt;omitted&gt;/pypi/simple</code>, the package srtifacts <code>url</code>s follow a more deterministic url pattern e.g. <code>http://&lt;omitted&gt;/pypi/simple/&lt;package name&gt;/&lt;package version&gt;/</code>. The same <code>aws-embedded-metrics</code> would be <code>http://&lt;omitted&gt;/pypi/simple/aws-embedded-metrics/3.2.0/aws-embedded-metrics-3.2.0.tar.gz</code>.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>As an aside, PyPI's URLs are not exactly opaque identifiers; they're content-addressed locations. The segments comprise the Blake2 hash of the file.</p>
+</blockquote>
+<p>Thanks for information. But I am still curious whether this is a documented detail that can be relied upon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArcticLampyrid">@ArcticLampyrid</a> on 2025-07-04 14:28</div>
+            <div class="timeline-body"><p>Adding a point, if the purpose of using a mirror is to bypass network censorship issues (which does happen in China due to <a href="https://en.wikipedia.org/wiki/Great_Firewall">GFW</a>), it is unacceptable to obtain URL details from multiple sources at the same time. Accessing PyPI is likely to result in failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2025-07-04 16:21</div>
+            <div class="timeline-body"><p>Hi everyone, this is a long-standing and important discussion with many thoughtful contributions. As a user who is keenly following this, I wanted to try to synthesize the core problem, the main points of debate, and the proposed solutions so far.</p>
+<h3>The Core Problem</h3>
+<p>The current <code>uv.lock</code> file includes absolute URLs for:</p>
+<ul>
+<li>Package registries (<code>source.registry</code>)</li>
+<li>Source distributions (<code>sdist.url</code>)</li>
+<li>Wheel files (<code>wheels.url</code>)</li>
+</ul>
+<p>This causes issues when:</p>
+<ol>
+<li>Developers use different index URLs / proxies locally vs. in CI</li>
+<li>Organizations have private proxies / mirrors with custom URL patterns</li>
+<li>Lockfiles contain internal URLs that shouldn't be exposed</li>
+<li>Environments can't access the originally locked URLs</li>
+</ol>
+<h3>The Central Tension: Portability vs. Hermeticity</h3>
+<p>The discussion has highlighted a key design tension:</p>
+<ul>
+<li><strong>Portability &amp; Separation of Concerns:</strong> Some feel that a lockfile should define <em>what</em> to install (package, version, hash) but that <em>where</em> it's downloaded from is an installation-time detail. This makes the lockfile portable and keeps environment-specific configuration out of committed project files.</li>
+<li><strong>Hermeticity &amp; Performance:</strong> Some have emphasized the goal of a hermetic lockfile. Storing exact URLs means <code>uv sync</code> doesn't need to perform any index lookups; it can just download the files directly. This is faster, simpler for the installer, and aligns with the direction of the proposed <code>pylock.toml</code> standard (PEP 751).</li>
+</ul>
+<hr />
+<p>Here are the main approaches discussed so far, as I see them:</p>
+<h4>Solution 1: Omit URLs from the lockfile (The &quot;Poetry&quot; / &quot;Separation of Concerns&quot; model)</h4>
+<ul>
+<li><strong>Where it comes from:</strong> This was one of the earliest suggestions by @humanzz and was advocated for by @xbeastx and @ArcticLampyrid. The core idea is that the lockfile should specify <em>what</em> to install (package name, version, hash), while the environment should specify <em>where</em> to get it from. @ArcticLampyrid pointed out that this is how <strong>Poetry</strong> operates.</li>
+<li><strong>Pros:</strong><ul>
+<li><strong>Maximum Portability:</strong> The <code>uv.lock</code> file would be completely agnostic to the index/mirror setup and would work seamlessly across any environment.</li>
+<li><strong>Simplicity:</strong> Solves all the different use cases (local proxies, different CI URLs, public vs. private URLs) without complex configuration.</li>
+</ul>
+</li>
+<li><strong>Cons:</strong><ul>
+<li><strong>Not Hermetic:</strong> As @charliermarsh pointed out, this goes against the goal of having a lockfile that can be used for installation without any further network queries to an index API. <code>uv sync</code> would need to re-resolve file locations.</li>
+<li><strong>Standard Alignment:</strong> This approach seems to diverge from the proposed <code>pylock.toml</code> format (PEP 751), which includes URLs.</li>
+</ul>
+</li>
+</ul>
+<h4>Solution 2: Canonical URL with a Proxy override (The current PR approach)</h4>
+<ul>
+<li><strong>Where it comes from:</strong> This was proposed by @charliermarsh and a draft PR was created by @jtfmumm. The idea is to define a canonical URL for an index in <code>pyproject.toml</code>, which gets written to the lockfile. A specific environment can then provide a &quot;proxy&quot; URL via an environment variable (<code>UV_INDEX_&lt;name&gt;_PROXY_URL</code>) or flag to use instead.</li>
+<li><strong>Pros:</strong><ul>
+<li><strong>Preserves Hermeticity:</strong> The lockfile still contains valid, canonical URLs.</li>
+<li><strong>Clear Intent:</strong> Separates the project's official source from an environment-specific override.</li>
+</ul>
+</li>
+<li><strong>Cons:</strong><ul>
+<li><strong>The PyPI Mirror Problem:</strong> This is the biggest drawback, as highlighted by @apollo13. This approach only works if the file URLs (for wheels/sdists) are on the same domain as the index URL. It <strong>may not work</strong> for PyPI mirrors (like Nexus, Artifactory, or public mirrors) which rewrite <code>files.pythonhosted.org</code> URLs to their own domain. This seems to defeat one of the primary use cases for this feature.</li>
+</ul>
+</li>
+</ul>
+<h4>Solution 3: Full URL Rewriting / Remapping (The &quot;Git&quot; / &quot;Pixi&quot; model)</h4>
+<ul>
+<li><strong>Where it comes from:</strong> This is a more powerful version of the proxying idea, inspired by <code>git</code>'s <code>url.&lt;base&gt;.insteadOf</code> (suggested by @ngnpope) and <strong>pixi</strong>'s <code>[mirrors]</code> configuration (from issue <a href="https://github.com/astral-sh/uv/issues/9056">#9056</a>).</li>
+<li><strong>The Idea:</strong> Allow arbitrary URL prefix remapping in the configuration. This would let a user map <em>both</em> the index URL (<code>https://pypi.org/simple</code>) and the file host URL (<code>https://files.pythonhosted.org</code>) to their mirror equivalents.</li>
+<li><strong>Pros:</strong><ul>
+<li><strong>Solves the PyPI Mirror Problem:</strong> This is flexible enough to handle the case where file URLs are on a different host from the simple index, making it compatible with most real-world proxy/mirror setups.</li>
+<li><strong>Powerful &amp; Flexible:</strong> It can handle a wide variety of scenarios, including the complex internal / external URL mapping described by @ngnpope.</li>
+</ul>
+</li>
+<li><strong>Cons:</strong><ul>
+<li><strong>Increased Complexity:</strong> This is a more complex feature to design, implement, and for users to configure compared to the other options.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>I've done my best to capture the nuances of this long discussion, but I may have missed or misinterpreted some points. Please feel free to correct me!</p>
+<p>Perhaps we could do an informal poll using emoji reactions on this comment:</p>
+<ul>
+<li><strong>Solution 1: Omit URLs from the lockfile (The &quot;Poetry&quot; / &quot;Separation of Concerns&quot; model):</strong> React with ❤️</li>
+<li><strong>Solution 2: Canonical URL with a Proxy override (The current PR approach):</strong> React with 🚀</li>
+<li><strong>Solution 3: Full URL Rewriting / Remapping (The &quot;Git&quot; / &quot;Pixi&quot; model):</strong> React with 👀</li>
+<li><strong>None of the above / More discussion needed:</strong> React with 🤔</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-poetry/poetry/issues/1632.html">python-poetry/poetry#1632</a> on 2025-07-05 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2025-07-16 05:01</div>
+            <div class="timeline-body"><p>For anyone who need to use PyPI mirrors and don't want to pollute <code>uv.lock</code> with mirror URLs, here's a not-so-elegant workaround. Before each <code>uv</code> command, we replace the URLs in <code>uv.lock</code> with mirror URLs. After <code>uv</code> command is finished, the mirror links are replaced with the default <code>pypi.org</code> and <code>files.pythonhosted.org</code>.</p>
+<p>This workaround only works for mirrors which maps original URLs in a pattern similar to:</p>
+<pre><code>https://pypi.org/simple
+-&gt; https://mirrors.cernet.edu.cn/pypi/web/simple
+https://files.pythonhosted.org/packages/1d/56/f5d...8fe/liblaf_grapes-0.6.0.tar.gz
+-&gt; https://mirrors.cernet.edu.cn/pypi/web/packages/1d/56/f5d...8fe/liblaf_grapes-0.6.0.tar.gz
+</code></pre>
+<p>It works fine with CERNET MirrorZ, and should works with most other mirrors as well. Comments on compatible mirror sites or more elegant and general methods are welcome.</p>
+<p>During my test, I found that <code>uv.lock</code> may miss a few, only a few <code>package[*]{sdist,wheels[*]}.{size,upload-time}</code>. Luckily, this doesn't affect functionality. Even if someone re-lock using origin PyPI index, it won't change <code>uv.lock</code>.</p>
+<p>The following is a fish shell function that wraps <code>uv</code>. Similarly, we can implement alias / functions for other shells, such as bash, zsh, etc.</p>
+<pre><code class="language-fish">function uv --wraps uv
+    # similar alias / functions can be implemented in other shells, e.g. bash, zsh
+    set --local PYPI_MIRROR &quot;https://mirrors.cernet.edu.cn/pypi/web&quot;
+    set --local git_root (git rev-parse --show-toplevel)
+    set --local uv_lock &quot;$git_root/uv.lock&quot;
+    echo &quot;$uv_lock&quot;
+    if test -f $uv_lock
+        # `sed` can also be used
+        sd --fixed-strings 'https://pypi.org' &quot;$PYPI_MIRROR&quot; &quot;$uv_lock&quot;
+        sd --fixed-strings 'https://files.pythonhosted.org' &quot;$PYPI_MIRROR&quot; &quot;$uv_lock&quot;
+    end
+    UV_DEFAULT_INDEX=&quot;$PYPI_MIRROR/simple&quot; command uv &quot;$argv&quot;
+    if test -f $uv_lock
+        # since mirrorz-302 redirects you to your &quot;best&quot; mirror site, the URLs
+        # in `uv.lock` does not have to be the same with `${PYPI_MIRROR}`
+        sd 'https://[\.\w]+/pypi/web/simple' 'https://pypi.org/simple' &quot;$uv_lock&quot;
+        sd 'https://[\.\w]+/pypi/web/packages' 'https://files.pythonhosted.org/packages' &quot;$uv_lock&quot;
+    end
+end
+</code></pre>
+<p>To use mirrors in <a href="https://pixi.sh/">Pixi</a>-managed projects (which uses <code>uv</code> to handle PyPI packages), <a href="https://github.com/prefix-dev/pixi/issues/4147">a similar workaround</a> can also be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/issues/4147.html">prefix-dev/pixi#4147</a> on 2025-07-16 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14796.html">astral-sh/uv#14796</a> on 2025-07-21 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waketzheng">@waketzheng</a> on 2025-07-23 13:52</div>
+            <div class="timeline-body"><p>I replace the registry and url by the following script:</p>
+<pre><code class="language-py">#!/usr/bin/env python
+&quot;&quot;&quot;Auto change registry of uv.lock to be pypi.org
+
+Usage::
+    python3 &lt;me&gt;.py
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import functools
+import re
+import sys
+from pathlib import Path
+
+PYPI = &quot;https://pypi.org/simple&quot;
+HOST = &quot;https://files.pythonhosted.org&quot;
+
+
+def main() -&gt; int | None:
+    verbose = &quot;--verbose&quot; in sys.argv
+    p = Path(&quot;uv.lock&quot;)
+    if not p.exists():
+        p = Path(&quot;..&quot;, p.name)
+        if not p.exists():
+            if verbose:
+                print(f&quot;{p.name} not found, skip.&quot;)
+            return None
+    text = p.read_text(&quot;utf-8&quot;)
+    registry_pattern = r'(registry = &quot;)(.*?)&quot;'
+    replace_registry = functools.partial(re.sub, registry_pattern, rf'\1{PYPI}&quot;')
+    registry_urls = {i[1] for i in re.findall(registry_pattern, text)}
+    download_pattern = r'(url = &quot;)(https?://.*?)(/packages/.*?\.)(gz|whl)&quot;'
+    replace_host = functools.partial(re.sub, download_pattern, rf'\1{HOST}\3\4&quot;')
+    download_hosts = {i[1] for i in re.findall(download_pattern, text)}
+    if not registry_urls:
+        raise ValueError(f&quot;Failed to find pattern {registry_pattern!r} in {p}&quot;)
+    if len(registry_urls) == 1:
+        current_registry = registry_urls.pop()
+        if current_registry == PYPI:
+            if download_hosts == {HOST}:
+                if verbose:
+                    print(f&quot;Registry of {p} is {PYPI}, no need to change.&quot;)
+                return 0
+        else:
+            text = replace_registry(text)
+            if verbose:
+                print(current_registry, &quot;--&gt;&quot;, PYPI)
+    else:
+        # TODO: ask each one to confirm replace
+        text = replace_registry(text)
+        if verbose:
+            for current_registry in sorted(registry_urls):
+                print(current_registry, &quot;--&gt;&quot;, PYPI)
+    if len(download_hosts) == 1:
+        current_host = download_hosts.pop()
+        if current_host != HOST:
+            text = replace_host(text)
+            if verbose:
+                print(current_host, &quot;--&gt;&quot;, HOST)
+    elif download_hosts:
+        # TODO: ask each one to confirm replace
+        text = replace_host(text)
+        if verbose:
+            for current_host in sorted(download_hosts):
+                print(current_host, &quot;--&gt;&quot;, HOST)
+    size = p.write_text(text, encoding=&quot;utf-8&quot;)
+    if verbose:
+        print(f&quot;Updated {p} with {size} bytes.&quot;)
+    return 1
+
+
+if __name__ == &quot;__main__&quot;:
+    sys.exit(main())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dariocurr">@dariocurr</a> on 2025-07-23 14:57</div>
+            <div class="timeline-body"><p>this is still the reason why we cannot use <code>uv</code> in our CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15015.html">astral-sh/uv#15015</a> on 2025-08-01 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mttbernardini">@mttbernardini</a> on 2025-08-22 10:06</div>
+            <div class="timeline-body"><p>Accessing PyPI from China is either slow or impossible because of the GFW.</p>
+<p>The usual workflow here is to use a PyPI mirror like the one provided by <a href="https://mirrors.tuna.tsinghua.edu.cn/help/pypi/">Tsinghua University</a>. However, for my colleagues in UK, using the mirror makes no sense since they can just access PyPI directly, so enforcing it in the <code>uv.lock</code> is not practical.</p>
+<p>Tools like <code>pdm</code> (or <code>pip</code>) can be instructed to use an alternative default index via its user-config <code>~/.config/pdm/config.toml</code>, and since <code>pdm.lock</code> doesn't include wheel urls (by default), I can get the benefit of a <code>pdm sync</code> using the Tsinghua mirror instead of PyPI, speeding up my workflow.</p>
+<p>I would like to see <code>uv</code> also respecting the configuration in <code>~/.config/uv/uv.toml</code> for the default index, the very page I linked from Tsingua University suggests this:</p>
+<pre><code class="language-toml">[[index]]
+url = &quot;https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/&quot;
+default = true
+</code></pre>
+<p>But since <code>uv</code> honours the urls in the <code>uv.lock</code>, the config above is ignored (the config above is only respected for <code>uv tool</code>/<code>uvx</code> I believe), and my UX with <code>uv sync</code> becomes unbearable.</p>
+<p>I'm for either option in:</p>
+<ol>
+<li>Don't store the urls in the <code>uv.lock</code> and always recompute them based on the relevant <code>uv.toml</code> and <code>pyproject.toml</code> configs.</li>
+<li>Store the canonical urls in the <code>uv.lock</code>, but add a proxying mechanism so that if the <code>default</code> index is re-defined (i.e. via user-config <code>uv.toml</code>), then the <code>uv.lock</code> urls for the default index are ignored and the proxy index is queried instead.</li>
+</ol>
+<p>Either approach has a &quot;hermeticity&quot; issue, but the second one moves it to the proxy scenario, leaving the normal scenario to be efficient/hermetic, assuming that proxying may be less common than using default behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @konstin on 2025-08-22 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-08-28 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps we could do an informal poll using emoji reactions on this comment:</p>
+<ul>
+<li><p><strong>Solution 1: Omit URLs from the lockfile (The &quot;Poetry&quot; / &quot;Separation of Concerns&quot; model):</strong> React with ❤️</p>
+</li>
+<li><p><strong>Solution 2: Canonical URL with a Proxy override (The current PR approach):</strong> React with 🚀</p>
+</li>
+<li><p><strong>Solution 3: Full URL Rewriting / Remapping (The &quot;Git&quot; / &quot;Pixi&quot; model):</strong> React with 👀</p>
+</li>
+<li><p><strong>None of the above / More discussion needed:</strong> React with 🤔</p>
+</li>
+</ul>
+</blockquote>
+<p>As much as I personally prefer the git/pixi model or even the current PR, my current issue is that we are currently trying to transition our mirrors from one backend mirror provider (sonatype nexus) to another (artifactory) which use different url schemes for actually hosting the files. This means nothing short of solution 1 would survive this use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-08-29 18:22</div>
+            <div class="timeline-body"><p>Just to clarify our issue: I work with a private repository that was until recently backed wholy by sonatype nexus. I.e. the domain name on the internal network used a round robin load balancer to route calls to the service to one of 8 different nodes running sonatype nexus. As part of a gradual scaling cutover, we are trying to move the backend server for this to artifactory. So our pool in the load balancer currently is 6 nexus nodes and 2 artifactory nodes.</p>
+<p>Since there is no standard format for the direct URLs to the wheels/sdists Sonatype and Jfrog chose different internal schemes to provide their packages. This means that any time we resolve that domain name, we have a 1 in 4 chance of resolving to a server that is hosting the file we want in a completely different URL.</p>
+<p>Would a possible solution in the installer be to do the following?</p>
+<pre><code>1. Attempt to download the package directly from the stored url.
+2. If the download fails to complete, ask the registry where the archive is stored and fetch the archive from there?
+</code></pre>
+<p>This would potentially slow down the initial sync on a system using a mirror, but the stored hash of the artifacts would verify that the artifacts are correct.</p>
+<p>An alternative approach would be to add a flag to to the <code>uv lock</code> command that would allow you to refresh the urls while keeping all other attributes of the locked data the same.</p>
+<p>It seems like, lacking a standard URL for sourced packages, this level of hermesticity is actively hostile to the goal of supporting widely available mirroring configurations, or even the ability to provide lock files as part of publicly distributable projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-08-29 18:25</div>
+            <div class="timeline-body"><p>The only work around we have been able to use to handle this is, instead of using <code>uv sync</code> to setup the project, we use (in bash)</p>
+<pre><code class="language-bash">uv venv
+uv pip install -r &lt;(uv export --format requirements.txt --frozen)
+</code></pre>
+<p>This will not be as clean or thurough as a uv_sync because it won't remove dependencies from the environment. but it works well enough for CI environments where the goal is to populate a newly created build environment with the installed requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-29 18:59</div>
+            <div class="timeline-body"><blockquote>
+<p>uv venv
+uv pip install -r &lt;(uv export --format requirements.txt --frozen)</p>
+<p>This will not be as clean or thurough as a uv_sync because it won't remove dependencies from the environment.</p>
+</blockquote>
+<p>Are you aware of <code>uv pip sync</code>? https://docs.astral.sh/uv/reference/cli/#uv-pip-sync</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wim-De-Clercq">@Wim-De-Clercq</a> on 2025-09-02 10:25</div>
+            <div class="timeline-body"><p>I like to add that when using a locally cached wheelhouse directory instead of index urls and</p>
+<pre><code>export UV_FIND_LINKS=~/.cache/pip-wheelhouse
+</code></pre>
+<p>as a variable. You end up with with local paths in the lockfile as well. Similar to the index urls.</p>
+<pre><code>source = { registry = &quot;../../.cache/pip-wheelhouse&quot; }
+</code></pre>
+<p>I think this makes even less sense than urls in the lock file. This requires my colleagues and servers to use the same folder structure, not only for the cache folder. But also it is relative to where the project is located in relation to the cache folder.
+A local file path should not end up in a lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-09-03 13:31</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>uv venv
+uv pip install -r &lt;(uv export --format requirements.txt --frozen)
+This will not be as clean or thurough as a uv_sync because it won't remove dependencies from the environment.</p>
+</blockquote>
+<p>Are you aware of <code>uv pip sync</code>? https://docs.astral.sh/uv/reference/cli/#uv-pip-sync</p>
+</blockquote>
+<p>I was not aware of this and this basically covers my workaround case. Thanks @notatallshaw!</p>
+<p>But again. This needs to be configurable or the hermesticity vs. reproducibility problem will break the ability to share lockfiles and properly mirror pypi with all available public solutions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15741.html">astral-sh/uv#15741</a> on 2025-09-09 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-09-09 21:35</div>
+            <div class="timeline-body"><blockquote>
+<p>this is still the reason why we cannot use <code>uv</code> in our CI</p>
+</blockquote>
+<p>Agreed, hoping this is solved soon. No one can use my projects I build due to my custom <code>UV_INDEX</code> littered in the lockfiles and <code>pyproject.toml</code>. I am having to go back and update this.</p>
+<p>I initially wanted to set <code>UV_INDEX</code> for use with <code>uv tool install</code> only, but did not know it also affected <code>uv lock</code>, etc. Maybe we can have some separation and have a <code>UV_TOOL_INDEX</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lorenzosciarra">@lorenzosciarra</a> on 2025-09-10 18:12</div>
+            <div class="timeline-body"><p>I also have a use case in which urls in lock file prevent me from switching from PDM to UV (actually there are a couple considering that the 'uv sync -U' doesn't yet update the pyproject.toml pinned versions, but this is another story):</p>
+<p>In my project we use different AWS accounts for different environments (Test, Staging, Prod), and we publish shared Python libraries to the corresponding CodeArtifact repositories. Finally we use them as dependencies of other modules. This is just fine with PDM because index urls and credentials can be entirely managed in the pdm.toml, which is not pushed to git, while the pdm.lock file is agnostic and doesn't change. It can't be achieved with UV at the moment instead, because syncing without locking will try to install libraries from the wrong environment, and locking will cause the lock file to continuously change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-09-11 16:16</div>
+            <div class="timeline-body"><p>Did we actually have a mechanism to force re-write the urls from the versions in the lock file while preserving the versions we are interested in?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2025-09-17 15:20</div>
+            <div class="timeline-body"><p>The big reason I switched from requirements.txt to a lockfile is that I want to use the lockfile's hashes to ensure the integrity of the environment, regardless of the provenance. Sometimes, where I am installing, I don't have an easy template-friendly URL transformation (or even a URL to transform to).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesharris-garmin">@jamesharris-garmin</a> on 2025-10-07 16:39</div>
+            <div class="timeline-body"><p>this is less than ideal because it requires checking in changes but if you need to refresh the urls for packages you can run <code>uv lock --refresh</code> with your mirror settings and it will re-write the lock file's url lookups to point to the correct locations.</p>
+<p>I am not sure if this ensures hashing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @konstin on 2025-12-18 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-18 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @konstin on 2025-12-18 15:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

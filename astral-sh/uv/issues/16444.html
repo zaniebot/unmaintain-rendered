@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv venv --python python3` does not use the `python3` executable - astral-sh/uv #16444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv venv --python python3` does not use the `python3` executable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16444">#16444</a>
+        opened by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a>
+        on 2025-10-24 23:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-10-24 23:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Zsh:</p>
+<pre><code class="language-console">$ uv -V; python -V; python3 -V
+uv 0.9.5
+Python 3.14.0
+Python 3.14.0
+$ uv venv --python python3 --verbose badvenv
+DEBUG uv 0.9.5
+DEBUG Acquired shared lock for `/home/andy/.cache/uv`
+DEBUG Using Python request `3` from explicit request
+DEBUG Searching for Python 3 in managed installations or search path
+DEBUG Searching for managed installations at `/home/andy/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.11.13-linux-x86_64-gnu`
+DEBUG Found `cpython-3.11.13-linux-x86_64-gnu` at `/home/andy/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin/python3.11` (managed installations)
+Using CPython 3.11.13
+Creating virtual environment at: badvenv
+DEBUG Assessing Python executable as base candidate: /home/andy/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin/python3.11
+DEBUG Using base executable for virtual environment: /home/andy/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/bin/python3.11
+Activate with: source badvenv/bin/activate
+DEBUG Released lock at `/home/andy/.cache/uv/.lock`
+$ uv venv --python python --verbose goodvenv
+DEBUG uv 0.9.5
+DEBUG Acquired shared lock for `/home/andy/.cache/uv`
+DEBUG Using Python request `python` from explicit request
+DEBUG Searching for Python interpreter with executable name `python`
+DEBUG Found `cpython-3.14.0-linux-x86_64-gnu` at `/home/andy/.local/share/mise/installs/python/3.14.0/bin/python` (search path)
+Using CPython 3.14.0 interpreter at: /home/andy/.local/share/mise/installs/python/3.14.0/bin/python
+Creating virtual environment at: goodvenv
+DEBUG Assessing Python executable as base candidate: /home/andy/.local/share/mise/installs/python/3.14.0/bin/python
+DEBUG Using base executable for virtual environment: /home/andy/.local/share/mise/installs/python/3.14.0/bin/python
+Activate with: source goodvenv/bin/activate
+DEBUG Released lock at `/home/andy/.cache/uv/.lock`
+</code></pre>
+<p>Looking at this debug output, it seems <code>--python</code> may not be what I had long thought it was -- the interpreter executable, to be found in the current <code>PATH</code>. Is that by design? I strikes me as a bug when <code>python3 -V</code> reports <code>3.14.0</code> and <code>uv venv --python python3</code> uses <code>3.11.13</code>.</p>
+<p>It seems it <em>is</em> what I thought when and only when the value is literally <code>python</code>, but something else when it's something different (<code>python3</code>).</p>
+<p>I see now in the docs (but not the <code>--help</code> output) that some expected values are <code>3.12.0</code> and <code>pypy@3.8</code>. Does that mean there's no way to have uv use &quot;whatever <code>python3</code> refers to&quot; if it happens to differ from what <code>python</code> refers to?</p>
+<p>I would guess that since it's not a straight number (<code>3</code>) or <code>@</code>-form (<code>python@3</code>) that it would be in the same class of value as <code>python</code>, which is the interpreter executable on the <code>PATH</code>.</p>
+<h3>Platform</h3>
+<p>Linux 6.17.2-zen1-1-zen x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.5</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AndydeCleyre on 2025-10-24 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-25 00:18</div>
+            <div class="timeline-body"><p>Yes, <code>--python</code> does not treat <code>python3</code> as a request for that executable name, but rather any Python 3 interpreter. I understand this can be surprising, but there are various nuanced reasons it's that way and I'm pretty hesitant to change it.</p>
+<p><code>--python python</code> is indeed treated as a request for that executable name, but that's just our fallback for any unrecognized request, e.g., <code>--python foobar</code> also does that.</p>
+<p>I'd recommend doing <code>--python $(which python3)</code> if you want the behavior you're describing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-25 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-10-25 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-10-25 00:41</div>
+            <div class="timeline-body"><p>Ok, thanks. I do think this is surprising enough to warrant a hint in the <code>--help</code> description.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

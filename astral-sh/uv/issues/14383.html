@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable Installs with scikit-build-core don't work - astral-sh/uv #14383</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Editable Installs with scikit-build-core don't work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14383">#14383</a>
+        opened by <a href="https://github.com/fizzxed">@fizzxed</a>
+        on 2025-07-01 03:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fizzxed">@fizzxed</a> on 2025-07-01 03:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://github.com/astral-sh/uv/pull/7857#issuecomment-2412479901 states that scikit-build-core should work fine with build isolation. But if we try an editable rebuild it doesn't seem to work.</p>
+<p>To reproduce:</p>
+<ol>
+<li><code>uv init --lib --build-backend scikit hello</code></li>
+<li>Edit pyproject.toml adding the line <code>editable.rebuild = true</code> under <code>[tool.scikit-build]</code></li>
+</ol>
+<pre><code>&gt; cat hello/pyproject.toml
+name = &quot;hello&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;...&quot;, email = &quot;...&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.scikit-build]
+minimum-version = &quot;build-system.requires&quot;
+build-dir = &quot;build/{wheel_tag}&quot;
+editable.rebuild = true
+
+[build-system]
+requires = [&quot;scikit-build-core&gt;=0.10&quot;, &quot;pybind11&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+</code></pre>
+<ol start="3">
+<li><code>uv run python -c &quot;import hello&quot;</code></li>
+</ol>
+<pre><code>Running cmake --build &amp; --install in /proj/build/cp312-cp312-linux_x86_64
+[0/1] Re-running CMake...
+CMake Error at CMakeLists.txt:5 (find_package):
+  Could not find a package configuration file provided by &quot;pybind11&quot; with any
+  of the following names:
+
+    pybind11Config.cmake
+    pybind11-config.cmake
+
+  Add the installation prefix of &quot;pybind11&quot; to CMAKE_PREFIX_PATH or set
+  &quot;pybind11_DIR&quot; to a directory containing one of the above files.  If
+  &quot;pybind11&quot; provides a separate development package or SDK, be sure it has
+  been installed.
+
+
+-- Configuring incomplete, errors occurred!
+FAILED: build.ninja
+
+/usr/bin/cmake --regenerate-during-build -S/proj/hello -B/proj/hello/build/cp312-cp312-linux_x86_64
+ninja: error: rebuilding 'build.ninja': subcommand failed
+ERROR: None
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/proj/hello/src/hello/__init__.py&quot;, line 1, in &lt;module&gt;
+    from hello._core import hello_from_bin
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1360, in _find_and_load
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1322, in _find_and_load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1262, in _find_spec
+  File &quot;/proj/hello/.venv/lib/python3.12/site-packages/_hello_editable.py&quot;, line 149, in find_spec
+    self.rebuild()
+  File &quot;/proj/hello/.venv/lib/python3.12/site-packages/_hello_editable.py&quot;, line 204, in rebuild
+    result.check_returncode()
+  File &quot;/users/&lt;USER&gt;/.local/share/uv/python/cpython-3.12.10-linux-x86_64-gnu/lib/python3.12/subprocess.py&quot;, line 502, in check_returncode
+    raise CalledProcessError(self.returncode, self.args, self.stdout,
+subprocess.CalledProcessError: Command '['cmake', '--build', '.']' returned non-zero exit status 1.
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 4.18.0-513.11.1.el8_9.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.17</p>
+<h3>Python version</h3>
+<p>Python 3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @fizzxed on 2025-07-01 03:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Editable Installs with scikit-build-core doesn't work" to "Editable Installs with scikit-build-core don't work" by @fizzxed on 2025-07-01 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-01 10:18</div>
+            <div class="timeline-body"><p>I can reproduce the problem using pip too, so this is a scikit-build-core bug, not a uv bug:</p>
+<pre><code>pip install -e .
+python -c &quot;import hello&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-build/scikit-build-core/issues/1112.html">scikit-build/scikit-build-core#1112</a> on 2025-07-01 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-07-01 20:50</div>
+            <div class="timeline-body"><p>This is a general issue with all isolated builds and editable installs. If you make an isolated build, pip or uv makes an isolated environment, installs scikit-build-core and pybind11 into it, then builds the package pointing at that environment. Then it throws it away once it's done. But for an editable install, you need those requirements later to rebuild! Scikit-build-core actually doesn't need itself to build, but it does need any other packages you request, like pybind11. You'll need to do a non-editable install, and include the build requirements. This is true for all editable backends that need dependencies when rebuilding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fizzxed">@fizzxed</a> on 2025-07-01 21:22</div>
+            <div class="timeline-body"><p>Is this then simply an incompatibility between editable installs and isolated builds, you can only have one but not the other when you have a python project with extensions? Or can anything be done to support both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-07-01 21:35</div>
+            <div class="timeline-body"><p>If you have no build dependencies except scikit-build-core, then you can support both. If you use pybind11 as a submodule, for example, that would also work (I'd recommend using an override in that case, so you can still pull it normally for non editable installs). Otherwise, it's just a limitation of the way editable installs were designed, they are not properly compatible with isolated environments. PS: That also includes cmake and ninja; those should already in installed; if you rely on scikit-build-core to request them, then that will also break rerunning an isolated install, since they would also be gone.</p>
+<p>(Possibly this could improve in the future in tools like uv, I could imagine uv installing the isolated environment into some not-as-temporary location for editable installs, and only removing it when making a new one, perhaps?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fizzxed">@fizzxed</a> on 2025-07-01 21:48</div>
+            <div class="timeline-body"><blockquote>
+<p>(Possibly this could improve in the future in tools like uv, I could imagine uv installing the isolated environment into some not-as-temporary location for editable installs, and only removing it when making a new one, perhaps?)</p>
+</blockquote>
+<p>I think that would be a nice feature. It would certainly make the development experience smoother for those trying to use the uv project api for Python projects that have C/C++ extensions. For now maybe just using uv's pip interface is the way to go until that hopeful future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @charliermarsh on 2025-07-02 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-07-02 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-07-02 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14940.html">astral-sh/uv#14940</a> on 2025-07-28 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Joseph-Edwards">@Joseph-Edwards</a> on 2025-11-04 02:10</div>
+            <div class="timeline-body"><p>A brief question following from @henryiii's comment:</p>
+<blockquote>
+<p>You'll need to do a non-editable install, and include the build requirements.</p>
+</blockquote>
+<p>Is there setting I can specify in <code>pyproject.toml</code> to enforce this behaviour systematically? Something similar to setting the environment variable <code>UV_NO_EDITABLE</code>, perhaps.</p>
+<p>I'm happy to elaborate on my specific use case, or to open a separate issue, if either would be desirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../openalea/stat_tool/issues/4.html">openalea/stat_tool#4</a> on 2025-11-17 16:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

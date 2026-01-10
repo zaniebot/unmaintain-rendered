@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce the uv binary size - astral-sh/uv #14026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce the uv binary size</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14026">#14026</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-13 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-13 14:03</div>
+            <div class="timeline-body"><p>This is a tracking issue for discussion on ways to reduce the size of the uv binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracking</span> added by @zanieb on 2025-06-13 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypi/support/issues/6640.html">pypi/support#6640</a> on 2025-06-13 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 15:52</div>
+            <div class="timeline-body"><p>Two main tools here are cargo-bloat and cargo-llvm-lines. Both report nothing outstandingly large.</p>
+<p>In cargo llvm-lines, we see that our futures are large. This is mostly likely due to the large number of local variables, we may get a few KB less with less locals and more boxing of futures. <code>uv_extract::stream::unzip</code> which calls <code>async_compression::futures::bufread::generic::decoder::Decoder</code> is generic (duplicating code), but making it <code>dyn</code> showed a performance regression.</p>
+<pre><code>$ cargo llvm-lines -p uv --bin uv | head -40
+  Lines                  Copies               Function name
+  -----                  ------               -------------
+  2035845                55022                (TOTAL)
+    22572 (1.1%,  1.1%)      1 (0.0%,  0.0%)  uv::run::{{closure}}::{{closure}}
+    20280 (1.0%,  2.1%)     65 (0.1%,  0.1%)  async_compression::futures::bufread::generic::decoder::Decoder&lt;R,D&gt;::do_poll_read
+    17371 (0.9%,  3.0%)     11 (0.0%,  0.1%)  uv_extract::stream::unzip::{{closure}}
+    17246 (0.8%,  3.8%)    739 (1.3%,  1.5%)  core::result::Result&lt;T,E&gt;::map_err
+    15912 (0.8%,  4.6%)     52 (0.1%,  1.6%)  &lt;toml_edit::de::value::ValueDeserializer as serde::de::Deserializer&gt;::deserialize_any
+    15287 (0.8%,  5.3%)    443 (0.8%,  2.4%)  std::panic::catch_unwind
+    14318 (0.7%,  6.0%)    656 (1.2%,  3.6%)  &lt;core::result::Result&lt;T,E&gt; as core::ops::try_trait::Try&gt;::branch
+    14269 (0.7%,  6.7%)    359 (0.7%,  4.2%)  &lt;alloc::boxed::Box&lt;T,A&gt; as core::ops::drop::Drop&gt;::drop
+    13839 (0.7%,  7.4%)    138 (0.3%,  4.5%)  &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+    13175 (0.6%,  8.1%)     27 (0.0%,  4.5%)  &lt;core::iter::adapters::flatten::FlattenCompat&lt;I,U&gt; as core::iter::traits::iterator::Iterator&gt;::size_hint
+    12423 (0.6%,  8.7%)    183 (0.3%,  4.9%)  core::iter::traits::iterator::Iterator::try_fold
+    11538 (0.6%,  9.2%)    372 (0.7%,  5.5%)  tokio::loom::std::unsafe_cell::UnsafeCell&lt;T&gt;::with_mut
+    11380 (0.6%,  9.8%)     72 (0.1%,  5.7%)  tokio::runtime::task::core::Cell&lt;T,S&gt;::new
+    11234 (0.6%, 10.4%)      1 (0.0%,  5.7%)  uv::commands::project::run::run::{{closure}}
+    10546 (0.5%, 10.9%)    722 (1.3%,  7.0%)  core::ops::function::FnOnce::call_once
+     9878 (0.5%, 11.4%)    449 (0.8%,  7.8%)  std::panicking::try::do_catch
+     9212 (0.5%, 11.8%)      8 (0.0%,  7.8%)  uv_client::cached_client::CachedClient::get_cacheable::{{closure}}::{{closure}}
+     8766 (0.4%, 12.2%)     68 (0.1%,  7.9%)  tokio::runtime::blocking::pool::Spawner::spawn_blocking_inner
+     8736 (0.4%, 12.7%)     28 (0.1%,  8.0%)  async_compression::tokio::bufread::generic::decoder::Decoder&lt;R,D&gt;::do_poll_read
+     8628 (0.4%, 13.1%)    379 (0.7%,  8.7%)  alloc::boxed::Box&lt;T&gt;::new
+     8127 (0.4%, 13.5%)     33 (0.1%,  8.7%)  core::slice::sort::shared::smallsort::small_sort_general_with_scratch
+     8011 (0.4%, 13.9%)     81 (0.1%,  8.9%)  alloc::vec::Vec&lt;T,A&gt;::extend_desugared
+     7560 (0.4%, 14.3%)     35 (0.1%,  8.9%)  core::slice::sort::shared::find_existing_run
+     7491 (0.4%, 14.6%)     11 (0.0%,  9.0%)  async_zip::base::read::lfh::{{closure}}
+     7402 (0.4%, 15.0%)     38 (0.1%,  9.0%)  core::slice::sort::stable::quicksort::stable_partition
+     7176 (0.4%, 15.3%)     46 (0.1%,  9.1%)  &lt;toml_edit::de::spanned::SpannedDeserializer&lt;T&gt; as serde::de::MapAccess&gt;::next_value_seed
+     7112 (0.3%, 15.7%)     72 (0.1%,  9.2%)  tokio::runtime::task::harness::poll_future
+     6882 (0.3%, 16.0%)     74 (0.1%,  9.4%)  alloc::vec::Vec&lt;T,A&gt;::extend_trusted
+     6767 (0.3%, 16.4%)      1 (0.0%,  9.4%)  uv::run_project::{{closure}}
+     6671 (0.3%, 16.7%)      1 (0.0%,  9.4%)  uv::commands::pip::compile::pip_compile::{{closure}}
+     6625 (0.3%, 17.0%)     25 (0.0%,  9.4%)  &lt;toml_edit::de::value::ValueDeserializer as serde::de::Deserializer&gt;::deserialize_struct
+     6514 (0.3%, 17.3%)     28 (0.1%,  9.5%)  alloc::collections::btree::node::Handle&lt;alloc::collections::btree::node::NodeRef&lt;alloc::collections::btree::node::marker::Mut,K,V,NodeType&gt;,alloc::collections::btree::node::marker::KV&gt;::split_leaf_data
+     6501 (0.3%, 17.7%)     33 (0.1%,  9.5%)  core::slice::sort::shared::smallsort::sort4_stable
+     6270 (0.3%, 18.0%)     33 (0.1%,  9.6%)  core::slice::sort::shared::smallsort::bidirectional_merge
+     6137 (0.3%, 18.3%)    449 (0.8%, 10.4%)  std::panicking::try::do_call
+     6097 (0.3%, 18.6%)      1 (0.0%, 10.4%)  uv::commands::tool::install::install::{{closure}}
+     6068 (0.3%, 18.9%)     34 (0.1%, 10.5%)  tokio::runtime::blocking::pool::Spawner::spawn_blocking
+</code></pre>
+<p>For cargo bloat, again our futures are large and derives such as serde and clap a large.</p>
+<pre><code>$ cargo bloat --release -n 30
+ File  .text     Size             Crate Name
+ 0.3%   0.6% 192.1KiB                uv uv::run::{{closure}}::{{closure}}
+ 0.3%   0.6% 181.5KiB                uv uv::run::{{closure}}::{{closure}}
+ 0.2%   0.3% 111.9KiB        uv_scripts &lt;serde::__private::de::content::ContentDeserializer&lt;E&gt; as serde::de::Deserializer&gt;::deserialize_any
+ 0.1%   0.2%  77.7KiB           reqwest h2::proto::connection::Connection&lt;T,P,B&gt;::poll
+ 0.1%   0.2%  68.2KiB            uv_cli &lt;uv_cli::PipCompileArgs as clap_builder::derive::Args&gt;::augment_args
+ 0.1%   0.2%  65.5KiB               std core::ptr::drop_in_place&lt;uv::run::{{closure}}::{{closure}}&gt;
+ 0.1%   0.2%  65.3KiB               std core::ptr::drop_in_place&lt;uv::run::{{closure}}::{{closure}}&gt;
+ 0.1%   0.2%  63.3KiB               std core::ptr::drop_in_place&lt;uv::run::{{closure}}::{{closure}}&gt;
+ 0.1%   0.2%  62.8KiB                uv uv::commands::pip::compile::pip_compile::{{closure}}
+ 0.1%   0.2%  62.8KiB      uv_installer uv_installer::plan::Planner::build
+ 0.1%   0.2%  61.3KiB                uv uv::commands::project::run::run::{{closure}}
+ 0.1%   0.2%  60.6KiB                uv uv::commands::project::add::add::{{closure}}
+ 0.1%   0.2%  57.8KiB            uv_cli &lt;uv_cli::RunArgs as clap_builder::derive::Args&gt;::augment_args
+ 0.1%   0.2%  54.5KiB            uv_cli &lt;uv_cli::PipInstallArgs as clap_builder::derive::Args&gt;::augment_args
+ 0.1%   0.2%  52.9KiB       uv_resolver uv_resolver::resolver::ResolverState&lt;InstalledPackages&gt;::solve
+ 0.1%   0.2%  52.7KiB       uv_resolver uv_resolver::resolver::ResolverState&lt;InstalledPackages&gt;::solve
+ 0.1%   0.2%  52.6KiB               std core::slice::sort::shared::smallsort::small_sort_network
+ 0.1%   0.2%  50.2KiB                uv uv::commands::project::export::export::{{closure}}
+ 0.1%   0.2%  49.9KiB       uv_resolver uv_resolver::lock::Lock::to_toml
+ 0.1%   0.2%  49.4KiB                uv uv::run_project::{{closure}}
+ 0.1%   0.1%  48.5KiB            uv_cli &lt;uv_cli::ExportArgs as clap_builder::derive::Args&gt;::augment_args
+ 0.1%   0.1%  47.4KiB            uv_cli &lt;uv_cli::SyncArgs as clap_builder::derive::Args&gt;::augment_args
+ 0.1%   0.1%  47.0KiB            uv_cli &lt;uv_cli::PipSyncArgs as clap_builder::derive::Args&gt;::augment_args
+ 0.1%   0.1%  45.7KiB                uv uv::commands::pip::compile::pip_compile::{{closure}}
+ 0.1%   0.1%  44.2KiB       uv_resolver uv_resolver::resolution::output::ResolverOutput::from_state
+ 0.1%   0.1%  43.7KiB            uv_cli &lt;uv_cli::PythonCommand as clap_builder::derive::Subcommand&gt;::augment_subcommands
+ 0.1%   0.1%  42.9KiB            uv_cli &lt;uv_cli::PipCommand as clap_builder::derive::Subcommand&gt;::augment_subcommands
+ 0.1%   0.1%  42.5KiB                uv uv::commands::build_frontend::build_package::{{closure}}
+ 0.1%   0.1%  42.1KiB uv_build_frontend uv_build_frontend::SourceBuild::setup::{{closure}}
+ 0.1%   0.1%  41.4KiB                uv uv::commands::build_frontend::build_package::{{closure}}
+51.7%  93.4%  29.9MiB                   And 31631 smaller methods. Use -n N to show more.
+55.3% 100.0%  32.1MiB                   .text section size, the file size is 58.0MiB
+</code></pre>
+<p>A possible optimization target is reducing the duplication of dependencies, which requires making (and getting merged) upstream PRs throughout the stack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/romuald">@romuald</a> on 2025-10-23 14:45</div>
+            <div class="timeline-body"><p>I'm pretty  sure it was already ruled out, but using adding <code>opt-level = &quot;s&quot;</code> to the release profile currently reduce final binary size from 50M to 33M (x86_64) for 0.9.5</p>
+<p>at the cost of performance: benchmark ouput:</p>
+<pre><code>standard
+Benchmark 1: uv (resolve-warm)
+  Time (mean ± σ):      24.1 ms ±   1.6 ms    [User: 14.0 ms, System: 20.2 ms]
+  Range (min … max):    20.5 ms …  30.6 ms    116 runs
+
+Benchmark 1: uv (resolve-cold)
+  Time (mean ± σ):     355.2 ms ±  77.9 ms    [User: 187.3 ms, System: 66.6 ms]
+  Range (min … max):   316.8 ms … 574.5 ms    10 runs
+
+opt-level = &quot;s&quot;
+Benchmark 1: uv (resolve-warm)
+  Time (mean ± σ):      25.6 ms ±   1.5 ms    [User: 17.5 ms, System: 18.8 ms]
+  Range (min … max):    21.4 ms …  29.3 ms    100 runs
+
+Benchmark 1: uv (resolve-cold)
+  Time (mean ± σ):     336.1 ms ±  18.2 ms    [User: 205.6 ms, System: 75.0 ms]
+  Range (min … max):   301.9 ms … 359.8 ms    10 runs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JosiahParry">@JosiahParry</a> on 2025-12-07 17:43</div>
+            <div class="timeline-body"><p>I was fairly surprised to see that <code>uv</code> is a 40mb binary.  I've found that <code>codegen-units = 1</code> is a surprisingly effect way of reducing the binary size. The downside is that it can be <em>very</em> slow.</p>
+<p>I use the following profile in a project that took the binary size from ~100mb to 40mb:</p>
+<pre><code>[profile.release]
+strip = &quot;symbols&quot;
+lto = true
+codegen-units = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-08 12:06</div>
+            <div class="timeline-body"><p>What platform are you on? For me on Ubuntu 24.04, it goes from ~52M to ~42MB, with comparable compression ratios (21MB vs. 17MB zipped).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

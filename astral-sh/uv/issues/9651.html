@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyTorch nightly index makes uv download all torch versions in a loop - astral-sh/uv #9651</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PyTorch nightly index makes uv download all torch versions in a loop</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9651">#9651</a>
+        opened by <a href="https://github.com/ViRb3">@ViRb3</a>
+        on 2024-12-04 23:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ViRb3">@ViRb3</a> on 2024-12-04 23:51</div>
+            <div class="timeline-body"><p>I copied the full PyTorch example from https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+  &quot;torch&gt;=2.5.1&quot;,
+  &quot;torchvision&gt;=0.20.1&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+<p>Only difference is I swapped the index url to <code>https://download.pytorch.org/whl/nightly/cpu</code></p>
+<p>When I run <code>uv sync</code>, it downloads all versions of torch in reverse order. It doesn't really stop until I Ctrl + C it. Without nightly, it works fine.</p>
+<pre><code class="language-bash">$ uv version
+uv 0.5.6 (Homebrew 2024-12-03)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "PyTorch guide with nightly index makes uv download all torch versions in a loop" to "PyTorch nightly index makes uv download all torch versions in a loop" by @ViRb3 on 2024-12-04 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 01:06</div>
+            <div class="timeline-body"><p>We're backtracking on the package because its dependencies can't be solved. Because of the limitations of the torch index, we can't inspect its metadata without downloading the full wheel.</p>
+<p>With some verbose logs..</p>
+<pre><code>TRACE Selecting candidate for pytorch-triton with range ==3.2.0+git35c6c7c6 with 1 remote versions
+TRACE Exhausted all candidates for package pytorch-triton with range ==3.2.0+git35c6c7c6 after 0 steps
+</code></pre>
+<p>There are <code>pytorch-triton</code> <a href="https://download.pytorch.org/whl/nightly/pytorch-triton/">wheels available</a> with a matching version, but your index is set to <code>explicit</code>. You'll want to use the index for it, e.g.</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+  &quot;torch&gt;=2.5.1&quot;, &quot;pytorch-triton&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot;},
+]
+torchvision = [
+    { index = &quot;pytorch-cpu&quot;},
+]
+pytorch-triton = [
+    { index = &quot;pytorch-cpu&quot;},
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/nightly/cpu&quot;
+explicit = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-05 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-05 01:08</div>
+            <div class="timeline-body"><p>A big part of the problem here (I assume) is that the PyTorch registry has no fast-path for metadata. So you literally have to download every version (in full) to understand the dependencies at each stage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ViRb3">@ViRb3</a> on 2024-12-05 01:11</div>
+            <div class="timeline-body"><p>@zanieb Thanks for the suggestion! I tried that, but it fails on macOS with the following error:</p>
+<blockquote>
+<p>error: Distribution <code>pytorch-triton==3.2.0+git35c6c7c6 @ registry+https://download.pytorch.org/whl/nightly/cpu</code> can't be installed because it doesn't have a source distribution or wheel for the current platform</p>
+</blockquote>
+<p>Removing <code>pytorch-triton</code> from dependencies sends it into the torch download loop again...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 01:13</div>
+            <div class="timeline-body"><p>I removed the != Darwin markers to debug, you should restore those (and include it for triton).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ViRb3">@ViRb3</a> on 2024-12-05 01:21</div>
+            <div class="timeline-body"><p>That worked, thanks! Although, why did it work? As far as I understand, we are specifying to use the nightly index ONLY IF <code>platform_system != 'Darwin'</code>. However, I <em>am</em> on Darwin, so it should fall back to the default pip index, and the nightly index is left unused?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 01:27</div>
+            <div class="timeline-body"><p>During lock, we'll solve for Darwin / not Darwin so there will be two versions</p>
+<pre><code>❯ uv lock
+Resolved 27 packages in 516ms
+Updated pytorch-triton v3.2.0+git35c6c7c6 -&gt; v0.0.1, v3.2.0+git35c6c7c6
+Updated torch v2.6.0.dev20241204+cpu -&gt; v2.5.1, v2.6.0.dev20241204+cpu
+</code></pre>
+<p>And yeah, the Darwin version will come from PyPI instead of the Pytorch CPU index (which only supports Linux).</p>
+<p>During sync, we install a locked version appropriate for the platform.</p>
+<pre><code>❯ uv sync
+...
+ + pytorch-triton==0.0.1
+ + torch==2.5.1
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 01:29</div>
+            <div class="timeline-body"><p>You can remove the extraneous <code>pytorch-triton</code> install (that's just a dummy package) by declaring the dependency as <code>&quot;pytorch-triton; platform_system != 'Darwin'&quot;,</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ViRb3">@ViRb3</a> on 2024-12-05 01:35</div>
+            <div class="timeline-body"><p>Interesting. I was following Apple's guide on installing PyTorch nightly (https://developer.apple.com/metal/pytorch/) and they specify the following command:</p>
+<pre><code>pip3 install --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+</code></pre>
+<p>If I run this using <code>uv pip</code>, it installs the following:</p>
+<pre><code>torch==2.6.0.dev20241126
+torchaudio==2.5.0.dev20241126
+torchvision==0.20.0.dev20241126
+</code></pre>
+<p>This definitely looks like nightly, so it surely should exist on the Pytorch CPU index? I was able to reproduce using the following:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;torch&quot;,
+    &quot;torchaudio&quot;,
+    &quot;torchvision&quot;,
+]
+
+[tool.uv]
+environments = [
+    &quot;platform_system == 'Darwin'&quot;,
+]
+
+[tool.uv.sources]
+torch = { url = &quot;https://download.pytorch.org/whl/nightly/cpu/torch-2.6.0.dev20241126-cp312-none-macosx_11_0_arm64.whl&quot; }
+torchaudio = { url = &quot;https://download.pytorch.org/whl/nightly/cpu/torchaudio-2.5.0.dev20241126-cp312-cp312-macosx_11_0_arm64.whl&quot; }
+torchvision = { url = &quot;https://download.pytorch.org/whl/nightly/cpu/torchvision-0.20.0.dev20241126-cp312-cp312-macosx_11_0_arm64.whl&quot; }
+</code></pre>
+<p>I'm honestly not sure what the <code>environments</code> part does, I saw it from another GitHub issue since without it I get this error:</p>
+<pre><code>  × No solution found when resolving dependencies for split (platform_system != 'Darwin' and python_full_version &gt;= '3.12' and python_full_version &lt; '4'):
+  ╰─▶ Because there is no version of pytorch-triton{python_full_version &lt; '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'}==3.2.0+git35c6c7c6 and torch==2.6.0.dev20241126 depends on pytorch-triton{python_full_version &lt; '3.13' and platform_machine
+      == 'x86_64' and platform_system == 'Linux'}==3.2.0+git35c6c7c6, we can conclude that torch==2.6.0.dev20241126 cannot be used.
+      And because only torch==2.6.0.dev20241126 is available and your project depends on torch, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>Specifying a dependency <code>pytorch-triton; platform_system != 'Darwin'</code> does not help in this case.</p>
+<p>Does this error throw because I am hardcoding macOS sources, while uv is trying to solve for all OSes so their dependencies can be included in the lock file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 02:54</div>
+            <div class="timeline-body"><pre><code>environments = [
+    &quot;platform_system == 'Darwin'&quot;,
+]
+</code></pre>
+<p>means &quot;only lock for Darwin&quot;. https://docs.astral.sh/uv/concepts/projects/config/#limited-resolution-environments</p>
+<p>With <code>uv pip</code>, we only solve for the current platform. https://docs.astral.sh/uv/concepts/resolution/#platform-specific-resolution</p>
+<p>I believe the <code>+cpu</code> suffixes on the versions are messing up our resolution. The nightly index seems to have different distributions. I'm not sure what the workaround is for that, @charliermarsh would probably know. I'd try to designate a version without <code>+cpu</code> for Darwin and with <code>+cpu</code> elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 03:18</div>
+            <div class="timeline-body"><p>Okay trial and error, the proper invocation is</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+  &quot;torch===2.6.0.dev20241204; platform_system == 'Darwin'&quot;,
+  &quot;torchvision===0.20.0.dev20241205; platform_system == 'Darwin'&quot;,
+  &quot;torch==2.6.0.dev20241204+cpu; platform_system != 'Darwin'&quot;,
+  &quot;torchvision==0.20.0.dev20241205+cpu; platform_system != 'Darwin'&quot;,
+  &quot;pytorch-triton; platform_system != 'Darwin'&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+pytorch-triton = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/nightly&quot;
+explicit = true
+</code></pre>
+<p>Sorry it's such a pain, the torch indexes are very inconsistent in their versioning and distribution availability per platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ViRb3">@ViRb3</a> on 2024-12-07 20:30</div>
+            <div class="timeline-body"><p>Got it, makes sense. Thanks for the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ViRb3 on 2024-12-07 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../KellerJordan/modded-nanogpt/pulls/56.html">KellerJordan/modded-nanogpt#56</a> on 2024-12-19 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10307.html">astral-sh/uv#10307</a> on 2025-01-06 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 00:59</div>
+            <div class="timeline-body"><p>This should be <em>way</em> better in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10693.html">astral-sh/uv#10693</a> on 2025-01-16 20:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:44 UTC
+    </footer>
+</body>
+</html>

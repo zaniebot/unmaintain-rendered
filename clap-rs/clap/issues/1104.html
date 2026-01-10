@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow Enum Variants as Arg|ArgGroup|SubCommand keys - clap-rs/clap #1104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow Enum Variants as Arg|ArgGroup|SubCommand keys</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1104">#1104</a>
+        opened by <a href="https://github.com/kbknapp">@kbknapp</a>
+        on 2017-11-12 20:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 20:11</div>
+            <div class="timeline-body"><p>I.e. remove the &quot;stringly typed&quot; nature of clap</p>
+<p>How this is done internally is up for debate and the reason for this issue. See the related topic #1041</p>
+<p>Basically we want to Hash whatever key is given and store that instead of a <code>&amp;str</code>/<code>String</code>/<code>Cow&lt;_&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 20:13</div>
+            <div class="timeline-body"><p>Even without a derivable component we'll need to iron out the constraints that are part of clap which <code>ArgMatches::value_of</code> accepts instead of <code>&amp;str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @kbknapp on 2017-11-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-11-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-11-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-11-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x blocker</span> added by @kbknapp on 2017-11-12 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2017-11-13 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-02-05 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x blocker</span> removed by @kbknapp on 2018-02-05 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha1" by @kbknapp on 2018-02-05 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/459.html">clap-rs/clap#459</a> on 2018-07-22 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacob-greenfield">@jacob-greenfield</a> on 2019-05-30 06:04</div>
+            <div class="timeline-body"><p>Is this still being considered? I really like this approach for a number of reasons. I saw the <a href="https://clap.rs/2019/03/08/clap-v3-update-no-more-strings/">recent blog post</a> didn't mention it which is why I am asking.</p>
+<p>I'm not sure if this is possible, and I think it this would rely on rust-lang/rfcs#2593. Anyway I imagine the following scenario. The user defines an enum. Each variant represents an argument. You call <code>ArgMatches::get_value&lt;Variant: Args&gt;() -&gt; &amp;str</code> where <code>Variant</code> is <em>the variant type itself</em> (see the linked RFC). That function gives you an instance of <em>T</em>, and you can get information from the associated value.</p>
+<p>For example (pseudocode):</p>
+<pre><code class="language-rust">// in Clap:
+
+struct Arg&lt;Variant&gt; {
+    // everything here remains the same
+}
+
+// here `Args` is the enum itself
+struct App&lt;Args&gt; {
+    ...
+    fn arg&lt;T: Into&lt;Arg&lt;Self::Args&gt;&gt;&gt;(self, a: T) -&gt; Self
+    fn get_matches(self) -&gt; ArgMatches&lt;Self::Args&gt;
+}
+
+// here `Args` is the enum itself
+impl ArgMatches&lt;Args&gt; {
+    ...
+    fn get_value&lt;Variant: Self::Args&gt; -&gt; &amp;str {
+        ...
+    }
+	fn get_values ...
+}
+
+// user code (no argument name strings!):
+
+enum MyArgs {
+    Username,
+}
+
+let matches = App&lt;MyArgs&gt;::new(&quot;foo&quot;)
+    .arg(
+        Arg&lt;MyArgs::Username&gt;::new().short(&quot;u&quot;)
+    )
+    .get_matches();
+
+let username = matches.get_value::&lt;MyArgs::Username&gt;();
+</code></pre>
+<p>Alternatively, if the Rust team ends up deciding to allow you to restrict enum variants more (not currently planned AFAIK):</p>
+<pre><code class="language-rust">// in Clap:
+
+// here `Args` refers to a variant of an enum
+struct Arg&lt;Variant: Args&gt; {
+    fn new_single() { ... } // Only allowed if the variant has an associated string
+    fn new_multiple() { ... } // Only allowed if the variant has an associated iterator
+    fn new_boolean() { ... } // Only allowed if the variant has an associated boolean
+}
+
+// here `Args` is the enum itself
+impl ArgMatches&lt;Args&gt; {
+    ...
+    fn get_value_automatic&lt;Variant: Self::Args&gt; -&gt; Variant {
+        ...
+    }
+}
+
+// user code (no argument name strings!):
+
+enum MyArgs {
+    Usernames(IntoIterator&lt;String&gt;),
+}
+
+let matches = App&lt;MyArgs&gt;::new(&quot;foo&quot;)
+    .arg(
+        Arg&lt;MyArgs::Usernames&gt;::new_multiple().short(&quot;u&quot;)
+    )
+    .get_matches();
+
+let MyArgs::Usernames(usernames) = matches.get_value();
+</code></pre>
+<p>This way, there is a single function <code>get_value</code> that returns the appropriate return type for any variant you give it. That means for example you can't pass a multi-argument to <code>ArgMatches::value_of</code> like you can today.</p>
+<p>Anyway this is all still up in the air anyway since it seems like the Rust team hasn't settled on exactly what features they plan to add to enums. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v3-alpha.2" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3.0" by @pksunkara on 2020-02-01 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1663.html">clap-rs/clap#1663</a> on 2020-02-03 09:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg enums</span> added by @pksunkara on 2020-04-12 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg groups</span> added by @pksunkara on 2020-04-12 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-04-12 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @pksunkara on 2020-04-12 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/magistau">@magistau</a> on 2021-01-14 17:37</div>
+            <div class="timeline-body"><p>Is there a workaround to this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../drogue-iot/drg/pulls/4.html">drogue-iot/drg#4</a> on 2021-03-17 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-19 18:56</div>
+            <div class="timeline-body"><p>I tried to read up on past effort for enums but <a href="https://clap.rs/2019/03/08/clap-v3-update-no-more-strings/">the blog post was removed</a> as part of the new site and for some reason <a href="https://web.archive.org/web/20190509121951/https://clap.rs/">the wayback machine doesn't have that one article</a></p>
+<p>@kbknapp happen to have this hanging around somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-07-19 19:09</div>
+            <div class="timeline-body"><p>I believe I do. I'm on mobile at the moment and will look it up shortly once I get to a computer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-07-19 21:07</div>
+            <div class="timeline-body"><p>I found it.</p>
+<details>
+<summary>Here is the post content </summary>
+# Issue: Removing Strings
+
+<p>One of the biggest complaints about clap is the “stringly typed” nature of arguments. You give them a string name, and retrieve their value by string. Where this goes wrong is if you typo a string name, you won’t know until you hit that code path. Combined with clap goes to decent lengths to ensure the clap::ArgMatches struct keeps memory usage low which means stripping out any arguments which weren’t used at runtime. This means the clap::ArgMatches struct doesn’t know if you typo’ed an argument value, or it simply wasn’t used at runtime.</p>
+<p>The solution to above problem would be keeping a list of all arguments in the clap::ArgMatches struct. However, for CLIs that have hundreds of arguments, the memory usage adds up quickly.</p>
+<p>So there are two (actually three) problems being conflated here:</p>
+<ul>
+<li>Users can typo argument names with no compiler help catching this (the can actually typo names in a number of places, definition <em>and</em> each individual access)</li>
+<li>clap::ArgMatches has no knowledge of defined arguments</li>
+<li>During parsing, clap must store, iterate, and compare all these strings many, many times which would be much more efficient with other types.</li>
+</ul>
+<h2>Challenge: Typo’ing Argument Names</h2>
+<p>The solution to this would be to use enum variants. This way the compiler can tell you, no such enum variant exists if you typo it.</p>
+<p>The question then is how to store such a value in each Argument (and clap) for parsing to be able to compare.</p>
+<p>Another constraint placed on myself, is I don’t want existing clap users to have to upgrade en masse.  If you’re happy using Strings, or you have a CLI that works, why spend the resources to change it.  That means the requirements are:</p>
+<ul>
+<li>Allow enum variants to be used</li>
+<li>The solution must also allow for strings to provide an easy upgrade path</li>
+</ul>
+<p>Before I talk about the solutions I tried, and ultimately chose let me speak about the other challenges.</p>
+<h2>Challenge: clap::ArgMatches has no knowledge of defined arguments</h2>
+<p>Ok, so now we have to come up with a solution which also:</p>
+<ul>
+<li>Is efficient enough, we can afford to store all defined arguments in a clap::ArgMatches</li>
+</ul>
+<p>If we quickly look at the current naive solution of storing Strings, so we know our upper bound, it would look something like (note: the actual types are nested and shown here as essentially primitives for brevity):</p>
+<pre><code class="language-rust">struct ArgMatchesV2 {
+    args: Vec&lt;(String, Vec&lt;OsString&gt;)&gt;,
+    subcommand: Box&lt;ArgMatches&gt;
+    ... 
+}
+struct ArgMatchesV3 {
+    args: Vec&lt;(String, Option&lt;Vec&lt;OsString&gt;&gt;)&gt;,
+    subcommand: Vec&lt;(String, Box&lt;ArgMatches&gt;)&gt;
+    ... 
+}
+</code></pre>
+<p>I put the <code>subcomamnd</code> field in this example, because it’s important to keep in mind this math can explode if multiple levels of sucommands are used.</p>
+<p>That doesn’t look different! You’re right. However, if one used two arguments at runtime (out of a possible valid 100 for instance) <code>args</code> will only consist of two elements. Whereas in v3 it’ll consist of the full 100 elements.</p>
+<p>Since a String is essentially a Vec<u8>, and a Vec<T> is a pointer plus length (usize) plus capacity (usize). That means it’s an additional 98 * (usize<em>3) *plus</em> whatever the actual String bytes are that are allocated, which if we just say an average of five bytes per String for simple math, and on my system a pointer/usize is 8 bytes, the difference between the above ArgMatchesV2 and ArgMatchesV3 is:</p>
+<ul>
+<li>V2 = 2<em>((8</em>3)+(5<em>5)) = 2</em>49 = 98 bytes.</li>
+<li>V3 = 100*49 = 4,900 bytes.</li>
+</ul>
+<p>That’s just args. Look at subcommands:</p>
+<p>Same math as before, but with the way subcommand work you can only ever have a single subcommand per “level”. However, now we’d need to store all possible subcommands, which even if Box::new doesn’t allocate for all the subcommands we didn’t use it’s still an additional String (49 bytes on average) plus a pointer (8 bytes). Now subcommand numbers <em>usually</em> don’t  go as high as args, possibly 30-50 at most. Let’s just say 25 for easy math:</p>
+<ul>
+<li>V2 = 1*8 = 8 bytes</li>
+<li>V3 = 25*(49+8) = 1,425 bytes</li>
+</ul>
+<p>Giving us a grand total of:</p>
+<ul>
+<li>V2 = 106 bytes</li>
+<li>V3 = 6,325 bytes</li>
+</ul>
+<p>Ok we have our baseline.</p>
+<h2>Challenge: Iterating and comparing strings is slow</h2>
+<p>Ok, whatever solution we go with, iterating Arg struct (and thus whatever this new field is) should be faster than a bunch of Strings. Since we’ve already gone over the math and breakdown of a String, we know it involves a heap lookup (Since Strings are a essentially Vec<u8>), so if we can avoid touching the heap that’d be gravy.</p>
+<h2>Solution 1: Generics</h2>
+<p>My first attempt at solving this was to use a generic type bound on PartialEq. While implementing this, I had an icky feeling though. All my type signatures were changing to clap::Arg&lt;T: PartialEq&gt; which expands out to clap::ArgMatches&lt;T: PartialEq&gt;. This has a few unfortunate side affects:</p>
+<ul>
+<li>People would have to annotate their types, making upgrading to clap v3 a pain</li>
+<li>T might be huge, which doesn’t fix the clap::ArgMatches low memory requirement</li>
+<li>clap codegen booms because you might have multiple T’s throughout your CLI (this is problem for one of the later challenges)</li>
+</ul>
+<p>So this doesn’t seem like a good route. Next I tried Trait Objects</p>
+<h2>Solution 2: Trait Objects</h2>
+<p>Ok, so what if instead of a type T: ParitalEq I just stored &amp;’a PartialEq (or Box<PartialEq>)? This fixes the problem of T being huge, now T is just a pointer (8 bytes). It also fixes the type signature as people still would just use clap::Arg. However, I’m still touching the heap each time I want to compare or find an argument.</p>
+<p>I put this on the back burner as a <em>maybe</em>.</p>
+<h2>Solution 3: Hashing</h2>
+<p>Ok, so what if I simply hash T and get a consistent output (I picked u64, or 8 bytes)?</p>
+<p>Sure, I’ll have to hash all 100 T’s at definition time, but clap iterates and compares each argument <em>far</em> more than once per argument. So it seems a small price to pay, especially if I only need a fast hashing algorithm instead of a super secure one.</p>
+<p>So I picked a FNV hash implementation which is insanely fast. Hashing a T using FNV is only a few ns for all the types of T I tested. Using this, clap::Arg can now store an <code>id: u64</code> (8 bytes vs the 24 bytes of a String), iterating and comparing a bunch of u64’s is <em>significantly</em> faster than a bunch of Strings.</p>
+<p>Without going through all the math again, here are grand totals using u64 instead of String (not to mention u64 doesn’t allocate any additional bytes for it’s content):</p>
+<ul>
+<li>V2 = args(2*8)+subcommands(8) = 24 bytes</li>
+<li>V3 = args(100<em>8)+subcommands(25</em>8) = 1,000 bytes</li>
+</ul>
+<p>Much improved. The jury is still out on whether I’ll provide the ability to know if an argument was used or not. 1,000 bytes (nearly 1KB) is still a good bit, compared to the 24 it could be. Granted, this is for a large CLI (100+ args and 25+ subcommands at a single level), so actual uses should be lower. We’ll see, although 1,000 bytes is much easier to swallow than over six times that.</p>
+<p>The biggest downside is each access now must be hashed. The reason I’m OK with this, is access is much less frequent, and typically only happens once. So assuming 100 arguments, we’re comparing 200 hashes with that of storing, iterating, and comparing a larger heap based type for more than 200 times. I haven’t counted lately, but due to how parsing and validation occurs the number of times an argument gets compared is in the order of (NUM_ARGS * NUM_USED_ARGS)*~3ish. Concretely that means, if you use an average of 5 arguments per run, out of a possible valid 100, there are roughly 1,500 comparisons of equality. For CLIs like ripgrep which can have hundreds or thousands of arguments per run, this number can dwarf 200 hashes easily.</p>
+<h2>Status</h2>
+<p>I’m in the middle of implementing this change. It’s somewhat conflated with re-working how the parsing happens in order to be more efficient. This is the last major change prior to releasing v3-beta1 which I’m hoping will happen in the coming weeks/month.</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-20 14:01</div>
+            <div class="timeline-body"><p>@pksunkara I propose this issue and #1663 be deferred to the clap4 milestone.</p>
+<ul>
+<li>This issue is from 2017 and the work required for it was decided to be deferred in the 2019 blog post quoted above</li>
+<li>Adding clap-derive reduces some of the value of this</li>
+<li>This is a big implementation change, with design work, that seems like it could unnecessarily bloat the remaining clap3 work.</li>
+<li>This is somewhat similar to #1041 which we already deferred.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-20 15:14</div>
+            <div class="timeline-body"><p>With that out of the way, some quick thoughts:</p>
+<p>Clap has several nearly distinct APIs</p>
+<ul>
+<li>The raw API</li>
+<li>YAML</li>
+<li>From example</li>
+<li>Macro</li>
+<li>Derive</li>
+</ul>
+<p>In considering our care abouts, we need to consider each API and what the expected role of it is.</p>
+<p>For example, if the expectation is someone will probably use the derive, unless they want to get rid of the overhead of proc macros, then derives for custom keys (#1663) seems contradictory.</p>
+<p>Similarly, the derive API prevents the problems with stringly typed APIs.  On a related note, I'm unsure if we can generate the needed enums for the derive API to use anything but strings.  We can't see through to other enums and structs to generate a global list.  We'd need to support a composable enum and then somehow allow all of the typing for <code>App</code> with subcommands to magically work.  This would also bloat the binary because we'd have multiple copies of App and ArgMatches being compiled.</p>
+<p>As for performance, while keys use less memory, <code>&amp;'static str</code> are fast to compare by equality.  I suspect Rust is short-circuiting with a pointer check.  We just can't use it because <em>sometimes</em> people use generated strings.</p>
+<p>We might be able to resolve the generics problem via type aliases (e.g. <code>pub type App = BaseApp&lt;&amp;'static str&gt;</code>).</p>
+<p>One problem with enums is that we default <code>value_name</code> to be the <code>name</code>.  We can't do this with enums unless we require a <code>Display</code> or <code>as_str()</code> on it.</p>
+<p>Regarding the hash work in the above blog post, one concern brought up at the time was collisions.  I can't find the discussions to see how that was resolved.</p>
+<p>I propose we rename <code>App</code> et all and make them generic.  We then provide type aliases that set the generic parameter to <code>&amp;'static str</code>.  This will require those who need allocations to go through more hoops, though they could choose to use <code>kstring::KString</code> (#1041).</p>
+<p>See <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=4fac2959cc5f6c40d8810c80e68ac367">playground for example code</a></p>
+<ul>
+<li>The main problem with this is the arg match lookups require an allocation for the string case.  We'd need to play with it more to allow borrows.</li>
+<li>I tried to design it so the current hashing system from the above blog post can be abstracted with it</li>
+</ul>
+<p>Benefits</p>
+<ul>
+<li>clap-derive gets an optimal solution (<code>&amp;'static str</code> for avoiding allocations and for fast lookups)</li>
+<li>The clap easy path is the fast API but users can step up to a more powerful API (solves #1041)<ul>
+<li>Users can choose enums or dynamic strings for us with clap if they want (solves this, #1104)</li>
+</ul>
+</li>
+<li>We can more easily compare potential solutions (KString vs String vs <code>&amp;'static str</code> vs hash vs enum, etc) and choose what works best</li>
+<li>We keep the code simple compared to other options<ul>
+<li>Only 1 type to be generic over rather than several</li>
+<li>The types in use don't have to implement custom types</li>
+</ul>
+</li>
+<li>We can reject #1663</li>
+</ul>
+<p>Downsides</p>
+<ul>
+<li>Still might be messy to get all of this working</li>
+<li>Time to implement all of this that could be spent on other work</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-20 17:22</div>
+            <div class="timeline-body"><p>Just wanted to call out https://github.com/clap-rs/clap/issues/604 is the issue for &quot;error on typo&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-07-25 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @pksunkara on 2021-07-25 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/82.html">epage/clapng#82</a> on 2021-12-06 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/135.html">epage/clapng#135</a> on 2021-12-06 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-08 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> removed by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> removed by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg groups</span> removed by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> removed by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg enums</span> removed by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 17:18</div>
+            <div class="timeline-body"><p>In thinking on this more, I propose we reject this</p>
+<ul>
+<li>The <code>enum</code> would need several traits to be implemented to work.  For maintenance sake, this is pushing people to use a derive.  At that point, why not use <code>clap_derive</code> to get everything checked at compile time?<ul>
+<li>A trait for the actual hash</li>
+<li>To keep the implicit <code>value_name</code> would require the enum have a <code>Display</code></li>
+<li>To populate subcommands in help and then convert an arg to the enum would require <code>Display</code> and <code>FromStr</code> implementations</li>
+</ul>
+</li>
+<li>Enums do not compose.  You can't pull in <code>clap_verbosity_flag</code> if you are using enums</li>
+<li>We've improved the situation with asserting on unrecognized names</li>
+<li>This will be pushing generics onto any code that deals with clap, like the completion generators, which will make them messier / harder to use</li>
+</ul>
+<p>@pksunkara what are your thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> removed by @epage on 2021-12-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2021-12-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-10 02:09</div>
+            <div class="timeline-body"><p>Those are good reasons for me to agree with. But I think we should let @kbknapp weigh in too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ta32">@ta32</a> on 2021-12-10 02:59</div>
+            <div class="timeline-body"><p>Hi</p>
+<p>So far the work around I have been using is using strum to convert enums to str slices.</p>
+<pre><code class="language-rust">#[derive(EnumString, Display, AsRefStr)]
+pub enum Args {
+    User
+}
+
+fn main() {
+    let app = clap::App::new(&quot;app&quot;);
+    let matches = app
+        .version(&quot;0.1.0&quot;)
+        .usage(&quot;app -user&quot;)
+        .arg(
+            clap::Arg::with_name(Args::User.as_ref())
+                .short(&quot;u&quot;)
+                .takes_value(true)
+        )
+        .get_matches_safe();
+
+    match matches {
+        Ok(matches) =&gt; {
+            let user = matches.value_of(Args::User.as_ref()).unwrap();
+            app(user );
+        }
+        Err(e) =&gt; {
+            println!(&quot;{}&quot;, e);
+        }
+    }
+}
+</code></pre>
+<p>https://github.com/Peternator7/strum
+Is this kind of thing users want?
+Strum has implementations that will derive a lot of things for enums like, display, fromStr, enumIter ... ect I have found it very useful.</p>
+<p>Maybe something like this could be made more ergonomic, with additional attributes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 18:02</div>
+            <div class="timeline-body"><p>@ta32 Yes, strum or something like <code>ArgEnum</code> can help get the rest of the needed features and solves one part of the whole.  I'm just looking at the whole and wondering whether its worth it.</p>
+<p>Let's start with the remaining API changes.  We'd either need to</p>
+<ol>
+<li>Add a generic type of <code>T: Key + Display + FromStr</code></li>
+<li>Add a generic type of <code>T: Key</code>, scaling back to only Args and not Subcommands and remove our defaulting of <code>value_name</code> with <code>name</code></li>
+<li>No generic type by scaling back to only Args and not Subcommands and just require that the <code>Key</code> hash of <code>T</code> equal the hash of <code>T::to_string()</code>, which removes the compile-time benefits and is the equivalent of creating <code>const FOO_NAME: &amp;str = &quot;foo&quot;;</code></li>
+</ol>
+<p>Each of the options using a generic type would only work with clap code that is also generic on that type, limiting code sharing.</p>
+<p>We then have to deal with the recursive nature of this across subcommands.  Most likely, we will end up with users creating a single <code>enum</code> for all subcommands.  This then loses some of the compile-time checking benefits (the <code>pest</code> parser does this and it is one of the things that makes me not want to use it).</p>
+<p>Then from a users perspective, they would be most likely needing to use a proc macro to help them manage this enum, like strum.  The question for me to understand is the overlap between users who want to use the builder API but are still ok with proc macros (one reason to avoid the derive API is to save on compile times).</p>
+<p>On the other hand, today without this feature, users can do the workaround you provided which is similar to my Option 3.   If we decide against this feature, we'd probably want to make an example out of your code snippet.</p>
+<p>So in balancing out the different aspects, it makes me wonder if the derive API and workarounds like yours are sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1041.html">clap-rs/clap#1041</a> on 2022-02-02 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-02 20:56</div>
+            <div class="timeline-body"><p>With the above reasoning, I'm going to go ahead and close this.  This was an ambitious idea but unfortunately, it doesn't seem like its going to pay off.</p>
+<p>I did note the workarounds discussed in this thread in https://github.com/clap-rs/clap/issues/1041 so we can make sure we continue to support them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-02 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> removed by @epage on 2022-05-03 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-05-03 14:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:41 UTC
+    </footer>
+</body>
+</html>

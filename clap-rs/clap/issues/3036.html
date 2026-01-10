@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`app help subcommand` only shows short help, doesn't include long_about - clap-rs/clap #3036</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`app help subcommand` only shows short help, doesn't include long_about</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3036">#3036</a>
+        opened by <a href="https://github.com/gibfahn">@gibfahn</a>
+        on 2021-11-18 11:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gibfahn">@gibfahn</a> on 2021-11-18 11:33</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.56.1 (59eed8a2a 2021-11-01)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.5</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn main() {
+    Opts::parse();
+}
+
+#[derive(Parser)]
+#[clap(version)]
+pub struct Opts {
+    #[clap(subcommand)]
+    pub cmd: Subcommand,
+}
+
+#[derive(Debug, Parser)]
+pub enum Subcommand {
+    /**
+    First line docs for subcommand foo, always shown.
+
+    Extra docs for subcommand foo, only shown in long help.
+
+    `clap_repro foo --help` -&gt; long help (as expected)
+    `clap_repro foo -h` -&gt; short help (as expected)
+    `clap_repro help foo` -&gt; short help (unexpected)
+
+    Examples:
+
+    ❯ clap_repro foo # Does nothing.
+    */
+    Foo,
+}
+</code></pre>
+<p>(this code is at https://github.com/gibfahn/clap_repro/tree/short_help_only for ease of copying)</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-shell">cargo run -- help foo
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>(basing my terminology on https://github.com/clap-rs/clap/issues/2983#issuecomment-957999783)</p>
+<p>Clap only shows the <code>about</code>, not the <code>long_about</code>. Same output as if you run <code>cargo run -- foo -h</code>.</p>
+<h3>Expected Behaviour</h3>
+<p>Clap should (I think) also show the <code>long_about</code>. This would be the same output as if you were to run <code>cargo run -- foo --help</code>.</p>
+<h3>Additional Context</h3>
+<p>I think users who run <code>app help subcommand</code> are expecting to get the full help, at least for me <code>help &lt;subcommand&gt;</code> seems equivalent to <code>&lt;subcommand&gt; --help</code>, it's just easier to write.</p>
+<h3>Debug Output</h3>
+<details><summary>Debug output of <code>cargo run -- help foo</code></summary>
+
+<pre><code class="language-console">❯ cargo run -- help foo
+    Finished dev [unoptimized + debuginfo] target(s) in 0.55s
+     Running `target/debug/clap_repro help foo`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:clap_repro
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Building help subcommand
+[            clap::build::app] 	App::_propagate_global_args:clap_repro
+[            clap::build::app] 	App::_derive_display_order:clap_repro
+[            clap::build::app] 	App::_derive_display_order:foo
+[            clap::build::app] 	App::_derive_display_order:help
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;help&quot;)' ([104, 101, 108, 112])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr(&quot;help&quot;)
+[         clap::parse::parser] 	Parser::get_matches_with: sc=Some(&quot;help&quot;)
+[         clap::parse::parser] 	Parser::parse_help_subcommand
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:foo
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Removing generated version
+[            clap::build::app] 	App::_propagate_global_args:foo
+[            clap::build::app] 	App::_derive_display_order:foo
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[         clap::parse::parser] 	Parser::help_err: use_long=false
+[          clap::output::help] 	Help::new
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap_repro foo
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args: Current Longest...2
+[          clap::output::help] 	Help::write_args: New Longest...6
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=help
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_after_help
+[           clap::output::fmt] 	is_a_tty: stderr=false
+clap_repro-foo 
+
+First line docs for subcommand foo, always shown
+
+USAGE:
+    clap_repro foo
+
+OPTIONS:
+    -h, --help    Print help information
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @gibfahn on 2021-11-18 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-11-18 20:38</div>
+            <div class="timeline-body"><p>https://docs.rs/clap/3.0.0-beta.5/clap/enum.AppSettings.html#variant.UseLongFormatForHelpSubcommand</p>
+<pre><code class="language-diff">- #[clap(version)]
++ #[clap(version, setting(AppSettings::UseLongFormatForHelpSubcommand))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @clap-rs on 2021-11-18 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-11-18 21:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:43 UTC
+    </footer>
+</body>
+</html>

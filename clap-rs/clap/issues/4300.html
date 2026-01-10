@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support reading `SHELL` into `Shell` - clap-rs/clap #4300</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support reading `SHELL` into `Shell`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4300">#4300</a>
+        opened by <a href="https://github.com/XyLyXyRR">@XyLyXyRR</a>
+        on 2022-09-30 13:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XyLyXyRR">@XyLyXyRR</a> on 2022-09-30 13:56</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.1.15</p>
+<h3>Describe your use case</h3>
+<p>Usually the env <code>$SHELL</code> is something like <code>/usr/bin/bash</code> or <code>/bin/fish</code>. I want clap support this env variable. It is more convenient to use. Right now I need add some code like below before clap parse env variables.</p>
+<pre><code class="language-rust">    env::var(&quot;SHELL&quot;).ok().map(|x| {
+        PathBuf::from(x)
+            .file_name()
+            .map(|x| env::set_var(&quot;SHELL&quot;, x))
+    });
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>I wish clap can handle this internally, so I don't need add this to my every project. #4296 just moved this part code into <code>FromStr</code> for <code>Shell</code> right now. It is a little ugly right now.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @XyLyXyRR on 2022-09-30 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: support from env `SHELL` in `FromStr` of `Shell`" to "Support reading `SHELL` into `Shell`" by @epage on 2022-09-30 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-09-30 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-09-30 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 14:34</div>
+            <div class="timeline-body"><p>As I said in #4296, putting this in <code>FromStr</code> is a no-go.  Instead let's focus on the underlying needs.</p>
+<p>I remember seeing an application using clap that parsed <code>SHELL</code> and then had some other logic for windows.  I'm wishing I could remember which that was as it would help provide insight into other use cases to see what else we might want to support.</p>
+<p>My thinking is that we would have</p>
+<ul>
+<li><code>Shell::from_shell_bin(path)</code><ul>
+<li>We would want to use <code>file_stem</code>, instead of <code>file_name</code>, in case thats relevant for windows support (unsure what all cygwin does)</li>
+<li>We'll probably want our own match statement in here in case there are divergences between SHELL and <code>Shell</code></li>
+<li>This would return an <code>Option&lt;Shell&gt;</code></li>
+</ul>
+</li>
+<li><code>Shell::from_env</code> which just calls <code>Shell::from_shell_bin(std::env::var_os(&quot;SHELL&quot;))</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4446.html">clap-rs/clap#4446</a> on 2022-11-03 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4447.html">clap-rs/clap#4447</a> on 2022-11-03 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> removed by @epage on 2022-11-03 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-11-03 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-11-04 04:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I remember seeing an application using clap that parsed SHELL and then had some other logic for windows. I'm wishing I could remember which that was as it would help provide insight into other use cases to see what else we might want to support.</p>
+</blockquote>
+<p>If that was fd, the logic was basically &quot;if the SHELL environment variable isn't set, and you are on windows, assume powershell&quot;.  I don't use windows, but I think that is probably a decent assumption.  If it is in cygwin or WSL, then SHELL would probably be set.</p>
+<p>One thing I didn't think about is if  SHELL is set correctly  in  powershell on a unix-like system. I would hope it is, but I don't actually know.</p>
+<p>Should we have any fallback for any other OSes? I fairly confident SHELL is pretty reliable on linux. I think it should be reliable on Mac, but I'm not as confident there. I don't know about more exotic systems.</p>
+<p>There is also the question of what <code>Shell::from_env</code> would return. <code>Option&lt;Shell&gt;</code> would probably be simplest, but would an application want to know more details about why it failed to determine a shell (was it because SHELL wasn't set, or because the SHELL didn't contain a supported shell)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-07 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5370.html">clap-rs/clap#5370</a> on 2024-02-21 01:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:11 UTC
+    </footer>
+</body>
+</html>

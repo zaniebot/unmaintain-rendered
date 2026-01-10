@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing dynamic completions for arguments containing shell expansions - clap-rs/clap #6069</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing dynamic completions for arguments containing shell expansions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6069">#6069</a>
+        opened by <a href="https://github.com/krobelus">@krobelus</a>
+        on 2025-07-12 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/krobelus">@krobelus</a> on 2025-07-12 18:15</div>
+            <div class="timeline-body"><p>Repro (using Jujutsu CLI, I can provide a minimal repro later):</p>
+<pre><code>$ bash
+$ COMPLETE=bash jj __this-command-does-not-exist &gt;? tmp.sh
+$ . ./tmp.sh
+$ jj --config-file ~/&lt;Tab&gt;
+</code></pre>
+<p>There are no completions. Same on <code>jj --config-file $HOME/</code> etc.</p>
+<p>Two options to resolve this:</p>
+<ol>
+<li>Don't compute any completions for <code>AnyPath</code> args but tell the shell to
+complete as if there were no custom completions. This is what Cobra does.</li>
+<li>Try to expand and unexpand shell syntax ourselves, so we can actually compute completions.</li>
+</ol>
+<p>This is quite tricky.
+I wonder if we want 1 as &quot;temporary&quot; measure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-07 20:59</div>
+            <div class="timeline-body"><p>Hmm, for bash, if I do <code>ls $HOME/&lt;TAB&gt;</code>, I don't get completions either.</p>
+<p>I'd be fine with us adding support for <code>~/</code> completions.  That can easily be done in our own code.  Expanding <code>~foo/</code> might be more tricky but I suspect thats rare enough to not matter.  While there are issues with <a href="https://doc.rust-lang.org/std/env/fn.home_dir.html"><code>std::env::home_dir</code></a> on Windows with versions of Rust lower than our MSRV, I think it might be reasonable to go ahead and just use that.</p>
+<p>Unsure what all it would look like to try to get it to work to delegate to the shell, especially without feature loss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-08-07 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2025-08-07 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6094.html">clap-rs/clap#6094</a> on 2025-08-07 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-07 21:30</div>
+            <div class="timeline-body"><p><code>clap_complete</code> 4.5.56 is now out with completing of <code>~/</code> paths.  I did not close the issue in case you had enough need for completing other types of paths referenced here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krobelus">@krobelus</a> on 2025-08-09 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, for bash, if I do <code>ls $HOME/&lt;TAB&gt;</code>, I don't get completions either.</p>
+</blockquote>
+<p>I do get them on bash 5.3.3, even in &quot;bash --norc -x&quot;</p>
+<blockquote>
+<p>I'd be fine with us adding support for <code>~/</code> completions.</p>
+</blockquote>
+<p>thanks, that's probably the biggest offender</p>
+<blockquote>
+<p>Unsure what all it would look like to try to get it to work to
+delegate to the shell, especially without feature loss.</p>
+</blockquote>
+<p>In fish it's possible with something like &quot;complete -n try-to-compute-completions -fa '$computed_completions'&quot;
+but yeah, delegation would cause feature-loss,
+for example the shell's default wouldn't know if we want file paths or directory paths;
+but IME false positive completions are much better than false negatives.</p>
+<p>For my quick design of a long-term solution, consider</p>
+<pre><code>jj --repository $repo {abandon,x</code></pre>
+<p>We can solve this by</p>
+<ol>
+<li><p>have the shell expand this to
+(we can't do it ourselves since we don't know $repo)</p>
+<p>jj --repository /path/to/repo abandon x</p>
+</li>
+<li><p>ask this clap CLI for completions for that command.</p>
+</li>
+<li><p>Pass the results (something like &quot;x1 x2 ...&quot;)
+back to the shell.</p>
+</li>
+<li><p>The shell will apply completions to the original (unexpanded) commandline.
+Cycling through completions will turn it into something like</p>
+<pre><code>jj --repository $repo {abandon,xFOO</code></pre>
+<p>where &quot;xFOO&quot; is the completion.</p>
+</li>
+</ol>
+<p>This would first require changes to shells.</p>
+<p>We can't use the <code>COMPREPLY</code> interface as-is because</p>
+<ol>
+<li>we don't want to replace the entire whitespace-delimited token</li>
+<li>we may not want to escape special characters in the completion</li>
+</ol>
+<p>There are some edge cases I didn't mention yet.
+I think we can address them if we allow adding metadata to completions (similar to how LSP completions work).
+So each completion candidate will be a structured data object.</p>
+<p>I also use clap dynamic completions in <a href="https://github.com/krobelus/kakoune/blob/594c23754503924c6c16ec01f70c9689d4569379/rc/tools/jj.kak#L319">Kakoune's jj integration</a>,
+which uses yet another shell-like language - so this could
+benefit too.
+(It'd be ideal if the ompletion candidate object would be easy to parse from shell.)</p>
+<p>It's unclear how many shells will want to implement this.
+I think it would be nice; it would fix a bunch of long-standing issues.
+Not yet sure if it will be worth the complexity or when I'll have time to work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-11 20:53</div>
+            <div class="timeline-body"><p>Ah, I'm on bash 5.1.16</p>
+<blockquote>
+<p>We can solve this by</p>
+</blockquote>
+<p>This sounds pretty complicated.  We're unlikely to take on investigating this but welcome others doing so.</p>
+<blockquote>
+<p>I think we can address them if we allow adding metadata to completions (similar to how LSP completions work).
+So each completion candidate will be a structured data object.
+(It'd be ideal if the ompletion candidate object would be easy to parse from shell.)</p>
+</blockquote>
+<p>My concerns about providing a generic interface for querying completions</p>
+<ul>
+<li>Completion inputs are very shell specific and we may have reason to change how we do it</li>
+<li>For parsing completion outputs, coming up with a format that every shell can easily work with is non-ideal.  Similarly, we'd need to come up with a schema for that format.  I'm also not thrilled about having these in our compatibility interface specially because that would then be propagated out to the interface for the users of clap which would make it a lot harder to change than just bumping to <code>clap_complete</code> v6.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5998.html">clap-rs/clap#5998</a> on 2025-08-26 19:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

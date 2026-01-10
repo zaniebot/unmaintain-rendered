@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local drive environment install with project on network drive - astral-sh/uv #8738</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Local drive environment install with project on network drive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8738">#8738</a>
+        opened by <a href="https://github.com/marcelroed">@marcelroed</a>
+        on 2024-10-31 23:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marcelroed">@marcelroed</a> on 2024-10-31 23:59</div>
+            <div class="timeline-body"><p>I'm working in an academic machine learning environment, where most users work across many machines, and therefore have their projects on a network drive. In practice this means people either maintain a (horribly slow) environment on the network drive, or they set up an environment manually on each machine they want to use. The benefit of keeping projects on a network drive is that projects can be used across different machines when hardware availability changes, or on multiple machines at once when multi-node runs happen.</p>
+<p>Currently, my understanding is that uv only supports keeping the virtualenv in the project-local <code>.venv</code> directory, meaning everything needs to be copied or symlinked (I think this means every package is symlinked individually?) to the network drive.</p>
+<p>I've found I can get all the benefits of the local cache and a local install by symlinking the <code>.venv</code> directory to a virtualenv on the local drive. It's really painful to set this up with current uv, and I propose this should be supported.</p>
+<p>Here is my current workaround:</p>
+<ol>
+<li>Place your project on the network drive</li>
+<li>Create a symlink from <code>&lt;project-dir&gt;/.venv/</code> to a directory on the local drive. The local path will be consistent across every machine.</li>
+<li>Instantiate an empty virtualenv in that local directory on the machine you want to use. This needs to be repeated on each machine.</li>
+<li><code>uv run ...</code> in the project directory on the network drive. This will be fast!</li>
+</ol>
+<p>What I'm envisioning is support for this without manually creating the symlinks on each machine, or at least without having to instantiate a virtualenv manually in the local drive. The key issue with my current setup is that it doesn't happen automatically when moving to a new machine, meaning I have to set it up for every project on every machine. An ideal implementation here might be something similar to the transient environments created for <code>uvx</code> or <code>uv run --with</code>.</p>
+<p>Is this use-case something the uv team would be interested in supporting? I know this would be very valuable to research labs that operate across many machines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-01 11:40</div>
+            <div class="timeline-body"><p>Would setting environment variables solve your problem?
+https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path</p>
+<p><strong>Note:</strong> I only contributed to the document. I'm not a member of the UV team.</p>
+<p>Edit:
+Actually, the temporary virtual environment created by UV doesn't necessarily have a short lifespan, as it caches the virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-01 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-01 13:39</div>
+            <div class="timeline-body"><p>Yeah I'm curious if <code>UV_PROJECT_ENVIRONMENT</code> solves your problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-01 13:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah I'm curious if <code>UV_PROJECT_ENVIRONMENT</code> solves your problem?</p>
+</blockquote>
+<p>However, in this context, if using <code>UV_PROJECT_ENVIRONMENT</code> can solve the problem, can we enforce its setting in the configuration file to prevent accidental creation of virtual environments within the project directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2024-11-05 21:45</div>
+            <div class="timeline-body"><p>Yes! This along with a <code>.env</code> file seems like a good approach. It seems like I have to explicitly set the <code>--env-file</code> flag from #8811. Is this the intended future behavior also for 0.5 and above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @marcelroed on 2024-11-07 04:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:21 UTC
+    </footer>
+</body>
+</html>

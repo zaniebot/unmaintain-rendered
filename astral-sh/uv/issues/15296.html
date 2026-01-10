@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to run `pyright` on a uv script - astral-sh/uv #15296</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to run `pyright` on a uv script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15296">#15296</a>
+        opened by <a href="https://github.com/stevenj">@stevenj</a>
+        on 2025-08-15 04:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stevenj">@stevenj</a> on 2025-08-15 04:06</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a uv script.
+I want to run pyright on it.
+Is it possible to run pyright on the script, inside the venv the script sets up when its run, so that pyright can properly check type annotations of the libraries the script uses?</p>
+<p>I want to do this in CI, so i would rather not actually <code>run</code> the script itself.</p>
+<p>I couldn't work out a way to achieve this.</p>
+<h3>Platform</h3>
+<p>Any</p>
+<h3>Version</h3>
+<p>0.8.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @stevenj on 2025-08-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-08-15 08:08</div>
+            <div class="timeline-body"><p>Probably <a href="https://github.com/astral-sh/uv/pull/12763">this</a>, but it's not merged yet.</p>
+<p>Related <a href="https://github.com/astral-sh/uv/issues/6542">issue</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ranma42">@ranma42</a> on 2025-11-16 09:38</div>
+            <div class="timeline-body"><p>I have stumbled upon the same issue. In most cases, the following command seems to work:</p>
+<pre><code class="language-sh">uvx --with-requirements script.py pyright script.py
+</code></pre>
+<p>but I can't get it to work when the script uses alternative package indexes.</p>
+<p>The example from https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies works:</p>
+<pre><code class="language-python"># /// script
+# dependencies = [
+#   &quot;requests&lt;3&quot;,
+#   &quot;rich&quot;,
+# ]
+# ///
+
+import requests
+from rich.pretty import pprint
+
+resp = requests.get(&quot;https://peps.python.org/api/peps.json&quot;)
+data = resp.json()
+pprint([(k, v[&quot;title&quot;]) for k, v in data.items()][:10])
+</code></pre>
+<pre><code>$ uvx --with-requirements example.py pyright example.py
+0 errors, 0 warnings, 0 informations
+</code></pre>
+<p>but this other script does not:</p>
+<pre><code class="language-python"># /// script
+# dependencies = [
+#     &quot;torch==2.7.1+cpu&quot;,
+# ]
+#
+# [[tool.uv.index]]
+# name = &quot;pytorch-cpu&quot;
+# url = &quot;https://download.pytorch.org/whl/cpu&quot;
+# explicit = true
+#
+# [tool.uv.sources]
+# torch = { index = &quot;pytorch-cpu&quot; }
+# torchvision = { index = &quot;pytorch-cpu&quot; }
+# ///
+
+print('Done')
+</code></pre>
+<pre><code>$ uvx --with-requirements bad.py pyright bad.py
+  × No solution found when resolving tool dependencies:
+  ╰─▶ Because there is no version of torch==2.7.1+cpu and you require torch==2.7.1+cpu, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>Note that the &quot;bad&quot; script actually works as intended when used for running:</p>
+<pre><code>$ uv run --script bad.py
+Installed 10 packages in 420ms
+Done
+</code></pre>
+<p>I am using uv[x] version 0.9.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ranma42">@ranma42</a> on 2025-11-16 09:48</div>
+            <div class="timeline-body"><p>related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/10381</li>
+<li>https://github.com/astral-sh/uv/issues/7032</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-16 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ranma42">@ranma42</a> on 2025-11-16 20:00</div>
+            <div class="timeline-body"><p>@zanieb do you think it might be worth mentioning this pattern in the <a href="https://docs.astral.sh/uv/guides/scripts/">scripts docs</a> or is it just a weird corner case?</p>
+<p>Also, for the alternative package index, should I follow #7032 or open a new feature request?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

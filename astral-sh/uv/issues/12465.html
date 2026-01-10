@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv's python appears to eat ansi escape sequences on WSL? (looks like cmd.Cmd) - astral-sh/uv #12465</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv's python appears to eat ansi escape sequences on WSL? (looks like cmd.Cmd)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12465">#12465</a>
+        opened by <a href="https://github.com/waynew">@waynew</a>
+        on 2025-03-25 14:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/waynew">@waynew</a> on 2025-03-25 14:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm definitely seeing some weird behavior here. At first I thought it was something with <code>uv</code> generally, but that does not appear to be the case. I could be doing something wrong, but...</p>
+<pre><code>pipx install shibboleth==25.3.0b1
+shibboleth
+
+Welcome to Shibboleth 25.3.0b1, the tool designed to be *your*
+secret weapon.
+
+Your editor is currently vim. If you don't like that, you
+should change or set your EDITOR environment variable.
+
+⇀shibboleth:/home/wayne
+</code></pre>
+<p>This is the expected output. If I run</p>
+<pre><code>uv tool install shibboleth==25.3.0b1
+shibboleth
+</code></pre>
+<p>On my <code>Linux 6.13.8-arch1-1 x86_64 GNU/Linux</code> machine, this works the same. However, after a <code>pipx uninstall shibboleth</code></p>
+<pre><code>uvx --from=shibboleth==25.3.0b1 shibboleth
+
+Welcome to Shibboleth 25.3.0b1, the tool designed to be *your*
+secret weapon.
+
+Your editor is currently vim. If you don't like that, you
+should change or set your EDITOR environment variable.
+
+⇀[34mshibboleth[0m:/home/wayne&gt;
+</code></pre>
+<p>It appears to be escaping the ansi escape sequences. <code>uv tool install shibboleth==25.3.0b1</code> has the same effect <code>shibboleth</code> ansi colors get borked.</p>
+<p>But when I use my system Python:</p>
+<pre><code>✦ ❯ PYTHONPATH=/home/wayne/.local/share/uv/tools/shibboleth/lib64/python3.13/site-packages/ python $(which shibboleth)
+
+Welcome to Shibboleth 25.3.0b1, the tool designed to be *your*
+secret weapon.
+
+Your editor is currently vim. If you don't like that, you
+should change or set your EDITOR environment variable.
+
+⇀shibboleth:/home/wayne
+&gt;
+</code></pre>
+<p>Everything is great!</p>
+<p>So it appears to have something to do with <code>uv</code>s python. Indeed:</p>
+<pre><code>/home/wayne/.local/share/uv/tools/shibboleth/bin/python ~/.local/share/uv/tools/shibboleth/lib/python3.13/site-packages/shibboleth.py
+</code></pre>
+<p>is borked, but system python works.</p>
+<p>Knowing that I went ahead and pulled some of the colorizing code from shibboleth and adapted it a bit:</p>
+<pre><code>print(f'\x1b[32mThis is sad\x1b[0m' )
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/f9949710-1dc2-4199-8958-73ab7bfb616b" alt="Image" /></p>
+<p>But... that worked. Putting it in a script worked. What other difference was there? OOooo. cmd.Cmd</p>
+<pre><code>import cmd
+bad =  f'\x1b[32mThis is sad\x1b[0m'
+
+
+class Ok(cmd.Cmd):
+    prompt = bad
+
+    def do_quit(self, line):
+        return True
+
+print(bad)
+Ok().cmdloop()
+print(bad)
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/cb2cf8e6-5a2b-4c8e-a691-fcc2adae9f31" alt="Image" /></p>
+<p>There it is. Something within uv doesn't play well with cmd.Cmd.</p>
+<p>But then things get <em>very</em> interesting! With a lil' tweak to the script to make this clear:</p>
+<p><img src="https://github.com/user-attachments/assets/7d24d6ec-52e6-4360-a53d-620294b2c19e" alt="Image" /></p>
+<p>Interactively, the colors are correctly displayed with the uv tool python. Non-interactively? Something goes haywire, at least under WSL 🤷</p>
+<p>If there's a command or env var, or flag I can add to the shibboleth entrypoint to try and make the colors work... let me know!</p>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.5.7</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @waynew on 2025-03-25 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-04-01 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2025-04-01 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 18:43</div>
+            <div class="timeline-body"><p>I suspect this is a <code>python-build-standalone</code> quirk, it might be a bit until we can dig deeper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hibukki">@hibukki</a> on 2025-05-11 10:28</div>
+            <div class="timeline-body"><p>We're seeing similar behavior in a very different situation:</p>
+<p>On macos 15.0.1, when using a uv-provided python</p>
+<pre><code>uv add visidata
+uv run vd
+</code></pre>
+<p>shows colors in the menu bar and popup, and you can change the default color and see everything in a different color, but visidata somehow <em>thinks</em> it doesn't have colors so it displays all cell contents and popup contents in the configured default color (Shift-O opens the options, where you should see a few things in color if running in a pyenv- or brew-supplied python, but they all appear in the default color in a uv-supplied python).</p>
+<p>(To quit visidata, press q a few times)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

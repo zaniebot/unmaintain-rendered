@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow more flexible configuration of the output steam (stdout vs. stderr) - clap-rs/clap #1788</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow more flexible configuration of the output steam (stdout vs. stderr)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1788">#1788</a>
+        opened by <a href="https://github.com/tzakharko">@tzakharko</a>
+        on 2020-04-05 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tzakharko">@tzakharko</a> on 2020-04-05 15:40</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>Some command line tools are used exclusively as components within larger configurations and their <code>stdout</code> might be  piped into other tools. <code>Clap</code> is currently hard-coded in <code>Error::use_stderr()</code> to print certain messages (e.g. the help block) to <code>stdout</code>, which might lead to surprising behavior.</p>
+<h3>Describe the solution you'd like</h3>
+<p>It would be nice to have an option in configuring the behavior of <code>Error:: use_stderr()</code>. maybe a configuration option in <code>App</code> that would override the default behavior, e.g.:</p>
+<pre><code class="language-rust">App::new(...).
+  ...
+  .setting(AppSettings::PrintToStderr)
+  .get_matches()
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>I am currently intercepting all <code>clap</code> messages and printing them manually like this:</p>
+<pre><code class="language-rust">App::new(...).
+  ...
+ .get_matches_safe()
+ .unwrap_or_else(|err| {
+     eprintln!(&quot;{}&quot;, err.message);
+     std::process::exit(1);
+});
+</code></pre>
+<p>but it feels a bit hacky to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @tzakharko on 2020-04-05 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @pksunkara on 2020-04-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @pksunkara on 2020-04-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @pksunkara on 2020-04-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-05 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-04-05 22:31</div>
+            <div class="timeline-body"><p>@tzakharko hi thanks for the issue, would you be willing to send us a pr that makes this change? thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tzakharko">@tzakharko</a> on 2020-04-06 08:00</div>
+            <div class="timeline-body"><p>@Dylan-DPC I am afraid I am neither familiar enough with the Clap codebase nor with Rust to figure out the best way of doing it at the moment. I suppose one would hav etc decouple the output settings  from the <code>Error</code> struct, so it's probably not trivial.</p>
+<p>I have opened the issue mainly because @pksunkara asked me to do so in a discussion thread. I understand this might be lower priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2020-04-06 14:41</div>
+            <div class="timeline-body"><p>@tzakharko that's fine we will mentor you if needed. It's a good way to learn rust :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tzakharko">@tzakharko</a> on 2020-04-07 07:48</div>
+            <div class="timeline-body"><p>@Dylan-DPC fair enough :) I will have a look, but I won't be able to allocate any time for this short term. I will put it on my agenda and let's keep the issue open for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-06-30 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @CreepySkeleton on 2020-06-30 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> added by @CreepySkeleton on 2020-06-30 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olson-sean-k">@olson-sean-k</a> on 2021-05-20 21:40</div>
+            <div class="timeline-body"><p>I imagine this would be much trickier to implement, but how do folks feel about allowing arbitrary <code>Write</code> targets for this? Instead of naming bespoke outputs, users could instead provide an <code>impl Write</code>. This would still support selecting <code>stdout</code> or <code>stderr</code> via <code>std::io::stdout</code> and <code>std::io::stderr</code>, which both emit <code>impl Write</code> types.</p>
+<p>I've been working on <a href="https://github.com/olson-sean-k/nym">a CLI tool</a> that incorporates paging by <a href="https://github.com/olson-sean-k/nym/blob/ae5729d574ea6554cc39ab3bf2205a984bf3b813/nym-cli/src/terminal.rs#L210">conditionally targeting a paging child process or the configured terminal</a>. <a href="https://github.com/sharkdp/bat"><code>bat</code></a> does something similar. AFAICT, it is not possible to use <code>clap</code>'s generated help text, options, and subcommands with such a paging mechanism and the only alternative would be to define help options and subcommands manually and use <code>App::print{_long}_help</code> by hand. For example, you'll notice that both <code>nym</code> and <code>bat</code> automatically page their output except for help text, which is written to <code>stdout</code> by <code>clap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/149.html">epage/clapng#149</a> on 2021-12-06 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> removed by @epage on 2021-12-08 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-08 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-08 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> removed by @epage on 2021-12-08 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 21:22</div>
+            <div class="timeline-body"><p>@tzakharko I believe clap is only reporting <code>--help</code> and <code>--version</code> to stdout.  Those are explicit user actions.  What would be the use case of passing those flags but still programmatically processing the output so you don't want it on stdout?</p>
+<p>@olson-sean-k some quick thoughts on this</p>
+<ul>
+<li>We wouldn't be able to detect coloring support.  Thats ok, the user can do it and tell us what coloring to do (we would only be able to support ansi coloring)</li>
+<li>It'd be a bit annoying to pass the lifetimes everywhere if its part of the builder.  We're trying to reduce our lifetimes (#1041 )</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> removed by @epage on 2021-12-09 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @epage on 2021-12-09 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> removed by @epage on 2021-12-09 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> added by @epage on 2021-12-09 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 17:36</div>
+            <div class="timeline-body"><p>I am leaning towards rejecting this until we have a use case that explains why output going to stdout for explicit user interactions is interfering with an applications behavior (especially since there are cases where people want their <code>-V</code> to be parseable).</p>
+<p>This isn't to make a statement of whether we want this or not but because we are specifically looking at finding ways to trim the API of clap which also raises the bar for changes that expand the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-11 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-author</span> removed by @epage on 2022-01-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheOnlyMrCat">@TheOnlyMrCat</a> on 2022-01-13 04:03</div>
+            <div class="timeline-body"><p>An example use case is if a command is leveraging shell hooks to <code>cd</code> when certain subcommands are used. The shell hook is only capable of capturing <code>stdout</code>, due to limitations of the shell language, but the program otherwise tries to behave like a normal shell command with subcommands and flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-13 15:14</div>
+            <div class="timeline-body"><p>I've not dealt with shell hooks to <code>cd</code>.  Could you elaborate more on the relationhip between the command and the hook and how a call to <code>--help</code> or <code>--version</code> wouldn't be processed correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheOnlyMrCat">@TheOnlyMrCat</a> on 2022-01-13 22:39</div>
+            <div class="timeline-body"><p>The shell hook is the main interface to the program, so the user would be expected to run <code>prog --help</code>.
+The shell hook passes all arguments through to the program and captures the contents of <code>stdout</code>. (There is no way to swap <code>stdout</code> and <code>stderr</code>).</p>
+<p>The automatic <code>--help</code> and <code>--version</code> flags print to <code>stdout</code>, which is incorrectly interpreted as a directory to attempt to change to, and as a result are not shown to the user in the intended way.</p>
+<pre><code class="language-sh">function prog() {
+    result=&quot;$(prog_bin $@)&quot; # Run `prog_bin` with the supplied arguments, capturing stdout but leaving stderr to the tty
+    [[ -n $result ]] &amp;&amp; cd $result # If anything was printed to stdout, `cd` to it.
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tzakharko">@tzakharko</a> on 2022-01-14 12:31</div>
+            <div class="timeline-body"><p>@epage Sorry for replying late and thanks for following this through. I have to be quite honest that I do not remember what was the actual problem that made me open this issue, it was two years ago and couldn't find any relevant notes. I think it had to do with the fact that some outputs did not pipe correctly when uses as part of a complex unix command sequence, but we are not currently using these tools so I guess that's all I can say.</p>
+<p>At any rate, I would be fine with this being closed, as it is not a critical issue for us at the moment. But I gather from the comments that some other folks are running into real-world issues, so maybe they will have a better motivating example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olson-sean-k">@olson-sean-k</a> on 2022-09-21 23:37</div>
+            <div class="timeline-body"><p>It seems that version <code>4.0</code> of <code>clap</code> <a href="https://epage.github.io/blog/2022/09/clap4/">is on the horizon</a>, so I wanted to bump this again in hopes that some of the dust has settled since this issue was first opened.</p>
+<blockquote>
+<p>I am leaning towards rejecting this until we have a use case that explains why output going to stdout for explicit user interactions is interfering with an applications behavior</p>
+</blockquote>
+<p>I believe the use case described in <a href="https://github.com/clap-rs/clap/issues/1788#issuecomment-845496010">my previous comment</a> has precedent and falls into this category. It is not possible to (comprehensively) implement <code>cli --pager=target</code> if <code>clap</code> cannot be configured to write to (more) arbitrary targets. Redirecting standard I/O streams does not completely solve I/O routing for a CLI application.</p>
+<blockquote>
+<p>We wouldn't be able to detect coloring support. ... the user can do it and tell us what coloring to do</p>
+</blockquote>
+<p>I feel that <code>clap</code> should probably allow users to configure styled (colored) output in all cases. Arbitrary outputs could interact with the styling APIs, with something like a <code>RenderTarget</code> that provides styling information as well as the <code>impl Write</code> target.</p>
+<p>Regarding styling, perhaps detection and styles could be feature gated. When the styling feature is enabled, <code>RenderTarget::default</code> could try to detect styling support and use it where available while simply disabling it when the feature is not enabled. In both of these cases the default <code>impl Write</code> target could be <code>std::io::stdout</code>.</p>
+<p>Any thoughts on something like this post-<code>4.0</code>? Thanks for taking a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-22 01:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe the use case described in https://github.com/clap-rs/clap/issues/1788#issuecomment-845496010 has precedent and falls into this category. It is not possible to (comprehensively) implement cli --pager=target if clap cannot be configured to write to (more) arbitrary targets. Redirecting standard I/O streams does not completely solve I/O routing for a CLI application.</p>
+</blockquote>
+<p>Requiring clap to take on lifetimes again to pass around the streams would be a no-go.</p>
+<p>For you printing everything yourself, my hope is that with the new styling API I plan to focus on for 4.x, we'll be able to provide you a <code>render_help</code> function that returns a type that will output ANSI escape codes (currently, we only allow access to output stripped of escape codes)</p>
+<blockquote>
+<p>Regarding styling, perhaps detection and styles could be feature gated.</p>
+<p>Any thoughts on something like this post-4.0? Thanks for taking a look!</p>
+</blockquote>
+<p>My priority is going to be on the issues currently targeting 4.x.  People are free to come up with a design for additional APIs but the further from my priorities, the less attention it will get.  There will also be a high bar for impact on all users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4248.html">clap-rs/clap#4248</a> on 2022-09-22 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3289.html">clap-rs/clap#3289</a> on 2022-09-22 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bitwarden/sdk-sm/pulls/190.html">bitwarden/sdk-sm#190</a> on 2023-08-25 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`environments` setting ignored in uv.toml? - astral-sh/uv #14904</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`environments` setting ignored in uv.toml?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14904">#14904</a>
+        opened by <a href="https://github.com/dpprdan">@dpprdan</a>
+        on 2025-07-25 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dpprdan">@dpprdan</a> on 2025-07-25 19:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It seems that <code>environments</code> setting in <code>uv.toml</code> is ignored when writing uv.lock.</p>
+<p>MWE:
+In an empty directory in a linux environment execute:</p>
+<pre><code class="language-bash">cat &lt;&lt; EOF &gt; uv.toml
+environments = [&quot;sys_platform == 'linux'&quot;]
+EOF
+
+uv init
+uv add ruff
+
+grep win uv.lock
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-text">Initialized project `test-uv`
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Resolved 2 packages in 73ms
+Installed 1 package in 86ms
+ + ruff==0.12.5
+    { url = &quot;https://files.pythonhosted.org/packages/3e/b9/053d6445dc7544fb6594785056d8ece61daae7214859ada4a152ad56b6e0/ruff-0.12.5-py3-none-win32.whl&quot;, hash = &quot;sha256:dfeb2627c459b0b78ca2bbdc38dd11cc9a0a88bf91db982058b26ce41714ffa9&quot;, size = 11751575, upload-time = &quot;2025-07-24T13:26:30.835Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/bc/0f/ab16e8259493137598b9149734fec2e06fdeda9837e6f634f5c4e35916da/ruff-0.12.5-py3-none-win_amd64.whl&quot;, hash = &quot;sha256:ae0d90cf5f49466c954991b9d8b953bd093c32c27608e409ae3564c63c5306a5&quot;, size = 12882273, upload-time = &quot;2025-07-24T13:26:32.929Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/00/db/c376b0661c24cf770cb8815268190668ec1330eba8374a126ceef8c72d55/ruff-0.12.5-py3-none-win_arm64.whl&quot;, hash = &quot;sha256:48cdbfc633de2c5c37d9f090ba3b352d1576b0015bfc3bc98eaf230275b7e805&quot;, size = 11951564, upload-time = &quot;2025-07-24T13:26:34.994Z&quot; },
+</code></pre>
+<p>Compare to adding the same <code>environments</code> setting to pyproject.toml</p>
+<pre><code class="language-bash">cat &lt;&lt; EOF &gt;&gt; pyproject.toml
+[tool.uv]
+environments = [&quot;sys_platform == 'linux'&quot;]
+EOF
+
+uv sync
+
+grep win uv.lock
+</code></pre>
+<p>Output:</p>
+<pre><code>warning: Found both a `uv.toml` file and a `[tool.uv]` section in an adjacent `pyproject.toml`. The following fields from `[tool.uv]` will be ignored in favor of the `uv.toml` file:
+- environments
+Resolved 2 packages in 177ms
+Audited 1 package in 0.59ms
+</code></pre>
+<p>I.e. there aren't any dependencies for Windows present in uv.lock, anymore.</p>
+<p>The <code>warning</code> is also not entirely correct in this case, as <code>uv</code> apparently uses the setting in pyproject.toml.
+The same warning is shown, when the <code>environments</code> setting is only present in pyproject.toml, so it cannot really be ignored in favor of the uv.toml file, obviously.</p>
+<p>Is this a bug or a mistake on my part?</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.2 x86_64 (WSL)</p>
+<h3>Version</h3>
+<p>uv 0.8.3</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dpprdan on 2025-07-25 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 19:37</div>
+            <div class="timeline-body"><p>Settings that affect project metadata aren't allowed in the <code>uv.toml</code>.</p>
+<p>Sorry the warning is confusing. I thought we fixed this in https://github.com/astral-sh/uv/pull/14325</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-25 19:40</div>
+            <div class="timeline-body"><p>It looks like the warning might just be inverted. I believe we respect the <code>pyproject.toml</code>, yeah.</p>
+<blockquote>
+<p>The same warning is shown, when the environments setting is only present in pyproject.toml, so it cannot really be ignored in favor of the uv.toml file, obviously.</p>
+</blockquote>
+<p>I think it's very likely that you still had a <code>uv.toml</code> file around if you're still seeing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-25 19:42</div>
+            <div class="timeline-body"><p>Yeah, I can't reproduce this if I remove the <code>uv.toml</code>. Maybe you removed your <code>uv.lock</code> by accident instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 19:43</div>
+            <div class="timeline-body"><p>The warning seems inverted, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 19:44</div>
+            <div class="timeline-body"><p>It's weird we warn here though, we should just error when <code>uv.toml</code> contains <code>environments</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 19:44</div>
+            <div class="timeline-body"><p>Which I thought was in https://github.com/astral-sh/uv/pull/14322</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-25 19:45</div>
+            <div class="timeline-body"><p>I don't see environments in https://github.com/astral-sh/uv/pull/14322.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14905.html">astral-sh/uv#14905</a> on 2025-07-25 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpprdan">@dpprdan</a> on 2025-07-25 19:52</div>
+            <div class="timeline-body"><p>Uhm, then let me vote for allowing environments in uv.toml, if I may.</p>
+<blockquote>
+<p>Settings that affect project metadata aren't allowed in the uv.toml.</p>
+</blockquote>
+<p>There's probably a very good reason for that, but IMHO the line between project metadata and config settings is bit blurry. E.g. (maybe not the best example) you might want to set different <code>link-mode</code>s per environment. Or if you're developing in some container based setup where you don't really have &quot;machine&quot; configs. Here I'd like to copy just the uv.toml with my settings (including <code>environments</code>) and then just manage the pyproject.toml with <code>uv init</code>, <code>uv add</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpprdan">@dpprdan</a> on 2025-07-25 19:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's very likely that you still had a <code>uv.toml</code> file around if you're still seeing this.</p>
+</blockquote>
+<blockquote>
+<p>Yeah, I can't reproduce this if I remove the <code>uv.toml</code>. Maybe you removed your <code>uv.lock</code> by accident instead?</p>
+</blockquote>
+<p>As hinted at in the post above, I do have other settings in uv.toml, so that is and will be present still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpprdan">@dpprdan</a> on 2025-07-25 20:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It's weird we warn here though, we should just error when <code>uv.toml</code> contains <code>environments</code>?</p>
+</blockquote>
+<p>Thinking about this a little further, I wonder: Setting e.g. <code>environments = [&quot;sys_platform == 'linux'&quot;]</code> at the user or system level might be a little odd, but is it that bad as to prohibit it altogether?</p>
+<p>And then there's the case where <code>uv.toml</code> is in the project directory. It's not really clear to me, why some settings would be mandatory to be set in pyproject.toml whereas others could be in both, I guess?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpprdan">@dpprdan</a> on 2025-07-25 20:11</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like the warning might just be inverted.</p>
+</blockquote>
+<p>The warning does make sense from the <a href="https://docs.astral.sh/uv/concepts/configuration-files/#configuration-files">&quot;<code>uv.toml</code> files take precedence over <code>pyproject.toml</code> files&quot;</a> point of view though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 20:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Setting e.g. environments = [&quot;sys_platform == 'linux'&quot;] at the user or system level might be a little odd, but is it that bad as to prohibit it altogether?</p>
+</blockquote>
+<p>In our current model, we prohibit other settings like this so we'd need to reconsider the model more broadly to allow it.</p>
+<blockquote>
+<p>It's not really clear to me, why some settings would be mandatory to be set in pyproject.toml whereas others could be in both, I guess?</p>
+</blockquote>
+<p>It's... complicated. It seems a little weird to special-case <code>uv.toml</code> files that are in project directories though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-25 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 20:20</div>
+            <div class="timeline-body"><p>(Happy to continue chatting, but the validation bug is fixed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpprdan">@dpprdan</a> on 2025-07-25 20:54</div>
+            <div class="timeline-body"><blockquote>
+<p>(Happy to continue chatting, but the validation bug is fixed)</p>
+</blockquote>
+<p>Thanks, I appreciate it!</p>
+<p>Again, you probably have good reasons for it. I just cannot entirely wrap my head around it ATM and from my perspective it seems somewhat confusing. I guess I'd need to hear those reasons to be able to understand it?</p>
+<blockquote>
+<p>It's... complicated. It seems a little weird to special-case <code>uv.toml</code> files that are in project directories though?</p>
+</blockquote>
+<p>I'd tend to agree at first. However, from my perspective there is a lot of precedence of other tools allowing either settings under the [tool] header in pyproject.toml or in tool.toml. I don't think I've seen a &quot;this setting has to live in pyproject.toml, but you can put others in tool.toml&quot;. With that in mind, special-casing project-level <code>uv.toml</code> files seems less weird than this alternative.</p>
+<p>I'd also like to stress this again:</p>
+<blockquote>
+<p>developing in some container based setup where you don't really have &quot;machine&quot; configs.</p>
+</blockquote>
+<p>E.g. using a GitHub template repo to bootstrap setting up new projects. These can contain a uv.toml file with all settings relevant to the environment and serve as a de-facto system-level config file which just happen to live in the project directory because there is only one project per machine (i.e. container). In that setting, <code>environments = [&quot;sys_platform == 'linux'&quot;]</code> , is really more of a system-level than a project-level setting, because you're only developing in linux containers anyway.</p>
+<p>It would be a bit clumsy for these templates to already contain a rudimentary pyproject.toml as you e.g. wouldn't be able to <code>uv init</code> the project.</p>
+<p>I understand the requirement to not allow definite project level settings on the user- or system-level, but like I said, for some settings the lines are blurrier than others. I would probably add <code>default-groups</code>, <code>index</code>, <code>sources</code>, possibly <code>build-backend</code> in the blurry category.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-25 21:07</div>
+            <div class="timeline-body"><p>Here's a dedicated issue to discuss this https://github.com/astral-sh/uv/issues/14908</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14908.html">astral-sh/uv#14908</a> on 2025-07-25 21:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

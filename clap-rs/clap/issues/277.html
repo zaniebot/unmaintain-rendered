@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected elements in usage - clap-rs/clap #277</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected elements in usage</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/277">#277</a>
+        opened by <a href="https://github.com/elszben">@elszben</a>
+        on 2015-09-24 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/elszben">@elszben</a> on 2015-09-24 16:11</div>
+            <div class="timeline-body"><pre><code class="language-rust">extern crate clap;
+use clap::{Arg,App};
+
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+
+    App::new(&quot;alma&quot;
+    ).arg(
+       Arg::with_name(&quot;arg1&quot;).short(&quot;c&quot;).takes_value(true).help(&quot;stuff&quot;).required(true)
+     ).arg(
+       Arg::with_name(&quot;arg2&quot;).short(&quot;d&quot;).takes_value(true).help(&quot;stuff&quot;).required(true)
+     ).arg(
+       Arg::with_name(&quot;arg3&quot;).short(&quot;e&quot;).takes_value(true).help(&quot;stuff&quot;).required(true)
+     ).arg(
+      Arg::with_name(&quot;arg4&quot;).short(&quot;f&quot;).takes_value(true).help(&quot;stuff&quot;).required(true)
+    ).get_matches();
+}
+</code></pre>
+<p>This program with arguments  -c gd -d fdf generates a really weird, unexpected error message:</p>
+<pre><code>Hello, world!
+error: The following required arguments were not supplied:
+       '-c &lt;arg1&gt;'
+       '-d &lt;arg2&gt;'
+       '-e &lt;arg3&gt;'
+       '-f &lt;arg4&gt;'
+
+USAGE:
+       claptest -c &lt;arg1&gt; -d &lt;arg2&gt; -e &lt;arg3&gt; -f &lt;arg4&gt; -d &lt;arg2&gt; -c &lt;arg1&gt;
+
+For more information try --help
+</code></pre>
+<p>The argument c and d were supplied but the program lists them as not supplied. I think this is plain wrong but I don't know what the design was, let's say that this is working as intended.
+However the USAGE text lists -c and -d twice and I can't come up with a situation where this is actually useful or makes sense.</p>
+<p>I've tried to figure out why the second fault happens and added some debug code into clap. It seems that create_usage() creates a list of args from known required args and it just appends the current matches to the list but does not remove duplicates. No idea how to fix this elegantly while also keeping the order (is that even necessary?). This context specific usage generation seems weird to me:) The library is quite nice otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-24 16:24</div>
+            <div class="timeline-body"><p>@elszben Interesting...</p>
+<p>~~What do you get when you give it each argument exactly once? Does it run as expected?~~
+It does run as expected with all arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-09-24 16:27</div>
+            <div class="timeline-body"><p>I am not sure I understand your request. I did give each argument exactly once. The command line arguments are these during the test: <strong>-c gd -d fdf</strong></p>
+<p>Are you asking if it works if I supply the correct arguments? It seems to work in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-24 16:28</div>
+            <div class="timeline-body"><p>@elszben I meant for <code>-c c -d d -e e -f f</code> which runs. Yes the correct arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-24 16:32</div>
+            <div class="timeline-body"><p>@elszben Okay. So two issues here. Sorry. I mis-read something somewhere. Okay.</p>
+<ul>
+<li><code>The following required arguments were not supplied</code> doesn't exclude what was supplied.</li>
+<li><code>USAGE</code> is poisoned with two lists. The expected required arguments and the supplied arguments (oddly also in reversed order).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-24 16:41</div>
+            <div class="timeline-body"><p><strong>I don't have the time to patch this right now, quickly providing line numbers and suggestions for anyone with such time</strong></p>
+<ul>
+<li><code>src/app/app.rs:2792</code> needs to filter away what was supplied.</li>
+<li><code>src/app/app.rs:2694</code> needs to show the expected usage, not the poisoned extended usage.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @sru on 2015-09-24 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @sru on 2015-09-24 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @sru on 2015-09-24 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @sru on 2015-09-24 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: tedious</span> added by @sru on 2015-09-24 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @sru on 2015-09-24 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-25 16:01</div>
+            <div class="timeline-body"><p>Good catch @james-darkfox</p>
+<p>@elszben thanks for taking the time to file this, once it's fixed we'll report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-28 16:57</div>
+            <div class="timeline-body"><p>Once this issue is fixed we'll put out v1.4.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.3" by @kbknapp on 2015-09-28 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P1: urgent</span> added by @kbknapp on 2015-09-30 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> removed by @kbknapp on 2015-09-30 04:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/289.html">clap-rs/clap#289</a> on 2015-09-30 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2015-09-30 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-30 18:47</div>
+            <div class="timeline-body"><p>v1.4.3 is out on crates.io which fixes this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-09-30 19:31</div>
+            <div class="timeline-body"><p>Thank you! I'll check it when I have time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-02 19:01</div>
+            <div class="timeline-body"><p>I had time to check the solution and it does not solve all faults described in this bug report (at least not in all cases). The supplied arguments are correctly filtered out of the required args. The USAGE text is sometimes filtered and sometimes not. The original program invoked with  <strong>-c gd -d fdf -g</strong> shows this output:</p>
+<pre><code>Hello, world!
+error: The argument '-g' isn't valid
+
+USAGE:
+        claptest.exe -c &lt;arg1&gt; -d &lt;arg2&gt; -e &lt;arg3&gt; -f &lt;arg4&gt; -d &lt;arg2&gt; -c &lt;arg1&gt;
+</code></pre>
+<p>In this case the solution is not applied and the USAGE text still contains the supplied arguments twice.</p>
+<p>Another interesting bug is that if I call the program with a valid argument but &quot;accidentally&quot; concatenate the argument and its value then the error states that the -c argument is not valid. This is clearly wrong, the -c is a valid argument, it is even stated in the USAGE text.</p>
+<pre><code>PS D:\rust\claptest&gt; cargo run --  -cdfdf
+ Running `target\debug\claptest.exe -cdfdf`
+Hello, world!
+error: The argument '-c' isn't valid
+
+USAGE:
+        claptest.exe -c &lt;arg1&gt; -d &lt;arg2&gt; -e &lt;arg3&gt; -f &lt;arg4&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sru on 2015-10-02 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-02 19:43</div>
+            <div class="timeline-body"><p>Thanks for letting us know! I'll start re-investigating now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2015-10-02 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-03 17:24</div>
+            <div class="timeline-body"><p>@elszben #305 should take care of this for you. Also, as a bi-product of solving this issue <code>clap</code> now supports the <code>-Lvalue</code> style options...so huge thanks for filing this :+1:</p>
+<p>Once that PR merges test out master, and if it truly fixes your scenario let us know and we'll put out 1.4.4 :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.4" by @kbknapp on 2015-10-03 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.4.3" by @kbknapp on 2015-10-03 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-03 18:06</div>
+            <div class="timeline-body"><p>Is there a way to get notified when it is merged into master? I don't know much about github:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-03 18:09</div>
+            <div class="timeline-body"><p>Click subscribe to the pr</p>
+<p>On Sat, Oct 3, 2015, 2:07 PM elszben notifications@github.com wrote:</p>
+<blockquote>
+<p>Is there a way to get notified when it is merged into master? I don't know
+much about github:)</p>
+<p>—
+Reply to this email directly or view it on GitHub
+https://github.com/kbknapp/clap-rs/issues/277#issuecomment-145273536.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-03 18:11</div>
+            <div class="timeline-body"><p>Great, thanks:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-10-03 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-04 07:01</div>
+            <div class="timeline-body"><p>I've tried it and it works on all cases I've previously reported. However there are still cases when it does not:) I did not even try to understand how clap works internally but based on this bug report it seems to me that this functionality is copied a few times, maybe it would be worth to change that? Just an idea. Anyway, here is the not correct case:</p>
+<pre><code>PS D:\rust\claptest&gt; cargo run -- -c alma -f asd -f asda
+     Running `target\debug\claptest.exe -c alma -f asd -f asda`
+Hello, world!
+error: The argument '-f' was supplied more than once, but does not support multiple values
+
+USAGE:
+        claptest.exe -c &lt;arg1&gt; -d &lt;arg2&gt; -e &lt;arg3&gt; -f &lt;arg4&gt; -c &lt;arg1&gt; -f &lt;arg4&gt;
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-10-04 09:30</div>
+            <div class="timeline-body"><p>@elszben This problem is due to the terribly organic way this library has been written. This makes testing fairly difficult as there are <strong>too many edge cases</strong>. I started a re-write in attempt to counter these types of problems. This re-write is being tracked in <code>#259</code> - just in case you're interested; It is <strong>NOT</strong> yet ready unless you have <strong>VERY</strong> simple needs (No usage string yet :ghost:).</p>
+<blockquote>
+<p>[..] this functionality is copied a few times, maybe it would be worth to change that?</p>
+</blockquote>
+<p>No doubt about it. <code>1.x</code> includes more duplicated code. A good refactor might have good value, however, completing the re-write would be better future-value. If the <code>2.0</code> plan goes through as expected, it'll directly replace the current clap. But again, there is nothing wrong with improving the current and <strong>working</strong> clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @WildCryptoFox on 2015-10-04 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.5" by @WildCryptoFox on 2015-10-04 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.4.4" by @WildCryptoFox on 2015-10-04 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-04 17:15</div>
+            <div class="timeline-body"><p>@elszben I apologize! We've been slowly refactoring away cases like this because it's like @james-darkfox said, edge cases pop up from everywhere! :)</p>
+<p>I'm going to make a quick change to this copy-paste-pasta which should eliminate this issue entirely as there will be only a single instance of determining what goes in the usage string...not the many that there are now.</p>
+<p>Once it's done, I'd be <strong>very</strong> interested if you find another case of duplication! Thanks again for taking the time to file and test these! :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-04 17:18</div>
+            <div class="timeline-body"><p>No need to apologize, and there is certainly no need to hurry, I have all the time in the world:) I don't need a quick fix, just make it correct:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/310.html">clap-rs/clap#310</a> on 2015-10-05 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/312.html">clap-rs/clap#312</a> on 2015-10-06 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "1.4.4" by @kbknapp on 2015-10-06 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "1.4.5" by @kbknapp on 2015-10-06 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-06 02:37</div>
+            <div class="timeline-body"><p>@elszben hopefully #312 finally does it :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2015-10-06 04:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-06 18:23</div>
+            <div class="timeline-body"><p>It mostly works but now it also crashes:)</p>
+<p>Example:</p>
+<pre><code>PS D:\rust\claptest&gt; cargo run -- -c sdsd -d df -g sfds
+     Running `target\debug\claptest.exe -c sdsd -d df -g sfds`
+Hello, world!
+thread '&lt;main&gt;' panicked at 'index out of bounds: the len is 1 but the index is 1', D:\clap\src\app\app.rs:1574
+</code></pre>
+<p>This is from v1.4.4 branch.</p>
+<p>p.s.: This is so funny, it just does not want to work:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @Vinatorul on 2015-10-06 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/314.html">clap-rs/clap#314</a> on 2015-10-06 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-06 19:13</div>
+            <div class="timeline-body"><p>I've added some assertions to ensure that doesn't happen again. Once #314 merges I'm going to ahead an put out 1.4.5 since it fixes a crash.</p>
+<p>@elszben Do you have your full test list? Just so we can ensure we're catching them all...and then we'll also add those to the actual tests :smile:</p>
+<p>Also, I'm leaving this open until we know <strong>for sure</strong> this issue is gone :stuck_out_tongue_winking_eye:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-06 19:32</div>
+            <div class="timeline-body"><p>1.4.5 is out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-06 19:36</div>
+            <div class="timeline-body"><p>Unfortunately I do not have a list, originally I only had a single use case I wanted to be covered then I just came up with more cases that broke clap. I believe they are all included in this bug but here is a &quot;complete&quot; list:</p>
+<ol>
+<li>arguments must be accepted even if provided in random order (believe it or not this was the use case that failed on my previous choice of opt parser and then I switched to clap)</li>
+<li>missing arguments must be properly printed as missing</li>
+<li>provided arguments cannot be printed as missing</li>
+<li>usage string must contain all arguments (provided arguments cannot corrupt usage string)</li>
+<li>short argument concatenated with its value must be accepted as well (this is now a feature in clap, I think).</li>
+<li>incorrectly providing an argument multiple times cannot break usage string (probably covered by 4.?)</li>
+<li>invalid argument with or without value must be correctly handled</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-06 19:43</div>
+            <div class="timeline-body"><p>Interesting &quot;feature&quot; in 1.4.5.</p>
+<pre><code> PS D:\rust\claptest&gt; cargo run -- -c asd -d sd -e fdsf -dsdfdsf
+ Hello, world!
+ error: The argument '-dsdfdsf' was supplied more than once, but does not support multiple values
+
+ USAGE:
+         claptest.exe [FLAGS] -c &lt;arg1&gt; -d &lt;arg2&gt; -e &lt;arg3&gt; -f &lt;arg4&gt;
+</code></pre>
+<p>If an argument is provided twice and one of them is concatenated with its value then the argument name is printed with its value:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-10-06 20:48</div>
+            <div class="timeline-body"><p>That's the intended functionality. In that particular use case (using <code>-Lvalue</code> style args) I can see how it's somewhat surprising, but typically (or so I would assume) it would appear as something like <code>The argument '--opt value' was supplied more than once</code></p>
+<p>It'd be possible for us to change it so that it <em>only</em> shows the argument, without the value, but I'd imagine that's somewhat bike shedding as the main goal is to alert the user to an error and where to find the error. :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elszben">@elszben</a> on 2015-10-07 16:05</div>
+            <div class="timeline-body"><p>Well, it is up to you, it does not hurt the usability in my use case:) I consider this bug to be fixed then. Thanks for all the help:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-10-07 16:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:17 UTC
+    </footer>
+</body>
+</html>

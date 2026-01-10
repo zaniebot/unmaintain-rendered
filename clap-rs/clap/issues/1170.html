@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for 'Called as' - clap-rs/clap #1170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for 'Called as'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1170">#1170</a>
+        opened by <a href="https://github.com/MggMuggins">@MggMuggins</a>
+        on 2018-02-10 00:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MggMuggins">@MggMuggins</a> on 2018-02-10 00:05</div>
+            <div class="timeline-body"><p>In some (mostly systems programming) situations, links are used to move a whole bunch of executables into one, and let that one figure out how it was called in order to determine it's behavior. I haven't done a ton of digging (so I don't know if there is support for this), but it would be really cool if clap supported this in some way. Feel free to close this, it's just a thought, really. Let me know if you want more detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-10 03:44</div>
+            <div class="timeline-body"><p>This is supported in a somewhat hacky way, however this is something an external crate could do easily (one just doesn't exist yet).</p>
+<p>I'll give each &quot;application&quot; a different argument so you can see what it would conceptually look like to have different args for each.</p>
+<pre><code>$ cargo new facade --bin
+</code></pre>
+<pre><code class="language-rust">// src/main.rs
+
+extern crate clap;
+use clap::{Arg, App};
+
+use std::env;
+
+fn main(){
+    // set up each of our &quot;applications&quot;
+    let foo = App::new(&quot;foo&quot;)
+        .bin_name(&quot;foo&quot;)
+        .arg(Arg::with_name(&quot;a&quot;).short(&quot;a&quot;));
+    let bar = App::new(&quot;bar&quot;)
+        .bin_name(&quot;bar&quot;)
+        .arg(Arg::with_name(&quot;b&quot;).short(&quot;b&quot;));
+    let baz = App::new(&quot;baz&quot;)
+        .bin_name(&quot;baz&quot;)
+        .arg(Arg::with_name(&quot;c&quot;).short(&quot;c&quot;));
+    
+    // match whatever the link was (normally you'd probably send those matches
+    // off to some *_run(matches) style function 
+    match &amp;*env::args().nth(0).unwrap_or(String::new()) {
+        &quot;foo&quot; =&gt; foo.get_matches(),
+        &quot;bar&quot; =&gt; bar.get_matches(),
+        &quot;baz&quot; =&gt; baz.get_matches(),
+        _ =&gt; panic!(&quot;Something went terribly wrong.&quot;)
+    }
+}
+</code></pre>
+<pre><code>$ pwd
+/tmp/issue_1170
+
+$ ls -l
+total 24
+lrwxrwxrwx 1 kevin kevin   17 Feb  9 22:34 bar -&gt; /home/kevin/.local/bin/facade
+lrwxrwxrwx 1 kevin kevin   17 Feb  9 22:34 baz -&gt; /home/kevin/.local/bin/facade
+lrwxrwxrwx 1 kevin kevin   17 Feb  9 22:33 foo -&gt; /home/kevin/.local/bin/facade
+
+$ foo --help
+foo
+
+USAGE:
+    foo [FLAGS]
+
+FLAGS:
+    -a
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+$ bar --help
+bar
+
+USAGE:
+    bar [FLAGS]
+
+FLAGS:
+    -b
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+$ baz --help
+baz
+
+USAGE:
+    baz [FLAGS]
+
+FLAGS:
+    -c
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-10 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MggMuggins">@MggMuggins</a> on 2018-02-10 17:23</div>
+            <div class="timeline-body"><p>I see. Thanks for the explanation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ogham/exa/issues/332.html">ogham/exa#332</a> on 2018-02-15 20:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:44 UTC
+    </footer>
+</body>
+</html>

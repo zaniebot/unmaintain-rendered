@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unable to build older releases due to MSRV conflict - clap-rs/clap #4811</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unable to build older releases due to MSRV conflict</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4811">#4811</a>
+        opened by <a href="https://github.com/tones111">@tones111</a>
+        on 2023-03-30 03:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tones111">@tones111</a> on 2023-03-30 03:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.62.1</p>
+<h3>Clap Version</h3>
+<p>v4.0.32</p>
+<h3>Minimal reproducible code</h3>
+<p>N/A</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo new --bin args
+cd args
+cargo add clap@=4.0.32
+cargo +1.62.1 check
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>error: package `clap_lex v0.3.3` cannot be built because it requires rustc 1.64.0 or newer, while the currently active rustc version is 1.62.1
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Since the <a href="https://github.com/clap-rs/clap/blob/v4.0.32/Cargo.toml#L26">MSRV for clap v4.0.32 is rust 1.60.0</a> I expect to be able to compile with the 1.62.1 compiler.</p>
+<h3>Additional Context</h3>
+<p>It looks like the version numbers for dependencies need to be constrained to prevent cargo from picking a version with an incompatible MSRV.  In this case clap_lex should be fixed to v0.3.0 since v0.3.1 bumped the MSRV to rust 1.64.0.  There may be other incompatibilities... this is just the first error presented.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @tones111 on 2023-03-30 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tones111">@tones111</a> on 2023-03-30 04:10</div>
+            <div class="timeline-body"><p>It looks like I'm able to build by adding the constraint described above to v4.0.32.</p>
+<pre><code>-clap_lex = { path = &quot;./clap_lex&quot;, version = &quot;0.3.0&quot; }
++clap_lex = { path = &quot;./clap_lex&quot;, version = &quot;=0.3.0&quot; }
+</code></pre>
+<p>however, I'm unable to create a pull request since there's no branch at that point in the repo.  Would it be possible to tag a v4.0.33 with this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-30 12:11</div>
+            <div class="timeline-body"><p>The way to solve this is for you to run <code>cargo update -p clap_lex --precise 0.3.0</code>.  Newer versions of <code>cargo</code> should include that suggestion in the error.</p>
+<p>Unfortunately, crates can only be responsible that they can build for the MSRV but should not be responsible for all of  versions of dependencies to build for the MSRV</p>
+<ul>
+<li>One way is for everyone to treat a change to MSRV as a breaking change but this is quite disruptive and leads to multiple copies of crates in dependency graphs</li>
+<li>Another way is to use version constraints, as you mentioned, but this has repercussions on the ecosystem, for example<ul>
+<li>https://github.com/rust-lang/cargo/issues/6584#issuecomment-1308032517</li>
+<li>https://www.reddit.com/r/rust/comments/p8clcx/how_to_fix_cargo_dependency_issue/</li>
+</ul>
+</li>
+</ul>
+<p>The ideal long term solution is for cargo to handle this automatically which I'm working towards: https://github.com/rust-lang/cargo/issues/9930</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-03-30 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/9930.html">rust-lang/cargo#9930</a> on 2023-03-30 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../eclipse-zenoh/zenoh/issues/740.html">eclipse-zenoh/zenoh#740</a> on 2024-02-16 03:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:22 UTC
+    </footer>
+</body>
+</html>

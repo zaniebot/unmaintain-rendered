@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative for PYI016 Duplicate union member - astral-sh/ruff #15815</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative for PYI016 Duplicate union member</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15815">#15815</a>
+        opened by <a href="https://github.com/nickdrozd">@nickdrozd</a>
+        on 2025-01-29 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-01-29 18:50</div>
+            <div class="timeline-body"><h3>Description</h3>
+<pre><code class="language-python">Q = int | int
+</code></pre>
+<p>Not flagged, should raise PYI016</p>
+<p>ruff 0.9.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-29 19:07</div>
+            <div class="timeline-body"><p>This is because Ruff can't be sure here that <code>Q</code> is a type alias, so it doesn't know whether to analyse it as a type expression or a value expression. If you explicitly annotate it with <code>typing.TypeAlias</code> or <code>typing_extensions.TypeAlias</code>, the diagnostic is emitted as expected:</p>
+<pre><code class="language-py">from typing import TypeAlias
+
+Q: TypeAlias = int | int
+</code></pre>
+<p>Same if you use a <code>type</code> statement on Python 3.12 or newer:</p>
+<pre><code class="language-py">type Q = int | int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2025-01-29 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-01-30 18:43</div>
+            <div class="timeline-body"><blockquote>
+<p>This is because Ruff can't be sure here that Q is a type alias, so it doesn't know whether to analyse it as a type expression or a value expression.</p>
+</blockquote>
+<p>I don't think it matters how it is used. AFAICT, there is literally no difference between <code>int | int</code> and <code>int</code>:</p>
+<pre><code class="language-python">assert int is int | int
+assert int == int | int
+
+##############################
+
+Q = int | int
+
+assert Q is int
+
+q = int
+
+assert q is q | q
+
+assert Q is q
+
+##############################
+
+from typing import TypeAlias
+
+P: TypeAlias = int | int
+
+assert P is int
+
+assert P is Q
+
+assert P is q
+</code></pre>
+<p>Is there any situation in which <code>int | int</code> would be preferred to <code>int</code>? Or IOW, any situation in which flagging this would be a false positive?</p>
+<p>Can't speak for others, but I have definitely done this before, and it was definitely a mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-30 21:26</div>
+            <div class="timeline-body"><p>From a human's perspective, it's obvious that <code>X = int | int</code> is an attempt to create a type alias. But from a static-analysis tool's perspective, how can it unambiguously differentiate <code>X = int | int</code> from <code>Y = 42 | 56</code> (which is not a type alias, just a normal value being assigned to a variable)?</p>
+<p>This would be <em>easier</em> for Ruff if it had better type inference. But even for type checkers, differentiating type aliases from other assignments isn't <em>easy</em>. If it <em>were</em> easy, there wouldn't be any need for <code>typing.TypeAlias</code> at all, and <a href="https://peps.python.org/pep-0613/">PEP 613</a> would never have been written :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-02 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

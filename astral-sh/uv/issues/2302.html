@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A bit too strict pyproject.toml validation for uv 0.1.16 - astral-sh/uv #2302</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A bit too strict pyproject.toml validation for uv 0.1.16</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2302">#2302</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2024-03-08 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-08 15:34</div>
+            <div class="timeline-body"><h2>Problem description</h2>
+<p>The uv 0.1.16 started to do quite stronger validation of pyproject.toml  (IMHO a bit too strong) and I think it's not good as it excludes projects that are using things on a bleeding edge. This covers  for example extensions of <code>pyproject.toml</code> that are not yet accepted, but already supported by popular tools. This is especially important if the features in pyproject.toml are related to build backend not frontend, because it's quite safe to assume by projects that they can add the features if they know the backend they are using supports it.</p>
+<h2>What happened</h2>
+<p>When we try to install Airflow in editable mode inside of our image with uv 0.1.16 we get this error (all works fine with uv 0.1.15) - it's the same error with <code>pip uninstall</code> and <code>pip install</code>:</p>
+<pre><code>  #58 0.485 + xargs uv pip uninstall --python /usr/local/bin/python
+  #58 0.847 error: Querying Python at `/usr/local/bin/python3` failed with status exit status: 1 with exit status: 1
+  #58 0.847 --- stdout:
+  #58 0.847 
+  #58 0.847 --- stderr:
+  #58 0.847 Traceback (most recent call last):
+  #58 0.847   File &quot;&lt;string&gt;&quot;, line 404, in &lt;module&gt;
+  #58 0.847   File &quot;&lt;string&gt;&quot;, line 380, in get_scheme
+  #58 0.847   File &quot;&lt;string&gt;&quot;, line 330, in get_distutils_scheme
+  #58 0.847   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/dist.py&quot;, line 627, in parse_config_files
+  #58 0.847     pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+  #58 0.847   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 67, in apply_configuration
+  #58 0.847     config = read_configuration(filepath, True, ignore_option_errors, dist)
+  #58 0.847   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 128, in read_configuration
+  #58 0.847     validate(subset, filepath)
+  #58 0.847   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 56, in validate
+  #58 0.847     raise ValueError(f&quot;{error}\n{summary}&quot;) from None
+  #58 0.847 ValueError: invalid pyproject.toml config: `project`.
+  #58 0.847 configuration error: `project` must not contain {'license-files'} properties
+  #58 0.847 ---
+  #58 0.853 + true
+  #58 0.853 + set +x
+  #58 0.853 
+  #58 0.853 Installing all packages in eager upgrade mode. Installation method: .
+  #58 0.853 
+  #58 0.854 + uv pip install --python /usr/local/bin/python --upgrade --resolution highest --editable '.[devel-ci]'
+  #58 1.162 error: Querying Python at `/usr/local/bin/python` failed with status exit status: 1 with exit status: 1
+  #58 1.162 --- stdout:
+  #58 1.162 
+  #58 1.162 --- stderr:
+  #58 1.162 Traceback (most recent call last):
+  #58 1.162   File &quot;&lt;string&gt;&quot;, line 404, in &lt;module&gt;
+  #58 1.162   File &quot;&lt;string&gt;&quot;, line 380, in get_scheme
+  #58 1.162   File &quot;&lt;string&gt;&quot;, line 330, in get_distutils_scheme
+  #58 1.162   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/dist.py&quot;, line 627, in parse_config_files
+  #58 1.162     pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+  #58 1.162   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 67, in apply_configuration
+  #58 1.162     config = read_configuration(filepath, True, ignore_option_errors, dist)
+  #58 1.162   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 128, in read_configuration
+  #58 1.162     validate(subset, filepath)
+  #58 1.162   File &quot;/usr/local/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 56, in validate
+  #58 1.162     raise ValueError(f&quot;{error}\n{summary}&quot;) from None
+  #58 1.162 ValueError: invalid pyproject.toml config: `project`.
+  #58 1.162 configuration error: `project` must not contain {'license-files'} properties
+</code></pre>
+<p>Example failure in CI here: https://github.com/apache/airflow/actions/runs/8204894763/job/22440571526?pr=37995#step:6:1817</p>
+<h2>Context</h2>
+<p>We have an example of that in Apache Airflow. We are currently using <code>license-files</code> keys and <code>.glob</code> pattern in it coming from (still Draft) https://peps.python.org/pep-0639/ - and the license-files keys is nicely supported by <code>hatchling</code> 1.21.1 which we use as Apache Airflow build backend. This allows us to easily add multiple licences to our sdist/wheel metadata - both Apache Licence 2.0 and 3rd-partylicences of projects that we partially vendored-in. This is a legal requirement for us to add the licences when we redistribute the software and being able to do it using dedicated mechanism for that (even if it is not yet fully accepted) is pretty useful.</p>
+<p>Here is an extract (important things only) from our pyproject.toml:</p>
+<pre><code class="language-pyproject.toml">
+[build-system]
+requires = [
+    ...
+    &quot;hatchling==1.21.1&quot;,
+    ...
+]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+....
+license-files.globs = [&quot;LICENSE&quot;, &quot;3rd-party-licenses/*.txt&quot;]
+</code></pre>
+<p>I think there are other projects that are using some upcoming features - even knowing that they might get rejected or changed, so I think better approach is to soften the validation - at least to allow some new unknown keys to appear there - maybe raise a warning and allow to silence them with a flag for those who are aware of this limitation and use <code>uv</code> for their CI/development tooling at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 15:35</div>
+            <div class="timeline-body"><p>Oh hmm, I don't think this was intentional (from my perspective). Let me take a look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-08 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 15:35</div>
+            <div class="timeline-body"><p>Seems like it's because we're now calling <code>get_distutils_scheme</code> internally. I wonder how / why this works in pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-08 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-08 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-08 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Seems like it's because we're now calling get_distutils_scheme internally. I wonder how / why this works in pip.</p>
+</blockquote>
+<p>It works for sure with lates version of <code>pip</code>. In our CI we switched most of our CI / PROD builds to <code>uv</code> for speed, but we just have a <code>--use-uv/--no-use-uv</code> that we can swap and PROD image is built in one variant with latest <code>pip</code> so I am quite sure it works :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 15:43</div>
+            <div class="timeline-body"><p>Awesome :) I'll take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/37996.html">apache/airflow#37996</a> on 2024-03-08 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-08 18:32</div>
+            <div class="timeline-body"><p>This is weird, the error is coming from setuptools, both uv and pip are making the same <code>Distribution(dist_args).parse_config_files()</code>. I don't see anything obvious on the setuptools side that would cause this issue, looking through the changelog, prs, and issues.</p>
+<p>It would be helpful, from both uv and pip, if on a build error it printed out the build environment, as otherwise one has to guess what happened on the build resolution. Maybe it already does that in verbose mode?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-08 18:35</div>
+            <div class="timeline-body"><p>One difference I do notice actually, uv is passing in <code>{}</code> for <code>dist_args</code>, where as pip is passing in <code>{&quot;name&quot;: dist_name}</code> and adding <code>dist_args[&quot;script_args&quot;] = [&quot;--no-user-cfg&quot;]</code> for isolated environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 18:37</div>
+            <div class="timeline-body"><p>My guess is that something happens in pip to prevent it from reading the config file in that case (it looks like it falls back to cwd), but not sure what. I’m probably going to disable it for us too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 18:38</div>
+            <div class="timeline-body"><p>Yeah but I think pip has isolated set to false by default, I could be mistaken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-03-08 18:44</div>
+            <div class="timeline-body"><p>I don't see any exception handeling in pip code for that, and what's weird is setuptools has supported <code>license-files</code> for years.</p>
+<p>If this issue is still open by this evening I'll see if I can reproduce it on uv side and put some breakpoints in the pip code and follow what's happening, as it's very difficult to statically analyze by glancing over it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 18:50</div>
+            <div class="timeline-body"><p>Thanks, I'll try to repro too a little later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 19:03</div>
+            <div class="timeline-body"><p>I think we may ultimately be calling different validation functions, we should be calling the <code>dist.py</code> in <code>distutils</code>, not in <code>setuptools</code>... Is there a shim happening somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 19:13</div>
+            <div class="timeline-body"><p>Yeah, ok, I think it has to do with this:</p>
+<pre><code class="language-python">def warn_distutils_present():
+    if 'distutils' not in sys.modules:
+        return
+    if is_pypy and sys.version_info &lt; (3, 7):
+        # PyPy for 3.6 unconditionally imports distutils, so bypass the warning
+        # https://foss.heptapod.net/pypy/pypy/-/blob/be829135bc0d758997b3566062999ee8b23872b4/lib-python/3/site.py#L250
+        return
+    import warnings
+
+    warnings.warn(
+        &quot;Distutils was imported before Setuptools, but importing Setuptools &quot;
+        &quot;also replaces the `distutils` module in `sys.modules`. This may lead &quot;
+        &quot;to undesirable behaviors or errors. To avoid these issues, avoid &quot;
+        &quot;using distutils directly, ensure that setuptools is installed in the &quot;
+        &quot;traditional way (e.g. not an editable install), and/or make sure &quot;
+        &quot;that setuptools is always imported before distutils.&quot;
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 19:26</div>
+            <div class="timeline-body"><p>Confirmed, our imports are getting the shimmed <code>setuptools</code> version:</p>
+<pre><code>  × Querying Python at `/opt/homebrew/bin/python3.8` failed with status exit status: 1 with exit status: 1
+  │ --- stdout:
+  │ get_distutils_scheme: &lt;class 'setuptools.dist.Distribution'&gt;
+  │ get_virtualenv: /opt/homebrew/lib/python3.8/site-packages/setuptools/_distutils/dist.py
+  │ {&quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.8.18&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;arm64&quot;, &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;23.2.0&quot;, &quot;platform_system&quot;:
+  │ &quot;Darwin&quot;, &quot;platform_version&quot;: &quot;Darwin Kernel Version 23.2.0: Wed Nov 15 21:54:05 PST 2023; root:xnu-10002.61.3~2/RELEASE_ARM64_T6031&quot;, &quot;python_full_version&quot;: &quot;3.8.18&quot;, &quot;python_version&quot;: &quot;3.8&quot;, &quot;sys_platform&quot;:
+  │ &quot;darwin&quot;}, &quot;base_prefix&quot;: &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8&quot;, &quot;base_exec_prefix&quot;: &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8&quot;,
+  │ &quot;prefix&quot;: &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8&quot;, &quot;base_executable&quot;: &quot;/opt/homebrew/bin/python3.8&quot;, &quot;sys_executable&quot;: &quot;/opt/homebrew/opt/python@3.8/bin/python3.8&quot;, &quot;stdlib&quot;:
+  │ &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8/lib/python3.8&quot;, &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages&quot;,
+  │ &quot;purelib&quot;: &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages&quot;, &quot;include&quot;:
+  │ &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8/include/python3.8&quot;, &quot;scripts&quot;: &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8/bin&quot;, &quot;data&quot;:
+  │ &quot;/opt/homebrew/Cellar/python@3.8/3.8.18_2/Frameworks/Python.framework/Versions/3.8&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;: &quot;lib/python3.8/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.8/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.8&quot;, &quot;scripts&quot;:
+  │ &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}}
+  │ --- stderr:
+  │ Traceback (most recent call last):
+  │   File &quot;&lt;string&gt;&quot;, line 414, in &lt;module&gt;
+  │ ZeroDivisionError: division by zero
+  │ ---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2305.html">astral-sh/uv#2305</a> on 2024-03-08 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2411.html">astral-sh/uv#2411</a> on 2024-03-13 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10819.html">astral-sh/uv#10819</a> on 2025-01-21 17:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

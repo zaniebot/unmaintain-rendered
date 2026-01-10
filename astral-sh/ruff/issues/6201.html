@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>missing TCH00(1-3) lint for typing.Callable function signature annotation - astral-sh/ruff #6201</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>missing TCH00(1-3) lint for typing.Callable function signature annotation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6201">#6201</a>
+        opened by <a href="https://github.com/bachmannscode">@bachmannscode</a>
+        on 2023-07-31 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bachmannscode">@bachmannscode</a> on 2023-07-31 16:10</div>
+            <div class="timeline-body"><p>ruff version: 0.0.280</p>
+<p>Due to <code>from __future__ import annotations</code>, the python interpreter can run this snippet without raising a <code>NameError</code>:</p>
+<pre><code>from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Callable
+
+def print_hello() -&gt; None:
+    print(&quot;hello&quot;)
+
+def foo() -&gt; Callable[[], None]:
+    return print_hello
+
+if __name__ == &quot;__main__&quot;:
+    foo()()
+</code></pre>
+<p>This tells me that <code>Callable</code> is only used for type checking. Running <code>ruff snippet.py --select=TCH --isolated</code> does, correctly so, not complain.</p>
+<p>If we edit the snippet by removing the type checking guard like so:</p>
+<pre><code>from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from typing import Callable
+
+def print_hello() -&gt; None:
+    print(&quot;hello&quot;)
+
+def foo() -&gt; Callable[[], None]:
+    return print_hello
+
+if __name__ == &quot;__main__&quot;:
+    foo()()
+</code></pre>
+<p>Running <code>ruff snippet.py --select=TCH --isolated</code> still does not complain which imho should with one of &quot;TCH00(1-3)&quot;.</p>
+<p>Notes:</p>
+<ul>
+<li>When ruff linting the same snippet but instead of importing from <code>typing</code>, one imports from <code>collections.abc</code>, ruff, correctly so, complains with TCH003.</li>
+<li>Ruff also does not complain if the <code>__future__</code> import is replaced by surrounding the annotation with quotes like so <code>&quot;Callable[[], None]&quot;</code> which can also be run by the python interpreter without any errors.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 16:21</div>
+            <div class="timeline-body"><p>I believe this is working as intended. The typing module itself is exempted from these rules, since you <em>need</em> to import typing at runtime to get access to TYPE_CHECKING, and so there is no runtime benefit to importing it in a deferred manner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-31 16:26</div>
+            <div class="timeline-body"><p>There are two relevant settings here:</p>
+<ul>
+<li>https://beta.ruff.rs/docs/settings/#flake8-type-checking-strict which applies the above heuristic to <em>all</em> modules (ie, don’t enforce typing rules for imports that have at least one runtime usage, since there’s no runtime benefit to moving parts of the import if you’re already importing the module at runtime).</li>
+<li>https://beta.ruff.rs/docs/settings/#flake8-type-checking-exempt-modules which exempts modules entirely and includes typing by default. I believe you can remove it but there’s at least one bug related to that behavior and I don’t recommend it (we may forbid that entirely for the typing module in the future).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-31 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bachmannscode">@bachmannscode</a> on 2023-08-02 22:23</div>
+            <div class="timeline-body"><p>I see, that makes sense. Thanks a lot for the answer!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

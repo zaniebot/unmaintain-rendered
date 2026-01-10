@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iterating over `ArgMatches` - clap-rs/clap #1206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Iterating over `ArgMatches`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1206">#1206</a>
+        opened by <a href="https://github.com/neysofu">@neysofu</a>
+        on 2018-03-09 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-09 12:04</div>
+            <div class="timeline-body"><p>Maintainer's notes</p>
+<ul>
+<li>This is blocked on https://github.com/clap-rs/clap/issues/1041 / https://github.com/clap-rs/clap/issues/2150 where we move away from opaque, non-public <code>Id</code>s for arguments to something the user can programmatically act on</li>
+</ul>
+<hr />
+<p>Hi, I am using Clap in a little side project and I would like to suggest a minor feature. I am ready to implement it myself and send a PR if needed, I just need a few pointers. The feature at hand is an ordered iterator over <code>ArgMatches</code>: as far as my understanding goes, Clap doesn't allow to freely iterate over the parsed arguments. What if my application APIs are dependent upon the order of the arguments? GNU <code>find</code> comes to my mind. Calling <code>index_of</code> for every argument can be expensive if you have a lot of them.</p>
+<p>If this feature were to be implemented, what would the return type and name of the method be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-19 17:58</div>
+            <div class="timeline-body"><p>Sorry for the wait, I've been on vacation with my kids this past week :)</p>
+<p>Do you mean iterating over only positional values, or over <em>all</em> args that have been used? Also, do you envision this iterating over <em>non</em>-matched args as well?</p>
+<p>If you'd like to take a stab at implementing I'd be happy to mentor you! This is how I'd attack it:</p>
+<ul>
+<li>Draw out how you see this working, including the questions I listed above (including any edge cases you can think of)</li>
+<li>I start with some usage code (such as in a test) to make sure the ergonomics are correct/comfortable</li>
+<li>Write some tests in <code>tests/matches.rs</code> for the various uses you've drawn up in step one</li>
+<li>I then just test <em>that</em> file alone with <code>cargo test --test matches</code> or can further test just a single function in that file with <code>cargo test --test matches -- name_of_function</code></li>
+<li>Start the implementation (this will vary greatly depending on how you've designed it)</li>
+</ul>
+<p>For the implementation once we have a good design I can give you some pointers as to where the changes you'll want to make are located / any particulars associated with those changes.</p>
+<p>Once all your new tests pass, I'd run a full test suite <code>cargo test --features &quot;yaml vec_map wrap_help unstable&quot;</code> and make sure nothing broke.</p>
+<p>If you need to see the debug output while you're building testing a single function use <code>cargo test --test matches --features debug -- name_of_function</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2018-03-19 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2018-03-19 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2018-03-19 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @kbknapp on 2018-03-19 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-19 19:54</div>
+            <div class="timeline-body"><p>First of all, thanks for taking the time to address this! I hope you enjoyed your vacation.</p>
+<p>The API I had in mind wouldn't be constrained only to positional arguments, but to all the arguments that have been used. Currently <code>ArgMatches</code> allows you to know which arguments have been used and their index in respect to all other arguments, yet it lacks a way to actually iterate over them.</p>
+<p>I mean adding an API to access the order in which options are given. Ex.:</p>
+<pre><code>cmd --abc --xyz
+cmd --xyz --abc</code></pre>
+<p>Let's say my command's behavior is specific to the order in which the options <code>abc</code> and <code>xyz</code> are given. As long as it's only two arguments I can get away with calling <code>index_of</code> for one of the two and figuring out which comes first. But what if I provide many another options? My idea is offer a method over <code>ArgMatches</code> that gives an iterator over the arguments in an ordered fashion:</p>
+<pre><code>arg_matches_1.iter_raw() == vec![&quot;abc&quot;, &quot;xyz&quot;];
+arg_matches_2.iter_raw() == vec![&quot;xyz&quot;, &quot;abc&quot;];</code></pre>
+<p>This example is just off the top of my head and I am sure it could be improved.</p>
+<p>Please correct me if I talked nonsense at any point because I am not very familiar with the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-19 20:25</div>
+            <div class="timeline-body"><p>To make sure it's not an <code>XY</code> problem, how does your CLI work with the order of args? I've always seen conflicts/overrides as the main driving factor for when order matters. Both of which handled in the parsing logic.</p>
+<p>The only other form I've seen is for things like include/exclude logic where there aren't really hard conflicts/overrides at the parsing level, but further up the execution stack there are. I've only seen this between a handlful of args at the most, and hence iterating over the indices isn't an issue.</p>
+<p>This is of course not to say my list is exhaustive, I'm sure there are other use cases out there!</p>
+<p>This actually wouldn't be a <em>huge</em> change for clap to implement this, but it would introduce an additional dep (such as <a href="https://github.com/bluss/indexmap"><code>indexmap</code></a> ) and thus would need to be behind a non-default cargo feature.</p>
+<p>The change you'd make is using <code>cfg</code> statements to change the <a href="https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/arg_matches.rs#L62"><code>hashmap</code> to an <code>indexmap</code></a> and provide an <code>ArgMatches</code> method to simply return an Iterator of the requested info, perhaps as a tuple? (Such as <code>(name, &amp;[vals])</code>?) This could be similar to how <a href="https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/arg_matches.rs#L211-L220"><code>Arg::values_of</code></a> works.</p>
+<p>For the iterator itself, it'd fine to use the <a href="https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/arg_matches.rs#L791-L818"><code>Values</code> impl as a guide.</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-19 20:28</div>
+            <div class="timeline-body"><p>Another more lengthy option (but arguably more correct) is instead of returning an Iterator of some custom data type tuple, returning the <a href="https://github.com/kbknapp/clap-rs/blob/07c15d28d94ffb0ba52b895cd75404c73ed5d10a/src/args/matched_arg.rs"><code>MatchedArg</code></a> itself. I say more lengthy because you'd have to document <code>MatchedArg</code> and provide the appropriate methods to get at it's internals such as values, occurrences, and indices. However, this is more flexible in the long run as you wouldn't need to add more <code>ArgMatches</code> methods in order to deal with different types of iteration...you'd just let the calling code deal with it has it wants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-20 15:22</div>
+            <div class="timeline-body"><p>My application has a custom <code>version</code> subcommand that works this way:</p>
+<pre><code>// Prints human readable version if no options are given
+$ cmd version
+Cmd 2.42.1-rc1 (fj23o83b)
+
+// Switches to line-by-line format if options are given, to facilitate machine readability. The requested data is printed in the specified order.
+$ cmd version --tags --major
+rc1
+2</code></pre>
+<p>However there are many other use cases. Tasks execution order in a Gulp-like application, apply filters in a specific order in GNU find, ecc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-20 15:24</div>
+            <div class="timeline-body"><blockquote>
+<p>This actually wouldn't be a huge change for clap to implement this, but it would introduce an additional dep (such as indexmap ) and thus would need to be behind a non-default cargo feature.</p>
+</blockquote>
+<p>That's a pity. I thought it would be as simple as adding a method to <code>ArgMatches</code>, with no fundamental changes to the actual program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-21 00:33</div>
+            <div class="timeline-body"><p>Right now, clap uses a <code>HashMap</code> to hold the matches, which is inherently not in order. Switching to an <code>IndexMap</code> would be basically a drop in replacement, but because it's another dep I'd want people to have to opt-in to it.</p>
+<p>So it basically would be just a cfg statement which adds the method on the matches struct and uses an indexmap instead of hashmap.  And I'd create a struct to act as the iterator, and impl Iterator for it.</p>
+<p>Something like (details left out for brevity):</p>
+<pre><code class="language-rust">#[cfg(not(feature = &quot;indexmap&quot;))]
+struct ArgMatches {
+    args: HashMap
+}
+
+#[cfg(feature = &quot;indexmap&quot;)]
+struct ArgMatches {
+    args: IndexMap
+}
+
+impl ArgMatches {
+    #[cfg(feature = &quot;indexmap&quot;)]
+    fn iter(&amp;self) -&gt; MatchIter {
+        MatchIter { iter: self.args.iter() }
+    }
+}
+
+#[cfg(feature = &quot;indexmap&quot;)]
+struct MatchIter {
+    iter: // whatever IndexMap::iter returns
+}
+
+#[cfg(feature = &quot;indexmap&quot;)]
+impl Iterator for MatchIter {
+    type Item = // whatever args.iter().next() returns
+
+    fn next(&amp;mut self) -&gt; Self::Item {
+        self.iter().next()
+    }
+}
+</code></pre>
+<p>So it's a pretty straight forward change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-21 04:44</div>
+            <div class="timeline-body"><p>Thanks for the tips, I'll start working on a prototype then. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-24 21:49</div>
+            <div class="timeline-body"><p>I feel hesitant adding an <code>iter</code> method to <code>ArgMatches</code>; it feels like a duplicate of <code>indexmap</code>'s functionality. <code>ArgMatches.args: IndexMap</code> is already public, so what's wrong with the user doing <code>matches.args.iter()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-24 23:19</div>
+            <div class="timeline-body"><p>You can take a look at the prototype <a href="https://github.com/neysofu/clap-rs">here</a>. There is some more work to do, specifically:</p>
+<ul>
+<li>write documentation for both the feature and the <code>iter</code> method;</li>
+<li>remove the feature from the default set (it was a quick hack to make it build every time without passing arguments);</li>
+<li>add some more tests.</li>
+</ul>
+<p>Please let me know how you like the API and if you want any changes. Congrats on the codebase BTW, I know this is a small change but still, it is a pleasure to dive in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-25 03:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel hesitant adding an iter method to ArgMatches; it feels like a duplicate of indexmap's functionality. ArgMatches.args: IndexMap is already public, so what's wrong with the user doing matches.args.iter()?</p>
+</blockquote>
+<p>My current policy is public, but undocumented internals are effectively private and should not be relied on. Sure, I can't stop anyone from using them directly, but there's the caveat that if I change them without warning it's considered a breaking change. Hence the <code>#[doc(hidden)]</code></p>
+<p>Most of the time public but undocumented is because it needs to be public because other mods (or eventually crates) need to touch it, but those mods (or crates) are maintained by myself or other clap members and thus it's essentially just a private API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-25 03:22</div>
+            <div class="timeline-body"><p>Looks like a good start! It's a small nit, but let's change the feature name to <code>iter_matches</code> because <code>iter</code> is somewhat ambiguous and may conflict with other types of iteration we may do in the future.</p>
+<p>Let me know if you have any other questions :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neysofu">@neysofu</a> on 2018-03-25 05:18</div>
+            <div class="timeline-body"><p>I'll create a PR for discussing further details, sounds good?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-25 19:21</div>
+            <div class="timeline-body"><p>Yep, I'd actually prefer it that way because it's easier to comment and review :smile:  :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1240.html">clap-rs/clap#1240</a> on 2018-04-01 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XX">@XX</a> on 2018-04-14 20:07</div>
+            <div class="timeline-body"><p>I also need this functionality</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradwood">@bradwood</a> on 2020-04-26 19:57</div>
+            <div class="timeline-body"><p>Hi all, I'm also looking to use something like this. I'd like to process my args in a functional fashion. The PR, however, seems to have died a death. Given that 3.0 is on the horizon how much of a bad idea is it for me to just use <code>matches.args.iter()</code> in 2.x?  Also, will this make it into 3.0?</p>
+<p>PS, I don't need ordering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-27 07:59</div>
+            <div class="timeline-body"><p>@bradwood Not as bad as you'd think: 2.x branch is frozen. I'd be really surprised if we change something regarding publicity of those fields because there is plenty of code out there relying on those, ugh. So, if you aren't planning on switching to 3.0 and you're OK with the fact that every time you use private API god kills a kitten, you can do that, yes.</p>
+<p>Beware: those will be truly private in 3.0.</p>
+<p>I suspect it won't make it into 3.0. The main question is: what are you going to iterate through? You can't have <code>&amp;Arg</code> from <code>ArgMatches</code> because it stores <code>Id</code>s, basically a hash of those. On doesn't simply restore the Arg from the hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradwood">@bradwood</a> on 2020-04-27 12:32</div>
+            <div class="timeline-body"><p>i am trying to call <code>map()</code> on each arg I find to invoke the appropriate handler function based on the argument passed...</p>
+<p>And, as regards the kittens, I'm cool with that!  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-27 12:39</div>
+            <div class="timeline-body"><p>clap has <code>Arg::validator</code> that is called on every <em>value</em> passed in. And of course, you can always iterate over <code>std::env::args()</code> and map it as you please; you don't really need clap for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-27 14:48</div>
+            <div class="timeline-body"><p>I think I can see a certain use case for this where people want to do dependency injection pattern for evaluating their args.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-27 15:37</div>
+            <div class="timeline-body"><blockquote>
+<p>[I] am trying to call map() on each arg I find to invoke the appropriate handler function based on the argument passed...</p>
+</blockquote>
+<p>For a while I was floating around the idea of adding filter/map capabilities to arguments themselves, in a similar manner to the current <code>validator</code>. In essence it's just a chance for people to call a function when a particular argument/value is used and do something with its value persistently. Some use cases were, &quot;I want my CLI to accept options <code>yes|no</code> but I want the value held my context struct to be some concrete type.&quot;</p>
+<p>But others also wanted more a &quot;handler&quot; type functionality (which is something some python libraries offer). This can be done already by (hackily) using the validator functionality.</p>
+<p>Currently, the mapping of values can be done pretty easily after the parsing in user code manually, but not <em>during</em> parsing.</p>
+<p>I'm not 100% sure where I fall on the thinking of this one though, as is the added complexity and public API space worth the small benefit of doing something at <em>parse time</em> instead of manually afterwards?</p>
+<p>Also perhaps more importantly, have users thought through what happens if a particular map/filter/handler whatever we'd call it has side affects, but parsing ultimately fails? Maybe that's just a, &quot;hey probably best you don't have side affects, but if you do be aware it can have XYZ consequences.&quot; I mean you can already (mis)use the validators for handlers, so I'd be less inclined to include that functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-27 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I want my CLI to accept options yes|no but I want the value held my context struct to be some concrete type</p>
+</blockquote>
+<p>Resolved by derive (and partially by <code>value_of_t*</code> methods).</p>
+<p>I'm not sure I get your &quot;handlers&quot; idea, I imagine it's something akin https://github.com/clap-rs/clap/issues/1185:</p>
+<blockquote>
+<p>a single Arg::custom_parse which accepts a function that takes the arg/value currently being parsed, and returns an Option<T> where None is skip this value (i.e. parse it as a different arg), or Some(T) is &quot;save this to the matches&quot; it could be the value as passed in, or it could be something different entirely (i.e. a map).</p>
+</blockquote>
+<p>Some thoughts:</p>
+<ul>
+<li><p>When is it ran, exactly? Before default values/environment variables were populated or after? What about required/conflicts stuff? How does it interact with old-style validators? With groups? Possible values?</p>
+<p>I'm not sure I'm ready to answer these questions.</p>
+</li>
+<li><p>We've already got <a href="https://github.com/clap-rs/clap/issues/1871">the flush-related bug</a>. The problem here that clap exits with <code>sys::exit()</code> which implies that no destructors are being accounted for, no finallizers are being run, the text still awaiting to be processed by <code>IO</code> facilities is lost, etc... When I'm reading the description above, I'm given impression that &quot;heavy&quot; side-effect functions are OK, so will be users.</p>
+</li>
+</ul>
+<p>In nutshell: I think this kind of tool is too vague and too powerful for a command line parsing library to provide. I don't think clap should be trying to accommodate <em>every single</em> CLI in existence, the number of well-supported designs is quite enough already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradwood">@bradwood</a> on 2020-04-27 17:38</div>
+            <div class="timeline-body"><p>FWIW, I'm not needing these <code>map()</code>s to run <em>during</em> arg parsing, I'm happy to pass an iterator of matched arguments into a function pipeline. I'll take a look at the <code>validator</code>, as I've not really looked properly at that. It might work for my use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-27 17:47</div>
+            <div class="timeline-body"><p>@bradwood Out of morbid curiosity, what is the core problem you're trying to solve? Why do you think <code>map</code> is  a good way to approach this kind of problem?</p>
+<p>I suspect you're just &quot;doing it wrong&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-27 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Resolved by derive (and partially by value_of_t* methods).</p>
+</blockquote>
+<p>Exactly. I'm describing a problem/issue that existed prior to derive macros. The &quot;handlers&quot; was just a common theme that popped up every so often, especially when people were moving from Python based CLIs which offer a &quot;when this argument is used, run this function.&quot; Although that's a totally different way to build/design a CLI and thus I don't think it's really applicable to how clap runs.</p>
+<blockquote>
+<p>I don't think clap should be trying to accommodate every single CLI in existence, the number of well-supported designs is quite enough already.</p>
+</blockquote>
+<p>100% agree. I'm just providing some historic context :wink:</p>
+<hr />
+<p>@bradwood I agree with @CreepySkeleton it sounds like you may be approaching the problem from a particular design angle and we may be seeing it as an XY problem.</p>
+<p>Some of the principal issues with a feature mapping over arguments (and their values) is:</p>
+<ul>
+<li>For us (clap) to provide it, it needs to be general enough to fit all (or most) use cases, and with feature in particular there are a <em>lot</em> of things to consider and edge cases</li>
+<li>If we're talking about true map (i.e. <code>T-&gt;U</code>), that can essentially already be done easily as @CreepySkeleton mentioned</li>
+<li>If we're talking about handlers (i.e. perform some action for each argument); unless these actions are only blind side affects they:<ul>
+<li>need some sort of context passed to/from them (other args, maybe application context, etc.)</li>
+<li>cannot rely on deterministic order or hierarchy</li>
+<li>most likely need the concept of fallibility (what happens on failure)</li>
+</ul>
+</li>
+</ul>
+<p>Those final three bullets are some of what making this feature a general clap feature difficult. If you <em>don't</em> have any of those requirements and are truly only wanting blind side affects, I'd question if there may be a better way to represent the CLI.</p>
+<p>If you can give some examples of what you're trying to do, we may be able to either point you in a direction or give you a way to accomplish that task with existing features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradwood">@bradwood</a> on 2020-04-27 19:02</div>
+            <div class="timeline-body"><p>Heh. Given that I'm only 3 weeks in and coming from Python, I'm almost <em>certainly</em> doing it wrong! :smile:</p>
+<p>Here's the situation:</p>
+<ul>
+<li>I have a subcommand with 1 positional and about 20 non-positional arguments (some are just flags, and some take 1 or more values).</li>
+<li>I want to drive another builder API with arguments passed in via clap. There is (almost) a 1-to-1 relationship between clap argument and the other API's builder methods</li>
+<li>I could do a massive chain of <code>if</code> statement (although maybe a <code>match</code> would be better) that goes something like the below pseudo-code</li>
+</ul>
+<pre><code>if arg_n passed then:
+     builder = builder.fn_n(arg's value[s]);
+ else if..
+(repeat 30 times)
+</code></pre>
+<p>Instead, more as a academic exercise than anything else, I'm trying to figure out if there's a more elegant way of doing in in a functional style... something like:</p>
+<pre><code class="language-rust">    // NOTE: args.args is a public, but _undocumented_ field in clap.rs
+    args.args.iter()
+        .map(
+            |(k,v)| println!(&quot;{} {:?}&quot;,*k ,v) //replace this with a mechanism that I can use to call the appropriate builder method
+            ).count(); // I'm using this to drive the function pipeline, purely for the side effects, rather than for the resulting value (I accept that this is probably not idiomatic)
+</code></pre>
+<p>What the aforementioned mechanism is, I'm not quite sure (yet)... but I was hoping to figure out a way to look up the other API's builder method that I need to call using the name of the clap argument passed...</p>
+<p>I wait with bated breath for you to give me some beautiful idiomatic pattern that'll make this into anything other than 30 if statements!</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-27 19:17</div>
+            <div class="timeline-body"><p>Yours is not a super common case. Essentially, your CLI is a facade for a builder API? A few things about what you mention stood out to me (emphasis mine):</p>
+<ol>
+<li></li>
+</ol>
+<blockquote>
+<p>There is (<strong>almost</strong>) a 1-to-1 relationship between clap argument and the other API's builder methods</p>
+</blockquote>
+<p>Unless you have a way of mapping those non 1:1 arguments, you'll end up with errors. So dealing with those errors is the <em>fallible</em> requirement I mentioned above.</p>
+<ol start="2">
+<li>In your example you use <code>println!</code> which kind of hides the problem, but in your pythonesque example you have <code>builder = builder.fn_n</code> which means each of these maps/handlers/whatever need to receive context, mutate it, and send it to the next fn (in this case its the <code>builder</code>). This is the  context sending I mentioned above.</li>
+</ol>
+<hr />
+<p>Although it's not the 2 line map you're hoping for, the most idiomatic way to deal with this type of situation is via the clap derive macros. Your CLI would evaluate to some type, lets call it <code>MyRawOpts</code>, and your other builder would then impl <code>From&lt;MyRawOpts&gt;</code>. And by using some combination of macros you could decrease the verbosity of the <code>From&lt;..&gt;</code> impl to essentially a loop and map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-27 19:21</div>
+            <div class="timeline-body"><p>Although it's a more advanced topic, and probably defeats the purpose of what you're trying to do, you could combine your own Custom Derive macro, and do something like <code>#[derive(Clap, IntoMyBuilderApi)]</code> which would instead impl <code>Into&lt;MyBuilderApi&gt; for MyRawOpts</code> automatically, and using things like the <code>syn</code> crate loop through the struct fields of <code>MyRawOpts</code> simply applying them to your builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradwood">@bradwood</a> on 2020-04-27 19:27</div>
+            <div class="timeline-body"><p>I'm still reeling from everything you just wrote below the horizontal rule 2 comments above... :thinking:.  I'm going to have to do a whole lot of research on this, which is no bad thing... Thanks for your help (and patience) here!</p>
+<p>As a final question, if I may, where would I look for examples of Clap and derive macros. Is this documented somewhere? I'm digging through the docs but not finding much on this topic (but I might not be looking in the right place).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-27 19:39</div>
+            <div class="timeline-body"><p>The clap derive macros are the new big feature of clap 3.x which is still in beta and thus not formally released yet. So the documentation is still lacking.  The source is under the <code>clap_derive</code> crate in the root of this repository. You can look at the <a href="https://github.com/clap-rs/clap/tree/master/clap_derive/examples">examples directory of <code>clap_derive</code></a> for some ideas.</p>
+<p>If you'd prefer, you can use <a href="https://crates.io/crates/structopt"><code>structopt</code></a> which is well documented, until clap 3x is released. <code>structopt</code> uses clap 2.x internally, and all the clap 3.x macros are based on <code>structopt</code> (i.e. for clap 3.x we combined efforts between the two crates :wink:).</p>
+<p>For info on writing Custom Derive macros:</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/book/ch19-06-macros.html">Rust book section on macros</a></li>
+<li><a href="https://github.com/clap-rs/clap/tree/master/clap_derive"><code>clap_derive</code> source</a></li>
+<li><a href="https://github.com/TeXitoi/structopt"><code>structopt</code> source</a></li>
+<li>You'll need to reference the docs for the following two crates which are pretty critical to procedural macros:<ul>
+<li><a href="https://docs.rs/crate/syn"><code>syn</code></a></li>
+<li><a href="https://docs.rs/quote"><code>quote</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradwood">@bradwood</a> on 2020-04-27 19:51</div>
+            <div class="timeline-body"><p>Okay.</p>
+<p>I'm still using clap 2.x and have been holding off going to 3.x... I had a cursory look at <code>structopt</code> a week or 2 ago, but decided I'd go for vanilla clap 2.x.  I've also read some of your blog posts on merging the 2 and the rationale for that, which makes a lot of sense to me. I'll have a dig through both the 3.x codebase and <code>structopt</code> again and have a further think. As regards macros, I've read the chapter in the book, but am yet to try writing a declarative one, let along a procedural one... so definitely some homework to do.  Thanks again to all of you for taking the time to respond to me on this thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-28 09:24</div>
+            <div class="timeline-body"><p>@bradwood Should you decide to take a stab at proc-macros, I recommend to start with <a href="https://github.com/dtolnay/proc-macro-workshop/"><code>proc-macro-orkshop</code></a> which is a set of very good intro-level (and not so intro) exercises .</p>
+<p>And if I may, I would humbly recommend <a href="https://crates.io/crates/proc-macro-error"><code>proc-macro-error</code></a> for error reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dynaxis">@dynaxis</a> on 2020-06-05 04:29</div>
+            <div class="timeline-body"><p>I've arrived here trying to write a crate to adapt some or all of command line arguments matched with Clap into a configuration to be built with config-rs. I just don't want to let users specify the same argument specifications as given to Clap twice. That is, arguments information from Clap + rules to map arguments to configuration items should minimize hassles from user side.</p>
+<p>For my case, it's good to iterate through matched arguments with a bit of information given to an <code>App</code>. But only the access to the argument specifications in <code>App</code> will also do. My idea is to let users choose whatever means to specify arguments information among those provided by Clap Ithat is, YAML, builder API, macro, and derive).</p>
+<p>Alternatively, I can design my own way of specifying arguments and their mappings into a configuration in one shot and generate arguments specification for Clap behind. But considering various ways Clap supports for specifying arguments, I'm afraid my crate might be limiting user choices or become more complicated than necessary to mimick Clap's ways of specifying arguments.</p>
+<p>In conclusion, IMHO, exposing argument specification and/or matches should open doors to more crates augmenting Clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-05 06:11</div>
+            <div class="timeline-body"><p>@dynaxis What you described sounds  a lot like <code>get_name</code>, <code>get_subcommand</code>, <code>get_...</code> methods in clap 3. you can just take the <code>App</code> and query all the info you might need.</p>
+<blockquote>
+<p>argument specifications</p>
+</blockquote>
+<p>And that is the big question: what the specification would be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dynaxis">@dynaxis</a> on 2020-06-05 06:32</div>
+            <div class="timeline-body"><p>@CreepySkeleton yes, those <code>get_...</code> methods are what I want. Thank you very much. I only looked into the doc of <code>3.0.0-beta.1</code> and they seem added afterwards.</p>
+<p><strong>UPDATE</strong>: I looked only into the doc of <code>clap-v3</code>, which was published on Mar. 30 this year. And what I get from <code>crates.io</code> is <code>3.0.0-beta.1</code> of <code>clap</code> crate, which was published on May 3 this year. That was the source of the confusion.</p>
+<p>And regarding &quot;argument specifications&quot;, I just mean specifying what arguments are expected (i.e. in the form of YAML, calls of builder methods, or whatever <code>Clap</code> supports).</p>
+<p><strong>UPDATE</strong>: I decide to use <code>3.0.0-beta.1</code> for my crate in the hope that release of version <code>3</code> is close enough. Thanks again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucasfernog">@lucasfernog</a> on 2020-06-07 00:47</div>
+            <div class="timeline-body"><p>I'm also interested in this feature, because I'm writing a library that uses Clap and since everything is dynamic, I'd also to know the &quot;big picture&quot; of the matched args, so something like exposing the IndexMap <code>args</code> inside <code>ArgMatches</code> would be useful to me. What's the status here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-07 05:50</div>
+            <div class="timeline-body"><p>The status is, we need to decide on this problem:</p>
+<blockquote>
+<p>The main question is: what are you going to iterate over? You can't have an <code>&amp;Arg</code> from <code>ArgMatches</code> because it stores <code>Id</code>s, basically a hash of those. One doesn't simply restore the <code>Arg</code> from the hash.</p>
+</blockquote>
+<p>Maybe we could export <code>Id</code> as an &quot;opaque identifier&quot; so you can iterate over them, but that would be as far as we can go.</p>
+<blockquote>
+<p>exposing the IndexMap args inside ArgMatches</p>
+</blockquote>
+<p>I'm currently working on rearranging the layout so that global arguments are stored separately from normal ones. I am opposed to exposing these details since there are plans to change them (inside my head mostly), but could you clarify what you mean by &quot;big picture&quot;? Maybe we can get away with an extra getter or two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucasfernog">@lucasfernog</a> on 2020-06-07 12:30</div>
+            <div class="timeline-body"><p>I'd like to have something like a JSON serialization of ArgMatches, so a mapping between each arg name and its value, number of occurrences, etc. The reason is that I'm trying to expose the parsed results to a different language (JavaScript), and this kind of structure would help me, since I can't just expose Clap's interface because it's recursive (subcommands inside subcommands).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-07 15:22</div>
+            <div class="timeline-body"><blockquote>
+<p>arg name and its value</p>
+</blockquote>
+<p><code>Id</code>, not name.</p>
+<p>Anyway, stable serialization of ArgMatches is beyound the scope of this issue. I encourage you to file a separate issue for that. Frankly, if I were you, I would just conver the matches into <code>HashMap</code> or something.</p>
+<p>Out of curiosity, why do you need the serialization in the first place? It sounds weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucasfernog">@lucasfernog</a> on 2020-06-07 19:51</div>
+            <div class="timeline-body"><p>Writing the matches to a <code>HashMap</code> is exactly what I need.</p>
+<p>But the thing is, i'm extending clap with my library, so the dev gives me a structure defining its CLI args, and I'd like to give them back a HashMap with every id and its value. But I'd prefer not iterating over this structure and calling <code>ArgMatches::get_value_of</code> or something like that, since there's a lot of edge cases to cover (like global args, multiple values, etc).</p>
+<p>Then I'm going to serialize this HashMap to send it to a JavaScript layer (and yeah, this is a weird use case, I'm doing it for <a href="https://github.com/tauri-apps/tauri">Tauri</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2020-11-13 16:27</div>
+            <div class="timeline-body"><blockquote>
+<p>But I'd prefer not iterating over this structure and calling <code>ArgMatches::get_value_of</code> or something like that, since there's a lot of edge cases to cover</p>
+</blockquote>
+<p>This is essentially my issue as well. I'm in a situation where it's as if I don't know all the available fields to be able to even call <code>get_value_of</code>. To be able to generically iterate would be very convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fosskers/aura/pulls/671.html">fosskers/aura#671</a> on 2020-11-22 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2332.html">clap-rs/clap#2332</a> on 2021-02-06 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/issues/2304.html">uutils/coreutils#2304</a> on 2021-05-30 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2759.html">clap-rs/clap#2759</a> on 2021-09-23 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2683.html">clap-rs/clap#2683</a> on 2021-10-18 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/90.html">epage/clapng#90</a> on 2021-12-06 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> removed by @epage on 2021-12-08 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> removed by @epage on 2021-12-09 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-09 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2021-12-09 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3286.html">clap-rs/clap#3286</a> on 2022-01-12 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/antonshkurenko">@antonshkurenko</a> on 2022-01-18 11:59</div>
+            <div class="timeline-body"><p>Writing this comment because of #3286: absence of iterator blocks our update from 2x to 3x</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:25</div>
+            <div class="timeline-body"><p>@tonyshkurenko can you expand on the use case for why this blocks updating?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/antonshkurenko">@antonshkurenko</a> on 2022-01-25 15:26</div>
+            <div class="timeline-body"><p>I mean we literally used field https://github.com/clap-rs/clap/blob/d51ae89656fda527ef1bccf53fca0ad78ecb8c29/src/args/arg_matches.rs#L66</p>
+<p>Part of our app was based on this. Now it's not available (correct me, if I'm wrong) without any alternative. That's why we can't update</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-25 15:40</div>
+            <div class="timeline-body"><p>Yes, I am asking for your use case or why you use the field.  What problem are you trying to solve by accessing <code>args</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2022-01-25 18:05</div>
+            <div class="timeline-body"><p>I was attempting this about a year ago, and my particular use case was either:</p>
+<ul>
+<li>to be able to filter back out matched flags under certain circumstances</li>
+<li>to be able to convert all the matched flags back into their original string forms</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-01 22:02</div>
+            <div class="timeline-body"><p>I was looking at exposing a <code>present_arg_ids() -&gt; impl Iterator</code> but it looks like this is not something we'd fix in clap3 but have to wait for clap4.</p>
+<p>We only store an <code>Id</code> for args, so this is the most of what we can return.  We can make it so users can check that its a specific arg.  The problem is then using this to do any dynamic operations on <code>ArgMatches</code>.  The problem is that <code>ArgMatches</code> functions take a <code>impl Key</code>.  To properly initialize a new <code>Id</code> from the <code>Key</code>, we have to add a <code>impl Display for Id</code>.  <code>Id</code> only has a reasonable <code>Display</code> in debug mode.  If we expose <code>Id</code> <strong>and</strong> <code>impl Display</code>, there is a good chance users will leverage the <code>Display</code> and being able to catch that not working depends on how thorough they test.  Alternatively, we could look to drop the <code>Display</code> bounds in release modes and only <code>impl Display for Id</code> in debug mode.</p>
+<p>In general, resolving this is getting hairy and something we are unlikely to want to take on.  Our current plan is to wait around 6 months at minimum between major breaking releases (which this change would probably be part of), so we are looking around June for resolving this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2022-02-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2022-02-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-02-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-02-01 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-01 22:06</div>
+            <div class="timeline-body"><p>Also, when implementing this, my expectation is that we'll provide something like:</p>
+<pre><code class="language-rust">pub fn present_arg_ids(&amp;self) -&gt; Iterator&lt;Item=&amp;Id&gt;
+</code></pre>
+<ul>
+<li>The order will be undefined.  If at the time, we are still using <code>IndexMap</code> internally, we should intentionally mix up the values via a <code>HashSet</code> in debug builds.<ul>
+<li>Use of <code>IndexMap</code> is an implementation detail and we are considering removing it to reduce our dependencies</li>
+<li>We aren't using <code>IndexMap</code> correctly for ensuring ordering is preserved, so seeing it there is misleading</li>
+<li>Ordering of the first occurrence of each arg id is only meaningful if multiple occurrences is not used but in most schemes where ordering matters, multiple occurrences will likely be used.  Providing ordering is a trap for people to not consider this</li>
+</ul>
+</li>
+<li>I suggest the function's example creates a <code>Vec&lt;(Id, &amp;str)&gt;</code> to show how to order all occurrences of all args by index.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omarabid">@omarabid</a> on 2022-02-06 12:54</div>
+            <div class="timeline-body"><p>So if I want to iterate over matched arguments (flags) how should I approach this today?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-07 15:33</div>
+            <div class="timeline-body"><p>You'll need to define a slice of all of you argument IDs (names) and iterate through that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/omarabid">@omarabid</a> on 2022-02-07 17:12</div>
+            <div class="timeline-body"><blockquote>
+<p>You'll need to define a slice of all of you argument IDs (names) and iterate through that.</p>
+</blockquote>
+<p>Does that mean I have to check <em>if</em> the flag was set. Because I have dozens of flags, so it seems to me to be a waste to check for all flags when I only want to know which flags were set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-07 17:19</div>
+            <div class="timeline-body"><p>Yes.  This is just a workaround.  Like I said, we cannot fix this until clap 4.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../maurocordioli/viperus/pulls/5.html">maurocordioli/viperus#5</a> on 2022-05-29 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2022-06-03 18:11</div>
+            <div class="timeline-body"><p>@epage thx for all the hard work on this! Is there a PR or some other work being done in this space? Per https://github.com/clap-rs/clap/discussions/2763#discussioncomment-2834309, it seems all layered configuration projects need to be able to enumerate over <code>ArgMatches</code> to support Clap3+derive. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-03 18:19</div>
+            <div class="timeline-body"><p>From my note I added in the issue</p>
+<blockquote>
+<p>This is blocked on https://github.com/clap-rs/clap/issues/1041 / https://github.com/clap-rs/clap/issues/2150 where we move away from opaque, non-public Ids for arguments to something the user can programmatically act on</p>
+</blockquote>
+<p>We cannot make these changes in clap v3 and but this should be available in clap v4.0.0.  My expectation is that I'm going to soon wrap up the work I'm doing for clap 3.2, give time to collect and handle any feedback, and then start on v4.0.0.  v3.2 is a big change, see https://github.com/clap-rs/clap/pull/3732.  My intention is to make this big change right before 4.0 so we don't have to live a long time with any mistakes identified through feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../storyfeet/clap_conf/issues/4.html">storyfeet/clap_conf#4</a> on 2022-06-05 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3876.html">clap-rs/clap#3876</a> on 2022-07-16 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4072.html">clap-rs/clap#4072</a> on 2022-08-12 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4080.html">clap-rs/clap#4080</a> on 2022-08-15 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-15 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bnjjj/twelf/issues/15.html">bnjjj/twelf#15</a> on 2022-08-15 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4093.html">clap-rs/clap#4093</a> on 2022-08-19 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5727.html">clap-rs/clap#5727</a> on 2024-09-11 13:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:45 UTC
+    </footer>
+</body>
+</html>

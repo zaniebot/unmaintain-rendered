@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce clap2-&gt;clap3 porting burden - clap-rs/clap #2617</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce clap2-&gt;clap3 porting burden</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2617">#2617</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-07-22 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-07-22 15:34</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.53.0 (53cb7b09b 2021-06-17)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Minimal reproducible code</h3>
+<p>See https://github.com/rust-cli/argparse-benchmarks-rs/blob/main/examples/clap-app/app.rs</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Port it to clap3</p>
+<h3>Actual Behaviour</h3>
+<p>Have to dig through the docs and changelog where the more that exists, the harder to find content</p>
+<p>We especially don't want noise from mechanical transitions to drown out behavior changes like #751 or removal of implied settings</p>
+<h3>Expected Behaviour</h3>
+<p>Deprecation warnings</p>
+<h3>Additional Context</h3>
+<p>Where its trivial, I'd propose we add functions back in</p>
+<ul>
+<li>Forward to new impl</li>
+<li>Have deprecation attribute</li>
+<li>Doc comment is only brief enough to mention what should be used</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>Arg::multiple</code></li>
+<li><code>Arg::with_name</code></li>
+<li><code>Arg::help</code></li>
+</ul>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-07-22 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ducaale">@ducaale</a> on 2021-07-24 16:59</div>
+            <div class="timeline-body"><p>I think <a href="https://github.com/clap-rs/clap/tree/master/clap_up">clap_up</a> can be used to automate the upgrade to v3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-24 17:07</div>
+            <div class="timeline-body"><p>Yes, I've seen <code>clap_up</code>.  Its unclear whats its state is since it doesn't even compile at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kornelski">@kornelski</a> on 2021-07-25 17:47</div>
+            <div class="timeline-body"><p>If you don't want to start 3.0 with deprecated functions, then I suggest doing the migration on 2.x: backport as much as possible, add methods under new names in 2.x, and then deprecate old names in 2.x.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-07-27 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-27 08:01</div>
+            <div class="timeline-body"><p>I have built the https://github.com/pksunkara/cargo-up using the efforts of https://github.com/rust-analyzer/rust-analyzer which can be used to port all kinds of code from clap v2 to v3.</p>
+<blockquote>
+<p>I'd propose we add functions back in</p>
+</blockquote>
+<p>I am of the strict opinion that we don't want to do this. The field of programming is so advanced right now that it should be trivial to automatically upgrade the code when upgrading dependencies.</p>
+<p>The <code>clap_up</code> code is pretty good right now (upgrades almost all of ripgrep). Need more polish, need to handle features though. I was just waiting to do clap 3.0 rc release before concentrating on finishing the upgrader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-27 17:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I am of the strict opinion that we don't want to do this. The field of programming is so advanced right now that it should be trivial to automatically upgrade the code when upgrading dependencies.</p>
+</blockquote>
+<p>Programming might be, but we still have to solve the human problem:</p>
+<ul>
+<li>Some won't have read the docs and know about the tool and this can serve as a way to advertise it.</li>
+<li>Others might find installing a one-off tool a hassle, so giving them inline guidance makes things easier</li>
+</ul>
+<p>(I suspect I'd fall into both camps)</p>
+<p>And as I said, <code>clap_up</code> doesn't even compile atm and we've not been making sure we update it (and the CHANGELOG) in PRs.</p>
+<p>Personally, I feel like <code>clap_up</code> adds risk of more delay to getting clap3 out.  This has taken years already; let's focus on what will get this into people's hands rather than trying for perfection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2718.html">clap-rs/clap#2718</a> on 2021-08-18 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2717.html">clap-rs/clap#2717</a> on 2021-09-23 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-01 00:44</div>
+            <div class="timeline-body"><p>Let me ask a simple question (to make my argument), what are the kind of changes we can add deprecation notice for?</p>
+<p>My answer would be simple code replacements for functions. Are there more?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 13:55</div>
+            <div class="timeline-body"><p>Having me play guessing games with what your point is is not constructive to the conversation and slows it down dramatically due to the delays in responses as we do back and forths.  Please just make your point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-01 14:08</div>
+            <div class="timeline-body"><p>No, I am just trying to understand what all the kind of deprecations are possible in Rust. That was the only case deprecations are made for, right? I am asking you if I am missing more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 14:15</div>
+            <div class="timeline-body"><blockquote>
+<p>No, I am just trying to understand what all the kind of deprecations are possible in Rust.</p>
+</blockquote>
+<p>As for what can be marked <code>deprecated</code>, I believe you can attach it to any item (module, function, etc) and on use of that, users will get a warning.</p>
+<p>As a heads up, by framing it with &quot;to make my argument&quot;, it implies this is a leading question to a point you are trying to make which is what I was responding to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-01 16:08</div>
+            <div class="timeline-body"><p>Yeah, I probably misphrased my intention. What I meant is that I need some more info before I make my argument clear.</p>
+<blockquote>
+<p>I believe you can attach it to any item (module, function, etc) and on use of that, users will get a warning.</p>
+</blockquote>
+<p>Yeah, but all of them would need the code inside them to be replaced to work with new broken API, right? It's not like we can mark something as deprecated but not change it if the internals change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-01 16:20</div>
+            <div class="timeline-body"><p>We'd need to make sure the function doesn't have a significant breakage of functionality.  If that means we need to provide code that adapts, that is one way of addressing it.  For when we change a default, we just might make the function or enum a no-op.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-02 15:53</div>
+            <div class="timeline-body"><p>I know I pop in and give historical context in almost all my comments...I apologize.</p>
+<p>However, my original intention (right, wrong, or indifferent) was to have v3 at RC and then go back through v2 marking everything that is missing or changed and make a final v2 release with all the deprecations.</p>
+<p>There are some APIs from v2 that don't need to be removed in v3 and can just maintain the deprecation warning (I.e. this will be removed in v4, etc.). Other APIs cannot co-exist in v3 because perhaps the underlying meaning changed/was removed, etc.</p>
+<p>So our challenge is both to identify <em>both</em> of those types of deprecations. For the ones that cannot co-exist in v3, we must clearly mark those as &quot;removed in v3&quot;, for all others can can co-exist in v3 but remain deprecated to ease transition we mark them as &quot;deprecated, use XYZ instead; will be removed in v4&quot;</p>
+<p>Most of this is my fault for delaying v3 so long and trying to get so much into it, while also trying to maintain v2 as a one man show. This led to not being able to put proper deprecation notices on v2 APIs because I wasn't sure on the solid v3 API yet.</p>
+<p>As for <code>clap_up</code> I'm very much in favor of using it, but not relying on it. I.e. I love that it's an option, I definitely want to advertise it as the go-to option for people if they're willing, but it absolutely shouldn't be the only option in lieu of good documentation, deprecation notices, and trying to ease the pain of upgrading as much as possible through good design choices. I work in an environment where it probably wouldn't be an option just by policy, and I imagine I'm not the only one out there. Likewise some people are cautious with automated upgrades because unless there is 100% certainty and test coverage subtle changes can sneak in.</p>
+<p>Also, I'm aware that by saying &quot;some of those good design choices&quot; may mean kicking the can, for certain changes, down the road until v4+ in order to ease transition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-02 18:08</div>
+            <div class="timeline-body"><p><code>clap_up</code> seems like it'll be really helpful for those able to and up for running it!</p>
+<p>I do have some questions though for our plan moving forward:</p>
+<ul>
+<li>Do we gate v3 on <code>clap_up</code>?</li>
+<li>What is the expected quality and completeness bar for <code>clap_up</code> and how do we communicate that if its not 100%?</li>
+<li>How much do we let it impact other development (compile and test times; it pulls in some pretty heavy dependencies(?</li>
+</ul>
+<blockquote>
+<p>Also, I'm aware that by saying &quot;some of those good design choices&quot; may mean kicking the can, for certain changes, down the road until v4+ in order to ease transition.</p>
+</blockquote>
+<p>Yeah, I fully support pushing back to v4 or later several things I'm really interested in to stagger upgrade pain (using ranges for number of values, adjusting what <code>Arg::new</code> does, etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2845.html">clap-rs/clap#2845</a> on 2021-10-11 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2840.html">clap-rs/clap#2840</a> on 2021-10-11 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2900.html">clap-rs/clap#2900</a> on 2021-10-17 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-18 10:08</div>
+            <div class="timeline-body"><p>Let's talk about types of breaking changes.</p>
+<ol>
+<li><p><strong>APIs that can co-exist.</strong></p>
+<p>These are the ones that are from the old code but can live as new code. These are the ones that are added back in #2718. A good example is a renamed method.</p>
+<p>In clap v2:</p>
+<pre><code class="language-rust">let arg = Arg::new(&quot;name&quot;).required_if(&quot;other&quot;, &quot;value&quot;);
+</code></pre>
+<p>In clap v3:</p>
+<pre><code class="language-rust">let arg = Arg::new(&quot;name&quot;).required_if_eq(&quot;other&quot;, &quot;value&quot;);
+</code></pre>
+<p>These type of API changes are easy to migrate by adding deprecation notices and implementing the new functionality in the old API.</p>
+<pre><code class="language-rust">fn required_if(mut self, key: &amp;str, value: &amp;str) -&gt; Self {
+    self.required_if_eq(key, value);
+}
+</code></pre>
+</li>
+<li><p><strong>APIs that can not co-exist.</strong></p>
+<p>These are the ones that have their behaviour changed and cannot exist alongside the new API due to various reasons. A good example is a behaviour change.</p>
+<p>In clap v2:</p>
+<pre><code class="language-rust">let arg = Arg::new(&quot;name&quot;).require_equals(true);
+</code></pre>
+<p>In clap v3:</p>
+<pre><code class="language-rust">let arg = Arg::new(&quot;name&quot;).require_equals(true).forbid_empty_values(true);
+</code></pre>
+<p>These type of API changes cannot be marked with deprecation notices at all.</p>
+</li>
+</ol>
+<hr />
+<p>Now, if a new version of a library contains only the first type of breaking changes, it is easy to mark them as deprecated in the new version and give users an easy way to migrate to the new version of the library.</p>
+<p>But if that new version of the library also contains the above mentioned second type of breaking changes, the end user would need to go through the library changelog to migrate to the new version of the library.</p>
+<p>In this second scenario, while I do agree that deprecation notices do help, I have never seen anyone deciding to keep using the old API when they are actually migrating to a new version of the library by trawling through the changelog.</p>
+<p>It is actually harder for the end user to actually recognise there are some behaviour breaking changes without reading the changelog since these second type of breaking changes do not have deprecation notices.</p>
+<p>Not only that, but keeping this old and dead code also makes the library hard to maintain. It also confuses new users of the library by adding unnecessary additions to the documentation.</p>
+<p>Thus it is of my opinion (and this is something I strongly feel for) that it would be much more beneficial if the new API is a clean slate in the second scenario and develop tools to migrate the library. Which is the main reason behind why I started <code>cargo-up</code>.</p>
+<hr />
+<p>Of course, I am not completely disregarding the people who want to manually migrate and also want deprecation notices. But my question here is, why do they need the deprecation notices in the new version of the library? Can't we release another patch (or minor) to the old version of the library with the deprecation notices added?</p>
+<p>This opinion has been expressed by other people above too:</p>
+<blockquote>
+<p>then I suggest doing the migration on 2.x: backport as much as possible, add methods under new names  in 2.x, and then deprecate old names in 2.x.</p>
+</blockquote>
+<blockquote>
+<p>However, my original intention (right, wrong, or indifferent) was to have v3 at RC and then go back through v2 marking everything that is missing or changed and make a final v2 release with all the deprecations.</p>
+</blockquote>
+<p>And this method not only keeps the v3 API and docs clean, but also helps people understand what all the breaking changes they need to migrate by adding deprecation notices even for behaviour changes in the old API. Thus it is easy for the user to immediately know which API to migrate even in the case of the second type of breaking changes (especially behaviour changes).</p>
+<p>This kind of release can be termed as a <strong>Deprecation release</strong>. We don't need to have alternatives for deprecated API at all in the same release because it is purely a warning release and users still have the option to pin the library to a previous compatible release.</p>
+<hr />
+<p><strong>tl;dr: Since we have behaviour changes, it is much better to do a warning release in v2 and keep the API clean for v3</strong></p>
+<hr />
+<blockquote>
+<p>Do we gate v3 on clap_up?</p>
+</blockquote>
+<p>No.</p>
+<blockquote>
+<p>What is the expected quality and completeness bar for clap_up and how do we communicate that if its not 100%?</p>
+</blockquote>
+<p>It can print it's own warnings while pointing to the exact line and file in case there's something we could not complete.</p>
+<blockquote>
+<p>How much do we let it impact other development (compile and test times; it pulls in some pretty heavy dependencies(?</p>
+</blockquote>
+<p>It doesn't impact anything at all since it is not in <code>default_members</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-18 21:11</div>
+            <div class="timeline-body"><p>There is a lot here.  My quick summary of thoughts</p>
+<ul>
+<li>Perfection is the enemy of good enough.  Just because we can't handle all cases doesn't mean we shouldn't try<ul>
+<li>Yes, the changelog will still be needed but this makes the number of <strong>required</strong> changes to make smaller and it makes it so we can better focus the document so people don't miss a critical behavior change due to a mass of mechanical changes that deprecations could handle</li>
+</ul>
+</li>
+<li>clap3 is fairly different because of how big and long delayed of a release it is.<ul>
+<li>Ideally, we would have been making as many of these changes during clap2 with depredations and feature gates.</li>
+<li>Updating clap2 has a lot more limited of a lifetime compared to having an active series of releases to migrate</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<blockquote>
+<p>What is the expected quality and completeness bar for clap_up and how do we communicate that if its not 100%?</p>
+</blockquote>
+<p>It can print it's own warnings while pointing to the exact line and file in case there's something we could not complete.</p>
+</blockquote>
+<p>I'm referring to level of compeleteness / user-facing quality.</p>
+<blockquote>
+<blockquote>
+<p>How much do we let it impact other development (compile and test times; it pulls in some pretty heavy dependencies(?</p>
+</blockquote>
+<p>It doesn't impact anything at all since it is not in default_members</p>
+</blockquote>
+<p>I had assumed the intent was for it eventually to be a default member or otherwise/.   No matter what direction we go, its a burden</p>
+<ul>
+<li>Not a default member, no CI:<ul>
+<li>it dies from entropy</li>
+<li>Extra work is needed for &quot;faster&quot; cargo test times to only test <code>clap</code></li>
+</ul>
+</li>
+<li>Not a default member, CI:<ul>
+<li>people are held accountable to it but it isn't included in basuic workflow</li>
+<li>Extra work is needed for &quot;faster&quot; cargo test times to only test <code>clap</code></li>
+<li>Slow CI</li>
+</ul>
+</li>
+<li>We remove default-members and use <code>--workspace</code><ul>
+<li>Faster <code>cargo test</code> in general cases</li>
+<li>Still a hassle with <code>--workspace</code> and general CI times</li>
+</ul>
+</li>
+</ul>
+<p>If we are leaving it out of default-members, should it even be in the workspace and in the repo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2907.html">clap-rs/clap#2907</a> on 2021-10-18 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-18 22:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Perfection is the enemy of good enough. Just because we can't handle all cases doesn't mean we shouldn't try</p>
+</blockquote>
+<p>That's old thinking. We are not bogged down by CPU power anymore. We are not constrained by system memory anymore. We can actually run complex migrators now on normal computers.</p>
+<p>Why do we want to settle for being &quot;good enough&quot; when we have the capability to reach for perfection? Where's the innovation? Where's the zeal for change? Where's the passion for the future? Where are the people who are willing to go beyond than normal?</p>
+<p>I will tell you where. They are busy reading changelogs for non-coexistable changes to migrate their code to new dependency versions. They are busy working around bugs of a library they use because they don't have time to migrate it. They are busy maintaining inefficient code in libraries to keep it backward compatible. They are busy managing tech-debt in their libraries because of that inefficient code.</p>
+<hr />
+<blockquote>
+<p>Not a default member, CI:
+people are held accountable to it but it isn't included in basuic workflow
+Extra work is needed for &quot;faster&quot; cargo test times to only test clap
+Slow CI</p>
+</blockquote>
+<p>It is basically tested only for releases. It's not like it will be in active development all the time. It's just a migration rules script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-19 16:26</div>
+            <div class="timeline-body"><p>Having a tool to automatically handle upgrades would be great!  However, being able to rely on it exclusively requires solving problems like</p>
+<ul>
+<li>Being trustworthy.  There is a lot of mistrust for automatic code changes, which a lot of this comes back to transparency</li>
+<li>Being transparent.  This isn't just a tooling problem but both a retraining problem and maintaining someone's familiarity with their code.  If someone doesn't feel like they understand what or why a change happened, how the new API works, that leads to a lack of trust in the tool and a hurdle for people doing any manual adjustments</li>
+<li>Being fast.  The slower it is, the less likely someone is willing to take a risk on it</li>
+<li>Being complete.  If we bail out and leave someone half-way through the conversion, especially if the conversion is not transparent, the person is unprepared for finishing the conversion.</li>
+<li>Being low effort for crate authors to write.  There is a trade off between a maintainers time and the communities.  While there is a whole lot of community, multiplying costs, there is a bottleneck with maintainers.  The more high value automatic upgrades, I presume, will come at a greater cost to write.</li>
+<li>Being low burden on the crate authors to maintain.  For example, I've previously enumerated problems with us keeping <code>clap_up</code> inside the workspace / repo.  Its dead code, weighing us down.</li>
+</ul>
+<p>Without solving these human problems, we've invested a lot in a tool people likely won't use.  And end-user adoption isn't binary, all or nothing, but a continuum, depending on how well the human problems are solved.  Even if its good enough and we keep a focus on <code>clap_up</code>, deprecating still helps us with those who won't use it.</p>
+<p>Also, I can understand exploring and stretching the expectations for the programming community but this project's focus is on command-line argument parsers, and not dependency upgrades.  The clap community should not be taking on the early-adopter burden but weighing when <code>cargo-up</code> is ready and adopting it then.  This is different than exploring tools like <code>clog</code> or  <code>cargo workspace</code> with clap because any burdens are restricted to just the person doing releases, rather than impacting the whole clap community.</p>
+<blockquote>
+<p>It is basically tested only for releases. It's not like it will be in active development all the time. It's just a migration rules script.</p>
+</blockquote>
+<p>It sounds like its dead code, weighing down the project.  Why don't we delete and it consider re-adding it later if we need it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-24 23:27</div>
+            <div class="timeline-body"><blockquote>
+<p>However, being able to rely on it exclusively requires solving problems like</p>
+</blockquote>
+<p>I completely agree with all those problems.</p>
+<p>Let me clarify what I was proposing in my previous <a href="https://github.com/clap-rs/clap/issues/2617#issuecomment-945612392">comment</a>. Having a migrator is not a blocker but a helper. The main point of that proposal is the following:</p>
+<blockquote>
+<p>Since we have behaviour changes, it is much better to do a warning release in v2 and keep the API clean for v3</p>
+</blockquote>
+<p>It doesn't matter if there's a fully completed migrator or not. It is a related discussion only because of <code>cargo fix</code> vs <code>cargo up</code>. But that's just replacing text for API changes that are co-existable which is fully complete implementation wise. If you want, we can go more into pros and cons about how <code>cargo fix</code> relies on our API not being clean causing more confusion to new users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2943.html">clap-rs/clap#2943</a> on 2021-10-26 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/61.html">epage/clapng#61</a> on 2021-12-06 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/191.html">epage/clapng#191</a> on 2021-12-06 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/213.html">epage/clapng#213</a> on 2021-12-06 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-07 21:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:31 UTC
+    </footer>
+</body>
+</html>

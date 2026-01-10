@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add hint for DevPi indexes without `/+simple` - astral-sh/uv #11136</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add hint for DevPi indexes without `/+simple`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11136">#11136</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-01-31 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 17:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Without the <code>/+simple</code> suffix, we'll report no versions on devpi indexes, e.g.:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/10567</li>
+<li>https://github.com/astral-sh/uv/issues/11135</li>
+</ul>
+<p>We may be able to sniff it is a devpi index with <code>&lt;h1&gt;&lt;a href=&quot;https://&lt;host&gt;/&quot;&gt;devpi&lt;/a&gt;&lt;/h1&gt;</code> and hint the fix to the user.</p>
+<p>This is an alternative to adding support as described in https://github.com/astral-sh/uv/issues/4907</p>
+<h3>Example</h3>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of package and you require package, we can conclude that the requirements
+      are unsatisfiable.
+
+hint: It looks like you are using a DevPi index but did not suffix the index URL with `/+simple` which is
+      required for uv to use the index.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-01-31 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-01-31 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 17:45</div>
+            <div class="timeline-body"><p>Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 18:04</div>
+            <div class="timeline-body"><p>Seems kind of painful to thread through, but might not be that bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 21:54</div>
+            <div class="timeline-body"><p>It's probably hard to thread through the hint, but could we fail entirely when we read from this URL, rather than making it a hint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 21:56</div>
+            <div class="timeline-body"><p>I'm not sure how much I trust the heuristic I shared, we might need something clearer if we're going to fail hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 21:58</div>
+            <div class="timeline-body"><p>We can probably use (or misuse) <code>IndexCapabilities</code> for this. It's how we show the 401 errors, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 00:03</div>
+            <div class="timeline-body"><p>It... turns out that <code>devpi</code> sniffs the user agent to determine if a request is coming from something that &quot;looks like&quot; an installer: https://github.com/devpi/devpi/blob/18a53a169865f770defa2932d69b75dbf4f869a4/server/devpi_server/views.py#L75.</p>
+<p>So if you have <code>devpi</code> running locally per the quickstart, this works:</p>
+<pre><code>curl http://testuser:123@localhost:3141/testuser/dev/flask -H &quot;Accept: application/vnd.pypi.simple.v1+json, application/vnd.pypi.simple.v1+html;q=0.2, text/html;q=0.01&quot; --user-agent &quot;uv/1.0&quot;
+</code></pre>
+<p>But this does not:</p>
+<pre><code>curl http://testuser:123@localhost:3141/testuser/dev/flask -H &quot;Accept: application/vnd.pypi.simple.v1+json, application/vnd.pypi.simple.v1+html;q=0.2, text/html;q=0.01&quot;
+</code></pre>
+<p>uv was <a href="https://github.com/devpi/devpi/pull/1045">added in July</a>. So newer versions should &quot;just work&quot;, but older versions do not work automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-16 23:43</div>
+            <div class="timeline-body"><p>Should we do anything then? Or just leave this as-is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 03:29</div>
+            <div class="timeline-body"><p>I was leaning towards doing nothing and closing out. Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-17 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13930.html">astral-sh/uv#13930</a> on 2025-06-09 21:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule C416 broke some pandas code - astral-sh/ruff #4491</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule C416 broke some pandas code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4491">#4491</a>
+        opened by <a href="https://github.com/wlach">@wlach</a>
+        on 2023-05-18 13:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wlach">@wlach</a> on 2023-05-18 13:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>This snippit:</p>
+<pre><code>import pandas as pd
+obj = { k: v for k,v in pd.DataFrame.from_records([], columns=[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]).groupby(&quot;foo&quot;)}
+</code></pre>
+<p>Is rewritten to the following using the <a href="https://beta.ruff.rs/docs/rules/unnecessary-comprehension/">C416</a> rule (no unnecessary comprehensions):</p>
+<pre><code>import pandas pd
+obj = dict(pd.DataFrame.from_records([], columns=[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]).groupby(&quot;foo&quot;))
+</code></pre>
+<p>However that generates a TypeError when I run it. I filed a bug about this upstream (see pandas-dev/pandas#53287) but it makes me wonder if this rule is safe to apply. Current using ruff 0.0.262.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 13:23</div>
+            <div class="timeline-body"><p>Huh, interesting. It's not immediately clear to me why / how those are different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-18 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-05-18 15:18</div>
+            <div class="timeline-body"><p>FWIW it's fixed by wrapping the <code>DataFrameGroupBy</code> object with <code>iter</code>:</p>
+<pre><code class="language-python">import pandas as pd
+obj = dict(iter(pd.DataFrame.from_records([], columns=[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]).groupby(&quot;foo&quot;)))
+</code></pre>
+<p>or using the splat <code>*</code> operator</p>
+<pre><code class="language-python">import pandas as pd
+obj = dict(*pd.DataFrame.from_records([], columns=[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]).groupby(&quot;foo&quot;))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Charlie-XIAO">@Charlie-XIAO</a> on 2023-05-18 17:14</div>
+            <div class="timeline-body"><p>The splat <code>*</code> operator does not work in general (only works when empty). <code>iter()</code> works because <code>DataFrameGroupBy.__iter__()</code> is a public method that returns a generator yielding sequence of <code>(name, subsetted object)</code> for each group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-18 17:30</div>
+            <div class="timeline-body"><p>Interesting...</p>
+<blockquote>
+<p>Thanks for reporting this issue. I looked online and apparently Python's dict() method checks for existence of the .keys() method.</p>
+<p>https://stackoverflow.com/questions/40667093/what-is-a-mapping-object-according-to-dict-type</p>
+<p>Unfortunately, in this case obj.keys returns a str, which is not callable.</p>
+</blockquote>
+<p>ref https://github.com/pandas-dev/pandas/issues/53287#issuecomment-1553294794</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14909.html">astral-sh/ruff#14909</a> on 2024-12-19 20:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

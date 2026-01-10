@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symlinking `.venv/bin` and `.venv/Scripts` - astral-sh/uv #15800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Symlinking `.venv/bin` and `.venv/Scripts`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15800">#15800</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2025-09-12 02:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2025-09-12 02:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Would it be possible for <code>uv</code> to (optionally) symlink <code>bin</code> and <code>Scripts</code> when creating a virtual environment?</p>
+<p>So that any tool that needs to statically point to the Python location can do so across OSes?</p>
+<p>My 2 current uses cases are:</p>
+<ol>
+<li>VSCode project workspace configuration to point to the venv Python exe/binary so a contributor doesn't have to manually configure their VSCode for it. https://github.com/microsoft/vscode/issues/5595
+<img width="697" height="407" alt="Image" src="https://github.com/user-attachments/assets/8c7285b9-5bef-40ff-8862-3f46bde78054" />
+<code>settings.json</code>
+<img width="1168" height="51" alt="Image" src="https://github.com/user-attachments/assets/23af313e-fae7-4db6-8d50-695cd5a990a6" />
+<img width="1153" height="50" alt="Image" src="https://github.com/user-attachments/assets/6f6de985-6901-49ec-90dd-27b10f52fc48" /></li>
+<li>Extending Ruff configs from a shared preset  https://github.com/astral-sh/ruff/issues/12352#issuecomment-3279772207</li>
+<li>Use the same path when manually activating a venv on Windows vs Linux, for convenience.
+<img width="120" height="111" alt="Image" src="https://github.com/user-attachments/assets/fe2f27aa-12a5-437a-b19a-fa71174117f4" /></li>
+</ol>
+<p>1 and 2 may be solved separately long term. 3 is not a common case (for example in typeshed I have multiple venvs to easily test different Python versions and OSes using WSL, then use <code>uv run --active</code>). But there's likely even more real worlds examples where this could simplify (or make work at all) a workflow, configuration, or internal script.</p>
+<p>If there's concerns on how a symlink interracts (I don't understand what the edge cases are, but I know they exist) on a specific OS, know that having this option on <em>either</em> Windows OR Unix-like systems would be enough.
+And it would probably have to be opt-in of course. Preferably configurable in <code>pyproject.toml</code>/<code>uv.toml</code> since the goal is to help project setups work out of the box.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Avasam on 2025-09-12 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-12 06:27</div>
+            <div class="timeline-body"><p>An IDE such as VS Code should be able to discover a venv with the path to the exact Python interpreter. This may work better with the upcoming new venv detection of VS Code.</p>
+<p>We recommend using <code>uv run</code> to start Python, which already works cross platform. On Windows, we need <code>python.exe</code>, while on Unix it's <code>python</code>, so the paths will be different even with a symlink. Ideally, the layout of the venv is just an implementation detail that users don't need to know about, since everything is abstracted away through the IDE and <code>uv</code> subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-09-13 01:30</div>
+            <div class="timeline-body"><blockquote>
+<p>the layout of the venv is just an implementation detail that users don't need to know about, since everything is abstracted away through the IDE</p>
+</blockquote>
+<p>Ideally, unfortunately the IDE often still needs to be told where the venv is (or worst, in the case of VSCode, where the executable is, if I could just point to <code>.venv</code> it wouldn't even be an issue...).</p>
+<blockquote>
+<p>This may work better with the upcoming new venv detection of VS Code.</p>
+</blockquote>
+<p>I just also learned through other discussions that the VSCode team is working on a new plugin for handling venvs, hopefully it solves the current issues (really it's just about finding the venv location immediately when first opening a project as far as I'm concerned).</p>
+<blockquote>
+<p>We recommend using <code>uv run</code> to start Python, which already works cross platform</p>
+</blockquote>
+<p>Of course, but sometimes you can't run anything, you just have to know the path you want (like the installed packages locations) ahead of time (like in a static config file for a tool)*</p>
+<p>You also still need to activate venvs first before using <code>uv run --active</code> if you wanna work on multiple environments in a project.</p>
+<blockquote>
+<p>On Windows, we need <code>python.exe</code>, while on Unix it's python, so the paths will be different even with a symlink.</p>
+</blockquote>
+<p>Just being pedantic (full explanation hidden below, in case that's already what you meant): After testing for the mentioned use case of VSCode configuration, it's true that it won't work. But that statement is not generally true. Anyway the fix really will have to be their new environment plugin.</p>
+<details>
+Whilst it's true that the full filename will differ, Windows (or it it just specific to the shell? Works in CMD and PowerShell) has special handling for commands and executing files with an extension of either `.exe`, `.cmd` or `.bat`. Any unknown command w/o extension will look in a local folder for a filename where the base matches, with either one of those extensions. Then look for the same in %PATH%. That's how `python` resolves to `<somewhere>/python.exe`.
+
+<p>Case in point:</p>
+<p><img width="1039" height="151" alt="Image" src="https://github.com/user-attachments/assets/f1720de3-4de6-4c06-a975-9c9d0837fc7b" /></p>
+<p><em>However</em> VSCode's <code>python.defaultInterpreterPath</code>, for some reason, needs the exact filename on path. (maybe it does a check for if the exact file exists, rather than just executing it?), so you're right that for that <code>&quot;python.defaultInterpreterPath&quot;: &quot;.venv/bin/python&quot;</code> won't work.</p>
+</details>
+
+<hr />
+<p>* ruff isn't the only tool that would benefit here (until https://github.com/astral-sh/ruff/issues/12352 is implemented). Another current real life example is dprint from a PyPI package. Although there there's an alternative that does work using the method described in the &lt;details&gt; above: https://github.com/dprint/dprint/issues/859#issuecomment-3194102785 . So maybe this actually also weakens my request ^^&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff/issues/12352.html">astral-sh/ruff#12352</a> on 2025-09-13 01:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-09-26 16:10</div>
+            <div class="timeline-body"><p>I have found a workaround to my 2nd point (and similar use-cases): https://github.com/astral-sh/ruff/issues/12352#issuecomment-3304413556</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-11-09 14:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

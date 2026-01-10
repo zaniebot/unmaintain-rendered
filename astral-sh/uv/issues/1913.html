@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changes to pyproject.toml dependency versions not updated on install - astral-sh/uv #1913</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Changes to pyproject.toml dependency versions not updated on install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1913">#1913</a>
+        opened by <a href="https://github.com/RonNabuurs">@RonNabuurs</a>
+        on 2024-02-23 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RonNabuurs">@RonNabuurs</a> on 2024-02-23 13:45</div>
+            <div class="timeline-body"><p>Say I have the following <code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.0.0&quot;
+dependencies = [
+  &quot;httpcore==1.0.2&quot;
+]
+requires-python = &quot;&gt;=3.8&quot;
+</code></pre>
+<p>To create a venv I would run <code>uv venv</code>. This creates a venv in which I can install packages. For comparison I'll also install pip in that environment <code>uv pip install pip</code>.</p>
+<p>Now I can run the following command to create an editable install with httpcore installed:</p>
+<pre><code class="language-bash">uv pip install -e .
+</code></pre>
+<p>This results in an venv with httpcore and it's dependencies installed.</p>
+<p>Now comes the issue, when I change dep versions in the pyproject.toml uv will not reinstall that package. E.g.</p>
+<p>Change the pyproject.toml to:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.0.0&quot;
+dependencies = [
+  &quot;httpcore==1.0.1&quot;
+]
+requires-python = &quot;&gt;=3.8&quot;
+</code></pre>
+<p>Run uv again <code>uv pip install -e .</code>. This results in</p>
+<pre><code class="language-bash">Audited 1 package in 3ms
+</code></pre>
+<p>Though if I run the same command with pip it will reinstall the new version:</p>
+<pre><code>.venv/bin/pip install -e .
+
+...
+  Attempting uninstall: example
+    Found existing installation: example 0.0.0
+    Uninstalling example-0.0.0:
+      Successfully uninstalled example-0.0.0
+Successfully installed example-0.0.0 httpcore-1.0.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-02-23 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 15:17</div>
+            <div class="timeline-body"><p>You can run with <code>--reinstall</code> to force uv to reinstall it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-02-23 15:33</div>
+            <div class="timeline-body"><p>Just noting that I have also ran into this yesterday with uv v0.1.8.
+In my case I was changing dependencies in <code>setup.cfg</code> (<code>pyproject.toml</code> only containing the <code>build-system</code> table),
+and <code>uv</code> was not picking up the changes upon subsequent invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 15:46</div>
+            <div class="timeline-body"><p>I can improve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-24 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1955.html">astral-sh/uv#1955</a> on 2024-02-24 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-24 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1960.html">astral-sh/uv#1960</a> on 2024-02-25 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1965.html">astral-sh/uv#1965</a> on 2024-02-25 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 01:46</div>
+            <div class="timeline-body"><p>For onlookers, we have a new API whereby you can add additional files to consider when invalidating the cache. You can also include the current Git commit (i.e., invalidate whenever the SHA changes).</p>
+<p>Looks like this:</p>
+<pre><code class="language-toml">[tool.uv]
+cache-keys = [{ file = &quot;pyproject.toml&quot; }, { file = &quot;requirements.txt&quot; }, { git = true }]
+</code></pre>
+<p>See: https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

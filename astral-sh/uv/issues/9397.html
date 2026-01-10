@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow UV_NO_SYNC=1 UV_FROZEN=1 on uv run - astral-sh/uv #9397</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow UV_NO_SYNC=1 UV_FROZEN=1 on uv run</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9397">#9397</a>
+        opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a>
+        on 2024-11-24 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-11-24 16:11</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I have a docker application where I don't want each <code>uv run</code> syncing every time (due to how I build the image without dev group on uv sync) and I don't want <code>uv sync</code> trying to resolve anything.
+Therefore I tried to add both env variables to my docker image</p>
+<pre><code>UV_NO_SYNC=1
+UV_FROZEN=1
+</code></pre>
+<p>For syncing, the UV_NO_SYNC  variable is simply ignored, which makes sense and is desirable.</p>
+<p>When doing <code>uv run</code> I get:</p>
+<pre><code>$ uv run foo
+error: the argument '--no-sync' cannot be used with '--frozen'
+
+Usage: uv run --no-sync
+</code></pre>
+<p>Also notice the error messages refer as if I passed conflicting arguments when in fact I used env variables which should be more lenient as in a best effort basis.</p>
+<p>In any case, I do not think --no-sync and --frozen are exclusive parameters. They should play along well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-24 16:26</div>
+            <div class="timeline-body"><p>Yeah this seems like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-24 16:26</div>
+            <div class="timeline-body"><p>Although, wait, I think <code>--no-sync</code> implies frozen in <code>uv run</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-24 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-11-24 17:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Although, wait, I think <code>--no-sync</code> implies frozen in <code>uv run</code>?</p>
+</blockquote>
+<p><code>--no-sync</code> will prevent syncing which makes <code>--frozen</code> just a no-op.</p>
+<p>But for <code>uv sync</code> the <code>--frozen</code> option is important because <code>--no-sync</code> is a no-op.</p>
+<p>IMHO I would just remove the conflicts_with here:
+https://github.com/astral-sh/uv/blob/e485dfd7f1984537374676e422691c2327c4e24e/crates/uv-cli/src/lib.rs#L2734-L2735</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 00:56</div>
+            <div class="timeline-body"><p>I see, so we're agreed that <code>--frozen</code> is redundant for <code>uv run</code> here, but you're saying that because you set the env vars, it makes it inconvenient. That's reasonable. I'll lift the restriction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-25 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9400.html">astral-sh/uv#9400</a> on 2024-11-25 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-25 01:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:37 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>installer: confusing UV_INSTALL_DIR behavior - astral-sh/uv #8300</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>installer: confusing UV_INSTALL_DIR behavior</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8300">#8300</a>
+        opened by <a href="https://github.com/ilyagr">@ilyagr</a>
+        on 2024-10-17 17:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ilyagr">@ilyagr</a> on 2024-10-17 17:53</div>
+            <div class="timeline-body"><p>I ran</p>
+<pre><code class="language-shell">curl -LsSf https://astral.sh/uv/install.sh | \
+  env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR=~/.local/bin sh
+</code></pre>
+<p>The result included the message &quot;installing to ~/.local/bin/bin&quot;:</p>
+<pre><code class="language-console">$ curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR=~/.local/bin sh
+downloading uv 0.4.23 aarch64-apple-darwin
+installing to ~/.local/bin/bin
+  uv
+  uvx
+everything's installed!
+</code></pre>
+<p>~Actually, the install seemed to correctly go to <code>~/.local/bin</code>, it's just the message that's wrong.~</p>
+<p>Actually, the install ended up going in <code>/Users/ilyagr/tmp/~/.local/bin/bin/uv</code> (with a literal <code>~</code> in the name), which has several problems with it. I was in <code>/Users/ilyagr/tmp/</code> when running the command.</p>
+<p><strong>Workaround:</strong></p>
+<p>The correct command would have been:</p>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | \
+   env INSTALLER_NO_MODIFY_PATH=1 UV_INSTALL_DIR=/Users/ilyagr/.local sh
+</code></pre>
+<p>without the <code>/bin</code> in <code>/Users/ilyagr/.local</code>.</p>
+<p><strong>Suggestions</strong></p>
+<p>It would have helped if the &quot;installing...&quot; message printed the absolute path.</p>
+<p>Now that the variable is called <code>UV_INSTALL_DIR</code> instead of <code>CARGO_HOME</code>, it makes less sense that <code>/bin</code> is added to it. I'm not sure what to do about it.</p>
+<p>Absent a better fix, the docs should perhaps be updated to explain this, somehow, e.g. by including the working command. I am not sure what's going wrong with the <code>~</code> expansion for me.</p>
+<p>Another minor issue: <code>curl -LsSf https://astral.sh/uv/install.sh | sh -s -- --help</code> still talks about CARGO_HOME. This might be OK if it still works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "installer: wrong message when using UV_INSTALL_DIR" to "installer: confusing UV_INSTALL_DIR behavior" by @ilyagr on 2024-10-17 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fish-shell/fish-shell/issues/10794.html">fish-shell/fish-shell#10794</a> on 2024-10-17 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2024-10-17 18:22</div>
+            <div class="timeline-body"><p>On my system (Mac + fish), there is a helpful <code>printenv</code> command that shows:</p>
+<pre><code class="language-console">$ a=~ printenv a
+/Users/ilyagr
+$ env a=~ printenv a
+~
+</code></pre>
+<p>This makes no sense to me. I filed a question at https://github.com/fish-shell/fish-shell/issues/10794 about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Actually, the install ended up going in /Users/ilyagr/tmp/~/.local/bin/bin/uv (with a literal ~ in the name), which has several problems with it. I was in /Users/ilyagr/tmp/ when running the command.</p>
+</blockquote>
+<p>Yeah this seems like a shell issue, that's weird. I'm confused too honestly.</p>
+<p>Sounds like you want <code>UV_UNMANAGED_INSTALL</code> if you don't want to create the <code>bin</code> directory? it's setup this way because we might need to install other things than binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-10-17 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2024-10-17 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2024-10-17 18:29</div>
+            <div class="timeline-body"><p>Bash acts the way I'd expect, so I thought it was a fish issue. However, <code>zsh</code> and <code>dash</code> both act like <code>fish</code>, so I guess the <code>env</code> trick I suggested a while ago is just not great. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-17 19:10</div>
+            <div class="timeline-body"><p>The documentation only recommends an absolute path though, right?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:12 UTC
+    </footer>
+</body>
+</html>

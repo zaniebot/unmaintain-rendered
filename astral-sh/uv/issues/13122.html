@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`python-version` setting has different meaning between `uv pip compile` and `uv pip install` - astral-sh/uv #13122</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`python-version` setting has different meaning between `uv pip compile` and `uv pip install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13122">#13122</a>
+        opened by <a href="https://github.com/watsonjj">@watsonjj</a>
+        on 2025-04-26 15:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/watsonjj">@watsonjj</a> on 2025-04-26 15:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My aim was to have a consistent <code>uv pip compile</code> output between the pre-commit running locally and on the CI, even if different Python versions may be present between two. The minimum Python version my package supports is 3.9. I decided to use the settings in the pyproject.toml for this, as it seemed the right thing to do:</p>
+<pre><code class="language-toml">[tool.uv.pip]
+python-version = &quot;3.9&quot;
+universal = true
+</code></pre>
+<p>And this achieved what I wanted.</p>
+<p>However, I later struggled with a strange problem when running numpy:</p>
+<details>
+  <summary>error message</summary>
+
+<pre><code class="language-bash">&gt;&gt;&gt;  import numpy
+Traceback (most recent call last):
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/core/__init__.py&quot;, line 24, in &lt;module&gt;
+    from . import multiarray
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/core/multiarray.py&quot;, line 10, in &lt;module&gt;
+    from . import overrides
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/core/overrides.py&quot;, line 8, in &lt;module&gt;
+    from numpy.core._multiarray_umath import (
+ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/__init__.py&quot;, line 130, in &lt;module&gt;
+    from numpy.__config__ import show as show_config
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/__config__.py&quot;, line 4, in &lt;module&gt;
+    from numpy.core._multiarray_umath import (
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/core/__init__.py&quot;, line 50, in &lt;module&gt;
+    raise ImportError(msg)
+ImportError:
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python3.10 from &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/bin/python&quot;
+  * The NumPy version is: &quot;1.26.4&quot;
+
+and make sure that they are the versions you expect.
+Please carefully study the documentation linked above for further help.
+
+Original error was: No module named 'numpy.core._multiarray_umath'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/local/Caskroom/miniforge/base/envs/ultrasat/lib/python3.10/site-packages/numpy/__init__.py&quot;, line 135, in &lt;module&gt;
+    raise ImportError(msg) from e
+ImportError: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+</code></pre>
+</details>
+
+<p>I have nailed down the issue being a result of:</p>
+<pre><code class="language-bash">uv pip install numpy==1.26.4 --python-version 3.9
+</code></pre>
+<p>Which was effectively occurring due to the above configuration inside the pyproject.toml of the directory I was in. My python version is 3.10.14, and therefore this incompatibility occurred.</p>
+<p>I would not consider this a bug, but it was quite surprising behaviour - the purpose of the <code>python-version</code> setting is quite different between <code>uv pip compile</code> and <code>uv pip install</code>/<code>uv pip sync</code>. I think this is somewhat reflected in the Commands documentation page, as the <code>--python-version</code> description differs slightly between the commands.</p>
+<p>It would be great if there was a different setting in the pyproject.toml for the minimum Python version considered for <code>uv pip compile</code>. Failing that, then at least a warning could be included on the <code>python-version</code> setting documentation.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @watsonjj on 2025-04-26 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-27 15:07</div>
+            <div class="timeline-body"><p>Yeah this has come up before (though I don't have the issue on-hand). I think it's a footgun, we should fix it. (I suggest passing <code>--python-version</code> explicitly to the <code>uv pip compile</code> call.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-27 15:21</div>
+            <div class="timeline-body"><p>One option is to put these under <code>[tool.uv.pip.compile]</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

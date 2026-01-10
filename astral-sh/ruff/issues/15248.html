@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long freeze(&gt;3 minutes - probably infinite) when checking file - astral-sh/ruff #15248</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Long freeze(&gt;3 minutes - probably infinite) when checking file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15248">#15248</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2025-01-04 08:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2025-01-04 08:41</div>
+            <div class="timeline-body"><p>Probably caused by #10891 - CC @augustelalande</p>
+<p>Command</p>
+<pre><code>timeout -v 300 ruff check . --select ALL --preview --output-format concise --no-cache --fix --unsafe-fixes --isolated
+</code></pre>
+<pre><code>Downloading source file /home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff_linter/src/rules/pylint/rules/unreachable.rs
+0x00005555569724b6 in ruff_linter::rules::pylint::rules::unreachable::post_process_loop (blocks=0x7fffffff2c80, start_index=..., loop_start=..., loop_exit=..., clause_exit=...)               
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:453
+warning: 453	crates/ruff_linter/src/rules/pylint/rules/unreachable.rs: No such file or directory
+(gdb) backtrace
+#0  0x00005555569724b6 in ruff_linter::rules::pylint::rules::unreachable::post_process_loop (blocks=0x7fffffff2c80, start_index=..., loop_start=..., loop_exit=..., clause_exit=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:453
+#1  0x00005555569725c2 in ruff_linter::rules::pylint::rules::unreachable::post_process_loop (blocks=0x7fffffff2c80, start_index=..., loop_start=..., loop_exit=..., clause_exit=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:484
+#2  0x00005555569725c2 in ruff_linter::rules::pylint::rules::unreachable::post_process_loop (blocks=0x7fffffff2c80, start_index=..., loop_start=..., loop_exit=..., clause_exit=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:484
+#3  0x00005555569722f9 in ruff_linter::rules::pylint::rules::unreachable::loop_block (blocks=0x7fffffff2c80, condition=..., body=..., orelse=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:414
+#4  0x00005555569731ee in ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::create_blocks (self=&lt;optimized out&gt;, stmts=..., after=...)
+    at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ub_checks.rs:127
+#5  0x0000555556972290 in ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::append_blocks (self=0x7fffffff2c80, stmts=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:931
+#6  ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::append_blocks_if_not_empty (self=0x7fffffff2c80, stmts=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:946
+#7  ruff_linter::rules::pylint::rules::unreachable::loop_block (blocks=0x7fffffff2c80, condition=..., body=..., orelse=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:411
+#8  0x00005555569731ee in ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::create_blocks (self=&lt;optimized out&gt;, stmts=..., after=...)
+    at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ub_checks.rs:127
+#9  0x0000555556972fab in ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::append_blocks (self=0x7fffffff2c80, stmts=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:931
+#10 ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::append_blocks_if_not_empty (self=0x7fffffff2c80, stmts=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:946
+#11 ruff_linter::rules::pylint::rules::unreachable::BasicBlocksBuilder::create_blocks (self=0x7fffffff2c80, stmts=..., after=...)
+    at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:781
+#12 0x0000555556971ff6 in ruff_linter::rules::pylint::rules::unreachable::{impl#2}::from (stmts=...) at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:222
+#13 0x00005555569714b8 in ruff_linter::rules::pylint::rules::unreachable::in_function (name=0x7fffeee228f8, body=...) at crates/ruff_linter/src/rules/pylint/rules/unreachable.rs:48
+#14 0x00005555568ee670 in ruff_linter::checkers::ast::analyze::statement::statement (stmt=0x7fffeee228c8, checker=0x7fffffff4a10)
+    at crates/ruff_linter/src/checkers/ast/analyze/statement.rs:372
+#15 0x00005555568f4003 in ruff_linter::checkers::ast::{impl#5}::visit_stmt (self=&lt;optimized out&gt;, stmt=0x7fffeee228c8) at crates/ruff_linter/src/checkers/ast/mod.rs:1064
+#16 0x00005555568f9419 in ruff_linter::checkers::ast::{impl#5}::visit_body (self=0x7fffffff4a10, body=...) at crates/ruff_linter/src/checkers/ast/mod.rs:1703
+#17 ruff_linter::checkers::ast::check_ast (parsed=0x7fffffff5ba0, locator=&lt;optimized out&gt;, stylist=&lt;optimized out&gt;, indexer=&lt;optimized out&gt;, noqa_line_for=&lt;optimized out&gt;, 
+    settings=0x7fffffff9608, noqa=&lt;optimized out&gt;, path=..., package=..., source_type=ruff_python_ast::PySourceType::Python, cell_offsets=..., notebook_index=...)
+    at crates/ruff_linter/src/checkers/ast/mod.rs:2638
+#18 0x0000555556842892 in ruff_linter::linter::check_path (path=..., package=..., locator=&lt;optimized out&gt;, stylist=&lt;optimized out&gt;, indexer=&lt;optimized out&gt;, directives=&lt;optimized out&gt;, 
+    settings=&lt;optimized out&gt;, noqa=&lt;optimized out&gt;, source_kind=&lt;optimized out&gt;, source_type=&lt;optimized out&gt;, parsed=&lt;optimized out&gt;) at crates/ruff_linter/src/linter.rs:148
+#19 0x000055555684683a in ruff_linter::linter::lint_fix (path=..., package=..., noqa=&lt;optimized out&gt;, unsafe_fixes=&lt;optimized out&gt;, settings=&lt;optimized out&gt;, source_kind=&lt;optimized out&gt;, 
+    source_type=&lt;optimized out&gt;) at crates/ruff_linter/src/linter.rs:513
+#20 0x00005555562e1616 in ruff::diagnostics::lint_path (path=..., package=..., settings=0x7fffffff9608, cache=..., noqa=&lt;optimized out&gt;, fix_mode=&lt;optimized out&gt;, 
+    unsafe_fixes=&lt;optimized out&gt;) at crates/ruff/src/diagnostics.rs:278
+#21 0x0000555556446b0f in ruff::commands::check::lint_path::{closure#0} () at crates/ruff/src/commands/check.rs:195
+#22 std::panicking::try::do_call&lt;ruff::commands::check::lint_path::{closure_env#0}, core::result::Result&lt;ruff::diagnostics::Diagnostics, anyhow::Error&gt;&gt; (
+    data=&lt;error reading variable: Cannot access memory at address 0x0&gt;)
+--Type &lt;RET&gt; for more, q to quit, c to continue without paging--c
+    at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:568
+#23 std::panicking::try&lt;core::result::Result&lt;ruff::diagnostics::Diagnostics, anyhow::Error&gt;, ruff::commands::check::lint_path::{closure_env#0}&gt; (f=...)
+    at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:531
+#24 std::panic::catch_unwind&lt;ruff::commands::check::lint_path::{closure_env#0}, core::result::Result&lt;ruff::diagnostics::Diagnostics, anyhow::Error&gt;&gt; (f=...)
+    at /home/runner/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358
+#25 ruff_db::panic::catch_unwind&lt;ruff::commands::check::lint_path::{closure_env#0}, core::result::Result&lt;ruff::diagnostics::Diagnostics, anyhow::Error&gt;&gt; (f=...)
+    at crates/ruff_db/src/panic.rs:40
+#26 0x00005555563ec92f in ruff::commands::check::lint_path (path=..., package=&lt;error reading variable: Cannot access memory at address 0x0&gt;, settings=0x4, cache=..., 
+    noqa=ruff_linter::settings::flags::Noqa::Enabled, fix_mode=ruff_linter::settings::flags::FixMode::Apply, unsafe_fixes=ruff_linter::settings::types::UnsafeFixes::Enabled)
+    at crates/ruff/src/commands/check.rs:194
+#27 0x00005555563ad1d1 in ruff::commands::check::check::{closure#0} (resolved_file=&lt;error reading variable: Cannot access memory at address 0x0&gt;) at crates/ruff/src/commands/check.rs:96
+#28 rayon::iter::filter_map::{impl#6}::consume&lt;&amp;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;, ruff::diagnostics::Diagnostics, rayon::iter::fold::FoldFolder&lt;rayon::iter::reduce::ReduceFolder&lt;ruff::commands::check::check::{closure_env#4}, (ruff::diagnostics::Diagnostics, u64)&gt;, (ruff::diagnostics::Diagnostics, u64), ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt; (self=..., item=&lt;optimized out&gt;)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/filter_map.rs:123
+#29 rayon::iter::plumbing::Folder::consume_iter&lt;rayon::iter::filter_map::FilterMapFolder&lt;rayon::iter::fold::FoldFolder&lt;rayon::iter::reduce::ReduceFolder&lt;ruff::commands::check::check::{closure_env#4}, (ruff::diagnostics::Diagnostics, u64)&gt;, (ruff::diagnostics::Diagnostics, u64), ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;, &amp;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;, core::slice::iter::Iter&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;&gt; (self=..., 
+    iter=...) at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/plumbing/mod.rs:178
+#30 rayon::iter::plumbing::Producer::fold_with&lt;rayon::slice::IterProducer&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, rayon::iter::filter_map::FilterMapFolder&lt;rayon::iter::fold::FoldFolder&lt;rayon::iter::reduce::ReduceFolder&lt;ruff::commands::check::check::{closure_env#4}, (ruff::diagnostics::Diagnostics, u64)&gt;, (ruff::diagnostics::Diagnostics, u64), ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;&gt; (self=..., folder=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/plumbing/mod.rs:109
+#31 0x000055555639ce1e in rayon::iter::plumbing::bridge_producer_consumer::helper&lt;rayon::slice::IterProducer&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, rayon::iter::filter_map::FilterMapConsumer&lt;rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;&gt; (len=1, migrated=&lt;optimized out&gt;, 
+    splitter=..., producer=..., consumer=...) at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/plumbing/mod.rs:437
+#32 0x00005555563ebd6d in rayon::iter::plumbing::bridge_producer_consumer&lt;rayon::slice::IterProducer&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, rayon::iter::filter_map::FilterMapConsumer&lt;rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;&gt; (len=1, 
+    producer=&lt;error reading variable: access outside bounds of object referenced via synthetic pointer&gt;, consumer=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/plumbing/mod.rs:396
+#33 rayon::iter::plumbing::bridge::{impl#0}::callback&lt;rayon::iter::filter_map::FilterMapConsumer&lt;rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;, &amp;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;, rayon::slice::IterProducer&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;&gt; (self=&lt;error reading variable: access outside bounds of object referenced via synthetic pointer&gt;, 
+    producer=&lt;error reading variable: access outside bounds of object referenced via synthetic pointer&gt;)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/plumbing/mod.rs:372
+#34 rayon::slice::{impl#6}::with_producer&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;, rayon::iter::plumbing::bridge::Callback&lt;rayon::iter::filter_map::FilterMapConsumer&lt;rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;&gt;&gt; (self=..., 
+    callback=&lt;error reading variable: access outside bounds of object referenced via synthetic pointer&gt;)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/slice/mod.rs:826
+#35 rayon::iter::plumbing::bridge&lt;rayon::slice::Iter&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, rayon::iter::filter_map::FilterMapConsumer&lt;rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;&gt; (par_iter=..., consumer=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/plumbing/mod.rs:356
+#36 rayon::slice::{impl#5}::drive_unindexed&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;, rayon::iter::filter_map::FilterMapConsumer&lt;rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#0}&gt;&gt; (self=..., consumer=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/slice/mod.rs:802
+#37 rayon::iter::filter_map::{impl#2}::drive_unindexed&lt;rayon::slice::Iter&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, ruff::commands::check::check::{closure_env#0}, ruff::diagnostics::Diagnostics, rayon::iter::fold::FoldConsumer&lt;rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;&gt; (self=..., consumer=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/filter_map.rs:46
+#38 rayon::iter::fold::{impl#2}::drive_unindexed&lt;(ruff::diagnostics::Diagnostics, u64), rayon::iter::filter_map::FilterMap&lt;rayon::slice::Iter&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, ruff::commands::check::check::{closure_env#0}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}, rayon::iter::reduce::ReduceConsumer&lt;ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt;&gt; (self=..., consumer=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/fold.rs:59
+#39 rayon::iter::reduce::reduce&lt;rayon::iter::fold::Fold&lt;rayon::iter::filter_map::FilterMap&lt;rayon::slice::Iter&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, ruff::commands::check::check::{closure_env#0}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}, (ruff::diagnostics::Diagnostics, u64)&gt; (pi=..., identity=..., reduce_op=...)
+    at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/reduce.rs:15
+#40 rayon::iter::ParallelIterator::reduce&lt;rayon::iter::fold::Fold&lt;rayon::iter::filter_map::FilterMap&lt;rayon::slice::Iter&lt;core::result::Result&lt;ruff_workspace::resolver::ResolvedFile, ignore::Error&gt;&gt;, ruff::commands::check::check::{closure_env#0}&gt;, ruff::commands::check::check::{closure_env#1}, ruff::commands::check::check::{closure_env#2}&gt;, ruff::commands::check::check::{closure_env#4}, ruff::commands::check::check::{closure_env#3}&gt; (self=...) at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rayon-1.10.0/src/iter/mod.rs:998
+#41 ruff::commands::check::check (files=..., pyproject_config=&lt;optimized out&gt;, config_arguments=&lt;optimized out&gt;, cache=&lt;optimized out&gt;, noqa=ruff_linter::settings::flags::Noqa::Enabled, 
+    fix_mode=ruff_linter::settings::flags::FixMode::Apply, unsafe_fixes=ruff_linter::settings::types::UnsafeFixes::Enabled) at crates/ruff/src/commands/check.rs:166
+#42 0x00005555563d18ed in ruff::check (args=..., global_options=...) at crates/ruff/src/lib.rs:423
+#43 0x00005555563cf161 in ruff::run () at crates/ruff/src/lib.rs:195
+#44 0x000055555645a784 in ruff::main () at crates/ruff/src/main.rs:44
+
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/18306155/SANITIZER_6-before.zip">SANITIZER_6-before.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2025-01-04 08:51</div>
+            <div class="timeline-body"><p>Minimized</p>
+<pre><code>def l():
+ while T:
+       try:
+        while():
+         if 3:break
+       finally:return
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/18306202/a.py.zip">a.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-04 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @AlexWaygood on 2025-01-04 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-04 10:49</div>
+            <div class="timeline-body"><p>Cc. @dylwil3 as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15252.html">astral-sh/ruff#15252</a> on 2025-01-04 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-04 11:29</div>
+            <div class="timeline-body"><p>I demoted the rule to testing only for now, see https://github.com/astral-sh/ruff/pull/15252</p>
+<p>Let's do some more fuzzing (we have multiple fuzzer scripts) before promoting the rule to preview</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @MichaReiser on 2025-01-04 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15276.html">astral-sh/ruff#15276</a> on 2025-01-05 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15278.html">astral-sh/ruff#15278</a> on 2025-01-05 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-07 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15707.html">astral-sh/ruff#15707</a> on 2025-01-24 04:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

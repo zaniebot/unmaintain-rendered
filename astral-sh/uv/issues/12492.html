@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Align the progress bars - astral-sh/uv #12492</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Align the progress bars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12492">#12492</a>
+        opened by <a href="https://github.com/debnath-d">@debnath-d</a>
+        on 2025-03-26 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/debnath-d">@debnath-d</a> on 2025-03-26 17:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Vertically align the progress bars and progress values (### MiB /### MiB) when installing packages.</p>
+<p><img src="https://github.com/user-attachments/assets/1ac58666-b064-4107-9db3-fb42640424b1" alt="Image" /></p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @debnath-d on 2025-03-26 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-26 20:55</div>
+            <div class="timeline-body"><p>I think we do? e.g., see <code>torch</code> and <code>triton</code>. We just don't for longer names. Perhaps this is a request to increase the name padding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-03-26 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/debnath-d">@debnath-d</a> on 2025-03-26 22:51</div>
+            <div class="timeline-body"><p>Perhaps you can get the width of the terminal window and allow increasing padding as much as needed to align the progress bars, unless it's no longer possible to increase padding because it will overflow the terminal window width.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2025-03-29 21:13</div>
+            <div class="timeline-body"><p>Aye, that's a good improvement that would make <code>uv</code> look even more professional to my eyes 🙂</p>
+<p>The padding could be the max name length of the resolved packages to be installed. I'm worried it might look empty when long ones finish their download, perhaps the value needs to be dynamic over the <em>current</em> downloads?</p>
+<p>Also, the sizes on the right could be formatted as <code>%6.2f</code> for alignment too! (or <code>%7.2f</code> if any size is <code>&gt;= 1000 MiB</code>). They could jump around with the dynamic padding, maybe stretch the bar to always match the original max padding's ending len?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 21:22</div>
+            <div class="timeline-body"><p>If the value is dynamic won't things move around in a weird way?</p>
+<p>I'm open to improvements here, if people want to propose them in pull requests — but I'm hesitant to invest much into it myself given we have lots of tangible friction points to focus on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-04-01 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/debnath-d">@debnath-d</a> on 2025-04-01 21:52</div>
+            <div class="timeline-body"><p>@zanieb Doesn't uv have the list of all packages to download, before it starts downloading the packages and showing the progress bars?</p>
+<p>If that's the case, then the dynamic value will be set before the progress bars show up, and things won't move around in a weird way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2025-04-01 22:09</div>
+            <div class="timeline-body"><p>@debnath-d Yea, I also think just setting it to the max package name at the start is non-ambiguous and solves the issue.</p>
+<p><sup>The (other) dynamic thing I said was just me overcomplicating things, as I spend wayy too much time on formatting in my stuff 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-04-22 20:04</div>
+            <div class="timeline-body"><p>I was looking into this and I'm not sure it's actually a simple change, since packages are streamed using a <code>tokio::Stream</code> (in the <code>resolve</code> function in <code>uv-resolver/src/resolver/mod.rs</code>). This means that packages are streamed as they are found, so when we get the information for the first package, we don't actually have the list of all packages which will be downloaed in order to set the &quot;correct&quot; alignment. I may be wrong since I'm new to the codebase, but I think the only way of doing this would be to store the largest package name found, and then update it as packages trickle in from the stream, and update all the <code>ProgressStyle</code>s dynamically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-22 21:13</div>
+            <div class="timeline-body"><p>cc @konstin who has the most context on the progress bars</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-24 07:50</div>
+            <div class="timeline-body"><p>We could store context on the <code>ProgressReporter</code> as we add and remove progress bars.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-01 20:56</div>
+            <div class="timeline-body"><p>I have a (very basic) implementation which adds a <code>max_len</code> field to <code>BarState</code> which is updated everytime a new progress bar is inserted. This works, but for example when the biggest package name ends I don't update <code>max_len</code> (since that would require storing all lengths), so the padding can only increase and never decrease. Do you think it's worth opening a PR? Below is an example of how it looks when doing <code>uv pip install torch</code></p>
+<p><img src="https://github.com/user-attachments/assets/f4b40a05-9f1c-49d6-b8c4-b00df2a4b11f" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 10:22</div>
+            <div class="timeline-body"><p>A (draft) pull request would be easiest place to discuss the changes, it's often easier to decide if something is viable with some code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13266.html">astral-sh/uv#13266</a> on 2025-05-02 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Secrus">@Secrus</a> on 2025-08-28 16:21</div>
+            <div class="timeline-body"><p>Is this issue still valid? Looks like appropriate PR was already merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-28 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-28 17:00</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

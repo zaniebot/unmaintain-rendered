@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency - astral-sh/uv #13515</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13515">#13515</a>
+        opened by <a href="https://github.com/WibblyGhost">@WibblyGhost</a>
+        on 2025-05-18 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WibblyGhost">@WibblyGhost</a> on 2025-05-18 21:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When trying to rename an entrypoint for one of my scripts, it seems that all subsequent <code>uv sync</code>'s inside of a docker build seems to have an incorrect entrypoint after updating to a new major package version.</p>
+<p>I have the following dependencies (Noting that these are private PIP packages, internal repo), which had an initial entrypoint of <strong>autoupgrader.application:main</strong> which in &gt;=4.0.0 has changed to <strong>autoupgrader.run_p25_install:main</strong></p>
+<ul>
+<li>channelsimulator(autoupgrader&gt;=3.0.0)</li>
+<li>terminalsimulator(autoupgrader&gt;=3.0.0)</li>
+</ul>
+<p><strong>Main Package</strong>
+TestSystem (channelsimulator, terminalsimulator, <strong>autoupgrader==4.0.0</strong>)</p>
+<p>This should install the new entrypoints of <strong>autoupgrader = autoupgrader.run_p25_install:main</strong> but instead in the docker build image the resultant <strong>/bin</strong> entry shows the legacy script.</p>
+<pre><code class="language-bash">cat .venv/bin/autoupgrader 
+#!/.venv/bin/python
+# -*- coding: utf-8 -*-
+import sys
+from autoupgrader.application import main
+if __name__ == &quot;__main__&quot;:
+    if sys.argv[0].endswith(&quot;-script.pyw&quot;):
+        sys.argv[0] = sys.argv[0][:-11]
+    elif sys.argv[0].endswith(&quot;.exe&quot;):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main())
+</code></pre>
+<p>When running a <code>uv sync</code> inside a docker build image I get the following .cache entries.</p>
+<pre><code class="language-bash">grep -r &quot;autoupgrader.application&quot; output/.cache/*
+output/.cache/uv/archive-v0/iW6SG0JKPBW03PBPUwhNz/channelsimulator-5.6.6.dist-info/entry_points.txt:autoupgrader = autoupgrader.application:main
+output/.cache/uv/archive-v0/N4lmejMS33Yh0vYbvaLmc/terminalsimulator-5.13.0.dist-info/entry_points.txt:autoupgrader = autoupgrader.application:main
+</code></pre>
+<p>Please see verbose sync command
+<a href="https://github.com/user-attachments/files/20275119/out.txt">uv-sync-verbose.txt</a></p>
+<h3>Platform</h3>
+<p>Ubuntu24.04, uv:python3.13-bookworm</p>
+<h3>Version</h3>
+<p>0.7.4</p>
+<h3>Python version</h3>
+<p>cpython-3.13.3-linux-x86_64-gnu</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @WibblyGhost on 2025-05-18 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Entrypoint creation isn't targeting the direct dependency, instead is build through third-party dependency" to "Entrypoint creation isn't targeting the direct dependency, instead is built through third-party dependency" by @WibblyGhost on 2025-05-18 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-18 21:45</div>
+            <div class="timeline-body"><p>Are you able to provide a complete MRE?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-05-18 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WibblyGhost">@WibblyGhost</a> on 2025-05-18 21:52</div>
+            <div class="timeline-body"><p>Might be a bit difficult to provide a <em>externally</em> reproducable  example for you, due to all of this being locked behind company security. However I'm happy to provide any verbose logs to you or run debug builds as log as I can sanitize the log outputs first.</p>
+<p>I'll spend some time and see whether I can create a localized version which doesn't have security implications for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-18 22:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

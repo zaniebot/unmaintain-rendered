@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add --editable` does not remove old dependency - astral-sh/uv #17342</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add --editable` does not remove old dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17342">#17342</a>
+        opened by <a href="https://github.com/rzuckerm">@rzuckerm</a>
+        on 2026-01-07 00:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rzuckerm">@rzuckerm</a> on 2026-01-07 00:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<ul>
+<li><p>Create new package:</p>
+<pre><code>uv init --package my-pkg
+cd my-pkg
+</code></pre>
+</li>
+<li><p>Add <code>ansicolors</code> as a dependency:</p>
+<pre><code>uv add ansicolors
+</code></pre>
+<p>This sets <code>project.dependencies</code> to <code>[&quot;ansicolors&gt;=1.1.8&quot;]</code></p>
+</li>
+<li><p>Create new local <code>ansicolors</code> package</p>
+<pre><code>cd ..
+uv init --package ansicolors
+cd test-pkg
+</code></pre>
+</li>
+<li><p>Add local <code>ansicolors</code> package as an editable dependency:</p>
+<pre><code>uv add --editable ../ansicolors
+</code></pre>
+</li>
+</ul>
+<p>The result is a <code>pyproject.toml</code> that looks like this:</p>
+<pre><code>[project]
+name = &quot;my-pkg&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;rzuckerm&quot;, email = &quot;&lt;redacted&gt;&quot; }
+]
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+    &quot;ansicolors&gt;=1.1.8&quot;,
+]
+
+[project.scripts]
+my-pkg = &quot;my_pkg:main&quot;
+
+[build-system]
+requires = [&quot;uv_build&gt;=0.9.22,&lt;0.10.0&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.sources]
+ansicolors = { path = &quot;../ansicolors&quot;, editable = true }
+</code></pre>
+<p>I would expect <code>project.dependencies</code> to be <code>ansicolors</code> without the version range. BTW, poetry would have replaced the old dependency with the new editable dependency.</p>
+<h3>Platform</h3>
+<p>Ubuntu 22.04 amd64</p>
+<h3>Version</h3>
+<p>0.9.22</p>
+<h3>Python version</h3>
+<p>Python 3.8.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @rzuckerm on 2026-01-07 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-07 00:52</div>
+            <div class="timeline-body"><p>I'm not sure I agree we should change the bounds in the <code>pyproject.toml</code>? Is there a reason you expected this other than Poetry's behavior?</p>
+<p>I think it's reasonable to require removing the dependency first or explicitly including new bounds if that's the intent?</p>
+<p>It seems ambiguous either way and I'm hesitant to change existing behavior without strong justification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2026-01-07 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rzuckerm">@rzuckerm</a> on 2026-01-07 13:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure I agree we should change the bounds in the <code>pyproject.toml</code>? Is there a reason you expected this other than Poetry's behavior?</p>
+</blockquote>
+<p>Yes, partly because this is how poetry work, but also for consistency. If a user runs <code>uv add --editable</code> for a dependency that is not already in the <code>pyproject.toml</code>, <code>project.dependencies</code> just shows the package name without a version range.</p>
+<blockquote>
+<p>I think it's reasonable to require removing the dependency first or explicitly including new bounds if that's the intent?</p>
+</blockquote>
+<p>It's more convenient for the user to have <code>uv add --editable</code> remove the existing entry first instead of having the user run <code>uv remove</code> before <code>uv add --editable</code>. The way we use <code>uv add --editable</code> is to allow the developer to try out changes to a dependency in another package. For example, <code>test-pkg</code> depends on <code>test-pkg-b</code>, and the user wants to test out changes to <code>test-pkg-b</code> in <code>test-pkg</code>.</p>
+<blockquote>
+<p>It seems ambiguous either way and I'm hesitant to change existing behavior without strong justification.</p>
+</blockquote>
+<p>I think the justification is consistency; it all works the same whether you are adding a new editable dependency, changing existing dependency to editable, or changing an editable dependency back to a regular dependency.</p>
+<p>BTW, there doesn't seem to be a good way to change an editable dependency back to a regular dependency with <code>uv add</code> without the <code>--editable</code>. The <code>tool.uv.sources</code> entry remains. I guess this is really the same problem that <code>uv remove</code> needs to be run first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-07 15:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the justification is consistency; it all works the same whether you are adding a new editable dependency, changing existing dependency to editable, or changing an editable dependency back to a regular dependency.</p>
+</blockquote>
+<p>I'm not feeling convinced that &quot;changing a dependency to editable&quot; should have behavior consistent with &quot;adding a new editable dependency&quot;. I think the operation is inherently different if the dependency already exists in the <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

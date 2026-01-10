@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer subscript expression types - astral-sh/ruff #13689</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer subscript expression types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13689">#13689</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-09 09:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-09 09:08</div>
+            <div class="timeline-body"><p>Limited support for inferring subscript expressions, e.g when the value is a tuple, or string.</p>
+<pre><code class="language-python">def test(a: str):
+	c = a[0]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/244.html">astral-sh/ty#244</a> on 2024-10-09 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "subscript expression @MichaReiser" to "[red-knot[ Infer subscript expression types" by @MichaReiser on 2024-10-09 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot[ Infer subscript expression types" to "[red-knot] Infer subscript expression types" by @MichaReiser on 2024-10-09 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-09 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-10-09 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-09 09:34</div>
+            <div class="timeline-body"><p>@carljm String and tuple support has already been implemented in https://github.com/astral-sh/ruff/pull/13562. Do you have something else in mind that goes beyond what's covered in that PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-09 11:08</div>
+            <div class="timeline-body"><p>Following #13562, #13579 and #13667, I think the only thing we don't support with regard to type inference of subscript expressions is where a class does not define <code>__class_getitem__</code> but its metaclass defines <code>__getitem__</code>. But we don't really support anything regarding metaclasses yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-09 11:35</div>
+            <div class="timeline-body"><p>Oh, it looks like we might not support slices for string-literal and tuple types yet? <code>x[1:3]</code> should be inferred as <code>tuple[str, str]</code> if x has type <code>tuple[int, str, str, int]</code>. <code>y[1:3]</code> should be inferred as <code>Literal[&quot;aa&quot;]</code> if y has type <code>Literal[&quot;baab&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 07:32</div>
+            <div class="timeline-body"><p>We could probably also add special handling for subscript expressions where BytesLiteral types are on the l.h.s. and IntLiteral or BooleanLiteral types are on the r.h.s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13853.html">astral-sh/ruff#13853</a> on 2024-10-21 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @MichaReiser by @sharkdp on 2024-10-21 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2024-10-21 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13901.html">astral-sh/ruff#13901</a> on 2024-10-24 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-29 09:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, it looks like we might not support slices for string-literal and tuple types yet? <code>x[1:3]</code> should be inferred as <code>tuple[str, str]</code> if x has type <code>tuple[int, str, str, int]</code>. <code>y[1:3]</code> should be inferred as <code>Literal[&quot;aa&quot;]</code> if y has type <code>Literal[&quot;baab&quot;]</code>.</p>
+</blockquote>
+<p>This is now supported via #13917</p>
+<blockquote>
+<p>We could probably also add special handling for subscript expressions where BytesLiteral types are on the l.h.s. and IntLiteral or BooleanLiteral types are on the r.h.s.</p>
+</blockquote>
+<p>This is now supported via #13901</p>
+<blockquote>
+<p>the only thing we don't support with regard to type inference of subscript expressions is where a class does not define <code>__class_getitem__</code> but its metaclass defines <code>__getitem__</code>. But we don't really support anything regarding metaclasses yet.</p>
+</blockquote>
+<p>This is not yet supported. Do we want to close the ticket and come back to this when we tackle metaclasses, or keep it open until then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-29 10:29</div>
+            <div class="timeline-body"><p>No strong opinion. When we add support for metaclasses, we'll have to audit lots of our type inference to account for the fact that any class must be considered an instance of its metaclass. So perhaps this could be closed; but it also doesn't hurt to keep it open so that we remember to address this last point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-29 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>When we add support for metaclasses, we'll have to audit lots of our type inference to account for the fact that any class must be considered an instance of its metaclass</p>
+</blockquote>
+<p>I think this is a good enough reason to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-10-29 11:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

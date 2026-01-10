@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>force-exclude doesn't work in subdirectory - astral-sh/ruff #4127</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>force-exclude doesn't work in subdirectory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4127">#4127</a>
+        opened by <a href="https://github.com/brandonchinn178">@brandonchinn178</a>
+        on 2023-04-27 00:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brandonchinn178">@brandonchinn178</a> on 2023-04-27 00:25</div>
+            <div class="timeline-body"><p>When a python project is in a subdirectory (e.g. the <code>pyproject.toml</code> is in <code>subdir/pyproject.toml</code>), <code>force-exclude</code> no longer excludes files passed on the command line.</p>
+<p>This is an issue when using ruff in a pre-commit hook. I could have the pre-commit hook cd into the subdirectory, but then I'd need to strip the prefix on all arguments</p>
+<h2>Repro</h2>
+<p>Create the following files:</p>
+<pre><code class="language-toml"># subdir/pyproject.toml
+[tool.ruff]
+select = [&quot;F&quot;]
+extend-exclude = [&quot;skip.py&quot;]
+force-exclude = true
+</code></pre>
+<pre><code class="language-py"># subdir/skip.py
+import math
+</code></pre>
+<pre><code class="language-py"># subdir/foo.py
+import math
+</code></pre>
+<ol>
+<li><code>python3 -m venv venv</code></li>
+<li><code>venv/bin/pip install ruff</code></li>
+<li><code>venv/bin/ruff subdir/</code><ul>
+<li>✅  Finds <code>subdir/foo.py</code></li>
+</ul>
+</li>
+<li><code>venv/bin/ruff subdir/*.py</code><ul>
+<li>💥  Finds <code>subdir/foo.py</code> and <code>subdir/skip.py</code></li>
+</ul>
+</li>
+<li><code>(cd subdir &amp;&amp; ../venv/bin/ruff *.py)</code><ul>
+<li>✅  Finds <code>subdir/foo.py</code></li>
+</ul>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-27 01:28</div>
+            <div class="timeline-body"><p>The root cause here is that <code>force-exclude</code> is one of a handful of options that are really meant to be provided as command-line arguments, but that we do respect when in a <code>pyproject.toml</code> <em>in the current working directory</em>. Those include:</p>
+<pre><code class="language-rust">// TODO(charlie): Captured in pyproject.toml as a default, but not part of `Settings`.
+pub cache_dir: Option&lt;PathBuf&gt;,
+pub fix: Option&lt;bool&gt;,
+pub fix_only: Option&lt;bool&gt;,
+pub force_exclude: Option&lt;bool&gt;,
+pub format: Option&lt;SerializationFormat&gt;,
+pub show_fixes: Option&lt;bool&gt;,
+pub update_check: Option&lt;bool&gt;,
+...
+</code></pre>
+<p><code>force_exclude</code> is one that we could perhaps support more generally, I'd need to poke around at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-27 01:29</div>
+            <div class="timeline-body"><p>(I might suggest passing <code>--force-exclude</code> explicitly in your pre-commit hook, that's what we suggest for <code>pre-commit</code> specifically IIRC, but of course I'm not totally familiar with your setup and whether that's acceptable.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-27 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandonchinn178">@brandonchinn178</a> on 2023-04-27 01:33</div>
+            <div class="timeline-body"><p>Ah thanks! Didn't think setting via CLI flag would be any different than via pyproject.toml. That works!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-27 02:15</div>
+            <div class="timeline-body"><p>Yeah, it's just those few flags that I linked above. The issue, in most cases, is that they're only defined as top-level controls, and not recursively (e.g., we don't support mixing output formats between files in different directories in a single invocation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-04-29 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laszlo-hypergolic">@laszlo-hypergolic</a> on 2024-02-15 16:37</div>
+            <div class="timeline-body"><p>Was this changed/fixed since this thread?</p>
+<p>I just added <code>force-exclude = true</code> to <code>pyproject.toml</code> and worked in the same situation (pre-commit hooks).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 07:11</div>
+            <div class="timeline-body"><blockquote>
+<p>worked in the same situation</p>
+</blockquote>
+<p>Are you saying that it worked as expected or did you run into the same issue as mentioned in this thread?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laszlo-hypergolic">@laszlo-hypergolic</a> on 2024-02-16 12:06</div>
+            <div class="timeline-body"><p>I have a <code>config.py</code> that imports a lot of packages that are not used in the file (I use this to declutter Jupyter notebooks).
+Ruff was complaining about it. I added the file (and then the dir) to <code>exclude = [&quot;notebooks&quot;]</code> then to <code>extend-exclude = [&quot;notebooks&quot;]</code> then came to this thread, added <code>force-exclude = true</code></p>
+<p>then run the command. I thought that it works and then I made the comment but when I checked it turned out that ruff just forced --fix the file and deleted the unused imports. (I then added <code>#noqa</code> to the top of the file and that made my problem go away but of course didn't solve the problem that <code>exclude=</code> doesn't seem to be working.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

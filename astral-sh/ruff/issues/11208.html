@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B024 false negative when there's a class var - astral-sh/ruff #11208</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B024 false negative when there's a class var</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11208">#11208</a>
+        opened by <a href="https://github.com/aureliojargas">@aureliojargas</a>
+        on 2024-04-29 21:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aureliojargas">@aureliojargas</a> on 2024-04-29 21:01</div>
+            <div class="timeline-body"><p>Taking the example from https://docs.astral.sh/ruff/rules/abstract-base-class-without-abstract-method/</p>
+<pre><code class="language-python">from abc import ABC
+
+
+class Foo(ABC):
+    def method(self):
+        bar()
+</code></pre>
+<p>B024 detects it as expected:</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.4.2
+$ ruff check --isolated --select B024 abc.py 
+abc.py:4:7: B024 `Foo` is an abstract base class, but it has no abstract methods
+Found 1 error.
+$
+</code></pre>
+<p>But if I add a simple class var, now it passes:</p>
+<pre><code class="language-python">from abc import ABC
+
+
+class Foo(ABC):
+    BAR = 1
+
+    def method(self):
+        bar()
+</code></pre>
+<pre><code class="language-console">$ ruff check --isolated --select B024 abc.py
+All checks passed!
+</code></pre>
+<p>Is that expected?</p>
+<p>Playground: https://play.ruff.rs/f0b51911-407f-4bd7-af7c-c9f5b1116677</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-30 03:24</div>
+            <div class="timeline-body"><p>It looks like it's due to https://github.com/PyCQA/flake8-bugbear/issues/293, but I think we can refine this check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-30 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-04-30 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11210.html">astral-sh/ruff#11210</a> on 2024-04-30 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-30 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyCQA/flake8-bugbear/issues/471.html">PyCQA/flake8-bugbear#471</a> on 2024-04-30 23:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

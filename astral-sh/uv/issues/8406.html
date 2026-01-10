@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build failing to build wheel correctly when project.name != package folder name - astral-sh/uv #8406</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build failing to build wheel correctly when project.name != package folder name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8406">#8406</a>
+        opened by <a href="https://github.com/david-waterworth">@david-waterworth</a>
+        on 2024-10-21 04:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-21 04:48</div>
+            <div class="timeline-body"><p>I have a project with a name (i.e. foo) that's not the same as the source folder / package name (<code>src/bar</code>).</p>
+<pre><code>[project]
+name = &quot;foo&quot;
+version = &quot;1.2.3&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/bar&quot;]
+
+[tool.hatch.build.targets.sdist]
+packages = [&quot;src/bar&quot;]
+</code></pre>
+<p>If I run <code>uvx hatch build</code> I get a wheel and sdist that contain the files I expect - i.e. the wheel <code>{project.name}-{version}-py3-none-any.whl</code>  contains</p>
+<pre><code>{project.name}-{version}.distinfo/
+    METADATA
+    RECORD
+    WHEEL
+bar/
+     {contents of src/bar}
+</code></pre>
+<p>But if I run <code>uv build</code> the sdist is correct, but the wheel only contains the project metadata - i.e. the contents of the archive <code>{project.name}-{version}-py3-none-any.whl</code> is</p>
+<pre><code>{project.name}-{version}.distinfo/
+    METADATA
+    RECORD
+    WHEEL
+</code></pre>
+<p>i.e. <code>bar/</code> is missing</p>
+<p>It works if I set the project name the same as the packages folder. I would expect that <code>uv build</code> and <code>uvx hatch build</code> would behave exactly the same?</p>
+<p>I'm using uv v0.4.24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-21 07:42</div>
+            <div class="timeline-body"><p>The sdist  works fine, the wheel is built correctly when I use hatch but not uv with the same pyproject file. Both have the same configSent from my iPhoneOn 21 Oct 2024, at 6:37 pm, bluss <em><strong>@</strong></em>.***&gt; wrote:﻿
+Could you create the sdist and check if it has the contents you expect. I think it's missing files because of your sdist config.</p>
+<p>—Reply to this email directly, view it on GitHub, or unsubscribe.You are receiving this because you authored the thread.Message ID: <em><strong>@</strong></em>.***&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-21 08:43</div>
+            <div class="timeline-body"><p>Could this be another case of https://github.com/astral-sh/uv/pull/8220? What version of uv are you using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 14:49</div>
+            <div class="timeline-body"><p>I assume <code>uv build --wheel</code> and <code>uv build --sdist</code> produce the right artifacts? (That's not the same as running <code>uv build</code>, which builds the wheel from the sdist.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-21 21:54</div>
+            <div class="timeline-body"><p>@charliermarsh yes it does
+@konstin  v0.4.24 - (and that link explains why  .gitignore keeps appearing in that folder...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 22:08</div>
+            <div class="timeline-body"><p>Does <code>python -m build</code> work on your project, or does it produce similar builds? (https://github.com/pypa/build)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-21 22:56</div>
+            <div class="timeline-body"><p>@charliermarsh no that does the same thing as <code>uv build</code> and only includes the metadata in the wheel, but the source is included in the sdist</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 23:25</div>
+            <div class="timeline-body"><p>@david-waterworth -- You may have a real issue with your project then. <code>pypa/build</code> is effectively the reference implementation for the spec. My guess is that <code>uvx hatch build</code> builds the wheel and the sdist from source, rather than building the wheel from the sdist as is the default in <code>pypa/build</code> and <code>uv</code>. You'll either need to figure out why your sdist isn't working as expected or use <code>uv build --sdist --wheel</code> (but, again, your sdist may have a real problem?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-21 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-22 00:58</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/17468438/foo.zip">foo.zip</a></p>
+<p>I created a minimal example - maybe there is something wrong with the sdist, I've not actually tried to install it. Also https://hatch.pypa.io/latest/config/build/#packages doesn't appear to explicitly cover the case where project.name doesn't equal package name - maybe it's not supported, the accepted answer to https://stackoverflow.com/questions/77070305/how-to-distribute-a-python-package-where-import-name-is-different-than-project-n was to switch to setuptools?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-22 01:02</div>
+            <div class="timeline-body"><p>Adding</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+packages = [&quot;src/bar&quot;]
+include = [
+  &quot;src/bar/**&quot;,
+]
+</code></pre>
+<p>Seems to work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-22 04:51</div>
+            <div class="timeline-body"><p>The config <code>tool.hatch.build.targets.sdist.packages</code> looks out of place to me, and without it, I think it's doing the right thing?</p>
+<p>&quot;&quot;&quot;
+The packages option is semantically equivalent to only-include (which takes precedence) except that the shipped path will be <strong>collapsed</strong> to only include the final component.
+&quot;&quot;&quot;</p>
+<p>When it is used on sdist, <code>src/bar</code> from the original source becomes <code>bar</code> in the sdist. When you build a wheel from that, there is no <code>src</code> anymore, so the wheel config becomes incorrect too?  (The right way -&gt; just omit the sdist config or change it to not use <code>packages</code>).</p>
+<p>A thing to keep in mind here is that there are two workflows that are both used. One is source -&gt; sdist -&gt; wheel and the other is source -&gt; sdist and source -&gt; wheel.  <code>hatch build</code> may well be using a different default than <code>build</code> and <code>uv build</code> - just check all their settings. They can all do one or the other, but source -&gt; sdist -&gt; wheel should be preferred. And it has basically caught an error in your sdist construction here for you, which is why wheels should be built that way..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 15:54</div>
+            <div class="timeline-body"><p>I'm going to close for now as I don't <em>think</em> it's uv-specific.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-22 15:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:14 UTC
+    </footer>
+</body>
+</html>

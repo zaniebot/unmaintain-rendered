@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH123 and S102 check `builtin` instead of `builtins` - astral-sh/ruff #15442</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PTH123 and S102 check `builtin` instead of `builtins`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15442">#15442</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-12 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-12 16:01</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/builtin-open/"><code>builtin-open</code> (PTH123)</a> and <a href="https://docs.astral.sh/ruff/rules/exec-builtin/"><code>exec-builtin</code> (S102)</a> check for the module <code>builtin</code>, but the standard library module is actually <code>builtins</code>. This causes false negatives and false positives in Ruff 0.9.1.</p>
+<p>False negatives:</p>
+<pre><code class="language-console">$ cat pth123_s102_builtins.py
+import builtins
+with builtins.open(__file__, &quot;r&quot;) as f:
+    builtins.exec(&quot;print(f.read())&quot;)
+
+$ ruff check --isolated --select PTH123,S102 pth123_s102_builtins.py
+All checks passed!
+</code></pre>
+<p>False positives:</p>
+<pre><code class="language-console">$ cat pth123_s102_builtin.py
+import builtin
+with builtin.open(__file__, &quot;r&quot;) as f:
+    builtin.exec(&quot;print(f.read())&quot;)
+
+$ ruff check --isolated --select PTH123,S102 pth123_s102_builtin.py
+pth123_s102_builtin.py:2:6: PTH123 `open()` should be replaced by `Path.open()`
+  |
+1 | import builtin
+2 | with builtin.open(__file__, &quot;r&quot;) as f:
+  |      ^^^^^^^^^^^^ PTH123
+3 |     builtin.exec(&quot;print(f.read())&quot;)
+  |
+
+pth123_s102_builtin.py:3:5: S102 Use of `exec` detected
+  |
+1 | import builtin
+2 | with builtin.open(__file__, &quot;r&quot;) as f:
+3 |     builtin.exec(&quot;print(f.read())&quot;)
+  |     ^^^^^^^^^^^^ S102
+  |
+
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15443.html">astral-sh/ruff#15443</a> on 2025-01-12 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-13 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-13 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 00:45</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

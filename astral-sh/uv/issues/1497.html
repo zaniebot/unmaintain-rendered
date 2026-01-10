@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install the CPU version of torch - astral-sh/uv #1497</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install the CPU version of torch</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1497">#1497</a>
+        opened by <a href="https://github.com/Nishikoh">@Nishikoh</a>
+        on 2024-02-16 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-16 14:57</div>
+            <div class="timeline-body"><p>I tried to install the CPU version of torch but could not.</p>
+<pre><code class="language-bash">uv pip install torch==2.1.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html
+# and next command gives the same result.
+uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<pre><code class="language-log">  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.1.0+cpu and you require torch==2.1.0+cpu, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>uv version: v0.1.2
+Python 3.11.7
+Ubuntu 20.4
+X86_64 Architecture</p>
+<hr />
+<p>By the way, the install of the GPU version of torch is successful.</p>
+<pre><code class="language-bash">uv pip install torch==2.1.0
+# success
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 14:58</div>
+            <div class="timeline-body"><p>Thanks! Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-16 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 15:02</div>
+            <div class="timeline-body"><p>Here's verbose output on my machine</p>
+<pre><code>❯ echo &quot;torch==2.1.0+cpu&quot; | uv pip compile --find-links https://download.pytorch.org/whl/torch_stable.html -
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.1.0+cpu and you require torch==2.1.0+cpu, we can conclude that the requirements are unsatisfiable.
+❯ echo &quot;torch==2.1.0+cpu&quot; | uv pip compile --find-links https://download.pytorch.org/whl/torch_stable.html - -v
+    0.000491s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /Users/mz/eng/src/astral-sh/uv/.venv
+    0.000781s DEBUG uv_interpreter::interpreter Using cached markers for: /Users/mz/eng/src/astral-sh/uv/.venv/bin/python
+    0.000791s DEBUG uv::commands::pip_compile Using Python 3.9.6 interpreter at /Users/mz/eng/src/astral-sh/uv/.venv/bin/python for builds
+ uv_client::cached_client::get_serde 
+   uv_client::cached_client::get_cacheable 
+     uv_client::cached_client::read_and_parse_cache file=/Users/mz/Library/Caches/uv/flat-index-v0/html/76f6661a0037bb05.msgpack
+        0.010378s   0ms  WARN uv_client::cached_client Broken cache entry at /Users/mz/Library/Caches/uv/flat-index-v0/html/76f6661a0037bb05.msgpack, removing: failed to open file `/Users/mz/Library/Caches/uv/flat-index-v0/html/76f6661a0037bb05.msgpack`
+        0.010766s   0ms DEBUG uv_client::cached_client No cache entry for: https://download.pytorch.org/whl/torch_stable.html
+     uv_client::cached_client::fresh_request url=&quot;https://download.pytorch.org/whl/torch_stable.html&quot;
+     uv_client::cached_client::new_cache file=/Users/mz/Library/Caches/uv/flat-index-v0/html/76f6661a0037bb05.msgpack
+     uv_client::flat_index::parse_flat_index_html url=https://download.pytorch.org/whl/torch_stable.html
+       uv_client::html::parse url=Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;download.pytorch.org&quot;)), port: None, path: &quot;/whl/torch_stable.html&quot;, query: None, fragment: None }
+    0.318613s DEBUG uv_client::flat_index Found 2243 packages in `--find-links` entry: https://download.pytorch.org/whl/torch_stable.html
+ uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.322186s   1ms DEBUG uv_resolver::resolver Solving with target Python version 3.9.6
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.322468s   0ms DEBUG uv_resolver::resolver Adding direct dependency: torch==2.1.0+cpu
+   uv_resolver::resolver::choose_version package=torch
+     uv_resolver::resolver::package_wait package_name=torch
+ uv_resolver::resolver::process_request request=Versions torch
+   uv_client::registry_client::simple_api package=torch
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/Users/mz/Library/Caches/uv/simple-v0/pypi/torch.rkyv
+ uv_resolver::resolver::process_request request=Prefetch torch ==2.1.0+cpu
+          0.323335s   0ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/torch
+ uv_resolver::version_map::from_metadata 
+        0.324165s   1ms DEBUG uv_resolver::resolver Searching for a compatible version of torch (==2.1.0+cpu)
+      0.324187s   3ms DEBUG uv_resolver::resolver No compatible version found for: torch
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of torch==2.1.0+cpu and you require torch==2.1.0+cpu, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 15:24</div>
+            <div class="timeline-body"><p>You can see these versions <em>are</em> available at https://download.pytorch.org/whl/torch_stable.html</p>
+<p>Adding a debug log and it looks like we're filtering these out before candidate selection</p>
+<pre><code>        0.382322s   4ms DEBUG uv_resolver::resolver Searching for a compatible version of torch (==2.1.0+cpu)
+        0.382340s   4ms DEBUG uv_resolver::candidate_selector Checking 2.2.0
+        0.382353s   4ms DEBUG uv_resolver::candidate_selector Checking 2.1.2
+        0.382366s   4ms DEBUG uv_resolver::candidate_selector Checking 2.1.1
+        0.382378s   4ms DEBUG uv_resolver::candidate_selector Checking 2.1.0
+        0.382391s   4ms DEBUG uv_resolver::candidate_selector Checking 2.0.1
+        0.382404s   4ms DEBUG uv_resolver::candidate_selector Checking 2.0.0
+        0.382417s   4ms DEBUG uv_resolver::candidate_selector Checking 1.13.1
+        0.382429s   4ms DEBUG uv_resolver::candidate_selector Checking 1.13.0
+        0.382442s   4ms DEBUG uv_resolver::candidate_selector Checking 1.12.1
+        0.382454s   4ms DEBUG uv_resolver::candidate_selector Checking 1.12.0
+        0.382466s   4ms DEBUG uv_resolver::candidate_selector Checking 1.11.0
+        0.382479s   4ms DEBUG uv_resolver::candidate_selector Checking 1.10.2
+        0.382491s   4ms DEBUG uv_resolver::candidate_selector Checking 1.10.1
+        0.382503s   4ms DEBUG uv_resolver::candidate_selector Checking 1.10.0
+        0.382516s   4ms DEBUG uv_resolver::candidate_selector Checking 1.9.1
+        0.382528s   4ms DEBUG uv_resolver::candidate_selector Checking 1.9.0
+        0.382540s   4ms DEBUG uv_resolver::candidate_selector Checking 1.8.1
+        0.382552s   4ms DEBUG uv_resolver::candidate_selector Checking 1.8.0
+        0.382564s   4ms DEBUG uv_resolver::candidate_selector Checking 1.7.1
+        0.382577s   4ms DEBUG uv_resolver::candidate_selector Checking 1.7.0
+        0.382589s   4ms DEBUG uv_resolver::candidate_selector Checking 1.6.0
+        0.382601s   4ms DEBUG uv_resolver::candidate_selector Checking 1.5.1
+        0.382613s   4ms DEBUG uv_resolver::candidate_selector Checking 1.5.0
+        0.382625s   4ms DEBUG uv_resolver::candidate_selector Checking 1.4.0
+        0.382638s   4ms DEBUG uv_resolver::candidate_selector Checking 1.3.1
+        0.382650s   4ms DEBUG uv_resolver::candidate_selector Checking 1.3.0.post2
+        0.382663s   4ms DEBUG uv_resolver::candidate_selector Checking 1.3.0
+        0.382675s   4ms DEBUG uv_resolver::candidate_selector Checking 1.2.0
+        0.382687s   4ms DEBUG uv_resolver::candidate_selector Checking 1.1.0.post2
+        0.382699s   4ms DEBUG uv_resolver::candidate_selector Checking 1.1.0
+        0.382712s   4ms DEBUG uv_resolver::candidate_selector Checking 1.0.1.post2
+        0.382725s   4ms DEBUG uv_resolver::candidate_selector Checking 1.0.1
+        0.382737s   4ms DEBUG uv_resolver::candidate_selector Checking 1.0.0
+        0.382749s   4ms DEBUG uv_resolver::candidate_selector Checking 0.4.1.post2
+        0.382762s   4ms DEBUG uv_resolver::candidate_selector Checking 0.4.1
+        0.382774s   4ms DEBUG uv_resolver::candidate_selector Checking 0.4.0
+        0.382786s   4ms DEBUG uv_resolver::candidate_selector Checking 0.3.1
+        0.382798s   4ms DEBUG uv_resolver::candidate_selector Checking 0.3.0.post4
+        0.382812s   4ms DEBUG uv_resolver::candidate_selector Checking 0.3.0.post3
+        0.382825s   4ms DEBUG uv_resolver::candidate_selector Checking 0.3.0.post2
+        0.382841s   4ms DEBUG uv_resolver::candidate_selector Checking 0.3.0
+        0.382854s   4ms DEBUG uv_resolver::candidate_selector Checking 0.2.0.post3
+        0.382867s   4ms DEBUG uv_resolver::candidate_selector Checking 0.2.0.post2
+        0.382881s   4ms DEBUG uv_resolver::candidate_selector Checking 0.2.0.post1
+        0.382894s   4ms DEBUG uv_resolver::candidate_selector Checking 0.1.12.post2
+        0.382907s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.12.post1
+        0.382921s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.11.post5
+        0.382933s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.11.post4
+        0.382946s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.10.post2
+        0.382960s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.10.post1
+        0.382974s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.9.post2
+        0.382987s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.9.post1
+        0.383001s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.8.post1
+        0.383015s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.7.post2
+        0.383029s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.6.post22
+        0.383042s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.6.post20
+        0.383082s   5ms DEBUG uv_resolver::candidate_selector Checking 0.1.6.post17
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-02-16 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../open-webui/open-webui/pulls/758.html">open-webui/open-webui#758</a> on 2024-02-16 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justinh-rahb">@justinh-rahb</a> on 2024-02-16 20:43</div>
+            <div class="timeline-body"><p>Ya there are definitely versions that should be installable available but I'm not getting any luck on Linux x86_64, worked fine on an M1 MacBook though.</p>
+<pre><code class="language-bash">uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-16 21:52</div>
+            <div class="timeline-body"><p>Oops, I guess I didn't provide enough information about my environment. I use the following environment.</p>
+<hr />
+<p>Python 3.11.7
+Ubuntu 20.4
+X86_64 Architecture</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-16 22:01</div>
+            <div class="timeline-body"><p>There is a way to install torch by typing the URL directly. I tried that too, but it failed.</p>
+<pre><code>$ uv pip install torch@https://download.pytorch.org/whl/cpu/torch-2.1.0%2Bcpu-cp311-cp311-linux_x86_64.whl#sha256=5954924ce74bc7e6a6c811e3fa4bdda9936d9889f6369fd068420c444bfd1cae
+
+error: The wheel filename &quot;torch-2.1.0%2Bcpu-cp311-cp311-linux_x86_64.whl&quot; has an invalid version part: after parsing 2.1.0, found &quot;%2Bcpu&quot; after it, which is not part of a valid version
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-16 22:06</div>
+            <div class="timeline-body"><p>Converting the string &quot;%2Bcpu&quot; to &quot;+cpu&quot; and executing it produces another error.</p>
+<pre><code>$ uv pip install torch@https://download.pytorch.org/whl/cpu/torch-2.1.0+cpu-cp311-cp311-linux_x86_64.whl#sha256=5954924ce74bc7e6a6c811e3fa4bdda9936d9889f6369fd068420c444bfd1cae
+
+error: Failed to download: torch @ https://download.pytorch.org/whl/cpu/torch-2.1.0+cpu-cp311-cp311-linux_x86_64.whl#sha256=5954924ce74bc7e6a6c811e3fa4bdda9936d9889f6369fd068420c444bfd1cae
+  Caused by: HTTP status client error (403 Forbidden) for url (https://download.pytorch.org/whl/cpu/torch-2.1.0+cpu-cp311-cp311-linux_x86_64.whl#sha256=5954924ce74bc7e6a6c811e3fa4bdda9936d9889f6369fd068420c444bfd1cae)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 22:08</div>
+            <div class="timeline-body"><p>I think part of the problem here is solved by https://github.com/astral-sh/uv/pull/1544 (but perhaps not all of it). Do you mind trying again once that's out later today?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-16 22:22</div>
+            <div class="timeline-body"><p>Thank you for working on the problem!</p>
+<blockquote>
+<p>I think part of the problem here is solved by https://github.com/astral-sh/uv/pull/1544 (but perhaps not all of it). Do you mind trying again once that's out later today?</p>
+</blockquote>
+<p>I'm actually going on a two-day trip starting today. So I won't be able to check it until after that. Sorry about that. If anyone is tracking this issue, I would be grateful if you could check on my behalf.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justinh-rahb">@justinh-rahb</a> on 2024-02-16 22:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm actually going on a two-day trip starting today. So I won't be able to check it until after that. Sorry about that. If anyone is tracking this issue, I would be grateful if you could check on my behalf.</p>
+</blockquote>
+<p>I got you fam 👌</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 01:48</div>
+            <div class="timeline-body"><p>Do you mind giving this at try (at your convenience) with v0.1.3?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justinh-rahb">@justinh-rahb</a> on 2024-02-17 04:31</div>
+            <div class="timeline-body"><p>Just using the <code>uv</code> tool on my bare Linux machine is working now, but I'm still having a heck of a time making things work in Docker containers. Keeps trying to install <code>six</code> from the PyTorch index, which of course fails because there is no such package there. I did try to explicitly set the version of torch as well, no luck.</p>
+<p>Verbose log: https://pastebin.com/SQh4cLQS</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-19 02:45</div>
+            <div class="timeline-body"><p>I have tried three different INSTALL methods and have confirmed that they all work 👏</p>
+<p>uv version: v0.1.4</p>
+<pre><code>$ uv pip install torch@https://download.pytorch.org/whl/cpu/torch-2.1.0%2Bcpu-cp311-cp311-linux_x86_64.whl#sha256=5954924ce74bc7e6a6c811e3fa4bdda9936d9889f6369fd068420c444bfd1cae
+
+Resolved 9 packages in 4.46s
+Downloaded 1 package in 4.10s
+Installed 9 packages in 149ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.1.0+cpu (from https://download.pytorch.org/whl/cpu/torch-2.1.0%2Bcpu-cp311-cp311-linux_x86_64.whl#sha256=5954924ce74bc7e6a6c811e3fa4bdda9936d9889f6369fd068420c444bfd1cae)
+ + typing-extensions==4.9.0
+</code></pre>
+<p>The next two methods worked in the same way 👍</p>
+<pre><code>$ uv pip install torch==2.1.0+cpu --index-url https://download.pytorch.org/whl/cpu
+$ uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<p>Great project and a big thank you to the maintainers!</p>
+<hr />
+<p>edit</p>
+<p>The following command failed</p>
+<pre><code>$ uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<p>The following command succeeds</p>
+<pre><code>uv pip install torch==2.1.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-19 02:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Verbose log: https://pastebin.com/SQh4cLQS</p>
+</blockquote>
+<p>I tried to check this log on my end, but also failed. I tried explicitly specifying the version and cpu, but no luck.</p>
+<pre><code>$ uv pip install torchvision==0.16.1+cpu torchaudio==2.1.1+cpu torch==2.1.1+cpu --index-url https://download.pytorch.org/whl/cpu
+
+  x No solution found when resolving dependencies:
+  `-&gt; Because torchvision==0.16.1+cpu depends on torch==2.1.1 and you require torch==2.1.1+cpu, we can conclude that root==0a0.dev0 and torchvision==0.16.1+cpu are incompatible.
+      And because you require torchvision==0.16.1+cpu, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baskervilski">@baskervilski</a> on 2024-02-19 14:08</div>
+            <div class="timeline-body"><p>I have a similar problem when trying to use <code>uv pip compile</code>:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/7703701/db46cf10-25bd-4f27-a541-399bba7c210c" alt="image" /></p>
+<p>In <code>pyproject.toml</code> I have the <code>+cpu</code> dependencies specifed, and they are available on our internal Artifactory (installation works without an issue), but the compilation fails for some reason...</p>
+<p>EDIT: Using v0.1.5 btw.</p>
+<p>EDIT2: Identical error and message happen when trying to install a package with <code>torch+cpu</code> dependencies, although &quot;direct&quot; installation of +cpu dependencies (<code>uv pip install ...</code>) works without issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 15:35</div>
+            <div class="timeline-body"><p>Just to clarify, <code>uv pip install</code> works but <code>uv pip compile</code> does not? What's the exact <code>compile</code> invocation and input file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baskervilski">@baskervilski</a> on 2024-02-19 17:22</div>
+            <div class="timeline-body"><p>So.</p>
+<ul>
+<li><code>uv pip install torch==2.1.1+cpu</code> =&gt; works 🟢</li>
+<li><code>uv pip install -e .</code> (where the local project has <code>torch==2.1.1+cpu</code> as a dependency) =&gt; fails. 🔴</li>
+<li><code>uv pip compile -o requirements.txt pyproject.toml</code> (where the local project has <code>torch==2.1.1+cpu</code> as a dependency) =&gt; fails. 🔴</li>
+</ul>
+<p>Error message (eviaea-api is my project):
+<img src="https://github.com/astral-sh/uv/assets/7703701/ca722e3d-ed80-440a-ace2-480290d32b9c" alt="305975352-db46cf10-25bd-4f27-a541-399bba7c210c" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baskervilski">@baskervilski</a> on 2024-02-22 13:12</div>
+            <div class="timeline-body"><p>Ok, found a workaround(?), using the <code>--override</code> option:</p>
+<p>I created the <code>overrides.txt</code> file with the following content</p>
+<pre><code># overrides.txt
+torch==2.1.1+cpu
+torchvision==0.16.1+cpu
+</code></pre>
+<p>Then called:
+<code>uv pip compile pyproject.toml -o requirements.txt --override overrides.txt</code>
+and
+<code>uv pip install -e . --override overrides.txt</code></p>
+<p>For now I can live with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 13:25</div>
+            <div class="timeline-body"><p>Thanks @baskervilski - that makes sense to me actually (that it works), I believe the bug here relates to our handling of local versions which we’ll need to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1855.html">astral-sh/uv#1855</a> on 2024-02-22 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-22 14:52</div>
+            <div class="timeline-body"><p>OK, so I'm looking into this (and still catching up conceptually with how #1855 ties into this) and thought it might be helpful to just start sharing what I'm seeing. At least initially, I suspect I'm not sharing anything that @charliermarsh doesn't already know. :)</p>
+<p>So what I did here was to try and isolate where the problem is coming from. I was able to get one of the commands shared above failing for me (I'm on Linux <code>x86-64</code>):</p>
+<pre><code>$ uv pip install torch==2.1.1 --index-url https://download.pytorch.org/whl/cpu
+  x No solution found when resolving dependencies:
+  `-&gt; Because torch==2.1.1 is unusable because no wheels are available with a matching platform and you require torch==2.1.1, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>And specifically, <code>pip install</code> with the same command works fine:</p>
+<pre><code>$ pip install torch==2.1.1 --index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.1.1
+  Using cached https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl (184.9 MB)
+Collecting filelock (from torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/filelock-3.9.0-py3-none-any.whl (9.7 kB)
+Collecting typing-extensions (from torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/typing_extensions-4.8.0-py3-none-any.whl (31 kB)
+Collecting sympy (from torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/sympy-1.12-py3-none-any.whl (5.7 MB)
+Collecting networkx (from torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/networkx-3.2.1-py3-none-any.whl (1.6 MB)
+Collecting jinja2 (from torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/Jinja2-3.1.2-py3-none-any.whl (133 kB)
+Collecting fsspec (from torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/fsspec-2023.4.0-py3-none-any.whl (153 kB)
+Collecting MarkupSafe&gt;=2.0 (from jinja2-&gt;torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/MarkupSafe-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (28 kB)
+Collecting mpmath&gt;=0.19 (from sympy-&gt;torch==2.1.1)
+  Using cached https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl (536 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch
+Successfully installed MarkupSafe-2.1.3 filelock-3.9.0 fsspec-2023.4.0 jinja2-3.1.2 mpmath-1.3.0 networkx-3.2.1 sympy-1.12 torch-2.1.1+cpu typing-extensions-4.8.0
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: pip install --upgrade pip
+</code></pre>
+<p>So I started taking a look at why <code>uv</code> doesn't see <code>torch 2.1.1</code>. To start with, I wanted to see with what our <code>VersionMap</code> was being populated with. So I printed out debug info for wheels with versions that contain <code>2.1.1</code> in them. I got this:</p>
+<pre><code>&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp310, abi tags: cp310, platform tags: manylinux_2_17_aarch64, manylinux2014_aarch64
+    filename: &quot;torch-2.1.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=84fefd63356416c0cd20578637ccdbb82164993400ed17b57c951dd6376dcee8
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp310, abi tags: none, platform tags: macosx_10_9_x86_64
+    filename: &quot;torch-2.1.1-cp310-none-macosx_10_9_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp310-none-macosx_10_9_x86_64.whl#sha256=1e1e5faddd43a8f2c0e0e22beacd1e235a2e447794d807483c94a9e31b54a758
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp310, abi tags: none, platform tags: macosx_11_0_arm64
+    filename: &quot;torch-2.1.1-cp310-none-macosx_11_0_arm64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp310-none-macosx_11_0_arm64.whl#sha256=e76bf3c5c354874f1da465c852a2fb60ee6cbce306e935337885760f080f9baa
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp311, abi tags: cp311, platform tags: manylinux_2_17_aarch64, manylinux2014_aarch64
+    filename: &quot;torch-2.1.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=61b51b33c61737c287058b0c3061e6a9d3c363863e4a094f804bc486888a188a
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp311, abi tags: none, platform tags: macosx_10_9_x86_64
+    filename: &quot;torch-2.1.1-cp311-none-macosx_10_9_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp311-none-macosx_10_9_x86_64.whl#sha256=a70593806f1d7e6b53657d96810518da0f88ef2608c98a402955765b8c79d52c
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp311, abi tags: none, platform tags: macosx_11_0_arm64
+    filename: &quot;torch-2.1.1-cp311-none-macosx_11_0_arm64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp311-none-macosx_11_0_arm64.whl#sha256=e312f7e82e49565f7667b0bbf9559ab0c597063d93044740781c02acd5a87978
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp38, abi tags: cp38, platform tags: manylinux_2_17_aarch64, manylinux2014_aarch64
+    filename: &quot;torch-2.1.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=9ca0fcbf3d5ba644d6a8572c83a9abbdf5f7ff575bc38529ef6c185a3a71bde9
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp38, abi tags: none, platform tags: macosx_10_9_x86_64
+    filename: &quot;torch-2.1.1-cp38-none-macosx_10_9_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp38-none-macosx_10_9_x86_64.whl#sha256=d56b032176458e2af4709627bbd2c20fe2917eff8cd087a7fe313acccf5ce2f1
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp38, abi tags: none, platform tags: macosx_11_0_arm64
+    filename: &quot;torch-2.1.1-cp38-none-macosx_11_0_arm64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp38-none-macosx_11_0_arm64.whl#sha256=29e3b90a8c281f6660804a939d1f4218604c80162e521e1e6d8c8557325902a0
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp39, abi tags: cp39, platform tags: manylinux_2_17_aarch64, manylinux2014_aarch64
+    filename: &quot;torch-2.1.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=b31230bd058424e56dba7f899280dbc6ac8b9948e43902e0c84a44666b1ec151
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp39, abi tags: none, platform tags: macosx_10_9_x86_64
+    filename: &quot;torch-2.1.1-cp39-none-macosx_10_9_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp39-none-macosx_10_9_x86_64.whl#sha256=715b50d8c1de5da5524a68287eb000f73e026e74d5f6b12bc450ef6995fcf5f9
+&quot;2.1.1&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1&quot; python tags: cp39, abi tags: none, platform tags: macosx_11_0_arm64
+    filename: &quot;torch-2.1.1-cp39-none-macosx_11_0_arm64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1-cp39-none-macosx_11_0_arm64.whl#sha256=db67e8725c76f4c7f4f02e7551bb16e81ba1a1912867bc35d7bb96d2be8c78b4
+
+
+
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp310, abi tags: cp310, platform tags: linux_x86_64
+    filename: &quot;torch-2.1.1+cpu-cp310-cp310-linux_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp310-cp310-linux_x86_64.whl#sha256=16e6cdb1991ff1f15f469b12fffb5b20f00b1ecff8c1073c23c7760fba90fcbc
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp310, abi tags: cp310, platform tags: win_amd64
+    filename: &quot;torch-2.1.1+cpu-cp310-cp310-win_amd64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp310-cp310-win_amd64.whl#sha256=8e4e47aa4a004d2f5edd516b296da6fba07981ae9d1fc0da862abf651dc07d96
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp311, abi tags: cp311, platform tags: linux_x86_64
+    filename: &quot;torch-2.1.1+cpu-cp311-cp311-linux_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl#sha256=d83b13cb17544f9851cc31fed197865eae0c0f5d32df9d8d6d8535df7d2e5109
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp311, abi tags: cp311, platform tags: win_amd64
+    filename: &quot;torch-2.1.1+cpu-cp311-cp311-win_amd64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-win_amd64.whl#sha256=23be0cb945970443c97d4f9ea61ed03b27f924d835de689dd4134f30966c13f7
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp38, abi tags: cp38, platform tags: linux_x86_64
+    filename: &quot;torch-2.1.1+cpu-cp38-cp38-linux_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp38-cp38-linux_x86_64.whl#sha256=9399a8dfe4833bb544e7a0c332c47db1e389a06b4ae5ac9b3b167d863adc95d9
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp38, abi tags: cp38, platform tags: win_amd64
+    filename: &quot;torch-2.1.1+cpu-cp38-cp38-win_amd64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp38-cp38-win_amd64.whl#sha256=d8e19bb465e1fa15f3231ff57bbf0a673e5dcaca39eee4f58a4be7832b80c9da
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp39, abi tags: cp39, platform tags: linux_x86_64
+    filename: &quot;torch-2.1.1+cpu-cp39-cp39-linux_x86_64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp39-cp39-linux_x86_64.whl#sha256=b2cc98815251f8a2d102c2f8f4afe8304c2df61ce9c237198032c7903d97fdbb
+&quot;2.1.1+cpu&quot;: PackageName(&quot;torch&quot;), wheel version: &quot;2.1.1+cpu&quot; python tags: cp39, abi tags: cp39, platform tags: win_amd64
+    filename: &quot;torch-2.1.1+cpu-cp39-cp39-win_amd64.whl&quot;
+    requires_python: None
+    url: /whl/cpu/torch-2.1.1%2Bcpu-cp39-cp39-win_amd64.whl#sha256=b09d431c8e53511b6c3624f1d79cce9cd28f4c27ca20c5a49e4dcc1f9e7377e5
+</code></pre>
+<p>In the <code>2.1.1</code> case, notice that none of them match my particular platform. They're all either macOS (either <code>x86-64</code> or <code>aarch64</code>) or Linux (only <code>aarch64</code>). But in the <code>2.1.1+cpu</code> case, there are wheels that match my platform.</p>
+<p>So the next thing I wanted to do was check to see whether the <code>2.1.1+cpu</code> version was ever being requested, and if so, whether any of its wheels were found to be compatible:</p>
+<pre><code>lazy init for: &quot;2.1.1&quot;
+/whl/cpu/torch-2.1.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=84fefd63356416c0cd20578637ccdbb82164993400ed17b57c951dd6376dcee8 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp310-none-macosx_10_9_x86_64.whl#sha256=1e1e5faddd43a8f2c0e0e22beacd1e235a2e447794d807483c94a9e31b54a758 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp310-none-macosx_11_0_arm64.whl#sha256=e76bf3c5c354874f1da465c852a2fb60ee6cbce306e935337885760f080f9baa :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=61b51b33c61737c287058b0c3061e6a9d3c363863e4a094f804bc486888a188a :: Incompatible(Tag(Platform))
+/whl/cpu/torch-2.1.1-cp311-none-macosx_10_9_x86_64.whl#sha256=a70593806f1d7e6b53657d96810518da0f88ef2608c98a402955765b8c79d52c :: Incompatible(Tag(Platform))
+/whl/cpu/torch-2.1.1-cp311-none-macosx_11_0_arm64.whl#sha256=e312f7e82e49565f7667b0bbf9559ab0c597063d93044740781c02acd5a87978 :: Incompatible(Tag(Platform))
+/whl/cpu/torch-2.1.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=9ca0fcbf3d5ba644d6a8572c83a9abbdf5f7ff575bc38529ef6c185a3a71bde9 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp38-none-macosx_10_9_x86_64.whl#sha256=d56b032176458e2af4709627bbd2c20fe2917eff8cd087a7fe313acccf5ce2f1 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp38-none-macosx_11_0_arm64.whl#sha256=29e3b90a8c281f6660804a939d1f4218604c80162e521e1e6d8c8557325902a0 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=b31230bd058424e56dba7f899280dbc6ac8b9948e43902e0c84a44666b1ec151 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp39-none-macosx_10_9_x86_64.whl#sha256=715b50d8c1de5da5524a68287eb000f73e026e74d5f6b12bc450ef6995fcf5f9 :: Incompatible(Tag(Abi))
+/whl/cpu/torch-2.1.1-cp39-none-macosx_11_0_arm64.whl#sha256=db67e8725c76f4c7f4f02e7551bb16e81ba1a1912867bc35d7bb96d2be8c78b4 :: Incompatible(Tag(Abi))
+</code></pre>
+<p>So <code>2.1.1</code> is requested (by the resolver), and as expected, none of its wheels are considered compatible. But crucially, <code>2.1.1+cpu</code> is never even requested in the first place. My next step is to understand why that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-22 15:02</div>
+            <div class="timeline-body"><p>Candidate selection believes <code>2.1.1+cpu</code> does not satisfy <code>==2.1.1</code>:</p>
+<pre><code>[andrew@duff i1497]$ RUST_LOG=trace uv pip install torch==2.1.1 --index-url https://download.pytorch.org/whl/cpu
+⠙ Resolving dependencies...                                                                                                                                                                                                             SELECTING CANDIDATE FOR PackageName(&quot;torch&quot;) and range Range { segments: [(Included(&quot;2.1.1&quot;), Included(&quot;2.1.1&quot;))] }
+select candidate: &quot;2.2.1+cpu&quot;
+    version not in range
+select candidate: &quot;2.2.1&quot;
+    version not in range
+select candidate: &quot;2.2.0+cpu&quot;
+    version not in range
+select candidate: &quot;2.2.0&quot;
+    version not in range
+select candidate: &quot;2.1.2+cpu&quot;
+    version not in range
+select candidate: &quot;2.1.2&quot;
+    version not in range
+select candidate: &quot;2.1.1+cpu&quot;
+    version not in range
+select candidate: &quot;2.1.1&quot;
+lazy init for: &quot;2.1.1&quot;
+SELECTING CANDIDATE FOR PackageName(&quot;torch&quot;) and range Range { segments: [(Included(&quot;2.1.1&quot;), Included(&quot;2.1.1&quot;))] }
+select candidate: &quot;2.2.1+cpu&quot;
+    version not in range
+select candidate: &quot;2.2.1&quot;
+    version not in range
+select candidate: &quot;2.2.0+cpu&quot;
+    version not in range
+select candidate: &quot;2.2.0&quot;
+    version not in range
+select candidate: &quot;2.1.2+cpu&quot;
+    version not in range
+select candidate: &quot;2.1.2&quot;
+    version not in range
+select candidate: &quot;2.1.1+cpu&quot;
+    version not in range
+select candidate: &quot;2.1.1&quot;
+</code></pre>
+<p>(Again, I think @charliermarsh already figured this out. But I'm confirming.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-27 14:22</div>
+            <div class="timeline-body"><p>@Nishikoh I've noticed that while <code>uv-main pip install 'torch==2.1.1' --index-url https://download.pytorch.org/whl/cpu</code> fails for me, <code>uv-main pip install 'torch==2.1.1+cpu' --index-url https://download.pytorch.org/whl/cpu</code> succeeds. Can you confirm for me that the latter still fails for you?</p>
+<p>Does it fail for anyone else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nishikoh">@Nishikoh</a> on 2024-02-27 15:39</div>
+            <div class="timeline-body"><p>@BurntSushi
+I ran the two commands and confirmed that the latter was successful.</p>
+<pre><code># uv v0.1.11
+root@bad8609641ae:/# uv pip install 'torch==2.1.1' --index-url https://download.pytorch.org/whl/cpu
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.1.1 is unusable because no wheels are available with a matching platform and you require torch==2.1.1, we can
+      conclude that the requirements are unsatisfiable.
+
+
+root@bad8609641ae:/# uv pip install 'torch==2.1.1+cpu' --index-url https://download.pytorch.org/whl/cpu
+Resolved 9 packages in 3.59s
+Downloaded 9 packages in 9.92s
+Installed 9 packages in 211ms
+ + filelock==3.9.0
+ + fsspec==2023.4.0
+ + jinja2==3.1.2
+ + markupsafe==2.1.3
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.1.1+cpu
+ + typing-extensions==4.8.0
+</code></pre>
+<p>My past comment may have been wrong and confused you.
+https://github.com/astral-sh/uv/issues/1497#issuecomment-1951600402</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2080.html">astral-sh/uv#2080</a> on 2024-02-29 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @BurntSushi by @BurntSushi on 2024-02-29 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kornia/workflows/pulls/15.html">kornia/workflows#15</a> on 2024-03-11 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2430.html">astral-sh/uv#2430</a> on 2024-03-15 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2478.html">astral-sh/uv#2478</a> on 2024-03-15 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 04:18</div>
+            <div class="timeline-body"><p>This should work as of the latest release:</p>
+<pre><code>uv pip install torch==2.1.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-20 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-20 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnnv1">@johnnv1</a> on 2024-03-20 11:00</div>
+            <div class="timeline-body"><blockquote>
+<p>This should work as of the latest release:</p>
+</blockquote>
+<p>@charliermarsh do you have any plans to add support for the most common case?
+<code>uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2655.html">astral-sh/uv#2655</a> on 2024-03-25 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-05-07 08:16</div>
+            <div class="timeline-body"><blockquote>
+<p>uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu</p>
+</blockquote>
+<p>This works for me! py3.10 and latest <code>uv</code> 0.1.35.</p>
+<blockquote>
+<p>This should work as of the latest release:</p>
+<pre><code>uv pip install torch==2.1.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html
+</code></pre>
+</blockquote>
+<p>On the other hand, this raises:</p>
+<pre><code>uv pip install torch==2.1.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.1.0+cpu is unusable because no wheels are available with a matching Python implementation and you require torch==2.1.0+cpu, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>EDIT: for this last command I also tried with the latest stable <code>uv</code>, 0.1.39.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-07 13:05</div>
+            <div class="timeline-body"><p>Can you confirm that the environment you're in is using Python 3.10, and that you're on x86 Linux or Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashgorana">@yashgorana</a> on 2024-05-07 16:52</div>
+            <div class="timeline-body"><p>The problem here is the behavior for installing CPU-only torch is different on arm64/aarch64 and x86_64/amd64 systems.</p>
+<ul>
+<li>amd64 requires us to explicitly provide <code>torch==x.x.x+cpu</code></li>
+<li>meanwhile for arm64 we don't need the moniker.</li>
+</ul>
+<p>On amd64,</p>
+<pre><code class="language-shell">$ arch
+x86_64
+
+
+$ uv pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.3.0 is unusable because no wheels are available with a matching Python ABI and you require torch==2.3.0, we can conclude that the requirements are unsatisfiable.
+
+
+# with +cpu moniker
+$ uv pip install torch==2.3.0+cpu --index-url https://download.pytorch.org/whl/cpu
+Resolved 9 packages in 4.33s
+Downloaded 9 packages in 2.90s
+Installed 9 packages in 114ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.3.0+cpu
+ + typing-extensions==4.9.0
+</code></pre>
+<p>On arm64, adding the <code>+cpu</code> fails &amp; without it installs.</p>
+<pre><code class="language-shell">~ arch
+arm64
+
+
+# with +cpu moniker
+~ uv pip install torch==2.3.0+cpu --index-url https://download.pytorch.org/whl/cpu
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.3.0+cpu is unusable because no wheels are available with a matching Python ABI and you require torch==2.3.0+cpu, we can conclude that the requirements are
+      unsatisfiable.
+
+
+# without the moniker
+~ uv pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+Resolved 9 packages in 3.58s
+Installed 9 packages in 210ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.3.0
+ + typing-extensions==4.9.0
+</code></pre>
+<p>uv has known limitations around <a href="https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md#local-version-identifiers">local version identifiers</a> but unsure why pip is able to make this work the way pytorch has documented https://pytorch.org/get-started/previous-versions/#v222 but uv can't</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3437.html">astral-sh/uv#3437</a> on 2024-05-08 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../OpenMined/PySyft/pulls/8605.html">OpenMined/PySyft#8605</a> on 2024-05-08 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-05-08 11:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you confirm that the environment you're in is using Python 3.10, and that you're on x86 Linux or Windows?</p>
+</blockquote>
+<p>Ops, sorry, I am on ARM macOS. You are right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-09 08:50</div>
+            <div class="timeline-body"><p>Perhaps it's due to a lack of supported variants that they omitted the local identifier there? (<em><a href="https://github.com/pytorch/pytorch/issues/110791#issuecomment-1753315240">here upstream PyTorch states they don't intend to publish <code>aarch64</code> variants with GPU accel</a></em>)</p>
+<pre><code class="language-bash"># Torch 2.3.0 + Python 3.12 Linux x86_64/aarch64 wheels
+
+# +cpu
+# https://download.pytorch.org/whl/cpu/torch/
+torch-2.3.0+cpu-cp312-cp312-linux_x86_64.whl
+# No local identifier for arm64:
+torch-2.3.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+
+# +cu121
+# https://download.pytorch.org/whl/cu121/torch/
+torch-2.3.0+cu121-cp312-cp312-linux_x86_64.whl
+</code></pre>
+<h2>Reference</h2>
+<p>Using Docker from an AMD64 machine to test ARM64 environment:</p>
+<pre><code class="language-console"># Base environment:
+$ arch
+x86_64
+$ docker run --rm -it --platform linux/arm64 --workdir /tmp fedora:40 bash
+$ arch
+aarch64
+
+# Install uv:
+$ curl -LsSf https://astral.sh/uv/install.sh | sh &amp;&amp; source $HOME/.cargo/env
+# Create and enter venv:
+$ uv venv &amp;&amp; source .venv/bin/activate
+
+# Install:
+$ uv pip install \
+    --extra-index-url https://download.pytorch.org/whl/cpu \
+    torch torchvision torchaudio
+
+Resolved 13 packages in 20.18s
+Downloaded 13 packages in 12.26s
+Installed 13 packages in 486ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + numpy==1.26.3
+ + pillow==10.2.0
+ + sympy==1.12
+ + torch==2.3.0
+ + torchaudio==2.3.0
+ + torchvision==0.18.0
+ + typing-extensions==4.9.0
+</code></pre>
+<hr />
+<p>You can kind of see why PyTorch has local identifier variants when comparing to PyPi?:</p>
+<pre><code class="language-console"># ARM64 (PyPi instead of PyTorch)
+# Slightly newer versions of the packages but otherwise equivalent
+$ uv pip install torch torchvision torchaudio
+
+Resolved 13 packages in 1.08s
+Downloaded 13 packages in 23.73s
+Installed 13 packages in 425ms
+ + filelock==3.14.0
+ + fsspec==2024.3.1
+ + jinja2==3.1.4
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.3
+ + numpy==1.26.4
+ + pillow==10.3.0
+ + sympy==1.12
+ + torch==2.3.0
+ + torchaudio==2.3.0
+ + torchvision==0.18.0
+ + typing-extensions==4.11.0
+</code></pre>
+<pre><code class="language-console"># AMD64 (PyPi instead of PyTorch)
+# Defaults to latest cuda variant (+cu121)
+# Same nvidia specific deps as PyTorch +cu121, except for nvidia-nvjitlink-cu12 (Cuda 12.4 here instead of 12.1)
+$ uv pip install torch torchvision torchaudio
+
+Resolved 25 packages in 558ms
+Downloaded 25 packages in 53.62s
+Installed 25 packages in 189ms
+ + filelock==3.14.0
+ + fsspec==2024.3.1
+ + jinja2==3.1.4
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.3
+ + numpy==1.26.4
+ + nvidia-cublas-cu12==12.1.3.1
+ + nvidia-cuda-cupti-cu12==12.1.105
+ + nvidia-cuda-nvrtc-cu12==12.1.105
+ + nvidia-cuda-runtime-cu12==12.1.105
+ + nvidia-cudnn-cu12==8.9.2.26
+ + nvidia-cufft-cu12==11.0.2.54
+ + nvidia-curand-cu12==10.3.2.106
+ + nvidia-cusolver-cu12==11.4.5.107
+ + nvidia-cusparse-cu12==12.1.0.106
+ + nvidia-nccl-cu12==2.20.5
+ + nvidia-nvjitlink-cu12==12.4.127
+ + nvidia-nvtx-cu12==12.1.105
+ + pillow==10.3.0
+ + sympy==1.12
+ + torch==2.3.0
+ + torchaudio==2.3.0
+ + torchvision==0.18.0
+ + typing-extensions==4.11.0
+</code></pre>
+<hr />
+<h2>Resolve platform packaging inconsistency upstream</h2>
+<p>Maybe open an issue about it upstream since it seems to be more of a packaging concern unrelated to <code>uv</code>?:</p>
+<p>https://github.com/pytorch/pytorch/issues/110791#issuecomment-1753334468</p>
+<blockquote>
+<p><em>please do not hesitate to open a new issue (or a PR) if you want to propose dropping <code>+cpu</code> suffix for Linux and Windows wheels, as nobody seems to be relying on the old installation method anyway.</em></p>
+</blockquote>
+<p>Which makes sense that CPU should be the default, with local identifiers only used for actual variants (<em>eg: different cuda version support</em>). Might introduce some friction to any existing CI perhaps, but you can see similar with nvidia's own Docker images they publish where the naming convention isn't always consistent 😅 (<em>at least it broke a PyTorch docker build CI task recently</em>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-06-22 07:36</div>
+            <div class="timeline-body"><blockquote>
+<p>do you have any plans to add support for the most common case?
+<code>uv pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu</code></p>
+</blockquote>
+<p>It seems to me there is a workaround by appending <code>.*</code> to the public version:</p>
+<pre><code class="language-sh">uv pip install torch==2.3.1.* --extra-index-url https://download.pytorch.org/whl/cpu
+Resolved 9 packages in 295ms
+Installed 9 packages in 336ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.3.1+cpu
+ + typing-extensions==4.9.0
+</code></pre>
+<p>According to <a href="https://peps.python.org/pep-0440/#version-matching">PEP 440</a>, <code>.*</code> means the prefix matching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-06-23 05:14</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems to me there is a workaround by appending <code>.*</code> to the public version:</p>
+</blockquote>
+<p>That's not very reliable. Try to bring in other torch packages for example:</p>
+<pre><code class="language-console">$ uv pip install 'torch==2.3.1.*' torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.3.1 has no wheels are available with a matching Python ABI and torchaudio==2.3.1+cpu depends on torch==2.3.1, we can conclude that torchaudio==2.3.1+cpu cannot be used. (1)
+
+...
+
+      And because torchaudio==2.2.2+cpu depends on torch==2.2.2 and torchaudio==2.3.0 has no wheels are available with a matching Python ABI, we can conclude that torchaudio&lt;2.3.0+cpu depends on one of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+
+      And because torchaudio==2.3.0+cpu depends on torch==2.3.0 and torchaudio==2.3.1 has no wheels are available with a matching Python ABI, we can conclude that torchaudio&lt;2.3.1+cpu depends on one of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+          torch==2.3.0
+
+      And because we know from (1) that torchaudio==2.3.1+cpu cannot be used, we can conclude that all versions of torchaudio depend on one of:
+          torch==2.2.0
+          torch==2.2.1
+          torch==2.2.2
+          torch==2.3.0
+
+      And because you require torch&gt;=2.3.1.dev0 and torchaudio, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<pre><code class="language-console">$ uv pip install 'torch==2.3.1.*' 'torchvision==2.3.1.*' 'torchaudio==0.18.1.*' --index-url https://download.pytorch.org/whl/cpu
+
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of torchvision are available:
+          torchvision&lt;2.3.1.dev0
+          torchvision&gt;=2.3.2.dev0
+      and you require torchvision&gt;=2.3.1.dev0,&lt;2.3.2.dev0, we can conclude that the requirements are unsatisfiable.
+
+      hint: torchvision was requested with a pre-release marker (e.g., torchvision&gt;=2.3.1.dev0,&lt;2.3.2.dev0), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>While separately, it resolves the desired package instead of <code>2.3.1.dev0</code>:</p>
+<pre><code class="language-console">$ uv pip install 'torch==2.3.1.*' --index-url https://download.pytorch.org/whl/cpu
+
+Resolved 9 packages in 3.64s
+Downloaded 9 packages in 7.97s
+Installed 9 packages in 307ms
+ + filelock==3.13.1
+ + fsspec==2024.2.0
+ + jinja2==3.1.3
+ + markupsafe==2.1.5
+ + mpmath==1.3.0
+ + networkx==3.2.1
+ + sympy==1.12
+ + torch==2.3.1+cpu
+ + typing-extensions==4.9.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7144.html">astral-sh/uv#7144</a> on 2024-09-06 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgrachten">@mgrachten</a> on 2024-11-05 10:54</div>
+            <div class="timeline-body"><p>I encountered a version of this issue today, installing torchaudio cpuonly as per pytorch instructions.  Pip without uv succeeds:</p>
+<pre><code>pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<p>but</p>
+<pre><code>uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+</code></pre>
+<p>Fails (error log attached).</p>
+<p>Versions:</p>
+<ul>
+<li><code>Python 3.11.9 (main, Jul 12 2024, 14:48:03) [GCC 11.4.0] on linux</code></li>
+<li><code>uv-0.4.30-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl</code></li>
+</ul>
+<p><a href="https://github.com/user-attachments/files/17631184/out.log">out.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petteriTeikari">@petteriTeikari</a> on 2025-02-09 03:46</div>
+            <div class="timeline-body"><p>Hi @charliermarsh <em>et al.</em></p>
+<p>I was facing similar issues here now after following <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">your instructions </a> and trying to have the CPU and CUDA flags both working for laptop debugging and CUDA for actual running of the code.</p>
+<ul>
+<li><code>uv sync --extra cu124</code> works</li>
+<li><code>uv pip install torch==2.6.0+cpu --index-url https://download.pytorch.org/whl/cpu</code> works</li>
+<li><code>uv sync --extra cpu</code> fails with the following message:</li>
+</ul>
+<pre><code>error: Distribution `torch==2.6.0 @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_35_x86_64`), but `torch` (v2.6.0) only has wheels for the following platform: `macosx_11_0_arm64`
+</code></pre>
+<p>I would say that <a href="https://download.pytorch.org/whl/torch/"><code>torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl</code></a> seems like the correct wheel? Can I somehow force <code>uv</code> to use this wheel?</p>
+<h2>My environment:</h2>
+<pre><code>uv version: 0.5.29
+Python 3.11.10
+Ubuntu 22.4
+X86_64 Architecture
+</code></pre>
+<h2>My <code>pyproject.toml</code></h2>
+<pre><code>[project]
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+   ...packages...
+]
+
+[project.optional-dependencies]
+# e.g. torch-2.6.0+cpu.cxx11.abi-cp311-cp311-linux_x86_64.whl
+cpu = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.6.0&quot;,
+  &quot;torchvision&gt;=0.21.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<h2><code>uv.lock</code></h2>
+<pre><code>[[package]]
+name = &quot;torch&quot;
+version = &quot;2.6.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+resolution-markers = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+]
+dependencies = [
+    { name = &quot;filelock&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;fsspec&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;jinja2&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;networkx&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cublas-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cuda-cupti-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cuda-nvrtc-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cuda-runtime-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cudnn-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cufft-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-curand-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cusolver-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cusparse-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-cusparselt-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-nccl-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-nvjitlink-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;nvidia-nvtx-cu12&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;sympy&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;triton&quot;, marker = &quot;(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124') or (extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124')&quot; },
+    { name = &quot;typing-extensions&quot;, marker = &quot;(extra == 'extra-8-sfm-venv-cpu' and extra == 'extra-8-sfm-venv-cu124') or (extra != 'extra-8-sfm-venv-cpu' and extra != 'extra-8-sfm-venv-cu124')&quot; },
+]
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/78/a9/97cbbc97002fff0de394a2da2cdfa859481fdca36996d7bd845d50aa9d8d/torch-2.6.0-cp311-cp311-manylinux1_x86_64.whl&quot;, hash = &quot;sha256:7979834102cd5b7a43cc64e87f2f3b14bd0e1458f06e9f88ffa386d07c7446e1&quot;, size = 766715424 },
+    { url = &quot;https://files.pythonhosted.org/packages/6d/fa/134ce8f8a7ea07f09588c9cc2cea0d69249efab977707cf67669431dcf5c/torch-2.6.0-cp311-cp311-manylinux_2_28_aarch64.whl&quot;, hash = &quot;sha256:ccbd0320411fe1a3b3fec7b4d3185aa7d0c52adac94480ab024b5c8f74a0bf1d&quot;, size = 95759416 },
+    { url = &quot;https://files.pythonhosted.org/packages/11/c5/2370d96b31eb1841c3a0883a492c15278a6718ccad61bb6a649c80d1d9eb/torch-2.6.0-cp311-cp311-win_amd64.whl&quot;, hash = &quot;sha256:46763dcb051180ce1ed23d1891d9b1598e07d051ce4c9d14307029809c4d64f7&quot;, size = 204164970 },
+    { url = &quot;https://files.pythonhosted.org/packages/0b/fa/f33a4148c6fb46ca2a3f8de39c24d473822d5774d652b66ed9b1214da5f7/torch-2.6.0-cp311-none-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:94fc63b3b4bedd327af588696559f68c264440e2503cc9e6954019473d74ae21&quot;, size = 66530713 },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 14:16</div>
+            <div class="timeline-body"><p>Do you mind creating a new issue so that I remember to follow-up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11406.html">astral-sh/uv#11406</a> on 2025-02-10 21:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

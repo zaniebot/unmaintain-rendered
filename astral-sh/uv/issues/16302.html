@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` causes re-syncing of default dependency groups - astral-sh/uv #16302</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` causes re-syncing of default dependency groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16302">#16302</a>
+        opened by <a href="https://github.com/alechouse97">@alechouse97</a>
+        on 2025-10-14 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-10-14 20:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am running into some unexpected behavior when added new deps via <code>uv add</code>. I currently have two dependency groups in my pyproject.toml:</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [&quot;mypy&quot;, &quot;pytest&quot;, &quot;pytest-cov&quot;, &quot;ruff&quot;]
+cpu = [&quot;torch&quot;]
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-cpu&quot;, group = &quot;cpu&quot; }]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+</code></pre>
+<p>To sync with this <code>cpu</code> group, I run <code>uv sync --group cpu</code>, and only CPU torch whls are installed, along with all other deps in <code>project.dependencies</code>.</p>
+<p>Now, say I wanted to add Pandas to my standard dependencies (not in any specific group), I would run <code>uv add pandas</code>. This adds <code>pandas&gt;=x.y.z</code> to the <code>project.dependencies</code> section, but this command also causes the <code>cpu</code> group from above to be &quot;de-synced&quot; and the standard CUDA accelerated torch whls are downloaded and installed.</p>
+<p>To get around this I could run <code>uv add pandas --group cpu</code>, but now pandas is added to the <code>cpu</code> group.</p>
+<p>Is this behavior expected? Or am I just misunderstanding how the dependency groups should be used?</p>
+<p><strong>UPDATE - 10/16</strong></p>
+<p>I confirmed that this same behavior is present when using the approach in the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">uv docs</a>. After syncing with <code>uv sync --extra cpu</code>, and uv command that does <em>not</em> have the <code>--extra cpu</code> will cause the CUDA accelerated torch whls to be downloaded.</p>
+<h3>Platform</h3>
+<p>Linux 5.14.0-503.40.1.el9_5.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.2</p>
+<h3>Python version</h3>
+<p>Python 3.13.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @alechouse97 on 2025-10-14 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-29 00:20</div>
+            <div class="timeline-body"><p>I think this is kind of &quot;expected&quot; and indicative of some awkwardness in the API (we use, e.g., <code>--group</code> both to determine where to add the package <em>and</em> which dependencies to sync). The best you could do right now is use <code>--no-sync</code> when you <code>uv add</code> in these cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-29 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alechouse97">@alechouse97</a> on 2025-10-29 13:22</div>
+            <div class="timeline-body"><p>Thanks for the follow-up, that's definitely an acceptable workaround for us.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

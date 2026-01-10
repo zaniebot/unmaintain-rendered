@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F811 false positive in match statement - astral-sh/ruff #4076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F811 false positive in match statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4076">#4076</a>
+        opened by <a href="https://github.com/cgahr">@cgahr</a>
+        on 2023-04-24 08:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cgahr">@cgahr</a> on 2023-04-24 08:45</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>really love ruff, such a great tool! It also inspired me to learn Rust ;)</p>
+<p>I found the following bug, which can be reproduced with this MWE:</p>
+<pre><code class="language-python">def no_redef(value):
+    if value:
+
+        def fun(x, y):
+            return x
+
+    else:
+
+        def fun(x, y):
+            return y
+
+    return fun
+
+
+def redef(value):
+    match value:
+        case True:
+
+            def fun(x, y):
+                return x
+
+        case False:
+
+            def fun(x, y):
+                return y
+
+    return fun
+</code></pre>
+<p>Running ruff throws the following error which (IMO) is a bug:</p>
+<pre><code class="language-bash">&gt; ruff redef.py --isolated
+redef.py:24:17: F811 Redefinition of unused `fun` from line 19
+Found 1 error.
+</code></pre>
+<p><strong>Why is this a bug?</strong>
+In my understanding both the <code>no_redef</code> and <code>redef</code> function have the same behavior. Thus, F811 should behave the same for both functions, which is not the case.</p>
+<p>This behavior is consistent with flake8/pyflakes, however, I think this is a bug in their code as well and I opened a ticket there too (https://github.com/PyCQA/pyflakes/issues/771).</p>
+<p><strong>Ruff version</strong></p>
+<pre><code class="language-bash">&gt; ruff --version
+ruff 0.0.261
+</code></pre>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;F&quot;]
+target-version = &quot;py38&quot;
+</code></pre>
+<p>Constantin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-24 16:54</div>
+            <div class="timeline-body"><p>Looking at the way the detection works, I think we might require help from <code>RustPython</code> in order to resolve this. Currently, the branch detection only works for an <code>if</code> statement:</p>
+<p>https://github.com/charliermarsh/ruff/blob/d64146683ee571832b1d6ce61fe8dc79052fd3b7/crates/ruff/src/checkers/ast/mod.rs#L4143-L4148</p>
+<p>Correct me if I'm wrong!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-04-24 20:25</div>
+            <div class="timeline-body"><p>I think the solution would be to add MatchCase to the binding and implement an equivalent different_forks for MatchCase instead of Stmt.
+I can pick it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-25 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4161.html">astral-sh/ruff#4161</a> on 2023-04-30 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-30 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

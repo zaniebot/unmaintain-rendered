@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI cache pruning corrupts cache for other Python versions - astral-sh/uv #8929</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>CI cache pruning corrupts cache for other Python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8929">#8929</a>
+        opened by <a href="https://github.com/nijel">@nijel</a>
+        on 2024-11-08 10:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nijel">@nijel</a> on 2024-11-08 10:24</div>
+            <div class="timeline-body"><p>We use multiple Python versions in one of our CI pipelines, but the uv cache is generated only for one of the Python versions. On subsequent runs when cache is used, the package build fails with:</p>
+<pre><code>Resolved 1 package in 107ms
+error: Failed to prepare distributions
+  Caused by: Failed to download and build `pycairo==1.27.0`
+  Caused by: Attempted to re-extract the source distribution for `pycairo==1.27.0`, but the hashes didn't match. Run `uv cache clean` to clear the cache.
+</code></pre>
+<p>Clearing the cache indeed fixes the issue.</p>
+<p>The issue does not exist without running <code>uv cache prune --ci</code>.</p>
+<p>Reproduced with uv 0.4.29 and 0.5.0.</p>
+<p>Reproducer:</p>
+<pre><code class="language-sh">#!/bin/sh
+
+export UV_CACHE_DIR=&quot;$PWD/cache&quot;
+
+rm -rf &quot;$UV_CACHE_DIR&quot; .venv .venv-2 pyproject.toml uv.lock
+
+uv init --name uv-cache-issue
+uv add --python 3.13 &quot;pycairo&quot;
+
+uv cache prune --ci
+
+rm -rf .venv .venv-2
+
+uv venv --python python3.11 .venv-2
+. .venv-2/bin/activate
+uv pip install &quot;pycairo&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-08 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2024-11-08 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 13:47</div>
+            <div class="timeline-body"><p>Sounds like a bug though not obvious why this would happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 15:50</div>
+            <div class="timeline-body"><p>I think the proximate problem is that <code>uv add</code> generates hashes by default but <code>uv pip install</code> does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-08 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8955.html">astral-sh/uv#8955</a> on 2024-11-08 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 20:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:26 UTC
+    </footer>
+</body>
+</html>

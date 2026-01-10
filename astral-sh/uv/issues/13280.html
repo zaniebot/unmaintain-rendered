@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>excluding `**/@test` causes &quot;Unsupported glob expression in: `tool.uv.build-backend.*-exclude`&quot; - astral-sh/uv #13280</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>excluding `**/@test` causes &quot;Unsupported glob expression in: `tool.uv.build-backend.*-exclude`&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13280">#13280</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2025-05-03 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-03 22:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using the <code>uv_build</code> backend, I was trying to exclude the in-package <code>@test</code> directories in numpy/numtype. The contents of the <code>pyproject.toml</code> looks like</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;uv_build&gt;=0.7.2,&lt;0.8&quot;]
+build-backend = &quot;uv_build&quot;
+
+# snip
+
+[tool.uv.build-backend]
+source-exclude = [
+    &quot;**/@test&quot;,
+    &quot;**/*.yml&quot;,
+    &quot;**/.*&quot;,
+    &quot;/docs&quot;,
+    &quot;/tool&quot;,
+    &quot;CONTRIBUTING.md&quot;,
+    &quot;uv.lock&quot;,
+]
+wheel-exclude = [
+    &quot;**/@test&quot;,
+    &quot;**/*.yml&quot;,
+    &quot;**/.*&quot;,
+    &quot;/docs&quot;,
+    &quot;/tool&quot;,
+    &quot;CONTRIBUTING.md&quot;,
+    &quot;uv.lock&quot;,
+]
+
+# snip
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 22.04</p>
+<h3>Version</h3>
+<p>0.7.2</p>
+<h3>Python version</h3>
+<p>3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jorenham on 2025-05-03 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../numpy/numtype/issues/470.html">numpy/numtype#470</a> on 2025-05-03 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-03 22:38</div>
+            <div class="timeline-body"><p>The full <code>pyproject.toml</code> can be found here: https://github.com/numpy/numtype/blob/61d553fec07151c5b61c9b5d76654431bbd67130/pyproject.toml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-03 22:50</div>
+            <div class="timeline-body"><p>We took this behavior from https://peps.python.org/pep-0639/#add-license-files-key, though it clearly falls short here: There is no way to escape characters outside the <code>[a-zA-z0-9_.-]</code> to use them verbatim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../numpy/numtype/pulls/540.html">numpy/numtype#540</a> on 2025-05-04 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joey-the-33rd">@joey-the-33rd</a> on 2025-05-04 16:48</div>
+            <div class="timeline-body"><h2>Fixing Unsupported Glob Expression in <code>pyproject.toml</code></h2>
+<p>The <code>unsupported glob expression</code> error is caused by the <code>@</code> character in the pattern <code>**/@test</code> found in your <code>pyproject.toml</code> file under the <code>[tool.uv.build-backend]</code> section. The <code>@</code> character is not supported by the <code>uv_build</code> backend's glob syntax.</p>
+<h3>Solution</h3>
+<p>Update your <code>pyproject.toml</code> to replace the problematic pattern <code>**/@test</code> with the directory pattern <code>/@test/</code>. This change helps match directories named <code>@test</code> more accurately while staying compatible with the <code>uv_build</code> backend's supported syntax.</p>
+<h3>Before Changes:</h3>
+<p><code>[tool.uv.build-backend] exclude = [&quot;**/@test&quot;]</code></p>
+<h3>After changes:</h3>
+<p><code>[tool.uv.build-backend] exclude = [&quot;/@test/&quot;] or =[ &quot;**/@test/**&quot;]</code></p>
+<p><em><strong>Full clip changes should look like this:</strong></em>
+This change ensures that in-package <code>@test</code> directories such as those in <code>numpy/numtype</code> are excluded without triggering the unsupported glob expression error.</p>
+<pre><code class="language-toml">[tool.uv.build-backend]
+source-exclude = [
+    &quot;**/@test/**&quot;,
+    &quot;**/*.yml&quot;,
+    &quot;**/.*&quot;,
+    &quot;/docs&quot;,
+    &quot;/tool&quot;,
+    &quot;CONTRIBUTING.md&quot;,
+    &quot;uv.lock&quot;,
+]
+wheel-exclude = [
+    &quot;**/@test/**&quot;,
+    &quot;**/*.yml&quot;,
+    &quot;**/.*&quot;,
+    &quot;/docs&quot;,
+    &quot;/tool&quot;,
+    &quot;CONTRIBUTING.md&quot;,
+    &quot;uv.lock&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-04 16:59</div>
+            <div class="timeline-body"><p>@joey-the-33rd Please do not post AI comment or pull requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jorenham">@jorenham</a> on 2025-05-04 17:03</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/joey-the-33rd">@joey-the-33rd</a> Please do not post AI comment or pull requests.</p>
+</blockquote>
+<p>That account made exactly 1001 contributions in the last couple of days, so I'm guessing it's a fully AI-controlled account, set out to waste all of our time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13311.html">astral-sh/uv#13311</a> on 2025-05-06 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13313.html">astral-sh/uv#13313</a> on 2025-05-06 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 14:31</div>
+            <div class="timeline-body"><p>We're adding support for escaping characters with backslashes. This means that our glob syntax isn't exactly PEP 639 globs anymore, but an extension over them. The backslashes allow escaping arbitrary characters except backwards and forward slashes, which are rejected they look like path separators depending on the platform (we always use forward slashes for consistency, even on windows, like PEP 639 and similar to <code>file:///</code> URLs). The restrictions on this are still tight currently, you need to escape all non-alphanumeric non-metacharacters, but it allows evolving the rules in the future, both for more metacharacters and for more non-escaped characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-07 16:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

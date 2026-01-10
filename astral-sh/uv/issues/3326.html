@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` doesn't install the latest version of `dstack` - astral-sh/uv #3326</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` doesn't install the latest version of `dstack`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3326">#3326</a>
+        opened by <a href="https://github.com/peterschmidt85">@peterschmidt85</a>
+        on 2024-04-30 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peterschmidt85">@peterschmidt85</a> on 2024-04-30 17:58</div>
+            <div class="timeline-body"><p><code>uv</code> doesn't install the latest version of <code>dstack</code></p>
+<pre><code>uv --version &amp;&amp; uv pip install &quot;dstack[all]&quot; -U --dry-run
+uv 0.1.39 (028b40741 2024-04-27)
+Resolved 60 packages in 48ms
+warning: The package `dstack==0.10.5` does not have an extra named `all`.
+Would install 1 package
+ + dstack==0.10.5
+</code></pre>
+<pre><code>pip install &quot;dstack[all]&quot; -U --dry-run | grep -v 'already satisfied'
+Collecting dstack[all]
+  Using cached dstack-0.18.1-py3-none-any.whl.metadata (8.8 kB)
+Collecting urllib3&gt;=1.26.0 (from docker&gt;=6.0.0-&gt;dstack[all])
+  Using cached urllib3-1.26.18-py2.py3-none-any.whl.metadata (48 kB)
+Using cached dstack-0.18.1-py3-none-any.whl (376 kB)
+Using cached urllib3-1.26.18-py2.py3-none-any.whl (143 kB)
+Would install dstack-0.18.1 urllib3-1.26.18
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-30 18:07</div>
+            <div class="timeline-body"><p>Hm the latest version has the pin</p>
+<pre><code>dstack[all]==0.18.1: azure-mgmt-network==23.0.0b2
+</code></pre>
+<p>and we say</p>
+<pre><code>DEBUG Searching for a compatible version of azure-mgmt-network (==23.0.0b2)
+DEBUG No compatible version found for: azure-mgmt-network
+</code></pre>
+<p>I believe you need to opt-in to pre-releases here, which is a known divergence from pip.</p>
+<p>If this was unsolvable, we'd hint this in the error — but we do find a solution since you have no lower bound on dstack.</p>
+<pre><code>❯ uv pip install &quot;dstack[all]&gt;0.18&quot; -U --dry-run
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of azure-mgmt-network==23.0.0b2 and dstack[all]==0.18.1 depends on
+      azure-mgmt-network==23.0.0b2, we can conclude that dstack[all]==0.18.1 cannot be used.
+      And because only the following versions of dstack[all] are available:
+          dstack[all]&lt;=0.18
+          dstack[all]==0.18.1
+      and you require dstack[all]&gt;0.18, we can conclude that the requirements are unsatisfiable.
+
+      hint: azure-mgmt-network was requested with a pre-release marker (e.g., azure-mgmt-network==23.0.0b2), but
+      pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-04-30 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @zanieb on 2024-04-30 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-06 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

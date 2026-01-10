@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace documentation doesn't include an example of a nested package `pyproject.toml` - astral-sh/uv #9415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace documentation doesn't include an example of a nested package `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9415">#9415</a>
+        opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a>
+        on 2024-11-25 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-25 12:54</div>
+            <div class="timeline-body"><p>See https://docs.astral.sh/uv/concepts/projects/workspaces/</p>
+<p>Workspace documentation doesn't include an example of a nested package <code>pyproject.toml</code> file, instead there are three examples of the <code>pyproject.toml</code> file for <code>name = &quot;albatross&quot;</code> the root package.</p>
+<p>I'm trying to work out what I should put in a <code>pyproject.toml</code> file of a nested package, and it's not clear.</p>
+<p>In particular, when working with cargo, I can include stuff like <code>version = { workspace = true }</code>, but it's not clear if I can do that with uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-25 12:57</div>
+            <div class="timeline-body"><p>😞</p>
+<p>I tried</p>
+<pre><code class="language-toml">version = { workspace = true }
+description = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+readme = { workspace = true }
+classifiers = { workspace = true }
+requires-python = { workspace = true }
+</code></pre>
+<p>As I would do with cargo, but I get:</p>
+<pre><code>uv sync
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 7, column 11
+  |
+7 | version = { workspace = true }
+  |           ^^^^^^^^^^^^^^^^^^^^
+invalid type: map, expected a string
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-11-25 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 13:30</div>
+            <div class="timeline-body"><p>Ah yeah, we don't inherit workspace configuration like that. In fact, we can't right now, it would be non-standards compliant and would break a lot of other tools. It's possible that we can provide something like this in the future via our own build backend, but even then, you'd need to use our build backend (rather than, e.g., maturin).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-25 13:30</div>
+            <div class="timeline-body"><p>Duplicating <code>description</code>, <code>authors</code>, <code>license</code> etc. is fine, but it would be really useful if I could set <code>version</code> as &quot;dynamic&quot; and have it shared across all packages.</p>
+<p>I guess that might already be possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pydantic/pydantic-ai/pulls/92.html">pydantic/pydantic-ai#92</a> on 2024-11-25 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-25 20:12</div>
+            <div class="timeline-body"><p>~~Turns out the package version stuff is easy, you can just do~~</p>
+<pre><code class="language-toml">[tool.hatch.version]
+path = &quot;../pyproject.toml&quot;
+
+[project]
+dynamic = [&quot;version&quot;]
+</code></pre>
+<p><strong>Update:</strong> turns out this doesn't work, uv is unable to track version correctly if you use a dynamic version.</p>
+<p>The ugly bit is if you want your packages to have a hard requirement on each other (e.g. you release <code>foo</code>, <code>bar</code> and <code>spam</code>, all have version <code>0.0.6b1</code> and you want <code>foo</code> and <code>bar</code> to depend on <code>spam==0.0.6b1</code>) then you have to hard code the version number in a bunch of places.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:38 UTC
+    </footer>
+</body>
+</html>

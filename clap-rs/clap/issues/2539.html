@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change behavior of flag arguments specified as env vars - clap-rs/clap #2539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Change behavior of flag arguments specified as env vars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2539">#2539</a>
+        opened by <a href="https://github.com/jacobsvante">@jacobsvante</a>
+        on 2021-06-16 13:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jacobsvante">@jacobsvante</a> on 2021-06-16 13:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p>I have a little CLI app that I also execute as a CronJob in Kubernetes. For this I used Helm to set up templates and &quot;values files&quot; which in turn generate the required Kubernetes manifests.</p>
+<p>The little Clap CLI I've cfeated is called like this:</p>
+<pre><code>./sync-data --store-source-cache
+</code></pre>
+<p>Now when I set up the Kubernetes CronJob values file I prefer to do it the Twelve-Factor App way, specifying the options and arguments as environment variables instead (which might differ between staging/production etc).</p>
+<p>It works well for arguments and parameters. But for flags it feels a bit awkward, having to comment out the environment variable from the <code>values.yaml</code> files (there's one with base settings, one for prod env, one for staging env).</p>
+<p>So currently it looks like this:</p>
+<pre><code class="language-yaml"># base/values.yaml (base file)
+envVars:
+  SOME_ARGUMENT: &quot;SOME VALUE&quot;
+  # LOAD_SOURCE_CACHE: &quot;true&quot;
+
+# prod/values.yaml
+envVars:
+  LOAD_SOURCE_CACHE: &quot;true&quot;
+
+# staging/values.yaml
+envVars: {}
+  # LOAD_SOURCE_CACHE: &quot;true&quot;
+</code></pre>
+<p>As you can see I have to comment out <code>LOAD_SOURCE_CACHE: &quot;&quot;</code> in the base and staging values files. (The base and the prod/staging file are merged together)</p>
+<p>Example <code>main.rs</code> which shows current behavior:</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap)]
+struct Opts {
+    #[clap(long, env, takes_value = false)]
+    load_source_cache: bool,
+}
+
+fn main() {
+    let opts: Opts = Opts::parse();
+    println!(&quot;Value for load_source_cache: {}&quot;, opts.load_source_cache);
+}
+</code></pre>
+<p>Example output with 3.0.0-beta.2:</p>
+<pre><code>❯ cargo run -q
+load_source_cache: false
+❯ LOAD_SOURCE_CACHE=1 cargo run -q
+load_source_cache: true
+❯ LOAD_SOURCE_CACHE=0 cargo run -q
+load_source_cache: true
+❯ LOAD_SOURCE_CACHE=false cargo run -q
+load_source_cache: true
+❯ LOAD_SOURCE_CACHE=true cargo run -q
+load_source_cache: true
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>What I would like to be able to specify in the files instead is:</p>
+<pre><code class="language-yaml"># base/values.yaml (base file)
+envVars:
+  SOME_ARGUMENT: &quot;SOME VALUE&quot;
+  LOAD_SOURCE_CACHE: &quot;false&quot;
+
+# prod/values.yaml
+envVars:
+  LOAD_SOURCE_CACHE: &quot;true&quot;
+
+# staging/values.yaml
+envVars:
+  LOAD_SOURCE_CACHE: &quot;false&quot;
+</code></pre>
+<p>I.e. the value set for the &quot;flag env var&quot; should be specified with:</p>
+<ul>
+<li>&quot;1&quot; / &quot;0&quot;</li>
+<li>&quot;true&quot; / &quot;false&quot;</li>
+<li>&quot;yes&quot; / &quot;no&quot;</li>
+</ul>
+<p>Any other value would be ignored (maybe empty value would mean <code>false</code>).</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @jacobsvante on 2021-06-16 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2021-06-17 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @pksunkara on 2021-06-17 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> added by @pksunkara on 2021-06-17 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2619.html">clap-rs/clap#2619</a> on 2021-07-26 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-30 22:49</div>
+            <div class="timeline-body"><p>@epage @pksunkara</p>
+<p>Thoughts: it seems that Python developers have a rather handy function <a href="https://docs.python.org/3/distutils/apiref.html#distutils.util.strtobool"><code>strtobool</code></a> to handle this:</p>
+<blockquote>
+<p>True values are y, yes, t, true, on and 1; false values are n, no, f, false, off and 0. Raises ValueError if val is anything else.</p>
+</blockquote>
+<p>I think this mechanism will suit most of the cases.</p>
+<p>The current possible ways to implement a flag (before #2619) are:</p>
+<ol>
+<li><code>--flag</code> (determined by presence) in CLI, <code>FLAG=anything</code> in env</li>
+<li>The <code>pseudo-flag</code> pattern, which gives the library user greater freedom to choose what they want for the input<ul>
+<li>This might be combined with <code>default_missing_value</code>, as suggested by @ldm0 in https://github.com/clap-rs/clap/issues/1649#issuecomment-890316771.</li>
+</ul>
+</li>
+</ol>
+<p>I propose that we can have in the future:</p>
+<ol>
+<li><code>--flag</code> + <code>--flag=bool</code> (<code>bool</code> is determined by <a href="https://docs.python.org/3/distutils/apiref.html#distutils.util.strtobool"><code>strtobool</code></a>) in CLI, <code>FLAG=bool</code> in env</li>
+<li>The <code>pseudo-flag</code> pattern (remains unchanged)</li>
+</ol>
+<p>I'm aware of the fact that for CLI flags there is a separate issue https://github.com/clap-rs/clap/issues/1649, so first I'd like to focus on the possibility of using the <a href="https://docs.python.org/3/distutils/apiref.html#distutils.util.strtobool"><code>strtobool</code></a> approach just for env args.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1649.html">clap-rs/clap#1649</a> on 2021-08-02 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2664.html">clap-rs/clap#2664</a> on 2021-08-05 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/488.html">TeXitoi/structopt#488</a> on 2021-08-09 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-08-10 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/503.html">TeXitoi/structopt#503</a> on 2021-10-11 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../solana-labs/solana-program-library/issues/4511.html">solana-labs/solana-program-library#4511</a> on 2023-06-08 23:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:30 UTC
+    </footer>
+</body>
+</html>

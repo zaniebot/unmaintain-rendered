@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC does not detect imports used only for type annotations - astral-sh/ruff #16529</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TC does not detect imports used only for type annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16529">#16529</a>
+        opened by <a href="https://github.com/devon-research">@devon-research</a>
+        on 2025-03-06 08:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/devon-research">@devon-research</a> on 2025-03-06 08:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It seems that some of the <code>TC</code> rules are not working correctly. For example, if I have this file:</p>
+<pre><code class="language-python">from typing import NamedTuple
+
+t: NamedTuple | None = None
+</code></pre>
+<p>and I run</p>
+<pre><code class="language-bash">ruff check --isolated --select=TC
+</code></pre>
+<p>then I get that all checks pass.</p>
+<p>My understanding is that this should yield a <code>TC003</code> error. Am I misunderstanding the intended behavior?</p>
+<h3>Version</h3>
+<p>0.9.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-06 08:29</div>
+            <div class="timeline-body"><p>Types imported from the <code>typing</code> module are excempt from moving into <code>TYPE_CHECKING</code> by default because you still have to import the <code>typing</code> module to get the <code>TYPE_CHECKING</code> variable at runtime. So the benefit of moving types imported from <code>typing</code> is marginal. See Charlie's response here https://github.com/astral-sh/ruff/issues/9197#issuecomment-1863808227</p>
+<p>However, you can remove <code>typing</code> from the <code>excempt-module</code> list and ruff will start enforcing moving <code>typing</code> imports in the <code>TYPE_CHECKING</code> block</p>
+<pre><code class="language-toml">[lint]
+select = [ &quot;TC&quot; ]
+
+[lint.flake8-type-checking]
+exempt-modules = []
+</code></pre>
+<p>See https://play.ruff.rs/9ccf9a06-534c-441a-8101-02056076b8a6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-03-06 08:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/devon-research">@devon-research</a> on 2025-03-06 09:45</div>
+            <div class="timeline-body"><p>Ah, I see. Thanks!</p>
+<p>I additionally had this confusion come up outside the <code>typing</code> module, but I realize now from the issue you linked that the behavior I was seeing is explained by the <code>strict = false</code> default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @devon-research on 2025-03-06 09:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

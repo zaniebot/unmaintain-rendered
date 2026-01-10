@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv falls back to copy instead of symlink - astral-sh/uv #7509</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv falls back to copy instead of symlink</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7509">#7509</a>
+        opened by <a href="https://github.com/ypnos">@ypnos</a>
+        on 2024-09-18 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ypnos">@ypnos</a> on 2024-09-18 16:57</div>
+            <div class="timeline-body"><p>When using a Docker cache mount, as recommended in the documentation, uv falls back to copying instead of hardlinking and complains about it. The message also recommends to suppress the complaint with explicitely setting the link mode to COPY.</p>
+<p>See https://github.com/astral-sh/uv/blob/fe4e39a230c1d48c706a031838e76969b43cd2bf/crates/install-wheel-rs/src/linker.rs#L443</p>
+<p>As a matter of fact, uv now supports link mode &quot;symlink&quot;.</p>
+<ol>
+<li>It would probably be great to try symlink before falling back to copy</li>
+<li>The error message makes it sound like we have to live with the performance degradation, and does not mention that symlink mode is also available</li>
+<li>The Docker documentation should include <code> ENV UV_LINK_MODE=symlink</code> so that people do not run into this issue. See https://docs.astral.sh/uv/guides/integration/docker/#caching</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 16:58</div>
+            <div class="timeline-body"><p>Symlinks are fairly problematic, since if the cache gets deleted, your entire project will break. I generally would not want to default to them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 17:00</div>
+            <div class="timeline-body"><p>We set <code>copy</code> in the example at https://github.com/astral-sh/uv-docker-example/blob/3d2a5afd814babec58804b9ffce923ea114a76fb/Dockerfile#L10-L11 — needs to be updated over here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7510.html">astral-sh/uv#7510</a> on 2024-09-18 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-18 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Symlinks are fairly problematic, since if the cache gets deleted, your entire project will break. I generally would not want to default to them.</p>
+</blockquote>
+<p>I use symlink mode at work and I agree with this, I've hit an issue twice where I had to recreate my entire environment, for me it's worth the trade off but I think a user should know they are opting into symlink.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 03:15</div>
+            <div class="timeline-body"><p>I think this is the correct behavior. It's totally fine for users to use symlinks, but they are also dangerous so I'd prefer not to make them the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-20 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-20 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lbsucceed">@lbsucceed</a> on 2025-02-18 06:45</div>
+            <div class="timeline-body"><pre><code class="language-shell">warning: Failed to symlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, symlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+</code></pre>
+<p>I encountered this problem, but I couldn't solve it. My system is Windows, and uv is installed by pip, but it works normally when I use hardlink and copy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaussianGuaicai">@GaussianGuaicai</a> on 2025-05-09 14:03</div>
+            <div class="timeline-body"><blockquote>
+<p>warning: Failed to symlink files; falling back to full copy. This may lead to degraded performance.
+If the cache and target directories are on different filesystems, symlinking may not be supported.
+If this is intentional, set <code>export UV_LINK_MODE=copy</code> or use <code>--link-mode=copy</code> to suppress this warning.
+I encountered this problem, but I couldn't solve it. My system is Windows, and uv is installed by pip, but it works normally when I use hardlink and copy</p>
+</blockquote>
+<pre><code class="language-shell">warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+</code></pre>
+<p>I have the same issues, even the hardlink...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:51 UTC
+    </footer>
+</body>
+</html>

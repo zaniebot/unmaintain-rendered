@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instances of logging.Logger falsely pass G004 when imported from another module - astral-sh/ruff #6972</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Instances of logging.Logger falsely pass G004 when imported from another module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6972">#6972</a>
+        opened by <a href="https://github.com/TimekillerTK">@TimekillerTK</a>
+        on 2023-08-29 11:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TimekillerTK">@TimekillerTK</a> on 2023-08-29 11:28</div>
+            <div class="timeline-body"><p><code>ruff</code> does not find errors of type <a href="https://beta.ruff.rs/docs/rules/logging-f-string/">logging-f-string (G004)</a> when checking a <code>Logger</code> object passed as a variable from another module.</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p><code>./main.py</code></p>
+<pre><code class="language-py">from .logger import log
+
+log.info(f&quot;{__name__}&quot;)
+</code></pre>
+<p><code>./logger.py</code></p>
+<pre><code class="language-py">import logging
+
+
+def initialize_logger() -&gt; logging.Logger:
+    logger = logging.getLogger()
+    return logger
+
+
+log = initialize_logger()
+
+log.info(f&quot;{__name__}&quot;)
+</code></pre>
+<hr />
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<p><code>ruff</code> will only detect the issue in <code>./logger.py</code>, while it will pass <code>./main.py</code>.</p>
+<pre><code class="language-sh">$ ruff check --isolated --select G004 src/logger.py
+
+src/logger.py:11:10: G004 Logging statement uses f-string
+Found 1 error.
+
+$ ruff check --isolated --select G004 src/main.py
+
+</code></pre>
+<p><code>pylint</code> will find both issues.</p>
+<pre><code class="language-sh">$ pylint src/logger.py
+
+************* Module src.logger
+src/logger.py:11:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+
+$ pylint src/main.py
+
+************* Module src.main
+src/main.py:3:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+</code></pre>
+<hr />
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<pre><code class="language-sh">$ ruff --version
+
+ruff 0.0.286
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-29 13:42</div>
+            <div class="timeline-body"><p>Can you take a look at <a href="https://beta.ruff.rs/docs/settings/#logger-objects"><code>logger-objects</code></a>? Ruff doesn't support resolving symbols across files, so if you re-export a common logger object, we require that you mark it as such (to avoid false positives on non-loggers). In this case, something like:</p>
+<pre><code class="language-toml">[tool.ruff]
+logger-objects = [&quot;logger.log&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-29 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TimekillerTK">@TimekillerTK</a> on 2023-08-30 08:12</div>
+            <div class="timeline-body"><p>That works! Adding the following to <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+logger-objects = [&quot;logger.log&quot;]
+</code></pre>
+<p>Resulted in:</p>
+<pre><code class="language-sh">$ ruff check --select G004 src/.
+src/logger.py:11:13: G004 Logging statement uses f-string
+src/main.py:3:13: G004 Logging statement uses f-string
+Found 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TimekillerTK on 2023-08-30 08:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

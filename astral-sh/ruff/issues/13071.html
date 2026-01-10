@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Knot panics when changing editor text rapidly - astral-sh/ruff #13071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Red Knot panics when changing editor text rapidly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13071">#13071</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-08-23 06:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-23 06:58</div>
+            <div class="timeline-body"><p>Discovered in https://github.com/astral-sh/ruff/pull/13042.</p>
+<pre><code>2024-08-22 15:33:38.802 [info] panicked at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/tracked_struct.rs:377:9:
+two concurrent writers to Id(4800), should not be possible
+</code></pre>
+<p>This could very well be a Salsa bug but we need a way to reproduce there reliably.</p>
+<p>What am I doing in the video below is to type of <code>def </code> and then removing all content from the file and then typing <code>def </code> again.</p>
+<p>https://github.com/user-attachments/assets/502c8bbb-8f7a-47ee-8f76-b9c25cdabf6c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-08-23 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-08-23 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-01 11:26</div>
+            <div class="timeline-body"><p>A stack trace would be very helpful to understand where this is throwing. This may or may not be a salsa bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-02 09:45</div>
+            <div class="timeline-body"><details><summary>Server logs (including the panic stack trace):</summary>
+<p>
+
+<pre><code>2024-09-02 15:14:54.781 [info] Name: Ruff
+2024-09-02 15:14:54.781 [info] Module: ruff
+2024-09-02 15:14:54.781 [info] Python extension loading
+2024-09-02 15:14:54.781 [info] Waiting for interpreter from python extension.
+2024-09-02 15:14:54.840 [info] Python extension loaded
+2024-09-02 15:14:54.841 [info] Using interpreter: /Users/dhruv/playground/.venv/bin/python
+2024-09-02 15:14:54.854 [info] Using 'path' setting: /Users/dhruv/work/astral/ruff/target/debug/red_knot
+2024-09-02 15:14:55.108 [info] Found Ruff 0.0.0 at /Users/dhruv/work/astral/ruff/target/debug/red_knot
+2024-09-02 15:14:55.108 [info] Server run command: /Users/dhruv/work/astral/ruff/target/debug/red_knot server
+2024-09-02 15:14:55.108 [info] Server: Start requested.
+2024-09-02 15:15:00.925 [info] panicked at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/tracked_struct.rs:377:9:
+two concurrent writers to Id(3400), should not be possible
+
+2024-09-02 15:15:00.970 [info]    0: std::backtrace_rs::backtrace::libunwind::trace
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/../../backtrace/src/backtrace/libunwind.rs:116:5
+   1: std::backtrace_rs::backtrace::trace_unsynchronized
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+   2: std::backtrace::Backtrace::create
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/backtrace.rs:331:13
+   3: red_knot_server::server::Server::run::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server.rs:145:29
+
+2024-09-02 15:15:00.970 [info]    4: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2077:9
+   5: std::panicking::rust_panic_with_hook
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:799:13
+   6: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:664:13
+   7: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:171:18
+   8: rust_begin_unwind
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:652:5
+   9: core::panicking::panic_fmt
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panicking.rs:72:14
+  10: salsa::tracked_struct::IngredientImpl&lt;C&gt;::update
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/tracked_struct.rs:377:9
+  11: salsa::tracked_struct::IngredientImpl&lt;C&gt;::new_struct
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/tracked_struct.rs:272:17
+  12: red_knot_python_semantic::semantic_index::symbol::_::&lt;impl red_knot_python_semantic::semantic_index::symbol::ScopeId&gt;::new
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_struct.rs:192:21
+  13: red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder::push_scope_with_parent
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index/builder.rs:109:24
+  14: red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder::push_scope
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index/builder.rs:90:9
+  15: &lt;red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder as ruff_python_ast::visitor::Visitor&gt;::visit_stmt::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index/builder.rs:404:25
+  16: red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder::with_type_params
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index/builder.rs:263:28
+  17: &lt;red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder as ruff_python_ast::visitor::Visitor&gt;::visit_stmt
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index/builder.rs:395:17
+  18: ruff_python_ast::visitor::walk_body
+             at /Users/dhruv/work/astral/ruff/crates/ruff_python_ast/src/visitor.rs:115:9
+  19: ruff_python_ast::visitor::Visitor::visit_body
+             at /Users/dhruv/work/astral/ruff/crates/ruff_python_ast/src/visitor.rs:94:9
+  20: red_knot_python_semantic::semantic_index::builder::SemanticIndexBuilder::build
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index/builder.rs:334:9
+  21: &lt;red_knot_python_semantic::semantic_index::semantic_index::Configuration_ as salsa::function::Configuration&gt;::execute::inner_
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/semantic_index.rs:42:5
+  22: &lt;red_knot_python_semantic::semantic_index::semantic_index::Configuration_ as salsa::function::Configuration&gt;::execute
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+  23: salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+  24: &lt;core::panic::unwind_safe::AssertUnwindSafe&lt;F&gt; as core::ops::function::FnOnce&lt;()&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panic/unwind_safe.rs:272:9
+  25: std::panicking::try::do_call
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:559:40
+  26: ___rust_try
+  27: std::panicking::try
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:523:19
+  28: std::panic::catch_unwind
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panic.rs:149:14
+  29: salsa::cycle::Cycle::catch
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+  30: salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+  31: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch_cold
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+  32: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::compute_value::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+  33: core::option::Option&lt;T&gt;::or_else
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/option.rs:1515:21
+  34: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::compute_value
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+  35: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+  36: red_knot_python_semantic::semantic_index::semantic_index::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+  37: salsa::attach::Attached::attach
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+  38: salsa::attach::attach::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+  39: std::thread::local::LocalKey&lt;T&gt;::try_with
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/local.rs:283:12
+  40: std::thread::local::LocalKey&lt;T&gt;::with
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/local.rs:260:9
+  41: salsa::attach::attach
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+  42: red_knot_python_semantic::semantic_index::semantic_index
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+  43: red_knot_python_semantic::types::check_types
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_python_semantic/src/types.rs:31:17
+
+2024-09-02 15:15:00.970 [info]   44: &lt;red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration&gt;::execute::inner_
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_workspace/src/workspace.rs:417:23
+  45: &lt;red_knot_workspace::workspace::check_file::Configuration_ as salsa::function::Configuration&gt;::execute
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:179:21
+  46: salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:43
+  47: &lt;core::panic::unwind_safe::AssertUnwindSafe&lt;F&gt; as core::ops::function::FnOnce&lt;()&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panic/unwind_safe.rs:272:9
+  48: std::panicking::try::do_call
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:559:40
+  49: ___rust_try
+  50: std::panicking::try
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:523:19
+  51: std::panic::catch_unwind
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panic.rs:149:14
+  52: salsa::cycle::Cycle::catch
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cycle.rs:42:15
+  53: salsa::function::execute::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::execute
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/execute.rs:52:27
+  54: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch_cold
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:95:14
+  55: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::compute_value::{{closure}}
+             at 
+2024-09-02 15:15:00.970 [info] /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:68
+  56: core::option::Option&lt;T&gt;::or_else
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/option.rs:1515:21
+  57: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::compute_value
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:35:34
+  58: salsa::function::fetch::&lt;impl salsa::function::IngredientImpl&lt;C&gt;&gt;::fetch
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/function/fetch.rs:17:13
+  59: red_knot_workspace::workspace::check_file::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:278:25
+  60: salsa::attach::Attached::attach
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:71:9
+  61: salsa::attach::attach::{{closure}}
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:23
+  62: std::thread::local::LocalKey&lt;T&gt;::try_with
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/local.rs:283:12
+  63: std::
+2024-09-02 15:15:00.970 [info] thread::local::LocalKey&lt;T&gt;::with
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/local.rs:260:9
+  64: salsa::attach::attach
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/attach.rs:91:5
+  65: red_knot_workspace::workspace::check_file
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/components/salsa-macro-rules/src/setup_tracked_fn.rs:270:13
+  66: red_knot_workspace::db::RootDatabase::check_file::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_workspace/src/db.rs:61:27
+  67: red_knot_workspace::db::RootDatabase::with_db::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_workspace/src/db.rs:79:29
+  68: std::panicking::try::do_call
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:559:40
+  69: ___rust_try
+  70: std::panicking::try
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:523:19
+  71: std::panic
+2024-09-02 15:15:00.970 [info] ::catch_unwind
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panic.rs:149:14
+  72: salsa::cancelled::Cancelled::catch
+             at /Users/dhruv/.cargo/git/checkouts/salsa-61760caba2b17ca5/f608ff8/src/cancelled.rs:36:15
+  73: red_knot_workspace::db::RootDatabase::with_db
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_workspace/src/db.rs:79:9
+  74: red_knot_workspace::db::RootDatabase::check_file
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_workspace/src/db.rs:61:9
+  75: red_knot_server::server::api::requests::diagnostic::compute_diagnostics
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/api/requests/diagnostic.rs:56:29
+  76: &lt;red_knot_server::server::api::requests::diagnostic::DocumentDiagnosticRequestHandler as red_knot_server::server::api::traits::BackgroundDocumentRequestHandler&gt;::run_with_snapshot
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/api/requests/diagnostic.rs:33:27
+  77: red_knot_server::server::api::background_request_task
+2024-09-02 15:15:00.970 [info] ::{{closure}}::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/api.rs:106:26
+  78: core::ops::function::FnOnce::call_once{{vtable.shim}}
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+  79: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2063:9
+  80: red_knot_server::server::schedule::Scheduler::dispatch::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/schedule.rs:97:36
+  81: red_knot_server::server::schedule::thread::pool::Pool::spawn::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/schedule/thread/pool.rs:99:13
+  82: core::ops::function::FnOnce::call_once{{vtable.shim}}
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+  83: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2063:9
+  84: red_knot_server::server::schedule::thread::pool::Pool::new::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/schedule/thread/pool.rs:74:29
+  85: red_knot_server::server::schedule::thread::Builder::spawn::{{closure}}
+             at /Users/dhruv/work/astral/ruff/crates/red_knot_server/src/server/schedule/thread.rs:70:13
+  86: 
+2024-09-02 15:15:00.970 [info] std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys_common/backtrace.rs:155:18
+  87: std::thread::Builder::spawn_unchecked_::{{closure}}::{{closure}}
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/mod.rs:542:17
+  88: &lt;core::panic::unwind_safe::AssertUnwindSafe&lt;F&gt; as core::ops::function::FnOnce&lt;()&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/panic/unwind_safe.rs:272:9
+  89: std::panicking::try::do_call
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:559:40
+  90: ___rust_try
+  91: std::panicking::try
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panicking.rs:523:19
+  92: std::panic::catch_unwind
+             at 
+2024-09-02 15:15:00.970 [info] /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/panic.rs:149:14
+  93: std::thread::Builder::spawn_unchecked_::{{closure}}
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/thread/mod.rs:541:30
+  94: core::ops::function::FnOnce::call_once{{vtable.shim}}
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/core/src/ops/function.rs:250:5
+  95: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2063:9
+  96: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::FnOnce&lt;Args&gt;&gt;::call_once
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/alloc/src/boxed.rs:2063:9
+  97: std::sys::pal::unix::thread::Thread::new::thread_start
+             at /rustc/051478957371ee0084a7c0913941d2a8c4757bb9/library/std/src/sys/pal/unix/thread.rs:108:17
+  98: __pthread_joiner_wake
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 10:21</div>
+            <div class="timeline-body"><p>Thx. Yeah, I think this is a salsa bug. I wasn't sure if it panics inside of <code>apply_changes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @dhruvmanila on 2024-09-02 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-05 16:19</div>
+            <div class="timeline-body"><p>Even if this is a Salsa bug, we should probably prioritize tracking it down soon? Seems like a serious issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-13 15:37</div>
+            <div class="timeline-body"><p>We've reproduced this in Salsa at https://github.com/salsa-rs/salsa/pull/573</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13480.html">astral-sh/ruff#13480</a> on 2024-09-23 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-23 12:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

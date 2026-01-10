@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrailingVarArg with hyphens - clap-rs/clap #558</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TrailingVarArg with hyphens</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/558">#558</a>
+        opened by <a href="https://github.com/marcbowes">@marcbowes</a>
+        on 2016-07-01 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marcbowes">@marcbowes</a> on 2016-07-01 16:15</div>
+            <div class="timeline-body"><p>#278 shows how to use <code>TrailingVarArg</code> and a multiple arg to capture extra args. This works great, but I can't seem to get it working with args that start with hyphens:</p>
+<pre><code>[dependencies]
+clap = &quot;2.2.4&quot;
+</code></pre>
+<pre><code class="language-rust">extern crate clap;
+
+#[cfg(test)]
+mod tests {
+    use clap::*;
+
+    #[test]
+    fn test_vararg_1() {
+        let m = App::new(&quot;myprog&quot;)
+            .setting(AppSettings::TrailingVarArg)
+            .subcommand(SubCommand::with_name(&quot;sub&quot;)
+                .setting(AppSettings::TrailingVarArg)
+                .arg(Arg::from_usage(&quot;&lt;cmd&gt;... 'commands to run'&quot;)))
+            .get_matches_from(vec![&quot;myprog&quot;, &quot;sub&quot;, &quot;arg1&quot;, &quot;-r&quot;, &quot;val1&quot;]);
+
+        let trail: Vec&lt;&amp;str&gt; =
+            m.subcommand_matches(&quot;sub&quot;).unwrap().values_of(&quot;cmd&quot;).unwrap().collect();
+        assert_eq!(trail, [&quot;arg1&quot;, &quot;-r&quot;, &quot;val1&quot;]);
+    }
+
+    #[test]
+    fn test_vararg_2() {
+        let m = App::new(&quot;myprog&quot;)
+            .setting(AppSettings::TrailingVarArg)
+            .subcommand(SubCommand::with_name(&quot;sub&quot;)
+                .setting(AppSettings::TrailingVarArg)
+                .arg(Arg::from_usage(&quot;&lt;cmd&gt;... 'commands to run'&quot;)))
+            .get_matches_from(vec![&quot;myprog&quot;, &quot;sub&quot;, &quot;--arg1&quot;, &quot;-r&quot;, &quot;val1&quot;]);
+       // ^ ERROR due to --arg1
+        let trail: Vec&lt;&amp;str&gt; =
+            m.subcommand_matches(&quot;sub&quot;).unwrap().values_of(&quot;cmd&quot;).unwrap().collect();
+        assert_eq!(trail, [&quot;--arg1&quot;, &quot;-r&quot;, &quot;val1&quot;]);
+    }
+}
+</code></pre>
+<pre><code>cargo test -- test_vararg_1
+     Running target/debug/vararg-e311bd86d802e1d9
+
+running 1 test
+test tests::test_vararg_1 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
+</code></pre>
+<pre><code class="language-rust">cargo test -- test_vararg_2 
+     Running target/debug/vararg-e311bd86d802e1d9
+
+running 1 test
+error: Found argument '--arg1' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    myprog sub &lt;cmd&gt;...
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clux">@clux</a> on 2016-07-01 16:20</div>
+            <div class="timeline-body"><p><code>TrailingVarArg</code> must be set inside the subcommand, or you have to make TrailingVarArg a global setting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcbowes">@marcbowes</a> on 2016-07-01 16:25</div>
+            <div class="timeline-body"><p>Sorry, I messed up the description. Updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SubCommand using TrailingVarArg" to "TrailingVarArg with hyphens" by @marcbowes on 2016-07-01 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-01 17:17</div>
+            <div class="timeline-body"><p>This appears to be a bug, thanks for filing! Like @clux said, the setting should be on the subcommand it affects. You can also use <code>global_setting</code> to set it on the parent command and propagate it down through all the child subcommands. Just an option :wink:</p>
+<p>I'm looking into this bug now as to why it only works when the first argument doesn't start with a hyphen. I'll post back here with what I find.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.9.0" by @kbknapp on 2016-07-01 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-01 17:55</div>
+            <div class="timeline-body"><p>#560 fixes this.</p>
+<p>Also, part of the problem is you need to add <a href="http://kbknapp.github.io/clap-rs/clap/enum.AppSettings.html#variant.AllowLeadingHyphen"><code>AppSettings::AllowLeadingHyphen</code></a>, because it's also possible to use proper long options and flags with commands that accept <code>TrailingVarArg</code>s, so this distinguishes them.</p>
+<p>This should be a passing test once the PR merges:</p>
+<pre><code class="language-rust">#[test]
+    fn test_vararg_2() {
+        let m = App::new(&quot;myprog&quot;)
+            .subcommand(SubCommand::with_name(&quot;sub&quot;)
+                .setting(AppSettings::TrailingVarArg)
+                .setting(AppSettings::AllowLeadingHyphen)   // &lt;-- Only change
+                .arg(Arg::from_usage(&quot;&lt;cmd&gt;... 'commands to run'&quot;)))
+            .get_matches_from(vec![&quot;myprog&quot;, &quot;sub&quot;, &quot;--arg1&quot;, &quot;-r&quot;, &quot;val1&quot;]);
+        let trail: Vec&lt;&amp;str&gt; =
+            m.subcommand_matches(&quot;sub&quot;).unwrap().values_of(&quot;cmd&quot;).unwrap().collect();
+        assert_eq!(trail, [&quot;--arg1&quot;, &quot;-r&quot;, &quot;val1&quot;]);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcbowes">@marcbowes</a> on 2016-07-01 17:58</div>
+            <div class="timeline-body"><p>That was fast! Thanks!</p>
+<p>Looking forward to the completion work you've done in #560.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-07-01 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/153.html">TeXitoi/structopt#153</a> on 2019-06-19 05:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

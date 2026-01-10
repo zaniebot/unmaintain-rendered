@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve error message when `version` is missing from `pyproject.toml` - astral-sh/uv #9910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve error message when `version` is missing from `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9910">#9910</a>
+        opened by <a href="https://github.com/edmorley">@edmorley</a>
+        on 2024-12-15 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edmorley">@edmorley</a> on 2024-12-15 12:31</div>
+            <div class="timeline-body"><p>The <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table">pyproject.toml spec</a> says two fields under the <code>[project]</code> table are mandatory: <code>name</code> and <code>version</code> (unless <code>version</code> is declared as <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#dynamic">dynamic</a>)</p>
+<p>If I run <code>uv sync</code> with a <code>pyproject.toml</code> that's missing the <code>name</code> field:</p>
+<pre><code>[project]
+version = &quot;0.0.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+</code></pre>
+<p>...then I get a concise error message like:</p>
+<pre><code>$ uv sync
+error: Failed to parse: `pyproject.toml`
+  Caused by: `pyproject.toml` is using the `[project]` table, but the required `project.name` field is not set
+  Caused by: TOML parse error at line 1, column 1
+  |
+1 | [project]
+  | ^^^^^^^^^
+missing field `name`
+</code></pre>
+<p>However, if instead the <code>version</code> field is missing, like so:</p>
+<pre><code>[project]
+name = &quot;testcase&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+</code></pre>
+<p>...then I get a Python stack trace rather than a TOML validation error:</p>
+<pre><code>$ uv sync
+Using CPython 3.13.1 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13
+Creating virtual environment at: .venv
+  × Failed to build `testcase @ file:///Users/emorley/src/heroku-buildpack-python/spec/fixtures/uv_basic`
+  ╰─▶ Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+          requires = get_requires_for_build({})
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 304, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 320, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+          import sys
+      
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/__init__.py&quot;,
+      line 117, in setup
+          return distutils.core.setup(**attrs)
+                 ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/_distutils/core.py&quot;,
+      line 157, in setup
+          dist.parse_config_files()
+          ~~~~~~~~~~~~~~~~~~~~~~~^^
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/_virtualenv.py&quot;, line 20,
+      in parse_config_files
+          result = old_parse_config_files(self, *args, **kwargs)
+        File &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/dist.py&quot;, line
+      648, in parse_config_files
+          pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/config/pyprojecttoml.py&quot;,
+      line 72, in apply_configuration
+          config = read_configuration(filepath, True, ignore_option_errors, dist)
+        File
+      &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/config/pyprojecttoml.py&quot;,
+      line 140, in read_configuration
+          validate(subset, filepath)
+          ~~~~~~~~^^^^^^^^^^^^^^^^^^
+        File
+      &quot;/Users/emorley/.cache/uv/builds-v0/.tmp11hzLt/lib/python3.13/site-packages/setuptools/config/pyprojecttoml.py&quot;,
+      line 61, in validate
+          raise ValueError(f&quot;{error}\n{summary}&quot;) from None
+      ValueError: invalid pyproject.toml config: `project`.
+      configuration error: `project` must contain ['version'] properties
+</code></pre>
+<p>...which isn't as concise/readable as the <code>name</code> error message and comes across as though it's an unhandled internal error rather than being an intentional user facing error.</p>
+<p>This <code>pyproject.toml</code> doesn't have a <code>[build-system]</code> section, so it seems as though uv shouldn't be getting setuptools to build it? (<code>version</code> isn't declared as <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#dynamic">dynamic</a> either, which is the only other reason I can think of why uv might be trying to build the project?)</p>
+<p>This was using:</p>
+<pre><code>$ uv --version
+uv 0.5.9 (Homebrew 2024-12-13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-12-15 13:26</div>
+            <div class="timeline-body"><p>Related: #7930</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-15 13:42</div>
+            <div class="timeline-body"><p>Yeah we should error early if version is neither present nor dynamic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-12-15 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-15 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9912.html">astral-sh/uv#9912</a> on 2024-12-15 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-15 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-15 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../HumanSignal/label-studio-sdk/pulls/387.html">HumanSignal/label-studio-sdk#387</a> on 2025-01-16 13:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:50 UTC
+    </footer>
+</body>
+</html>

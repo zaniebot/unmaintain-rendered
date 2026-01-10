@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow declaring match-runtime for project's own build dependencies - astral-sh/uv #15568</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow declaring match-runtime for project's own build dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15568">#15568</a>
+        opened by <a href="https://github.com/zsol">@zsol</a>
+        on 2025-08-28 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zsol">@zsol</a> on 2025-08-28 10:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR allows specifying:</p>
+<pre><code class="language-toml">[tool.uv.build-dependencies-metadata.foo]
+match-runtime = true
+</code></pre>
+<p>which when paired with:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;foo&quot;, &quot;bar&quot;]
+# ...
+</code></pre>
+<p>will cause the <code>foo</code> build-time dependency to be runtime-matched when this is applicable.</p>
+<p>A few differences between this approach and triggering runtime-matching via <code>extra-build-dependencies</code>:</p>
+<blockquote>
+<p>[!NOTE]
+It is impossible to introduce new dependencies using <code>build-dependencies-metadata</code> (these should simply be added to <code>build-system.requires</code> instead), so trying to specify metadata for a package that's not a build-time dependency is an error.</p>
+</blockquote>
+<blockquote>
+<p>[!NOTE]
+This PR implements runtime matching slightly differently from the current <code>extra-build-dependencies</code> option: the latter takes the (lowered) extra requirements, and mutates them according to the &quot;top-level&quot; resolution to attach the corresponding <code>source</code> before passing it into the build frontend, which checks that the extra requirements have been mutated before appending them to the build environment resolution.
+This PR's implementation passes down the entire &quot;top-level&quot; resolution into the frontend, which then does the requirement matching and validation in the same place.</p>
+</blockquote>
+<h2>TODOs</h2>
+<ul>
+<li>[ ] Add more docs about how this works</li>
+<li>[x] <code>tool.uv.build-dependencies-metadata.foo</code> should fail if <code>foo</code> isn't a build-time dependency</li>
+<li>[x] <code>uv build</code>ing a wheel should fail if a package tries to runtime match a build dependency</li>
+</ul>
+<p>And a future PR should unify how <code>extra-build-dependencies</code>'s <code>match-runtime</code> works with this approach</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: allow declaring match-runtime for project's own build dependencies" to "Allow declaring match-runtime for project's own build dependencies" by @zsol on 2025-08-31 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-31 12:40</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/zsol%2Fjj-ormktspssmzq?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #15568 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>zsol/jj-ormktspssmzq</code> (88aceda) with <code>main</code> (c2c713e)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 3</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-09-01 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15984.html">astral-sh/uv#15984</a> on 2025-09-22 20:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

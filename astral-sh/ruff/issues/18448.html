@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve blank lines when formatting multi-line lists, function arguments, etc. - astral-sh/ruff #18448</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve blank lines when formatting multi-line lists, function arguments, etc.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18448">#18448</a>
+        opened by <a href="https://github.com/mabeyj">@mabeyj</a>
+        on 2025-06-03 20:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mabeyj">@mabeyj</a> on 2025-06-03 20:25</div>
+            <div class="timeline-body"><p>Requesting the ability for <code>ruff format</code> to preserve blank lines within multi-line lists, dictionaries, sets, tuples, function arguments, and any other list-like syntax. Collapsing multiple blank lines into a single blank line would make sense here and would be consistent with blank lines being collapsed elsewhere.</p>
+<p>Currently, it strips out all blank lines in these cases:</p>
+<pre><code class="language-python">### INPUT
+
+func(
+    &quot;first&quot;,
+
+    # This could be a long comment
+    # documenting something important
+    &quot;arg&quot;,
+    &quot;arg&quot;,
+
+    # This could be a long comment
+    # for which the blank line implies it's not talking about the last argument
+    &quot;arg&quot;,
+    &quot;arg&quot;,
+
+    &quot;last&quot;,
+)
+
+items = [
+    &quot;first&quot;,
+
+    # Apples
+    &quot;item&quot;,
+    &quot;item&quot;,
+
+    # Oranges
+    &quot;item&quot;,
+
+    &quot;last&quot;,
+]
+
+@params(
+    ('case'),
+
+    # Really long list of test cases that might be documented
+    ('case'),
+
+    # Comment
+    ('case'),
+)
+def test_func(value):
+    pass
+
+### OUTPUT
+
+func(
+    &quot;first&quot;,
+    # This could be a long comment
+    # documenting something important
+    &quot;arg&quot;,
+    &quot;arg&quot;,
+    # This could be a long comment
+    # for which the blank line implies it's not talking about the last argument
+    &quot;arg&quot;,
+    &quot;arg&quot;,
+    &quot;last&quot;,
+)
+
+items = [
+    &quot;first&quot;,
+    # Apples
+    &quot;item&quot;,
+    &quot;item&quot;,
+    # Oranges
+    &quot;item&quot;,
+    &quot;last&quot;,
+]
+
+@params(
+    (&quot;case&quot;),
+    # Really long list of test cases that might be documented
+    (&quot;case&quot;),
+    # Comment
+    (&quot;case&quot;),
+)
+def test_func(value):
+    pass
+</code></pre>
+<p>Similar to why we would add blank lines anywhere else, blank lines can improve the readability of long lists. Especially if there are comments within the list; a blank line should be allowed around comment lines for readability.</p>
+<p>For comparison, YAPF and Prettier do not strip blank lines here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-06-03 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2025-06-04 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-04 06:24</div>
+            <div class="timeline-body"><p>I'm supportive of this change. It's something that I found very surprising coming from Prettier but I've to do some digging if there's a specific reason that Black disallows it.</p>
+<p>IMO, it's an instance where the formatter is too opinionated today, to the extend where it is harmful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-04 06:26</div>
+            <div class="timeline-body"><p>Related issues in the black repository:</p>
+<ul>
+<li>https://github.com/psf/black/issues/2805</li>
+<li>https://github.com/psf/black/issues/2723</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mabeyj">@mabeyj</a> on 2025-06-04 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>IMO, it's an instance where the formatter is too opinionated today, to the extend where it is harmful.</p>
+</blockquote>
+<p>100% agreed! So much so, that I had forked Black to make this change because it was very disruptive for a project and just inconsistent when used alongside Prettier:</p>
+<ul>
+<li>https://github.com/mabeyj/black-ex/pull/3</li>
+<li>https://github.com/jsh9/cercis/pull/26</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

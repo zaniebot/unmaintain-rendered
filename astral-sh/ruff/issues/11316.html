@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF401 triggers when adding items to collection from function arguments - astral-sh/ruff #11316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF401 triggers when adding items to collection from function arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11316">#11316</a>
+        opened by <a href="https://github.com/CoolCat467">@CoolCat467</a>
+        on 2024-05-07 03:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-05-07 03:34</div>
+            <div class="timeline-body"><p>PERF401 is triggered and suggests rewriting as async for loop when modifying a collection from arguments, which makes this not possible.</p>
+<p><code>example.py</code></p>
+<pre><code class="language-python">async def read_output(
+    stream: ReceiveStream,
+    chunks: list[bytes | bytearray],
+) -&gt; None:
+    async with stream:
+        async for chunk in stream:
+            chunks.append(chunk)
+</code></pre>
+<pre><code>ruff check example.py --isolated --select PERF401
+</code></pre>
+<p><code>example.py:7:13: PERF401 Use an async list comprehension to create a transformed list</code></p>
+<p><code>ruff --version</code>: <code>ruff 0.4.3</code></p>
+<p>Suggested fixes:</p>
+<ul>
+<li>Don't raise issue for this circumstance</li>
+<li>?Suggest extending collection with async comprehension if argument is a list</li>
+</ul>
+<p>Worries I have about 2nd solution is that this way of ordering your code makes it seem like you care quite a lot about having the function caller having complete control over memory allocation, and then there is the matter of what about collections that are not lists like sets and how are we even finding out if argument is a list or not if it doesn't have type annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-trio/trio/pulls/2969.html">python-trio/trio#2969</a> on 2024-05-07 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-07 03:41</div>
+            <div class="timeline-body"><p>Can it not be written with something like:</p>
+<pre><code class="language-python">async def read_output(
+    stream: ReceiveStream,
+    chunks: list[bytes | bytearray],
+) -&gt; None:
+    async with stream:
+        chunks.extend(chunk async for chunk  in stream)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-05-07 03:45</div>
+            <div class="timeline-body"><p>That's what I'm mentioning in second idea for suggested fix, ruff telling people they could use extend, but as I noted, what if people are passing in a <code>set</code> object? Sets don't have an <code>extend</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-07 04:22</div>
+            <div class="timeline-body"><p>Ah yeah, I think the message could be better here.</p>
+<p>On the second point, thankfully sets also don't have an <code>append</code> method, so we wouldn't trigger on a set here I don't think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-05-08 00:26</div>
+            <div class="timeline-body"><p>Correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-05-10 14:38</div>
+            <div class="timeline-body"><p>@CoolCat467 sets and dicts do have an <code>update()</code> method though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-05-10 22:39</div>
+            <div class="timeline-body"><p>Not tuple though. The point is, giving one single solution for all collections will probably not work for at least one somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/A5rocks">@A5rocks</a> on 2024-05-16 06:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Can it not be written with something like:</p>
+<pre><code class="language-python">async def read_output(
+    stream: ReceiveStream,
+    chunks: list[bytes | bytearray],
+) -&gt; None:
+    async with stream:
+        chunks.extend(chunk async for chunk  in stream)
+</code></pre>
+</blockquote>
+<p>No, <code>async for</code> in a generator like that returns an async generator, which <code>.extend</code> doesn't take. Instead, you could do <code>chunks.extend([chunk async for chunk  in stream])</code> which is like... I don't know, is that slower? Faster? You're making an extra list and discarding it, I can't imagine that's faster.</p>
+<pre><code class="language-py">&gt;&gt;&gt; import asyncio
+&gt;&gt;&gt; async def agenerator():
+...   yield 1
+...   await asyncio.sleep(2)
+...   yield 3
+...
+&gt;&gt;&gt; async def main():
+...   b = []
+...   b.extend(i async for i in agenerator())
+...
+&gt;&gt;&gt; asyncio.run(main())
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;C:\Users\A5rocks\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py&quot;, line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\A5rocks\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py&quot;, line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;C:\Users\A5rocks\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py&quot;, line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File &quot;&lt;stdin&gt;&quot;, line 3, in main
+TypeError: 'async_generator' object is not iterable
+</code></pre>
+<p>(I comment this because I thought that would work too, but then tried it just to be sure...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16315.html">astral-sh/ruff#16315</a> on 2025-02-22 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gsakkis">@gsakkis</a> on 2025-10-06 16:50</div>
+            <div class="timeline-body"><blockquote>
+<p>No, async for in a generator like that returns an async generator, which .extend doesn't take. Instead, you could do chunks.extend([chunk async for chunk  in stream])</p>
+</blockquote>
+<p>You can't even do that if the iteration may raise an exception:</p>
+<pre><code class="language-python">async def agenerator():
+    for i in range(-3, 4):
+        await asyncio.sleep(0.1)
+        yield 1 / i
+
+b = []
+try:
+    async for i in agenerator():
+        b.append(i)
+except ZeroDivisionError:
+    pass
+assert b == [-1 / 3, -1 / 2, -1]
+
+c = []
+try:
+    c.extend([i async for i in agenerator()])
+except ZeroDivisionError:
+    pass
+assert c == []
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

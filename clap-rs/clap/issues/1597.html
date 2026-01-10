@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow changing SUBCOMMAND placeholder in usage - clap-rs/clap #1597</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow changing SUBCOMMAND placeholder in usage</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1597">#1597</a>
+        opened by <a href="https://github.com/clarfonthey">@clarfonthey</a>
+        on 2019-11-10 02:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/clarfonthey">@clarfonthey</a> on 2019-11-10 02:19</div>
+            <div class="timeline-body"><!-- Issuehunt Badges -->
+
+<p><a href="https://issuehunt.io/r/clap-rs/clap/issues/1597"><img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%240%20Funded-%2300A156.svg" /></a></p>
+<!-- /Issuehunt Badges -->
+
+<p>(Note: I'm using v2 right now, but I believe that v3 doesn't change this.)</p>
+<p>Basically, the usage will use the placeholder <code>&lt;SUBCOMMAND&gt;</code> or <code>[SUBCOMMAND]</code> depending on whether the subcommand is used, and it won't let you change this. Sometimes, it may actually be more beneficial to change this, e.g.:</p>
+<pre><code>USAGE:
+    util list &lt;THING&gt;
+</code></pre>
+<p>as opposed to:</p>
+<pre><code>USAGE:
+    util list &lt;SUBCOMMAND&gt;
+</code></pre>
+<!-- Issuehunt content -->
+
+<hr />
+<details>
+<summary>
+<b>IssueHunt Summary</b>
+</summary>
+
+<h3>Backers (Total: $0.00)</h3>
+<h4><a href="https://issuehunt.io/r/clap-rs/clap/issues/1597">Become a backer now!</a></h4>
+<h4><a href="https://issuehunt.io/r/clap-rs/clap/issues/1597">Or submit a pull request to get the deposits!</a></h4>
+<h3>Tips</h3>
+<ul>
+<li>Checkout the <a href="https://issuehunt.io/r/clap-rs/clap/">Issuehunt explorer</a> to discover more funded issues.</li>
+<li>Need some help from other developers? <a href="https://issuehunt.io/r/new">Add your repositories</a> on IssueHunt to raise funds.</details>
+
+</li>
+</ul>
+<!-- /Issuehunt content-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 11:20</div>
+            <div class="timeline-body"><p>@clarfon Do you have some concrete design in mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-02-01 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> added by @CreepySkeleton on 2020-02-01 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1459.html">clap-rs/clap#1459</a> on 2020-02-01 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @pksunkara on 2020-02-01 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clarfonthey">@clarfonthey</a> on 2020-02-02 00:25</div>
+            <div class="timeline-body"><p>I would, but I haven't taken a proper look at the changes for 3.0 and don't know where it would properly integrate with that. I was under the assumption it'd just be a property on the thing that accepts subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-02 05:49</div>
+            <div class="timeline-body"><p>That sounds correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsdw">@jsdw</a> on 2020-02-10 07:37</div>
+            <div class="timeline-body"><p>I ran into a desire for this as well using <code>structopt</code>. My use case is that I want to require a certain value from a limited set of options (eg &quot;foo&quot;, &quot;bar&quot;, &quot;lark&quot;) and in the case that one of those values is provided (&quot;foo&quot;, for instance) I need some other config as well.</p>
+<p>A more concrete example using <code>structopt</code> (though any such changes would need to happen here first I'd assume):</p>
+<pre><code>#[derive(Debug, Clone, StructOpt)]
+struct Opts {
+    /// General arg 1
+    #[structopt(long)]
+    apple: u16,
+
+    /// General arg 2
+    #[structopt(long)]
+    banana: u16,
+
+    /// Required; may lead to other args needed
+    #[structopt(subcommand)]
+    thing: Thing
+}
+
+#[derive(Debug, Clone, StructOpt)]
+enum Thing {
+    Foo,
+    Bar,
+    Lark {
+        #[structopt(long)]
+        other_opt: String
+    }
+}
+</code></pre>
+<p>Here, I want &quot;thing&quot; to be as close to a normal positional arg as possible, but to require other opts if one of them is selected. I'd therefore like to be able to rename SUBCOMMAND to something like THING so that it's clearer what is being selected.</p>
+<p>If there is a better way to achieve this though, I'm all ears :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/issuehunt-oss[bot]">@issuehunt-oss[bot]</a> on 2020-05-27 14:31</div>
+            <div class="timeline-body"><p><a href="https://issuehunt.io/u/pksunkara">@pksunkara</a> has funded $5.00 to this issue.</p>
+<hr />
+<ul>
+<li>Submit pull request via <a href="https://issuehunt.io/repos/31315121/issues/1597">IssueHunt</a> to receive this reward.</li>
+<li>Want to contribute? Chip in to this issue via <a href="https://issuehunt.io/repos/31315121/issues/1597">IssueHunt</a>.</li>
+<li>Checkout the <a href="https://issuehunt.io/issues">IssueHunt Issue Explorer</a> to see more funded issues.</li>
+<li>Need help from developers? <a href="https://issuehunt.io/r/new">Add your repository</a> on IssueHunt to raise funds.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:dollar: Funded on Issuehunt</span> added by @issuehunt-oss[bot] on 2020-05-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1986.html">clap-rs/clap#1986</a> on 2020-06-26 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-07-10 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/issuehunt-oss[bot]">@issuehunt-oss[bot]</a> on 2020-08-11 11:39</div>
+            <div class="timeline-body"><p><a href="https://issuehunt.io/u/pksunkara">@pksunkara</a> has cancelled funding for this issue.(Cancelled amount: $5.00) <a href="https://issuehunt.io/repos/31315121/issues/1597">See it on IssueHunt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:dollar: Funded on Issuehunt</span> removed by @issuehunt-oss[bot] on 2020-08-11 11:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:03 UTC
+    </footer>
+</body>
+</html>

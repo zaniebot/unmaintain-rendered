@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honor `--refresh` when reusing cached tool environments for `uvx`/`uv` tool run - astral-sh/uv #16991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Honor `--refresh` when reusing cached tool environments for `uvx`/`uv` tool run</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16991">#16991</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-12-04 21:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-12-04 21:00</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/16974</p>
+<p>This diff consults the cache’s freshness policy before reusing a cached tool environment, so <code>--refresh</code> (and package-specific refresh flags) actually invalidate stale envs instead of silently reusing them. Previously, local projects with unchanged versions kept running old code because the cached env was always treated as fresh; the change implemented here forces a rebuild when refresh is requested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-12-04 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/project/environment.rs</code>:177 on 2025-12-04 21:04</div>
+            <div class="timeline-body"><p>Previous errors were swallowed here... I'm thinking we should do the same for the freshness check? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-04 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/environment.rs</code>:177 on 2025-12-04 21:16</div>
+            <div class="timeline-body"><p>What causes the freshness check to fail? <code>is_ok_and</code> could be fine 🤷‍♀️ but it depends on the failure conditions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-04 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/environment.rs</code>:180 on 2025-12-04 21:16</div>
+            <div class="timeline-body"><p>Note you can use chained if lets now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-12-04 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/project/environment.rs</code>:180 on 2025-12-04 21:20</div>
+            <div class="timeline-body"><p>True! Clippy should enforce this 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-12-04 21:28</div>
+            <div class="timeline-body"><p>@zanieb Thinking about this change more (after looking at a few existing tests), it looks like re-using the cache for <code>--refresh</code> was deliberate? I can see this as an optimization for registry packages, but it kind of breaks down for local path dependencies. I would assume that users expect <code>--refresh</code> to give them fresh results everytime, so we're essentially prioritizing correctness over the existing optimization here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-12-04 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/project/environment.rs</code>:177 on 2025-12-04 21:31</div>
+            <div class="timeline-body"><p>Permission denied or other I/O related errors when reading the cache entry's metadata could occur. These are probably rare edge cases, and if we can't even read the metadata of a cache entry, falling through to rebuild seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 22:41</div>
+            <div class="timeline-body"><p>I think @charliermarsh probably has the most context on the existing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-09 04:02</div>
+            <div class="timeline-body"><p>Does this mean we would <em>always</em> create a new environment with <code>@latest</code>?</p>
+<p>I am wondering if we should instead try to expand the content of the environment hash. Like, for registry dependencies, the effect of <code>--refresh</code> will already be reflected in the hash because it will lead to a different resolution, right?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

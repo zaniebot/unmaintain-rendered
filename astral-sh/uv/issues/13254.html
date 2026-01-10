@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv version leaves lock file out-of-date - astral-sh/uv #13254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv version leaves lock file out-of-date</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13254">#13254</a>
+        opened by <a href="https://github.com/StephenRobin">@StephenRobin</a>
+        on 2025-05-01 17:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/StephenRobin">@StephenRobin</a> on 2025-05-01 17:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Thanks for adding the <code>uv version</code> command! I'm not sure if this is a bug or not, but it feels strange that the version number in uv.lock is not updated by <code>uv version</code>.</p>
+<p>We currently have a dynamic version number in pyproject.toml. In the CI pipeline we set the version of the build in an env var, then do:</p>
+<pre><code>uv sync --locked # locked to ensure the build is reproduceable and pyproject.toml matches uv.lock
+uv run --no-sync ruff check
+# Some other stuff
+uv build
+# Some other stuff
+</code></pre>
+<p>I would like to change this so we just set the version number in pyproject.toml at the start of the CI run using <code>uv version 1.2.3</code>. This doesn't work as the subsequent <code>uv sync --locked</code> step gives the error &quot;The lockfile at <code>uv.lock</code> needs to be updated, but <code>--locked</code> was provided. To update the lockfile, run <code>uv lock</code>&quot;.</p>
+<p>The error makes sense, but wouldn't it be better to either update the lock file as part of <code>uv version</code> or perhaps even omit the version from uv.lock like when dynamic versions are used?</p>
+<p>I could solve this by doing <code>uv version 1.2.3 &amp;&amp; uv lock</code> after the sync (some of our later stages require it to be locked) but it feels wrong.</p>
+<h3>Platform</h3>
+<p>Ubuntu 22</p>
+<h3>Version</h3>
+<p>uv 0.7.2</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @StephenRobin on 2025-05-01 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-05-01 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-01 18:28</div>
+            <div class="timeline-body"><p>Yep good call, we should definitely do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HenriBlacksmith">@HenriBlacksmith</a> on 2025-05-05 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Yep good call, we should definitely do this.</p>
+</blockquote>
+<p>I think this is even breaking the <code>uv version</code> command, not sure if there is a priority for bugs but this one is definitely an important one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2025-05-06 15:22</div>
+            <div class="timeline-body"><p>Additionally, it seems that <code>lock</code> and <code>sync</code> do something slightly different. If I do a <code>lock</code> after a <code>version</code> update the lock file gets updated, but then if I later do a <code>sync</code> I get a message saying that the package version is updated. The latter only happens once and doesn't seem to change the lock file, but it's unclear why it does that if all the files are already up to date.</p>
+<pre><code class="language-bash">$ uv version 0.3.13a0
+lvmcryo 0.3.12 =&gt; 0.3.13a0
+
+$ uv lock
+Resolved 98 packages in 1.77s
+Updated lvmcryo v0.3.12 -&gt; v0.3.13a0
+
+$ uv sync --all-groups --all-extras
+Resolved 98 packages in 8ms
+      Built lvmcryo @ file:///home/gallegoj/code/lvmcryo
+Prepared 1 package in 530ms
+Uninstalled 1 package in 3ms
+Installed 1 package in 1ms
+ - lvmcryo==0.3.12a0 (from file:///home/gallegoj/code/lvmcryo)
+ + lvmcryo==0.3.13a0 (from file:///home/gallegoj/code/lvmcryo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13317.html">astral-sh/uv#13317</a> on 2025-05-06 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-06 19:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is even breaking the uv version command, not sure if there is a priority for bugs but this one is definitely an important one</p>
+</blockquote>
+<p>Good news the fix is written and will hopefully land soon (it's unfortunately a bit of a non-trivial change, in spite of the net effect usually being &quot;edit this one string in a toml file&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-05-21 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

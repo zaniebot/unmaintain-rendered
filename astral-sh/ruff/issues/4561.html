@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlike isort, ruff `I` rules do not remove unneeded line break commas - astral-sh/ruff #4561</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unlike isort, ruff `I` rules do not remove unneeded line break commas</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4561">#4561</a>
+        opened by <a href="https://github.com/johnthagen">@johnthagen</a>
+        on 2023-05-21 18:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johnthagen">@johnthagen</a> on 2023-05-21 18:07</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Consider this code:</p>
+<pre><code class="language-py">from enum import (
+    Enum,
+    unique,
+)
+</code></pre>
+<p>Running <code>isort main.py</code> results in:</p>
+<pre><code class="language-py">from enum import Enum, unique
+</code></pre>
+<p>But running <code>ruff check .\main.py --select I --fix</code> results in (unchanged):</p>
+<pre><code class="language-py">from enum import (
+    Enum,
+    unique,
+)
+</code></pre>
+<p>Our workflow <em>used</em> to be, run <code>isort</code> and then run <code>black</code>. What this would do was remove any unnecessary line break commas in imports, and then black would reflow any lines that needed changing.</p>
+<ul>
+<li>Example using nox: https://github.com/johnthagen/python-blueprint/blob/9e3c9a7ee7d89f46a2e0be0e8b77984abf974634/noxfile.py#L30</li>
+</ul>
+<p>But with Ruff's implementation of isort rules, a single small import with a trailing comma will never be collapsed.</p>
+<p>Imagine a scenario where you used to import 6 things from a module and that required breaking into new lines, but later refactor your code and use your editor to automatically remove the unused imports. If there is a single trailing comma, now that will never be nicely collapsed to a single line. Over a large code base, this can start to add up to a lot of extra vertical space consumed.</p>
+<p>Is there a way to restore to isort's behavior?</p>
+<h3>Environmenet</h3>
+<ul>
+<li>Python: 3.10.7</li>
+<li>Ruff: 0.0.269</li>
+<li>isort: 5.12.0</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 18:17</div>
+            <div class="timeline-body"><p>You can set <a href="https://beta.ruff.rs/docs/settings/#split-on-trailing-comma"><code>split-on-trailing-comma</code></a> to <code>false</code>.</p>
+<p>(There's more on this here: https://github.com/charliermarsh/ruff/issues/4153. I continue to believe this is a bug in isort: the documentation states that <code>split-on-trailing-comma</code> defaults to <code>true</code> for <code>profile = &quot;black&quot;</code>, but in practice, you have to explicitly enable it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 18:18</div>
+            <div class="timeline-body"><p>(Closing preemptively, but let me know if this doesn't solve your problem.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-21 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-05-21 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2023-05-21 18:33</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh! That is very interesting about the isort history. I always assumed it was intentional to collapse extra lines for the imports (and deviate from black in this one specific way), but as you mention in the other thread, perhaps it was not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../johnthagen/python-blueprint/pulls/172.html">johnthagen/python-blueprint#172</a> on 2023-05-21 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

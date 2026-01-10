@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packages that fail to install under PEP 517 with build isolation - astral-sh/uv #2252</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Packages that fail to install under PEP 517 with build isolation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2252">#2252</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-06 22:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 22:34</div>
+            <div class="timeline-body"><p>I don't know that an issue is the right home for this, but I want to track the packages we <em>know</em> can't be installed under PEP 517 when build isolation is enforced. In all cases, these packages <em>also</em> fail under <code>pip install --use-pep517</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 22:35</div>
+            <div class="timeline-body"><p><a href="https://github.com/TaylorSMarks/playsound/blob/9cf4af20caa5ae8586f88b65659681b24f0c4e69/setup.py"><code>playsound</code></a></p>
+<pre><code>❯ pip install -e . --use-pep517
+Obtaining file:///Users/crmarsh/workspace/puffin/playsound
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build editable did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [31 lines of output]
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 132, in get_requires_for_build_editable
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-n_6uhe_d/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 448, in get_requires_for_build_editable
+          return self.get_requires_for_build_wheel(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-n_6uhe_d/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=['wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-n_6uhe_d/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
+          self.run_setup()
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-n_6uhe_d/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-n_6uhe_d/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 6, in &lt;module&gt;
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/inspect.py&quot;, line 1282, in getsource
+          lines, lnum = getsourcelines(object)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/inspect.py&quot;, line 1264, in getsourcelines
+          lines, lnum = findsource(object)
+                        ^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/inspect.py&quot;, line 1093, in findsource
+          raise OSError('could not get source code')
+      OSError: could not get source code
+      [end of output]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 22:37</div>
+            <div class="timeline-body"><p>Prior versions of <code>fastText</code> failed, but were fixed in https://github.com/facebookresearch/fastText/commit/de458ddea42327cf314e69f9eef40d0ec02705ab.</p>
+<p>However, the most recent published version (<code>v0.9.2</code>) does fail:</p>
+<pre><code>❯ pip install -e . --use-pep517
+Obtaining file:///Users/crmarsh/workspace/puffin/fastText
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build editable did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [31 lines of output]
+      /Users/crmarsh/.local/share/rtx/installs/python/3.12.1/bin/python3.12: No module named pip
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 38, in __init__
+      ModuleNotFoundError: No module named 'pybind11'
+
+      During handling of the above exception, another exception occurred:
+
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 132, in get_requires_for_build_editable
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-vc8gsuu6/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 448, in get_requires_for_build_editable
+          return self.get_requires_for_build_wheel(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-vc8gsuu6/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=['wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-vc8gsuu6/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
+          self.run_setup()
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-vc8gsuu6/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-vc8gsuu6/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 72, in &lt;module&gt;
+        File &quot;&lt;string&gt;&quot;, line 41, in __init__
+      RuntimeError: pybind11 install failed.
+      [end of output]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 22:39</div>
+            <div class="timeline-body"><p><a href="https://github.com/mattloper/chumpy/blob/51d5afd92a8ded3637553be8cef41f328a1c863a/setup.py"><code>chumpy</code></a></p>
+<pre><code>❯ pip install -e . --use-pep517
+Obtaining file:///Users/crmarsh/workspace/puffin/chumpy
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build editable did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [29 lines of output]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 9, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'pip'
+
+      During handling of the above exception, another exception occurred:
+
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 132, in get_requires_for_build_editable
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-31a60nip/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 448, in get_requires_for_build_editable
+          return self.get_requires_for_build_wheel(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-31a60nip/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=['wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-31a60nip/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
+          self.run_setup()
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-31a60nip/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-31a60nip/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'pip'
+      [end of output]
+</code></pre>
+<p>This also causes <a href="https://github.com/ViTAE-Transformer/ViTPose/blob/d5216452796c90c6bc29f5c5ec0bdba94366768a/setup.py"><code>ViTPose</code></a> to fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-03-06 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-06 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/9175.html">pypa/pip#9175</a> on 2024-03-07 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-03-07 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-03-08 08:47</div>
+            <div class="timeline-body"><p>I have problems with <a href="https://github.com/facebookresearch/xformers"><code>xformers</code> by Meta</a> (see <a href="https://github.com/facebookresearch/xformers/issues/940">issue</a>). I even tried with latest <code>uv</code> <em>without build isolation</em>:</p>
+<pre><code class="language-bash">❯ uv pip install setuptools torch numpy
+Resolved 11 packages in 2ms
+Installed 1 package in 23ms
+ + numpy==1.26.4
+
+❯ uv pip install xformers --no-build-isolation
+Resolved 11 packages in 2ms
+error: Failed to download distributions
+  Caused by: Failed to fetch wheel: xformers==0.0.24
+  Caused by: Failed to build: xformers==0.0.24
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: setup.py --help [cmd1 cmd2 ...]
+   or: setup.py --help-commands
+   or: setup.py cmd --help
+
+error: invalid command 'bdist_wheel'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 15:02</div>
+            <div class="timeline-body"><p>@baggiponte -- I think you need to install <code>wheel</code> as well -- that's the trace you get when you're missing <code>wheel</code> (e.g., <code>uv pip install wheel</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-03-08 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>@baggiponte -- I think you need to install <code>wheel</code> as well -- that's the trace you get when you're missing <code>wheel</code> (e.g., <code>uv pip install wheel</code>).</p>
+</blockquote>
+<p>That solves it - then I get weird C errors but definitely not uv-related.</p>
+<p>Do you think uv should automatically recommend this kind of suggestions? A bit like the Rust compiler, that has wonderfully helpful error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 18:39</div>
+            <div class="timeline-body"><p>Yeah we should add a nice message for “missing wheel”. We have that for a few other failures. \cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2342.html">astral-sh/uv#2342</a> on 2024-03-10 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 13:51</div>
+            <div class="timeline-body"><p><a href="https://github.com/VKCOM/YouTokenToMe"><code>youtokentome</code></a> at least as of f4162d846057a3118222ca04a01b84297eb8a8db.</p>
+<pre><code>❯ pip install youtokentome --use-pep517
+Collecting youtokentome
+  Downloading youtokentome-1.0.6.tar.gz (86 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.7/86.7 kB 3.5 MB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [20 lines of output]
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.2/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.2/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.2/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 118, in get_requires_for_build_wheel
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-xop9lly4/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=['wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-xop9lly4/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
+          self.run_setup()
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-xop9lly4/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-xop9lly4/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 5, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'Cython'
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─&gt; See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2955.html">astral-sh/uv#2955</a> on 2024-04-10 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 14:07</div>
+            <div class="timeline-body"><p><a href="https://github.com/idiap/fast-transformers"><code>pytorch-fast-transformers</code></a> though perhaps intentional since it requires PyTorch at build time.</p>
+<pre><code>❯ pip install pytorch-fast-transformers --use-pep517
+Collecting pytorch-fast-transformers
+  Downloading pytorch-fast-transformers-0.4.0.tar.gz (93 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 93.6/93.6 kB 4.2 MB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [26 lines of output]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 19, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'torch'
+
+      The above exception was the direct cause of the following exception:
+
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.1/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 118, in get_requires_for_build_wheel
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-wn0uzfrt/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=['wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-wn0uzfrt/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
+          self.run_setup()
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-wn0uzfrt/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-wn0uzfrt/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 22, in &lt;module&gt;
+      ImportError: PyTorch is required to install pytorch-fast-transformers. Please install your favorite version of PyTorch, we support 1.3.1, 1.5.0 and &gt;=1.6
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─&gt; See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2991.html">astral-sh/uv#2991</a> on 2024-04-11 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-23 19:14</div>
+            <div class="timeline-body"><p><a href="https://github.com/PyYoshi/cChardet"><code>cchardet</code></a> which doesn't work on Py311 out of the box, but <em>does</em> work on Py311 with <code>cython</code> installed.</p>
+<p>~But <code>pip --pep517</code> still works, <code>uv</code> doesn't (maybe because the package has no <code>pyproject.toml</code>?)~</p>
+<pre><code class="language-console">$ uv venv .venv --seed
+$ .venv/bin/pip install cython==3.0.0
+$ .venv/bin/pip install cchardet==2.1.7 --use-pep517
+</code></pre>
+<p>~succeeds~ fails with a cold cache. Succeeds without <code>--use-pep517</code>. then <code>uv</code>:</p>
+<pre><code class="language-console">$ uv venv .venv
+$ uv pip install --python .venv/bin/python cython==3.0.0
+$ uv pip install --python .venv/bin/python cchardet==2.1.7
+</code></pre>
+<p>fails.</p>
+<p>~LMK if, because <code>pip</code> <em>does</em> handle this, it belongs in a new issue~</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:19</div>
+            <div class="timeline-body"><p><code>pip install cchardet==2.1.7 --use-pep517</code> does not work for me actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-23 19:20</div>
+            <div class="timeline-body"><pre><code>❯ python -m pip install cchardet==2.1.7 --use-pep517
+Collecting cchardet==2.1.7
+  Using cached cchardet-2.1.7.tar.gz (653 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Installing backend dependencies ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: cchardet
+  Building wheel for cchardet (pyproject.toml) ... error
+  error: subprocess-exited-with-error
+
+  × Building wheel for cchardet (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [23 lines of output]
+      running bdist_wheel
+      running build
+      running build_py
+      creating build
+      creating build/lib.macosx-14.2-arm64-cpython-311
+      creating build/lib.macosx-14.2-arm64-cpython-311/cchardet
+      copying src/cchardet/version.py -&gt; build/lib.macosx-14.2-arm64-cpython-311/cchardet
+      copying src/cchardet/__init__.py -&gt; build/lib.macosx-14.2-arm64-cpython-311/cchardet
+      running build_ext
+      building 'cchardet._cchardet' extension
+      creating build/temp.macosx-14.2-arm64-cpython-311
+      creating build/temp.macosx-14.2-arm64-cpython-311/src
+      creating build/temp.macosx-14.2-arm64-cpython-311/src/cchardet
+      creating build/temp.macosx-14.2-arm64-cpython-311/src/ext
+      creating build/temp.macosx-14.2-arm64-cpython-311/src/ext/uchardet
+      creating build/temp.macosx-14.2-arm64-cpython-311/src/ext/uchardet/src
+      creating build/temp.macosx-14.2-arm64-cpython-311/src/ext/uchardet/src/LangModels
+      clang -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -I/opt/homebrew/opt/openssl@3include -Isrc/ext/uchardet/src -I/Users/crmarsh/.local/share/rtx/installs/python/3.11.8/include/python3.11 -c src/cchardet/_cchardet.cpp -o build/temp.macosx-14.2-arm64-cpython-311/src/cchardet/_cchardet.o
+      src/cchardet/_cchardet.cpp:196:12: fatal error: 'longintrepr.h' file not found
+        #include &quot;longintrepr.h&quot;
+                 ^~~~~~~~~~~~~~~
+      1 error generated.
+      error: command '/usr/bin/clang' failed with exit code 1
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for cchardet
+Failed to build cchardet
+ERROR: Could not build wheels for cchardet, which is required to install pyproject.toml-based projects
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2024-05-23 19:20</div>
+            <div class="timeline-body"><p>Ahhhhhhh I'm like 90% certain <code>pip</code> pulled it from its cache on my box. 😅</p>
+<p>EDIT: Yeah this fails: <code>.venv/bin/pip install cchardet==2.1.7 --use-pep517 --no-cache</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3871.html">astral-sh/uv#3871</a> on 2024-05-28 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/1131.html">astral-sh/rye#1131</a> on 2024-05-31 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4069.html">astral-sh/uv#4069</a> on 2024-06-05 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4354.html">astral-sh/uv#4354</a> on 2024-06-17 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/covracer">@covracer</a> on 2024-06-24 14:48</div>
+            <div class="timeline-body"><p>https://pypi.org/project/biopython/</p>
+<p>https://github.com/astral-sh/uv/issues/4069#issuecomment-2186762048</p>
+<p>Edit: fixed in https://github.com/biopython/biopython/pull/4749</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4600.html">astral-sh/uv#4600</a> on 2024-06-27 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4685.html">astral-sh/uv#4685</a> on 2024-07-01 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4886.html">astral-sh/uv#4886</a> on 2024-07-08 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 13:22</div>
+            <div class="timeline-body"><p><a href="https://github.com/BYVoid/OpenCC.git@ver.1.1.7">OpenCC</a></p>
+<pre><code>❯ pip install --use-pep517 git+https://github.com/BYVoid/OpenCC.git@ver.1.1.7
+Collecting git+https://github.com/BYVoid/OpenCC.git@ver.1.1.7
+  Cloning https://github.com/BYVoid/OpenCC.git (to revision ver.1.1.7) to /private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-lz7b4_dp
+  Running command git clone --filter=blob:none --quiet https://github.com/BYVoid/OpenCC.git /private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-lz7b4_dp
+  Running command git checkout -q e5d6c5f1b78e28a5797e7ad3ede3513314e544b7
+  Resolved https://github.com/BYVoid/OpenCC.git to commit e5d6c5f1b78e28a5797e7ad3ede3513314e544b7
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [20 lines of output]
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.3/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.3/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.3/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 118, in get_requires_for_build_wheel
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-mnle05bg/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 327, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-mnle05bg/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 297, in _get_build_requires
+          self.run_setup()
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-mnle05bg/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 497, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-build-env-mnle05bg/overlay/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 313, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 9, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'wheel'
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─&gt; See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5040.html">astral-sh/uv#5040</a> on 2024-07-13 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5176.html">astral-sh/uv#5176</a> on 2024-07-18 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5399.html">astral-sh/uv#5399</a> on 2024-07-24 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amanmibra">@amanmibra</a> on 2024-07-29 07:01</div>
+            <div class="timeline-body"><p>Is the solution to just pip install?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 14:40</div>
+            <div class="timeline-body"><p>@amanmibra -- The solution is generally to do something like:</p>
+<pre><code>uv venv
+uv pip install torch setuptools
+uv pip install --no-build-isolation ${package}
+</code></pre>
+<p>I.e., you create a virtual environment, &quot;manually&quot; install any build dependencies, then install the package in question with <code>--no-build-isolation</code>, so that it's built in <em>your</em> virtual environment and has access to the installed dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-07-29 16:53</div>
+            <div class="timeline-body"><p>What's the <code>uv</code> logic for building packages with no <code>pyproject.toml</code>? (asking in light of #5551 - wondering if <code>uv</code> should just assume a very specific old version of setuptools... I don't know what pip does)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-07-29 17:06</div>
+            <div class="timeline-body"><p>@astrojuanlu The default backend is defined here:
+https://github.com/astral-sh/uv/blob/194904b34023a71b749b14f311e2151b3c53750d/crates/uv-build/src/lib.rs#L69-L76</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5816.html">astral-sh/uv#5816</a> on 2024-08-06 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 20:11</div>
+            <div class="timeline-body"><p>Adding <code>BoltzTraP2</code>: https://github.com/astral-sh/uv/issues/5816</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../heroku/buildpacks-python/pulls/243.html">heroku/buildpacks-python#243</a> on 2024-08-07 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-08-14 16:57</div>
+            <div class="timeline-body"><blockquote>
+<p>@amanmibra -- The solution is generally to do something like:</p>
+<pre><code>uv venv
+uv pip install torch setuptools
+uv pip install --no-build-isolation ${package}
+</code></pre>
+<p>I.e., you create a virtual environment, &quot;manually&quot; install any build dependencies, then install the package in question with <code>--no-build-isolation</code>, so that it's built in <em>your</em> virtual environment and has access to the installed dependencies.</p>
+</blockquote>
+<p>@charliermarsh Is there a similar workaround for <code>uv pip compile</code>? I landed here by googling error when trying to install torch and trorch-cluster. Am I supposed to put <code>torch</code> in the requirements.in, and then install from the output requirements.txt + torch-cluster ?</p>
+<pre><code># requirements.in
+foo
+bar
+...
+torch
+</code></pre>
+<pre><code class="language-shell">$ uv pip compile requirements.in --output-file requirements.txt
+$ uv pip sync requirements.txt
+$ uv pip install torch-cluster
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6250.html">astral-sh/uv#6250</a> on 2024-08-20 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mak448a">@mak448a</a> on 2024-09-04 01:16</div>
+            <div class="timeline-body"><blockquote>
+<p>@amanmibra -- The solution is generally to do something like:</p>
+<pre><code>uv venv
+uv pip install torch setuptools
+uv pip install --no-build-isolation ${package}
+</code></pre>
+<p>I.e., you create a virtual environment, &quot;manually&quot; install any build dependencies, then install the package in question with <code>--no-build-isolation</code>, so that it's built in <em>your</em> virtual environment and has access to the installed dependencies.</p>
+</blockquote>
+<p>Is there a workaround for playsound? I had to use real pip instead of uv, which I'd like to avoid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7015.html">astral-sh/uv#7015</a> on 2024-09-04 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7291.html">astral-sh/uv#7291</a> on 2024-09-11 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mak448a">@mak448a</a> on 2024-09-26 03:20</div>
+            <div class="timeline-body"><p>Ok, there's a workaround for playsound. Use uv venv --seed when creating the venv and use pip install for playsound instead of uv pip install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7879.html">astral-sh/uv#7879</a> on 2024-10-02 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7936.html">astral-sh/uv#7936</a> on 2024-10-04 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/12847.html">python/typeshed#12847</a> on 2024-10-18 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Imageomics/kabr-tools/issues/60.html">Imageomics/kabr-tools#60</a> on 2024-10-22 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bboydflo">@bboydflo</a> on 2024-10-27 15:04</div>
+            <div class="timeline-body"><p>Tried the following on a macos m1, using uv 0.4.27</p>
+<pre><code>uv venv -p 3.11.9
+uv pip install setuptools
+uv pip install --no-build-isolation imgui==2.0.0
+</code></pre>
+<p>This is unfortunately failing. The only option I have would be to use a python version installed via <code>pyvenv</code>.  That seems to work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-27 16:04</div>
+            <div class="timeline-body"><p>@bboydflo can you open a new issue with details including the error message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zanieb/uv/issues/6.html">zanieb/uv#6</a> on 2024-11-26 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9452.html">astral-sh/uv#9452</a> on 2024-11-26 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AbdealiLoKo">@AbdealiLoKo</a> on 2025-01-29 14:29</div>
+            <div class="timeline-body"><p>I found <code>pyspark==2.4.8</code> has a similar issue (fixed in pyspark 3):</p>
+<pre><code>venv/bin/pip install 'pyspark&lt;3' --use-pep517                         # fails ❌ 
+uv pip install 'pyspark&lt;3' --python venv                              # fails ❌ 
+venv/bin/pip install 'pyspark&lt;3'                                      # works ✅ 
+uv pip install pyspark --no-build-isolation --python venv             # works ✅ 
+</code></pre>
+<p>Using:</p>
+<pre><code>Python 3.10.14
+pip 25.0
+uv 0.5.24
+setuptools 75.8.0 (from: venv/bin/pip list | grep setuptools)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2025-01-29 16:28</div>
+            <div class="timeline-body"><p><code>pip install 'pyspark&lt;3'</code> fails in the same way as <code>uv pip install 'pyspark&lt;3'</code> for me: <code>AttributeError: module 'pypandoc' has no attribute 'convert'</code>. Doesn't look like a uv-specific thing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fortminors">@fortminors</a> on 2025-01-30 10:51</div>
+            <div class="timeline-body"><p>I was having problems with packages <code>flash-attn</code> and <code>auto-gptq</code>, as they both require <code>torch</code> and <code>setuptools</code> to be installed <strong>before</strong> their build begins. I tried many things (tool.uv.dependency-metadata, following <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">that page</a> in the docs and playing around with pyproject.toml), but the only thing that worked and seems like a nice solution is using <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups">dependency groups</a>.</p>
+<p>So my final <code>pyproject.toml</code> looks similar to this</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+
+[dependency-groups]
+build = [
+    &quot;setuptools&gt;=75.8.0&quot;,
+]
+direct = [
+    &quot;torch&gt;=2.5.1&quot;,
+]
+main = [
+    &quot;flash-attn&gt;=2.7.3&quot;,
+    &quot;auto-gptq&quot;,
+    # And all of your other dependencies
+]
+
+[tool.uv]
+default-groups = [&quot;build&quot;, &quot;direct&quot;, &quot;main&quot;]
+no-build-isolation-package = [&quot;flash-attn&quot;, &quot;auto-gptq&quot;]
+
+[tool.uv.sources]
+auto-gptq = { git = &quot;https://github.com/PanQiWei/AutoGPTQ.git&quot; }
+
+</code></pre>
+<p>And then you can just do</p>
+<p>Install build time dependencies (that are also used in project and should not be deleted after build, such as torch)</p>
+<pre><code class="language-python">uv sync --no-group main 
+</code></pre>
+<p>Install the whole project (including all groups declared in default-groups)</p>
+<pre><code class="language-python">uv sync
+</code></pre>
+<p>In my opinion, this is much better than declaring dependencies through <code>optional-dependencies</code> as suggested by <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">docs</a>, because they are actually not optional - someone using <code>flash-attn</code> will most likely use <code>torch</code> in the project (not just at the build phase) and the solution with groups won't require to add --extra to every uv sync call and making sure that we <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation:~:text=retain%20the%20build%20dependencies">retain the build dependencies</a></p>
+<p>@charliermarsh @zanieb Perhaps we can update the documentation with this solution for build isolation?</p>
+<p>Hope this helps someone</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11161.html">astral-sh/uv#11161</a> on 2025-02-02 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11887.html">astral-sh/uv#11887</a> on 2025-03-02 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JakkuSakura">@JakkuSakura</a> on 2025-03-10 10:10</div>
+            <div class="timeline-body"><p>This is still relevant today. I use pipxu which uses uv</p>
+<pre><code class="language-logs">  × Failed to build `pybuild @ file:///home/jakku/Dev/pybuild`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta.build_editable` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+          import setuptools.build_meta as backend
+      ModuleNotFoundError: No module named 'setuptools'
+
+      hint: This usually indicates a problem with the package or the build environment.
+DEBUG Released lock at `/home/jakku/snap/code/185/.local/share/pipxu/venvs/1/.lock`
+</code></pre>
+<p>I have setup</p>
+<pre><code class="language-python">[build-system]
+requires = [
+    &quot;setuptools&gt;=61.0&quot;,
+]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>and I'm using python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bulletmark/pipxu/issues/19.html">bulletmark/pipxu#19</a> on 2025-03-10 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12150.html">astral-sh/uv#12150</a> on 2025-03-13 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stfc/janus-core/pulls/421.html">stfc/janus-core#421</a> on 2025-03-14 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/pulls/13319.html">pypa/pip#13319</a> on 2025-04-05 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/13314.html">pypa/pip#13314</a> on 2025-04-05 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saagarjha">@saagarjha</a> on 2025-06-06 14:35</div>
+            <div class="timeline-body"><p>@fortminors I don't think your solution with dependency groups actually works as you describe. If you try either command on a fresh install you'll get an error that setuptools is not available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14092.html">astral-sh/uv#14092</a> on 2025-06-16 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 13:58</div>
+            <div class="timeline-body"><p>We've added a new <code>extra-build-dependencies</code> feature that you can use to add <code>setuptools</code>, <code>pip</code>, etc. to build environments so you don't need to turn off build isolation. See #14735</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

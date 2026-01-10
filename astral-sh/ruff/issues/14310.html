@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neovim LSP settings with a dash in the name are ignored - astral-sh/ruff #14310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Neovim LSP settings with a dash in the name are ignored</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14310">#14310</a>
+        opened by <a href="https://github.com/mamekoro">@mamekoro</a>
+        on 2024-11-13 08:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mamekoro">@mamekoro</a> on 2024-11-13 08:45</div>
+            <div class="timeline-body"><p>I've tried to set <code>extend-exclude</code> to <code>[&quot;__about__.py&quot;]</code> and <code>lint.allowed-confusables</code> to <code>[&quot;（&quot;, &quot;）&quot;]</code> in various ways, but none of them work.</p>
+<p>Here is what I tried:</p>
+<pre><code class="language-lua">require(&quot;lspconfig&quot;).ruff.setup {
+    init_options = {
+        settings = {
+            [&quot;extend-exclude&quot;] = { &quot;__about__.py&quot; },
+            extend_exclude = { &quot;__about__.py&quot; },
+            extendExclude = { &quot;__about__.py&quot; },
+            lint = {
+                select = { &quot;ALL&quot; },
+                [&quot;allowed-confusables&quot;] = { &quot;（&quot;, &quot;）&quot; },
+                allowed_confusables = { &quot;（&quot;, &quot;）&quot; },
+                allowedConfusables = { &quot;（&quot;, &quot;）&quot; },
+            },
+        },
+    },
+}
+</code></pre>
+<p>I created <code>__about__.py</code> as follows:</p>
+<pre><code class="language-py"># This is __about__.py
+a = &quot;（）&quot;
+</code></pre>
+<p>And ruff shows the following diagnostics.
+As you can see, both <code>extend-exclude</code> and <code>allowed-confusables</code> are not taking effect.</p>
+<pre><code class="language-text"># This is __about__.py     ■ Missing docstring in public module
+a = &quot;（）&quot;     ■■ String contains ambiguous `）` (FULLWIDTH RIGHT PARENTHESIS). Did you mean `)` (RIGHT PARENTHESIS)?
+</code></pre>
+<p>The project directory contains only <code>__about__.py</code>. There are no <code>pyproject.toml</code>, <code>ruff.toml</code>, or <code>.ruff.toml</code> files.</p>
+<p>How can I make these settings work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "LSP settings with a dash in the name are ignored" to "Neovim LSP settings with a dash in the name are ignored" by @mamekoro on 2024-11-13 09:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 09:23</div>
+            <div class="timeline-body"><p>The <code>settings</code> don't support arbitrary ruff settings. They only support the LSP settings listed <a href="https://docs.astral.sh/ruff/editors/settings/">here</a>.</p>
+<p><code>extend-exclude</code> can't be configured directly in the LSP. You have to create a configuration file instead and point to that. See <a href="https://docs.astral.sh/ruff/editors/settings/#configuration">configuration</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-13 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-11-13 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mamekoro">@mamekoro</a> on 2024-11-13 10:49</div>
+            <div class="timeline-body"><blockquote>
+<p>The settings don't support arbitrary ruff settings.</p>
+</blockquote>
+<p>Is it intentional that the supported settings are limited?</p>
+<p>In my opinion, it would be more convenient if all settings could be passed via Lua, as this would allow for the entire configuration to be managed in a single file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 11:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it intentional that the supported settings are limited?</p>
+</blockquote>
+<p>Somewhat. But I could see us supporting a <code>config</code> setting long-term that allows setting arbitrary configuration options, similar to the CLI's <code>ruff check --config extend-exclude=[...]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mamekoro">@mamekoro</a> on 2024-11-13 11:20</div>
+            <div class="timeline-body"><p>Thanks. Closing since the question has been resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mamekoro on 2024-11-13 11:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

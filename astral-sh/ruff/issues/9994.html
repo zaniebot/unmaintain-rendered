@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bandit check seems to link arguments not function call - astral-sh/ruff #9994</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>bandit check seems to link arguments not function call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9994">#9994</a>
+        opened by <a href="https://github.com/Borda">@Borda</a>
+        on 2024-02-15 10:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Borda">@Borda</a> on 2024-02-15 10:13</div>
+            <div class="timeline-body"><p>It seems that Ruff reports wrong lines for this bandit issue</p>
+<pre><code class="language-py">out = subprocess.check_output(  # &lt;-- yesqa expected
+    [&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;],  # &lt;-- ruff reported
+    stderr=DEVNULL,
+)
+</code></pre>
+<p>in fact, it creates deadlock as <code>yesqa</code> removes <code>noqa</code>s from line 2 as it expects them with line 1, but then ruff reports line 2</p>
+<pre><code>2: S603 `subprocess` call: check for execution of untrusted input
+2: S607 Starting a process with a partial executable path
+</code></pre>
+<p>adding a dummy line to the argument, and it seems to be baked with the first argument as this</p>
+<pre><code class="language-py">out = subprocess.check_output(  # &lt;-- yesqa expected
+	print(), # &lt;-- ruff reported
+    [&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;],
+    stderr=DEVNULL,
+)
+</code></pre>
+<p>still reports line 2 but the next one</p>
+<pre><code class="language-py">out = subprocess.check_output(  # &lt;-- yesqa expected
+	# any line
+    [&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;],  # &lt;-- ruff reported
+    stderr=DEVNULL,
+)
+</code></pre>
+<p>reports line 3</p>
+<p>--</p>
+<p>using pre-commit with</p>
+<pre><code class="language-yaml">  - repo: https://github.com/asottile/yesqa
+    rev: v1.5.0
+    hooks:
+      - id: yesqa
+        additional_dependencies:
+          - flake8-bandit
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.1
+    hooks:
+      - id: ruff
+        args: [&quot;--fix&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-cachier/cachier/pulls/186.html">python-cachier/cachier#186</a> on 2024-02-15 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-cachier/cachier/pulls/192.html">python-cachier/cachier#192</a> on 2024-02-15 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-16 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 03:32</div>
+            <div class="timeline-body"><p>Interesting, will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 06:38</div>
+            <div class="timeline-body"><p>It seems like <code>bandit</code> highlights the <code>subprocess.check_output</code> call in the diagnostic and we highlight the argument. And, <code>yesqa</code> uses the location bandit provides to check if NoQA comment is valid or not.</p>
+<pre><code class="language-console">$ bat src/S603.py 
+         File: src/S603.py
+     1   import subprocess
+     2   
+     3   out = subprocess.check_output(
+     4       [&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;],
+     5   )
+
+$ flake8 src/S603.py
+src/S603.py:1:1: S404 Consider possible security implications associated with the subprocess module.
+src/S603.py:3:1: S607 Starting a process with a partial executable path
+src/S603.py:3:1: S603 subprocess call - check for execution of untrusted input.
+</code></pre>
+<p>A simple fix would be to use the same location.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 06:41</div>
+            <div class="timeline-body"><p>Note that in general, using <code>yesqa</code> alongside Ruff isn't necessarily a supported workflow (for this reason: we don't guarantee that our rules trigger on the exact same locations, since we sometimes refine the ranges).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 06:49</div>
+            <div class="timeline-body"><p>You can use our own implementation of <a href="https://docs.astral.sh/ruff/rules/unused-noqa/"><code>unused-noqa</code></a> if <code>yesqa</code> isn't strictly required in your workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 06:59</div>
+            <div class="timeline-body"><p>@dhruvmanila - I'm not totally sure which (if any) of these rules should have their ranges adjusted -- would need to look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10667.html">astral-sh/ruff#10667</a> on 2024-03-30 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12005.html">astral-sh/ruff#12005</a> on 2024-06-26 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @MichaReiser on 2024-06-26 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-26 09:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

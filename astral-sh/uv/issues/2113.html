@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify install paths for prior Debian system Pythons - astral-sh/uv #2113</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Modify install paths for prior Debian system Pythons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2113">#2113</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-01 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 15:12</div>
+            <div class="timeline-body"><p>Within:</p>
+<pre><code># Use bullseye
+FROM debian:bullseye
+
+RUN apt-get update
+RUN apt-get install python3 python3-pip python3-venv -y
+</code></pre>
+<p>We see:</p>
+<pre><code>root@ff9ce2004eb7:/# python3
+Python 3.9.2 (default, Feb 28 2021, 17:03:44)
+[GCC 10.2.1 20210110] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import sysconfig
+&gt;&gt;&gt; sysconfig.get_paths()
+{'stdlib': '/usr/lib/python3.9', 'platstdlib': '/usr/lib/python3.9', 'purelib': '/usr/lib/python3.9/site-packages', 'platlib': '/usr/lib/python3.9/site-packages', 'include': '/usr/include/python3.9', 'platinclude': '/usr/include/python3.9', 'scripts': '/usr/bin', 'data': '/usr'}
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path
+['', '/usr/lib/python39.zip', '/usr/lib/python3.9', '/usr/lib/python3.9/lib-dynload', '/usr/local/lib/python3.9/dist-packages', '/usr/lib/python3/dist-packages']
+</code></pre>
+<p>So when installing into Debian's system Python, we'll end up installing into the &quot;wrong&quot; place. See Filipe's excellent article on it here: https://ffy00.github.io/blog/02-python-debian-and-the-install-locations/.</p>
+<p>(I don't see this issue with latest Debian.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-01 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-01 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 03:55</div>
+            <div class="timeline-body"><p>This is really complex, we'd need to vendor quite a lot of Python code from <code>pip</code>. It also seems like <code>disutils</code> needs a distribution name in order to generate paths, but we want to generate these without such a name. Maybe it's possible? Will play around with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 13:47</div>
+            <div class="timeline-body"><p>Note that this only affects installing with <code>--system</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>It also seems like <code>disutils</code> needs a distribution name in order to generate paths, but we want to generate these without such a name. Maybe it's possible? Will play around with it.</p>
+</blockquote>
+<p>Yes, possible, <code>virtualenv</code> does it without providing a dist name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2131.html">astral-sh/uv#2131</a> on 2024-03-02 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 15:04</div>
+            <div class="timeline-body"><p>The thing we want to do here is:</p>
+<ul>
+<li>Vendor pip's <code>locations.get_scheme</code>: https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/locations/<strong>init</strong>.py#L230</li>
+<li>This requires vendoring pip's <code>_sysconfig.get_scheme</code>: https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/locations/_sysconfig.py#L124.</li>
+<li>This also requires vendoring pip's <code>_distutils.get_scheme</code>: https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/locations/_distutils.py#L115.</li>
+</ul>
+<p>Add all of this to <code>get_interpreter_info.py</code>, and change our internal structs to use the <code>Scheme</code> schema rather than <code>SysconfigPaths</code> (i.e., a subset). However, instead of <code>headers</code>, we should use <code>include</code>, and omit the distribution name from the end, so that it's generic across distributions. (It <em>should</em> (?) be okay to omit the distribution name when calling <code>distutils</code>, virtualenv omits it, although I'm not 100% sure.)</p>
+<p>You can also see an example of how virtualenv does this: https://github.com/pypa/virtualenv/blob/5cd543fdf8047600ff2737babec4a635ad74d169/src/virtualenv/discovery/py_info.py#L80.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2193.html">astral-sh/uv#2193</a> on 2024-03-05 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-05 21:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

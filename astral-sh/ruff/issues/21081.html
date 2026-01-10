@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff format on multiple directories returns inconsistent results - astral-sh/ruff #21081</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff format on multiple directories returns inconsistent results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21081">#21081</a>
+        opened by <a href="https://github.com/OBarronCS">@OBarronCS</a>
+        on 2025-10-26 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/OBarronCS">@OBarronCS</a> on 2025-10-26 21:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The pwndbg project - https://github.com/pwndbg/pwndbg/ -  is using <code>ruff format</code> to format the codebase. We have found that using  <code>ruff format</code> will inconsistently report formatting errors when running it with multiple directories.</p>
+<h1>Reproduce</h1>
+<p>Pwndbg uses Ruff 0.4.10, however I have reproduced this with the latest version of Ruff as well. See the note at the end.</p>
+<p>Clone the pwndbg repo on a version where this applies:</p>
+<pre><code class="language-sh">git clone --depth 1 https://github.com/pwndbg/pwndbg.git --branch 2025.10.20
+cd pwndbg
+</code></pre>
+<p>Within the nested <code>pwndbg/</code> directory, there are 5 files with some formatting errors.</p>
+<p>If you run this, you will see the errors (this uses our specific version of ruff through a virtual environment with <code>uv</code>):</p>
+<pre><code class="language-sh">uv run --group lint ruff format --check --diff pwndbg
+</code></pre>
+<p>However, if you add additional directories to be formatted, these errors will not always be reported.</p>
+<pre><code class="language-sh">uv run --group lint ruff format --check --diff pwndbg pwndbginit tests *.py scripts
+</code></pre>
+<p>You can run it in a loop of 100, and see it prints out the diff only on rare cases:</p>
+<pre><code>for i in `seq 1 100`; do uv run --group lint ruff format --check --diff pwndbg pwndbginit tests *.py scripts; done
+</code></pre>
+<p>As you remove directories from the list to be formatted, the likelihood of <code>ruff format</code> finding the formatting errors in the <code>pwndbg/</code> directory increases.</p>
+<p>Note that if you don't use the <code>uv</code> virtual environment, and instead use the latest version of Ruff, 0.14.2, the same results apply. It will still find an inconsistent number of files with errors between different runs (the numbers vary from 0.4.10, as the new errors are resulting from newer versions of Ruff changing how things are formatted)</p>
+<h3>Version</h3>
+<p>0.14.2 and 0.4.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-27 07:28</div>
+            <div class="timeline-body"><p>Curious. Looking at the logs, I suspect this is a <code>gitignore</code> related bug. I compared the logs from formatting just <code>pwndbg</code> and <code>pwndb scripts</code>.</p>
+<p>When only formatting <code>pwndbg</code>, I get</p>
+<pre><code>[2025-10-27][08:20:30][ignore::walk][DEBUG] whitelisting /Users/micha/astral/ecosystem/pwndbg/pwndbg/lib: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/micha/astral/ecosystem/pwndbg/.gitignore&quot;), original: &quot;!/pwndbg/lib/&quot;, actual: &quot;pwndbg/lib&quot;, is_whitelist: true, is_only_dir: true })))
+</code></pre>
+<p>When formatting both <code>pwndbg</code> and <code>scripts</code>, I get</p>
+<pre><code>[2025-10-27][08:20:22][ignore::walk][DEBUG] ignoring /Users/micha/astral/ecosystem/pwndbg/pwndbg/lib: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/micha/astral/ecosystem/pwndbg/.gitignore&quot;), original: &quot;lib/&quot;, actual: &quot;**/lib&quot;, is_whitelist: false, is_only_dir: true })))
+</code></pre>
+<p>Note how the gitignore pattern is slightly different</p>
+<p>It looks like https://github.com/astral-sh/ruff/pull/20979 fixes this (running with only <code>pwndbg</code></p>
+<pre><code>❯ ~/astral/ruff/target/debug/ruff format --check pwndbg
+warning: Detected debug build without --no-cache.
+Would reformat: pwndbg/aglib/disasm/instruction.py
+Would reformat: pwndbg/aglib/kernel/buddydump.py
+Would reformat: pwndbg/aglib/macho.py
+Would reformat: pwndbg/aglib/onegadget.py
+Would reformat: pwndbg/aglib/regs.py
+Would reformat: pwndbg/commands/ai.py
+Would reformat: pwndbg/commands/context.py
+Would reformat: pwndbg/commands/hijack_fd.py
+Would reformat: pwndbg/commands/kdmesg.py
+Would reformat: pwndbg/commands/mallocng.py
+Would reformat: pwndbg/commands/mmap.py
+Would reformat: pwndbg/commands/vmmap.py
+Would reformat: pwndbg/dbg/gdb/__init__.py
+Would reformat: pwndbg/dbg/lldb/__init__.py
+Would reformat: pwndbg/dbg/lldb/repl/__init__.py
+Would reformat: pwndbg/dbg/lldb/repl/io.py
+Would reformat: pwndbg/gdblib/events.py
+Would reformat: pwndbg/gdblib/ptmalloc2_tracking.py
+Would reformat: pwndbg/lib/cache.py
+Would reformat: pwndbg/lib/kernel/kconfig.py
+Would reformat: pwndbg/lib/memory.py
+Would reformat: pwndbg/lib/pretty_print.py
+Would reformat: pwndbg/lib/regs.py
+Would reformat: pwndbg/lib/zig.py
+</code></pre>
+<pre><code>❯ ~/astral/ruff/target/debug/ruff format --check pwndbg scripts
+warning: Detected debug build without --no-cache.
+Would reformat: pwndbg/aglib/disasm/instruction.py
+Would reformat: pwndbg/aglib/kernel/buddydump.py
+Would reformat: pwndbg/aglib/macho.py
+Would reformat: pwndbg/aglib/onegadget.py
+Would reformat: pwndbg/aglib/regs.py
+Would reformat: pwndbg/commands/ai.py
+Would reformat: pwndbg/commands/context.py
+Would reformat: pwndbg/commands/hijack_fd.py
+Would reformat: pwndbg/commands/kdmesg.py
+Would reformat: pwndbg/commands/mallocng.py
+Would reformat: pwndbg/commands/mmap.py
+Would reformat: pwndbg/commands/vmmap.py
+Would reformat: pwndbg/dbg/gdb/__init__.py
+Would reformat: pwndbg/dbg/lldb/__init__.py
+Would reformat: pwndbg/dbg/lldb/repl/__init__.py
+Would reformat: pwndbg/dbg/lldb/repl/io.py
+Would reformat: pwndbg/gdblib/events.py
+Would reformat: pwndbg/gdblib/ptmalloc2_tracking.py
+Would reformat: pwndbg/lib/cache.py
+Would reformat: pwndbg/lib/kernel/kconfig.py
+Would reformat: pwndbg/lib/memory.py
+Would reformat: pwndbg/lib/pretty_print.py
+Would reformat: pwndbg/lib/regs.py
+Would reformat: pwndbg/lib/zig.py
+Would reformat: scripts/_docs/extract_configuration_docs.py
+25 files would be reformatted, 243 files already formatted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-27 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20979.html">astral-sh/ruff#20979</a> on 2025-10-27 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-10-27 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-28 17:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

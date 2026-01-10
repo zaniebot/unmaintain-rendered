@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected sys.path Behavior When Using uv run python with Editable Install in a Docker Container - astral-sh/uv #13454</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected sys.path Behavior When Using uv run python with Editable Install in a Docker Container</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13454">#13454</a>
+        opened by <a href="https://github.com/eycjur">@eycjur</a>
+        on 2025-05-14 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eycjur">@eycjur</a> on 2025-05-14 16:09</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p><strong>Background:</strong>
+I'm developing inside a Docker container and using an editable install for a package with a src-layout.
+When I run <code>uv run python</code>, it seems to modify Python's <code>sys.path</code>. This behavior feels strange. Below are the details and the problems it causes:</p>
+<ol>
+<li>When I check <code>sys.path</code>, before running <code>uv run python</code>, it includes <code>/app</code>, but afterward, it is overwritten to <code>/app/src</code>.</li>
+<li>Before the change, even though I'm using <code>/app/.venv/bin/python</code>, I can't install my development package (<code>/app/src/my_package</code>).</li>
+<li>After the change, I can install my development package.</li>
+</ol>
+<p><strong>Questions:</strong></p>
+<ul>
+<li>Why does the path to <code>/app/src</code> get added?</li>
+<li>Even though I'm using an editable install, I don’t see a <code>&lt;package&gt;.egg-link</code> or similar in <code>/app/.venv/lib/python3.12/site-packages/</code>. Is it expected behavior that the path is added to <code>sys.path</code> instead?</li>
+<li>I thought the benefit of the src-layout is that it helps mimic the behavior of an installed package by avoiding referencing the source code directly in <code>/app/src</code>. If we add the source path directly to <code>sys.path</code>, does that defeat the purpose of using the src-layout?</li>
+</ul>
+<p><img width="932" alt="Image" src="https://github.com/user-attachments/assets/23be110c-58a8-44e2-94d9-4d915ad398f2" /></p>
+<p>I share my Dockerfile.</p>
+<pre><code class="language-Dockerfile">FROM python:3.12-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
+
+RUN apt-get update &amp;&amp; \
+    apt-get install --no-install-recommends -y \
+        fonts-ipafont-gothic gcc git locales sudo tzdata vim zsh &amp;&amp; \
+    apt-get clean &amp;&amp; \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo &quot;ja_JP UTF-8&quot; &gt; /etc/locale.gen &amp;&amp; \
+    locale-gen ja_JP.UTF-8
+ENV LANG=ja_JP.UTF-8
+ENV LC_ALL=ja_JP.UTF-8
+ENV TZ=Asia/Tokyo
+
+WORKDIR /app
+
+ENV UV_LINK_MODE=copy
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project
+
+COPY ./src ./README.md ./app ./model /app/
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen
+
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+CMD [&quot;streamlit&quot;, &quot;run&quot;, &quot;app/app.py&quot;, &quot;--server.port&quot;, &quot;8501&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.10.14-linuxkit aarch64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.7.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @eycjur on 2025-05-14 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 08:15</div>
+            <div class="timeline-body"><p>Editables nowadays don't use eggs anymore, they use <code>.pth</code> files. On startup, Python looks for pth-files and uses them to extend <code>sys.path</code> (https://docs.python.org/3/library/site.html). The build backend for your project generated the pth-file and the editable installation is placing that pth-file into the venv (https://peps.python.org/pep-0660/). You should see the pth-file in the <code>site-packages</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eycjur">@eycjur</a> on 2025-05-15 15:43</div>
+            <div class="timeline-body"><p>I see, indeed, the .pth file exists and it seems that running uv run python modifies it.
+Also, regarding my original question about sys.path being changed when running uv run python, the issue was due to a mistake in the Dockerfile's COPY instruction.</p>
+<p>Before:</p>
+<pre><code>./src ./README.md ./app ./model /app/
+</code></pre>
+<p>After:</p>
+<pre><code>./src/ /app/src/
+...
+</code></pre>
+<p>Thank you for your support. The issue has been resolved, so I’ll go ahead and close it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @eycjur on 2025-05-15 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

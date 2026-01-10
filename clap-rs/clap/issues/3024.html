@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect parsing - The subcommand 'bar' wasn't recognized, did you mean 'bar'? - clap-rs/clap #3024</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect parsing - The subcommand 'bar' wasn't recognized, did you mean 'bar'?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3024">#3024</a>
+        opened by <a href="https://github.com/Ten0">@Ten0</a>
+        on 2021-11-14 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Ten0">@Ten0</a> on 2021-11-14 13:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.56.1 (59eed8a2a 2021-11-01)</p>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+	let m = App::new(&quot;prog&quot;)
+		.arg(Arg::with_name(&quot;foo&quot;).long(&quot;foo&quot;).multiple(true).value_terminator(&quot;--&quot;))
+		.subcommand(SubCommand::with_name(&quot;bar&quot;))
+		.get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;, &quot;--&quot;, &quot;bar&quot;]);
+	let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+	assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+	assert_eq!(m.subcommand().0, &quot;bar&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>error: The subcommand 'bar' wasn't recognized
+	Did you mean 'bar'?
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><em>Runs without panicking</em></p>
+<h3>Additional Context</h3>
+<p>This is always an invalid error message regardless of the context in which it happens: it knows it's trying to parse a subcommand, it reads it properly, but doesn't match it to the exact same existing subcommand.</p>
+<p>The same thing happens regardless of my value terminator (even if it's not <code>--</code>). I would expect <code>--</code> in the args to still be treated at least as a terminator regardless, especially considering I didn't set <code>allow_hyphen_values</code>.</p>
+<p>However, <code>multiple</code> won't accept multiple values in a single occurrence and instead be treated as a flag if I don't specify an arbitrary value terminator, despite this being what the doc says it would do (https://docs.rs/clap/2.33.3/clap/struct.Arg.html#method.multiple):</p>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+	let m = App::new(&quot;prog&quot;)
+		.arg(Arg::with_name(&quot;foo&quot;).long(&quot;foo&quot;))
+		.get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;]);
+	let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+	assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+}
+</code></pre>
+<p>gives:</p>
+<pre><code>error: Found argument '1' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    prog --foo
+
+For more information try --help
+</code></pre>
+<p>and <code>--help</code> gives</p>
+<pre><code>USAGE:
+    prog [FLAGS]
+
+FLAGS:
+        --foo        
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<p>Is this a separate issue? Was it already filed? Related to #2599 maybe?</p>
+<h3>Debug Output</h3>
+<pre><code>DEBUG:clap:Parser::add_subcommand: term_w=None, name=bar
+DEBUG:clap:Parser::propagate_settings: self=prog, g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: sc=bar, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+), g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: self=bar, g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--foo&quot;' ([45, 45, 102, 111, 111])
+DEBUG:clap:Parser::is_new_arg:&quot;--foo&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--foo&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:foo
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--foo &lt;foo&gt;...'
+DEBUG:clap:Parser::parse_opt; opt=foo, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(MULTIPLE | EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=foo
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=foo
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;foo&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;1&quot;' ([49])
+DEBUG:clap:Parser::is_new_arg:&quot;1&quot;:Opt(&quot;foo&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=foo, val=&quot;1&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;1&quot;
+DEBUG:clap:Parser::groups_for_arg: name=foo
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=foo
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;2&quot;' ([50])
+DEBUG:clap:Parser::is_new_arg:&quot;2&quot;:Opt(&quot;foo&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=foo, val=&quot;2&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;2&quot;
+DEBUG:clap:Parser::groups_for_arg: name=foo
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=foo
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--&quot;' ([45, 45])
+DEBUG:clap:Parser::is_new_arg:&quot;--&quot;:Opt(&quot;foo&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::get_matches_with: setting TrailingVals=true
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;bar&quot;' ([98, 97, 114])
+DEBUG:clap:Parser::is_new_arg:&quot;bar&quot;:Opt(&quot;foo&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::smart_usage;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;foo&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;foo&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:foo:
+DEBUG:clap:OptBuilder::fmt:foo
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:Colorizer::good;
+error: The subcommand 'bar' wasn't recognized
+	Did you mean 'bar'?
+
+If you believe you received this message in error, try re-running with 'prog -- bar'
+
+USAGE:
+    prog --foo &lt;foo&gt;...
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @Ten0 on 2021-11-14 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/509.html">TeXitoi/structopt#509</a> on 2021-11-14 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 16:16</div>
+            <div class="timeline-body"><p>Gave this a try on master (clap3)</p>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+    let m = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::with_name(&quot;foo&quot;)
+                .long(&quot;foo&quot;)
+                .multiple_values(true)
+                .value_terminator(&quot;--&quot;),
+        )
+        .subcommand(SubCommand::with_name(&quot;bar&quot;))
+        .get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;, &quot;--&quot;, &quot;bar&quot;]);
+    let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+    assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+    assert_eq!(m.subcommand().unwrap().0, &quot;bar&quot;);
+}
+</code></pre>
+<p>gave</p>
+<pre><code>error: Found argument 'bar' which wasn't expected, or isn't valid in this context
+
+        If you tried to supply `bar` as a subcommand, remove the '--' before it.
+
+USAGE:
+    prog [OPTIONS] [SUBCOMMAND]
+
+For more information try --help
+</code></pre>
+<p>If I switch the value terminator, the command runs successfully.</p>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+    let m = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::with_name(&quot;foo&quot;)
+                .long(&quot;foo&quot;)
+                .multiple_values(true)
+                .value_terminator(&quot;;&quot;),
+        )
+        .subcommand(SubCommand::with_name(&quot;bar&quot;))
+        .get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;, &quot;;&quot;, &quot;bar&quot;]);
+    let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+    assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+    assert_eq!(m.subcommand().unwrap().0, &quot;bar&quot;);
+}
+</code></pre>
+<p>Within clap3, my guess is there is a precedence issue between clap's built-in <code>--</code> processing and a <code>--</code> value terminator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @epage on 2021-11-15 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 16:19</div>
+            <div class="timeline-body"><blockquote>
+<p>The same thing happens regardless of my value terminator (even if it's not --)</p>
+</blockquote>
+<p>Could you provide an example?  I just tried this in clap2 and it worked for me</p>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+    let m = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::with_name(&quot;foo&quot;)
+                .long(&quot;foo&quot;)
+                .multiple(true)
+                .value_terminator(&quot;;&quot;),
+        )
+        .subcommand(SubCommand::with_name(&quot;bar&quot;))
+        .get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;, &quot;;&quot;, &quot;bar&quot;]);
+    let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+    assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+    assert_eq!(m.subcommand().0, &quot;bar&quot;);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>However, multiple won't accept multiple values in a single occurrence and instead be treated as a flag if I don't specify an arbitrary value terminator, despite this being what the doc says it would do (https://docs.rs/clap/2.33.3/clap/struct.Arg.html#method.multiple):</p>
+</blockquote>
+<p>Thats because its a flag by default.  If you look at the <code>multiple</code> examples, they are multiple flags unless you pass <code>takes_value(true)</code>.  That gives you</p>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+    let m = App::new(&quot;prog&quot;)
+        .arg(
+            Arg::with_name(&quot;foo&quot;)
+                .long(&quot;foo&quot;)
+                .multiple(true)
+                .takes_value(true),
+        )
+        .subcommand(SubCommand::with_name(&quot;bar&quot;))
+        .get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;, &quot;;&quot;, &quot;bar&quot;]);
+    let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+    assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+    assert_eq!(m.subcommand().0, &quot;bar&quot;);
+}
+</code></pre>
+<p>which fails with</p>
+<pre><code>thread 'main' panicked at 'assertion failed: `(left == right)`
+  left: `[&quot;1&quot;, &quot;2&quot;, &quot;;&quot;, &quot;bar&quot;]`,
+ right: `[&quot;1&quot;, &quot;2&quot;]`', src/main.rs:42:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>However, in clap3, we added a new <code>AppSettings::SubcommandPrecedenceOverArg</code> to help in this situation which makes it pass without a value terminator</p>
+<pre><code class="language-rust">use clap::*;
+fn main() {
+    let m = App::new(&quot;prog&quot;)
+        .setting(AppSettings::SubcommandPrecedenceOverArg)
+        .arg(
+            Arg::with_name(&quot;foo&quot;)
+                .long(&quot;foo&quot;)
+                .multiple(true)
+                .takes_value(true),
+        )
+        .subcommand(SubCommand::with_name(&quot;bar&quot;))
+        .get_matches_from(vec![&quot;prog&quot;, &quot;--foo&quot;, &quot;1&quot;, &quot;2&quot;, &quot;bar&quot;]);
+    let cmds: Vec&lt;_&gt; = m.values_of(&quot;foo&quot;).unwrap().collect();
+    assert_eq!(&amp;cmds, &amp;[&quot;1&quot;, &quot;2&quot;]);
+    assert_eq!(m.subcommand().unwrap().0, &quot;bar&quot;);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-11-15 17:20</div>
+            <div class="timeline-body"><p>Is there anything actionable here that I am missing or can this be closed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-15 17:25</div>
+            <div class="timeline-body"><p>There is one question to Ten0 to get more information on one of the reported problems (&quot;regardless of value terminator&quot;).</p>
+<p>I'm also interested from any parties on our level of concern over:</p>
+<blockquote>
+<p>Within clap3, my guess is there is a precedence issue between clap's built-in -- processing and a -- value terminator.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ten0">@Ten0</a> on 2021-11-16 16:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you provide an example? I just tried this in clap2 and it worked for me</p>
+</blockquote>
+<p>Sorry I was unclear, I meant if I change the value terminator, but not the input.</p>
+<p>I understand this will be fixed by clap 3 -&gt; Closing. Thanks! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Ten0 on 2021-11-16 16:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:42 UTC
+    </footer>
+</body>
+</html>

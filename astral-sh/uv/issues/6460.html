@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docs suggestion for use with existing simple projects - astral-sh/uv #6460</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docs suggestion for use with existing simple projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6460">#6460</a>
+        opened by <a href="https://github.com/philgyford">@philgyford</a>
+        on 2024-08-22 19:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/philgyford">@philgyford</a> on 2024-08-22 19:23</div>
+            <div class="timeline-body"><p>I've been trying to get up and running with uv on an existing Django project and I feel the (otherwise very good) docs have a familiar problem from other package managers: for someone who's creating Python-based websites, or other projects that aren't going to be packaged and redistributed, some of the tool and its docs, confuse matters.</p>
+<p>For example, <a href="https://docs.astral.sh/uv/guides/projects/#creating-a-new-project">Creating a new project</a> creates a file structure with a <code>src/</code> directory, which I rarely/never see in repos that are things like Django sites, Flask sites, etc.</p>
+<p>Then the next section <a href="https://docs.astral.sh/uv/guides/projects/#working-on-an-existing-project">Working on an existing project</a> makes it sound simpler than it is. If I do commands like <code>uv run ...</code> then I end up with errors[1] about the structure of my project. While the error provides three options for solving it, none of them mean much to me, even after googling, as someone who's worked on Python websites for years but done very little packaging of projects.</p>
+<p>Another common need is to install dev requirements locally, but non-dev requirements in production. While there's a <a href="https://docs.astral.sh/uv/reference/settings/#dev-dependencies"><code>dev-dependencies</code> in the settings</a> I can't see anywhere that explains how to install them in my local virtualenv.</p>
+<p>I am old and tired and may have missed things, but I think there could be some clarity for those who know nothing about <code>src</code> directories, or eggs, wheels, and building packages, and who just want to work on a simple non-packaged project.</p>
+<p>[1]</p>
+<pre><code>error: Multiple top-level packages discovered in a flat-layout: ['conf', 'hines', 'docker', 'assets', 'node_modules'].
+
+To avoid accidental inclusion of unwanted files or directories,
+setuptools will not proceed with this build.
+
+If you are trying to create a single distribution with multiple packages
+on purpose, you should not rely on automatic discovery.
+Instead, consider the following options:
+
+1. set up custom discovery (`find` directive with `include` or `exclude`)
+2. use a `src-layout`
+3. explicitly set `py_modules` or `packages` with a list of names
+
+To find more information, look for &quot;package discovery&quot; on setuptools docs.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 21:00</div>
+            <div class="timeline-body"><p>This is good feedback -- thank you. I think the docs are slightly more oriented towards new projects right now.</p>
+<p>We also don't have great support for what I would call &quot;virtual&quot; projects: Python projects that don't have a package structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 21:03</div>
+            <div class="timeline-body"><p>This is tough because the complaint isn't from <em>our</em> tool, it's from setuptools which we use as a default build backend for legacy compatibility. Unfortunately, this is causing other problems, e.g. #6456.</p>
+<p>It's becoming obvious that we need a better solution for projects that don't define a build backend, instead of throwing a legacy tool at your project and letting it complain about the structure. Opening #6462 to discuss that more general problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6462.html">astral-sh/uv#6462</a> on 2024-08-22 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-22 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-22 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/weihenglim">@weihenglim</a> on 2024-08-23 09:43</div>
+            <div class="timeline-body"><p>Yes would definitely love to see more support for projects that don't require a build system. I am currently pushing to replace <code>pipenv</code> with <code>uv</code> for dependency management in several Django projects but the pain points that are holding us back are:</p>
+<ul>
+<li>The inability to install both development <em>and</em> production dependencies in a virtual project. We could initialize the projects without the <code>--virtual</code> flag but that requires some manual wrangling of the <code>pyproject.toml</code> file to make things work.</li>
+<li>Having to jump through several hoops to install the set of locked dependencies to the system environment. <code>uv sync --frozen</code> forces the creation of a virtual environment while there doesn't seem to be a way to <code>uv pip install</code> from the <code>uv.lock</code> file.</li>
+</ul>
+<p>Basically we just want to use <code>uv</code> to manage dependencies without having to bother with project structure, build backends, packaging tools, etc. At the moment <code>pipenv</code> does a great job at this but it is sorely lacking in speed especially for our larger projects (version resolution and locking could take tens of minutes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philgyford">@philgyford</a> on 2024-08-23 11:16</div>
+            <div class="timeline-body"><p>Yep, all of that. Hopefully uv can improve that side of things a bit more, because it seems <em>so good</em> otherwise.</p>
+<p>If it can, I feel the docs could also be tweaked a bit to make it easier for people who only create what @charliermarsh calls &quot;virtual&quot; projects, including beginners. All the stuff in the docs about building reusable packages for distribution makes uv more confusing than necessary for them/me. It's hard to know what to ignore, and what's essential vs optional.</p>
+<p>It seems like the docs for this and similar tools are (understandably) written by people for whom building and distributing Python packages is common and obvious. But for people like me (I've done it a couple of times, never want to again) who only make Python websites etc, it makes the tools seem unnecessarily complicated.</p>
+<p>I don't know if there's a way to separate parts of the docs out more, so that someone making &quot;virtual&quot; projects can ignore stuff about building etc until they need it, but that would be great. The danger, I guess, is then making the docs longer or less useful for the package-building developers. But thinking through what a Python newbie, making a Flask website for example, needs, and moving unnecessary details out of the way, might help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6405.html">astral-sh/uv#6405</a> on 2024-08-23 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 13:37</div>
+            <div class="timeline-body"><p>We will address this in https://github.com/astral-sh/uv/issues/6511</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 18:19</div>
+            <div class="timeline-body"><p>As of <a href="https://github.com/astral-sh/uv/releases/tag/0.4.0">uv v0.4.0</a>, we now support &quot;simple&quot; projects by default! This includes a bunch of documentation changes targeting &quot;application&quot; developers and I even tried the <a href="https://github.com/astral-sh/uv-flask-example">Flask tutorial</a>. I hope this is helpful. If you have any problems please let us know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-28 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8178.html">astral-sh/uv#8178</a> on 2024-11-06 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

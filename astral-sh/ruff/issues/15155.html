@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect import removal with &quot;todo:&quot; in Neovim/LSP - astral-sh/ruff #15155</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect import removal with &quot;todo:&quot; in Neovim/LSP</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15155">#15155</a>
+        opened by <a href="https://github.com/pykeras">@pykeras</a>
+        on 2024-12-26 23:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pykeras">@pykeras</a> on 2024-12-26 23:27</div>
+            <div class="timeline-body"><p>When using Ruff as a formatter within Neovim with Mason and nvim-lspconfig, Ruff aggressively removes imports, even if they are used later in the file, if the file starts with a comment containing &quot;todo:&quot;.</p>
+<p><strong>To Reproduce</strong></p>
+<ol>
+<li>Set up Neovim with Mason, nvim-lspconfig, and Ruff as the Python LSP and formatter. (mine provided in the context)</li>
+<li>Create a Python file (e.g., <code>test.py</code>) with the following content:</li>
+</ol>
+<pre><code class="language-python"># todo:
+
+import json
+from collections import defaultdict
+import time
+from datetime import datetime, timedelta
+
+def addtime(minutes: int) -&gt; datetime:
+    return datetime.now() + timedelta(minutes=minutes)
+
+print(addtime(1564))
+print('fax this shoot')
+
+mdic = defaultdict()
+
+print(f&quot;json is {json.__name__}&quot;)
+</code></pre>
+<ol start="3">
+<li>Open the file in Neovim.</li>
+<li>Save the file. Ruff will remove the from datetime import datetime and will keep the time module import. Also, the line <code>print('fax this shoot')</code> will get a duplicate, and you will get 2 lines with the same content, but the second one uses <code>&quot;</code> instead of <code>'</code>.</li>
+<li>Moving to another place solves the issue.</li>
+</ol>
+<p>Environment</p>
+<p>OS: Linux
+Ruff version: 0.8.4
+Neovim version: 0.10.2</p>
+<p><strong>Contenxt:</strong></p>
+<pre><code class="language-lua">-- lsp-config.lua (relevant parts)
+vim.api.nvim_create_autocmd(&quot;BufWritePre&quot;, {
+                pattern = &quot;*.py&quot;,
+                callback = function()
+                    local clients = vim.lsp.get_active_clients({ bufnr = vim.api.nvim_get_current_buf() })
+                    local ruff_client = nil
+                    for _, client in pairs(clients) do
+                        if client.name == &quot;ruff&quot; then
+                            ruff_client = client
+                            break
+                        end
+                    end
+
+                    if ruff_client then
+                        vim.lsp.buf.code_action({
+                            context = { only = { &quot;source.organizeImports&quot; } },
+                            apply = true,
+                        })
+                        vim.lsp.buf.code_action({
+                            context = { only = { &quot;source.fixAll&quot; } },
+                            apply = true,
+                            callback = function()
+                                local has_formatter = false
+                                for _, client in pairs(clients) do
+                                    if client.supports_method(&quot;textDocument/formatting&quot;) and client.name ~= &quot;ruff&quot; then
+                                        has_formatter = true
+                                        client.action.command.argument = { &quot;--extend-select&quot;, &quot;I&quot; }
+                                        break
+                                    end
+                                end
+                                if has_formatter then
+                                    vim.lsp.buf.format({
+                                        async = false,
+                                        filter = function(client)
+                                            return client.supports_method(&quot;textDocument/formatting&quot;) and
+                                                client.name ~= &quot;ruff&quot;
+                                        end,
+                                    })
+                                end
+                            end,
+                        })
+                    else
+                        local has_formatter = false
+                        for _, client in pairs(clients) do
+                            if client.supports_method(&quot;textDocument/formatting&quot;) then
+                                has_formatter = true
+                                break
+                            end
+                        end
+                        if has_formatter then
+                            vim.lsp.buf.format({
+                                async = false,
+                                filter = function(client)
+                                    return client.supports_method(&quot;textDocument/formatting&quot;)
+                                end,
+                            })
+                        end
+                    end
+                end,
+                desc = &quot;Run Ruff autofix and format on save for Python files&quot;,
+            })
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-27 16:57</div>
+            <div class="timeline-body"><p>I quickly tried to reproduce this in our playground, and I was not able to reproduce the issue. That's why I suspect this is something specific to your neovim configuration. I'm not very familiar with neovim, but I noticed that you use both <code>organiseImports</code> and <code>-extend-select=I</code>. The organizeImports action in the LSP defaults to <code>I</code>. That's why I suspect that you run into some sort of race where both <code>organizeImports</code> and <code>fixAll</code> apply fixes but without seeing each other changes.</p>
+<p>Can you try to disable <code>organizeImports</code> or the <code>--extend-select</code> customization for now to see if the error persists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-12-27 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2024-12-27 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pykeras">@pykeras</a> on 2024-12-27 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I quickly tried to reproduce this in our playground, and I was not able to reproduce the issue. That's why I suspect this is something specific to your neovim configuration. I'm not very familiar with neovim, but I noticed that you use both <code>organiseImports</code> and <code>-extend-select=I</code>. The organizeImports action in the LSP defaults to <code>I</code>. That's why I suspect that you run into some sort of race where both <code>organizeImports</code> and <code>fixAll</code> apply fixes but without seeing each other changes.</p>
+<p>Can you try to disable <code>organizeImports</code> or the <code>--extend-select</code> customization for now to see if the error persists?</p>
+</blockquote>
+<p>Thanks for the advice!
+Removing <code>--extend-select I</code> didn’t work, but based on your description, I removed <code>organizeImports</code>, and that solved that issue.</p>
+<p>But now there is another issue. This might be a conflict between Pyright (which I need for type checking) and Ruff.
+here is the result:</p>
+<pre><code class="language-python">import json
+from collections import defaultdict
+from datetime import datetime, timedelta
+
+def addtime(minutes: int) -&gt; datetime:
+
+def addtime(minutes: int) -&gt; datetime:
+    return datetime.now() + timedelta(minutes=minutes)
+
+
+print(addtime(1564))
+print(&quot;fax this shoot&quot;)
+
+mdic = defaultdict()
+
+print(f&quot;json is {json.__name__}&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pykeras on 2024-12-27 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @pykeras on 2024-12-27 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pykeras">@pykeras</a> on 2024-12-27 21:13</div>
+            <div class="timeline-body"><p>This might be the solution for anyone who may need it.</p>
+<p>I've updated my Pyright settings section to:</p>
+<pre><code class="language-lua">.....
+settings = {
+    pyright = {
+        disableOrganizeImports = true,
+    },
+    python = {
+        analysis = {
+            typeCheckingMode = &quot;strict&quot;,
+            diagnosticMode = &quot;workspace&quot;,
+            typeCheckingBehavior = &quot;strict&quot;,
+            reportMissingType = true,
+            reportUnusedImport = false,
+            reportUnusedVariable = false,
+        },
+    },
+},
+....
+</code></pre>
+<p>and also updated <code>BufWritePre</code> to:</p>
+<pre><code class="language-lua">....
+vim.api.nvim_create_autocmd(&quot;BufWritePre&quot;, {
+    pattern = &quot;*.py&quot;,
+    callback = function()
+        local clients = vim.lsp.get_active_clients({ bufnr = vim.api.nvim_get_current_buf() })
+        local ruff_client = nil
+        for _, client in pairs(clients) do
+            if client.name == &quot;ruff&quot; then
+                ruff_client = client
+                break
+            end
+        end
+
+        if ruff_client then
+            vim.lsp.buf.code_action({
+                context = { only = { &quot;source.fixAll&quot; } },
+                apply = true,
+                action_handler = function(action)
+                    if action.command then
+                        action.command.arguments = { &quot;--extend-select&quot;, &quot;I&quot; }
+                    end
+                    vim.lsp.buf.execute_command(action.command)
+                end,
+            })
+        else
+            vim.notify(&quot;Ruff LSP not available...&quot;, vim.log.levels.WARN)
+        end
+    end,
+    desc = &quot;Run Ruff autofix and format on save for Python files&quot;,
+})
+....
+</code></pre>
+<p>This time it seems to work. I will share my Neovim final setup on my profile for anyone who may need it (as a reference on how to configure ruff for Python)
+<strong>Please keep in mind I'm not a Lua developer, so the code may not be the best, but it does what I need.</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-28 09:07</div>
+            <div class="timeline-body"><blockquote>
+<p>But now there is another issue. This might be a conflict between Pyright (which I need for type checking) and Ruff.
+here is the result:</p>
+</blockquote>
+<p>Can you tell us more about the issue? It's unclear to me from just looking at your code example. Or is everything solved and we can close the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pykeras">@pykeras</a> on 2024-12-29 18:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you tell us more about the issue? It's unclear to me from just looking at your code example. Or is everything solved and we can close the issue?</p>
+</blockquote>
+<p>The above solutions seem to work. The combination of Pyright and Ruff was the key. I will close this issue, as it has been working like a charm over the past few days.</p>
+<p>Thank you for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pykeras on 2024-12-29 18:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

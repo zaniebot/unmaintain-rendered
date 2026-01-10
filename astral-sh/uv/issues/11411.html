@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pytorch install not working on linux - astral-sh/uv #11411</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pytorch install not working on linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11411">#11411</a>
+        opened by <a href="https://github.com/spkgyk">@spkgyk</a>
+        on 2025-02-10 23:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-10 23:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here is my config:</p>
+<pre><code>[project]
+name = &quot;project-name&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;monai&gt;=1.4.0&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;torchaudio&gt;=2.6.0&quot;,
+    &quot;torchvision&gt;=0.21.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu126&quot;, marker = &quot;sys_platform == 'win32' or sys_platform == 'linux'&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cu126&quot;, marker = &quot;sys_platform == 'win32' or sys_platform == 'linux'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu126&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+</code></pre>
+<p>When i run this, and import torch, i get the error</p>
+<pre><code>uv sync &amp;&amp; uv run local/test.py
+Resolved 19 packages in 9ms
+Audited 15 packages in 0.02ms
+Traceback (most recent call last):
+  File &quot;/local/test.py&quot;, line 1, in &lt;module&gt;
+    import torch
+  File &quot;/.venv/lib/python3.12/site-packages/torch/__init__.py&quot;, line 405, in &lt;module&gt;
+    from torch._C import *  # noqa: F403
+    ^^^^^^^^^^^^^^^^^^^^^^
+ImportError: libcusparseLt.so.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>However, if my config is simply</p>
+<pre><code>[project]
+name = &quot;project-name&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;monai&gt;=1.4.0&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;torchaudio&gt;=2.6.0&quot;,
+    &quot;torchvision&gt;=0.21.0&quot;,
+]
+</code></pre>
+<p>Everything works no problem. I believe I have followed the docs correctly, so I'm not sure why this doesn't work. Is anyone else experiencing this issue?</p>
+<p>I noticed that when I run the simplified config without the index url, I get all the correct nvidia deps installing:</p>
+<pre><code>nvidia-cusolver-cu12 ------------------------------ 98.70 MiB/122.01 MiB
+nvidia-cusparselt-cu12 ------------------------------ 98.64 MiB/143.11 MiB
+nvidia-nccl-cu12 ------------------------------ 99.87 MiB/179.91 MiB
+nvidia-cusparse-cu12 ------------------------------ 99.51 MiB/197.84 MiB
+nvidia-cufft-cu12 ------------------------------ 100.21 MiB/201.66 MiB
+triton     ------------------------------ 98.60 MiB/241.43 MiB
+nvidia-cublas-cu12 ------------------------------ 99.00 MiB/346.60 MiB
+nvidia-cudnn-cu12 ------------------------------ 98.57 MiB/633.96 MiB
+etc
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.8.0-1020-gcp x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.5.29</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @spkgyk on 2025-02-10 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 23:33</div>
+            <div class="timeline-body"><p>I'm guessing you might have a different CUDA version installed? I think the PyPI wheels are CUDA 12.4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-10 23:36</div>
+            <div class="timeline-body"><p>wget https://developer.download.nvidia.com/compute/cuda/12.8.0/local_installers/cuda_12.8.0_570.86.10_linux.run
+This is the NVIDIA drivers used.</p>
+<p>wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cudnn
+This is the cudnn version used</p>
+<p>I think it's strange that specifying the tool.uv.index causes things to fail</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 23:38</div>
+            <div class="timeline-body"><p>I'm a bit confused. Using <code>tool.uv.index</code> results in you downloading and using different wheels. It makes sense that it would fail -- it's not the same package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-10 23:42</div>
+            <div class="timeline-body"><p>I have cuda 12.8 installed, surely if I don't specify the wheel it uses 12.6 - the closest version - by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 23:43</div>
+            <div class="timeline-body"><p>No, the Python packaging ecosystem doesn't know anything about your installed CUDA version. The PyTorch team can only upload wheels to PyPI that are compatible with a single CUDA version, and it looks like they publish for 12.4. That's why they have their own indexes: to publish wheels for more accelerator variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-10 23:44</div>
+            <div class="timeline-body"><p>https://pytorch.org/</p>
+<p>the publish for 12.6. their install command for pip is:</p>
+<p>pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 23:48</div>
+            <div class="timeline-body"><p>That command downloads from the PyTorch index, not from PyPI. It's similar to your first <code>pyproject.toml</code>, and not the same as your second <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spkgyk">@spkgyk</a> on 2025-02-10 23:53</div>
+            <div class="timeline-body"><p>I see, so the second pyproject.toml is downloading from PyPI, and that correctly ships the nvidia dependencies, but the PytorchIndex doesn't do this correctly and that's why it fails. Thanks for the help!</p>
+<p>Interestingly, if i use this pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;inference-server&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;monai&gt;=1.4.0&quot;,
+    &quot;torch&gt;=2.6.0&quot;,
+    &quot;torchaudio&gt;=2.6.0&quot;,
+    &quot;torchvision&gt;=0.21.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;sys_platform == 'win32' or sys_platform == 'linux'&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;sys_platform == 'win32' or sys_platform == 'linux'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+</code></pre>
+<p>I don't have any issues - I guess the 12.6 version is a little buggy as it's new. Thank you for the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @spkgyk on 2025-02-10 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 00:12</div>
+            <div class="timeline-body"><p>No worries, happy to help!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`bad-exit-annotation` (`PYI036`) triggers on `typing.overload` definitions - astral-sh/ruff #11044</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`bad-exit-annotation` (`PYI036`) triggers on `typing.overload` definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11044">#11044</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2024-04-19 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-04-19 14:32</div>
+            <div class="timeline-body"><p>Keywords searched in the issue tracker: PYI036, overload</p>
+<p>Running <code>ruff check --select PYI036 --isolated</code> using Ruff version 0.4.0 on the file</p>
+<pre><code class="language-python">import typing
+from types import TracebackType
+
+
+class Foo:
+    def __enter__(self) -&gt; typing.Self:
+        return self
+
+    @typing.overload
+    def __exit__(self, exc_type: None, exc_val: None, exc_tb: None) -&gt; None: ...
+
+    @typing.overload
+    def __exit__(
+        self,
+        exc_type: type[BaseException],
+        exc_val: BaseException,
+        exc_tb: TracebackType,
+    ) -&gt; None: ...
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        pass
+</code></pre>
+<p>produces six <code>PYI036</code> errors (three for each overload definition). The expected behaviour is that no <code>PYI036</code> errors are raised, as these are overloads that describe legal calls rather than the complete implementation. This approach was recommended on <a href="https://adamj.eu/tech/2021/07/04/python-type-hints-how-to-type-a-context-manager/">this blog post</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:50</div>
+            <div class="timeline-body"><p>@AlexWaygood - do you mind taking this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-04-20 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-20 10:14</div>
+            <div class="timeline-body"><p>Yeah, good call — I think we should just skip any functions decorated with <code>@overload</code> for this check. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2024-04-20 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-04-20 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-04-20 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-20 12:41</div>
+            <div class="timeline-body"><p>On second thought, we can provide <em>some</em> validation for overloaded functions. Slightly more fiddly, but definitely doable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-04-20 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 13:36</div>
+            <div class="timeline-body"><p>Thanks Alex!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11057.html">astral-sh/ruff#11057</a> on 2024-04-20 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-04-22 13:41</div>
+            <div class="timeline-body"><p>Some &quot;related off-topic&quot; from me, since I recently went through a similar thing.</p>
+<p>There should be no need to write overloads if we return <code>None</code> in either case.
+That's the thing for a PEP to propose the ability of unpacking unions of same-sized tuples:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from _typeshed import OptExcInfo  # tuple[None, None, None] | tuple[type[BaseException], BaseException, TracebackType]
+    from typing_extensions import Unpack
+
+
+class Foo:
+    def __exit__(self, *args: Unpack[OptExcInfo]) -&gt; None:  # should be legal, but isn't
+        pass
+</code></pre>
+<p>What Ruff might or might not want to do is <a href="https://play.ruff.rs/9cd359a5-7745-4013-85b9-2e31c1b28e29">allow unpacking <code>_typeshed.ExcInfo</code> in the annotations of the <code>__exit__</code> signature</a>, not require either <code>object</code> or full signature. But that would only make sense if we always expect an error to occur 🤷‍♀️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-24 15:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add environment variable to always use `--active` flag - astral-sh/uv #11273</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add environment variable to always use `--active` flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11273">#11273</a>
+        opened by <a href="https://github.com/albireox">@albireox</a>
+        on 2025-02-06 04:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/albireox">@albireox</a> on 2025-02-06 04:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The new <code>--active</code> flag (#11189) is a great addition and I think it goes some way to allow <code>uv</code> and <code>pyenv</code> to work better together (see #6204).</p>
+<p>Would it be possible to add a new environment variable to make that flag the default? For example, the PR suggested something like <code>UV_PROJECT_ENVIRONMENT=ACTIVE</code> but could also be <code>UV_ACTIVE=1</code>. Or maybe this already works? If so, it's not clear from the documentation.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @albireox on 2025-02-06 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-02-08 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-08 02:33</div>
+            <div class="timeline-body"><p>I posted some ideas in https://github.com/astral-sh/uv/pull/11189#issuecomment-2631810023 but did not add one yet. I'm not sure what name is best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2025-02-08 02:38</div>
+            <div class="timeline-body"><p>I think any of the options in that comment would work. My personal preference would be a new variable, so something like <code>UV_PROJECT_USE_ACTIVE</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11458.html">astral-sh/uv#11458</a> on 2025-02-12 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8878.html">astral-sh/uv#8878</a> on 2025-02-16 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2025-04-07 23:36</div>
+            <div class="timeline-body"><p>Any updates on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-04-07 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juditnovak">@juditnovak</a> on 2025-04-11 14:34</div>
+            <div class="timeline-body"><p>May I give it a try (ore there's another volunteer already :-) )?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-05-28 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13714.html">astral-sh/uv#13714</a> on 2025-05-29 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-05 16:46</div>
+            <div class="timeline-body"><p>I'd like to get everyone's thoughts on @zanieb's questions from here: https://github.com/astral-sh/uv/pull/13714#issuecomment-2940490221</p>
+<blockquote>
+<ul>
+<li>An environment variable here would apply equally to projects and scripts with inline metadata, is that what people would want? Or would you still expect a script to be run in a separate environment? Does that imply we want separate variables? Do we just want to tackle the <code>UV_PROJECT_ENVIRONMENT</code> case?</li>
+<li>How would this behave if <code>VIRTUAL_ENV</code> is not set? Would it error?</li>
+</ul>
+</blockquote>
+<p>Now that I've read a bit more about <code>pyenv[-virtualenv]</code>, I'm starting to worry that setting <code>UV_[whatever]_ACTIVE=true</code> in e.g. <code>.bashrc</code> (is that how folks would do it?) could create some other confusing interactions. Here are some scattered thoughts:</p>
+<p><code>uv run</code> does an &quot;inexact&quot; sync by default where it only adds dependencies to the environment, and doesn't remove anything. But <code>uv sync</code> does an &quot;exact&quot; sync by default, where it removes unneeded dependencies. Doing exact syncs in implicitly activated environments might break things in surprising ways, and editors and IDEs might do that for/to you automatically. (Inexact syncs can also break things by switching between incompatible versions of a package.)</p>
+<p>The <code>.python-version</code> file that determines <code>pyenv-virtualenv</code>'s &quot;scope&quot; might also be at a different level of the directory hierarchy than the <code>pyproject.toml</code> that <code>uv</code> looks for. <code>~/.python-version</code> (do folks use those?) could interact with <code>~/foo/bar/baz/pyproject.toml</code>, and <code>foo/pyproject.toml</code> could interact with <code>foo/bar/baz/.python-version</code>. Both of those might be unexpected?</p>
+<p>At a high level, <code>uv</code> thinks it &quot;owns&quot; the environment it's working in. The <code>--active</code> flag sort of violates that assumption, but in a way that the user understands and intends. However, <em>always</em> violating that assumption seems like asking for trouble?</p>
+<p>Could folks say more about the workflows they'd like to enable here? I wonder if there might be less footgun-y ways.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-06-06 02:17</div>
+            <div class="timeline-body"><p>Strictly personally I have historically used <code>pyenv-virtualenv</code> together with <code>direnv</code> using something like the <code>layout activate &lt;venv&gt;</code> <a href="https://github.com/direnv/direnv/wiki/Python#pyenv-virtualenv">pattern</a> on a <code>.envrc</code>. Other times via the <code>.python-version</code> pyenv <a href="https://github.com/astral-sh/uv/issues/6204#issue-2473353444">pattern</a>.</p>
+<p>Post uv-era, when I need to use centrally managed uv environments with the project api I still fundamentally use the same recipe with a few tweaks and ends up looking like:</p>
+<pre><code class="language-bash">export UV_PROJECT_ENVIRONMENT=$(pyenv root)/versions/&lt;venv&gt;
+layout activate &lt;venv&gt;
+</code></pre>
+<p>For me at least having something like <code>UV_PROJECT_ENVIRONMENT=VIRTUAL_ENV</code> (or equivalent) would simplify this usage or recipes like <a href="https://github.com/astral-sh/uv/issues/6204#issuecomment-2448148190">this one</a> by having to think less about where the environment lives when working on a uv project that uses a centralized managed environment.</p>
+<p>Hence if something like <code>UV_PROJECT_ENVIRONMENT=VIRTUAL_ENV</code> ends up being supported,</p>
+<ul>
+<li>I would expect it to fail if there's no activated venv.</li>
+<li>I would not plan to permanently activate this environment variable, only when I'm on the valid uv project.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MilkClouds">@MilkClouds</a> on 2025-06-06 10:39</div>
+            <div class="timeline-body"><h2>Proposal: Flexible Environment Management Strategy</h2>
+<p>Hi @oconnor663,</p>
+<p>I'd like to propose a solution that addresses the different environment management needs expressed in issues #11315 and #11152.</p>
+<h3>Problem</h3>
+<p>Currently, by default, uv assumes all users want automatic per-project environment management with exact syncing. However, many users (myself included) prefer managing their own virtual environments with full control, often sharing environments across multiple projects.</p>
+<h3>Proposed Solution</h3>
+<p><strong>1. Add <code>uv install</code> command</strong></p>
+<ul>
+<li>Equivalent to <code>uv sync --inexact</code></li>
+<li>Installs/updates packages without strict environment recreation</li>
+<li>Matches Poetry's <code>poetry install</code> behavior</li>
+</ul>
+<p><strong>2. Add environment configuration</strong></p>
+<ul>
+<li>Environment variable: <code>UV_MANAGE_VENV</code></li>
+<li>Values:<ul>
+<li><code>true</code> (default): uv creates and manages project-specific environments</li>
+<li><code>false</code>: uv operates on the currently active environment without managing it</li>
+</ul>
+</li>
+<li>Could be implemented as a config option (<code>--active</code>) instead of env var, but it gonna be inconvenient for myself and users.</li>
+<li>Existing environment variable, such as <code>UV_PROJECT_ENVIRONMENT</code>, gonna be considered only when <code>UV_MANAGE_VENV=true</code>. Of course <code>uv</code> can raise error or warn if both <code>UV_PROJECT_ENVIRONMENT</code> and <code>UV_MANAGE_VENV=false</code> is set.</li>
+<li><code>UV_USE_ACTIVE_ENV=true</code> instead of <code>UV_MANAGE_VENV=false</code> may be better.</li>
+</ul>
+<h3>Usage Examples</h3>
+<p><strong>Current workflow (unchanged):</strong></p>
+<pre><code class="language-bash">uv sync  # Creates/manages project venv automatically
+</code></pre>
+<p><strong>New workflow for manual environment management:</strong></p>
+<pre><code class="language-bash">export UV_MANAGE_VENV=false
+conda activate my-shared-env  # or any venv activation
+uv install  # Installs to active environment without recreation
+</code></pre>
+<p>Also I think <code>uv sync</code> for <code>UV_MANAGE_VENV=false</code> must request confirm to user after execution. Accidentally calling <code>uv sync</code> for existing environment is very annoying and dangerous; I've met that situation several times, especially when running Cursor Agent mode.</p>
+<h3>Benefits</h3>
+<ul>
+<li>Maintains backward compatibility (default behavior unchanged)</li>
+<li>Supports both use cases without breaking existing workflows</li>
+<li>Clear separation of concerns between environment creation and package installation</li>
+</ul>
+<h3>Reference Implementation</h3>
+<p>I've created a proof-of-concept wrapper called <code>vuv</code> that it similar to this approach, but with <code>vuv</code> CLI executable rather than defining <code>UV_MANAGE_VENV</code>: https://github.com/open-world-agents/vuv</p>
+<p>What are your thoughts on this direction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-06 13:53</div>
+            <div class="timeline-body"><p>@milkclouds, appreciate that you took the time to write something up, but it probably would be best as its own issue as it's much larger in scope than adding an environment variable to persistently control an existing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wangnov">@Wangnov</a> on 2025-06-12 03:04</div>
+            <div class="timeline-body"><blockquote>
+<p>At a high level, <code>uv</code> thinks it &quot;owns&quot; the environment it's working in. The <code>--active</code> flag sort of violates that assumption, but in a way that the user understands and intends. However, <em>always</em> violating that assumption seems like asking for trouble?</p>
+</blockquote>
+<p>Hi @charlierm, thank you for the detailed explanation in your comment and for creating such a fantastic tool.</p>
+<p>I'd like to share a common workflow for many full-stack developers that highlights why a smoother <code>uv</code>-<code>conda</code> integration would be incredibly valuable.</p>
+<p>Many of us rely on <strong>conda/mamba as a universal environment manager</strong> to handle multi-language projects. For a single project, it's common to have an environment that includes specific versions of Python, Node.js, and perhaps even Rust or other system dependencies. Conda excels at creating and managing this isolated, multi-language &quot;outer shell.&quot;</p>
+<p>Within this activated conda environment, <strong>we want to use <code>uv</code> to completely manage the Python portion</strong>. Our ideal workflow is for <code>uv</code> to recognize the Python provided by the active conda environment and &quot;take full ownership&quot; of it, treating it as the authoritative virtual environment.</p>
+<p>Currently, to achieve this, the process is quite manual and adds significant overhead:</p>
+<ol>
+<li>After running <code>mamba activate my-env</code>, we must manually set <code>export VIRTUAL_ENV=$CONDA_PREFIX</code>.</li>
+<li>Even with <code>VIRTUAL_ENV</code> set, when a <code>pyproject.toml</code> is present, we still need to add the <code>--active</code> flag to nearly every <code>uv</code> command (<code>add</code>, <code>sync</code>, <code>run</code>, etc.) to force <code>uv</code> to use the conda environment instead of looking for a local <code>.venv</code>.</li>
+</ol>
+<p>This need to configure environment variables and consistently remember the <code>--active</code> flag adds a lot of friction and management cost to our daily workflow.</p>
+<p>Therefore, we are hoping for a more seamless, <strong>&quot;set-it-and-forget-it&quot;</strong> way for <code>uv</code> to collaborate with conda/mamba. This could perhaps involve <code>uv</code> automatically recognizing <code>CONDA_PREFIX</code> when <code>VIRTUAL_ENV</code> is not set, or a global configuration option to always prefer the active conda environment.</p>
+<p>Thank you again for your incredible work. We believe a smoother integration would make <code>uv</code> an even more indispensable tool for the wide community of developers who rely on conda for multi-language environment management.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-12 03:11</div>
+            <div class="timeline-body"><p>@Wangnov why not set <code>UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX</code>? You could also make an alias for <code>mamba activate</code> that also sets <code>VIRTUAL_ENV</code> (and / or the above variable), so you don't need to do so manually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wangnov">@Wangnov</a> on 2025-06-12 03:21</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/Wangnov">@Wangnov</a>为什么不设置<code>UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX</code>？您还可以为<code>mamba activate</code>设置<code>VIRTUAL_ENV</code>(和/或上述变量)​​创建一个别名，这样就不需要手动执行此操作了？</p>
+</blockquote>
+<p>@zanieb Thank you so much for the quick and insightful reply! I really appreciate you pointing out the <code>UV_PROJECT_ENVIRONMENT</code> variable; that's a variable I had overlooked, and I will be testing it right away.</p>
+<p>To provide some context on our current workflow, we are already doing something very similar to your suggestion. We have a function in our <code>.bashrc</code> that hooks into <code>mamba activate</code> to automatically set <code>VIRTUAL_ENV=$CONDA_PREFIX</code>.</p>
+<p>In addition to that, we have another function for the <code>uv</code> command itself, which automatically adds the <code>--active</code> flag to top-level commands. I admit, this second part might indeed be a bit clunky if setting <code>UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX</code> makes the <code>--active</code> flag unnecessary. I'm keen to try this more direct approach.</p>
+<p>However, this brings me to the main point I wanted to share. Relying on custom shell functions in <code>.bashrc</code> for this kind of core integration, while functional, comes with inherent risks. It can be brittle, breaking with shell or tool updates, and it creates an extra setup step for every team member, which can sometimes lead to &quot;it works on my machine&quot; issues.</p>
+<p>If <code>uv</code> could offer some level of native support for this conda/mamba workflow, it would feel like a safer and more elegant solution. I've read through the related issues and I understand and respect the team's commitment to PEP standards and the &quot;not planned&quot; decisions made on similar topics.</p>
+<p>So, please consider this merely a case study from my team and me, shared for your reference. We represent a group of developers who find immense value in using conda for its powerful multi-language environment management and would love for <code>uv</code> to be our go-to Python package manager within that ecosystem.</p>
+<p>Thank you again for your time and responsiveness!</p>
+<hr />
+<p><strong>UPDATE:</strong></p>
+<p>I've just tested setting <code>UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX</code>, and I can confirm it works beautifully. It has allowed me to simplify my <code>.bashrc</code> function significantly, as I no longer need the separate, complex function to add the <code>--active</code> flag to each <code>uv</code> command.</p>
+<p>This is a much cleaner approach. Thank you so much for this specific and very helpful tip!</p>
+<p>BTW: As a developer in China, our situation highlights why a global configuration is so valuable. Due to network reasons, modifying uv's user-level configuration is a mandatory step for us right after installation. We have to write scripts to change the package index-url and the python-build mirror—even the uv installation script itself often needs a special download method. Because we already rely on these custom setup scripts, having a single, global setting for conda integration would be trivial for us to add. It would be a one-time, reliable configuration that we could roll out to our entire team, fitting perfectly into our existing, necessary procedures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-08-11 21:48</div>
+            <div class="timeline-body"><p>Though <code>UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX</code> does the trick it's not ideal as this needs to be set after activating every conda environment. It would be nice to just set some boolean config option that whenever <code>$CONDA_PREFIX</code> is set it is used for UV's project environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11315.html">astral-sh/uv#11315</a> on 2025-08-11 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15603.html">astral-sh/uv#15603</a> on 2025-08-31 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

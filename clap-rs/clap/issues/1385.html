@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global args on subcommands do not get propagated to sub-subcommands - clap-rs/clap #1385</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Global args on subcommands do not get propagated to sub-subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1385">#1385</a>
+        opened by <a href="https://github.com/ctron">@ctron</a>
+        on 2018-11-19 12:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ctron">@ctron</a> on 2018-11-19 12:24</div>
+            <div class="timeline-body"><!--
+Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
+-->
+
+<h3>Rust Version</h3>
+<pre><code>rustc 1.30.1 (1433507eb 2018-11-07)
+</code></pre>
+<h3>Affected Version of clap</h3>
+<pre><code>2.32.0
+</code></pre>
+<h3>Bug or Feature Request Summary</h3>
+<p>Bug</p>
+<h3>Expected Behavior Summary</h3>
+<p>Subcommand matches gets value.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Subcommand matched do not get value.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>Run sample code.</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">extern crate clap;
+
+use clap::{Arg,App,SubCommand};
+
+fn main() {
+
+    let app = App::new(&quot;foo&quot;)
+
+        .subcommand(SubCommand::with_name(&quot;sub1&quot;)
+
+            .arg(Arg::with_name(&quot;arg1&quot;)
+                .long(&quot;arg1&quot;)
+                .takes_value(true)
+                .global(true)
+            )
+
+            .subcommand(SubCommand::with_name(&quot;sub1a&quot;)
+            )
+        )
+    ;
+
+    let m1 = app.get_matches_from(&amp;[&quot;foo&quot;, &quot;sub1&quot;, &quot;--arg1&quot;, &quot;v1&quot;, &quot;sub1a&quot;]); // fails
+
+    println!(&quot;{:#?}&quot;, m1);
+
+    let v1 = m1.subcommand_matches(&quot;sub1&quot;).unwrap().subcommand_matches(&quot;sub1a&quot;).unwrap().value_of(&quot;arg1&quot;).unwrap();
+    println!(&quot;{}&quot;, v1);
+}
+</code></pre>
+<p>On the example application I would expect the subcommand to receive the global value as well. Putting the argument <code>arg1</code> on the app global level works. But then the argument is available outside the subcommand <code>sub1</code> as well.</p>
+<h3>Debug output</h3>
+<p>Compile clap with cargo features <code>&quot;debug&quot;</code> such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+
+<p>Compiling clap v2.32.0
+Compiling clap1 v0.1.0 (/home/jreimann/git/clap1)
+Finished dev [unoptimized + debuginfo] target(s) in 8.18s
+Running <code>target/debug/clap1</code>
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=sub1a
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=sub1
+DEBUG:clap:Parser::propagate_settings: self=foo, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: sc=sub1, settings=AppFlags(
+NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: self=sub1, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: sc=sub1a, settings=AppFlags(
+NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::propagate_settings: self=sub1a, g_settings=AppFlags(
+(empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;sub1&quot;' ([115, 117, 98, 49])
+DEBUG:clap:Parser::is_new_arg:&quot;sub1&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;sub1&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some(&quot;sub1&quot;)
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=sub1
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--arg1&quot;' ([45, 45, 97, 114, 103, 49])
+DEBUG:clap:Parser::is_new_arg:&quot;--arg1&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--arg1&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:arg1
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--arg1 <arg1>'
+DEBUG:clap:Parser::parse_opt; opt=arg1, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(EMPTY_VALS | GLOBAL | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=arg1
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=arg1
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;arg1&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;v1&quot;' ([118, 49])
+DEBUG:clap:Parser::is_new_arg:&quot;v1&quot;:Opt(&quot;arg1&quot;)
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::add_val_to_arg; arg=arg1, val=&quot;v1&quot;
+DEBUG:clap:Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+DEBUG:clap:Parser::add_single_val_to_arg;
+DEBUG:clap:Parser::add_single_val_to_arg: adding val...&quot;v1&quot;
+DEBUG:clap:Parser::groups_for_arg: name=arg1
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:ArgMatcher::needs_more_vals: o=arg1
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;sub1a&quot;' ([115, 117, 98, 49, 97])
+DEBUG:clap:Parser::is_new_arg:&quot;sub1a&quot;:ValuesDone
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;sub1a&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=true, sc=Some(&quot;sub1a&quot;)
+DEBUG:clap:Parser::parse_subcommand;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;arg1&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;arg1&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:Parser::parse_subcommand: About to parse sc=sub1a
+DEBUG:clap:Parser::parse_subcommand: sc settings=AppFlags(
+NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:arg1: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:arg1: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=foo sub1 sub1a [OPTIONS]
+DEBUG:clap:ArgMatcher::process_arg_overrides:Some(&quot;arg1&quot;);
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:arg1: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:arg1: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_blacklist:iter:arg1;
+DEBUG:clap:Parser::groups_for_arg: name=arg1
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:arg1: vals=[
+&quot;v1&quot;
+]
+DEBUG:clap:Validator::validate_arg_num_vals:arg1
+DEBUG:clap:Validator::validate_arg_values: arg=&quot;arg1&quot;
+DEBUG:clap:Validator::validate_arg_requires:arg1;
+DEBUG:clap:Validator::validate_arg_num_occurs: a=arg1;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=foo sub1 [OPTIONS] [SUBCOMMAND]
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::remove_overrides:[];
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Validator::validate_blacklist;
+DEBUG:clap:Validator::validate_required: required=[];
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=foo [SUBCOMMAND]
+DEBUG:clap:ArgMatcher::get_global_values: global_arg_vec=[]
+ArgMatches {
+args: {},
+subcommand: Some(
+SubCommand {
+name: &quot;sub1&quot;,
+matches: ArgMatches {
+args: {
+&quot;arg1&quot;: MatchedArg {
+occurs: 1,
+indices: [
+2
+],
+vals: [
+&quot;v1&quot;
+]
+}
+},
+subcommand: Some(
+SubCommand {
+name: &quot;sub1a&quot;,
+matches: ArgMatches {
+args: {},
+subcommand: None,
+usage: Some(
+&quot;USAGE:\n    foo sub1 sub1a [OPTIONS]&quot;
+)
+}
+}
+),
+usage: Some(
+&quot;USAGE:\n    foo sub1 [OPTIONS] [SUBCOMMAND]&quot;
+)
+}
+}
+),
+usage: Some(
+&quot;USAGE:\n    foo [SUBCOMMAND]&quot;
+)
+}
+thread 'main' panicked at 'called <code>Option::unwrap()</code> on a <code>None</code> value', libcore/option.rs:345:21
+stack backtrace:
+0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+at libstd/sys/unix/backtrace/tracing/gcc_s.rs:49
+1: std::sys_common::backtrace::print
+at libstd/sys_common/backtrace.rs:71
+at libstd/sys_common/backtrace.rs:59
+2: std::panicking::default_hook::{{closure}}
+at libstd/panicking.rs:211
+3: std::panicking::default_hook
+at libstd/panicking.rs:227
+4: std::panicking::rust_panic_with_hook
+at libstd/panicking.rs:477
+5: std::panicking::continue_panic_fmt
+at libstd/panicking.rs:391
+6: rust_begin_unwind
+at libstd/panicking.rs:326
+7: core::panicking::panic_fmt
+at libcore/panicking.rs:77
+8: core::panicking::panic
+at libcore/panicking.rs:52
+9: &lt;core::option::Option<T>&gt;::unwrap
+at libcore/macros.rs:20
+10: clap1::main
+at src/main.rs:27
+11: std::rt::lang_start::{{closure}}
+at libstd/rt.rs:74
+12: std::panicking::try::do_call
+at libstd/rt.rs:59
+at libstd/panicking.rs:310
+13: __rust_maybe_catch_panic
+at libpanic_unwind/lib.rs:103
+14: std::rt::lang_start_internal
+at libstd/panicking.rs:289
+at libstd/panic.rs:392
+at libstd/rt.rs:58
+15: std::rt::lang_start
+at libstd/rt.rs:74
+16: main
+17: __libc_start_main
+18: <unknown></p>
+<p>Process finished with exit code 101</p>
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">not-sure</span> added by @CreepySkeleton on 2020-02-01 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Global args on subcommands do not get propagated" to "Global args on subcommands do not get propagated to sub-subcommands" by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cc: CreepySkeleton</span> removed by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-02-06 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-09 07:48</div>
+            <div class="timeline-body"><p>When you say its a global arg, it means you can specify it in any subcommand, not that you actually get that value in the subcommand.</p>
+<pre><code class="language-rust">&amp;[&quot;foo&quot;, &quot;sub1&quot;, &quot;sub1a&quot;, &quot;--arg1&quot;, &quot;v1&quot;]
+</code></pre>
+<p>@CreepySkeleton Do you agree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-09 20:24</div>
+            <div class="timeline-body"><p>@pksunkara Speaking for my personal intuition, I would expect global args to be accessible from everywhere. &quot;Global&quot; is in the tittle, anyway.</p>
+<p>Not really sure if it would worth the effort, but I'd like to see it implemented. I'll be looking into it when I get to bugfixing, I'll decide then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../geldata/rfcs/pulls/14.html">geldata/rfcs#14</a> on 2020-07-03 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2026.html">clap-rs/clap#2026</a> on 2020-07-26 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2053.html">clap-rs/clap#2053</a> on 2020-08-06 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-25 22:03</div>
+            <div class="timeline-body"><p>Might be related to #2053</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2020-12-12 05:58</div>
+            <div class="timeline-body"><p>Well,
+This works,</p>
+<pre><code class="language-rust">    let m1 = App::new(&quot;foo&quot;)
+        .arg(Arg::new(&quot;arg1&quot;).long(&quot;arg1&quot;).takes_value(true).global(true))
+        .subcommand(
+            App::new(&quot;sub1&quot;)
+                .subcommand(App::new(&quot;sub1a&quot;)),
+        )
+</code></pre>
+<p>but this doesn't:</p>
+<pre><code class="language-rust">    let m1 = App::new(&quot;foo&quot;)
+        .subcommand(
+            App::new(&quot;sub1&quot;)
+                .arg(Arg::new(&quot;arg1&quot;).long(&quot;arg1&quot;).takes_value(true).global(true))
+                .subcommand(App::new(&quot;sub1a&quot;)),
+        )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2253.html">clap-rs/clap#2253</a> on 2020-12-12 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-12-14 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../hyperledger-archives/grid/issues/997.html">hyperledger-archives/grid#997</a> on 2021-10-27 21:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:55 UTC
+    </footer>
+</body>
+</html>

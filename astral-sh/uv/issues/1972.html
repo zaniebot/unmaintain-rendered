@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace package name clash with builtins - when uv is enabled - astral-sh/uv #1972</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace package name clash with builtins - when uv is enabled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1972">#1972</a>
+        opened by <a href="https://github.com/mihalikv">@mihalikv</a>
+        on 2024-02-25 21:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mihalikv">@mihalikv</a> on 2024-02-25 21:21</div>
+            <div class="timeline-body"><h3>Steps to Reproduce</h3>
+<ol>
+<li>clone repository https://github.com/mihalikv/improved-umbrella</li>
+<li>run <code>rye sync</code></li>
+</ol>
+<h3>Expected Result</h3>
+<p><strong>With uv</strong>: successful installation</p>
+<h3>Actual Result</h3>
+<p>When <strong>uv</strong> is disabled: it just works.</p>
+<p>When <strong>uv</strong> is enabled:</p>
+<pre><code>vilo@Vilo:~/test_project$ rye sync
+Reusing already existing virtualenv
+Generating production lockfile: /home/vilo/test_project/requirements.lock
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///home/vilo/test_project/nested_lib
+  Caused by: Build backend failed to build wheel through `build_editable()`:
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 6, in &lt;module&gt;
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/hatchling/build.py&quot;, line 82, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/hatchling/builders/plugin/interface.py&quot;, line 90, in build
+    self.metadata.validate_fields()
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 244, in validate_fields
+    self.core.validate_fields()
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 1334, in validate_fields
+    getattr(self, attribute)
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 1207, in dependencies
+    self._dependencies = list(self.dependencies_complex)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 1158, in dependencies_complex
+    from packaging.requirements import InvalidRequirement, Requirement
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/packaging/requirements.py&quot;, line 7, in &lt;module&gt;
+    from ._parser import parse_requirement as _parse_requirement
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/packaging/_parser.py&quot;, line 10, in &lt;module&gt;
+    from ._tokenizer import DEFAULT_RULES, Tokenizer
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/packaging/_tokenizer.py&quot;, line 6, in &lt;module&gt;    from .specifiers import Specifier
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/packaging/specifiers.py&quot;, line 26, in &lt;module&gt;
+    from .utils import canonicalize_version
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/packaging/utils.py&quot;, line 8, in &lt;module&gt;
+    from .tags import Tag, parse_tag
+  File &quot;/home/vilo/.cache/uv/.tmp30t7GI/.venv/lib/python3.11/site-packages/packaging/tags.py&quot;, line 27, in &lt;module&gt;
+    logger = logging.getLogger(__name__)
+             ^^^^^^^^^^^^^^^^^
+AttributeError: module 'logging' has no attribute 'getLogger'
+---
+error: could not write production lockfile for workspace
+
+Caused by:
+    failed to generate lockfile
+</code></pre>
+<h3>Version Info</h3>
+<pre><code>rye 0.26.0
+commit: 0.26.0 (d245f625e 2024-02-23)
+platform: linux (x86_64)
+self-python: cpython@3.12
+symlink support: true
+uv enabled: false
+</code></pre>
+<h3>Stacktrace</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Workspace dependencies clash with builtins" to "Workspace dependencies clash with builtins - when uv is enabled" by @mihalikv on 2024-02-25 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Workspace dependencies clash with builtins - when uv is enabled" to "Workspace package name clash with builtins - when uv is enabled" by @mihalikv on 2024-02-25 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-02-25 21:40</div>
+            <div class="timeline-body"><p>This would be a bug in uv. Can be reproduced from that repo:</p>
+<pre><code>$ uv pip compile requirements.lock
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///private/tmp/improved-umbrella/nested_lib
+  Caused by: Build backend failed to build wheel through `build_editable()`:
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 6, in &lt;module&gt;
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/hatchling/build.py&quot;, line 82, in build_editable
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/hatchling/builders/plugin/interface.py&quot;, line 90, in build
+    self.metadata.validate_fields()
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 244, in validate_fields
+    self.core.validate_fields()
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 1334, in validate_fields
+    getattr(self, attribute)
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 1207, in dependencies
+    self._dependencies = list(self.dependencies_complex)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/hatchling/metadata/core.py&quot;, line 1158, in dependencies_complex
+    from packaging.requirements import InvalidRequirement, Requirement
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/packaging/requirements.py&quot;, line 7, in &lt;module&gt;
+    from ._parser import parse_requirement as _parse_requirement
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/packaging/_parser.py&quot;, line 10, in &lt;module&gt;
+    from ._tokenizer import DEFAULT_RULES, Tokenizer
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/packaging/_tokenizer.py&quot;, line 6, in &lt;module&gt;
+    from .specifiers import Specifier
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/packaging/specifiers.py&quot;, line 26, in &lt;module&gt;
+    from .utils import canonicalize_version
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/packaging/utils.py&quot;, line 8, in &lt;module&gt;
+    from .tags import Tag, parse_tag
+  File &quot;/Users/mitsuhiko/Library/Caches/uv/.tmpAQYEa4/.venv/lib/python3.11/site-packages/packaging/tags.py&quot;, line 27, in &lt;module&gt;
+    logger = logging.getLogger(__name__)
+             ^^^^^^^^^^^^^^^^^
+AttributeError: module 'logging' has no attribute 'getLogger'
+---
+</code></pre>
+<p>Contents of requirements.txt:</p>
+<pre><code># generated by rye
+# use `rye lock` or `rye sync` to update this lockfile
+#
+# last locked with the following flags:
+#   pre: false
+#   features: []
+#   all-features: false
+#   with-sources: false
+
+-e file:nested_lib
+-e file:.
+asgiref==3.7.2
+    # via django
+django==5.0.2
+    # via nested-lib
+sqlparse==0.4.4
+    # via django
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-25 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 21:44</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-25 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 23:23</div>
+            <div class="timeline-body"><p>Not clear to me yet why this works with <code>pip</code>. The hook is called with <code>./improved-umbrella/nested_lib</code> as the current working directory, and Python adds the current working directory to the path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 23:30</div>
+            <div class="timeline-body"><p>@henryiii -- do you know have an understanding of why this works? <code>./improved-umbrella/nested_lib</code> contains a module called <code>logging</code>, which the build backend is importing while building.</p>
+<p><code>python -m build .</code> fails in that directory, but <code>python -m build nested_lib</code> succeeds from the parent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 23:34</div>
+            <div class="timeline-body"><p>I see some code in <code>pip</code> to avoid adding the current working directory:</p>
+<pre><code class="language-python"># Remove '' and current working directory from the first entry
+# of sys.path, if present to avoid using current directory
+# in pip commands check, freeze, install, list and show,
+# when invoked as python -m pip &lt;command&gt;
+if sys.path[0] in (&quot;&quot;, os.getcwd()):
+    sys.path.pop(0)
+</code></pre>
+<p>I guess that would end up affecting pip's PEP 517 builds, assuming they happen in the same process?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-25 23:38</div>
+            <div class="timeline-body"><p>The current directory should not be present unless the build backend adds it. <code>setuptools.build_meta</code> does not, while <code>setuptools.build_meta.__legacy__</code> does.</p>
+<p>I believe you can't stop Python from adding the current directory (before/without PYTHONSAFEPATH) in module mode, so you'd probably need a hack like pip's, which build might miss. But I'd have to check the package build backend first (on phone).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 23:46</div>
+            <div class="timeline-body"><p>This makes sense. So we need to set the current directory, but avoid adding it to the path. (I’m not totally sure how pip avoids this since that code is in <strong>main</strong>.py, which I thought only ran when invoked via python -m.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-26 00:07</div>
+            <div class="timeline-body"><p>If you run “pytest”, then the current directory is not added to the path. But if you run <code>python -m pytest</code>, it is there (added by Python). You can try it out, pytest does not try to filter it. Pretty sure we don’t in build either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-26 00:10</div>
+            <div class="timeline-body"><p>This is an extremely rare issue for building packages, since most tools would expect to install “logging” as a top level package, which would clash with the std lib. A subpackage logging is fine, but not a top level one (in a wheel).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1975.html">astral-sh/uv#1975</a> on 2024-02-26 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-26 01:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-27 14:37</div>
+            <div class="timeline-body"><p>FYI, <code>python -m venv .venv</code> doesn't work in the directory either, due to Python putting it at the top of the PATH. This means <code>pipx run</code> can't be used in this directory either. Also, it seems runpy triggers the import before it loads <code>__main__</code>, so not sure it's something we can even work around in build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/build/pulls/741.html">pypa/build#741</a> on 2024-02-27 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-28 15:43</div>
+            <div class="timeline-body"><p>Easiest way to fix this actually is to run <code>python -Im build</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

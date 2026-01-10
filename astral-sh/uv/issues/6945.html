@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uv installs cached (?) pre-release instead of latest from index - astral-sh/uv #6945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Uv installs cached (?) pre-release instead of latest from index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6945">#6945</a>
+        opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a>
+        on 2024-09-02 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-09-02 20:59</div>
+            <div class="timeline-body"><p>Hi 👋</p>
+<h3>Synopsis</h3>
+<p>This may be two, or three bugs in one..? All of these seem wrong on an individual level:</p>
+<ul>
+<li>Uv unexpectedly installs a pre-release (<code>0.42.1.post0.dev8+gf84dd7e0</code>) without any <code>--prerelease</code> flag</li>
+<li>It installs this version despite not having specified the <code>--extra-index-url</code> that the package version is served from</li>
+<li>It does not recognize that a newer (final) release is available in the <code>--index-url</code> (<code>0.43.0</code>)</li>
+</ul>
+<h3>Context</h3>
+<p>At my company we use Artifactory and have two virtual Python repositories:</p>
+<ul>
+<li><code>python-all</code> which contains all tagged, i.e. final, releases as well as &quot;snapshots&quot; (<code>.post0.devN</code>  &quot;pre-releases&quot; (which are actually post releases but in the sense of PEP440 should be considered as a prerelease))</li>
+<li><code>python-playground-all</code> which contains all versions publish during CI of feature branches (version format is something like <code>x.y.z.post0.devN+gSHA</code>)</li>
+</ul>
+<h3>Observed behaviour</h3>
+<p>The issue I am having is that the following command ends up installing a pre-release that isn't even served by the specified <code>--index-url</code>, and does not install the more recent <code>0.43.0</code> release:</p>
+<pre><code>❯ curl -s https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-all/simple/hs-infrastructure-kraken-hs/ | grep '0.4[23].0'
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.42.0/hs_infrastructure_kraken_hs-0.42.0-py3-none-any.whl#sha256=5fe11d580fcbda79c7300a9f94097b5308233555de61755b662a4f91cf6fbf00&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; data-yanked=&quot;corpnet rollout by default was a bit rushed&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.42.0-py3-none-any.whl&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.42.0.post0.dev1/hs_infrastructure_kraken_hs-0.42.0.post0.dev1-py3-none-any.whl#sha256=b3acaa223febb8bb9ab6a2753d18c872da76fcfe8e49d63a21d6354de20719ca&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.42.0.post0.dev1-py3-none-any.whl&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.42.0.post0.dev1/hs_infrastructure_kraken_hs-0.42.0.post0.dev1.tar.gz#sha256=56502a2145fe1c24d066502f04a8e52562f428a89938ac958dd5c3dc91b3007c&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.42.0.post0.dev1.tar.gz&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.42.0.post0.dev2/hs_infrastructure_kraken_hs-0.42.0.post0.dev2-py3-none-any.whl#sha256=5ab98095215c4855e5d14b3ba29d6d280e8c7fe88d8c420fecb9be5b195376ce&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.42.0.post0.dev2-py3-none-any.whl&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.42.0.post0.dev2/hs_infrastructure_kraken_hs-0.42.0.post0.dev2.tar.gz#sha256=15d5417b823abba3efcceeb8cea3fc90191e7994b2ed1ba01270f3066b8878fb&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.42.0.post0.dev2.tar.gz&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.42.0/hs_infrastructure_kraken_hs-0.42.0.tar.gz#sha256=f74b0ef924ac734b2c458122c54e43f2014e0b111ba567b6f5f3ae530b976dd2&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; data-yanked=&quot;corpnet rollout by default was a bit rushed&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.42.0.tar.gz&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.43.0/hs_infrastructure_kraken_hs-0.43.0-py3-none-any.whl#sha256=b7d3be07c187f473de2848e61234b6e6eb24edf3df0652efe3991476ecf0b5fa&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.43.0-py3-none-any.whl&lt;/a&gt;
+&lt;a href=&quot;../../hs-infrastructure-kraken-hs/0.43.0/hs_infrastructure_kraken_hs-0.43.0.tar.gz#sha256=cb37524f27cb4c17275af40b776124cfa84888180712d7c6d72d64deb7a1a689&quot; data-requires-python=&quot;&amp;gt;=3.10,&amp;lt;3.14&quot; rel=&quot;internal&quot;&gt;hs_infrastructure_kraken_hs-0.43.0.tar.gz&lt;/a&gt;
+
+❯ VIRTUAL_ENV=test uv pip install --index-url https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-all/simple hs-infrastructure-kraken-hs
+Resolved 50 packages in 4.67s
+Installed 50 packages in 107ms
+ + hs-infrastructure-kraken-hs==0.42.1.post0.dev8+gf84dd7e0
+[ ... shortened ... ]
+</code></pre>
+<p>Before the above command, I explicitly installed that version into another virtual environment:</p>
+<pre><code>❯ uv pip install --index-url https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-all/simple --extra-index-url https://username:[MASKED]@company.jfrog.io/artifactory/api/pypi/python-playground-all/simple hs-infrastructure-kraken-hs==0.42.1.post0.dev8+gf84dd7e0
+</code></pre>
+<p>I've tried running <code>uv cache clear</code> but it did not help. Even if it did, it would only be a workaround in my opinion.</p>
+<p>Uv 0.4.2</p>
+<hr />
+<ul>
+<li><em>edit</em>: Added missing <code>==0.42.1.post0.dev8+gf84dd7e0</code> to last <code>uv pip install</code> example command I included in the last section</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2024-09-02 21:05</div>
+            <div class="timeline-body"><p>What leaves me puzzled the most is that specifying <code>==0.43.0</code> doesn't work either. With <code>RUST_LOG=debug</code>, I get:</p>
+<pre><code>DEBUG uv 0.4.2
+DEBUG Searching for Python interpreter in system path
+DEBUG Found `cpython-3.10.14-macos-aarch64-none` at `test/bin/python3` (active virtual environment)
+DEBUG Using Python 3.10.14 environment at test/bin/python3
+DEBUG Acquired lock for `test`
+DEBUG At least one requirement is not satisfied: hs-infrastructure-kraken-hs==0.43.0
+DEBUG Using request timeout of 30s
+⠙ Resolving dependencies...                                                                                                                                                                                                                           DEBUG Solving with installed Python version: 3.10.14
+DEBUG Adding direct dependency: hs-infrastructure-kraken-hs==0.43.0
+INFO add_decision: root @ 0a0.dev0    
+DEBUG Found fresh response for: https://company.jfrog.io/artifactory/api/pypi/python-playground-all/simple/hs-infrastructure-kraken-hs/
+DEBUG Searching for a compatible version of hs-infrastructure-kraken-hs (==0.43.0)
+DEBUG No compatible version found for: hs-infrastructure-kraken-hs
+INFO Start conflict resolution because incompat satisfied:
+   hs-infrastructure-kraken-hs ==0.43.0 is forbidden    
+INFO prior cause: root ==0a0.dev0 is forbidden    
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of hs-infrastructure-kraken-hs==0.43.0 and you require hs-infrastructure-kraken-hs==0.43.0, we can conclude that your requirements are unsatisfiable.
+DEBUG Released lock at `/Users/niklas/Desktop/test/.lock`
+</code></pre>
+<p>What does <code>hs-infrastructure-kraken-hs ==0.43.0 is forbidden</code> mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:08</div>
+            <div class="timeline-body"><p>The first thing to note, which I believe explains at least (3), is that if a package exists in <code>--extra-index-url</code>, we won't even check <code>--index-url</code>, to avoid dependency confusion attacks. You can read about that here (https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes), or just specify <code>--index-strategy unsafe-best-match</code> if you want to enable that behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:09</div>
+            <div class="timeline-body"><p>I think that also explains this part:</p>
+<blockquote>
+<p>What leaves me puzzled the most is that specifying <code>==0.43.0</code> doesn't work either.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:10</div>
+            <div class="timeline-body"><blockquote>
+<p>It installs this version despite not having specified the --extra-index-url that the package version is served from.</p>
+</blockquote>
+<p>This part I don't understand though. You're saying that you run <code>uv pip install --index-url A package</code>, and it installs a version of <code>package</code> that does not exist on <code>A</code>? Can you show me the <code>--verbose</code> logs for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-03 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-15 23:31</div>
+            <div class="timeline-body"><p>Closing due to lack of follow-up, but let me know if you have other questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-15 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-15 23:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:37 UTC
+    </footer>
+</body>
+</html>

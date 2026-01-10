@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty environment variables e.g. `UV_FROZEN=''` is treated as an error, not unset - astral-sh/uv #9021</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Empty environment variables e.g. `UV_FROZEN=''` is treated as an error, not unset</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9021">#9021</a>
+        opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a>
+        on 2024-11-11 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-11 16:29</div>
+            <div class="timeline-body"><p>Running</p>
+<pre><code class="language-bash">UV_FROZEN='' uv add django --no-sync
+</code></pre>
+<p>gives:</p>
+<pre><code>error: invalid value '' for '--frozen': value was not a boolean
+
+For more information, try '--help'.
+</code></pre>
+<p>I'm using <code>uv 0.4.29 (85f9a0d0e 2024-10-30)</code>, I also tried on <code>uv 0.5.1 (f399a5271 2024-11-08)</code> and got the same behaviour.</p>
+<p>Generally empty environment variables are treat as equivalent to them not being set, so I can use an empty env var as &quot;unset&quot;.</p>
+<p>In my case, I'm trying to unset <code>UV_FROZEN</code> in one github action job.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 16:30</div>
+            <div class="timeline-body"><p>Can you share why you'd expect an empty environment variable to be treated as unset? Why not just unset the variable properly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 16:30</div>
+            <div class="timeline-body"><p>(We have updated some variables to treat an empty value as unset, but I'd like to understand the use-case better)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-11 16:32</div>
+            <div class="timeline-body"><p>TIL: if you hit enter while writing an issue title, it creates an empty issue.</p>
+<p>I've now added more details.</p>
+<p>(and I'm upgrading uv just in case it's fixed on newer versions, give me a minute...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2024-11-11 16:34</div>
+            <div class="timeline-body"><blockquote>
+<p>(We have updated some variables to treat an empty value as unset, but I'd like to understand the use-case better)</p>
+</blockquote>
+<p>https://github.com/pydantic/pydantic/pull/10815 - I want to unset <code>UV_FROZEN</code> in the <code>test-plugin</code> job, to avoid the errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-11-12 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-11-12 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2025-01-22 15:33</div>
+            <div class="timeline-body"><p>This is getting me again, and it's really ugly to work around!</p>
+<p>@charliermarsh any chance you can respect and empty string as equivalent to the env var being unset for all boolean variables (or just <code>UV_FROZEN</code> as that's the one that's kiling me).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2025-01-22 16:28</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/9021 where I'm try to run</p>
+<pre><code class="language-bash">uv run --resolution lowest-direct coverage run -m pytest
+</code></pre>
+<p>But for that to work, I need to unset <code>UV_FROZEN</code> which is otherwise set globally in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pydantic/pydantic-ai/pulls/743.html">pydantic/pydantic-ai#743</a> on 2025-01-22 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-01-23 17:11</div>
+            <div class="timeline-body"><blockquote>
+<p>it's really ugly to work around</p>
+</blockquote>
+<p>How is it &quot;really ugly&quot; to do <code>UV_FROZEN=false</code> or <code>UV_FROZEN=0</code> instead of <code>UV_FROZEN=''</code> somewhere?</p>
+<p>(Maybe you didn't know that uv is parsing bool-like values here?)</p>
+<p>Even if the above were not possible, you can unset an environment variable as a one liner with <code>env -u UV_FROZEN uv ...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2025-01-23 17:45</div>
+            <div class="timeline-body"><p>If that works, it's not ugly, but I thought it didn't.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:29 UTC
+    </footer>
+</body>
+</html>

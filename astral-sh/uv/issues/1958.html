@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include linehaul information in user agent - astral-sh/uv #1958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include linehaul information in user agent</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1958">#1958</a>
+        opened by <a href="https://github.com/pradyunsg">@pradyunsg</a>
+        on 2024-02-25 00:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-02-25 00:12</div>
+            <div class="timeline-body"><p>This is effectively a request to include download-related information available to PyPI when interacting with the index server, so that informtion can used to make ecosystem-wide decision (by querying said information via https://warehouse.pypa.io/api-reference/bigquery-datasets.html#download-statistics-table).</p>
+<p>https://github.com/pypi/linehaul-cloud-function is the PyPI side implementation. https://github.com/pypa/pip/blob/24.0/src/pip/_internal/network/session.py#L109 is the pip side implementation.</p>
+<p>This data powers decision making such as https://pypistats.org/packages/<strong>all</strong> (and similar sites), https://mayeut.github.io/manylinux-timeline/ and a few ad-hoc queries to determine usage patterns across the ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 00:27</div>
+            <div class="timeline-body"><p>Perfect, thanks @pradyunsg!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-02-25 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 00:30</div>
+            <div class="timeline-body"><p>Everything here looks pretty straightforward (and we should already have it all available), perhaps with the exception of <code>setuptools_version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-02-25 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-02-25 00:56</div>
+            <div class="timeline-body"><blockquote>
+<p>perhaps with the exception of setuptools_version</p>
+</blockquote>
+<p>Yea, skipping values you don't have readily available seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-25 03:27</div>
+            <div class="timeline-body"><p>Last I benchmarked, construction of user agent was surprisingly expensive in pip, took like 200ms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-25 03:31</div>
+            <div class="timeline-body"><p>Hm, looks like it might cost up to 600ms in a representative environment:</p>
+<pre><code>λ hyperfine -w 3 'python -c &quot;import pkg_resources; from pip._internal.network.session import *; user_agent()&quot;' 'python -c &quot;import pkg_resources; from pip._internal.network.session import *&quot;'
+Benchmark 1: python -c &quot;import pkg_resources; from pip._internal.network.session import *; user_agent()&quot;
+  Time (mean ± σ):      1.423 s ±  0.031 s    [User: 0.677 s, System: 0.365 s]
+  Range (min … max):    1.388 s …  1.482 s    10 runs
+ 
+Benchmark 2: python -c &quot;import pkg_resources; from pip._internal.network.session import *&quot;
+  Time (mean ± σ):     854.2 ms ±   6.0 ms    [User: 414.9 ms, System: 198.2 ms]
+  Range (min … max):   843.4 ms … 862.7 ms    10 runs
+</code></pre>
+<p>If pip were to skip getting setuptools version then pip's user agent construction costs 190ms for me. Next most expensive thing is rustc version, which wouldn't be horrible to cache. I guess off topic for this tracker, but Pradyun let me know if pip is interested in PRs here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rustup/issues/2626.html">rust-lang/rustup#2626</a> on 2024-02-25 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-25 14:15</div>
+            <div class="timeline-body"><p>I've asked upstream about <code>rustc</code> startup time: https://github.com/rust-lang/rustup/issues/2626#issuecomment-1962952569. Is there a page i can link with rust version stats to motivate this use case?</p>
+<blockquote>
+<p>Next most expensive thing is rustc version, which wouldn't be horrible to cache.</p>
+</blockquote>
+<p>The entrypoint is a shim, so afaik you can't cache it reliably (i'm happy to query the default rustc from a different place though).</p>
+<p>Is the setuptools information from uv relevant given that we don't install it be default, and always use the latest (compatible) version in build envs?</p>
+<p>Except for the <code>rustc</code> call and the (base) interpreter metadata call we cache already, i think we should be able to do without any subprocess calls, i.e. fast enough it's not noticeable on profiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-02-25 14:19</div>
+            <div class="timeline-body"><p>In general I would say that the setuptools information is much less useful than it used to be: projects who need a newer setuptools can now reliably depend on it with <code>build-system.requires</code>.</p>
+<p>What do you mean a page with rust version stats? Are you asking where you can see the stats from PyPI? They're all available in BigQuery. Here's an example of the type of analysis I do with it:
+<a href="https://github.com/astral-sh/uv/files/14396641/pyca_cryptography_rage_dashboard.1.pdf">pyca_cryptography_rage_dashboard (1).pdf</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-25 14:19</div>
+            <div class="timeline-body"><p>Let’s just stick to what we have access to (I’d like to omit rustc and setuptools for now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-25 14:37</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you mean a page with rust version stats? Are you asking where you can see the stats from PyPI? They're all available in BigQuery. Here's an example of the type of analysis I do with it:
+<a href="https://github.com/astral-sh/uv/files/14396641/pyca_cryptography_rage_dashboard.1.pdf">pyca_cryptography_rage_dashboard (1).pdf</a></p>
+</blockquote>
+<p>Yes, something like <a href="https://pypistats.org/packages/__all__"><strong>all</strong></a> but including the rust version. Getting the data from bigquery is quite the overhead if someone wants just simple caniuse.com style check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-02-25 14:38</div>
+            <div class="timeline-body"><p>Ah. I'm not aware of any website that displays rust versions for all of PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1977.html">astral-sh/uv#1977</a> on 2024-02-26 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rust/issues/121631.html">rust-lang/rust#121631</a> on 2024-02-26 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2136.html">astral-sh/uv#2136</a> on 2024-03-03 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-03-14 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2493.html">astral-sh/uv#2493</a> on 2024-03-17 03:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-03-18 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypi/linehaul-cloud-function/pulls/162.html">pypi/linehaul-cloud-function#162</a> on 2024-03-25 12:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

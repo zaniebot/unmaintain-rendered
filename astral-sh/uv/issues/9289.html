@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple conflicting extras installed when using explicit index assignments - astral-sh/uv #9289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiple conflicting extras installed when using explicit index assignments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9289">#9289</a>
+        opened by <a href="https://github.com/anaoum">@anaoum</a>
+        on 2024-11-20 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/anaoum">@anaoum</a> on 2024-11-20 18:59</div>
+            <div class="timeline-body"><p>When conflicting extra groups share a dependant, both extra groups seem to be installed.</p>
+<p>Consider the following example adapted from the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">docs</a>:</p>
+<pre><code class="language-pyproject.toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch&gt;=2.5.1&quot;,
+  &quot;torchvision&gt;=0.20.1&quot;,
+]
+cu124 = [
+  &quot;torch&gt;=2.5.1&quot;,
+  &quot;torchvision&gt;=0.20.1&quot;,
+]
+metrics = [
+  &quot;torchmetrics&gt;=1.2.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>The key difference is the additional extra <code>metrics</code> that includes the <code>torchmetrics</code> package that depends on <code>torch</code>.</p>
+<p>When I lock and sync both cpu and metrics extras, I get multiple versions of torch installed:</p>
+<pre><code class="language-bash">$ uv sync --extra cpu --extra metrics
+Resolved 34 packages in 1ms
+Uninstalled 3 packages in 199ms
+Installed 3 packages in 1.10s
+ ~ torch==2.5.1
+ ~ torch==2.5.1+cpu
+ ~ torch==2.5.1+cu124
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-20 19:03</div>
+            <div class="timeline-body"><p>Interesting, thanks. I don't think the extra indexes are relevant, since you can reproduce with:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+foo = [
+  &quot;idna==3.10&quot;,
+]
+bar = [
+  &quot;idna==3.9&quot;,
+]
+baz = [
+  &quot;anyio&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;foo&quot; },
+    { extra = &quot;bar&quot; },
+  ],
+]
+</code></pre>
+<p>From there, <code>uv tree</code> gives you:</p>
+<pre><code>project v0.1.0
+├── idna v3.9 (extra: bar)
+├── anyio v4.6.2.post1 (extra: baz)
+│   ├── idna v3.9
+│   ├── idna v3.10
+│   └── sniffio v1.3.1
+└── idna v3.10 (extra: foo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-20 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anaoum">@anaoum</a> on 2024-11-20 19:39</div>
+            <div class="timeline-body"><p>Thanks. It also happens if the two conflicting extra groups share the common dependant:</p>
+<pre><code class="language-pyproject.toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+foo = [
+  &quot;idna==3.10&quot;,
+  &quot;anyio&quot;,
+]
+bar = [
+  &quot;idna==3.9&quot;,
+  &quot;anyio&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;foo&quot; },
+    { extra = &quot;bar&quot; },
+  ],
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @charliermarsh on 2024-11-20 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9296.html">astral-sh/uv#9296</a> on 2024-11-21 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-21 12:17</div>
+            <div class="timeline-body"><p>I think i see a path to fixing this. I think it has two components:</p>
+<ul>
+<li>In <code>ResolverOutput::from_state</code> (and possibly also <code>marker_reachability</code>), generate <code>extra = &quot;...&quot;</code> markers from each <code>Resolution</code>'s conflicting groups, if they have them. Then apply those markers via intersection to each of the edges in that <code>Resolution</code>. So in Charlie's example above, that means the <code>idna==3.9</code> dependency would have a <code>extra == &quot;bar&quot;</code> marker and the <code>idna==3.10</code> dependency would have a <code>extra == &quot;foo&quot; or extra == &quot;baz&quot;</code> marker. Or something similar.</li>
+<li>Update <code>InstallTarget::to_resolution</code> in <code>uv-resolver/lock</code> to pass in extras when doing marker evaluation.</li>
+</ul>
+<p>One hiccup here is that this doesn't take groups into account, so we might not be able to reuse markers for this. We'll instead need an additional field to encode this extra/group inclusion logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-21 13:16</div>
+            <div class="timeline-body"><p>Working it out by hand, I think the conditional logic for each idna dependency in each of the three forks present in this example is:</p>
+<pre><code> idna==3.9: extra != &quot;foo&quot; and (extra == &quot;bar&quot; or extra == &quot;baz&quot;)
+idna==3.10: extra != &quot;bar&quot; and (extra == &quot;foo&quot; or extra == &quot;baz&quot;)
+idna==3.10: (extra != &quot;foo&quot; and extra != &quot;bar&quot;) and extra == &quot;baz&quot;
+</code></pre>
+<p>Which combines to:</p>
+<pre><code> idna==3.9: extra != &quot;foo&quot; and (extra == &quot;bar&quot; or extra == &quot;baz&quot;)
+idna==3.10: (extra != &quot;bar&quot; and (extra == &quot;foo&quot; or extra == &quot;baz&quot;))
+            or ((extra != &quot;foo&quot; and extra != &quot;bar&quot;) and extra == &quot;baz&quot;)
+</code></pre>
+<p>And simplifies to:</p>
+<pre><code> idna==3.9: extra != &quot;foo&quot; and (extra == &quot;bar&quot; or extra == &quot;baz&quot;)
+idna==3.10: (extra != &quot;bar&quot; and extra == &quot;baz&quot;) or (extra != &quot;bar&quot; and extra == &quot;foo&quot;)
+</code></pre>
+<p>Note that because of how extras work, the above notation is quite misleading. It's more clearly written like this:</p>
+<pre><code> idna==3.9: &quot;foo&quot; not in extras and (&quot;bar&quot; in extras or &quot;baz&quot; in extras)
+idna==3.10: (&quot;bar&quot; not in extras and &quot;baz&quot; in extras) or (&quot;bar&quot; not in extras and &quot;foo&quot; in extras)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9306.html">astral-sh/uv#9306</a> on 2024-11-21 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9307.html">astral-sh/uv#9307</a> on 2024-11-21 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9334.html">astral-sh/uv#9334</a> on 2024-11-21 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9353.html">astral-sh/uv#9353</a> on 2024-11-22 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9365.html">astral-sh/uv#9365</a> on 2024-11-22 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9370.html">astral-sh/uv#9370</a> on 2024-11-22 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9386.html">astral-sh/uv#9386</a> on 2024-11-23 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9469.html">astral-sh/uv#9469</a> on 2024-11-27 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9498.html">astral-sh/uv#9498</a> on 2024-11-28 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9546.html">astral-sh/uv#9546</a> on 2024-12-03 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9640.html">astral-sh/uv#9640</a> on 2024-12-04 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9734.html">astral-sh/uv#9734</a> on 2024-12-09 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-12-10 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stfc/janus-core/pulls/358.html">stfc/janus-core#358</a> on 2024-12-10 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:35 UTC
+    </footer>
+</body>
+</html>

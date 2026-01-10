@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run --with` can't find installed ruff in subprocess - astral-sh/uv #14874</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run --with` can't find installed ruff in subprocess</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14874">#14874</a>
+        opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a>
+        on 2025-07-24 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-07-24 16:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following Python script <code>test.py</code>:</p>
+<pre><code>import subprocess
+import sys
+subprocess.run([sys.executable, &quot;-m&quot;, &quot;ruff&quot;, &quot;-h&quot;], check=True)
+</code></pre>
+<p>fails when run with this invocation:</p>
+<pre><code>❯ uv run -p python3.13 --with ruff test.py
+</code></pre>
+<p>The error message is this:</p>
+<pre><code>❯ uv run -p python3.13 --with ruff test.py
+Installed 1 package in 3ms
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/charles/.cache/uv/archive-v0/sn6gCRNvu9pVNdW-aD0pf/lib/python3.13/site-packages/ruff/__main__.py&quot;, line 81, in &lt;module&gt;
+    ruff = find_ruff_bin()
+  File &quot;/Users/charles/.cache/uv/archive-v0/sn6gCRNvu9pVNdW-aD0pf/lib/python3.13/site-packages/ruff/__main__.py&quot;, line 77, in find_ruff_bin
+    raise FileNotFoundError(scripts_path)
+FileNotFoundError: /Users/charles/.cache/uv/builds-v0/.tmpaiwJLs/bin/ruff
+Traceback (most recent call last):
+  File &quot;/Users/charles/src/uv-run-test/test.py&quot;, line 4, in &lt;module&gt;
+    subprocess.run([sys.executable, &quot;-m&quot;, &quot;ruff&quot;, &quot;-h&quot;], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py&quot;, line 577, in run
+    raise CalledProcessError(retcode, process.args, output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/Users/charles/.cache/uv/builds-v0/.tmpaiwJLs/bin/python', '-m', 'ruff', '-h']' returned non-zero exit status 1.
+</code></pre>
+<p>It's certainly a wrinkle that I'm trying to launch ruff via a subprocess of the current python, but it also feels like it should work? I'm not sure if this is a bug or me holding it wrong.</p>
+<p>Thanks for reading!</p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.0 (0b2357294 2025-07-17)</p>
+<h3>Python version</h3>
+<p>Python 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charlesnicholson on 2025-07-24 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-07-24 16:41</div>
+            <div class="timeline-body"><p>Also, sorry- i'm not sure if this is a <code>uv</code> bug or a <code>ruff</code> bug but I figured I'd start with <code>uv</code> because of the subprocess approach I'm trying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 17:20</div>
+            <div class="timeline-body"><p>I assume this is an interaction with the environment layering we do for <code>--with</code> requirements. I presume it's fixable, but I'll have to see where it's going wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-07-24 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-07-24 19:02</div>
+            <div class="timeline-body"><p>Sorry, forgot to mention: uv 0.5.23 does support this use case, so if it's an intended feature then this might be a regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 20:02</div>
+            <div class="timeline-body"><p>This looks like a regression from 0.8</p>
+<pre><code>❯ uvx uv@0.7 run --with ruff python -c 'import subprocess, sys; subprocess.run([sys.executable, &quot;-m&quot;, &quot;ruff&quot;])'
+Installed 1 package in 7ms
+Ruff: An extremely fast Python linter and code formatter.
+
+...
+
+❯ uvx uv@0.7.22 run --with ruff python -c 'import subprocess, sys; subprocess.run([sys.executable, &quot;-m&quot;, &quot;ruff&quot;])'
+Installed 1 package in 8ms
+Installed 1 package in 2ms
+Ruff: An extremely fast Python linter and code formatter.
+
+...
+
+❯ uvx uv@0.8 run --with ruff python -c 'import subprocess, sys; subprocess.run([sys.executable, &quot;-m&quot;, &quot;ruff&quot;])'
+Installed 1 package in 8ms
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/zb/.cache/uv/archive-v0/t9IrbjSm57DWh1Dy5qrYt/lib/python3.13/site-packages/ruff/__main__.py&quot;, line 81, in &lt;module&gt;
+    ruff = find_ruff_bin()
+  File &quot;/Users/zb/.cache/uv/archive-v0/t9IrbjSm57DWh1Dy5qrYt/lib/python3.13/site-packages/ruff/__main__.py&quot;, line 77, in find_ruff_bin
+    raise FileNotFoundError(scripts_path)
+FileNotFoundError: /Users/zb/.cache/uv/builds-v0/.tmp3PcDUA/bin/ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14877.html">astral-sh/uv#14877</a> on 2025-07-24 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-24 20:26</div>
+            <div class="timeline-body"><p>Feels like this is partly just a result of Ruff's limited path discovery. Unsure if it should be fixed in uv, hmm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 20:34</div>
+            <div class="timeline-body"><p>Yeah I'm not sure either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-07-30 19:38</div>
+            <div class="timeline-body"><p>FWIW we just worked around this via</p>
+<pre><code>./uv venv -p ${{env.OUR_PYTHON_VERSION}} out/venv
+./uv pip install -p out/venv/bin/python $(grep '^ruff' build/constraints-linux.txt)
+</code></pre>
+<p>before running our script as a separate command. Not quite as elegant as a <code>./uv run --with</code> one-liner but whatevs. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2025-10-23 06:51</div>
+            <div class="timeline-body"><p>I also encountered this today. As explained in Discord you can easily reproduce like so:</p>
+<pre><code>❯ docker run --rm -it ghcr.io/astral-sh/uv:debian bash
+$ git clone -qqq https://github.com/ofek/dotslash-python &amp;&amp; cd dotslash-python
+$ DOTSLASH_VERSION=&quot;v0.5.8&quot; uv run --with pytest python -c &quot;import shutil,sys,sysconfig;print('proj bin',shutil.which('dotslash'));print('dep bin',shutil.which('pyte
+st'));print(f'{sysconfig.get_path('scripts')=}');print(f'{sysconfig.get_path('scripts', vars={'base': sys.base_prefix})=}')&quot;
+</code></pre>
+<p>I get the following output, showing that the project binary gets placed at a different path than the one used for dependencies and <code>sysconfig</code> appears to only have knowledge of the latter:</p>
+<pre><code>proj bin /dotslash-python/.venv/bin/dotslash
+dep bin /root/.cache/uv/builds-v0/.tmpd8mffh/bin/pytest
+sysconfig.get_path('scripts')='/root/.cache/uv/builds-v0/.tmpd8mffh/bin'
+sysconfig.get_path('scripts', vars={'base': sys.base_prefix})='/usr/bin'
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

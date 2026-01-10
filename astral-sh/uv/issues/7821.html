@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environments and dependency version specifiers don't work with workspaces - astral-sh/uv #7821</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Environments and dependency version specifiers don't work with workspaces</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7821">#7821</a>
+        opened by <a href="https://github.com/chadrik">@chadrik</a>
+        on 2024-09-30 22:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chadrik">@chadrik</a> on 2024-09-30 22:30</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I ran into an issue with locking and version specifiers similar to https://github.com/astral-sh/uv/issues/4668 and https://github.com/astral-sh/uv/issues/4669, but the fix there of creating environments for different python versions does not work with workspaces.</p>
+<p>Here's how I reproduced this.</p>
+<p>I started with this pyproject.toml and confirmed that it works with uv==0.4.17</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.7&quot;
+dependencies = [
+    &quot;types-psutil==6.0.0.20240901 ; python_version &gt;= '3.8'&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+environments = [&quot;python_version &lt; '3.8'&quot;, &quot;python_version &gt;= '3.8'&quot;]
+</code></pre>
+<pre><code>$ uv lock
+Using CPython 3.8.19 interpreter at: /usr/local/opt/python@3.8/bin/python3.8
+Resolved 2 packages in 3ms
+</code></pre>
+<p>Note that this requires the <code>tool.uv.environment</code> setting recommended in https://github.com/astral-sh/uv/issues/4668</p>
+<p>Next I setup my repo using workspaces, with a folder structure like this:</p>
+<pre><code>./
+  project-foo/
+    pyproject.toml
+  pyproject.toml
+</code></pre>
+<p>The root pyproject.toml looks like this:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [
+    &quot;project-foo&quot;,
+]
+
+[tool.uv.sources]
+foo = { workspace = true }
+
+[tool.uv]
+environments = [&quot;python_version &lt; '3.8'&quot;, &quot;python_version &gt;= '3.8'&quot;]
+</code></pre>
+<p>The child looks like this (same as before but without the <code>uv.tool.environment</code> setting):</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.7&quot;
+dependencies = [
+    &quot;types-psutil==6.0.0.20240901 ; python_version &gt;= '3.8'&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+environments = [&quot;python_version &lt; '3.8'&quot;, &quot;python_version &gt;= '3.8'&quot;]
+</code></pre>
+<p>Locking from the root of the workspace fails:</p>
+<pre><code>$ uv lock
+Using CPython 3.8.19 interpreter at: /usr/local/opt/python@3.8/bin/python3.8
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version (&gt;=3.7) does not satisfy Python&gt;=3.8 and your project depends on types-psutil{python_full_version
+      &gt;= '3.8'}==6.0.0.20240901, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>I made a repo to demonstrate:  https://github.com/chadrik/uv-tests</p>
+<p>These are some PRs mentioned that could be related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/4712</li>
+<li>https://github.com/astral-sh/uv/pull/6143</li>
+</ul>
+<p>Is there a way to indicate that a dependency simply should not be installed on certain versions of python?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-30 22:36</div>
+            <div class="timeline-body"><p>Thanks. That repo is 404ing for me -- any chance the URL is not quite right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-30 23:02</div>
+            <div class="timeline-body"><p>(Working now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-30 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-01 00:16</div>
+            <div class="timeline-body"><p>Ah sorry. You need to add a <code>[project]</code> table to the root <code>pyproject.toml</code>:</p>
+<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+index 504c40f..f0b42da 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,3 +1,7 @@
++[project]
++name = &quot;root&quot;
++version = &quot;0.0.1&quot;
++
+ [tool.uv.workspace]
+ members = [
+     &quot;project-foo&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-01 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-01 00:19</div>
+            <div class="timeline-body"><p>I'll lift this restriction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7824.html">astral-sh/uv#7824</a> on 2024-10-01 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-01 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-01 00:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:58 UTC
+    </footer>
+</body>
+</html>

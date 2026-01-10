@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem with window/dialog focus and tkinter - astral-sh/uv #10536</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Problem with window/dialog focus and tkinter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10536">#10536</a>
+        opened by <a href="https://github.com/brot">@brot</a>
+        on 2025-01-12 08:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brot">@brot</a> on 2025-01-12 08:42</div>
+            <div class="timeline-body"><p>This is somehow a followup to #7036</p>
+<p>When using my homebrew <a href="https://formulae.brew.sh/formula/python@3.13#default">python</a>+<a href="https://formulae.brew.sh/formula/python-tk@3.10#default">python-tk</a> installation everything works fine, but when I use a uv installed python version, tkinter is basically working, but there is a problem with dialog/window focus.</p>
+<p>When I use the homebrew python+python-tk installation and when using &quot;filedialog.askopenfilename&quot;, the file dialog is opened in the foreground and immediately visible to the user</p>
+<p>With the uv installed python version the file dialog stays in the background and a warning is printed too
+<code>python3[38524:799162] +[IMKClient subclass]: chose IMKClient_Modern</code></p>
+<p>This is my small test script to easily reproduce this behavior</p>
+<pre><code class="language-python">from tkinter import Tk
+from tkinter import filedialog
+
+root = Tk()
+root.withdraw()  # Hide the main window
+file_path = filedialog.askopenfilename()
+print(file_path)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 02:37</div>
+            <div class="timeline-body"><p>This may be a better fit for the <code>python-build-standalone</code> repo. I doubt there's anything to fix in uv here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 20:09</div>
+            <div class="timeline-body"><p>I wonder if this is https://github.com/astral-sh/python-build-standalone/issues/296</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-02-04 15:44</div>
+            <div class="timeline-body"><p>This issue is seen with <code>matplotlib</code> too</p>
+<pre><code>uvx -p 3.13 --with matplotlib python -c &quot;import matplotlib.pyplot as plt; plt.plot(); plt.show()&quot;
+</code></pre>
+<pre><code>2025-02-04 15:39:59.140 python[72419:11950539] +[IMKClient subclass]: chose IMKClient_Modern
+2025-02-04 15:39:59.140 python[72419:11950539] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+</code></pre>
+<p><code>uv 0.5.27 - macOS 15.2 arm64</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-02-04 23:09</div>
+            <div class="timeline-body"><p>Not reproducable on my other Mac running <code>macOS 13.6.5</code>. Further digging suggests it could be a Sequoia bug. See https://discussions.apple.com/thread/255761734 and https://github.com/zegervdv/homebrew-zathura/issues/129#issuecomment-2360382975</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 23:45</div>
+            <div class="timeline-body"><p>Oh interesting. Thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-02-05 10:13</div>
+            <div class="timeline-body"><p>@brot Am I right in saying your issue was more about the tkinter window focus? And the emitting of <code>python3[38524:799162] +[IMKClient subclass]: chose IMKClient_Modern</code> in the terminal was just something that happened as well? Maybe they are related I suppose.</p>
+<p>My issue was that my scripts which used <code>matplotlib</code> and <code>dearpygui</code> were working fine but emitting these logs on the terminal.</p>
+<pre><code>2025-02-04 15:39:59.140 python[72419:11950539] +[IMKClient subclass]: chose IMKClient_Modern
+2025-02-04 15:39:59.140 python[72419:11950539] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+</code></pre>
+<p>So I searched for those keywords in the issue tracker here and found your issue. But it seems that these logs are some sort of bug with macOS Sequoia which affects other frameworks as well (not just Python).</p>
+<p>But @brot maybe your issue with tkinter window focus is something different, I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-08-08 18:24</div>
+            <div class="timeline-body"><p>FWIW, I used to get those IMK log messages on the terminal in a completely unrelated non-Python app I have (written in Swift). I just noticed that they're gone. I'm running Sequoia 15.5, perhaps a recent OS update fixed it?</p>
+<p>For the rest of this issue - are you saying that the bug is that the dialog box pops up in the background and doesn't receive focus? (This would be separate from the issue in astral-sh/python-build-standalone#296 where, even with focus, some mouse clicks are dropped but some aren't.) I think I've seen that myself, I didn't realize that was a python-build-standalone vs. other Pythons quirk but that's helpful. I can dig at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @geofft by @geofft on 2025-08-08 18:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:04 UTC
+    </footer>
+</body>
+</html>

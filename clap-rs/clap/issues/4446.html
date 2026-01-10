@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[clap_complete] support for guessing the shell from the environment. - clap-rs/clap #4446</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[clap_complete] support for guessing the shell from the environment.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4446">#4446</a>
+        opened by <a href="https://github.com/tmccombs">@tmccombs</a>
+        on 2022-11-03 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-11-03 07:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.18</p>
+<h3>Describe your use case</h3>
+<p>Currently it is up to the caller to determine which  &quot;generator&quot; to use to generate completions in clap_complete.</p>
+<p>In many cases it is possible to determine the user's current shell from the SHELL environment variable. It would be nice if the functionality to determine which <code>Shell</code> to use was provided by clap_complete so that it doesn't have to be re-implemented across multiple consumer projects of the crate.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Something along the lines of what fd does:</p>
+<pre><code class="language-rust">#[cfg(feature = &quot;completions&quot;)]
+fn guess_shell() -&gt; anyhow::Result&lt;Shell&gt; {
+    let env_shell = std::env::var_os(&quot;SHELL&quot;).map(PathBuf::from);
+    if let Some(shell) = env_shell
+        .as_ref()
+        .and_then(|s| s.file_name())
+        .and_then(|s| s.to_str())
+    {
+        shell
+            .parse::&lt;Shell&gt;()
+            .map_err(|_| anyhow!(&quot;Unknown shell {}&quot;, shell))
+    } else {
+        // Assume powershell on windows
+        #[cfg(windows)]
+        return Ok(Shell::PowerShell);
+        #[cfg(not(windows))]
+        return Err(anyhow!(&quot;Unable to get shell from environment&quot;));
+    }
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @tmccombs on 2022-11-03 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4447.html">clap-rs/clap#4447</a> on 2022-11-03 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-03 14:02</div>
+            <div class="timeline-body"><p>A previous take on this: #4296</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-11-03 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-03 14:06</div>
+            <div class="timeline-body"><p>Closing as duplicate of #4300</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-03 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:15 UTC
+    </footer>
+</body>
+</html>

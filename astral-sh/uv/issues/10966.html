@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose which scripts entrypoints are installed in the virtual environment when installing packages - astral-sh/uv #10966</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Choose which scripts entrypoints are installed in the virtual environment when installing packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10966">#10966</a>
+        opened by <a href="https://github.com/Coruscant11">@Coruscant11</a>
+        on 2025-01-26 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2025-01-26 12:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello! 🙂</p>
+<p>While working with environment encountering issues with dependencies scripts, (in my case, having <code>httpx</code> installing a <code>httpx.exe</code> on Windows, raising some issues like #9531), I was wondering:</p>
+<p>In fact, and I probably think for most people this is the case, I was using <code>httpx</code> as a library. I just wanted to call its code.
+However, I do not need <a href="https://github.com/encode/httpx/blob/master/pyproject.toml#L60">the entrypoint included</a>.
+Could we avoid, if we want, installing a script (<code>.exe</code> on windows)?
+Or for example, choose which script we want to allow inside our virtual environment?</p>
+<p>In my case, I encounter the issue while using <code>uv tool install</code>. Maybe in the case of <code>uv tool</code> we could want only one command of the installed package for example.</p>
+<p>An option like choosing exactly the name of the scripts allowed for example would be great. For example, what if I would want to install <code>uv</code> without <code>uvx</code>?
+Is it an option that could be available in every install related commands or only this one? (Maybe we want to limit where it is since this is most probably not defined in a PEP).</p>
+<p>What is your opinion about it? I don't really know if this kind of option is a good idea in fact, since of course you have a better global picture of pip related constraints than me.</p>
+<p>Cheers!</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Coruscant11 on 2025-01-26 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a `--no-script` or `--with-script` to `tool install` and maybe `pip install` and other similar commands" to "Add a `--no-script`, `--with-script` like commands to `tool install` and maybe `pip install` and other similar commands" by @Coruscant11 on 2025-01-26 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a `--no-script`, `--with-script` like commands to `tool install` and maybe `pip install` and other similar commands" to "Add `--no-script`, `--with-script` like commands to `tool install` and maybe `pip install` and other similar commands" by @Coruscant11 on 2025-01-26 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `--no-script`, `--with-script` like commands to `tool install` and maybe `pip install` and other similar commands" to "Choose which scripts entrypoints are installed in the virtual environment when installing packages" by @Coruscant11 on 2025-01-26 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-26 16:49</div>
+            <div class="timeline-body"><p>I think we want something like this for <code>uv tool install</code>. We could perhaps extend it to other interfaces. I worry a little about packages that expect their entrypoint to be available where removing it will break some functionality in the library, but it's hard to say if that's realistic or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2025-01-27 20:00</div>
+            <div class="timeline-body"><p>@zanieb Thanks for the quick answer!
+In my view, once you explicitly choose which scripts to enable, this shouldn't be an issue. If an executable is missing, it would be fairly straightforward to fix by simply enabling the required script. While the process may not be completely intuitive, we're dealing with a rather niche use case here, right? What do you think?</p>
+<p>Would you prefer to keep this task reserved for the maintainers, or would you welcome a pull request from me? (If I managed to do so 😜)
+Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 18:05</div>
+            <div class="timeline-body"><p>You could definitely try to implement it, but we should make sure we're on the same page about the interface first.</p>
+<p>How do you propose exposing this to users? e.g., <code>uv pip install --no-executable &lt;name&gt;</code> or <code>--no-bin &lt;name&gt;</code> seems fine, but.. how would this be exposed elsewhere? We'd also probably want <code>--no-bin-package &lt;package&gt;</code> to exclude all entrypoints for a package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2025-02-02 20:01</div>
+            <div class="timeline-body"><p>@zanieb Sorry for the late answer! And thanks for yours.</p>
+<blockquote>
+<p>but we should make sure we're on the same page about the interface first.</p>
+</blockquote>
+<p>Totally agree!
+I had exactly the first same idea as yours, with <code>--no-bin</code> and <code>--no-bin-package</code>.
+This was what I had in mind.
+This is also something that could be configurable from configuration file.</p>
+<p>I think that excluding packages is easier and safer than only choosing what will be installed. (We may forget some required one)</p>
+<p>I think I will try to play on my side, and then it will be easier to catch any missing parts regarding the interface.
+To be clear, I do not mind at all if you are not satisfied with the interface at the end! I just love writing some Rust and trying to contribute, so it will not be a waste of time at all on my side.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

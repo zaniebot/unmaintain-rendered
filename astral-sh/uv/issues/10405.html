@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specifying conflicts a workspace dependency with conflicting extras? - astral-sh/uv #10405</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specifying conflicts a workspace dependency with conflicting extras?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10405">#10405</a>
+        opened by <a href="https://github.com/shawnohare">@shawnohare</a>
+        on 2025-01-08 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shawnohare">@shawnohare</a> on 2025-01-08 19:08</div>
+            <div class="timeline-body"><h1># Description of Problem</h1>
+<p>Using <code>uv==0.5.16</code> I created a workspace dependency <code>runtimes</code> with conflicting extras <code>cow5</code> and <code>cow6</code> and specify the conflict in that package's <code>pyproject.toml</code>. I want to include <code>runtimes[cow6]</code> in the main <code>dependencies</code> group of an <code>app</code> package. However, it's unclear to me how to specify the conflict in <code>app/pyproject.toml</code>, as <code>uv sync</code> complains about an unconditional reference to the conflicting extra. I suspect this is potentially related to #10238?</p>
+<p>Below is a simple bash script that should create the packages and add the attempted conflict resolution.</p>
+<pre><code class="language-bash">rm -rf ./runtimes
+rm -rf ./app
+
+printf '[tool.uv.workspace]\nmembers = [&quot;*&quot;]' &gt; pyproject.toml
+uv init --lib runtimes
+uv add --package &quot;runtimes&quot; --optional &quot;cow5&quot; &quot;cowsay&lt;6&quot; --frozen
+uv add --package &quot;runtimes&quot; --optional &quot;cow6&quot; &quot;cowsay&gt;=6&quot; --frozen
+
+cat &lt;&lt; EOF &gt;&gt; runtimes/pyproject.toml
+
+[tool.uv]
+conflicts = [
+  [
+     { extra = &quot;cow5&quot;},
+     { extra = &quot;cow6&quot;},
+  ],
+]
+EOF
+# at this stage this works: uv sync --package &quot;runtimes&quot; --extra &quot;cow6&quot;
+
+
+uv init app
+uv add --package &quot;app&quot; &quot;runtimes[cow6]&quot; --frozen
+
+cat &lt;&lt; EOF &gt;&gt; app/pyproject.toml
+
+[tool.uv]
+conflicts = [
+  [
+     { package = &quot;runtimes&quot;, extra = &quot;cow5&quot;},
+     { package = &quot;runtimes&quot;, extra = &quot;cow6&quot;},
+  ],
+]
+EOF
+
+echo &quot;# runtimes/pyproject.toml&quot;
+cat runtimes/pyproject.toml
+echo &quot;# app/pyproject.toml&quot;
+cat app/pyproject.toml
+
+# errors
+uv sync
+</code></pre>
+<p>The &quot;library&quot; <code>pyproject.toml</code> is below.</p>
+<pre><code class="language-toml">
+# runtimes/pyproject.toml
+[project]
+name = &quot;runtimes&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+authors = [
+    { name = &quot;Shawn O'Hare&quot;, email = &quot;shawn@email.com&quot; }
+]
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cow5 = [
+    &quot;cowsay&lt;6&quot;,
+]
+cow6 = [
+    &quot;cowsay&gt;=6&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+conflicts = [
+  [
+     { extra = &quot;cow5&quot;},
+     { extra = &quot;cow6&quot;},
+  ],
+]
+</code></pre>
+<p>The &quot;app&quot; <code>pyproject.toml</code> is below.</p>
+<pre><code class="language-toml"># app/pyproject.toml
+[project]
+name = &quot;app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;runtimes[cow6]&quot;,
+]
+
+[tool.uv.sources]
+runtimes = { workspace = true }
+
+[tool.uv]
+conflicts = [
+  [
+     { package = &quot;runtimes&quot;, extra = &quot;cow5&quot;},
+     { package = &quot;runtimes&quot;, extra = &quot;cow6&quot;},
+  ],
+]
+</code></pre>
+<h2>Context and workaround</h2>
+<p>What I'm actually trying to do is utilize <code>uv</code> workspaces in a monorepo context where many common dependencies are pushed to dummy packages. Think pinned dependencies for machine learning runtimes, where individual projects (an app / inference endpoint) target a specific runtime. Originally I had thought to make a singular <code>runtimes</code> dummy package like the above, where runtime specific dependency sets are specified as optional dependencies. An obvious workaround for this particular situation is to simply make the various runtime targets separate dummy packages, but from a book-keeping perspective this seems sub-optimal (albeit very minor).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`#[arg(from_global)]` with `#[command(flatten)]` - clap-rs/clap #5525</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`#[arg(from_global)]` with `#[command(flatten)]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5525">#5525</a>
+        opened by <a href="https://github.com/abesto">@abesto</a>
+        on 2024-06-10 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/abesto">@abesto</a> on 2024-06-10 11:43</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.4</p>
+<h3>Describe your use case</h3>
+<p>Consider some global options, and some logic that reads multiple fields. Implementing this with arg-level <code>global</code> and <code>from_global</code> attributes quickly becomes clumsy. To avoid a lot of duplication, it's useful to group these args into a <code>struct</code> and place the shared logic in its <code>impl</code> (and <code>flatten</code> it into each subcommand).</p>
+<p>Currently (AFAICT) this requires one struct with <code>global</code>, and another with <code>from_global</code>, with the fields matched up manually, including documentation (both for <code>--help</code> and  IDEs on the <code>from_global</code> side). In the worst case, the <code>impl</code> also needs to be duplicated. This might look like this:</p>
+<pre><code class="language-rs">use clap::{Parser, Args, Subcommand};
+
+#[derive(Debug, Args)]
+struct GlobalOptions {
+    /// Some docs
+    #[arg(long, global = true)]
+    some_flag: bool,
+    
+    /// Some other docs
+    #[arg(long, global = true)]
+    some_other_flag: bool
+}
+impl GlobalOptions {
+    pub fn some_logic(self) -&gt; bool {
+        self.some_flag &amp;&amp; self.some_other_flag
+    }
+}
+
+/////////
+
+#[derive(Debug, Args)]
+struct FromGlobalOptions {
+    /// Some docs
+    #[arg(from_global)]
+    some_flag: bool,
+    
+    /// Some other docs
+    #[arg(from_global)]
+    some_other_flag: bool
+}
+impl FromGlobalOptions {
+    pub fn some_logic(self) -&gt; bool {
+        self.some_flag &amp;&amp; self.some_other_flag
+    }
+}
+
+////////
+
+#[derive(Debug, Parser)]
+struct TopLevelCommand {
+    #[command(flatten)]
+    global: GlobalOptions,
+    
+    #[command(subcommand)]
+    command: Command
+}
+
+#[derive(Debug, Subcommand)]
+enum Command {
+    SomeCommand {
+        #[command(flatten)]
+        global: FromGlobalOptions
+    }
+}
+</code></pre>
+<p>The <code>impl</code> can probably be deduplicated somehow, but even so: this is clumsy and prone to drift.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Pipe-dream: <code>#[command(flatten, from_global)]</code> would magically, transparently transform the <code>global</code> args into <code>from_global</code> variants. For extra strength pipe-dream: also magically share the <code>impl</code>. I suspect this would require hooking into the globals passing machinery of <code>clap</code> such that we don't generate a new <code>struct</code>, but instead use <code>GlobalOptions</code> in both sites (instead of doing this at an external-to-<code>clap</code>-machinery macro level).</p>
+<p>So the above example would become:</p>
+<pre><code class="language-rs">use clap::{Parser, Args, Subcommand};
+
+#[derive(Debug, Args)]
+struct GlobalOptions {
+
+    /// Some docs
+    #[arg(long, global = true)]
+    some_flag: bool,
+    
+    /// Some other docs
+    #[arg(long, global = true)]
+    some_other_flag: bool
+}
+impl GlobalOptions {
+    pub fn some_logic(self) -&gt; bool {
+        self.some_flag &amp;&amp; self.some_other_flag
+    }
+}
+
+////////
+
+#[derive(Debug, Parser)]
+struct TopLevelCommand {
+    #[command(flatten)]
+    global: GlobalOptions,
+    
+    #[command(subcommand)]
+    command: Command
+}
+
+#[derive(Debug, Subcommand)]
+enum Command {
+    SomeCommand {
+        #[command(flatten, from_global)]
+        global: GlobalOptions
+    }
+}
+</code></pre>
+<p>(And then <code>some_command.global.some_logic()</code> would be valid.)</p>
+<p>This is slightly preferable to manual arg-level <code>from_global</code>s even in the absence of an <code>impl</code> block, because of the automatically-synced doc comment between the <code>global</code> and <code>from_global</code> variant.</p>
+<h3>Alternatives, if applicable</h3>
+<p>This might be asking for too much magic, maybe? If so, a less magical but still-nice solution might be (possibly not part of <code>clap</code>?) a macro that generates both the <code>global</code> and the <code>from_global</code> variants (with doc comments and the <code>impl</code> copied). Maybe something like:</p>
+<pre><code class="language-rs">clap_globalize! {
+#[derive(Debug, Args)]
+struct GlobalOptions {
+    /// Some docs
+    #[arg(long)]
+    some_flag: bool,
+    
+    /// Some other docs
+    #[arg(long)]
+    some_other_flag: bool
+}
+impl GlobalOptions {
+    pub fn some_logic(self) -&gt; bool {
+        self.some_flag &amp;&amp; self.some_other_flag
+    }
+}
+}
+
+////////
+
+#[derive(Debug, Parser)]
+struct TopLevelCommand {
+    #[command(flatten)]
+    global: GlobalOptions,
+    
+    #[command(subcommand)]
+    command: Command
+}
+
+#[derive(Debug, Subcommand)]
+enum Command {
+    SomeCommand {
+        #[command(flatten)]
+        global: GlobalOptionsFromGlobal
+    }
+}
+</code></pre>
+<p>Or maybe:</p>
+<pre><code class="language-rs">#[derive(Debug, Args, FromGlobalsVariant(name = &quot;GlobalOptionsFromGlobal&quot;))]
+struct GlobalOptions {
+...
+}
+</code></pre>
+<p>This feels less neat, but hey, maybe it's the best we can get.</p>
+<h3>Additional Context</h3>
+<p>If instead the preferred way is an explicitly propagated <code>GlobalOptions</code> instance, and <code>from_global</code> is just kinda... there, then knowing that would also be good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @abesto on 2024-06-10 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-10 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Pipe-dream: #[command(flatten, from_global)] would magically, transparently transform the global args into from_global variants. For extra strength pipe-dream: also magically share the impl. I suspect this would require hooking into the globals passing machinery of clap such that we don't generate a new struct, but instead use GlobalOptions in both sites (instead of doing this at an external-to-clap-machinery macro level).</p>
+</blockquote>
+<p>The challenge with <code>#[command(flatten, from_global)]</code> is that proc macros can't talk to each other at compile time.  We'd have to implement this at runtime through the code we generate.  This requires expanding the <code>Args</code> trait with &quot;just one more parameter&quot; to change how the code is generated.  Unfortunately, we have a lot of these &quot;just one more&quot;s and are concerned about what principle is it ok to expand this and that its either a breaking change or a messy transition because people can hand implement these traits and the new functionality wouldn't work with them.</p>
+<p>Maybe one way of doing this is if <code>#[command(flatten, from_global)]</code> only invoked <code>FromArgMatches</code> and not <code>Args</code>.  This would require everything in the struct to be <code>from_global</code> or else they get ignored.</p>
+<blockquote>
+<p>This might be asking for too much magic, maybe? If so, a less magical but still-nice solution might be (possibly not part of clap?) a macro that generates both the global and the from_global variants (with doc comments and the impl copied). Maybe something like:</p>
+</blockquote>
+<p>Not thrilled with having macros for such specialized cases.  Also, personally I'm bothered when macros do anything besides generate a trait impl because its harder to understand what they do.</p>
+<blockquote>
+<p>If instead the preferred way is an explicitly propagated GlobalOptions instance, and from_global is just kinda... there, then knowing that would also be good!</p>
+</blockquote>
+<p>For myself, I find probably 75% (made up number) of times people discuss using globals, they are reaching for the wrong tool.  They want to &quot;DRY&quot; their code when there isn't an inherent requirement that all subcommands have a shared argument.  Instead, its only happenstance.  We have this problem with cargo itself today, e.g. <code>--offline</code> was made global but it is meaningless in some commands.</p>
+<p>Of the remaining uses for globals, I somewhat question the value of <code>from_global</code>.  It was added in #2026 but there was no discussion on use cases.  Without a good understanding of why the use case is important enough for built-in support, it makes it harder to smooth out the path in even more directions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2024-06-10 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2024-06-10 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abesto">@abesto</a> on 2024-06-10 15:03</div>
+            <div class="timeline-body"><p>Thank you for the quick and detailed response!</p>
+<p>I pinky-promise I do actually have a real actual use-case for global args, but that doesn't change the maths on ecosystem-wide cost/benefit.</p>
+<blockquote>
+<p>Of the remaining uses for globals, I somewhat question the value of from_global. It was added in https://github.com/clap-rs/clap/pull/2026 but there was no discussion on use cases. Without a good understanding of why the use case is important enough for built-in support, it makes it harder to smooth out the path in even more directions.</p>
+</blockquote>
+<p>That's good to know. As for the why: for me, it's mainly ergonomics. Slightly stronger: if all global propagation logic is handled by <code>clap</code>, then building some kinds of generic abstractions over <code>clap</code> becomes simpler. This <em>rapidly</em> devolves into &quot;how do you do subcommand dispatch with zero boilerplate&quot;, which is not a can of worms I wanna open right now (and possibly not a matter <code>clap</code> itself should take a stand on?)</p>
+<p>Given all of ^, it sounds like explicitly propagated <code>GlobalOptions</code> structs remain the way to go (until such time as someone comes around and provides a real compelling case for <code>from_global</code> and also solves OP).</p>
+<p>This is an outcome I can work with!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../thin-edge/thin-edge.io/pulls/3311.html">thin-edge/thin-edge.io#3311</a> on 2025-01-03 13:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Come up with a more declarative interface for adding simple checks to `Checker` - astral-sh/ruff #801</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Come up with a more declarative interface for adding simple checks to `Checker`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/801">#801</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-11-17 22:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 22:27</div>
+            <div class="timeline-body"><p>Right now, whenever we add a check to <code>Checker</code>, we have to expand the visit methods.</p>
+<p>It'd be nice if we could instead define a mapping from node kind to check methods (and the codes they correspond to), then add those methods to <code>Checker</code> ahead-of-time, and iterate over them -- or something like that, I haven't really explored any concrete options. Generally, what I'd like is for adding a check to be closer to &quot;adding a (node, code, method) pair to a list&quot; rather than expanding the <code>Checker</code>.</p>
+<p>There could also be a benefit here in that if we only add the methods we need ahead-of-time, maybe we can get a small performance gain by avoiding so many <code>self.settings.enabled</code> calls, but I'm not sure.</p>
+<p>I'd love proposals or ideas here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2022-11-17 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 22:29</div>
+            <div class="timeline-body"><p>The AST structure makes this kind of difficult, because each check function has a slightly different interface. It'd be nice if every <code>ExprKind</code> had its own struct, instead of being an enum, so we could define checks as functions on (<code>Checker</code>, <code>ExprKind</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-18 06:29</div>
+            <div class="timeline-body"><p>Just putting this up here.</p>
+<pre><code class="language-rust">pub trait AstPass {
+    fn check_classdef(&amp;self, checker: &amp;mut Checker, stmt: &amp;Stmt) {}
+    fn check_call(&amp;self, checker: &amp;mut Checker, expr: &amp;Expr) {}
+    ...
+}
+
+pub struct AbstractBaseClass;
+
+impl AstPass for AbstractBaseClass {
+    fn check_classdef(&amp;self, checker: &amp;mut Checker, stmt: &amp;Stmt) {
+         do_stuff();
+    }
+}
+
+pub struct UselessExpression;
+
+impl AstPass for UselessExpression {
+    fn check_functiondef(&amp;self, checker: &amp;mut Checker, stmt: &amp;Stmt) {
+        do_stuff();
+    }
+}
+</code></pre>
+<pre><code class="language-rust">let passes: Vec&lt;Box&lt;dyn AstPass&gt;&gt; = vec![
+    Box::new(flake8_bugbear::plugins::UselessExpressionInfo),
+    Box::new(flake8_bugbear::plugins::AbstractBaseClass),
+];
+
+// somewhere in the ast checker
+for pass in &amp;passes {
+    pass.check_classdef(self, &amp;stmt);
+}
+</code></pre>
+<p>Don't know enough about rust yet to understand any potential performance effect using trait objects here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 19:50</div>
+            <div class="timeline-body"><p>This isn't super actionable -- closing for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-14 19:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

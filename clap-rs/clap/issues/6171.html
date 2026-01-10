@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deferred loading of help strings - clap-rs/clap #6171</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deferred loading of help strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6171">#6171</a>
+        opened by <a href="https://github.com/andreacorbellini">@andreacorbellini</a>
+        on 2025-11-01 01:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andreacorbellini">@andreacorbellini</a> on 2025-11-01 01:02</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.51</p>
+<h3>Describe your use case</h3>
+<p>Help messages passed to <code>Command::about</code>, <code>help_template</code>, <code>override_usage</code>, and similar must be fully initialized strings. Those strings however may never be used by the program (in general, these strings are only ever used if the user specifies something like <code>--help</code>, or if an error occurs). For programs where generating those strings is relatively expensive (e.g. programs where help messages are translated in multiple languages), this can have a performance hit for all the invocations of the program.</p>
+<h3>Describe the solution you'd like</h3>
+<p>It would be great if methods like <code>about()</code> could accept a closure instead of a string. This could be done e.g by changing</p>
+<pre><code class="language-rust">pub fn about(self, about: impl IntoResettable&lt;StyledStr&gt;) -&gt; Command
+</code></pre>
+<p>to:</p>
+<pre><code class="language-rust">pub fn about(self, about: impl Into&lt;StyledStrOption&gt;) -&gt; Command
+</code></pre>
+<p>with:</p>
+<pre><code class="language-rust">pub enum StyledStrOption {
+    Default, // equivalent to the current Resettable::Reset
+    Value(StyledStr), // equvalent to the current Resettable::Value
+    Callback(Box&lt;dyn Fn() -&gt; StyledStr), // new functionality
+}
+</code></pre>
+<p>(The name of this enum can be improved.)</p>
+<h3>Alternatives, if applicable</h3>
+<p>Alternatively, if you don't want to expose a new type like <code>StyledStrOption</code>, we could have two distinct functions:</p>
+<pre><code class="language-rust">pub fn about(self, about: impl IntoResettable&lt;StyledStr&gt;) -&gt; Command
+pub fn with_about(self, about: impl Fn() -&gt; StyledStr) -&gt; Command
+</code></pre>
+<h3>Additional Context</h3>
+<p>This issue is a problem for example for Rust coreutils, where utilities like <code>cat</code> (which normally don't need to display any message) currently open, read, and parse translation files at each and every invocation, even if these translations are never used (see https://github.com/uutils/coreutils/issues/9103). If you run <code>cat /dev/null</code>, there should be no need to load any strings, but currently the Rust version of <code>cat</code> does load all relevant translation files to extract help strings and pass them to <code>clap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @andreacorbellini on 2025-11-01 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @andreacorbellini on 2025-11-01 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../uutils/coreutils/issues/9103.html">uutils/coreutils#9103</a> on 2025-11-01 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2025-11-03 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2025-11-03 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2025-11-03 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-03 20:56</div>
+            <div class="timeline-body"><p>Note that we do have <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.defer"><code>Command::defer</code></a> which likely could be combined with <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.mut_args"><code>Command::mut_args</code></a>  and <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.mut_subcommands"><code>Command::mut_subcommands</code></a>.  However, this still requires loading the initial command being parsed which, I'm assuming, will still run into your issue.</p>
+<p>This seems like a reasonable thing to do but I'm hesitant in doing it in this release, getting all the traits right for this not to break people, and would err on the side of doing it for clap v5.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreacorbellini">@andreacorbellini</a> on 2025-11-04 08:26</div>
+            <div class="timeline-body"><p>Yes I'm aware of <code>Command::defer()</code>, but the problem with <code>defer</code> is that it <em>always</em> runs <em>before</em> the options are parsed. What I would like to have is a way to generate help strings only if <code>--help</code> was specified, so this new functionality needs to run <em>after</em> option parsing is done, and after <code>--help</code> is detected.</p>
+<p>I agree that adding this functionality in a minor release may be risky. In fact, I made some attempts at implementing this feature and I think it's not possible to have it without breaking backwards compatibility:</p>
+<ul>
+<li>My first attempt was to implement <code>StyledStrOption</code> as shown above, with a <code>StyledStrOption::get()</code> method that calls the callback (if specified) and mutates <code>self</code> from <code>StyledStrOption::Callback</code> to <code>StyledStrOption::Value</code><ul>
+<li>The problem with this approach is that it requires <code>StyledStrOption::get()</code>  to be <code>&amp;mut self</code>, but this makes it impossible for methods like <code>Command::get_about()</code> (which take a <code>&amp;self</code>) to use <code>StyledStrOption::get()</code>.</li>
+<li>The problem could be solved by using interior mutability, so that <code>StyledStrOption::get()</code> can be <code>&amp;self</code>, but using interior mutability means that <code>Command</code> can no longer be <code>Sync</code>.</li>
+<li>We could use mutexes/locks inside <code>StyledStrOption</code> to have interior mutability and bring back <code>Sync</code>, but this would introduce a significant performance overhead, and would defeat the purpose of this feature.</li>
+<li>We could use a single mutex to protect a struct that contains all the <code>StyledStrOption</code> objects, but returning a reference from that struct requires unsafe code, and I see that unsafe code is explicitly forbidden in clap.</li>
+</ul>
+</li>
+<li>I suspect that adding a <code>Command::defer_help()</code> method that is similar to <code>defer()</code> but only gets invoked when <code>--help</code> is detected could be a backward-compatible way to do it, but I haven't experimented with it because it would involve a huge refactor. I also don't like the idea of using <code>defer()</code>/<code>defer_help()</code> because that would make the code much more verbose and scattered.</li>
+</ul>
+<p>Personally, the option that I prefer is to make <code>Command</code> not <code>Sync</code>. I might be wrong, but I don't think there are many use cases for sharing read-only <code>&amp;Command</code> references between threads, so I think it would be ok to drop <code>Sync</code> and not many people would notice. Those who do want to share references between threads can always wrap <code>Command</code> in a mutex or a rw lock: they would pay a small overhead, but that's expected when using threads.</p>
+<p>If any of that sounds acceptable I can contribute a draft PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-04 16:29</div>
+            <div class="timeline-body"><blockquote>
+<p>My first attempt was to implement StyledStrOption as shown above, with a StyledStrOption::get() method that calls the callback (if specified) and mutates self from StyledStrOption::Callback to StyledStrOption::Value</p>
+</blockquote>
+<p>Why do we need to transition from a <code>Callback</code> to a <code>Value</code>?  We don't generally call the help methods multiple times, so we could just leave it in the <code>Callback</code> state</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andreacorbellini">@andreacorbellini</a> on 2025-11-09 04:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Why do we need to transition from a <code>Callback</code> to a <code>Value</code>? We don't generally call the help methods multiple times, so we could just leave it in the <code>Callback</code> state</p>
+</blockquote>
+<p>Forgot to mention that: methods like <code>get_about()</code> return a <code>&amp;StyledStr</code>. A <code>Callback</code> in order to be as flexible as possible would need to return a <code>StyledStr</code>. If that return value is not stored anywhere, there's no reasonable way to return a reference to it (except leaking it so that it gets a <code>'static</code> lifetime, but I don't think that's an elegant solution).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-10 15:00</div>
+            <div class="timeline-body"><p>If we already need to make a breaking change, we can re-evaluate those getters</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler error with `ArgEnum` and multi-line doc comments on variants - clap-rs/clap #2975</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Compiler error with `ArgEnum` and multi-line doc comments on variants</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2975">#2975</a>
+        opened by <a href="https://github.com/graelo">@graelo</a>
+        on 2021-10-31 08:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/graelo">@graelo</a> on 2021-10-31 08:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.56.0 (09c42c458 2021-10-18)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.5</p>
+<h3>Minimal reproducible code</h3>
+<p>Content of <code>Cargo.toml</code>:</p>
+<pre><code class="language-rust">[package]
+name = &quot;repro&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2018&quot;
+
+[dependencies]
+clap = { version = &quot;3.0.0-beta.5&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+<p>Content of <code>src/main.rs</code>:</p>
+<pre><code class="language-rust">use clap::{ArgEnum, Parser};
+
+/// Some random enum
+#[derive(Debug, Clone, ArgEnum)]
+pub enum Field {
+    /// Variant1 doc
+    ///
+    /// The long_about doc that is not accepted anymore.
+    VariantOne,
+
+    /// Variant2 doc
+    VariantTwo,
+}
+
+/// Main configuration, parsed from command line.
+#[derive(Parser, Debug)]
+pub struct Config {
+    /// Field documentation
+    #[clap(arg_enum, rename_all = &quot;kebab-case&quot;, default_value = &quot;variant-one&quot;)]
+    pub field: Field,
+}
+
+fn main() {
+    let _ = Config::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-sh">cargo build
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The compiler returns the following error</p>
+<pre><code class="language-text">error[E0599]: no method named `long_about` found for struct `ArgValue` in the current scope
+ --&gt; src/main.rs:4:24
+  |
+4 | #[derive(Debug, Clone, ArgEnum)]
+  |                        ^^^^^^^ method not found in `ArgValue&lt;'_&gt;`
+  |
+  = note: this error originates in the derive macro `ArgEnum` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `repro` due to previous error
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>I <em>think</em> that <code>long_about</code> docs should not generate compiler errors, as it was the case before <code>beta.5</code>.</p>
+<h3>Additional Context</h3>
+<p>While migrating from <code>beta.2</code> and <code>beta.4</code> to <code>beta.5</code> I encountered misc issues I discussed with @epage: https://github.com/clap-rs/clap/discussions/2932</p>
+<h3>Debug Output</h3>
+<p>Exact same error as above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @graelo on 2021-10-31 08:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @epage on 2021-11-01 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`3.0.0-beta.5` does not allow `long_about` docs for enum variants." to "Compiler error with `ArgEnum` and multi-line doc comments on variants" by @epage on 2021-11-01 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-01 14:00</div>
+            <div class="timeline-body"><p>We don't do a good job of distinguishing between Args, Subcommands, ArgEnums, etc when generating method calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marjakm">@marjakm</a> on 2021-11-03 20:54</div>
+            <div class="timeline-body"><p>I think this should be fixed in master branch by my pull request:
+https://github.com/clap-rs/clap/pull/2916</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-03 22:44</div>
+            <div class="timeline-body"><p>You're right, I forgot about that having gone in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-11-03 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/graelo">@graelo</a> on 2021-11-03 23:42</div>
+            <div class="timeline-body"><p>Fantastic, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:41 UTC
+    </footer>
+</body>
+</html>

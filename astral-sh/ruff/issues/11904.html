@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Args:` section not correctly formatted when no description is provided - astral-sh/ruff #11904</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Args:` section not correctly formatted when no description is provided</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11904">#11904</a>
+        opened by <a href="https://github.com/antoinebrl">@antoinebrl</a>
+        on 2024-06-17 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/antoinebrl">@antoinebrl</a> on 2024-06-17 12:54</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I stumbled upon this bug when trying to add <code>pydocstyle</code> rules using the Google docstring convention. The <code>Args:</code> section is not correctly identified and therefore formatted when no description is provided. For example, this code</p>
+<pre><code class="language-python">class MyClass:
+    &quot;&quot;&quot;Short Summary.
+    
+    Long description.
+    &quot;&quot;&quot;
+
+    def __init__(self, a, b):
+        &quot;&quot;&quot;
+        Args:
+            a: first argument.
+            b: second argument.
+        &quot;&quot;&quot;
+        self.a = a
+        self.b = a
+</code></pre>
+<p>if formatted to this:</p>
+<pre><code class="language-python">class MyClass:
+    &quot;&quot;&quot;Short Summary.
+    
+    Long description.
+    &quot;&quot;&quot;
+
+    def __init__(self, a, b):
+        &quot;&quot;&quot;Args:
+        a: first argument.
+        b: second argument.
+        &quot;&quot;&quot;
+        self.a = a
+        self.b = a
+</code></pre>
+<p>The command I used is <code>ruff check --config ../ruff.toml --fix ruff-d212.py</code> and the config is below:</p>
+<pre><code class="language-toml">target-version = &quot;py310&quot;
+line-length = 120
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 89
+skip-magic-trailing-comma = true
+
+[lint]
+preview = true
+select = [
+    &quot;D&quot;,        # pydocstyle
+]
+
+[lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p><code>Args:</code> is a special heading so I wouldn't expect it to be moved it onto the first line. Note that the <code>--fix</code> resolved D212 but not D205, which make me to think the section is not correctly identified:</p>
+<pre><code>ruff-d212.py:8:9: D205 1 blank line required between summary line and description
+ruff-d212.py:8:9: D212 [*] Multi-line docstring summary should start at the first line
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-18 06:01</div>
+            <div class="timeline-body"><p>Thanks for opening this issue.</p>
+<p>Reading through the google convention, it seems that the summary line is mandatory.</p>
+<blockquote>
+<p>A docstring should be organized as a summary line (one physical line not exceeding 80 characters) terminated by a period, question mark, or exclamation point. When writing more (encouraged), this must be followed by a blank line, followed by the rest of the docstring starting at the same cursor position as the first quote of the first line. There are more formatting guidelines for docstrings below. <a href="https://google.github.io/styleguide/pyguide.html#381-docstrings">source</a></p>
+</blockquote>
+<p>But I can  see how enforcing a summary might have to be its own rule, or at least would help to get more descriptive errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-06-18 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/antoinebrl">@antoinebrl</a> on 2024-06-18 11:08</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser for providing references!</p>
+<p>If the module and the class are already well documented there is little interest in adding a summary to the constructor. All <code>__init__</code> would somehow ending up with a variant of &quot;Instantiating object XYX&quot; or &quot;Initializes the instance&quot;, which doesn't carry much information. The standard doesn't consider the case were only the Args section is relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-18 11:33</div>
+            <div class="timeline-body"><p>Yeah, I can see the use case. What's unclear to me is this is in accordance with the google convention. What I read out of it is that the summary is mandatory.</p>
+<p>Either way, fixing this might be a bit more involved because the way these two rules are currently implemented is that they don't know about sections. We would need to change the implementations to consider sections.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-06-23 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 16:35</div>
+            <div class="timeline-body"><p>I think D212 is arguably the culprit here. I feel like the diagnostic should be: you're missing a summary line (rather than: the summary line is on the wrong line).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

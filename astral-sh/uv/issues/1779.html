@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to find python in non-venv install on Windows - astral-sh/uv #1779</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to find python in non-venv install on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1779">#1779</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2024-02-20 19:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-20 19:35</div>
+            <div class="timeline-body"><p>When trying to run the tool on Windows, I get this rust like stack trace:</p>
+<pre><code>Error: The system cannot find the file specified.
+ (from CreateProcessA(null(), child_cmdline.into_bytes_with_nul().as_mut_ptr(),
+    null(), null(), 1, 0, null(), null(), addr_of!(*si),
+    child_process_info.as_mut_ptr()))
+</code></pre>
+<p>See https://github.com/tox-dev/tox-uv/actions/runs/7978647392/job/21784221224?pr=19</p>
+<p>I'm using uv find_uv_bin...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/pulls/19.html">tox-dev/tox-uv#19</a> on 2024-02-20 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-20 21:09</div>
+            <div class="timeline-body"><p>Interesting, this is the same error I was getting in #1639 (cc. @MichaReiser)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-20 21:14</div>
+            <div class="timeline-body"><p>Have you created and activated a virtual environment? My and Micha's conclusion from debugging #1639 was that it's not possible on Windows (yet) to use the &quot;trick&quot; where you pretend a virtual environment has been created and activated by doing the <code>echo &quot;VIRTUAL_ENV=${Python_ROOT_DIR}&quot; &gt;&gt; $GITHUB_ENV</code> in a GitHub Actions workflow. The reason why this doesn't work on Windows is likely due to the fact that <code>python.exe</code> is found in a different directory on Windows when a virtual environment hasn't been activated (it's <em>not</em> in a <code>Scripts/</code> directory when a virtual environment hasn't been activated, and <code>uv</code> assumes <code>python.exe</code> will always be in a <code>Scripts/</code> directory on Windows). So the <code>VIRTUAL_ENV</code> trick to avoid having to create and activate an environment currently only works on Unix.</p>
+<p>(Edit: it looks like you <em>are</em> indeed doing the Unix-only &quot;trick&quot;: https://github.com/tox-dev/tox-uv/blob/a93e37e98a012d07d6ac151e097c444a77d15b0a/.github/workflows/check.yml#L43)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-20 21:22</div>
+            <div class="timeline-body"><p>I outlined a cross-platform way of using <code>uv</code> in a GitHub Actions workflow here: https://github.com/astral-sh/uv/issues/1386#issuecomment-1952420541</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-20 21:25</div>
+            <div class="timeline-body"><p>Yeah, I can do that, but sounds more like a workaround than a solution for the underlying problem 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-20 21:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, I can do that, but sounds more like a workaround than a solution for the underlying problem 👍</p>
+</blockquote>
+<p>Oh of course. Longer-term we want to have first-class support for GitHub Actions, which I think will probably include something like #1526. We absolutely agree the current situation is far from ideal :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-21 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @MichaReiser on 2024-02-21 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-02-21 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1803.html">astral-sh/uv#1803</a> on 2024-02-21 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @MichaReiser by @MichaReiser on 2024-02-21 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-02-22 08:14</div>
+            <div class="timeline-body"><p>I ran into this error when trying to run pytest installed with uv from a pre existing conda environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-22 09:40</div>
+            <div class="timeline-body"><p>The main issue here is that <code>uv</code> assumes that Python is located at <code>$VIRTUAL_ENV/Scripts/python.exe</code> which isn't the case when pointing to a global python installation. see https://github.com/astral-sh/uv/pull/1803 for some details.</p>
+<p>@jenshnielsen https://github.com/astral-sh/uv/pull/1803 might help with your issue, depending on the layout of the <code>venv</code> directory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @konstin on 2024-02-22 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @MichaReiser by @MichaReiser on 2024-02-22 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv crashes on Windows with The system cannot find the file specified" to "uv fails to find python in non-venv install" by @konstin on 2024-02-22 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2024-02-22 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv fails to find python in non-venv install" to "uv fails to find python in non-venv install on Windows" by @AlexWaygood on 2024-02-22 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pixel-Minions">@Pixel-Minions</a> on 2024-02-23 17:16</div>
+            <div class="timeline-body"><p>I wonder of this is related to the same issue I am having with embedded versions of Python:
+https://github.com/astral-sh/uv/issues/1656</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkleinbort">@mkleinbort</a> on 2024-02-26 14:26</div>
+            <div class="timeline-body"><p>Is a solution for this in the works? I'm preparing an internal talk on UV for users that use windows and keen to know what they should expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-26 14:28</div>
+            <div class="timeline-body"><p>We're planning to solve this as part of https://github.com/astral-sh/uv/issues/1526</p>
+<p>The recommended local workflow is to use a venv instead of installing dependencies globally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-26 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 14:55</div>
+            <div class="timeline-body"><p>Yup I'm on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1988.html">astral-sh/uv#1988</a> on 2024-02-26 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2000.html">astral-sh/uv#2000</a> on 2024-02-27 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-28 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6008.html">astral-sh/uv#6008</a> on 2024-08-11 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

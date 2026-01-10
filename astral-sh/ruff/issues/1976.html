@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting F821 Undefined name &quot;xyz&quot; for typing.Literal values when imported indirectly - astral-sh/ruff #1976</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Getting F821 Undefined name &quot;xyz&quot; for typing.Literal values when imported indirectly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1976">#1976</a>
+        opened by <a href="https://github.com/alisaifee">@alisaifee</a>
+        on 2023-01-18 22:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alisaifee">@alisaifee</a> on 2023-01-18 22:59</div>
+            <div class="timeline-body"><h1>Description</h1>
+<p>Ruff complains with <code>F821 Undefined name &quot;xyz&quot;</code> for the values described in arguments typed as <code>typing.Literal</code>. I was however only able to reproduce this when <code>Literal</code> is imported indirectly (i.e. not <code>from typing import Literal</code>).</p>
+<p>As an example, the following file passes all checks:</p>
+<pre><code class="language-py">from typing import Literal
+
+a: Literal[&quot;fu&quot;, &quot;bar&quot;] = &quot;fu&quot;
+a = &quot;bar&quot;
+</code></pre>
+<p>But this does not:</p>
+<ul>
+<li><p>x.py</p>
+<pre><code class="language-py">from typing import Literal
+__all__ = [&quot;Literal&quot;]
+</code></pre>
+</li>
+<li><p>y.py</p>
+<pre><code class="language-py">from x import Literal
+a: Literal[&quot;fu&quot;, &quot;bar&quot;] = &quot;fu&quot;
+a = &quot;bar&quot;
+</code></pre>
+</li>
+<li><p>Output:</p>
+<pre><code>$ ruff y.py
+y.py:2:12: F821 Undefined name `fu`
+y.py:2:18: F821 Undefined name `bar`
+</code></pre>
+</li>
+<li><p>Reproduced without any configuration changes.</p>
+</li>
+<li><p>Ruff version:</p>
+<pre><code>$ ruff --version
+ruff 0.0.225
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Getting F821 Undefined name "xyz" for typing.Literal " to "Getting F821 Undefined name "xyz" for typing.Literal values when imported indirectly" by @alisaifee on 2023-01-18 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 23:03</div>
+            <div class="timeline-body"><p>Yeah we don't track that the re-exported <code>Literal</code> in that case is the same as <code>typing.Literal</code>.</p>
+<p>We do have something to support this use-case though. If you want to treat every member of <code>x</code> as if it's a re-export of a <code>typing</code> member, you can do:</p>
+<pre><code class="language-toml">[tool.ruff]
+typing-modules = [&quot;x&quot;]
+</code></pre>
+<p>(Relevant docs are here: https://github.com/charliermarsh/ruff#typing-modules)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 23:04</div>
+            <div class="timeline-body"><p>(The canonical use-case for this is projects that have some kind of compatibility shim over <code>typing</code> and <code>typing-extensions</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alisaifee">@alisaifee</a> on 2023-01-18 23:17</div>
+            <div class="timeline-body"><p>Neat, that is exactly the use case (<a href="https://github.com/alisaifee/coredis/blob/master/coredis/typing.py">reference</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alisaifee">@alisaifee</a> on 2023-01-18 23:18</div>
+            <div class="timeline-body"><p>I'll close this as it is clearly pointed out in the documentation (😅)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @alisaifee on 2023-01-18 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 23:19</div>
+            <div class="timeline-body"><p>Oh nice! Good to know that there are more examples of this, and glad it solves your problem :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-01-19 22:16</div>
+            <div class="timeline-body"><p>Solves my problem too, thank you! Though I use relative imports, so it seems to not be triggering on <code>from .._compat.typing import Literal</code>. If I change it to absolute, then it works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2005.html">astral-sh/ruff#2005</a> on 2023-01-19 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 22:28</div>
+            <div class="timeline-body"><p>Ah good call -- filed as #2005!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 02:31</div>
+            <div class="timeline-body"><p>@henryiii - Heads up, I also checked out <code>scikit_build_core</code> and verified that (e.g.) <code>F821</code> errors aren't being triggered for Literals with <code>typing-modules = [&quot;scikit_build_core._compat.typing&quot;]</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

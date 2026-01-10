@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New rule: limit call‑hierarchy depth across functions/methods - astral-sh/ruff #19633</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New rule: limit call‑hierarchy depth across functions/methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19633">#19633</a>
+        opened by <a href="https://github.com/Spenhouet">@Spenhouet</a>
+        on 2025-07-30 09:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2025-07-30 09:41</div>
+            <div class="timeline-body"><h3>Motivation</h3>
+<p>Ruff already checks block‑nesting depth (<a href="https://docs.astral.sh/ruff/rules/too-many-nested-blocks/">PLR1702</a>) and cyclomatic complexity (<a href="https://docs.astral.sh/ruff/rules/complex-structure/">C901</a>). These don’t catch code that hops through many functions/methods (A→B→C→D…), which reduces readability, testability and maintainability. <a href="https://github.com/astral-sh/ruff/issues/8022">WPS233</a> limits chained calls in one expression (e.g., obj.a().b().c()). It does not measure cross‑function call depth. A rule to cap inter‑procedural call depth would fill this gap.</p>
+<p>Enforcing a flatter software code architecture is something that we'd like to have.</p>
+<h3>Proposal</h3>
+<p>Add a new rule, e.g. RUF1xxx: max-call-hierarchy-depth.</p>
+<h4>Behavior</h4>
+<ul>
+<li>Build a static call graph from imports + AST within a module (optionally across the project).</li>
+<li>From configurable “entry points” (public functions, <strong>main</strong>, CLI handlers, views), measure longest call path.</li>
+<li>Emit a diagnostic when depth exceeds a threshold.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">def a(): b()
+def b(): c()
+def c(): d()
+def d(): pass  # depth = 4  -&gt; violation if max-depth=3
+</code></pre>
+<h3>Limitations / notes</h3>
+<ul>
+<li>Python’s dynamism means resolution is best‑effort: dynamic dispatch, monkey‑patching, and reflective calls may be skipped or approximated.</li>
+<li>Decorators, first‑class functions, and callbacks may need conservative handling.</li>
+<li>Start as opt‑in and preview (like PLR1702) while feedback is gathered.</li>
+</ul>
+<h3>Why in Ruff</h3>
+<p>Complements PLR1702 (local nesting) and C901 (branching) with inter‑procedural depth, giving teams a simple knob to keep designs shallow without extra tools.</p>
+<h3>Alternatives considered</h3>
+<p>No alternative known.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 09:58</div>
+            <div class="timeline-body"><p>Thanks for this detailed write up.</p>
+<p>There are a few challenges that I see with this rule:</p>
+<ul>
+<li>Where should ruff stop? Should it count the complexity of third party modules to, what about built ins?</li>
+<li>Doing this recursively is probably very expensive and will slow down your analysis a lot</li>
+<li>I don't think the rule is very actionable. I don't know what I'm supposed to do if I'm <code>a</code> but I have to call <code>b</code>. Should I duplicate <code>b</code>?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2025-07-30 10:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Where should ruff stop? Should it count the complexity of third party modules to, what about built ins?</p>
+</blockquote>
+<p>I would not count third party modules or build ins.
+But I would count editable packages (workspace packages) if that does make it even more complicated to implement than it might already be.</p>
+<blockquote>
+<p>Doing this recursively is probably very expensive and will slow down your analysis a lot</p>
+</blockquote>
+<p>Without any knowledge on how ruff is implemented, I have a similar fear but I hoped that maybe ruff already does internal caching of details about the code which might enable something like this or that something like this could be done.</p>
+<p>I guess having to perform this recursive scan every time is not feasible.</p>
+<blockquote>
+<p>I don't think the rule is very actionable. I don't know what I'm supposed to do if I'm a but I have to call b. Should I duplicate b?</p>
+</blockquote>
+<p>You are thinking about existing/legacy code (which indeed is most of the code out there). I'm thinking more about newly written code or code where the developer has the ability to refactor the code, not duplicate but reimplement in a flatter structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-30 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-07-30 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-31 06:31</div>
+            <div class="timeline-body"><blockquote>
+<p>You are thinking about existing/legacy code (which indeed is most of the code out there). I'm thinking more about newly written code or code where the developer has the ability to refactor the code, not duplicate but reimplement in a flatter structure.</p>
+</blockquote>
+<p>Even for new code, it's unclear to me what a user should do if they see this lint warning. It could mean that they have to rewrite a bunch of functions to make a fix.</p>
+<p>It's not clear to me that this improves code quality and Ruff currently also doesn't have the necessary multifile analysis capabilities to implement this rule (and even ty couldn't implement this rule today because it doesn't track if a search path comes from an editable install). I'll close this issue because I want to keep the issue tracker actionable and this rule isn't something that can be implemented anytime soon (ignoring my concerns with the rule itself)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-31 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2025-07-31 07:04</div>
+            <div class="timeline-body"><blockquote>
+<p>this rule isn't something that can be implemented anytime soon</p>
+</blockquote>
+<p>I feared so. Thanks for the clarification.</p>
+<blockquote>
+<p>It could mean that they have to rewrite a bunch of functions to make a fix.</p>
+</blockquote>
+<p>But that is the case with many ruff linting rules.</p>
+<blockquote>
+<p>It's not clear to me that this improves code quality</p>
+</blockquote>
+<p>In my experience deeply nested call chains makes changes very hard. In our team we have a larger percentage of developers/data-scientists with research background coming from other domains than computer science. Code structure decisions often do not consider programming best practices leading to things like deeply nested call chains, forwarding a parameter through many hops, ...
+Now changing something 10 levels down can have many side effects. Changes become impossible without doing large refactorings.</p>
+<p>This rule was intended to prevent that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

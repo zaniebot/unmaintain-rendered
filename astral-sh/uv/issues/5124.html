@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: `uv help pip compile` failing with `error: program not found` - astral-sh/uv #5124</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: `uv help pip compile` failing with `error: program not found`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5124">#5124</a>
+        opened by <a href="https://github.com/jbw-vtl">@jbw-vtl</a>
+        on 2024-07-16 19:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-16 19:37</div>
+            <div class="timeline-body"><p>Running the command <code>uv help pip compile -v</code> is failing with</p>
+<pre><code class="language-text">DEBUG uv 0.2.25
+error: program not found
+</code></pre>
+<p>As advised by @zanieb, <code>uv help pip compile --no-pager</code> is working as expected.
+Additionally <code>uv pip compile --help</code> is working aswell, however the output differs from the above command in structure &amp; content.</p>
+<pre><code>uv==0.2.25
+python==3.11.9
+Running on Windows
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 19:42</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-16 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-07-16 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-07-16 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-07-16 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-16 20:10</div>
+            <div class="timeline-body"><p>This sounds like the dreaded &quot;<code>which</code> finds executables differently then spawning a process on Windows&quot;. I have no idea why Cargo doesn't have this problem, as we used their implementation here. We might be able to just pass the path discovered by <code>which</code> to the subprocess invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-16 20:22</div>
+            <div class="timeline-body"><p>Running the <code>uv help pip compile</code> in bash on windows works (with the same versions as stated above).
+Running within Powershell (tried multiple versions) and CMD both fails with the <code>error: program not found</code></p>
+<p><code>which</code> is by default not available in Powershell (using <code>get-command uv</code>) / Cmd (using <code>where uv</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-16 20:24</div>
+            <div class="timeline-body"><p>Note I'm referring to the <code>which</code> implementation in Rust, not the executable program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-16 20:25</div>
+            <div class="timeline-body"><p>I've remembered that Cargo uses a custom &quot;resolve_executables&quot; method instead of <code>which</code> which is probably why they do not suffer from this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 14:37</div>
+            <div class="timeline-body"><p>Just to confirm, this works as intended if the pager is not found by <code>which</code>:</p>
+<pre><code>PATH=&quot;&quot; ~/.cargo/bin/uv help pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-18 14:47</div>
+            <div class="timeline-body"><p>@zanieb - Do you think we can fix this for a release today?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 14:52</div>
+            <div class="timeline-body"><p>@charliermarsh if someone with a Windows machine wants to test, it's either a trivial &quot;pass the full path to the subprocess invocation&quot; or turn off paging on Windows to resolve the issue immediately and explore the proper solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-18 14:54</div>
+            <div class="timeline-body"><p>I can test it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-18 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5198.html">astral-sh/uv#5198</a> on 2024-07-18 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-18 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-22 14:03</div>
+            <div class="timeline-body"><p>Can confirm working well with the latest version, thanks a bunch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:08</div>
+            <div class="timeline-body"><p>Awesome, thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

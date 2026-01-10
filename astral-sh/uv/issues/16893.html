@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistency with handling pre-release packages - installing from pypi vs installing from git - astral-sh/uv #16893</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistency with handling pre-release packages - installing from pypi vs installing from git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16893">#16893</a>
+        opened by <a href="https://github.com/Andrej730">@Andrej730</a>
+        on 2025-11-29 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-11-29 18:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>E.g. running <code>uv tool install changedetection.io==0.51.4 --python 3.11</code> fail with an error, since pre-releases are not allowed for this package.</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of pyppeteer-ng==2.0.0rc10 and changedetection-io==0.51.4 depends on pyppeteer-ng==2.0.0rc10, we can conclude that changedetection-io==0.51.4
+      cannot be used.
+      And because you require changedetection-io==0.51.4, we can conclude that your requirements are unsatisfiable.
+
+      hint: `pyppeteer-ng` was requested with a pre-release marker (e.g., pyppeteer-ng==2.0.0rc10), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>But installing <code>uv tool install git+https://github.com/dgtlmoon/changedetection.io.git@0.51.4 --python 3.11</code> works without any errors.</p>
+<p>Since in both cases the same pre-release package is requested, shouldn't it behave the same?
+https://github.com/dgtlmoon/changedetection.io/blob/39274f121c7eca724fcc1e888533ab30c3f45499/requirements.txt#L87C1-L87C24</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.9.2 (141369ce7 2025-10-10)</p>
+<h3>Python version</h3>
+<p>3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Andrej730 on 2025-11-29 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dgtlmoon/changedetection.io/issues/3662.html">dgtlmoon/changedetection.io#3662</a> on 2025-11-29 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-29 19:09</div>
+            <div class="timeline-body"><p>We have a concept of &quot;lookahead&quot; for direct URL dependencies, so we end up accepting pre-releases if they're explicitly requested by a direct URL dependency (which doesn't apply to registry requirements).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-11-29 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-11-29 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-11-29 19:45</div>
+            <div class="timeline-body"><p>Should this be documented or it applies to many other areas, so it wouldn't make sense to document it in just <code>--prerelease</code>?</p>
+<p>And reading <code>--prerelease</code> option description - isn't installing this package from <code>pip</code> falls into <code>Allow pre-release versions if the package has an explicit pre-release marker in its version requirements</code> and it should be accepted when installing from <code>pip</code> too? Since it has explicit pre-release marker in the requirements - <code>pyppeteer-ng==2.0.0rc10</code></p>
+<p>Ref to docs - https://docs.astral.sh/uv/reference/cli/#uv-add--prerelease</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>py3.9 and 3.10 error if typing is importable from cwd - astral-sh/uv #2547</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>py3.9 and 3.10 error if typing is importable from cwd</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2547">#2547</a>
+        opened by <a href="https://github.com/raylu">@raylu</a>
+        on 2024-03-19 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/raylu">@raylu</a> on 2024-03-19 18:40</div>
+            <div class="timeline-body"><pre><code>$ docker run -it --rm python:3.10-slim bash
+root@b6e27da47b8a:/# pip install uv
+root@b6e27da47b8a:/# uv --version
+uv 0.1.22
+root@b6e27da47b8a:/# cd opt
+root@b6e27da47b8a:/opt# touch typing.py
+root@b6e27da47b8a:/opt# uv venv venv
+  × Querying Python at `/usr/local/bin/python3` failed with status exit status: 1 with exit status: 1
+  │ --- stdout:
+
+  │ --- stderr:
+  │ Traceback (most recent call last):
+  │   File &quot;/usr/local/lib/python3.10/runpy.py&quot;, line 196, in _run_module_as_main
+  │     return _run_code(code, main_globals, None,
+  │   File &quot;/usr/local/lib/python3.10/runpy.py&quot;, line 86, in _run_code
+  │     exec(code, run_globals)
+  │   File &quot;/root/.cache/uv/.tmpqYO0rn/python/get_interpreter_info.py&quot;, line 525, in &lt;module&gt;
+  │     &quot;platform&quot;: get_operating_system_and_architecture(),
+  │   File &quot;/root/.cache/uv/.tmpqYO0rn/python/get_interpreter_info.py&quot;, line 429, in get_operating_system_and_architecture
+  │     from .packaging._manylinux import _get_glibc_version
+  │   File &quot;/root/.cache/uv/.tmpqYO0rn/python/packaging/_manylinux.py&quot;, line 10, in &lt;module&gt;
+  │     from typing import Generator, Iterator, NamedTuple, Sequence
+  │ ImportError: cannot import name 'Generator' from 'typing' (/opt/typing.py)
+  │ ---
+</code></pre>
+<p>however, if you move to a directory where <code>typing</code> isn't importable, the <code>~/.cache/uv/interpreter-v0</code> cache gets populated, allowing you to use <code>uv</code> from whichever directory you like</p>
+<pre><code>root@b6e27da47b8a:/opt# cd /
+root@b6e27da47b8a:/# uv venv opt/venv
+Using Python 3.10.13 interpreter at: /usr/local/bin/python3
+Creating virtualenv at: opt/venv
+root@b6e27da47b8a:/# cd opt
+root@b6e27da47b8a:/opt# uv pip list
+Package    Version
+---------- -------
+pip        23.0.1
+setuptools 65.5.1
+uv         0.1.22
+wheel      0.43.0
+</code></pre>
+<p>until you try a new interpreter</p>
+<pre><code>root@b6e27da47b8a:/opt# source venv/bin/activate
+(venv) root@b6e27da47b8a:/opt# uv pip list
+error: Querying Python at `/opt/venv/bin/python` failed with status exit status: 1 with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;/usr/local/lib/python3.10/runpy.py&quot;, line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File &quot;/usr/local/lib/python3.10/runpy.py&quot;, line 86, in _run_code
+    exec(code, run_globals)
+  File &quot;/root/.cache/uv/.tmpsEXOzS/python/get_interpreter_info.py&quot;, line 525, in &lt;module&gt;
+    &quot;platform&quot;: get_operating_system_and_architecture(),
+  File &quot;/root/.cache/uv/.tmpsEXOzS/python/get_interpreter_info.py&quot;, line 429, in get_operating_system_and_architecture
+    from .packaging._manylinux import _get_glibc_version
+  File &quot;/root/.cache/uv/.tmpsEXOzS/python/packaging/_manylinux.py&quot;, line 10, in &lt;module&gt;
+    from typing import Generator, Iterator, NamedTuple, Sequence
+ImportError: cannot import name 'Generator' from 'typing' (/opt/typing.py)
+---
+</code></pre>
+<p>this happens in 3.9 and 3.10 but not 3.8 or 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-19 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 18:43</div>
+            <div class="timeline-body"><p>Thanks. We use <code>PYTHONSAFEPATH</code> which was added in 3.11. I'll fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-19 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2552.html">astral-sh/uv#2552</a> on 2024-03-19 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 21:48</div>
+            <div class="timeline-body"><p>Did this happen to you in a real project? I'm trying to figure out how to solve it but adding <code>typing.py</code> breaks all <code>python -m</code> invocations anyway. E.g., <code>touch typing.py</code> and then <code>python -m pip list</code> also breaks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 21:49</div>
+            <div class="timeline-body"><p>Specifically, <code>runpy</code> doesn't work anymore once you do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raylu">@raylu</a> on 2024-03-19 22:05</div>
+            <div class="timeline-body"><p>yes. in our project, we have</p>
+<pre><code>.
+├── subdir1
+│   ├── requirements1.txt
+│   ├── some_code.py
+│   └── typing
+│       └── some_types.py
+└── subdir2
+    └── requirements2.txt
+</code></pre>
+<p>and our code runs from the root dir, so <code>subdir1/some_code.py</code> has <code>import subdir1.typing.some_types</code> and never runs into the import issue
+we can <code>uv pip install -r subdir1/requirements1.txt</code>
+but it'd be nice to be able to <code>cd subdir1 &amp;&amp; uv pip install requirements1.txt</code> without having to prepopulate the cache
+(actually, we have a tool that wraps <code>uv</code> that detects which subdir you're in and installs other requirements files differently)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-20 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raylu">@raylu</a> on 2024-03-20 02:52</div>
+            <div class="timeline-body"><p>so speedy! thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 02:56</div>
+            <div class="timeline-body"><p>Any time :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

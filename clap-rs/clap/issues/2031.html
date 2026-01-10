@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rant: MultipleValues considered harmful - clap-rs/clap #2031</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rant: MultipleValues considered harmful</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2031">#2031</a>
+        opened by <a href="https://github.com/intgr">@intgr</a>
+        on 2020-07-21 09:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/intgr">@intgr</a> on 2020-07-21 09:51</div>
+            <div class="timeline-body"><p>Sorry, but a rant here... I accept that other people might have a different view on this, but let me make my case.</p>
+<p>I've only been scratching the surface of clap, both as CLI application developer and hacking clap itself. And I'm already losing count of the number of times I've been confused by the distinction between <code>MultipleValues</code> and <code>MultipleOccurrences</code>.</p>
+<h3>As positional arg</h3>
+<p>I was trying to test a positional argument (with <code>TrailingVarArg</code> in #1793) and figure out, which of the two settings is correct. It turns out, <em>both are needed</em> for it to work correctly. With just one or the other set, it results in surprising and non-useful behavior. So I think either it should be an error to use positional args with one <code>Multiple*</code> flag without the other, or the behavior should be changed to only need one.</p>
+<h4>Code</h4>
+<pre><code class="language-rust">    App::new(&quot;Alter Ego: run desktop applications under a different local user&quot;)
+        .setting(AppSettings::TrailingVarArg)
+        .arg(
+            Arg::new(&quot;command&quot;)
+                .about(&quot;Command name and arguments to run (default: user shell)&quot;)
+                .multiple_*(true) // multiple_values/multiple_occurrences
+                .value_hint(ValueHint::CommandWithArguments),
+</code></pre>
+<h4>Current actual behavior</h4>
+<ul>
+<li>Using <code>MultipleOccurrences</code>: Found argument 'asd' which wasn't expected, or isn't valid in this context</li>
+<li>Using <code>MultipleValues</code>: The argument '<command>...' was provided more than once, but cannot be used multiple times</li>
+</ul>
+<h3>As named arg</h3>
+<p>As for named options, <code>MultipleValues</code> might serve a purpose, but I think it's confusing for <em>users</em> of clap-based applications as well. I can't name a single common Unix utility from the top of my head that would accept multiple values after some <code>--option</code> switch. And there isn't support for such behavior in shell completion either, which is the topic of my PR #1793.</p>
+<p>Indeed I'm not the first person working on clap to be confused by this duality; zsh.rs has this:</p>
+<pre><code class="language-rust">        // @TODO @soundness should probably be either multiple occurrences or multiple values and
+        // not both
+        let multiple = if o.is_set(ArgSettings::MultipleOccurrences)
+            || o.is_set(ArgSettings::MultipleValues)
+</code></pre>
+<p>I can't help but feel that the <code>MultipleValues</code> feature is a mistake. Or maybe it is useful in some edge case, but should be discouraged and not exist as a prominent <code>Arg::multiple_values()</code> method, and should not be part of <code>Arg::multiple()</code>.</p>
+<h3>Additional context</h3>
+<p>Using clap latest master branch, commit dc363d0b.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @intgr on 2020-07-21 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-07-21 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @pksunkara on 2020-07-21 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> added by @pksunkara on 2020-07-21 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-07-21 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-21 09:58</div>
+            <div class="timeline-body"><p>It's better to have them both for normal args, but for positional args, I guess they both mean the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-21 14:02</div>
+            <div class="timeline-body"><p>Before I follow with a rant of my own - because of course I will, but I need to gather my thoughts or it will be nasty - @intgr , could you check if <code>multiple_occurences(true).takes_value(true)</code> works for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ch00k">@Ch00k</a> on 2020-10-21 14:54</div>
+            <div class="timeline-body"><p><code>multiple_occurences(true).takes_value(true)</code> does not work for me in 3.0.0-beta2: <code>Found argument 'foo' which wasn't expected, or isn't valid in this context</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2229.html">clap-rs/clap#2229</a> on 2020-11-28 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-02-21 15:18</div>
+            <div class="timeline-body"><p>Recent change of MultipleValues related change fixes this problem.</p>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {
+    let m = App::new(&quot;Alter Ego: run desktop applications under a different local user&quot;)
+        .setting(AppSettings::TrailingVarArg)
+        .arg(
+            Arg::new(&quot;command&quot;)
+                .about(&quot;Command name and arguments to run (default: user shell)&quot;)
+                .multiple_values(true) // multiple_values/multiple_occurrences
+                .value_hint(ValueHint::CommandWithArguments),
+        )
+        .get_matches();
+    dbg!(m);
+}
+
+</code></pre>
+<p>Code above doesn't work correctly with <code>cargo run -- a b c d ef g</code> on <code>3.0.0-beta.2</code>, but it works correctly on current master. cc @pksunkara .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-02-21 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-derivation with `multiple_occurrences` - clap-rs/clap #2195</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-derivation with `multiple_occurrences`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2195">#2195</a>
+        opened by <a href="https://github.com/fosskers">@fosskers</a>
+        on 2020-10-31 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fosskers">@fosskers</a> on 2020-10-31 18:38</div>
+            <div class="timeline-body"><p>This issue is related to the following discussion: https://github.com/clap-rs/clap/discussions/2192 . The original issue is explained it detail there. I was asked to open an issue, since there may be a UI/UX change that can be made. Below is runnable code that demonstrates the problem.</p>
+<h3>Code and Behaviour</h3>
+<p>This first example shows the original form of the code.</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap, Debug)]
+struct Args {
+    /// Some cleaning operation.
+    #[clap(long, short)]
+    clean: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    println!(&quot;{:#?}&quot;, args);
+}
+</code></pre>
+<p>When we run this, we see that <code>--clean</code> is a flag. Either on or off.</p>
+<pre><code>&gt; cargo run -- -h
+clap-ma 
+
+USAGE:
+    clap-ma [FLAGS]
+
+FLAGS:
+    -c, --clean      Some cleaning operation
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<p>If we try to set <code>--clean</code> multiple times, we get an error as expected:</p>
+<pre><code>&gt; cargo run -- -cc
+error: The argument '--clean' was provided more than once, but cannot be used multiple times
+
+USAGE:
+    clap-ma [FLAGS]
+
+For more information try --help
+</code></pre>
+<p>Now let's set <code>multiple_occurrences = true</code>:</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap, Debug)]
+struct Args {
+    /// Some cleaning operation.
+    #[clap(long, short, multiple_occurrences = true)]
+    clean: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    println!(&quot;{:#?}&quot;, args);
+}
+</code></pre>
+<p>This compiles fine, but help output doesn't change. <code>-c</code> can be passed more than once, but since the field is a single <code>bool</code>, nothing really changes. You might think that setting the field instead to <code>u8</code> or <code>Vec&lt;bool&gt;</code> would then represent the <em>count</em> of the appearances of the flag, but doing so instead turns it into an arg-accepting &quot;option&quot;:</p>
+<pre><code>&gt; cargo run -- -h
+clap-ma 
+
+USAGE:
+    clap-ma --clean &lt;clean&gt;...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --clean &lt;clean&gt;...    Some cleaning operation
+colin@yumi ~/c/r/clap-ma (master)&gt; cargo run -- -c
+error: The argument '--clean &lt;clean&gt;...' requires a value but none was supplied
+
+USAGE:
+    clap-ma --clean &lt;clean&gt;...
+
+For more information try --help
+</code></pre>
+<h3>Steps to reproduce the issue</h3>
+<ol>
+<li>Run the first example with <code>cargo run -- -h</code></li>
+<li>See the expected output: <code>--clean</code> is a &quot;flag&quot;.</li>
+<li>Activate <code>multiple_occurrences</code>.</li>
+<li>Notice that <code>--help</code> output remains the same.</li>
+<li>Change the field type to a non-bool.</li>
+<li>Notice that <code>--clean</code> becomes an arg-accepting &quot;option&quot;.</li>
+</ol>
+<h3>Version</h3>
+<ul>
+<li><strong>Rust</strong>: <code>rustc 1.47.0 (18bf6b4f0 2020-10-07)</code></li>
+<li><strong>Clap</strong>: <code>3.0.0-beta.2</code></li>
+</ul>
+<h3>Actual Behavior Summary</h3>
+<p><em>See the above.</em></p>
+<p>I am attempting to represent flags that can appear multiple times in my <a href="https://github.com/fosskers/aura/issues/657">port of the Aura project</a> to Rust, but I wish to do so via the auto-derived <code>Clap</code> trait, which is much cleaner than handwriting the <code>App</code> and <code>Arg</code>s.</p>
+<h3>Debug output</h3>
+<p>The following shows <code>multiple_occurrences = true</code>, but the field is a single <code>bool</code>:</p>
+<details>
+<summary> Debug Output </summary>
+<pre>
+<code>
+> cargo run -- -cc
+   Compiling clap v3.0.0-beta.2
+   Compiling clap-ma v0.1.0 (/home/colin/code/rust/clap-ma)
+    Finished dev [unoptimized + debuginfo] target(s) in 5.85s
+     Running `target/debug/clap-ma -cc`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:clap-ma
+[            clap::build::app] 	App::_derive_display_order:clap-ma
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:clean
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '"-cc"' ([45, 99, 99])
+[         clap::parse::parser] 	Parser::is_new_arg: "-cc":NotFound
+[         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
+[         clap::parse::parser] 	Parser::is_new_arg: - found
+[         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=true
+[         clap::parse::parser] 	Parser::possible_subcommand: arg="-cc"
+[         clap::parse::parser] 	Parser::get_matches_with: possible_sc=false, sc=None
+[         clap::parse::parser] 	Parser::parse_short_arg: full_arg="-cc"
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:c
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:c: Found valid opt or flag
+[         clap::parse::parser] 	Parser::check_for_help_and_version_char
+[         clap::parse::parser] 	Parser::check_for_help_and_version_char: Checking if -c is help or version...
+[         clap::parse::parser] 	Neither
+[         clap::parse::parser] 	Parser::parse_flag
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of: arg=clean
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of: first instance
+[            clap::build::app] 	App::groups_for_arg: id=clean
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:c
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:c: Found valid opt or flag
+[         clap::parse::parser] 	Parser::check_for_help_and_version_char
+[         clap::parse::parser] 	Parser::check_for_help_and_version_char: Checking if -c is help or version...
+[         clap::parse::parser] 	Neither
+[         clap::parse::parser] 	Parser::parse_flag
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of: arg=clean
+[            clap::build::app] 	App::groups_for_arg: id=clean
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_short_arg Flag(clean)
+[         clap::parse::parser] 	Parser::maybe_inc_pos_counter: arg = clean
+[         clap::parse::parser] 	Parser::maybe_inc_pos_counter: is it positional?
+[         clap::parse::parser] 	No
+[            clap::build::app] 	App::groups_for_arg: id=clean
+[         clap::parse::parser] 	Parser::remove_overrides
+[         clap::parse::parser] 	Parser::remove_overrides:iter:clean
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:clean
+[      clap::parse::validator] 	Validator::gather_conflicts
+[      clap::parse::validator] 	Validator::gather_conflicts:iter: id=clean
+[            clap::build::app] 	App::groups_for_arg: id=clean
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::gather_requirements:iter:clean
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:clean: vals=[]
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg="clean"
+[      clap::parse::validator] 	Validator::validate_arg_requires:"clean"
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: "clean"=2
+[    clap::parse::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
+Args {
+    clean: true,
+}
+</code>
+</pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @fosskers on 2020-10-31 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2020-10-31 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-10-31 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2020-11-20 03:35</div>
+            <div class="timeline-body"><p>I managed to satisfy my original requirements via the suggestion given here: https://github.com/clap-rs/clap/discussions/2192#discussioncomment-133916</p>
+<p>We can probably close this issue, since what I was looking for was effectively already possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../fosskers/aura/pulls/671.html">fosskers/aura#671</a> on 2020-11-20 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-26 10:37</div>
+            <div class="timeline-body"><p>To resolve: <code>Vec&lt;bool&gt;</code> should not be treated as an arg taking values. Also, look into how <code>Option&lt;bool&gt;</code> performs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-20 17:18</div>
+            <div class="timeline-body"><p>I'd propose we &quot;won't fix&quot; this and instead point people to <code>#[clap(..., parse(from_occurrences))]</code></p>
+<p>Currently, we don't special case any compound <code>bool</code> types.</p>
+<p>I'm trying to understand why/when someone would want one compared to <code>from_occurrences</code>:</p>
+<ul>
+<li><code>Option&lt;bool&gt;</code> is redundant: we already know whether the flag is present or not, based on bool</li>
+<li><code>Vec&lt;bool&gt;</code> will just be a variable number of <code>true</code>, only useful for the count.</li>
+</ul>
+<p>As part of my holistic view for #1772 though I should call this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fosskers on 2021-10-21 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2993.html">clap-rs/clap#2993</a> on 2021-11-05 14:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:22 UTC
+    </footer>
+</body>
+</html>

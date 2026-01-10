@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xgboost==0.90 fails to install on Windows 10 - astral-sh/uv #8798</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>xgboost==0.90 fails to install on Windows 10</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8798">#8798</a>
+        opened by <a href="https://github.com/RyanBlace">@RyanBlace</a>
+        on 2024-11-04 06:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RyanBlace">@RyanBlace</a> on 2024-11-04 06:33</div>
+            <div class="timeline-body"><pre><code>C:\Users\Ryan\xgboostinstall&gt;uv init
+Initialized project `xgboostinstall`
+
+C:\Users\Ryan\xgboostinstall&gt;uv add xgboost==0.90
+Using CPython 3.12.7
+Creating virtual environment at: .venv
+Resolved 4 packages in 14ms
+error: Failed to install: xgboost-0.90-py2.py3-none-win_amd64.whl (xgboost==0.90)
+  Caused by: RECORD file doesn't match wheel contents: Could not find entry for xgboost-0.90.data\data\xgboost\vcomp140.dll (C:\Users\Ryan\xgboostinstall\.venv\Lib\site-packages\xgboost-0.90.data\data\xgboost\vcomp140.dll)
+
+C:\Users\Ryan\xgboostinstall&gt;uv --version
+uv 0.4.29 (85f9a0d0e 2024-10-30)
+
+C:\Users\Ryan\xgboostinstall&gt;ver
+Microsoft Windows [Version 10.0.19045.5011]
+</code></pre>
+<p>This does work with pyenv.</p>
+<p>I realize that xgboost 0.90 is from May 2019, so this might not be worthwhile. But, I want to report it in case it hints at some larger issue.</p>
+<p>Thank you so much for uv, it is changing how we work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-11-04 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-04 10:23</div>
+            <div class="timeline-body"><p>I've checked and confirmed that this is a bug in the packaging of that xgboost version:</p>
+<p>In https://inspector.pypi.io/project/xgboost/0.90/packages/5e/49/b95c037b717b4ceadc76b6e164603471225c27052d1611d5a2e832757945/xgboost-0.90-py2.py3-none-win_amd64.whl/xgboost-0.90.dist-info/RECORD#line.18, it records only a <code>xgboost-0.90.data/data/xgboost/xgboost.dll</code>, but the package contains a <code>./xgboost-0.90.data/data/xgboost/vcomp140.dll</code> (https://inspector.pypi.io/project/xgboost/0.90/packages/5e/49/b95c037b717b4ceadc76b6e164603471225c27052d1611d5a2e832757945/xgboost-0.90-py2.py3-none-win_amd64.whl/).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-04 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RyanBlace">@RyanBlace</a> on 2024-11-04 10:44</div>
+            <div class="timeline-body"><p>Thank you for explaining what is going on.</p>
+<p>Is there a switch to tell uv to ignore extra files missing from the RECORD? I'm guessing that is what pip is doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-04 11:52</div>
+            <div class="timeline-body"><p>As far as i know, pip is basically just ignoring the RECORD. We need the RECORD properly, since we use it for uninstalling files. I recommend upgrading to a newer xgboost version that has this bug fixed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:23 UTC
+    </footer>
+</body>
+</html>

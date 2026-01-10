@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV lock contains package without artifacts (when installing `cuml-cu12`, `ray[data]`, `torch`) - astral-sh/uv #15521</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV lock contains package without artifacts (when installing `cuml-cu12`, `ray[data]`, `torch`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15521">#15521</a>
+        opened by <a href="https://github.com/pimdh">@pimdh</a>
+        on 2025-08-25 22:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-25 22:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With the <code>pyproject.toml</code> file</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;cuml-cu12==25.8&quot;,
+  &quot;ray[data]==2.47.1&quot;,
+  &quot;torch==2.6.0+cu124&quot;,
+]
+
+[[tool.uv.index]]
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+</code></pre>
+<p>The command <code>uv lock</code> results in a <code>uv.lock</code> which contains one package with artifacts and one package without any artifact</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;nvidia-cublas-cu12&quot;
+version = &quot;12.4.5.8&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }
+resolution-markers = [
+    &quot;platform_machine == 'aarch64'&quot;,
+    &quot;platform_machine == 'x86_64' and sys_platform != 'darwin'&quot;,
+    &quot;platform_machine != 'aarch64' and platform_machine != 'x86_64'&quot;,
+]
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cu124/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:0f8aa1706812e00b9f19dfe0cdb3999b092ccb8ca168c0db5b8ea712456fd9b3&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cu124/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:2fc8da60df463fdefa81e323eef2e36489e1c94335b5358bcb38360adf75ac9b&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cu124/nvidia_cublas_cu12-12.4.5.8-py3-none-win_amd64.whl&quot;, hash = &quot;sha256:5a796786da89203a0657eda402bcdcec6180254a8ac22d72213abc42069522dc&quot; },
+]
+
+[[package]]
+name = &quot;nvidia-cublas-cu12&quot;
+version = &quot;12.9.1.4&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }
+resolution-markers = [
+    &quot;platform_machine == 'x86_64' and sys_platform == 'darwin'&quot;,
+]
+</code></pre>
+<p>On that index, for the latter no corresponding package seems to exist.</p>
+<p>The expected behaviour would be to only resolve for markers for which artifacts exist.</p>
+<p>This issue also arises in <code>pylock.toml</code> files generated with <code>uv export</code> (using #14783), which subsequently raises errors in PEX, with which I'm trying to consume said lock files.</p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-1027-gke x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.13 (9b8d6989d 2025-08-25)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @pimdh on 2025-08-25 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-25 23:56</div>
+            <div class="timeline-body"><p>I think that might be a sign that this isn't installable on macOS. The resolver should probably error entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-26 00:08</div>
+            <div class="timeline-body"><p>Wouldn't it be better to exclude the macOS marked package? If I only install torch, with</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  # &quot;cuml-cu12==25.8&quot;,
+  # &quot;ray[data]==2.47.1&quot;,
+  &quot;torch==2.6.0+cu124&quot;,
+]
+
+[[tool.uv.index]]
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+</code></pre>
+<p>I only get the linux version of <code>cublas</code>:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;nvidia-cublas-cu12&quot;
+version = &quot;12.4.5.8&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cu124/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:2fc8da60df463fdefa81e323eef2e36489e1c94335b5358bcb38360adf75ac9b&quot; },
+]
+</code></pre>
+<p>this seems like the desired behaviour. This can not be resolved for macOS, so it's not included in any package.
+The same happens when I install <code>cuml-cu12</code> or both <code>torch</code> and <code>cuml-cu12</code>.</p>
+<p>So why does it resolve with differently happen when I include <code>ray[data]</code>? That itself doesn't depend on <code>nvidia-cublas-cu12</code> at all, not even transitively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-26 00:15</div>
+            <div class="timeline-body"><p>For context, this appears to be happening due the following <a href="https://github.com/ray-project/ray/blob/releases/2.47.1/python/requirements.txt">requirements</a> of <code>ray</code>:</p>
+<pre><code># pyarrow 18 causes macos build failures.
+# See https://github.com/ray-project/ray/pull/48300
+pyarrow &gt;= 9.0.0
+pyarrow &lt;18; sys_platform == &quot;darwin&quot; and platform_machine == &quot;x86_64&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-26 09:42</div>
+            <div class="timeline-body"><p>By looking at the lockfile, it's clearly nonsense to produce an entry that can never be installed, but by the logic of the universal resolver, this is supported: Packages without source distributions only support a subset of platforms, so we can only produce a resolution for that limited set of platforms. Instead, we error on installation, saying that the platform isn't supported.</p>
+<p>For packages where different versions support different platforms, where you want to exclude a platform altogether or you want a version that supports a specific platform, you can define <code>tool.uv-environment</code> (https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments) or <code>tool.uv-required-environment</code> (https://docs.astral.sh/uv/concepts/resolution/#required-environments). For your case this would be the following, which makes the empty entry go away.</p>
+<pre><code class="language-toml">[tool.uv]
+environments = [&quot;sys_platform == 'linux'&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/issues/2887.html">pex-tool/pex#2887</a> on 2025-08-27 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-27 07:42</div>
+            <div class="timeline-body"><p>Okay thanks. This seems consistent with the <code>pylock.toml</code> <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-wheels">spec</a>, which, afaict, does not state that an artifact must be available.</p>
+<blockquote>
+<p>[[packages.wheels]]
+Type: array of tables</p>
+<p>Required?: no; mutually-exclusive with <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-packages-vcs">[packages.vcs]</a>, <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-packages-directory">[packages.directory]</a>, and <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-packages-archive">[packages.archive]</a></p>
+</blockquote>
+<p>I'll see if this can be accommodated when consuming the lockfiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pimdh on 2025-08-27 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-08-27 20:47</div>
+            <div class="timeline-body"><p>I've fixed Pex to deal with packages with no artifacts, but I think this is definitely a spec weakness. As an internal detail in <code>uv.lock</code> it makes total sense - uv code can deal with its own format as it sees fit. As an external detail in <code>pylock.toml</code> it seems sub-optimal if only because the spec is sub-optimal and, IIUC you can spell uninstallable for the current platform either by doing what uv does now - emit the package with no artifacts, or by simply not emitting that package at all in the lock. IOW the spec is under-specified here for, from what I can tell, is no good reason. It seems like just a confusion inducing unnecessary degree of freedom. All installers must handle both forms of absence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/pulls/2888.html">pex-tool/pex#2888</a> on 2025-08-27 20:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

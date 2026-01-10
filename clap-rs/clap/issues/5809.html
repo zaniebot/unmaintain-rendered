@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optional `#[command(flatten)]` breaks when nesting - clap-rs/clap #5809</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optional `#[command(flatten)]` breaks when nesting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5809">#5809</a>
+        opened by <a href="https://github.com/kaplanz">@kaplanz</a>
+        on 2024-11-06 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaplanz">@kaplanz</a> on 2024-11-06 20:30</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.82.0 (f6e511eec 2024-10-15)</p>
+<h3>Clap Version</h3>
+<p>4.5.20</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Args, Parser};
+
+fn main() {
+    dbg!(Cli::parse());
+}
+
+#[derive(Debug, Parser)]
+struct Cli {
+    #[command(flatten)]
+    pub opt: Option&lt;Opt&gt;,
+}
+
+#[derive(Args, Debug)]
+pub struct Opt {
+    #[arg(long)]
+    pub bar: bool,
+
+    #[arg(long)]
+    pub baz: Option&lt;i32&gt;,
+
+    // NOTE: Everything works if you comment out this field!
+    #[command(flatten)]
+    pub bad: Oops,
+}
+
+#[derive(Args, Debug)]
+pub struct Oops {
+    #[arg(long)]
+    pub oops: bool
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the produced executable, supplying any args on the command-line within the <code>opt</code> struct:</p>
+<pre><code>$ cargo run -- --bar --baz 3 --oops
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The minimum reproducible code will correctly parse the supplied options as shown in the (correct) help text:</p>
+<pre><code>Usage: foo [OPTIONS]
+
+Options:
+      --bar        
+      --baz &lt;BAZ&gt;  
+      --oops       
+  -h, --help       Print help
+</code></pre>
+<p>However, as can clearly been seen in the parsed output, the parsed values are seemingly discarded:</p>
+<pre><code>$ cargo run -- --bar --baz 3 --oops
+[src/main.rs:4:5] Cli::parse() = Cli {
+    opt: None,
+}
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>What is strange is that this issue <strong>only</strong> occurs with the nested <code>#[command(flatten)]</code> on lines 22-23. If this line is removed, the output will be as expected (with the obvious omission of the now-removed <code>--oops</code> flag):</p>
+<pre><code>$ cargo run -- --bar --baz 3
+[src/main.rs:4:5] Cli::parse() = Cli {
+    opt: Some(
+        Opt {
+            bar: true,
+            baz: Some(
+                3,
+            ),
+        },
+    ),
+}
+</code></pre>
+<p>Comparing the debug output between with/without the problematic lines, there's notably the following line missing:</p>
+<pre><code>[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Opt&quot;, source=CommandLine
+</code></pre>
+<h3>Additional Context</h3>
+<h3>Possibly Related</h3>
+<ul>
+<li>#3566<ul>
+<li>@epage I believe this is a similar issue to <a href="https://github.com/clap-rs/clap/discussions/3566#discussioncomment-3860552">this comment</a>.</li>
+</ul>
+</li>
+<li>#4350</li>
+</ul>
+<h3>Debug Output</h3>
+<pre><code>    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `foo --bar --baz 3 --oops`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;foo&quot;
+[clap_builder::builder::command]Command::_propagate:foo
+[clap_builder::builder::command]Command::_check_help_and_version:foo expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:foo
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:bar
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:baz
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:oops
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--bar&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--bar&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--bar'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;bar&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;bar&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;bar&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;bar&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--baz&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--baz&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--baz &lt;BAZ&gt;'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;baz&quot;): Found an arg with value 'None'
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=baz, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg Opt(&quot;baz&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;3&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=baz, pending=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=1
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--oops&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--oops&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--oops'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;oops&quot;): Presence validated
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;baz&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=2
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;baz&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;baz&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;baz&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;3&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=baz, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;oops&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;oops&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;oops&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Oops&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:bar:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:bar: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:bar: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:baz:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:baz: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:oops:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:oops: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:oops: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;bar&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;bar&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;baz&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;baz&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;oops&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;oops&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Oops&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;bar&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;baz&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;oops&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;Oops&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;bar&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;bar&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;baz&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;baz&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;oops&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;oops&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;bar&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;baz&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;oops&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Oops&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Oops&quot;:group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @kaplanz on 2024-11-06 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2024-11-06 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-11-06 21:00</div>
+            <div class="timeline-body"><p>I believe this is a duplicate of #4697, closing in favor of that.  If there is a reason to keep this open separately, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-11-06 21:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:41 UTC
+    </footer>
+</body>
+</html>

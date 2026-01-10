@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monorepo/Workspace Layout Adjustments - astral-sh/uv #16120</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Monorepo/Workspace Layout Adjustments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16120">#16120</a>
+        opened by <a href="https://github.com/ZachHandley">@ZachHandley</a>
+        on 2025-10-03 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZachHandley">@ZachHandley</a> on 2025-10-03 20:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi!</p>
+<p>I love the project, and I just wanted to say thank you, first and foremost</p>
+<p>I want to be able to define workspaces like, normally. I really hate how Python makes you do e.g.</p>
+<pre><code>albatross
+├── packages
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds
+│       ├── pyproject.toml
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── albatross
+        └── main.py
+</code></pre>
+<p>Is there any way we could (even with a symlink behind the scenes or something?) do more like</p>
+<pre><code>albatross
+├── packages
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       ├── __init__.py
+│   │       └── foo.py
+│   └── seeds
+│       ├── pyproject.toml
+│       └── src
+│             ├── __init__.py
+│             └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+        └─ main.py
+</code></pre>
+<p>IMO this is cleaner, and makes more sense to my brain, but maybe that's me --</p>
+<h3>Example</h3>
+<p>Well, you'd just specify the workspace packages, and uv would automatically know that the <code>pythonpath</code> and the <code>pyproject.toml</code> specifies the package, so if I have in the bird-feeder pyproject.toml that it's called <code>bird-feeder</code>, I don't quite get why that isn't just resolved automatically?</p>
+<p>I get that python has standards, and maybe it goes against them, but I would prefer to at least have this as an option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @ZachHandley on 2025-10-03 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2025-10-05 16:16</div>
+            <div class="timeline-body"><p>The whole point of a src-folder is that it is not importable.
+A src-folder should only contain one or more directories.
+It should never contain *.py files directly.</p>
+<p>What you are doing, is basically creating a project called &quot;src&quot; 3x times.</p>
+<p>For a workspace mono, I would put all packages in src:</p>
+<pre><code>albatross
+├── src
+│   ├──  albatross
+│   │    └── main.py
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds
+│       ├── pyproject.toml
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+</code></pre>
+<p>in pyproject.toml</p>
+<pre><code>[tool.uv.workspace]
+members = [&quot;src/*&quot;]
+exclude = [&quot;src/albatross&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-06 09:39</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/11325 for this being proposed and the rebuttal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZachHandley">@ZachHandley</a> on 2025-10-06 20:24</div>
+            <div class="timeline-body"><p>interesting, okay, I'll try that! I still think it's not really clear, because in TypeScript for instance, I have</p>
+<p>basically what I mean is: imagine Python supported monorepos like TypeScript with pnpm workspaces.</p>
+<p>so instead of one big <code>src/</code>, you'd do this kind of layout:</p>
+<pre><code>root
+├── README.md
+├── pyproject.toml
+├── uv.lock
+└── packages
+    ├── albatross
+    │   ├── pyproject.toml
+    │   └── src/main.py
+    ├── bird-feeder
+    │   ├── pyproject.toml
+    │   └── src/foo.py
+    ├── seeds
+    │   ├── pyproject.toml
+    │   └── src/bar.py
+    └── seagull
+        ├── pyproject.toml
+        └── src/wind.py
+</code></pre>
+<p>and then the root <code>pyproject.toml</code> acts like a workspace manager, same as a pnpm monorepo:</p>
+<pre><code>[tool.uv.workspace]
+members = [
+  &quot;packages/albatross&quot;,
+  &quot;packages/bird-feeder&quot;,
+  &quot;packages/seeds&quot;,
+  &quot;packages/seagull&quot;,
+]
+</code></pre>
+<p>and each subpackage just declares editable path deps:</p>
+<pre><code>[tool.uv.sources]
+seeds = { path = &quot;../seeds&quot;, editable = true }
+
+[tool.uv]
+dependencies = [&quot;seeds&quot;]
+</code></pre>
+<p>basically — this would give Python a pnpm-style workspace, single <code>uv.lock</code>, and linked editable packages by default.</p>
+<p>Granted, I know this would move away from Python standards a bit, which is probably averse to the goal, I just think it would make it a lot easier to use, IMO. I don't know, I just don't love having multiple sub-folders for seemingly not a ton of reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11325.html">astral-sh/uv#11325</a> on 2025-10-06 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seffs">@seffs</a> on 2025-10-08 06:22</div>
+            <div class="timeline-body"><blockquote>
+<p>this would give Python a pnpm-style workspace, single <code>uv.lock</code>, and linked editable packages by default.</p>
+</blockquote>
+<p>If I fully understood what you're looking for, I think this is already the case. Consider the following structure:</p>
+<pre><code> backend/
+  ├── pyproject.toml       # workspace root
+  ├── uv.lock              # single lock file for all packages
+  ├── libs/
+  │   └── core/
+  │       ├── pyproject.toml
+  │       └── src/
+  └── services/
+      ├── api/
+      │   ├── pyproject.toml
+      │   └── src/
+      ├── messaging/
+      │   ├── bridge/
+      │   │   ├── pyproject.toml
+      │   │   └── src/
+      │   └── relay/
+      │       ├── pyproject.toml
+      │       └── src/
+      └── middleware/
+          └── orchestrator/
+              ├── pyproject.toml
+              └── src/
+</code></pre>
+<p><code>backend</code> acts as our root. In order to serve as the &quot;workspace manager&quot; you need to define:</p>
+<pre><code class="language-toml"># backend/pyproject.toml
+[tool.uv.workspace]
+members = [
+    &quot;libs/*&quot;,
+    &quot;services/api&quot;,
+    &quot;services/messaging/*&quot;,
+    &quot;services/middleware/*&quot;,
+]
+
+# No [build-system] defined!
+</code></pre>
+<p>For each (sub)component, e.g. the API service:</p>
+<pre><code class="language-toml">  # Individual package (services/api/pyproject.toml)
+  [project]
+  name = &quot;my-api-gateway&quot;
+  dependencies = [
+      &quot;my-core&quot;,
+      &quot;fastapi[all]&gt;=0.115.8&quot;,
+      # ... other deps
+  ]
+
+  [tool.uv.sources]
+  my-core = { workspace = true }  # editable workspace dep
+</code></pre>
+<p>Executing <code>uv sync --all-packages</code> at the root (<code>backend/</code>) takes care of the rest.</p>
+<h2>Bonus</h2>
+<p>I found an elegant (or rather lazy) way to take care of complex, nested layouts as above. You could do something like this:</p>
+<pre><code class="language-toml">[tool.uv.workspace]
+members = [
+    &quot;[!.]*/**&quot; # Traverse all visible directories right under backend/
+]
+
+exclude = [
+    &quot;**/src&quot;, # Exclude all src/ dirs
+    &quot;**/src/**&quot;,  # Exclude all src/ subdirs
+    # Exclude non-python folders
+    &quot;docs&quot;,
+    # Define the immediate parent of nested projects
+    &quot;services/messaging&quot;,
+    &quot;services/middleware&quot;,
+    &quot;services/x/y/z&quot;,
+    # ...
+]
+</code></pre>
+<p>I like this approach better as it will raise an error on undefined nested paths instead of being permissive and &quot;failing&quot; silently.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

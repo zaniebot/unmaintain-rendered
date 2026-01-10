@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version 0.1.19 breaks AWS CodeArtifact authentication - astral-sh/uv #2444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Version 0.1.19 breaks AWS CodeArtifact authentication</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2444">#2444</a>
+        opened by <a href="https://github.com/tom-engineering">@tom-engineering</a>
+        on 2024-03-14 02:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tom-engineering">@tom-engineering</a> on 2024-03-14 02:43</div>
+            <div class="timeline-body"><p><code>uv</code> version 0.1.19 gives a 401 error when connecting to a CodeArtifact repo, where 0.1.18 works fine.</p>
+<p>uv version: 0.1.19
+platform: macOS 14.4 (23E214)</p>
+<p>Example:
+<code>uv pip install -r requirements.txt --index-url https://aws:&lt;redacted-key&gt;@&lt;redacted-subdomain&gt;.codeartifact.us-east-1.amazonaws.com/pypi/eng/simple/</code></p>
+<pre><code>error: Failed to download: tenacity==8.1.0
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://&lt;redacted-subdomain&gt;.codeartifact.us-east-1.amazonaws.com/pypi/eng/simple/tenacity/8.1.0/tenacity-8.1.0[...])
+</code></pre>
+<p>Can't give a repro but it does track with the changes to authentication between 0.1.18 and 0.1.19. The module that fails changes each time, so not specific to the module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 02:49</div>
+            <div class="timeline-body"><p>Did you try with <code>--native-tls</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 02:51</div>
+            <div class="timeline-body"><p>\cc @zanieb - my guess is this is related to the authentication store in some way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tom-engineering">@tom-engineering</a> on 2024-03-14 03:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you try with <code>--native-tls</code>?</p>
+</blockquote>
+<p>Just ran and same result ($UV_INDEX_URL is set as the <code>--index-url</code> flag was before):</p>
+<pre><code>uv pip install --native-tls -r requirements.txt
+error: Failed to download and build: strict-rfc3339==0.7
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://&lt;redacted-subdomain&gt;.codeartifact.us-east-1.amazonaws.com/pypi/eng/simple/[...])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-14 03:00</div>
+            <div class="timeline-body"><p>Okay, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-14 03:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-14 03:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @charliermarsh on 2024-03-14 03:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2446.html">astral-sh/uv#2446</a> on 2024-03-14 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2447.html">astral-sh/uv#2447</a> on 2024-03-14 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-14 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-14 03:49</div>
+            <div class="timeline-body"><p>Thanks for the report! We should have a fix released shortly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ealap">@ealap</a> on 2024-03-20 12:35</div>
+            <div class="timeline-body"><p>Hi @charliermarsh, I can confirm that this issue was fixed on v0.1.20 (#2446) but the issue came back after v0.1.22 (probably due to #2449?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 13:23</div>
+            <div class="timeline-body"><p>Oh strange! Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 14:00</div>
+            <div class="timeline-body"><p>Unfortunately I'm not able to reproduce this when running against an authenticated CodeArtifact index. Are you certain that this is the issue you're running into? And certain that you're on the right uv version, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ealap">@ealap</a> on 2024-03-20 14:32</div>
+            <div class="timeline-body"><p>I'm certain because I have specified the uv versions on a requirements.txt file I used for a project. The only versions where it doesn't worked are &quot;uv==0.1.19&quot; and &quot;uv==0.1.22&quot;.</p>
+<p>The index url I am trying to use points to a private JFrog artifactory PyPI repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-20 14:37</div>
+            <div class="timeline-body"><p>@ealap can you open a new issue please and provide verbose logs (<code>-v</code>) with your password omitted?</p>
+<p>This issue is for AWS CodeArtifact.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ealap">@ealap</a> on 2024-03-20 14:43</div>
+            <div class="timeline-body"><p>Sorry, I thought the root issue was generally for basic HTTP authentication / in-URL credentials.</p>
+<p>I will create a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2566.html">astral-sh/uv#2566</a> on 2024-03-20 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

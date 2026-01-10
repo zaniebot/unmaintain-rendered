@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows: uv doesn't find python versions on PATH - astral-sh/uv #1310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows: uv doesn't find python versions on PATH</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1310">#1310</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-15 08:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-15 08:37</div>
+            <div class="timeline-body"><p>I installed Python using pyenv-win but puffin can't find it (because it's not in the PATH). Running python from the command line works as expected and starship recognises it correctly too.</p>
+<pre><code class="language-bash">❯ python -V
+Python 3.12.0
+
+puffin on  main [?] is 📦 v0.0.4 via 🐍 v3.12.0 via 🦀 v1.75.0
+❯ where.exe python
+C:\Users\Micha\.pyenv\pyenv-win\shims\python
+C:\Users\Micha\.pyenv\pyenv-win\shims\python.bat
+C:\Users\Micha\AppData\Local\Microsoft\WindowsApps\python.exe
+
+py --list-paths
+ -V:IronPython/3.4 * C:\Program Files\IronPython 3.4\ipy.exe
+ -V:IronPython/3.4-32 C:\Program Files\IronPython 3.4\ipy32.exe
+
+puffin venv
+  × Could not find `python.exe` in PATH and `py --list-paths` did not list any Python versions. Is Python installed?
+</code></pre>
+<p>Probably related to https://github.com/astral-sh/puffin/issues/1168</p>
+<p>Work around: use <code>pyenv which python</code> and pass the path explicitly <code>puffin pip -p &lt;path_shown_by_pyenv_which&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @MichaReiser on 2024-02-15 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-15 14:55</div>
+            <div class="timeline-body"><p>Nice, good find.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 19:16</div>
+            <div class="timeline-body"><p>The issue is probably more general and applies to all python versions that are on the PATH. See <a href="https://github.com/astral-sh/uv/pull/940#issuecomment-1949127576">this comment</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/940.html">astral-sh/uv#940</a> on 2024-02-16 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Windows: Doesn't find python version installed with pyenv-win" to "Windows: uv doesn't find python versions on PATH" by @MichaReiser on 2024-02-16 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-16 20:38</div>
+            <div class="timeline-body"><p>Ran into this on Github Actions too, see https://github.com/tox-dev/tox-uv/actions/runs/7935511069?pr=2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/melMass">@melMass</a> on 2024-02-17 17:17</div>
+            <div class="timeline-body"><p>Yep, uv seems to expect the global <code>py</code> (apparently a thing on windows)
+I also use pyenv-win and pyenv on unix and have the same issue:</p>
+<pre><code class="language-sh">❯ uv venv
+  × Failed to run `py --list-paths` to find Python installations. Is Python installed?
+  ╰─▶ program not found
+</code></pre>
+<p>I tried all installation methods (cargo, pip, from source)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 18:00</div>
+            <div class="timeline-body"><p>@melMass is <code>python.exe</code> on your <code>PATH</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/melMass">@melMass</a> on 2024-02-17 18:03</div>
+            <div class="timeline-body"><blockquote>
+<p>@melMass is <code>python.exe</code> on your <code>PATH</code>?</p>
+</blockquote>
+<p>Yep
+<img src="https://github.com/astral-sh/uv/assets/7041726/2ec6ea87-69c7-4d0a-9003-1a659380e303" width=400/></p>
+<p>Maybe the <code>bat</code> shims is causing an issue?</p>
+<p>Specifying the path like this works fine:</p>
+<pre><code class="language-sh">uv venv -p (pyenv exec python -c &quot;import sys; print(sys.executable)&quot;)
+</code></pre>
+<p><img src="https://github.com/astral-sh/uv/assets/7041726/7c8b15f0-9518-48df-b8e1-82fa1d5ab236" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 18:05</div>
+            <div class="timeline-body"><p>It looks like <code>python</code> and <code>python.bat</code> are on your path, we don't support those shims yet. You should add <code>python.exe</code> to your path e.g. by adding the <code>sys.executable</code> folder you showed at the end to <code>PATH</code>.</p>
+<p>Or, yes, you can use the full path to the interpreter executable directly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/melMass">@melMass</a> on 2024-02-17 18:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like <code>python</code> and <code>python.bat</code> are on your path, we don't support those shims yet. You should add <code>python.exe</code> to your path e.g. by adding the <code>sys.executable</code> folder you showed at the end to <code>PATH</code>.</p>
+</blockquote>
+<p>Thanks, it makes sense.</p>
+<p><code>pyenv-win</code> is a little finicky so I don't mind specifying the full path, I avoid global pythons at all cost, from experience it creates complex issues to debug (especially on windows)</p>
+<p>In this case I think I'll use the cargo releases to avoid <code>pip</code> &amp; <code>pipx</code> being responsible of uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-17 19:18</div>
+            <div class="timeline-body"><p>I plan to work on this on Monday except someone beats me to it. Appreciate any pointers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-02-17 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 19:21</div>
+            <div class="timeline-body"><p>We <em>do</em> correctly find <code>python.exe</code> with #1381. I think #1521 is the next major step for Windows Python discovery. I'm not sure if we have intermediate solutions, but we could maybe support <code>python</code> shims from pyenv-win like we do for pyenv on unix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-17 19:41</div>
+            <div class="timeline-body"><p>@zanieb any idea why GitHub actions fails?</p>
+<p>https://github.com/astral-sh/uv/issues/1521#issuecomment-1949299848</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 20:23</div>
+            <div class="timeline-body"><p>Hm this looks to be working in GitHub actions with <code>setup-python</code> over here https://github.com/astral-sh/uv/actions/runs/7944040120/job/21689087415?pr=1611</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-18 22:25</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/1521 should not be the next step. I know that is a spec and I know that virtualenv supports that, but I guarantee you that it is generally unused in most scenarios and you should prioritize implementing lookups based on PATH. The way virtualenv works is that it will try the registry and if the result is not empty then use PATH but in all of my time in enterprise and on my personal machine it has always responded to modifications to PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1636.html">astral-sh/uv#1636</a> on 2024-02-18 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1639.html">astral-sh/uv#1639</a> on 2024-02-18 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1660.html">astral-sh/uv#1660</a> on 2024-02-18 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 23:58</div>
+            <div class="timeline-body"><p>@ofek can you please clarify what you'd like us to find on the PATH? We already will find <code>python.exe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-18 23:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm this looks to be working in GitHub actions with <code>setup-python</code> over here <a href="https://github.com/astral-sh/uv/actions/runs/7944040120/job/21689087415?pr=1611">astral-sh/uv/actions/runs/7944040120/job/21689087415?pr=1611</a></p>
+</blockquote>
+<p>When called from within tox https://github.com/tox-dev/tox-uv/pull/19 seems it fails though....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-19 00:36</div>
+            <div class="timeline-body"><p>@zanieb can you help what information exactly is used on Windows to create the environment today? Env-vars, and such 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 01:03</div>
+            <div class="timeline-body"><p>@zanieb Yes I understand that but the issue is that you're not finding every single <code>python.exe</code> on PATH.</p>
+<p><img src="https://github.com/astral-sh/uv/assets/9677399/d932e53d-c699-425a-a790-386a28302f36" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 10:42</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Hm this looks to be working in GitHub actions with <code>setup-python</code> over here <a href="https://github.com/astral-sh/uv/actions/runs/7944040120/job/21689087415?pr=1611">astral-sh/uv/actions/runs/7944040120/job/21689087415?pr=1611</a></p>
+</blockquote>
+<p>When called from within tox <a href="https://github.com/tox-dev/tox-uv/pull/19">tox-dev/tox-uv#19</a> seems it fails though....</p>
+</blockquote>
+<p>This seems unrelated to the Python discovery because <code>uv</code> successfully starts to resovle dependencies but fails with <code>Unable to extract filename from URL: d:\a\tox-uv\tox-uv\.tox\.tmp\package\1\tox_uv-0.1.dev1+g5039064-py3-none-any.whl</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 10:56</div>
+            <div class="timeline-body"><p>According to pep514, <code>py</code> already makes use of the registry information. Therefore, implementing PEP514 is unlikely to help when trying to discover all python versions.</p>
+<blockquote>
+<p>When installed on Windows, the official Python installer creates a registry key for discovery and detection by other applications. This allows tools such as installers or IDEs to automatically detect and display a user’s Python installations. For example, the <a href="https://peps.python.org/pep-0397/">PEP 397</a> py.exe launcher and editors such as PyCharm and Visual Studio already make use of this information.</p>
+</blockquote>
+<p>Virtualenv has a fallback where it iterates over each path and tries to find the right python version https://github.com/pypa/virtualenv/blob/fa283474fd199e3836f8b2c99510190c6b77e2bc/src/virtualenv/discovery/builtin.py#L107-L120</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>We <em>do</em> correctly find <code>python.exe</code> with #1381.</p>
+</blockquote>
+<p>I think #1381 only fixes the problem for <code>find_default_python</code> but not when calling <code>uv --python 3.8</code> where 3.8 is the default python installation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1693.html">astral-sh/uv#1693</a> on 2024-02-19 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1711.html">astral-sh/uv#1711</a> on 2024-02-19 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-22 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2056.html">astral-sh/uv#2056</a> on 2024-02-29 01:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/684.html">astral-sh/ty#684</a> on 2025-06-19 19:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

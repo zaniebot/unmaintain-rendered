@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] support Literal[None] as a spelling for None - astral-sh/ruff #14981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] support Literal[None] as a spelling for None</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14981">#14981</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-12-15 05:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-12-15 05:49</div>
+            <div class="timeline-body"><p>Per the spec, <code>Literal[None]</code> is a valid spelling for <code>None</code> (that is, in red-knot terms, <code>Type::Instance(types.NoneType)</code>.) And e.g. <code>Literal[1, None]</code> is an alternate spelling for <code>Literal[1] | None</code>. We don't support this, but we should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2024-12-15 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-12-15 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-15 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-12-15 12:40</div>
+            <div class="timeline-body"><p>I tried reproducing this using the following test but it passes:</p>
+<pre><code class="language-python">x1: Literal[1, None]
+def f():
+  # revealed: Literal[1] | None
+  reveal_type(x1)
+
+x2: Literal[None]
+def f2():
+  # revealed: None
+  reveal_type(x2)
+</code></pre>
+<p>Did I miss something in the description?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-12-15 16:20</div>
+            <div class="timeline-body"><p>On a slightly different note, there’s also the issue of class literals.
+For example, <code>Literal[str, int]</code> should be represented as <code>type[str]</code> | <code>type[int]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-15 17:58</div>
+            <div class="timeline-body"><p>Sorry, this was my mistake, I made an assumption and didn't check it!</p>
+<blockquote>
+<p><code>Literal[str, int]</code> should be represented as <code>type[str]</code> | <code>type[int]</code></p>
+</blockquote>
+<p>Yeah, perhaps. The problem with this is that <code>Literal[str]</code> and <code>type[str]</code> are different types (the latter includes all subclasses, the former does not) and can behave differently, so it could be confusing to display them the same. On the other hand, it can be confusing to display types that aren't part of the spec / we don't accept if spelled by the user in an annotation. (We will have this latter problem also for intersections.) I don't have a clear plan in mind yet for how we should handle this :/</p>
+<p>One other note on <code>Literal</code> is that we currently split different &quot;kinds&quot; of literal, so we show <code>Literal[1, 2] | Literal[&quot;foo&quot;]</code>, whereas the spec (and every other type checker) prefer <code>Literal[1, 2, &quot;foo&quot;]</code>. It's probably better for us to switch to the latter, since there's no ambiguity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-12-15 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-15 18:02</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/14988</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

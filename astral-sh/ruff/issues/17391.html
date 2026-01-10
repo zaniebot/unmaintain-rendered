@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for `per-file-select` to simplify incremental rule adoption in monorepos - astral-sh/ruff #17391</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for `per-file-select` to simplify incremental rule adoption in monorepos</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17391">#17391</a>
+        opened by <a href="https://github.com/mgaitan">@mgaitan</a>
+        on 2025-04-14 12:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgaitan">@mgaitan</a> on 2025-04-14 12:01</div>
+            <div class="timeline-body"><p>We're currently running into a limitation related to <code>select</code> granularity. In our setup, we want to <strong>enable all <code>B</code> (flake8-bugbear) rules only for a specific subdirectory</strong>, e.g., <code>infrastructure/**/*.py</code>, while <strong>keeping a small, curated subset of <code>B</code> rules for the rest of the codebase</strong>.</p>
+<p>Since <code>per-file-select</code> is not supported, the only way to do this today is to add <code>&quot;B&quot;</code> to the global <code>select</code> list, and then <strong>manually disable every unwanted <code>B</code> rule for all other paths using <code>per-file-ignores</code></strong>.</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;E&quot;, &quot;F&quot;, &quot;B&quot;]
+
+[tool.ruff.lint.per-file-ignores]
+&quot;!infrastructure/**/*.py&quot; = [
+  &quot;B011&quot;, &quot;B012&quot;, &quot;B013&quot;, &quot;B014&quot;, &quot;B015&quot;, &quot;B017&quot;, &quot;B019&quot;, &quot;B020&quot;, &quot;B024&quot;, &quot;B028&quot;, ...
+]
+</code></pre>
+<p>This approach has two major downsides:</p>
+<ol>
+<li>It's hard to maintain and scales poorly with monorepos.</li>
+<li><strong>If a new <code>B</code> rule is added in a Ruff update</strong>, it will immediately start triggering errors in all non-<code>infrastructure</code> code — unless we explicitly add it to the <code>per-file-ignores</code>, which makes upgrades error-prone.</li>
+</ol>
+<p>Instead, we'd love to see support for something like:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;E&quot;, &quot;F&quot;, &quot;B006&quot;, &quot;B007&quot;]
+
+[tool.ruff.lint.per-file-select]
+&quot;infrastructure/**/*.py&quot; = [&quot;B&quot;]
+</code></pre>
+<p>This would allow teams to <strong>adopt rules incrementally in targeted parts of the codebase</strong>, without negatively affecting the rest of the project. It would significantly improve maintainability and unlock cleaner linting strategies in larger codebases.</p>
+<p>This idea has already come up in a couple of discussions by @carljm:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/11042#issuecomment-2067022376</li>
+<li>https://github.com/astral-sh/ruff/pull/10863#discussion_r1561770000</li>
+</ul>
+<p>PS: Thanks for your great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-14 12:37</div>
+            <div class="timeline-body"><p><code>per-file-select</code> may still be useful (thanks for the references to other comments!), but I think this specific example could also be handled by a separate, small <code>ruff.toml</code> in your <code>infrastructure</code> subdirectory with the <code>B</code> rules <a href="https://docs.astral.sh/ruff/settings/#lint_extend-select"><code>extend-select</code></a>ed. That might be a useful workaround for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-04-14 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-14 22:51</div>
+            <div class="timeline-body"><p>I think this can be merged into https://github.com/astral-sh/ruff/issues/7696 which is a more general issue that asks support for per-file configuration that would include <code>select</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-15 13:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

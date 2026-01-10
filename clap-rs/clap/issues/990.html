@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatal internal error when misusing requires/conflicting rules - clap-rs/clap #990</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fatal internal error when misusing requires/conflicting rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/990">#990</a>
+        opened by <a href="https://github.com/chriscoomber">@chriscoomber</a>
+        on 2017-06-20 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chriscoomber">@chriscoomber</a> on 2017-06-20 15:30</div>
+            <div class="timeline-body"><p>I provided the following misconfigured matches:</p>
+<pre><code class="language-rust">    let matches = clap::App::new(&quot;test&quot;)
+        .arg(clap::Arg::with_name(&quot;viv&quot;)
+            .short(&quot;v&quot;)
+            .requires_all(&amp;[&quot;w&quot;]))
+        .arg(clap::Arg::with_name(&quot;walter&quot;)
+            .short(&quot;w&quot;)
+            .requires_all(&amp;[&quot;v&quot;]))
+        .arg(clap::Arg::with_name(&quot;andy&quot;)
+            .short(&quot;a&quot;)
+            .conflicts_with_all(&amp;[&quot;v&quot;, &quot;w&quot;]))
+        .get_matches();
+</code></pre>
+<p>and got a fatal internal error (suggesting I raise here), rather than a well handled error.</p>
+<p>I should have put as my matches:</p>
+<pre><code class="language-rust">    let matches = clap::App::new(&quot;test&quot;)
+        .arg(clap::Arg::with_name(&quot;viv&quot;)
+            .short(&quot;v&quot;)
+            .requires_all(&amp;[&quot;walter&quot;]))
+        .arg(clap::Arg::with_name(&quot;walter&quot;)
+            .short(&quot;w&quot;)
+            .requires_all(&amp;[&quot;viv&quot;]))
+        .arg(clap::Arg::with_name(&quot;andy&quot;)
+            .short(&quot;a&quot;)
+            .conflicts_with_all(&amp;[&quot;viv&quot;, &quot;walter&quot;]))
+        .get_matches();
+</code></pre>
+<h3>Rust Version</h3>
+<p>rustc 1.18.0 (03fc9d622 2017-06-06)</p>
+<h3>Affected Version of clap</h3>
+<p>2.24.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>A graceful error, possibly explaining my mistake.</p>
+<h3>Actual Behavior Summary</h3>
+<pre><code>thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', /checkout/src/libcore/option.rs:794
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>Put the above matches in a binary. Run <code>cargo run -- -v</code>.</p>
+<h3>Output</h3>
+<pre><code>$ RUST_BACKTRACE=1 cargo run -- -v
+     Running `&lt;snip&gt;/my_app -v`
+thread 'main' panicked at 'Fatal internal error. Please consider filing a bug report at https://github.com/kbknapp/clap-rs/issues', /checkout/src/libcore/option.rs:794
+stack backtrace:
+   0: std::sys::imp::backtrace::tracing::imp::unwind_backtrace
+             at /checkout/src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:49
+   1: std::sys_common::backtrace::_print
+             at /checkout/src/libstd/sys_common/backtrace.rs:71
+   2: std::panicking::default_hook::{{closure}}
+             at /checkout/src/libstd/sys_common/backtrace.rs:60
+             at /checkout/src/libstd/panicking.rs:355
+   3: std::panicking::default_hook
+             at /checkout/src/libstd/panicking.rs:371
+   4: std::panicking::rust_panic_with_hook
+             at /checkout/src/libstd/panicking.rs:549
+   5: std::panicking::begin_panic
+             at /checkout/src/libstd/panicking.rs:511
+   6: std::panicking::begin_panic_fmt
+             at /checkout/src/libstd/panicking.rs:495
+   7: rust_begin_unwind
+             at /checkout/src/libstd/panicking.rs:471
+   8: core::panicking::panic_fmt
+             at /checkout/src/libcore/panicking.rs:69
+   9: core::option::expect_failed
+             at /checkout/src/libcore/option.rs:794
+  10: &lt;core::option::Option&lt;T&gt;&gt;::expect
+             at /checkout/src/libcore/option.rs:297
+  11: clap::app::usage::get_required_usage_from::{{closure}}
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/usage.rs:420
+  12: &lt;core::option::Option&lt;T&gt;&gt;::unwrap_or_else
+             at /checkout/src/libcore/option.rs:364
+  13: clap::app::usage::get_required_usage_from
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/usage.rs:417
+  14: clap::app::validator::Validator::missing_required_error
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/validator.rs:436
+  15: clap::app::validator::Validator::validate_required
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/validator.rs:360
+  16: clap::app::validator::Validator::validate
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/validator.rs:65
+  17: clap::app::parser::Parser::get_matches_with
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/parser.rs:1084
+  18: clap::app::App::get_matches_from_safe_borrow
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/mod.rs:1618
+  19: clap::app::App::get_matches_from
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/mod.rs:1503
+  20: clap::app::App::get_matches
+             at /data/cc3/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.24.2/src/app/mod.rs:1446
+  21: my_app::main
+             at ./src/main.rs:54
+  22: __rust_maybe_catch_panic
+             at /checkout/src/libpanic_unwind/lib.rs:98
+  23: std::rt::lang_start
+             at /checkout/src/libstd/panicking.rs:433
+             at /checkout/src/libstd/panic.rs:361
+             at /checkout/src/libstd/rt.rs:57
+  24: main
+  25: __libc_start_main
+  26: &lt;unknown&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-08-21 22:22</div>
+            <div class="timeline-body"><p>Thanks for the heads up and sorry it's taken me so long to reply, I'm trying to blind myself to get 3.x released which should actually take care of this issue. I'm going to leave it open though to verify that it's fixed before finishing 3.x</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2017-08-21 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2017-08-21 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-07-22 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1479.html">clap-rs/clap#1479</a> on 2019-05-26 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1644.html">clap-rs/clap#1644</a> on 2020-02-01 22:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:34 UTC
+    </footer>
+</body>
+</html>

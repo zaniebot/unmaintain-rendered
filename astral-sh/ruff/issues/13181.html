@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 rule has a bug - astral-sh/ruff #13181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 rule has a bug</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13181">#13181</a>
+        opened by <a href="https://github.com/seriaati">@seriaati</a>
+        on 2024-08-31 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/seriaati">@seriaati</a> on 2024-08-31 08:08</div>
+            <div class="timeline-body"><p>I'm not exactly sure if this is a bug.
+Consider the following file structure:</p>
+<pre><code>my_view_items/
+├─ my_button.py
+components.py
+my_view.py
+</code></pre>
+<p>With the following code:</p>
+<pre><code class="language-py"># components.py
+
+from typing import Generic, TypeVar
+
+V_co = TypeVar(&quot;V_co&quot;, bound=&quot;View&quot;)
+
+
+class View:
+    pass
+
+
+class Button(Generic[V_co]):
+    pass
+</code></pre>
+<pre><code class="language-py"># my_view.py
+
+from .components import View
+
+
+class MyView(View):
+    pass
+</code></pre>
+<pre><code class="language-py"># my_view_items/button.py
+
+from typing import TYPE_CHECKING
+
+from ..components import Button
+
+if TYPE_CHECKING:
+    from ..my_view import MyView # F401 is raised here.
+
+
+class MyButton(Button[&quot;MyView&quot;]):
+    pass
+</code></pre>
+<p>The example can probably be more simplified to reproduce this issue, but this is something that I encountered in one of my projects, so I decided to just simplify the code (from my project).
+Basically, typing using quotes for generics would cause F401 (unused import) to be triggered. But the import is actually needed.
+In addition, the presence of <code>from __future__ import annotations</code> doesn't affect whether F401 is raised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 18:24</div>
+            <div class="timeline-body"><p>This is similar to https://github.com/astral-sh/ruff/issues/9298. We can't detect arbitrary user-defined generics right now. You can tell Ruff that a class should be considered generic via https://docs.astral.sh/ruff/settings/#lint_pyflakes_extend-generics for now, and we plan to improve it in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-01 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-01 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2024-09-01 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15860.html">astral-sh/ruff#15860</a> on 2025-02-01 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

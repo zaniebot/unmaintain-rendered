@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoking `python` can fail if the interpreter is named `python3` - astral-sh/uv #5838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invoking `python` can fail if the interpreter is named `python3`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5838">#5838</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-06 22:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 22:22</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code>❯ uv run -v python -c &quot;import anyio&quot;
+DEBUG uv 0.2.32
+warning: `uv run` is experimental and may change without warning
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/zb/Library/Application Support/uv/python`
+DEBUG Found managed installation `cpython-3.12.1-macos-aarch64-none`
+DEBUG Found `cpython-3.12.1-macos-aarch64-none` at `/Users/zb/Library/Application Support/uv/python/cpython-3.12.1-macos-aarch64-none/bin/python3` (managed installations)
+DEBUG Using Python 3.12.1 interpreter at: /Users/zb/Library/Application Support/uv/python/cpython-3.12.1-macos-aarch64-none/bin/python3
+DEBUG Running `python -c import anyio`
+error: Failed to spawn: `python`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>We should detect and special case <code>python</code>, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 22:23</div>
+            <div class="timeline-body"><p>Huh. I thought there was always a <code>python</code> alias in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-06 22:41</div>
+            <div class="timeline-body"><p>Should we add one to our installs?</p>
+<pre><code>❯ ls '/Users/zb/Library/Application Support/uv/python/cpython-3.12.1-macos-aarch64-none/bin/'
+2to3			idle3			pip			pip3.12			pydoc3.12		python3-config		python3.12-config
+2to3-3.12		idle3.12		pip3			pydoc3			python3			python3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:02</div>
+            <div class="timeline-body"><p>I guess this would succeed if we always ran in a virtual environment...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:22</div>
+            <div class="timeline-body"><p>We should probably create a symlink there though. It's interesting that we have <code>pip</code> and <code>pip3</code> but not <code>python</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:23</div>
+            <div class="timeline-body"><p>Doing some research, it looks like this was. added to <code>python-build-standalone</code> in https://github.com/indygreg/python-build-standalone/commit/e9427bd059465e6472ea6ac80e6dd849e53f3e64, and <a href="https://peps.python.org/pep-0394/">PEP 394</a> says it's allowed. So wondering why it didn't appear here. I'll debug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:33</div>
+            <div class="timeline-body"><p>I think the symlink is being filtered out when unzipping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-06 23:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-07 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 01:36</div>
+            <div class="timeline-body"><p>Regardless of its presence in the python-build-standalone installations, should we special case <code>python</code> in <code>uv run</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 01:38</div>
+            <div class="timeline-body"><p>I don’t think so personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 01:51</div>
+            <div class="timeline-body"><p>Alright, we can see if it comes up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 01:51</div>
+            <div class="timeline-body"><p>(Do you mean: if they use <code>python</code>, we inject the full path to the interpreter?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 02:22</div>
+            <div class="timeline-body"><p>On my machine at least, these <em>do</em> have a <code>python</code>:</p>
+<ul>
+<li>cpython-3.8.18-macos-aarch64-none</li>
+<li>cpython-3.9.18-macos-aarch64-none</li>
+<li>cpython-3.10.13-macos-aarch64-none</li>
+</ul>
+<p>While these do not:</p>
+<ul>
+<li>cpython-3.8.12-macos-aarch64-none</li>
+<li>cpython-3.11.7-macos-aarch64-none</li>
+<li>cpython-3.12.1-macos-aarch64-none</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 02:24</div>
+            <div class="timeline-body"><p>Ah ok, it looks like those distributions actually don't contain a <code>python</code>. So it's an inconsistency in <code>python-build-standalone</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 02:26</div>
+            <div class="timeline-body"><p>Ooooh those versions pre-date the introduction of that feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 02:28</div>
+            <div class="timeline-body"><p>I'm going to change our installer to add it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5849.html">astral-sh/uv#5849</a> on 2024-08-07 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-07 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-07 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-07 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6348.html">astral-sh/uv#6348</a> on 2024-08-21 16:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

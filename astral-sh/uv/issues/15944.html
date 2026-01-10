@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build` fails to build local project when invoked by pex - astral-sh/uv #15944</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build` fails to build local project when invoked by pex</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15944">#15944</a>
+        opened by <a href="https://github.com/matthieucx">@matthieucx</a>
+        on 2025-09-19 09:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthieucx">@matthieucx</a> on 2025-09-19 09:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello!</p>
+<p>I am trying to package my project and its dependencies using pex, to make it available on a spark cluster. If the project is included in the lockfile, pex invokes the configured build backend. This step fails with uv_build.</p>
+<p>The pex creation is successful when using hatchling, which is why I am opening the issue in this repo. Sorry if this issue is on the pex side, tagging @jsirois just in case.</p>
+<p>Here is a reproducible example:</p>
+<pre><code class="language-bash">mkdir uv-pex &amp;&amp; cd uv-pex
+uv init --lib
+uv export --output-file pylock.toml
+uvx pex --pylock pylock.toml
+</code></pre>
+<pre><code class="language-bash">There was 1 error downloading required artifacts:
+1. uv-pex from file://.
+    Failed to build sdist for local project .: PEP-517:build_sdist at .: Executing /home/[user]/.cache/pex/venvs/1/bba7cd5ad78c1f55b532cd0b62be6af5e9571e8d/0de1795ad4486f45ee94cecd983e9905b6b11dc9/bin/python /home/[user]/.cache/pex/venvs/1/bba7cd5ad78c1f55b532cd0b62be6af5e9571e8d/0de1795ad4486f45ee94cecd983e9905b6b11dc9/pex -c import json
+    import sys
+    
+    import uv_build
+    
+    
+    if not hasattr(uv_build, 'build_sdist'):
+        sys.exit(75)
+    
+    result = uv_build.build_sdist(*('/tmp/tmp28a30lpz/dists',), **{})
+    with open('/tmp/pex-pep-517.webptr6e/build_hook_result.json', &quot;w&quot;) as fp:
+        json.dump(result, fp)
+     failed with 1
+    STDERR:
+    Error: failed to create file `/tmp/tmp28a30lpz/dists/uv_pex-0.1.0.tar.gz`: No such file or directory (os error 2)
+    
+    Error: failed to create file `/tmp/tmp28a30lpz/dists/uv_pex-0.1.0.tar.gz`: No such file or directory (os error 2)
+</code></pre>
+<p>Thank you for your work on uv!</p>
+<h3>Platform</h3>
+<p>Linux 6.14.0-29-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.18</p>
+<h3>Python version</h3>
+<p>Python 3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @matthieucx on 2025-09-19 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 09:52</div>
+            <div class="timeline-body"><p>This does sound like a pex bug, the target directory needs to already exist for a PEP 517 build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-09-19 10:09</div>
+            <div class="timeline-body"><p>I'll take this up as a Pex bug later today and link the issue. That said @konstin , where does the spec say this? There's a lot to read, and I have just now, but don't see it. In particular, all I see is https://peps.python.org/pep-0517/#build-sdist</p>
+<blockquote>
+<p>Must build a .tar.gz source distribution and place it in the specified sdist_directory. It must return the basename (not the full path) of the .tar.gz file it creates, as a unicode string.</p>
+</blockquote>
+<p>And, later, for build front ends, no suggestion they need to create the dir arguments to backend hooks AFAICT:</p>
+<ul>
+<li>https://peps.python.org/pep-0517/#build-environment</li>
+<li>https://peps.python.org/pep-0517/#recommendations-for-build-frontends-non-normative</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pex-tool/pex/issues/2913.html">pex-tool/pex#2913</a> on 2025-09-19 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-09-19 10:40</div>
+            <div class="timeline-body"><p>FWIW @matthieucx, you can work around by having uv skip emitting the local project in the lock and adjusting how you build the PEX by telling Pex about the project instead:</p>
+<pre><code class="language-console">:; mkdir uv-pex &amp;&amp; cd uv-pex
+:; uv init --lib
+
+# Tell uv to skip the local project, just record the locked 3rdparty deps:
+:; uv export --no-emit-project --output-file pylock.toml
+
+# Now tell Pex about the local project instead:
+:; uvx pex --pylock pylock.toml --project .
+Project `uv-pex` is already a member of workspace `/home/jsirois/dev/pex-tool/pex`
+Initialized project `uv-pex`
+Resolved 252 packages in 585ms
+# This file was autogenerated by uv via the following command:
+#    uv export --no-emit-project --output-file pylock.toml
+lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;&gt;=2.7, &lt;3.15&quot;
+Pex 2.58.0 ephemeral hermetic environment with 1 requirement and 1 activated distribution.
+Python 3.13.7 (main, Aug 15 2025, 11:40:50) [GCC 14.2.0] on linux
+Type &quot;help&quot;, &quot;pex&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; pex()
+Running from ephemeral loose PEX directory: /tmp/tmpdbuom6nn
+Requirements:
+  uv-pex==0.1.0
+Activated Distributions:
+  uv_pex-0.1.0-py3-none-any.whl
+&gt;&gt;&gt;
+</code></pre>
+<p>That said, I should have a Pex fix out in a 2.58.1 release in a few hours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthieucx">@matthieucx</a> on 2025-09-19 11:17</div>
+            <div class="timeline-body"><blockquote>
+<p>FWIW <a href="https://github.com/matthieucx">@matthieucx</a>, you can work around by having uv skip emitting the local project in the lock and adjusting how you build the PEX by telling Pex about the project instead:</p>
+</blockquote>
+<p>Neat, I played around and this definitely works. I was going to need the flag for poetry-based projects so that also helps!</p>
+<blockquote>
+<p>That said, I should have a Pex fix out in a 2.58.1 release in a few hours.</p>
+</blockquote>
+<p>Thanks a lot for processing this so quickly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-09-19 11:24</div>
+            <div class="timeline-body"><p>@matthieucx you're welcome. I will point out that locking local projects is inherently weird since you tend to want to actually mutate the local project. When you don't, you use the envelope of the project - git, an enclosing archive, what have you - to pin the project source tree with the lock file. That said, Pex locks allow locking projects too, although they do it differently and actually take you seriously and lock the hash of the source tree as it exists when you lock. That is why an sdist build happens here instead of a direct local project wheel build. The pex lock infra assumes it needs to build an sdist and get the hash of its contents to compare to the locked hash. In pylock.toml though, local projects do not get a hash. The issue was raised during PEP-751 spec development but punted in the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-09-19 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-09-19 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 12:54</div>
+            <div class="timeline-body"><p>Thank you for being so responsive!</p>
+<p>Fixed in https://github.com/pex-tool/pex/pull/2914</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-19 12:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

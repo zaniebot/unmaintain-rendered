@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to tell uv to install in editable mode or from index - astral-sh/uv #14154</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to tell uv to install in editable mode or from index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14154">#14154</a>
+        opened by <a href="https://github.com/kurt-rhee">@kurt-rhee</a>
+        on 2025-06-20 14:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-20 14:17</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a library that I maintain in AWS CodeArtifact.  When I am working on the library I often install it in editable mode.  When I want to deploy my non-library package which imports my library I want to go back to specifying the AWS CodeArtifact version instead of the local editable version.</p>
+<p>I am not sure how to do this, it seems like uv always prefers the local source over the remote one.</p>
+<p>Pyproject.toml</p>
+<pre><code>[tool.uv]
+
+[[tool.uv.index]]
+name = &quot;proximal&quot;
+url = &quot;https://proximal-code-artifact-domain-016997484973.d.codeartifact.us-east-2.amazonaws.com/pypi/proximal-hub/simple/&quot;
+explicit = true
+
+[tool.uv.sources]
+core = { path = &quot;../core&quot;, editable = true }
+
+[tool.poe.tasks.core]
+cmd = &quot;./_scripts/update_core.sh&quot;
+executor = { type = &quot;simple&quot; }
+
+[tool.poe.tasks.uv]
+cmd = &quot;./_scripts/uv_wrapper.sh&quot;
+executor = { type = &quot;simple&quot; }
+
+[tool.poe.tasks]
+types = &quot;mypy --config-file pyproject.toml -p app&quot;
+freeze = &quot;uv export --frozen --no-emit-workspace --no-dev --no-editable -o requirements.txt --no-hashes&quot;
+smoke_local = &quot;bru run get -r --env Local&quot;
+smoke_staging = &quot;bru run get -r --env Staging&quot;
+smoke_prod = &quot;bru run get -r --env Production&quot;
+get_env = &quot;uv run _scripts/generate_env_from_secrets.py&quot;
+e_core = &quot;bash -c 'source .env &amp;&amp; uv add --editable --dev ${CORE_PATH%/src/core}'&quot;
+</code></pre>
+<p>update_core.sh</p>
+<pre><code>#!/bin/sh
+
+# Check if uv is installed
+if ! command -v uv &gt;/dev/null 2&gt;&amp;1; then
+    echo &quot;uv is not installed. &quot;
+    exit 1
+fi
+
+# Source the authentication script
+# Get the directory of this script
+SCRIPT_DIR=&quot;$(cd &quot;$(dirname &quot;${BASH_SOURCE[0]}&quot;)&quot; &amp;&amp; pwd)&quot;
+. &quot;$SCRIPT_DIR/auth_aws_codeartifact.sh&quot;
+
+LATEST_VERSION=$(aws codeartifact list-package-versions \
+    --package core \
+    --domain xxx-code-artifact-domain \
+    --domain-owner xxx \
+    --repository xxx-hub \
+    --sort-by PUBLISHED_TIME \
+    --format pypi \
+    --output text \
+    --query 'versions[0].version' \
+    )
+
+echo &quot;Latest version of core: $LATEST_VERSION&quot;
+
+uv remove core --dev
+uv add &quot;core==$LATEST_VERSION&quot;
+
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.13 (Homebrew 2025-06-12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @kurt-rhee on 2025-06-20 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kurt-rhee">@kurt-rhee</a> on 2025-06-20 18:07</div>
+            <div class="timeline-body"><p>This is another duplicate I think:</p>
+<p>https://github.com/astral-sh/uv/issues/7945</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kurt-rhee on 2025-06-20 18:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

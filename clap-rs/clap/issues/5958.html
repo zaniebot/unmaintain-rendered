@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excessively long &quot;Usage:&quot; line when specifying invalid option. - clap-rs/clap #5958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Excessively long &quot;Usage:&quot; line when specifying invalid option.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5958">#5958</a>
+        opened by <a href="https://github.com/vi">@vi</a>
+        on 2025-03-25 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vi">@vi</a> on 2025-03-25 23:11</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.85.0-nightly (4363f9b6f 2025-01-02)</p>
+<h3>Clap Version</h3>
+<p>4.5.32</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+#[derive(Parser, Debug)]
+struct Args {
+    name: String,
+
+    #[arg(long)] hello: Option&lt;u8&gt;,
+    
+    #[arg(long)] count01: Vec&lt;u8&gt;,
+    #[arg(long)] count02: Vec&lt;u8&gt;,
+    #[arg(long)] count03: Vec&lt;u8&gt;,
+    #[arg(long)] count04: Vec&lt;u8&gt;,
+    #[arg(long)] count05: Vec&lt;u8&gt;,
+    #[arg(long)] count06: Vec&lt;u8&gt;,
+    #[arg(long)] count07: Vec&lt;u8&gt;,
+    #[arg(long)] count08: Vec&lt;u8&gt;,
+    #[arg(long)] count09: Vec&lt;u8&gt;,
+    #[arg(long)] count10: Vec&lt;u8&gt;,
+    #[arg(long)] count11: Vec&lt;u8&gt;,
+    #[arg(long)] count12: Vec&lt;u8&gt;,
+    #[arg(long)] count13: Vec&lt;u8&gt;,
+    #[arg(long)] count14: Vec&lt;u8&gt;,
+    #[arg(long)] count15: Vec&lt;u8&gt;,
+    #[arg(long)] count16: Vec&lt;u8&gt;,
+    #[arg(long)] count17: Vec&lt;u8&gt;,
+    #[arg(long)] count18: Vec&lt;u8&gt;,
+}
+
+fn main() {
+    let _args = Args::parse();
+}
+</code></pre>
+<p>The multitude of <code>countNN</code> options are to demonstrate the point, not essential for the minimized example.</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --hell</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>error: unexpected argument '--hell' found
+
+  tip: a similar argument exists: '--hello'
+
+Usage: qqq &lt;NAME|--hello &lt;HELLO&gt;|--count01 &lt;COUNT01&gt;|--count02 &lt;COUNT02&gt;|--count03 &lt;COUNT03&gt;|--count04 &lt;COUNT04&gt;|--count05 &lt;COUNT05&gt;|--count06 &lt;COUNT06&gt;|--count07 &lt;COUNT07&gt;|--count08 &lt;COUNT08&gt;|--count09 &lt;COUNT09&gt;|--count10 &lt;COUNT10&gt;|--count11 &lt;COUNT11&gt;|--count12 &lt;COUNT12&gt;|--count13 &lt;COUNT13&gt;|--count14 &lt;COUNT14&gt;|--count15 &lt;COUNT15&gt;|--count16 &lt;COUNT16&gt;|--count17 &lt;COUNT17&gt;|--count18 &lt;COUNT18&gt;&gt;
+
+For more information, try '--help'.
+</code></pre>
+<p>Usage line mentions <strong>all</strong> the options, so that one may need to scroll up to see the actual error message.</p>
+<p>Also angle brackets look strange.</p>
+<h3>Expected Behaviour</h3>
+<p>Either &quot;Usage:&quot; like just omitted, or minimized (like as if I specify <code>cargo run -- --qqqqqqq</code>, i.e. option not similar to anything).</p>
+<pre><code>error: unexpected argument '--hell' found
+
+  tip: a similar argument exists: '--hello'
+
+For more information, try '--help'.
+</code></pre>
+<hr />
+<pre><code>error: unexpected argument '--hell' found
+
+  tip: a similar argument exists: '--hello'
+
+Usage: qqq &lt;NAME&gt; [--hello &lt;HELLO&gt;]
+
+For more information, try '--help'.
+</code></pre>
+<h3>Additional Context</h3>
+<p>If I disable <code>suggestions</code> Cargo feature, it stops mention name of invalid option (<code>--hell</code> in this example) completely, not just omit suggestions.</p>
+<pre><code>error: unexpected argument found
+</code></pre>
+<p>Without <code>suggestions</code> it is overly short, with <code>suggestions</code> it is overly long.</p>
+<hr />
+<p>Here are samples of other error reports where the bug does not happen:</p>
+<pre><code>$ cargo run -- --qqq
+...
+error: unexpected argument '--qqq' found
+
+  tip: to pass '--qqq' as a value, use '-- --qqq'
+
+Usage: qqq [OPTIONS] &lt;NAME&gt;
+
+For more information, try '--help'.
+
+$ cargo run
+...
+error: the following required arguments were not provided:
+  &lt;NAME&gt;
+
+Usage: qqq &lt;NAME&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Debug Output</h3>
+<details> <summary> Debug output </summary>
+
+<pre><code>    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target/debug/qqq --hell`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;qqq&quot;
+[clap_builder::builder::command]Command::_propagate:qqq
+[clap_builder::builder::command]Command::_check_help_and_version:qqq expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:qqq
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:name
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:hello
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count01
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count02
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count03
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count04
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count05
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count06
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count07
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count08
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count09
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count10
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count11
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count12
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count13
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count14
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count15
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count16
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count17
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:count18
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--hell&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--hell&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::possible_long_flag_subcommand: arg=&quot;hell&quot;
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg NoMatchingArg { arg: &quot;hell&quot; }
+[clap_builder::parser::parser]Parser::did_you_mean_error: arg=hell
+[clap_builder::parser::parser]Parser::did_you_mean_error: longs=[&quot;hello&quot;, &quot;count01&quot;, &quot;count02&quot;, &quot;count03&quot;, &quot;count04&quot;, &quot;count05&quot;, &quot;count06&quot;, &quot;count07&quot;, &quot;count08&quot;, &quot;count09&quot;, &quot;count10&quot;, &quot;count11&quot;, &quot;count12&quot;, &quot;count13&quot;, &quot;count14&quot;, &quot;count15&quot;, &quot;count16&quot;, &quot;count17&quot;, &quot;count18&quot;, &quot;help&quot;]
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;hello&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;hello&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;hello&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Args&quot;, source=CommandLine
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_smart_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::write_args: incls=[&quot;hello&quot;, &quot;Args&quot;]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;name&quot;]
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;Args&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;name&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;hello&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count01&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count02&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count03&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count04&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count05&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count06&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count07&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count08&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count09&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count10&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count11&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count12&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count13&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count14&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count15&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count16&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count17&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count18&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;Args&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;name&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;hello&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count01&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count02&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count03&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count04&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count05&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count06&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count07&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count08&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count09&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count10&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count11&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count12&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count13&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count14&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count15&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count16&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count17&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;count18&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[  clap_builder::builder::arg]Arg::name_no_brackets:name
+[  clap_builder::builder::arg]Arg::name_no_brackets: val_names=[
+    &quot;NAME&quot;,
+]
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: qqq &lt;NAME|--hello &lt;HELLO&gt;|--count01 &lt;COUNT01&gt;|--count02 &lt;COUNT02&gt;|--count03 &lt;COUNT03&gt;|--count04 &lt;COUNT04&gt;|--count05 &lt;COUNT05&gt;|--count06 &lt;COUNT06&gt;|--count07 &lt;COUNT07&gt;|--count08 &lt;COUNT08&gt;|--count09 &lt;COUNT09&gt;|--count10 &lt;COUNT10&gt;|--count11 &lt;COUNT11&gt;|--count12 &lt;COUNT12&gt;|--count13 &lt;COUNT13&gt;|--count14 &lt;COUNT14&gt;|--count15 &lt;COUNT15&gt;|--count16 &lt;COUNT16&gt;|--count17 &lt;COUNT17&gt;|--count18 &lt;COUNT18&gt;&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: unexpected argument '--hell' found
+
+  tip: a similar argument exists: '--hello'
+
+Usage: qqq &lt;NAME|--hello &lt;HELLO&gt;|--count01 &lt;COUNT01&gt;|--count02 &lt;COUNT02&gt;|--count03 &lt;COUNT03&gt;|--count04 &lt;COUNT04&gt;|--count05 &lt;COUNT05&gt;|--count06 &lt;COUNT06&gt;|--count07 &lt;COUNT07&gt;|--count08 &lt;COUNT08&gt;|--count09 &lt;COUNT09&gt;|--count10 &lt;COUNT10&gt;|--count11 &lt;COUNT11&gt;|--count12 &lt;COUNT12&gt;|--count13 &lt;COUNT13&gt;|--count14 &lt;COUNT14&gt;|--count15 &lt;COUNT15&gt;|--count16 &lt;COUNT16&gt;|--count17 &lt;COUNT17&gt;|--count18 &lt;COUNT18&gt;&gt;
+
+For more information, try '--help'.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @vi on 2025-03-25 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5959.html">clap-rs/clap#5959</a> on 2025-03-26 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-26 18:41</div>
+            <div class="timeline-body"><p>Thanks for reporting this!  We have #5959 up for addressing this one specific error.  This may come up in more places and I'd like to handle them on a case-by-case basis for now to tailor the solution to the error.  If there is a large group that is relevant to show, we'll handle that when we get to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2025-03-26 19:03</div>
+            <div class="timeline-body"><p>Shall I create a separate issue about the lack of invalid option name in the mode without <code>suggestions</code> Cargo feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-26 19:09</div>
+            <div class="timeline-body"><p>I'm not able to reproduce it.  To disable suggestions, you needed to disable the default features and re-enable specific features.  Did you re-enable <code>error-context</code>?</p>
+<pre><code class="language-rust">#!/usr/bin/env nargo
+---
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;, &quot;error-context&quot;, &quot;std&quot;], default-features = false }
+---
+
+use clap::Parser;
+#[derive(Parser, Debug)]
+struct Args {
+    name: String,
+
+    #[arg(long)] hello: Option&lt;u8&gt;,
+
+    #[arg(long)] count01: Vec&lt;u8&gt;,
+    #[arg(long)] count02: Vec&lt;u8&gt;,
+    #[arg(long)] count03: Vec&lt;u8&gt;,
+    #[arg(long)] count04: Vec&lt;u8&gt;,
+    #[arg(long)] count05: Vec&lt;u8&gt;,
+    #[arg(long)] count06: Vec&lt;u8&gt;,
+    #[arg(long)] count07: Vec&lt;u8&gt;,
+    #[arg(long)] count08: Vec&lt;u8&gt;,
+    #[arg(long)] count09: Vec&lt;u8&gt;,
+    #[arg(long)] count10: Vec&lt;u8&gt;,
+    #[arg(long)] count11: Vec&lt;u8&gt;,
+    #[arg(long)] count12: Vec&lt;u8&gt;,
+    #[arg(long)] count13: Vec&lt;u8&gt;,
+    #[arg(long)] count14: Vec&lt;u8&gt;,
+    #[arg(long)] count15: Vec&lt;u8&gt;,
+    #[arg(long)] count16: Vec&lt;u8&gt;,
+    #[arg(long)] count17: Vec&lt;u8&gt;,
+    #[arg(long)] count18: Vec&lt;u8&gt;,
+}
+
+fn main() {
+    let _args = Args::parse();
+}
+</code></pre>
+<pre><code class="language-console">$ ./clap-5958.rs --hell
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
+warning: `package.edition` is unspecified, defaulting to `2024`
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running `/home/epage/.cargo/target/13/2af89248ce70a7/debug/clap-5958 --hell`
+error: unexpected argument '--hell' found
+
+  tip: to pass '--hell' as a value, use '-- --hell'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-03-26 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-03-26 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2025-03-26 19:22</div>
+            <div class="timeline-body"><p>Indeed, I forgot about <code>error-context</code>.
+With it, the error message is reasonable again.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:44 UTC
+    </footer>
+</body>
+</html>

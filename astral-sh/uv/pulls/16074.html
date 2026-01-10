@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error when built wheel is for the wrong platform - astral-sh/uv #16074</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error when built wheel is for the wrong platform</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16074">#16074</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-30 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-30 12:44</div>
+            <div class="timeline-body"><p>Error when a built wheel is for the wrong platform. This can happen especially when using <code>--python-platform</code> or <code>--python-version</code> with <code>uv pip install</code>.</p>
+<p>Fixes #16019</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-09-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2025-10-08 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 08:14</div>
+            <div class="timeline-body"><p>There are no changes in the ecosystem tests, so this is ready to be reviewed and merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-10-16 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-03 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13314 on 2025-12-03 13:02</div>
+            <div class="timeline-body"><p>fwiw the preferred pattern is now <code>context.with_filter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-03 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13462 on 2025-12-03 13:03</div>
+            <div class="timeline-body"><p>I might just say..</p>
+<pre><code class="language-suggestion">      ╰─▶ The built wheel `py313-0.1.0-py313-none-any.whl` is not compatible with the current Python 3.12 on [ARCH] [OS]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-03 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13462 on 2025-12-03 13:05</div>
+            <div class="timeline-body"><p>Do we need to say something like...</p>
+<blockquote>
+<p>The build backend (setuptools) does not appear to support this cross build</p>
+</blockquote>
+<p>I'm not sure if that's quite safe to say but something in that vein?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-03 13:06</div>
+            <div class="timeline-body"><p>Is it possible that this can cause false positives or regressions?</p>
+<p>What if we're just building the wheel for a resolve (i.e., <code>uv pip compile</code>) and don't care if it's not valid?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-03 13:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it possible that this can cause false positives or regressions?</p>
+<p>What if we're just building the wheel for a resolve (i.e., <code>uv pip compile</code>) and don't care if it's not valid?</p>
+</blockquote>
+<p>It's technically possible but for this too happen, we need to have a case where:</p>
+<ol>
+<li>There is no static metadata</li>
+<li>The build backend doesn't support <code>prepare_metadata_for_build_wheel</code></li>
+<li>The build backend always targets a specific platform</li>
+<li>The user is running <code>uv pip compile</code> on a non-target platform. This excludes cases with <code>uv pip compile -p</code> pointing to a target Python that can be emulated on the host.</li>
+</ol>
+<p>Of these, (3) is very unlikely, in my experience build backends only have limited cross-compiling support if any, and I've never seen one that defaults to a different platform than the current one. It would also be strange to me if a build backend wouldn't implement <code>prepare_metadata_for_build_wheel</code>, as the functionality is a subset of the <code>build_wheel</code> hook.</p>
+<p><code>--python-platform</code> is a bit fragile by design (PEP 517 has no concept of a target that can be given to build backends, you can only pass them a real Python interpreter as <code>sys.executable</code>), but I'm not aware of other cases where this would cause a regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-03 13:47</div>
+            <div class="timeline-body"><p>I'm wary because I think <code>uv pip compile --python-platform</code> is far more common than <code>uv pip install --python-platform</code> and I think this error can only cause regressions in the former / is only helpful for the latter.</p>
+<p>What do you mean by (3)? Yes I would only expect most build backends to target the current platform and have no conception of cross-builds. Why would &quot;always targets a <em>specific</em> platform&quot; be needed for this to cause a regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16972.html">astral-sh/uv#16972</a> on 2025-12-03 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-03 16:43</div>
+            <div class="timeline-body"><p>That's a very good point, I added a test specifically for this. The good news is it's already passing as the metadata-only branch in <code>DistributionDatabase</code> doesn't pass around tags nor does it check them.</p>
+<p>The stronger checks uncovered a bug in how we generate tags for Pyston: https://github.com/astral-sh/uv/pull/16972. Merging this PR may uncover more such problems on non-PyPI platform that usually don't have built wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-04 15:23</div>
+            <div class="timeline-body"><p>I'd probably consider this an &quot;enhancement&quot; rather than a &quot;bug&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-12-05 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-05 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-12-05 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-12-05 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-05 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/257541.html">Homebrew/homebrew-core#257541</a> on 2025-12-06 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjamroz">@mjamroz</a> on 2025-12-09 09:47</div>
+            <div class="timeline-body"><p>guys is there any way to ignore that error? With this upgrade we cannot install <code>kinto-11.2.1-cp3-none-any.whl</code> on alpine anymore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-09 09:50</div>
+            <div class="timeline-body"><p>@mjamroz Can you please file a new issue with a reproduction? <code>cp3-none-any</code> is a very odd tag, should it by <code>py3-none-any</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjamroz">@mjamroz</a> on 2025-12-10 07:27</div>
+            <div class="timeline-body"><p>@konstin here you go https://github.com/astral-sh/uv/issues/17061</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

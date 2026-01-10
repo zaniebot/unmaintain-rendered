@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Difference between Ruff's I and isort with import * - astral-sh/ruff #2318</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Difference between Ruff's I and isort with import *</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2318">#2318</a>
+        opened by <a href="https://github.com/gvangool">@gvangool</a>
+        on 2023-01-29 02:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gvangool">@gvangool</a> on 2023-01-29 02:37</div>
+            <div class="timeline-body"><p>There's a difference in the import ordering between isort and ruff when an <code>import *</code> is included.</p>
+<p>A small test case:</p>
+<pre><code class="language-python">from .logging import config_logging
+from .settings import *  # noqa F403
+from .settings import ENV
+</code></pre>
+<p>When running both isort and ruff:</p>
+<pre><code># isort --check --profile=black bug.py &amp;&amp; echo &quot;all good&quot;
+all good
+# ruff check --select I001 --isolated bug.py
+bug.py:1:1: I001 Import block is un-sorted or un-formatted
+Found 1 error.
+1 potentially fixable with the --fix option.
+# ruff check --select I001 --isolated bug.py --fix
+Found 1 error (1 fixed, 0 remaining).
+# isort --check --profile=black bug.py
+ERROR: ./bug.py Imports are incorrectly sorted and/or formatted.
+</code></pre>
+<p>The modified version of the test looks like</p>
+<pre><code class="language-python">from .logging import config_logging
+from .settings import ENV
+from .settings import *  # noqa F403
+</code></pre>
+<p>Relevant versions:</p>
+<pre><code># ruff --version
+ruff 0.0.237
+# isort --version
+
+                 _                 _
+                (_) ___  ___  _ __| |_
+                | |/ _/ / _ \/ '__  _/
+                | |\__ \/\_\/| |  | |_
+                |_|\___/\___/\_/   \_/
+
+      isort your imports, so you don't have to.
+
+                    VERSION 5.11.4
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Difference in isort with import *" to "Difference between Ruff's I and isort with import *" by @gvangool on 2023-01-29 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-01-29 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 03:02</div>
+            <div class="timeline-body"><p>Oh interesting! Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-29 03:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-29 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2320.html">astral-sh/ruff#2320</a> on 2023-01-29 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-29 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 03:18</div>
+            <div class="timeline-body"><p>Should be fixed on <code>main</code>, will go out in the next release (tomorrow or Monday).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gvangool">@gvangool</a> on 2023-01-29 04:46</div>
+            <div class="timeline-body"><p>Thank you for that quick Saturday night support!</p>
+<p>I can confirm it works with the latest <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 05:56</div>
+            <div class="timeline-body"><p>No problem! I work weird hours 😅 Thank you for confirming? (Just curious: did you build from source with <code>cargo</code>, or via <code>maturin</code>, or some other way to test on <code>main</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gvangool">@gvangool</a> on 2023-01-29 18:07</div>
+            <div class="timeline-body"><p>Pip and a local rust buildchain:</p>
+<pre><code># python -m pip install -e 'git+https://github.com/charliermarsh/ruff#egg=ruff'
+Obtaining ruff from git+https://github.com/charliermarsh/ruff#egg=ruff
+  Cloning https://github.com/charliermarsh/ruff to ./.venv/src/ruff
+  Running command git clone --filter=blob:none --quiet https://github.com/charliermarsh/ruff ./.venv/src/ruff
+  Resolved https://github.com/charliermarsh/ruff to commit e371ef9b1a0f8e95776dea478cebf23b7517bf40
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... -
+done
+Building wheels for collected packages: ruff
+  Building editable for ruff (pyproject.toml) ... done
+  Created wheel for ruff: filename=ruff-0.0.237-py3-none-macosx_10_7_x86_64.whl size=4350535 sha256=e7e045c479a91388c2a6887d6abd94ed32c84de43135f8a4262f0dc230a732c7
+  Stored in directory: /private/var/folders/fn/v91b3c2x0dx92kh4170ly38h0000gn/T/pip-ephem-wheel-cache-rs5r8ug2/wheels/89/5f/c5/3a1babdf0256db6d4dfc2d822a49320c2ba6f1d40fa4467b55
+Successfully built ruff
+Installing collected packages: ruff
+Successfully installed ruff-0.0.237
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-29 18:08</div>
+            <div class="timeline-body"><p>Nice :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

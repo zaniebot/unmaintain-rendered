@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv install from wheel does not use index specified in pyproject.toml - astral-sh/uv #11179</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv install from wheel does not use index specified in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11179">#11179</a>
+        opened by <a href="https://github.com/alksndrglk">@alksndrglk</a>
+        on 2025-02-03 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alksndrglk">@alksndrglk</a> on 2025-02-03 09:46</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p><em>pyproject.toml</em></p>
+<pre><code>[project]
+name = &quot;storekeeper&quot;
+version = &quot;1.0.0&quot;
+description = &quot;S3 and DAV clients&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11,&lt;3.14&quot;
+authors = []
+classifiers = [
+    &quot;Development Status :: 5 - Production/Stable&quot;,
+    &quot;Framework :: AsyncIO&quot;,
+    &quot;Intended Audience :: Developers&quot;,
+    &quot;Intended Audience :: Information Technology&quot;,
+    &quot;Programming Language :: Python :: 3&quot;,
+    &quot;Programming Language :: Python :: 3 :: Only&quot;,
+    &quot;Programming Language :: Python :: 3.11&quot;,
+    &quot;Programming Language :: Python :: 3.12&quot;,
+    &quot;Programming Language :: Python :: 3.13&quot;,
+    &quot;Topic :: Internet :: WWW/HTTP&quot;,
+    &quot;Topic :: Software Development :: Libraries&quot;
+]
+dependencies = [
+    &quot;ahttp==1.0.2&quot;,
+    &quot;aiohttp-s3-client==1.0.0&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;ahttp_repo&quot;
+url = &quot;https://&lt;GITLAB_URL&gt;/api/v4/projects/1035/packages/pypi/simple&quot;
+explicit = true
+
+[tool.uv.sources]
+ahttp = { index = &quot;ahttp_repo&quot; }
+</code></pre>
+<p>building simply with <code>uv build</code></p>
+<p>trying to install from local distribution with <code>uv tool install --verbose /storekeeper/dist/storekeeper-1.0.0-py3-none-any.whl</code></p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there is no version of ahttp==1.0.2 and storekeeper==1.0.0 depends on ahttp==1.0.2, we can conclude that storekeeper==1.0.0 cannot be used.
+      And because only storekeeper==1.0.0 is available and you require storekeeper, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p><strong>What is the proper way to force uv use index from pyproject.toml?</strong> Am I doing something wrong?</p>
+<h3>Platform</h3>
+<p>macOS 15.3 (24D60)</p>
+<h3>Version</h3>
+<p>uv 0.5.7 (3ca155ddd 2024-12-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @alksndrglk on 2025-02-03 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-03 16:15</div>
+            <div class="timeline-body"><p>The tool section of pyproject.toml is related to the source.</p>
+<p>Once you build a package into a wheel then any installer should read from the wheels metadata, not from the pyproject.toml.</p>
+<p>And the wheels metadata, by design, has no way to specify what index it's dependencies are sourced from, that's up to the client installing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alksndrglk">@alksndrglk</a> on 2025-02-04 09:23</div>
+            <div class="timeline-body"><p>Thank you for the answer.</p>
+<p>Am I clear that I am facing something similar described in <a href="https://github.com/astral-sh/uv/issues/1808#issuecomment-2327626020">1808#</a> ?</p>
+<p>Even if I change <code>pyproject.toml</code> like so</p>
+<pre><code>dependencies = [
+    &quot;ahttp @ https://&lt; GITLAB_URL &gt;/api/v4/groups/989/-/packages/pypi/files/9a231837b0c0749c7a200790ba78808cdf89329a1a449d034658134a8f09856a/ahttp-1.0.2-py3-none-any.whl&quot;,
+    &quot;aiohttp-s3-client==1.0.0&quot;,
+]
+</code></pre>
+<p>Installation using <code>uv install &lt;link&gt;</code> resolve all dependencies.</p>
+<p>But when I add desired package <code>storekeeper</code> to pyproject.toml, uv can not create lock file.</p>
+<pre><code>error: Package `ahttp` attempted to resolve via URL: https://&lt; GITLAB_URL &gt;/api/v4/groups/989/-/packages/pypi/files/9a231837b0c0749c7a200790ba78808cdf89329a1a449d034658134a8f09856a/ahttp-1.0.2-py3-none-any.whl. 
+URL dependencies must be expressed as direct requirements or constraints. 
+Consider adding `ahttp @ https://&lt; GITLAB_URL &gt;/api/v4/groups/989/-/packages/pypi/files/9a231837b0c0749c7a200790ba78808cdf89329a1a449d034658134a8f09856a/ahttp-1.0.2-py3-none-any.whl` to your dependencies or constraints file.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alksndrglk">@alksndrglk</a> on 2025-02-04 11:33</div>
+            <div class="timeline-body"><p>Found <a href="https://github.com/astral-sh/uv/issues/2511">2511#</a> and also <a href="https://docs.astral.sh/uv/pip/compatibility/#transitive-url-dependencies">transitive url dependencies</a>.</p>
+<p>Now I think it makes me clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-11 03:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

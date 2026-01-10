@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically detect allow_missing_positional - clap-rs/clap #4837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically detect allow_missing_positional</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4837">#4837</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2023-04-17 04:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2023-04-17 04:35</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.2.2</p>
+<h3>Describe your use case</h3>
+<p>I'd like to make a CLI that accepts either &quot;arg1 arg2&quot; or just &quot;arg2&quot; (the first argument is optional).</p>
+<p>I wrote this:</p>
+<pre><code class="language-rust">#[derive(clap::Args, Debug)]
+#[command(arg_required_else_help = true)]
+pub struct MySubcommand {
+    /// ...
+    pub name: Option&lt;String&gt;,
+
+    /// ...
+    pub dir: PathBuf,
+
+    /// ...
+}
+</code></pre>
+<p>This <em>did</em> cause clap to realize that <code>name</code> should be optional, based on the generated help:</p>
+<pre><code>subcommand description
+
+Usage: cmd subcmd [OPTIONS] [NAME] &lt;DIR&gt;
+
+Arguments:
+  [NAME]  ...
+  &lt;DIR&gt;   ...
+</code></pre>
+<p>Notice the <code>[NAME]</code> vs <code>&lt;DIR&gt;</code>.</p>
+<p>However, if I actually <em>run</em> the command with one argument:</p>
+<pre><code>error: the following required arguments were not provided:
+  &lt;DIR&gt;
+
+Usage: cmd subcmd &lt;NAME&gt; &lt;DIR&gt;
+</code></pre>
+<p>I had to supply <code>#[command(allow_missing_positional = true)]</code> to make this work as expected.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'd like clap to automatically assume that if it has a single positional argument specified with <code>Option</code>, it should assume <code>allow_missing_positional = true</code>.</p>
+<h3>Alternatives, if applicable</h3>
+<p>If there's a strong reason <em>not</em> to autodetect this, then instead, I'd suggest producing an error on an <code>Option</code> positional argument with <code>allow_missing_positional = false</code>.</p>
+<p>However, if at all possible I'd suggest making this work automatically.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @joshtriplett on 2023-04-17 04:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-04-17 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-04-17 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-17 15:28</div>
+            <div class="timeline-body"><p>The challenges this would run into</p>
+<ul>
+<li>(either solution) Technically you could flatten in positionals from different structs, making this impossible to do with <code>flatten</code> and I've been loathe to offer additional features only for the non-flatten cases (see also #3133)</li>
+<li>(unlikely but ...) a developer could set <code>index</code> to an expression and we would be in a similar opaque situation as <code>flatten</code></li>
+<li>(unlikely but ....) a developer could set <code>index</code> to a literal, requiring us to start tracking it so we can detect either case.  The more we add to the derive, the slower it is to compile and run, so we need to be judicious in what we add</li>
+<li>There are times when a user might use <code>Option</code> but set <code>#[arg(required = true)]</code> (e.g. a conflict with all positionals).  While #2621 will improve this, people might still want to do the current workaround.  This ends up being another case of <code>index</code> of dealing with expressions and literals</li>
+<li>(a bit hand waive-y) <code>allow_missing_positional</code> is not very polished at this time (seems like people are regularly running into limitations) and the more we streamline it without polish, the more people are likely to use it and get frustrated at the limitations</li>
+</ul>
+<p>None of this is to say &quot;no&quot;.  This case is a bit more peculiar than something like <code>short</code>, making it less likely to run into problems but I currently lean towards &quot;no&quot; for a simpler, more predictable experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-17 15:29</div>
+            <div class="timeline-body"><blockquote>
+<p>This did cause clap to realize that name should be optional, based on the generated help:</p>
+</blockquote>
+<p>This should have caused a debug assert to fire</p>
+<pre><code class="language-rust">#!/usr/bin/env cargo-eval
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4&quot;, features = [&quot;derive&quot;] }
+//! ```
+
+use clap::{Args, Parser, Subcommand};
+use std::path::PathBuf;
+
+#[derive(Parser, Debug)]
+#[command(arg_required_else_help = true)]
+pub struct Cli {
+    /// ...
+    pub name: Option&lt;String&gt;,
+
+    /// ...
+    pub dir: PathBuf,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    dbg!(cli);
+}
+</code></pre>
+<pre><code>thread 'main' panicked at 'Found non-required positional argument with a lower index than a required positional argument: &quot;name&quot; index Some(1)', /home/epage/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_builder-4.2.2/src/builder/debug_asserts.rs:639:17
+</code></pre>
+<p>I could see us suggesting <code>last</code> or <code>allow_misisng_positional</code> in the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2023-10-24 22:15</div>
+            <div class="timeline-body"><p>@epage I ran into the same issue when trying to implement <code>cp</code> shell command-like interface (any number of sources followed by a single target - <code>cp src1 src2 src3 destination</code>). Are there any suggested ways to do this, or is the best to simply implement a single vector of <code>PathBuf</code>s, and explain in the help message what those should be? Thx!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-10-25 02:26</div>
+            <div class="timeline-body"><p>atm a single vector of <code>PathBuf</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6105.html">clap-rs/clap#6105</a> on 2025-08-15 13:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:23 UTC
+    </footer>
+</body>
+</html>

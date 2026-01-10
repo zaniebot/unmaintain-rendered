@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot use non-literal expressions for `name` attribute - clap-rs/clap #5407</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot use non-literal expressions for `name` attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5407">#5407</a>
+        opened by <a href="https://github.com/mwu-tow">@mwu-tow</a>
+        on 2024-03-20 23:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mwu-tow">@mwu-tow</a> on 2024-03-20 23:53</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.76.0 (07dca489a 2024-02-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+pub trait HasName {
+    const NAME: &amp;'static str;
+}
+
+pub struct Foo;
+
+impl HasName for Foo {
+    const NAME: &amp;'static str = &quot;foo&quot;;
+}
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+struct Args&lt;T: HasName&gt; {
+    /// Name of the person to greet
+    #[clap(name = T::NAME, short, long)]
+    name: String,
+
+    #[clap(skip)]
+    phantom: std::marker::PhantomData&lt;T&gt;,
+}
+
+fn main() {
+    Args::&lt;Foo&gt;::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo build</code></p>
+<h3>Actual Behaviour</h3>
+<p>Build error:</p>
+<pre><code>error: expected a literal
+  --&gt; src\main.rs:17:19
+   |
+17 |     #[clap(name = T::NAME, short, long)]
+   |                   ^^^^^^^
+   |
+   = note: only literals (like `&quot;foo&quot;`, `-42` and `3.14`) can be passed to `concat!()`
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>This code worked in clap <code>3.2.25</code> and was not documented as a change, so I think it still should work.</p>
+<p>Also, <a href="https://docs.rs/clap/4.5.2/clap/_derive/index.html#command-attributes">the documentation</a> says that the <code>name</code> attribute argument is an expression, so I would expect it to work. Especially since there is no restriction on the <a href="https://docs.rs/clap/4.5.2/clap/struct.Command.html#method.name">Command::name</a> API. I don't think there are similar restrictions on other attributes.</p>
+<h3>Additional Context</h3>
+<p>This blocks me from migrating to clap v4. I relied on this pattern to reuse the same structure definition, while avoiding the name collisions.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @mwu-tow on 2024-03-20 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../enso-org/enso/pulls/9517.html">enso-org/enso#9517</a> on 2024-03-22 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-03-25 19:30</div>
+            <div class="timeline-body"><p>This was broken in #4947.  Looking to see if we can better detect when to use one or the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5425.html">clap-rs/clap#5425</a> on 2024-03-25 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-03-25 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../enso-org/enso/pulls/9595.html">enso-org/enso#9595</a> on 2024-04-02 11:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:34 UTC
+    </footer>
+</body>
+</html>

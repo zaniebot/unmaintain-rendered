@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make arg.short accept char instead of &amp;str - clap-rs/clap #1303</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make arg.short accept char instead of &amp;str</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1303">#1303</a>
+        opened by <a href="https://github.com/Pzixel">@Pzixel</a>
+        on 2018-06-24 18:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Pzixel">@Pzixel</a> on 2018-06-24 18:31</div>
+            <div class="timeline-body"><p>I'm writing an app using clap and it's wonderful. But I've encountered a problem with flags. I used this code:</p>
+<pre><code class="language-rust">let matches = App::new(&quot;App&quot;)
+	.arg(
+		Arg::with_name(&quot;externalAddress&quot;)
+			.short(&quot;ea&quot;)
+			.long(&quot;externalAddress&quot;)
+			.help(&quot;Sets the external address where webhook should be setted up&quot;)
+			.takes_value(true)
+			.required(true),
+	)
+	.get_matches();
+</code></pre>
+<p>The problem here is that when I pass <code>ea</code> to the app I get a runtime error.</p>
+<p>I have found the answer relatively quick but watching to the source code and documentation which says:</p>
+<blockquote>
+<p>To set short use a single valid UTF-8 code point.</p>
+</blockquote>
+<p>If it have to be a single UTF-8 code point then it's better to have <code>char</code> parameter instead, which would allow to have a compile time error instead of silently trim the rest of the string out:</p>
+<pre><code class="language-rust">pub fn short&lt;S: AsRef&lt;str&gt;&gt;(mut self, s: S) -&gt; Self {
+	self.s.short = s.as_ref().trim_left_matches(|c| c == '-').chars().nth(0);
+	self
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-26 14:55</div>
+            <div class="timeline-body"><p>I agree. This will be changed in v3.</p>
+<p>I think initially I was planning on supporting <code>-foo</code> at some point. Although now that proposal has morphed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-06-26 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: refactor</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha.1" by @kbknapp on 2018-07-22 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-23 19:10</div>
+            <div class="timeline-body"><p>Implemented on v3-master</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-07-23 19:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:49 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TypedValueParser` cannot parse/validate an `OsStr` with full error context - clap-rs/clap #4362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TypedValueParser` cannot parse/validate an `OsStr` with full error context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4362">#4362</a>
+        opened by <a href="https://github.com/kpreid">@kpreid</a>
+        on 2022-10-09 04:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kpreid">@kpreid</a> on 2022-10-09 04:24</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.11 (and also 3.2)</p>
+<h3>Describe your use case</h3>
+<p>There seems to be no way to simultaneously:</p>
+<ul>
+<li>run custom parsing or validation code on an argument (via <code>value_parser = ...</code>),</li>
+<li>accept <code>OsStr</code> input (non-UTF-8) rather than <code>str</code>, and</li>
+<li>produce errors with <code>context</code> information identifying the erroneous value etc.</li>
+</ul>
+<p>There is <a href="https://docs.rs/clap/latest/clap/builder/trait.TypedValueParser.html#impl-TypedValueParser-for-F">an implementation</a> of <code>TypedValueParser</code> for functions which adds context for the error but it only accepts <code>&amp;str</code> input, and if one is writing one's own <code>impl TypedValueParser for …</code> then it is not possible to access the <code>Error</code> operations to add context. The documentation recommends <code>Command::error()</code>, but that takes a mutable <code>Command</code> which is not available from within a <code>TypedValueParser</code>.</p>
+<h3>Describe the solution you'd like</h3>
+<p>It should be possible to construct a <code>clap::Error</code>, while implementing a parser, that has all the usual context.</p>
+<h3>Alternatives, if applicable</h3>
+<p>A second implementation for functions that take <code>&amp;OsStr</code> would work, but does not seem an ideal solution to me since it doesn't allow composing <code>TypedValueParser</code>s.</p>
+<h3>Additional Context</h3>
+<p>In <a href="https://github.com/clap-rs/clap/discussions/4140">previous discussion</a>, epage wrote:</p>
+<blockquote>
+<p>But we should also support people writing their own value parsers and this is a bug hole for it. Can you create an issue?</p>
+</blockquote>
+<p>No one filed that issue yet, so I am now. (<a href="https://github.com/clap-rs/clap/discussions/4029">Another discussion post</a>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @kpreid on 2022-10-09 04:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpreid">@kpreid</a> on 2022-10-09 04:26</div>
+            <div class="timeline-body"><p>(I think this should be labeled a bug rather than an enhancement, since it's functionality that existed in clap 3, but the &quot;enhancement&quot; issue template was more fitting for what there was to say about it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> removed by @epage on 2022-10-10 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2022-10-10 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-10 14:02</div>
+            <div class="timeline-body"><p>For anyone else reading this, I would recommend double checking if you need to implement <code>TypedValueParser</code>.  Too frequently people immediately jump to implementing it when that is the harder and more verbose route</p>
+<p>Current alternatives:</p>
+<ul>
+<li>Any <code>Fn(&amp;str) -&gt; Result&lt;T, E&gt;</code> already implements it</li>
+<li><code>value_parser!</code> can adapt types that implement <code>FromStr</code>, <code>From&lt;&amp;str&gt;</code>, <code>From&lt;String&gt;</code>, <code>From&lt;&amp;OsStr&gt;</code> and <code>From&lt;OsString&gt;</code></li>
+<li>You can take existing <code>TypedValueParser</code>s and call <code>TypedValueParser::map</code> on them</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-10 14:03</div>
+            <div class="timeline-body"><p>@kpreid could you expand on your use case?  I'm curious in what situations someone needs to parse <code>OsStr</code> or <code>OsString</code> types.  That'll also help in understanding if we should also look into supporting <code>TryFrom</code>, <code>TypedValueParser::try_map</code>, or a host of additional solutions on top of exposing more error context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-10 14:09</div>
+            <div class="timeline-body"><p>For this issue, there are two core problems</p>
+<ul>
+<li>We don't expose a way to set <code>Error::context</code></li>
+<li>We don't expose a way to enable coloring and other similar features</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4365.html">clap-rs/clap#4365</a> on 2022-10-10 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpreid">@kpreid</a> on 2022-10-10 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>could you expand on your use case?</p>
+</blockquote>
+<p>In the particular case, I want to validate that <code>--output &lt;FILE&gt;</code> has a recognizable filename extension. I could do this validation on the final struct post-<code>clap</code>-parsing of course, but then I still don't have the ability to provide all the nice formatted error context, at least without doing a lot of digging to get an <code>&amp;mut Command</code> (which, besides being inelegant, also doesn't fit well the <code>clap</code> derive system which allows the code that runs after <code>clap</code> parsing to not care about anything but the struct fields).</p>
+<p>A more elaborate case of actual <em>parsing</em> involving <code>OsStr</code> input might be, say, expecting a glob pattern or a numeric-sequence pattern.</p>
+<blockquote>
+<p>That'll also help in understanding if we should also look into supporting…</p>
+</blockquote>
+<p>Prior to <code>clap</code> 3.2 I was using the <code>validator_os</code> option. So, <code>TypedValueParser::try_map</code> would be perhaps a good option, <em>if</em> it then supports returning an error that will be given context (as opposed to the map function having to assemble the desired context itself). While setting arbitrary <code>context</code> would be <em>sufficient</em>, it would be <em>preferable</em> to be able to express “this is a validation error; please insert all the context you would for that” without having to duplicate that fragment of clap's internal logic. That way, good and <strong>consistent</strong> messages appear by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-10 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4366.html">clap-rs/clap#4366</a> on 2022-10-10 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpreid">@kpreid</a> on 2022-10-11 02:12</div>
+            <div class="timeline-body"><p>I just confirmed that release 4.0.12 solves the problem I had. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5065.html">clap-rs/clap#5065</a> on 2023-08-03 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5066.html">clap-rs/clap#5066</a> on 2023-08-08 00:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:12 UTC
+    </footer>
+</body>
+</html>

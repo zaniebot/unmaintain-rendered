@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error and mix-up when using `uv init --bare` - astral-sh/uv #13539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error and mix-up when using `uv init --bare`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13539">#13539</a>
+        opened by <a href="https://github.com/dennemeyer-lpe">@dennemeyer-lpe</a>
+        on 2025-05-19 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dennemeyer-lpe">@dennemeyer-lpe</a> on 2025-05-19 14:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>First time commenting here.
+I've been digging into the uv documentation since I got to know about it.
+When initializing a <code>--bare</code> project, it creates a <code>pyproject.toml</code>.
+When using <code>--python</code>, it specifies the <code>requires-python</code> in the <code>pyproject.toml</code></p>
+<p>However, there is a typo in <a href="https://github.com/astral-sh/uv/blob/2894721b6e304c54d121dd90b59d5fd421e32f94/docs/concepts/projects/init.md?plain=1#L340">here</a>. Shouldn't it be <code>--pin-python</code> (corresponding to <a href="https://github.com/astral-sh/uv/blob/2894721b6e304c54d121dd90b59d5fd421e32f94/crates/uv/tests/it/init.rs#L693">line 561 in crates/uv/tests/it/init.rs</a>) instead of <code>--python-pin</code>?
+The <code>--pin-python</code> flag is also not present in the <code>uv init</code> section of the CLI documentation (should be written <a href="https://github.com/astral-sh/uv/blob/2894721b6e304c54d121dd90b59d5fd421e32f94/docs/reference/cli.md?plain=1#L690">here</a>).</p>
+<p>Additional minor issue:
+Why does <code>uv init --bare --python 3.8 --pin-python</code> write the version into <code>pyproject.toml</code> and create the same version in <code>.python-version</code> but when i first do <code>uv init --bare --python 3.8</code> and later do <code>uv pin python</code>, it takes the default uv managed python and not the version limited to the constraints set in the <code>pyproject.toml</code>? Doesn't the flag <code>--no-config</code> tell <code>uv python pin</code> to NOT look into configuration files like <code>pyproject.toml</code> in the current directory i.e. omitting <code>--no-config</code> should set <code>.python-version</code> to match the requirements set in the <code>pyproject.toml</code>?</p>
+<p>Thanks</p>
+<h3>Platform</h3>
+<p>MINGW64_NT-10.0-22631 3.5.7-463ebcdc.x86_64 x86_64 Msys</p>
+<h3>Version</h3>
+<p>uv 0.7.5 (9d1a14e1f 2025-05-16)</p>
+<h3>Python version</h3>
+<p>Python 3.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dennemeyer-lpe on 2025-05-19 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 13:05</div>
+            <div class="timeline-body"><p>I believe <code>--pin-python</code> is correct. For booleans, we don't show flags that match the default, so it shows up as <code>--no-pin-python</code> in the help:</p>
+<pre><code>Options:
+  --name &lt;NAME&gt;                    The name of the project
+  --bare                           Only create a `pyproject.toml`
+  --package                        Set up the project to be built as a Python package
+  --no-package                     Do not set up the project to be built as a Python package
+  --app                            Create a project for an application
+  --lib                            Create a project for a library
+  --script                         Create a script
+  --description &lt;DESCRIPTION&gt;      Set the project description
+  --no-description                 Disable the description for the project
+  --vcs &lt;VCS&gt;                      Initialize a version control system for the project [possible values: git, none]
+  --build-backend &lt;BUILD_BACKEND&gt;  Initialize a build-backend of choice for the project [possible values: hatch, flit,
+                                   pdm, poetry, setuptools, maturin, scikit]
+  --no-readme                      Do not create a `README.md` file
+  --author-from &lt;AUTHOR_FROM&gt;      Fill in the `authors` field in the `pyproject.toml` [possible values: auto, git, none]
+  --no-pin-python                  Do not create a `.python-version` file for the project
+  --no-workspace                   Avoid discovering a workspace and create a standalone project
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 13:06</div>
+            <div class="timeline-body"><p>For your second issue, as long as the Python version pinned in the second invocation is valid according to the <code>requires-python</code>, this sounds reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-20 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-05-20 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Error and mix-up when using uv init --bare" to "Error and mix-up when using `uv init --bare`" by @dennemeyer-lpe on 2025-05-20 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dennemeyer-lpe">@dennemeyer-lpe</a> on 2025-05-20 14:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe <code>--pin-python</code> is correct. For booleans, we don't show flags that match the default, so it shows up as <code>--no-pin-python</code> in the help:</p>
+</blockquote>
+<p>Thanks for the response.
+Based on it, if you don't show flags that match the default, why are both <code>--pin-python</code> and <code>--no-pin-python</code> then valid flags, but <code>--readme</code> is not whereas <code>--no-readme</code> is?</p>
+<p>It's all comes down to the setting that <code>uv init</code> creates a git repo, a .gitignore, a pyproject.toml, a .python-version, a README.md and a main.py, but several of those can be removed by doing <code>--vcs none</code>, <code>--no-readme</code>, <code>--no-pin-python</code>.</p>
+<p><code>uv init --bare</code> however only creates a pyproject.toml file, but others can be added by doing <code>--vcs git</code> or <code>--pin-python</code>. The latter only by guessing, because it is hidden deep in the docs.
+However, the sample main.py and the README.md are not able to be added explicitly when using <code>uv init --bare</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-20 15:31</div>
+            <div class="timeline-body"><p>It just sounds like a small oversight. We can add a <code>--readme</code> flag to <code>uv init</code>.</p>
+<p>For adding the <code>main</code> file, there's no a great way to express that in a flag name. That's why it doesn't exist, afaik. If you have any suggestions, I'm happy to consider them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dennemeyer-lpe">@dennemeyer-lpe</a> on 2025-05-20 17:13</div>
+            <div class="timeline-body"><p>My suggestions:</p>
+<ul>
+<li>add <code>--pin-python</code> to the <code>uv init</code> documentation</li>
+<li>add <code>--readme</code> as flag for <code>uv init</code> to explicitly add a README.md and also add it to the <code>uv init</code> documentation</li>
+<li>allow <code>uv python pin</code> to set the <code>.python-version</code> according to the constraints set in <code>pyproject.toml</code> if existing</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 17:21</div>
+            <div class="timeline-body"><p>For the first thing: we shouldn’t make a change here that isn’t consistent with the rest of the CLI. So if we change that, we would need to change all other flags too. We can do it, but it’s not a matter of “just” changing this one flag on this one command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dennemeyer-lpe">@dennemeyer-lpe</a> on 2025-05-20 17:25</div>
+            <div class="timeline-body"><p>I understand.
+I believe you know best how to tackle this issue.
+I just wanted to bring to your attention that there might be an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dennemeyer-lpe on 2025-05-20 17:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

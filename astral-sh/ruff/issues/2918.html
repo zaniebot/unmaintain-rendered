@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT006 fix adds unneeded parenthesis - astral-sh/ruff #2918</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT006 fix adds unneeded parenthesis</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2918">#2918</a>
+        opened by <a href="https://github.com/frenck">@frenck</a>
+        on 2023-02-15 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/frenck">@frenck</a> on 2023-02-15 11:53</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>PT006 seems to add additional parenthesis in case the string is already wrapped in a parenthesis to split it into multiple lines.</p>
+<p><img src="https://user-images.githubusercontent.com/195327/219019029-fc0a9da7-14e5-41b9-8580-987d0dc0cd90.png" alt="image" /></p>
+<pre><code class="language-py">@pytest.mark.parametrize(
+    (
+        &quot;create_backup_error, create_backup_calls, &quot;
+        &quot;update_addon_error, update_addon_calls, &quot;
+        &quot;error_message&quot;
+    ),
+	[...]
+)
+</code></pre>
+<p>Results in:</p>
+<pre><code class="language-py">@pytest.mark.parametrize(
+    (
+        (
+            &quot;create_backup_error&quot;,
+            &quot;create_backup_calls&quot;,
+            &quot;update_addon_error&quot;,
+            &quot;update_addon_calls&quot;,
+            &quot;error_message&quot;,
+        )
+    ),
+    [...]
+)
+</code></pre>
+<p>Expected:</p>
+<pre><code class="language-py">@pytest.mark.parametrize(
+    (
+        &quot;create_backup_error&quot;,
+        &quot;create_backup_calls&quot;,
+        &quot;update_addon_error&quot;,
+        &quot;update_addon_calls&quot;,
+        &quot;error_message&quot;,
+    ),
+    [...]
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../home-assistant/core/pulls/88165.html">home-assistant/core#88165</a> on 2023-02-15 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-15 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-15 13:18</div>
+            <div class="timeline-body"><p>Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-17 22:13</div>
+            <div class="timeline-body"><p>Ohh interesting, because the expression is itself parenthesized already. Hmm...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-07 11:03</div>
+            <div class="timeline-body"><p>So, I was looking at the recent commit (https://github.com/charliermarsh/ruff/commit/abaf0a198d9d2cebefd5c029bb271be1a3498f20) and thought of a similar approach in solving this problem.</p>
+<p>The indexer will collect all the ranges for a pair of parenthesis (<code>(</code> to <code>)</code>). Then, while trying to generate a fix for the above case, we'll check how many ranges does the string expression range belongs to. If the value is 2, we won't add the parenthesis otherwise we will.</p>
+<p>I'm not sure if you've any other solution in mind so just thought to share this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-13 05:12</div>
+            <div class="timeline-body"><p>Actually, I've a better solution in mind, will try to fix it by tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3955.html">astral-sh/ruff#3955</a> on 2023-04-13 07:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-13 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frenck">@frenck</a> on 2023-04-13 18:00</div>
+            <div class="timeline-body"><p>Thanks, @dhruvmanila 👍</p>
+<p>../Frenck</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 18:41</div>
+            <div class="timeline-body"><p>Another all-star contribution from @dhruvmanila :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-14 01:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Another all-star contribution from @dhruvmanila :)</p>
+</blockquote>
+<p>Thanks for your kind words! Always happy to help wherever I can 😄</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

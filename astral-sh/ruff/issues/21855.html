@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clash between `FURB120` and `B905` - astral-sh/ruff #21855</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clash between `FURB120` and `B905`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21855">#21855</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2025-12-09 00:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-12-09 00:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://github.com/python/typeshed/pull/14824 added knowledge of <code>strict=False</code> default for <code>zip</code>. This now exposes a clash between <a href="https://github.com/dosisod/refurb/blob/master/docs/checks.md#furb120-use-implicit-default"><code>refurb</code>'s <code>FURB120</code></a> and <a href="https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/"><code>ruff</code>'s <code>B905</code></a>:</p>
+<ul>
+<li><code>FURB120</code>: wants to remove <code>strict=False</code>, as it's the default argument</li>
+<li><code>B905</code>: wants to keep <code>strict=False</code>, to be explicit</li>
+</ul>
+<p>Here's a minimal reproducer:</p>
+<pre><code class="language-python">zip([1], [2], strict=False)
+</code></pre>
+<p>For posterity, I have <code>refurb==2.2.0</code> and <code>mypy==0.19.0</code> (which pulls in https://github.com/python/typeshed/pull/14824).</p>
+<p>Perhaps should <code>B905</code> not flag <code>strict=False</code> if <code>external = [&quot;FURB&quot;]</code> is configured? This feels hacky but it's an idea.</p>
+<h3>Version</h3>
+<p>ruff 0.14.8 (9d4f1c6ae 2025-12-04)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-09 00:35</div>
+            <div class="timeline-body"><p>Hmm, that's interesting. I'm curious what others think and how we've handled similar conflicts in the past. My first thought is that we can't really avoid all possible conflicts with other linters, and you may just want to pick one of these two rules to enable.</p>
+<p>This probably also means we shouldn't implement FURB120 ourselves, even though it's still listed in https://github.com/astral-sh/ruff/issues/1348.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-12-09 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 08:06</div>
+            <div class="timeline-body"><p>If those were both Ruff rules, I'd change <code>FURB120</code> to not flag <code>strict=False</code>. I don't think we want to make any assumption about other linter and the solution here is to manually disable <code>B905</code> (or <code>FURB120</code>, depending on what is more importnt to you)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

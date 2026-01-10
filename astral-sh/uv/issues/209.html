@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address slow start-time for large resolutions - astral-sh/uv #209</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Address slow start-time for large resolutions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/209">#209</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-26 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 19:18</div>
+            <div class="timeline-body"><p>If you try to resolve <code>./scripts/resolve/pypi_top_8k_flat.txt</code>, there's like a 1 second delay at the start of the resolution. The issue is that we kick off requests eagerly for all 8,000 packages, and then we wait for the first package in <code>potential_packages</code> to be available. If that first package (which isn't guaranteed to match the order of the initial requirements) is deep in the list, we end up waiting a long time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-10-26 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Initial release" by @charliermarsh on 2023-10-26 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 19:22</div>
+            <div class="timeline-body"><p>I don't know what the right solution is here. Pick packages in the order they were fetched, basically? But I don't know how to implement that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 19:27</div>
+            <div class="timeline-body"><p>Another thing we could explore here is doing a better job loading cached metadata upfront. Like, we could do a blocking operation upfront to ensure we pre-load any cached metadata without going through channels or the reqwest client.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 19:56</div>
+            <div class="timeline-body"><p>For 500 packages, if you just try to fetch all the (cached) metadata in a loop upfront, it takes about 600ms on a release build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 19:59</div>
+            <div class="timeline-body"><p>It seems like all the time is spent deserializing and computing SHAs (42% in <code>sha256::compress256</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-28 14:47</div>
+            <div class="timeline-body"><p>I tried this again and i get</p>
+<pre><code>[...] DEBUG puffin_resolver::resolver Adding direct dependency: [..., x 8000]
+0.117878s INFO pubgrub::internal::partial_solution add_decision: root @ 0a0.dev0
+[...]
+0.273812s DEBUG puffin_resolver::resolver Searching for a compatible version of numba (*)
+[...] 0.274196s DEBUG puffin_client::cached_client Found fresh response for: [...]
+</code></pre>
+<p>with</p>
+<pre><code>RUST_LOG=debug cargo run --bin puffin -- pip-compile -v ./scripts/popular_packages/pypi_8k_downloads.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-28 16:49</div>
+            <div class="timeline-body"><p>Let's close this for now, it's not super actionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-28 16:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

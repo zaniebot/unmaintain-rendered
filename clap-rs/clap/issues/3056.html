@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse arguments before or after subcommands ambivalently - clap-rs/clap #3056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parse arguments before or after subcommands ambivalently</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3056">#3056</a>
+        opened by <a href="https://github.com/9999years">@9999years</a>
+        on 2021-12-02 21:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/9999years">@9999years</a> on 2021-12-02 21:14</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>2.34, but I don't think this is a feature in 3.0 either.</p>
+<h3>Describe your use case</h3>
+<p>I'd like to be able to pass args at any position before or after subcommands. This is a quality-of-live improvement for users of command-line tools.</p>
+<p>Consider the following <code>App</code>:</p>
+<pre><code class="language-rust">use clap::{App, Arg, Subcommand};
+App::new(&quot;prog&quot;)
+    .arg(Arg::with_name(&quot;a&quot;).short(&quot;a&quot;))
+    .subcommand(SubCommand::with_name(&quot;cmd&quot;).arg(Arg::with_name(&quot;b&quot;).short(&quot;b&quot;)))
+</code></pre>
+<p><code>prog -a cmd -b</code> will parse, but <code>prog -a -b cmd</code> and <code>prog cmd -a -b</code> will not. In my opinion, this makes the command-line interface more cumbersome:</p>
+<ul>
+<li>In the shell, it's harder to work on a previous command by hitting <code>^P</code> and adding options to the end -- you have to know what level the option can be set at and insert it at the correct place in the command line</li>
+<li>Requiring arguments at a certain position doesn't enable a compelling use-case -- I don't like the idea of a CLI where <code>prog -a cmd</code> and <code>prog cmd -a</code> mean different things</li>
+</ul>
+<h3>Describe the solution you'd like</h3>
+<p>Adding a <code>clap::AppSettings</code> variant seems like the natural way to alter parsing behavior:</p>
+<pre><code class="language-rust">App::new(&quot;prog&quot;)
+    .setting(AppSettings::ArgsBeforeOrAfterSubcommands)
+    // ...
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>A more granular API could use an <code>ArgSettings</code> instead:</p>
+<pre><code class="language-rust">App::new(&quot;prog&quot;)
+    .arg(Arg::with_name(&quot;a&quot;).short(&quot;a&quot;).set(ArgSettings::BeforeOrAfterSubcommands))
+</code></pre>
+<h3>Additional Context</h3>
+<p>I'm not familiar with clap's implementation, and it occurs to me that the parser might be structured such that it would be difficult or resource-intensive to alter the parser to recognize subcommand args before the subcommand token itself.</p>
+<p>The parser would have to know about and check all the subcommand-args before parsing, or otherwise determine which subcommand is going to be used -- which I think may be tricky, because determining if <code>bar</code> is a subcommand in <code>prog --foo bar</code> would require knowing if <code>--foo</code> takes a value or not.</p>
+<p>This change would also make certain patterns that are currently allowed ambiguous, such as having a top-level argument and a subcommand argument with the same name (and impossible to parse if, for example, one takes a value and the other doesn't).</p>
+<p>My immediate questions about this feature request are:</p>
+<ul>
+<li>Would it be possible to add this to clap?</li>
+<li>Would this feature be allowed in clap, in light of the above complications?</li>
+<li>Should I work on a PR to implement this functionality?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @9999years on 2021-12-02 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-02 21:26</div>
+            <div class="timeline-body"><p>While not quite what you are asking for,</p>
+<ul>
+<li>Clap does have <code>Arg::global</code> for saying a top-level argument can exist within subcommands</li>
+<li>You could skip clap's built-in subcommand support and define all of your arguments at the top level and have a positional argument that is your &quot;subcommand&quot;.  You could even get some validation working with <code>required_if</code>, <code>conflicts_with</code>, etc.  In clap3 we also expose a <code>App::error</code> for custom validation to report errors like clap does.</li>
+</ul>
+<p>(leaving it to others to weigh in on whether this is desirable or not)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/245.html">epage/clapng#245</a> on 2021-12-06 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-09 08:31</div>
+            <div class="timeline-body"><p>@9999years Are you migrating an existing CLI or is this a new one you are building?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9999years">@9999years</a> on 2021-12-09 19:10</div>
+            <div class="timeline-body"><p>@epage Thank you, I didn't notice <code>Arg::global</code> -- that solves 90% of this!</p>
+<p>@pksunkara I'm building a new CLI.</p>
+<p>Setting the top-level <code>App</code>'s arguments to <code>global</code> fixes most of the problem (I think <code>prog cmd -a -b</code> is more important than <code>prog -a -b cmd</code> because command-line interfaces tend to be edited by appending to the end of a previously entered command). It would still be nice to support <code>prog -a -b cmd</code>, but as pointed out above I'm not sure how feasible that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 21:15</div>
+            <div class="timeline-body"><p>In general, I would recommend following existing conventions for CLIs.  This means that flags are scoped to come directly after the command they are semantically related to.  <code>global</code> breaks from that slightly to help when you want an arg everywhere, like <code>--version</code>, <code>--help</code>, or logging flags.</p>
+<p>Separate from that, for someone to add this to clap, we would need a special parse mode where we parse ahead to find what command we are in and then parse the flags.  This will interfere with positional argument support and can cause problems if a command and subcommand have overlapping flags (even figuring out what flags belong to which will take some work).  There is enough complexity to implementing and supporting this and enough gotchas, that I'd be concerned about moving forward with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9999years">@9999years</a> on 2021-12-13 17:40</div>
+            <div class="timeline-body"><blockquote>
+<p>There is enough complexity to implementing and supporting this and enough gotchas, that I'd be concerned about moving forward with it.</p>
+</blockquote>
+<p>@epage That makes sense, thanks for your input. Closing this as infeasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @9999years on 2021-12-13 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-01-11 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/14858.html">rust-lang/cargo#14858</a> on 2024-11-26 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:43 UTC
+    </footer>
+</body>
+</html>

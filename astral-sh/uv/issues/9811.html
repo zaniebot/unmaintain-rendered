@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building and publishing uv workspace members with pinned version constraints - astral-sh/uv #9811</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Building and publishing uv workspace members with pinned version constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9811">#9811</a>
+        opened by <a href="https://github.com/mtnmbr">@mtnmbr</a>
+        on 2024-12-11 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mtnmbr">@mtnmbr</a> on 2024-12-11 14:49</div>
+            <div class="timeline-body"><p>Hey,</p>
+<p>first of all. Thanks a lot for your efforts on making the python tooling ecosystem better! I love ruff and uv :). Please keep up the great work.</p>
+<p>I am currently migrating an existing monorepo from poetry using the <a href="https://pypi.org/project/poetry-monorepo-dependency-plugin/">poetry-monorepo-dependency-plugin</a> to uv.</p>
+<p>I thought that uv workspaces should be the way to handle this usecase.</p>
+<p>The current setup looks somewhat like this:</p>
+<pre><code>uv_monorepo
+│   .gitignore
+│   .python-version
+│   pyproject.toml
+│   README.md
+│   uv.lock
+│
+├───package_a
+│   │   pyproject.toml
+│   │   README.md
+│   │
+│   └───src
+│       └───package_a
+│               py.typed
+│               __init__.py
+│
+├───package_b
+│   │   pyproject.toml
+│   │   README.md
+│   │
+│   └───src
+│       └───package_b
+│               py.typed
+│               __init__.py
+│
+└───package_c
+    │   pyproject.toml
+    │   README.md
+    │
+    └───src
+        └───package_c
+                py.typed
+                __init__.py
+</code></pre>
+<p>uv tree gives the following output to show the inter_package dependecies:</p>
+<pre><code>#uv tree
+Using CPython 3.12.1
+Resolved 4 packages in 13ms
+package-a v0.1.0
+└── package-b v0.2.0
+    └── package-c v0.3.0
+uv-monorepo v0.1.0
+</code></pre>
+<p>So my previous setup did allow me to publish the packages individually to our internal pypi mirror with pinned versions of the dependencies.</p>
+<p>My  main pyproject.toml looks like this atm. (in reality the workspace members are added to the toplevel virtual workspace package to be able to omit the <code>--al--packages</code> on <code>uv sync</code>):</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-monorepo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+
+[tool.uv.workspace]
+members = [&quot;package_a&quot;, &quot;package_b&quot;, &quot;package_c&quot;]
+
+</code></pre>
+<p>With e.g. the package_a pyproject.toml being:</p>
+<pre><code class="language-toml">[project]
+name = &quot;package-a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;package-b&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+package-b = { workspace = true }
+
+</code></pre>
+<p>This demo setup has basically been fully created with several <code>uv init</code> calls.</p>
+<p>The hope was that <code>uv build --package-a --wheel</code> would output a wheel that has the pinned lower version of the dependency <code>package-b</code> listed internally. At least this is what my previous setup did.
+Instead I get a METADATA file like this:</p>
+<pre><code>Metadata-Version: 2.3
+Name: package-a
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: &gt;=3.12
+Requires-Dist: package-b
+</code></pre>
+<p>When published to our pypi instance this would ofcource not resolve to the actual boundary of <code>package-b&gt;=0.2.0,&lt;0.3 </code> that would be required here.</p>
+<p>After bumping e.g. the patch version of <code>package-b</code> I would also assume that the version inside the METADATA is bumped to e.g. 0.2.1.</p>
+<p>Is this use-case supported? What is the current approach to handle this properly? I am open for suggestions!</p>
+<p>Best regards
+Michael</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gracevivi523">@gracevivi523</a> on 2024-12-12 03:27</div>
+            <div class="timeline-body"><p>I have opened <a href="https://github.com/astral-sh/uv/issues/9626">this issue</a> and I think we are trying to achieve the same goal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-12 03:46</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8729</li>
+<li>https://github.com/astral-sh/uv/issues/8949</li>
+</ul>
+<p>(though I think this request is distinct)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-12 03:49</div>
+            <div class="timeline-body"><p>It would be nice to have some automated support for this, but, as described in the linked issues, it's sort of hard to do this in a spec-compliant way. We haven't designed a solution for this category of problem yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-12-12 03:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtnmbr">@mtnmbr</a> on 2024-12-12 07:47</div>
+            <div class="timeline-body"><p>Hey, thanks for the pointing out the related topics. I must have overlooked https://github.com/astral-sh/uv/issues/8729 for some reason.</p>
+<p>I think it's the one most related to my problem.</p>
+<p>So as for now there is no standard way to do this. In the meanwhile do you have any suggestions on how to handle this?</p>
+<p>I mean for version bumping I am using a separate tool anyways atm. So I might give it a try to manually add the version constraint in the dependency groups and make that tool update the other pyproject.toml files as well.</p>
+<p>Though maybe not intended it at least did not seem to break anything when adding version constraints on workspace members (funny enough not even if the version does not match the one in the workspace at all)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtnmbr on 2024-12-12 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtnmbr">@mtnmbr</a> on 2024-12-12 13:37</div>
+            <div class="timeline-body"><p>So this is not fully related to the marked issue but at least covered by it. Maybe this is even possible for only workspaces?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @mtnmbr on 2024-12-12 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11250.html">astral-sh/uv#11250</a> on 2025-03-04 08:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gr1N">@Gr1N</a> on 2025-05-16 10:03</div>
+            <div class="timeline-body"><p>Hey!</p>
+<p>We're facing the same usability problem with our mono repositories. We solved it with a custom script we run before release, which pins versions across all packages and dependencies inside the repo by the specified Git tag.</p>
+<p>Here is an example of our solution:</p>
+<pre><code># /// script
+# requires-python = &quot;&gt;=3.12,&lt;3.13&quot;
+# dependencies = [
+#     &quot;tomlkit&gt;=0.13,&lt;1.0&quot;,
+# ]
+# ///
+import argparse
+from pathlib import Path
+
+import tomlkit
+
+
+def main() -&gt; None:
+    parser = argparse.ArgumentParser()
+
+    subparsers = parser.add_subparsers(metavar=&quot;COMMAND&quot;)
+    subparsers.required = True
+
+    freeze = subparsers.add_parser(
+        &quot;freeze&quot;, help=&quot;Freezes versions of packages in workspaces&quot;
+    )
+    freeze.set_defaults(func=freeze_func)
+    freeze.add_argument(&quot;--version&quot;, required=True)
+
+    (args := parser.parse_args()).func(args)
+
+
+def freeze_func(args: argparse.Namespace) -&gt; None:
+    for p in Path(&quot;.&quot;).glob(&quot;packages/*/pyproject.toml&quot;):
+        freeze_pyproject(p, version=args.version)
+
+
+def freeze_pyproject(pyproject: Path, /, *, version: str) -&gt; None:
+    print(f'Freezing in &quot;{pyproject}&quot;')
+
+    with pyproject.open() as f:
+        pyproject_d = tomlkit.loads(f.read())
+
+    for deps in (
+        pyproject_d[&quot;project&quot;][&quot;dependencies&quot;],
+        *(pyproject_d[&quot;project&quot;].get(&quot;optional-dependencies&quot;, {}).values()),
+    ):
+        freeze_dependencies(deps, version=version)
+
+    with pyproject.open(mode=&quot;w&quot;) as f:
+        f.write(tomlkit.dumps(pyproject_d))
+
+
+def freeze_dependencies(deps: list[str], /, *, version: str) -&gt; None:
+    for i in range(len(deps)):
+        if deps[i].startswith(&quot;basename&quot;):
+            deps[i] = f&quot;{deps[i]}=={version}&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>It would be great to have such an interface out of the box; we believe it can massively improve the experience with workspaces and be a good point of departure for extending the <code>uv version</code> command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../equinor/dataorc/issues/28.html">equinor/dataorc#28</a> on 2025-11-07 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sillocan">@Sillocan</a> on 2025-12-04 21:33</div>
+            <div class="timeline-body"><p>I would even settle for the version being pinned with an <code>package-b==0.2.0</code>. Has anyone accomplished this using hatch build system hooks? (I think the uv build system doesnt have build hooks yet still?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-17 17:24</div>
+            <div class="timeline-body"><p>Note that even with hatch, you need to declare dependencies as dynamic to support rewriting properly. This may get easier with PEP 808, which allows doing some of these properly. The flipside is that uv then always need to build to determine the workspace dependencies, which will noticeably slow down <code>uv sync</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:48 UTC
+    </footer>
+</body>
+</html>

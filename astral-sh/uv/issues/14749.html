@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project dependencies no longer available in JupyterLab launched with `uv run --with jupyter jupyter lab` - astral-sh/uv #14749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Project dependencies no longer available in JupyterLab launched with `uv run --with jupyter jupyter lab`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14749">#14749</a>
+        opened by <a href="https://github.com/bellkev">@bellkev</a>
+        on 2025-07-19 22:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bellkev">@bellkev</a> on 2025-07-19 22:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My understanding from the uv + Jupyter <a href="https://docs.astral.sh/uv/guides/integration/jupyter/">integration doc</a> is that running JupyterLab without adding it to the project dependencies like <code>uv run --with jupyter jupyter lab</code> should make the project's dependencies available in the JupyterLab environment. I see that that works in 0.7.22 but not in 0.8.0. I strongly suspect that the change comes from https://github.com/astral-sh/uv/pull/14447.</p>
+<p>As a minimal example, if I run:</p>
+<pre><code>curl -LsSf https://astral.sh/uv/install.sh | sh
+uv python install 3.10
+uv init --bare --python 3.10
+uv add boto3
+uv run --with jupyter jupyter lab
+</code></pre>
+<p>Then with 0.7.22 I'm able to run <code>import boto3</code> successfully in a python cell in a notebook, but not in 0.8.0. In version 0.8.0, when I run the following in a cell:</p>
+<pre><code>import sys
+print(sys.executable)
+print(sys.path)
+</code></pre>
+<p>I get:</p>
+<pre><code>/Users/kevin/.cache/uv/archive-v0/clAeKvr1eBVfjXfG8R8TX/bin/python
+['/Users/kevin/.local/share/uv/python/cpython-3.10.18-macos-aarch64-none/lib/python310.zip', '/Users/kevin/.local/share/uv/python/cpython-3.10.18-macos-aarch64-none/lib/python3.10', '/Users/kevin/.local/share/uv/python/cpython-3.10.18-macos-aarch64-none/lib/python3.10/lib-dynload', '', '/Users/kevin/.cache/uv/archive-v0/clAeKvr1eBVfjXfG8R8TX/lib/python3.10/site-packages']
+</code></pre>
+<p>While if I run a command like:</p>
+<pre><code>!python -c &quot;import sys; print(sys.executable); print(sys.path)&quot;
+</code></pre>
+<p>I get:</p>
+<pre><code>/Users/kevin/.cache/uv/builds-v0/.tmp2PZpfe/bin/python
+['', '/Users/kevin/.local/share/uv/python/cpython-3.10.18-macos-aarch64-none/lib/python310.zip', '/Users/kevin/.local/share/uv/python/cpython-3.10.18-macos-aarch64-none/lib/python3.10', '/Users/kevin/.local/share/uv/python/cpython-3.10.18-macos-aarch64-none/lib/python3.10/lib-dynload', '/Users/kevin/.cache/uv/builds-v0/.tmp2PZpfe/lib/python3.10/site-packages', '/Users/kebel/source/uv-test/uv-repro/.venv/lib/python3.10/site-packages', '/Users/kevin/.cache/uv/archive-v0/clAeKvr1eBVfjXfG8R8TX/lib/python3.10/site-packages']
+</code></pre>
+<p>The latter contains the desired <code>.../uv-repro/.venv</code> project venv, I believe via a <code>.pth</code> file where the ephemeral <code>.cache/uv/builds-v0/.tmp2PZpfe/bin/python</code> is installed.</p>
+<p>I believe the intention is for the kernel to use the same &quot;builds-v0&quot; ephemeral python interpreter location which has the overlay <code>.pth</code> file rather than the &quot;archive-v0&quot; <code>--with</code> python environment. I see that the kernelspec looks like:</p>
+<pre><code>{
+ &quot;argv&quot;: [
+  &quot;python&quot;,
+  &quot;-m&quot;,
+  &quot;ipykernel_launcher&quot;,
+  &quot;-f&quot;,
+  &quot;{connection_file}&quot;
+ ],
+ &quot;display_name&quot;: &quot;Python 3 (ipykernel)&quot;,
+ &quot;language&quot;: &quot;python&quot;,
+ &quot;metadata&quot;: {
+  &quot;debugger&quot;: true
+ }
+}
+</code></pre>
+<p>The <code>jupyter_client</code> <a href="https://github.com/jupyter/jupyter_client/blob/1f36fbf4d0e2e067129552d9e69212f7bf7c0624/jupyter_client/manager.py#L309-L320">logic</a> is that the &quot;python&quot; command is interpreted as <code>sys.executable</code>, and judging by the output of <code>uv run --with jupyter jupyter troubleshoot</code>, that is the <code>--with</code> environment (<code>/Users/kevin/.cache/uv/archive-v0/clAeKvr1eBVfjXfG8R8TX/bin/python</code> in my case). (The <code>!python</code> and similar commands have the ephemeral env in the $PATH env var though, and thus seem to use the right python environment.)</p>
+<h3>Platform</h3>
+<p>macOS 15.5 (also tested in Amazon Linux 2023 and debian:bookworm docker image)</p>
+<h3>Version</h3>
+<p>0.8.0</p>
+<h3>Python version</h3>
+<p>3.10.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bellkev on 2025-07-19 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-20 00:59</div>
+            <div class="timeline-body"><p>Hmm yeah, I think this is because <code>jupyter</code> is in the <code>--with</code> environment rather than the environment that we invoke from (which has the requisite <code>.pth</code> file pointing to both the <code>--with</code> environment and the base environment).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-20 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-20 18:23</div>
+            <div class="timeline-body"><p>This also appears to have broken mypy invocations such as <code>uv run --with=mypy mypy</code> FYI.</p>
+<p>(I know the way you're &quot;supposed&quot; to do this is by listing mypy as a dev dependency, but this is often the way I invoke mypy in practice.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-20 18:29</div>
+            <div class="timeline-body"><p>That one I assume would be fixed by rewriting the shebangs in the final environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14729.html">astral-sh/uv#14729</a> on 2025-07-21 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 12:32</div>
+            <div class="timeline-body"><p>Charlie's referring to https://github.com/astral-sh/uv/issues/13327 which was a bug in the previous implementation as well. Unfortunately that breaks Jupyter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14788.html">astral-sh/uv#14788</a> on 2025-07-21 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14790.html">astral-sh/uv#14790</a> on 2025-07-21 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jupyterlab/jupyterlab/issues/17716.html">jupyterlab/jupyterlab#17716</a> on 2025-07-21 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-22 12:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

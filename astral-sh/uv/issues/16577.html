@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git dependency HTTPS/SSH differentiation based on platform markers - astral-sh/uv #16577</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>git dependency HTTPS/SSH differentiation based on platform markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16577">#16577</a>
+        opened by <a href="https://github.com/vasile-c">@vasile-c</a>
+        on 2025-11-03 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vasile-c">@vasile-c</a> on 2025-11-03 10:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello,</p>
+<p>When trying to differentiate the protocol to use for a git dependency based on the platform:</p>
+<pre><code class="language-pyproject">[tool.uv.sources]
+private_dep = [
+    { git = &quot;ssh://git@github.com/private_orga/private_dep.git&quot;, marker = &quot;sys_platform != 'win32'&quot; },
+    { git = &quot;https://github.com/private_orga/private_dep.git&quot;, marker = &quot;sys_platform == 'win32'&quot; },
+]
+</code></pre>
+<p><code>uv sync</code> still tries to access the dependency using <strong>both</strong> protocols on any platform:</p>
+<pre><code class="language-shell">&gt; uv sync
+  Updated ssh://git@github.com/private_orga/private_dep.git
+  Updated https://github.com/private_orga/private_dep.git
+</code></pre>
+<p>And if one of the platforms doesn't support both protocols:</p>
+<pre><code class="language-shell">&gt; uv sync
+  Updating ssh://git@github.com/private_orga/private_dep (HEAD)
+  Updated https://github.com/private_orga/private_dep.git
+  ⠹ Resolving dependencies...
+  × Failed to download and build `private_dep @ git+ssh://git@github.com/private_orga/private_dep.git`
+  ├─▶ Git operation failed
+  [...]
+</code></pre>
+<p>Should <code>uv</code> be able to install git dependencies using different protocols on different platforms?</p>
+<p>Thank you for all your work at Astral!</p>
+<h3>Platform</h3>
+<p>macOS 15 ARM64, Windows 11 AMD64</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vasile-c on 2025-11-03 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-05 18:09</div>
+            <div class="timeline-body"><p>uv needs to know the metadata of both URLs for both platforms to build the lockfile, so it tries to fetch both, which creates the error you see. The marker in sources isn't well suited for this case, we recommend instead using the same protocol consistently across platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-11-05 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-11-05 18:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

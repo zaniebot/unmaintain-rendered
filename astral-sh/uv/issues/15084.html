@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflink failures on macOS 15.5 - astral-sh/uv #15084</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reflink failures on macOS 15.5</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15084">#15084</a>
+        opened by <a href="https://github.com/mertdeveci5">@mertdeveci5</a>
+        on 2025-08-05 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mertdeveci5">@mertdeveci5</a> on 2025-08-05 16:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After <code>uv</code> upgrade to 0.8.4, it is throwing a warning around copy_mode.</p>
+<pre><code> uv run uvicorn config.asgi:application --reload
+░░░░░░░░░░░░░░░░░░░░ [0/99] Installing wheels...                                             warning: Failed to clone files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, reflinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+</code></pre>
+<p>This never used to happen on version 6. Bigger problem is that this is corrupting some packages with incomplete installations.</p>
+<p>When I stop and run the server a couple times, some of the site-packages can never be found.</p>
+<p>Not really sure what is happening here</p>
+<h3>Platform</h3>
+<p>macos Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.4</p>
+<h3>Python version</h3>
+<p>3.11.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mertdeveci5 on 2025-08-05 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 16:32</div>
+            <div class="timeline-body"><p>We'll need way more details. Where's your target directory? Where's your cache? Do you have multiple file systems? Can you share verbose logs as requested in #9452 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mertdeveci5">@mertdeveci5</a> on 2025-08-05 16:44</div>
+            <div class="timeline-body"><p>Sure thing. You can see it below:</p>
+<p>System Information</p>
+<ul>
+<li>uv version: 0.8.4 (Homebrew 2025-07-30)</li>
+<li>Operating System: macOS 15.5 (24F74) - Sequoia</li>
+<li>Architecture: arm64 (Apple Silicon)</li>
+<li>Python: CPython 3.11.8</li>
+<li>Target directory: /Users/mertdeveci5/Desktop/Code/alpha</li>
+<li>Cache directory: /Users/mertdeveci5/.cache/uv</li>
+<li>Filesystem: Both directories are on the same APFS volume (/dev/disk3s5)</li>
+</ul>
+<p>Issue Description</p>
+<p>When uv attempts to use APFS clonefile operations, it fails and falls back to copying, but the
+fallback sometimes results in corrupted package installations. This manifests as:</p>
+<ol>
+<li>Missing module files (e.g., ModuleNotFoundError: No module named 'h11._version')</li>
+<li>Corrupted directories in .venv (e.g., bin 2 with 65535 subdirectories)</li>
+<li>Incomplete package installations (missing subdirectories like openai/resources/)</li>
+</ol>
+<p>Verbose Logs</p>
+<p>DEBUG Failed to clone
+<code>/Users/mertdeveci5/.cache/uv/archive-v0/NFhOC022_BSCGW8TBVKDa/requests-2.32.4.dist-info</code> to <code>/User   s/mertdeveci5/Desktop/Code/alpha/.venv/lib/python3.11/site-packages/requests-2.32.4.dist-info</code>,
+attempting to copy files as a fallback
+warning: Failed to clone files; falling back to full copy. This may lead to degraded performance.
+If this is intentional, set <code>export UV_LINK_MODE=copy</code> or use <code>--link-mode=copy</code> to
+suppress this warning.</p>
+<p>Reproduction Steps</p>
+<ol>
+<li>On macOS with APFS filesystem</li>
+<li>rm -rf .venv &amp;&amp; uv venv &amp;&amp; uv sync</li>
+<li>Run server: uv run uvicorn config.asgi:application --reload</li>
+<li>Repeat steps 2-3 multiple times</li>
+<li>Eventually, packages become corrupted with errors like:
+- ImportError: cannot import name 'ImproperlyConfigured' from 'channels.exceptions'
+- ModuleNotFoundError: No module named 'h11._version'
+- FileNotFoundError: [Errno 2] No such file or directory:
+'.venv/lib/python3.11/site-packages/openai/resources/chat'</li>
+</ol>
+<ul>
+<li>intermittent - first few installations often work, then corruption occur</li>
+<li>The corrupted directories show bizarre properties (65535 subdirectories)</li>
+</ul>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 17:19</div>
+            <div class="timeline-body"><p>Thanks for the details. Unfortunately, I'm not sure what could be going on here. There are <em>a lot</em> of people using uv on macOS (including most of us!) and I've never seen this before.</p>
+<p>Are you setting <code>export UV_LINK_MODE=copy</code> or are you saying the corrupted directories are occurring with the default settings?</p>
+<p>I think our best path forward here is to add more logs when we encounter a reflink error so we can tell what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mertdeveci5">@mertdeveci5</a> on 2025-08-05 17:23</div>
+            <div class="timeline-body"><p>I don't set the <code>export UV_LINK_MODE=copy</code> - never did it so far and this error surfaced only today after my upgrade to 0.8.4 although not sure if they are related. I am running <code>uv</code> with default settings. Also I uninstalled and reinstlaled it as well but it keeps happening.</p>
+<p>Any recommendation here or any other logs you need? Claude Code also suggested that there is an incomptability issues around reflink with uv's new version and Mac - however I did not upgrade my os for a while now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 17:26</div>
+            <div class="timeline-body"><p>I'd recommend changing the link mode to copy until we can determine the root cause of the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 17:26</div>
+            <div class="timeline-body"><p>We'll need to release more logs before you can do more, I think. Unless there's some system log that has information about the failed clones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-05 17:28</div>
+            <div class="timeline-body"><p>I guess the other thing to do would be to narrow the issue down to a specific version. Going from 0.6.x to 0.8.x is a huge range for us to try to identify the cause of a regression. You can use <code>uvx uv@&lt;version&gt;</code> to quickly test versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Link_mode copy corruption" to "Reflink failures on macOS 15.5" by @zanieb on 2025-08-05 17:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

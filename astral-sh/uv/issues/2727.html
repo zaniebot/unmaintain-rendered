@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing from subdirectories is broken in 0.1.26 (and 0.1.25 probably) - astral-sh/uv #2727</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing from subdirectories is broken in 0.1.26 (and 0.1.25 probably)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2727">#2727</a>
+        opened by <a href="https://github.com/abdulhaq-e">@abdulhaq-e</a>
+        on 2024-03-30 01:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/abdulhaq-e">@abdulhaq-e</a> on 2024-03-30 01:07</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>A  dependency defined using a subdirectory fails to generate the lockfile in <code>0.1.26</code>.</p>
+<p>An example dependency is: <code>&quot;mersal @ git+ssh://git@github.com/mersal-org/mersal.git@trunk#subdirectory=core&quot;</code></p>
+<p>The error message is:</p>
+<pre><code>error: Failed to download and build: mersal @ git+ssh://git@github.com/mersal-org/mersal.git@trunk#subdirectory=core
+  Caused by: Package metadata name `mersal-virtual-workspace` does not match given name `mersal`
+error: could not write production lockfile for project
+</code></pre>
+<p>The error was originally obtained using <code>rye sync</code> but then I switched to using <code>uv</code> directly via <code>uv pip compile pyproject.toml -o requirements.txt</code></p>
+<p>What is happening: The process is finding a <code>pyproject.toml</code> at the root directory which has a package metadata name <code>mersal-virtual-workspace</code>. This didn't happen in version <code>0.1.24</code> or before (I tested from <code>01.20</code>).</p>
+<p>With <code>0.1.25</code>, I get a different error which I believe is now resolved in <code>0.1.26</code> (https://github.com/astral-sh/uv/pull/2712):</p>
+<pre><code> Caused by: Failed to deserialize cache entry
+  Caused by: expected version to start with a number, but no leading ASCII digits were found
+</code></pre>
+<p>However, looking at the changelog, the original error was probably caused by a change in <code>0.1.25</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abdulhaq-e">@abdulhaq-e</a> on 2024-03-30 01:10</div>
+            <div class="timeline-body"><p>If I had to guess, it's probably not the subdirectory handling itself being broken but the existence of a <code>pyproject.toml</code> in the root directory is throwing the resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Subdirectories are broken in 0.1.26 (and 0.1.25 probably)" to "Installing from subdirectories is broken in 0.1.26 (and 0.1.25 probably)" by @abdulhaq-e on 2024-03-30 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-30 01:30</div>
+            <div class="timeline-body"><p>Thanks for the thorough report! If you have time, could you share a reproduction with a public repository?</p>
+<p>Note for us, we should add test coverage for this in a new <a href="https://github.com/orgs/astral-test/repositories"><code>astral-test</code></a> repository (e.g. <code>uv-pypackage-workspace</code>).</p>
+<p>cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-30 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 01:35</div>
+            <div class="timeline-body"><p>Not immediately obvious to me how this would be happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 01:36</div>
+            <div class="timeline-body"><p>Sorry, yes it is. Easy fix, my mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-30 01:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2728.html">astral-sh/uv#2728</a> on 2024-03-30 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-30 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 02:37</div>
+            <div class="timeline-body"><p>Fixed in the next release, apologies.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

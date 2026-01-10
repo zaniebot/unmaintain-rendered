@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Lambda Docker example - astral-sh/uv #8935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>AWS Lambda Docker example</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8935">#8935</a>
+        opened by <a href="https://github.com/tonymaynard97">@tonymaynard97</a>
+        on 2024-11-08 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tonymaynard97">@tonymaynard97</a> on 2024-11-08 12:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I was wondering if there were any examples on how to use UV with the prebuilt AWS lambda python base images? Using the https://docs.astral.sh/uv/guides/integration/docker/ as reference but I seem to get into a state where the lambda does not have access to the imports.</p>
+<p>I thought there wasn't a need to update PYTHONPATH as this would point to the default used by the lambda.
+Dockerfile</p>
+<pre><code>FROM public.ecr.aws/lambda/python:3.13
+ARG ACCESS_TOKEN
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+
+# Copy pyproject.toml and uv.lock to the working directory
+COPY pyproject.toml uv.lock ${LAMBDA_TASK_ROOT}
+
+# Install dependencies using uv
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
+
+# Copy the rest of the application code
+COPY . ${LAMBDA_TASK_ROOT}
+
+WORKDIR ${LAMBDA_TASK_ROOT}
+# Install the project itself
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
+
+RUN python -c &quot;import aws_lambda_typing; print('aws_lambda_typing is installed')&quot;
+
+CMD [&quot;lambda.lambda_handler&quot;]
+</code></pre>
+<p>lambda.py</p>
+<pre><code>from aws_lambda_typing import context as ctx
+from aws_lambda_typing import events
+import logging
+
+
+def lambda_handler(event: events.APIGatewayProxyEventV1, context: ctx.Context):
+    # def lambda_handler(event, context):
+    logging.info(&quot;RUNNING&quot;)
+    return {&quot;statusCode&quot;: 200, &quot;body&quot;: &quot;Ok&quot;}
+</code></pre>
+<p>Command is correct as when I remove the types I get a 200.</p>
+<p>pyproject.toml</p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11.9&quot;
+dependencies = [
+    &quot;aws-lambda-typing==2.17.0&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-11-09 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:21</div>
+            <div class="timeline-body"><p>This is a good question -- @zanieb, do you think it's worth having a guide for Lambda?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 14:49</div>
+            <div class="timeline-body"><p>Yeah I think so. The packaging situation for Lambda is pretty weird though, it might be hard for us to write. It'll probably be pretty stable, as least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sertainly">@sertainly</a> on 2024-11-20 10:26</div>
+            <div class="timeline-body"><p>I was just trying to get this to work and for me, the <code>--system</code> flag was the important part.</p>
+<p>For me it's always helpful to have a minimal working example, something along the lines of:</p>
+<p>Dockerfile:</p>
+<pre><code class="language-docker">FROM public.ecr.aws/lambda/python:3.12
+
+# Copy python code and the pyproject.toml
+COPY ./aws/lambdas ${LAMBDA_TASK_ROOT}/lambdas
+COPY ./pyproject.toml ./pyproject.toml
+
+# Install uv
+RUN pip install uv
+# The --system flag points uv to use the python expected by AWS
+RUN uv pip install . --system
+</code></pre>
+<p>I hope this already helps. If I can/should provide more context, please let me know 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fitz-vivodyne">@fitz-vivodyne</a> on 2024-11-20 17:33</div>
+            <div class="timeline-body"><p>Also currently trying to figure out how to get <code>uv sync</code> to work in an AWS lambda container (<code>public.ecr.aws/lambda/python:3.13-arm64</code> for me though)</p>
+<p>Trying some variations of <code>ENV UV_PROJECT_ENVIRONMENT=&quot;/var/lang/bin&quot;</code> (no luck)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fitz-vivodyne">@fitz-vivodyne</a> on 2024-11-20 17:42</div>
+            <div class="timeline-body"><p>Here's my latest attempt which appears to work:</p>
+<pre><code class="language-docker"># syntax=docker/dockerfile:1
+
+# We don't need `uv` in the final image, so we'll just mount the binary
+# See https://docs.astral.sh/uv/guides/integration/docker/
+FROM ghcr.io/astral-sh/uv:0.5.2 AS uv
+
+FROM public.ecr.aws/lambda/python:3.13-arm64
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+# Install dependencies
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=secret,id=UV_INDEX,env=UV_INDEX \
+    uv export --format=requirements-txt --frozen -o requirements.txt &amp;&amp; \
+    uv pip install -r requirements.txt --system &amp;&amp; \
+    rm requirements.txt
+
+# copy app source
+COPY src ${LAMBDA_TASK_ROOT}/src
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=secret,id=UV_INDEX,env=UV_INDEX \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv sync --frozen
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doron98">@doron98</a> on 2024-11-27 10:18</div>
+            <div class="timeline-body"><p>Same comment as in this issue #9350 including path dependencies is tricky. In this case maybe more here I think we would like to generate a requirement file without the path dependencies and the ability to copy them in our bundle dir before building our docker image https://github.com/sst/sst/pull/5132</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 15:26</div>
+            <div class="timeline-body"><p>@doron98 there's <code>uv export --no-emit-workspace</code> for that, and you can <code>--no-emit-package</code> other specific path dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doron98">@doron98</a> on 2024-11-27 18:56</div>
+            <div class="timeline-body"><p>Yes it is exactly what is has been done in this pr https://github.com/sst/sst/pull/5132, we force the user to use workspace and when exporting with the <code>--no-emit-workspace</code> option we are able to get the requirements files with all third party dependencies. Now what it lacks it's to bring ('copy paste') the local dependency inside the build directory. There is no easy way to do it. What is has been done in the pr is <code>uv buid --sdist --all</code> that build all local packages, then we extract all builded packages and copy paste them next to the handler. I was hoping there would be cleaner way to it, because this has the huge drawback of adding local dependency that our handler may not depends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibbe">@tibbe</a> on 2024-12-20 13:28</div>
+            <div class="timeline-body"><p>I would very much appreciate an example that includes (editable) path dependencies. We have a large monorepo with several applications and thus we don't use workspaces (because there's not once set of consistent package versions that work across all applications). Currently I'm doing</p>
+<pre><code class="language-Dockerfile"># We don't need `uv` in the final image, so we'll just mount the binary
+# See https://docs.astral.sh/uv/guides/integration/docker/
+FROM ghcr.io/astral-sh/uv:0.5.2 AS uv
+
+FROM public.ecr.aws/lambda/python:3.11 AS builder
+ARG TARGETPLATFORM
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+COPY core core
+COPY db db
+COPY backend/pyproject.toml backend/uv.lock ./backend/
+
+WORKDIR ${LAMBDA_TASK_ROOT}/backend
+
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    uv export --frozen --no-emit-project --no-hashes --no-dev -o requirements.txt --no-editable &amp;&amp; \
+    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot; --system
+
+WORKDIR ${LAMBDA_TASK_ROOT}/backend
+
+COPY backend/app ./app
+
+FROM public.ecr.aws/lambda/python:3.11
+
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+COPY --from=builder ${LAMBDA_TASK_ROOT} ./
+
+CMD [ &quot;app.api.main.handler&quot; ]
+</code></pre>
+<p>I suspect that this part</p>
+<pre><code class="language-Dockerfile">COPY core core
+COPY db db
+</code></pre>
+<p>isn't the best way to achieve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-02 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10278.html">astral-sh/uv#10278</a> on 2025-01-02 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-02 19:02</div>
+            <div class="timeline-body"><p>I put something together here: https://github.com/astral-sh/uv/pull/10278</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-07 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adri1wald">@adri1wald</a> on 2025-01-13 00:36</div>
+            <div class="timeline-body"><p>Trying to wrap my head around the scenario where you have multiple apps:</p>
+<pre><code class="language-toml">[project]
+name = &quot;monorepo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Monorepo&quot;
+readme = &quot;README.md&quot;
+
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = []
+
+[dependency-groups]
+dev = [
+    &quot;ruff~=0.9.1&quot;,
+    &quot;pytest~=8.3.3&quot;,
+    &quot;pytest-xdist~=3.6.1&quot;,
+    &quot;pyright&gt;=1.1.391&quot;,
+]
+
+[tool.uv.workspace]
+members = [
+    &quot;apps/example-app&quot;,
+    &quot;apps/example-app-2&quot;,
+    &quot;libs-py/*&quot;,
+]
+</code></pre>
+<p>This is the direction I'm trying, but it's not working:</p>
+<pre><code class="language-dockerfile">ARG PATH_TO_ROOT=../..
+ARG APP=example-app
+
+#*---------- uv ----------
+
+FROM ghcr.io/astral-sh/uv:0.5.18 AS uv
+
+#*---------- builder ----------
+FROM public.ecr.aws/lambda/python:3.13 AS builder
+
+ARG PATH_TO_ROOT
+ARG APP
+
+# Enable bytecode compilation, to improve cold-start performance.
+ENV UV_COMPILE_BYTECODE=1
+# Disable installer metadata, to create a deterministic layer.
+ENV UV_NO_INSTALLER_METADATA=1
+# Enable copy mode to support bind mount caching.
+ENV UV_LINK_MODE=copy
+
+
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=${PATH_TO_ROOT}/uv.lock,target=uv.lock \
+    --mount=type=bind,source=${PATH_TO_ROOT}/pyproject.toml,target=pyproject.toml \
+    uv export --frozen --no-emit-workspace --no-dev --no-editable -o requirements.txt &amp;&amp; \
+    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
+
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=${PATH_TO_ROOT}/uv.lock,target=uv.lock \
+    --mount=type=bind,source=${PATH_TO_ROOT}/pyproject.toml,target=pyproject.toml \
+    # pull in libs-py, our shared libraries
+    --mount=type=bind,source=${PATH_TO_ROOT}/libs-py,target=libs-py \
+    # pull in the app's pyproject.toml
+    --mount=type=bind,source=${PATH_TO_ROOT}/apps/$APP/pyproject.toml,target=apps/$APP/pyproject.toml \
+    # not sure why needed
+    touch apps/$APP/README.md &amp;&amp; \
+    # fails but i don't want to copy in the app code until after installing libs-py deps
+    uv export --package $APP --frozen --no-dev --no-editable -o requirements.txt &amp;&amp; \
+    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
+
+# ...
+</code></pre>
+<p>I tried adding <code>--no-emit-package $APP</code> but this caused none of the <strong>local</strong> deps to be included. Any ideas @charliermarsh ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JuR-0">@JuR-0</a> on 2025-04-28 08:57</div>
+            <div class="timeline-body"><p>Hey @tibbe, in the end did you manage to build a docker with local dependencies without having to copy all of your source code (and thus invalidate the layer for each changes) ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibbe">@tibbe</a> on 2025-05-02 14:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Hey <a href="https://github.com/tibbe">@tibbe</a>, in the end did you manage to build a docker with local dependencies without having to copy all of your source code (and thus invalidate the layer for each changes) ?</p>
+</blockquote>
+<p>Unfortunately not. You can avoid copying the sources just for the main project/executable but all the local libraries need to be copied before the initial <code>uv sync</code>/<code>uv pip install</code> and thus invalidate the layer.</p>
+<p>I think we need some new functionality in uv to make this work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jusexton">@jusexton</a> on 2025-12-11 10:04</div>
+            <div class="timeline-body"><p>@adri1wald I have a very similar setup. Something like</p>
+<pre><code>project
+|_pyproject.toml &lt;-- doesnt have all the dependencies needed
+|_packages
+   |__app. &lt;-- fastapi app
+   |__lib1
+   |__libx
+</code></pre>
+<p>I've given <a href="https://docs.astral.sh/uv/guides/integration/aws-lambda/#workspace-support">the docs associated with this issue</a> a good read and have something similar to your dockerfile but no luck. When running the image it can never find the library.</p>
+<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:0.9.17 AS uv
+FROM public.ecr.aws/lambda/python:3.13 AS builder
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_NO_INSTALLER_METADATA=1
+ENV UV_LINK_MODE=copy
+
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv export --frozen --package app --no-emit-workspace --no-dev --no-editable -o requirements.txt &amp;&amp; \
+    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
+
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=packages/lib1 target=lib1 \
+    uv export --frozen --no-dev --no-editable -o requirements.txt &amp;&amp; \
+    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
+
+FROM public.ecr.aws/lambda/python:3.13
+
+COPY --from=builder ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
+COPY ./packages/app/app ${LAMBDA_TASK_ROOT}/app
+
+CMD [&quot;app.main.handler&quot;]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:27 UTC
+    </footer>
+</body>
+</html>

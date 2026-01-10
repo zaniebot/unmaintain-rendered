@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing some old dependencies migh fail local builds - astral-sh/uv #2411</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing some old dependencies migh fail local builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2411">#2411</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2024-03-13 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-13 13:22</div>
+            <div class="timeline-body"><p>Installing some old, dependencies that require buidling local wheels, might lead to failures of the build project - especially when <code>--lowest-direct</code> resolution is used.</p>
+<p>I encountered this wiht <code>zenpy</code> dependency of Airflow, which has no matching platform wheel and their lowest applicable version has some problems with pyproject.toml not being correct (similar to the issue solved in 0.1.17 with direct installation in #2302.</p>
+<p>It's reproducible with <a href="https://github.com/apache/airflow/commit/1a8c3bacd5b46b7224b6f0558e8fe36de8bb9ff0">1a8c3bacd5b46b7224b6f0558e8fe36de8bb9ff0</a> commit hash of apache airflow</p>
+<pre><code class="language-bash">uv pip install --upgrade --resolution lowest-direct --editable '.[devel-ci]'                
+   Built file:///home/jarek/code/airflow                                                                                                                                                                                                                                                                                                                                                      Built 1 editable in 4.84s
+error: Failed to download and build: zenpy==2.0.32
+  Caused by: Failed to build: zenpy==2.0.32
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/dist.py:476: SetuptoolsDeprecationWarning: Invalid dash-separated options
+!!
+
+        ********************************************************************************
+        Usage of dash-separated 'description-file' will not be supported in future
+        versions. Please use the underscore name 'description_file' instead.
+
+        By 2024-Sep-26, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+        ********************************************************************************
+
+!!
+  opt = self.warn_dash_deprecation(opt, section)
+/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/_apply_pyprojecttoml.py:76: _MissingDynamic: `license` defined outside of `pyproject.toml` is ignored.
+!!
+
+        ********************************************************************************
+        The following seems to be defined outside of `pyproject.toml`:
+
+        `license = 'GPLv3'`
+
+        According to the spec (see the link below), however, setuptools CANNOT
+        consider this value unless `license` is listed as `dynamic`.
+
+        https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table
+
+        To prevent this problem, you can list `license` under `dynamic` or alternatively
+        remove the `[project]` table from your file and rely entirely on other means of
+        configuration.
+        ********************************************************************************
+
+!!
+  _handle_missing_dynamic(dist, project_table)
+/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/_apply_pyprojecttoml.py:76: _MissingDynamic: `keywords` defined outside of `pyproject.toml` is ignored.
+!!
+
+        ********************************************************************************
+        The following seems to be defined outside of `pyproject.toml`:
+
+        `keywords = ['zendesk', 'api', 'wrapper']`
+
+        According to the spec (see the link below), however, setuptools CANNOT
+        consider this value unless `keywords` is listed as `dynamic`.
+
+        https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table
+
+        To prevent this problem, you can list `keywords` under `dynamic` or alternatively
+        remove the `[project]` table from your file and rely entirely on other means of
+        configuration.
+        ********************************************************************************
+
+!!
+  _handle_missing_dynamic(dist, project_table)
+/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/_apply_pyprojecttoml.py:76: _MissingDynamic: `dependencies` defined outside of `pyproject.toml` is ignored.
+!!
+
+        ********************************************************************************
+        The following seems to be defined outside of `pyproject.toml`:
+
+        `dependencies = ['requests&gt;=2.14.2', 'python-dateutil&gt;=2.7.5', 'cachetools&gt;=3.1.0', 'pytz&gt;=2018.9', 'six&gt;=1.14.0']`
+
+        According to the spec (see the link below), however, setuptools CANNOT
+        consider this value unless `dependencies` is listed as `dynamic`.
+
+        https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table
+
+        To prevent this problem, you can list `dependencies` under `dynamic` or alternatively
+        remove the `[project]` table from your file and rely entirely on other means of
+        configuration.
+        ********************************************************************************
+
+!!
+  _handle_missing_dynamic(dist, project_table)
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=['wheel'])
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
+    self.run_setup()
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 4, in &lt;module&gt;
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/__init__.py&quot;, line 104, in setup
+    return distutils.core.setup(**attrs)
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/_distutils/core.py&quot;, line 159, in setup
+    dist.parse_config_files()
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/_virtualenv.py&quot;, line 22, in parse_config_files
+    result = old_parse_config_files(self, *args, **kwargs)
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/dist.py&quot;, line 631, in parse_config_files
+    pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 69, in apply_configuration
+    return _apply(dist, config, filepath)
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/_apply_pyprojecttoml.py&quot;, line 57, in apply
+    _apply_project_table(dist, config, root_dir)
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/_apply_pyprojecttoml.py&quot;, line 83, in _apply_project_table
+    corresp(dist, value, root_dir)
+  File &quot;/home/jarek/.cache/uv/.tmprbvDM3/.venv/lib/python3.8/site-packages/setuptools/config/_apply_pyprojecttoml.py&quot;, line 184, in _license
+    _set_config(dist, &quot;license&quot;, val[&quot;text&quot;])
+KeyError: 'text'
+---
+</code></pre>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-13 13:31</div>
+            <div class="timeline-body"><p>BTW. Bumping min version of zenpy helped in this case: https://github.com/apache/airflow/pull/38110  - but it would be nice if uv does not crash when they encounter a somewhat broken dependency that fails during wheel building for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 15:33</div>
+            <div class="timeline-body"><p>What do you expect us to do here? If the lowest direct version is broken it seems like we should fail? I think adjusting the minimum version or excluding builds for the problematic package i.e. <code>--no-build &lt;package&gt;</code> makes sense as the solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-13 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-14 01:45</div>
+            <div class="timeline-body"><p>If <code>--no-build</code> is an option then yes, we can close it, I just thought that in this case the failure should be avoided - but you are right - this is setuptools problem rather than <code>uv</code> or <code>resolution</code> problem. Closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @potiuk on 2024-03-14 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2821.html">astral-sh/uv#2821</a> on 2024-04-04 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

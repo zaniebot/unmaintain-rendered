@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>report an error when installing a package that overrides another - astral-sh/uv #16546</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>report an error when installing a package that overrides another</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16546">#16546</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-11-01 08:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-11-01 08:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>since pypi packages can have conflicting names, if you install two different packages with the same name they will silently override each other. uv should fail when this occurs to prevent unexpected behavior.</p>
+<h3>Example</h3>
+<p>this often occurs when using a fork. for example, i've made <a href="https://pypi.org/project/dtach/">my own fork</a> of the abandoned <a href="https://pypi.org/project/tach/">tach</a> linter. to allow it to be a drop-in replacement, i've kept the package name &quot;tach&quot;, but this can cause unexpected behavior if the user has both packages installed at the same time:</p>
+<pre><code>uv add --dev dtach
+uv add --dev tach
+</code></pre>
+<p>in this example, one of the packages will be silently overridden.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @DetachHead on 2025-11-01 08:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 19:41</div>
+            <div class="timeline-body"><p>I think we already <em>do</em> emit a warning if you install both in the same operation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-11-02 05:10</div>
+            <div class="timeline-body"><p>hmm i don't see a warning when adding both dependencies in the same command either:</p>
+<pre><code>$ uv add --dev tach dtach
+Using CPython 3.12.3 interpreter at: .pyprojectx/main/python
+Creating virtual environment at: .venv
+warning: No `requires-python` value found in the workspace. Defaulting to `&gt;=3.12`.
+Resolved 23 packages in 162ms
+Installed 22 packages in 25ms
+ + annotated-types==0.7.0
+ + dtach==0.31.0
+ + gitdb==4.0.12
+ + gitpython==3.1.45
+ + markdown-it-py==4.0.0
+ + mdurl==0.1.2
+ + networkx==3.5
+ + prompt-toolkit==3.0.52
+ + pydantic==2.12.3
+ + pydantic-core==2.41.4
+ + pydot==3.0.4
+ + pygments==2.19.2
+ + pyparsing==3.2.5
+ + pyyaml==6.0.3
+ + rich==13.9.4
+ + smmap==5.0.2
+ + tach==0.29.0
+ + tomli==2.3.0
+ + tomli-w==1.2.0
+ + typing-extensions==4.15.0
+ + typing-inspection==0.4.2
+ + wcwidth==0.2.14
+</code></pre>
+<p>i'm using uv 0.9.7, tested on both a linux and macos device</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-02 18:25</div>
+            <div class="timeline-body"><p>Oh sorry, I think we rolled it back because it was triggering on too many real-world packages that include overlapping files or write to overlapping directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-11-02 22:48</div>
+            <div class="timeline-body"><p>Maybe it could be a setting? IMO it's quite dangerous for something like this to go undetected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-03 03:34</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/13437</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 13:32</div>
+            <div class="timeline-body"><p>This is available with <code>--preview-features detect-module-conflicts</code>, it's not active by default currently because some popular packages rely on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-12-20 04:24</div>
+            <div class="timeline-body"><p>hmm i still don't see an error when i enable this feature:</p>
+<pre><code>$ uv add --dev dtach --preview-features detect-module-conflicts
+Resolved 95 packages in 38ms
+      Built test-project @ file:///home/me/test-project
+Prepared 1 package in 107ms
+Uninstalled 1 package in 0.41ms
+Installed 2 packages in 7ms
+ + dtach==0.31.2
+ ~ test-project==1.0.0 (from file:///home/me/test-project)
+</code></pre>
+<p>tested with uv 0.9.18</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-24 23:37</div>
+            <div class="timeline-body"><blockquote>
+<p>hmm i still don't see an error when i enable this feature:</p>
+</blockquote>
+<p>In it's current form, I think it would only show up when both are being installed. Try cleaning your venv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-12-25 07:39</div>
+            <div class="timeline-body"><p>ah that worked, thanks.</p>
+<p>would it be possible for this to be reported as an error instead of a warning? (or at least an option to do so) because i believe in its current state this warning would be extremely easy to miss, considering what i would think is the most common scenario:</p>
+<ol>
+<li>user adds a new package that conflicts with an already installed package (eg. <code>uv add --dev dtach</code> when <code>tach</code> is already installed in the venv)</li>
+<li>the warning does not appear since one of the packages was already installed, so the user commits their change that introduces the new package</li>
+<li>the warning now appears in CI when running <code>uv sync</code>. nobody notices because it's a warning that does not cause the CI to fail</li>
+<li>the PR introducing the conflicting packages gets merged because nobody noticed the warning</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 19:02</div>
+            <div class="timeline-body"><p>There's a number of existing setups that rely on overriding things unfortunately, which blocks us from properly erroring here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2026-01-06 10:08</div>
+            <div class="timeline-body"><p>if it's an option then users who rely on those setups can just disable the error</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

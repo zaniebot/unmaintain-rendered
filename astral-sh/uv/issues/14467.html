@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How do I install CPU torch by default while allowing GPU torch? - astral-sh/uv #14467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How do I install CPU torch by default while allowing GPU torch?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14467">#14467</a>
+        opened by <a href="https://github.com/CookieHCl">@CookieHCl</a>
+        on 2025-07-05 16:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CookieHCl">@CookieHCl</a> on 2025-07-05 16:22</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I want to install CPU torch by default, (e.g. <code>uv run</code>) but allow using GPU torch for users. (e.g. <code>uv run --extra cu124</code>)</p>
+<p>This is my pyproject.toml. (I'm using Python 3.11. i.e. .python-version = 3.11)</p>
+<pre><code class="language-toml">[project]
+name = &quot;r-vectors-visualization&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;huggingface-hub[hf-xet]==0.33.2&quot;,
+    &quot;transformers[torch]==4.53.1&quot;,
+    &quot;torch==2.6.0&quot;,
+    &quot;torchaudio==2.6.0&quot;,
+    &quot;torchvision==0.21.0&quot;,
+]
+
+[project.optional-dependencies]
+cu124 = [
+    &quot;torch==2.6.0&quot;,
+    &quot;torchaudio==2.6.0&quot;,
+    &quot;torchvision==0.21.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;extra != 'cu124'&quot; },
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;extra == 'cu124'&quot; },
+]
+torchaudio = [
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;extra != 'cu124'&quot; },
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;extra == 'cu124'&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;extra != 'cu124'&quot; },
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;extra == 'cu124'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>I expected that <code>uv run</code> will install CPU version of torch (2.6.0+cpu), and <code>uv run --extra cu124</code> will install GPU version of torch (2.6.0+cu124).</p>
+<p>However, this toml always install GPU version of torch, and <a href="https://gist.github.com/CookieHCl/c91913a20c676fe9600def8dc5fa3454">uv.lock</a> only contains GPU version of the torch.<br />
+How should I fix the toml?</p>
+<h3>Platform</h3>
+<p>Windows_NT 10.0 x86_64 MS/Windows</p>
+<h3>Version</h3>
+<p>uv 0.7.18 (87e9ccfb9 2025-07-01)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @CookieHCl on 2025-07-05 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-07 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-07 19:37</div>
+            <div class="timeline-body"><p>Hmm, we don't quite have perfect support for this. Per the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">docs</a>, we'd typically recommend:</p>
+<pre><code class="language-toml">[project]
+name = &quot;r-vectors-visualization&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+  &quot;huggingface-hub[hf-xet]==0.33.2&quot;,
+  &quot;transformers[torch]==4.53.1&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+  ],
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch==2.6.0&quot;,
+  &quot;torchaudio==2.6.0&quot;,
+  &quot;torchvision==0.21.0&quot;,
+]
+cu124 = [
+  &quot;torch==2.6.0&quot;,
+  &quot;torchaudio==2.6.0&quot;,
+  &quot;torchvision==0.21.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchaudio = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>That differs from your request in that users need to specify <code>--extra cpu</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CookieHCl">@CookieHCl</a> on 2025-07-08 09:57</div>
+            <div class="timeline-body"><p>Thank you for your reply!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CookieHCl on 2025-07-08 09:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

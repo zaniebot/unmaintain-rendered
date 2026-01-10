@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC: Handling diverging requires-python in workspaces with forking on the python version - astral-sh/uv #5594</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RFC: Handling diverging requires-python in workspaces with forking on the python version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5594">#5594</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-30 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-30 11:16</div>
+            <div class="timeline-body"><p>When using workspaces, we uses the combined requires-python of all packages. Say you have foo that requires python 3.8 and bar that requires python 3.12, we require that all dependencies are compatible with python 3.8. This limits the usefulness of workspaces (#5578, #5398).</p>
+<p>An alternative would the following: We create separate resolution for workspace members with separate python requirements: When we encounter foo and bar, we fork into a resolution for 3.8 through 3.11 and one for at least 3.12. In the <code>&gt;=3.8,&lt;3.12</code> one, our root requirements are only foo, while for <code>&gt;=3.12</code>, we start with foo and bar. When running <code>uv sync -p 3.8</code> we then only install foo and its deps, while with <code>uv sync -p 3.12</code>, we install foo and bar and their deps. <code>uv sync -p 3.8 --package bar</code> is forbidden (error: bar requires at least python <code>&gt;=3.12</code>, but you have <code>3.8</code>). Naturally, you can have a requirement for <code>bar</code> in <code>foo</code>, while a requirement <code>bar; python_version &gt;= &quot;3.12&quot;</code> is allowed in foo; the inverse is always allowed.</p>
+<p>Implementing this likely requires #5583.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-07-30 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @konstin on 2024-07-30 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-30 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5644.html">astral-sh/uv#5644</a> on 2024-07-31 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5398.html">astral-sh/uv#5398</a> on 2024-08-09 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chadrik">@chadrik</a> on 2025-07-01 19:40</div>
+            <div class="timeline-body"><p>We're facing a pretty serious problem with the way that the workspaces treat the <code>requires-python</code> value of their constituent projects.</p>
+<h2>Current problem</h2>
+<h3>Scenario 1</h3>
+<ul>
+<li>we have a workspace with two projects:  <code>projectA</code> and <code>projectB</code>. <code>projectB</code> depends on <code>projectA</code></li>
+<li><code>projectA</code> sets <code>requires-python &gt;= 3.9</code> and <code>projectB</code> sets <code>requires-python &gt;= 3.10</code></li>
+<li>uv lock uses python 3.10 to resolve dependency versions, which is the highest value in the intersection between <code>projectA</code> and <code>project B</code> (as described <a href="https://github.com/eth3lbert/uv/commit/bf8934e3e442efb4be5af3d0d4db60ce6d72c600">here</a>)</li>
+<li>some of these resolved dependencies do not support python 3.9, so <code>projectA</code> cannot be successfully distributed and run using python 3.9</li>
+</ul>
+<h3>Scenario 2</h3>
+<ul>
+<li>to avoid the problem above, we establish a convention to set every project’s <code>requires-python</code> to the global minimum version across the workspace.<ul>
+<li>thus, <code>projectA</code> sets <code>requires-python</code> to 3.9 and <code>projectB</code> also sets <code>requires-python</code> to 3.9, despite the fact that its code base uses features that are only available in python 3.10</li>
+</ul>
+</li>
+<li>however, when we publish <code>projectB,</code> its metadata declares that it supports python 3.9, so it is erroneously installed for python 3.9 projects and we encounter runtime errors due to the fact that the code uses python 3.10 features</li>
+</ul>
+<h2>Desired behavior</h2>
+<p>The behavior that we want is something like the following:</p>
+<ul>
+<li>use <code>requires-python</code> to specify the minimum supported version of python for each workspace member (i.e. use this value as intended instead of trying to abuse it to work around this bug, as in scenario 2)</li>
+<li>running <code>uv lock</code> at the workspace level should find the intersection of all the <code>requires-python</code> values in the project, and use the <em>lowest</em> value, rather than the highest as it does now.  At the very least, we would like an option to control the strategy for choosing the <code>requires-python</code> that value that gets baked into <code>uv.lock</code></li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

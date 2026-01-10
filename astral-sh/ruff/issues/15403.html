@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overwrite ignore values from config from cli command - astral-sh/ruff #15403</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overwrite ignore values from config from cli command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15403">#15403</a>
+        opened by <a href="https://github.com/benedikt-mue">@benedikt-mue</a>
+        on 2025-01-10 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benedikt-mue">@benedikt-mue</a> on 2025-01-10 15:12</div>
+            <div class="timeline-body"><p>Hope, I can address my question in here, if not feel free to delete.
+__</p>
+<p>I have the following setup where I disable the F401 (delete unused imports) rule for development so it is not picked up by the auto-formatting.
+However, before committing the code, F401 should be re-introduced. I run ruff in my pre-commit config, but I cannot see that there is any way to overwrite an existing ignore value from the cli, am I correct?</p>
+<pre><code># pyroject.toml
+
+...
+[tool.ruff.lint]
+select = [ &quot;E4&quot;, &quot;E7&quot;, &quot;E9&quot;, &quot;F&quot;,]
+ignore = [&quot;F401&quot;]
+fixable = [ &quot;ALL&quot;]
+unfixable = []
+...
+
+</code></pre>
+<pre><code># pre-commit.yaml
+repo:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      # Run the linter.
+      - id: ruff
+        name: Ruff-Linter
+        types_or: [ python, pyi, jupyter ]
+        args: [ --fix, --fixable]
+      # Run the formatter.
+      - id: ruff-format
+        name: Ruff-Formatter
+        types_or: [ python, pyi, jupyter ]
+
+</code></pre>
+<p>Any workarounds on how to achieve the intended behavior (without the need of two separate files) are also welcomed!
+Cheers in advance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-01-10 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 15:19</div>
+            <div class="timeline-body"><p>You should be able to use <code>--extend-select=F401</code> to re-enable a rule that was ignored in the configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benedikt-mue">@benedikt-mue</a> on 2025-01-10 15:26</div>
+            <div class="timeline-body"><p>Damn, you right.. I literally tried every flag except this one for some unknown reason.. thanks for the quick reply!</p>
+<pre><code>      - id: ruff
+        name: Ruff-Linter
+        types_or: [ python, pyi, jupyter ]
+        args: [ --fix, --extend-select=F401]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @benedikt-mue on 2025-01-10 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 16:14</div>
+            <div class="timeline-body"><p>No worries. I'm glad it works :) Have a great weekend</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-06-24 08:56</div>
+            <div class="timeline-body"><p>Hi @MichaReiser thanks for your reply on this, I have a very similar question: it seems <code>--extend-select</code> cannot re-enable rules ignored by <code>extend-per-file-ignores</code>? Is this intended behaviour?</p>
+<hr />
+<p>More details: I have the following in <code>pyproject.toml</code> to ignore I001 for <code>__init__.py</code>, but <code>ruff check __init__.py --extend-select=I001</code> doesn't seem to detect issues (when there is):</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [
+    &quot;I001&quot;, 
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+&quot;__init__.py&quot; = [&quot;I001&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 09:02</div>
+            <div class="timeline-body"><p>@DanielYang59</p>
+<p><code>extend-per-file-ignores</code> takes precedence over <code>--extend-select</code> because it's the more specific option (you disabled that rule for <code>__init__.py</code>). You could try using <code>--config 'lint.extend-per-file-ignores.'__init__.py' = []'</code> but I'm not sure if that's supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-06-24 09:09</div>
+            <div class="timeline-body"><p>Hi thanks for the quick reply and input again</p>
+<blockquote>
+<p>extend-per-file-ignores takes precedence over --extend-select because it's the more specific option (you disabled that rule for <strong>init</strong>.py).</p>
+</blockquote>
+<p>Great to know, this explains.</p>
+<blockquote>
+<p>You could try using --config 'lint.extend-per-file-ignores.'<strong>init</strong>.py' = []' but I'm not sure if that's supported.</p>
+</blockquote>
+<p>I tried it seems to ignore the file still, so I guess I would just comment out the <code>extend-per-file-ignores</code> rule for now ;)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

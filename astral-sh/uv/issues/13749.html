@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behaviour of `uv run` and `uv sync` is inconsistent based on current directory in a workspace - astral-sh/uv #13749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Behaviour of `uv run` and `uv sync` is inconsistent based on current directory in a workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13749">#13749</a>
+        opened by <a href="https://github.com/bradezard131">@bradezard131</a>
+        on 2025-05-31 06:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bradezard131">@bradezard131</a> on 2025-05-31 06:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Summary</h1>
+<p>When navigating around a workspace file structure, <code>uv sync</code> and <code>uv run</code> will have different behaviour, causing packages to be installed/uninstalled and scripts to fail with <code>ModuleNotFoundError</code>s.</p>
+<h1>Reproduction</h1>
+<h2>Structure</h2>
+<pre><code>pyproject.toml
+uv.lock
+.venv/
+packages/
+|-- bar/
+    |-- pyproject.toml
+    |-- main.py
+|-- foo/
+    |-- pyproject.toml
+    |-- main.py
+</code></pre>
+<h2>Project Files</h2>
+<pre><code class="language-toml"># root pyproject.toml
+[project]
+name = &quot;uv-bug&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.uv.workspace]
+members = [&quot;packages/foo&quot;, &quot;packages/bar&quot;]
+
+# packages/foo/pyproject.toml
+[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;fire&quot;]
+
+# packages/bar/pyproject.toml
+[project]
+name = &quot;bar&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;numpy&quot;]
+</code></pre>
+<h2>Scripts</h2>
+<pre><code class="language-python"># packages/foo/main.py
+import fire
+
+# packages/bar/main.py
+import numpy as np
+print(f&quot;Hello from bar! {np.arange(5)}&quot;)
+</code></pre>
+<h2>Behaviour</h2>
+<pre><code class="language-bash">$ pwd  # should be the workspace root, situation 1
+
+$ uv sync
+Resolved 6 packages in 1ms
+Audited in 0.00ms
+
+$ uv run packages/foo/main.py
+Traceback (most recent call last):
+...
+ModuleNotFoundError: No module named 'fire'
+
+$ uv run packages/bar/main.py
+...
+ModuleNotFoundError: No module named 'numpy'
+
+$ cd packages/bar  # situation 2
+
+$ uv run main.py
+Installed 1 package in 47ms
+Hello from bar! [0 1 2 3 4]
+
+$ cd ../..  # back to workspace root
+
+$ uv sync
+Resolved 6 packages in 1ms
+Uninstalled 1 package in 17ms
+ - numpy==2.2.6
+
+$ cd packages/foo  # situation 3
+
+$ uv sync
+Resolved 6 packages in 1ms
+Installed 2 packages in 7ms
+ + fire==0.7.0
+ + termcolor==3.1.0
+
+$ uv run main.py baz
+Hello from foo: baz
+
+$ cd ../.. # back to workspace root, situation 4
+
+$ uv run packages/foo/main.py bing
+Hello from foo: bing
+
+$ uv sync
+Resolved 6 packages in 1ms
+Uninstalled 2 packages in 2ms
+ - fire==0.7.0
+ - termcolor==3.1.0
+
+$ uv run packages/foo/main.py bort
+...
+ModuleNotFoundError: No module named 'fire'
+</code></pre>
+<p>The failure in situation 1 is apparently intended behaviour, as described in  <a href="https://github.com/astral-sh/uv/issues/13664#issuecomment-2910505312">#13664</a>. However because all projects in a workspace share a common <code>.venv/</code>, situation 2 arises where navigating into a package and running it with <code>uv run</code> causes it to be installed into the workspace <code>.venv/</code>, then navigating back up and running <code>uv sync</code> causes it to be uninstalled again.</p>
+<p>Situation 3 is similar to 2, where navigating into the member and running <code>uv sync</code> causes the dependencies to be installed in the workspace <code>.venv/</code> and things are runnable again.</p>
+<p>Situation 4 is the strangest, back in the workspace root after syncing inside a member and you can run the script with <code>uv run</code> just fine, until you run <code>uv sync</code> which (which uninstalls the dependencies), then subsequent <code>uv run</code> invocations fail.</p>
+<p>I feel this raises two questions:</p>
+<ol>
+<li>If <code>uv</code> is going to use a common <code>.venv/</code> for the whole workspace, does it really make sense for it to sync exactly at the package (incl. root package) by default? This causes churn in package installation as shown in situations 2 and 3.
+a. Either they should continue to share a <code>uv.lock</code> but not a <code>.venv</code>; or
+b. Or the <code>.venv</code> should sync with the <code>uv.lock</code> and include all dependencies.</li>
+<li>If <code>uv</code> doesn't change it's interactions with the <code>.venv</code>, then shouldn't situation 4 fail in all cases? Why doesn't it sync during the <code>uv run</code> command?</li>
+</ol>
+<h3>Platform</h3>
+<p>Ubuntu on WSL (Linux 6.6.87.1-microsoft-standard-WSL2 x86_64)</p>
+<h3>Version</h3>
+<p>uv 0.6.14</p>
+<h3>Python version</h3>
+<p>Python 3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bradezard131 on 2025-05-31 06:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-02 00:25</div>
+            <div class="timeline-body"><p>Thanks for the write-up. I <em>think</em> this is all working as intended. The model is as follows:</p>
+<ul>
+<li>When you run <code>uv run</code> or <code>uv sync</code>, we determine the current workspace member based on the current working directory. (The root is just another workspace member -- it's not special.) We then make sure the virtual environment is up-to-date with that workspace member.</li>
+<li>By default, <code>uv sync</code> performs an &quot;exact&quot; sync, so it will not only install any missing packages, but also uninstall any extraneous packages.</li>
+<li>By default, <code>uv run</code> performs an &quot;inexact&quot; sync, so it will make the minimum required changes to add the necessary packages to the environment. It won't remove extraneous packages.</li>
+<li>You can pass <code>--inexact</code> to <code>uv sync</code> to use &quot;inexact&quot; semantics.</li>
+<li>You can pass <code>--exact</code> to <code>uv run</code> to use &quot;exact&quot; semantics.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-02 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-06-02 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradezard131">@bradezard131</a> on 2025-06-02 07:26</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>By default, uv sync performs an &quot;exact&quot; sync, so it will not only install any missing packages, but also uninstall any extraneous packages.</li>
+<li>By default, uv run performs an &quot;inexact&quot; sync, so it will make the minimum required changes to add the necessary packages to the environment. It won't remove extraneous packages.</li>
+</ul>
+</blockquote>
+<p>This intentional difference is surprising to me, I guess I can see why but is that documented anywhere? I can't find it in the places I would expect (<a href="https://docs.astral.sh/uv/guides/projects/#running-commands">projects</a> <a href="https://docs.astral.sh/uv/concepts/projects/run/">running commands</a> <a href="https://docs.astral.sh/uv/concepts/projects/sync/">syncing</a> <a href="https://docs.astral.sh/uv/reference/cli/#uv-run">cli reference</a>).</p>
+<p>Subsequently, what are the chances of considering adding a flag or command to sync the workspace .venv against the lockfile and/or the union of all workspace member dependencies? E.g. something like <code>uv sync --workspace</code> which produces the same effect as <code>cd</code>-ing into each member and using <code>uv run</code> or <code>uv sync --inexact</code>? Basically one command I can run so I no longer have to ensure that the workspace root depends on everything, and no longer have to make sure I'm in the correct directory the first time I <code>uv run</code> a member.  I'm fairly sure the generally expected end result is more in-line with having all members in the one venv, and less in line with installing/uninstalling/reinstalling packages every time you run a command, so it would be nice to have this available as an option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strugee">@strugee</a> on 2025-12-01 22:38</div>
+            <div class="timeline-body"><p>We ran into this at $dayjob. https://docs.astral.sh/uv/concepts/projects/sync/#automatic-lock-and-sync is not clear at all - because the same page, further down, talks about syncs being exact, this makes it sound like the sync done by <code>uv run</code> is exact. But it's not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 22:58</div>
+            <div class="timeline-body"><p>It seems reasonable to expand https://docs.astral.sh/uv/concepts/projects/sync/#retaining-extraneous-packages to be clearer that an explicit sync is exact by default and implicit (automatic) syncs are not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Subsequently, what are the chances of considering adding a flag or command to sync the workspace .venv against the lockfile and/or the union of all workspace member dependencies?</p>
+</blockquote>
+<p>I think you're asking for <code>--all-packages</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-12-01 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-12-01 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strugee">@strugee</a> on 2025-12-01 23:06</div>
+            <div class="timeline-body"><p>@zanieb is there a strong case against making automatic syncs exact by default too? The issue we're running into in our development environment is that when you're juggling multiple workspace members, it's easy to run <code>uv sync</code> in one directory, have its deps populated into the venv, and then switch what you're working on to another workspace member - only to have extraneous deps in the venv that now affect IDE completions, and will be successful locally but fail in a freshly-built venv in production.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strugee">@strugee</a> on 2025-12-01 23:07</div>
+            <div class="timeline-body"><p>If there's e.g. potential performance issues then this totally makes sense to me to keep automatic syncing inexact, but if not this seems like an unnecessary footgun. (Though, maybe I'm just biased from the current version of the docs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 23:12</div>
+            <div class="timeline-body"><p>It's not really about performance no, it's just about people's expectations. There are people that will manually mutate the environment, e.g., <code>uv pip install package</code>, and it'd be surprising for <code>uv run</code> to subsequently remove that package. They should use <code>uv run --with package</code> instead... but it's hard to teach people to use new workflows. The strong case against changing it now is that it'd be massively breaking and disruptive.</p>
+<p>I think the ideal solution for your problem is that the IDE becomes workspace aware and just ignores <code>.venv</code> entirely and references hermetic isolated environments for each workspace member. We're working towards this.</p>
+<p>I'd also like to encourage the use of <code>--isolated</code> for <code>uv run</code>, maybe making it easy for that to be the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strugee">@strugee</a> on 2025-12-02 19:55</div>
+            <div class="timeline-body"><p>Ahh, ok, that makes at least some sense. Another short-term easy(?) fix that probably would have helped us, then, is a prominent warning in <code>uv run</code> that there are extra, undeclared dependencies still lingering in the venv. I can imagine people complaining about this if it's warning them about their usual workflow, though, so I don't know how easy it actually is.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

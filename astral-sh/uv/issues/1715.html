@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support &quot;--no-build-isolation&quot; when installing packages - astral-sh/uv #1715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support &quot;--no-build-isolation&quot; when installing packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1715">#1715</a>
+        opened by <a href="https://github.com/Taytay">@Taytay</a>
+        on 2024-02-19 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Taytay">@Taytay</a> on 2024-02-19 19:58</div>
+            <div class="timeline-body"><p><code>uv --version</code>: <code>0.1.5</code></p>
+<p>This is an official issue to track a separate issue discovered in #1582. It was requested to be tracked separately here: https://github.com/astral-sh/uv/issues/1582#issuecomment-1950984546</p>
+<h2>Short version:</h2>
+<p>Without <code>--no-build-isolation</code>, many popular ML libraries, including <code>flash-attn</code> can't be <code>pip installed</code>.
+I want to be able to do this:</p>
+<p><code>uv pip install flash-attn --no-build-isolation</code></p>
+<p>But I can't.</p>
+<p>If <code>uv pip install</code> doesn't support this, I don't think that it will support installing some popular ML and Deep Learning python modules.</p>
+<h3>Disclaimer</h3>
+<p>I just discovered this stuff in about 1 hour of reading, and my python-dependency knowledge is pretty poor. I <em>think</em> this is a good description of the issue, but know that this is NOT coming from an expert.</p>
+<h2>Long version</h2>
+<p>The &quot;newer&quot; versions of pip enable build-isolation by default when modules are being installed. (BIG discussion here for those interested in the history: https://github.com/pypa/pip/issues/8437)
+This is generally pretty nice, because it allows a python module to request a newer version of <code>setuptools</code> or something at install time, without polluting a user's global environment by permanently installing an undesired newer version of a module.
+The downside is that it hides all existing installed modules from the module's setup.py script.
+The typical solution to this is to tell <code>pyproject.toml</code> about the modules required at setup time. It will install them in the isolated environment, and then proceed with the installation.</p>
+<p>There is a bigger downside though:</p>
+<p>A number of machine learning-related modules <a href="https://github.com/Dao-AILab/flash-attention">Flash-attn</a>, <a href="https://github.com/NVIDIA/apex">NVidia Apex</a> need pytorch to be installed before they are installed, so that they can do things like compile against version of pytorch currently installed in the user's environment.</p>
+<p>You might think that these modules should declare that they depend upon Pytorch at setup time in their pyproject.toml file, but that isn't a good solution. No one wants a newly installed Pytorch version, and they might have installed pytorch using Conda or some other mechanism that pip isn't aware of. And these modules want to just work with whatever version of pytorch is already there. It would cause a LOT more problems than it would solve.</p>
+<p>So, modules like these simply instruct users to disable this build isolation by running <code>pip install</code> with <code>--no-build-isolation</code>. Problem solved! But <code>uv</code> doesn't support this. (As discovered in https://github.com/astral-sh/uv/issues/1582).</p>
+<p>(This issue <em>generally</em> manifests as an error when setup.py can't being find the <code>packaging</code> module, and users being confused because they already ran <code>pip install packaging</code>. See: https://github.com/Dao-AILab/flash-attention/issues/453
+That's exactly the error I get when I <code>uv pip install flash-attn</code>: <code>ModuleNotFoundError: No module named 'packaging'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1582.html">astral-sh/uv#1582</a> on 2024-02-19 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Dao-AILab/flash-attention/issues/833.html">Dao-AILab/flash-attention#833</a> on 2024-02-19 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-19 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-19 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">installer</span> added by @zanieb on 2024-02-19 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilkersigirci">@ilkersigirci</a> on 2024-02-20 19:16</div>
+            <div class="timeline-body"><p>I hope this is fixed soon since <code>flash-attn</code> is the barebone for my ML projects :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-20 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 19:30</div>
+            <div class="timeline-body"><p>We'll support it. Assigning to myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-20 19:32</div>
+            <div class="timeline-body"><blockquote>
+<p>So, modules like these simply instruct users to disable this build isolation by running <code>pip install</code> with <code>--no-build-isolation</code>. Problem solved!</p>
+</blockquote>
+<p>I'd call this a workaround, not a problem solved... and note this approach would not be endorsed by the PyPA. I wonder though why these tools can't do ensure pytorch is installed inside the build wheel isolated environment, and they <em>must</em> have access to the target Python instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-02-20 21:57</div>
+            <div class="timeline-body"><p>Numpy is more foundational library with similar interesting workarounds (oldest-supported-numpy). What build isolated environment has doesn't really matter because today there's no way to say that build environment and runtime environment for library must be same. These libraries care about runtime version of pytorch that will be used. They may support older pytorch versions, but build process can do optimizations specific to actual pytorch used at runtime. The pytorch present at build time does not matter to them. So build isolation here is in direct conflict with this use case.</p>
+<p>A packaging standard here would ideally be a way for specific dependencies to specify that their build vs runtime version are same. Most dependencies isolation is fine, only rare few that are sensitive to this.</p>
+<p>edit: If your intent is access to target python to dynamically inspect runtime pytorch that may work, but also seems like violation of intent of build isolation and would still leave a separate pytorch in build environment as not needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-20 22:51</div>
+            <div class="timeline-body"><p>Yeah, +1 to the problem mdrissi mentions. <code>--no-build-isolation</code> is really useful to allow us to ensure that a build of PyTorch in the build environment is the exact same build that is in the runtime environment. Without this you get linker issues.</p>
+<p>The PyPI ecosystem doesn't really work well for this kind of thing. We have custom logic that wraps and handles all of this stuff at work (e.g. it uses things like https://github.com/astral-sh/uv/issues/1415 as an escape hatch). Although note we don't actually use <code>pip install --no-build-isolation</code>, we do <code>python -m build --no-isolation</code> since we prebuild all this stuff. Our custom logic actually gets quite interesting, if you're curious I'd be happy to talk more about it when y'all are less swamped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 11:27</div>
+            <div class="timeline-body"><p>If we could guarantee that we install the install the same pytorch version in the build env as in the target env (assuming we manage the target env torch version) and we reflink/hardlink so installing is fast and doesn't take disk space, would that work for you? I don't think we can cover all use cases that <code>--no-build-isolation</code> supports, but i'd like to support isolation for as many cases as possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../drivendataorg/zamba/pulls/311.html">drivendataorg/zamba#311</a> on 2024-03-02 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2024-03-04 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I hope this is fixed soon since <code>flash-attn</code> is the barebone for my ML projects :(</p>
+</blockquote>
+<p>This is the only issue keeping me from using uv for everything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2258.html">astral-sh/uv#2258</a> on 2024-03-07 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 02:34</div>
+            <div class="timeline-body"><p>PR is up: https://github.com/astral-sh/uv/pull/2258</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2024-03-07 02:38</div>
+            <div class="timeline-body"><p>Wow, thanks @charliermarsh! Will test this on <code>flash-attn</code> as soon as it lands in main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 23:51</div>
+            <div class="timeline-body"><p>This just went out in v0.1.16. Feedback welcome as always.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/issues/552.html">astral-sh/rye#552</a> on 2024-03-11 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AutoGPTQ/AutoGPTQ/issues/535.html">AutoGPTQ/AutoGPTQ#535</a> on 2024-03-28 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shiyangcao">@shiyangcao</a> on 2024-04-24 19:07</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I'm finding that --no-build-isolation makes it so that nothing in the pyproject.toml is processed.</p>
+<p>For example, we have this pyproject.toml</p>
+<pre><code>  1
+  2 [build-system]
+  3 requires = [ &quot;setuptools&gt;=41&quot;, &quot;wheel&quot;, &quot;setuptools-git-versioning&lt;2&quot;, &quot;packaging&quot;]
+  4 build-backend = &quot;setuptools.build_meta&quot;
+  5
+  6 [tool.setuptools-git-versioning]
+  7 enabled = true
+  8 dev_template = &quot;{tag}.{ccount}+g{sha}&quot;
+  9
+</code></pre>
+<p>When we use <code>uv pip install -e .</code> the version is something like 1.2.3. However, when we use --no-build-isolation, it goes to <code>0.0.0</code></p>
+<p>Is there a way to assume that the dependencies are already installed, but still run setuptools-git-versioning etc?</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ModelCloud/GPTQModel/issues/108.html">ModelCloud/GPTQModel#108</a> on 2024-06-28 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NVIDIA/TransformerEngine/pulls/981.html">NVIDIA/TransformerEngine#981</a> on 2024-07-03 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hcoona">@hcoona</a> on 2024-08-14 04:42</div>
+            <div class="timeline-body"><p>May I know how to install <code>flash-attn</code> with uvx?</p>
+<p>I tried <code>uvx --with torch --with flash-attn --no-build-isolation insanely-fast-whisper</code> but got the error: (uv 0.2.36)</p>
+<pre><code>warning: `uvx` is experimental and may change without warning
+⠙ nvidia-cusparse-cu12==12.1.0.106                                                                                      error: Failed to download and build `flash-attn==2.6.3`
+  Caused by: Failed to build: `flash-attn==2.6.3`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/usr/lib/python3/dist-packages/setuptools/build_meta.py&quot;, line 174, in prepare_metadata_for_build_wheel
+    self.run_setup()
+  File &quot;/usr/lib/python3/dist-packages/setuptools/build_meta.py&quot;, line 267, in run_setup
+    super(_BuildMetaLegacyBackend,
+  File &quot;/usr/lib/python3/dist-packages/setuptools/build_meta.py&quot;, line 158, in run_setup
+    exec(compile(code, __file__, 'exec'), locals())
+  File &quot;setup.py&quot;, line 21, in &lt;module&gt;
+    import torch
+ModuleNotFoundError: No module named 'torch'
+---
+  Caused by: This error likely indicates that flash-attn==2.6.3 depends on torch, but doesn't declare it as a build dependency. If flash-attn==2.6.3 is a first-party package, consider adding torch to its `build-system.requires`. Otherwise, `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 13:23</div>
+            <div class="timeline-body"><p>@hcoona -- I think this isn't possible right now. I'll file an issue about it. I think you'll have better luck using <code>uv tool install</code>, like:</p>
+<pre><code>uv venv
+uv pip install torch
+uv tool install flash-attn --no-build-isolation --python .venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6083.html">astral-sh/uv#6083</a> on 2024-08-14 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rusty1s/pytorch_scatter/issues/455.html">rusty1s/pytorch_scatter#455</a> on 2024-09-04 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NVIDIA/TransformerEngine/pulls/1324.html">NVIDIA/TransformerEngine#1324</a> on 2024-11-08 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10138.html">astral-sh/uv#10138</a> on 2024-12-24 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsantiago">@dsantiago</a> on 2025-01-11 23:34</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/hcoona">@hcoona</a> -- I think this isn't possible right now. I'll file an issue about it. I think you'll have better luck using <code>uv tool install</code>, like:</p>
+<pre><code>uv venv
+uv pip install torch
+uv tool install flash-attn --no-build-isolation --python .venv
+</code></pre>
+</blockquote>
+<p>@charliermarsh Could you explain why install <code>flash-attn</code> via <code>uv tool</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-15 23:45</div>
+            <div class="timeline-body"><p>How can I build flash-attn against a specific version of pytorch? I added <code>tool.tv.sources</code> and <code>tools.tv.index</code> entries, and confirmed its downloading the right version of pytorch. But the other packages I've listed as dependencies are not getting built against that version of torch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CorentinJ">@CorentinJ</a> on 2025-01-29 20:10</div>
+            <div class="timeline-body"><p>So <code>uv add flash-attn --no-build-isolation</code> works great but the <code>--no-build-isolation</code> is not saved to the pyproject.toml! So the installation fails when syncing without flash-attn present because it installs without the flag</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-29 20:22</div>
+            <div class="timeline-body"><p>Sure you can add it like so:</p>
+<pre><code class="language-toml">[tool.uv]
+no-build-isolation-package = ['flash-attn']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CorentinJ">@CorentinJ</a> on 2025-01-30 07:50</div>
+            <div class="timeline-body"><p>Ah I see, so the problem with syncing an env from scratch with <code>--no-build-isolation-package flash-attn</code> is that the packages required for building might not be installed at the time <code>flash-attn</code> is installed. I've had to do</p>
+<pre><code>uv sync --no-install-package flash-attn
+uv sync
+</code></pre>
+<p>To install from scratch (with <code>no-build-isolation-package</code> set in the toml)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ananth1996">@ananth1996</a> on 2025-01-30 10:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah I see, so the problem with syncing an env from scratch with <code>--no-build-isolation-package flash-attn</code> is that the packages required for building might not be installed at the time <code>flash-attn</code> is installed. I've had to do</p>
+<pre><code>uv sync --no-install-package flash-attn
+uv sync
+</code></pre>
+<p>To install from scratch (with <code>no-build-isolation-package</code> set in the toml)</p>
+</blockquote>
+<p>This approach worked for me to install <code>torch-scatter</code>, <code>torch-sparse</code> and <code>torch-cluster</code> for PyTorch Geometric.
+This was an open issue in  https://github.com/rusty1s/pytorch_scatter/issues/455</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bulletmark/pipxu/issues/19.html">bulletmark/pipxu#19</a> on 2025-03-10 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doctorpangloss">@doctorpangloss</a> on 2025-05-19 17:55</div>
+            <div class="timeline-body"><p>this should be reopened - we practically need to specify torch as an override for build requirements</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-19 17:56</div>
+            <div class="timeline-body"><p>Please open a separate issue with a clear ask and MRE, and avoid commenting on closed issues. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15248.html">astral-sh/uv#15248</a> on 2025-08-13 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Machine-Learning-for-Medical-Language/cnlp_llm/issues/43.html">Machine-Learning-for-Medical-Language/cnlp_llm#43</a> on 2025-08-24 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NVlabs/earth2grid/issues/57.html">NVlabs/earth2grid#57</a> on 2025-10-28 23:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

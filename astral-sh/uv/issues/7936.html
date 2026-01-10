@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker build with workspace package - astral-sh/uv #7936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docker build with workspace package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7936">#7936</a>
+        opened by <a href="https://github.com/idinsmore1">@idinsmore1</a>
+        on 2024-10-04 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/idinsmore1">@idinsmore1</a> on 2024-10-04 21:26</div>
+            <div class="timeline-body"><p>Thanks for such an amazing tool in <code>uv</code>, it has been an awesome addition in my work as an analyst in academic research. I'm trying to build out a docker image of the workspace using the docker guide in the docs, but I'm running into the following error while trying to build the image.</p>
+<pre><code class="language-bash">docker build . 
+ &gt; [stage-0 5/7] RUN --mount=type=cache,target=/root/.cache/uv     --mount=type=bind,source=uv.lock,target=uv.lock     --mount=type=bind,source=pyproject.toml,target=pyproject.toml     uv sync --frozen --no-install-project --no-install-workspace --compile-bytecode:
+#10 5.139 Using CPython 3.11.10
+#10 5.139 Creating virtual environment at: .venv
+#10 8.494 error: Failed to prepare distributions
+#10 8.494   Caused by: Failed to fetch wheel: dracopy==1.4.0
+#10 8.494   Caused by: Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+#10 8.494 --- stdout:
+#10 8.494
+#10 8.494 --- stderr:
+#10 8.494 Traceback (most recent call last):
+#10 8.494   File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+#10 8.494   File &quot;/root/.cache/uv/builds-v0/.tmpVvUWy6/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 332, in get_requires_for_build_wheel
+#10 8.494     return self._get_build_requires(config_settings, requirements=[])
+#10 8.494            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#10 8.494   File &quot;/root/.cache/uv/builds-v0/.tmpVvUWy6/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 302, in _get_build_requires
+#10 8.494     self.run_setup()
+#10 8.494   File &quot;/root/.cache/uv/builds-v0/.tmpVvUWy6/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 503, in run_setup
+#10 8.494     super().run_setup(setup_script=setup_script)
+#10 8.494   File &quot;/root/.cache/uv/builds-v0/.tmpVvUWy6/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 318, in run_setup
+#10 8.494     exec(code, locals())
+#10 8.494   File &quot;&lt;string&gt;&quot;, line 6, in &lt;module&gt;
+#10 8.494 ModuleNotFoundError: No module named 'skbuild'
+#10 8.494 ---
+------
+executor failed running [/bin/sh -c uv sync --frozen --no-install-project --no-install-workspace --compile-bytecode]: exit code: 2
+</code></pre>
+<p>My workspace looks like this:</p>
+<pre><code class="language-bash">├── Dockerfile
+├── LICENSE
+├── README.md
+├── packages
+│   ├── mircat-seg
+│   │   ├── README.md
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── mircat_seg
+│   │           ├── __init__.py
+│   │           ├── core.py
+│   │           └── models
+│   │               └── __init__.py
+│   └── mircat-stats
+│       ├── Dockerfile
+│       ├── README.md
+│       ├── pyproject.toml
+│       └── src
+│           └── mircat_stats
+│               ├── __init__.py
+│               ├── configs
+│               │   ├── __init__.py
+│               │   ├── logging.py
+│               │   ├── models.py
+│               │   └── statistics.py
+│               ├── dicom
+│               │   ├── __init__.py
+│               │   └── dicom_folder.py
+│               ├── models
+│               │   ├── __init__.py
+│               │   └── xgboost.json
+│               └── statistics
+│                   ├── __init__.py
+│                   ├── aorta.py
+│                   ├── body_and_tissues.py
+│                   ├── centerline.py
+│                   ├── contrast_detection.py
+│                   ├── cpr.py
+│                   ├── nifti.py
+│                   ├── total.py
+│                   └── utils.py
+├── pyproject.toml
+├── src
+│   └── mircat
+│       └── __init__.py
+└── uv.lock
+</code></pre>
+<p>My root <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;mircat&quot;
+version = &quot;0.1.1&quot;
+description = &quot;write description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.12&quot;
+dependencies = [
+    &quot;loguru&gt;=0.7.2&quot;,
+    &quot;nibabel&gt;=5.2.1&quot;,
+    &quot;numpy==1.26&quot;,
+    &quot;scipy==1.13.1&quot;,
+    &quot;threadpoolctl&gt;=3.5.0&quot;,
+    &quot;mircat-seg&quot;,
+    &quot;mircat-stats&quot;,
+    &quot;scikit-build&gt;=0.18.1&quot;,
+]
+
+[project.scripts]
+mircat = &quot;mircat:mircat&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+mircat-seg = { workspace = true }
+mircat-stats = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;packages/mircat-seg&quot;, &quot;packages/mircat-stats&quot;]
+</code></pre>
+<p>and finally my Dockerfile</p>
+<pre><code class="language-dockerfile">FROM ubuntu:oracular
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.18 /uv /bin/uv
+
+# Change the working directory to the `app` directory
+RUN apt-get update &amp;&amp; \
+    apt-get install -y clang gcc g++ python3-dev &amp;&amp; \
+    apt-get clean &amp;&amp; \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-install-workspace --compile-bytecode
+
+# Copy the project into the image
+ADD . /app
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    &amp;&amp; uv sync --frozen
+
+ENTRYPOINT [&quot;uv&quot;, &quot;run&quot;, &quot;mircat&quot;]
+</code></pre>
+<p>Any ideas on a solution would be great. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:45</div>
+            <div class="timeline-body"><p>It looks like that version of Dracopy does not define <code>skbuild</code> as a build requirement but imports it: https://inspector.pypi.io/project/dracopy/1.4.0/packages/40/dc/fc22bdbe29fc9ecc7232f55253e7d6419be5b28ca77eb2e9f9cd9fac321c/DracoPy-1.4.0.tar.gz/DracoPy-1.4.0/setup.py#line.6</p>
+<p>Hence, when we attempt to build that project in an isolated environment we see the error:</p>
+<blockquote>
+<p>ModuleNotFoundError: No module named 'skbuild'</p>
+</blockquote>
+<p>Is there a newer version of that package that properly declares its dependencies? If not you'll need to disable build isolation and manually install its build dependencies beforehand (i.e. <code>uv pip install skbuild &amp;&amp; uv sync --no-build-isolation-package dracopy</code>).</p>
+<p>See more details about build isolation https://docs.astral.sh/uv/pip/compatibility/#pep-517-build-isolation (and #2252)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-04 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idinsmore1">@idinsmore1</a> on 2024-10-08 15:11</div>
+            <div class="timeline-body"><p>Weirdly enough, this seems to be an issue of trying to build the image on an M1 Mac vs. on a Linux machine. DracoPy doesn't properly pull it's pre-built wheel when I attempt to build the image on Mac and tries to build from source (where the error is happening), but it works just fine when I build the image on my Ubuntu machine, with the same base image used on both. Thanks so much for your help and quick response, this is good to know for the future!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @idinsmore1 on 2024-10-08 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BielStela">@BielStela</a> on 2024-10-23 16:32</div>
+            <div class="timeline-body"><p>Sam happens to me but with library <code>rasterio</code> as a dependency, Building a docker image like yours in mac silicon fails with a similar error :</p>
+<pre><code> &gt; [stage-0 5/7] RUN --mount=type=cache,target=/root/.cache/uv     --mount=type=bind,source=uv.lock,target=uv.lock     --mount=type=bind,source=pyproject.toml,target=pyproject.toml     uv sync --frozen --no-install-project:                                           
+0.088 Using CPython 3.12.7 interpreter at: /usr/local/bin/python                                                                     
+0.088 Creating virtual environment at: .venv                                                                                         
+0.727 error: Failed to prepare distributions                                                                                         
+0.727   Caused by: Failed to download and build `rasterio==1.3.11`
+0.727   Caused by: Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+0.727 
+0.727 [stderr]
+0.727 &lt;string&gt;:22: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+0.727 WARNING:root:Failed to get options via gdal-config: [Errno 2] No such file or directory: 'gdal-config'
+0.727 ERROR: A GDAL API version must be specified. Provide a path to gdal-config using a GDAL_CONFIG environment variable or use a GDAL_VERSION environment variable.
+</code></pre>
+<p>What blow my mind is that I can build perfectly fine in x86 linux OS 🙃</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title: uv venv hangs when using managed Python (works with manual python -m venv) - astral-sh/uv #14508</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Title: uv venv hangs when using managed Python (works with manual python -m venv)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14508">#14508</a>
+        opened by <a href="https://github.com/svk1998">@svk1998</a>
+        on 2025-07-08 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/svk1998">@svk1998</a> on 2025-07-08 16:38</div>
+            <div class="timeline-body"><p><strong>Describe the bug</strong></p>
+<p>Running <code>uv venv</code> hangs when using the managed Python interpreter installed by <code>uv</code>.</p>
+<p>This happens even though manually creating a virtual environment using the same interpreter works fine.</p>
+<hr />
+<p><strong>To Reproduce</strong></p>
+<p>Steps to reproduce the behavior:</p>
+<ol>
+<li><p>Let <code>uv</code> install a managed Python:</p>
+<pre><code class="language-sh">uv venv
+</code></pre>
+</li>
+<li><p>OR try explicitly passing the Python path:</p>
+<pre><code class="language-sh">uv venv --python &quot;C:\Users\svk19\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe&quot;
+</code></pre>
+</li>
+<li><p>Observe that <code>uv</code> hangs after logging:</p>
+<pre><code>TRACE Querying interpreter executable at C:\Users\svk19\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe
+</code></pre>
+</li>
+<li><p>However, running:</p>
+<pre><code class="language-sh">C:\Users\svk19\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe -m venv test-env
+</code></pre>
+<p>works immediately.</p>
+</li>
+</ol>
+<hr />
+<p><strong>Expected behavior</strong></p>
+<p><code>uv venv</code> should proceed to create the virtual environment instead of hanging.</p>
+<hr />
+<p><strong>Environment:</strong></p>
+<ul>
+<li><p>OS: Windows 11 (build 22621)</p>
+</li>
+<li><p>uv version: 0.7.19</p>
+</li>
+<li><p>Installed Python version: cpython-3.12.11 (managed by <code>uv</code>)</p>
+</li>
+<li><p>Reproduced with both:</p>
+<ul>
+<li><code>uv venv</code></li>
+<li><code>uv venv --python &quot;&lt;full path&gt;&quot;</code></li>
+</ul>
+</li>
+</ul>
+<hr />
+<p><strong>Additional context</strong></p>
+<ul>
+<li><code>uv self update</code> reports the latest version (<code>0.7.19</code>)</li>
+<li>The hang consistently occurs right after the <code>TRACE Querying interpreter executable</code> message</li>
+<li>Disabling <code>-vvv</code> doesn't resolve the issue</li>
+<li>Antivirus was checked and ruled out</li>
+<li>Workaround: creating the venv manually and using <code>uv pip</code> works fine</li>
+</ul>
+<hr />
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-08 16:39</div>
+            <div class="timeline-body"><p>How did you rule out Windows Defender? This is typically a problem with Windows where the system is blocking execution of <code>python.exe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-08 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CHC383">@CHC383</a> on 2025-07-16 23:33</div>
+            <div class="timeline-body"><p>Another data point I reported on <code>mise</code> side: https://github.com/jdx/mise/discussions/5665, seems to be the same issue that <code>uv</code> hangs on using managed Python at <code>TRACE Querying interpreter executable</code>.</p>
+<p><code>mise</code> internally uses <code>uv venv</code> (<a href="https://github.com/jdx/mise/blob/e4ea0c3dd916b29a0dc9c8164e5e5de1afef8ae7/src/uv.rs#L60-L64">code</a>) to create the virtual env, and the issue happens when mise has automatic virtualenv activation enabled.</p>
+<p>Just a high level guess: Is this some soft of recursive bug?</p>
+<ul>
+<li><code>uv</code> tries to create the virtual env and found the <code>mise</code> Python shim</li>
+<li><code>mise</code> Python shim tries to resolve to the <code>uv</code> venv python (with <a href="https://mise.jdx.dev/mise-cookbook/python.html#mise-uv">uv_venv_auto</a> enabled), which again triggers <code>uv venv</code></li>
+<li>The steps above repeat</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wcde">@wcde</a> on 2026-01-04 10:56</div>
+            <div class="timeline-body"><p>I have same issue. After creating venv, any commands to uv result in &quot;Querying interpreter executable at&quot;, python.exe process starts and completely hangs. Changing the Python version doesn't fix anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-04 16:14</div>
+            <div class="timeline-body"><p>As noted above, this is almost always due to overzealous antivirus on Windows.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

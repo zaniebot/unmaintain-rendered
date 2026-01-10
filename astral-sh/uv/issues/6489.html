@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scripts that use &quot;from future&quot; can result in syntax error when used with uvx - astral-sh/uv #6489</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Scripts that use &quot;from future&quot; can result in syntax error when used with uvx</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6489">#6489</a>
+        opened by <a href="https://github.com/ggydush">@ggydush</a>
+        on 2024-08-23 03:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ggydush">@ggydush</a> on 2024-08-23 03:48</div>
+            <div class="timeline-body"><p>When using <code>uvx</code> with script files that have <code>from future</code> import and shebang with a space, I receive the following syntax error:</p>
+<pre><code class="language-console">    from __future__ import print_function, unicode_literals
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: from __future__ imports must occur at the beginning of the file
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-console">uvx tabview
+</code></pre>
+<p><a href="https://github.com/TabViewer/tabview/blob/a5b120d74fbf9ba56d31ebffe85f9580e966d8aa/bin/tabview#L1">Link</a> to shebang in tabview, <a href="https://github.com/astral-sh/uv/blob/c5440001ce2cff1657aaa51ce39779fca3e6c565/crates/install-wheel-rs/src/wheel.rs#L146">link</a> to uv snippet that causes the syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 03:50</div>
+            <div class="timeline-body"><p>Thanks, we'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-23 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-08-23 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yk-kd">@yk-kd</a> on 2024-08-24 19:19</div>
+            <div class="timeline-body"><p>This is because tabview contains a module docstring and imports from <code>__future__</code>.
+Adding a comment has turned the internal comment into a string.</p>
+<pre><code class="language-python">'''
+module docstring
+'''
+
+'''
+string 
+'''
+from __future__ import ...
+</code></pre>
+<p>I just don't know what to do..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 19:20</div>
+            <div class="timeline-body"><p>It's actually a very complex problem to solve -- @carljm was looking at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-24 21:23</div>
+            <div class="timeline-body"><p>I was looking at it, but at this point I have no satisfactory ideas for how to solve it :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-24 21:51</div>
+            <div class="timeline-body"><p>Here's an example of what the shebang rewriting looks like in practice. This kind of technique is called a polyglot script, because it's simultaneously a /bin/sh script and a valid python file.</p>
+<ol>
+<li>Due to space in path</li>
+</ol>
+<pre><code class="language-shell">#!/bin/sh
+'''exec' '/home/user/tmp/tool dir/tabview/bin/python' &quot;$0&quot; &quot;$@&quot;
+' '''
+</code></pre>
+<ol start="2">
+<li>Due to venv setting relocatable</li>
+</ol>
+<pre><code class="language-shell">#!/bin/sh
+'''exec' &quot;$(CDPATH= cd -- &quot;$(dirname -- &quot;$0&quot;)&quot; &amp;&amp; echo &quot;$PWD&quot;)&quot;/'python3' &quot;$0&quot; &quot;$@&quot;
+' '''
+</code></pre>
+<p>The top of the file before rewriting is of course <code>#!/usr/bin/env python3</code>. Just putting this in here since it makes it more accessible to see and think about alternatives. cc @paveldikov</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-08-25 12:57</div>
+            <div class="timeline-body"><p>Dumping my thoughts from another conversation here: I think patching the actual script is always going to result in frustration, a better option would be to generate a trampoline script that imports the actual code.  Something similar is already done on windows where you get a <code>.exe</code> which invokes a python script.</p>
+<p>So for relocatable virtualenvs instead of having <code>bin/tool</code> be the script, you would generate <code>bin/tool-script</code> as an executable wrapper that then invokes <code>bin/tool-script.py</code> (which itself is not marked as executable).</p>
+<p><code>bin/tool</code> then looks like this:</p>
+<pre><code class="language-python">#!/bin/sh
+&quot;exec&quot; &quot;`dirname $0`/python&quot; &quot;$0&quot; &quot;$@&quot;
+__file__ = __import__('os').path.join(__import__('os').path.dirname(__file__), &quot;tool-script.py&quot;)
+exec(compile((lambda f: (f.read(), f.close())[0])(open(__file__)), __file__, 'exec'))
+</code></pre>
+<p>and <code>bin/tool-script.py</code> is the normal file unchanged (at least for as long as it's a python script).</p>
+<p>This results in the following:</p>
+<ul>
+<li>line numbers are unchanged as the script is unchanged</li>
+<li><code>__file__</code> reports <code>tool-script.py</code> instead of <code>tool</code></li>
+<li>the frame code's <code>co_filename</code> reports <code>tool-script.py</code> instead of <code>tool</code></li>
+<li><code>__doc__</code> is correct (needed for libraries such as <code>docopt</code>)</li>
+<li>The script combine docstrings with <code>__future__</code> imports</li>
+</ul>
+<p>I think this would be the best tradeoff but it comes with the cost of generating a useless second file.  The only requirement is <code>sh</code> which is a standard tool.  Because <code>sh</code> uses <code>exec</code> it will also not keep a second process running around for nothing.</p>
+<p>Like the current solution if someone were to run <code>file</code> on the wrapper <code>bin/tool</code> script it would misclassify the file as perl, but since that wrapper is kinda useless that's probably okay.  For most editors actually opening up the underlying <code>tool-script.py</code> file will correctly detect Python which is an improvement over today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-25 13:18</div>
+            <div class="timeline-body"><p>Probably tangential but is it reasonable to rewrite #!/usr/bin/env shebangs at all? The spec<a href="https://packaging.python.org/en/latest/specifications/binary-distribution-format/#recommended-installer-features">https://packaging.python.org/en/latest/specifications/binary-distribution-format/#recommended-installer-features</a> explicitly mentions #!python and #!pythonw as rewritable placeholders. An argument can be made that anything else amounts to a specific intent on the author's part, and should be left untouched.</p>
+<p>(also, did not know uvx used relocatable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-25 15:17</div>
+            <div class="timeline-body"><p>The space in the shebang on GitHub is not actually relevant to this case; the script that appears in the tabview wheel (which is what uv installs from) has a rewritable placeholder shebang. The cause of the issue (and the reason uv encounters this problem while pip does not) is that uv uses relocatable venvs for all cached venvs. The reason for this (I think?) is that uv wants to create the venv in a temporary location and atomically move it to its &quot;content-addressable&quot; location in the cache.</p>
+<p>If we were able to avoid using relocatable envs, we would achieve something closer to parity with pip, in that I think a problem would only appear when all of these conditions are met: script has a docstring, script uses <code>__future__</code> imports, script is installed into a venv whose location is nested deep enough that the resulting absolute shebang is too long for the kernel (&gt;127 bytes on Linux, the platform with the lowest limit.)</p>
+<p>Given that we don't need to arbitrarily relocate the env, but just do a one-time move from a temp location to a permanent location (after which the venv is immutable; nothing else will be installed into it), I think we could avoid the need for a truly location-independent shebang by just doing a one-time search-and-replace rewrite of absolute paths in shebangs, before moving the venv into place (or possibly even simpler, write the shebangs in the first place using the intended final destination location of the venv.) I think this would solve the immediate problem with the least risk of causing other undesired side effects. It might still leave us vulnerable to issues with overly-long shebangs, but I think those cases would be rare and pip would have the same problem (and we could still use the extra-wrapper-script solution to help in this case).</p>
+<p>If we do need to support truly arbitrarily-relocatable venvs, then I think the best option is to generate an additional wrapper script as proposed by @mitsuhiko, which does carry with it some small risk of further breakage in rare cases, since it changes the <code>__file__</code> seen by the script. This might e.g. cause the help text displayed by some scripts to no longer show the expected executable name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-25 15:50</div>
+            <div class="timeline-body"><p>Both cases occur here I think, if the user sets  UV_TOOL_DIR to a directory with spaces (or I guess if the default has spaces, which is unlikely on posix?) and installs tabview, then it ends up the space in the shebang path case instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-26 15:30</div>
+            <div class="timeline-body"><p>Yes, I think both the &quot;spaces&quot; case and the &quot;too long&quot; case could occur relatively rarely, but the use of relocatable envs makes this impact everyone who attempts to use tabview (or any other script with a docstring that uses <code>__future__</code> imports) with uvx. So the impact of relocatable is much broader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-27 12:13</div>
+            <div class="timeline-body"><p>I am not sure if <code>uvx</code> <em>needs</em> to use true relocatable. Since the activate scripts are not really expected to be used (assumption), and tools are only really supposed to be launched from the <code>uvx</code> command line (also assumption), maybe it is simplest to simply let the <code>uvx</code> executable handle the trampolining aspect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-27 12:51</div>
+            <div class="timeline-body"><p>I <em>think</em> we could make it non-relocatable, though the issue will still be present for long shebangs or paths with spaces, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-27 13:01</div>
+            <div class="timeline-body"><p>Also, FWIW, on a somewhat orthogonal note, the use case for which I implemented relocatable is rather different from <code>uvx</code>'s usage of it. My objective was to enable developers to create redistributable versions of <em>their own</em> projects (that they fully control). So I could steer users towards using <code>{console,gui}-scripts</code> instead of arbitrary/non-entrypoint scripts (for pure Python that is; binaries are not in scope for this issue anyhow)</p>
+<p>I think @mitsuhiko's is probably the best and most idiomatic solution since there is existing precedent for the <code>-script</code> pattern. It should also generalise nicely beyond <code>uvx</code> and help with standalone usage of relocatable venvs which is always a good thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-27 13:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I <em>think</em> we could make it non-relocatable, though the issue will still be present for long shebangs or paths with spaces, right?</p>
+</blockquote>
+<p>Hmmm, actually it shouldn't be a problem as far as <code>uvx</code> is concerned. You are still doing the same fundamental <code>exec</code> trick and therefore bypassing the shebang completely. It's just that, instead of doing the <code>exec</code> inside of a shell script -- and therefore having to deal with polyglot scripting -- you are doing the exact same thing inside of <code>uvx</code>'s own logic (in Rust).</p>
+<p>But yes, this train of thought is entirely predicated on decreasing the range of scenarios affected by the problem, as opposed to actually solving its root cause. You'd fix it for <code>uvx</code> but standalone <code>uv venv</code> usage remains affected even if the range of cases where this happens is vastly smaller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6713.html">astral-sh/uv#6713</a> on 2024-08-27 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @charliermarsh on 2024-09-04 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6970.html">astral-sh/uv#6970</a> on 2024-10-03 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bottlepy/bottle/issues/1486.html">bottlepy/bottle#1486</a> on 2025-06-15 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/defnull">@defnull</a> on 2025-06-15 12:19</div>
+            <div class="timeline-body"><p>If you are maintaining a module or tool affected by this, there is a workaround: Move the <code>from __future__ import ...</code> line above your own module docstring. It must be the very first non-comment statement in the file. This way, the string injected by uv/uvx will count as the new module-docstring and not as a forbidden statements before the future-import. As long as there is only one string before the future-import, the parser won't complain.</p>
+<p><strong>This does not work:</strong></p>
+<pre><code class="language-python">#!/usr/bin/env python
+''' module docstring '''
+from __future__ import print_function
+</code></pre>
+<p>because uv/uvx turns it into:</p>
+<pre><code class="language-python">#!/bin/sh
+'''exec' &quot;$(dirname -- &quot;$(realpath -- &quot;$0&quot;)&quot;)&quot;/'python' &quot;$0&quot; &quot;$@&quot;
+' '''
+''' module docstring '''
+from __future__ import print_function
+</code></pre>
+<p>which is a <code>SyntaxError</code>. There are two string statements in front of the future-import and only the first one counts as the module-docstring.</p>
+<p><strong>This works:</strong></p>
+<pre><code class="language-python">#!/usr/bin/env python
+from __future__ import print_function
+''' module docstring '''
+</code></pre>
+<p>because uv/uvx turns it into:</p>
+<pre><code class="language-python">#!/bin/sh
+'''exec' &quot;$(dirname -- &quot;$(realpath -- &quot;$0&quot;)&quot;)&quot;/'python' &quot;$0&quot; &quot;$@&quot;
+' '''
+from __future__ import print_function
+''' module docstring '''
+</code></pre>
+<p>which is ugly and may confuse <code>help()</code>, but at least it is not a <code>SyntaxError</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

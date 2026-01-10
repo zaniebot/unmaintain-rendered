@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug in pre-release compatibility - astral-sh/uv #12424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug in pre-release compatibility</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12424">#12424</a>
+        opened by <a href="https://github.com/schlamar">@schlamar</a>
+        on 2025-03-24 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/schlamar">@schlamar</a> on 2025-03-24 10:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We get an error (these are internal packages)</p>
+<blockquote>
+<p>No solution found when resolving dependencies
+Because only lib&lt;1.8.0b1 is available and X&gt;=10.0.0 depends on lib&gt;=1.8.0b1, we can conclude that X&gt;=10.0.0 cannot be used
+hint: <code>lib</code> was requested with a pre-release-marker (...), but pre-releases weren't enabled</p>
+</blockquote>
+<p>According to the <a href="https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility">docs</a>, pre-releases should be implicitly enabled if it is a direct dependency:</p>
+<blockquote>
+<p>If the package is a direct dependency, and its version markers include a pre-release specifier</p>
+</blockquote>
+<p>lib is a direct dependency of X in pyproject.toml:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;lib&gt;=1.8.0b1,&lt;2&quot;,
+]
+</code></pre>
+<p>So I would expect that <code>uv pip install</code> works without <code>--prerelease allow</code></p>
+<p>My guess is that uv does not correctly detect that this is a direct dependency with pre-release specifier as we are using a range specifier (<code>&lt;2</code>).</p>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>0.6.9</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @schlamar on 2025-03-24 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-24 13:09</div>
+            <div class="timeline-body"><p>Is there any way to create a minimal reproduction here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-03-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-03-26 08:53</div>
+            <div class="timeline-body"><p>My guess was wrong - this has nothing to do with range specifier. There is a general bug here.</p>
+<p>Attached 4 wheels to reproduce this issue. These were produced with a minimal pyproject.toml and no Python code with <code>python -m build --wheel</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&gt;=61.0&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;lib&quot;
+requires-python = &quot;&gt;=3.7&quot;
+version = &quot;1.7.0&quot;
+dependencies = [
+    # &quot;lib&gt;=1.8.0b1&quot;,
+]
+</code></pre>
+<p>Y has no range specifier as dependecy (<code>&quot;lib&gt;=1.8.0b1&quot;</code>). X has range specifier (<code>&quot;lib&gt;=1.8.0b1,&lt;2&quot;</code>). Both fail:</p>
+<pre><code>&gt; uv venv &amp;&amp; uv pip install --offline --no-cache -f dist &quot;X&gt;=10.0dev0&quot;
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Activate with: .venv\Scripts\activate
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only lib&lt;1.8.0b1 is available and x==10.0.0 depends on lib&gt;=1.8.0b1, we can conclude that x==10.0.0 cannot be used.
+      And because only x==10.0.0 is available and you require x==10.0.0, we can conclude that your requirements are unsatisfiable.
+
+      hint: `lib` was requested with a pre-release marker (e.g., lib&gt;=1.8.0b1), but pre-releases weren't enabled (try: `--prerelease=allow`)
+
+&gt; uv venv &amp;&amp; uv pip install --offline --no-cache -f dist &quot;Y&gt;=10.0dev0&quot; 
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Activate with: .venv\Scripts\activate
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only lib&lt;1.8.0b1 is available and y==10.0.0 depends on lib&gt;=1.8.0b1, we can conclude that y==10.0.0 cannot be used.
+      And because only y==10.0.0 is available and you require y==10.0.0, we can conclude that your requirements are unsatisfiable.
+
+      hint: `lib` was requested with a pre-release marker (e.g., lib&gt;=1.8.0b1), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>The issue is not reproducible, if lib-1.7.0 wheel is missing.</p>
+<p><a href="https://github.com/user-attachments/files/19463390/dist.zip">dist.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 13:07</div>
+            <div class="timeline-body"><p>How are you telling uv where to find X, Y, and lib? Are you using <code>--find-links</code>? Are they on your registry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 13:10</div>
+            <div class="timeline-body"><p>Why would installing <code>X</code> work? It depends on <code>Requires-Dist: lib&lt;2,&gt;=1.8.0b1</code>, but you didn't enable pre-releases, and the only wheel in that range is <code>1.8.0b1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-03-26 15:21</div>
+            <div class="timeline-body"><p>Your documentation says that pre-releases are implicitly enabled if a pre-release is a direct dependency of a requested package. In this case lib is a direct dependency of X and the version markers has a pre-release specifier</p>
+<blockquote>
+<p>If the package is a direct dependency, and its version markers include a pre-release specifier</p>
+</blockquote>
+<p>https://docs.astral.sh/uv/pip/compatibility/#pre-release-compatibility</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-03-26 15:22</div>
+            <div class="timeline-body"><blockquote>
+<p>How are you telling uv where to find X, Y, and lib? Are you using <code>--find-links</code>? Are they on your registry?</p>
+</blockquote>
+<p>Yes, see my example. I use <code>-f</code> == <code>--find-links</code> to the dist directory (which is dist.zip extracted).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 15:32</div>
+            <div class="timeline-body"><p>It looks like <code>lib</code> is a direct dependency of <code>X</code>, but it's a transitive dependency of &quot;your project&quot;. It's like if <code>requests</code> was published to PyPI with a dependency specifier that contained a pre-release marker. If you ran <code>uv pip install requests</code>, we wouldn't consider that dependency of <code>requests</code> to be a &quot;direct&quot; dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-03-27 07:32</div>
+            <div class="timeline-body"><p>So if I understand this correctly, &quot;direct dependency&quot; in this context means the package requested by <code>uv pip install &lt;PACKAGE&gt;</code> and not dependencies of &quot;package&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-27 13:00</div>
+            <div class="timeline-body"><p>Yeah, with some nuance for local source trees. If you do <code>uv pip install .</code> or <code>uv pip install ./path/to/project</code> or similar, then the dependencies of that source tree (at <code>.</code> or <code>./path/to/project</code>) will be considered direct dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-03-27 17:47</div>
+            <div class="timeline-body"><p>Ok thanks for clarification. Maybe you want to add this to the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-06-22 02:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

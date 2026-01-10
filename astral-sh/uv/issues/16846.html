@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is there a workaround to exempt packages without an upload date from `exclude-newer`? - astral-sh/uv #16846</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is there a workaround to exempt packages without an upload date from `exclude-newer`?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16846">#16846</a>
+        opened by <a href="https://github.com/SAI-Marko">@SAI-Marko</a>
+        on 2025-11-25 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SAI-Marko">@SAI-Marko</a> on 2025-11-25 15:39</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When running uv lock on a project that depends on packages missing an upload date and <code>exclude-newer</code> is set, the resolution step does (of course) fail. Is there a way to selectively disable the <code>exclude-newer</code> for some packages?</p>
+<h1>Example</h1>
+<p>Consider a project using CPU-only PyTorch wheels (adapted from the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index">uv PyTorch integration guide</a>):</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+  &quot;torch&gt;=2.7.0&quot;,
+  &quot;torchvision&gt;=0.22.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+# Forbid packages newer than a specified cutoff date:
+[tool.uv]
+exclude-newer = &quot;2025-11-25T00:00:00Z&quot;
+</code></pre>
+<p>Running uv lock produces:</p>
+<pre><code>$ uv lock
+warning: torch-2.9.1+cpu-cp310-cp310-manylinux_2_28_aarch64.whl is missing an upload date, but user provided: 2025-11-25T00:00:00Z
+[...]
+warning: torch-2.6.0+cpu-cp39-cp39-win_amd64.whl is missing an upload date, but user provided: 2025-11-25T00:00:00Z
+× No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of torch and your project depends on torch&gt;=2.7.0, we  can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<h1>Question</h1>
+<p>Is there a recommended way to handle packages missing upload dates when using <code>exclude-newer</code>? Is it for example possible to selectively ignore <code>exclude-newer</code> for such packages?</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.3 LTS Linux 6.8.0-87-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @SAI-Marko on 2025-11-25 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-25 19:55</div>
+            <div class="timeline-body"><p>I guess we could add something like <code>exclude-newer-package { name = false }</code> to override the global <code>exclude-newer</code> value?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-11-25 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-11-25 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-11-25 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-25 19:55</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/uv/issues/16813</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16854.html">astral-sh/uv#16854</a> on 2025-11-26 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-11-26 13:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess we could add something like <code>exclude-newer-package { name = false }</code> to override the global exclude-newer value?</p>
+</blockquote>
+<p>I don't know about the issue at stake, but this would <em>definitely</em> be useful in at least one case I know of.
+xref: https://github.com/astropy/astropy/issues/17788</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

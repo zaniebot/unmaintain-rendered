@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-idempotent comment movement for ((x) # comment here ...) with parens and 3+ lines - astral-sh/ruff #16151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Non-idempotent comment movement for ((x) # comment here ...) with parens and 3+ lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16151">#16151</a>
+        opened by <a href="https://github.com/huonw">@huonw</a>
+        on 2025-02-14 02:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/huonw">@huonw</a> on 2025-02-14 02:36</div>
+            <div class="timeline-body"><h3>Description</h3>
+<h2>Context</h2>
+<p>We have some code along the lines of:</p>
+<pre><code class="language-python">result = (
+   (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+   .foo()
+   .bar()
+)
+</code></pre>
+<p>Switching from black to <code>ruff format</code> results in the comment moving:</p>
+<ul>
+<li>in a non-idempotent way, requiring two <code>ruff format</code> invocations</li>
+<li>to a 'strange' location</li>
+</ul>
+<h2>Reproducer</h2>
+<p>Formatting this code requires multiple invocations of <code>ruff format</code> to be &quot;stable&quot;/reach a fixed point:</p>
+<ol>
+<li><p>Input:</p>
+<pre><code class="language-python">(
+    (x)  # a
+    .y()
+    .z()
+)
+</code></pre>
+</li>
+<li><p>Output of formatting 1 (change: comment is shifted to next line):</p>
+<pre><code class="language-python">(
+    (x)
+      # a
+    .y()
+    .z()
+)
+</code></pre>
+</li>
+<li><p>Output of formatting 2 (change: comment is unindented):</p>
+<pre><code class="language-python">(
+    (x)
+    # a
+    .y()
+    .z()
+)
+</code></pre>
+</li>
+</ol>
+<p>Playground links:</p>
+<ul>
+<li>Step 1 -&gt; 2: https://play.ruff.rs/515f65e6-80ee-43b0-9131-8130dcde20a3</li>
+<li>Step 2 -&gt; 3: https://play.ruff.rs/fda5a46d-519e-498c-866c-9f49133277f9</li>
+</ul>
+<h2>Expected behaviour</h2>
+<p><code>ruff format</code> should be idempotent: the output of formatting should not have any changes if formatted again.</p>
+<p>That is, the first format call (step 1 -&gt; 2) should give the final result with the comment in its final position (unindented), and the second (step 2 -&gt; 3) should not change the code.</p>
+<p>Alternatively, the formatting for this circumstance changed to sidestep the issue. It's seems weird to me that this comment is being wrapped. It moving the comment to the next line also problems if the comment is a <code># type: ...</code> or <code># noqa</code> pragma.</p>
+<p>See also &quot;Ablations&quot;.</p>
+<h2>Ablations</h2>
+<p>This stops reproducing with these variations of the Input (1):</p>
+<ol>
+<li><p>Only one extra line after the comment (no change: comment remains where it is)</p>
+<pre><code class="language-python">(
+    (x)  # a
+    .y()
+)
+</code></pre>
+</li>
+<li><p>No parens around <code>x</code> (becomes <code>x.y().z()  # a</code>)</p>
+<pre><code class="language-python">(
+    x  # a
+    .y()
+    .z()
+)
+</code></pre>
+</li>
+<li><p>Comment on a different line (no change):</p>
+<pre><code class="language-python">(
+    (x)
+    .y()  # a
+    .z()
+)
+</code></pre>
+</li>
+</ol>
+<h2>Metadata</h2>
+<p>Ruff version: 0.9.6</p>
+<p>Settings (default play.ruff.rs ones):</p>
+<details>
+
+<pre><code class="language-json">{
+  &quot;preview&quot;: false,
+  &quot;builtins&quot;: [],
+  &quot;target-version&quot;: &quot;py312&quot;,
+  &quot;line-length&quot;: 88,
+  &quot;indent-width&quot;: 4,
+  &quot;lint&quot;: {
+    &quot;allowed-confusables&quot;: [],
+    &quot;dummy-variable-rgx&quot;: &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;,
+    &quot;extend-select&quot;: [],
+    &quot;extend-fixable&quot;: [],
+    &quot;external&quot;: [],
+    &quot;ignore&quot;: [],
+    &quot;select&quot;: [
+      &quot;ALL&quot;
+    ]
+  },
+  &quot;format&quot;: {
+    &quot;indent-style&quot;: &quot;space&quot;,
+    &quot;quote-style&quot;: &quot;double&quot;
+  }
+}
+</code></pre>
+</details>
+
+<p>Search keywords: idempotent, idempotency, reformat, repeated invocations, fixed point, stable</p>
+<hr />
+<p>Thanks for ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-02-14 03:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dylwil3 on 2025-02-14 03:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-02-14 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2025-02-14 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 19:12</div>
+            <div class="timeline-body"><p>Thanks for this great write up! I hope to get time to look into this next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-16 15:23</div>
+            <div class="timeline-body"><p>In case you're blocked by this. You can work around this bug if you move the <code>type[ignore]</code> into the parenthesized range</p>
+<pre><code class="language-py">result = (
+    (
+        await query_the_thing(mypy_doesnt_understand)  # type: ignore[x]
+    )
+    .foo()
+    .bar()
+)
+</code></pre>
+<p>It definetely is less elegant than the fixed formatting:</p>
+<pre><code class="language-py">result = (
+    (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+    .foo()
+    .bar()
+)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16187.html">astral-sh/ruff#16187</a> on 2025-02-16 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-18 07:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

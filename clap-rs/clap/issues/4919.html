@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>value_terminator unexpectedly eating with multiple multi-length arguments - clap-rs/clap #4919</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>value_terminator unexpectedly eating with multiple multi-length arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4919">#4919</a>
+        opened by <a href="https://github.com/kleptog">@kleptog</a>
+        on 2023-05-18 22:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kleptog">@kleptog</a> on 2023-05-18 22:03</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.69.0 (84c898d65 2023-04-16)</p>
+<h3>Clap Version</h3>
+<p>master (3fa7b8fe5)</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rustuse">clap::{self, Arg, ArgAction};
+
+fn main() {
+    // Define the command line interface using Clap
+    let matches = clap::Command::new(&quot;Tester&quot;)
+        .version(&quot;1.0&quot;)
+        .about(&quot;Testing&quot;)
+        .arg(
+            Arg::new(&quot;program1&quot;)
+                .action(ArgAction::Append)
+                .required(true)
+                .allow_hyphen_values(true)
+                .value_terminator(&quot;--&quot;)
+                .help(&quot;Arguments for the first command line program&quot;)
+                .num_args(0..)
+                .last(false),
+        )
+        .arg(
+            Arg::new(&quot;program2&quot;)
+                .action(ArgAction::Append)
+                // .required(true)
+                .allow_hyphen_values(true)
+                .help(&quot;Arguments for the second command line program&quot;)
+                .num_args(0..)
+                .last(true),
+        )
+        .get_matches();
+
+    // Extract the values of the command line arguments
+    let program1: Vec&lt;&amp;str&gt; = matches.get_many::&lt;String&gt;(&quot;program1&quot;)
+        .unwrap_or_default()
+        .map(|v| v.as_str())
+        .collect();
+    let program2: Vec&lt;&amp;str&gt; = matches.get_many::&lt;String&gt;(&quot;program2&quot;)
+        .unwrap_or_default()
+        .map(|v| v.as_str())
+        .collect();
+
+    // Print the extracted values (for demonstration purposes)
+    eprintln!(&quot;Program 1: {:?}&quot;, program1);
+    eprintln!(&quot;Program 2: {:?}&quot;, program2);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- echo foo -- echo bar</p>
+<h3>Actual Behaviour</h3>
+<p>Program 1: [&quot;echo&quot;, &quot;foo&quot;, &quot;echo&quot;, &quot;bar&quot;]
+Program 2: []</p>
+<h3>Expected Behaviour</h3>
+<p>Program 1: [&quot;echo&quot;, &quot;foo&quot;]
+Program 2: [&quot;echo&quot;, &quot;bar&quot;]</p>
+<h3>Additional Context</h3>
+<p>What I'm trying to do is have a command line parser that accepts two multivalue arguments which are going to be used to spawn two programs. And it <em>almost</em> works. If you comment out the two lines:</p>
+<pre><code>                .allow_hyphen_values(true)
+                .value_terminator(&quot;--&quot;)
+</code></pre>
+<p>It actually appear to works as expected. However, if you try to the pass argument to the programs, like so:</p>
+<pre><code>cargo run -- echo -e foo -- echo bar
+</code></pre>
+<p>it breaks because clap assumes the &quot;-e&quot; is for it rather than for the subprogram. Setting allow_hyphen_values(true) should fix that, except it now swallows the entire rest of the arguments into program1. I thought value_terminator() should fix that, except it just vanishes.</p>
+<p>Now, it may be that this isn't the right way to do this, but the current behavior violates the Principle of Least Astonishment. Either the double-hyphen should terminate the argument, or it should be included in the result. Making the second argument required or not makes no difference.</p>
+<p>I tried following the code to figure out exactly which bit needs changing, but I just can't figure it out. I think the point where it checks for the terminator it should do something other than ignoring it (the debug line about &quot;ignoring terminator result&quot;).</p>
+<p>Thanks in advance.</p>
+<h3>Debug Output</h3>
+<p>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;Interactive Output Comparator&quot;
+[clap_builder::builder::command]Command::_propagate:Interactive Output Comparator
+[clap_builder::builder::command]Command::_check_help_and_version:Interactive Output Comparator expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:Interactive Output Comparator
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:program1
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:program2
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;echo&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;echo&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;foo&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::check_terminator: terminator=Some(&quot;--&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: ignoring terminator result ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;echo&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;bar&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;program1&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;program1&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;program1&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;program1&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;echo&quot;, &quot;foo&quot;, &quot;echo&quot;, &quot;bar&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=program1, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=0..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:program1:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:program1: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:program2:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:program2: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:version:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:version: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;program1&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;program1&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;program1&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;program1&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;program1&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;program1&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @kleptog on 2023-05-18 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4924.html">clap-rs/clap#4924</a> on 2023-05-19 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4925.html">clap-rs/clap#4925</a> on 2023-05-19 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-05-19 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-19 17:14</div>
+            <div class="timeline-body"><p>4.3.0 is out with the fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kleptog">@kleptog</a> on 2023-05-19 19:17</div>
+            <div class="timeline-body"><p>Wow, thanks for the quick fix. I've checked it out and I've made it work.</p>
+<p>The only weird bit is that if I leave the  <code>.last(true)</code> in program2 like in my example program, then it breaks with the error:</p>
+<pre><code>error: unexpected argument 'echo' found
+</code></pre>
+<p>which seems weird. It's not a problem because I can just leave <code>.last(false)</code> (which is the default), but it's just unexpected to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-19 20:47</div>
+            <div class="timeline-body"><p>Its giving you that error because it is processing the <code>last</code> argument without coming across the required escape (<code>--</code>).  Instead <code>--</code> is being treated as an argument to <code>program1</code> due to <code>allow_hyphen_values</code> and you are (cleverly) leveraging <code>value_terminator</code> to emulate escaping but its not the same thing and so <code>last</code> won't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kleptog">@kleptog</a> on 2023-05-21 09:17</div>
+            <div class="timeline-body"><p>Thank you. In retrospect it is obvious. Everything is working as expected now.</p>
+<p>Thanks again!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:24 UTC
+    </footer>
+</body>
+</html>

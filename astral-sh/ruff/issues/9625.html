@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RET505/RET506 doesn't work for an else after a return/raise in a try/except block - astral-sh/ruff #9625</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RET505/RET506 doesn't work for an else after a return/raise in a try/except block</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9625">#9625</a>
+        opened by <a href="https://github.com/Greesb">@Greesb</a>
+        on 2024-01-23 16:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Greesb">@Greesb</a> on 2024-01-23 16:45</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I found that the <code>RET505</code> and <code>RET506</code> do not raise an error when there is a <code>return</code> or <code>raise</code> inside a <code>try/except</code> block.</p>
+<pre><code class="language-python">def test_ret505():
+    try:
+        print(&quot;test&quot;)
+    except Exception:
+        return
+    else:  # Shouldn't this raise a RET505 error ?
+        return &quot;test&quot;
+
+def test_ret506():
+    try:
+        print(&quot;test&quot;)
+    except Exception:
+        raise
+    else:  # Shouldn't this raise a RET506 error ?
+        return &quot;test&quot;
+</code></pre>
+<p>Thanks and keep up the great work on this wonderful tool !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "RET506 doesn't work for raise in try/except block" to "RET505/RET506 doesn't work for after a return/raise in a try/except block" by @Greesb on 2024-01-23 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-01-24 15:06</div>
+            <div class="timeline-body"><p>Good point. Yes, I think it should be raised here atleast for your first example of <code>RET505</code>. I guess you meant <code>raise</code> on the last line in <code>test_ret506</code> function? If so, then yes for that as well.</p>
+<p>We need to make sure that there isn't a <code>finally</code> block here because then the execution order will be different. It's <code>try</code>, <code>else</code>, <code>finally</code> and removing <code>else</code> would alter the order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-01-24 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Greesb">@Greesb</a> on 2024-01-24 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess you meant <code>raise</code> on the last line in <code>test_ret506</code> function? If so, then yes for that as well.</p>
+</blockquote>
+<p>Whether it be a <code>return</code> or a <code>raise</code> in the <code>else</code> for both case it shouldn't matter, right ? In both case it won't be reached because of the <code>raise</code> / <code>return</code> in the <code>except</code> clause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-01-24 15:12</div>
+            <div class="timeline-body"><p>Yep, it's all about the <code>except</code> body. I think you should've commented the <code>else:</code> line since that's the violating one 👍 (which could be why Dhruv thought the <code>raise</code>/<code>return</code> in the <code>else</code> body matters)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Greesb">@Greesb</a> on 2024-01-24 15:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Yep, it's all about the <code>except</code> body. I think you should've commented the <code>else:</code> line since that's the violating one 👍 (which could be why Dhruv thought the <code>raise</code>/<code>return</code> in the <code>else</code> body matters)</p>
+</blockquote>
+<p>Indeed, edited it as you said for better clarity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "RET505/RET506 doesn't work for after a return/raise in a try/except block" to "RET505/RET506 doesn't work for an else after a return/raise in a try/except block" by @Greesb on 2024-01-27 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8018.html">astral-sh/ruff#8018</a> on 2024-06-09 14:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

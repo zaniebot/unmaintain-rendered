@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider presence on the `PATH` an opt-in to Python pre-releases - astral-sh/uv #7469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider presence on the `PATH` an opt-in to Python pre-releases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7469">#7469</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-09-17 15:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 15:57</div>
+            <div class="timeline-body"><p>From @henryiii in https://github.com/astral-sh/uv/issues/7300#issuecomment-2356049477</p>
+<blockquote>
+<p>Yes, the issue wasn't VIRTUAL_ENV, but rather that we were making the venv assuming it would use the Python on the top of the PATH. cibuildwheel 2.21.1 fixes this.</p>
+<p>It's really weird, though, that it no longer takes the Python at the top of the PATH when <code>--system</code> is used. If someone goes to the trouble to put Python in the PATH, intentionally skipping over it is really surprising; and if you type <code>python</code>, you don't get the one you just installed to. For example:</p>
+<pre><code class="language-yaml">- uses: actions/setup-python@v5
+  with:
+    python-version: ${{ matrix.python-version }}
+    allow-prereleases: true
+- uses: astral-sh/setup-uv@v3
+- run: uv pip install --system some_lib
+- run: python -c &quot;import some_lib&quot;
+</code></pre>
+<p>now fails only on 3.13 because uv installed to the 3.12 instead of the 3.13 that's been prepared by setup-python. The <code>python</code> above is 3.13, while uv is skipping it and installing into 3.12. (I've seen this failure somewhere but have forgotten which repos it affected).</p>
+<p>I understand this makes sense with managed Python (where you have a bunch of Pythons and uv's just picking out the best one), but it is very surprising to have it do this to the Python on PATH.</p>
+</blockquote>
+<p>We may want to consider allowing <code>--system</code> to opt-in here, but I'm a little hesitant to have different discovery behaviors.</p>
+<p>cc @carljm / @AlexWaygood who suggested to me that we should not select Python pre-releases by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-09-17 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-09-17 16:03</div>
+            <div class="timeline-body"><p>I don't like handling pre-releases differently from full releases in general - if someone is helping test pre-releases, making it harder for them isn't very helpful. We want to encourage pre-release to be easy to test and use like regular releases (especially RC's). The only exception I know of is the original motivation: if you have installed several <em>managed</em> Pythons, defaulting to the latest non-prerelease is a good default. But these aren't on the PATH. What about only having special handling for commands that pick up a managed release automatically, and letting PATH work normally? Is that possible?</p>
+<pre><code class="language-yaml">- uses: actions/setup-python@v5
+  with:
+    python-version: &quot;3.13&quot;
+    allow-prereleases: true
+- run: python --version  # 3.13
+- run: uv venv # I would kind of expect Python 3.13 here
+</code></pre>
+<pre><code class="language-yaml">- run: uv python install 3.11
+- run: uv python install 3.12
+- run: uv python install 3.13
+- run: python --version # This is whatever's already present, or nothing
+- run: uv venv  # I would not expect Python 3.13 here, either system or 3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-17 16:11</div>
+            <div class="timeline-body"><p>It's definitely possible — we just need to align on the behavior.</p>
+<p>I believe https://github.com/astral-sh/uv/pull/7470 would achieve the behavior here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7470.html">astral-sh/uv#7470</a> on 2024-09-17 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Consider `--system` an opt-in to Python pre-releases" to "Consider `PATH` an opt-in to Python pre-releases" by @zanieb on 2024-09-17 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Consider `PATH` an opt-in to Python pre-releases" to "Consider presence on the `PATH` an opt-in to Python pre-releases" by @zanieb on 2024-09-17 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neutrinoceros/gpgi/pulls/270.html">neutrinoceros/gpgi#270</a> on 2024-09-18 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neutrinoceros/gpgi/issues/271.html">neutrinoceros/gpgi#271</a> on 2024-09-18 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-18 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-18 15:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:50 UTC
+    </footer>
+</body>
+</html>

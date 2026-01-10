@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insufficient retrying around transient errors during `uv sync` (os error 104 in this case) - astral-sh/uv #8144</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>insufficient retrying around transient errors during `uv sync` (os error 104 in this case)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8144">#8144</a>
+        opened by <a href="https://github.com/jgehrcke">@jgehrcke</a>
+        on 2024-10-12 11:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-10-12 11:19</div>
+            <div class="timeline-body"><p>With uv 0.4.20 while running <code>uv sync --locked</code> I saw this:</p>
+<pre><code>...
+2024-10-12T10:59:36.1923265Z Resolved 309 packages in 1ms
+2024-10-12T10:59:42.4248290Z error: Failed to prepare distributions
+2024-10-12T10:59:42.4252642Z   Caused by: Failed to fetch wheel: validators==0.20.0
+2024-10-12T10:59:42.4257462Z   Caused by: Failed to resolve requirements from `setup.py` build
+2024-10-12T10:59:42.4261587Z   Caused by: No solution found when resolving: `setuptools&gt;=40.8.0`
+2024-10-12T10:59:42.4265596Z   Caused by: request or response body error
+2024-10-12T10:59:42.4269481Z   Caused by: error reading a body from connection
+2024-10-12T10:59:42.4273696Z   Caused by: Connection reset by peer (os error 104)
+2024-10-12T10:59:42.4366532Z ##[error]Process completed with exit code 2.
+...
+</code></pre>
+<p>Environment: github actions</p>
+<p>The log does not reveal if any retry was attempted. Such transient errors should certainly be retried for a small-ish number of times, up to a reasonable deadline.</p>
+<p>As I have thought and talked a lot about the relevance of retries around transient errors in distributed systems and CI: once we improve the retrying logic it would be great to have explicit logs indicating those error and retries, leading up to success.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3514.html">astral-sh/uv#3514</a> on 2024-10-12 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-12 15:03</div>
+            <div class="timeline-body"><p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-12 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>...once we improve the retrying logic it would be great to have explicit logs indicating those error and retries, leading up to success.</p>
+</blockquote>
+<p>I believe we already have this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-12 15:39</div>
+            <div class="timeline-body"><p>If we did retry, we show &quot;Request failed after 3 retries&quot; in the error chain, so this error failed our retrying and was not retried as it should have been.</p>
+<p>Currently, we only show individual retries with eventual success with <code>-v</code>, but we can certainly bump that to a warning (<a href="https://github.com/astral-sh/uv/blob/ad638d7fa394303f09d8bd0e8bde474702dff606/crates/uv-client/src/base_client.rs#L402-L413">https://github.com/astral-sh/uv/blob/ad638d7fa394303f09d8bd0e8bde474702dff606/crates/uv-client/src/base_client.rs#L402-L413</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-10-12 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @konstin on 2024-10-12 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-12 16:00</div>
+            <div class="timeline-body"><blockquote>
+<p>... was retried as it should have been.</p>
+</blockquote>
+<p>I'm confused, I don't see &quot;after 3 retries&quot; in the error message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-12 16:03</div>
+            <div class="timeline-body"><p>there's was a <em>not</em> critically missing in that sentence</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-10-12 16:04</div>
+            <div class="timeline-body"><p>I see this error occasionally, and need to rerun uv, if it is retrying it would be a better user experience to include how many times it tried in the final user error message, this would allow the user to be more empathetic to uv when it happens (&quot;hey, at least it tried!&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-10-12 16:08</div>
+            <div class="timeline-body"><p>Oh, with context of the <em>not</em>, as I reported in https://github.com/astral-sh/uv/issues/3514#issuecomment-2341462736, I also occasionally get this error and there is no mention of a retry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-12 16:08</div>
+            <div class="timeline-body"><p>I agree that there should be messaging about retries, but iirc the problem here specifically is that that code path isn't in our retry logic at all (streaming or range requests, at least that what it's look likes from the logs, this needs a proper investigation of course), so what's missing is hooking this into our retry logic, which will then also print proper feedback about retries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-10-16 14:32</div>
+            <div class="timeline-body"><p>Sorry to harp on about this, but currently I've migrated my works dev environment tooling to uv, I took a look at migrating our build tooling to uv yesterday and faced this error several times.</p>
+<p>Our build tooling has a lower tolerance for errors because it's more difficult to recover from, so I've put migrating on hold for now.</p>
+<p>I'm not in a rush, I can revisit this in the future, but I imagine it will cause other users not to migrate to uv, and they won't make a GitHub issue about it.</p>
+<p>Let me know if there's anything useful I can run to help. I can't reproduce it consistently, but I'm happy to try a few times a week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-10-16 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8285.html">astral-sh/uv#8285</a> on 2024-10-17 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-17 10:46</div>
+            <div class="timeline-body"><p>I'm not clear where the error originates so I'm trying to get better traces with #8285.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-21 14:50</div>
+            <div class="timeline-body"><p>I see that PR landed so I ran my build setup with <code>ENV RUST_LOG=uv=trace</code> and set uv to 0.4.25, and I got the error immediately.</p>
+<p>FYI, I <em>suspect</em> the network issue on our end is the firewall decides it needs to do a security scan of the package, it kills the network connection, after the security scan is complete the same requests work for, at least a few more days, but at some point it falls out of the firewall cache (most our builds are cached so we don't normally make this network request). Compared to uv, it appears pip's timeout/retry mechanism will wait long enough for the security scan to complete.</p>
+<summary>
+
+<p>Find below as much as the end log as I could fit in this post, if you need me to attach the entire log I will need to make a request to access gist (it is blocked by default).</p>
+<details>
+
+<pre><code class="language-log">#15 3.108 DEBUG No static `pyproject.toml` available for: odfpy==1.4.1 (MissingPyprojectToml)
+#15 3.108 DEBUG No static `PKG-INFO` available for: odfpy==1.4.1 (PkgInfo(UnsupportedMetadataVersion(&quot;1.1&quot;)))
+#15 3.108 DEBUG Found static `egg-info` for: odfpy==1.4.1
+#15 3.108 DEBUG Released lock at `/tmp/.tmpqJKjec/sdists-v5/pypi/odfpy/1.4.1/.lock`
+#15 3.108 TRACE Received source distribution metadata for: odfpy==1.4.1
+#15 3.108 DEBUG Adding transitive dependency for odfpy==1.4.1: defusedxml*
+#15 3.108 DEBUG Adding transitive dependency for odfpy==1.4.1: defusedxml==0.7.1
+#15 3.108 TRACE Fetching metadata for defusedxml from https://pypi.org/simple/defusedxml/
+#15 3.108 DEBUG Searching for a compatible version of openpyxl (==3.1.5)
+#15 3.108 TRACE Selecting candidate for openpyxl with range ==3.1.5 with 96 remote versions
+#15 3.108 TRACE found candidate for package PackageName(&quot;openpyxl&quot;) with range Range { segments: [(Included(&quot;3.1.5&quot;), Included(&quot;3.1.5&quot;))] } after 1 steps: &quot;3.1.5&quot; version
+#15 3.108 DEBUG Selecting: openpyxl==3.1.5 [compatible] (openpyxl-3.1.5-py2.py3-none-any.whl)
+#15 3.108 DEBUG Adding transitive dependency for openpyxl==3.1.5: et-xmlfile*
+#15 3.108 DEBUG Adding transitive dependency for openpyxl==3.1.5: et-xmlfile==1.1.0
+#15 3.108 DEBUG Searching for a compatible version of pyxlsb (==1.0.10)
+#15 3.108 TRACE Fetching metadata for et-xmlfile from https://pypi.org/simple/et-xmlfile/
+#15 3.108 TRACE Selecting candidate for pyxlsb with range ==1.0.10 with 10 remote versions
+#15 3.108 TRACE found candidate for package PackageName(&quot;pyxlsb&quot;) with range Range { segments: [(Included(&quot;1.0.10&quot;), Included(&quot;1.0.10&quot;))] } after 1 steps: &quot;1.0.10&quot; version
+#15 3.108 DEBUG Selecting: pyxlsb==1.0.10 [compatible] (pyxlsb-1.0.10-py2.py3-none-any.whl)
+#15 3.108 TRACE No cache entry exists for /tmp/.tmpqJKjec/simple-v13/pypi/defusedxml.rkyv
+#15 3.108 DEBUG No cache entry for: https://pypi.org/simple/defusedxml/
+#15 3.108 TRACE Sending fresh GET request for https://pypi.org/simple/defusedxml/
+#15 3.108 TRACE Handling request for https://pypi.org/simple/defusedxml/
+#15 3.108 DEBUG Searching for a compatible version of xlrd (==2.0.1)
+#15 3.108 TRACE Request for https://pypi.org/simple/defusedxml/ is unauthenticated, checking cache
+#15 3.108 TRACE Selecting candidate for xlrd with range ==2.0.1 with 24 remote versions
+#15 3.108 TRACE No credentials in cache for URL https://pypi.org/simple/defusedxml/
+#15 3.108 TRACE Attempting unauthenticated request for https://pypi.org/simple/defusedxml/
+#15 3.108 TRACE found candidate for package PackageName(&quot;xlrd&quot;) with range Range { segments: [(Included(&quot;2.0.1&quot;), Included(&quot;2.0.1&quot;))] } after 1 steps: &quot;2.0.1&quot; version
+#15 3.108 DEBUG Selecting: xlrd==2.0.1 [compatible] (xlrd-2.0.1-py2.py3-none-any.whl)
+#15 3.108 DEBUG Searching for a compatible version of numpy (==1.26.4)
+#15 3.108 TRACE Selecting candidate for numpy with range ==1.26.4 with 111 remote versions
+#15 3.108 TRACE found candidate for package PackageName(&quot;numpy&quot;) with range Range { segments: [(Included(&quot;1.26.4&quot;), Included(&quot;1.26.4&quot;))] } after 1 steps: &quot;1.26.4&quot; version
+#15 3.108 DEBUG Selecting: numpy==1.26.4 [compatible] (numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.108 TRACE No cache entry exists for /tmp/.tmpqJKjec/simple-v13/pypi/et-xmlfile.rkyv
+#15 3.108 DEBUG No cache entry for: https://pypi.org/simple/et-xmlfile/
+#15 3.108 TRACE Sending fresh GET request for https://pypi.org/simple/et-xmlfile/
+#15 3.108 TRACE Handling request for https://pypi.org/simple/et-xmlfile/
+#15 3.108 TRACE Request for https://pypi.org/simple/et-xmlfile/ is unauthenticated, checking cache
+#15 3.108 TRACE No credentials in cache for URL https://pypi.org/simple/et-xmlfile/
+#15 3.108 TRACE Attempting unauthenticated request for https://pypi.org/simple/et-xmlfile/
+#15 3.109 DEBUG Searching for a compatible version of numpy{python_full_version == '3.11.*'} (==1.26.4)
+#15 3.109 TRACE Selecting candidate for numpy with range ==1.26.4 with 111 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;numpy&quot;) with range Range { segments: [(Included(&quot;1.26.4&quot;), Included(&quot;1.26.4&quot;))] } after 1 steps: &quot;1.26.4&quot; version
+#15 3.109 DEBUG Selecting: numpy==1.26.4 [compatible] (numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.109 DEBUG Adding transitive dependency for numpy==1.26.4: numpy==1.26.4
+#15 3.109 DEBUG Adding transitive dependency for numpy==1.26.4: numpy{python_full_version == '3.11.*'}==1.26.4
+#15 3.109 DEBUG Searching for a compatible version of numpy{python_full_version == '3.11.*'} (==1.26.4)
+#15 3.109 TRACE Selecting candidate for numpy with range ==1.26.4 with 111 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;numpy&quot;) with range Range { segments: [(Included(&quot;1.26.4&quot;), Included(&quot;1.26.4&quot;))] } after 1 steps: &quot;1.26.4&quot; version
+#15 3.109 DEBUG Selecting: numpy==1.26.4 [compatible] (numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.109 DEBUG Searching for a compatible version of python-dateutil (==2.9.0.post0)
+#15 3.109 TRACE Selecting candidate for python-dateutil with range ==2.9.0.post0 with 27 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;python-dateutil&quot;) with range Range { segments: [(Included(&quot;2.9.0.post0&quot;), Included(&quot;2.9.0.post0&quot;))] } after 1 steps: &quot;2.9.0.post0&quot; version
+#15 3.109 DEBUG Selecting: python-dateutil==2.9.0.post0 [compatible] (python_dateutil-2.9.0.post0-py2.py3-none-any.whl)
+#15 3.109 DEBUG Adding transitive dependency for python-dateutil==2.9.0.post0: six&gt;=1.5
+#15 3.109 DEBUG Adding transitive dependency for python-dateutil==2.9.0.post0: six==1.16.0
+#15 3.109 DEBUG Searching for a compatible version of pytz (==2024.2)
+#15 3.109 TRACE Selecting candidate for pytz with range ==2024.2 with 71 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;pytz&quot;) with range Range { segments: [(Included(&quot;2024.2&quot;), Included(&quot;2024.2&quot;))] } after 1 steps: &quot;2024.2&quot; version
+#15 3.109 DEBUG Selecting: pytz==2024.2 [compatible] (pytz-2024.2-py2.py3-none-any.whl)
+#15 3.109 DEBUG Searching for a compatible version of tzdata (==2024.2)
+#15 3.109 TRACE Selecting candidate for tzdata with range ==2024.2 with 30 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;tzdata&quot;) with range Range { segments: [(Included(&quot;2024.2&quot;), Included(&quot;2024.2&quot;))] } after 1 steps: &quot;2024.2&quot; version
+#15 3.109 DEBUG Selecting: tzdata==2024.2 [compatible] (tzdata-2024.2-py2.py3-none-any.whl)
+#15 3.109 DEBUG Searching for a compatible version of bottleneck (==1.4.0)
+#15 3.109 TRACE Selecting candidate for bottleneck with range ==1.4.0 with 44 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;bottleneck&quot;) with range Range { segments: [(Included(&quot;1.4.0&quot;), Included(&quot;1.4.0&quot;))] } after 1 steps: &quot;1.4.0&quot; version
+#15 3.109 DEBUG Selecting: bottleneck==1.4.0 [compatible] (Bottleneck-1.4.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.109 DEBUG Adding transitive dependency for bottleneck==1.4.0: numpy*
+#15 3.109 DEBUG Adding transitive dependency for bottleneck==1.4.0: numpy==1.26.4
+#15 3.109 DEBUG Searching for a compatible version of numba (==0.60.0)
+#15 3.109 TRACE Selecting candidate for numba with range ==0.60.0 with 113 remote versions
+#15 3.109 TRACE found candidate for package PackageName(&quot;numba&quot;) with range Range { segments: [(Included(&quot;0.60.0&quot;), Included(&quot;0.60.0&quot;))] } after 1 steps: &quot;0.60.0&quot; version
+#15 3.109 DEBUG Selecting: numba==0.60.0 [compatible] (numba-0.60.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl)
+#15 3.109 DEBUG Adding transitive dependency for numba==0.60.0: llvmlite&gt;=0.43.0.dev0, &lt;0.44
+#15 3.109 DEBUG Adding transitive dependency for numba==0.60.0: llvmlite==0.43.0
+#15 3.109 DEBUG Adding transitive dependency for numba==0.60.0: numpy&gt;=1.22, &lt;2.1
+#15 3.109 DEBUG Adding transitive dependency for numba==0.60.0: numpy==1.26.4
+#15 3.109 DEBUG Searching for a compatible version of numexpr (==2.10.1)
+#15 3.109 TRACE Selecting candidate for numexpr with range ==2.10.1 with 51 remote versions
+#15 3.109 TRACE Fetching metadata for llvmlite from https://pypi.org/simple/llvmlite/
+#15 3.109 TRACE found candidate for package PackageName(&quot;numexpr&quot;) with range Range { segments: [(Included(&quot;2.10.1&quot;), Included(&quot;2.10.1&quot;))] } after 1 steps: &quot;2.10.1&quot; version
+#15 3.109 DEBUG Selecting: numexpr==2.10.1 [compatible] (numexpr-2.10.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl)
+#15 3.109 DEBUG Adding transitive dependency for numexpr==2.10.1: numpy&gt;=1.23.0
+#15 3.109 DEBUG Adding transitive dependency for numexpr==2.10.1: numpy==1.26.4
+#15 3.109 DEBUG Searching for a compatible version of greenlet{(python_full_version &gt;= '3' and platform_machine == 'AMD64') or (python_full_version &gt;= '3' and platform_machine == 'WIN32') or (python_full_version &gt;= '3' and platform_machine == 'aarch64') or (python_full_version &gt;= '3' and platform_machine == 'amd64') or (python_full_version &gt;= '3' and platform_machine == 'ppc64le') or (python_full_version &gt;= '3' and platform_machine == 'win32') or (python_full_version &gt;= '3' and platform_machine == 'x86_64')} (==3.1.1)
+#15 3.109 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 3.109 TRACE No cache entry exists for /tmp/.tmpqJKjec/simple-v13/pypi/llvmlite.rkyv
+#15 3.109 DEBUG No cache entry for: https://pypi.org/simple/llvmlite/
+#15 3.109 TRACE Sending fresh GET request for https://pypi.org/simple/llvmlite/
+#15 3.109 TRACE Handling request for https://pypi.org/simple/llvmlite/
+#15 3.109 TRACE Request for https://pypi.org/simple/llvmlite/ is unauthenticated, checking cache
+#15 3.109 TRACE No credentials in cache for URL https://pypi.org/simple/llvmlite/
+#15 3.109 TRACE Attempting unauthenticated request for https://pypi.org/simple/llvmlite/
+#15 3.109 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 3.109 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl)
+#15 3.110 DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet==3.1.1
+#15 3.111 DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet{(python_full_version &gt;= '3' and platform_machine == 'AMD64') or (python_full_version &gt;= '3' and platform_machine == 'WIN32') or (python_full_version &gt;= '3' and platform_machine == 'aarch64') or (python_full_version &gt;= '3' and platform_machine == 'amd64') or (python_full_version &gt;= '3' and platform_machine == 'ppc64le') or (python_full_version &gt;= '3' and platform_machine == 'win32') or (python_full_version &gt;= '3' and platform_machine == 'x86_64')}==3.1.1
+#15 3.111 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 3.111 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 3.111 DEBUG Searching for a compatible version of greenlet{(python_full_version &gt;= '3' and platform_machine == 'AMD64') or (python_full_version &gt;= '3' and platform_machine == 'WIN32') or (python_full_version &gt;= '3' and platform_machine == 'aarch64') or (python_full_version &gt;= '3' and platform_machine == 'amd64') or (python_full_version &gt;= '3' and platform_machine == 'ppc64le') or (python_full_version &gt;= '3' and platform_machine == 'win32') or (python_full_version &gt;= '3' and platform_machine == 'x86_64')} (==3.1.1)
+#15 3.111 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 3.111 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 3.111 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl)
+#15 3.111 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/greenlet/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.msgpack
+#15 3.111 DEBUG No cache entry for: https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 3.111 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 3.111 TRACE Handling request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 3.111 TRACE Request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata is unauthenticated, checking cache
+#15 3.111 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 3.111 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 3.117 TRACE cached request https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.117 TRACE Received built distribution metadata for: greenlet==3.1.1
+#15 3.117 DEBUG Searching for a compatible version of greenlet (==3.1.1)
+#15 3.117 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 3.117 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 3.117 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl)
+#15 3.117 DEBUG Searching for a compatible version of pytzdata (==2020.1)
+#15 3.117 TRACE Selecting candidate for pytzdata with range ==2020.1 with 22 remote versions
+#15 3.117 TRACE found candidate for package PackageName(&quot;pytzdata&quot;) with range Range { segments: [(Included(&quot;2020.1&quot;), Included(&quot;2020.1&quot;))] } after 1 steps: &quot;2020.1&quot; version
+#15 3.117 DEBUG Selecting: pytzdata==2020.1 [compatible] (pytzdata-2020.1-py2.py3-none-any.whl)
+#15 3.117 DEBUG Searching for a compatible version of pyhcl (==0.4.5)
+#15 3.117 TRACE Selecting candidate for pyhcl with range ==0.4.5 with 40 remote versions
+#15 3.117 TRACE found candidate for package PackageName(&quot;pyhcl&quot;) with range Range { segments: [(Included(&quot;0.4.5&quot;), Included(&quot;0.4.5&quot;))] } after 1 steps: &quot;0.4.5&quot; version
+#15 3.117 DEBUG Selecting: pyhcl==0.4.5 [compatible] (pyhcl-0.4.5-py3-none-any.whl)
+#15 3.117 DEBUG Searching for a compatible version of soupsieve (==2.6)
+#15 3.117 TRACE Selecting candidate for soupsieve with range ==2.6 with 46 remote versions
+#15 3.117 TRACE found candidate for package PackageName(&quot;soupsieve&quot;) with range Range { segments: [(Included(&quot;2.6&quot;), Included(&quot;2.6&quot;))] } after 1 steps: &quot;2.6&quot; version
+#15 3.117 DEBUG Selecting: soupsieve==2.6 [compatible] (soupsieve-2.6-py3-none-any.whl)
+#15 3.117 DEBUG Searching for a compatible version of cryptography (==43.0.1)
+#15 3.117 TRACE Selecting candidate for cryptography with range ==43.0.1 with 133 remote versions
+#15 3.117 TRACE found candidate for package PackageName(&quot;cryptography&quot;) with range Range { segments: [(Included(&quot;43.0.1&quot;), Included(&quot;43.0.1&quot;))] } after 1 steps: &quot;43.0.1&quot; version
+#15 3.117 DEBUG Selecting: cryptography==43.0.1 [compatible] (cryptography-43.0.1-cp39-abi3-manylinux_2_28_x86_64.whl)
+#15 3.118 DEBUG Adding transitive dependency for cryptography==43.0.1: cffi{platform_python_implementation != 'PyPy'}&gt;=1.12
+#15 3.118 DEBUG Adding transitive dependency for cryptography==43.0.1: cffi{platform_python_implementation != 'PyPy'}==1.17.1
+#15 3.118 DEBUG Searching for a compatible version of charset-normalizer (==3.3.2)
+#15 3.118 TRACE Selecting candidate for charset-normalizer with range ==3.3.2 with 54 remote versions
+#15 3.118 TRACE Fetching metadata for cffi from https://pypi.org/simple/cffi/
+#15 3.118 TRACE found candidate for package PackageName(&quot;charset-normalizer&quot;) with range Range { segments: [(Included(&quot;3.3.2&quot;), Included(&quot;3.3.2&quot;))] } after 1 steps: &quot;3.3.2&quot; version
+#15 3.118 DEBUG Selecting: charset-normalizer==3.3.2 [compatible] (charset_normalizer-3.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.118 TRACE No cache entry exists for /tmp/.tmpqJKjec/simple-v13/pypi/cffi.rkyv
+#15 3.118 DEBUG No cache entry for: https://pypi.org/simple/cffi/
+#15 3.118 TRACE Sending fresh GET request for https://pypi.org/simple/cffi/
+#15 3.118 TRACE Handling request for https://pypi.org/simple/cffi/
+#15 3.118 TRACE Request for https://pypi.org/simple/cffi/ is unauthenticated, checking cache
+#15 3.118 TRACE No credentials in cache for URL https://pypi.org/simple/cffi/
+#15 3.118 TRACE Attempting unauthenticated request for https://pypi.org/simple/cffi/
+#15 3.118 DEBUG Searching for a compatible version of idna (==3.10)
+#15 3.118 TRACE Selecting candidate for idna with range ==3.10 with 32 remote versions
+#15 3.118 TRACE found candidate for package PackageName(&quot;idna&quot;) with range Range { segments: [(Included(&quot;3.10&quot;), Included(&quot;3.10&quot;))] } after 1 steps: &quot;3.10&quot; version
+#15 3.118 DEBUG Selecting: idna==3.10 [compatible] (idna-3.10-py3-none-any.whl)
+#15 3.118 DEBUG Searching for a compatible version of urllib3 (==2.2.3)
+#15 3.118 TRACE Selecting candidate for urllib3 with range ==2.2.3 with 96 remote versions
+#15 3.118 TRACE found candidate for package PackageName(&quot;urllib3&quot;) with range Range { segments: [(Included(&quot;2.2.3&quot;), Included(&quot;2.2.3&quot;))] } after 1 steps: &quot;2.2.3&quot; version
+#15 3.118 DEBUG Selecting: urllib3==2.2.3 [compatible] (urllib3-2.2.3-py3-none-any.whl)
+#15 3.118 DEBUG Searching for a compatible version of certifi (==2024.8.30)
+#15 3.118 TRACE Selecting candidate for certifi with range ==2024.8.30 with 60 remote versions
+#15 3.118 TRACE found candidate for package PackageName(&quot;certifi&quot;) with range Range { segments: [(Included(&quot;2024.8.30&quot;), Included(&quot;2024.8.30&quot;))] } after 1 steps: &quot;2024.8.30&quot; version
+#15 3.118 DEBUG Selecting: certifi==2024.8.30 [compatible] (certifi-2024.8.30-py3-none-any.whl)
+#15 3.118 DEBUG Searching for a compatible version of joblib (==1.4.2)
+#15 3.118 TRACE Selecting candidate for joblib with range ==1.4.2 with 95 remote versions
+#15 3.118 TRACE found candidate for package PackageName(&quot;joblib&quot;) with range Range { segments: [(Included(&quot;1.4.2&quot;), Included(&quot;1.4.2&quot;))] } after 1 steps: &quot;1.4.2&quot; version
+#15 3.118 DEBUG Selecting: joblib==1.4.2 [compatible] (joblib-1.4.2-py3-none-any.whl)
+#15 3.118 DEBUG Searching for a compatible version of threadpoolctl (==3.5.0)
+#15 3.118 TRACE Selecting candidate for threadpoolctl with range ==3.5.0 with 11 remote versions
+#15 3.118 TRACE found candidate for package PackageName(&quot;threadpoolctl&quot;) with range Range { segments: [(Included(&quot;3.5.0&quot;), Included(&quot;3.5.0&quot;))] } after 1 steps: &quot;3.5.0&quot; version
+#15 3.118 DEBUG Selecting: threadpoolctl==3.5.0 [compatible] (threadpoolctl-3.5.0-py3-none-any.whl)
+#15 3.118 DEBUG Searching for a compatible version of markdown-it-py (==3.0.0)
+#15 3.118 TRACE Selecting candidate for markdown-it-py with range ==3.0.0 with 42 remote versions
+#15 3.118 TRACE found candidate for package PackageName(&quot;markdown-it-py&quot;) with range Range { segments: [(Included(&quot;3.0.0&quot;), Included(&quot;3.0.0&quot;))] } after 1 steps: &quot;3.0.0&quot; version
+#15 3.118 DEBUG Selecting: markdown-it-py==3.0.0 [compatible] (markdown_it_py-3.0.0-py3-none-any.whl)
+#15 3.118 DEBUG Adding transitive dependency for markdown-it-py==3.0.0: mdurl&gt;=0.1, &lt;1.dev0
+#15 3.118 DEBUG Adding transitive dependency for markdown-it-py==3.0.0: mdurl==0.1.2
+#15 3.118 DEBUG Searching for a compatible version of pygments (==2.18.0)
+#15 3.118 TRACE Selecting candidate for pygments with range ==2.18.0 with 64 remote versions
+#15 3.118 TRACE Fetching metadata for mdurl from https://pypi.org/simple/mdurl/
+#15 3.118 TRACE found candidate for package PackageName(&quot;pygments&quot;) with range Range { segments: [(Included(&quot;2.18.0&quot;), Included(&quot;2.18.0&quot;))] } after 1 steps: &quot;2.18.0&quot; version
+#15 3.118 DEBUG Selecting: pygments==2.18.0 [compatible] (pygments-2.18.0-py3-none-any.whl)
+#15 3.118 TRACE No cache entry exists for /tmp/.tmpqJKjec/simple-v13/pypi/mdurl.rkyv
+#15 3.118 DEBUG No cache entry for: https://pypi.org/simple/mdurl/
+#15 3.118 TRACE Sending fresh GET request for https://pypi.org/simple/mdurl/
+#15 3.118 TRACE Handling request for https://pypi.org/simple/mdurl/
+#15 3.118 TRACE Request for https://pypi.org/simple/mdurl/ is unauthenticated, checking cache
+#15 3.118 TRACE No credentials in cache for URL https://pypi.org/simple/mdurl/
+#15 3.118 TRACE Attempting unauthenticated request for https://pypi.org/simple/mdurl/
+#15 3.174 TRACE cached request https://pypi.org/simple/webencodings/ is storable because its response has a 'public' cache-control directive
+#15 3.174 TRACE cached request https://pypi.org/simple/six/ is storable because its response has a 'public' cache-control directive
+#15 3.175 TRACE cached request https://pypi.org/simple/fonttools/ is storable because its response has a 'public' cache-control directive
+#15 3.175 TRACE Received package metadata for: webencodings
+#15 3.175 TRACE Selecting candidate for webencodings with range ==0.5.1 with 6 remote versions
+#15 3.176 TRACE found candidate for package PackageName(&quot;webencodings&quot;) with range Range { segments: [(Included(&quot;0.5.1&quot;), Included(&quot;0.5.1&quot;))] } after 1 steps: &quot;0.5.1&quot; version
+#15 3.176 TRACE Received package metadata for: six
+#15 3.176 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/webencodings/webencodings-0.5.1-py2.py3-none-any.msgpack
+#15 3.176 DEBUG No cache entry for: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata
+#15 3.176 DEBUG Searching for a compatible version of six (==1.16.0)
+#15 3.176 TRACE Selecting candidate for six with range ==1.16.0 with 28 remote versions
+#15 3.176 TRACE Handling request for https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Request for https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.176 TRACE found candidate for package PackageName(&quot;six&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 1 steps: &quot;1.16.0&quot; version
+#15 3.176 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata
+#15 3.176 DEBUG Selecting: six==1.16.0 [compatible] (six-1.16.0-py2.py3-none-any.whl)
+#15 3.176 TRACE Selecting candidate for six with range ==1.16.0 with 28 remote versions
+#15 3.176 TRACE found candidate for package PackageName(&quot;six&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 1 steps: &quot;1.16.0&quot; version
+#15 3.176 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/six/six-1.16.0-py2.py3-none-any.msgpack
+#15 3.176 DEBUG No cache entry for: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Handling request for https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Request for https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.176 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata
+#15 3.176 TRACE cached request https://pypi.org/simple/pyparsing/ is storable because its response has a 'public' cache-control directive
+#15 3.176 TRACE cached request https://pypi.org/simple/markupsafe/ is storable because its response has a 'public' cache-control directive
+#15 3.176 TRACE cached request https://pypi.org/simple/pillow/ is storable because its response has a 'public' cache-control directive
+#15 3.176 TRACE cached request https://pypi.org/simple/cycler/ is storable because its response has a 'public' cache-control directive
+#15 3.177 TRACE Received package metadata for: cycler
+#15 3.177 TRACE Selecting candidate for cycler with range ==0.12.1 with 6 remote versions
+#15 3.177 TRACE found candidate for package PackageName(&quot;cycler&quot;) with range Range { segments: [(Included(&quot;0.12.1&quot;), Included(&quot;0.12.1&quot;))] } after 1 steps: &quot;0.12.1&quot; version
+#15 3.177 TRACE cached request https://pypi.org/simple/kiwisolver/ is storable because its response has a 'public' cache-control directive
+#15 3.177 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/cycler/cycler-0.12.1-py3-none-any.msgpack
+#15 3.177 DEBUG No cache entry for: https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata
+#15 3.177 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata
+#15 3.177 TRACE Handling request for https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata
+#15 3.177 TRACE Request for https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.177 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata
+#15 3.177 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata
+#15 3.179 TRACE cached request https://pypi.org/simple/packaging/ is storable because its response has a 'public' cache-control directive
+#15 3.180 TRACE cached request https://pypi.org/simple/contourpy/ is storable because its response has a 'public' cache-control directive
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.1.win32.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.2.win32.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py2.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py2.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.3.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py2.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py2.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.4.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py2.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py2.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.5.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py2.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py2.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.6.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.7.win32-py2.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.7.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-1.5.7.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.0.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.0.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.0.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.0.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.1.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.1.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.1.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.1.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.1.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.1.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.2.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py3.0.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py3.1.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.3.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.4.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.4.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.4.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.4.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.4.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.5.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.5.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.5.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.5.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.5.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.6.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.6.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.6.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.6.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.6.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.7.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.7.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.7.win32-py3.2.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.7.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.7.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.0.7.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.0.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.0.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.0.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.0.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.0.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.1.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.1.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.1.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.1.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.1.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.10.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.10.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.10.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.10.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.10.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.2.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.2.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.2.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.2.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.2.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.3.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.3.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.3.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.3.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.3.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.4.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.4.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.4.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.4.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.4.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.5.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.5.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.5.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.5.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.5.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.6.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.6.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.6.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.6.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.6.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.7.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.7.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.7.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.7.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.7.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.8.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.8.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.8.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.8.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.8.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.9.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.9.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.9.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.9.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.1.9.win32-py3.5.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.2.0.win32-py2.6.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.2.0.win32-py2.7.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.2.0.win32-py3.3.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.2.0.win32-py3.4.exe
+#15 3.184 WARN Skipping file for pyparsing: pyparsing-2.2.0.win32-py3.5.exe
+#15 3.187 TRACE Received package metadata for: pyparsing
+#15 3.187 TRACE Selecting candidate for pyparsing with range ==3.1.4 with 75 remote versions
+#15 3.187 TRACE found candidate for package PackageName(&quot;pyparsing&quot;) with range Range { segments: [(Included(&quot;3.1.4&quot;), Included(&quot;3.1.4&quot;))] } after 1 steps: &quot;3.1.4&quot; version
+#15 3.188 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/pyparsing/pyparsing-3.1.4-py3-none-any.msgpack
+#15 3.188 DEBUG No cache entry for: https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata
+#15 3.188 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata
+#15 3.188 TRACE Handling request for https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata
+#15 3.188 TRACE Request for https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.188 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata
+#15 3.188 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata
+#15 3.188 TRACE Received package metadata for: packaging
+#15 3.188 TRACE Selecting candidate for packaging with range ==24.1 with 45 remote versions
+#15 3.188 TRACE found candidate for package PackageName(&quot;packaging&quot;) with range Range { segments: [(Included(&quot;24.1&quot;), Included(&quot;24.1&quot;))] } after 1 steps: &quot;24.1&quot; version
+#15 3.188 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/packaging/packaging-24.1-py3-none-any.msgpack
+#15 3.188 DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+#15 3.188 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+#15 3.188 TRACE Handling request for https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+#15 3.188 TRACE Request for https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.188 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+#15 3.188 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+#15 3.189 TRACE cached request https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.190 TRACE cached request https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.190 TRACE cached request https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.191 TRACE Received built distribution metadata for: cycler==0.12.1
+#15 3.191 TRACE Received built distribution metadata for: six==1.16.0
+#15 3.191 TRACE Received built distribution metadata for: webencodings==0.5.1
+#15 3.191 DEBUG Searching for a compatible version of webencodings (==0.5.1)
+#15 3.191 TRACE Selecting candidate for webencodings with range ==0.5.1 with 6 remote versions
+#15 3.191 TRACE found candidate for package PackageName(&quot;webencodings&quot;) with range Range { segments: [(Included(&quot;0.5.1&quot;), Included(&quot;0.5.1&quot;))] } after 1 steps: &quot;0.5.1&quot; version
+#15 3.191 DEBUG Selecting: webencodings==0.5.1 [compatible] (webencodings-0.5.1-py2.py3-none-any.whl)
+#15 3.191 DEBUG Searching for a compatible version of packaging (==24.1)
+#15 3.191 TRACE Selecting candidate for packaging with range ==24.1 with 45 remote versions
+#15 3.191 TRACE found candidate for package PackageName(&quot;packaging&quot;) with range Range { segments: [(Included(&quot;24.1&quot;), Included(&quot;24.1&quot;))] } after 1 steps: &quot;24.1&quot; version
+#15 3.191 DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
+#15 3.206 TRACE Received package metadata for: markupsafe
+#15 3.207 TRACE Selecting candidate for markupsafe with range ==2.1.5 with 34 remote versions
+#15 3.207 TRACE found candidate for package PackageName(&quot;markupsafe&quot;) with range Range { segments: [(Included(&quot;2.1.5&quot;), Included(&quot;2.1.5&quot;))] } after 1 steps: &quot;2.1.5&quot; version
+#15 3.208 TRACE cached request https://files.pythonhosted.org/packages/e5/0c/0e3c05b1c87bb6a1c76d281b0f35e78d2d80ac91b5f8f524cebf77f51049/pyparsing-3.1.4-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.208 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/markupsafe/markupsafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack
+#15 3.208 DEBUG No cache entry for: https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.208 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.208 TRACE Handling request for https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.208 TRACE Request for https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is unauthenticated, checking cache
+#15 3.208 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.208 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.208 TRACE cached request https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.235 TRACE Received built distribution metadata for: pyparsing==3.1.4
+#15 3.235 TRACE Received built distribution metadata for: packaging==24.1
+#15 3.235 DEBUG Searching for a compatible version of markupsafe (==2.1.5)
+#15 3.235 TRACE Received package metadata for: kiwisolver
+#15 3.235 TRACE Selecting candidate for markupsafe with range ==2.1.5 with 34 remote versions
+#15 3.235 TRACE Selecting candidate for kiwisolver with range ==1.4.7 with 19 remote versions
+#15 3.235 TRACE found candidate for package PackageName(&quot;markupsafe&quot;) with range Range { segments: [(Included(&quot;2.1.5&quot;), Included(&quot;2.1.5&quot;))] } after 1 steps: &quot;2.1.5&quot; version
+#15 3.235 DEBUG Selecting: markupsafe==2.1.5 [compatible] (MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.235 TRACE found candidate for package PackageName(&quot;kiwisolver&quot;) with range Range { segments: [(Included(&quot;1.4.7&quot;), Included(&quot;1.4.7&quot;))] } after 1 steps: &quot;1.4.7&quot; version
+#15 3.236 TRACE Received package metadata for: contourpy
+#15 3.236 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/kiwisolver/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack
+#15 3.236 DEBUG No cache entry for: https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Handling request for https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Request for https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is unauthenticated, checking cache
+#15 3.236 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Selecting candidate for contourpy with range ==1.3.0 with 20 remote versions
+#15 3.236 TRACE found candidate for package PackageName(&quot;contourpy&quot;) with range Range { segments: [(Included(&quot;1.3.0&quot;), Included(&quot;1.3.0&quot;))] } after 1 steps: &quot;1.3.0&quot; version
+#15 3.236 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/contourpy/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack
+#15 3.236 DEBUG No cache entry for: https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Handling request for https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Request for https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is unauthenticated, checking cache
+#15 3.236 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.236 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.259 TRACE cached request https://files.pythonhosted.org/packages/a7/4b/2db7af3ed3af7c35f388d5f53c28e155cd402a55432d800c543dc6deb731/kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.259 TRACE Received package metadata for: fonttools
+#15 3.259 TRACE cached request https://files.pythonhosted.org/packages/03/33/003065374f38894cdf1040cef474ad0546368eea7e3a51d48b8a423961f8/contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.259 TRACE cached request https://files.pythonhosted.org/packages/97/18/c30da5e7a0e7f4603abfc6780574131221d9148f323752c2755d48abad30/MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.260 TRACE Selecting candidate for fonttools with range ==4.54.1 with 204 remote versions
+#15 3.260 TRACE found candidate for package PackageName(&quot;fonttools&quot;) with range Range { segments: [(Included(&quot;4.54.1&quot;), Included(&quot;4.54.1&quot;))] } after 1 steps: &quot;4.54.1&quot; version
+#15 3.260 TRACE Received built distribution metadata for: kiwisolver==1.4.7
+#15 3.260 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/fonttools/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack
+#15 3.260 DEBUG No cache entry for: https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.260 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.260 TRACE Handling request for https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.260 TRACE Request for https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is unauthenticated, checking cache
+#15 3.260 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.260 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#15 3.260 TRACE Received built distribution metadata for: contourpy==1.3.0
+#15 3.260 TRACE Received built distribution metadata for: markupsafe==2.1.5
+#15 3.260 DEBUG Searching for a compatible version of contourpy (==1.3.0)
+#15 3.260 TRACE Selecting candidate for contourpy with range ==1.3.0 with 20 remote versions
+#15 3.260 TRACE found candidate for package PackageName(&quot;contourpy&quot;) with range Range { segments: [(Included(&quot;1.3.0&quot;), Included(&quot;1.3.0&quot;))] } after 1 steps: &quot;1.3.0&quot; version
+#15 3.260 DEBUG Selecting: contourpy==1.3.0 [compatible] (contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.260 DEBUG Adding transitive dependency for contourpy==1.3.0: numpy&gt;=1.23
+#15 3.260 DEBUG Adding transitive dependency for contourpy==1.3.0: numpy==1.26.4
+#15 3.260 DEBUG Searching for a compatible version of cycler (==0.12.1)
+#15 3.260 TRACE Selecting candidate for cycler with range ==0.12.1 with 6 remote versions
+#15 3.260 TRACE found candidate for package PackageName(&quot;cycler&quot;) with range Range { segments: [(Included(&quot;0.12.1&quot;), Included(&quot;0.12.1&quot;))] } after 1 steps: &quot;0.12.1&quot; version
+#15 3.260 DEBUG Selecting: cycler==0.12.1 [compatible] (cycler-0.12.1-py3-none-any.whl)
+#15 3.260 DEBUG Searching for a compatible version of fonttools (==4.54.1)
+#15 3.260 TRACE Selecting candidate for fonttools with range ==4.54.1 with 204 remote versions
+#15 3.260 TRACE found candidate for package PackageName(&quot;fonttools&quot;) with range Range { segments: [(Included(&quot;4.54.1&quot;), Included(&quot;4.54.1&quot;))] } after 1 steps: &quot;4.54.1&quot; version
+#15 3.260 DEBUG Selecting: fonttools==4.54.1 [compatible] (fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.5-py2.4-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.5-py2.5-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.5-py2.6-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.5-py2.7-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.6-py2.4-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.6-py2.5-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.6-py2.6-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.6-py2.7-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.7-py2.4-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.7-py2.5-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.7-py2.6-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.7-py2.7-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.8-py2.4-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.8-py2.5-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.8-py2.6-win-amd64.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.8-py2.6-win32.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.8-py2.7-win-amd64.egg
+#15 3.273 WARN Skipping file for pillow: Pillow-1.7.8-py2.7-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py2.6-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py2.6-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py2.7-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py2.7-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py3.2-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py3.2-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py3.3-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0-py3.3-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py2.6.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py2.7.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py3.2.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win-amd64-py3.3.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win32-py2.6.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win32-py2.7.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win32-py3.2.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.0.0.win32-py3.3.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py2.6-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py2.6-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py2.7-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py2.7-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py3.2-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py3.2-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py3.3-win-amd64.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0-py3.3-win32.egg
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py2.6.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py2.7.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py3.2.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win-amd64-py3.3.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win32-py2.6.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win32-py2.7.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win32-py3.2.exe
+#15 3.275 WARN Skipping file for pillow: Pillow-2.1.0.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.1.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.2.2.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.3.0.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.4.0.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.0.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.1.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.2.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.5.3.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.0.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.1.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.6.2.win32-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py2.6-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py2.6-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py2.7-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py2.7-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py3.2-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py3.2-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py3.3-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py3.3-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py3.4-win-amd64.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0-py3.4-win32.egg
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win-amd64-py3.4.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win32-py2.6.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win32-py2.7.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win32-py3.2.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win32-py3.3.exe
+#15 3.276 WARN Skipping file for pillow: Pillow-2.7.0.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py2.6-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py2.6-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py2.7-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py2.7-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py3.2-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py3.2-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py3.3-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py3.3-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py3.4-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0-py3.4-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win-amd64-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win32-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win32-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win32-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win32-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.0.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py2.6-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py2.6-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py2.7-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py2.7-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py3.2-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py3.2-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py3.3-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py3.3-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py3.4-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1-py3.4-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win-amd64-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win32-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win32-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win32-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win32-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.1.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py2.6-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py2.6-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py2.7-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py2.7-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py3.2-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py3.2-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py3.3-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py3.3-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py3.4-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2-py3.4-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win-amd64-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win32-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win32-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win32-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win32-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.8.2.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py2.6-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py2.6-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py2.7-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py2.7-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py3.2-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py3.2-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py3.3-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py3.3-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py3.4-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0-py3.4-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win-amd64-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win32-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win32-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win32-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win32-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-2.9.0.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py2.6-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py2.6-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py2.7-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py2.7-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.2-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.2-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.3-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.3-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.4-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.4-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.5-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0-py3.5-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win-amd64-py3.5.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win32-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win32-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.0.0.win32-py3.5.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py2.6-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py2.6-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py2.7-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py2.7-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.2-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.2-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.3-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.3-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.4-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.4-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.5-win-amd64.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0-py3.5-win32.egg
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win-amd64-py3.5.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win32-py2.6.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win32-py2.7.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.2.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.3.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.4.exe
+#15 3.277 WARN Skipping file for pillow: Pillow-3.1.0.win32-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py2.6-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py2.6-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py2.7-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py2.7-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.2-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.2-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.3-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.3-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.4-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.4-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.5-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1-py3.5-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.2.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win-amd64-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win32-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win32-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.2.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.1.1.win32-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py2.6-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py2.6-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py2.7-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py2.7-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.2-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.2-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.3-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.3-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.4-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.4-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.5-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0-py3.5-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.2.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win-amd64-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win32-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win32-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.2.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.2.0.win32-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py2.6-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py2.6-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py2.7-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py2.7-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.2-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.2-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.3-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.3-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.4-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.4-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.5-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0-py3.5-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.2.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win-amd64-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win32-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win32-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.2.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.0.win32-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py2.6-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py2.6-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py2.7-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py2.7-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py3.3-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py3.3-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py3.4-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py3.4-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py3.5-win-amd64.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1-py3.5-win32.egg
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win-amd64-py3.5.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win32-py2.6.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win32-py2.7.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win32-py3.3.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win32-py3.4.exe
+#15 3.278 WARN Skipping file for pillow: Pillow-3.3.1.win32-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py2.6-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py2.6-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py2.7-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py2.7-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.2-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.2-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.3-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.3-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.4-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.4-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.5-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0-py3.5-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py2.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.2.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win-amd64-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win32-py2.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win32-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.2.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.0.win32-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py2.6-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py2.6-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py2.7-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py2.7-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py3.3-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py3.3-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py3.4-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py3.4-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py3.5-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1-py3.5-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py2.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win-amd64-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win32-py2.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win32-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win32-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win32-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.1.win32-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py2.6-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py2.6-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py2.7-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py2.7-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py3.3-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py3.3-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py3.4-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py3.4-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py3.5-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2-py3.5-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py2.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win-amd64-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win32-py2.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win32-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win32-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win32-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-3.4.2.win32-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py2.7-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py2.7-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.3-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.3-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.4-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.4-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.5-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.5-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.6-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0-py3.6-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win-amd64-py3.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win32-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.0.0.win32-py3.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py2.7-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py2.7-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.3-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.3-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.4-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.4-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.5-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.5-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.6-win-amd64.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0-py3.6-win32.egg
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win-amd64-py3.6.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win32-py2.7.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.3.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.4.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.5.exe
+#15 3.279 WARN Skipping file for pillow: Pillow-4.1.0.win32-py3.6.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py2.7-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py2.7-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.3-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.3-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.4-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.4-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.5-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.5-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.6-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1-py3.6-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py2.7.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.3.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.4.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.5.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win-amd64-py3.6.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win32-py2.7.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.3.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.4.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.5.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.1.1.win32-py3.6.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py2.7-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py2.7-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.3-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.3-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.4-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.4-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.5-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.5-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.6-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0-py3.6-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py2.7.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.3.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.4.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.5.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win-amd64-py3.6.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win32-py2.7.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.3.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.4.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.5.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.0.win32-py3.6.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py2.7-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py2.7-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.3-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.3-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.4-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.4-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.5-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.5-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.6-win-amd64.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1-py3.6-win32.egg
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py2.7.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.3.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.4.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.5.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win-amd64-py3.6.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win32-py2.7.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.3.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.4.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.5.exe
+#15 3.280 WARN Skipping file for pillow: Pillow-4.2.1.win32-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py2.7-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py2.7-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.3-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.3-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.4-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.4-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.5-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.5-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.6-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0-py3.6-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.3.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win-amd64-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win32-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.3.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-4.3.0.win32-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py2.7-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py2.7-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py3.4-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py3.4-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py3.5-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py3.5-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py3.6-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0-py3.6-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win-amd64-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win32-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win32-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win32-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.0.0.win32-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py2.7-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py2.7-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py3.4-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py3.4-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py3.5-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py3.5-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py3.6-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0-py3.6-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win-amd64-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win32-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win32-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win32-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.1.0.win32-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py2.7-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py2.7-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.4-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.4-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.5-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.5-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.6-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.6-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.7-win-amd64.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0-py3.7-win32.egg
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win-amd64-py3.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win32-py2.7.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.4.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.5.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.6.exe
+#15 3.281 WARN Skipping file for pillow: Pillow-5.2.0.win32-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py2.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py2.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.4-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.4-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.5-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.5-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.6-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.6-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0-py3.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.4.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win-amd64-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win32-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.4.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.3.0.win32-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py2.7-macosx-10.13-x86_64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py2.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py2.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.4-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.4-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.5-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.5-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.6-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.6-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0-py3.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.dev0-py3.7-macosx-10.13-x86_64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.4.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win-amd64-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win32-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.4.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.0.win32-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py2.7-macosx-10.13-x86_64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py2.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py2.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.4-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.4-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.5-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.5-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.6-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.6-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1-py3.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.4.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win-amd64-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win32-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.4.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-5.4.1.win32-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py2.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py2.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py3.5-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py3.5-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py3.6-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py3.6-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py3.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0-py3.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win-amd64-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win32-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win32-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win32-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.0.0.win32-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py2.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py2.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.5-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.5-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.6-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.6-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.7-macosx-10.14-x86_64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.7-win-amd64.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0-py3.7-win32.egg
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win-amd64-py3.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win32-py2.7.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win32-py3.5.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win32-py3.6.exe
+#15 3.283 WARN Skipping file for pillow: Pillow-6.1.0.win32-py3.7.exe
+#15 3.284 WARN Skipping file for pillow: Pillow-7.1.0-py3.8-macosx-10.9-x86_64.egg
+#15 3.284 WARN Skipping file for pillow: Pillow-7.1.1-py3.8-macosx-10.9-x86_64.egg
+#15 3.284 WARN Skipping file for pillow: Pillow-7.1.2-py3.8-macosx-10.9-x86_64.egg
+#15 3.299 TRACE cached request https://files.pythonhosted.org/packages/96/13/748b7f7239893ff0796de11074b0ad8aa4c3da2d9f4d79a128b0b16147f3/fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.299 TRACE cached request https://pypi.org/simple/defusedxml/ is storable because its response has a 'public' cache-control directive
+#15 3.300 TRACE Received package metadata for: pillow
+#15 3.300 TRACE Received package metadata for: defusedxml
+#15 3.300 TRACE Selecting candidate for pillow with range ==10.4.0 with 97 remote versions
+#15 3.300 TRACE found candidate for package PackageName(&quot;pillow&quot;) with range Range { segments: [(Included(&quot;10.4.0&quot;), Included(&quot;10.4.0&quot;))] } after 1 steps: &quot;10.4.0&quot; version
+#15 3.300 TRACE Selecting candidate for defusedxml with range ==0.7.1 with 13 remote versions
+#15 3.300 TRACE found candidate for package PackageName(&quot;defusedxml&quot;) with range Range { segments: [(Included(&quot;0.7.1&quot;), Included(&quot;0.7.1&quot;))] } after 1 steps: &quot;0.7.1&quot; version
+#15 3.300 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/pillow/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.msgpack
+#15 3.300 DEBUG No cache entry for: https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata
+#15 3.300 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata
+#15 3.300 TRACE Handling request for https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata
+#15 3.300 TRACE Request for https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata is unauthenticated, checking cache
+#15 3.300 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata
+#15 3.300 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata
+#15 3.300 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/defusedxml/defusedxml-0.7.1-py2.py3-none-any.msgpack
+#15 3.300 DEBUG No cache entry for: https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 3.300 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 3.300 TRACE Handling request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 3.300 TRACE Request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.300 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 3.300 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 3.301 TRACE cached request https://pypi.org/simple/mdurl/ is storable because its response has a 'public' cache-control directive
+#15 3.301 TRACE cached request https://pypi.org/simple/et-xmlfile/ is storable because its response has a 'public' cache-control directive
+#15 3.301 TRACE cached request https://pypi.org/simple/cffi/ is storable because its response has a 'public' cache-control directive
+#15 3.301 TRACE Received package metadata for: mdurl
+#15 3.301 TRACE Received package metadata for: et-xmlfile
+#15 3.302 TRACE Selecting candidate for mdurl with range ==0.1.2 with 4 remote versions
+#15 3.302 TRACE found candidate for package PackageName(&quot;mdurl&quot;) with range Range { segments: [(Included(&quot;0.1.2&quot;), Included(&quot;0.1.2&quot;))] } after 1 steps: &quot;0.1.2&quot; version
+#15 3.302 TRACE Selecting candidate for et-xmlfile with range ==1.1.0 with 3 remote versions
+#15 3.302 TRACE found candidate for package PackageName(&quot;et-xmlfile&quot;) with range Range { segments: [(Included(&quot;1.1.0&quot;), Included(&quot;1.1.0&quot;))] } after 1 steps: &quot;1.1.0&quot; version
+#15 3.302 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/mdurl/mdurl-0.1.2-py3-none-any.msgpack
+#15 3.302 DEBUG No cache entry for: https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 3.302 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 3.302 TRACE Handling request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 3.302 TRACE Request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.302 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 3.302 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 3.302 TRACE No cache entry exists for /tmp/.tmpqJKjec/wheels-v2/pypi/et-xmlfile/et_xmlfile-1.1.0-py3-none-any.msgpack
+#15 3.302 DEBUG No cache entry for: https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 3.302 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 3.302 TRACE Handling request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 3.302 TRACE Request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 3.302 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 3.302 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 3.304 TRACE Received built distribution metadata for: fonttools==4.54.1
+#15 3.305 DEBUG Searching for a compatible version of kiwisolver (==1.4.7)
+#15 3.305 TRACE Selecting candidate for kiwisolver with range ==1.4.7 with 19 remote versions
+#15 3.305 TRACE found candidate for package PackageName(&quot;kiwisolver&quot;) with range Range { segments: [(Included(&quot;1.4.7&quot;), Included(&quot;1.4.7&quot;))] } after 1 steps: &quot;1.4.7&quot; version
+#15 3.305 DEBUG Selecting: kiwisolver==1.4.7 [compatible] (kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 3.305 DEBUG Searching for a compatible version of pillow (==10.4.0)
+#15 3.305 TRACE Selecting candidate for pillow with range ==10.4.0 with 97 remote versions
+#15 3.305 TRACE found candidate for package PackageName(&quot;pillow&quot;) with range Range { segments: [(Included(&quot;10.4.0&quot;), Included(&quot;10.4.0&quot;))] } after 1 steps: &quot;10.4.0&quot; version
+#15 3.305 DEBUG Selecting: pillow==10.4.0 [compatible] (pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl)
+#15 3.305 TRACE cached request https://pypi.org/simple/llvmlite/ is storable because its response has a 'public' cache-control directive
+#15 3.306 TRACE cached request https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.307 TRACE Received built distribution metadata for: pillow==10.4.0
+#15 3.307 TRACE skipping typing-extensions ; python_full_version &lt; '3.10' and extra == 'typing' because of Requires-Python: &gt;=3.11.10
+#15 3.307 DEBUG Searching for a compatible version of pyparsing (==3.1.4)
+#15 3.307 TRACE cached request https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.307 TRACE Selecting candidate for pyparsing with range ==3.1.4 with 75 remote versions
+#15 3.307 TRACE found candidate for package PackageName(&quot;pyparsing&quot;) with range Range { segments: [(Included(&quot;3.1.4&quot;), Included(&quot;3.1.4&quot;))] } after 1 steps: &quot;3.1.4&quot; version
+#15 3.307 DEBUG Selecting: pyparsing==3.1.4 [compatible] (pyparsing-3.1.4-py3-none-any.whl)
+#15 3.307 DEBUG Searching for a compatible version of defusedxml (==0.7.1)
+#15 3.307 TRACE Selecting candidate for defusedxml with range ==0.7.1 with 13 remote versions
+#15 3.307 TRACE found candidate for package PackageName(&quot;defusedxml&quot;) with range Range { segments: [(Included(&quot;0.7.1&quot;), Included(&quot;0.7.1&quot;))] } after 1 steps: &quot;0.7.1&quot; version
+#15 3.307 DEBUG Selecting: defusedxml==0.7.1 [compatible] (defusedxml-0.7.1-py2.py3-none-any.whl)
+#15 3.307 TRACE Received built distribution metadata for: mdurl==0.1.2
+#15 3.308 TRACE cached request https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.309 TRACE cached request https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 3.309 TRACE Received built distribution metadata for: et-xmlfile==1.1.0
+#15 3.311 DEBUG Released lock at `/home/backoffice/.venv/.lock`
+#15 3.324 error: Failed to download `defusedxml==0.7.1`
+#15 3.324   Caused by: request or response body error
+#15 3.324   Caused by: error reading a body from connection
+#15 3.324   Caused by: Connection reset by peer (os error 104)
+#15 ERROR: executor failed running [/bin/sh -c uv pip install     --no-progress     -r /requirements.txt     -c /constraints.txt]: runc did not terminate sucessfully
+</code></pre>
+</details>
+
+</summary>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8444.html">astral-sh/uv#8444</a> on 2024-10-22 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-10-22 12:12</div>
+            <div class="timeline-body"><p>I am following this with keen eyes. Thanks for the efforts here @konstin and also @notatallshaw for providing quick feedback.</p>
+<blockquote>
+<p>an explicit source with a URL attached ....  guarantees that we get the URL that failed, and helps identifying the responsible code path.</p>
+</blockquote>
+<p>music to my ears :musical_note:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-10-30 14:46</div>
+            <div class="timeline-body"><p>Another one from within GitHub Actions CI:</p>
+<pre><code>2024-10-30T13:03:46.1241709Z Resolved 308 packages in 1ms
+2024-10-30T13:03:48.9208986Z error: Failed to prepare distributions
+2024-10-30T13:03:48.9210096Z   Caused by: Failed to download and build `coverage==6.3`
+2024-10-30T13:03:48.9210805Z   Caused by: Failed to extract archive
+2024-10-30T13:03:48.9212700Z   Caused by: failed to unpack `/home/runner/_work/_temp/setup-uv-cache/sdists-v5/.tmpz4MN4L/coverage-6.3/tests/test_misc.py`
+2024-10-30T13:03:48.9214805Z   Caused by: failed to unpack `coverage-6.3/tests/test_misc.py` into `/home/runner/_work/_temp/setup-uv-cache/sdists-v5/.tmpz4MN4L/coverage-6.3/tests/test_misc.py`
+2024-10-30T13:03:48.9216122Z   Caused by: error decoding response body
+2024-10-30T13:03:48.9216690Z   Caused by: request or response body error
+2024-10-30T13:03:48.9217275Z   Caused by: error reading a body from connection
+2024-10-30T13:03:48.9217925Z   Caused by: stream closed because of a broken pipe
+2024-10-30T13:03:48.9255280Z ##[error]Process completed with exit code 2.
+</code></pre>
+<p>This was <code>uv sync --locked</code> with <code>0.4.28</code>.</p>
+<p>Instead of <code>Connection reset by peer (os error 104)</code> here we instead see <code>stream closed because of a broken pipe</code>. This is just another variant of a transport error. Transient. A little bit of retrying would have auto-healed this in all likelihood.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-30 15:12</div>
+            <div class="timeline-body"><p>This week my company made a change to their network security stack meaning I am unlikely to be able to reproduce this error again. So apologies, I see there was an additional PR that landed that gives more info but I am not likely going to be able to trigger it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-11-13 14:17</div>
+            <div class="timeline-body"><p>@konstin @charliermarsh I'd love to help here, retrying around transient errors is a passion of mine but I have no Rust experience. Meh.</p>
+<p>What do we think about prioritizing this relative to other things?</p>
+<p>We keep seeing this in CI every now and then. Of course, an outer retrying watchdog thingy can always do the trick, but now that <code>uv</code> is still so young it would be cool to show to the world that we take &quot;best-best-best-effort retrying&quot; serious :-) :heart:</p>
+<p>Thanks again for all the great work you're doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-11-18 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>meaning I am unlikely to be able to reproduce this error again</p>
+</blockquote>
+<p>I spoke too soon, here is an error I got today where I am testing migrating our build system to use uv (and fortunately I am leaving trace logs on until I think we are ready):</p>
+<summary>
+
+<p>Trace output log from a <code>uv pip install</code> command:</p>
+<details>
+
+<pre><code>#15 1.972 DEBUG Adding transitive dependency for odfpy==1.4.1: defusedxml*
+#15 1.972 DEBUG Adding transitive dependency for odfpy==1.4.1: defusedxml==0.7.1
+#15 1.972 TRACE Fetching metadata for defusedxml from https://pypi.org/simple/defusedxml/
+#15 1.972 DEBUG Searching for a compatible version of openpyxl (==3.1.5)
+#15 1.972 TRACE No cache entry exists for /tmp/.tmpkPoPTP/simple-v13/pypi/defusedxml.rkyv
+#15 1.972 DEBUG No cache entry for: https://pypi.org/simple/defusedxml/
+#15 1.972 TRACE Sending fresh GET request for https://pypi.org/simple/defusedxml/
+#15 1.972 TRACE Selecting candidate for openpyxl with range ==3.1.5 with 96 remote versions
+#15 1.972 TRACE Handling request for https://pypi.org/simple/defusedxml/
+#15 1.972 TRACE Request for https://pypi.org/simple/defusedxml/ is unauthenticated, checking cache
+#15 1.972 TRACE No credentials in cache for URL https://pypi.org/simple/defusedxml/
+#15 1.972 TRACE Attempting unauthenticated request for https://pypi.org/simple/defusedxml/
+#15 1.972 TRACE found candidate for package PackageName(&quot;openpyxl&quot;) with range Range { segments: [(Included(&quot;3.1.5&quot;), Included(&quot;3.1.5&quot;))] } after 1 steps: &quot;3.1.5&quot; version
+#15 1.972 DEBUG Selecting: openpyxl==3.1.5 [compatible] (openpyxl-3.1.5-py2.py3-none-any.whl)
+#15 1.972 DEBUG Adding transitive dependency for openpyxl==3.1.5: et-xmlfile*
+#15 1.972 DEBUG Adding transitive dependency for openpyxl==3.1.5: et-xmlfile==1.1.0
+#15 1.972 TRACE Fetching metadata for et-xmlfile from https://pypi.org/simple/et-xmlfile/
+#15 1.972 TRACE No cache entry exists for /tmp/.tmpkPoPTP/simple-v13/pypi/et-xmlfile.rkyv
+#15 1.972 DEBUG No cache entry for: https://pypi.org/simple/et-xmlfile/
+#15 1.972 TRACE Sending fresh GET request for https://pypi.org/simple/et-xmlfile/
+#15 1.972 TRACE Handling request for https://pypi.org/simple/et-xmlfile/
+#15 1.972 TRACE Request for https://pypi.org/simple/et-xmlfile/ is unauthenticated, checking cache
+#15 1.972 TRACE No credentials in cache for URL https://pypi.org/simple/et-xmlfile/
+#15 1.972 TRACE Attempting unauthenticated request for https://pypi.org/simple/et-xmlfile/
+#15 1.972 DEBUG Searching for a compatible version of pyxlsb (==1.0.10)
+#15 1.973 TRACE Selecting candidate for pyxlsb with range ==1.0.10 with 10 remote versions
+#15 1.973 TRACE found candidate for package PackageName(&quot;pyxlsb&quot;) with range Range { segments: [(Included(&quot;1.0.10&quot;), Included(&quot;1.0.10&quot;))] } after 1 steps: &quot;1.0.10&quot; version
+#15 1.973 DEBUG Selecting: pyxlsb==1.0.10 [compatible] (pyxlsb-1.0.10-py2.py3-none-any.whl)
+#15 1.973 DEBUG Searching for a compatible version of xlrd (==2.0.1)
+#15 1.973 TRACE Selecting candidate for xlrd with range ==2.0.1 with 24 remote versions
+#15 1.973 TRACE found candidate for package PackageName(&quot;xlrd&quot;) with range Range { segments: [(Included(&quot;2.0.1&quot;), Included(&quot;2.0.1&quot;))] } after 1 steps: &quot;2.0.1&quot; version
+#15 1.973 DEBUG Selecting: xlrd==2.0.1 [compatible] (xlrd-2.0.1-py2.py3-none-any.whl)
+#15 1.973 DEBUG Searching for a compatible version of numpy (==1.26.4)
+#15 1.973 TRACE Selecting candidate for numpy with range ==1.26.4 with 112 remote versions
+#15 1.973 TRACE found candidate for package PackageName(&quot;numpy&quot;) with range Range { segments: [(Included(&quot;1.26.4&quot;), Included(&quot;1.26.4&quot;))] } after 1 steps: &quot;1.26.4&quot; version
+#15 1.973 DEBUG Selecting: numpy==1.26.4 [compatible] (numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.973 DEBUG Searching for a compatible version of numpy{python_full_version == '3.11.*'} (==1.26.4)
+#15 1.973 TRACE Selecting candidate for numpy with range ==1.26.4 with 112 remote versions
+#15 1.973 TRACE found candidate for package PackageName(&quot;numpy&quot;) with range Range { segments: [(Included(&quot;1.26.4&quot;), Included(&quot;1.26.4&quot;))] } after 1 steps: &quot;1.26.4&quot; version
+#15 1.973 DEBUG Selecting: numpy==1.26.4 [compatible] (numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.973 DEBUG Adding transitive dependency for numpy==1.26.4: numpy==1.26.4
+#15 1.973 DEBUG Adding transitive dependency for numpy==1.26.4: numpy{python_full_version == '3.11.*'}==1.26.4
+#15 1.973 DEBUG Searching for a compatible version of numpy{python_full_version == '3.11.*'} (==1.26.4)
+#15 1.973 TRACE Selecting candidate for numpy with range ==1.26.4 with 112 remote versions
+#15 1.973 TRACE found candidate for package PackageName(&quot;numpy&quot;) with range Range { segments: [(Included(&quot;1.26.4&quot;), Included(&quot;1.26.4&quot;))] } after 1 steps: &quot;1.26.4&quot; version
+#15 1.973 DEBUG Selecting: numpy==1.26.4 [compatible] (numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.974 DEBUG Searching for a compatible version of python-dateutil (==2.9.0.post0)
+#15 1.974 TRACE Selecting candidate for python-dateutil with range ==2.9.0.post0 with 27 remote versions
+#15 1.974 TRACE found candidate for package PackageName(&quot;python-dateutil&quot;) with range Range { segments: [(Included(&quot;2.9.0.post0&quot;), Included(&quot;2.9.0.post0&quot;))] } after 1 steps: &quot;2.9.0.post0&quot; version
+#15 1.974 DEBUG Selecting: python-dateutil==2.9.0.post0 [compatible] (python_dateutil-2.9.0.post0-py2.py3-none-any.whl)
+#15 1.974 DEBUG Adding transitive dependency for python-dateutil==2.9.0.post0: six&gt;=1.5
+#15 1.974 DEBUG Adding transitive dependency for python-dateutil==2.9.0.post0: six==1.16.0
+#15 1.974 DEBUG Searching for a compatible version of pytz (==2024.2)
+#15 1.974 TRACE Selecting candidate for pytz with range ==2024.2 with 71 remote versions
+#15 1.974 TRACE found candidate for package PackageName(&quot;pytz&quot;) with range Range { segments: [(Included(&quot;2024.2&quot;), Included(&quot;2024.2&quot;))] } after 1 steps: &quot;2024.2&quot; version
+#15 1.974 DEBUG Selecting: pytz==2024.2 [compatible] (pytz-2024.2-py2.py3-none-any.whl)
+#15 1.974 DEBUG Searching for a compatible version of tzdata (==2024.2)
+#15 1.974 TRACE Selecting candidate for tzdata with range ==2024.2 with 30 remote versions
+#15 1.974 TRACE found candidate for package PackageName(&quot;tzdata&quot;) with range Range { segments: [(Included(&quot;2024.2&quot;), Included(&quot;2024.2&quot;))] } after 1 steps: &quot;2024.2&quot; version
+#15 1.974 DEBUG Selecting: tzdata==2024.2 [compatible] (tzdata-2024.2-py2.py3-none-any.whl)
+#15 1.974 DEBUG Searching for a compatible version of bottleneck (==1.4.0)
+#15 1.974 TRACE Selecting candidate for bottleneck with range ==1.4.0 with 44 remote versions
+#15 1.974 TRACE found candidate for package PackageName(&quot;bottleneck&quot;) with range Range { segments: [(Included(&quot;1.4.0&quot;), Included(&quot;1.4.0&quot;))] } after 1 steps: &quot;1.4.0&quot; version
+#15 1.974 DEBUG Selecting: bottleneck==1.4.0 [compatible] (Bottleneck-1.4.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.974 DEBUG Adding transitive dependency for bottleneck==1.4.0: numpy*
+#15 1.974 DEBUG Adding transitive dependency for bottleneck==1.4.0: numpy==1.26.4
+#15 1.974 DEBUG Searching for a compatible version of numba (==0.60.0)
+#15 1.974 TRACE Selecting candidate for numba with range ==0.60.0 with 113 remote versions
+#15 1.974 TRACE found candidate for package PackageName(&quot;numba&quot;) with range Range { segments: [(Included(&quot;0.60.0&quot;), Included(&quot;0.60.0&quot;))] } after 1 steps: &quot;0.60.0&quot; version
+#15 1.974 DEBUG Selecting: numba==0.60.0 [compatible] (numba-0.60.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl)
+#15 1.974 DEBUG Adding transitive dependency for numba==0.60.0: llvmlite&gt;=0.43.0.dev0, &lt;0.44
+#15 1.974 DEBUG Adding transitive dependency for numba==0.60.0: llvmlite==0.43.0
+#15 1.974 DEBUG Adding transitive dependency for numba==0.60.0: numpy&gt;=1.22, &lt;2.1
+#15 1.974 DEBUG Adding transitive dependency for numba==0.60.0: numpy==1.26.4
+#15 1.974 DEBUG Searching for a compatible version of numexpr (==2.10.1)
+#15 1.974 TRACE Selecting candidate for numexpr with range ==2.10.1 with 51 remote versions
+#15 1.974 TRACE found candidate for package PackageName(&quot;numexpr&quot;) with range Range { segments: [(Included(&quot;2.10.1&quot;), Included(&quot;2.10.1&quot;))] } after 1 steps: &quot;2.10.1&quot; version
+#15 1.974 DEBUG Selecting: numexpr==2.10.1 [compatible] (numexpr-2.10.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl)
+#15 1.974 TRACE Fetching metadata for llvmlite from https://pypi.org/simple/llvmlite/
+#15 1.974 DEBUG Adding transitive dependency for numexpr==2.10.1: numpy&gt;=1.23.0
+#15 1.974 DEBUG Adding transitive dependency for numexpr==2.10.1: numpy==1.26.4
+#15 1.974 TRACE No cache entry exists for /tmp/.tmpkPoPTP/simple-v13/pypi/llvmlite.rkyv
+#15 1.974 DEBUG No cache entry for: https://pypi.org/simple/llvmlite/
+#15 1.974 TRACE Sending fresh GET request for https://pypi.org/simple/llvmlite/
+#15 1.974 TRACE Handling request for https://pypi.org/simple/llvmlite/
+#15 1.974 TRACE Request for https://pypi.org/simple/llvmlite/ is unauthenticated, checking cache
+#15 1.974 TRACE No credentials in cache for URL https://pypi.org/simple/llvmlite/
+#15 1.974 TRACE Attempting unauthenticated request for https://pypi.org/simple/llvmlite/
+#15 1.975 DEBUG Searching for a compatible version of greenlet{(python_full_version &gt;= '3' and platform_machine == 'AMD64') or (python_full_version &gt;= '3' and platform_machine == 'WIN32') or (python_full_version &gt;= '3' and platform_machine == 'aarch64') or (python_full_version &gt;= '3' and platform_machine == 'amd64') or (python_full_version &gt;= '3' and platform_machine == 'ppc64le') or (python_full_version &gt;= '3' and platform_machine == 'win32') or (python_full_version &gt;= '3' and platform_machine == 'x86_64')} (==3.1.1)
+#15 1.975 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 1.975 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 1.975 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl)
+#15 1.975 DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet==3.1.1
+#15 1.975 DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet{(python_full_version &gt;= '3' and platform_machine == 'AMD64') or (python_full_version &gt;= '3' and platform_machine == 'WIN32') or (python_full_version &gt;= '3' and platform_machine == 'aarch64') or (python_full_version &gt;= '3' and platform_machine == 'amd64') or (python_full_version &gt;= '3' and platform_machine == 'ppc64le') or (python_full_version &gt;= '3' and platform_machine == 'win32') or (python_full_version &gt;= '3' and platform_machine == 'x86_64')}==3.1.1
+#15 1.975 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 1.976 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 1.976 TRACE No cache entry exists for /tmp/.tmpkPoPTP/wheels-v2/pypi/greenlet/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.msgpack
+#15 1.976 DEBUG No cache entry for: https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 1.976 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 1.976 TRACE Handling request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 1.976 TRACE Request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata is unauthenticated, checking cache
+#15 1.976 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 1.976 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+#15 1.976 DEBUG Searching for a compatible version of greenlet{(python_full_version &gt;= '3' and platform_machine == 'AMD64') or (python_full_version &gt;= '3' and platform_machine == 'WIN32') or (python_full_version &gt;= '3' and platform_machine == 'aarch64') or (python_full_version &gt;= '3' and platform_machine == 'amd64') or (python_full_version &gt;= '3' and platform_machine == 'ppc64le') or (python_full_version &gt;= '3' and platform_machine == 'win32') or (python_full_version &gt;= '3' and platform_machine == 'x86_64')} (==3.1.1)
+#15 1.976 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 1.976 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 1.976 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl)
+#15 1.983 TRACE cached request https://files.pythonhosted.org/packages/f7/4b/1c9695aa24f808e156c8f4813f685d975ca73c000c2a5056c514c64980f6/greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 1.983 TRACE Received built distribution metadata for: greenlet==3.1.1
+#15 1.983 DEBUG Searching for a compatible version of greenlet (==3.1.1)
+#15 1.983 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
+#15 1.983 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Range { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
+#15 1.984 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl)
+#15 1.984 DEBUG Searching for a compatible version of pytzdata (==2020.1)
+#15 1.984 TRACE Selecting candidate for pytzdata with range ==2020.1 with 22 remote versions
+#15 1.984 TRACE found candidate for package PackageName(&quot;pytzdata&quot;) with range Range { segments: [(Included(&quot;2020.1&quot;), Included(&quot;2020.1&quot;))] } after 1 steps: &quot;2020.1&quot; version
+#15 1.984 DEBUG Selecting: pytzdata==2020.1 [compatible] (pytzdata-2020.1-py2.py3-none-any.whl)
+#15 1.984 DEBUG Searching for a compatible version of pyhcl (==0.4.5)
+#15 1.984 TRACE Selecting candidate for pyhcl with range ==0.4.5 with 40 remote versions
+#15 1.984 TRACE found candidate for package PackageName(&quot;pyhcl&quot;) with range Range { segments: [(Included(&quot;0.4.5&quot;), Included(&quot;0.4.5&quot;))] } after 1 steps: &quot;0.4.5&quot; version
+#15 1.984 DEBUG Selecting: pyhcl==0.4.5 [compatible] (pyhcl-0.4.5-py3-none-any.whl)
+#15 1.984 DEBUG Searching for a compatible version of soupsieve (==2.6)
+#15 1.984 TRACE Selecting candidate for soupsieve with range ==2.6 with 46 remote versions
+#15 1.984 TRACE found candidate for package PackageName(&quot;soupsieve&quot;) with range Range { segments: [(Included(&quot;2.6&quot;), Included(&quot;2.6&quot;))] } after 1 steps: &quot;2.6&quot; version
+#15 1.984 DEBUG Selecting: soupsieve==2.6 [compatible] (soupsieve-2.6-py3-none-any.whl)
+#15 1.984 DEBUG Searching for a compatible version of cryptography (==43.0.1)
+#15 1.984 TRACE Selecting candidate for cryptography with range ==43.0.1 with 133 remote versions
+#15 1.984 TRACE found candidate for package PackageName(&quot;cryptography&quot;) with range Range { segments: [(Included(&quot;43.0.1&quot;), Included(&quot;43.0.1&quot;))] } after 1 steps: &quot;43.0.1&quot; version
+#15 1.984 DEBUG Selecting: cryptography==43.0.1 [compatible] (cryptography-43.0.1-cp39-abi3-manylinux_2_28_x86_64.whl)
+#15 1.984 DEBUG Adding transitive dependency for cryptography==43.0.1: cffi{platform_python_implementation != 'PyPy'}&gt;=1.12
+#15 1.984 DEBUG Adding transitive dependency for cryptography==43.0.1: cffi{platform_python_implementation != 'PyPy'}==1.17.1
+#15 1.984 DEBUG Searching for a compatible version of charset-normalizer (==3.3.2)
+#15 1.984 TRACE Selecting candidate for charset-normalizer with range ==3.3.2 with 54 remote versions
+#15 1.984 TRACE Fetching metadata for cffi from https://pypi.org/simple/cffi/
+#15 1.984 TRACE found candidate for package PackageName(&quot;charset-normalizer&quot;) with range Range { segments: [(Included(&quot;3.3.2&quot;), Included(&quot;3.3.2&quot;))] } after 1 steps: &quot;3.3.2&quot; version
+#15 1.984 DEBUG Selecting: charset-normalizer==3.3.2 [compatible] (charset_normalizer-3.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.985 TRACE No cache entry exists for /tmp/.tmpkPoPTP/simple-v13/pypi/cffi.rkyv
+#15 1.985 DEBUG No cache entry for: https://pypi.org/simple/cffi/
+#15 1.985 TRACE Sending fresh GET request for https://pypi.org/simple/cffi/
+#15 1.985 TRACE Handling request for https://pypi.org/simple/cffi/
+#15 1.985 TRACE Request for https://pypi.org/simple/cffi/ is unauthenticated, checking cache
+#15 1.985 TRACE No credentials in cache for URL https://pypi.org/simple/cffi/
+#15 1.985 TRACE Attempting unauthenticated request for https://pypi.org/simple/cffi/
+#15 1.985 DEBUG Searching for a compatible version of idna (==3.10)
+#15 1.985 TRACE Selecting candidate for idna with range ==3.10 with 32 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;idna&quot;) with range Range { segments: [(Included(&quot;3.10&quot;), Included(&quot;3.10&quot;))] } after 1 steps: &quot;3.10&quot; version
+#15 1.985 DEBUG Selecting: idna==3.10 [compatible] (idna-3.10-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of urllib3 (==2.2.3)
+#15 1.985 TRACE Selecting candidate for urllib3 with range ==2.2.3 with 96 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;urllib3&quot;) with range Range { segments: [(Included(&quot;2.2.3&quot;), Included(&quot;2.2.3&quot;))] } after 1 steps: &quot;2.2.3&quot; version
+#15 1.985 DEBUG Selecting: urllib3==2.2.3 [compatible] (urllib3-2.2.3-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of certifi (==2024.8.30)
+#15 1.985 TRACE Selecting candidate for certifi with range ==2024.8.30 with 60 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;certifi&quot;) with range Range { segments: [(Included(&quot;2024.8.30&quot;), Included(&quot;2024.8.30&quot;))] } after 1 steps: &quot;2024.8.30&quot; version
+#15 1.985 DEBUG Selecting: certifi==2024.8.30 [compatible] (certifi-2024.8.30-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of joblib (==1.4.2)
+#15 1.985 TRACE Selecting candidate for joblib with range ==1.4.2 with 95 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;joblib&quot;) with range Range { segments: [(Included(&quot;1.4.2&quot;), Included(&quot;1.4.2&quot;))] } after 1 steps: &quot;1.4.2&quot; version
+#15 1.985 DEBUG Selecting: joblib==1.4.2 [compatible] (joblib-1.4.2-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of threadpoolctl (==3.5.0)
+#15 1.985 TRACE Selecting candidate for threadpoolctl with range ==3.5.0 with 11 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;threadpoolctl&quot;) with range Range { segments: [(Included(&quot;3.5.0&quot;), Included(&quot;3.5.0&quot;))] } after 1 steps: &quot;3.5.0&quot; version
+#15 1.985 DEBUG Selecting: threadpoolctl==3.5.0 [compatible] (threadpoolctl-3.5.0-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of markdown-it-py (==3.0.0)
+#15 1.985 TRACE Selecting candidate for markdown-it-py with range ==3.0.0 with 42 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;markdown-it-py&quot;) with range Range { segments: [(Included(&quot;3.0.0&quot;), Included(&quot;3.0.0&quot;))] } after 1 steps: &quot;3.0.0&quot; version
+#15 1.985 DEBUG Selecting: markdown-it-py==3.0.0 [compatible] (markdown_it_py-3.0.0-py3-none-any.whl)
+#15 1.985 DEBUG Adding transitive dependency for markdown-it-py==3.0.0: mdurl&gt;=0.1, &lt;1.dev0
+#15 1.985 DEBUG Adding transitive dependency for markdown-it-py==3.0.0: mdurl==0.1.2
+#15 1.985 DEBUG Searching for a compatible version of pygments (==2.18.0)
+#15 1.985 TRACE Selecting candidate for pygments with range ==2.18.0 with 64 remote versions
+#15 1.985 TRACE Fetching metadata for mdurl from https://pypi.org/simple/mdurl/
+#15 1.985 TRACE found candidate for package PackageName(&quot;pygments&quot;) with range Range { segments: [(Included(&quot;2.18.0&quot;), Included(&quot;2.18.0&quot;))] } after 1 steps: &quot;2.18.0&quot; version
+#15 1.985 DEBUG Selecting: pygments==2.18.0 [compatible] (pygments-2.18.0-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of six (==1.16.0)
+#15 1.985 TRACE Selecting candidate for six with range ==1.16.0 with 28 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;six&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 1 steps: &quot;1.16.0&quot; version
+#15 1.985 TRACE No cache entry exists for /tmp/.tmpkPoPTP/simple-v13/pypi/mdurl.rkyv
+#15 1.985 DEBUG No cache entry for: https://pypi.org/simple/mdurl/
+#15 1.985 TRACE Sending fresh GET request for https://pypi.org/simple/mdurl/
+#15 1.985 DEBUG Selecting: six==1.16.0 [compatible] (six-1.16.0-py2.py3-none-any.whl)
+#15 1.985 TRACE Handling request for https://pypi.org/simple/mdurl/
+#15 1.985 TRACE Request for https://pypi.org/simple/mdurl/ is unauthenticated, checking cache
+#15 1.985 TRACE No credentials in cache for URL https://pypi.org/simple/mdurl/
+#15 1.985 TRACE Attempting unauthenticated request for https://pypi.org/simple/mdurl/
+#15 1.985 DEBUG Searching for a compatible version of webencodings (==0.5.1)
+#15 1.985 TRACE Selecting candidate for webencodings with range ==0.5.1 with 6 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;webencodings&quot;) with range Range { segments: [(Included(&quot;0.5.1&quot;), Included(&quot;0.5.1&quot;))] } after 1 steps: &quot;0.5.1&quot; version
+#15 1.985 DEBUG Selecting: webencodings==0.5.1 [compatible] (webencodings-0.5.1-py2.py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of packaging (==24.1)
+#15 1.985 TRACE Selecting candidate for packaging with range ==24.1 with 46 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;packaging&quot;) with range Range { segments: [(Included(&quot;24.1&quot;), Included(&quot;24.1&quot;))] } after 1 steps: &quot;24.1&quot; version
+#15 1.985 DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
+#15 1.985 DEBUG Searching for a compatible version of markupsafe (==2.1.5)
+#15 1.985 TRACE Selecting candidate for markupsafe with range ==2.1.5 with 34 remote versions
+#15 1.985 TRACE found candidate for package PackageName(&quot;markupsafe&quot;) with range Range { segments: [(Included(&quot;2.1.5&quot;), Included(&quot;2.1.5&quot;))] } after 1 steps: &quot;2.1.5&quot; version
+#15 1.985 DEBUG Selecting: markupsafe==2.1.5 [compatible] (MarkupSafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.986 DEBUG Searching for a compatible version of contourpy (==1.3.0)
+#15 1.986 TRACE Selecting candidate for contourpy with range ==1.3.0 with 21 remote versions
+#15 1.986 TRACE found candidate for package PackageName(&quot;contourpy&quot;) with range Range { segments: [(Included(&quot;1.3.0&quot;), Included(&quot;1.3.0&quot;))] } after 1 steps: &quot;1.3.0&quot; version
+#15 1.986 DEBUG Selecting: contourpy==1.3.0 [compatible] (contourpy-1.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.986 DEBUG Adding transitive dependency for contourpy==1.3.0: numpy&gt;=1.23
+#15 1.986 DEBUG Adding transitive dependency for contourpy==1.3.0: numpy==1.26.4
+#15 1.986 DEBUG Searching for a compatible version of cycler (==0.12.1)
+#15 1.986 TRACE Selecting candidate for cycler with range ==0.12.1 with 6 remote versions
+#15 1.986 TRACE found candidate for package PackageName(&quot;cycler&quot;) with range Range { segments: [(Included(&quot;0.12.1&quot;), Included(&quot;0.12.1&quot;))] } after 1 steps: &quot;0.12.1&quot; version
+#15 1.986 DEBUG Selecting: cycler==0.12.1 [compatible] (cycler-0.12.1-py3-none-any.whl)
+#15 1.986 DEBUG Searching for a compatible version of fonttools (==4.54.1)
+#15 1.986 TRACE Selecting candidate for fonttools with range ==4.54.1 with 205 remote versions
+#15 1.986 TRACE found candidate for package PackageName(&quot;fonttools&quot;) with range Range { segments: [(Included(&quot;4.54.1&quot;), Included(&quot;4.54.1&quot;))] } after 1 steps: &quot;4.54.1&quot; version
+#15 1.986 DEBUG Selecting: fonttools==4.54.1 [compatible] (fonttools-4.54.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.986 DEBUG Searching for a compatible version of kiwisolver (==1.4.7)
+#15 1.986 TRACE Selecting candidate for kiwisolver with range ==1.4.7 with 19 remote versions
+#15 1.986 TRACE found candidate for package PackageName(&quot;kiwisolver&quot;) with range Range { segments: [(Included(&quot;1.4.7&quot;), Included(&quot;1.4.7&quot;))] } after 1 steps: &quot;1.4.7&quot; version
+#15 1.986 DEBUG Selecting: kiwisolver==1.4.7 [compatible] (kiwisolver-1.4.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#15 1.986 DEBUG Searching for a compatible version of pillow (==10.4.0)
+#15 1.986 TRACE Selecting candidate for pillow with range ==10.4.0 with 97 remote versions
+#15 1.986 TRACE found candidate for package PackageName(&quot;pillow&quot;) with range Range { segments: [(Included(&quot;10.4.0&quot;), Included(&quot;10.4.0&quot;))] } after 1 steps: &quot;10.4.0&quot; version
+#15 1.986 DEBUG Selecting: pillow==10.4.0 [compatible] (pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl)
+#15 1.987 TRACE skipping typing-extensions ; python_full_version &lt; '3.10' and extra == 'typing' because of Requires-Python: &gt;=3.11.10
+#15 1.987 DEBUG Searching for a compatible version of pyparsing (==3.1.4)
+#15 1.987 TRACE Selecting candidate for pyparsing with range ==3.1.4 with 75 remote versions
+#15 1.987 TRACE found candidate for package PackageName(&quot;pyparsing&quot;) with range Range { segments: [(Included(&quot;3.1.4&quot;), Included(&quot;3.1.4&quot;))] } after 1 steps: &quot;3.1.4&quot; version
+#15 1.987 DEBUG Selecting: pyparsing==3.1.4 [compatible] (pyparsing-3.1.4-py3-none-any.whl)
+#15 2.052 TRACE cached request https://pypi.org/simple/cffi/ is storable because its response has a 'public' cache-control directive
+#15 2.053 TRACE cached request https://pypi.org/simple/et-xmlfile/ is storable because its response has a 'public' cache-control directive
+#15 2.054 TRACE Received package metadata for: et-xmlfile
+#15 2.054 TRACE Selecting candidate for et-xmlfile with range ==1.1.0 with 4 remote versions
+#15 2.054 TRACE found candidate for package PackageName(&quot;et-xmlfile&quot;) with range Range { segments: [(Included(&quot;1.1.0&quot;), Included(&quot;1.1.0&quot;))] } after 1 steps: &quot;1.1.0&quot; version
+#15 2.054 TRACE No cache entry exists for /tmp/.tmpkPoPTP/wheels-v2/pypi/et-xmlfile/et_xmlfile-1.1.0-py3-none-any.msgpack
+#15 2.054 DEBUG No cache entry for: https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 2.054 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 2.054 TRACE Handling request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 2.054 TRACE Request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 2.054 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 2.054 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+#15 2.060 TRACE cached request https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 2.060 TRACE Received built distribution metadata for: et-xmlfile==1.1.0
+#15 2.093 TRACE Received package metadata for: cffi
+#15 2.129 TRACE cached request https://pypi.org/simple/mdurl/ is storable because its response has a 'public' cache-control directive
+#15 2.129 TRACE cached request https://pypi.org/simple/defusedxml/ is storable because its response has a 'public' cache-control directive
+#15 2.129 TRACE Received package metadata for: mdurl
+#15 2.129 TRACE Selecting candidate for mdurl with range ==0.1.2 with 4 remote versions
+#15 2.129 TRACE found candidate for package PackageName(&quot;mdurl&quot;) with range Range { segments: [(Included(&quot;0.1.2&quot;), Included(&quot;0.1.2&quot;))] } after 1 steps: &quot;0.1.2&quot; version
+#15 2.130 TRACE No cache entry exists for /tmp/.tmpkPoPTP/wheels-v2/pypi/mdurl/mdurl-0.1.2-py3-none-any.msgpack
+#15 2.130 DEBUG No cache entry for: https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 2.130 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 2.130 TRACE Handling request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 2.130 TRACE Request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 2.130 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 2.130 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+#15 2.130 TRACE Received package metadata for: defusedxml
+#15 2.130 TRACE Selecting candidate for defusedxml with range ==0.7.1 with 13 remote versions
+#15 2.130 DEBUG Searching for a compatible version of defusedxml (==0.7.1)
+#15 2.130 TRACE Selecting candidate for defusedxml with range ==0.7.1 with 13 remote versions
+#15 2.130 TRACE found candidate for package PackageName(&quot;defusedxml&quot;) with range Range { segments: [(Included(&quot;0.7.1&quot;), Included(&quot;0.7.1&quot;))] } after 1 steps: &quot;0.7.1&quot; version
+#15 2.130 TRACE found candidate for package PackageName(&quot;defusedxml&quot;) with range Range { segments: [(Included(&quot;0.7.1&quot;), Included(&quot;0.7.1&quot;))] } after 1 steps: &quot;0.7.1&quot; version
+#15 2.130 DEBUG Selecting: defusedxml==0.7.1 [compatible] (defusedxml-0.7.1-py2.py3-none-any.whl)
+#15 2.130 TRACE No cache entry exists for /tmp/.tmpkPoPTP/wheels-v2/pypi/defusedxml/defusedxml-0.7.1-py2.py3-none-any.msgpack
+#15 2.130 DEBUG No cache entry for: https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 2.130 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 2.130 TRACE Handling request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 2.130 TRACE Request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata is unauthenticated, checking cache
+#15 2.130 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 2.130 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata
+#15 2.131 TRACE cached request https://pypi.org/simple/llvmlite/ is storable because its response has a 'public' cache-control directive
+#15 2.148 TRACE cached request https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 2.148 TRACE cached request https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+#15 2.148 DEBUG Released lock at `/home/backoffice/.venv/.lock`
+#15 2.161 error: Failed to download `defusedxml==0.7.1`
+#15 2.161   Caused by: Failed to fetch: `https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl.metadata`
+#15 2.161   Caused by: request or response body error
+#15 2.161   Caused by: error reading a body from connection
+#15 2.161   Caused by: Connection reset by peer (os error 104)
+</code></pre>
+</details>
+</summary>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:29</div>
+            <div class="timeline-body"><p>Thanks for the verbose logs. We must still be missing a site or two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 17:16</div>
+            <div class="timeline-body"><p>(I'll try to debug today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 20:19</div>
+            <div class="timeline-body"><p>Oh interesting -- that failure is actually in fetching the <em>metadata</em>, not the wheel itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 20:47</div>
+            <div class="timeline-body"><p>I think the issue @notatallshaw-gts is experiencing is that we aren't retrying on body errors when fetching <code>.metadata</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-11-18 20:55</div>
+            <div class="timeline-body"><p>Yes, I think I mentioned it appeared to be the metadata before (https://github.com/astral-sh/uv/issues/3514#issuecomment-2341724943), of course, no idea if others have the same issue, but I'm seeing it on a very popular corporate firewall (Palo Alto).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 21:00</div>
+            <div class="timeline-body"><p>Yeah I have a reproduction, we just don't seem to be retrying those, but it looks like we <em>should</em> be so still trying to understand why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-18 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9213.html">astral-sh/uv#9213</a> on 2024-11-19 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-19 04:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-19 04:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-11-19 10:42</div>
+            <div class="timeline-body"><p>Thank you @charliermarsh!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-11-19 20:20</div>
+            <div class="timeline-body"><p>FYI, I still got an error on 0.5.3  but I was running docker build without <code>--progress=plain</code> 😞, so I only have the last few lines and didn't see if retried or not. I'll open a new issue if I am able to catch it again with more context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9246.html">astral-sh/uv#9246</a> on 2024-11-19 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NVIDIA/gpu-driver-container/issues/347.html">NVIDIA/gpu-driver-container#347</a> on 2025-06-13 08:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:08 UTC
+    </footer>
+</body>
+</html>

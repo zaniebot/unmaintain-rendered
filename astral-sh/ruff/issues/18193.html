@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad splitting of long expressions in function arguments - astral-sh/ruff #18193</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bad splitting of long expressions in function arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18193">#18193</a>
+        opened by <a href="https://github.com/tolomea">@tolomea</a>
+        on 2025-05-19 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tolomea">@tolomea</a> on 2025-05-19 12:39</div>
+            <div class="timeline-body"><p>This</p>
+<pre><code>f(
+    x,
+    a=lambda b, c: &quot;this_is_very_very_very_very_very_very_very_very_very_very_very_long&quot;,
+)
+</code></pre>
+<p>Gets formatted as</p>
+<pre><code>f(
+    x,
+    a=lambda b,
+    c: &quot;this_is_very_very_very_very_very_very_very_very_very_very_very_long&quot;,
+)
+</code></pre>
+<p>and</p>
+<pre><code>f(
+    x,
+    a=&quot;hello&quot; if a else &quot;this_is_very_very_very_very_very_very_very_very_very_very_very_long&quot;,
+)
+</code></pre>
+<p>Gets formatted as</p>
+<pre><code>f(
+    x,
+    a=&quot;hello&quot;
+    if a
+    else &quot;this_is_very_very_very_very_very_very_very_very_very_very_very_long&quot;,
+)
+</code></pre>
+<p>(checked in the playpen)</p>
+<p>I'm not sure how I feel about the splits themselves.
+However the split within the arg is strictly inside the split for the function arguments and so needs parens and an additional indent level.
+For example like this:</p>
+<pre><code>f(
+    x,
+    a=(
+        lambda b,
+        c: &quot;this_is_very_very_very_very_very_very_very_very_very_very_very_long&quot;
+    ),
+)
+</code></pre>
+<p>and</p>
+<pre><code>f(
+    x,
+    a=(
+        &quot;hello&quot;
+        if a
+        else &quot;this_is_very_very_very_very_very_very_very_very_very_very_very_long&quot;
+    ),
+)
+</code></pre>
+<p>FYI: Black had a series of problems like this where different types of split within a split weren't getting indented. Suggesting that maybe a general solution is needed rather than a case by case approach</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-05-19 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-19 13:39</div>
+            <div class="timeline-body"><p>Yes, this requires a general solution and is tracked in https://github.com/astral-sh/ruff/issues/12856 (see the link in that issue to where my minds at)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-19 13:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

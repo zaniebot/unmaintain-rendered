@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improper Caching - failed to unpack - Is a directory - astral-sh/uv #2539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improper Caching - failed to unpack - Is a directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2539">#2539</a>
+        opened by <a href="https://github.com/AiyionPrime">@AiyionPrime</a>
+        on 2024-03-19 09:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AiyionPrime">@AiyionPrime</a> on 2024-03-19 09:40</div>
+            <div class="timeline-body"><p>This one might be a nasty one.
+The problem is not reliably reproducible, yet.</p>
+<p>We've got a jenkins, which runs multiple steps invoking <code>uv pip</code> in <strong>parallel</strong>.
+building the package, running tests (and installling test requirements), building the docs (and install theirs as well).</p>
+<p>They are running in the same workspace and share <code>~/home/jenkins/.cache/uv/</code>.
+Is this form of concurrent access allowed?</p>
+<p>And further:
+If one of the parallel stages fails early the others get <strong>aborted</strong>.
+Might this leave the cache in strange states as well?</p>
+<p>We're hitting several seemingly random problems right now, the most clear of them being:</p>
+<pre><code class="language-bash">lint: install_package&gt; venv/bin/uv pip install --reinstall --no-deps my-project@/home/localuser/jenkins/workspace/my-project-py_PR-655/.tox/.tmp/package/2/my-project-1.1.0rc3.dev2+ge757c45.tar.gz
+
+[35](https://jenkins.somecompany.net/job/my-project-py/job/PR-655/25/pipeline-console/?start-byte=0&amp;selected-node=99#log-35)
+error: Failed to build: my-project @ file:///home/localuser/jenkins/workspace/my-project-py_PR-655/.tox/.tmp/package/2/my-project-1.1.0rc3.dev2+ge757c45.tar.gz
+
+[36](https://jenkins.somecompany.net/job/my-project-py/job/PR-655/25/pipeline-console/?start-byte=0&amp;selected-node=99#log-36)
+  Caused by: Failed to extract archive
+
+[37](https://jenkins.somecompany.net/job/my-project-py/job/PR-655/25/pipeline-console/?start-byte=0&amp;selected-node=99#log-37)
+  Caused by: failed to unpack `/home/jenkins/.cache/uv/built-wheels-v0/.tmpJZqxvB/my-project-1.1.0rc3.dev2+ge757c45/src/my_project/common/sendable_commands/schemas`
+
+[38](https://jenkins.somecompany.net/job/my-project-py/job/PR-655/25/pipeline-console/?start-byte=0&amp;selected-node=99#log-38)
+  Caused by: failed to unpack `my-project-1.1.0rc3.dev2+ge757c45/src/my_project/common/sendable_commands/schemas/` into `/home/jenkins/.cache/uv/built-wheels-v0/.tmpJZqxvB/my-project-1.1.0rc3.dev2+ge757c45/src/my_project/common/sendable_commands/schemas`
+
+[39](https://jenkins.somecompany.net/job/my-project-py/job/PR-655/25/pipeline-console/?start-byte=0&amp;selected-node=99#log-39)
+  Caused by: Is a directory (os error 21)
+
+[40](https://jenkins.somecompany.net/job/my-project-py/job/PR-655/25/pipeline-console/?start-byte=0&amp;selected-node=99#log-40)
+lint: exit 2 (0.09 seconds) /home/localuser/jenkins/workspace/my-project-py_PR-655&gt; venv/bin/uv pip install --reinstall --no-deps my-project@/home/localuser/jenkins/workspace/my-project-py_PR-655/.tox/.tmp/package/2/my-project-1.1.0rc3.dev2+ge757c45.tar.gz pid=1494
+</code></pre>
+<p>We're using <code>tox-uv 1.5.1</code> and and uv 0.1.22`.
+The problem is not new in these versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improper Caching" to "Improper Caching - failed to unpack - Is a directory" by @AiyionPrime on 2024-03-19 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 13:10</div>
+            <div class="timeline-body"><p>Yes, this form of concurrent access should work fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-19 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 13:54</div>
+            <div class="timeline-body"><p>I will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AiyionPrime">@AiyionPrime</a> on 2024-03-19 13:56</div>
+            <div class="timeline-body"><p>Thank you, that's highly appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-19 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 17:26</div>
+            <div class="timeline-body"><p>No prob. The cache is designed to be robust to concurrent access so any errors of this form are a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 23:53</div>
+            <div class="timeline-body"><p>Is it possible for you to try installing <em>just</em> that package? I'm trying to understand if this is in any way specific to the contents of the package. (I assume you can't share it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 23:55</div>
+            <div class="timeline-body"><p>Oh sorry, I misread -- you are installing <em>just</em> that package, got it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 23:57</div>
+            <div class="timeline-body"><p>I honestly might need the package in order to debug this. It could be trimmed down and obfuscated as long as it reproduces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AiyionPrime">@AiyionPrime</a> on 2024-03-21 10:17</div>
+            <div class="timeline-body"><p>This might very well be a fail on our end.
+I'm running a pipeline to verify this, but I think I messed up:
+One of the five things we do in parallel is <code>python -m build .</code> (within a tox step).</p>
+<p>As I learned today, <code>setuptools</code> is not supposed to run in parallel with anything,
+as it builds e.g. sdist parts right within your project folder.
+It creates an intermediate directory e.g. <code>my-project-1.1.0rc3.dev2+ge757c45</code> and copies src and test directories in it.</p>
+<p>It does so for about 140ms and creates a tar from this new folder, puts that into its output directory and deletes its temporary folder afterwords.
+Internally this folder is called <code>base_dir</code> if someone wants to look it up.</p>
+<p>Furthermore this might not only happen upon our explicit build step, but each of the tox steps might do this implicitely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-22 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-03-22 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AiyionPrime">@AiyionPrime</a> on 2024-03-22 12:34</div>
+            <div class="timeline-body"><p>Alright, that appears to have been it.
+Upon entering a <code>tox</code> run (which happens 5 times in parallel for us) <code>tox</code> starts building an sdist to then install and use, unless configured otherwise.
+Building an sdist with <code>setuptools</code> does not happen in the target folder, but in the project root, which these 5 <code>tox</code> incarnations then simultaneously use to build a directory to then compress into the output dir.</p>
+<p>Each of the 5 <code>tox run</code> creates a directory to copy source and test files into.
+If this happens at the same time (which <code>uv</code> seems to abet by reliable speed) the folder creations collide with the above error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AiyionPrime">@AiyionPrime</a> on 2024-03-22 12:35</div>
+            <div class="timeline-body"><p>This is not a bug in <code>uv</code>, not in <code>tox-uv</code> either, but something that should be fixed in setuptools, imho.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 13:50</div>
+            <div class="timeline-body"><p>Thanks so much for following up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-22 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AiyionPrime">@AiyionPrime</a> on 2024-03-22 15:35</div>
+            <div class="timeline-body"><p>Thanks for your fast responses :)
+This project looks really nice, we're looking forward to use it in more of our repos.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

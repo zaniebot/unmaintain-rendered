@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strangeness with implicit string concatenation, f-strings, and rules F541, RUF027 - astral-sh/ruff #11357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strangeness with implicit string concatenation, f-strings, and rules F541, RUF027</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11357">#11357</a>
+        opened by <a href="https://github.com/dougthor42">@dougthor42</a>
+        on 2024-05-10 03:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dougthor42">@dougthor42</a> on 2024-05-10 03:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Seems like <a href="https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/">f-string-missing-placeholders (F541)</a> and <a href="https://docs.astral.sh/ruff/rules/missing-f-string-syntax/">missing-f-string-syntax (RUF027)</a> don't play nicely with implicit string concatenation.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.4.4
+$ python --version
+Python 3.8.13
+</code></pre>
+<h2>Examples:</h2>
+<p>Commands used:</p>
+<pre><code class="language-console">$ ruff check --select F541 --preview --isolated ruff_bug.py
+$ ruff check --select RUF027 --preview --isolated ruff_bug.py
+</code></pre>
+<table>
+<tr>
+<th>Code</th>
+<th>Expected F541</th>
+<th>Actual F541</th>
+<th>Expected RUF027</th>
+<th>Actual RUF027</th>
+</tr>
+
+<tr>
+<td>
+
+<pre><code class="language-python"># ruff_bug.py
+a = &quot;hello&quot;
+print(
+    f&quot;some text here&quot;
+    f&quot; bar {a}.&quot;
+    f&quot; {a}&quot;
+)
+</code></pre>
+</td>
+<td>Error on line 4</td>
+<td><code>All checks passed!</code></td>
+<td><code>All checks passed!</code></td>
+<td><code>All checks passed!</code></td>
+</tr>
+
+<tr>
+<td>
+
+<pre><code class="language-python"># ruff_bug.py
+a = &quot;hello&quot;
+print(
+    f&quot;some text here&quot;
+    f&quot; bar {a}.&quot;
+    &quot; {a}&quot;
+)
+</code></pre>
+</td>
+<td>Error on line 4</td>
+<td><code>All checks passed!</code></td>
+<td>Error on line 6</td>
+<td><code>All checks passed!</code></td>
+</tr>
+
+<tr>
+<td>
+
+<pre><code class="language-python"># ruff_bug.py
+a = &quot;hello&quot;
+print(
+    &quot;some text here&quot;
+    f&quot; bar {a}.&quot;
+    &quot; {a}&quot;
+)
+</code></pre>
+</td>
+<td><code>All checks passed!</code></td>
+<td><code>All checks passed!</code></td>
+<td>Error on line 6</td>
+<td><code>All checks passed!</code></td>
+</tr>
+
+<tr>
+<td>
+
+<pre><code class="language-python"># ruff_bug.py
+a = &quot;hello&quot;
+print(
+    f&quot;some text here&quot;
+    &quot; bar {a}.&quot;
+    &quot; {a}&quot;
+)
+</code></pre>
+</td>
+<td>Error on line 4</td>
+<td>Error on line 4</td>
+<td>Error on line 5 and 6</td>
+<td><code>All checks passed!</code></td>
+</tr>
+
+<tr>
+<td>
+
+<pre><code class="language-python"># ruff_bug.py
+a = &quot;hello&quot;
+print(
+    &quot;some text here&quot;
+    &quot; bar {a}.&quot;
+    f&quot; {a}&quot;
+)
+</code></pre>
+</td>
+<td><code>All checks passed!</code></td>
+<td><code>All checks passed!</code></td>
+<td>Error on line 5</td>
+<td><code>All checks passed!</code></td>
+</tr>
+</table>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-10 05:17</div>
+            <div class="timeline-body"><p>Thank you providing such a detailed set of examples along with the diagnosis!</p>
+<p>Regarding <code>F541</code>, we decided to maintain this behavior where the <code>F541</code> rule is only flagged when <em>all</em> of the f-strings in an implicit string concatenation doesn't have any placeholders. Refer to https://github.com/astral-sh/ruff/issues/10885 for more details.</p>
+<p>I've pasted all of the examples in the playground (https://play.ruff.rs/0de4d4a3-bbb3-44bd-b163-2778dba84f64) and I'm seeing the expected behavior for <code>RUF027</code> for examples 2, 3, 4, and 5.</p>
+<p>And, I'm seeing the same behavior on the CLI as well:</p>
+<pre><code class="language-console">$ ruff check --select RUF027 --preview --isolated src/RUF027.py --output-format=concise
+src/RUF027.py:14:5: RUF027 Possible f-string without an `f` prefix
+src/RUF027.py:22:5: RUF027 Possible f-string without an `f` prefix
+src/RUF027.py:29:5: RUF027 Possible f-string without an `f` prefix
+src/RUF027.py:30:5: RUF027 Possible f-string without an `f` prefix
+src/RUF027.py:37:5: RUF027 Possible f-string without an `f` prefix
+Found 5 errors.
+No fixes available (5 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>I'm not sure why you're seeing different behavior for <code>RUF027</code>. Can you re-check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-05-10 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dougthor42">@dougthor42</a> on 2024-05-10 14:30</div>
+            <div class="timeline-body"><h3>F541</h3>
+<p>Ah ok, I didn't realize F541 was expected behavior.:+1:. I plan on making a PR to update the docs https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/ to include something like your comment. Perhaps:</p>
+<blockquote>
+<p><strong>Note regarding implicit string concatenation:</strong> In order to maintain compatibilty with the source pyflakes rule, this rule is only flagged when <em>all</em> of the f-strings in an implicit string concatenation don't have any placeholders. For example:</p>
+<python code showing example>
+
+<p>Please see Issue #10885 for more details.</p>
+</blockquote>
+<h3>RUF027</h3>
+<p>Strange! Yeah I'll double check.</p>
+<p>...</p>
+<p>Oh son of a b*. My CLI arg was set to RUF02<strong>9</strong> :facepalm:</p>
+<p>Sorry about that! It looks like everything is WAI so I'll close this. Thanks for double checking!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dougthor42 on 2024-05-10 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-10 14:36</div>
+            <div class="timeline-body"><p>No worries, thanks for confirming!</p>
+<blockquote>
+<p>Ah ok, I didn't realize F541 was expected behavior.:+1:. I plan on making a PR to update the docs <a href="https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/">docs.astral.sh/ruff/rules/f-string-missing-placeholders</a> to include something like your comment. Perhaps:</p>
+</blockquote>
+<p>Yeah, I think that would be useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11362.html">astral-sh/ruff#11362</a> on 2024-05-10 15:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

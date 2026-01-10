@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install fails while pip install success - astral-sh/uv #6892</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install fails while pip install success</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6892">#6892</a>
+        opened by <a href="https://github.com/rakeshksr">@rakeshksr</a>
+        on 2024-08-31 06:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rakeshksr">@rakeshksr</a> on 2024-08-31 06:01</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><code>uv pip install unstructured[pdf]</code> fails with following error</p>
+<pre><code>error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: pycrypto==2.6.1
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit code: 1
+</code></pre>
+<p><code>pip install unstructured[pdf]</code> success without error.</p>
+<p>After some debugging found that issue caused by two packages <code>unstructured-inference</code> and <code>pdfminer.six</code></p>
+<h3>Steps to Reproduce:</h3>
+<ol>
+<li><code>uv venv</code></li>
+<li><code>.venv\Scripts\activate</code></li>
+<li><code>uv pip install pdfminer.six unstructured-inference</code></li>
+</ol>
+<p>It's strange that installing packages individually( <code>uv pip install pdfminer.six; uv pip install unstructured-inference</code>) working fine.</p>
+<p><strong>uv platform:</strong> Windows 11
+<strong>uv version:</strong> uv 0.4.1 (823f23e22 2024-08-30)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-01 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:07</div>
+            <div class="timeline-body"><p>Have you seen this behavior repeatedly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rakeshksr">@rakeshksr</a> on 2024-09-03 11:15</div>
+            <div class="timeline-body"><p>Yes, I have tested in different windows machines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhofstetter">@dhofstetter</a> on 2024-09-06 15:21</div>
+            <div class="timeline-body"><p>can confirm that with uv version <code>0.4.6</code> something has changed, so that uv now wants to build pycrypto wheel (and considers it as being an explicit dependency!) but I have no deps requiring pycrypto.</p>
+<p>Is there a way to figure out why uv wants to install a certain package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 15:28</div>
+            <div class="timeline-body"><p>Can you share the output with <code>--verbose</code>? That will tell us exactly why it's being included.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhofstetter">@dhofstetter</a> on 2024-09-06 15:34</div>
+            <div class="timeline-body"><p>hmm good to know, I got the dependency that requires pycrypto now</p>
+<p>And there it is indeed a direct dependency. Im just uncertain, why this dependency <code>jose</code> is within my project.</p>
+<p>Thanks for your quick response :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 18:19</div>
+            <div class="timeline-body"><p>No prob!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-08 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-08 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rakeshksr">@rakeshksr</a> on 2024-09-13 12:33</div>
+            <div class="timeline-body"><p>@charliermarsh issue still persists with <code>uv 0.4.9 (77d278f68 2024-09-10)</code></p>
+<p>After some investigation, I have determined that the root cause lies in the conflicting versions of <code>pdfplumber</code> installed. When using the command <code>uv pip install pdfminer.six unstructured-inference</code>, an older version of <code>pdfplumber (v0.5.3)</code> is installed, which has a dependency on <code>pycrypto</code>. This results in the pycrypto dependency being added to the project, dependency tree <code>unstructured-inference -&gt; layoutparser -&gt; pdfplumber-0.5.3 -&gt; pycrypto</code>.</p>
+<p>However, when using the command <code>uv pip install pdfminer.six; uv pip install unstructured-inference</code>, the latest version of <code>pdfplumber (v0.11.4)</code> is installed, which does not have a dependency on <code>pycrypto</code>. Therefore, the pycrypto dependency is not added to the project in this case, dependency tree <code>unstructured-inference -&gt; layoutparser -&gt; pdfplumber-0.11.4</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 13:20</div>
+            <div class="timeline-body"><p>I think this is all reasonable behavior... The difference is that if you run <code>uv pip install pdfminer.six</code>, then <code>uv pip install unstructured-inference</code>, we end up <em>downgrading</em> <code>pdfminer.six</code>:</p>
+<pre><code> - pdfminer-six==20240706
+ + pdfminer-six==20231228
+</code></pre>
+<p>Whereas if you run <code>uv pip install pdfminer.six unstructured-inference</code>, we prefer using a more recent <code>pdfminer.six</code> and a less recent transitive dependency (<code>pdfplumber</code>). Both are completely valid resolutions.</p>
+<p>If you specifically want to avoid using an old <code>pdfplumber</code>, you should add a constraint for <code>pdfplumber&gt;0.6</code> or similar. You need to give more information to the resolver if you want and are expecting a specific outcome like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rakeshksr">@rakeshksr</a> on 2024-09-15 18:30</div>
+            <div class="timeline-body"><p>@charliermarsh  thanks for information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Unstructured-IO/unstructured-inference/issues/368.html">Unstructured-IO/unstructured-inference#368</a> on 2024-09-27 02:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:35 UTC
+    </footer>
+</body>
+</html>

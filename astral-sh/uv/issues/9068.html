@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV 0.5.1 fails to build xgboost  - astral-sh/uv #9068</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV 0.5.1 fails to build xgboost </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9068">#9068</a>
+        opened by <a href="https://github.com/blbuford">@blbuford</a>
+        on 2024-11-12 18:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/blbuford">@blbuford</a> on 2024-11-12 18:15</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Here's a minimum dockerfile to reproduce the error:</p>
+<pre><code class="language-Dockerfile">FROM python:3.11.9-slim-bookworm
+RUN apt-get update \
+    &amp;&amp; apt-get install -y git build-essential cmake --no-install-recommends \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN pip install uv==0.5.1
+RUN uv pip install --system --no-cache --no-binary xgboost xgboost==1.5.2
+</code></pre>
+<p>Changing that <code>uv==0.5.1</code> to <code>uv==0.5.0</code> makes the <code>docker build -f tmp/uv-fails.Dockerfile  .</code> pass. Also up-to-date pip works as well, so I suspect there's something with the newest version of uv.</p>
+<p>From what I can see about the error, somewhere in the compilation uv makes some god-awful looking path that exceeds 4096 characters and looks like:</p>
+<pre><code>/tmp/.tmphc3YDw/sdists-v6/pypi/xgboost/1.5.2/zwaKdpTMLMT2TpKaD0bTH/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/build/temp.linux-x86_64-cpython-311/xgboost/src/xgboost/dmlc-core/src/data/basic_row_iter.h
+</code></pre>
+<p>Let me know if you need any more info! Thanks for taking a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 18:17</div>
+            <div class="timeline-body"><p>Hm we changed some build behaviors in an attempt to make the file paths <em>shorter</em>, cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-11-12 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2024-11-12 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 18:30</div>
+            <div class="timeline-body"><p>It may not be related -- the path here seems to be repeated infinitely for some reason (<code>src/build/temp.linux-x86_64-cpython-311/xgboost</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 18:49</div>
+            <div class="timeline-body"><p>Hm I can't think of another reason it'd regress though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 18:52</div>
+            <div class="timeline-body"><p>I didn't see that it regressed. You're right, it's probably related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-12 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 19:08</div>
+            <div class="timeline-body"><p>So I don't really understand the problem yet, but if you change the directory name from <code>src</code> to <code>xyz</code> in our build cache, it works...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 19:10</div>
+            <div class="timeline-body"><p>I think the problem is that they seem to create some sort of scratch directory at <code>../src</code>. But we build from a directory named <code>src</code>. So it's specific to XGBoost...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 19:12</div>
+            <div class="timeline-body"><p>That's pretty particular. It seems naughty of them to escape their build directory like that. I think it's worth opening an upstream issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 19:13</div>
+            <div class="timeline-body"><p>I might be misunderstanding, it could be a problem on our end. Need to look at the source.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9069.html">astral-sh/uv#9069</a> on 2024-11-12 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 19:23</div>
+            <div class="timeline-body"><p>Ah actually, I can't replicate this with latest XGBoost:</p>
+<pre><code class="language-docker">FROM python:3.11.9-slim-bookworm
+RUN apt-get update \
+    &amp;&amp; apt-get install -y git build-essential cmake --no-install-recommends \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN pip install uv==0.5.1
+RUN uv pip install --system --no-cache --no-binary xgboost xgboost
+</code></pre>
+<p>I think this is really an issue with XGBoost that seems to have been fixed. I'm a little hesitant to make changes in light of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blbuford">@blbuford</a> on 2024-11-12 19:50</div>
+            <div class="timeline-body"><p>Bummer. Why does up-to-date pip work on that, but uv does not? E.g. this works:</p>
+<pre><code class="language-Dockerfile">FROM python:3.11.9-slim-bookworm
+RUN apt-get update \
+    &amp;&amp; apt-get install -y git build-essential cmake --no-install-recommends \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade pip &amp;&amp; pip install --no-cache --no-binary xgboost xgboost==1.5.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 19:56</div>
+            <div class="timeline-body"><p>They probably do not use the same build directory naming scheme as us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-11-22 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-11-22 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 02:17</div>
+            <div class="timeline-body"><p>I'm going to close this as <code>wontfix</code>. Sorry about that -- I'd just prefer to avoid implementing custom workarounds for older versions of specific packages, and changing the directory name here does have some cost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-02 02:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:30 UTC
+    </footer>
+</body>
+</html>

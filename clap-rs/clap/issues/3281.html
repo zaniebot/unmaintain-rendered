@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positional arg after repeated positional arg - prefer compiler error to runtime error - clap-rs/clap #3281</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Positional arg after repeated positional arg - prefer compiler error to runtime error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3281">#3281</a>
+        opened by <a href="https://github.com/nipunn1313">@nipunn1313</a>
+        on 2022-01-11 18:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nipunn1313">@nipunn1313</a> on 2022-01-11 18:06</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.6</p>
+<h3>Describe your use case</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(clap::Parser, Debug)]
+struct Args {
+    arg2: Vec&lt;String&gt;,
+    arg1: String,
+}
+
+fn main() {
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>This code is bad. Currently when running it, it fails at runtime</p>
+<pre><code>➜  clap_repro cargo run
+   Compiling clap-repro v0.1.0 (/Users/nipunn/src/clap_repro)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/clap-repro`
+thread 'main' panicked at 'Found non-required positional argument with a lower index than a required positional argument: &quot;arg2&quot; index Some(1)', /Users/nipunn/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.6/src/parse/parser.rs:210:21
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>If possible, some kind of compile time error.
+Probably would involve a proc-macro to iterate/logic over the struct and bail</p>
+<h3>Alternatives, if applicable</h3>
+<p>Status quo runtime error could work, but means you don't catch clear bugs until much later.
+If we stick with status quo, a better error message might be nice.</p>
+<p>&quot;Found positional argument after a repeated positional argument&quot;</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @nipunn1313 on 2022-01-11 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-11 18:13</div>
+            <div class="timeline-body"><p>#2720 is about supporting all debug asserts in the derive macro.   As noted in that issue, there are complications with that.  This falls into some of those complications because of <code>flatten</code> making it so we can't fully reason about this case.  At best, we can implement a compile error only for when a <code>flatten</code> is not used, leaving it to runtime otherwise.</p>
+<p>As noted in #2720, our <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#300---2021-12-31">CHANGELOG</a> and Derive Tutorial's <a href="https://github.com/clap-rs/clap/tree/master/examples/tutorial_derive#tips">tips</a>, we encourage having a test like below so these will be caught while testing (and for all subcommands, when relevant) as compared to manual testing / using the application.</p>
+<pre><code class="language-rust">#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    ...
+}
+
+#[test]
+fn verify_app() {
+    use clap::IntoApp;
+    Cli::into_app().debug_assert()
+}
+</code></pre>
+<p>So like #2720, I lean towards closing this issue out as &quot;won't fix&quot;.  If there are thoughts or concerns about this, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-11 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-01-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-duplicate</span> added by @epage on 2022-01-11 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nipunn1313">@nipunn1313</a> on 2022-01-11 23:16</div>
+            <div class="timeline-body"><p>Sounds good. May still be nice to have a better runtime error message!</p>
+<pre><code>thread 'main' panicked at 'Found non-required positional argument with a lower index than a required positional argument: &quot;arg2&quot; index Some(1)'
+</code></pre>
+<p>was somewhat misleading to us. To my user, it seemed like it was user-error for providing the args in the wrong order (or something like that) - when actually it was a bug in the specification of the CLI by me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nipunn1313">@nipunn1313</a> on 2022-01-11 23:29</div>
+            <div class="timeline-body"><p>I also don't think <code>debug_assert()</code> catches this issue</p>
+<p>Here's a <code>cargo play</code> compatible snippit - drop it into a <code>main.rs</code>. (<code>cargo install cargo-play ; cargo play main.rs</code>)</p>
+<pre><code class="language-rust">//# clap = {version=&quot;3&quot;, features=[&quot;derive&quot;]}
+use clap::{IntoApp, Parser};
+
+#[derive(clap::Parser, Debug)]
+struct Args {
+    arg2: Vec&lt;String&gt;,
+    arg1: String,
+}
+
+fn main() {
+    Args::into_app().debug_assert();
+    let args = Args::parse();
+    dbg!(args);
+}
+</code></pre>
+<p>If I run it, the debug_assert doesn't catch the issue, but Args::parse() fails at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-12 16:43</div>
+            <div class="timeline-body"><p>Interesting!  This lives in a completely different place but doesn't need to.  My guess is it predates some of how we do assertions today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3288.html">clap-rs/clap#3288</a> on 2022-01-12 16:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:51 UTC
+    </footer>
+</body>
+</html>

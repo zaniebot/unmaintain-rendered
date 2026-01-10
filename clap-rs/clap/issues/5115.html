@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parsing error on positional arguments after mixing a multiple-valued positional arg with a flag - clap-rs/clap #5115</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parsing error on positional arguments after mixing a multiple-valued positional arg with a flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5115">#5115</a>
+        opened by <a href="https://github.com/marcospb19">@marcospb19</a>
+        on 2023-09-08 20:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/marcospb19">@marcospb19</a> on 2023-09-08 20:27</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p><code>cargo 1.74.0-nightly (925280f02 2023-08-25)</code></p>
+<h3>Clap Version</h3>
+<p><code>4.4.2</code></p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, PartialEq)]
+pub enum Subcommand {
+    Compress {
+        #[arg(required = true)]
+        files: Vec&lt;String&gt;,
+
+        #[arg(required = true)]
+        output: String,
+
+        #[arg(short)]
+        verbose: bool,
+    },
+}
+
+fn main() {
+    let inputs = [
+        &quot;ouch compress a b c output -v&quot;,
+        &quot;ouch compress a b c -v output&quot;,
+        &quot;ouch compress a b -v c output&quot;,
+        &quot;ouch compress a -v b c output&quot;,
+        &quot;ouch compress -v a b c output&quot;,
+    ];
+    let expected = Subcommand::Compress {
+        files: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;].map(Into::into).to_vec(),
+        verbose: true,
+        output: &quot;output&quot;.into(),
+    };
+
+    for input in inputs {
+        let result = Subcommand::try_parse_from(input.split_whitespace());
+        let result = result.map(|ok| ok == expected).map_err(|_| ());
+        println!(&quot;{input}, {result:?}&quot;);
+    }
+}
+</code></pre>
+<p>Outputs:</p>
+<pre><code class="language-rust">&quot;ouch compress a b c output -v&quot;, Ok(true)
+&quot;ouch compress a b c -v output&quot;, Err(())
+&quot;ouch compress a b -v c output&quot;, Err(())
+&quot;ouch compress a -v b c output&quot;, Err(())
+&quot;ouch compress -v a b c output&quot;, Ok(true)
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>Parsing fails in 3 out of the 5 cases provided in the example.</p>
+<h3>Expected Behaviour</h3>
+<p>Succeed in all 5 cases.</p>
+<h3>Additional Context</h3>
+<p>With this definition, the following input parses OK:</p>
+<pre><code class="language-rust">Compress {
+    #[arg(required = true)]
+    files: Vec&lt;String&gt;,
+
+    #[arg(required = true)]
+    output: String,
+},
+
+&quot;ouch compress a b c output&quot; // parses ok!
+</code></pre>
+<p>And, with this definition, the following inputs parse OK:</p>
+<pre><code class="language-rust">Compress {
+    #[arg(required = true)]
+    files: Vec&lt;String&gt;,
+
+    #[arg(short)]
+    verbose: bool,
+},
+
+&quot;ouch compress a b c -v&quot; // parses ok!
+&quot;ouch compress a b -v c&quot; // parses ok!
+&quot;ouch compress a -v b c&quot; // parses ok!
+&quot;ouch compress -v a b c&quot; // parses ok!
+</code></pre>
+<p>So, I assumed that merging both would work, but it doesn't (in 3/5 cases).</p>
+<p><strong>Repeating here the output of <em>Minimal reproducible Code</em>:</strong></p>
+<pre><code class="language-rust">&quot;ouch compress a b c output -v&quot;, Ok(true)
+&quot;ouch compress a b c -v output&quot;, Err(())
+&quot;ouch compress a b -v c output&quot;, Err(())
+&quot;ouch compress a -v b c output&quot;, Err(())
+&quot;ouch compress -v a b c output&quot;, Ok(true)
+</code></pre>
+<h3>Debug Output</h3>
+<details>
+<summary><code>"ouch compress a b c output -v" -> Ok(true))</code></summary>
+
+<pre><code class="language-python">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;rust&quot;
+[clap_builder::builder::command]Command::_propagate:rust
+[clap_builder::builder::command]Command::_check_help_and_version:rust expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:rust
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;compress&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of compress to &quot;ouch compress&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of compress to &quot;rust-compress&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;compress&quot;
+[clap_builder::builder::command]Command::_propagate:compress
+[clap_builder::builder::command]Command::_check_help_and_version:compress expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:compress
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:files
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:output
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=compress
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;a&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;a&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;b&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;b&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;b&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;c&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;c&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;output&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;output&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;output&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;-v&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: -&lt;something&gt; found
+[clap_builder::parser::parser]Parser::get_matches_with: Bumping the positional counter...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;files&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;files&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=files, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-v&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-v&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;v&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['v']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v: Found valid opt or flag
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;output&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;output&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;output&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=output, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=5
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `&lt;FILES&gt;...`
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `&lt;OUTPUT&gt;`
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `-v`
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--help`
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:files:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:files: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:output:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:output: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:verbose:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;files&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;files&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Compress&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;output&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;verbose&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;files&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;Compress&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;output&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;verbose&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;files&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;files&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;output&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;output&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;files&quot;, children: [] }, Child { id: &quot;output&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;files&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Compress&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Compress&quot;:group
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;output&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;verbose&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--help`
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+</code></pre>
+</details><details>
+<summary><code>"ouch compress a b c -v output" -> Err(()))</code></summary>
+
+<pre><code class="language-python">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;rust&quot;
+[clap_builder::builder::command]Command::_propagate:rust
+[clap_builder::builder::command]Command::_check_help_and_version:rust expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:rust
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;compress&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of compress to &quot;ouch compress&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of compress to &quot;rust-compress&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;compress&quot;
+[clap_builder::builder::command]Command::_propagate:compress
+[clap_builder::builder::command]Command::_check_help_and_version:compress expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:compress
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:files
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:output
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=compress
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;a&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;a&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;b&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;b&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;b&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;c&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;c&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;-v&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: -&lt;something&gt; found
+[clap_builder::parser::parser]Parser::get_matches_with: Bumping the positional counter...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;files&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;files&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;a&quot;, &quot;b&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=files, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-v&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-v&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;v&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['v']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v: Found valid opt or flag
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;output&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;output&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;c&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=output, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;output&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;output&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...3
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_help_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=verbose
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter:iter: grp_s=&quot;Compress&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: [OPTIONS] required
+[ clap_builder::output::usage]Usage::get_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;files&quot;, &quot;output&quot;]
+[ clap_builder::output::usage]Usage::get_args: ret_val=[StyledStr(&quot;&lt;FILES&gt;...&quot;), StyledStr(&quot;&lt;OUTPUT&gt;&quot;)]
+[ clap_builder::output::usage]Usage::create_help_usage: usage=ouch compress [OPTIONS] &lt;FILES&gt;... &lt;OUTPUT&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+</code></pre>
+</details><details>
+<summary><code>"ouch compress a b -v c output" -> Err(()))</code></summary>
+
+<pre><code class="language-python">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;rust&quot;
+[clap_builder::builder::command]Command::_propagate:rust
+[clap_builder::builder::command]Command::_check_help_and_version:rust expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:rust
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;compress&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of compress to &quot;ouch compress&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of compress to &quot;rust-compress&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;compress&quot;
+[clap_builder::builder::command]Command::_propagate:compress
+[clap_builder::builder::command]Command::_check_help_and_version:compress expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:compress
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:files
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:output
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=compress
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;a&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;a&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;b&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;b&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;b&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;-v&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: -&lt;something&gt; found
+[clap_builder::parser::parser]Parser::get_matches_with: Bumping the positional counter...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;files&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;files&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;a&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=files, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-v&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-v&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;v&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['v']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v: Found valid opt or flag
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;output&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;output&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;b&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=output, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;c&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...3
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_help_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=verbose
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter:iter: grp_s=&quot;Compress&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: [OPTIONS] required
+[ clap_builder::output::usage]Usage::get_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;files&quot;, &quot;output&quot;]
+[ clap_builder::output::usage]Usage::get_args: ret_val=[StyledStr(&quot;&lt;FILES&gt;...&quot;), StyledStr(&quot;&lt;OUTPUT&gt;&quot;)]
+[ clap_builder::output::usage]Usage::create_help_usage: usage=ouch compress [OPTIONS] &lt;FILES&gt;... &lt;OUTPUT&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+</code></pre>
+</details><details>
+<summary><code>"ouch compress a -v b c output" -> Err(()))</code></summary>
+
+<pre><code class="language-python">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;rust&quot;
+[clap_builder::builder::command]Command::_propagate:rust
+[clap_builder::builder::command]Command::_check_help_and_version:rust expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:rust
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;compress&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of compress to &quot;ouch compress&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of compress to &quot;rust-compress&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;compress&quot;
+[clap_builder::builder::command]Command::_propagate:compress
+[clap_builder::builder::command]Command::_check_help_and_version:compress expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:compress
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:files
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:output
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=compress
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;a&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;a&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;-v&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: -&lt;something&gt; found
+[clap_builder::parser::parser]Parser::get_matches_with: Bumping the positional counter...
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-v&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-v&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;v&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['v']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v: Found valid opt or flag
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;output&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;output&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;a&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=output, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;b&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;b&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...3
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_help_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=verbose
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter:iter: grp_s=&quot;Compress&quot;
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: [OPTIONS] required
+[ clap_builder::output::usage]Usage::get_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;files&quot;, &quot;output&quot;]
+[ clap_builder::output::usage]Usage::get_args: ret_val=[StyledStr(&quot;&lt;FILES&gt;...&quot;), StyledStr(&quot;&lt;OUTPUT&gt;&quot;)]
+[ clap_builder::output::usage]Usage::create_help_usage: usage=ouch compress [OPTIONS] &lt;FILES&gt;... &lt;OUTPUT&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+</code></pre>
+</details><details>
+<summary><code>"ouch compress -v a b c output" -> Ok(true))</code></summary>
+
+<pre><code class="language-python">[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;rust&quot;
+[clap_builder::builder::command]Command::_propagate:rust
+[clap_builder::builder::command]Command::_check_help_and_version:rust expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:rust
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;compress&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;compress&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of compress to &quot;ouch compress&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of compress to &quot;rust-compress&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;compress&quot;
+[clap_builder::builder::command]Command::_propagate:compress
+[clap_builder::builder::command]Command::_check_help_and_version:compress expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:compress
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:files
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:output
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=compress
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-v&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-v&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;v&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['v']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;a&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;a&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;b&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;b&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;b&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;c&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;c&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;c&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::is_new_arg: &quot;output&quot;:files
+[clap_builder::parser::parser]Parser::is_new_arg: value
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;output&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;output&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...true
+[clap_builder::parser::parser]Parser::get_matches_with: Bumping the positional counter...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;files&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;files&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;files&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=3
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=files, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;output&quot;
+[clap_builder::parser::parser]Parser::react action=Set, identifier=Some(Index), source=CommandLine
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;output&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Compress&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;output&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=5
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=output, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `&lt;FILES&gt;...`
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `&lt;OUTPUT&gt;`
+[clap_builder::parser::parser]Parser::add_env: Skipping existing arg `-v`
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--help`
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:files:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:files: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:output:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:output: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:verbose:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;verbose&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Compress&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;files&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;files&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;output&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;output&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;verbose&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;Compress&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;files&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;output&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;files&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;files&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;output&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;output&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([Child { id: &quot;files&quot;, children: [] }, Child { id: &quot;output&quot;, children: [] }])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;verbose&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Compress&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Compress&quot;:group
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;files&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;output&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::parser]Parser::add_env
+[clap_builder::parser::parser]Parser::add_env: Checking arg `--help`
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[]
+
+&lt;/details&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @marcospb19 on 2023-09-08 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1125.html">clap-rs/clap#1125</a> on 2023-09-08 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ouch-org/ouch/issues/485.html">ouch-org/ouch#485</a> on 2023-09-08 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5361.html">clap-rs/clap#5361</a> on 2024-02-17 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../serokell/deploy-rs/issues/325.html">serokell/deploy-rs#325</a> on 2025-06-06 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../serokell/deploy-rs/pulls/326.html">serokell/deploy-rs#326</a> on 2025-06-06 07:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:29 UTC
+    </footer>
+</body>
+</html>

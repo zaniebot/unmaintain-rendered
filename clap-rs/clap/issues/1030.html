@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support argument aliases that set multiple arguments - clap-rs/clap #1030</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support argument aliases that set multiple arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1030">#1030</a>
+        opened by <a href="https://github.com/darnir">@darnir</a>
+        on 2017-08-15 07:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/darnir">@darnir</a> on 2017-08-15 07:17</div>
+            <div class="timeline-body"><h2>Problem Description</h2>
+<p>In my projects, I often have a scenario where there is a single shortcut switch which sets values for multiple switches. For example, in my current project, I have (taken directly from my code):</p>
+<pre><code class="language-rust">        .arg(
+            Arg::with_name(&quot;UTILIZATION&quot;)
+                .long(&quot;utilization&quot;)
+                .short(&quot;u&quot;)
+                .takes_value(true)
+                .overrides_with_all(&amp;[&quot;UBEGIN&quot;, &quot;USTEP&quot;, &quot;UEND&quot;])
+                .help(&quot;Utilization of generated taskset&quot;),
+        )
+        .arg(
+            Arg::with_name(&quot;UBEGIN&quot;)
+                .long(&quot;utilization-begin&quot;)
+                .takes_value(true)
+                .default_value(&quot;0.025&quot;)
+                .help(&quot;Begin Utilization Range&quot;),
+        )
+        .arg(
+            Arg::with_name(&quot;USTEP&quot;)
+                .long(&quot;utilization-step&quot;)
+                .default_value(&quot;0.1&quot;)
+                .help(&quot;Step for Utilization Range&quot;),
+        )
+        .arg(
+            Arg::with_name(&quot;UEND&quot;)
+                .long(&quot;utilization-end&quot;)
+                .default_value(&quot;1.0&quot;)
+                .help(&quot;End of Utilization Range&quot;),
+        )
+        .group(
+            ArgGroup::with_name(&quot;UTILIZATION_RANGE&quot;)
+                .conflicts_with(&quot;UTILIZATION&quot;)
+                .multiple(true),
+        )
+</code></pre>
+<p>Now what I would like it for the argument <code>UTILIZATION</code> to explicitly set values for <code>UBEGIN</code>, <code>USTEP</code> and <code>UEND</code>.</p>
+<p>As you can see, I currently have a overrides and conflicts rule and then later in the application code, <code>UTILIZATION</code> is tested for and the other values are set.</p>
+<p>Another way to implement this would be by allowing the user to manipulate values in the <code>ArgMatches</code> struct. Then one could simply set the values there before returning to the main client for consumption.</p>
+<p>This is not a very obscure feature but is often used in many programs. For a more real-world usage of such a feature, please look at GNU Wget, quoting from its manual here (Emphasis mine):</p>
+<blockquote>
+<pre><code>  --mirror
+       Turn on options suitable for mirroring.  This option turns on recursion and time-stamping, sets infinite recursion depth and keeps FTP
+       directory listings.  It is currently equivalent to **-r -N -l inf --no-remove-listing**.</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-04 03:03</div>
+            <div class="timeline-body"><p>Using <a href="https://docs.rs/clap/2.26.2/clap/struct.Arg.html#method.default_value_if"><code>Arg::default_value_if</code></a> will probably get you about 90% of what you're looking for. Otherwise, you'll have to go with defining these aliases in user code. I'm not against adding something like this feature in the future, but it's not something I can work on right now as there are about 1,000 other things I need to finish first :stuck_out_tongue_winking_eye:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2017-10-04 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-10-04 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2017-10-04 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2017-10-04 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/78.html">epage/clapng#78</a> on 2021-12-06 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 17:09</div>
+            <div class="timeline-body"><p>Between <code>default_value_if</code> and <code>replace</code> (https://github.com/clap-rs/clap/issues/2836), I think we've got this covered.  If there is feedback on `replace, please put it there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-09 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync fail with pillow - astral-sh/uv #11658</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync fail with pillow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11658">#11658</a>
+        opened by <a href="https://github.com/barakatzir">@barakatzir</a>
+        on 2025-02-20 09:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/barakatzir">@barakatzir</a> on 2025-02-20 09:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm not sure if this is a <code>uv</code> bug or a <code>hatchling</code> bug but I stumbled across it while using <code>uv sync</code>.</p>
+<p>I'm testing my package with its lowest dependencies and I get build errors when I use <code>pillow</code>. I think it is because old <code>pillow</code> versions do not support newer python version, but I'm not sure (I didn't see anything suspicious in their <code>setup.py</code> file).</p>
+<p>What I expected to happen is for <code>uv</code> to set me up with the minimal version of pillow that works on the requested python version.</p>
+<p>Here is a minimal reproduction:</p>
+<pre><code class="language-console">➜  temp mkdir uvcheck
+➜  temp cd uvcheck 
+➜  uvcheck uv init --package --python 3.10
+Initialized project `uvcheck`
+➜  uvcheck git:(master) ✗ uv add 'pillow&gt;=9.0.0'
+Using CPython 3.10.14
+Creating virtual environment at: .venv
+Resolved 2 packages in 2ms
+      Built uvcheck @ file:///home/barak-katzir/dev/temp/uvcheck
+Prepared 1 package in 166ms
+Installed 2 packages in 1ms
+ + pillow==11.1.0
+ + uvcheck==0.1.0 (from file:///home/barak-katzir/dev/temp/uvcheck)
+➜  uvcheck git:(master) ✗ uv sync --python 3.13 
+Using CPython 3.13.0
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.48ms
+Installed 2 packages in 2ms
+ + pillow==11.1.0
+ + uvcheck==0.1.0 (from file:///home/barak-katzir/dev/temp/uvcheck)
+➜  uvcheck git:(master) ✗ uv sync --python 3.13 --resolution lowest-direct
+Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+Resolved 2 packages in 3ms
+  × Failed to build `pillow==9.0.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+      status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+          requires = get_requires_for_build({})
+        File
+      &quot;/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      &quot;/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 304, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File
+      &quot;/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      &quot;/home/barak-katzir/.cache/uv/builds-v0/.tmpSLFMxv/lib/python3.13/site-packages/setuptools/build_meta.py&quot;,
+      line 320, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File &quot;&lt;string&gt;&quot;, line 29, in &lt;module&gt;
+        File &quot;&lt;string&gt;&quot;, line 26, in get_version
+      KeyError: '__version__'
+
+      hint: This usually indicates a problem with the package or the build
+      environment.
+  help: `pillow` (v9.0.0) was included because `uvcheck` (v0.1.0) depends
+        on `pillow`
+➜  uvcheck git:(master) ✗ uv sync --python 3.10 --resolution lowest-direct
+Using CPython 3.10.14
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.52ms
+Installed 2 packages in 2ms
+ + pillow==9.0.0
+ + uvcheck==0.1.0 (from file:///home/barak-katzir/dev/temp/uvcheck)
+
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.1 LTS amd64</p>
+<h3>Version</h3>
+<p>uv 0.6.1</p>
+<h3>Python version</h3>
+<p>managed (see minimal reproduction for details)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @barakatzir on 2025-02-20 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 09:54</div>
+            <div class="timeline-body"><p>This looks like a bug in an old version of the pillow build script.</p>
+<p>uv unfortunately can't detect what the upper limit for the python version on a package is. If you want to force using a wheel for pillow, you can use the <code>--no-build-package pillow</code> option, this option makes uv backtrack to a newer version that has a wheel for the current Python version and platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-20 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/barakatzir">@barakatzir</a> on 2025-02-20 13:22</div>
+            <div class="timeline-body"><p>I like the idea of the solution, but this doesn't seem to work as you suggest.
+On lowest-direct, <code>uv</code> insists to use <code>pillow==9.0.0</code> and fails.</p>
+<pre><code class="language-console">➜  uvcheck git:(master) ✗ uv sync --python 3.13 --resolution lowest-direct --no-build-package pillow
+Resolved 2 packages in 0.50ms
+error: Distribution `pillow==9.0.0 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 13:31</div>
+            <div class="timeline-body"><p>Can you try passing <code>--upgrade</code> too? This should update the resolution with the higher pillow version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/barakatzir">@barakatzir</a> on 2025-02-20 14:36</div>
+            <div class="timeline-body"><p>I still get the same error:</p>
+<pre><code class="language-console">➜  uvcheck git:(master) ✗ uv sync --python 3.13 --upgrade --resolution lowest-direct --no-build-package pillow
+Resolved 2 packages in 249ms
+error: Distribution `pillow==9.0.0 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-20 20:08</div>
+            <div class="timeline-body"><p>Unfortunately I think the real &quot;solution&quot; here is to set a lower-bound constraint on Pillow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/barakatzir">@barakatzir</a> on 2025-02-20 22:20</div>
+            <div class="timeline-body"><p>I did set a lower bound on pillow to 9.0.0 which does work with python 3.10 but not newer python versions.</p>
+<p>I using the lowest direct resolution on the earliest python version, so this issue doesn't bother me too much, but since I got unexpected error I thought I better report it.</p>
+<p>If I could have uv detect the earliest pillow build available for the python version I require it could save me the hassle of manually looking for the version and setting it to 9.0.0. A solution like using the <code>--no-build-package pillow</code> could be good for that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

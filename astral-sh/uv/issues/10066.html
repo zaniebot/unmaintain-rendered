@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv build` produces empty wheels when using hatchling (in some cases) - astral-sh/uv #10066</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv build` produces empty wheels when using hatchling (in some cases)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10066">#10066</a>
+        opened by <a href="https://github.com/jsnel-ct">@jsnel-ct</a>
+        on 2024-12-20 20:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsnel-ct">@jsnel-ct</a> on 2024-12-20 20:52</div>
+            <div class="timeline-body"><p>When using <code>uv build</code> to produce distributable wheels I get an empty wheel, as opposed to when using hatch directly <code>uvx hatch build</code>.</p>
+<p>The issue reproduces (for me) on Windows, as well as WSL2, with <code>uv</code> versions up until <code>0.5.11</code>.</p>
+<p>This issue might be related to  this earlier reported <a href="https://github.com/astral-sh/uv/issues/8200">issue</a>.</p>
+<p>I pushed a 'minimal' example repository along with reproduction instructions in the readme here:</p>
+<ul>
+<li>https://github.com/jsnel-ct/uv_build_pmt</li>
+</ul>
+<p>In brief:</p>
+<h2>Setup</h2>
+<pre><code class="language-shell">git clone https://github.com/jsnel-ct/uv_build_pmt.git; cd uv_build_pmt
+uv sync
+# activate your venv (e.g. `.\.venv\Scripts\activate`)
+# and verify this does not produce an error:
+python -c 'import uv_build_pmt'
+</code></pre>
+<h2>Issue - observed behavior</h2>
+<p>After running the step in setup above, run:</p>
+<pre><code class="language-shell">uv build
+uv pip install --force-reinstall .\dist\uv_build_pmt-0.1.0-py3-none-any.whl
+python -c 'import uv_build_pmt'
+</code></pre>
+<p>And observe the error:</p>
+<blockquote>
+<p>ModuleNotFoundError: No module named 'uv_build_pmt'</p>
+</blockquote>
+<h2>Expected behavior</h2>
+<p>When building directly with hatch(ling)</p>
+<pre><code class="language-shell">uvx hatch build
+uv pip install --force-reinstall .\dist\uv_build_pmt-0.1.0-py3-none-any.whl
+python -c 'import uv_build_pmt'
+</code></pre>
+<p>This does not result in an import error, as I expect.</p>
+<h2>Update</h2>
+<p>User @cofin provided a helpful hint in the right direction, which largely resolves this issue:</p>
+<blockquote>
+<p>[!TIP]
+Make sure that your <code>pyproject.toml</code> does not have a section <code>[tool.hatch.build]</code> which includes the line <code>sources = [&quot;src&quot;]</code>. Check the <a href="https://hatch.pypa.io/1.13/config/build/">hatch documentation</a> for up to date instructions.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-20 20:53</div>
+            <div class="timeline-body"><p>What does <code>uvx --from build pyproject-build</code> produce? If it also produces empty wheels, then it's likely a Hatch issue, not a uv issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-20 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsnel-ct">@jsnel-ct</a> on 2024-12-20 21:21</div>
+            <div class="timeline-body"><p>This also produces an empty wheel (starting with the same reproduction environment described above).</p>
+<pre><code class="language-log"> uvx --from build pyproject-build
+Installed 4 packages in 55ms
+* Creating isolated environment: venv+pip...                                                                                                                                       
+* Installing packages in isolated environment:                                                                                                                                     
+  - hatchling
+* Getting build dependencies for sdist...
+* Building sdist...
+* Building wheel from sdist
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - hatchling
+* Getting build dependencies for wheel...
+* Building wheel...
+Successfully built uv_build_pmt-0.1.0.tar.gz and uv_build_pmt-0.1.0-py3-none-any.whl
+</code></pre>
+<p>Not sure if it was clear, but by 'empty' I mean that <code>uv_build_pmt-0.1.0-py3-none-any.whl</code> only contains:</p>
+<pre><code class="language-txt">└───uv_build_pmt-0.1.0.dist-info
+    │   METADATA
+    │   RECORD
+    │   WHEEL
+    │
+    └───licenses
+            LICENSE
+</code></pre>
+<p>The content of WHEEL being:</p>
+<pre><code>Wheel-Version: 1.0
+Generator: hatchling 1.27.0
+Root-Is-Purelib: true
+Tag: py3-none-any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-20 21:25</div>
+            <div class="timeline-body"><p>I'd recommend opening an issue with <code>hatch</code> then — both <code>uv</code> and <code>build</code> are operating as standards-compliant build frontends in this situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsnel-ct">@jsnel-ct</a> on 2024-12-20 21:30</div>
+            <div class="timeline-body"><p>Thank you for the quick feedback, I will file it with hatch.</p>
+<p>Is there a reproducing scenario I can use that doesn't involve <code>uv</code>? If I install and use <code>hatch build</code> it works correctly, and also <code>uv run --isolated --with hatch hatch build</code> works correctly. How exactly does <code>uv</code> invoke hatch to build normally and can I emulate that directly on the CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-20 21:39</div>
+            <div class="timeline-body"><p>You can reproduce using a build frontend without uv</p>
+<pre><code>python -m pip install build
+python -m build
+</code></pre>
+<p>@ofek will be familiar with that reproduction.</p>
+<p>We invoke <code>hatchling</code> which is the <code>hatch</code> build backend, it's roughly <code>python -c &quot;import hatchling.build; hatchling.build.build_wheel('.')&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/hatch/issues/1865.html">pypa/hatch#1865</a> on 2024-12-20 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cofin">@cofin</a> on 2024-12-20 22:49</div>
+            <div class="timeline-body"><p>I believe <a href="https://github.com/astral-sh/uv/issues/8833#issuecomment-2466423582">this is related</a>.</p>
+<p>Moving away from:</p>
+<pre><code class="language-toml">[tool.hatch.build]
+only-include = [&quot;src&quot;]
+sources = [&quot;src&quot;]
+</code></pre>
+<p>Was the solution in my case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsnel-ct">@jsnel-ct</a> on 2024-12-20 23:29</div>
+            <div class="timeline-body"><p>Thank you! That <strong>indeed</strong> is the controlling variable!</p>
+<p>Removing <strong>either</strong> one of those lines resulted in <code>uv build</code> building the right wheel.</p>
+<p>Probably the configuration that comes closest to what was expected (function wheel, clean sdist) is:</p>
+<pre><code class="language-toml">[tool.hatch.build]
+only-include = [&quot;src&quot;]
+</code></pre>
+<p>But it does appear that hatch in <a href="https://hatch.pypa.io/1.13/config/build/">its documentation</a> has moved toward recommending to specify build instruction on a per-target level. So more along these lines:</p>
+<pre><code class="language-toml">[tool.hatch.build.targets.wheel]
+sources = [&quot;src&quot;]
+
+[tool.hatch.build.targets.sdist]
+only-include = [&quot;src&quot;]
+</code></pre>
+<p>For now - to help with the search engine or LLM bots scraping this - I'll just leave the TIP below, and leave it to the maintainers to decide how to close this issue.</p>
+<blockquote>
+<p>[!TIP]
+Make sure that your <code>pyproject.toml</code> does <strong>not</strong> have a section <code>[tool.hatch.build]</code> which includes the lines <code>sources = [&quot;src&quot;]</code> as well as <code>only-include = [&quot;src&quot;]</code> <em>at the same time</em>. To update your configuration, refer to the <a href="https://hatch.pypa.io/1.13/config/build/">latest hatch documentation</a>.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-21 00:59</div>
+            <div class="timeline-body"><p>Thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-21 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-12-21 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11557.html">astral-sh/uv#11557</a> on 2025-02-16 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../xorq-labs/xorq/pulls/792.html">xorq-labs/xorq#792</a> on 2025-04-02 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JamesParrott">@JamesParrott</a> on 2025-04-04 21:41</div>
+            <div class="timeline-body"><p>Hi everybody,
+I don't have a reproduction or a concrete explanation, but I ran into this issue in a Github action from something else, in a simple pure Python project, and thought I'd share my fix.  Basically I had a mix up between a package folder (in src) that was displaying as containing upper case characters on Windows (on which directories are case insensitive, but there is some mechanism to let you display them in whatever case you like), but on Github was mixed case.  So Hatchling's default logic could never find my package, and from Windows I had no clue why.</p>
+<p>The fix was to make some commits straight to my repo on Github (i.e. not via VS Code and Github Desktop):</p>
+<ul>
+<li>creating a new folder/package in with the mixed case name I wanted as the package name</li>
+<li>copying all the files into this (Github lets you do a bulk upload)</li>
+<li>Deleting the incorrectly named folder.</li>
+</ul>
+<p>The empty wheel problem was self-inflicted, presumably for the same reasons as others have described above (how hatch identifies files for inclusion in a build target).  I had added to my pyproject.toml:</p>
+<pre><code>[tool.hatch.build.targets.wheel]
+packages = [&quot;src/foo&quot;]
+</code></pre>
+<p>In my defence, I did this (naively) because without it, I was hitting the following error, which suggested I do so:</p>
+<pre><code>Run uv build
+  uv build
+  shell: /usr/bin/bash -e {0}
+  env:
+    UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Building source distribution...
+Building wheel from source distribution...
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/build.py&quot;, line 58, in build_wheel
+    return os.path.basename(next(builder.build(directory=wheel_directory, versions=['standard'])))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 155, in build
+    artifact = version_api[version](directory, **build_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 477, in build_standard
+    for included_file in self.recurse_included_files():
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 176, in recurse_included_files
+    yield from self.recurse_selected_project_files()
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 180, in recurse_selected_project_files
+    if self.config.only_include:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/functools.py&quot;, line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/config.py&quot;, line 713, in only_include
+    only_include = only_include_config.get('only-include', self.default_only_include()) or self.packages
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 262, in default_only_include
+    return self.default_file_selection_options.only_include
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/lib/python3.12/functools.py&quot;, line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp1JcKPt/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 250, in default_file_selection_options
+    raise ValueError(message)
+ValueError: Unable to determine which files to ship inside the wheel using the following heuristics: https://hatch.pypa.io/latest/plugins/builder/wheel/#default-file-selection
+
+The most likely cause of this is that there is no directory that matches the name of your project (Cheetah_GH or cheetah_gh).
+
+At least one file selection option must be defined in the `tool.hatch.build.targets.wheel` table, see: https://hatch.pypa.io/latest/config/build/
+
+As an example, if you intend to ship a directory named `foo` that resides within a `src` directory located at the root of your project, you can define the following:
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/foo&quot;]
+  × Failed to build `/home/runner/work/Cheetah_GH/Cheetah_GH`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `hatchling.build.build_wheel` failed (exit status: 1)
+      hint: This usually indicates a problem with the package or the build
+      environment.
+Error: Process completed with exit code 2.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-04 23:28</div>
+            <div class="timeline-body"><p>cc @ofek for visibility</p>
+<p>Thanks for sharing @JamesParrott !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JamesParrott">@JamesParrott</a> on 2025-04-05 10:34</div>
+            <div class="timeline-body"><p>You're welcome Zanie.  I've ruled out my situation being due to anything in uv.  This is not a bug in Hatchling either however, as it involves so many different parts, and specific choices by the user.  But if they choose to do so, the Hatchling team could help avoid this situation by tweaking the suggested fix in the error message, or even by widening the default directory searching logic for wheel targets.</p>
+<p>I've made an <a href="https://github.com/JamesParrott/fOO_base/">MRX repo</a>, and tested it both with uv/hatchling and python/build/hatchling alone.  The behaviour is the same with both workflows (on Ubuntu runners).  Full explanation:  https://github.com/pypa/hatch/issues/1953</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:54 UTC
+    </footer>
+</body>
+</html>

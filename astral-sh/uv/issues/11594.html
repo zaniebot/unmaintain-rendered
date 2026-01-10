@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow using `requirements.in` to specify dependencies for `uv tool run` and `uv tool install` and show examples in the docs - astral-sh/uv #11594</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow using `requirements.in` to specify dependencies for `uv tool run` and `uv tool install` and show examples in the docs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11594">#11594</a>
+        opened by <a href="https://github.com/ShaiAvr">@ShaiAvr</a>
+        on 2025-02-18 11:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ShaiAvr">@ShaiAvr</a> on 2025-02-18 11:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I want to migrate to <code>uv</code> to manage my Python installations and tools. I currently use <code>pyenv</code> and I usually have a &quot;global&quot; installation into which I install ipython, ruff, numpy, etc. I use it for quick sketches or playing around (Real projects use virtual environments of course). According to the <a href="https://docs.astral.sh/uv/pip/environments/#python-environments">docs</a>, I shouldn't really mess with a global installation, which I can understand, and I want to migrate to using the <code>uv tool</code> interface. One common workflow I have is to simply open an <code>ipython</code> session into which I can import numpy or another library to test and play around. Since I use <code>ipython</code> a lot, I think it would be better to install it rather than doing <code>uvx ipython</code> every time. The problem, is that I need many dependencies for <code>ipython</code>. For example, I use the <a href="https://rich.readthedocs.io/en/stable/introduction.html#ipython-extension">rich extension for ipython</a> to get nice colors and highlighting so I always need to run <code>uvx --with rich ipython</code>. In addition, I almost always use numpy or other libraries in Python, so if I were to install this tool, it would be something like <code>uv tool install --with 'rich,numpy,scipy,matplotlib,pandas,sympy,astropy,attrs' ipython</code>. This commands gets quite long, and while I only run it once to install everything, it's still not nice. When reading the command reference of the <code>uv tool install</code> command, I found that it accepts an option <code>--with-requirements &lt;WITH_REQUIREMENTS&gt;</code> which takes a <code>requirements.txt</code> file. This looks like a nice solution to my problem, but I have a few problems with this option which I think we can address:</p>
+<ul>
+<li>The option takes a <code>requirements.txt</code> file instead of <code>requirements.in</code>. <code>requirements.txt</code> is normally for locked dependencies and in this case, it makes less sense to lock the dependencies of an installed tool. I think the option should be changed to take a <code>requirements.in</code> file instead or in addition to <code>requirements.txt</code>, so I can simply specify all the dependencies of a tool in a file without version locking.</li>
+<li>This option isn't very well documented. From my search, this option only appears in the reference of the <code>uv tool run</code> and <code>uv tool install</code> commands. There is no mention of this option in the guides for using and installing tools and no examples of how to use this option. The ability to specify the dependencies of a tool in a file instead of in a command line argument seems to me like a great feature and I think the guides should mention it and provide examples on how to do that.</li>
+</ul>
+<h3>Example</h3>
+<p>I believe my suggestions could improve the workflow of running and installing tools. With these suggestions implemented, I can simply make a <code>requirements.in</code> file containing:</p>
+<pre><code>astropy
+attrs
+colorama
+matplotlib
+mccabe
+numba
+numpy
+opt_einsum
+pandas
+pillow
+pint
+requests
+rich
+rich-argparse
+scipy
+sympy
+tqdm
+uncertainties
+</code></pre>
+<p>and then use <code>uv tool install --with-requirements requirements.in ipython</code> to install <code>ipython</code> which I can then launch with all the libraries I need to play around and test things out, and it's very easy to change or extend this file and run the same command to get <code>ipython</code> with all the libraries I need.</p>
+<p>Another idea I had is that we can extend this interface to install tools from a configuration file. For example, we can make a JSON file:</p>
+<pre><code class="language-json">{
+    &quot;ipython&quot;: {
+        &quot;python version&quot;: &quot;3.12&quot;,
+        &quot;dependencies&quot;: [&quot;rich&quot;, &quot;numpy&quot;, ...]
+    },
+    &quot;ruff&quot;: {
+        &quot;python version&quot;: &quot;3.13&quot;
+    },
+    ....
+}
+</code></pre>
+<p>and then I can run something like <code>uv tool install --tools requirements.json</code> to install all the tools I need with their specified versions and dependencies with one command. This will make installing Python tools on another computer much easier and faster. I don't know how realistic this idea is, but I thought to mention it in addition to the improving the docs and allowing <code>requirements.in</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @ShaiAvr on 2025-02-18 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-18 15:43</div>
+            <div class="timeline-body"><p>We accept <code>requirements.in</code> files here.</p>
+<pre><code>❯ echo &quot;anyio&quot; &gt; requirements.in
+❯ uv run --with-requirements reqquir
+❯ uvx --with-requirements ./requirements.in python -c &quot;import anyio&quot;
+Installed 3 packages in 4ms
+</code></pre>
+<p><code>requirements.txt</code> just refers to the defacto-format of the file.</p>
+<p>We can add some documentation though.</p>
+<p>Regarding declarative tool installations from a file — we're interested in that and it's on the roadmap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-02-18 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-02-18 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-18 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShaiAvr">@ShaiAvr</a> on 2025-02-20 12:06</div>
+            <div class="timeline-body"><p>@zanieb In that case, I certainly think the documentation could be improved. Both to specify that <code>requirements.in</code> also works, and to provide examples of using this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 14:18</div>
+            <div class="timeline-body"><p>Sure, we just have to balance that with all the other things we need to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liiight">@liiight</a> on 2025-03-18 20:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Regarding declarative tool installations from a file — we're interested in that and it's on the roadmap</p>
+</blockquote>
+<p>@zanieb is there an issue to watch for this?</p>
+<p>Thanks in advance, and thank you and everyone involved for the mind boggling work you all do on this project!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

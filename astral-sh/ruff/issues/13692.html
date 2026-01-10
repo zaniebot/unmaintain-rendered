@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff incorrectly matches .gitignore rules with sub-directories and has issues with `respect-gitignore = false` - astral-sh/ruff #13692</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff incorrectly matches .gitignore rules with sub-directories and has issues with `respect-gitignore = false`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13692">#13692</a>
+        opened by <a href="https://github.com/mihnatenko">@mihnatenko</a>
+        on 2024-10-09 15:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mihnatenko">@mihnatenko</a> on 2024-10-09 15:08</div>
+            <div class="timeline-body"><p>Recently I have faced two issues with ruff. And they might not be that tightly related, but the description for the first one serves as a context for the second one, so I have combined them into a single issue. Let me know if it would be better to separate them.</p>
+<p>Here is a minimal reproducible example I was able to prepare.</p>
+<ol>
+<li>Initialize a git repository</li>
+</ol>
+<pre><code class="language-sh">cd ruff-ignore-subdir-bug
+git init
+</code></pre>
+<ol start="2">
+<li>Create <code>.gitignore</code> file with the following content:</li>
+</ol>
+<pre><code>/backend/log
+</code></pre>
+<ol start="3">
+<li>Locate files and directories with the following structure:</li>
+</ol>
+<pre><code class="language-bash">mkdir -p backend/log
+mkdir -p backend/src/subdir/log
+touch backend/pyproject.toml
+touch backend/log/example.py
+touch backend/src/subdir/log/some_logging_lib.py
+# the resulting structure should look like this:
+tree
+.
+└── backend
+    ├── log
+    │   └── example.py
+    ├── pyproject.toml
+    └── src
+        └── subdir
+            └── log
+                └── some_logging_lib.py
+
+6 directories, 3 files
+</code></pre>
+<p>Contents of backend/pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;D&quot;]
+ignore = [&quot;D203&quot;, &quot;D212&quot;]
+</code></pre>
+<p>Contents of backend/log/example.py:</p>
+<pre><code class="language-python"># just for example purposes of what ruff linter finds. This file is not that important,
+# as in our project, we store logs in backend/log
+
+
+def please_ignore_me(arg):
+    return arg * 2
+</code></pre>
+<p>Contents of backend/src/subdir/log/some_logging_lib.py:</p>
+<pre><code class="language-python">def do_not_ignore_me(*args, **kwargs):
+    print(&quot;got: &quot;, args, kwargs)
+</code></pre>
+<h3>1. Issue with ignore rule and subdir</h3>
+<p>Ruff mistakenly ignores backend/src/subdir/log, while it shouldn't.</p>
+<p>Actual behavior:</p>
+<pre><code class="language-bash">ruff --version
+ruff 0.6.9
+
+ruff check --output-format=concise backend
+All checks passed!
+
+cd backend
+
+ruff check --output-format=concise
+All checks passed!
+
+</code></pre>
+<p>Expected behavior:</p>
+<pre><code class="language-bash">ruff check --output-format=concise backend
+backend/src/subdir/log/some_logging_lib.py:1:1: D100 Missing docstring in public module
+backend/src/subdir/log/some_logging_lib.py:1:5: D103 Missing docstring in public function
+Found 2 errors.
+
+cd backend
+
+ruff check --output-format=concise
+src/subdir/log/some_logging_lib.py:1:1: D100 Missing docstring in public module
+src/subdir/log/some_logging_lib.py:1:5: D103 Missing docstring in public function
+Found 2 errors.
+
+</code></pre>
+<p>Here are two log entries I was able to see when added <code>--verbose</code> flag:</p>
+<pre><code>[2024-10-09][16:25:25][ignore::walk][DEBUG] ignoring /tmp/ruff-ignore-subdir-bug/backend/log: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/ruff-ignore-subdir-bug/.gitignore&quot;), original: &quot;/backend/log&quot;, actual: &quot;backend/log&quot;, is_whitelist: false, is_only_dir: false })))
+[2024-10-09][16:25:25][ignore::walk][DEBUG] ignoring /tmp/ruff-ignore-subdir-bug/backend/src/subdir/log: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/ruff-ignore-subdir-bug/.gitignore&quot;), original: &quot;/backend/log&quot;, actual: &quot;backend/log&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p>Also, I might be not that familiar with rust, but I checked Cargo.toml file, and I was able to find that you are using ignore crate, which is a part of ripgrep repository. So this issue might be related: https://github.com/BurntSushi/ripgrep/issues/2778</p>
+<h3>2. Ruff doesn't apply <code>respect-gitignore = false</code> when pyproject.toml is not in the same directory where you run command</h3>
+<p>I can't tell too much details about the real project where I faced this issue, but we have our pyproject.toml located inside of backend directory and not in the root, since there are other directories and pieces of functionality, which also might contain python code, and they are not using ruff linter. So running linter from the root of repository without arguments will produce a lot of errors. That's why I run commands like <code>ruff check backend</code> or <code>cd backend &amp;&amp; ruff check</code>, but not <code>ruff check</code> from root.</p>
+<p>So once I have faced the issue above with .gitignore and sub-directories, I have added the following to the backend/pyproject.toml file:</p>
+<pre><code class="language-toml">[tool.ruff]
+respect-gitignore = false
+</code></pre>
+<p>And here is what it shows.</p>
+<p>Actual behavior:</p>
+<pre><code class="language-bash">ruff check --output-format=concise backend
+All checks passed!
+
+cd backend
+
+ruff check --output-format=concise
+log/example.py:1:1: D100 Missing docstring in public module
+log/example.py:5:5: D103 Missing docstring in public function
+src/subdir/log/some_logging_lib.py:1:1: D100 Missing docstring in public module
+src/subdir/log/some_logging_lib.py:1:5: D103 Missing docstring in public function
+Found 4 errors.
+</code></pre>
+<p>Expected behavior:
+🤷‍♂️ 😄
+I don't know whether it's a correct expectation, but since ruff already applies lint rules to backend/ and it's sub-directories, listed in backend/pyproject.toml, it feels logical that it should apply this <code>respect-gitignore</code> setting as well.</p>
+<p>We don't have a configured git hooks via pre-commit, or something similar, so I have added the following pre-commit hook <code>ruff check backend</code> for myself, since ruff is fast enough to do that (thank you so much for that, btw). And once I have found that there might be issues with ignoring sub-directories, I changed the command to be <code>ruff check --no-respect-gitignore backend</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-13 15:24</div>
+            <div class="timeline-body"><p>Hi @mihnatenko</p>
+<blockquote>
+<p>Ruff mistakenly ignores backend/src/subdir/log, while it shouldn't.</p>
+</blockquote>
+<p>Can you explain me why you think that Ruff shouldn't ignore the file? What I understand from the description is that the file gets ignored because you ignored the entire <code>backend/log</code>by listing it in the <code>.gitignore</code> file.</p>
+<blockquote>
+<p>I don't know whether it's a correct expectation, but since ruff already applies lint rules to backend/ and it's sub-directories, listed in backend/pyproject.toml, it feels logical that it should apply this respect-gitignore setting as well.</p>
+</blockquote>
+<p>The <code>respect-gitignore</code> setting is special because it changes how Ruff traverses the directories and how it finds relevant files and configuration. E.g. the <code>backend</code> folder could be gitignored, in which case it shouldn't visit the directory at all.</p>
+<p>That's why the <code>respect-gitignore</code> is only respected in the root configuration. The root configuration is the closest configuration of the current working directory, only considering the files in the directory itself or in any ancestor directory.</p>
+<p>You could consider adding a <code>ruff check --config backend/pyproject.toml</code> alias to your project (e.g. an npm script, just file, ...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-10-13 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mihnatenko">@mihnatenko</a> on 2024-10-14 10:52</div>
+            <div class="timeline-body"><p>Hello @MichaReiser</p>
+<blockquote>
+<p>Can you explain me why you think that Ruff shouldn't ignore the file?</p>
+</blockquote>
+<p>Since git doesn't ignore it. You can verify that by ~repeating steps in that reproducible example I prepared above~ Ok, I have prepared even smaller reproducible example, so that you can simply copy-paste it and run from a single input.</p>
+<pre><code class="language-sh">mkdir ruff-ignore-subdir-bug &amp;&amp; cd ruff-ignore-subdir-bug
+git init
+echo &quot;backend/log&quot; &gt; .gitignore
+mkdir -p backend/log
+mkdir -p backend/src/subdir/log
+echo &quot;# no docstring, but should be ignored&quot; &gt; backend/log/ignore_me.py
+echo &quot;# no docstring, should NOT be ignored&quot; &gt; backend/src/subdir/log/do_not_ignore_me.py
+
+</code></pre>
+<p>Git does ignore <code>backend/log</code> and all of it's contents, but doesn't ignore <code>backend/src/subdir/log</code>. You can verify that by running:</p>
+<pre><code class="language-sh">/tmp/ruff-ignore-subdir-bug ❯ git add .gitignore backend/
+/tmp/ruff-ignore-subdir-bug ❯ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+	new file:   .gitignore
+	new file:   backend/src/subdir/log/do_not_ignore_me.py
+</code></pre>
+<p>And this in my opinion is expected behavior, since if you would need to ignore any arbitrarily nested <code>log</code> directory inside of <code>backend</code>, you would add <code>backend/**/log</code> to .gitignore, not <code>backend/log</code>.</p>
+<p>But ruff ignores both <code>backend/log</code> and <code>backend/src/subdir/log</code>:</p>
+<pre><code class="language-sh">/tmp/ruff-ignore-subdir-bug ❯ ruff check --select=D100 backend
+warning: No Python files found under the given path(s)
+All checks passed!
+
+/tmp/ruff-ignore-subdir-bug ❯ cd backend
+
+/tmp/ruff-ignore-subdir-bug/backend ❯ ruff check --select=D100
+warning: No Python files found under the given path(s)
+All checks passed!
+</code></pre>
+<p>So does ripgrep. But ripgrep does that in a different manner. It works correctly when executed from root of the repository, but incorrectly when executed from backend:</p>
+<pre><code class="language-sh">/tmp/ruff-ignore-subdir-bug ❯ rg &quot;be ignored&quot;
+backend/src/subdir/log/do_not_ignore_me.py
+1:# no docstring, so should NOT be ignored
+
+/tmp/ruff-ignore-subdir-bug ❯ cd backend
+
+/tmp/ruff-ignore-subdir-bug/backend ❯ rg &quot;be ignored&quot;
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<p>I presume both ruff and ripgrep do that incorrectly, since they use the same <code>ignore</code> crate, and the same issue, described here, applies to them: https://github.com/BurntSushi/ripgrep/issues/2778</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 12:11</div>
+            <div class="timeline-body"><p>Thanks for the example.</p>
+<p>I tried reproducing the problem you're mentioning but running ruff in the directory when enabling the pydocstyle rules does flag the missing docstring in <code>do_not_ignore_me.py</code></p>
+<pre><code class="language-bash">uvx ruff check . -v --select D
+[2024-10-14][14:10:15][ruff::resolve][DEBUG] Using configuration file (via parent) at: /home/micha/astral/test/pyproject.toml
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+[2024-10-14][14:10:15][ignore::gitignore][DEBUG] opened gitignore file: /home/micha/.gitignore
+[2024-10-14][14:10:15][ignore::gitignore][DEBUG] opened gitignore file: /home/micha/.gitignore
+[2024-10-14][14:10:15][ignore::gitignore][DEBUG] opened gitignore file: /home/micha/astral/test/.git/info/exclude
+[2024-10-14][14:10:15][ignore::gitignore][DEBUG] opened gitignore file: /home/micha/astral/test/ruff-ignore-subdir-bug/.gitignore
+[2024-10-14][14:10:15][ignore::gitignore][DEBUG] opened gitignore file: /home/micha/astral/test/ruff-ignore-subdir-bug/.git/info/exclude
+[2024-10-14][14:10:15][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/micha/astral/test/ruff-ignore-subdir-bug/.git&quot;
+[2024-10-14][14:10:15][ignore::walk][DEBUG] ignoring /home/micha/astral/test/ruff-ignore-subdir-bug/backend/log: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/micha/astral/test/ruff-ignore-subdir-bug/.gitignore&quot;), original: &quot;backend/log&quot;, actual: &quot;backend/log&quot;, is_whitelist: false, is_only_dir: false })))
+[2024-10-14][14:10:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/micha/astral/test/ruff-ignore-subdir-bug/backend/src/subdir/log/do_not_ignore_me.py&quot;
+[2024-10-14][14:10:15][ruff::commands::check][DEBUG] Identified files to lint in: 5.132392ms
+[2024-10-14][14:10:15][ruff::diagnostics][DEBUG] Checking: /home/micha/astral/test/ruff-ignore-subdir-bug/backend/src/subdir/log/do_not_ignore_me.py
+[2024-10-14][14:10:15][ruff::commands::check][DEBUG] Checked 1 files in: 388.274µs
+backend/src/subdir/log/do_not_ignore_me.py:1:1: D100 Missing docstring in public module
+Found 1 error.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mihnatenko">@mihnatenko</a> on 2024-10-15 08:17</div>
+            <div class="timeline-body"><p>Please try <code>uvx ruff check backend -v --select D</code></p>
+<p>As I mentioned above, the reason we are running ruff only for backend is because we have another pieces of functionality, written in python (behave tests, to be more precise). We are not managing their code and they didn't switch to ruff yet.</p>
+<p>So calling <code>ruff check</code> from root will produce a lot of errors, which are not applicable to backend. So we are either running <code>ruff check backend</code>, or <code>cd backend</code> and then <code>ruff check</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-15 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-10-15 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-10-15 08:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandoncazander">@brandoncazander</a> on 2025-01-03 16:37</div>
+            <div class="timeline-body"><p>Just wanted to say that I was bit by this as well, in the same manner, reproducible with a small git repo (using ruff 0.8.5):</p>
+<pre><code class="language-bash">mkdir /tmp/ruff-repro
+cd /tmp/ruff-repro
+git init
+cat &lt;&lt;EOF | git apply -
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..f189725
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++web/__init__.py
+diff --git a/web/myapp/__init__.py b/web/myapp/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/web/myapp/models/__init__.py b/web/myapp/models/__init__.py
+new file mode 100644
+index 0000000..da5fac8
+--- /dev/null
++++ b/web/myapp/models/__init__.py
+@@ -0,0 +1 @@
++from foo import *
+diff --git a/web/myapp/models/foo.py b/web/myapp/models/foo.py
+new file mode 100644
+index 0000000..e69de29
+EOF
+</code></pre>
+<p>Running <code>ruff check .</code> yields the expected F403 violation in <code>web/myapp/models/__init__.py</code>:</p>
+<pre><code class="language-bash">$ ruff --verbose check .
+[2025-01-03][08:29:35][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-01-03][08:29:35][ignore::gitignore][DEBUG] opened gitignore file: /home/brandon.cazander@bruker.com/.config/git/.gitignore
+[2025-01-03][08:29:35][ignore::gitignore][DEBUG] opened gitignore file: /tmp/foo/.gitignore
+[2025-01-03][08:29:35][ignore::gitignore][DEBUG] opened gitignore file: /tmp/foo/.git/info/exclude
+[2025-01-03][08:29:35][ignore::walk][DEBUG] ignoring /tmp/foo/.ruff_cache: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/brandon.cazander@bruker.com/.config/git/.gitignore&quot;), original: &quot;.ruff_cache&quot;, actual: &quot;**/.ruff_cache&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-01-03][08:29:35][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/tmp/foo/.git&quot;
+[2025-01-03][08:29:35][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/foo/web/myapp/__init__.py&quot;
+[2025-01-03][08:29:35][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/foo/web/myapp/models/__init__.py&quot;
+[2025-01-03][08:29:35][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/foo/web/myapp/models/foo.py&quot;
+[2025-01-03][08:29:35][ruff::commands::check][DEBUG] Identified files to lint in: 7.007262ms
+[2025-01-03][08:29:35][ruff::commands::check][DEBUG] Checked 3 files in: 195.033µs
+web/myapp/models/__init__.py:1:1: F403 `from foo import *` used; unable to detect undefined names
+  |
+1 | from foo import *
+  | ^^^^^^^^^^^^^^^^^ F403
+  |
+
+Found 1 error.
+</code></pre>
+<p>But <code>ruff check web</code> does not:</p>
+<pre><code class="language-bash">$ ruff --verbose check web
+[2025-01-03][08:29:37][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-01-03][08:29:37][ignore::gitignore][DEBUG] opened gitignore file: /home/brandon.cazander@bruker.com/.config/git/.gitignore
+[2025-01-03][08:29:37][ignore::gitignore][DEBUG] opened gitignore file: /tmp/foo/.gitignore
+[2025-01-03][08:29:37][ignore::gitignore][DEBUG] opened gitignore file: /tmp/foo/.git/info/exclude
+[2025-01-03][08:29:37][ignore::walk][DEBUG] ignoring /tmp/foo/web/myapp/__init__.py: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/foo/.gitignore&quot;), original: &quot;web/__init__.py&quot;, actual: &quot;web/__init__.py&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-01-03][08:29:37][ignore::walk][DEBUG] ignoring /tmp/foo/web/myapp/models/__init__.py: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/foo/.gitignore&quot;), original: &quot;web/__init__.py&quot;, actual: &quot;web/__init__.py&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-01-03][08:29:37][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/foo/web/myapp/models/foo.py&quot;
+[2025-01-03][08:29:37][ruff::commands::check][DEBUG] Identified files to lint in: 3.593057ms
+[2025-01-03][08:29:37][ruff::commands::check][DEBUG] Checked 1 files in: 43.404µs
+All checks passed!
+</code></pre>
+<hr />
+<p>Even more perplexing to me is that if I repeatedly run <code>ruff --verbose check --no-cache web</code>, it will sometimes work (catching F403 despite the <code>.gitignore</code> exclude behavior). When this happens, I can see in the verbose logs that it's still reading the <code>.gitignore</code> file, but never logs about matching on the specific path.</p>
+<p>However, this only happens in my main repository and I haven't been able to reproduce this inconsistent behavior in the toy repo example above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17392.html">astral-sh/ruff#17392</a> on 2025-04-14 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18720.html">astral-sh/ruff#18720</a> on 2025-06-17 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-18 12:55</div>
+            <div class="timeline-body"><p>Running ruff at the root of the repro now seems to work. The issue really is when running it in the <code>backend</code> directory. It then incorrectly matches <code>/Users/micha/astral/test/ignore-bug/backend/src/subdir/log</code> against <code>Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/micha/astral/test/ignore-bug/.gitignore&quot;), original: &quot;/backend/log&quot;, actual: &quot;backend/log&quot;, is_whitelist: false, is_only_dir: false })))</code>. Which is somewhat surprising but that seems like a bug in the ignore crate. But not sure where to start looking :) @BurntSushi any ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-18 14:42</div>
+            <div class="timeline-body"><p>Yeah I think the bug linked in the OP here is probably the right one: https://github.com/BurntSushi/ripgrep/issues/2778</p>
+<p>Looks like it might be fixed by this PR: https://github.com/BurntSushi/ripgrep/pull/2933</p>
+<p>So I think I just need to get that merged and released. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-31 17:45</div>
+            <div class="timeline-body"><p>I believe this issue was resolved by our upgrade to ignore 0.4.24 in https://github.com/astral-sh/ruff/pull/20979 and released in Ruff 0.14.3. Using the original example:</p>
+<pre><code>$ tree
+.
+└── backend
+    ├── log
+    │   └── example.py
+    ├── pyproject.toml
+    └── src
+        └── subdir
+            └── log
+                └── some_logging_lib.py
+
+6 directories, 3 files
+$ uvx ruff@0.14.2 check --output-format=concise backend
+All checks passed!
+$ uvx ruff@0.14.3 check --output-format=concise backend
+backend/src/subdir/log/some_logging_lib.py:1:1: D100 Missing docstring in public module
+backend/src/subdir/log/some_logging_lib.py:1:5: D103 Missing docstring in public function
+Found 2 errors.
+$ cd backend
+$ uvx ruff@0.14.2 check --output-format=concise
+All checks passed!
+$ uvx ruff@0.14.3 check --output-format=concise
+src/subdir/log/some_logging_lib.py:1:1: D100 Missing docstring in public module
+src/subdir/log/some_logging_lib.py:1:5: D103 Missing docstring in public function
+Found 2 errors.
+</code></pre>
+<p>which I believe is the expected behavior!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-31 17:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

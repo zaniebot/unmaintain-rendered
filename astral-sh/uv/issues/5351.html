@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd UV Cache behaviour around freshly published package - astral-sh/uv #5351</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Odd UV Cache behaviour around freshly published package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5351">#5351</a>
+        opened by <a href="https://github.com/jbw-vtl">@jbw-vtl</a>
+        on 2024-07-23 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 17:05</div>
+            <div class="timeline-body"><p>Hi Team,</p>
+<p>We unfortunately ran into a nasty issue with uv seemingly incorrectly handling the repository cache for a newly released package (in this case <code>importlib-metadata==8.1.0</code> which was released this morning)</p>
+<p>Poetry happily installs the version (assuming they are handling cache differently), however UV fails to compile, complaining <code>8.1.0</code> is not found. The previous version <code>8.0.0</code> is found as expected.</p>
+<p>Removing the cache or running without cache succeeds.
+Now locally this would be fine, however this is happening in our CI environment, which is using a mix of <code>uv</code> and <code>poetry</code>, dropping the cache which is shared across builds would work as a one-time, however is not sustainable of course.</p>
+<p>Struggling to investigate why UV might behave like this, any help is appreciated.
+Compiling all the info below with my current investigation.</p>
+<pre><code>uv version: 0.2.27
+Python: 3.9.19
+Platform: Windows
+</code></pre>
+<pre><code class="language-text"># requirements.txt
+importlib-metadata==8.1.0
+</code></pre>
+<pre><code class="language-bash">uv pip compile .\requirements.txt -vvv
+</code></pre>
+<pre><code>    0.000048s DEBUG uv uv 0.2.27
+ uv_requirements::specification::from_source source=.\requirements.txt
+ uv_python::discovery::find_best_python_installation
+    0.004312s   0ms DEBUG uv_python::discovery Starting Python discovery for any Python
+    0.004420s   0ms DEBUG uv_python::discovery Looking for exact match for request any Python
+    0.004539s   0ms DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.005217s   0ms DEBUG uv_python::discovery Found cpython 3.9.19 at `&lt;...&gt;\.venv\Scripts\python.exe` (active virtual environment)
+    0.005450s DEBUG uv::commands::pip::compile Using Python 3.9.19 interpreter at &lt;...&gt;\.venv\Scripts\python.exe for builds
+ uv_client::linehaul::linehaul
+    0.006788s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_resolver::resolver::solve
+    0.009353s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.9.19
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.009903s   0ms DEBUG uv_resolver::resolver Adding direct dependency: importlib-metadata==8.1.0
+   uv_resolver::resolver::choose_version package=importlib-metadata
+ uv_resolver::resolver::process_request request=Versions importlib-metadata
+   uv_client::registry_client::simple_api package=importlib-metadata
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-uv-cache&gt;\simple-v9\dcb525f06f275a06\importlib-metadata.rkyv
+ uv_resolver::resolver::process_request request=Prefetch importlib-metadata ==8.1.0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-uv-cache&gt;\\simple-v9\\dcb525f06f275a06\\importlib-metadata.rkyv&quot;
+        0.011602s   0ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+   uv_resolver::version_map::from_metadata
+      0.012114s   2ms DEBUG uv_resolver::resolver Searching for a compatible version of importlib-metadata (==8.1.0)
+    0.012227s   2ms DEBUG uv_resolver::resolver No compatible version found for: importlib-metadata
+  x No solution found when resolving dependencies:
+  `-&gt; Because there is no version of importlib-metadata==8.1.0 and you require importlib-metadata==8.1.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>If I understand the output correctly, it believes the cache file for importlib-metadata to be up to date.
+I am however unsure how to parse the cache headers / any other information that would indicate why UV thinks so.</p>
+<p>Below a manual head request for that index
+<code>HEAD https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/</code>
+<img src="https://github.com/user-attachments/assets/8228bb24-7b92-40e1-b6fb-8b4934f1fd28" alt="image" /></p>
+<p>The repo does have the <code>8.1.0</code> (we essentially have a pass through mirror using nexus with very minimal caching, should have gotten the new release shortly after it was pushed on PyPi)
+<code>GET https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/</code></p>
+<pre><code class="language-html">...
+&lt;a href=&quot;../../packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c&quot; rel=&quot;internal&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; &gt;importlib_metadata-8.1.0-py3-none-any.whl&lt;/a&gt;&lt;br/&gt;
+        &lt;a href=&quot;../../packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0.tar.gz#sha256=fcdcb1d5ead7bdf3dd32657bb94ebe9d2aabfe89a19782ddc32da5041d6ebfb4&quot; rel=&quot;internal&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; &gt;importlib_metadata-8.1.0.tar.gz&lt;/a&gt;&lt;br/&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Now the plot thickens, when running without cache, uv correctly installs / compiles the package (as expected I assume)</p>
+<pre><code class="language-bash">uv pip compile .\requirements.txt --no-cache -v
+</code></pre>
+<pre><code>DEBUG uv 0.2.27
+DEBUG Starting Python discovery for any Python
+DEBUG Looking for exact match for request any Python
+DEBUG Searching for Python interpreter in system path or `py` launcher
+DEBUG Found cpython 3.9.19 at `&lt;...&gt;\.venv\Scripts\python.exe` (active virtual environment)
+DEBUG Using Python 3.9.19 interpreter at &lt;...&gt;\.venv\Scripts\python.exe for builds
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.9.19
+DEBUG Adding direct dependency: importlib-metadata==8.1.0
+DEBUG No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+DEBUG Searching for a compatible version of importlib-metadata (==8.1.0)
+DEBUG Selecting: importlib-metadata==8.1.0 [compatible] (importlib_metadata-8.1.0-py3-none-any.whl)
+DEBUG No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+WARN Range requests unsupported when fetching metadata for importlib-metadata==8.1.0; downloading wheel directly (range requests are not supported)
+DEBUG No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+DEBUG Adding transitive dependency for importlib-metadata==8.1.0: zipp&gt;=0.5
+DEBUG No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/zipp/
+DEBUG Searching for a compatible version of zipp (&gt;=0.5)
+DEBUG Selecting: zipp==3.19.2 [compatible] (zipp-3.19.2-py3-none-any.whl)
+DEBUG No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/zipp/3.19.2/zipp-3.19.2-py3-none-any.whl#sha256=f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c      
+WARN Range requests unsupported when fetching metadata for zipp==3.19.2; downloading wheel directly (range requests are not supported)
+DEBUG No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/zipp/3.19.2/zipp-3.19.2-py3-none-any.whl#sha256=f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c      
+DEBUG Tried 2 versions: importlib-metadata 1, zipp 1
+DEBUG Split specific environment resolution took 0.263s
+Resolved 2 packages in 266ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile .\requirements.txt --no-cache
+importlib-metadata==8.1.0
+    # via -r ./requirements.txt
+zipp==3.19.2
+    # via importlib-metadata
+</code></pre>
+<p>Now dropping all of my cache would probably resolve the issue as well, however more interestingly, dropping just the importlib-metadata cache does <strong>not</strong> resolve the issue.</p>
+<pre><code class="language-bash">uv cache clean importlib-metadata -vvv
+</code></pre>
+<pre><code>0.000048s DEBUG uv uv 0.2.27
+No cache entries found for importlib-metadata
+</code></pre>
+<p>So far so good, however running the original command again, it clearly still has a cache file relating to importlib-metadata (...\simple-v9\dcb525f06f275a06\importlib-metadata.rkyv, not familiar with how to read rust .rkyv, however opening with text editor clearly shows there's several importlib-metadata version in there, no 8.1.0). Would expect this to be deleted, but then maybe that's me misunderstanding how some internal work.</p>
+<pre><code class="language-bash">uv pip compile .\requirements.txt -vvv
+</code></pre>
+<pre><code>   0.000056s DEBUG uv uv 0.2.27
+ uv_requirements::specification::from_source source=.\requirements.txt
+ uv_python::discovery::find_best_python_installation 
+    0.005373s   0ms DEBUG uv_python::discovery Starting Python discovery for any Python
+    0.005467s   0ms DEBUG uv_python::discovery Looking for exact match for request any Python
+    0.005672s   0ms DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.006549s   1ms DEBUG uv_python::discovery Found cpython 3.9.19 at `&lt;...&gt;\.venv\Scripts\python.exe` (active virtual environment)
+    0.006925s DEBUG uv::commands::pip::compile Using Python 3.9.19 interpreter at &lt;...&gt;\.venv\Scripts\python.exe for builds
+ uv_client::linehaul::linehaul 
+    0.008426s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+    0.011665s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.9.19
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.012436s   0ms DEBUG uv_resolver::resolver Adding direct dependency: importlib-metadata==8.1.0
+   uv_resolver::resolver::choose_version package=importlib-metadata
+ uv_resolver::resolver::process_request request=Versions importlib-metadata
+   uv_client::registry_client::simple_api package=importlib-metadata
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v9\dcb525f06f275a06\importlib-metadata.rkyv
+ uv_resolver::resolver::process_request request=Prefetch importlib-metadata ==8.1.0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v9\\dcb525f06f275a06\\importlib-metadata.rkyv&quot;
+        0.014333s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+   uv_resolver::version_map::from_metadata
+      0.015031s   2ms DEBUG uv_resolver::resolver Searching for a compatible version of importlib-metadata (==8.1.0)
+    0.015177s   3ms DEBUG uv_resolver::resolver No compatible version found for: importlib-metadata
+  x No solution found when resolving dependencies:
+  `-&gt; Because there is no version of importlib-metadata==8.1.0 and you require importlib-metadata==8.1.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>So two questions:</p>
+<ul>
+<li>Why does UV think the cache is still valid / how do I go ahead with debugging? (fairly important as this is impacting CI builds using fresh versions)</li>
+<li>Why does UV still persist this <code>*.rkyv</code> file despite deleting the cache for the package? (not so important)</li>
+</ul>
+<p>Any help is massively appreciated as always</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:15</div>
+            <div class="timeline-body"><p>So, as background, we respect HTTP caching headers for the simple API responses (so, e.g., we cache PyPI responses for 10 minutes, per their headers). Are you seeing this behavior consistently, or was it only for the first 10 minutes after publishing? (I assume the latter.) Either way, running <code>uv cache clean</code> should've resolved the issue -- I think there might a bug there, that we're missing the <code>.rkyv</code> files. I'll fix that now.</p>
+<p>Is there any <code>Cache-Control</code> header on your proxy response? Perhaps some header is indicating that we can cache it indefinitely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 17:15</div>
+            <div class="timeline-body"><p>Adding on, after running the compile once with <code>--refresh-package importlib-metadata</code> following all the previous steps, it does compile correctly.
+Subsequent calls are now working as intended, assuming the cache was refreshed.</p>
+<p>Which I found in https://github.com/astral-sh/uv/issues/2538</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 17:15</div>
+            <div class="timeline-body"><p>Thanks for the thorough write-up! Some people on the team are more familiar with the cache and can probably weigh in on what's going on, but hopefully I can unblock you quickly.</p>
+<p>Unlike pip, uv respects the <code>max-age</code> cache response from the registry which is generally 10 minutes (context on that in https://github.com/astral-sh/uv/issues/505). If you attempt to install the package within that range, we will use the cached version instead of a newly released one. Best practice for ensuring the latest version of a package is used is to use <code>--refresh-package &lt;name&gt;</code>.</p>
+<p>Did this happen outside that range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 17:15</div>
+            <div class="timeline-body"><p>Ah three comments at once :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:18</div>
+            <div class="timeline-body"><p>The <code>uv cache clean importlib-metadata</code> <em>not</em> removing the <code>.rkyv</code> file is indeed a bug that I just reproduced. I think it only applies to non-PyPI indexes. I'll fix now: https://github.com/astral-sh/uv/issues/5352</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 17:23</div>
+            <div class="timeline-body"><p>The nexus repo response doesn't set any cache header from what I can see (sent the response in the screenshot) but maybe i'm not looking at the right thing.
+Both me and my dev-ops team are a bit puzzled, we found configuration for the cache control towards PyPi but not for incoming requests (to our repo) itself.</p>
+<p>We noticed this first occurrence about 30 minutes after the <code>importlib-metadata==8.1.0</code> was released and were still running into the same issue about 3 hours later at which point we decided to drop the whole cache in our CI environment.
+That did &quot;resolve&quot; the issue, however could pop up again.
+Are there any tools available to dig into the cache to understand which cache headers etc might UV have seen?
+When this happens again (will try to replicate over the coming days), not sure how I could go further with the debugging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:33</div>
+            <div class="timeline-body"><p>If you run, e.g., <code>RUST_LOG=trace uv pip install flask --reinstall -n -vvv</code>, you'll get way more output including things like:</p>
+<pre><code>0.211284s  31ms TRACE uv_client::httpcache cached request https://files.pythonhosted.org/packages/bb/2a/10164ed1f31196a2f7f3799368a821765c62851ead0e630ab52b8e14b4d0/blinker-1.8.2-py3-none-any.whl is storable because its response has a 'public' cache-control directive
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 17:56</div>
+            <div class="timeline-body"><p>Thanks a lot, that indeed is giving a lot better info.
+Unfortunately the cache got cleaned using the <code>--refresh-package</code>, however the output might still be helpful</p>
+<p>Apologies for the big blob below, cut out anything not related to importlib-metadata.
+Not too familiar with the output, but some things stand out</p>
+<ul>
+<li><code>0.011418s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/ is storable because its response has a heuristically cacheable status code 200</code><br />
+Not sure how to read this, however it looks like it keeps the cached response based on a 200? or does that mean its going to cache the response because it was successful.</li>
+<li>However next line then mentions it found a fresh response for the same request</li>
+<li>Reading through all the logs, not seeing any info relating to cache control headers, merely <code>is storable because its response has a heuristically cacheable status code 200</code></li>
+<li>Also saw this warning, does that mean our nexus repo does not support range requests or uv in the configuration we are running with does not support it? <code>WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for importlib-metadata==8.1.0; downloading wheel directly (range requests are not supported)</code></li>
+<li>We are running nexus repo version <code>3.57.1-03</code> from July 2023 (about a year behind) in case that's relevant. Looked through all newer releases and could not find any references to the <code>Accept-Ranges</code> header. In the index responses headers am not seeing that header set. Assuming we could get some additional performance boost here if that's enabled to reduce network usage.</li>
+</ul>
+<pre><code> uv_resolver::resolver::process_request request=Versions importlib-metadata
+   uv_resolver::resolver::choose_version package=importlib-metadata
+   uv_client::registry_client::simple_api package=importlib-metadata
+      0.010308s   0ms TRACE uv_client::registry_client Fetching metadata for importlib-metadata from https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v9\dcb525f06f275a06\importlib-metadata.rkyv
+ uv_resolver::resolver::process_request request=Prefetch importlib-metadata ==8.1.0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v9\\dcb525f06f275a06\\importlib-metadata.rkyv&quot;
+        0.011418s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/ is storable because its response has a heuristically cacheable status code 200
+        0.011516s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+   uv_resolver::version_map::from_metadata
+    0.011933s TRACE uv_resolver::resolver Received package metadata for: importlib-metadata
+    0.012031s   1ms TRACE uv_resolver::candidate_selector selecting candidate for package importlib-metadata with range Range { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } with 118 remote versions
+      0.012130s   2ms DEBUG uv_resolver::resolver Searching for a compatible version of importlib-metadata (==8.1.0)
+      0.012218s   2ms TRACE uv_resolver::candidate_selector selecting candidate for package importlib-metadata with range Range { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } with 118 remote versions
+      0.012295s   2ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;importlib-metadata&quot;) with range Range { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
+    0.012401s   1ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;importlib-metadata&quot;) with range Range { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
+      0.012475s   2ms DEBUG uv_resolver::resolver Selecting: importlib-metadata==8.1.0 [compatible] (importlib_metadata-8.1.0-py3-none-any.whl)
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=importlib-metadata==8.1.0
+   uv_resolver::resolver::get_dependencies_forking package=importlib-metadata, version=8.1.0
+     uv_client::registry_client::wheel_metadata built_dist=importlib-metadata==8.1.0
+     uv_resolver::resolver::get_dependencies package=importlib-metadata, version=8.1.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\importlib-metadata\importlib_metadata-8.1.0-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\importlib-metadata\\importlib_metadata-8.1.0-py3-none-any.msgpack&quot;
+              0.013232s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\importlib-metadata\importlib_metadata-8.1.0-py3-none-any.msgpack
+            0.013300s   0ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+           uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c&quot;
+              0.013457s   0ms TRACE uv_client::cached_client Sending fresh HEAD request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+              0.013574s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+              0.013640s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c is unauthenticated, checking cache
+              0.013724s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+              0.013788s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+              0.013905s   0ms TRACE hyper_util::client::legacy::pool checkout waiting for idle connection: (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.014008s   0ms DEBUG reqwest::connect starting new connection: https://&lt;internal-repo&gt;/
+              0.014122s   0ms TRACE hyper_util::client::legacy::connect::http Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;&lt;internal-repo&gt;&quot;), port=None
+    0.014211s DEBUG hyper_util::client::legacy::connect::dns resolving host=&quot;&lt;internal-repo&gt;&quot;
+              0.025801s  12ms DEBUG hyper_util::client::legacy::connect::http connecting to &lt;ip&gt;
+              0.041181s  27ms DEBUG hyper_util::client::legacy::connect::http connected to &lt;ip&gt;
+              0.077806s  64ms TRACE hyper_util::client::legacy::client http1 handshake complete, spawning background dispatcher task
+              0.078098s  64ms TRACE hyper_util::client::legacy::pool checkout dropped for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.093198s  79ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.093335s  79ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.093472s  80ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c is storable because its response has a heuristically cacheable status code 200
+           uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\importlib-metadata\importlib_metadata-8.1.0-py3-none-any.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=importlib_metadata-8.1.0-py3-none-any.whl
+      0.093978s  81ms  WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for importlib-metadata==8.1.0; downloading wheel directly (range requests are not supported)
+     uv_client::cached_client::get_serde
+       uv_client::cached_client::get_cacheable
+         uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\importlib-metadata\importlib_metadata-8.1.0-py3-none-any.http
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\importlib-metadata\\importlib_metadata-8.1.0-py3-none-any.http&quot;
+          0.094793s   0ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c is storable because its response has a heuristically cacheable status code 200
+          0.094893s   0ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c
+    0.095682s TRACE uv_resolver::resolver Received built distribution metadata for: importlib-metadata==8.1.0
+    0.095849s  86ms DEBUG uv_resolver::resolver Adding transitive dependency for importlib-metadata==8.1.0: zipp&gt;=0.5
+    0.095927s  86ms  INFO pubgrub::internal::partial_solution add_decision: importlib-metadata @ 8.1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:59</div>
+            <div class="timeline-body"><p>\cc @BurntSushi who can probably explain the headers / behavior (but is working on some other high-priority things right now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 18:00</div>
+            <div class="timeline-body"><blockquote>
+<p>We are running nexus repo version 3.57.1-03 from July 2023 (about a year behind) in case that's relevant. Looked through all newer releases and could not find any references to the Accept-Ranges header. In the index responses headers am not seeing that header set. Assuming we could get some additional performance boost here if that's enabled to reduce network usage.</p>
+</blockquote>
+<p>Yeah, if your index supports range requests, we can resolve faster. Even better are the <code>.metadata</code> files that PyPI exposes, like: https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl.metadata</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 18:22</div>
+            <div class="timeline-body"><p>interesting not seen this. Nexus repo definitely does not have support for these unfortunately.
+Will open a request with our point of contact to further explore the <code>Accept-Ranges</code> and <code>Cache-Control</code> headers for Python repos in Nexus, from what I can tell it supports neither currently.</p>
+<p>Either way, keen to get some further input from you guys whenever available, it seems possible uv is not handling caching for repo's without Cache-Control headers properly / is too relaxed with it's TTL for these cases.
+Will feed back if this pops up again with hopefully more decisive trace logs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 18:27</div>
+            <div class="timeline-body"><p>Will take a closer look at the logs when we can!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-23 18:34</div>
+            <div class="timeline-body"><p>From a quick glance, I'm not seeing anything interesting with respect to the HTTP cache semantics we have implemented. It seems to detect a &quot;fresh&quot; response without issue, which means, &quot;the data we have cached is fresh after considering HTTP cache headers.&quot; And thus, a &quot;fresh&quot; response is one that can be used.</p>
+<p>The only thing that doesn't seemed to be cached is this:</p>
+<pre><code>0.013232s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\importlib-metadata\importlib_metadata-8.1.0-py3-none-any.msgpack
+</code></pre>
+<p>But that's not in our HTTP semantics. That's just a result of not being able to find any cached file for that wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-23 18:34</div>
+            <div class="timeline-body"><p>The <code>httpcache</code> module <em>should</em> be pretty noisy if there is something exciting going on there.</p>
+<p>Of course, the problem could be outside that module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-24 10:02</div>
+            <div class="timeline-body"><p>Just ran into another case with the cache thinking it's up to date for a package pushed yesterday evening (<code>pyspnego==0.11.1</code>).</p>
+<p>Same behavior, new version for several hours (this time &gt;~12), but UV thinking it's cache is up to date.</p>
+<p>Got the full trace output this time.
+Realized there was a new version <code>0.2.28</code> available, so upgraded and ran again without making any cache change which was now successful.
+Included both full verbose + trace outputs below.</p>
+<p>Going through the release notes, seeing multiple bug fixes that could be cache related however not sure.
+Something in the release seemed to have fixed this particular issue.</p>
+<p>Even more interesting, downgrading to <code>0.2.27</code> fails again, following the successful compile on <code>0.2.28</code></p>
+<p>Failing</p>
+<pre><code>python: 3.9.19
+system: windows (however same issue is happening in our debian based CI env)
+uv: 0.2.27
+</code></pre>
+<pre><code>RUST_LOG=trace uv pip compile requirements.txt -vvv
+</code></pre>
+<pre><code>   0.000102s DEBUG uv uv 0.2.27
+ uv_requirements::specification::from_source source=.\requirements.txt
+   requirements_txt::parse requirements_txt=&quot;.\\requirements.txt&quot;
+ uv_python::discovery::find_best_python_installation
+    0.004466s   0ms DEBUG uv_python::discovery Starting Python discovery for any Python
+    0.004553s   0ms DEBUG uv_python::discovery Looking for exact match for request any Python
+    0.004718s   0ms DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.006704s   2ms TRACE uv_python::interpreter Cached interpreter info for Python 3.9.19, skipping probing: ...\.venv\Scripts\python.exe
+    0.006867s   2ms DEBUG uv_python::discovery Found cpython 3.9.19 at `...\.venv\Scripts\python.exe` (active virtual environment)
+    0.006967s DEBUG uv::commands::pip::compile Using Python 3.9.19 interpreter at ...\.venv\Scripts\python.exe for builds
+ uv_client::linehaul::linehaul
+    0.008412s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_resolver::resolver::solve
+    0.012832s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.9.19
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.013745s   1ms DEBUG uv_resolver::resolver Adding direct dependency: pyspnego==0.11.1
+    0.014003s   1ms  INFO pubgrub::internal::partial_solution add_decision: root @ 0a0.dev0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v9\\dcb525f06f275a06\\pyspnego.rkyv&quot;
+        0.016647s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/ is storable because its response has a heuristically cacheable status code 200
+        0.016785s   2ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+   uv_resolver::version_map::from_metadata
+    0.017355s TRACE uv_resolver::resolver Received package metadata for: pyspnego
+      0.017437s   3ms DEBUG uv_resolver::resolver Searching for a compatible version of pyspnego (==0.11.1)
+      0.017513s   3ms TRACE uv_resolver::candidate_selector selecting candidate for package pyspnego with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } with 34 remote versions
+    0.017616s   2ms TRACE uv_resolver::candidate_selector selecting candidate for package pyspnego with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } with 34 remote versions
+    0.017727s   2ms TRACE uv_resolver::candidate_selector exhausted all candidates for package PackageName(&quot;pyspnego&quot;) with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } after 34 steps
+      0.017841s   3ms TRACE uv_resolver::candidate_selector exhausted all candidates for package PackageName(&quot;pyspnego&quot;) with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } after 34 steps
+    0.017940s   5ms DEBUG uv_resolver::resolver No compatible version found for: pyspnego
+    0.018105s   5ms  INFO pubgrub::internal::core Start conflict resolution because incompat satisfied:
+    pyspnego ==0.11.1 is forbidden
+    0.018247s   5ms  INFO pubgrub::internal::core prior cause: root ==0a0.dev0 is forbidden
+  x No solution found when resolving dependencies:
+  `-&gt; Because there is no version of pyspnego==0.11.1 and you require pyspnego==0.11.1, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>Working</p>
+<pre><code>python: 3.9.19
+system: windows (however same issue is happening in our debian based CI env)
+uv: 0.2.28
+</code></pre>
+<pre><code>RUST_LOG=trace uv pip compile requirements.txt -vvv
+</code></pre>
+<pre><code>    0.000086s DEBUG uv uv 0.2.28
+ uv_requirements::specification::from_source source=.\requirements.txt
+   requirements_txt::parse requirements_txt=&quot;.\\requirements.txt&quot;
+ uv_python::discovery::find_best_python_installation
+    0.003902s   0ms DEBUG uv_python::discovery Starting Python discovery for any Python
+    0.003962s   0ms DEBUG uv_python::discovery Looking for exact match for request any Python
+    0.004011s   0ms DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.004924s   1ms TRACE uv_python::interpreter Cached interpreter info for Python 3.9.19, skipping probing: ...\.venv\Scripts\python.exe
+    0.005024s   1ms DEBUG uv_python::discovery Found cpython 3.9.19 at `...\.venv\Scripts\python.exe` (active virtual environment)
+    0.005114s DEBUG uv::commands::pip::compile Using Python 3.9.19 interpreter at ...\.venv\Scripts\python.exe for builds
+ uv_client::linehaul::linehaul
+    0.006264s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries
+ uv_resolver::resolver::solve
+    0.008844s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.9.19
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.009315s   0ms DEBUG uv_resolver::resolver Adding direct dependency: pyspnego==0.11.1
+    0.009422s   0ms  INFO pubgrub::internal::partial_solution add_decision: root @ 0a0.dev0
+ uv_resolver::resolver::process_request request=Versions pyspnego
+   uv_resolver::resolver::choose_version package=pyspnego
+   uv_client::registry_client::simple_api package=pyspnego
+      0.009938s   0ms TRACE uv_client::registry_client Fetching metadata for pyspnego from https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\pyspnego.rkyv
+ uv_resolver::resolver::process_request request=Prefetch pyspnego ==0.11.1
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\pyspnego.rkyv&quot;
+          0.010553s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\pyspnego.rkyv
+        0.010639s   0ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+       uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/&quot;
+          0.010806s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+          0.010954s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+          0.011019s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/ is unauthenticated, checking cache
+          0.011099s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+          0.011156s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+          0.011300s   0ms TRACE hyper_util::client::legacy::pool checkout waiting for idle connection: (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.011627s   0ms DEBUG reqwest::connect starting new connection: https://&lt;internal-repo&gt;/
+          0.011743s   1ms TRACE hyper_util::client::legacy::connect::http Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;&lt;internal-repo&gt;&quot;), port=None
+    0.011853s DEBUG hyper_util::client::legacy::connect::dns resolving host=&quot;&lt;internal-repo&gt;&quot;
+          0.026626s  15ms DEBUG hyper_util::client::legacy::connect::http connecting to 10.5.1.165:443
+          0.038994s  28ms DEBUG hyper_util::client::legacy::connect::http connected to 10.5.1.165:443
+          0.104906s  94ms TRACE hyper_util::client::legacy::client http1 handshake complete, spawning background dispatcher task
+          0.105524s  94ms TRACE hyper_util::client::legacy::pool checkout dropped for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.131608s 120ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/ is storable because its response has a heuristically cacheable status code 200
+       uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\pyspnego.rkyv
+       uv_client::registry_client::parse_simple_api package=pyspnego
+    0.168680s TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+    0.169020s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+         uv_client::html::parse url=https://&lt;internal-repo&gt;/repository/pypi-group/simple/pyspnego/
+   uv_resolver::version_map::from_metadata
+    0.178089s TRACE uv_resolver::resolver Received package metadata for: pyspnego
+    0.178260s 168ms TRACE uv_resolver::candidate_selector selecting candidate for package pyspnego with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } with 35 remote versions
+      0.178425s 168ms DEBUG uv_resolver::resolver Searching for a compatible version of pyspnego (==0.11.1)
+    0.178700s 168ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;pyspnego&quot;) with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } after 1 steps: &quot;0.11.1&quot; version
+      0.178882s 169ms TRACE uv_resolver::candidate_selector selecting candidate for package pyspnego with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } with 35 remote versions
+      0.179085s 169ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;pyspnego&quot;) with range Range { segments: [(Included(&quot;0.11.1&quot;), Included(&quot;0.11.1&quot;))] } after 1 steps: &quot;0.11.1&quot; version
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pyspnego==0.11.1
+      0.179462s 169ms DEBUG uv_resolver::resolver Selecting: pyspnego==0.11.1 [compatible] (pyspnego-0.11.1-py3-none-any.whl)
+     uv_client::registry_client::wheel_metadata built_dist=pyspnego==0.11.1
+   uv_resolver::resolver::get_dependencies_forking package=pyspnego, version=0.11.1
+     uv_resolver::resolver::get_dependencies package=pyspnego, version=0.11.1
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pyspnego\pyspnego-0.11.1-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\pyspnego\\pyspnego-0.11.1-py3-none-any.msgpack&quot;
+              0.181017s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pyspnego\pyspnego-0.11.1-py3-none-any.msgpack
+            0.181117s   0ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+           uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e&quot;
+              0.181257s   0ms TRACE uv_client::cached_client Sending fresh HEAD request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+              0.181329s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+              0.181395s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e is unauthenticated, checking cache
+              0.181459s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+              0.181522s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+              0.181601s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+              0.181661s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.193893s  12ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.194055s  12ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.194143s  12ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e is storable because its response has a heuristically cacheable status code 200
+           uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pyspnego\pyspnego-0.11.1-py3-none-any.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=pyspnego-0.11.1-py3-none-any.whl
+      0.194422s  15ms  WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for pyspnego==0.11.1; downloading wheel directly (range requests are not supported)
+     uv_client::cached_client::get_serde
+       uv_client::cached_client::get_cacheable
+         uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pyspnego\pyspnego-0.11.1-py3-none-any.http
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\pyspnego\\pyspnego-0.11.1-py3-none-any.http&quot;
+            0.195070s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pyspnego\pyspnego-0.11.1-py3-none-any.http
+          0.195136s   0ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+         uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e&quot;
+            0.195255s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+            0.195324s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+            0.195387s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e is unauthenticated, checking cache
+            0.195451s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+            0.195514s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e
+            0.195588s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+            0.195644s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+            0.219840s  24ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/pyspnego/0.11.1/pyspnego-0.11.1-py3-none-any.whl#sha256=129a4294f2c4d681d5875240ef87accc6f1d921e8983737fb0b59642b397951e is storable because its response has a heuristically cacheable status code 200
+         uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pyspnego\pyspnego-0.11.1-py3-none-any.http
+         uv_distribution::distribution_database::wheel wheel=pyspnego==0.11.1
+    0.282940s TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+    0.283064s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+    0.298589s TRACE uv_resolver::resolver Received built distribution metadata for: pyspnego==0.11.1
+    0.298804s 290ms DEBUG uv_resolver::resolver Adding transitive dependency for pyspnego==0.11.1: cryptography*
+    0.298867s 290ms DEBUG uv_resolver::resolver Adding transitive dependency for pyspnego==0.11.1: sspilib{sys_platform == 'win32'}&gt;=0.1.0
+    0.298944s 290ms  INFO pubgrub::internal::partial_solution add_decision: pyspnego @ 0.11.1
+ uv_resolver::resolver::process_request request=Versions cryptography
+   uv_resolver::resolver::choose_version package=cryptography
+   uv_client::registry_client::simple_api package=cryptography
+      0.299252s   0ms TRACE uv_client::registry_client Fetching metadata for cryptography from https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cryptography.rkyv
+ uv_resolver::resolver::process_request request=Versions sspilib
+   uv_client::registry_client::simple_api package=sspilib
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\cryptography.rkyv&quot;
+      0.299649s   0ms TRACE uv_client::registry_client Fetching metadata for sspilib from https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\sspilib.rkyv
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\sspilib.rkyv&quot;
+          0.299899s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cryptography.rkyv
+        0.299960s   0ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+       uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/&quot;
+          0.300081s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+          0.300145s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+          0.300197s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/ is unauthenticated, checking cache
+          0.300251s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+          0.300303s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+          0.300366s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+          0.300457s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+ uv_resolver::resolver::process_request request=Prefetch cryptography *
+          0.300739s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\sspilib.rkyv
+        0.315743s  16ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+       uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/&quot;
+          0.315937s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+          0.316146s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+          0.316225s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/ is unauthenticated, checking cache
+          0.316283s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+          0.316335s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+          0.316505s   0ms TRACE hyper_util::client::legacy::pool checkout waiting for idle connection: (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.316642s   0ms DEBUG reqwest::connect starting new connection: https://&lt;internal-repo&gt;/
+          0.316928s   1ms TRACE hyper_util::client::legacy::connect::http Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;&lt;internal-repo&gt;&quot;), port=None
+    0.317044s DEBUG hyper_util::client::legacy::connect::dns resolving host=&quot;&lt;internal-repo&gt;&quot;
+          0.317848s   1ms DEBUG hyper_util::client::legacy::connect::http connecting to 10.5.1.165:443
+          0.329808s  13ms DEBUG hyper_util::client::legacy::connect::http connected to 10.5.1.165:443
+          0.341610s  25ms TRACE hyper_util::client::legacy::client http1 handshake complete, spawning background dispatcher task
+          0.341931s  26ms TRACE hyper_util::client::legacy::pool checkout dropped for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.363520s  47ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.363719s  47ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.363917s  48ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/ is storable because its response has a heuristically cacheable status code 200
+       uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\sspilib.rkyv
+       uv_client::registry_client::parse_simple_api package=sspilib
+         uv_client::html::parse url=https://&lt;internal-repo&gt;/repository/pypi-group/simple/sspilib/
+   uv_resolver::version_map::from_metadata
+    0.369043s TRACE uv_resolver::resolver Received package metadata for: sspilib
+          0.373589s  73ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/ is storable because its response has a heuristically cacheable status code 200
+       uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cryptography.rkyv
+       uv_client::registry_client::parse_simple_api package=cryptography
+         uv_client::html::parse url=https://&lt;internal-repo&gt;/repository/pypi-group/simple/cryptography/
+    0.394665s TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+    0.394933s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+   uv_resolver::version_map::from_metadata
+    0.401447s TRACE uv_resolver::resolver Received package metadata for: cryptography
+    0.401604s 100ms TRACE uv_resolver::candidate_selector selecting candidate for package cryptography with range Range { segments: [(Unbounded, Unbounded)] } with 131 remote versions
+      0.401674s 102ms DEBUG uv_resolver::resolver Searching for a compatible version of cryptography (*)
+      0.401758s 102ms TRACE uv_resolver::candidate_selector selecting candidate for package cryptography with range Range { segments: [(Unbounded, Unbounded)] } with 131 remote versions
+      0.401819s 102ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cryptography&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;43.0.0&quot; version
+      0.401880s 102ms DEBUG uv_resolver::resolver Selecting: cryptography==43.0.0 [compatible] (cryptography-43.0.0-cp39-abi3-win_amd64.whl)
+    0.401939s 101ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cryptography&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;43.0.0&quot; version
+ uv_resolver::resolver::process_request request=Metadata cryptography==43.0.0
+   uv_resolver::resolver::get_dependencies_forking package=cryptography, version=43.0.0
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cryptography==43.0.0
+     uv_resolver::resolver::get_dependencies package=cryptography, version=43.0.0
+     uv_client::registry_client::wheel_metadata built_dist=cryptography==43.0.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cryptography\cryptography-43.0.0-cp39-abi3-win_amd64.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\cryptography\\cryptography-43.0.0-cp39-abi3-win_amd64.msgpack&quot;
+              0.403011s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cryptography\cryptography-43.0.0-cp39-abi3-win_amd64.msgpack
+            0.403091s   0ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+           uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709&quot;
+              0.403248s   0ms TRACE uv_client::cached_client Sending fresh HEAD request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+              0.403324s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+              0.407915s   4ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709 is unauthenticated, checking cache
+              0.408006s   4ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+              0.408072s   4ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+              0.408153s   4ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+              0.408210s   5ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.545449s 142ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.545880s 142ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.546229s 143ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709 is storable because its response has a heuristically cacheable status code 200
+           uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cryptography\cryptography-43.0.0-cp39-abi3-win_amd64.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=cryptography-43.0.0-cp39-abi3-win_amd64.whl
+      0.547027s 144ms  WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for cryptography==43.0.0; downloading wheel directly (range requests are not supported)
+     uv_client::cached_client::get_serde
+       uv_client::cached_client::get_cacheable
+         uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cryptography\cryptography-43.0.0-cp39-abi3-win_amd64.http
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\cryptography\\cryptography-43.0.0-cp39-abi3-win_amd64.http&quot;
+          0.549410s   2ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709 is storable because its response has a heuristically cacheable status code 200
+          0.549793s   2ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709 has a cached response that does not allow staleness
+          0.550082s   2ms TRACE uv_client::httpcache request https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709 does not have a fresh cache because its age is 66280 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
+          0.550404s   3ms DEBUG uv_client::cached_client Found stale response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+          0.550697s   3ms DEBUG uv_client::cached_client Sending revalidation request for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+         uv_client::cached_client::revalidation_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709&quot;
+            0.551265s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+            0.551419s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709 is unauthenticated, checking cache
+            0.551542s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+            0.551662s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+            0.551804s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+            0.551909s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+            0.564632s  13ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+            0.564873s  13ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.565027s  17ms TRACE uv_client::httpcache not modified because old and new etag values ([34, 52, 54, 97, 100, 102, 49, 100, 54, 52, 100, 48, 51, 55, 97, 54, 48, 101, 57, 99, 57, 101, 99, 50, 99, 51, 56, 51, 99, 56, 101, 55, 50, 34]) match
+          0.565170s  17ms DEBUG uv_client::cached_client Found not-modified response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
+         uv_client::cached_client::refresh_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cryptography\cryptography-43.0.0-cp39-abi3-win_amd64.http
+    0.570601s TRACE uv_resolver::resolver Received built distribution metadata for: cryptography==43.0.0
+    0.570761s 561ms DEBUG uv_resolver::resolver Adding transitive dependency for cryptography==43.0.0: cffi{platform_python_implementation != 'PyPy'}&gt;=1.12
+    0.570931s 562ms  INFO pubgrub::internal::partial_solution add_decision: cryptography @ 43.0.0
+ uv_resolver::resolver::process_request request=Versions cffi
+   uv_resolver::resolver::choose_version package=sspilib{sys_platform == 'win32'}
+      0.571546s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib{sys_platform == 'win32'} (&gt;=0.1.0)
+      0.571619s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Unbounded)] } with 1 remote versions
+   uv_client::registry_client::simple_api package=cffi
+      0.571869s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;sspilib&quot;) with range Range { segments: [(Included(&quot;0.1.0&quot;), Unbounded)] } after 1 steps: &quot;0.1.0&quot; version
+      0.571939s   0ms DEBUG uv_resolver::resolver Selecting: sspilib==0.1.0 [compatible] (sspilib-0.1.0-cp39-cp39-win_amd64.whl)
+      0.572057s   0ms TRACE uv_client::registry_client Fetching metadata for cffi from https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+   uv_resolver::resolver::get_dependencies_forking package=sspilib{sys_platform == 'win32'}, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=sspilib{sys_platform == 'win32'}, version=0.1.0
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cffi.rkyv
+    0.572646s 563ms DEBUG uv_resolver::resolver Adding transitive dependency for sspilib==0.1.0: sspilib==0.1.0
+    0.572709s 563ms DEBUG uv_resolver::resolver Adding transitive dependency for sspilib==0.1.0: sspilib{sys_platform == 'win32'}==0.1.0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\cffi.rkyv&quot;
+    0.572826s 564ms  INFO pubgrub::internal::partial_solution add_decision: sspilib{sys_platform == 'win32'} @ 0.1.0
+   uv_resolver::resolver::choose_version package=sspilib{sys_platform == 'win32'}
+          0.572982s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cffi.rkyv
+      0.573042s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib{sys_platform == 'win32'} (==0.1.0)
+      0.573111s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } with 1 remote versions
+      0.573173s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;sspilib&quot;) with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } after 1 steps: &quot;0.1.0&quot; version
+      0.573234s   0ms DEBUG uv_resolver::resolver Selecting: sspilib==0.1.0 [compatible] (sspilib-0.1.0-cp39-cp39-win_amd64.whl)
+        0.573442s   1ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+       uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/&quot;
+          0.573553s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+   uv_resolver::resolver::get_dependencies_forking package=sspilib{sys_platform == 'win32'}, version=0.1.0
+          0.573684s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+          0.573744s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/ is unauthenticated, checking cache
+          0.573802s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+          0.573857s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+     uv_resolver::resolver::get_dependencies package=sspilib{sys_platform == 'win32'}, version=0.1.0
+          0.573988s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+          0.574047s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+ uv_resolver::resolver::process_request request=Prefetch sspilib ==0.1.0
+    0.574162s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } with 1 remote versions
+    0.574216s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;sspilib&quot;) with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } after 1 steps: &quot;0.1.0&quot; version
+ uv_resolver::resolver::process_request request=Metadata sspilib==0.1.0
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=sspilib==0.1.0
+     uv_client::registry_client::wheel_metadata built_dist=sspilib==0.1.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\sspilib\sspilib-0.1.0-cp39-cp39-win_amd64.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\sspilib\\sspilib-0.1.0-cp39-cp39-win_amd64.msgpack&quot;
+            0.575571s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/sspilib/0.1.0/sspilib-0.1.0-cp39-cp39-win_amd64.whl#sha256=369727097f07a440099882580e284e137d9c27b7de354d63b65e327a454e7bee is storable because its response has a heuristically cacheable status code 200
+            0.575707s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/sspilib/0.1.0/sspilib-0.1.0-cp39-cp39-win_amd64.whl#sha256=369727097f07a440099882580e284e137d9c27b7de354d63b65e327a454e7bee
+    0.575845s TRACE uv_resolver::resolver Received built distribution metadata for: sspilib==0.1.0
+    0.575911s 567ms  INFO pubgrub::internal::partial_solution add_decision: sspilib{sys_platform == 'win32'} @ 0.1.0
+   uv_resolver::resolver::choose_version package=sspilib
+      0.576139s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib (==0.1.0)
+      0.576204s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } with 1 remote versions
+      0.576260s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;sspilib&quot;) with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } after 1 steps: &quot;0.1.0&quot; version
+      0.576316s   0ms DEBUG uv_resolver::resolver Selecting: sspilib==0.1.0 [compatible] (sspilib-0.1.0-cp39-cp39-win_amd64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=sspilib, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=sspilib, version=0.1.0
+    0.576503s 567ms  INFO pubgrub::internal::partial_solution add_decision: sspilib @ 0.1.0
+   uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != 'PyPy'}
+          0.615185s  41ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/ is storable because its response has a heuristically cacheable status code 200
+       uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cffi.rkyv
+       uv_client::registry_client::parse_simple_api package=cffi
+         uv_client::html::parse url=https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
+    0.628855s TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+    0.629012s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+   uv_resolver::version_map::from_metadata
+    0.634172s TRACE uv_resolver::resolver Received package metadata for: cffi
+      0.634245s  57ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (&gt;=1.12)
+      0.634335s  57ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.12&quot;), Unbounded)] } with 76 remote versions
+      0.634565s  58ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.12&quot;), Unbounded)] } after 2 steps: &quot;1.16.0&quot; version
+      0.634624s  58ms DEBUG uv_resolver::resolver Selecting: cffi==1.16.0 [compatible] (cffi-1.16.0-cp39-cp39-win_amd64.whl)
+   uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
+     uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
+    0.634834s 626ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: cffi==1.16.0
+    0.634889s 626ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: cffi{platform_python_implementation != 'PyPy'}==1.16.0
+    0.634952s 626ms  INFO pubgrub::internal::partial_solution add_decision: cffi{platform_python_implementation != 'PyPy'} @ 1.16.0
+   uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != 'PyPy'}
+      0.635121s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (==1.16.0)
+      0.635178s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } with 76 remote versions
+      0.635236s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 2 steps: &quot;1.16.0&quot; version
+      0.635295s   0ms DEBUG uv_resolver::resolver Selecting: cffi==1.16.0 [compatible] (cffi-1.16.0-cp39-cp39-win_amd64.whl)
+ uv_resolver::resolver::process_request request=Prefetch cffi ==1.16.0
+    0.635430s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } with 76 remote versions
+    0.635779s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 2 steps: &quot;1.16.0&quot; version
+   uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
+     uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
+ uv_resolver::resolver::process_request request=Metadata cffi==1.16.0
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cffi==1.16.0
+     uv_client::registry_client::wheel_metadata built_dist=cffi==1.16.0
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cffi\cffi-1.16.0-cp39-cp39-win_amd64.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\cffi\\cffi-1.16.0-cp39-cp39-win_amd64.msgpack&quot;
+              0.643070s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cffi\cffi-1.16.0-cp39-cp39-win_amd64.msgpack
+            0.643154s   1ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
+           uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8&quot;
+              0.643277s   0ms TRACE uv_client::cached_client Sending fresh HEAD request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
+              0.643352s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
+              0.643417s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8 is unauthenticated, checking cache
+              0.643485s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
+              0.643551s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
+              0.643639s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+              0.643701s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.685047s  41ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.685186s  41ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.685266s  42ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8 is storable because its response has a heuristically cacheable status code 200
+           uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cffi\cffi-1.16.0-cp39-cp39-win_amd64.msgpack
+           uv_client::registry_client::read_metadata_range_request wheel=cffi-1.16.0-cp39-cp39-win_amd64.whl
+      0.685951s  49ms  WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for cffi==1.16.0; downloading wheel directly (range requests are not supported)
+     uv_client::cached_client::get_serde
+       uv_client::cached_client::get_cacheable
+         uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cffi\cffi-1.16.0-cp39-cp39-win_amd64.http
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\cffi\\cffi-1.16.0-cp39-cp39-win_amd64.http&quot;
+          0.687172s   0ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8 is storable because its response has a heuristically cacheable status code 200
+          0.687274s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
+    0.688880s TRACE uv_resolver::resolver Received built distribution metadata for: cffi==1.16.0
+    0.689004s 680ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: pycparser*
+    0.689086s 680ms  INFO pubgrub::internal::partial_solution add_decision: cffi{platform_python_implementation != 'PyPy'} @ 1.16.0
+ uv_resolver::resolver::process_request request=Versions pycparser
+   uv_client::registry_client::simple_api package=pycparser
+   uv_resolver::resolver::choose_version package=cffi
+      0.689420s   0ms TRACE uv_client::registry_client Fetching metadata for pycparser from https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+     uv_client::cached_client::get_cacheable
+      0.689728s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi (==1.16.0)
+      0.690012s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } with 76 remote versions
+      0.690098s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 2 steps: &quot;1.16.0&quot; version
+      0.690165s   1ms DEBUG uv_resolver::resolver Selecting: cffi==1.16.0 [compatible] (cffi-1.16.0-cp39-cp39-win_amd64.whl)
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\pycparser.rkyv
+ uv_resolver::resolver::process_request request=Prefetch pycparser *
+   uv_resolver::resolver::get_dependencies_forking package=cffi, version=1.16.0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\pycparser.rkyv&quot;
+     uv_resolver::resolver::get_dependencies package=cffi, version=1.16.0
+    0.690735s 681ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: pycparser*
+          0.690803s   1ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\pycparser.rkyv
+    0.690869s 682ms  INFO pubgrub::internal::partial_solution add_decision: cffi @ 1.16.0
+        0.690930s   1ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+       uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/&quot;
+          0.691047s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+   uv_resolver::resolver::choose_version package=pycparser
+          0.691161s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+          0.691220s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/ is unauthenticated, checking cache
+          0.691274s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+          0.691327s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+          0.691391s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+          0.691446s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.708234s  17ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.708365s  17ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+          0.708457s  17ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/ is storable because its response has a heuristically cacheable status code 200
+       uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\pycparser.rkyv
+       uv_client::registry_client::parse_simple_api package=pycparser
+         uv_client::html::parse url=https://&lt;internal-repo&gt;/repository/pypi-group/simple/pycparser/
+   uv_resolver::version_map::from_metadata
+    0.712821s TRACE uv_resolver::resolver Received package metadata for: pycparser
+    0.712892s  22ms TRACE uv_resolver::candidate_selector selecting candidate for package pycparser with range Range { segments: [(Unbounded, Unbounded)] } with 22 remote versions
+      0.712989s  22ms DEBUG uv_resolver::resolver Searching for a compatible version of pycparser (*)
+      0.713057s  22ms TRACE uv_resolver::candidate_selector selecting candidate for package pycparser with range Range { segments: [(Unbounded, Unbounded)] } with 22 remote versions
+      0.713120s  22ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;pycparser&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;2.22&quot; version
+      0.713183s  22ms DEBUG uv_resolver::resolver Selecting: pycparser==2.22 [compatible] (pycparser-2.22-py3-none-any.whl)
+    0.713242s  22ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;pycparser&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;2.22&quot; version
+ uv_resolver::resolver::process_request request=Metadata pycparser==2.22
+   uv_resolver::resolver::get_dependencies_forking package=pycparser, version=2.22
+     uv_resolver::resolver::get_dependencies package=pycparser, version=2.22
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pycparser==2.22
+     uv_client::registry_client::wheel_metadata built_dist=pycparser==2.22
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pycparser\pycparser-2.22-py3-none-any.msgpack
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\wheels-v1\\index\\dcb525f06f275a06\\pycparser\\pycparser-2.22-py3-none-any.msgpack&quot;
+            0.714632s   0ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc is storable because its response has a heuristically cacheable status code 200
+            0.714734s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc has a cached response that does not allow staleness
+            0.714804s   1ms TRACE uv_client::httpcache request https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc does not have a fresh cache because its age is 66280 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
+            0.714874s   1ms DEBUG uv_client::cached_client Found stale response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc
+            0.714939s   1ms DEBUG uv_client::cached_client Sending revalidation request for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc
+           uv_client::cached_client::revalidation_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc&quot;
+              0.715064s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc
+              0.715129s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc is unauthenticated, checking cache
+              0.715194s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc
+              0.715258s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc
+              0.715335s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
+              0.715391s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.728207s  13ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+              0.728370s  13ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
+            0.728501s  14ms TRACE uv_client::httpcache not modified because old and new etag values ([34, 101, 57, 98, 102, 52, 97, 57, 50, 102, 50, 55, 48, 101, 54, 52, 56, 50, 51, 57, 51, 98, 100, 55, 49, 54, 52, 48, 54, 102, 102, 56, 53, 34]) match
+            0.728577s  14ms DEBUG uv_client::cached_client Found not-modified response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/pycparser/2.22/pycparser-2.22-py3-none-any.whl#sha256=c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc
+           uv_client::cached_client::refresh_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\pycparser\pycparser-2.22-py3-none-any.msgpack
+    0.731731s TRACE uv_resolver::resolver Received built distribution metadata for: pycparser==2.22
+    0.731844s 723ms  INFO pubgrub::internal::partial_solution add_decision: pycparser @ 2.22
+    0.731982s 723ms DEBUG uv_resolver::resolver::batch_prefetch Tried 5 versions: cffi 1, cryptography 1, pycparser 1, pyspnego 1, sspilib 1
+    0.732039s 723ms DEBUG uv_resolver::resolver Split specific environment resolution took 0.723s
+    0.732236s 723ms TRACE uv_resolver::resolver Resolution: pyspnego -&gt; sspilib
+    0.732291s 723ms TRACE uv_resolver::resolver Resolution:     0.11.1 -&gt; 0.1.0 ; sys_platform == 'win32'
+    0.732343s 723ms TRACE uv_resolver::resolver Resolution: pyspnego -&gt; cryptography
+    0.732398s 723ms TRACE uv_resolver::resolver Resolution:     0.11.1 -&gt; 43.0.0
+    0.732449s 723ms TRACE uv_resolver::resolver Resolution: cffi -&gt; pycparser
+    0.732502s 723ms TRACE uv_resolver::resolver Resolution:     1.16.0 -&gt; 2.22
+    0.732554s 723ms TRACE uv_resolver::resolver Resolution: cryptography -&gt; cffi
+    0.732607s 723ms TRACE uv_resolver::resolver Resolution:     43.0.0 -&gt; 1.16.0 ; platform_python_implementation != 'PyPy'
+    0.732659s 723ms TRACE uv_resolver::resolver Resolution: ROOT -&gt; pyspnego
+    0.732712s 723ms TRACE uv_resolver::resolver Resolution:     0a0.dev0 -&gt; 0.11.1
+Resolved 5 packages in 725ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile .\requirements.txt -vvv
+cffi==1.16.0
+    # via cryptography
+cryptography==43.0.0
+    # via pyspnego
+pycparser==2.22
+    # via cffi
+pyspnego==0.11.1
+    # via -r ./requirements.txt
+sspilib==0.1.0
+    # via pyspnego
+</code></pre>
+<p>Running with <code>0.2.27</code> afterwards using the exact same command, no cache clean etc is failing again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-26 14:34</div>
+            <div class="timeline-body"><p>Afraid this happened again just now, this time with <code>0.2.28</code>, also validated with <code>0.2.29</code>.</p>
+<p>We have a package pushed to our internal repo about ~40 minutes ago, and are still running into UV not finding it via either <code>install</code> or <code>compile</code>.</p>
+<p>The behavior seems similar to the other cases, with uv thinking the cache for package specific index is up to date.
+Is there anything we can configure here?
+Oddly enough the <code>0.2.28</code> release fixed this for other packages, however not in this case.</p>
+<p>Replicated both in our CI and on local Windows</p>
+<pre><code>uv: `0.2.28` &amp; `0.2.29`
+python `3.10.14`
+windows / debian
+</code></pre>
+<pre><code class="language-bash">RUST_LOG=trace uv pip install company-auth==2.5.0 -vvv
+</code></pre>
+<pre><code>    0.000039s DEBUG uv uv 0.2.29
+ uv_requirements::specification::from_source source=company-auth==2.5.0
+    0.004051s DEBUG uv_python::discovery Searching for Python interpreter in system path or `py` launcher
+    0.004629s TRACE uv_python::interpreter Cached interpreter info for Python 3.10.14, skipping probing: .venv\Scripts\python.exe
+    0.004723s DEBUG uv_python::discovery Found `cpython-3.10.14-windows-x86_64-none` at `&lt;venv&gt;\Scripts\python.exe` (active virtual environment)
+    0.004782s DEBUG uv::commands::pip::install Using Python 3.10.14 environment at .venv\Scripts\python.exe
+    0.005163s TRACE uv_fs Checking lock for `.venv`
+    0.005350s DEBUG uv_fs Acquired lock for `.venv`
+    0.008644s DEBUG uv::commands::pip::install At least one requirement is not satisfied: company-auth==2.5.0
+ uv_client::linehaul::linehaul 
+    0.009932s DEBUG uv_client::base_client Using request timeout of 30s
+ uv_resolver::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+    0.012586s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.10.14
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+     uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+    0.012881s   0ms DEBUG uv_resolver::resolver Adding direct dependency: company-auth==2.5.0
+    0.012954s   0ms  INFO pubgrub::internal::partial_solution add_decision: root @ 0a0.dev0
+   uv_resolver::resolver::choose_version package=company-auth
+ uv_resolver::resolver::process_request request=Versions company-auth
+   uv_client::registry_client::simple_api package=company-auth
+      0.013370s   0ms TRACE uv_client::registry_client Fetching metadata for company-auth from https://&lt;internal-repo./repository/pypi-group/simple/company-auth/
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=\\?\&lt;uv-cache&gt;\simple-v10\index\dcb525f06f275a06\company-auth.rkyv
+ uv_resolver::resolver::process_request request=Prefetch company-auth ==2.5.0
+ uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;uv-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\company-auth.rkyv&quot;
+        0.014495s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo./repository/pypi-group/simple/company-auth/ is storable because its response has a heuristically cacheable status code 200
+        0.014566s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo./repository/pypi-group/simple/company-auth/
+   uv_resolver::version_map::from_metadata 
+    0.014985s TRACE uv_resolver::resolver Received package metadata for: company-auth
+    0.015058s   1ms TRACE uv_resolver::candidate_selector selecting candidate for package company-auth with range Range { segments: [(Included(&quot;2.5.0&quot;), Included(&quot;2.5.0&quot;))] } with 51 remote versions
+      0.015354s   2ms DEBUG uv_resolver::resolver Searching for a compatible version of company-auth (==2.5.0)
+    0.015519s   1ms TRACE uv_resolver::candidate_selector exhausted all candidates for package PackageName(&quot;company-auth&quot;) with range Range { segments: [(Included(&quot;2.5.0&quot;), Included(&quot;2.5.0&quot;))] } after 51 steps
+      0.015636s   2ms TRACE uv_resolver::candidate_selector selecting candidate for package company-auth with range Range { segments: [(Included(&quot;2.5.0&quot;), Included(&quot;2.5.0&quot;))] } with 51 remote versions
+      0.015769s   2ms TRACE uv_resolver::candidate_selector exhausted all candidates for package PackageName(&quot;company-auth&quot;) with range Range { segments: [(Included(&quot;2.5.0&quot;), Included(&quot;2.5.0&quot;))] } after 51 steps
+    0.015847s   3ms DEBUG uv_resolver::resolver No compatible version found for: company-auth
+    0.015913s   3ms  INFO pubgrub::internal::core Start conflict resolution because incompat satisfied:
+    company-auth ==2.5.0 is forbidden
+    0.016007s   3ms  INFO pubgrub::internal::core prior cause: root ==0a0.dev0 is forbidden
+  x No solution found when resolving dependencies:
+  `-&gt; Because there is no version of company-auth==2.5.0 and you require company-auth==2.5.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>Any help / further insight into the cache behavior is highly appreciated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 14:39</div>
+            <div class="timeline-body"><p>It's all the same issue: uv thinks that the response is cacheable indefinitely based on something in your cache headers.</p>
+<p>While we figure it out, I would suggest adding:</p>
+<pre><code class="language-toml">[tool.uv.pip]
+refresh = true
+</code></pre>
+<p>...to your <code>pyproject.toml</code> or <code>uv.toml</code> for now. That should ensure that we always refresh the simple metadata responses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 14:39</div>
+            <div class="timeline-body"><p>Can you share the exact headers you get back from hitting <code>https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-26 14:45</div>
+            <div class="timeline-body"><p>Here you go</p>
+<pre><code class="language-bash">http get https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+</code></pre>
+<pre><code>HTTP/1.1 200 OK
+Connection: Keep-Alive
+Content-Encoding: gzip
+Content-Length: 12517
+Content-Security-Policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+Content-Type: text/html
+Date: Fri, 26 Jul 2024 14:43:15 GMT
+Keep-Alive: timeout=2, max=300
+Last-Modified: Wed, 24 Jul 2024 15:33:00 GMT
+Server: Nexus/3.57.1-03 (PRO)
+Vary: Accept-Encoding
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;&lt;title&gt;Links for importlib-metadata&lt;/title&gt;
+  &lt;meta name=&quot;api-version&quot; value=&quot;2&quot;/&gt;
+  ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 14:46</div>
+            <div class="timeline-body"><p>Thank you. Would you be able to send one for a package that is getting a &quot;stale&quot; response too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-26 15:12</div>
+            <div class="timeline-body"><p>Since there isn't an <code>Expires</code> header or any cache control headers, I <em>believe</em> <code>uv</code> is going through its &quot;heuristic&quot; for how long a response should be fresh for before calling it stale, and this is based on the last-modified header: https://github.com/astral-sh/uv/blob/cb505d24f80725ccdfb8625acc0ce418d99bf63c/crates/uv-client/src/httpcache/mod.rs#L946-L950</p>
+<p>We could probably use better logging here, particularly around choices made based on heuristics. And perhaps the heuristic ought to be tweaked. (Assuming I've diagnosed the problem correctly.)</p>
+<p>Of course, the HTTP server should probably have better cache headers, but <code>uv</code> should probably also have better heuristics if possible. (And at least log something that indicates the problem.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 15:14</div>
+            <div class="timeline-body"><p>👍 Yeah, I'm mostly wondering if the last-modified header is being updated or not for those &quot;stale&quot; packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-26 15:28</div>
+            <div class="timeline-body"><p>Having some issues replicating it now following the <code>--refresh</code> earlier.
+However when the issue popped up on Tuesday, our repo returned a response with the date being 3 hours after the last-modified, and uv considering this heuristically cacheable</p>
+<p>Will share headers when it pops up again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 15:30</div>
+            <div class="timeline-body"><p>Thanks @jbw-vtl. Clearly something off here so appreciate any info you can provide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5409.html">astral-sh/uv#5409</a> on 2024-07-29 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-31 13:55</div>
+            <div class="timeline-body"><p>This has popped up again just now in our CI, however was not able to reproduce locally i'm afraid.
+Looked through the heuristic logic in detail and think uv is caching too aggressively.</p>
+<p>See the below, think this is roughly what happened with <code>importlib-metadata 8.1.0</code> initially (however no way to be sure).
+https://pypi.org/project/importlib-metadata/#history
+<code>8.1.0</code> was published on Jul 23rd
+The previous version <code>8.0.0</code> was published about a month earlier on Jun 25th</p>
+<p>If UV retrieves the simple index for <code>importlib-metadata</code> on i.e. Jul 22nd (before 8.1.0 was published), the heuristic duration would be set to the below</p>
+<pre><code>last_modified_header = &quot;Tue, 25 Jun 2024 07:01:23 GMT&quot;
+date_header = &quot;Mon, 22 Jul 2024 07:01:23 GMT&quot;
+interval = date_header - last_modified_header
+percent= 10
+duration = (interval * percent) / 100
+</code></pre>
+<p>Duration in this case would be set to <code>2 days, 16hours</code>!!
+So the new <code>importlib-metadata</code> release 8.1.0 which came out the next day (23 Jul) is not found, as uv is still considering the simple cache as fresh.</p>
+<p>Believe this to be way to aggressive, as quite common for packages to be updated a lot less frequently, which could cause the cache to last for weeks.</p>
+<p>Think there could be two possible changes here</p>
+<ul>
+<li>Allow users setting a ceiling for the heuristic, i.e. 600 seconds, which would match the cache control header on PyPi.</li>
+<li>Or outright allow overwriting the heuristic with a static duration to have a consistent cache of i.e. 600 seconds</li>
+</ul>
+<p>We are still awaiting nexus to come back to us regarding implementing proper cache control headers, however have not got strong hopes here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-31 13:59</div>
+            <div class="timeline-body"><p>We own the HTTP caching semantics here, so we could also just use a hard-coded duration instead of trying to get too smart with the heuristic. @charliermarsh What do you think about just hard-coding 600 seconds as the time we treat things as &quot;fresh&quot; in this specific case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 14:00</div>
+            <div class="timeline-body"><p>That seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 14:22</div>
+            <div class="timeline-body"><p>Thanks for exploring this @jbw-vtl. We will change to 600 for now and consider making it configurable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5654.html">astral-sh/uv#5654</a> on 2024-07-31 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-31 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../simple-repository/simple-repository-server/issues/12.html">simple-repository/simple-repository-server#12</a> on 2024-09-09 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

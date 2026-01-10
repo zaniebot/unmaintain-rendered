@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv venv &quot;Failed to parse: `pyproject.toml`&quot; warning without the root cause + why the project version in `pyproject.toml` - astral-sh/uv #10522</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv venv &quot;Failed to parse: `pyproject.toml`&quot; warning without the root cause + why the project version in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10522">#10522</a>
+        opened by <a href="https://github.com/pabepadu">@pabepadu</a>
+        on 2025-01-11 20:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pabepadu">@pabepadu</a> on 2025-01-11 20:10</div>
+            <div class="timeline-body"><p>Hi, first uv is a really great tool, thanks!</p>
+<p>I'm using version 0.5.18 and I found two issues with this <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;dummy-name&quot;
+requires-python = &quot;&gt;=3.12, &lt;3.13&quot;
+</code></pre>
+<ol>
+<li><p><code>uv venv</code> returns no explanation why as to why it could not parse the <code>pyproject.toml</code> (same with verbose mode):</p>
+<pre><code class="language-bash">$ uv venv
+warning: Failed to parse: `pyproject.toml`
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Activate with: source .venv/Scripts/activate
+</code></pre>
+<p>And in this case the wrong version of python is selected.</p>
+<p>By luck I found the root cause with another command:</p>
+<pre><code class="language-bash">$ uv tree
+error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 1, column 1
+  |
+1 | [project]
+  | ^^^^^^^^^^
+`pyproject.toml` is using the `[project]` table, but the required `project.version` field is neither set nor present in the `project.dynamic` list
+</code></pre>
+<p>Is it possible to improve the warning message with the root cause or change the warning to an error like in <code>uv tree</code> ?</p>
+</li>
+<li><p>Why a project <code>version</code> is mandatory to be able to parse the <code>pyproject.toml</code> ?
+In this case I don't expect to publish the project, so the version is meaningless</p>
+</li>
+</ol>
+<p>Thanks in advance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 20:12</div>
+            <div class="timeline-body"><p><code>uv venv</code> doesn't require the Python version, but it does try to parse <code>pyproject.toml</code> in case you have uv configuration in there. So the warning you see (I think( is uv failing to parse the <code>pyproject.toml</code> while trying to extract any configuration. If we fail, we just warn, rather than failing hard, since it's not <em>required</em> for that command.</p>
+<p>I'm surprised we don't show the full error, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-01-11 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 20:12</div>
+            <div class="timeline-body"><p>(From my perspective, we <em>should</em> show that error in this case, but it should be the expanded version.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 20:40</div>
+            <div class="timeline-body"><p>Regarding</p>
+<blockquote>
+<p>Why a project version is mandatory to be able to parse the pyproject.toml ?</p>
+</blockquote>
+<p>If you have a <code>[project]</code> table, the <code>version</code> field is mandatory per the specification https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-13 02:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10553.html">astral-sh/uv#10553</a> on 2025-01-13 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-13 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-13 19:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:04 UTC
+    </footer>
+</body>
+</html>

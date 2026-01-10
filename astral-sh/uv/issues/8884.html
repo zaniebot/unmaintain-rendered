@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to install `jupyter_contrib_nbextensions==0.7.0` while pip succeeds - astral-sh/uv #8884</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to install `jupyter_contrib_nbextensions==0.7.0` while pip succeeds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8884">#8884</a>
+        opened by <a href="https://github.com/leodevian">@leodevian</a>
+        on 2024-11-07 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 09:48</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I'm using uv 0.4.30 (61ed2a236 2024-11-04) on Windows and I'm trying to install <code>jupyter_contrib_nbextensions==0.7.0</code>. It seems that uv fails to install the package as it cannot be built with the latest versions of <code>setuptools</code>, due to some deprecations.</p>
+<pre><code class="language-shell">uv pip install jupyter_contrib_nbextensions==0.7.0
+</code></pre>
+<p>However, the latest version of pip (24.3.1) succeeds to build and install the package and I would like to understand this difference in behavior.</p>
+<pre><code class="language-shell">pip install jupyter_contrib_nbextensions==0.7.0
+</code></pre>
+<p>I read the documentation on build failures and I don't understand if I can force a version of <code>setuptools</code> and <code>wheel</code> for <code>jupyter_contrib_nbextensions</code>.</p>
+<p>Also, can I manage this package with uv if it has been installed using pip?</p>
+<p>Thank you for your awesome work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-07 10:05</div>
+            <div class="timeline-body"><p>I'm a Windows user and I couldn't reproduce the problem you mentioned.
+~~Furthermore, according to your description, the package installed with uv is not the same as the one installed with pip.~~ (Corrected)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-07 12:48</div>
+            <div class="timeline-body"><p>@leodevian
+I suggest you provide more complete information. After all, if we can't reproduce the issue, we won't know what the error message is. As for the method, at least add <code>--verbose</code> to get complete information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 13:07</div>
+            <div class="timeline-body"><p>Thanks for your quick feedback! Indeed, I did mispell the package name in the description (now edited).</p>
+<p>The following command should reproduce the issue:</p>
+<pre><code class="language-shell">mkdir issue
+cd issue
+uv venv -p 3.11 *&gt; log.txt
+uv pip install jupyter_contrib_nbextensions==0.7.0 -vvv *&gt;&gt; log.txt
+</code></pre>
+<p>I'm using cpython-3.11.10-windows-x86_64-none, which has been installed using uv.</p>
+<p>Here are the logs with <code>--verbose</code> (I'm not used to redirection and struggled to get them).</p>
+<p><a href="https://github.com/user-attachments/files/17661915/log.txt">log.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-07 13:13</div>
+            <div class="timeline-body"><p>@leodevian Could you provide the <code>pyproject.toml</code>  that can reproduce this issue? Because when I tried your problem, I used a default pyproject.toml.</p>
+<p>Edit:
+But it has a lot of warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 13:19</div>
+            <div class="timeline-body"><p>@FishAlchemist I don't have <code>pyproject.toml</code> in my directory.</p>
+<p>I tried the following commands and it still failed with the same error:</p>
+<pre><code class="language-powershell">mkdir issue
+cd issue
+uv init -p 3.11
+uv add jupyter_contrib_nbextensions==0.7.0
+</code></pre>
+<p>It seems that pip succeeds to build a wheel while uv fails?</p>
+<p>EDIT: I don't understand the difference in behavior. Does pip support deprecated methods that have not been implemented in uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-11-07 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 13:25</div>
+            <div class="timeline-body"><p>Are you perhaps hitting the filename length limit on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 13:30</div>
+            <div class="timeline-body"><p>The directory is located in <code>%USERPROFILE%</code>, which is 18 characters long, so I doubt it.</p>
+<p>I will try to reproduce the issue on my personal computer later, to investigate further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-07 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you perhaps hitting the filename length limit on Windows?</p>
+</blockquote>
+<p>It seems possible, as my computer enable Long Paths.</p>
+<p>To check if it's enabled, you can simply open PowerShell to query. Reading the registry doesn't require administrative privileges.</p>
+<pre><code>Get-ItemProperty -Path &quot;HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem&quot; `
+∙ -Name &quot;LongPathsEnabled&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 13:33</div>
+            <div class="timeline-body"><p>Yes but the error you shared is for <code>build\lib\jupyter_contrib_nbextensions\nbextensions\code_prettify\README_code_prettify.md</code> which will already be nested inside the build cache directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 13:37</div>
+            <div class="timeline-body"><p>I don't have it and I have no admin rights on this computer. I will give your more information once I tried to reproduce the issue on my personal computer (with admin rights).</p>
+<p>Could it be that building universal wheels is not supported by uv? To me, it seems that this feature has been deprecated for quite some time...</p>
+<p>From the logs:</p>
+<pre><code class="language-text">With Python 2.7 end-of-life, support for building universal wheels
+        (i.e., wheels that support both Python 2 and Python 3)
+        is being obviated.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-07 13:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes but the error you shared is for <code>build\lib\jupyter_contrib_nbextensions\nbextensions\code_prettify\README_code_prettify.md</code> which will already be nested inside the build cache directory.</p>
+</blockquote>
+<p>@charliermarsh Yes, I just closed the long path, and then the problem occurred</p>
+<p>Edit:
+Can UV  detect long paths that are not enabled during the build phase?</p>
+<hr />
+<p>@leodevian This is the configuration method provided by Microsoft.
+https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#registry-setting-to-enable-long-paths</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-11-07 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-11-07 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 14:03</div>
+            <div class="timeline-body"><p>@FishAlchemist Thanks a lot! I guess that's good news.</p>
+<p>It pains me because I'm promoting uv within my organization and no one will be able to disable the maximum file path limitation because of internal policies...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 16:27</div>
+            <div class="timeline-body"><p>Is it possible to bypass the limitation using <code>\\?\</code>?</p>
+<p>Here is how I would do it using Python.</p>
+<pre><code class="language-python">import os
+
+longpath = &quot;...&quot;
+
+longpath = os.path.realpath(longpath)
+
+unc = &quot;\\\\?\\&quot; if len(longpath) &gt;= 260 else &quot;&quot;
+
+os.mkdir(unc + longpath)
+
+with open(unc + os.path.join(longpath, &quot;hello.txt&quot;), &quot;w&quot;) as f:
+    f.write(&quot;Hello world!&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 16:40</div>
+            <div class="timeline-body"><p>I don't believe so. Using those UNC paths breaks a lot of things -- for example, any relative paths in the build will be interpreted relative to the drive: https://github.com/astral-sh/uv/pull/1277</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-11-07 17:01</div>
+            <div class="timeline-body"><p>Well, I had mitigated hopes on this... I hope that I won't encounter this issue too many times. Meanwhile, I'll look for a workaround.</p>
+<p>Is it possible to install a package using pip and still manage it using uv (so it won't be uninstalled with <code>uv sync</code> or <code>uv add</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 17:09</div>
+            <div class="timeline-body"><p>I'll look into reducing the length of the cache path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 18:10</div>
+            <div class="timeline-body"><p>I actually don't really understand why this succeeds with pip but not uv. Their build cache prefix isn't any shorter, and even when I set <code>--cache-dir</code> to something short, uv still fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-07 19:14</div>
+            <div class="timeline-body"><p>@charliermarsh  I've tracked program's behavior, and it should serve as a reference.
+The nesting of the UV cache seems quite deep, but pip seems to have only the nesting of the source code.</p>
+<h1>UV (uv 0.4.30 (61ed2a236 2024-11-04))</h1>
+<p>( maximum 233 without user home path)</p>
+<pre><code>~\AppData\Local\Temp\.tmpyBcss8\sdists-v5\pypi\jupyter-contrib-nbextensions\0.7.0\Jk8_nRpxZF8Zdq-pjfEJr\jupyter_contrib_nbextensions-0.7.0.tar.gz\build\lib\jupyter_contrib_nbextensions\nbextensions\code_prettify\README_code_prettify.md
+</code></pre>
+<h1>PIP (pip 24.3.1)</h1>
+<p>(maximum 209 without user home path)</p>
+<pre><code>~\AppData\Local\Temp\pip-install-7pgurthd\jupyter-contrib-nbextensions_0d7b5c639ab74a4fb664a5235eb7c74d\src\jupyter_contrib_nbextensions\nbextensions\code_prettify\README_code_prettify.md
+~\AppData\Local\Temp\pip-install-7pgurthd\jupyter-contrib-nbextensions_0d7b5c639ab74a4fb664a5235eb7c74d\build\lib\jupyter_contrib_nbextensions\nbextensions\code_prettify\README_code_prettify.md
+~\AppData\Local\Temp\pip-install-7pgurthd\jupyter-contrib-nbextensions_0d7b5c639ab74a4fb664a5235eb7c74d\build\bdist.win-amd64\wheel\jupyter_contrib_nbextensions\nbextensions\code_prettify\README_code_prettify.md
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 19:31</div>
+            <div class="timeline-body"><p>Collecting clues:</p>
+<p>With <code>pip install jupyter_contrib_nbextensions==0.7.0</code>:</p>
+<pre><code>  copying build\lib\jupyter_contrib_nbextensions\nbextensions\codefolding\main.js -&gt; build\bdist.win-amd64\wheel\.\jupyter_contrib_nbextensions\nbextensions\codefolding
+  copying build\lib\jupyter_contrib_nbextensions\nbextensions\codefolding\readme.md -&gt; build\bdist.win-amd64\wheel\.\jupyter_contrib_nbextensions\nbextensions\codefolding
+  creating build\bdist.win-amd64\wheel\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+  copying build\lib\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions\codemirror_mode_extensions.yaml -&gt; build\bdist.win-amd64\wheel\.\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+</code></pre>
+<p>With <code>uv pip install jupyter_contrib_nbextensions==0.7.0</code>, but also with <code>uv pip install jupyter_contrib_nbextensions==0.7.0 --cache-dir C:\Users\Konsti\a</code>:</p>
+<pre><code>copying src\jupyter_contrib_nbextensions\nbextensions\codefolding\main.js -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codefolding
+copying src\jupyter_contrib_nbextensions\nbextensions\codefolding\readme.md -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codefolding
+creating build\lib\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+copying src\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions\codemirror_mode_extensions.yaml -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+</code></pre>
+<p>With <code>uv pip install jupyter_contrib_nbextensions==0.7.0 --cache-dir asdf</code> in <code>C:\Users\Konsti\projects\uv\</code>:</p>
+<pre><code>copying src\jupyter_contrib_nbextensions\nbextensions\codefolding\main.js -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codefolding
+copying src\jupyter_contrib_nbextensions\nbextensions\codefolding\readme.md -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codefolding
+creating build\lib\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+copying src\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions\codemirror_mode_extensions.yaml -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+copying src\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions\main.js -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\codemirror_mode_extensions
+creating build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+copying src\jupyter_contrib_nbextensions\nbextensions\collapsible_headings\collapsible_headings.yaml -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+copying src\jupyter_contrib_nbextensions\nbextensions\collapsible_headings\icon.png -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+copying src\jupyter_contrib_nbextensions\nbextensions\collapsible_headings\main.css -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+copying src\jupyter_contrib_nbextensions\nbextensions\collapsible_headings\main.js -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+copying src\jupyter_contrib_nbextensions\nbextensions\collapsible_headings\readme.md -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+copying src\jupyter_contrib_nbextensions\nbextensions\collapsible_headings\screenshot.png -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\collapsible_headings
+creating build\lib\jupyter_contrib_nbextensions\nbextensions\comment-uncomment
+copying src\jupyter_contrib_nbextensions\nbextensions\comment-uncomment\comment-uncomment.yaml -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\comment-uncomment
+copying src\jupyter_contrib_nbextensions\nbextensions\comment-uncomment\icon.png -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\comment-uncomment
+copying src\jupyter_contrib_nbextensions\nbextensions\comment-uncomment\main.js -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\comment-uncomment
+copying src\jupyter_contrib_nbextensions\nbextensions\comment-uncomment\readme.md -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\comment-uncomment
+creating build\lib\jupyter_contrib_nbextensions\nbextensions\contrib_nbextensions_help_item
+copying src\jupyter_contrib_nbextensions\nbextensions\contrib_nbextensions_help_item\README.md -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\contrib_nbextensions_help_item
+copying src\jupyter_contrib_nbextensions\nbextensions\contrib_nbextensions_help_item\contrib_nbextensions_help_item.yaml -&gt; build\lib\jupyter_contrib_nbextensions\nbextensions\contrib_nbextensions_help_item
+</code></pre>
+<p>I can also <code>uv build</code> in the repo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 21:19</div>
+            <div class="timeline-body"><p>@konstin -- You may need to use <code>--use-pep517</code> in <code>pip install</code> (it still failed for me, but I think the behavior may be different).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 21:33</div>
+            <div class="timeline-body"><p>Oh my guess is the problem is this huge prefix? <code>sdists-v5\pypi\jupyter-contrib-nbextensions\0.7.0\Jk8_nRpxZF8Zdq-pjfEJr\jupyter_contrib_nbextensions-0.7.0.tar.</code> I need to trace this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 21:39</div>
+            <div class="timeline-body"><p>So sketching this out... When we go to install that wheel:</p>
+<ol>
+<li>We create a new revision in the cache, like <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr</code>.</li>
+<li>We stream-unzip the contents into a temporary directory within <code>${UV_CACHE_DIR}/sdists-v5</code>, like <code>${UV_CACHE_DIR}/sdists-v5/.tmpyBcss8</code>.</li>
+<li>We move the temporary directory to into the <code>sdists-v5</code> bucket, e.g., we move it to <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr/jupyter_contrib_nbextensions-0.7.0.tar.gz</code> (this is a <em>directory</em>, despite the filename).</li>
+<li>We then build the source that has been extracted to <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr/jupyter_contrib_nbextensions-0.7.0.tar.gz</code>.</li>
+<li>To build, we create a virtual environment in a temporary directory in <code>${UV_CACHE_DIR}/builds-v0</code>, like <code>${UV_CACHE_DIR}/builds-v0/.tmay5cs91</code>.</li>
+<li>To build, we create a temporary directory within the target directory... So, like: <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr/.tmpQWxTfb</code>. Then we build the wheel using and into that directory (i.e., it's the output directory passed to the PEP 517 hooks).</li>
+<li>We then rename the built wheel them to, e.g., <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr/interpreters_pep_734-0.4.0-py3-none-any.whl</code> (this is a file).</li>
+<li>We then unzip the built distribution:<ul>
+<li>First, we create a temporary direcotry in the cache root (e.g., <code>${UV_CACHE_DIR}/.tmay5cs91</code>).</li>
+<li>Then we unzip into that directory.</li>
+<li>Then we persist it in the archive bucket (e.g., we rename it to <code>${UV_CACHE_DIR}/archive-v0/5ZQyJUPRJyOe8jCGM3gql</code>).</li>
+<li>Then we create a symlink from the archive bucket to the <code>sdists-v5</code> bucket (e.g., <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr/interpreters_pep_734-0.4.0-py3-none-any</code>).</li>
+</ul>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 21:52</div>
+            <div class="timeline-body"><p>I think one thing we should <em>definitely</em> change is that we shouldn't build the wheel into <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr/.tmpQWxTfb</code>. That's just a huge path and there's no reason for it? I'll do that first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 21:53</div>
+            <div class="timeline-body"><p>We may also want to consider shortening <code>${UV_CACHE_DIR}/sdists-v5/pypi/jupyter-contrib-nbextensions/0.7.0/Jk8_nRpxZF8Zdq-pjfEJr</code>. It's just a huge path. And if you use a non-PyPI index, it's even longer because the <code>pypi</code> segment gets expanded to, e.g., <code>index/6934cf8789bf06c0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 23:08</div>
+            <div class="timeline-body"><p>Okay cool, I just got this package to build on my machine. It'll be a series of small PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-07 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8905.html">astral-sh/uv#8905</a> on 2024-11-08 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8907.html">astral-sh/uv#8907</a> on 2024-11-08 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MitchellAcoustics">@MitchellAcoustics</a> on 2025-07-24 10:07</div>
+            <div class="timeline-body"><p>It looks like I am hitting this same issue:</p>
+<pre><code>uv add --group docs &quot;jupyter_contrib_nbextensions &gt;= 0.5.1, &lt;1&quot; -vvv *&gt;&gt; log.txt
+</code></pre>
+<p>produces a very similar error as @leodevian . I also don't have admin rights and can't enable long paths.</p>
+<p>uv version is <code>uv 0.7.21 (77c771c7f 2025-07-14)</code></p>
+<p>It looks like the bug fix isn't working for me - any suggestions for another way around this?</p>
+<p><a href="https://github.com/user-attachments/files/21405869/log.txt">log.txt</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:25 UTC
+    </footer>
+</body>
+</html>

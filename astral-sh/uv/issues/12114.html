@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deflate decompression error: repeated call with bad state - astral-sh/uv #12114</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>deflate decompression error: repeated call with bad state</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12114">#12114</a>
+        opened by <a href="https://github.com/nijel">@nijel</a>
+        on 2025-03-11 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nijel">@nijel</a> on 2025-03-11 13:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Recently, I started to occasionally get <code>deflate decompression error: repeated call with bad state</code> errors on uv sync. My guess is that it is caused by some temporary networking issue (this happens in GitHub Actions), but the error message is not really helpful to diagnose the root cause. Maybe the error handling could be better?</p>
+<p>Full log:</p>
+<pre><code> Using CPython 3.12.9 interpreter at: /opt/hostedtoolcache/Python/3.12.9/x64/bin/python3
+Creating virtual environment at: .venv
+Resolved 84 packages in 1.64s
+   Building translate-toolkit @ file:///home/runner/work/translate/translate
+Downloading virtualenv (4.1MiB)
+Downloading rapidfuzz (3.0MiB)
+Downloading kiwisolver (1.4MiB)
+Downloading pygments (1.2MiB)
+Downloading pillow (4.3MiB)
+Downloading numpy (15.4MiB)
+Downloading babel (9.7MiB)
+Downloading lxml (4.8MiB)
+Downloading matplotlib (8.2MiB)
+Downloading fonttools (4.6MiB)
+Downloading sphinx (3.4MiB)
+Downloading setuptools (1.2MiB)
+  × Failed to download `virtualenv==20.29.3`
+  ├─▶ Failed to extract archive
+  ╰─▶ deflate decompression error: repeated call with bad state
+  help: `virtualenv` (v20.29.3) was included because `translate-toolkit:dev`
+        depends on `pre-commit` (v4.1.0) which depends on `virtualenv`
+</code></pre>
+<p>Workflow log: https://github.com/translate/translate/actions/runs/13786806477/job/38556653760?pr=5535</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04.2 amd64 (GitHub Actions)</p>
+<h3>Version</h3>
+<p>0.6.5</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @nijel on 2025-03-11 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 13:40</div>
+            <div class="timeline-body"><p>Could this be the same error as #8692 / https://status.python.org/incidents/2zf08fkp0nd1 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jayqi">@jayqi</a> on 2025-03-11 13:44</div>
+            <div class="timeline-body"><p>I also had some similar installation issues about 8-9 hours ago (around 04:00–05:00 UTC) with uv in GitHub Actions.</p>
+<hr />
+<h2>Case 1</h2>
+<p>Running: <code>uvx nox -s tests-3.12 --verbose </code></p>
+<p>Download/install fails when setting up nox as a tool.</p>
+<pre><code>Downloading virtualenv (4.1MiB)
+  × Failed to download `virtualenv==20.29.3`
+  ├─▶ Failed to extract archive
+  ╰─▶ deflate decompression error: repeated call with bad state
+  help: `virtualenv` (v20.29.3) was included because `nox` (v2025.2.9) depends
+        on `virtualenv`
+Error: Process completed with exit code 1.
+</code></pre>
+<p>https://github.com/drivendataorg/erdantic/actions/runs/13780302271/job/38537257570#step:5:13</p>
+<ul>
+<li>astral-sh/setup-uv@v5</li>
+<li>uv version 0.6.5</li>
+<li>ubuntu-latest (ubuntu-24.04, 20250302.1.0)</li>
+</ul>
+<hr />
+<h2>Case 2</h2>
+<p>Download/install fails when installing with <code>uv pip</code>.</p>
+<pre><code>nox &gt; /opt/hostedtoolcache/uv/0.6.5/x86_64/uv pip install -r requirements/tests.txt
+Using Python 3.13.2 environment at: .nox/tests-3-13
+Resolved 42 packages in 149ms
+   Building pygraphviz==1.14
+   Building erdantic @ file:///home/runner/work/erdantic/erdantic
+Downloading pydantic-core (1.9MiB)
+Downloading jedi (1.5MiB)
+Downloading pygments (1.2MiB)
+  × Failed to download `pydantic-core==2.27.2`
+  ├─▶ Failed to extract archive
+  ╰─▶ unexpected BufError
+  help: `pydantic-core` (v2.27.2) was included because `erdantic` (v1.0.5)
+        depends on `pydantic-core`
+nox &gt; Command /opt/hostedtoolcache/uv/0.6.5/x86_64/uv pip install -r requirements/tests.txt failed with exit code 1
+</code></pre>
+<p>https://github.com/drivendataorg/erdantic/actions/runs/13780431633/job/38537603774#step:5:290</p>
+<ul>
+<li>astral-sh/setup-uv@v5</li>
+<li>uv version 0.6.5</li>
+<li>ubuntu-latest (ubuntu-24.04, 20250309.1.0)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-11 13:47</div>
+            <div class="timeline-body"><p>I believe this is due to a PyPI outage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2025-03-11 13:51</div>
+            <div class="timeline-body"><p>Yes, that could likely be the cause. Still, the message looks like there is some issue in error handling. But please don't hesitate to close this if you think it is okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-14 00:29</div>
+            <div class="timeline-body"><p>I think the message could be better but going to close for now since the behavior seems alright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-14 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-03-14 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-14 00:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

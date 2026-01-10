@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest version of ruff (0.4.2) removes blank double blank line that was allowed previously - astral-sh/ruff #11254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Latest version of ruff (0.4.2) removes blank double blank line that was allowed previously</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11254">#11254</a>
+        opened by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a>
+        on 2024-05-02 23:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-05-02 23:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><code>ruff --version</code>: 0.4.2</p>
+<p>I recently updated to the latest version of <code>ruff</code> and noticed that in specific cases, a double blank line is now getting changed to a single blank line. I strongly prefer to use double blank lines to visually separate some sections of code, and this only seems to happen in one specific scenario so it is kind of driving me crazy. Here is a code snippet that triggers the change:</p>
+<pre><code class="language-python">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+&quot;&quot;&quot;Run CLI if package is run directly as a module.&quot;&quot;&quot;
+
+
+####################################################################################################
+# Imports
+####################################################################################################
+
+
+# ==Package==
+from ._private import cli_test_utils
+
+
+####################################################################################################
+# Main
+####################################################################################################
+
+
+cli_test_utils.run_app()
+</code></pre>
+<p>When this is formatted using <code>ruff format &lt;file&gt;</code> (no other flags needed), it remove the blank line above <code># ==Package==</code>, but leaves all other double blank lines:</p>
+<pre><code class="language-python">#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+&quot;&quot;&quot;Run CLI if package is run directly as a module.&quot;&quot;&quot;
+
+
+####################################################################################################
+# Imports
+####################################################################################################
+
+# ==Package==
+from ._private import cli_test_utils
+
+
+####################################################################################################
+# Main
+####################################################################################################
+
+
+cli_test_utils.run_app()
+</code></pre>
+<p>In the past, it did not do this. I'm not sure what the previous working version is, but I may try a few previous versions to see if I can narrow it down.</p>
+<p>Update: The last version where it didn't delete the blank line was v0.2.2. The next version, v0.3.0 exhibits the new behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-03 00:34</div>
+            <div class="timeline-body"><p>Hi! It sounds like this was introduced in our stable style mentioned in the <a href="https://github.com/astral-sh/ruff/releases/tag/v0.3.0">v0.3.0 changelog</a>. You can see more details about the stable style at https://github.com/astral-sh/ruff/issues/8678</p>
+<p>However, it looks like this is <em>not</em> a part of Black's stable style e.g. I tested with <code>black==24.4.2</code> and this line is not removed. I wonder if our behavior is intentional.</p>
+<p>cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2024-05-03 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-03 06:29</div>
+            <div class="timeline-body"><p>Yeah, I consider this a bug. The two blank lines should be preserved. I checked out v0.2.2 and narrowed it down that this is due to the preview changes in https://github.com/astral-sh/ruff/pull/8283/files. Although I'm not sure what's  the cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-05-03 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-03 06:50</div>
+            <div class="timeline-body"><p>Hehe, okay, this one is kind of funny, and it's less clear what the intended behavior is. Looking at Black's tests, they are fairly explicit that there should always only be one blank line after a module-level docstring, but that's not what we're seeing in case there's a comment after a module-level docstring.</p>
+<p>However, that would only mean that there are two bugs:</p>
+<ul>
+<li>It should only preserve one blank line between the module docstring and the comment</li>
+<li>It should preserve two blank lines between the import section and the import comment.</li>
+</ul>
+<p>Note: We should not preserve two blank lines in stub files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-08-06 23:48</div>
+            <div class="timeline-body"><p>@zanieb @MichaReiser Hello, just checking to see what the status is on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 06:01</div>
+            <div class="timeline-body"><p>Hi @taranlu-houzz Sorry, I haven't had time to look into this more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20482.html">astral-sh/ruff#20482</a> on 2025-09-19 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

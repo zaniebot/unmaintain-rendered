@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Underscore derive options converted to hyphen? - clap-rs/clap #3564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Underscore derive options converted to hyphen?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3564">#3564</a>
+        opened by <a href="https://github.com/ristillu">@ristillu</a>
+        on 2022-03-19 06:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ristillu">@ristillu</a> on 2022-03-19 06:38</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.59.0 (9d1b2106e 2022-02-23)</p>
+<h3>Clap Version</h3>
+<p>{ version = &quot;3.1.6&quot;, features = [&quot;derive&quot;] }</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>extern crate clap;
+
+use clap::{ArgEnum, Parser};
+
+#[derive(Debug, Parser)]
+struct Args {
+    #[clap(
+        short,
+        long,
+        multiple_occurrences(true),
+        multiple_values(true),
+        required = true,
+        arg_enum
+    )]
+    filters: Vec&lt;Filter&gt;,
+}
+
+#[derive(ArgEnum, Clone, Debug)]
+#[allow(non_camel_case_types)]
+enum Filter {
+    filter1,
+    filter1_option1,
+    filter1_option2,
+    filter2,
+    filter2_option1,
+    filter2_option2,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;args: {:?}&quot;, args);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo build &amp;&amp; target/debug/prog -f filter1_option1</p>
+<h3>Actual Behaviour</h3>
+<pre><code>error: &quot;filter1_option1&quot; isn't a valid value for '--filters &lt;FILTERS&gt;...'
+	[possible values: filter1, filter1-option1, filter1-option2, filter2, filter2-option1, filter2-option2]
+
+	Did you mean &quot;filter1-option1&quot;?
+
+USAGE:
+    prog --filters &lt;FILTERS&gt;...
+
+For more information try --help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><code>args: Args { filters: [filter1_option1] }</code></p>
+<h3>Additional Context</h3>
+<p>I get the Expected Behaviour when I flip things and invoke the program with a hyphen, like <code>target/debug/prog -f filter1-option1</code>. My domain users will be familiar with the underscore format so that's what I want to constrain them to and that's what matches options that my enum will match in other aspects of my full fledged program where I noticed this behaviour.</p>
+<h3>Debug Output</h3>
+<pre><code>[        clap::build::command] 	App::_do_parse
+[        clap::build::command] 	App::_build
+[        clap::build::command] 	App::_propagate:prog
+[        clap::build::command] 	App::_check_help_and_version: prog
+[        clap::build::command] 	App::_check_help_and_version: Removing generated version
+[        clap::build::command] 	App::_propagate_global_args:prog
+[        clap::build::command] 	App::_derive_display_order:prog
+[  clap::build::debug_asserts] 	Command::_debug_asserts
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:help
+[  clap::build::debug_asserts] 	Arg::_debug_asserts:filters
+[  clap::build::debug_asserts] 	Command::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-f&quot;)' ([45, 102])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr(&quot;-f&quot;)
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_short_arg: short_arg=RawOsStr(&quot;f&quot;)
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:f
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:f: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:f: Found valid opt or flag
+[         clap::parse::parser] 	Parser::parse_short_arg:iter:f: val=RawOsStr(&quot;&quot;) (bytes), val=[] (ascii), short_arg=RawOsStr(&quot;f&quot;)
+[         clap::parse::parser] 	Parser::parse_opt; opt=filters, val=None
+[         clap::parse::parser] 	Parser::parse_opt; opt.settings=ArgFlags(REQUIRED | MULTIPLE_OCC | TAKES_VAL | MULTIPLE_VALS | MULTIPLE)
+[         clap::parse::parser] 	Parser::parse_opt; Checking for val...
+[         clap::parse::parser] 	Parser::parse_opt: More arg vals required...
+[         clap::parse::parser] 	Parser::remove_overrides: id=filters
+[    clap::parse::arg_matcher] 	ArgMatcher::inc_occurrence_of_arg: id=filters
+[        clap::build::command] 	App::groups_for_arg: id=filters
+[        clap::build::command] 	App::groups_for_arg: id=filters
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_short_arg Opt(filters)
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;filter1_option1&quot;)' ([102, 105, 108, 116, 101, 114, 49, 95, 111, 112, 116, 105, 111, 110, 49])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::add_val_to_arg; arg=filters, val=RawOsStr(&quot;filter1_option1&quot;)
+[         clap::parse::parser] 	Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;filter1_option1&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[        clap::build::command] 	App::groups_for_arg: id=filters
+[    clap::parse::arg_matcher] 	ArgMatcher::needs_more_vals: o=filters
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[         clap::parse::parser] 	Parser::add_defaults:iter:filters:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:filters: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:filters: doesn't have default missing vals
+[      clap::parse::validator] 	Validator::validate: needs_val_of=filters
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:filters
+[      clap::parse::validator] 	Validator::validate_conflicts::iter: id=filters
+[      clap::parse::validator] 	Conflicts::gather_conflicts
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([Child { id: filters, children: [] }])
+[      clap::parse::validator] 	Validator::gather_requires
+[      clap::parse::validator] 	Validator::gather_requires:iter:filters
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:filters: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;filter1_option1&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;filters&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: possible_vals=[PossibleValue { name: &quot;filter1&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;filter1-option1&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;filter1-option2&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;filter2&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;filter2-option1&quot;, help: None, aliases: [], hide: false }, PossibleValue { name: &quot;filter2-option2&quot;, help: None, aliases: [], hide: false }]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={filters}
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:filters
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[&quot;--filters &lt;FILTERS&gt;...&quot;]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=filters
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is required
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=prog --filters &lt;FILTERS&gt;...
+[        clap::build::command] 	App::color: Color setting...
+[        clap::build::command] 	Auto
+error: &quot;filter1_option1&quot; isn't a valid value for '--filters &lt;FILTERS&gt;...'
+	[possible values: filter1, filter1-option1, filter1-option2, filter2, filter2-option1, filter2-option2]
+
+	Did you mean &quot;filter1-option1&quot;?
+
+USAGE:
+    prog --filters &lt;FILTERS&gt;...
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ristillu on 2022-03-19 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-19 18:10</div>
+            <div class="timeline-body"><p>By default, clap switches the case to follow common conventions.  To customize this, see <code>rename_all</code> and <code>name</code> attributes in the <a href="https://github.com/clap-rs/clap/blob/v3.1.6/examples/derive_ref/README.md#arg-enum-attributes">reference</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-03-19 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ristillu">@ristillu</a> on 2022-03-21 09:53</div>
+            <div class="timeline-body"><p>Thanks @epage. That solves my question. Apologies for not finding the answer myself - I searched for keywords &quot;hyphen&quot; and &quot;underscore&quot; when I needed to search for things like &quot;snake-case&quot; and &quot;kebab-case&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../infinyon/fluvio-website/pulls/297.html">infinyon/fluvio-website#297</a> on 2022-04-19 19:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:57 UTC
+    </footer>
+</body>
+</html>

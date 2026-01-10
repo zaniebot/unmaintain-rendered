@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Increase or adjust scope of default HTTP timeout - astral-sh/uv #1921</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Increase or adjust scope of default HTTP timeout</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1921">#1921</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-23 17:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-23 17:07</div>
+            <div class="timeline-body"><p>Our current HTTP timeout is not sufficient for some large packages e.g. <code>torch</code></p>
+<ul>
+<li>#1920</li>
+<li>#1912</li>
+</ul>
+<p>Increasing the timeout has a downside for people that have network problems while downloading smaller packages, e.g. it will wait longer before surfacing a problem.</p>
+<p>What does pip use for a default timeout?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-23 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-02-23 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1912.html">astral-sh/uv#1912</a> on 2024-02-23 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 17:09</div>
+            <div class="timeline-body"><p>I would expect that a server only sends an HTTP Timeout response if the connection is idle for too long, which makes me wonder if increasing the timeout solves the problem or only hides the root cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1922.html">astral-sh/uv#1922</a> on 2024-02-23 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-23 17:10</div>
+            <div class="timeline-body"><p>Yeah good point, I wonder if we're setting the wrong timeout? We shouldn't be enforcing this timeout when data transfer is actively occurring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2024-02-23 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Increase default HTTP timeout" to "Increase or adjust scope of default HTTP timeout" by @zanieb on 2024-02-23 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1920.html">astral-sh/uv#1920</a> on 2024-02-23 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-02-24 19:20</div>
+            <div class="timeline-body"><p>FWIW the default in PIP is 15 seconds https://github.com/pypa/pip/blob/main/src/pip/_internal/cli/cmdoptions.py#L294, so I'm not sure uv's 30? second default is at fault.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-26 09:13</div>
+            <div class="timeline-body"><p>Could it be that we need to reduce the number of parallel requests? It could also be that they timeout because some cpu intensive task is blocking the main thread, esp. with something large like pytorch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-26 23:05</div>
+            <div class="timeline-body"><p>It seems like the next steps are to:</p>
+<ol>
+<li>Determine what exactly the timeout we are configuring applies to</li>
+<li>Create a simple MRE</li>
+<li>Determine what is happening with the request when the error is raised</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../materialsproject/pymatgen/pulls/3688.html">materialsproject/pymatgen#3688</a> on 2024-03-14 06:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../emdgroup/baybe/pulls/182.html">emdgroup/baybe#182</a> on 2024-03-26 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2514.html">astral-sh/uv#2514</a> on 2024-03-28 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-05 22:15</div>
+            <div class="timeline-body"><p>See https://github.com/seanmonstar/reqwest/issues/2237</p>
+<p>It looks like we're using a deadline for the full request not a read timeout as desired. We need this functionality to be added upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-12 19:59</div>
+            <div class="timeline-body"><p>See https://github.com/seanmonstar/reqwest/pull/2241</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2024-04-14 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-14 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-04-14 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mariosasko">@mariosasko</a> on 2024-04-16 00:33</div>
+            <div class="timeline-body"><p>Hi @zanieb! When can we expect this to be fixed?</p>
+<p><code>huggingface/datasets</code> CI is quite consistently failing because of this issue (I'd assume) as of yesterday (e.g., check the &quot;Install dependencies&quot; step of <a href="https://github.com/huggingface/datasets/actions/runs/8692786216/job/23838173446">this</a> CI run).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 00:36</div>
+            <div class="timeline-body"><p>@mariosasko - How often are you seeing this? We'll ship the HTTP timeout change soon (this week for sure), but I'm still wondering if there's something else going on here and would use <code>huggingface/datasets</code> to investigate if it's at least somewhat frequent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mariosasko">@mariosasko</a> on 2024-04-16 01:04</div>
+            <div class="timeline-body"><p>@charliermarsh It's pretty consistent, e.g., see the first two commit's CI runs in https://github.com/huggingface/datasets/pull/6811 (it's more likely to happen than not based on recent CI runs).</p>
+<p>PS: Not sure if this info is valuable, but both Windows and Ubuntu GH runners are susceptible to this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../huggingface/datasets/pulls/6812.html">huggingface/datasets#6812</a> on 2024-04-16 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 01:16</div>
+            <div class="timeline-body"><p>OK thanks. I'm gonna do some testing using that CI workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 16:24</div>
+            <div class="timeline-body"><p>So the first issue I ran into is that Windows sometimes fails with pytest missing, because the &quot;Install dependencies&quot; step silently fails:</p>
+<pre><code>error: Failed to download: scikit-learn==0.23.1
+  Caused by: HTTP status server error (503 Service Unavailable) for url (https://files.pythonhosted.org/packages/7e/e5/888491b7e2c16718a68dfd8498325e8927003410b2d19ba255d875[13](https://github.com/charliermarsh/datasets/actions/runs/8708243419/job/23885167918?pr=1#step:7:14)38a5/scikit_learn-0.23.1-cp38-cp38-win_amd64.whl.metadata)
+Resolved 4 packages in 41ms
+Downloaded 4 packages in 2.54s
+Installed 4 packages in 28ms
+ + bleurt==0.0.2 (from git+https://github.com/google-research/bleurt.git@cebe7e6f996b40910cfaa520a63db47807e3bf5c)
+ + coval==0.0.1 (from git+https://github.com/ns-moosavi/coval.git@87071a6293dc2e786dcfe2ed78e9369c[17](https://github.com/charliermarsh/datasets/actions/runs/8708243419/job/23885167918?pr=1#step:7:18)e41b3b)
+ + math-equivalence==0.0.0 (from git+https://github.com/hendrycks/math.git@357963a7f5501a6c1708cf3f3fb0cdf525642761)
+ + unbabel-comet==2.2.2
+</code></pre>
+<p>We can make that <em>not</em> silent by changing the shell configuration (so that it exits as soon as one command fails, rather than proceeding). But I'm not sure why it's failing in the first place. 503 hitting that static endpoint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3144.html">astral-sh/uv#3144</a> on 2024-04-19 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-19 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../materialsproject/pymatgen/pulls/3826.html">materialsproject/pymatgen#3826</a> on 2024-05-13 08:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

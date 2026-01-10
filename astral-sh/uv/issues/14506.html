@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not use Homebrew OpenSSL, resulting in &quot;fatal error: 'openssl/crypto.h' file not found&quot; - astral-sh/uv #14506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not use Homebrew OpenSSL, resulting in &quot;fatal error: 'openssl/crypto.h' file not found&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14506">#14506</a>
+        opened by <a href="https://github.com/slhck">@slhck</a>
+        on 2025-07-08 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/slhck">@slhck</a> on 2025-07-08 12:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Perhaps this is not a bug, but I am trying to install a package under macOS:</p>
+<pre><code>➜ uv add XXXXXXX
+Resolved 72 packages in 1.47s
+  × Failed to build `securestring==0.2`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stdout]
+      running bdist_wheel
+      running build
+      running build_ext
+      building 'SecureString' extension
+      clang -fno-strict-overflow -Wsign-compare -Wunreachable-code -DNDEBUG -g -O3 -Wall -I/Users/werner/.cache/uv/builds-v0/.tmpkkcKgq/include -I/Users/werner/.pyenv/versions/3.13.2/include/python3.13 -c pysecstr.c -o
+      build/temp.macosx-15.4-arm64-cpython-313/pysecstr.o
+
+      [stderr]
+      pysecstr.c:4:10: fatal error: 'openssl/crypto.h' file not found
+          4 | #include &lt;openssl/crypto.h&gt;
+            |          ^~~~~~~~~~~~~~~~~~
+      1 error generated.
+      error: command '/usr/bin/clang' failed with exit code 1
+
+      hint: This error likely indicates that you need to install a library that provides &quot;openssl/crypto.h&quot; for `securestring@0.2`
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>That is despite having <code>openssl</code> installed through Homebrew:</p>
+<pre><code>➜ brew info openssl   
+==&gt; openssl@3: stable 3.5.1 (bottled)
+Cryptography and SSL/TLS Toolkit
+https://openssl-library.org
+Installed
+/opt/homebrew/Cellar/openssl@3/3.5.1 (7,563 files, 35.4MB) *
+  Poured from bottle using the formulae.brew.sh API on 2025-07-08 at 14:40:50
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/o/openssl@3.rb
+License: Apache-2.0
+==&gt; Dependencies
+Required: ca-certificates ✔
+==&gt; Caveats
+A CA file has been bootstrapped using certificates from the system
+keychain. To add additional certificates, place .pem files in
+  /opt/homebrew/etc/openssl@3/certs
+
+and run
+  /opt/homebrew/opt/openssl@3/bin/c_rehash
+==&gt; Analytics
+install: 415,091 (30 days), 1,255,991 (90 days), 4,962,357 (365 days)
+install-on-request: 64,517 (30 days), 198,141 (90 days), 699,819 (365 days)
+build-error: 13,147 (30 days)
+</code></pre>
+<p>I would have <em>expected</em> <code>uv</code> to just use that for installing the package.</p>
+<p>For example, I am used to installing Python via <code>pyenv</code>, where you just install <a href="https://github.com/pyenv/pyenv/wiki#suggested-build-environment">the build dependencies</a>, and then you can use <code>pyenv install</code> to compile a Python version linked to Homebrew's OpenSSL.</p>
+<p>Once I set the compiler flags manually, it works:</p>
+<pre><code class="language-bash">$ export CFLAGS=&quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+$ export LDFLAGS=&quot;-L/opt/homebrew/opt/openssl@3/lib&quot;
+$ export CPPFLAGS=&quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+$ export PKG_CONFIG_PATH=&quot;/opt/homebrew/opt/openssl@3/lib/pkgconfig&quot;
+$ uv add XXXXXXXXX
+Resolved 72 packages in 1.92s
+      Built securestring==0.2
+      Built pyspark==3.1.1
+Prepared 2 packages in 7.95s
+Uninstalled 2 packages in 100ms
+Installed 28 packages in 217ms
+...
+</code></pre>
+<p>I am posting this because I could not find any related issues here when searching for <code>openssl</code> and Homebrew.</p>
+<h3>Platform</h3>
+<p>macOS 15</p>
+<h3>Version</h3>
+<p>uv 0.7.14 (Homebrew 2025-06-23)</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @slhck on 2025-07-08 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-09 12:14</div>
+            <div class="timeline-body"><p>Yeah, unlike pyenv we don't link to the system OpenSSL in our Python distributions so package builds will not automatically detect it. I don't think we can do anything to improve this, unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slhck">@slhck</a> on 2025-07-09 12:16</div>
+            <div class="timeline-body"><p>I see. Could this be addressed somewhere in the documentation?
+For example, <a href="https://docs.astral.sh/uv/reference/troubleshooting/build-failures/#header-or-library-is-missing">here it says</a> that apt-installing a package would be enough to fix a build error with a missing header file. Apparently this is not the case here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-09 12:24</div>
+            <div class="timeline-body"><p>Discovery of package headers is... complicated. I think it's actually uncommon for build systems to be able to discover things installed with Homebrew without taking the sort of action you've done there, whereas it's more common for installed packages to be globally discoverable on Linux.</p>
+<p>We can add a note to the managed Python distribution documentation though, yes. We could also probably adjust our build failure hint here for macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-09 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-07-09 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-07-09 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slhck">@slhck</a> on 2025-07-09 14:18</div>
+            <div class="timeline-body"><p>Yeah, sounds great, I think a nudge in the error would have been helpful.</p>
+<p>(Just dropping this here: <code>uv</code> is awesome and has, despite that error, tremendously helped in getting dependencies working and switching between Python versions for a legacy project!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-09 18:23</div>
+            <div class="timeline-body"><p>So the usual answer to this is that most libraries that have native code have precompiled wheels. <code>securestring</code> doesn't, and having taken a look at it, I would like to encourage you not to use it.</p>
+<p><a href="https://github.com/dnet/pysecstr">The package</a> is very small and provides a single function:</p>
+<pre><code class="language-c">static PyObject* SecureString_clearmem(PyObject *self, PyObject *args) {
+	char *buffer;
+	Py_ssize_t length;
+
+	if(!PyArg_ParseTuple(args, &quot;s#&quot;, &amp;buffer, &amp;length)) {
+		return NULL;
+	}
+	OPENSSL_cleanse(buffer, length);
+	return Py_BuildValue(&quot;&quot;);
+}
+</code></pre>
+<p>There's a couple of problems with this.</p>
+<p>First, <a href="https://docs.python.org/3/c-api/arg.html">the <code>s#</code> format gets you a <code>const char *</code>, not a <code>char *</code></a>. You're not supposed to modify it, and the behavior on the Python side if you modify an object like <code>bytes</code> or <code>str</code> that is immutable is undefined. In practice, Python <code>str</code> objects can be stored in multiple encodings <em>simultaneously</em>, and this code will modify at most one of them:</p>
+<pre><code>$ uv run --with securestring python
+Python 3.13.2 (main, Feb 12 2025, 14:38:11) [GCC 6.3.0 20170516] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import SecureString
+&gt;&gt;&gt; string_stored_1byte = &quot;Hello&quot;
+&gt;&gt;&gt; SecureString.clearmem(string_stored_1byte)
+&gt;&gt;&gt; string_stored_1byte
+'\x00\x00\x00\x00\x00'
+&gt;&gt;&gt; string_stored_2byte = &quot;\uffff\uffff&quot;
+&gt;&gt;&gt; SecureString.clearmem(string_stored_2byte)
+&gt;&gt;&gt; string_stored_2byte
+'\uffff\uffff'
+</code></pre>
+<p>Because <code>string_stored_2byte</code> contains Unicode characters that don't fit in a one-byte encoding, Python primarily stores it in a two-byte encoding, and makes a cached UTF-8 copy for code that asks for it, such as <code>securestring</code>... which securely clears the cache but not the original string. :(</p>
+<p>Also, <a href="https://github.com/openssl/openssl/blob/openssl-3.5.1/crypto/mem_clr.c"><code>OPENSSL_cleanse</code> is implemented</a> as just a call to <code>memset(ptr, 0, len)</code> (through a volatile function pointer to attempt to prevent it from getting optimized out). At the time <code>securestring</code> was written, it did something more complicated with writing various patterns through assembly, because it was believed that it theoretically helped erase something from disk in unusual circumstances. It no longer does that, so there's not really any point in using OpenSSL's wrapper over <code>memset</code>.</p>
+<p>Finally, given that this is Python, you have to be very careful that you're not getting extra copies of the string around. For instance, if you're reading a file from disk, you have to use <code>readinto()</code> on a raw unbuffered I/O object (<code>open(...buffering=False)</code>) or Python 3.14's <code>os.readinto()</code>, or it will make extra copies, and <code>securestring</code> can't guarantee that there aren't unwanted copies somewhere else. (Both <code>readinto()</code> and <code>readinto1()</code> on a buffered I/O object will make extra copies.) The <code>OPENSSL_cleanse</code> API is designed for C users who are being very careful about memory management and probably doing clever things to avoid unwanted copies in other ways through coredumps etc.</p>
+<p>So, if you're in pure Python, as far as I can tell, you can do as good a job as <code>securestring</code> can do by just setting bytes in a writable buffer to zero yourself using normal Python assignment (something like <code>b[:] = bytearray(len(b))</code> should work), which also has the benefit of forcing you to actually use a writable byte buffer in the first place (<code>bytearray</code>, <code>array.array</code>, <code>mmap.mmap</code>, etc.), not an immutable <code>bytes</code> or <code>str</code>. Alternatively, you may want to move a little more of the handling of the sensitive data into C or some other compiled language (and calling <code>memset</code> yourself instead of using <code>OPENSSL_cleanse</code>).</p>
+<hr />
+<p>Anyway, to the actual issue: I suspect when you ran <code>brew install openssl</code> you got a message saying something like</p>
+<pre><code>openssl@3 is keg-only, which means it was not symlinked into /opt/homebrew,
+because macOS provides LibreSSL.
+ 
+If you need to have openssl@3 first in your PATH, run:
+  echo 'export PATH=&quot;/opt/homebrew/opt/openssl@3/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+ 
+For compilers to find openssl@3 you may need to set:
+  export LDFLAGS=&quot;-L/opt/homebrew/opt/openssl@3/lib&quot;
+  export CPPFLAGS=&quot;-I/opt/homebrew/opt/openssl@3/include&quot;
+</code></pre>
+<p>This advice is accurate.  (Although it would be entirely understandable if this message displayed long ago and you totally forgot it ever showed up. :) )</p>
+<p>If I'm understanding right, I would almost say this is a bug in pyenv :) though it is something of a happy accident. I think what's going on is that</p>
+<ol>
+<li>pyenv specifically knows about Homebrew and how to find Homebrew's OpenSSL, even though it is not on the default compiler search paths: https://github.com/pyenv/pyenv/blob/v2.6.4/plugins/python-build/bin/python-build#L1687-L1708</li>
+<li>The build process for Python stores the build flags that were used for Python itself, so that extension modules can use the same flags. Specifically I think that if you run <code>python3 -m sysconfig</code> with a pyenv interpreter, it will show paths to Homebrew's OpenSSL.</li>
+<li>pyenv doesn't distribute binaries that it has built in advance, it builds Python on your machine, so those paths are valid and useful when you're compiling extension modules.</li>
+</ol>
+<p>We want to be able to distribute pre-built Python binaries so that it installs quickly and reliably. We also don't have a dependency on Homebrew; we want to be able to run on machines that don't have Homebrew installed at all. So there's nothing that will cause package builds under uv to pick up libraries installed from Homebrew (or Macports, or Nix, or whatever else) that are not on the default compiler search paths.</p>
+<p>Honestly, item 2 is a little weird—it's pyenv's decision to go and find OpenSSL for its own build in a certain way, which is fine, but Python then causes those flags to apply to all package builds, too. (Because we build Python binaries in CI we actually have to go out of our way to work around this behavior so that compiler flags that exist in CI <em>don't</em> show up when building packages on local systems. If you do <code>uv run --managed-python python -m sysconfig</code> you'll probably see a few lingering harmless references to paths on our CI infrastructure that don't exist on your machine.)</p>
+<p>Apart from docs/error message improvements, in theory we could expose our own internal build of OpenSSL for downstream packages to use. That's a bit complicated for technical reasons at the moment, and it would also be a little more of a commitment to a generally-usable OpenSSL than we do at the moment—for instance, what happens across version upgrades? What if a package needs an older or newer version of OpenSSL? Because pyenv builds against whatever's on your system, those issues don't come up for it.</p>
+<p>(Another theoretical answer is that, just like pyenv has special logic to go find Homebrew OpenSSL, securestring should also have this logic in its own build process. Then it won't depend on what the Python interpreter is telling it about its own build. But then there's the stuff above about whether you should use this library at all.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slhck">@slhck</a> on 2025-07-09 18:55</div>
+            <div class="timeline-body"><p>Thanks for the detailed information! I am actually just trying to make a (somewhat outdated) code base work that I have no control over, so while I appreciate your notes regarding the <code>securestring</code> package, unfortunately there is nothing I can do about its use…</p>
+<hr />
+<p>Regarding Homebrew, I am aware of these caveats (I wrote some myself for other Homebrew formulae), and I did actually check it, but it does not show up when you do a <code>brew info</code>:</p>
+<pre><code>➜ brew info openssl
+==&gt; openssl@3: stable 3.5.1 (bottled)
+Cryptography and SSL/TLS Toolkit
+https://openssl-library.org
+Installed
+/opt/homebrew/Cellar/openssl@3/3.5.1 (7,563 files, 35.4MB) *
+  Poured from bottle using the formulae.brew.sh API on 2025-07-08 at 14:40:50
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/o/openssl@3.rb
+License: Apache-2.0
+==&gt; Dependencies
+Required: ca-certificates ✔
+==&gt; Caveats
+A CA file has been bootstrapped using certificates from the system
+keychain. To add additional certificates, place .pem files in
+  /opt/homebrew/etc/openssl@3/certs
+
+and run
+  /opt/homebrew/opt/openssl@3/bin/c_rehash
+==&gt; Analytics
+install: 425,241 (30 days), 1,263,613 (90 days), 4,967,033 (365 days)
+install-on-request: 66,802 (30 days), 200,328 (90 days), 701,856 (365 days)
+build-error: 13,995 (30 days)
+</code></pre>
+<p>I wonder where you got that post-install message from? It's <a href="https://github.com/Homebrew/homebrew-core/blob/main/Formula/o/openssl%403.rb#L125">not there in the formula</a>.</p>
+<p>I guess the <code>use_homebrew_ssl</code> function is a &quot;quality of life&quot; hack that I, as an end user, appreciate a lot. But I completely understand how your build process is different.</p>
+<p>I guess what I'm saying is, a simple note in the FAQ/Troubleshooting should help a lot.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

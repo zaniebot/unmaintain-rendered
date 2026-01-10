@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install packages in managed python - astral-sh/uv #8202</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install packages in managed python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8202">#8202</a>
+        opened by <a href="https://github.com/ion-elgreco">@ion-elgreco</a>
+        on 2024-10-15 08:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-10-15 08:59</div>
+            <div class="timeline-body"><p>Currently when you install packages with <code>--system</code> it will use the system installation. Is there a way to force to install packages in the managed installation without creating a venv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:55</div>
+            <div class="timeline-body"><p>Are you asking if there's a way to achieve the <code>--system</code> behavior without passing <code>--system</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-15 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 14:01</div>
+            <div class="timeline-body"><p>We explicitly don't allow installing packages into the managed Python installation environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-10-15 15:08</div>
+            <div class="timeline-body"><blockquote>
+<p>We explicitly don't allow installing packages into the managed Python installation environments.</p>
+</blockquote>
+<p>Why not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 15:25</div>
+            <div class="timeline-body"><p>Because they're only intended to be sources for creating virtual environments. We are trying to move away from mutable global state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-10-15 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Because they're only intended to be sources for creating virtual environments. We are trying to move away from mutable global state.</p>
+</blockquote>
+<p>Hmm I need to setup a system wide installation which has all the packages since the environment has no internet access. I think there is still some domains that need this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 16:11</div>
+            <div class="timeline-body"><p>Perhaps our <a href="https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment">Docker guide</a> would be helpful to demonstrate how to setup a system-wide environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-10-15 16:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps our <a href="https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment">Docker guide</a> would be helpful to demonstrate how to setup a system-wide environment.</p>
+</blockquote>
+<p>I'm using a custom base image, so I wanted to avoid the hassle of installing a specific python version and use UV for that, and then install packages in that managed python version.</p>
+<p>But I will install the python version I need explicitly then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 16:19</div>
+            <div class="timeline-body"><p>You can still do that, you just need to put create a virtual environment and put it on the path (as described in the linked guide). Is there a reason that's not an option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-10-15 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>You can still do that, you just need to put create a virtual environment and put it on the path (as described in the linked guide). Is there a reason that's not an option?</p>
+</blockquote>
+<p>There is no project to install so to say, also the directory where stuff will happen is not fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-15 17:06</div>
+            <div class="timeline-body"><p>I'm not sure I really understand your point, why isn't this sufficient:</p>
+<pre><code>uv venv
+export VIRTUAL_ENV=&quot;$(pwd)/.venv&quot;
+export PATH=&quot;$VIRTUAL_ENV/bin:$PATH&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2024-10-18 07:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure I really understand your point, why isn't this sufficient:</p>
+<pre><code>uv venv
+export VIRTUAL_ENV=&quot;$(pwd)/.venv&quot;
+export PATH=&quot;$VIRTUAL_ENV/bin:$PATH&quot;
+</code></pre>
+</blockquote>
+<p>Because the working directory might not be known, so someone has to specifically know the venv path since our IDE's don't recognize it automatically.</p>
+<p>I tried this now with a small test but having a system installation with packages installed in it, has the preference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>so someone has to specifically know the venv path since our IDE's don't recognize it automatically.</p>
+</blockquote>
+<p>Why don't you make the virtual environment in a specific location then? One that your IDE looks in?</p>
+<p>The IDE won't look in the managed Python environment either, it's in an arbitrary location.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-26 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:09 UTC
+    </footer>
+</body>
+</html>

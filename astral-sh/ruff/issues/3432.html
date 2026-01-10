@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot build ruff due erorr in ruff_cli - astral-sh/ruff #3432</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot build ruff due erorr in ruff_cli</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3432">#3432</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-03-10 07:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-03-10 07:30</div>
+            <div class="timeline-body"><p>Main branch  08ec11a3, compilation worked fine with 889c05c8
+Ubuntu 22.10, Rust 1.68.0</p>
+<pre><code>cargo build --release
+</code></pre>
+<p>(cargo check and debug cargo build works fine)</p>
+<pre><code>   Compiling ruff_cli v0.0.254 (/home/rafal/test/ruff/crates/ruff_cli)
+error[E0599]: no method named `red` found for reference `&amp;'static str` in the current scope
+  --&gt; crates/ruff_cli/src/lib.rs:64:29
+   |
+64 |                     &quot;error&quot;.red().bold(),
+   |                             ^^^ method not found in `&amp;'static str`
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: the following trait is implemented but not in scope; perhaps add a `use` for it:
+   |
+1  | use colored::Colorize;
+   |
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `ruff_cli` due to previous error
+</code></pre>
+<p>Bisect shows</p>
+<pre><code>a3de791f0af0c0860ea71c994332a6845e9dd6ff is the first bad commit
+commit a3de791f0af0c0860ea71c994332a6845e9dd6ff
+Author: Micha Reiser &lt;micha@reiser.io&gt;
+Date:   Wed Mar 8 12:11:55 2023 +0100
+
+    Make `ruff_cli` binary a small wrapper around `lib` (#3398)
+
+ crates/ruff_cli/Cargo.toml                  |   2 -
+ crates/ruff_cli/src/args.rs                 |   2 -
+ crates/ruff_cli/src/bin/ruff.rs             |  64 +++++
+ crates/ruff_cli/src/commands/config.rs      |   3 +-
+ crates/ruff_cli/src/lib.rs                  | 299 ++++++++++++++++++++++--
+ crates/ruff_cli/src/main.rs                 | 346 ----------------------------
+ crates/ruff_dev/src/generate_all.rs         |  45 ++--
+ crates/ruff_dev/src/generate_cli_help.rs    | 103 +++++----
+ crates/ruff_dev/src/generate_json_schema.rs |  44 ++--
+ 9 files changed, 456 insertions(+), 452 deletions(-)
+ create mode 100644 crates/ruff_cli/src/bin/ruff.rs
+ delete mode 100644 crates/ruff_cli/src/main.rs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3434.html">astral-sh/ruff#3434</a> on 2023-03-10 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-10 08:48</div>
+            <div class="timeline-body"><p>Sorry for this. #3434 adds the missing use statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-03-10 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-10 09:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_lex 0.5.1 inherited a stricter msrv than probably intended - clap-rs/clap #5088</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_lex 0.5.1 inherited a stricter msrv than probably intended</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5088">#5088</a>
+        opened by <a href="https://github.com/udoprog">@udoprog</a>
+        on 2023-08-25 04:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/udoprog">@udoprog</a> on 2023-08-25 04:02</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.69.0 (84c898d65 2023-04-16)</p>
+<h3>Clap Version</h3>
+<p>~4.3.0 which should be (&gt;=4.3.0, &lt;4.4.0)</p>
+<h3>Minimal reproducible code</h3>
+<p>Not relevant.</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Add the following to your Cargo.toml:</p>
+<pre><code class="language-toml">clap = { version = &quot;~4.3.0&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+<p>Try to build the project with an older rust version.</p>
+<h3>Actual Behaviour</h3>
+<p>It will probably fail with:</p>
+<pre><code>error: package `clap_lex v0.5.1` cannot be built because it requires rustc 1.70.0 or newer, while the currently active rustc version is 1.69.0
+Either upgrade to rustc 1.70.0 or newer, or use
+cargo update -p clap_lex@0.5.1 --precise ver
+where `ver` is the latest version of `clap_lex` supporting rustc 1.69.0
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The intent seems to have been to preserve the old msrv by bumping the minor version of <code>clap</code>. But <code>clap_lex</code> seems to have accidentally inherited a stricter msrv  (without a corresponding version bump to isolate it in the dependency tree) due to inheriting it from the workspace:</p>
+<pre><code class="language-toml">rust-version.workspace = true
+</code></pre>
+<h3>Additional Context</h3>
+<p>Furthermore, <code>clap_builder</code> should probably specify a stricter version requirement if this is how it's intended to work in the future: <a href="https://github.com/clap-rs/clap/blob/master/clap_builder/Cargo.toml#L61">https://github.com/clap-rs/clap/blob/master/clap_builder/Cargo.toml#L61</a>. In this instance <code>~0.5.0</code> instead of just <code>0.5.0</code>, the latter which I think will pick up a new clap_lex release.</p>
+<p>For anyone that needs to work around this, you can add the following to your Cargo.toml</p>
+<pre><code class="language-toml">clap_lex = &quot;&lt;=0.5.0&quot;
+</code></pre>
+<p>A solution to this would be to release a new <code>clap_lex</code> 0.5.x version with a more relaxed msrv.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @udoprog on 2023-08-25 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "clap_lex inherited a stricter msrv than probably intended" to "clap_lex 0.5.1 inherited a stricter msrv than probably intended" by @udoprog on 2023-08-25 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mozilla/uniffi-rs/pulls/1719.html">mozilla/uniffi-rs#1719</a> on 2023-08-25 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-25 13:50</div>
+            <div class="timeline-body"><p>Clap is working as-expected.</p>
+<p>Libraries should not be making policy decisions for their dependents by constraining upper bounds on version requirements.  In fact doing so can be harmful to the entire ecosystem.  We only do it for <code>clap</code>/<code>clap_builder</code>/<code>clap_derive</code> due to a special case related to proc macros.  See https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#multiple-requirements for more details.</p>
+<p>Instead, if you care about MSRV, you likely should be committing your lockfile.  Note that Cargo has changed its guidance (blog post on this is upcoming).  See the new guidance on the nightly docs: https://doc.rust-lang.org/nightly/cargo/faq.html#why-have-cargolock-in-version-control</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-08-25 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/udoprog">@udoprog</a> on 2023-08-25 14:06</div>
+            <div class="timeline-body"><p>Note that applications are affected by this decision as well, not just libraries. They will have to do a <code>cargo update -p clap_lex --precise 0.5.0</code> after each <code>cargo update</code> when that could've been part of their direct dependency specification to <code>clap = &quot;~4.3.0&quot;</code> instead. It's the same end result, but a worse UX for lockfile management.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-25 14:15</div>
+            <div class="timeline-body"><p>The path forward for that is for cargo to improve, particularly for it to gain support for an MSRV-aware resolver, see https://github.com/rust-lang/cargo/issues/9930</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/udoprog">@udoprog</a> on 2023-08-25 14:17</div>
+            <div class="timeline-body"><p>I'm waiting for that too as much as anyone 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../thin-edge/thin-edge.io/pulls/2195.html">thin-edge/thin-edge.io#2195</a> on 2023-08-27 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../n0-computer/iroh/issues/1441.html">n0-computer/iroh#1441</a> on 2023-08-31 22:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:28 UTC
+    </footer>
+</body>
+</html>

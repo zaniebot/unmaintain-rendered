@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support flash attention `flash-attn --no-build-isolation` with `uv sync` - astral-sh/uv #6437</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support flash attention `flash-attn --no-build-isolation` with `uv sync`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6437">#6437</a>
+        opened by <a href="https://github.com/vwxyzjn">@vwxyzjn</a>
+        on 2024-08-22 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vwxyzjn">@vwxyzjn</a> on 2024-08-22 14:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I get the following error despite installation flash attention was successful via <code>uv add flash-attn --no-build-isolation</code>. See https://github.com/astral-sh/uv/issues/6402. Is there anyway to honor the <code>no-build-isolation</code> when doing <code>uv sync</code>? I imagine the idea is to mark the <code>flash-attn</code> dependencies somehow and run it with <code>no-build-isolation</code> after all the other dependencies have been installed.</p>
+<p>pyproject.toml and uv.lock are here: https://gist.github.com/vwxyzjn/fba2c7ffac8e6c923ffe912a872ec9a8</p>
+<pre><code>  open-instruct git:(uv) ✗ uv sync
+Using Python 3.12.5
+Creating virtualenv at: .venv
+⠦ fire==0.6.0                                                                                    error: Failed to download and build `flash-attn==2.6.3`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpLR2n19/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpLR2n19/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 302, in _get_build_requires
+    self.run_setup()
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpLR2n19/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 502, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpLR2n19/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 21, in &lt;module&gt;
+ModuleNotFoundError: No module named 'torch'
+---
+  Caused by: This error likely indicates that flash-attn==2.6.3 depends on torch, but doesn't declare it as a build dependency. If flash-attn==2.6.3 is a first-party package, consider adding torch to its `build-system.requires`. Otherwise, `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 16:02</div>
+            <div class="timeline-body"><p>You'll need to use <code>uv sync --no-build-isolation-package flash-attn</code> — it'd be great if we tracked this though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-22 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">projects</span> added by @zanieb on 2024-08-22 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vwxyzjn">@vwxyzjn</a> on 2024-08-22 16:32</div>
+            <div class="timeline-body"><p>Wow amazing that this feature already exists!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vwxyzjn">@vwxyzjn</a> on 2024-08-22 17:12</div>
+            <div class="timeline-body"><p>I just tested it out, and it seems to fail:</p>
+<pre><code>uv sync --no-build-isolation-package flash-attn
+⠹ flash-attn==2.6.3                                                                                 error: Failed to download and build `flash-attn==2.6.3`
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpEfmf64/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 332, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpEfmf64/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 302, in _get_build_requires
+    self.run_setup()
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpEfmf64/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 502, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/home/costa/.cache/uv/builds-v0/.tmpEfmf64/lib/python3.12/site-packages/setuptools/build_meta.py&quot;, line 318, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 21, in &lt;module&gt;
+ModuleNotFoundError: No module named 'torch'
+---
+  Caused by: This error likely indicates that flash-attn==2.6.3 depends on torch, but doesn't declare it as a build dependency. If flash-attn==2.6.3 is a first-party package, consider adding torch to its `build-system.requires`. Otherwise, `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+</code></pre>
+<img width="756" alt="image" src="https://github.com/user-attachments/assets/f93eb5e1-ebe7-49d5-b618-b8d43b462ea5">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 17:19</div>
+            <div class="timeline-body"><p>I think to make this work with <code>uv sync</code>, sadly you need to do something like <code>uv pip install torch</code> prior to running <code>uv sync</code>. The build dependencies have to be available in the virtual environment <em>before</em> you run the install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-25 10:04</div>
+            <div class="timeline-body"><p>I'm curious about what the recommended best practice is for including torch extensions in the project.</p>
+<p>Here's my current approach:</p>
+<pre><code class="language-shell">uv sync  # torch is installed here
+uv sync --extra build  # to keep things tidy: setuptools, wheel, and other stuff missing because of --no-build-isolation
+uv sync --extra torchextensions --no-build-isolation  # torch extensions installed here
+</code></pre>
+<p>Previously, I did this, which is also not ideal:</p>
+<pre><code class="language-shell">uv sync  # torch is installed here
+uv pip install setuptools wheel ...  # missing because of --no-build-isolation
+uv pip install --no-build-isolation some_torch_extension
+</code></pre>
+<p>Your recommendation here is also not ideal, because you would need to manually make sure to <code>pip install</code> the <strong>exact</strong> torch version that is also in the uv.lock file:</p>
+<pre><code class="language-shell">uv pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+uv pip install setuptools wheel ...  # missing because of --no-build-isolation
+uv sync --no-build-isolation  # torch extensions installed here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vwxyzjn">@vwxyzjn</a> on 2024-08-25 13:29</div>
+            <div class="timeline-body"><p>You can include wheel and setup tools in uv add I think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6607.html">astral-sh/uv#6607</a> on 2024-08-25 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-25 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 16:02</div>
+            <div class="timeline-body"><p>I added some docs for this here: https://github.com/astral-sh/uv/pull/6607</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-26 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eladrich">@eladrich</a> on 2024-12-11 09:40</div>
+            <div class="timeline-body"><p>Hi, I was following the suggested solution that was also introduced in the <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">docs</a> of specifying flash-attn as an extra dependency and use the following two commands</p>
+<pre><code class="language-bash">uv sync --extra build
+uv sync --extra build --extra compile
+</code></pre>
+<p>My main challenge with that solution is from now on this required me to always remember to specify these flags when using uv for that project with the flash-attn dependencies, otherwise if I accidentally use a <code>uv sync</code> command the package gets uninstalled.
+A different suggested solution was to separately use a <code>uv pip install torch</code> beforehand but I think that requires verifying I'm using the right torch versions in both the <code>uv pip</code> commands and <code>sync</code> ones and I wanted to avoid the <code>uv pip</code> syntax completely.</p>
+<p>Instead, I managed to build the environment by specifying flash-attn alongside the other dependencies (while still defining it as a <code>no-build-isolation-package</code>) and then using the <code>--no-install-package</code> to create the environment the first time.</p>
+<pre><code class="language-bash">uv sync --no-install-package flash-attn
+uv sync
+</code></pre>
+<p>If I understand correctly this allows me to use the regular <code>uv sync</code> once the project was initialized. I was wondering whether that is a valid solution or whether it has other downsides?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-08-03 19:30</div>
+            <div class="timeline-body"><p>For anyone still following this, it's possible to install flash-attn without the two steps (meaning <code>uv run</code> should work fine with no fuss) if you specify extra build dependencies for <code>flash-attn</code>. This isn't quite robust yet, but it works well as long as you specify your torch version in a narrow way. Some more features are due to make this more ergonomic in the future. See Charlie's latest comments in https://github.com/astral-sh/uv/issues/13959#issuecomment-3146717644.</p>
+<p>As of uv v0.8.4 it looks like this in practice:</p>
+<pre><code class="language-toml">[tool.uv.extra-build-dependencies]
+# Will require these extra packages when building flash-attn.
+# It's important that the torch version matches the one used by this package.
+# Consider using == in both your dependencies and here for an exact match on the torch version.
+flash-attn = [&quot;setuptools&gt;=80.9.0&quot;, &quot;torch&gt;=2.6,&lt;2.7&quot;]
+</code></pre>
+<p>With this, I can install all my packages, including <code>flash-attn</code>, without any additional steps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/finbarrtimbers">@finbarrtimbers</a> on 2025-08-07 17:12</div>
+            <div class="timeline-body"><p>Hey @marcelroed can you share your entire <code>pyproject.toml</code> file? I'm struggling to get this to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-07 17:21</div>
+            <div class="timeline-body"><p>(I’m gonna overhaul the docs around flash-attn shortly as we’ve shipped some new things that should make it easier. Unfortunately I’m on my phone right now so hard to type it all out but I’ll try to post here when I’m back.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 09:51</div>
+            <div class="timeline-body"><p>If anyone wants to try it out, this is what we're planning to recommend:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;torch&quot;, &quot;flash-attn&quot;]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }]
+
+[tool.uv.extra-build-variables]
+flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = &quot;TRUE&quot; }
+</code></pre>
+<p>(You'll need to be on latest uv.)</p>
+<p>This lets <code>flash-attn</code> build with build isolation (so, no more <code>--no-build-isolation</code>), but <em>also</em> ensures that <code>torch</code> is included in the environment -- and, critically, that it uses the same version of <code>torch</code> as in the lockfile, which is the crucial requirement for the <code>flash-attn</code> build script. This should let you &quot;just&quot; <code>uv sync</code> without requiring multiple invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2025-08-08 11:36</div>
+            <div class="timeline-body"><p>Thanks, I just tried it and it works! However, I noticed that the wheel is not being rebuilt when I change the build dependencies:</p>
+<pre><code class="language-bash">uv sync  # builds flash-attn
+uv add torch==2.6  # change build dep version
+uv sync  # does not rebuild flash-attn
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 12:16</div>
+            <div class="timeline-body"><p>Can you explain what you mean by &quot;not being rebuilt&quot;? The flash-attn wheel is basically never built. The <code>setup.py</code> just downloads it from GitHub. Do you mean that it's not being reinstalled when you change your torch version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 13:01</div>
+            <div class="timeline-body"><p>If so, I think <code>--reinstall-package flash-attn</code> would correctly pull in the right version. I'll file an issue for the stale &quot;retained package&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2025-08-08 14:55</div>
+            <div class="timeline-body"><p>By being built I mean uv &quot;building&quot; the wheel instead of using the wheel in uv's cache. In this case building is just <code>setup.py</code> being executed and downloading the correct wheel.</p>
+<p>Yes, <code>--reinstall-package flash-attn</code> works, but I think the correct solution would be to have the set of build deps (including their exact version) be part of a wheel's cache key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 15:08</div>
+            <div class="timeline-body"><p>It is a part of the wheel's cache key. The problem is when we're checking if the package is already installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15248.html">astral-sh/uv#15248</a> on 2025-08-13 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-13 03:43</div>
+            <div class="timeline-body"><p>We're tracking that in https://github.com/astral-sh/uv/issues/15218</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Machine-Learning-for-Medical-Language/cnlp_llm/issues/43.html">Machine-Learning-for-Medical-Language/cnlp_llm#43</a> on 2025-08-24 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../embeddings-benchmark/mteb/issues/3240.html">embeddings-benchmark/mteb#3240</a> on 2025-10-02 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Butanium">@Butanium</a> on 2025-10-05 11:51</div>
+            <div class="timeline-body"><p>Just to make sure: there is no magic uv flags to make this work on Windows without going through custom wheels / full build from scratch (according to https://github.com/Dao-AILab/flash-attention/issues/1469 this is what I should do)</p>
+<p>It fails like this for me:</p>
+<pre><code class="language-py">                                                                             × Failed to build `flash-attn==2.8.3`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stdout]
+      running bdist_wheel
+
+      [stderr]
+      C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\torch\_subclasses\functional_tensor.py:279: UserWarning: Failed to initialize NumPy: No module      
+      named 'numpy' (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\utils\tensor_numpy.cpp:81.)
+        cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+      C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+      !!
+
+              ********************************************************************************
+              Please consider removing the following classifiers in favor of a SPDX license expression:
+
+              License :: OSI Approved :: BSD License
+
+              See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+              ********************************************************************************
+
+      !!
+        self._finalize_license_expression()
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\build_meta.py&quot;, line 432, in build_wheel
+          return _build(['bdist_wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\build_meta.py&quot;, line 423, in _build
+          return self._build_with_temp_dir(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\build_meta.py&quot;, line 404, in _build_with_temp_dir
+          self.run_setup()
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 526, in &lt;module&gt;
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\__init__.py&quot;, line 115, in setup
+          return distutils.core.setup(**attrs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\_distutils\core.py&quot;, line 186, in setup
+          return run_commands(dist)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\_distutils\core.py&quot;, line 186, in setup
+          return run_commands(dist)
+                 ^^^^^^^^^^^^^^^^^^
+                 ^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\_distutils\core.py&quot;, line 202, in run_commands
+          dist.run_commands()
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\_distutils\dist.py&quot;, line 1002, in run_commands
+          self.run_command(cmd)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\dist.py&quot;, line 1102, in run_command
+          super().run_command(command)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\setuptools\_distutils\dist.py&quot;, line 1021, in run_command
+          cmd_obj.run()
+        File &quot;&lt;string&gt;&quot;, line 483, in run
+        File &quot;&lt;string&gt;&quot;, line 456, in get_wheel_url
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\packaging\version.py&quot;, line 56, in parse
+          return Version(version)
+                 ^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpxWQvwf\Lib\site-packages\packaging\version.py&quot;, line 200, in __init__
+          match = self._regex.search(version)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      TypeError: expected string or bytes-like object, got 'NoneType'
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `flash-attn` (v2.8.3) was included because `nnterp[llms]` depends on `flash-attn`
+
+C:\Users\Travail\Documents\interp\nnterp&gt;uv pip install flash-attn --no-build-isolation
+
+C:\Users\Travail\Documents\interp\nnterp&gt;uv sync --no-build-isolation-package flash-attn --extra dev --extra llms
+Resolved 271 packages in 4.55s                                                                                                                                                           
+      Built nnterp @ file:///C:/Users/Travail/Documents/interp/nnterp
+Prepared 1 package in 1.59s
+Uninstalled 2 packages in 88ms
+Installed 1 package in 8ms
+ ~ nnterp==1.0b3.dev12+g7e614574b.d20251005 (from file:///C:/Users/Travail/Documents/interp/nnterp)
+ - setuptools==79.0.1
+
+C:\Users\Travail\Documents\interp\nnterp&gt;uv pip show flash-attn
+warning: Package(s) not found for: flash-attn
+
+C:\Users\Travail\Documents\interp\nnterp&gt;uv pip show flash-attn
+warning: Package(s) not found for: flash-attn
+
+C:\Users\Travail\Documents\interp\nnterp&gt;uv sync --no-build-isolation-package flash-attn --extra dev --extra llms
+Resolved 272 packages in 3.52s                                                                                                                                                           
+      Built nnterp @ file:///C:/Users/Travail/Documents/interp/nnterp
+Prepared 1 package in 1.54s
+Uninstalled 1 package in 3ms
+Installed 2 packages in 16ms
+  × Failed to build `flash-attn==2.8.3`
+  ├─▶ The build backend returned an error                                                                                                                                                
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'setuptools'
+
+      hint: This error likely indicates that `flash-attn@2.8.3` depends on `setuptools`, but doesn't declare it as a build dependency. If `flash-attn` is a first-party package,
+      consider adding `setuptools` to its `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:
+
+      [tool.uv.extra-build-dependencies]
+      flash-attn = [&quot;setuptools&quot;]
+
+      or `uv pip install setuptools` into the environment and re-run with `--no-build-isolation`.
+  help: `flash-attn` (v2.8.3) was included because `nnterp[llms]` depends on `flash-attn`
+
+C:\Users\Travail\Documents\interp\nnterp&gt;uv sync --no-build-isolation-package flash-attn --extra dev --extra llms
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+Resolved 272 packages in 5ms
+   Building nnterp @ file:///C:/Users/Travail/Documents/interp/nnterp
+⠸ Preparing packages... (0/1)                                                                                                                                                            
+^CTerminer le programme de commandes (O/N) ? 
+^CTerminer le programme de commandes (O/N) ? 
+^CTerminer le programme de commandes (O/N) ? 
+^C
+C:\Users\Travail\Documents\interp\nnterp&gt;uv sync --extra dev --extra llms
+warning: The `extra-build-dependencies` option is experimental and may change without warning. Pass `--preview-features extra-build-dependencies` to disable this warning.
+Resolved 272 packages in 6ms
+      Built nnterp @ file:///C:/Users/Travail/Documents/interp/nnterp
+  × Failed to build `flash-attn==2.8.3`
+  ├─▶ The build backend returned an error                                                                                                                                                
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
+
+      [stdout]
+      running bdist_wheel
+
+      [stderr]
+      C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\torch\_subclasses\functional_tensor.py:279: UserWarning: Failed to initialize NumPy: No module      
+      named 'numpy' (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\utils\tensor_numpy.cpp:81.)
+        cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
+      C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+      !!
+
+              ********************************************************************************
+              Please consider removing the following classifiers in favor of a SPDX license expression:
+
+              License :: OSI Approved :: BSD License
+
+              See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+              ********************************************************************************
+
+      !!
+        self._finalize_license_expression()
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\build_meta.py&quot;, line 432, in build_wheel
+          return _build(['bdist_wheel'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\build_meta.py&quot;, line 423, in _build
+          return self._build_with_temp_dir(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\build_meta.py&quot;, line 404, in _build_with_temp_dir
+          self.run_setup()
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\build_meta.py&quot;, line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\build_meta.py&quot;, line 317, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 526, in &lt;module&gt;
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\__init__.py&quot;, line 115, in setup
+          return distutils.core.setup(**attrs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\_distutils\core.py&quot;, line 186, in setup
+          return run_commands(dist)
+                 ^^^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\_distutils\core.py&quot;, line 202, in run_commands
+          dist.run_commands()
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\_distutils\dist.py&quot;, line 1002, in run_commands
+          self.run_command(cmd)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\dist.py&quot;, line 1102, in run_command
+          super().run_command(command)
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\setuptools\_distutils\dist.py&quot;, line 1021, in run_command
+          cmd_obj.run()
+        File &quot;&lt;string&gt;&quot;, line 483, in run
+        File &quot;&lt;string&gt;&quot;, line 456, in get_wheel_url
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\packaging\version.py&quot;, line 56, in parse
+          return Version(version)
+                 ^^^^^^^^^^^^^^^^
+        File &quot;C:\Users\Travail\AppData\Local\uv\cache\builds-v0\.tmpdvwBNP\Lib\site-packages\packaging\version.py&quot;, line 200, in __init__
+          match = self._regex.search(version)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      TypeError: expected string or bytes-like object, got 'NoneType'
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `flash-attn` (v2.8.3) was included because `nnterp[llms]` depends on `flash-attn`
+</code></pre>
+<p>I ended up just doing</p>
+<pre><code class="language-toml">&quot;flash-attn; sys_platform != 'win32'&quot;,
+</code></pre>
+<p>in my pyproject</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/c-vongpaseut">@c-vongpaseut</a> on 2025-10-28 14:32</div>
+            <div class="timeline-body"><p>Hello, I am using uv with workspaces and I have the following project structure</p>
+<pre><code>my_project
+├── packages
+│   └── my_package
+│       ├── pyproject.toml
+│       └── src
+│           └── my_package
+│               ├── __init__.py
+│               └── foo.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── my_project
+        └── main.py
+</code></pre>
+<p>I need to add flash attention in <code>my_package</code> dependencies. I followed the solution</p>
+<blockquote>
+<p>If anyone wants to try it out, this is what we're planning to recommend:</p>
+<p>[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [&quot;torch&quot;, &quot;flash-attn&quot;]</p>
+<p>[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = &quot;torch&quot;, match-runtime = true }]</p>
+<p>[tool.uv.extra-build-variables]
+flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = &quot;TRUE&quot; }</p>
+<p>(You'll need to be on latest uv.)</p>
+<p>This lets <code>flash-attn</code> build with build isolation (so, no more <code>--no-build-isolation</code>), but <em>also</em> ensures that <code>torch</code> is included in the environment -- and, critically, that it uses the same version of <code>torch</code> as in the lockfile, which is the crucial requirement for the <code>flash-attn</code> build script. This should let you &quot;just&quot; <code>uv sync</code> without requiring multiple invocations.</p>
+</blockquote>
+<p>but I still encounter the error</p>
+<pre><code>ModuleNotFoundError: No module named 'torch'
+
+      hint: This error likely indicates that `flash-attn@2.8.3` depends on `torch`, but doesn't declare it as a build dependency. If `flash-attn` is a first-party package, consider adding `torch` to its `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:
+
+      [tool.uv.extra-build-dependencies]
+      flash-attn = [&quot;torch&quot;]
+
+      or `uv pip install torch` into the environment and re-run with `--no-build-isolation`.
+</code></pre>
+<p>However, it works if I move the <code>flash-attn</code> dependency in <code>my_project</code> dependencies. Is this normal?</p>
+<p>Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../NVlabs/earth2grid/issues/57.html">NVlabs/earth2grid#57</a> on 2025-10-28 23:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

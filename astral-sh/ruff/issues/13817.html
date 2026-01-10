@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`RUF027` - missing f-string - gotcha example - astral-sh/ruff #13817</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`RUF027` - missing f-string - gotcha example</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13817">#13817</a>
+        opened by <a href="https://github.com/tony">@tony</a>
+        on 2024-10-19 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tony">@tony</a> on 2024-10-19 10:31</div>
+            <div class="timeline-body"><blockquote>
+<p>[!NOTE]
+This may be a duplicate. <code>RUF027</code> as a rule is nuanced, I am not sure if this may be duplicating a known caveat of <code>RUF027</code>. Fine to close if this works as intended or is a duplicate. Thank you!</p>
+</blockquote>
+<p><a href="https://docs.astral.sh/ruff/rules/missing-f-string-syntax/"><code>RUF027</code></a> is a preview. This is tested with <a href="https://github.com/astral-sh/ruff/releases/tag/0.7.0"><code>0.7.0</code></a>.</p>
+<h1>Example case: MyST Markdown test fixtures</h1>
+<p>via Project: gp-libs (<a href="https://github.com/git-pull/gp-libs">repo</a>, <a href="https://gp-libs.git-pull.com/">docs</a>, <a href="https://pypi.org/project/gp-libs/">PyPI</a>)</p>
+<p>Examples of strings where <code>{doctest}</code> wants to be preserved:</p>
+<ul>
+<li>https://github.com/git-pull/gp-libs/blob/v0.0.7/tests/test_doctest_docutils.py#L102-L110</li>
+<li>https://github.com/git-pull/gp-libs/blob/v0.0.7/tests/test_doctest_docutils.py#L119-L125</li>
+</ul>
+<p>Excerpt:</p>
+<pre><code class="language-python">FIXTURES = [
+    #
+    # Docutils
+    #
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_directive-colons&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+:::{doctest}
+
+    &gt;&gt;&gt; 4 + 4
+    8
+:::
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_directive-backticks&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+```{doctest}
+
+    &gt;&gt;&gt; 4 + 4
+    8
+```
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+]
+</code></pre>
+<h2>More details</h2>
+<p>File (<a href="https://github.com/git-pull/gp-libs/blob/v0.0.7/tests/test_doctest_docutils.py">source</a>):</p>
+<details>
+
+<pre><code class="language-python">&quot;&quot;&quot;Tests for doctest_docutils.&quot;&quot;&quot;
+
+import doctest
+import pathlib
+import textwrap
+import typing as t
+
+import pytest
+
+import doctest_docutils
+
+FixtureFileDict = t.Dict[str, str]
+
+
+class DocTestFinderFixture(t.NamedTuple):
+    &quot;&quot;&quot;Test fixture for doctest_docutils.&quot;&quot;&quot;
+
+    # pytest
+    test_id: str
+
+    # Content
+    files: FixtureFileDict
+    tests_found: int
+
+
+FIXTURES = [
+    #
+    # Docutils
+    #
+    DocTestFinderFixture(
+        test_id=&quot;reST-doctest_block&quot;,
+        files={
+            &quot;example.rst&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+&gt;&gt;&gt; 4 + 4
+8
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;reST-doctest_directive&quot;,
+        files={
+            &quot;example.rst&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+.. doctest::
+
+   &gt;&gt;&gt; 4 + 4
+   8
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    #
+    # Markdown / myst-parser
+    #
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_block&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+```
+&gt;&gt;&gt; 4 + 4
+8
+```
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_block-python&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+```python
+&gt;&gt;&gt; 4 + 4
+8
+```
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_block-indented&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+Here's a test:
+
+    &gt;&gt;&gt; 4 + 4
+    8
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_directive-colons&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                f&quot;&quot;&quot;
+:::{doctest}
+
+    &gt;&gt;&gt; 4 + 4
+    8
+:::
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_directive-backticks&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                f&quot;&quot;&quot;
+```{doctest}
+
+    &gt;&gt;&gt; 4 + 4
+    8
+```
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_directive-eval-rst-colons&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+:::{eval-rst}
+
+   .. doctest::
+
+      &gt;&gt;&gt; 4 + 4
+      8
+:::
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_directive-eval-rst-backticks&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+```{eval-rst}
+
+   .. doctest::
+
+      &gt;&gt;&gt; 4 + 4
+      8
+```
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=1,
+    ),
+    # sphinx-inline-tabs
+    DocTestFinderFixture(
+        test_id=&quot;MyST-doctest_block-python--sphinx-inline-tabs&quot;,
+        files={
+            &quot;example.md&quot;: textwrap.dedent(
+                &quot;&quot;&quot;
+````{tab} example tab
+```python
+&gt;&gt;&gt; 4 + 4
+8
+```
+````
+
+````{tab} example second
+```python
+&gt;&gt;&gt; 4 + 2
+6
+```
+````
+        &quot;&quot;&quot;,
+            ),
+        },
+        tests_found=2,
+    ),
+]
+
+
+class FilePathModeNotImplemented(Exception):
+    &quot;&quot;&quot;Raised if file_path_mode not supported.&quot;&quot;&quot;
+
+    def __init__(self, file_path_mode: str) -&gt; None:
+        return super().__init__(f&quot;No file_path_mode supported for {file_path_mode}&quot;)
+
+
+@pytest.mark.parametrize(
+    DocTestFinderFixture._fields,
+    FIXTURES,
+    ids=[f.test_id for f in FIXTURES],
+)
+@pytest.mark.parametrize(&quot;file_path_mode&quot;, [&quot;relative&quot;, &quot;absolute&quot;])
+def test_DocutilsDocTestFinder(
+    tmp_path: pathlib.Path,
+    monkeypatch: pytest.MonkeyPatch,
+    test_id: str,
+    files: FixtureFileDict,
+    tests_found: int,
+    file_path_mode: str,
+) -&gt; None:
+    &quot;&quot;&quot;Test for doctest_docutils.&quot;&quot;&quot;
+    # Initialize variables
+    tests_path = tmp_path / &quot;tests&quot;
+    first_test_key = next(iter(files.keys()))
+    first_test_filename = first_test_key
+    if file_path_mode == &quot;absolute&quot;:
+        first_test_filename = str(tests_path / first_test_filename)
+    elif file_path_mode != &quot;relative&quot;:
+        raise FilePathModeNotImplemented(file_path_mode)
+
+    tests_path.mkdir()
+    for file_name, text in files.items():
+        rst_file = tests_path / file_name
+        rst_file.write_text(
+            text,
+            encoding=&quot;utf-8&quot;,
+        )
+
+    if file_path_mode == &quot;relative&quot;:
+        monkeypatch.chdir(tests_path)
+
+    # Test
+    finder = doctest_docutils.DocutilsDocTestFinder()
+    text, _ = doctest._load_testfile(  # type: ignore
+        str(first_test_filename),
+        package=None,
+        module_relative=False,
+        encoding=&quot;utf-8&quot;,
+    )
+    tests = finder.find(text, str(first_test_filename))
+    tests.sort(key=lambda test: test.name)
+
+    assert len(tests) == tests_found
+
+    for test in tests:
+        doctest.DebugRunner(verbose=False).run(test)
+</code></pre>
+</details>
+
+<p>Command:</p>
+<pre><code>ruff check . --select RUF027 --fix --unsafe-fixes --preview --show-fixes; ruff format .;
+</code></pre>
+<p>Output:</p>
+<pre><code>Fixed 2 errors:
+- tests/test_doctest_docutils.py:
+    2 × RUF027 (missing-f-string-syntax)
+
+Found 2 errors (2 fixed, 0 remaining).
+11 files left unchanged
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-19 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-19 19:14</div>
+            <div class="timeline-body"><p>It took me a bit to reproduce so I created a <a href="https://play.ruff.rs/6ebf7ab4-fe76-4c4b-b96e-2a2f28af4382">playground</a> demonstrating the false positive.</p>
+<p>I'm afraid. I don't think there's much that can be done here unless you're aware of a specific pattern that we can detect to suppress the false positive.</p>
+<p>To me it seems that avoiding this false positive would require understanding this specific API because it very much looks like a possible f-string, at least without knowing more about sphinx.</p>
+<p>I recommend you to disable the rule with a <code>noqa</code> comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-19 22:42</div>
+            <div class="timeline-body"><p>I agree with @MichaReiser here, sadly. There are things we can try to do to reduce the false positives for RUF027 (I'm trying a few of them in https://github.com/astral-sh/ruff/pull/13076, though I need to revisit that PR at some point). But I can't see a way we'd ever be able to prevent this false positive in particular without hardcoding some knowledge of Sphinx's API into the rule -- which I'm somewhat reluctant to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tony">@tony</a> on 2024-10-19 23:05</div>
+            <div class="timeline-body"><p>@MichaReiser @AlexWaygood Thank you.</p>
+<p>in re: https://github.com/git-pull/gp-libs/pull/35, <code>ignore: RUF027</code> at the end of the string does the trick:</p>
+<pre><code class="language-diff">diff --git a/tests/test_doctest_docutils.py b/tests/test_doctest_docutils.py
+index b21f22e..73161ff 100644
+--- a/tests/test_doctest_docutils.py
++++ b/tests/test_doctest_docutils.py
+@@ -102,13 +102,13 @@ class DocTestFinderFixture(t.NamedTuple):
+         test_id=&quot;MyST-doctest_directive-colons&quot;,
+         files={
+             &quot;example.md&quot;: textwrap.dedent(
+-                f&quot;&quot;&quot;
++                &quot;&quot;&quot;
+ :::{doctest}
+ 
+     &gt;&gt;&gt; 4 + 4
+     8
+ :::
+-        &quot;&quot;&quot;,
++        &quot;&quot;&quot;,  # noqa: RUF027
+             ),
+         },
+         tests_found=1,
+@@ -117,13 +117,13 @@ class DocTestFinderFixture(t.NamedTuple):
+         test_id=&quot;MyST-doctest_directive-backticks&quot;,
+         files={
+             &quot;example.md&quot;: textwrap.dedent(
+-                f&quot;&quot;&quot;
++                &quot;&quot;&quot;
+ ```{doctest}
+ 
+     &gt;&gt;&gt; 4 + 4
+     8
+ ```
+-        &quot;&quot;&quot;,
++        &quot;&quot;&quot;,  # noqa: RUF027
+             ),
+         },
+         tests_found=1,
+</code></pre>
+<p>Tests work (these are <a href="https://docs.python.org/3/library/doctest.html"><code>doctest</code>s</a>, I was relieved that ignoring of the rule could take effect without interfering with the tests).</p>
+<p>@MichaReiser @AlexWaygood Preference for closing this? Keeping open? I will leave it up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-19 23:11</div>
+            <div class="timeline-body"><p>I think I'll close this; I can't see a reasonable way of improving our behaviour here, at least in the short-to-medium term :/</p>
+<p>Thanks for opening the issue, sorry we can't do more on this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-19 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tony">@tony</a> on 2024-10-19 23:15</div>
+            <div class="timeline-body"><p>No worries - the ignore acts as a seemless workaround for this! Thank you for your assistance!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

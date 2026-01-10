@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running on Windows in a virtualenv: stubs in .venv/Scripts crash when run from cmake - astral-sh/uv #6464</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Running on Windows in a virtualenv: stubs in .venv/Scripts crash when run from cmake</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6464">#6464</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2024-08-22 21:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2024-08-22 21:37</div>
+            <div class="timeline-body"><p>Sorry, this is a bit complicated, and I don't have a compact repro case for you. But here's the situation:</p>
+<ul>
+<li>Windows 11, msys64 zsh, cmake 3.28, and a big cmake setup.</li>
+</ul>
+<p>To repro:</p>
+<ul>
+<li>Install latest uv</li>
+<li>Run these commands in msys64 bash:</li>
+</ul>
+<pre><code class="language-bash">uv venv --prompt MyProject
+uv sync # installs deps from pyproject.toml
+source .venv/Scripts/activate
+</code></pre>
+<p>Now <code>which ninja</code> correctly shows <code>.venv/Scripts/ninja.exe</code> -- but that is actually a uv stub or &quot;trampoline&quot; that invokes the real <code>ninja.exe</code> somewhere else. It works fine from the shell (or even from powershell).</p>
+<p>When I run <code>cmake</code> which invokes <code>ninja.exe</code>, it finds that one, but in that situation the trampoline crashes almost immediately. I got it in the VS2022 debugger, but the stack trace without a .pdb is not very helpful:</p>
+<pre><code>Exception thrown at 0x00007FF759526AE2 in ninja.exe: 0xC0000005: Access violation reading location 0x0000000000000002.
+&gt;	ninja.exe!00007ff759526ae2()	Unknown
+ 	ninja.exe!00007ff759521009()	Unknown
+ 	kernel32.dll!BaseThreadInitThunk()	Unknown
+ 	ntdll.dll!RtlUserThreadStart()	Unknown
+</code></pre>
+<p>I expect this is something cmake is doing to modify the environment in a way that the trampoline doesn't expect.</p>
+<p>I do note, from tracing the execution, that the trampoline execs the python launcher with itself as an arg:</p>
+<pre><code>&quot;E:\dss\consulting\xyz\reframe\.venv\Scripts\python.exe&quot; &quot;E:\dss\consulting\xyz\reframe\.venv\Scripts\ninja.exe&quot; --version
+</code></pre>
+<p>but I don't think that python ever gets to running anything significant. Maybe that means something?
+Also: the python it uses when creating the venv is 3.12.5 which uv downloads itself -- no system python.</p>
+<p>I'd really like uv to work in Windows along with cmake. Last year I had to switch away from traditional virtualenv to miniconda because miniconda puts the real executables into the virtualenv dir, which works. I'm happy to help track this down further -- just let me know what I need to do. (I'm not a rust person particularly, but I'm sure I can build a rust executable if that will help.)</p>
+<p>The complete environment passed to the ninja.exe trampoline from CMake is as follows, in case this is helpful, and I notice no <code>VIRTUALENV</code>. But when I remove VIRTUALENV from my shell env, the trampoline works when called directly from the shell.</p>
+<pre><code>=::=::\
+	AE_SDK_BASE_PATH=c:\Users\garyo\Downloads\May2023_AfterEffectsSDK_Win\AfterEffectsSDK
+	ALLUSERSPROFILE=C:\ProgramData
+	APPDATA=C:\Users\garyo\AppData\Roaming
+	ChocolateyInstall=C:\ProgramData\chocolatey
+	ChocolateyLastPathUpdate=133434121256729855
+	ChocolateyToolsLocation=C:\tools
+	CommonProgramFiles=C:\Program Files\Common Files
+	CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+	CommonProgramW6432=C:\Program Files\Common Files
+	COMPLUS_InstallRoot=
+	COMPLUS_Version=
+	COMPUTERNAME=TOWER1
+	ComSpec=C:\WINDOWS\system32\cmd.exe
+	CUDA_PATH=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5
+	CUDA_PATH_V12_4=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4
+	CUDA_PATH_V12_5=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5
+	DriverData=C:\Windows\System32\Drivers\DriverData
+	ENABLE_XAML_DIAGNOSTICS_SOURCE_INFO=1
+	FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer
+	FPS_BROWSER_USER_PROFILE_STRING=Default
+	GCExpConfigUsedInSession=3
+	GIT_LFS_PATH=C:\Program Files\Git LFS
+	HOME=c:/Users/garyo
+	HOMEDRIVE=C:
+	HOMEPATH=\Users\garyo
+	INTEL_DEV_REDIST=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\
+	LOCALAPPDATA=C:\Users\garyo\AppData\Local
+	LOGONSERVER=\\TOWER1
+	MIC_LD_LIBRARY_PATH=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\compiler\lib\mic
+	MSBuildLoadMicrosoftTargetsReadOnly=true
+	NUMBER_OF_PROCESSORS=32
+	NVCUDASAMPLES10_2_ROOT=C:\ProgramData\NVIDIA Corporation\CUDA Samples\v10.2
+	NVCUDASAMPLES_ROOT=C:\ProgramData\NVIDIA Corporation\CUDA Samples\v10.2
+	NVM_HOME=C:\Users\garyo\AppData\Roaming\nvm
+	NVM_SYMLINK=C:\Program Files\nodejs
+	NVTOOLSEXT_PATH=C:\Program Files\NVIDIA Corporation\NvToolsExt\
+	OneDrive=C:\Users\garyo\OneDrive
+	OS=Windows_NT
+	Path=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\libnvvp;C:\Program Files\Microsoft\jdk-11.0.16.101-hotspot\bin;C:\VulkanSDK\1.2.182.0\Bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4\libnvvp;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\dotnet\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\garyo\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Cloudflare\Cloudflare WARP\;C:\Users\garyo\.cargo\bin;c:\Users\garyo\bin;c:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin;C:\Users\garyo\AppData\Local\Microsoft\WindowsApps;C:\Program Files\kdiff3;C:\Users\garyo\AppData\Local\Pandoc\;C:\Users\garyo\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files (x86)\Nmap;C:\Program Files\CMake\bin;C:\Users\garyo\AppData\Local\Programs\Espanso;C:\Program Files\Git\cmd;C:\Program Files\Git LFS;C:\Program Files\GitHub CLI\;C:\msys64\usr\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\tools\gsudo\Current;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\Tailscale\;C:\Program Files (x86)\Gpg4win\..\GnuPG\bin;C:\Program Files\NVIDIA Corporation\Nsight Compute 2024.3.0\;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4\bin\\..\extras\CUPTI\lib64;c:\
+	PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+	PkgDefApplicationConfigFile=C:\Users\garyo\AppData\Local\Microsoft\VisualStudio\17.0_3f96ed42\devenv.exe.config
+	PKG_CONFIG_PATH=E:/dss/consulting/xyz/reframe/build/generators;
+	PROCESSOR_ARCHITECTURE=AMD64
+	PROCESSOR_IDENTIFIER=AMD64 Family 23 Model 1 Stepping 1, AuthenticAMD
+	PROCESSOR_LEVEL=23
+	PROCESSOR_REVISION=0101
+	ProgramData=C:\ProgramData
+	ProgramFiles=C:\Program Files
+	ProgramFiles(x86)=C:\Program Files (x86)
+	ProgramW6432=C:\Program Files
+	PSModulePath=C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files\Barracuda\Network Access Client\Modules
+	PUBLIC=C:\Users\Public
+	PYENV=C:\Users\garyo\.pyenv\pyenv-win\
+	ServiceHubLogSessionKey=F1F92813
+	SystemDrive=C:
+	SystemRoot=C:\WINDOWS
+	TEMP=d:\tmp
+	ThreadedWaitDialogDpiContext=-4
+	TMP=d:\tmp
+	USERDOMAIN=TOWER1
+	USERDOMAIN_ROAMINGPROFILE=TOWER1
+	USERNAME=garyo
+	USERPROFILE=C:\Users\garyo
+	VisualStudioDir=C:\Users\garyo\OneDrive\Documents\Visual Studio 2022
+	VisualStudioEdition=Microsoft Visual Studio Community 2022
+	VisualStudioVersion=17.0
+	VK_SDK_PATH=C:\VulkanSDK\1.2.182.0
+	VSAPPIDDIR=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\
+	VSAPPIDNAME=devenv.exe
+	vsconsoleoutput=1
+	VSLANG=1033
+	VsPerMonitorDpiAwarenessEnabled.3888=TRUE
+	VSSKUEDITION=Community
+	VS_Perf_Session_GCHeapCount=2
+	VULKAN_SDK=C:\VulkanSDK\1.2.182.0
+	WEBVIEW2_DEFAULT_BACKGROUND_COLOR=ffffff
+	windir=C:\WINDOWS
+	_NO_DEBUG_HEAP=1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6699.html">astral-sh/uv#6699</a> on 2024-08-27 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermbauer">@petermbauer</a> on 2024-08-29 09:10</div>
+            <div class="timeline-body"><p>I am running into a similar issue here with VS Code executing cmake.exe whereas cmake has been installed via <code>uv pip install</code>.</p>
+<pre><code>[cmakeExecutable] CMake executable not found in cache. Checking again.
+[proc] Executing command: C:\Users\myuser\myrepo\.venv\Scripts\cmake.EXE --version
+[proc] The command: C:\Users\myuser\myrepo\.venv\Scripts\cmake.EXE --version exited with code: 3221225477
+[proc] Executing command: C:\Users\myuser\myrepo\.venv\Scripts\cmake.EXE -E capabilities
+[proc] The command: C:\Users\myuser\myrepo\.venv\Scripts\cmake.EXE -E capabilities exited with code: 3221225477
+...
+</code></pre>
+<p>If cmake is installed via <code>pip install</code> into the same venv it works as expected. Since the actual cmake.exe in the <code>.venv\Lib\site-packages\cmake\data\bin</code> is exactly the same as when installed with pip, i also expect the problem to be the generated trampoline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6792.html">astral-sh/uv#6792</a> on 2024-08-30 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6866.html">astral-sh/uv#6866</a> on 2024-08-30 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2024-08-30 21:09</div>
+            <div class="timeline-body"><p>I confirm the latest uv 0.4.1 (823f23e22 2024-08-30) fixes this issue for me. Had to recreate my <code>.venv</code> dir, of course, but once I got that done it's smooth. Nice work!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ghost on 2024-08-30 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 22:08</div>
+            <div class="timeline-body"><p>Awesome, thank for following up @garyoberbrunner-gpsw!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DetachHead/basedpyright/pulls/1634.html">DetachHead/basedpyright#1634</a> on 2025-11-09 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6399.html">astral-sh/uv#6399</a> on 2025-11-09 04:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

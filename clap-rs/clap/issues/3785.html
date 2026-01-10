@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive API doesn't respect `id` attribute - clap-rs/clap #3785</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive API doesn't respect `id` attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3785">#3785</a>
+        opened by <a href="https://github.com/survived">@survived</a>
+        on 2022-06-03 11:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/survived">@survived</a> on 2022-06-03 11:32</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.60.0 (7737e0b5c 2022-04-04)</p>
+<h3>Clap Version</h3>
+<p>3.1.18</p>
+<h3>Minimal reproducible code</h3>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=3823c43cec7e251150faf0af365e1e2b">playground</a></p>
+<pre><code class="language-rust">#[derive(clap::Parser)]
+struct App {
+    #[clap(id = &quot;some-argument&quot;, long = &quot;some-argument&quot;)]
+    field: String,
+}
+
+fn main() {
+    let _parsed: App = clap::Parser::parse_from([&quot;app&quot;, &quot;--some-argument&quot;, &quot;123&quot;]);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>Panics with a message:</p>
+<pre><code>thread 'main' panicked at '`field` is not a name of an argument or a group.
+Make sure you're using the name of the argument itself and not the name of short or long flags.', src/main.rs:5:5
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>In the code above, you can replace <code>id</code> with <code>name</code> and it will work just fine. <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.id"><code>Arg::id</code></a> was introduced in 3.1.0, it's supposed to replace <code>Arg::name</code>. However, derive api doesn't work with <code>id</code> attribute, it keeps supporting <code>name</code> attribute that refers to deprecated method.</p>
+<p>I expect that <code>id</code> attribute will have the same behaviour as <code>name</code>. Moreover, to be aligned with changes in library API, derive API ideally should yield a warning that <code>name</code> attribute is deprecated.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @survived on 2022-06-03 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-06-03 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-06-03 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielparks">@danielparks</a> on 2022-07-31 04:55</div>
+            <div class="timeline-body"><p>I wrote a quick fix for this, but I have a couple of questions before I submit a PR:</p>
+<ol>
+<li>Should the <code>name</code> and <code>id</code> attributes really do the same thing? I see that <code>Arg</code> and <code>Command</code> both have separate <code>name</code> and <code>id</code> fields, though I haven’t taken the time to figure out what exactly they do.</li>
+<li>Should this change only apply to fields? Given that <code>Command</code> has an <code>id</code> field as well I’m inclined to make it universal, which seems simpler.</li>
+<li>Would you prefer a separate PR to update documentation, or should I combine them into one?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-01 17:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Should the name and id attributes really do the same thing? I see that Arg and Command both have separate name and id fields, though I haven’t taken the time to figure out what exactly they do.</p>
+</blockquote>
+<p>While this is murkier in clap v3, clap v4 is working to make this more obvious (some deprecations move us in this direction): <code>name</code> and <code>id</code> are distinct.  a command's name is both an identifier and a user-visible value.  An argument's ID is mostly just an identifier though it might be used as a default for <code>Arg::value_name</code>.</p>
+<p>Us conflating the two has led to maintainer confusion in some of the design and user confusion in how they are used.</p>
+<blockquote>
+<p>Should this change only apply to fields? Given that Command has an id field as well I’m inclined to make it universal, which seems simpler.</p>
+</blockquote>
+<p>Could you clarify what you mean?  Are you speaking in terms of should this apply to both Arg and Command?  Yes, we should respect explicit overrides in both</p>
+<blockquote>
+<p>Would you prefer a separate PR to update documentation, or should I combine them into one?</p>
+</blockquote>
+<p>Commits should be atomic.  If the code is deviating from the documentation, the documentation should be updated at the same time.</p>
+<p>What documentation updates do you see being needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielparks">@danielparks</a> on 2022-08-03 03:31</div>
+            <div class="timeline-body"><p>Thanks for the quick response. I‘m not very familiar with clap’s internals, so I appreciate your clarifications.</p>
+<p>It sounds like the attribute behavior should be different for Command and Arg. Specifically:</p>
+<ol>
+<li>Command: set only the <code>id</code> field. This will probably involve adding a public <code>id()</code> method to the <code>Command</code> struct.</li>
+<li>Arg: set both <code>id</code> and <code>name</code>, much as the <code>name</code> attribute does now.</li>
+</ol>
+<p>There are a few derive reference doc updates needed:</p>
+<ol>
+<li>Add <code>id</code> attribute for Args.</li>
+<li>Depreciate <code>name</code> attribute on Args.</li>
+<li>Add <code>id</code> attribute for Commands.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-03 13:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Command: set only the id field. This will probably involve adding a public id() method to the Command struct.</p>
+</blockquote>
+<p>From a users perspective, <code>Command</code> only has <code>name</code>.  Ignore the <code>id</code> field (it will likely go away in clap v4).</p>
+<blockquote>
+<p>Arg: set both id and name, much as the name attribute does now.</p>
+</blockquote>
+<p>From a users perspective, <code>Arg</code> only has <code>id</code>.  Ignore the <code>name</code> field (it will likely go away in clap v4)</p>
+<p>Something that confuses the matter further is <code>Arg</code> also has <code>value_name[s]</code>, e.g. https://github.com/clap-rs/clap/issues/3709</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielparks">@danielparks</a> on 2022-08-04 03:25</div>
+            <div class="timeline-body"><p>Seems like we should disallow the <code>id</code> attribute on <code>Command</code>, then? Unfortunately, that’s going to be either messy or complicated.</p>
+<p><a href="https://github.com/clap-rs/clap/compare/master...danielparks:clap:issue-3785-derive-id-attr">Here is the solution</a> I have that effectively just recognizes the <code>id</code> attribute as an alias for <code>name</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 15:57</div>
+            <div class="timeline-body"><p>I'd say that solution is good enough for now.  Note that we would merge for master first which would has all deprecated functionality removed.  We'd want to add back in the <code>name</code> attribute in the docs if/when its backported to v3-master.</p>
+<p>If we want to go for the error, short term, we could augment <code>push_attrs</code> with what type of attribute it is <code>Command</code>, <code>Arg</code>, etc) and do error checking in the case for <code>PushMethod</code></p>
+<p>Longer term, I'm going to be splitting up the attributes like <code>#[command(name = &quot;foo&quot;)]</code> and it'll be easier to do such checks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4049.html">clap-rs/clap#4049</a> on 2022-08-09 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielparks">@danielparks</a> on 2022-08-09 19:02</div>
+            <div class="timeline-body"><p>Thanks for all of your clarifications and help. I’ve submitted PR #4049; let me know if it needs updates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-09 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4068.html">clap-rs/clap#4068</a> on 2022-08-12 04:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spurious warning with `--no-project --only-group &lt;group&gt;`? - astral-sh/uv #10743</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Spurious warning with `--no-project --only-group &lt;group&gt;`?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10743">#10743</a>
+        opened by <a href="https://github.com/woodruffw">@woodruffw</a>
+        on 2025-01-18 20:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-01-18 20:24</div>
+            <div class="timeline-body"><p>Hello! As always, thanks for all the amazing work you've done on <code>uv</code> and <code>ruff</code>.</p>
+<p>I tried searching for an open issue for this, and couldn't find one. Please close with prejudice if there is one that I've missed!</p>
+<h2>Problem</h2>
+<p>This isn't a breaking problem per se, since it appears to work. However, it produces a spurious warning that I suspect is a holdover from an earlier restriction 🙂</p>
+<p>I have a <code>pyproject.toml</code> that looks like this:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;maturin&gt;=1.0,&lt;2.0&quot;]
+build-backend = &quot;maturin&quot;
+
+[tool.maturin]
+bindings = &quot;bin&quot;
+
+[dependency-groups]
+docs = [&quot;mkdocs ~= 1.6&quot;, &quot;mkdocs-material[imaging] ~= 9.5&quot;]
+</code></pre>
+<p>Notably, the <code>pyproject.toml</code> has no <code>[project]</code> section (since it's a Maturin-based pure-Rust project that pulls all metadata from <code>Cargo.toml</code>). My goal is to ideally keep it that way, to reduce duplication between the two files.</p>
+<p>With that configuration, I'm using <code>uv run --no-project --only-group docs mkdocs build</code> to build my (<code>mkdocs</code>-based) documentation.</p>
+<h2>Expected behavior</h2>
+<p>I expect <code>uv run --no-project --only-group docs mkdocs build</code> to produce no warnings, and run <code>mkdocs</code> correctly.</p>
+<h2>Actual behavior</h2>
+<p>The command warnings that <code>--only-group docs</code> and <code>--no-project</code> have no effect alongside each other, but then runs successfully:</p>
+<pre><code class="language-bash">$ uv run --no-project --only-group docs mkdocs build
+warning: `--only-group docs` has no effect when used alongside `--no-project`
+INFO    -  Cleaning site directory
+INFO    -  Building documentation to directory: /&lt;blah&gt;/zizmor/site_html
+INFO    -  Documentation built in 0.84 seconds
+</code></pre>
+<h2>Workarounds</h2>
+<p>I can add a dummy <code>[project]</code> section containing just a <code>name</code> key, which hushes the warning. However I think the warning is still spurious, since (IIUC) the semantics of PEP 735 dep groups are not dependent on project metadata at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-01-18 20:26</div>
+            <div class="timeline-body"><p>Actually, it looks like caching may have been masking a larger problem here: when I run the same <code>--no-project --only-group docs</code> command in CI, I get a command error for <code>mkdocs</code>:</p>
+<pre><code>uv run --no-project --only-group docs mkdocs build
+warning: `--only-group docs` has no effect when used alongside `--no-project`
+error: Failed to spawn: `mkdocs`
+  Caused by: No such file or directory (os error 2)
+make: *** [Makefile:7: site] Error 2
+Error: Process completed with exit code 2.
+</code></pre>
+<p>(CI logs: https://github.com/woodruffw/zizmor/actions/runs/12847160565/job/35823153622)</p>
+<p>Whereas locally this command succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-18 23:19</div>
+            <div class="timeline-body"><p>Hmm, I think this is intentional behavior -- I wouldn't expect us to discover that <code>pyproject.toml</code> if it's lacking a <code>[project]</code> or <code>[tool.uv.workspace]</code> table. I'm guessing that if you run with <code>--verbose</code>, it says something like <code>No project found</code>? We don't have first-class support for &quot;projects without a <code>[project]</code> table right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-18 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-01-19 00:14</div>
+            <div class="timeline-body"><p>Aha, indeed!</p>
+<pre><code>WARN Ignoring project discovery error due to `--no-project`: No `project` table found in: `/home/william/devel/zizmor/pyproject.toml`
+warning: `--only-group docs` has no effect when used alongside `--no-project`
+</code></pre>
+<p>In that case, I <em>think</em> this is a feature request: it'd be great to be able to express <code>dependency-groups</code> in a <code>pyproject.toml</code> without requiring a <code>[project]</code> block!</p>
+<p>But I can also understand if this is not a well-defined part of packaging, and I have a perfectly functional workaround 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-20 03:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

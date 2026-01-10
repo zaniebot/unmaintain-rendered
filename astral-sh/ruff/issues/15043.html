@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FAST002` rule produces false positives and incorrect suggestions - astral-sh/ruff #15043</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`FAST002` rule produces false positives and incorrect suggestions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15043">#15043</a>
+        opened by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a>
+        on 2024-12-18 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2024-12-18 08:04</div>
+            <div class="timeline-body"><p>Ruff (0.8.3) <code>FAST002</code> produces false positives and suggests incorrect <code>Annotated</code> format with FastAPI params having default values. Following example can not be converted into the <code>Annotated</code> format as FastAPI does not support this format with params having default values. Also <code>--unsafe-fixes</code> fixes it to the format the FastAPI wont accept.</p>
+<p>Ruff FAST002 violation:</p>
+<pre><code class="language-python">def test_fast002_bug():
+    from fastapi import FastAPI, Query
+    app = FastAPI()
+
+    @app.get(&quot;/test&quot;)
+    def handler(echo: str = Query(&quot;&quot;)):  # FAST002 FastAPI dependency without `Annotated`
+        return echo
+</code></pre>
+<p>But that is not compatible with FastAPI. It fails deeply with an AssertionError:</p>
+<pre><code class="language-python">def test_fast002_bug():
+    from typing import Annotated
+    from fastapi import FastAPI, Query
+    app = FastAPI()
+
+    # AssertionError: `Query` default value cannot be set in `Annotated` for 'echo'. Set the default value with `=` instead.
+    @app.get(&quot;/test&quot;)
+    def handler(echo: Annotated[str, Query(&quot;&quot;)]):
+        return echo
+</code></pre>
+<p>Used FastAPI 0.115.5.</p>
+<p>The rule is pretty nice otherwise so thanks for it! Hopefully we get it fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-18 08:43</div>
+            <div class="timeline-body"><p>Thanks for opening the issue. I think this is a true positive, but the fix is incorrect. The <code>Query</code> default value cannot be used inside <code>Annotated</code> according to <a href="https://fastapi.tiangolo.com/tutorial/query-params-str-validations/?h=annotated#query-as-the-default-value-or-in-annotated">FastAPI's documentation</a>. Instead, a regular default value should be used. So the proper fix for your example is to rewrite it to</p>
+<pre><code class="language-py">def test_fast002_bug():
+    from typing import Annotated
+    from fastapi import FastAPI, Query
+    app = FastAPI()
+
+    # AssertionError: `Query` default value cannot be set in `Annotated` for 'echo'. Set the default value with `=` instead.
+    @app.get(&quot;/test&quot;)
+    def handler(echo: Annotated[str, Query()] = &quot;&quot;):
+        return echo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-18 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-12-18 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-10 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15462.html">astral-sh/ruff#15462</a> on 2025-01-13 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @MichaReiser on 2025-01-14 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @MichaReiser on 2025-01-14 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-15 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-15 18:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

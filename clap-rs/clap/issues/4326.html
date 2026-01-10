@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>making custom help optional with default_value_t panicks - clap-rs/clap #4326</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>making custom help optional with default_value_t panicks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4326">#4326</a>
+        opened by <a href="https://github.com/erazor-de">@erazor-de</a>
+        on 2022-10-01 07:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/erazor-de">@erazor-de</a> on 2022-10-01 07:41</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.64.0 (a55dd71d5 2022-09-19)</p>
+<h3>Clap Version</h3>
+<p>4.0.7</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>[package]
+name = &quot;claptest&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = { version = &quot;4&quot;, features = [&quot;derive&quot;, &quot;debug&quot;] }
+</code></pre>
+<pre><code class="language-rust">use clap::{ArgAction, Parser};
+
+#[derive(Parser)]
+#[command(disable_help_flag = true)]
+struct Args {
+    #[arg(long, action = ArgAction::Help, default_value_t = false)]
+    help: bool,
+}
+
+fn main() {
+    let _args = Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<blockquote>
+<p>thread 'main' panicked at 'assertion failed: <code>(left == right)</code>
+left: <code>[&quot;false&quot;]</code>,
+right: <code>[]</code>', /home/stefan/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.7/src/parser/parser.rs:1277:17</p>
+</blockquote>
+<h3>Expected Behaviour</h3>
+<p>No panick, no output.</p>
+<h3>Additional Context</h3>
+<p>I try to get rid of the short help '-h' by removing default behaviour and creating own help argument with only long version using default functionality.
+With using only <code>#[arg(long, action = ArgAction::Help)]</code> help is required.
+Making the argument optional with <code>default_value_t = false</code> leads to panick.
+Using <code>help: Option&lt;bool&gt;,</code> works and can be used as workaround.</p>
+<h3>Debug Output</h3>
+<blockquote>
+<p>[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;claptest&quot;
+[      clap::builder::command]  Command::_propagate:claptest
+[      clap::builder::command]  Command::_check_help_and_version:claptest expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_propagate_global_args:claptest
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:help
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::add_defaults
+[        clap::parser::parser]  Parser::add_defaults:iter:help:
+[        clap::parser::parser]  Parser::add_default_value: doesn't have conditional defaults
+[        clap::parser::parser]  Parser::add_default_value:iter:help: has default vals
+[        clap::parser::parser]  Parser::add_default_value:iter:help: wasn't used
+[        clap::parser::parser]  Parser::react action=Help, identifier=None, source=DefaultValue
+thread 'main' panicked at 'assertion failed: <code>(left == right)</code>
+left: <code>[&quot;false&quot;]</code>,
+right: <code>[]</code>', /home/stefan/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-4.0.7/src/parser/parser.rs:1277:17
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @erazor-de on 2022-10-01 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4330.html">clap-rs/clap#4330</a> on 2022-10-01 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-01 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-01 18:58</div>
+            <div class="timeline-body"><p>The assert is removed in 4.0.8.  I've also considered adding support for <code>()</code> as a type to say &quot;don't bother reading a value&quot;.  If you are interested in that for this case, feel free to create an issue</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` is trying to solve for dependencies that are already installed, failing if they are not available from the package repository - astral-sh/uv #4059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` is trying to solve for dependencies that are already installed, failing if they are not available from the package repository</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4059">#4059</a>
+        opened by <a href="https://github.com/hoechenberger">@hoechenberger</a>
+        on 2024-06-05 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-05 18:14</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I was trying to switch my package installation workflow to <code>uv</code>, but I'm facing an issue because in this particular use case, <code>uv</code> behaves differently than <code>pip</code>.</p>
+<p>I'm working on <a href="https://github.com/mne-tools/mne-python">MNE-Python</a> on <code>aarch64</code> (ARM64 Linux running natively on Apple Silicon), and some of my package dependencies are not available from PyPI for this platform. Hence, I install these dependencies from <code>conda-forge</code> before installing the remaining dependencies via <code>pip</code>:</p>
+<pre><code class="language-shell">$ conda create -c conda-forge -n uv-test python h5py vtk pyside6 cftime psutil
+$ conda activate uv-test
+$ pip install -e &quot;.[full-pyside6]&quot;
+...
+Requirement already satisfied: vtk in /opt/conda/envs/uv-test/lib/python3.11/site-packages (from mne==1.8.0.dev106+g17bfca4e2.d20240605) (9.2.6)
+...
+</code></pre>
+<p><code>pip</code> figures that some dependencies (in this case, I limited the output to the one related to <code>vtk</code>) are already installed, so it skips them. The installation completes successfully, yielding an environment with packages that are not available from PyPI, but were installed from <code>conda-forge</code> instead.</p>
+<p>Now, let's try to reproduce the same via <code>uv</code>:</p>
+<pre><code class="language-shell">$ pipx run uv pip install -e &quot;.[full-pyside6]&quot;
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of vtk are available:
+          vtk&lt;=9.2.6
+          vtk==9.3.0
+      and vtk==8.1.0 has no wheels are available with a matching Python implementation, we can conclude that any of:
+          vtk&lt;8.1.1
+          vtk&gt;9.2.6,&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==8.1.1 has no wheels are available with a matching Python implementation, we can conclude that any of:
+          vtk&lt;8.1.2
+          vtk&gt;9.2.6,&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==8.1.2 has no wheels are available with a matching Python implementation and vtk==9.0.0 has no wheels are available with a
+      matching Python ABI, we can conclude that any of:
+          vtk&lt;9.0.1
+          vtk&gt;9.2.6,&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==9.0.1 has no wheels are available with a matching Python ABI and vtk==9.0.2 has no wheels are available with a matching Python
+      ABI, we can conclude that any of:
+          vtk&lt;9.0.3
+          vtk&gt;9.2.6,&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==9.0.3 has no wheels are available with a matching Python ABI and vtk==9.1.0 has no wheels are available with a matching Python
+      ABI, we can conclude that any of:
+          vtk&lt;9.2.2
+          vtk&gt;9.2.6,&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==9.2.2 has no wheels are available with a matching Python ABI and vtk==9.2.4 has no wheels are available with a matching Python
+      ABI, we can conclude that any of:
+          vtk&lt;9.2.5
+          vtk&gt;9.2.6,&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==9.2.5 has no wheels are available with a matching Python ABI and vtk==9.2.6 has no wheels are available with a matching Python
+      ABI, we can conclude that any of:
+          vtk&lt;9.3.0
+          vtk&gt;9.3.0
+       cannot be used.
+      And because vtk==9.3.0 has no wheels are available with a matching Python implementation and mne[full-pyside6]==1.8.0.dev106+g17bfca4e2.d20240605
+      depends on vtk, we can conclude that mne[full-pyside6]==1.8.0.dev106+g17bfca4e2.d20240605 cannot be used.
+      And because only mne[full-pyside6]==1.8.0.dev106+g17bfca4e2.d20240605 is available and you require mne[full-pyside6], we can conclude that the
+      requirements are unsatisfiable.
+
+      hint: mne[full-pyside6] was requested with a pre-release marker (e.g., any of:
+          mne[full-pyside6]&lt;1.8.0.dev106+g17bfca4e2.d20240605
+          mne[full-pyside6]&gt;1.8.0.dev106+g17bfca4e2.d20240605
+      ), but pre-releases weren't enabled (try: `--prerelease=allow`)
+
+      hint: Pre-releases are available for vtk in the requested range (e.g., 9.3.20230807rc0), but pre-releases weren't enabled (try:
+      `--prerelease=allow`)
+</code></pre>
+<p>As you can see, it fails, as <code>uv</code> correctly determines that <code>vtk</code> is not available from PyPI for my platform.</p>
+<p>Unlike <code>pip</code>, however, it wasn't happy with the fact that the package is actually already installed, hence there's no need to pull it from PyPI.</p>
+<p>Now while I know that it's commonly not recommended to mix <code>pip</code>- and <code>conda</code>-installed packages in the same environment, this approach has worked quite well for me in the past in this specific situation. It would be great if we could find a solution to this issue with <code>uv</code>.</p>
+<pre><code class="language-shell"> $ pipx run uv --version                       
+uv 0.2.6
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 18:21</div>
+            <div class="timeline-body"><p>Thanks. In general we do discover already-installed requirements, so I would expect what you described above to work. It's possible, though, that <code>vtk</code> is installed in some legacy format that we don't support. I'll try to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-05 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-05 18:23</div>
+            <div class="timeline-body"><p>Thanks, @charliermarsh! Please let me know if I should test something or if you need some &quot;actual&quot; MWE (I tried to produce one but failed in my first attempt, so I then ended up posting what I posted above … which is not really minimal.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-05 18:25</div>
+            <div class="timeline-body"><p>@charliermarsh Also, I can share with you my Dev Container configuration if you want. I'm working on Linux in Docker on an M2 MacBook Pro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 23:38</div>
+            <div class="timeline-body"><p>Ok, it's because <code>vtk</code> is being installed as a legacy <code>.egg-info</code> file, which we don't support. I think we can probably add support for discovering them, like we support <code>.egg-info</code> directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-05 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4082.html">astral-sh/uv#4082</a> on 2024-06-06 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-06 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-06-06 05:00</div>
+            <div class="timeline-body"><p>Wow, thanks for the super swift action, @charliermarsh! I'm looking forward to the next release!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore `mutable-argument-default (B006)` in `.pyi` stubs - astral-sh/ruff #14026</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore `mutable-argument-default (B006)` in `.pyi` stubs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14026">#14026</a>
+        opened by <a href="https://github.com/jorenham">@jorenham</a>
+        on 2024-10-31 21:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jorenham">@jorenham</a> on 2024-10-31 21:31</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/mutable-argument-default/">Mutable argument defaults</a> can only be a problem at runtime. But at the moment, <code>B006</code> will also be reported in <code>.pyi</code> stub files, even though it is certain that mutations can never occur there.</p>
+<p>For example, consider the following function in <a href="https://github.com/jorenham/scipy-stubs/blob/5a2603e9fc3c37e9355773da31d294ac688d699d/scipy-stubs/stats/_mstats_basic.pyi#L578-L585"><code>scipy-stubs/stats/_mstats_basic.pyi:578</code></a>:</p>
+<pre><code class="language-pyi">def mquantiles(
+    a: _ArrayLikeFloat_co,
+    prob: _ArrayLikeFloat_co = [0.25, 0.5, 0.75],
+    alphap: AnyReal = 0.4,
+    betap: AnyReal = 0.4,
+    axis: CanIndex | None = None,
+    limit: tuple[AnyReal, AnyReal] | tuple[()] = (),
+) -&gt; _MArrayND: ...
+</code></pre>
+<p>For the <code>prob</code> parameter the following error is reported:</p>
+<pre><code>scipy-stubs/stats/_mstats_basic.pyi:580:32: B006 Do not use mutable data structures for argument defaults
+</code></pre>
+<p>I think that &quot;mutable&quot; defaults should be allowed in cases like these. Having explicit parameter defaults that match the runtime can be seen as a form of documentation. This is especially useful when the runtime sources aren't available, which is quite common in this <a href="https://github.com/jorenham/scipy-stubs"><code>scipy-stubs</code></a> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 22:02</div>
+            <div class="timeline-body"><p>Yeah, your argument makes sense. You want to emulate the runtime in a stub file; whether or not the runtime <em>should</em> be using mutable defaults or not, you'll want to accurately represent that in the stub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-10-31 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-10-31 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`mutable-argument-default (B006)` in `.pyi` stubs" to "Ignore `mutable-argument-default (B006)` in `.pyi` stubs" by @AlexWaygood on 2024-10-31 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-11-01 04:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14058.html">astral-sh/ruff#14058</a> on 2024-11-02 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-03 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-03 02:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

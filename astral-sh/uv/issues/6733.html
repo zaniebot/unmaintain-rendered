@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` with a different root directory - astral-sh/uv #6733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` with a different root directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6733">#6733</a>
+        opened by <a href="https://github.com/haarisr">@haarisr</a>
+        on 2024-08-28 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/haarisr">@haarisr</a> on 2024-08-28 00:07</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<pre><code class="language-bash">uv init bird
+echo &quot;import bird\n print(bird.hello())&quot; &gt; bird/main.py
+uv run bird/main.py
+</code></pre>
+<pre><code class="language-console">Traceback (most recent call last):
+  File &quot;/home/dev/bird/main.py&quot;, line 3, in &lt;module&gt;
+    print(bird.hello())
+AttributeError: module 'bird' has no attribute 'hello'
+</code></pre>
+<p>I would like to run <code>bird/main.py</code> from any directory that the user is in.</p>
+<p>If the user could specify the package root or <code>uv</code> could start searching for the <code>pyproject.toml</code> from the script path towards the root directory, that would help fix the issue.</p>
+<p>uv version: <code>uv 0.3.2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JamesMTSloan">@JamesMTSloan</a> on 2024-08-28 08:47</div>
+            <div class="timeline-body"><p>Something like <code>uv -C bird/ run</code> would be useful. Missing this was one of the only slight pain-points I had migrating from Poetry. git also provides an equivalent <code>-C</code> option.</p>
+<p>Although, maybe <code>uvx --from &lt;path-to-project&gt; &lt;entry-point&gt;</code> comes close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 12:54</div>
+            <div class="timeline-body"><p><code>uv --directory</code> exists already -- is this what you're looking for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-28 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-28 13:14</div>
+            <div class="timeline-body"><p>uv --directory is hidden, I guess because it is not yet ready?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 13:25</div>
+            <div class="timeline-body"><p>Oh.. I want this too. Why do we hide it? haha</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 13:26</div>
+            <div class="timeline-body"><p>I think we hide it because we wanted to change the semantics such that relative paths were resolved relative to the CWD rather than <code>--directory</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 13:28</div>
+            <div class="timeline-body"><p>See: https://github.com/astral-sh/uv/issues/5613. We should unhide it though. I think I originally added it to facilitate benchmarking, and there wasn't consensus on the team at the time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 13:34</div>
+            <div class="timeline-body"><p>Oh.. hm.. I guess it might make sense to sort that out since it'll be a breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haarisr">@haarisr</a> on 2024-08-28 17:54</div>
+            <div class="timeline-body"><p><code>--directory</code> works great. Didn't know that existed, thanks!</p>
+<blockquote>
+<p>I think we hide it because we wanted to change the semantics such that relative paths were resolved relative to the CWD rather than <code>--directory</code>.</p>
+</blockquote>
+<p>This makes more sense to me. You can use shell autocomplete to find the file instead of knowing the script name relative to the project directory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 17:56</div>
+            <div class="timeline-body"><p>I think it makes sense but it seems non-trivial and I can see people getting confused either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-28 18:10</div>
+            <div class="timeline-body"><p>I would feature request that it should work like this: https://github.com/astral-sh/uv/pull/5579#issuecomment-2257207224</p>
+<p>But it doesn't have to be --directory that does it. It could be some other flag on <code>uv run</code> with those requested semantics? It is not just about convenience, if the user can't control the current working directory (user &quot;can't control it&quot; here because the --directory has to be equal to the project directory with the uv project) then some commands can't be used correctly at all.</p>
+<p>But the current rules for --directory have precedent in cargo -C and git -C.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 18:16</div>
+            <div class="timeline-body"><p>@bluss to clarify, <code>cargo -C</code> and <code>git -C</code> work like our current behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-28 18:20</div>
+            <div class="timeline-body"><p>@zanieb Yep, at least for git I'm sure of that, git says &quot;Run as if git was started in <code>&lt;path&gt;</code> instead of the current working directory&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff/pulls/13074.html">astral-sh/ruff#13074</a> on 2024-08-28 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5613.html">astral-sh/uv#5613</a> on 2024-09-13 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-24 00:54</div>
+            <div class="timeline-body"><p>We now support <code>--project</code> which accepts a path to a directory like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-24 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-24 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgolinvaux">@bgolinvaux</a> on 2024-10-08 11:21</div>
+            <div class="timeline-body"><p>Thank your for this <code>--project</code> flag and, more generally, for <code>uv</code> :smile:<br />
+I am in love with uv. It's been a while since a two-letter CLI tool gave me so much joy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../modelcontextprotocol/docs/issues/121.html">modelcontextprotocol/docs#121</a> on 2025-01-28 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdengler">@mdengler</a> on 2025-02-13 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>We now support <code>--project</code> which accepts a path to a directory like this.</p>
+</blockquote>
+<p>Can I help to point to some documentation on how to use this?  As a poetry user, it's unclear how <code>--project</code> (or <code>--directory</code>) is helping here:</p>
+<pre><code>$ uv --version
+uv 0.5.25
+
+$ mkdir bird-uv-6733
+$ cd bird-uv-6733/
+$ mkdir bird
+$ echo -e 'def hello():\n  print(&quot;hello bird&quot;)' &gt; bird/__init__.py
+$ mkdir examples
+$ echo -e &quot;import bird\nprint(bird.hello())&quot; &gt; examples/example1.py
+$ tree .
+.
+├── bird
+│   └── __init__.py
+└── examples
+    └── example1.py
+
+3 directories, 2 files
+
+$ uv run examples/example1.py 
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733/examples/example1.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+
+
+$ uv --project=$PWD run examples/example1.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733/examples/example1.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+
+$ uv --project=. run examples/example1.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733/examples/example1.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+
+$ uv --directory=$PWD run examples/example1.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733/examples/example1.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+
+$ uv --directory=. run examples/example1.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733/examples/example1.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+
+$ uv --directory=examples run examples/example1.py
+error: Failed to spawn: `examples/example1.py`
+  Caused by: No such file or directory (os error 2)
+
+  $ uv --directory=examples run example1.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733/examples/example1.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+
+</code></pre>
+<p>I can file a new issue, but it seems something like what I've tried should actually work; that is, changes including:</p>
+<ol>
+<li>add <code>$PWD</code> (or <code>--project</code> argument) to <code>PYTHONPATH</code> (this is not done; the script directory gets added to <code>PYTHONPATH</code>, regardless of the value of <code>--project</code> or <code>--directory</code>)</li>
+<li>run <code>examples/example1.py</code></li>
+</ol>
+<p>...like this:</p>
+<pre><code>$ PYTHONPATH=. uv run examples/example1.py 
+hello bird
+None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 19:27</div>
+            <div class="timeline-body"><p>@mdengler -- please open a new issue articulating your problem rather than commenting on a closed issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11490.html">astral-sh/uv#11490</a> on 2025-02-13 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdengler">@mdengler</a> on 2025-02-13 19:58</div>
+            <div class="timeline-body"><p>@charliermarsh sure; I opened #11490.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>We now support --project which accepts a path to a directory like this.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>Can I help to point to some documentation on how to use this?</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>please open a new issue</p>
+</blockquote>
+<p>I asked for help documenting how the new feature was going to be used, though.  Also, the original report does not seem to be resolved with either <code>--project</code> or <code>--directory</code>:</p>
+<pre><code>$ mkdir bird-uv-6733-orig
+$ cd bird-uv-6733-orig
+$ mkdir bird
+$ uv init bird
+$ echo -e &quot;import bird\nprint(bird.hello())&quot; &gt; bird/main.py
+$ uv run bird/main.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733-orig/bird/main.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+$ uv --project=. run bird/main.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733-orig/bird/main.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+$ uv --directory=. run bird/main.py
+Traceback (most recent call last):
+  File &quot;/home/martin/src/bird-uv-6733-orig/bird/main.py&quot;, line 1, in &lt;module&gt;
+    import bird
+ModuleNotFoundError: No module named 'bird'
+</code></pre>
+<p>Should this issue be re-opened?  Or could you point me to where in the documentation it describes how to use <code>--project</code> to address this (#6733) issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdengler">@mdengler</a> on 2025-02-13 20:00</div>
+            <div class="timeline-body"><p>Happy to add to documentation.  I was surprised to find no examples of <code>uv run bird/main.py</code> that worked, including with <code>--project=.</code>.  I'd just like to help avoid other people getting stuck like I did/am.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 20:17</div>
+            <div class="timeline-body"><p>Thanks @mdengler -- I appreciate it. I just find it hard to keep track of outstanding work when there's discussion in closed issues since there's so much activity in the repo. I'm happy to discuss this all in https://github.com/astral-sh/uv/issues/11490!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdengler">@mdengler</a> on 2025-02-13 20:34</div>
+            <div class="timeline-body"><p>Understood -- you all are doing tons.  Thanks for <code>uv</code> and the great work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14585.html">astral-sh/uv#14585</a> on 2025-07-13 10:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

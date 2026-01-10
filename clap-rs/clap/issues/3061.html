@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden possible values - clap-rs/clap #3061</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hidden possible values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3061">#3061</a>
+        opened by <a href="https://github.com/dbrgn">@dbrgn</a>
+        on 2021-12-05 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dbrgn">@dbrgn</a> on 2021-12-05 13:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.5</p>
+<h3>Describe your use case</h3>
+<p>In <a href="https://github.com/dbrgn/tealdeer/">tealdeer</a> a user can override the platform / OS by using the <code>--platform=(linux|osx|sunos|windows)</code> flag. This is how we implement the parameter:</p>
+<pre><code>/// Override the operating system
+#[clap(
+    short = 'p',
+    long = &quot;platform&quot;,
+    requires = &quot;command&quot;,
+    possible_values = [&quot;linux&quot;, &quot;osx&quot;, &quot;sunos&quot;, &quot;windows&quot;],
+)]
+platform: Option&lt;PlatformType&gt;,</code></pre>
+<p>In the next version, we will probably rename <code>osx</code> to <code>macos</code> but keep <code>osx</code> for backwards compatibility. However, this means both options will be listed in the <code>--help</code> docs and in auto-generated completion files. To the end user, this may be confusing.</p>
+<h3>Describe the solution you'd like</h3>
+<p>It would be nice if I could specify <code>hidden_possible_values</code> that are accepted, but not listed in docs and completions.</p>
+<pre><code>/// Override the operating system
+#[clap(
+    short = 'p',
+    long = &quot;platform&quot;,
+    requires = &quot;command&quot;,
+    possible_values = [&quot;linux&quot;, &quot;macos&quot;, &quot;sunos&quot;, &quot;windows&quot;],
+    hidden_possible_values = [&quot;osx&quot;],
+)]
+platform: Option&lt;PlatformType&gt;,</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>Alternatively I could specify <code>.hide_possible_values(true)</code> and include the possible values in the help text, but then the value still shows up in the completion, which might confuse the user (&quot;what's the difference between macos and osx?&quot;).</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @dbrgn on 2021-12-05 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-06 12:58</div>
+            <div class="timeline-body"><p>You're in luck; we already support this!  This is a reported earlier in https://github.com/clap-rs/clap/issues/2756 which was fixed in https://github.com/clap-rs/clap/issues/2756 and https://github.com/clap-rs/clap/pull/2762.</p>
+<p>It went through some iteration since then, so for a recent example, see https://docs.rs/clap/3.0.0-beta.5/clap/struct.Arg.html#method.possible_values</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbrgn">@dbrgn</a> on 2021-12-06 13:33</div>
+            <div class="timeline-body"><p>Oh, I'm sorry to have missed this both in the docs and in the issue tracker 😕 But awesome that it's already supported!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dbrgn on 2021-12-06 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-06 13:38</div>
+            <div class="timeline-body"><p>btw is there a reason you are using <code>possible_values</code> instead of deriving <code>ArgEnum</code> on an <code>enum</code> and using <code>#[clap(arg_enum)]</code>?</p>
+<p>Also, an alias (which shouldn't be visible) should also work in your case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbrgn">@dbrgn</a> on 2021-12-06 13:49</div>
+            <div class="timeline-body"><p>@epage yeah, we have a custom <code>FromStr</code> implementation for this type: https://github.com/dbrgn/tealdeer/blob/4a92bed585ae15c58a348e886910fe8dd575624f/src/types.rs#L67-L84 I don't think deriving would work in this case, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-06 13:52</div>
+            <div class="timeline-body"><p>Hmm.. I think it does. IIRC we tried to allow it work with that trait. But maybe the code changed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbrgn">@dbrgn</a> on 2021-12-06 13:54</div>
+            <div class="timeline-body"><p>Well, the custom <code>FromStr</code> works for me, so that's fine 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ducaale/xh/issues/152.html">ducaale/xh#152</a> on 2021-12-23 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:43 UTC
+    </footer>
+</body>
+</html>

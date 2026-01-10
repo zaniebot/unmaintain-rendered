@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv fails to detect OS from interpreter on NixOS - astral-sh/uv #13713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv fails to detect OS from interpreter on NixOS</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13713">#13713</a>
+        opened by <a href="https://github.com/definfo">@definfo</a>
+        on 2025-05-28 22:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/definfo">@definfo</a> on 2025-05-28 22:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running any uv command that requires a Python interpreter will raise error:</p>
+<pre><code>➜ uv --verbose sync
+DEBUG uv 0.7.7
+DEBUG Found project root: `/home/definfo/dir`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/home/definfo/dir`
+DEBUG Using Python request `/nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3` from explicit request
+DEBUG Checking for Python environment at `/home/definfo/dir/.venv`
+DEBUG Checking for Python interpreter in directory `/nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3`
+DEBUG Skipping bad interpreter at /nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3/bin/python3 from provided path: Unknown operating system: ``
+DEBUG Released lock at `/tmp/uv-3e90f49eaef6eaa5.lock`
+error: Failed to inspect Python interpreter from provided path at `/nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3`
+  Caused by: Can't use Python at `/nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3/bin/python3`
+  Caused by: Unknown operating system: ``
+</code></pre>
+<p>This can be reproduced with a bare uv in nixpkgs as well as uv2nix flakes.</p>
+<h3>Platform</h3>
+<p>Linux 6.12.30 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.7.7</p>
+<h3>Python version</h3>
+<p>Should be 3.13.3 yet uv failed to detect it :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @definfo on 2025-05-28 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 12:27</div>
+            <div class="timeline-body"><p>This comes from https://github.com/astral-sh/uv/blob/40efe6119bd645a061e975955139f6bde8a2f56a/crates/uv-python/python/get_interpreter_info.py#L408-L536</p>
+<p>Can you provide the output of <code>sysconfig.get_platform()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/definfo">@definfo</a> on 2025-05-29 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>This comes from</p>
+<p><a href="https://github.com/astral-sh/uv/blob/40efe6119bd645a061e975955139f6bde8a2f56a/crates/uv-python/python/get_interpreter_info.py#L408-L536">uv/crates/uv-python/python/get_interpreter_info.py</a></p>
+<p>Lines 408 to 536 in <a href="/astral-sh/uv/commit/40efe6119bd645a061e975955139f6bde8a2f56a">40efe61</a>
+def get_operating_system_and_architecture():
+&quot;&quot;&quot;Determine the Python interpreter architecture and operating system.</p>
+<pre><code> This can differ from uv's architecture and operating system. For example, Apple 
+ Silicon Macs can run both x86_64 and aarch64 binaries transparently. 
+ &quot;&quot;&quot; 
+ # https://github.com/pypa/packaging/blob/cc938f984bbbe43c5734b9656c9837ab3a28191f/src/packaging/_musllinux.py#L84 
+ # Note that this is not `os.name`. 
+ # https://docs.python.org/3/library/sysconfig.html#sysconfig.get_platform 
+ # windows x86 will return win32 
+ platform_info = sysconfig.get_platform().split(&quot;-&quot;, 1) 
+ if len(platform_info) == 1: 
+     if platform_info[0] == &quot;win32&quot;: 
+         operating_system, version_arch = &quot;win&quot;, &quot;i386&quot; 
+     else: 
+         # unknown_operating_system will flow to the final error print 
+         operating_system, version_arch = platform_info[0], &quot;&quot; 
+ else: 
+     [operating_system, version_arch] = platform_info 
+ if &quot;-&quot; in version_arch: 
+     # Ex: macosx-11.2-arm64 
+     version, architecture = version_arch.rsplit(&quot;-&quot;, 1) 
+ else: 
+     # Ex: linux-x86_64 
+     version = None 
+     architecture = version_arch 
+
+ if sys.version_info &lt; (3, 7): 
+     print( 
+         json.dumps( 
+             { 
+                 &quot;result&quot;: &quot;error&quot;, 
+                 &quot;kind&quot;: &quot;unsupported_python_version&quot;, 
+                 &quot;python_version&quot;: format_full_version(sys.version_info), 
+             } 
+         ) 
+     ) 
+     sys.exit(0) 
+
+ if operating_system == &quot;linux&quot;: 
+     # noinspection PyProtectedMember 
+     from .packaging._manylinux import _get_glibc_version 
+
+     # noinspection PyProtectedMember 
+     from .packaging._musllinux import _get_musl_version 
+
+     # https://github.com/pypa/packaging/blob/4dc334c86d43f83371b194ca91618ed99e0e49ca/src/packaging/tags.py#L539-L543 
+     # https://github.com/astral-sh/uv/issues/9842 
+     if struct.calcsize(&quot;P&quot;) == 4: 
+         if architecture == &quot;x86_64&quot;: 
+             architecture = &quot;i686&quot; 
+         elif architecture == &quot;aarch64&quot;: 
+             architecture = &quot;armv8l&quot; 
+
+     musl_version = _get_musl_version(sys.executable) 
+     glibc_version = _get_glibc_version() 
+
+     if musl_version: 
+         operating_system = { 
+             &quot;name&quot;: &quot;musllinux&quot;, 
+             &quot;major&quot;: musl_version[0], 
+             &quot;minor&quot;: musl_version[1], 
+         } 
+     elif glibc_version != (-1, -1): 
+         operating_system = { 
+             &quot;name&quot;: &quot;manylinux&quot;, 
+             &quot;major&quot;: glibc_version[0], 
+             &quot;minor&quot;: glibc_version[1], 
+         } 
+     elif hasattr(sys, &quot;getandroidapilevel&quot;): 
+         operating_system = { 
+             &quot;name&quot;: &quot;android&quot;, 
+             &quot;api_level&quot;: sys.getandroidapilevel(), 
+         } 
+     else: 
+         print(json.dumps({&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;libc_not_found&quot;})) 
+         sys.exit(0) 
+ elif operating_system == &quot;win&quot;: 
+     operating_system = { 
+         &quot;name&quot;: &quot;windows&quot;, 
+     } 
+ elif operating_system == &quot;macosx&quot;: 
+     # Apparently, Mac OS is reporting i386 sometimes in sysconfig.get_platform even 
+     # though that's not a thing anymore. 
+     # https://github.com/astral-sh/uv/issues/2450 
+     version, _, architecture = platform.mac_ver() 
+
+     if not version or not architecture: 
+         print(json.dumps({&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;broken_mac_ver&quot;})) 
+         sys.exit(0) 
+
+     # https://github.com/pypa/packaging/blob/cc938f984bbbe43c5734b9656c9837ab3a28191f/src/packaging/tags.py#L356-L363 
+     is_32bit = struct.calcsize(&quot;P&quot;) == 4 
+     if is_32bit: 
+         if architecture.startswith(&quot;ppc&quot;): 
+             architecture = &quot;ppc&quot; 
+         else: 
+             architecture = &quot;i386&quot; 
+
+     version = version.split(&quot;.&quot;) 
+     operating_system = { 
+         &quot;name&quot;: &quot;macos&quot;, 
+         &quot;major&quot;: int(version[0]), 
+         &quot;minor&quot;: int(version[1]), 
+     } 
+ elif operating_system in [ 
+     &quot;freebsd&quot;, 
+     &quot;netbsd&quot;, 
+     &quot;openbsd&quot;, 
+     &quot;dragonfly&quot;, 
+     &quot;illumos&quot;, 
+     &quot;haiku&quot;, 
+ ]: 
+     operating_system = { 
+         &quot;name&quot;: operating_system, 
+         &quot;release&quot;: version, 
+     } 
+ else: 
+     print( 
+         json.dumps( 
+             { 
+                 &quot;result&quot;: &quot;error&quot;, 
+                 &quot;kind&quot;: &quot;unknown_operating_system&quot;, 
+                 &quot;operating_system&quot;: operating_system, 
+             } 
+         ) 
+     ) 
+     sys.exit(0) 
+ return {&quot;os&quot;: operating_system, &quot;arch&quot;: architecture} </code></pre>
+<p>Can you provide the output of <code>sysconfig.get_platform()</code>?</p>
+</blockquote>
+<p>$ , uv --verbose run python -c &quot;import sysconfig; print(sysconfig.get_platform())&quot;
+DEBUG uv 0.7.8
+DEBUG Found project root: <code>/home/&lt;dir&gt;</code>
+DEBUG No workspace root found, using project root
+DEBUG Discovered project <code>&lt;project&gt;</code> at: /home/<dir>
+DEBUG Acquired lock for <code>/home/&lt;dir&gt;</code>
+DEBUG Using Python request <code>/nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3/bin/python3.13</code> from explicit request
+DEBUG Checking for Python environment at <code>.venv</code>
+DEBUG Released lock at <code>/tmp/uv-d5a15f50e0d37c2d.lock</code>
+error: Failed to query Python interpreter
+Caused by: failed to canonicalize path <code>/home/&lt;dir&gt;/.venv/bin/python3</code>: Permission denied (os error 13)</p>
+<p>$ python -c &quot;import sysconfig; print(sysconfig.get_platform())&quot;
+linux-x86_64</p>
+<p>$ which python
+/nix/store/2mab9iiwhcqwk75qwvp3zv0bvbiaq6cs-python3-3.13.3/bin/python</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 14:43</div>
+            <div class="timeline-body"><p>That's confusing, I don't see how we'd get to that error case with that output 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/definfo">@definfo</a> on 2025-05-29 14:50</div>
+            <div class="timeline-body"><p>The latter error message is simply a directory permission issue which seems unrelated to the previous one. :(
+I'm trying to reproduce that situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/definfo">@definfo</a> on 2025-05-30 17:17</div>
+            <div class="timeline-body"><p>🤔 I can no longer reproduce this error after reboot.
+I'll mark this issue as closed here (and reopen in case of any further context).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @definfo on 2025-05-30 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

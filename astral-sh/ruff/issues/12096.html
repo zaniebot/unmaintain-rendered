@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff extension for Visual Studio Code not show error E501 (line-too-long) - astral-sh/ruff #12096</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff extension for Visual Studio Code not show error E501 (line-too-long)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12096">#12096</a>
+        opened by <a href="https://github.com/alejandro-kid">@alejandro-kid</a>
+        on 2024-06-28 19:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alejandro-kid">@alejandro-kid</a> on 2024-06-28 19:48</div>
+            <div class="timeline-body"><p>I am using Visual Studio Code Insider, version 1.85, in Fedora Linux version 39.
+Don't matter what config I set, never shows when the line exceeds de configured limit. The other features in RUFF work well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-28 19:59</div>
+            <div class="timeline-body"><p>We actually don't enable <code>E501</code> by default. Are you enabling it in your configuration file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @dhruvmanila on 2024-07-01 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Denis-Alexeev">@Denis-Alexeev</a> on 2024-07-10 20:22</div>
+            <div class="timeline-body"><p>@charliermarsh I have found 1 case when ruff does not raise E501. Pls tell me if I should create new issue for that.
+This is steps to reproduce.</p>
+<p>I have 2 modules: <code>other.py</code> and <code>test_new.py</code></p>
+<p><code>other.py</code></p>
+<pre><code class="language-python">def very_very_very_long_function_name(attr: int):
+    pass
+
+</code></pre>
+<p><code>test_new.py</code></p>
+<pre><code class="language-python">&quot;&quot;&quot;docstring.&quot;&quot;&quot;
+
+import logging
+
+import other
+
+logging.info(&quot;first long&quot;)
+other.very_very_very_long_function_name(9)
+logging.info(&quot;second long&quot;)
+
+</code></pre>
+<p><code>ruff.toml</code></p>
+<pre><code class="language-toml">target-version = &quot;py312&quot;
+line-length = 17
+
+[lint]
+select = [&quot;ALL&quot;]
+
+[lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<pre><code class="language-bash">ruff --version                                                       
+ruff 0.5.1
+
+python --version   
+Python 3.12.2
+</code></pre>
+<p><code>command</code></p>
+<pre><code class="language-bash">ruff check --config ./ruff.toml --output-format concise ./test_new.py
+</code></pre>
+<p><code>output</code></p>
+<pre><code class="language-bash">test_new.py:7:18: E501 Line too long (26 &gt; 17)
+test_new.py:9:18: E501 Line too long (27 &gt; 17)
+Found 2 errors.
+</code></pre>
+<p><code>Expected behavior</code>
+3 violations of E501</p>
+<p><code>Actual behavior</code>
+2 violations of E501</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 20:32</div>
+            <div class="timeline-body"><p>@Denis-Alexeev The problem here is that the line 8 contains no whitespace (<a href="https://docs.astral.sh/ruff/rules/line-too-long/#why-is-this-bad">see the rules documentation</a>).</p>
+<p>I think we could do better here now that is kind of cheap to get the tokens at a specific offset by only applying the exception rules if the range falls into a string (wdyt @charliermarsh )?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Denis-Alexeev">@Denis-Alexeev</a> on 2024-07-10 20:41</div>
+            <div class="timeline-body"><p>@MichaReiser Oh, I guess I've misread the first exception. I always thought, that it is about exactly one word. Now I see that the word &quot;word&quot; has quotation marks 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-26 01:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

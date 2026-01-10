@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>no uvx.exe found on windows during installation - astral-sh/uv #4755</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>no uvx.exe found on windows during installation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4755">#4755</a>
+        opened by <a href="https://github.com/njzjz">@njzjz</a>
+        on 2024-07-03 03:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/njzjz">@njzjz</a> on 2024-07-03 03:29</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<pre><code>downloading uv 0.2.20 x86_64-pc-windows-gnu
+installing to /c/Users/runneradmin/.cargo/bin
+  uv.exe
+mv: cannot stat '/tmp/tmp.NnFUbsjG4h/uvx.exe': No such file or directory
+ERROR: command failed: mv /tmp/tmp.NnFUbsjG4h/uvx.exe /c/Users/runneradmin/.cargo/bin
+Error: Process completed with exit code 1.
+</code></pre>
+<p>A simple GitHub Action can reproduce it:</p>
+<pre><code class="language-yml">name: Test
+
+on:
+  push:
+
+jobs:
+  test:
+    name: test windows uv
+    runs-on: windows-latest
+    steps:
+    - run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      shell: sh
+</code></pre>
+<p>When using the powershell instead of shell, it still cannot find <code>uvx.exe</code>, but prints <code>everything's installed!</code> and does not fail the script (is it expected?).</p>
+<pre><code>Run powershell -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+  powershell -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+  shell: C:\Program Files\PowerShell\7\pwsh.EXE -command &quot;. '{0}'&quot;
+Downloading uv 0.[2](https://github.com/njzjz/gist/actions/runs/9771365816/job/26974013770#step:2:2).20 (x86_64-pc-windows-msvc)
+Installing to C:\Users\runneradmin\.cargo\bin
+  uv.exe
+Copy-Item : Cannot find path 'C:\Users\runneradmin\AppData\Local\Temp\a68bd8a8-a5da-48ff-8d6[3](https://github.com/njzjz/gist/actions/runs/9771365816/job/26974013770#step:2:3)-5151c2b99750\uvx.exe' 
+because it does not exist.
+At line:244 char:5
++     Copy-Item &quot;$bin_path&quot; -Destination &quot;$dest_dir&quot;
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\runner...2b99750\uvx.exe:String) [Copy-Item], ItemNotFoundExce 
+   ption
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.CopyItemCommand
+ 
+Remove-Item : Cannot find path 'C:\Users\runneradmin\AppData\Local\Temp\a68bd8a8-a5da-[4](https://github.com/njzjz/gist/actions/runs/9771365816/job/26974013770#step:2:5)8ff-8d63-5151c2b99750\uvx.exe' 
+because it does not exist.
+At line:24[5](https://github.com/njzjz/gist/actions/runs/9771365816/job/26974013770#step:2:6) char:5
++     Remove-Item &quot;$bin_path&quot; -Recurse -Force
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\runner...2b99[7](https://github.com/njzjz/gist/actions/runs/9771365816/job/26974013770#step:2:8)50\uvx.exe:String) [Remove-Item], ItemNotFoundEx 
+   ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.RemoveItemCommand
+ 
+  uvx.exe
+everything's installed!
+</code></pre>
+<pre><code class="language-yml">name: Test
+
+on:
+  push:
+
+jobs:
+  test:
+    name: test windows uv
+    runs-on: windows-latest
+    steps:
+    - run: powershell -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 03:53</div>
+            <div class="timeline-body"><p>Thanks for the report. I'd recommend pinning to 0.2.18 in the meantime:</p>
+<pre><code>powershell -c &quot;irm https://astral.sh/uv/0.2.18/install.ps1 | iex&quot;
+</code></pre>
+<p>We'll resolve this ASAP though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-03 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-07-03 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @zanieb on 2024-07-03 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4756.html">astral-sh/uv#4756</a> on 2024-07-03 03:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-03 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../axodotdev/cargo-dist/issues/1183.html">axodotdev/cargo-dist#1183</a> on 2024-07-03 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 04:50</div>
+            <div class="timeline-body"><p>This should be fixed in 0.2.21</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

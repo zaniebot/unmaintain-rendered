@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap complete dynamic doesn't work with `ValueEnum` in args - clap-rs/clap #5498</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap complete dynamic doesn't work with `ValueEnum` in args</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5498">#5498</a>
+        opened by <a href="https://github.com/HKalbasi">@HKalbasi</a>
+        on 2024-05-22 22:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/HKalbasi">@HKalbasi</a> on 2024-05-22 22:44</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.76</p>
+<h3>Clap Version</h3>
+<p>4.5.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser, ValueEnum};
+
+#[derive(Debug, Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    /// What mode to run the program in
+    #[arg(short, long, value_enum)]
+    mode: Mode,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum Mode {
+    /// Run swiftly
+    Fast,
+    /// Crawl slowly but steadily
+    ///
+    /// This paragraph is ignored because there is no long help text for possible values.
+    Slow,
+}
+fn main() {
+    let mut cmd = Cli::command();
+    let args = std::env::args_os().collect::&lt;Vec&lt;_&gt;&gt;();
+    let arg_index = args.len() - 1;
+    let r = clap_complete::dynamic::complete(&amp;mut cmd, args, arg_index, None).unwrap();
+    dbg!(r);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cargo run -- --mode fa
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>The output is:</p>
+<pre><code>[src/main.rs:25:5] r = []
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The output should be:</p>
+<pre><code>[src/main.rs:25:5] r = [
+    (
+        &quot;fast&quot;,
+        Some(
+            StyledStr(
+                &quot;Run swiftly&quot;,
+            ),
+        ),
+    ),
+]
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_build: name=&quot;clap-test&quot;
+[clap_builder::builder::command]Command::_propagate:clap-test
+[clap_builder::builder::command]Command::_check_help_and_version:clap-test expand_help_tree=true
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:clap-test
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:mode
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::builder::command]Command::_build_bin_names
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[&quot;mode&quot;]
+[ clap_builder::output::usage]Usage::get_required_usage_from:iter:&quot;mode&quot; arg is_present=false
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[StyledStr(&quot;\u{1b}[1m--mode\u{1b}[0m &lt;MODE&gt;&quot;)]
+[clap_complete::dynamic::completer]     complete::next: Begin parsing '&quot;--mode&quot;'
+[clap_complete::dynamic::completer]     complete_arg: arg=ParsedArg { inner: &quot;fa&quot; }, cmd=&quot;clap-test&quot;, current_dir=None, pos_index=1, is_escaped=false
+[clap_complete::dynamic::completer]     complete_subcommand: cmd=&quot;clap-test&quot;, value=&quot;fa&quot;
+[clap_complete::dynamic::completer]     subcommands: name=clap-test
+[clap_complete::dynamic::completer]     subcommands: Has subcommands...false
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @HKalbasi on 2024-05-22 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HKalbasi">@HKalbasi</a> on 2024-05-22 22:58</div>
+            <div class="timeline-body"><p>Ah, this is duplicate of #3920, sorry for noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @HKalbasi on 2024-05-22 22:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:35 UTC
+    </footer>
+</body>
+</html>

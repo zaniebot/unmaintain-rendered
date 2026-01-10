@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD003 error in regex or misleading error message - astral-sh/ruff #16519</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TD003 error in regex or misleading error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16519">#16519</a>
+        opened by <a href="https://github.com/JimMajor">@JimMajor</a>
+        on 2025-03-05 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JimMajor">@JimMajor</a> on 2025-03-05 14:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Rule TD0003 ('Missing issue link for this TODO') allows for 4 different forms off issue link, however only explicit link and  <code>#123</code> works anywhere in the TODO comment, <code>123</code> and <code>FOOBAR-1234</code> have to be put alone in the separate line.</p>
+<ol>
+<li>While it may be reasonable for digits alone version I think it would be much more convenient to search for FOOBAR-1234 form in the whole TODO comment.</li>
+<li>This difference in behavior is not stated anywhere clearly, nor in the error message neither in ruff docs (it can be only inferred form the examples) which is very confusing for the user.</li>
+</ol>
+<h3>Version</h3>
+<p>0.9.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TD0003 error in regex or misleading error message" to "TD003 error in regex or misleading error message" by @MichaReiser on 2025-03-05 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-05 14:20</div>
+            <div class="timeline-body"><p>Looking at the code, the distinction between same and own line comments seems very intentional</p>
+<p>https://github.com/astral-sh/ruff/blob/79a2c7eaa28daed1de520f35119ec0625b007188/crates/ruff_linter/src/rules/flake8_todos/rules/todos.rs#L233-L248</p>
+<p>@dylwil3 I see you're name pop up when annotating the code. Do you know more?</p>
+<p>I do agree, that it isn't clear from the documentation which pattern are allowed on the same or have to be on a separate line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-03-05 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-06 14:18</div>
+            <div class="timeline-body"><p>I agree this is confusing!</p>
+<p>The change in <code>TD003</code> from #15519 was the minimal necessary to support the VSCode issue link formats.</p>
+<p>But I think it would be reasonable to support links on the same line as the TODO in general. This was suggested in #9986, but that was closed under the assumption that supporting VSCode formats would cover the general case.</p>
+<p>So I propose we make the rule less rigid and simultaneously improve the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-03-06 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @dylwil3 on 2025-03-06 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-05-23 14:24</div>
+            <div class="timeline-body"><p>To add to this, both the <a href="https://docs.astral.sh/ruff/rules/missing-todo-link/#example">third and fourth examples</a> in the documentation raise the warning:</p>
+<pre><code class="language-py"># TODO(charlie): https://github.com/astral-sh/ruff/issues/3870
+# this comment has an issue link
+
+# TODO(charlie): #003 this comment has a 3-digit issue code
+# with leading character `#`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-02 15:36</div>
+            <div class="timeline-body"><blockquote>
+<p>To add to this, both the <a href="https://docs.astral.sh/ruff/rules/missing-todo-link/#example">third and fourth examples</a> in the documentation raise the warning:</p>
+<pre><code># TODO(charlie): https://github.com/astral-sh/ruff/issues/3870
+# this comment has an issue link
+
+# TODO(charlie): #003 this comment has a 3-digit issue code
+# with leading character `#`
+</code></pre>
+</blockquote>
+<p>Can you share a way to reproduce that behavior? I don't see any diagnostics in the playground for this: https://play.ruff.rs/339852bf-dcf3-45b0-af34-4c3b4ad5aefe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-10-03 11:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share a way to reproduce that behavior? I don't see any diagnostics in the playground for this: https://play.ruff.rs/339852bf-dcf3-45b0-af34-4c3b4ad5aefe</p>
+</blockquote>
+<p>After further testing, this seems to only occur in the VS Code extension (<code>ruff check</code> works fine).</p>
+<p>I am using version 2025.26.0 of the Ruff extension with a test project of 2 files:</p>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;TD003&quot;]
+</code></pre>
+<p>test.py</p>
+<pre><code class="language-py"># TODO(charlie): https://github.com/astral-sh/ruff/issues/3870
+# this comment has an issue link
+
+# TODO(charlie): #003 this comment has a 3-digit issue code
+# with leading character `#`
+</code></pre>
+<p>Here is the problems tab in VS Code:</p>
+<p><img width="623" height="124" alt="Image" src="https://github.com/user-attachments/assets/0bb9e9df-ff53-41a5-8243-f608586ca357" /></p>
+<p>Here is the Ruff warning popup:</p>
+<p><img width="649" height="175" alt="Image" src="https://github.com/user-attachments/assets/91b9cf4f-ee44-4af7-89eb-149022d5daf3" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-03 12:41</div>
+            <div class="timeline-body"><p>I cannot reproduce this with VSCode either. Perhaps your VSCode is picking up an older Ruff binary from somewhere? If you look at the Output console in the &quot;Ruff&quot; channel it should tell you which Ruff it found and what version it is.</p>
+<p><img width="1278" height="427" alt="Image" src="https://github.com/user-attachments/assets/f1af01db-e928-4540-a222-1b3e2fb5c5a5" /></p>
+<p>If that doesn't work could you open a new issue so we can discuss further?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MattTheCuber">@MattTheCuber</a> on 2025-10-03 15:59</div>
+            <div class="timeline-body"><p>That resolved my problem, thanks! Ruff was using a very old install from my user <code>.local</code> pip environment instead of the virtual environment in the project I had open... <code>deactivate</code> then <code>pip uninstall ruff</code> and a reload fixed my problem.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

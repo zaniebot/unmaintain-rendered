@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector of anonymous args + named arg + subcommand leads to USAGE which fails to parse with `cargo run ... --` - clap-rs/clap #4238</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Vector of anonymous args + named arg + subcommand leads to USAGE which fails to parse with `cargo run ... --`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4238">#4238</a>
+        opened by <a href="https://github.com/jacg">@jacg</a>
+        on 2022-09-20 12:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jacg">@jacg</a> on 2022-09-20 12:07</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>{ version = &quot;3.2.20&quot;, features = [&quot;derive&quot;] }</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(clap::Parser)]
+#[clap(name = &quot;erm&quot;, about = &quot;Doesn't accept NAMED before ANONYMOUS as advertised by USAGE&quot;)]
+pub struct Cli {
+
+    // Changing this from Vec&lt;u32&gt; to u32 makes the problem go away
+    pub anonymous: Vec&lt;u32&gt;,
+
+    #[clap(short, long)]
+    pub named: u32,
+
+    // Removing this makes the problem go away
+    #[clap(subcommand)]
+    reco: Subcommand,
+}
+
+#[derive(clap::Subcommand)]
+enum Subcommand {
+    SubA,
+    SubB,
+}
+
+fn main() {
+    Cli::parse();
+    println!(&quot;All's well&quot;);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run --bin erm -- --named 1 2 sub-a</code></p>
+<h3>Actual Behaviour</h3>
+<ol>
+<li><code>target/debug/erm 1 --named 2 sub-a</code> -&gt; All's well</li>
+<li><code>target/debug/erm --named 1 2 sub-a</code> -&gt; All's well</li>
+<li><code>cargo run --bin erm -- 1 --named 2 sub-a</code> -&gt; All's well</li>
+<li><code>cargo run --bin erm -- --named 1 2 sub-a</code> fails</li>
+</ol>
+<p>By 'fails' I mean that it displays the <code>clap</code> help message, because it fails to parse the command line.</p>
+<h3>Expected Behaviour</h3>
+<p>Version 4, above, shoud behave just like versions 1-3.</p>
+<p>In other words, it should manage to parse the command line, which</p>
+<ul>
+<li>is the same as the one in version 2, but in the context of <code>cargo run</code></li>
+<li>agrees with the <code>clap</code>-generated USAGE: <code>erm --named &lt;NAMED&gt; [ANONYMOUS]... &lt;SUBCOMMAND&gt;</code></li>
+</ul>
+<h3>Additional Context</h3>
+<p>This behaviour was observed in both <code>zsh</code> and <code>bash</code>. I'm aware that <code>zsh</code> has some options which may affect how commands are parsed, but don't remember any details about this.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @jacg on 2022-09-20 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:44</div>
+            <div class="timeline-body"><p>With clap 3.2.22 and bash, Case 2 matches Case 4 in erroring out for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:49</div>
+            <div class="timeline-body"><p>The reason <code>cargo run --bin erm -- --named 1 2 sub-a</code> fails is <code>2</code> and <code>sub-a</code> are being consumed into <code>anonymous</code>.  In clap 3, the derive defaults to <code>SubcommandRequiredElseHelp</code>.  Since no subcommand was found, it then shows the help.</p>
+<p>In clap 4, we are switching the derive to <code>subcommand_required(true).arg_required_else_help(true)</code> which will show the help if you just run <code>erm</code> but will then show the subcommand-required error for Case 4, making what is happening more clear.</p>
+<p>If you want the subcommand to win out over <code>anonymous</code>, you need to set <code>subcommand_precedence_over_arg </code>, like</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(clap::Parser)]
+#[clap(
+    name = &quot;erm&quot;,
+    about = &quot;Doesn't accept NAMED before ANONYMOUS as advertised by USAGE&quot;,
+    subcommand_precedence_over_arg = true
+)]
+pub struct Cli {
+    // Changing this from Vec&lt;u32&gt; to u32 makes the problem go away
+    pub anonymous: Vec&lt;u32&gt;,
+
+    #[clap(short, long)]
+    pub named: u32,
+
+    // Removing this makes the problem go away
+    #[clap(subcommand)]
+    reco: Subcommand,
+}
+
+#[derive(clap::Subcommand)]
+enum Subcommand {
+    SubA,
+    SubB,
+}
+
+fn main() {
+    Cli::parse();
+    println!(&quot;All's well&quot;);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:50</div>
+            <div class="timeline-body"><p>See also https://github.com/clap-rs/clap/issues/3721</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:51</div>
+            <div class="timeline-body"><p>Looking closer at https://github.com/clap-rs/clap/issues/3721, these seem to be the same thing, closing this out in favor of the other issue.  If there is any concerns not directly related to https://github.com/clap-rs/clap/issues/3721, let us know and we can re-open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-20 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-20 18:33</div>
+            <div class="timeline-body"><p>Thanks. Agree with closing this in favour of #3721.</p>
+<p>The <code>subcommand_precedence_over_arg</code> solution works as proposed.</p>
+<p>Is it possible to make <code>anonymous</code> be displayed before <code>named</code> in the help? <code>display_order</code> seems to be intended for positional arguments only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 22:11</div>
+            <div class="timeline-body"><p>display order is meant to change the other within a group and does't affect the ordering of groups.</p>
+<p>I don't think its worth changing the default as this is the order people generally expect.  I don't see it being worth the cost to customize it (API surface, code size, etc).  It also doesn't help that I'm not sympathetic to a case where positional arguments and subcommands are being mixed; that just seems like its asking for trouble, in terms of user confusion if nothing else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-21 06:49</div>
+            <div class="timeline-body"><p>Perfectly reasonable.</p>
+<p>What design would you suggest for the use case</p>
+<ul>
+<li>an arbitrary (often very large) number of input files (<code>anonymous</code> in the earlier example)</li>
+<li>exactly one output file (<code>named</code>)</li>
+<li>exactly one obligatory choice of algorithm (the subcommand)</li>
+</ul>
+<p>?</p>
+<p>I was hoping for something like <code>prog input1 input2 input3 --out output algo</code> (which, using your <code>subcommand_precendence_over_arg</code> hint, now works). I think that is preferable to <code>prog --out output input1 input2 input3 algo</code> which (also works and) is what <code>clap</code> suggest in <code>USAGE</code>.</p>
+<p>As the input files typically number in the hundreds (and are specified with a wildcard) I'd rather avoid having to prepend each and every input with a <code>-i</code> which AFAICT would be mandatory if the inputs weren't anonymous/positional.</p>
+<p>(Apologies if this is not an appropriate place to ask this question. If so, just say so, and I'll buzz off.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-21 16:54</div>
+            <div class="timeline-body"><p>Why is the algorithm a subcommand?  And why are the args coming before it?</p>
+<p>Normally, I would all relevant arguments to come <em>after</em> the subcommand.  Any arguments that come before the subcommand are generally application-wide configuration (color and logging support, etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-22 08:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Why is the algorithm a subcommand?</p>
+</blockquote>
+<p>Hmm, maybe because of a combination of historical reasons and misunderstandings that have been lost in the mists of time ...</p>
+<blockquote>
+<p>And why are the args coming before it?</p>
+</blockquote>
+<p>The interface that we've got used to looks something like this:</p>
+<p><code>prog      data you want to process      --out where-result-should-be-written       processing-algorithm algo-arg1 algo-arg2</code></p>
+<p>Probably because, historically, we wanted to compare how different <code>processing-algorithm</code>s treated the same data, and hitting <code>&lt;up&gt;</code> (or <code>C-p</code> or whatever) in the shell and editing the end of the line (where the cursor is by default) was most convenient.</p>
+<blockquote>
+<p>Normally, I would all relevant arguments to come after the subcommand.</p>
+</blockquote>
+<p>In our case, these would be the args to <code>processing-algo</code>. (Admittedly, we're still running all our <code>processing-algorithm</code>s with hard-wired parameters, so none of them take any arguments, <em>yet</em> [edit: that is incorrect, there are some, I haven't used them for so long that I forgot], so maybe there's something I'm overlooking lurking in that corner. )</p>
+<blockquote>
+<p>Any arguments that come before the subcommand are generally application-wide configuration (color and logging support, etc).</p>
+</blockquote>
+<p>As this is code for analyzing experimental data, and not your typical 'application', I guess it doesn't fit comfortably into the usual mould. Colour, logging and other typical application-config are completely irrelevant in this case.</p>
+<p>In an exploratory phase, the data are fairly constant: you want to see how different algos treat some representative data. So the input data are constant, and should go at the front: you want to try different algos and tweak their parameters, so those should go at the end, where they are most easily editable in the shell.</p>
+<p>Once you've discovered a good algo with a decent set of parameters, you probably want to fix those and run the process on many different sets of data. At this point the algo and its parameters feels like it should go at the front and the data at the end.</p>
+<p>But, as I said, this might be a misguided consequence of history and misunderstandings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-22 18:18</div>
+            <div class="timeline-body"><p>Why isn't the algorithm a required option (<code>--algorithm foo</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-22 18:36</div>
+            <div class="timeline-body"><p>Quite possibly because I'm completely missing something.</p>
+<p>For the sake of illustration imagine we have two algorithms:</p>
+<ol>
+<li><code>foo</code>, with optional arguments <code>this</code> and <code>that</code></li>
+<li><code>bar</code>, with optional arguments <code>ho</code>, <code>hum</code> and <code>hmmm</code></li>
+</ol>
+<p>How would you express that with the algorithms being required options?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-22 18:40</div>
+            <div class="timeline-body"><p>If you do a <code>--foo</code> flag, you could put <code>--this</code> and <code>--that</code> in a group that requires <code>--foo</code>.  Unfortunately, I don't think we can setup that relationship today for <code>--algorithm foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-22 18:48</div>
+            <div class="timeline-body"><p>I should mention that we've recently migrated from <code>structopt</code>. I recall that I originally had some trouble with getting groups to do what I wanted in <code>structopt</code>. Does <code>derive</code> provide the full feature set of groups?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-22 18:53</div>
+            <div class="timeline-body"><p>The feature set should be similar.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:09 UTC
+    </footer>
+</body>
+</html>

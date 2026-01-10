@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative for D417 - astral-sh/ruff #1406</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative for D417</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1406">#1406</a>
+        opened by <a href="https://github.com/PhilReinhold">@PhilReinhold</a>
+        on 2022-12-27 15:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PhilReinhold">@PhilReinhold</a> on 2022-12-27 15:26</div>
+            <div class="timeline-body"><p>It appears that ruff v0.0.195 fails to detect missing argument docs from a google-formatted docstring (D417) when a newline is present in the <code>Returns</code> block.</p>
+<pre><code class="language-python"># test.py
+def f(x, y, z):
+    &quot;&quot;&quot;Do f.
+
+    Args:
+        x: the value
+        z: A final argument
+
+    Returns: 
+        the value
+    &quot;&quot;&quot;
+    return x
+
+def g(x, y, z):
+    &quot;&quot;&quot;Do g.
+
+    Args:
+        x: the value
+        z: A final argument
+
+    Returns: the value
+    &quot;&quot;&quot;
+    return x
+
+def h(x, y, z):
+    &quot;&quot;&quot;Do h.
+
+    Args:
+        x: the value
+        z: A final argument
+    &quot;&quot;&quot;
+    return x
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.0.195
+
+$ ruff --select D --show-source test.py
+test.py:14:1: D417 Missing argument description in the docstring: `y`
+   |
+14 | / def g(x, y, z):
+15 | |     &quot;&quot;&quot;Do g.
+16 | |
+17 | |     Args:
+18 | |         x: the value
+19 | |         z: A final argument
+20 | |
+21 | |     Returns: the value
+22 | |     &quot;&quot;&quot;
+23 | |     return x
+   | |____________^ D417
+   |
+test.py:25:1: D417 Missing argument description in the docstring: `y`
+   |
+25 | / def h(x, y, z):
+26 | |     &quot;&quot;&quot;Do h.
+27 | |
+28 | |     Args:
+29 | |         x: the value
+30 | |         z: A final argument
+31 | |     &quot;&quot;&quot;
+32 | |     return x
+   | |____________^ D417
+   |
+Found 2 error(s).
+</code></pre>
+<p>I'm expecting 3 errors for all three functions, not just g and h.</p>
+<p>(I promise I don't just sit around looking for corner-case D417 bugs! But checking for missing docstring args is one of the useful features of pydocstyle which I'm hoping ruff can replace)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-27 15:38</div>
+            <div class="timeline-body"><p>I’ve gotta see if the latest pydocstyle catches this. Wondering if this was a regression from when I last updated the parser to match their logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-27 16:13</div>
+            <div class="timeline-body"><p>Yeah pydocstyle doesn't catch this either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-27 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-27 16:27</div>
+            <div class="timeline-body"><p>I'm going to make the improvement that pydocstyle described <a href="https://github.com/PyCQA/pydocstyle/issues/459">here</a>, to use a dedicated convention flag. pydocstyle seems to have stalled, I don't see much movement there, but I can implement this for sure in Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilReinhold">@PhilReinhold</a> on 2022-12-27 16:31</div>
+            <div class="timeline-body"><p>Yes, official &quot;docstring-convention&quot; support would be a wonderful feature! I guess I can feel safe replacing pydocstyle if it has the same bugs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-27 16:34</div>
+            <div class="timeline-body"><p>Yeah the current logic used by pydocstyle is sort of brittle. It first checks to see if there are <em>any</em> valid NumPy sections, and if so, uses NumPy-style; otherwise, it falls back to Google. In the case of <code>Returns:</code> followed by a hanging indent, that <em>is</em> a valid section. That logic could be improved a bit, but explicitness will be less confusing tbh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-27 16:34</div>
+            <div class="timeline-body"><p>This'll go out today, working on it now, just a sec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1408.html">astral-sh/ruff#1408</a> on 2022-12-27 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-27 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

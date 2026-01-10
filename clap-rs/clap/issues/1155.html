@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't compile ansi_term on Windows - clap-rs/clap #1155</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't compile ansi_term on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1155">#1155</a>
+        opened by <a href="https://github.com/XAMPPRocky">@XAMPPRocky</a>
+        on 2018-01-27 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/XAMPPRocky">@XAMPPRocky</a> on 2018-01-27 17:26</div>
+            <div class="timeline-body"><p><code>ansi_term</code> currently doesn't work on <a href="https://github.com/ogham/rust-ansi-term/issues/31">32bit Windows platforms</a> and is not being maintained. <code>clap</code> being dependent by so many crates(mine included) needs to resolve this since there is no maintainer for <code>ansi_term</code>. There are two solutions I can think of.</p>
+<ul>
+<li><code>clap</code> maintains a forked version of <code>ansi_term</code>.</li>
+<li><code>clap</code> pulls required functionality of our <code>ansi_term</code> and into it's own module in tree.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SergioBenitez">@SergioBenitez</a> on 2018-01-30 22:33</div>
+            <div class="timeline-body"><p>Alternatively, migrate to <a href="https://docs.rs/yansi/"><code>yansi</code></a>, a crate I created for Rocket. The API is fairly similar to <code>ansi_term</code>'s, so migrating should be very simple. If there's a feature missing in <code>yansi</code> that makes migrating difficult, I'm happy to adjust the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-30 22:56</div>
+            <div class="timeline-body"><p>@SergioBenitez Your crate only supports ANSI escape sequences, which won't work in Windows consoles that don't have ANSI support. (Your API is also appears fundamentally incompatible with how Windows console coloring works.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SergioBenitez">@SergioBenitez</a> on 2018-01-30 22:59</div>
+            <div class="timeline-body"><p>@BurntSushi Yes, I'm quite aware of that; it's even part of the crate's name! This issue is about moving away from <code>ansi_term</code>, which <em>also</em> doesn't support older Windows consoles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-30 23:03</div>
+            <div class="timeline-body"><p>@SergioBenitez Let me rephrase: It would be great to move to a library that supports Windows console coloring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-31 01:35</div>
+            <div class="timeline-body"><p>@Aaronepower <code>ansi_term</code> <a href="https://github.com/kbknapp/clap-rs/blob/969c3adb4107d7e2934d2721f8eda9992985301d/src/fmt.rs#L142-L153">isn't used by <code>clap</code> on Windows</a>, as I just default to no color support on Windows. However, the plan is to move to <a href="https://github.com/BurntSushi/ripgrep/tree/master/termcolor"><code>termcolor</code></a> to enable color support for Windows. Progress can be tracked specifically in #836</p>
+<p>However, this color re-write will be implemented in v3 (which actively being worked again after a stagnant period) and can be tracked via the overall v3 tracking issue #1037</p>
+<p>I've implemented a feature freeze for v2 so I can actually get v3 out the door. So it shouldn't be long before v3-alpha1 is out.</p>
+<p>I'm going to close this so comments can be consolidated in one place. I appreciate the suggestions @SergioBenitez and if <code>termcolor</code> ends up not working out and I have to default back to no Windows color support, but still want color support elsewhere I'll look into swapping <code>ansi_term</code> with <code>yansi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-01-31 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XAMPPRocky">@XAMPPRocky</a> on 2018-01-31 12:19</div>
+            <div class="timeline-body"><p>@kbknapp <a href="https://ci.appveyor.com/project/Aaronepower/tokei/build/1.0.264/job/9m5yfof69111sqdv#L124">It's still compiled on Windows</a> which is the real problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-31 18:12</div>
+            <div class="timeline-body"><p>@Aaronepower Ah, I see my mistake. I'll re-open this issue as &quot;Don't compile <code>ansi_term</code> on Windows which should be <a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#platform-specific-dependencies">totally possible with <code>cargo</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @kbknapp on 2018-01-31 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Move away from using ansi_term." to "Don't compile ansi_term on Windows" by @kbknapp on 2018-01-31 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2018-01-31 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2018-01-31 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2018-01-31 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @kbknapp on 2018-01-31 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-01-31 18:13</div>
+            <div class="timeline-body"><p>I'd be willing to merge a PR for 2.29.3 that fixes this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.29.3" by @kbknapp on 2018-02-02 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-04 23:08</div>
+            <div class="timeline-body"><p>Turns out this is harder than I had first thought: https://github.com/rust-lang/cargo/issues/1197</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "2.29.3" by @kbknapp on 2018-02-04 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: postponed</span> added by @kbknapp on 2018-02-04 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-02-04 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> removed by @kbknapp on 2018-02-04 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> removed by @kbknapp on 2018-02-04 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @kbknapp on 2018-02-04 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: blocking on external</span> added by @kbknapp on 2018-02-04 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: postponed</span> removed by @kbknapp on 2018-02-04 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-12 20:03</div>
+            <div class="timeline-body"><p>For those compiling <em>only</em> to windows, not using the <code>color</code> feature will disable compiling <code>ansi_term</code></p>
+<pre><code>kevin@beefcake: ~/Projects/clap-rs 
+➜ cargo build --no-default-features --features wrap_help,suggestions
+   Compiling strsim v0.7.0
+   Compiling libc v0.2.36
+   Compiling bitflags v1.0.1
+   Compiling unicode-width v0.1.4
+   Compiling term_size v0.3.1
+   Compiling textwrap v0.9.0
+   Compiling clap v2.29.4 (file:///home/kevin/Projects/clap-rs)
+    Finished dev [unoptimized + debuginfo] target(s) in 8.0 secs
+</code></pre>
+<p>I'm going to close this for now, and re-address once cargo supports per-target deps. I'll also keep this in mind during the great color redux in v3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-12 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2018-02-12 20:47</div>
+            <div class="timeline-body"><blockquote>
+<p>re-address once cargo supports per-target deps</p>
+</blockquote>
+<p>You mean like <code>[target.i686-pc-windows-gnu.dependencies]</code> or <code>[target.'cfg(all(windows, target_arch=&quot;x86&quot;))'.dependencies]</code>? Or did you mean per-target features?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-12 20:59</div>
+            <div class="timeline-body"><p>@retep998 I meant them somewhat interchangeably. The issue being the <code>color</code> feature is currently ignored on Windows, yet even though it's ignored the <code>ansi_term</code> dep is still compiled.</p>
+<p>What I'd like to happen is per-target features (so that on everything but Windows the <code>color</code> feature will include <code>ansi_term</code>, but on Windows the <code>color</code> feature will simply be empty, thus not compiling <code>ansi_term</code> for no reason).</p>
+<p>If this is already possible, I may have misunderstood the state of things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2018-02-12 21:01</div>
+            <div class="timeline-body"><p>While features themselves cannot be target specific, dependencies can, even if they are optional. You can enable the feature from any target, but the dependency will only be compiled for the targets it specifies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-12 21:14</div>
+            <div class="timeline-body"><p>TIL...just tested it and it works!</p>
+<p>Wow 🎉 Thanks for the explanation @retep998 👍</p>
+<p>I'll re-open this and put in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @kbknapp on 2018-02-12 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1178.html">clap-rs/clap#1178</a> on 2018-02-12 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @kbknapp on 2018-02-12 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: blocking on external</span> removed by @kbknapp on 2018-02-12 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2018-02-12 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: optional dep</span> added by @kbknapp on 2018-02-12 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2018-02-12 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-02-13 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2018-02-13 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1182.html">clap-rs/clap#1182</a> on 2018-02-13 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../volks73/cargo-wix/issues/45.html">volks73/cargo-wix#45</a> on 2018-04-15 19:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:43 UTC
+    </footer>
+</body>
+</html>

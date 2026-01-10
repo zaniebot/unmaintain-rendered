@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT019 `pytest-fixture-param-without-value` misses public fixture - astral-sh/ruff #17132</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT019 `pytest-fixture-param-without-value` misses public fixture</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17132">#17132</a>
+        opened by <a href="https://github.com/mschoettle">@mschoettle</a>
+        on 2025-04-01 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mschoettle">@mschoettle</a> on 2025-04-01 19:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I defined a fixture in <code>conftest.py</code> and I was expecting a violation since it satisfies the same logic as described in the <a href="https://docs.astral.sh/ruff/rules/pytest-fixture-param-without-value/">rule description.</a>.</p>
+<pre><code class="language-python"># in conftest.py
+def my_fixture() -&gt; None:
+    pass
+</code></pre>
+<pre><code class="language-python">def test_something(my_fixture: None):
+    pass
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.2 (4773878ee 2025-03-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-01 20:24</div>
+            <div class="timeline-body"><p>Looking at the code, it seems that you'd need to prefix the fixture with an underscore, so <code>_my_fixture</code> works, which I think would be to match the upstream rule (?).</p>
+<p>So, the following would work:</p>
+<pre><code class="language-py">def test_some(_my_fixture: None):
+    pass
+</code></pre>
+<p>You'd also need to use <code>test_</code> prefix and not suffix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mschoettle">@mschoettle</a> on 2025-04-01 21:23</div>
+            <div class="timeline-body"><p>It does work when prefixing with an underscore. When reading the rationale (<a href="https://github.com/m-burst/flake8-pytest-style/blob/master/docs/rules/PT019.md">upstream</a> and <code>ruff</code>, i.e., unused fixture in the test function) it seems to me that it should apply to any fixture that is not used in the test function, so also those not prefixed. Unless fixtures should be prefixed all the time? 🤔</p>
+<blockquote>
+<p>You'd also need to use test_ prefix and not suffix.</p>
+</blockquote>
+<p>Good catch. It was just in this minimal example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-02 07:41</div>
+            <div class="timeline-body"><p>The rule uses heuristics to detect fixtures, and we need to balance false positives (where Ruff detects something as a fixture where it isn't) with false negatives. That's why it requires the underscore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-04-02 07:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

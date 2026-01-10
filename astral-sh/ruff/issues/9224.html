@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimize production binaries - astral-sh/ruff #9224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optimize production binaries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9224">#9224</a>
+        opened by <a href="https://github.com/T-256">@T-256</a>
+        on 2023-12-21 06:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/T-256">@T-256</a> on 2023-12-21 06:00</div>
+            <div class="timeline-body"><p>#9031 Improved compile-time, but it also affects runtime, this issue opened to create a separated build profile for production.</p>
+<p>Note that current <code>release</code> profile is used for benchmarking (comparing Ruff to itself) and new <code>production</code> profile supposed to have better runtime and comparing Ruff to foreign tools. We can document when which profile should use.</p>
+<p>By separating these profiles, perhaps we could enhance current <code>release</code> profile to have even faster compile-time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-21 12:35</div>
+            <div class="timeline-body"><p>Thanks for filing this issue! I remember you mentioning this in #9031.</p>
+<p>I would like to push back a bit here.</p>
+<p>IMO, the point of <code>release</code> isn't just to be fast to compile. It's to balance between runtime performance <em>and</em> compile time. We don't want to chase the road of faster compiles too far. We already have a mode that is meant to compile as quickly as possible (the <code>dev</code> and <code>test</code> profiles). As I said in that PR, the issue with having two different configurations is that it becomes very easy to accidentally benchmark and profile the wrong thing, and if not that, you just wind up back with high iteration times. This is important because LTO greatly effects function inlining, and inlining is really the mother of all optimizations. They are doors to even more optimization. It is typically the case, although <em>not always</em>, that many of the benefits of LTO can be unlocked with well placed <code>#[inline]</code> or <code>#[inline(always)]</code> hints. (This was also discussed in the PR.)</p>
+<p>Profiling the wrong thing can be maddening when trying to fix a regression in the benchmark results. For example, if our codspeed benchmarks are run with the <code>production</code> profile, but one ends up trying to reproduce that locally with the <code>release</code> profile, you might wind up chasing the wrong thing. We could have a <code>production</code> profile and <em>not</em> use it in codspeed, but now you aren't tracking performance of the actual final artifact shipped to end users. Instead, it's something different. And if we do use <code>production</code> in codspeed, then you'll wind up needing to use the <code>production</code> profile to chase down regressions, which puts us back at square one: very long iteration times. With that said, not every performance problem with be obscured if one uses two different profiles. It's likely only <em>some</em> will be obscured. So even if I benchmark using the <code>release</code> profile while we ship the <code>production</code> profile, it isn't guaranteed that it will end in sadness. (I say this to make sure I'm not over-stating the downsides here.)</p>
+<p>My personal feeling here is to <em>not</em> add a separate <code>production</code> profile. Or at least, let's see how far we can get without adding one. I don't feel like it would be the worst problem in the world to have a separate profile personally, so I don't mean to say that I'll always be opposed to it. But I would like to give the current configuration a try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-12-21 13:52</div>
+            <div class="timeline-body"><blockquote>
+<p>We could have a <code>production</code> profile and <em>not</em> use it in codspeed, but now you aren't tracking performance of the actual final artifact shipped to end users.</p>
+</blockquote>
+<p>@BurntSushi Thanks for your response, if I didn't understand correctly, please tell me.
+We use codspeed to check speed regression or improvements for PRs, so comparing them on same <code>release</code> profile doesn't affect on speed diffs.
+Here is build profiles usecases would like:</p>
+<h3><code>release</code> profile:</h3>
+<ul>
+<li>CI for PRs, Commits</li>
+<li>Benchmark for PRs, Commits</li>
+</ul>
+<h3><code>production</code> profile</h3>
+<ul>
+<li>End-users</li>
+<li>Benchmark for publish releasing (e.g. different between <code>0.1.9</code> and <code>0.1.8</code>)</li>
+<li>Doc's reference for run-time measured numbers</li>
+</ul>
+<p>Devs can easily use <code>production</code> to put the measured benchmarks into docs, Also, cospeed shows speed (%) diffs between GH releases.</p>
+<blockquote>
+<p>So even if I benchmark using the <code>release</code> profile while we ship the <code>production</code> profile, it isn't guaranteed that it will end in sadness.</p>
+</blockquote>
+<p>By that said, end-users almost don't feel anything, there would be a little confusing for contributors/local-compilers that can be solved by <strong><code>Building</code></strong> section in the docs.</p>
+<blockquote>
+<p>Or at least, let's see how far we can get without adding one.</p>
+</blockquote>
+<p>How would you check how much is the performance difference between current <code>release</code> profile and the optimized one (<code>production</code>)? perhaps a ready to test profile could help, like <code>profiling</code> build profile.</p>
+<p>If decided to avoid using production nowhere, I'd recommend make it ready to be option for volunteers to have it (needs some helps on docs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-21 14:53</div>
+            <div class="timeline-body"><p>Benchmarking is not just about CI, as developers we need to be able to run benchmarks locally while optimizing code. If we're not using the same profile as we will eventually release to users, we could make the wrong optimizations. A goal in #9031 was to improve the developer experience and reduce the amount of time it takes to work on performance improvements. We believe this will yield more significant improvements in the long run.</p>
+<p>As @BurntSushi said: if we have concerns after using this profile for a while, we can consider adding a more optimized profile. In the meantime, I think the performance regression from #9031 is not significant enough to warrant the additional complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @charliermarsh on 2024-01-02 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-26 07:30</div>
+            <div class="timeline-body"><p>I close this issue considering that we haven't received any user feedback that ruff got noticeably slower for them after releasing #9031</p>
+<p>We can revisit more involved optimisations of our release binary in the future (and also explore e.g. profiling driven optimisations etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-26 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-26 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/pulls/5904.html">astral-sh/uv#5904</a> on 2024-08-08 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/pulls/5909.html">astral-sh/uv#5909</a> on 2024-08-08 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

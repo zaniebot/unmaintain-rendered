@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't `uv run` a simple script when Python binary is a symlink with uv 0.5.x - astral-sh/uv #10674</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't `uv run` a simple script when Python binary is a symlink with uv 0.5.x</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10674">#10674</a>
+        opened by <a href="https://github.com/gozdal">@gozdal</a>
+        on 2025-01-16 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-16 11:37</div>
+            <div class="timeline-body"><p>I ran into a bug with Ubuntu 24, which has (by default) system-wide Python 3.12.
+Coincidently I have our own Python 3.12 installed, which is symlinked from <code>/usr/local/bin/python3.12</code>:
+<code>$ ls -al /usr/bin/python3.12</code></p>
+<pre><code>-rwxr-xr-x 1 root root 8019136 Nov  6 13:32 /usr/bin/python3.12
+</code></pre>
+<p><code>$ ls -al /usr/local/bin/python3.12</code></p>
+<pre><code>lrwxrwxrwx 1 root root 39 Nov 27 14:02 /usr/local/bin/python3.12 -&gt; /opt/starfish/python3.12/bin/python3.12
+</code></pre>
+<p><code>$ which python3.12</code></p>
+<pre><code>/usr/local/bin/python3.12
+</code></pre>
+<p>Now, if I try to run <code>example.py</code>:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = []
+# ///
+
+import sys
+
+def main() -&gt; None:
+    print(sys.version)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>uv 0.4.30 works:
+<code>uv cache clean &amp;&amp; ./0.4.30/uv run example.py</code></p>
+<pre><code>Clearing cache at: /home/gozdal/.cache/uv
+Removed 47 files (64.9KiB)
+Reading inline script metadata from `example.py`
+3.12.5 (main, Nov 14 2024, 04:29:17) [GCC 13.2.0]
+</code></pre>
+<p>uv 0.5.0 and 0.5.20 (latest as I am writing this) fail with <code>ModuleNotFoundError</code>:</p>
+<p><code>uv cache clean &amp;&amp; ./0.5.0/uv run example.py</code></p>
+<pre><code>Clearing cache at: /home/gozdal/.cache/uv
+Removed 26 files (35.2KiB)
+Reading inline script metadata from `example.py`
+error: Querying Python at `/home/gozdal/.cache/uv/archive-v0/FUbvxrhgdDsOgH-FF1as3/bin/python3` failed with exit status exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/gozdal/.cache/uv/.tmpXvEd2n/python/get_interpreter_info.py&quot;, line 12, in &lt;module&gt;
+    import struct
+  File &quot;/usr/lib/python3.12/struct.py&quot;, line 13, in &lt;module&gt;
+    from _struct import *
+ModuleNotFoundError: No module named '_struct'
+---
+</code></pre>
+<p><code>uv cache clean &amp;&amp; ./0.5.20/uv run example.py</code></p>
+<pre><code>Clearing cache at: /home/gozdal/.cache/uv
+Removed 24 files (29.8KiB)
+error: Querying Python at `/home/gozdal/.cache/uv/archive-v0/xvAW0xfqtaDWv89Ju96Pb/bin/python3` failed with exit status exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/gozdal/.cache/uv/.tmpDMAraa/python/get_interpreter_info.py&quot;, line 12, in &lt;module&gt;
+    import struct
+  File &quot;/usr/lib/python3.12/struct.py&quot;, line 13, in &lt;module&gt;
+    from _struct import *
+ModuleNotFoundError: No module named '_struct'
+---
+</code></pre>
+<p>If I remove <code>/usr/local/bin</code> from <code>$PATH</code>, it works:
+<code>uv cache clean &amp;&amp; PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin ./0.5.0/uv run example.py</code></p>
+<pre><code>Clearing cache at: /home/gozdal/.cache/uv
+Removed 24 files (29.8KiB)
+Reading inline script metadata from `example.py`
+3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0]
+</code></pre>
+<p>Similarly if I add <code>/opt/starfish/python3.12/bin</code> to <code>PATH</code>:
+<code>uv cache clean &amp;&amp; PATH=/opt/starfish/python3.12/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin ./0.5.0/uv run example.py</code></p>
+<pre><code>Clearing cache at: /home/gozdal/.cache/uv
+Removed 26 files (34.8KiB)
+Reading inline script metadata from `example.py`
+3.12.5 (main, Nov 14 2024, 04:29:17) [GCC 13.2.0]
+</code></pre>
+<p>So it seems that the problem is <code>/usr/local/bin</code> symlink.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 15:15</div>
+            <div class="timeline-body"><p>Can you please create an MRE in a Dockerfile that I can use to reproduce?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-16 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-16 17:23</div>
+            <div class="timeline-body"><p>Sure, have a look at https://github.com/gozdal/sf-python
+I reproduced it with:</p>
+<ol>
+<li><code>docker build -t uv-mre .</code></li>
+<li><code>docker run -it uv-mre</code></li>
+<li>attach from another console, run <code>bash uv-0.4.sh</code> or <code>bash uv-0.5.sh</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-21 09:27</div>
+            <div class="timeline-body"><p>@charliermarsh I was wondering if this MRE is good enough for reproduction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 14:13</div>
+            <div class="timeline-body"><p>I think it is, thank you! I just haven't had a chance to fix it yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-01-21 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-21 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 17:58</div>
+            <div class="timeline-body"><p>Where does this Python distribution come from? Is it from <code>python-build-standalone</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-21 17:59</div>
+            <div class="timeline-body"><p>It's a custom-built Python, but it's from vanilla, official sources with official build scripts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 18:03</div>
+            <div class="timeline-body"><p>I think this is a problem with your Python distribution. You don't need uv to reproduce it:</p>
+<pre><code>root@415137aa2e3f:/uv# /usr/local/bin/python3.12 -m venv foo --without-pip
+root@415137aa2e3f:/uv# foo/bin/python
+Python 3.12.5 (main, Nov 14 2024, 04:29:17) [GCC 13.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import struct
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.12/struct.py&quot;, line 13, in &lt;module&gt;
+    from _struct import *
+ModuleNotFoundError: No module named '_struct'
+</code></pre>
+<p>It's likely failing to find the expected anchor landmarks during startup. Was it built on a different machine, with a different layout?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-21 18:19</div>
+            <div class="timeline-body"><p>Hmm, it's built in a container matching the OS.
+It doesn't happen on other OS, which do not have Python 3.12 as system package.
+My guess is there is some bad interaction between OS Python and our custom one - thought it's something with the venv created by uv but it looks it's deeper.</p>
+<p>The Python is built with</p>
+<pre><code>LDFLAGS=&quot;-Wl,--enable-new-dtags,--rpath=/opt/starfish/python3.12/lib&quot; ./configure 
+  --prefix=/opt/starfish/python3.12
+  --with-computed-gotos
+  --disable-test-modules
+  --with-ensurepip=no
+  --enable-ipv6
+  --enable-loadable-sqlite-extensions
+  --enable-shared
+  --without-static-libpython
+  --enable-shared
+  --enable-optimizations 
+  --with-lto
+
+make -j2
+make altinstall
+/opt/starfish/python3.12/bin/python3.12 -m ensurepip --upgrade --default-pip
+</code></pre>
+<p>and then resulting <code>/opt/starfish/python3.12</code> is packaged into DEB.</p>
+<p>I understand it's not a <code>uv</code> bug but maybe you see something obviously wrong here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-21 18:26</div>
+            <div class="timeline-body"><p>The first thing that comes to mind is that it's in <code>/usr/lib/python3.12</code> but your prefix is <code>/opt/starfish/python3.12</code>?</p>
+<p>It's often helpful to look at the paths in the <code>sysconfig</code>, e.g.,<code>python -m sysconfig | grep /usr/lib</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 18:29</div>
+            <div class="timeline-body"><p>I would expect that symlink to still be okay given that it's a non-relocatable Python? But I'm not totally sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-21 21:59</div>
+            <div class="timeline-body"><p>It's fine if I run <code>/opt/starfish/python3.12/bin/python3.12 -m sysconfig | grep /usr/lib</code>:</p>
+<pre><code>TZPATH = &quot;/usr/share/zoneinfo:/usr/lib/zoneinfo:/usr/share/lib/zoneinfo:/etc/zoneinfo
+</code></pre>
+<p>It's fine if I run via symlink <code>/usr/local/bin/python3.12 -m sysconfig | grep /usr/lib</code>:</p>
+<pre><code>TZPATH = &quot;/usr/share/zoneinfo:/usr/lib/zoneinfo:/usr/share/lib/zoneinfo:/etc/zoneinfo&quot;
+</code></pre>
+<p>It's fine if I create venv from the binary:
+<code>/opt/starfish/python3.12/bin/python3.12 -m venv foo --without-pip</code>
+<code>foo/bin/python -m sysconfig | grep /usr/lib</code></p>
+<pre><code>TZPATH = &quot;/usr/share/zoneinfo:/usr/lib/zoneinfo:/usr/share/lib/zoneinfo:/etc/zoneinfo&quot;
+</code></pre>
+<p>It's not fine if I create the venv using symlink:
+<code>/usr/local/bin/python3.12 -m venv foo --without-pip</code>
+<code>foo/bin/python -m sysconfig | grep /usr/lib</code></p>
+<pre><code>	stdlib = &quot;/usr/lib/python3.12&quot;
+	BINLIBDEST = &quot;/usr/lib/x86_64-linux-gnu/python3.12&quot;
+	CONFIG_ARGS = &quot;'--enable-shared' '--prefix=/usr' '--libdir=/usr/lib/x86_64-linux-gnu' '--enable-ipv6' '--enable-loadable-sqlite-extensions' '--with-dbmliborder=bdb:gdbm' '--with-computed-gotos' '--without-ensurepip' '--with-system-expat' '--with-dtrace' '--with-ssl-default-suites=openssl' '--with-wheel-pkg-dir=/usr/share/python-wheels/' 'MKDIR_P=/bin/mkdir -p' 'CC=x86_64-linux-gnu-gcc'&quot;
+	DESTDIRS = &quot;/usr /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/python3.12 /usr/lib/python3.12/lib-dynload&quot;
+	DESTLIB = &quot;/usr/lib/python3.12&quot;
+	DESTSHARED = &quot;/usr/lib/python3.12/lib-dynload&quot;
+	LIBDEST = &quot;/usr/lib/python3.12&quot;
+	LIBDIR = &quot;/usr/lib/x86_64-linux-gnu&quot;
+	LIBPC = &quot;/usr/lib/x86_64-linux-gnu/pkgconfig&quot;
+	LIBPL = &quot;/usr/lib/python3.12/config-3.12-x86_64-linux-gnu&quot;
+	MACHDESTLIB = &quot;/usr/lib/x86_64-linux-gnu/python3.12&quot;
+	MODULE__HASHLIB_LDFLAGS = &quot;-L/usr/lib   -lcrypto&quot;
+	MODULE__SSL_LDFLAGS = &quot;-L/usr/lib  -lssl -lcrypto&quot;
+	SCRIPTDIR = &quot;/usr/lib&quot;
+	TZPATH = &quot;/usr/share/zoneinfo:/usr/lib/zoneinfo:/usr/share/lib/zoneinfo:/etc/zoneinfo&quot;
+	WASM_STDLIB = &quot;./usr/lib/python3.12/os.py&quot;
+	srcdir = &quot;/usr/lib/python3.12/config-3.12-x86_64-linux-gnu&quot;
+</code></pre>
+<p>But I have no idea why this happens, because <code>foo/bin/python</code> is &quot;just&quot; a symlink to symlink:
+<code>ls -al foo/bin/</code></p>
+<pre><code>total 32
+drwxr-xr-x 2 gozdal core-devs 4096 Jan 21 16:56 .
+drwxr-xr-x 5 gozdal core-devs 4096 Jan 21 16:56 ..
+-rw-r--r-- 1 gozdal core-devs 2018 Jan 21 16:56 activate
+-rw-r--r-- 1 gozdal core-devs  908 Jan 21 16:56 activate.csh
+-rw-r--r-- 1 gozdal core-devs 2187 Jan 21 16:56 activate.fish
+-rw-r--r-- 1 gozdal core-devs 9033 Jan 21 16:56 Activate.ps1
+lrwxrwxrwx 1 gozdal core-devs   10 Jan 21 16:56 python -&gt; python3.12
+lrwxrwxrwx 1 gozdal core-devs   10 Jan 21 16:56 python3 -&gt; python3.12
+lrwxrwxrwx 1 gozdal core-devs   25 Jan 21 16:56 python3.12 -&gt; /usr/local/bin/python3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-21 22:01</div>
+            <div class="timeline-body"><p>Merely creating a symlink to a symlink doesn't trigger this.
+<code>ln -s /usr/local/bin/python3.12 usrlocalbinpython3.12</code>
+<code>./usrlocalbinpython3.12 -m sysconfig | grep /usr/lib</code></p>
+<pre><code>	TZPATH = &quot;/usr/share/zoneinfo:/usr/lib/zoneinfo:/usr/share/lib/zoneinfo:/etc/zoneinfo&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-21 22:10</div>
+            <div class="timeline-body"><p>I wouldn't expect anything in <code>sysconfig</code> to change from a symlink. That was just a suggestion of how to inspect what kind of expectations are encoded into the build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-21 22:11</div>
+            <div class="timeline-body"><p>See</p>
+<ul>
+<li>https://github.com/python/cpython/issues/106045</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-21 22:18</div>
+            <div class="timeline-body"><p>@zanieb that sounds exactly like my problem, thanks!
+I wonder how <code>python-build-standalone</code> works around this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-21 22:23</div>
+            <div class="timeline-body"><p>We implement custom behavior to work around that https://github.com/astral-sh/uv/blob/cecff3a72630a23287b32efa8fbec20d31a85b05/crates/uv-virtualenv/src/virtualenv.rs#L65-L86</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-21 22:24</div>
+            <div class="timeline-body"><p>We may upstream it somehow, but it's harder to make changes like this upstream than here. You may want to weigh in on that issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-01-22 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2025-01-22 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2025-01-22 16:49</div>
+            <div class="timeline-body"><p>Thanks a lot @zanieb @charliermarsh , that was very helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gozdal on 2025-01-22 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11234.html">astral-sh/uv#11234</a> on 2025-02-05 06:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:57 UTC
+    </footer>
+</body>
+</html>

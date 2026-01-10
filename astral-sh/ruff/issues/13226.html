@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent import ordering via `ruff check --fix --select I`? - astral-sh/ruff #13226</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent import ordering via `ruff check --fix --select I`?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13226">#13226</a>
+        opened by <a href="https://github.com/pansen">@pansen</a>
+        on 2024-09-03 09:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pansen">@pansen</a> on 2024-09-03 09:51</div>
+            <div class="timeline-body"><p>Thanks for your wonderful work!</p>
+<h2>Situation</h2>
+<p>We do see some unexplained behaviour of <code>ruff check --fix --select I</code>.</p>
+<p>Given I have two different macOS devices, with this spec</p>
+<ul>
+<li>macOS 14.6.1 (23G93)</li>
+<li>Python 3.11.9 via Homebrew</li>
+<li>equally created venv</li>
+<li>ruff 0.6.3 via <code>poetry install</code> or <code>uv pip install</code>, no difference</li>
+</ul>
+<p>The reduced execution looks like this:</p>
+<pre><code class="language-shell">$ .venv/bin/python -V
+Python 3.11.9
+$ .venv/bin/ruff -V
+ruff 0.6.3
+$ .venv/bin/python -m poetry run ruff check --config ruff.toml --fix --select I cluster_api/alembic_/env.py
+All checks passed!
+</code></pre>
+<h2>Issue</h2>
+<p>On one of both devices we see the file to stay like this:
+<img width="707" alt="image" src="https://github.com/user-attachments/assets/5024a191-e5a6-4a73-b8eb-0d62b42e9e9b"></p>
+<p>on the other one it will be changed like so:
+<img src="https://github.com/user-attachments/assets/abafa1fb-dbbf-4706-bc5e-5f3520af756d" alt="image (32)" /></p>
+<p>This applies to other files as well, but lets focus on one example. Do you have any suggestion what may be wrong?</p>
+<h2>Config</h2>
+<p>Ruff configuration in place for both of them</p>
+<pre><code class="language-shell">$ cat ruff.toml 
+# https://docs.astral.sh/ruff/configuration/
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.ipynb_checkpoints&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pyenv&quot;,
+    &quot;.pytest_cache&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;.vscode&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;site-packages&quot;,
+    &quot;venv&quot;,
+]
+
+# The GitHub editor is 127 chars wide
+line-length = 120
+indent-width = 4
+
+target-version = &quot;py311&quot;
+
+[lint]
+# 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
+# select = [&quot;E4&quot;, &quot;E7&quot;, &quot;E9&quot;, &quot;F&quot;, &quot;B&quot;]
+
+# Disable fix for unused imports (`F401`).
+unfixable = [&quot;F401&quot;]
+
+[lint.per-file-ignores]
+&quot;tests/*&quot; = [&quot;F811&quot;]
+&quot;smoke_tests/*&quot; = [&quot;F811&quot;]
+
+[format]
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pansen">@pansen</a> on 2024-09-03 09:56</div>
+            <div class="timeline-body"><p>Turned out that we had an <code>alembic</code> package top-level, which was refactored to be moved. That top-level <code>alembic</code> still existed on some devices, which caused <code>ruff</code> to detect it as local package.</p>
+<p>Thanks @hossainemruz for figuring!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pansen on 2024-09-03 09:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

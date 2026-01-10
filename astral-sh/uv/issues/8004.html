@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an argument which makes `uv pip compile` consider installed packages - astral-sh/uv #8004</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an argument which makes `uv pip compile` consider installed packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8004">#8004</a>
+        opened by <a href="https://github.com/antony-frolov">@antony-frolov</a>
+        on 2024-10-08 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/antony-frolov">@antony-frolov</a> on 2024-10-08 14:13</div>
+            <div class="timeline-body"><p>Hi! I'm trying to use <code>uv pip compile</code> to lock my dependencies for a docker image build. I've got a package already installed in my base image which is not present in any package index, so I need the dependency resolver to consider installed packages.</p>
+<p>An option which makes <code>compile</code> consider installed packages when resolving dependencies would solve that problem.</p>
+<p>I've already tried to hack <code>compile.rs</code> to consider installed packages <a href="https://github.com/astral-sh/uv/compare/main...antony-frolov:uv:main">here</a> and my lock worked just fine!</p>
+<p>I've created a similar <a href="https://github.com/jazzband/pip-tools/issues/2123">issue</a> in <code>jazzband/pip-tools</code> a while ago but is seems like it's development is stale, so I'm happy to use <code>uv</code> instead.</p>
+<p>P.S.: I'm very new to Rust so I'm afraid I won't be able to submit a ready to ship PR myself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-08 14:58</div>
+            <div class="timeline-body"><p>What would be the difference between this and <code>uv pip install --dry-run</code>?</p>
+<p>Which considers what is installed and gives you the output of what changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/antony-frolov">@antony-frolov</a> on 2024-10-08 15:38</div>
+            <div class="timeline-body"><blockquote>
+<p>What would be the difference between this and <code>uv pip install --dry-run</code>?</p>
+</blockquote>
+<p>@notatallshaw-gts, it seems like indeed <code>uv pip install --dry-run</code> does about the thing I need. Though the output format of <code>uv pip compile</code> seem much more friendly.</p>
+<p>Had to something like this to get a working <code>requirements.txt</code>:</p>
+<pre><code class="language-bash">uv pip install -c constraints.txt -r requirements.in --dry-run --system 2&gt;&amp;1 \
+        | grep &quot;+ &quot; | sed &quot;s/+ //g&quot; &gt; requirements.txt
+</code></pre>
+<p>Also no comments from <code>uv pip install --dry-run</code> about dependency resolution and no option to emit index-urls (which would be convenient).</p>
+<p>I do think though that my case is not uncommon and <code>uv pip compile</code> is more convenient for such dependency locking use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-08 15:45</div>
+            <div class="timeline-body"><p>Yeah, pip has a <code>--report</code> option to make the output of <code>--dry-run</code> more parsable. I guess uv assumes you will use the &quot;pip compile&quot; option.</p>
+<p>The only thing about a flag for &quot;pip compile&quot; that includes the current environment is it would, presumably, be incompatible with options that let you resolve things that aren't your environment, e.g. different Python version, different platform, universal resolution etc.</p>
+<p>So to me it would make more sense to have <code>--report</code> options for install with <code>--dry-run</code>. But maybe uv team feel differently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/antony-frolov">@antony-frolov</a> on 2024-10-08 20:49</div>
+            <div class="timeline-body"><p>Actually, it feels like with <code>pip install</code> I can't as well do a single package upgrade for a locked environment (which I can do with <code>pip compile</code> using <code>--upgrade-package</code> with an output-file already present). If there is a way that I'm missing please share!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-08 20:55</div>
+            <div class="timeline-body"><p>It's a little involved, but you could use constraints:</p>
+<pre><code>uv pip freeze --exclude-editable | grep -v '{package_to_upgrade}=='  &gt; locked_versions.txt
+uv pip install --dry-run {package_to_upgrade} --upgrade -c locked_versions.txt
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:03 UTC
+    </footer>
+</body>
+</html>

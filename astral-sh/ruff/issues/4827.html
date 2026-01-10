@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F541: Invalid replacement with string concatenation - astral-sh/ruff #4827</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F541: Invalid replacement with string concatenation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4827">#4827</a>
+        opened by <a href="https://github.com/addisoncrump">@addisoncrump</a>
+        on 2023-06-03 05:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-03 05:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Python allows for string concatenation by placing two strings one after another:</p>
+<pre><code class="language-py">&gt;&gt;&gt; &quot;5&quot; &quot;4&quot;
+'54'
+</code></pre>
+<p>It also permits a string followed by a f-string:</p>
+<pre><code class="language-py">&gt;&gt;&gt; &quot;5&quot; f&quot;4&quot;
+'54'
+</code></pre>
+<p>Even those immediately concatenated:</p>
+<pre><code class="language-py">&gt;&gt;&gt; &quot;5&quot;f&quot;4&quot;
+'54'
+</code></pre>
+<p>However, there is a niche corner case which causes Ruff to generate invalid syntax: if the first string is empty, followed by an f-string, it will incorrectly generate a triple-quote:</p>
+<pre><code class="language-py">&gt;&gt;&gt; &quot;&quot;f&quot;&quot;
+''
+&gt;&gt;&gt; &quot;&quot;f&quot;4&quot;
+'4'
+&gt;&gt;&gt; &quot;&quot;&quot;4&quot;
+... 
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    &quot;&quot;&quot;4&quot;
+    ^
+SyntaxError: unterminated triple-quoted string literal (detected at line 1)
+</code></pre>
+<p>The reproducing example for this is:</p>
+<pre><code class="language-py">&quot;&quot;f&quot;4&quot;
+</code></pre>
+<p>Which Ruff corrects to:</p>
+<pre><code class="language-py">&quot;&quot;&quot;4&quot;
+</code></pre>
+<p>Which is invalid syntax. It's worth noting that I don't think <em>any</em> linter currently supports this!</p>
+<p>Discovered by #4822.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-03 06:18</div>
+            <div class="timeline-body"><p>Should we automatically fix this case as <code>&quot;&quot;f&quot;4&quot;</code> → <code>&quot;4&quot;</code>?</p>
+<p>Since this wasn't apparent to me at first, note that F541 is for <a href="https://beta.ruff.rs/docs/rules/f-string-missing-placeholders/">f-strings with missing placeholders</a> so if the second string has placeholders i.e. <code>&quot;&quot;f&quot;{x}&quot;</code> this bug does not apply. Perhaps it's a general bug in string concatenation cases though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-03 12:17</div>
+            <div class="timeline-body"><p>Yes, I suspect this is an issue with how strings are formatted -- not just for this case. However, this particular scenario is just very likely for a fuzzer to generate, where other string issues may not be so trivial to trigger.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-04 02:06</div>
+            <div class="timeline-body"><p>We ran into something like this before, in the rule that transforms from strings to f-strings (<code>rules/pyupgrade/rules/f_strings.rs</code>):</p>
+<pre><code class="language-rust">// If necessary, add a space between any leading keyword (`return`, `yield`, `assert`, etc.)
+// and the string. For example, `return&quot;foo&quot;` is valid, but `returnf&quot;foo&quot;` is not.
+let existing = checker.locator.slice(TextRange::up_to(expr.start()));
+if existing
+    .chars()
+    .last()
+    .map_or(false, |char| char.is_ascii_alphabetic())
+{
+    contents.insert(0, ' ');
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-04 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4972.html">astral-sh/ruff#4972</a> on 2023-06-08 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5281.html">astral-sh/ruff#5281</a> on 2023-06-22 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-22 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5319.html">astral-sh/ruff#5319</a> on 2023-06-22 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-22 21:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

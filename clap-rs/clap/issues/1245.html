@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for negative numbers as positional or named values. - clap-rs/clap #1245</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for negative numbers as positional or named values.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1245">#1245</a>
+        opened by <a href="https://github.com/ddrscott">@ddrscott</a>
+        on 2018-04-07 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ddrscott">@ddrscott</a> on 2018-04-07 22:20</div>
+            <div class="timeline-body"><p>I can't seem to find a way to elegantly use negative numbers as a positional argument or named argument.</p>
+<p>I'm trying to make the CLI args something like:</p>
+<pre><code>calc add -123 345
+</code></pre>
+<p>but everything I've tried always returns:</p>
+<pre><code>error: Found argument '-1' which wasn't expected, or isn't valid in this context
+</code></pre>
+<h3>Rust Version</h3>
+<p>rustc 1.22.1 (05e2e1c41 2017-11-22)</p>
+<h3>Affected Version of clap</h3>
+<p>2.31.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>Should distinguish negative numbers as number instead of flags.</p>
+<h3>Actual Behavior Summary</h3>
+<pre><code>error: Found argument '-1' which wasn't expected, or isn't valid in this context
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<pre><code>cargo run -- -1.0
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code>extern crate clap;
+use clap::{Arg, App};
+
+fn main() {
+    let matches = App::new(&quot;Float Test&quot;)
+        .arg(Arg::with_name(&quot;FLOAT&quot;)
+             .help(&quot;positive or negative float value&quot;)
+             .required(true)
+             .index(1))
+        .get_matches();
+    println!(&quot;float: {}&quot;, matches.value_of(&quot;FLOAT&quot;).unwrap());
+}
+</code></pre>
+<h3>Debug output</h3>
+<p>Compile clap with cargo features <code>&quot;debug&quot;</code> such as:</p>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;2&quot;, features = [&quot;debug&quot;] }
+</code></pre>
+<p>The output may be very long, so feel free to link to a gist or attach a text file</p>
+<pre><code> ± % cargo run -- -1.0
+   Compiling clap v2.31.2
+   Compiling mandy v0.1.0 (file:///Users/scott.pierce/code/rust/mandy)
+    Finished dev [unoptimized + debuginfo] target(s) in 7.39 secs
+     Running `target/debug/mandy -1.0`
+DEBUG:clap:Parser::propagate_settings: self=Float Test, g_settings=AppFlags(
+    (empty)
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;-1.0&quot;' ([45, 49, 46, 48])
+DEBUG:clap:Parser::is_new_arg:&quot;-1.0&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: - found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;-1.0&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_short_arg: full_arg=&quot;-1.0&quot;
+DEBUG:clap:Parser::parse_short_arg:iter:1
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;FLOAT&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;FLOAT&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=mandy &lt;FLOAT&gt;
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+error: Found argument '-1' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    mandy &lt;FLOAT&gt;
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-04-12 02:23</div>
+            <div class="timeline-body"><p>This can be done on a per-argument basis using <a href="https://docs.rs/clap/2.31.2/clap/struct.Arg.html#method.allow_hyphen_values"><code>Arg::allow_hyphen_values(true)</code></a> which simply allows an arguments value to start with a hyphen (<code>-</code>) or to <em>all</em> args in a command via <a href="https://docs.rs/clap/2.31.2/clap/enum.AppSettings.html#variant.AllowLeadingHyphen"><code>AppSettings::AllowLeadingHyphen</code></a>. The latter requires greater can when designing the CLI as it can cause valid arguments to be treated as values in certain circumstances.</p>
+<p>The technical details are clap uses the hyphen character to determine if a new argument is being parsed (assuming no other rules apply, such as number of values has been exhausted, etc.). Unfortunately this wraps up negative numbers. However, with the above settings you can opt-in to allowing negative numbers and relax clap's parsing rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-04-12 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2018-04-12 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../yoshihitoh/ut-cli/issues/3.html">yoshihitoh/ut-cli#3</a> on 2019-06-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jiricodes/ft_linear_regression/issues/1.html">jiricodes/ft_linear_regression#1</a> on 2022-01-06 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../typst/typst/pulls/970.html">typst/typst#970</a> on 2023-04-25 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nextest-rs/nextest/pulls/1874.html">nextest-rs/nextest#1874</a> on 2024-11-15 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pallets/click/issues/2676.html">pallets/click#2676</a> on 2024-11-28 23:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:47 UTC
+    </footer>
+</body>
+</html>

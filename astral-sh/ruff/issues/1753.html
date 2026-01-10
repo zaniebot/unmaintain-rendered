@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-fix for `SIM108` breaks `if sys.version_info ...` mypy convention - astral-sh/ruff #1753</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-fix for `SIM108` breaks `if sys.version_info ...` mypy convention</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1753">#1753</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2023-01-09 21:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-09 21:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">import random
+import sys
+
+
+def _get_random_bytes(n: int):
+    return random.getrandbits(n * 8).to_bytes(n, &quot;little&quot;)
+
+if sys.version_info &gt;= (3, 9):
+    randbytes = random.randbytes
+else:
+    randbytes = _get_random_bytes
+</code></pre>
+<p>From <a href="https://mypy.readthedocs.io/en/stable/common_issues.html#python-version-and-system-platform-checks">the Mypy docs</a>:</p>
+<blockquote>
+
+<p>Mypy supports the ability to perform Python version checks and platform checks (e.g. Windows vs Posix), ignoring code paths that won’t be run on the targeted Python version or platform. This allows you to more effectively typecheck code that supports multiple versions of Python or multiple operating systems.</p>
+<p>More specifically, mypy will understand the use of <a href="https://docs.python.org/3/library/sys.html#sys.version_info">sys.version_info</a> and <a href="https://docs.python.org/3/library/sys.html#sys.platform">sys.platform</a> checks within if/elif/else statements.</p>
+</blockquote>
+
+<p>so this works well with <code>mypy</code>:</p>
+<pre><code class="language-console">$ mypy ternary_sys.py --python-version 3.8
+Success: no issues found in 1 source file
+</code></pre>
+<p>But the ternary operation created by the <code>SIM108</code> autofix breaks the above convention:</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.0.216
+
+$ ruff --select SIM108 ternary_sys.py
+ternary_sys.py:8:1: SIM108 Use ternary operator `randbytes = random.randbytes if sys.version_info &gt;= (3, 9) else _get_random_bytes` instead of if-else-block
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+
+$ ruff --select SIM108 ternary_sys.py --fix
+Found 1 error(s) (1 fixed, 0 remaining).
+
+$ mypy ternary_sys.py --python-version 3.8
+ternary_sys.py:8: error: Module has no attribute &quot;randbytes&quot;  [attr-defined]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-09 21:06</div>
+            <div class="timeline-body"><p>Maybe the autofix should check if <code>sys.version_info</code> or <code>sys.platform</code> are referenced</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../edgarrmondragon/citric/pulls/667.html">edgarrmondragon/citric#667</a> on 2023-01-09 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 22:01</div>
+            <div class="timeline-body"><p>Sounds good, we can definitely special-case it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-09 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-01-09 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 22:02</div>
+            <div class="timeline-body"><p>We already special-case “if name = main” so there’s precedent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 22:29</div>
+            <div class="timeline-body"><p>I can probably get to this tonight unless you want to @edgarrmondragon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-09 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1756.html">astral-sh/ruff#1756</a> on 2023-01-10 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-10 00:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

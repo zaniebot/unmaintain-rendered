@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`arg(required = false)` is ignored (argument is still required) - clap-rs/clap #5148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`arg(required = false)` is ignored (argument is still required)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5148">#5148</a>
+        opened by <a href="https://github.com/Andrew15-5">@Andrew15-5</a>
+        on 2023-09-30 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Andrew15-5">@Andrew15-5</a> on 2023-09-30 12:21</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.72.1 (d5c2e9c34 2023-09-13)</p>
+<h3>Clap Version</h3>
+<p>4.4.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    #[arg(required = false)]
+    output: std::path::PathBuf,
+}
+
+fn main() {
+    Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-sh">cargo new program
+cd program
+cargo add clap -F derive
+# Edit ./src/main.rs
+cargo run
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Exists with status code 2:</p>
+<pre><code>error: The following required argument was not provided: output
+                     ^^^^^^^^ Says that is is somehow required.
+Usage: program [OUTPUT] &lt;- Literally says that is is optional.
+
+For more information, try '--help'.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Status code 0 and no stderr or stdout data.</p>
+<h3>Additional Context</h3>
+<p>I haven't found anywhere about specifically <code>#[arg(required = true)]</code> in https://docs.rs/clap/latest/clap/_derive/index.html, but after seeing <code>Arg::required(false)</code> and <code>#[group(required = true)]</code> I tried, and it did change the help message. However, I can use the program without passing the value to the output optional argument.</p>
+<h3>Debug Output</h3>
+<pre><code class="language-toml">[dependencies]
+clap = { version = &quot;4.4.6&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Andrew15-5 on 2023-09-30 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-09-30 13:08</div>
+            <div class="timeline-body"><p>The error isn't coming from clap's validation but from the derive trying to fill in your struct.</p>
+<p>Instead of marking it <code>required = false</code>, wrap the type in <code>Option</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-09-30 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrew15-5">@Andrew15-5</a> on 2023-09-30 13:33</div>
+            <div class="timeline-body"><p>Ooh, so <code>Option</code> is literally the <code>Option</code> enum, and it acts like an <em>optional</em> CLI argument. I thought that this is not related. Thanks. Here is the related table: https://docs.rs/clap/latest/clap/_derive/index.html#arg-types.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:30 UTC
+    </footer>
+</body>
+</html>

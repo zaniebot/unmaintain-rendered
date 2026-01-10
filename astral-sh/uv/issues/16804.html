@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync CI secrets leak - astral-sh/uv #16804</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync CI secrets leak</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16804">#16804</a>
+        opened by <a href="https://github.com/matyx44">@matyx44</a>
+        on 2025-11-21 09:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matyx44">@matyx44</a> on 2025-11-21 09:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hope this is not a duplicate, sorry if that is the case.</p>
+<p><strong>Description</strong>
+When running uv sync  in GitLab CI, we hit a case where a source build of a dependency printed the entire os.environ, and that output was passed through by uv into the CI logs. This resulted in multiple sensitive environment variables (DB passwords, test user credentials, CI/infra/repository tokens, etc.) being exposed in the GitLab job log.</p>
+<p>In our case the dependency was pymupdf==1.26.6 on CPython 3.13.9 / Alpine (no wheel available), whose setup.py prints detailed environment information including os.environ. Because uv streams the build output directly, all secrets in the environment were logged.</p>
+<p><strong>Environment</strong>
+uv image: astral/uv:0.9-python3.13-alpine
+Python: CPython 3.13.9
+OS: Alpine Linux
+CI: GitLab CI
+Dependency: pymupdf==1.26.6 (no prebuilt wheel for this platform/runtime)</p>
+<p><strong>Steps to Reproduce</strong>
+Run GitLab CI job using astral/uv:0.9-python3.13-alpine.
+Configure environment with sensitive variables (DB password, tokens, etc.).
+Add pymupdf==1.26.6 (or any package whose setup.py prints os.environ) to pyproject.toml.
+Run uv sync.
+Inspect CI job log.</p>
+<p><strong>Actual Behavior</strong>
+During the source build of pymupdf, its setup.py prints the full os.environ.
+uv forwards this output to stdout.
+CI logs now contain all environment variables, including secrets.
+The build then fails with Failed to build pymupdf==1.26.6, but the secrets are already exposed.</p>
+<p><strong>Expected Behavior</strong>
+Can uv prevent this somehow? Or can we prevent this ourselves?
+The --quiet / -q flag does not hide this.</p>
+<p>Screenshot from log:</p>
+<p><img width="767" height="349" alt="Image" src="https://github.com/user-attachments/assets/62cecef7-eb5e-4ecd-b327-08ac12addcd2" /></p>
+<h3>Platform</h3>
+<p>astral/uv:0.9-python3.13-alpine</p>
+<h3>Version</h3>
+<p>0.9</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @matyx44 on 2025-11-21 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-21 09:54</div>
+            <div class="timeline-body"><p>There's not really much uv can do here, iirc all build frontends show build backend output on failure which is needed for debugging. Instead, secrets should be redacted from logging by the CI provider, e.g. with https://docs.gitlab.com/ci/variables/#mask-a-cicd-variable. GitHub Actions has a Secrets feature, where all secrets are added through a dedicated interface and automatically redacted, but I couldn't find the same mechanism in GitLab CI during a quick search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-11-21 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-11-21 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-21 16:43</div>
+            <div class="timeline-body"><p>I'd also report this to that package, they shouldn't dump all of your environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-21 16:43</div>
+            <div class="timeline-body"><p>I wouldn't be opposed to a <code>UV_HIDE_BUILD_LOGS</code> option, I guess?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pymupdf/PyMuPDF/issues/4801.html">pymupdf/PyMuPDF#4801</a> on 2025-11-24 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matyx44">@matyx44</a> on 2025-11-25 08:08</div>
+            <div class="timeline-body"><p>@zanieb
+Something like that would be great, I reported it to the pymupdf package also, as you suggested.
+I am not sure how to mask secrets loaded into env variables from external secret manager such as Google Cloud, I don't think that is possible in gitlab sadly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-28 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2025-11-28 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16885.html">astral-sh/uv#16885</a> on 2025-11-28 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-03 00:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

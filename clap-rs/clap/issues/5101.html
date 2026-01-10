@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parentheses in doc comments for `ValueEnum` break generated fish completions - clap-rs/clap #5101</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parentheses in doc comments for `ValueEnum` break generated fish completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5101">#5101</a>
+        opened by <a href="https://github.com/cstyles">@cstyles</a>
+        on 2023-08-29 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cstyles">@cstyles</a> on 2023-08-29 19:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.72.0 (5680fa18f 2023-08-23)</p>
+<h3>Clap Version</h3>
+<p>4.4.1</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::CommandFactory;
+
+#[derive(clap::Parser)]
+struct MyCommand {
+    #[arg(long)]
+    color: Color,
+}
+
+#[derive(Clone, clap::ValueEnum)]
+enum Color {
+    /// do something (default)
+    Auto,
+    /// do not use colorized output
+    Never,
+}
+
+fn main() {
+    clap_complete::generate(
+        clap_complete::shells::Fish,
+        &amp;mut MyCommand::command(),
+        &quot;ls&quot;,
+        &amp;mut std::io::stdout(),
+    );
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-fish">$ cargo run | source
+$ ls --color=&lt;TAB&gt;
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code class="language-fish">$ ls --color=&lt;TAB&gt;fish: Unknown command: default
+fish: 
+default
+^~~~~~^
+in command substitution
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code class="language-fish">$ ls --color=&lt;TAB&gt;
+--color=auto  (show colors if the output goes to an interactive console (default))
+--color=never                                        (do not use colorized output)
+</code></pre>
+<h3>Additional Context</h3>
+<p>The solution might just be to escape parentheses in <code>clap_complete::shells::Fish::escape_string</code>. But A) I'm not sure if there are unintended consequences of doing that and B) the docs for that function mention that it's for escaping single quoted strings which the completions don't use. But it's also used in <code>value_completion</code> to escape a string inside double quotes so maybe that comment is just out-of-date? I didn't feel confident making the change so I'll defer to someone more knowledgeable.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @cstyles on 2023-08-29 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-08-29 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-08-29 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jporwal05">@jporwal05</a> on 2023-09-01 17:08</div>
+            <div class="timeline-body"><p>I would like to work on this @epage. Please assign this to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jporwal05 by @epage on 2023-09-01 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jporwal05">@jporwal05</a> on 2023-09-04 13:35</div>
+            <div class="timeline-body"><p>Below is my analysis so far:
+The <code>complete</code> command that <code>clap_complete</code> generates for @cstyles's example, for fish shell is this:</p>
+<pre><code class="language-bash">complete -c ls -l color -r -f -a &quot;{auto	do something (default)}&quot;
+</code></pre>
+<p>If I go through fish shell's <a href="https://fishshell.com/docs/current/completions.html#completion-own">documentation</a>, I don't see any mention of adding description/hint in the <code>-a</code> flag itself. The flag <code>-d</code> suits the purpose. So, if I compose the following command:</p>
+<pre><code class="language-bash">complete -c ls -l color -r -f -a auto -d &quot;do something (default)&quot;
+</code></pre>
+<p>And then try the auto-completion:</p>
+<pre><code class="language-bash">$ ls --color=&lt;TAB&gt;
+</code></pre>
+<p>I get the expected output:</p>
+<pre><code class="language-bash">--color=always  (Use colors)  --color=auto  (do something (default))  --color=never  (Use colors)
+</code></pre>
+<p>without any errors. I will do some more analysis with multiple parameters and their description. From the face value, it seems like separate <code>complete</code> command will be required for parameters that have a description/hint with them. If that is the case, this might be a bigger change/fix than anticipated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cstyles">@cstyles</a> on 2023-09-04 17:41</div>
+            <div class="timeline-body"><p>I don't think it's <em>required</em> that we use separate <code>complete</code> commands, though that might be a good idea. The relevant bit from that documentation page is this:</p>
+<blockquote>
+<p>Each line of output is used as a separate candidate, and anything after a tab is taken as the description.</p>
+</blockquote>
+<p>Which is what <code>clap_complete</code> is using:</p>
+<p>https://github.com/clap-rs/clap/blob/dc63cba772ab1d1a2b977acedd08af2b3baa6692/clap_complete/src/shells/fish.rs#L171-L175</p>
+<p>The problem is this, emphasis mine:</p>
+<blockquote>
+<p>The argument to the -a switch is always a single string. At completion time, it will be tokenized on spaces and tabs, and variable expansion, <em>command substitution</em> and other forms of parameter expansion will take place.</p>
+</blockquote>
+<p>I tried a couple different approaches but I think the simplest solution is to wrap the description in single quotes and ditch the comma-escaping. For me, that prevents any expansion inside the description and doesn't require any complicated escaping.</p>
+<pre><code class="language-diff">diff --git a/clap_complete/src/shells/fish.rs b/clap_complete/src/shells/fish.rs
+index 5a069d35..175ae6aa 100644
+--- a/clap_complete/src/shells/fish.rs
++++ b/clap_complete/src/shells/fish.rs
+@@ -169,9 +169,9 @@ fn value_completion(option: &amp;Arg) -&gt; String {
+                     None
+                 } else {
+                     Some(format!(
+-                        &quot;{}\t{}&quot;,
++                        &quot;{}\t'{}'&quot;,
+                         escape_string(value.get_name(), true).as_str(),
+-                        escape_string(&amp;value.get_help().unwrap_or_default().to_string(), true)
++                        escape_string(&amp;value.get_help().unwrap_or_default().to_string(), false)
+                     ))
+                 })
+                 .collect::&lt;Vec&lt;_&gt;&gt;()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jporwal05">@jporwal05</a> on 2023-09-05 08:06</div>
+            <div class="timeline-body"><p>Valid point @cstyles. I tried few more variations with your solution. Here are my observations:
+✓</p>
+<pre><code class="language-bash">$ complete -c ls -l color -r -f -a &quot;{auto\t'do something (default)',never\t'no color',always\t'always color'}&quot;
+$ ls --color=&lt;TAB&gt;
+--color=always  (always color)  --color=auto  (do something (default))  --color=never  (no color)
+</code></pre>
+<p>✕ - I believe this is expected, so this case is fine?</p>
+<pre><code class="language-bash">$ complete -c ls -l color -r -f -a &quot;{auto\t'do something %$# (default)',never\t'no &amp;* color',always\t'always!! color'}&quot;
+$ ls --color=&lt;TAB&gt;
+fish: $# is not supported. In fish, please use 'count $argv'.
+complete -c ls -l color -r -f -a &quot;{auto\t'do something %$# (default)',never\t'no &amp;* color',always\t'always!! color'}&quot;
+</code></pre>
+<p>✕ - Same as the previous one.</p>
+<pre><code class="language-bash">$ complete -c ls -l color -r -f -a &quot;{auto\t'do something %$ (default)',never\t'no &amp;* color',always\t'always!! color'}&quot;
+$ ls --color=&lt;TAB&gt;
+fish: $  is not a valid variable in fish.
+complete -c ls -l color -r -f -a &quot;{auto\t'do something %$ (default)',never\t'no &amp;* color',always\t'always!! color'}&quot;
+</code></pre>
+<p>✓</p>
+<pre><code class="language-bash">$ complete -c ls -l color -r -f -a &quot;{auto\t'do something % (default)',never\t'no &amp;* color',always\t'always!! color'}&quot;
+$ ls --color=&lt;TAB&gt;
+--color=always  (always!! color)  --color=auto  (do something % (default))  --color=never  (no &amp;* color)
+</code></pre>
+<p>So, in summary, the solution to enclose the help text in <code>''</code> , without <code>,</code> escaping, should work! I will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5111.html">clap-rs/clap#5111</a> on 2023-09-05 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5114.html">clap-rs/clap#5114</a> on 2023-09-07 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-09-07 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sharkdp/fd/pulls/1382.html">sharkdp/fd#1382</a> on 2023-09-09 19:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:29 UTC
+    </footer>
+</body>
+</html>

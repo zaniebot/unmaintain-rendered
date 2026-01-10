@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install open3d` installs python3 package but has python2 init file - astral-sh/uv #6186</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install open3d` installs python3 package but has python2 init file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6186">#6186</a>
+        opened by <a href="https://github.com/robert1003">@robert1003</a>
+        on 2024-08-18 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-18 22:16</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hi, when I tried to use uv to install open3d (and other packages), I encountered a weird issue which I got a python2 <a href="https://github.com/isl-org/Open3D/blob/v0.3.0/util/pip_package/open3d/__init__.py"><strong>init</strong>.py</a> file while the whole package is in python3. Basically I can fix the package by copying <a href="https://github.com/isl-org/Open3D/blob/v0.18.0/python/open3d/__init__.py">this</a> file to <code>lib/python3.11/site-packages/open3d/__init__.py</code>.</p>
+<p>I couldn't reproduce this result consistently, so it is really hard to debug :\ Wonder if anyone has encountered similar issue before? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-08-18 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-18 22:17</div>
+            <div class="timeline-body"><p>I would love to help but would need something that's more easily reproducible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-19 17:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I would love to help but would need something that's more easily reproducible.</p>
+</blockquote>
+<p>Thank you! The following is a repro snippet</p>
+<hr />
+<pre><code>mamba create \
+  --prefix $HOME/.conda/envs/test_uv2 \
+  --channel conda-forge \
+  --channel anaconda \
+  --channel pytorch \
+  --yes \
+  python==3.11.6 cmake cython libopenblas libprotobuf libunwind &quot;pip&gt;=22.2&quot; psycopg2 py-opencv==4.7.0 pybind11
+
+conda activate $HOME/.conda/envs/test_uv2
+pip install uv
+UV_INDEX_STRATEGY=&quot;unsafe-best-match&quot; UV_NO_BUILD_ISOLATION=&quot;1&quot; uv pip install jobqueue==3.0.4 msgpack numpy==1.23.5 open3d opencv-contrib-python-headless==4.6.0.66 pyspark==3.5.0 pythreejs python-geohash PyOpenGL-accelerate PyTurboJPEG rtree sbp scipy==1.10.0 sentry_sdk==1.30.0 smplx[all] splines==0.3.0 streamlit==1.23.0 &quot;sympy&gt;=1.1.1&quot; syrupy tb-nightly==2.5.0a20210402 tox typing-inspect twine visdom==0.1.8.3 warp-lang
+</code></pre>
+<p>uv version</p>
+<pre><code>❯ uv --version
+uv 0.2.37
+</code></pre>
+<p>mamba version</p>
+<pre><code>❯ mamba --version
+mamba 1.4.2
+conda 23.3.1
+</code></pre>
+<p>os</p>
+<pre><code>❯ lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.2 LTS
+Release:        22.04
+Codename:       jammy
+❯ uname -a
+Linux se02ln002 5.15.0-75-generic #82-Ubuntu SMP Tue Jun 6 23:10:23 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-19 17:50</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look (but probably not today -- prepping for a release).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-19 18:04</div>
+            <div class="timeline-body"><p>Thank you! The error message is:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages/open3d/__init__.py&quot;, line 9, in &lt;module&gt;
+    from open3d.linux import *
+  File &quot;/home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages/open3d/linux/__init__.py&quot;, line 7, in &lt;module&gt;
+    globals().update(importlib.import_module('open3d.linux.open3d').__dict__)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/robert1003/.conda/envs/test_uv2/lib/python3.11/importlib/__init__.py&quot;, line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: /home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages/open3d/linux/open3d.so: undefined symbol: _Py_ZeroStruct
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-19 18:06</div>
+            <div class="timeline-body"><p>Another weird thing I observe is that this is not reproducible on all machine for me, which make me suspect that there might be some kind of race condition?</p>
+<p>I cannot reproduce it in another Ubuntu 22.04 machine</p>
+<pre><code>❯ uname -a
+Linux se01ln001 5.19.0-45-generic #46~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Wed Jun 7 15:06:04 UTC 20 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<p>I can reproduce it on the following 20.04 machine</p>
+<pre><code>❯ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04 LTS
+Release:	20.04
+Codename:	focal
+❯ uname -a
+Linux ln001 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<p>but cannot reproduce the error on the following 20.04 machine:</p>
+<pre><code>❯ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04.6 LTS
+Release:	20.04
+Codename:	focal
+❯ uname -a
+Linux login-dh1-r517u02 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-20 00:40</div>
+            <div class="timeline-body"><p>What is your open3d version inside <code>/home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages</code> when this happens? Is it <code>0.3.0</code> (what you linked to) since https://pypi.org/project/open3d/0.3.0/ does not seem to exist in the pypi (maybe some other registry?).</p>
+<p>I also wonder if you're hitting some kind of edge case that ends up getting your the oldest open3d available, e.g. something like (but not exactly the same) the case described in https://github.com/astral-sh/uv/issues/6141</p>
+<p>Do you have logs using e.g. <code>RUST_LOG=trace</code> or <code>--verbose</code> when the error occurs that you could share?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-20 08:04</div>
+            <div class="timeline-body"><p>the version is 0.18.0:</p>
+<pre><code class="language-bash">❯ pip list | grep open3d
+pip is now uv; running uv pip...
+open3d                         0.18.0
+open3d-python                  0.3.0.0
+❯ which python3
+/home/robert1003/.conda/envs/test_uv2/bin/python3
+❯ python3 -c 'import open3d as o3d'
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages/open3d/__init__.py&quot;, line 9, in &lt;module&gt;
+    from open3d.linux import *
+  File &quot;/home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages/open3d/linux/__init__.py&quot;, line 7, in &lt;module&gt;
+    globals().update(importlib.import_module('open3d.linux.open3d').__dict__)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/robert1003/.conda/envs/test_uv2/lib/python3.11/importlib/__init__.py&quot;, line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: /home/robert1003/.conda/envs/test_uv2/lib/python3.11/site-packages/open3d/linux/open3d.so: undefined symbol: _Py_ZeroStruct
+</code></pre>
+<p>yeah I am very confused that it fetched that specific init file, it took me a while to find where is that file from...</p>
+<blockquote>
+<p>Do you have logs using e.g. RUST_LOG=trace or --verbose when the error occurs that you could share?</p>
+</blockquote>
+<p>I will add this flag and retry again</p>
+<blockquote>
+<p>I also wonder if you're hitting some kind of edge case that ends up getting your the oldest open3d available, e.g. something like (but not exactly the same) the case described in https://github.com/astral-sh/uv/issues/6141</p>
+</blockquote>
+<p>Interesting... will take a look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-20 11:51</div>
+            <div class="timeline-body"><pre><code>❯ pip list | grep open3d
+pip is now uv; running uv pip...
+open3d                         0.18.0
+open3d-python                  0.3.0.0
+</code></pre>
+<p>Ok, this helped a lot.</p>
+<p>It seems having both <code>open3d==0.18.0</code> and <code>open3d-python=0.3.0.0</code> is incompatible as they overwrite each other's namespaces. Depending on the order of installation, you could end up with files from one or the other in the same <code>site-packages/open3d</code> location.</p>
+<p>Here's on <a href="https://pypi.org/project/open3d-python/0.3.0.0/">open3d-python=0.3.0.0</a> on PyPI. The sdist shows me it uses <code>open3d</code> namespace with a very old build of open3d (2018).</p>
+<p>It's possible one of your dependencies is introducing <code>open3d-python</code>, worth finding out which one it is. Avoid installing <code>open3d-python</code> as it's incompatible with <code>open3d==0.18.0</code> and unmaintained since 2019. It's either one or the other 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-20 18:36</div>
+            <div class="timeline-body"><p>Thank you for figuring this out! It appears that <code>smplx[all]</code> is the one pulling in <code>open3d-python</code>. I just removed that and it works. Thank you for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @robert1003 on 2024-08-20 18:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

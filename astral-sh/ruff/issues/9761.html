@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYI019 causes false positives on `.py` files if you support Python &lt;=3.10 - astral-sh/ruff #9761</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PYI019 causes false positives on `.py` files if you support Python &lt;=3.10</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9761">#9761</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-02-01 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-01 19:07</div>
+            <div class="timeline-body"><p>I just tried enabling ruff's PYI rules on <a href="https://github.com/AlexWaygood/typeshed-stats">typeshed-stats</a>, a hobby project of mine, and ran into a false positive with PYI019. I have the following class in the project:</p>
+<pre><code class="language-py">from enum import Enum
+from typing import TypeVar
+
+_NiceReprEnumSelf = TypeVar(&quot;_NiceReprEnumSelf&quot;, bound=&quot;_NiceReprEnum&quot;)
+
+class _NiceReprEnum(Enum):
+    &quot;&quot;&quot;Base class for several public-API enums in this package.&quot;&quot;&quot;
+
+    def __new__(cls: type[_NiceReprEnumSelf], doc: str) -&gt; _NiceReprEnumSelf:
+        assert isinstance(doc, str)
+        member = object.__new__(cls)
+        member._value_ = member.__doc__ = doc
+        return member
+</code></pre>
+<p>PYI019 tells me off about this, saying:</p>
+<pre><code>src\typeshed_stats\gather.py:88:60: PYI019 Methods like `__new__` should return `typing.Self` instead of a custom `TypeVar`
+</code></pre>
+<p>But I still support Python 3.10 (<code>typing.Self</code> is new in Python 3.11), and don't have <code>typing_extensions</code> as a dependency, so this violation isn't actionable.</p>
+<p>(This isn't an issue for <code>.pyi</code> files, as type checkers think <code>typing_extensions</code> is part of the stdlib due to some white lies we tell them in typeshed. That means <code>Self</code> can always be imported from <code>typing_extensions</code> in a <code>.pyi</code> file, even if the stubs package doesn't explicitly declare a dependency on <code>typing_extensions</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-02-01 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14183.html">astral-sh/ruff#14183</a> on 2024-11-08 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14184.html">astral-sh/ruff#14184</a> on 2024-11-08 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14217.html">astral-sh/ruff#14217</a> on 2024-11-09 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14230.html">astral-sh/ruff#14230</a> on 2024-11-09 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2025-04-08 18:19</div>
+            <div class="timeline-body"><p>Hi. I'd like to bump this issue again.
+I see that #14230 by @charliermarsh addressed this issue and that PR was included in <a href="https://github.com/astral-sh/ruff/releases/tag/0.7.4">v0.7.4</a>. Indeed, running that version doesn't suggest using <code>typing.Self</code> for me. However, it seems to be back in the latest version, i.e. a regression:</p>
+<p>foo.py</p>
+<pre><code class="language-python">from typing import TypeVar
+
+Self = TypeVar(&quot;Self&quot;, bound=&quot;Foo&quot;)
+
+class Foo:
+    def return_self(self: Self) -&gt; Self:
+        ...
+        return self
+</code></pre>
+<pre><code class="language-shell">$ ruff --version
+ruff 0.11.4
+$ ruff check .\foo.py --isolated --target-version py39 --select PYI
+foo.py:6:20: PYI019 Use `Self` instead of custom TypeVar `Self`
+  |
+5 | class Foo:
+6 |     def return_self(self: Self) -&gt; Self:
+  |                    ^^^^^^^^^^^^^^^^^^^^ PYI019
+7 |         ...
+8 |         return self
+  |
+  = help: Replace TypeVar `Self` with `Self`
+
+Found 1 error.
+</code></pre>
+<p>Am I missing something or is this indeed a regression?
+Looking forward to feedback :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-telegram-bot/python-telegram-bot/pulls/4748.html">python-telegram-bot/python-telegram-bot#4748</a> on 2025-04-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-09 06:44</div>
+            <div class="timeline-body"><p>@Bibo-Joshi the error message here is a bit confusing because you named your <code>TypeVar</code> Self. But the rule recommends you to use <code>typing.Self</code> over your own custom <code>TypeVar</code>, see https://peps.python.org/pep-0673/</p>
+<p>If you still think this isn't working as expected, please open a new issue</p>
+<p>https://play.ruff.rs/ef57ccbf-05d1-4e54-9c6c-3e2365da3d5b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-09 06:46</div>
+            <div class="timeline-body"><p>This should also be a relatively simple fix, I think. All it needs is to early return from the function body if the current file isn't a stub file and the target version is 3.10 or older</p>
+<p>https://github.com/astral-sh/ruff/blob/66cae0a3ec9b0d0d5a9540908f41fbf2238c1e13/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_for_self.rs#L106</p>
+<p>Edit: Oh, I think the challenge here is that we have no good way of knowing whether a project has <code>typing_extensions</code> as a dependency or not.</p>
+<p>I think my suggestion here would be to use <code>per-file-ignores</code> and disable the rule for all <code>*.py</code> files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2025-04-09 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @MichaReiser on 2025-04-09 06:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2025-04-09 08:50</div>
+            <div class="timeline-body"><p>Hi, thanks for the quick reply. However I do not think that the problem is the name of the <code>TypeVar</code>. Renaming to <code>T</code> still gives the issue:</p>
+<p>https://play.ruff.rs/8c7fc9c8-af0e-42fa-87ac-b3b9c86ede79</p>
+<p>Or did I misunderstand your point? Please let me know if I should open a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-09 08:56</div>
+            <div class="timeline-body"><p>Oh no, sorry. You're right and this is the same issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-09 17:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Edit: Oh, I think the challenge here is that we have no good way of knowing whether a project has <code>typing_extensions</code> as a dependency or not.</p>
+</blockquote>
+<p>yeah. And we have lots of rules that assume that you have <code>typing_extensions</code> as a dependency. Whatever we do here, we should fix it for all rules that have this problem at once, rather than applying a fix just to this rule.</p>
+<p>Assuming you have <code>typing_extensions</code> as a dependency isn't an unreasonable assumption! Many, many projects have it either as an implicit or explicit dependency, since it is depended on by many core libraries and frameworks. So I wouldn't <em>necessarily</em> want to disable this rule, and other rules like it, on lower Python versions.</p>
+<p>It would be ideal if we could automatically detect whether or not the user has it listed as a dependency. Failing that, maybe we could consider a dedicated config option that you could toggle to tell Ruff whether you have it listed as a dependency, and use in rules like this...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2025-04-09 20:53</div>
+            <div class="timeline-body"><p>I see how parsing the dependencies can be difficult with all those different options out there 😁 introducing a config option to override the auto-detect sounds sane to me at First glance, though I have no idea in what ruffs policy on adding new configs is.
+What I'd like to point out is that having <code>typing_extensions</code> as <em>implicit</em> dependency should <em>not</em> count towards this auto-detection IMO, as that's bad practice in the first place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-10 01:52</div>
+            <div class="timeline-body"><p>I always avoid using <code>typing_extensions</code> as a runtime dependency unless I absolutely have to, especially for libraries. But it can still be used for annotations no? (unless you need it at runtime).</p>
+<pre><code class="language-py">from __future__ import annotations  # Or manually wrap Self in a string.
+
+from enum import Enum
+from typing import TYPE_CHECKING  # or TYPE_CHECKING = False
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
+
+class _NiceReprEnum(Enum):
+    &quot;&quot;&quot;Base class for several public-API enums in this package.&quot;&quot;&quot;
+
+    def __new__(cls, doc: str) -&gt; Self:
+        assert isinstance(doc, str)
+        member = object.__new__(cls)
+        member._value_ = member.__doc__ = doc
+        return member
+</code></pre>
+<p>That's how I've been doing it for various types taken from <code>typing_extensions</code>.</p>
+<p>So I don't think saying this isn't actionable is true. The error message however can be updated to mention <code>typing_extensions</code> for relevant Python versions. And documentation can be updated to better teach users about typing-only imports and string-annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2025-04-10 10:14</div>
+            <div class="timeline-body"><p>Typing-only dependencies are an interesting edge case, true. And they make an auto-detection of <code>typing_extensions</code> presence even harder. Still, I would also not like for ruff to throw an error telling me to switch to <code>typing_extensions</code> instead of using my custom <code>TypeVar</code> 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-10 10:16</div>
+            <div class="timeline-body"><p>Yeah, I agree with @Bibo-Joshi -- this rule is purely stylistic... I'm not sure the awkwardness of having to add an <code>if TYPE_CHECKING</code> block for the typing-only import is really better stylistically than defining a custom TypeVar! Though if you already have an <code>if TYPE_CHECKING</code> block in your module, that's perhaps a different case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-10 15:18</div>
+            <div class="timeline-body"><p>When I want to avoid rewriting <code>if TYPE_CHECKING</code> constantly, I throw the relevant names in a compat module and use https://docs.astral.sh/ruff/settings/#lint_typing-modules to make Ruff happy if needed.
+Type-checkers understand the symbols through re-exports.</p>
+<p>Something like: <code>_compat/311.py</code> or <code>_typing.py</code>:</p>
+<pre><code class="language-py">if TYPE_CHECKING:
+    from typing_extensions import ...
+    from _typeshed import ...
+else:
+    # simplified symbol stubs, or re-implement what typing_extensions does
+</code></pre>
+<p>If you go a bit more verbose and use a <code>sys.version_info</code> check, you can even have <a href="https://docs.astral.sh/ruff/rules/outdated-version-block/#outdated-version-block-up036">outdated-version-block (UP036)</a> tell you when that code is outdated.</p>
+<p>Btw I'm not saying you should absolutely write it this way. Having a stylistic preference for <code>Typevar(&quot;Self&quot;)</code> is valid. I'm just making a point that rules assuming you can use <code>typing_extensions</code> isn't wrong or unactionable. (although it may not be <em>preferable</em> to you)</p>
+<p>As an argument <em>for</em> this rule on Python &lt;= 3.10: You may want your code to look as close as possible to &quot;modern&quot; annotations. Meaning that when dropping Python 3.10 support, you'd only have imports to change, rather than updating <code>self: Self</code> and removing <code>TypeVar</code>s everywhere.</p>
+<p>Short of having a config option, my <em>personal</em> suggestion would be:</p>
+<pre><code class="language-toml">[lint.per-file-ignores]
+# Keep using custom TypeVars until Python 3.10 support is dropped
+&quot;*.py&quot; = [&quot;PYI019&quot;]
+</code></pre>
+<p>Which is just as verbose as having a dedicated config option 😉</p>
+<p>There's a small handful of <code>PYI</code> rules (namely regarding docstrings, default args, and variable length) that are nothing more than stylistic preferences coming from Typeshed and I myself disable in my projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-10 16:25</div>
+            <div class="timeline-body"><p>A good first step would be to at least make the fix unsafe for <code>py</code> files when targeting &lt;= 3.10 to avoid breaking tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../scikit-hep/boost-histogram/pulls/996.html">scikit-hep/boost-histogram#996</a> on 2025-04-10 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17340.html">astral-sh/ruff#17340</a> on 2025-04-10 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-04-10 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17611.html">astral-sh/ruff#17611</a> on 2025-04-24 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-28 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17821.html">astral-sh/ruff#17821</a> on 2025-05-03 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

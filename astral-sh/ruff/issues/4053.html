@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger violation on mutable values and function calls for non-dataclass attribute defaults - astral-sh/ruff #4053</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Trigger violation on mutable values and function calls for non-dataclass attribute defaults</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4053">#4053</a>
+        opened by <a href="https://github.com/adampauls">@adampauls</a>
+        on 2023-04-20 23:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adampauls">@adampauls</a> on 2023-04-20 23:08</div>
+            <div class="timeline-body"><p>This is a feature request. I see in <a href="https://github.com/charliermarsh/ruff/pull/3877">this PR</a> that there is some recent work in flagging mutable and function call defaults for dataclass attributes. Is there a plan to enable this check for non-dataclass attributes  as well? Right now, no Python tooling I know of catches this bug:</p>
+<pre><code class="language-python">import dataclasses
+
+class NonDataClass:
+    my_list: list[int] = dataclasses.field(default_factory=list)  # oops! type checks but is nonsense
+
+    def add_item(self, item: int) -&gt; None:
+        self.my_list.append(item)
+
+instance = NonDataClass()
+instance.add_item(1)
+assert instance.my_list == [1]
+</code></pre>
+<p>The problem is that <code>dataclass.field</code> <a href="https://github.com/microsoft/pyright/issues/4980">lies</a> about its type.</p>
+<p>It would be great if we could check for mutable and function call defaults in class attributes because they are just problematic for non-dataclasses as they are for dataclasses. The only difference from the existing implementation would need to be that <code>dataclasses.field</code> should only be exempted when used inside a dataclass.</p>
+<p>I can look into this if the work is not already planned since I think it's a simple change from what's already been done.</p>
+<p>Thanks for the great tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Trigger violation on mutable values and function calls for non-dataclass attribut defaults" to "Trigger violation on mutable values and function calls for non-dataclass attribute defaults" by @adampauls on 2023-04-20 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-21 01:24</div>
+            <div class="timeline-body"><p>Interesting! I initially assumed that the suggestion here was to flag usages of <code>dataclasses.field</code> within classes that lack the <code>@dataclass</code> decorator, but I think you're suggesting something a bit broader: disallowing mutable defaults and function calls within non-<code>@dataclass</code>-decorated classes, which would by definition include usages of <code>dataclasses.field</code>. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-21 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2023-04-21 01:38</div>
+            <div class="timeline-body"><p>I'll note some libraries do re-use/support dataclasses field for there own decorator/class. field just serves as a convenient way to hold some annotations and there are number of dataclass like libraries. I do use internal library that does,</p>
+<pre><code class="language-python">from dataclasses import field
+
+@configurable
+class Foo:
+  x = field(default_factory=list)
+</code></pre>
+<p>where default_factory list can be safe to use. It's own separate rule to disallow field in non dataclass sounds fine though as if you aren't using alternative dataclass like libraries it makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-04-21 02:38</div>
+            <div class="timeline-body"><p>If it's easy, it would be great to allow a configurable list of decorators that allow data class.field, or maybe even any dataclass_transform should be exempted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-04-21 02:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Is that right?</p>
+</blockquote>
+<p>Yes, exactly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-04-21 02:47</div>
+            <div class="timeline-body"><p>Though I would settle for the more targeted warning on just dataclass.field if that's preferable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4096.html">astral-sh/ruff#4096</a> on 2023-04-25 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4390.html">astral-sh/ruff#4390</a> on 2023-05-12 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 16:55</div>
+            <div class="timeline-body"><p>Closing in favor of #4390.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-12 16:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

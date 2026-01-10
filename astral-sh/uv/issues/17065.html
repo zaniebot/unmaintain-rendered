@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bug: `uv` is missing optional conditional dependencies(Almost got fired) - astral-sh/uv #17065</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>bug: `uv` is missing optional conditional dependencies(Almost got fired)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17065">#17065</a>
+        opened by <a href="https://github.com/Aviksaikat">@Aviksaikat</a>
+        on 2025-12-10 11:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Aviksaikat">@Aviksaikat</a> on 2025-12-10 11:00</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Summary</h2>
+<p><code>uv</code> is not able to pick up conditional dependencies.</p>
+<pre><code class="language-sh">uv pip install -e &quot;deps/web3-ethereum-defi[web3v7]&quot;
+</code></pre>
+<p>Doing the above ignores the dependencies defined like this</p>
+<pre><code class="language-toml">[...]
+
+web3 = [
+    {version = &quot;^7.12.0&quot;, markers = &quot;extra != 'web3v6'&quot;},
+    {version = &quot;==6.14.0&quot;, markers = &quot;extra == 'web3v6'&quot;}
+]
+
+eth-tester = [
+    {version = &quot;*&quot;, markers = &quot;extra != 'web3v6'&quot;},
+    {version = &quot;*&quot;, markers = &quot;extra == 'web3v6'&quot;}
+]
+
+[tool.poetry.extras]
+
+web3v7 = [&quot;eth-tester&quot;]
+web3v6 = [&quot;eth-tester&quot;]
+</code></pre>
+<h3>Results</h3>
+<p><code>web3</code> is not getting installed, but when we are using <code>pip</code> it's working just fine</p>
+<h3>Platform</h3>
+<p>macOs arm</p>
+<h3>Version</h3>
+<p>uv 0.9.17 (2b5d65e61 2025-12-09)</p>
+<h3>Python version</h3>
+<p>Python 3.13.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Aviksaikat on 2025-12-10 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-10 12:41</div>
+            <div class="timeline-body"><p>We don't support reading Poetry-specific fields and neither does pip? so we won't read</p>
+<pre><code>[tool.poetry.extras]
+web3v7 = [&quot;eth-tester&quot;]
+web3v6 = [&quot;eth-tester&quot;]
+</code></pre>
+<p>Can you share a complete minimal reproducible example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aviksaikat">@Aviksaikat</a> on 2025-12-10 17:31</div>
+            <div class="timeline-body"><ol>
+<li>Setup virtual env</li>
+</ol>
+<pre><code class="language-sh">uv venv .venv
+
+# Activate the virtual environment
+source .venv/bin/activate
+</code></pre>
+<ol start="2">
+<li>Clone the repo</li>
+</ol>
+<pre><code class="language-sh">git clone https://github.com/tradingstrategy-ai/web3-ethereum-defi
+cd web3-ethereum-defi
+</code></pre>
+<ol start="3">
+<li>Install the dependencies</li>
+</ol>
+<pre><code class="language-sh">uv pip install -e &quot;web3-ethereum-defi[web3v7]&quot;
+</code></pre>
+<ol start="4">
+<li>Verify the installation</li>
+</ol>
+<pre><code class="language-sh"># web3py is not installed
+uv pip list | grep web3
+web3-ethereum-defi        0.35         /Users/avik/Work/tradingstrategy/freqtrade-gmx-demo-main/deps/web3-ethereum-defi
+web3-google-hsm           0.1.0
+</code></pre>
+<h3>But doing the same thing using <code>pip</code> installs <code>web3py</code></h3>
+<pre><code class="language-sh">pip list | grep web3
+web3                      7.14.0
+web3-ethereum-defi        0.35            /Users/avik/Work/tradingstrategy/freqtrade-gmx-demo-main/deps/web3-ethereum-defi
+web3-google-hsm           0.1.0
+</code></pre>
+<p>For some reason, <code>uv</code> is not able to read the conditional dependencies. As <code>poetry</code> follows the PEP standards for it should be compatible with <code>pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-10 18:03</div>
+            <div class="timeline-body"><p>Looking at <code>web3-ethereum-defi</code>, it looks like it doesn't define a dependency on <code>web3</code> under that extra in the wheel <code>METADATA</code>? https://inspector.pypi.io/project/web3-ethereum-defi/0.35/packages/21/98/c394244e90cc4c1139678d0366ac61a16821d1f3b4f33600995963cafb4a/web3_ethereum_defi-0.35-py3-none-any.whl/web3_ethereum_defi-0.35.dist-info/METADATA#line.73</p>
+<p>Perhaps I'm missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-10 18:25</div>
+            <div class="timeline-body"><p>I'm guessing <code>web3</code> is being included by a transitive dependency that uv excludes? It looks like <code>safe-eth-py</code> would do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17078.html">astral-sh/uv#17078</a> on 2025-12-10 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aviksaikat">@Aviksaikat</a> on 2025-12-10 18:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Looking at <code>web3-ethereum-defi</code>, it looks like it doesn't define a dependency on <code>web3</code> under that extra in the wheel <code>METADATA</code>? https://inspector.pypi.io/project/web3-ethereum-defi/0.35/packages/21/98/c394244e90cc4c1139678d0366ac61a16821d1f3b4f33600995963cafb4a/web3_ethereum_defi-0.35-py3-none-any.whl/web3_ethereum_defi-0.35.dist-info/METADATA#line.73</p>
+<p>Perhaps I'm missing something?</p>
+</blockquote>
+<p>This is very odd. other <code>extra != &quot;web3v6&quot;</code> conditioned dependencies are evaluating just fine. hmm.....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-13 19:41</div>
+            <div class="timeline-body"><p>I think we explicitly do not include the case where a dependency is &quot;removed&quot; when an extra is activated. While the markers you have are specification compliant, the pattern breaks assumptions of our resolution algorithm.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

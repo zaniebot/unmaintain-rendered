@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`package.metadata.requires-dist` in `uv.lock` is incomplete for last added packages. - astral-sh/uv #6614</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`package.metadata.requires-dist` in `uv.lock` is incomplete for last added packages.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6614">#6614</a>
+        opened by <a href="https://github.com/kabouzeid">@kabouzeid</a>
+        on 2024-08-25 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-25 18:56</div>
+            <div class="timeline-body"><p><code>package.metadata.requires-dist</code> in <code>uv.lock</code> isn't updated with the version specifier on <code>add</code>. only subsequent <code>add</code>, <code>lock</code>, or <code>sync</code> calls add it.</p>
+<pre><code class="language-console">➜ uv --version
+uv 0.3.3 (Homebrew 2024-08-23)
+
+➜ uv add ruff
+Using Python 3.12.5
+Creating virtualenv at: .venv
+Resolved 2 packages in 190ms
+   Built project @ file:///private/tmp/project
+Prepared 2 packages in 695ms
+Installed 2 packages in 2ms
+ + project==0.1.0 (from file:///private/tmp/project)
+ + ruff==0.6.2
+
+➜ cat uv.lock | grep requires-dist
+requires-dist = [{ name = &quot;ruff&quot; }]
+
+➜ uv add polars
+Resolved 3 packages in 5ms
+   Built project @ file:///private/tmp/project
+Prepared 2 packages in 139ms
+Uninstalled 1 package in 0.51ms
+Installed 2 packages in 2ms
+ + polars==1.5.0
+ ~ project==0.1.0 (from file:///private/tmp/project)
+
+➜ cat uv.lock | grep -A 3 requires-dist
+requires-dist = [
+    { name = &quot;polars&quot; },
+    { name = &quot;ruff&quot;, specifier = &quot;&gt;=0.6.2&quot; },
+]
+
+➜ uv sync
+Resolved 3 packages in 16ms
+Audited 3 packages in 0.05ms
+
+➜ cat uv.lock | grep -A 3 requires-dist
+requires-dist = [
+    { name = &quot;polars&quot;, specifier = &quot;&gt;=1.5.0&quot; },
+    { name = &quot;ruff&quot;, specifier = &quot;&gt;=0.6.2&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6607.html">astral-sh/uv#6607</a> on 2024-08-25 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 20:05</div>
+            <div class="timeline-body"><p>Thanks! Will take a look, looks wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-25 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-25 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 20:15</div>
+            <div class="timeline-body"><p>Oh this actually <em>does</em> make sense (we update the <code>pyproject.toml</code> <em>after</em> the resolution, to set the lower-bound specifier). Difficult to fix but we definitely need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6618.html">astral-sh/uv#6618</a> on 2024-08-25 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-25 21:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please comment on CVE-2024-53899 and virtualenv activation scripts - astral-sh/uv #9424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Please comment on CVE-2024-53899 and virtualenv activation scripts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9424">#9424</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2024-11-25 19:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-11-25 19:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Yesterday, <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-53899">CVE-2024-53899</a> was published, with the following description:</p>
+<blockquote>
+<p>virtualenv before 20.26.6 allows command injection through the activation scripts for a virtual environment. Magic template strings are not quoted correctly when replacing.</p>
+</blockquote>
+<p>This corresponds to https://github.com/pypa/virtualenv/issues/2768 and is supposed to be fixed by https://github.com/pypa/virtualenv/pull/2771.</p>
+<p>Because <code>uv</code> vendors <code>virtualenv</code> activation scripts in <a href="https://github.com/astral-sh/uv/tree/0.5.4/crates/uv-virtualenv/src/activator/"><code>crates/uv-virtualenv/src/activator/</code></a>, I wondered if <code>uv</code> was also affected. Imitating the original reproducer in https://github.com/pypa/virtualenv/issues/2768, and working with a <code>uv</code> checkout on the <code>0.5.4</code> tag:</p>
+<pre><code>$ cargo build
+$ envname=&quot;';uname -a;':&quot;
+$ mkdir &quot;$envname&quot;
+$ cd &quot;$envname&quot;
+$ ../target/debug/uv venv .
+$ . ./bin/activate
+(';uname -a;':) ben@musicbox:~/src/forks/uv/';uname -a;':$
+</code></pre>
+<p>This is good; the <code>uname -a</code> command was not executed, so this test did <em>not</em> reproduce the problem.</p>
+<p>Checking older versions, it looks like this was fixed between <code>uv</code> 0.5.2 and 0.5.3, probably in https://github.com/astral-sh/uv/pull/8984 (although I did not bother bisecting). To reiterate this very clearly, I <em>was not</em> able to trivially reproduce CVE-2024-53899 in <code>uv</code> 0.5.3 and later, but I <em>was</em> able to reproduce it (output from <code>uname -a</code> appeared in my console) in <code>uv</code> 0.5.2 and earlier.</p>
+<p>Could you please comment on whether you believe the underlying issue is entirely mitigated in <code>uv</code>, or whether further work needs to be done? Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2024-11-25 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 20:10</div>
+            <div class="timeline-body"><p>Thanks for filing! We'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @charliermarsh on 2024-11-25 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9466.html">astral-sh/uv#9466</a> on 2024-11-27 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-27 12:37</div>
+            <div class="timeline-body"><p>Due to #8984, uv is unaffected for:</p>
+<ul>
+<li>bash</li>
+<li>csg</li>
+<li>fish</li>
+<li>nushell</li>
+</ul>
+<p>The powershell activator does not contain the path.</p>
+<p>The batch activator is fixed by #9466.</p>
+<p>While #8947 and the batch behavior are clearly bugs, I would like to remind users that you should never build virtual environments from untrusted input. There are various sources of arbitrary code execution, such as <code>.pth</code> files, wheel data writing to arbitrary paths in the venv and source dist builds running arbitrary code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2024-11-27 14:27</div>
+            <div class="timeline-body"><p>Thank you for investigating!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @musicinmybrain on 2024-11-27 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:38 UTC
+    </footer>
+</body>
+</html>

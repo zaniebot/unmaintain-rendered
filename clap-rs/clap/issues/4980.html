@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Subcommand when deriving Parser for a struct that has a Subcommand field - clap-rs/clap #4980</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement Subcommand when deriving Parser for a struct that has a Subcommand field</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4980">#4980</a>
+        opened by <a href="https://github.com/Heliozoa">@Heliozoa</a>
+        on 2023-06-21 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Heliozoa">@Heliozoa</a> on 2023-06-21 21:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<p>I have a Subcommand enum and I'd like to add an argument that is used with all of them.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Normally in Rust, when you have a field used with all variants of an enum it's common to define a struct that has the enum as an inner field. Something like so:</p>
+<pre><code class="language-rs">struct MyType {
+    common_field: String,
+    kind: MyTypeKind,
+}
+
+enum MyTypeKind {
+    A,
+    B {
+        some_field: String
+    },
+    // ..
+}
+</code></pre>
+<p>I think it would be nice if this same pattern could be used with clap like this:</p>
+<pre><code class="language-rs">#[derive(Parser)]
+pub struct Cmd {
+    #[clap(long)]
+    common_arg: String,
+    // &quot;forwards&quot; the subcommand implementation to this field that implements Subcommand
+    // a struct needs to have a field with this annotation for the derive to impl Subcommand
+    #[clap(bikeshed)]
+    kind: CmdKind,
+}
+
+#[derive(Parser)]
+pub enum CmdKind {
+    A,
+    B {
+        #[clap(long)]
+        some_arg: String,
+    },
+    // ..
+}
+</code></pre>
+<p>This would behave the same as if <code>Cmd</code> was <code>CmdKind</code> with <code>common_arg</code> as a field in every variant.</p>
+<h3>Alternatives, if applicable</h3>
+<p>I'm aware of two alternative solutions:
+Adding the argument to each variant manually. This makes the argument cumbersome to maintain and access.
+Moving the argument &quot;up&quot; one level. This makes it more convenient for the developer, but makes the CLI's user experience worse, as the placement of the arg when using the CLI or reading the help output is off.</p>
+<h3>Additional Context</h3>
+<p>A potential issue with the suggested solution is that a struct and one of its subcommand variants could have arguments with the same names. I'm not sure how clap deals with conflicts like that in general, hopefully it's not a blocker if this feature is otherwise desireable.</p>
+<p>When searching for related issues I got hundreds of results even when trying to use more specific wording, sorry if I missed an existing one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @Heliozoa on 2023-06-21 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Heliozoa on 2023-06-21 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Heliozoa">@Heliozoa</a> on 2023-06-21 21:36</div>
+            <div class="timeline-body"><p>My bad, it seems like if <code>Cmd</code> is a struct I can just leave out the <code>#[clap(subcommand)]</code> annotation and it'll work as I'd like it to.</p>
+<p>Previously I had something like</p>
+<pre><code class="language-rs">#[derive(Debug, Parser, Clone)]
+struct Cli {
+    #[clap(long)]
+    arg: String,
+    #[clap(subcommand)]
+    cmd: Cmd,
+}
+
+#[derive(Debug, Parser, Clone)]
+enum Cmd {
+    #[clap(subcommand)]
+    MySubcommand(MySubcommandEnum),
+}
+
+#[derive(Debug, Parser, Clone)]
+enum MySubcommandEnum {
+    A,
+    B { some_arg: String },
+}
+</code></pre>
+<p>and now</p>
+<pre><code class="language-rs">#[derive(Debug, Parser, Clone)]
+struct Cli {
+    #[clap(long)]
+    arg: String,
+    #[clap(subcommand)]
+    cmd: Cmd,
+}
+
+#[derive(Debug, Parser, Clone)]
+enum Cmd {
+    // no #[clap(subcommand)] here
+    MySubcommand(MySubcommandStruct),
+}
+
+#[derive(Debug, Parser, Clone)]
+struct MySubcommandStruct {
+    #[clap(long)]
+    common_arg: String,
+    #[clap(subcommand)]
+    kind: MySubcommandEnum,
+}
+
+#[derive(Debug, Parser, Clone)]
+enum MySubcommandEnum {
+    A,
+    B { some_arg: String },
+}
+</code></pre>
+<p>Sorry for the noise, though maybe someone with the same problem will find this issue later and find it helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-22 01:46</div>
+            <div class="timeline-body"><p>For future reference, you might find the <a href="https://docs.rs/clap/latest/clap/_derive/_cookbook/git_derive/index.html">git example</a> useful as it show cases a lot of different subcommand features.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:26 UTC
+    </footer>
+</body>
+</html>

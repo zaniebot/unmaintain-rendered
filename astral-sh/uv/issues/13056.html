@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Report: uv ignores --offline flag with git+ssh dependencies - astral-sh/uv #13056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug Report: uv ignores --offline flag with git+ssh dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13056">#13056</a>
+        opened by <a href="https://github.com/Rukopet">@Rukopet</a>
+        on 2025-04-22 17:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Rukopet">@Rukopet</a> on 2025-04-22 17:23</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>When running <code>uv lock --check --offline</code> on a project that contains git+ssh dependencies, uv still attempts to fetch from remote Git repositories despite the <code>--offline</code> flag. This results in failed checks in environments without network access or in CI/CD pipelines that should run offline.</p>
+<h2>Reproduction Steps</h2>
+<ol>
+<li>Create a project with git+ssh dependencies in pyproject.toml:<pre><code class="language-toml">[project]
+dependencies = [
+    &quot;some-package @ git+ssh://git@example.com/org/repo.git@commit-hash&quot;
+]
+</code></pre>
+</li>
+<li>Generate a uv.lock file</li>
+<li>Run <code>uv lock --check --offline</code></li>
+</ol>
+<h2>Expected Behavior</h2>
+<p>When <code>--offline</code> is specified, uv should check the lockfile's integrity using only local data, without attempting to contact remote Git repositories or package indexes.</p>
+<h2>Actual Behavior</h2>
+<p>Despite the <code>--offline</code> flag, uv still attempts to fetch the git repository:</p>
+<pre><code>   Updating ssh://git@example.com/org/repo.git (commit-hash)
+⠙ Resolving dependencies...                                                       
+× Failed to download and build `package-name @ git+ssh://git@example.com/org/repo.git@commit-hash`
+  ├─▶ Git operation failed
+  ├─▶ failed to fetch into: /path/to/cache
+  ├─▶ failed to fetch commit `commit-hash`
+  ╰─▶ process didn't exit successfully:
+      `/path/to/git fetch --force --update-head-ok 'ssh://git@example.com/org/repo.git' '+commit-hash:refs/commit/commit-hash'`
+      (exit status: 128)
+      --- stderr
+      fatal: not a git repository (or any of the parent directories): .git
+</code></pre>
+<h2>Impact</h2>
+<p>This bug breaks CI/CD pipelines and pre-commit hooks that need to operate in offline mode, especially in environments with git+ssh dependencies.</p>
+<p>No workarounds were founded</p>
+<h3>Platform</h3>
+<p>Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.16 (d8ad9d3cd 2025-04-22)</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Rukopet on 2025-04-22 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 01:53</div>
+            <div class="timeline-body"><p>Hmm, I can't reproduce that -- I don't see the flag being ignored:</p>
+<pre><code>❯ uv sync --cache-dir baz --offline
+Resolved 2 packages in 1ms
+   Updating ssh://git@github.com/pytest-dev/iniconfig.git (HEAD)                                                                                                                                                                                × Failed to download and build `iniconfig @ git+ssh://git@github.com/pytest-dev/iniconfig.git@71901257f6cbf660e77b1077e00f11a0f440be1e`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into: baz/git-v0/db/b434d4698eccd5c0
+  ├─▶ failed to fetch commit `71901257f6cbf660e77b1077e00f11a0f440be1e`
+  ╰─▶ Remote Git fetches are not allowed because network connectivity is disabled (i.e., with `--offline`)
+  help: `iniconfig` was included because `foo` (v0.1.0) depends on `iniconfig`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-04-25 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-04-25 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rukopet">@Rukopet</a> on 2025-04-30 14:43</div>
+            <div class="timeline-body"><p>@charliermarsh It's very interesting, because I can't reproduce it now too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Rukopet on 2025-04-30 14:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

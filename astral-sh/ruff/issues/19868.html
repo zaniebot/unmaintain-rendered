@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: `PLC0415` autofix - astral-sh/ruff #19868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: `PLC0415` autofix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19868">#19868</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2025-08-11 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-08-11 16:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Without a custom rule set, I observe the AI coding agents commonly employing local imports. It's not uncommon for me to see PRs opened with built-ins (e.g. <code>import os</code>) being imported inside a method.</p>
+<p>Ruff has <code>PLC0415</code> implemented to deny this, but since it doesn't have autofix support, it can get disabled.</p>
+<p>The request essentially boils down to: a common form of &quot;AI slop&quot; is non-module level imports. Is it possible to add autofix support to PLC0415 to make this process smoother.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 17:44</div>
+            <div class="timeline-body"><p>Makes sense to me. I think we have good infrastructure for adding imports too, so I'm guessing the fix would look something like:</p>
+<ol>
+<li>delete the local import</li>
+<li>add the module-level import</li>
+</ol>
+<p>Since the rule is stable we'd need to add the fix in preview, especially if it's a safe fix, which it probably could be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-11 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-08-11 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2025-08-11 17:54</div>
+            <div class="timeline-body"><p>That sounds good. From my perspective, times where a <code>PLC0415</code> autofix could be unsafe are:</p>
+<ul>
+<li>Case 1: avoiding circular imports via a lazy import of a third party or local package<ul>
+<li>Imo this warrants an explicit <code># noqa: PLC0415</code></li>
+</ul>
+</li>
+<li>Case 2: unit tests with monkeypatching requiring lazy import<ul>
+<li>Imo this also warrants an explicit <code># noqa: PLC0415</code></li>
+</ul>
+</li>
+</ul>
+<p>So I think the classification would be:</p>
+<ul>
+<li>If built-in: autofix is safe</li>
+<li>If third party or local: autofix is unsafe</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 19:14</div>
+            <div class="timeline-body"><p>Ah those are great points. I don't think I was weighing those cases enough earlier. Special-casing built-ins makes some sense to me, or we could even just make it always unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2025-08-14 02:27</div>
+            <div class="timeline-body"><p>Imports can have side effects, even in the standard library, so I think they should always be considered unsafe to move.</p>
+<p>For example, <code>import antigravity</code> from the stdlib opens the web browser.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

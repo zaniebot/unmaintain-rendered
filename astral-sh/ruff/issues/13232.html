@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff toml with `extend` doesn't apply the rules - astral-sh/ruff #13232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff toml with `extend` doesn't apply the rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13232">#13232</a>
+        opened by <a href="https://github.com/rogier-stegeman">@rogier-stegeman</a>
+        on 2024-09-03 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rogier-stegeman">@rogier-stegeman</a> on 2024-09-03 15:23</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I looked for: &quot;extend&quot;, &quot;extend configuration&quot;.</p>
+<p>Version: 0.6.3</p>
+<p><strong>Situation</strong></p>
+<pre><code class="language-py">#test.py
+def f(a):
+    return a
+</code></pre>
+<p>And</p>
+<pre><code class="language-toml">#ruff.toml
+extend  = &quot;./ruff.2.toml&quot;
+[lint]
+select = []
+ignore = []
+</code></pre>
+<p>And finally</p>
+<pre><code class="language-toml">#ruff.2.toml
+[lint]
+select = []
+ignore = []
+</code></pre>
+<p>And command: <code>ruff check test.py</code>.</p>
+<p><strong>Result</strong></p>
+<p>No warnings, nothing. As expected.</p>
+<p><strong>Change situation</strong></p>
+<p>Add a random line like <code>foo=[]</code> to <code>ruff.2.toml</code>. Or moving the <code>select</code> outside of the <code>[lint]</code> block.</p>
+<p><strong>Result</strong></p>
+<p>Errors on running the command, like unknown rules. This is great, so it can find the file listed in <code>extend</code> and evaluates it properly.</p>
+<p><strong>Change situation</strong></p>
+<pre><code class="language-toml">#ruff.toml
+extend  = &quot;./ruff.2.toml&quot;
+[lint]
+select = [&quot;ANN&quot;]
+ignore = []
+</code></pre>
+<pre><code class="language-toml">#ruff.2.toml
+[lint]
+select = [&quot;D&quot;]
+ignore = [&quot;ANN001&quot;]
+</code></pre>
+<p><strong>Result</strong></p>
+<p>Expected: ANN001 to be supressed, ANN201 to be raised, D103 to be raised.</p>
+<p>Actual: ANN001 is raised, ANN 201 is raised.</p>
+<p>This is equivalent to only <code>ruff.toml</code> being used, in other words, <code>ruff.2.toml</code> is completely ignored, even though it is evaluated for correct syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 16:03</div>
+            <div class="timeline-body"><p>If the <code>pyproject.toml</code> that contains an <code>extend</code> defines its own <code>select</code>, it effectively resets the selection chain. In your situation, you want <code>ruff.toml</code> to use <code>extend-select = [&quot;ANN&quot;]</code> instead of <code>select = [&quot;ANN&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-03 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2024-09-03 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rogier-stegeman">@rogier-stegeman</a> on 2024-09-04 14:47</div>
+            <div class="timeline-body"><p>My <code>pyproject.toml</code> doesn't specify any ruff configuration, I assume you meant <code>ruff.toml</code> in my scenario, and to put the <code>extend-select</code> in my <code>ruff.2.toml</code>, the file which is extending.</p>
+<p>How would this work with <code>ignore</code>? The docs tell me <code>extend-ignore</code> is deprecated. A normal <code>ignore</code> is itself, ignored.</p>
+<strike>
+Second, my issue is not specifically with the `select` options not merging, the entire file found and validated by `extend`, is not actually used. Rules like `line-length` and ~~
+
+<pre><code class="language-toml">[lint.pyupgrade]
+keep-runtime-typing = true
+</code></pre>
+<p>Are also ignored in my extended file (<code>ruff.2.toml</code>). This while the file is correctly found by the <code>extend</code> rule because any syntax errors in the <code>ruff.2.toml</code> cause an error when running any ruff command.
+</strike></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-04 14:55</div>
+            <div class="timeline-body"><p>How did you determine that the settings were ignored?</p>
+<p>Can you try running <code>ruff check --show-settings</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rogier-stegeman">@rogier-stegeman</a> on 2024-09-04 15:20</div>
+            <div class="timeline-body"><p>Mhm my VSCode seems to have been acting up yesterday, the main way I tested it. Striked from previous comment. It works fine now for most configuration.</p>
+<p>Still my main issue, and why I created this post, is that I can't disable specific rules. My use case is to have a generic ruff.toml used in all projects and one for the specific project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-05 07:22</div>
+            <div class="timeline-body"><p>The problem you're facing here is that Ruff resolves the selectors of the base configuration first, before merging them with the sub-configuration.</p>
+<p>What happens when resolving the rules of <code>ruff.toml</code> is:</p>
+<ul>
+<li>Select all <code>D</code> rules</li>
+<li>Ignore <code>ANN001</code> but the rule is already disabled. So this is a no-op</li>
+<li>Select <code>Ann</code>, this does include <code>ANN001</code>.</li>
+</ul>
+<p>That's why you end up with <code>ANN001</code> selected.</p>
+<p>You would have to move the <code>select=[&quot;ANN&quot;]</code> to <code>ruff.2.toml</code> if you want that the <code>ignore = [&quot;ANN001&quot;]</code> to have any effect or move the ignore to <code>ruff.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rogier-stegeman">@rogier-stegeman</a> on 2024-09-05 09:31</div>
+            <div class="timeline-body"><p>Aah I think I'm doing this the wrong way around. <code>ruff.toml</code> should be the specific one. Ignores here work even if they don't select anything. If I want anything extra I use <code>extend-select</code>, but I don't need to just to ignore more settings. Then Instead of a <code>ruff.python38.toml</code> I would create a <code>ruff.base.toml</code> and share that one with all projects. If I still want drop-in support for specific configuration files like a ruff file for a specific python version, I'll either have to do <code>pyproject</code> extend <code>ruff specific</code> extend <code>ruff base</code>. Or <code>pyroject</code> extend <code>ruff.toml</code> extend <code>ruff specific</code> extend <code>ruff base</code>. Sounds extremely overkill but would allow for very standardised files we can keep synced through dozens of projects.
+<img src="https://github.com/user-attachments/assets/6aa196cb-1eb2-467a-99b4-b0fef9f0a1c5" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @rogier-stegeman on 2024-09-05 09:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

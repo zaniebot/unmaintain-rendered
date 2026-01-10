@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>require_value_delimiter missing in Clap-4 - clap-rs/clap #4942</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>require_value_delimiter missing in Clap-4</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4942">#4942</a>
+        opened by <a href="https://github.com/asomers">@asomers</a>
+        on 2023-05-27 00:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/asomers">@asomers</a> on 2023-05-27 00:15</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.71.0-nightly (77f4f828a 2023-05-20)</p>
+<h3>Clap Version</h3>
+<p>4.3.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Cli {
+    #[clap(
+        // How to specify require_value_delimiter?  It was removed in Clap-4.0.0
+        // require_value_delimiter(true),
+        value_delimiter(',')
+    )]
+    options: Vec&lt;i32&gt;,
+    #[clap(num_args(1..), required(true))]
+    pargs: Vec&lt;String&gt;
+}
+
+fn main() {
+    let cli = Cli::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code> without arguments will fail with the below error.</p>
+<h3>Actual Behaviour</h3>
+<p>Fails with an error like this:</p>
+<pre><code>thread 'main' panicked at 'Only one positional argument with `.num_args(1..)` set is allowed per command, unless the second one also has .last(true) set', /playground/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_builder-4.2.7/src/builder/debug_asserts.rs:615:9
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The program should run fine.  And it should accept invocations like:</p>
+<pre><code>cargo run -- option1 parg1
+cargo run -- option1,option2 parg1
+cargo run -- option1,option2 parg1 parg2
+</code></pre>
+<h3>Additional Context</h3>
+<p>The goal is to have two required Args, one of which is comma-delimited and the other space-delimited.  Similar to the <code>zfs get</code> command.</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-require-value-delimiter&quot;
+[clap_builder::builder::command]Command::_propagate:clap-require-value-delimiter
+[clap_builder::builder::command]Command::_check_help_and_version:clap-require-value-delimiter expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-require-value-delimiter
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:options
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:pargs
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @asomers on 2023-05-27 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-27 01:38</div>
+            <div class="timeline-body"><p>What you most likely want is to just disable some of the automatic <code>Vec</code> behavior:</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Cli {
+    #[clap(
+        num_args = 1,
+        action = ArgAction::Set,
+        value_delimiter(',')
+    )]
+    options: Vec&lt;i32&gt;,
+    #[clap(num_args(1..), required(true))]
+    pargs: Vec&lt;String&gt;
+}
+
+fn main() {
+    let cli = Cli::parse();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asomers">@asomers</a> on 2023-05-27 19:07</div>
+            <div class="timeline-body"><p>Thanks!  It would've taken me forever to figure that out by myself.  FTR, I also had to add a <code>required(true)</code>.  So the complete program is</p>
+<pre><code class="language-rust">use clap::{ArgAction, Parser};
+
+#[derive(Parser, Debug)]
+struct Cli {
+    #[clap(
+        num_args = 1,
+        action = ArgAction::Set,
+        required(true),
+        value_delimiter(',')
+    )]
+    options: Vec&lt;i32&gt;,
+    #[clap(num_args(1..), required(true))]
+    pargs: Vec&lt;String&gt;
+}
+
+fn main() {
+    let cli = Cli::parse();
+    dbg!(&amp;cli.options, &amp;cli.pargs);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @asomers on 2023-05-27 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neherlab/pangraph/pulls/120.html">neherlab/pangraph#120</a> on 2025-02-04 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:25 UTC
+    </footer>
+</body>
+</html>

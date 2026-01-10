@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff VSCode extension erases entire file on save - astral-sh/ruff #9123</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff VSCode extension erases entire file on save</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9123">#9123</a>
+        opened by <a href="https://github.com/bdewilde">@bdewilde</a>
+        on 2023-12-14 02:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bdewilde">@bdewilde</a> on 2023-12-14 02:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>After updating/reloading a couple extensions in VSCode -- one of which may have been Ruff, I'm not 100% sure -- the Ruff extension suddenly started erasing entire Python files on save. I've disabled/re-enabled and uninstalled/re-installed, but that doesn't change the behavior. I've further narrowed it down to the &quot;format imports&quot; command -- &quot;format document&quot; does not erase the module -- but disabling the &quot;organize imports&quot; behavior in settings somehow does not stop saves from erasing the file. The corresponding configs in my VSCode settings and <code>pyproject.toml</code> tools have not changed.</p>
+<p>I don't have a code snippet, but I do have a gif demonstrating the phenomenon:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/2514535/ec86f690-6dc0-45e5-afbc-2cdddb690f5c" alt="ruff-surprise" /></p>
+<p>This is quite unexpected, and I do not understand what's gone wrong. I have the latest version of both the <code>ruff</code> VSCode extension (v2023.52.0) and Python package (v0.1.8) installed. Here's the relevant config:</p>
+<pre><code class="language-json">  &quot;[python]&quot;: {
+    &quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;,
+    &quot;editor.formatOnSave&quot;: true,
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll.ruff&quot;: &quot;always&quot;,
+      &quot;source.organizeImports.ruff&quot;: &quot;always&quot;
+    },
+  }
+</code></pre>
+<p>and</p>
+<pre><code class="language-toml">[tool.ruff]
+# ignore line-length violations, None comparisons
+ignore = [&quot;E501&quot;, &quot;E711&quot;]
+line-length = 88
+indent-width = 4
+target-version = &quot;py310&quot;
+
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+skip-magic-trailing-comma = false
+line-ending = &quot;auto&quot;
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+[tool.ruff.per-file-ignores]
+&quot;__init__.py&quot; = [&quot;E402&quot;, &quot;F401&quot;] # imports not at top of cell and unused imports
+</code></pre>
+<p>Assuming this must be user error, but gosh I don't know what or how. Thanks in advance for your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:10</div>
+            <div class="timeline-body"><p>Let me try this now -- I thought we had fixed this but it may've regressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:12</div>
+            <div class="timeline-body"><p>Is this happening in every file, or only certain files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:15</div>
+            <div class="timeline-body"><p>I assume this persists across restarting VS Code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdewilde">@bdewilde</a> on 2023-12-14 03:16</div>
+            <div class="timeline-body"><p>Hi! Thanks very much for the quick response. This does happen across VSCode restarts -- I even restarted my laptop, was getting desperate. This is happening for every Python file that I try to save.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:18</div>
+            <div class="timeline-body"><p>Do you mind checking the version of Ruff that's running as reported by the extension in the Ruff logs?</p>
+<img width="727" alt="Screen Shot 2023-12-13 at 10 17 44 PM" src="https://github.com/astral-sh/ruff/assets/1309177/f0dd3d65-f979-4b92-a71f-5816cb20fb95">
+
+<p>I can't reproduce with the latest extension and Ruff version, but if you're continuing to see this then I'll revert the change that likely caused it and re-release while we figure out what's gone wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:23</div>
+            <div class="timeline-body"><p>Also, if you could confirm that downgrading to the previous release fixes it for you, that'd be super helpful too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdewilde">@bdewilde</a> on 2023-12-14 03:27</div>
+            <div class="timeline-body"><p>Nice, I didn't realize you could peep on logs from particular extensions in VSCode. Here's what I see there re: version:</p>
+<pre><code>2023-12-13 22:19:28.313 [info] Name: Ruff
+2023-12-13 22:19:28.313 [info] Module: ruff
+2023-12-13 22:19:28.313 [info] Python extension loading
+2023-12-13 22:19:28.313 [info] Waiting for interpreter from python extension.
+2023-12-13 22:19:28.313 [info] Python extension loaded
+2023-12-13 22:19:28.313 [info] Server run command: /Users/burtondewilde/.pyenv/versions/3.10.12/envs/colandr-py310/bin/python /Users/burtondewilde/.vscode/extensions/charliermarsh.ruff-2023.52.0-darwin-x64/bundled/tool/server.py
+2023-12-13 22:19:28.313 [info] Server: Start requested.
+2023-12-13 22:19:29.271 [info] 2023-12-13 22:19:29,269 INFO Starting IO server
+</code></pre>
+<p>Scrolling through, I also see an error -- maybe this is normal, but figured I'd call it out:</p>
+<pre><code>2023-12-13 22:19:29.415 [info] [Trace - 10:19:29 PM] Received notification 'window/logMessage'.
+2023-12-13 22:19:29.415 [info] Running Ruff with: /Users/burtondewilde/.pyenv/versions/3.10.12/envs/colandr-py310/bin/ruff ['--force-exclude', '--no-cache', '--no-fix', '--quiet', '--output-format', 'json', '-', '--line-length=88', '--indent-width=4', '--stdin-filename', '/Users/burtondewilde/Desktop/example.py']
+2023-12-13 22:19:29.428 [info] [Trace - 10:19:29 PM] Received notification 'window/logMessage'.
+2023-12-13 22:19:29.428 [info] error: unexpected argument '--indent-width' found
+
+  tip: to pass '--indent-width' as a value, use '-- --indent-width'
+</code></pre>
+<p>Which should I try downgrading: the package (from v0.1.8 to v0.1.7) or the extension?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:28</div>
+            <div class="timeline-body"><p>Interesting, do you have <code>--indent-width</code> passed in as a command-line argument in your settings? (I was suggesting downgrading the <em>extension</em> to 2023.50.0.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:29</div>
+            <div class="timeline-body"><p>Ahhh okay, I think the issue is:</p>
+<pre><code class="language-json">&quot;ruff.lint.args&quot;: [&quot;--indent-width&quot;, &quot;4&quot;]
+</code></pre>
+<p>Or similar in your <code>settings.json</code>. We're wiping the file on error, apparently. I'll fix this tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdewilde">@bdewilde</a> on 2023-12-14 03:31</div>
+            <div class="timeline-body"><p>Aha, yeah, I have these at the bottom of my VSCode user settings -- forgot about them, since I set them up a long while back when I was still trying to figure out if <code>ruff</code> could replace <code>black</code>+<code>isort</code> :)</p>
+<pre><code>  &quot;ruff.lint.run&quot;: &quot;onSave&quot;,
+  &quot;ruff.lint.args&quot;: [
+    &quot;--line-length=88&quot;,
+    &quot;--indent-width=4&quot;
+  ],
+</code></pre>
+<p>Should I remove them? Restructure the JSON as your example suggests?</p>
+<p><em>update:</em> Removing them stops the files from being erased on save, but changing the structure of the json does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:40</div>
+            <div class="timeline-body"><p>Yeah you need to remove <code>--indent-width=4</code> -- we only support a subset of arguments on the command-line, so Ruff is failing when it sees <code>--indent-width=4</code>, and we're (erroneously) wiping your file instead of surfacing the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdewilde">@bdewilde</a> on 2023-12-14 03:41</div>
+            <div class="timeline-body"><p>Understood. Thanks a ton for helping to resolve this so quickly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 03:42</div>
+            <div class="timeline-body"><p>No prob. Sorry for all the trouble... Will get this fixed for good ASAP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-12-14 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-12-14 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-lsp/pulls/341.html">astral-sh/ruff-lsp#341</a> on 2023-12-14 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-14 04:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 05:38</div>
+            <div class="timeline-body"><p>Should be fixed in the latest version, just published.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15734.html">astral-sh/ruff#15734</a> on 2025-01-24 22:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

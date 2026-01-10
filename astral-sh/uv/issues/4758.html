@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>installing `colorspacious` with uv produces a broken env - astral-sh/uv #4758</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>installing `colorspacious` with uv produces a broken env</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4758">#4758</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-07-03 06:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-07-03 06:47</div>
+            <div class="timeline-body"><p>Using uv 0.18.0:</p>
+<pre><code class="language-shell">uv venv
+source ./venv/bin/activate
+uv pip install colorspacious
+python -c &quot;from colorspacious import cspace_converter&quot;
+</code></pre>
+<p>I get</p>
+<pre><code class="language-python-traceback">/private/tmp/.venv/lib/python3.12/site-packages/colorspacious/comparison.py:11: SyntaxWarning: invalid escape sequence '\D'
+  &quot;&quot;&quot;Computes the :math:`\Delta E` distance between pairs of colors.
+</code></pre>
+<p>Additional notes:</p>
+<ul>
+<li>the error only appears the first time I attempt to import from <code>colorspacious</code></li>
+<li>it doesn't show up at all if I pass <code>--compile</code> to <code>uv pip install</code></li>
+<li>installing <code>colorspacious</code> with <code>pip</code> as follows gives no error (even leaving out <code>compile</code>)</li>
+<li>passing <code> --only-binary 'colorspacious'</code> or <code> --no-binary 'colorspacious'</code> doesn't change anything as far as I can tell</li>
+</ul>
+<pre><code class="language-shell">uv venv
+source ./venv/bin/activate
+uv pip install pip
+python -m pip install colorspacious
+python -c &quot;from colorspacious import cspace_converter&quot;
+</code></pre>
+<p>So it seems to me that bytecode compilation is sufficient to get around the issue, but <code>python -m pip install</code> isn't supposed to perform it more than <code>uv pip install</code> if <code>--compile</code> is omitted, so I don't understand what the difference might be.</p>
+<p>system info: this seems to happen consistently on all platforms, as seen in <a href="https://github.com/yt-project/cmyt/actions/runs/9772843597/job/26977924118?pr=174">example logs</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../yt-project/cmyt/pulls/174.html">yt-project/cmyt#174</a> on 2024-07-03 06:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 11:56</div>
+            <div class="timeline-body"><p>I think this is the same as https://github.com/astral-sh/uv/issues/1928#issuecomment-1968857514. (I think the warning is correct?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-07-03 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-07-03 12:15</div>
+            <div class="timeline-body"><p>oh yes, it's the same, and I get it now: I was under the impression that <code>pip install</code> would not compile byte code by default (I knew about <code>--compile</code> but not <code>--no-compile</code>). Now I'm confused what exactly is pip's default behavior but at least I can agree now that this is not a bug in uv. Thanks Charlie !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "BUG: installing `colorspacious` with uv produces a broken env" to "installing `colorspacious` with uv produces a broken env" by @neutrinoceros on 2024-07-03 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @neutrinoceros on 2024-07-03 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 13:11</div>
+            <div class="timeline-body"><p>No problem! I’m also not sure, I just remember that we debugged this before :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

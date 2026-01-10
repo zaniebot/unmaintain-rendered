@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve Python version resolution UI - astral-sh/uv #7183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve Python version resolution UI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7183">#7183</a>
+        opened by <a href="https://github.com/lmmx">@lmmx</a>
+        on 2024-09-07 21:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lmmx">@lmmx</a> on 2024-09-07 21:52</div>
+            <div class="timeline-body"><p>I just resurrected an old project (I suspect over 10 years old, changed hands entirely at one point and was rewritten from Python 2 to 3)</p>
+<p>I managed to install it OK, but when I added another unrelated dependency, I got errors.</p>
+<p>It turned out it was to do with an overly relaxed (and thus irreconcilable) NumPy constraint.</p>
+<p>NumPy dropped support for Python 3.8 around v1.25, and demanded support for Python 3.10 as of v2.1.0</p>
+<p>PDM gives a huge list of messages that hint to the user that the problem is (if they read between the lines) that you can't satisfy an unpinned numpy with a requires-python TOML config of &quot;&gt;=3.8,&lt;3.13&quot;, too ambiguous</p>
+<details><summaryClick to show some of said PDM messages</summary>
+
+<pre><code>(page-dewarp) louis 🚶 ~/lab/other/page-dewarp $ pdm install                                                                                                                                                                                                                    
+WARNING: Lockfile does not exist                                                                                                                                                                                                                                                
+Updating the lock file...                                                                                                                                                                                                                                                       
+INFO: Inside an active virtualenv /home/louis/lab/other/page-dewarp/.venv, reusing it.                                                                                                                                                                                          
+Set env var PDM_IGNORE_ACTIVE_VENV to ignore it.                                                                                                                                                                                                                                
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@2.1.1 because it requires Python&gt;=3.10 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@2.1.1, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.10&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@2.1.0 because it requires Python&gt;=3.10 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@2.1.0, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.10&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@2.0.2 because it requires Python&gt;=3.9 but                                                                                                                     
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@2.0.2, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                    
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@2.0.1 because it requires Python&gt;=3.9 but                                                                                                                     
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@2.0.1, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                    
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@2.0.0 because it requires Python&gt;=3.9 but                                                                                                                     
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@2.0.0, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                    
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.26.4 because it requires Python&gt;=3.9 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@1.26.4, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.26.3 because it requires Python&gt;=3.9 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@1.26.3, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.26.2 because it requires Python&gt;=3.9 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@1.26.2, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.26.1 because it requires Python&lt;3.13,&gt;=3.9                                                                                                                  
+but the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                            
+If you want to install numpy@1.26.1, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.26.0 because it requires Python&lt;3.13,&gt;=3.9                                                                                                                  
+but the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                            
+If you want to install numpy@1.26.0, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.25.2 because it requires Python&gt;=3.9 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@1.25.2, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.25.1 because it requires Python&gt;=3.9 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@1.25.1, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping numpy@1.25.0 because it requires Python&gt;=3.9 but                                                                                                                    
+the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of numpy that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                                
+If you want to install numpy@1.25.0, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.                                                                                                                                   
+  return self.repository.find_candidates(                                                                                                                                                                                                                                       
+/home/louis/miniconda3/lib/python3.12/site-packages/pdm/resolver/providers.py:200: PackageWarning: Skipping matplotlib@3.9.2 because it requires Python&gt;=3.9                                                                                                                    
+but the lock targets to work with Python&lt;3.13,&gt;=3.8. Instead, another version of matplotlib that supports Python&lt;3.13,&gt;=3.8 will be used.                                                                                                                                       
+If you want to install matplotlib@3.9.2, narrow down the `requires-python` range to include this version. For example, &quot;&lt;3.13,&gt;=3.9&quot; should work.           
+</code></pre>
+</details>
+
+<p>uv (latest version) however is showing a relatively concise and uninformative error.</p>
+<p>If you inspect the traceback you might assume you're dealing with a setuptools issue (red herring: this is the build backend for numpy, the package doesn't use that backend).</p>
+<p>It looks like 1.24.4 was chosen in this case, but when the python-requires was amended as PDM suggested, the uv installation succeeded.</p>
+<pre><code>(page-dewarp) louis 🚶 ~/lab/other/page-dewarp $ uv add msgspec                                                                         
+Resolved 23 packages in 39ms                                        
+error: Failed to prepare distributions                              
+  Caused by: Failed to fetch wheel: numpy==1.24.4                                                                                       
+  Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1                                                                                                                                                                          
+--- stdout:                                                         
+
+--- stderr:                                                         
+Traceback (most recent call last):                                  
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;                              
+  File &quot;/home/louis/.cache/uv/builds-v0/.tmpr2bEaK/lib/python3.12/site-packages/setuptools/__init__.py&quot;, line 10, in &lt;module&gt;                                                                                                                                                   
+    import distutils.core                                           
+ModuleNotFoundError: No module named 'distutils'                                                                                        
+---                                   
+</code></pre>
+<p>I imagine the solution here is for uv to be on the lookout for this category of error and fail fast sooner (or at least give helpful messages before failing)?</p>
+<p>Let me know if I haven't explained any of the setup here clearly: for reference the pathological python-requires pin was <a href="https://github.com/lmmx/page-dewarp/blob/feb0d7af28b2e54adc440384ebb791813c86c93a/pyproject.toml#L43">here</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7035.html">astral-sh/uv#7035</a> on 2024-09-08 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 15:16</div>
+            <div class="timeline-body"><p>I think we should add some custom messages for <code>ModuleNotFoundError: No module named 'distutils' </code> and similar errors, at the very least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 15:17</div>
+            <div class="timeline-body"><p>We do have messages like the PDM messages above, but we only show them on failure. I guess we could show them with <code>--verbose</code> while solving?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-09-08 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 15:21</div>
+            <div class="timeline-body"><p>I'm also sort of wondering if we should treat these as non-fatal errors so that we can continue backtracking... But it's not great, would be pretty inefficient if we had to test a lot of versions this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 14:29</div>
+            <div class="timeline-body"><p>Just to clarify, what was the solution here? You added <code>requires-python = &quot;&gt;=3.8, &lt;=3.10&quot;</code>? Something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2024-09-09 18:59</div>
+            <div class="timeline-body"><p><a href="https://github.com/lmmx/page-dewarp/blob/405c65b73b1fcff7266375ac47b1fa1a47128df8/pyproject.toml#L41">Yes yes</a></p>
+<pre><code class="language-toml">requires-python = &quot;&gt;=3.9,&lt;3.13&quot;
+</code></pre>
+<p>I also <a href="https://github.com/lmmx/page-dewarp/blob/405c65b73b1fcff7266375ac47b1fa1a47128df8/pyproject.toml#L20-L22">pinned numpy</a> in the <code>project.dependencies</code> with a comment:</p>
+<pre><code class="language-toml">dependencies = [
+  &quot;numpy&gt;1.25&quot;,
+  # NumPy 1.25+ requires Python &gt;= 3.9
+</code></pre>
+<p>The PDM UI of &quot;here are all these constraints, which make it plain to see why there's ambiguity, which may in fact prevent resolution entirely&quot;.</p>
+<p>It is more of a clue, I noted that some combos of constraints <strong>would</strong> resolve but would show these conflicts along the way (so it's not an error so much as a warning of a not-ideal situation, as in <em>&quot;potential degradation ahead, review this part if it turns out to be fatal&quot;</em>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-09 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7239.html">astral-sh/uv#7239</a> on 2024-09-10 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-10 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-10 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8373.html">astral-sh/uv#8373</a> on 2024-10-19 21:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock --check` doesn't error if environment doesn't match lockfile - astral-sh/uv #11932</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock --check` doesn't error if environment doesn't match lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11932">#11932</a>
+        opened by <a href="https://github.com/cjw296">@cjw296</a>
+        on 2025-03-03 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cjw296">@cjw296</a> on 2025-03-03 20:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I expect <code>uv lock --check</code> not only to check that the lockfile and pyproject.toml are consistent but also that the current project/library virtualenv matches the lockfile.</p>
+<p>I changed one of the hashes in <code>uv.lock</code> and also a third point version of one of the dependencies to check this, and then ran <code>uv lock --check</code>, which run to a zero return code and gave no error output.</p>
+<p>I feel like this could be a feature request for new behaviour, but either way, it feels like there should be a way to say &quot;check everything matches&quot; between <code>pyproject.toml</code>, <code>uv.lock</code> and the project's virtualenv, including hashes. It's already confusing that there's <code>uv lock --locked</code> and <code>uv lock --check</code>, and yet there still appears to be no way to verify that the virtualenv matches both the lockfile and the requirements in <code>pyproject.toml</code>.</p>
+<h3>Platform</h3>
+<p>macOS</p>
+<h3>Version</h3>
+<p>uv 0.5.21 (3478c068b 2025-01-17)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @cjw296 on 2025-03-03 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-03-03 20:10</div>
+            <div class="timeline-body"><p>It's also troubling that if I change the version in the lockfile such that it no longer matches the environment or <code>pyproject.toml</code>, such as by changing to a lower second point release, <code>uv sync</code> and <code>uv sync --locked</code> both do nothing, <code>uv lock --check</code> and <code>uv lock</code> also both do nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12202.html">astral-sh/uv#12202</a> on 2025-04-01 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 21:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I expect uv lock --check not only to check that the lockfile and pyproject.toml are consistent but also that the current project/library virtualenv matches the lockfile.</p>
+</blockquote>
+<p>Why? <code>uv lock --check</code> is &quot;check the lockfile is consistent with the project&quot;. The <code>uv lock</code> namespace never touches the environment.</p>
+<p>It sounds like you want <code>uv sync --check</code>?</p>
+<blockquote>
+<p>It's already confusing that there's uv lock --locked and uv lock --check,</p>
+</blockquote>
+<p>These are just aliases. <code>--locked</code> exists for consistency with the rest of the interface.</p>
+<blockquote>
+<p>I changed one of the hashes in uv.lock and also a third point version of one of the dependencies to check this, and then ran uv lock --check, which run to a zero return code and gave no error output.</p>
+</blockquote>
+<p>Regarding changing the version, we've added some validation in #12235. It's not reasonable for <code>uv sync --check</code> to check hashes, because we'd need to download the wheels to see if they match (which defeats the purpose of a dry-run command). We could add support for this, but what are we defending against here? People writing invalid hashes into the lockfile? Once the wheels are unpacked into the cache, we can't check that the hashes match anymore so there's nothing to do there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-04-01 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-04-01 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-03 14:41</div>
+            <div class="timeline-body"><p>I guess stepping back, what I think I have is a feature request for a <code>uv check</code> that &quot;check everything matches&quot; between <code>pyproject.toml</code>, <code>uv.lock</code> and the project's virtualenv. I take your point about hashes being hard to validate once you've unpacked the package.</p>
+<p>It's pretty confusing to have:</p>
+<pre><code>uv lock --check
+uv lock --locked
+uv sync --locked
+uv sync --check
+</code></pre>
+<p>I appreciate they do subtley different things or are synonyms, but I don't see that as a good thing 😅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

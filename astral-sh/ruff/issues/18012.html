@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF006: False positive warning for task stored in global variable - astral-sh/ruff #18012</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF006: False positive warning for task stored in global variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18012">#18012</a>
+        opened by <a href="https://github.com/5j9">@5j9</a>
+        on 2025-05-11 02:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/5j9">@5j9</a> on 2025-05-11 02:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following sample code:</p>
+<pre><code class="language-python">from asyncio import new_event_loop, sleep
+
+loop = new_event_loop()
+task = loop.create_task(sleep(1))
+loop.run_until_complete(sleep(2))
+</code></pre>
+<p>Despite <code>task</code> being a global variable, Ruff reports the following error:</p>
+<pre><code class="language-bash">$ ruff check --isolated \~scratch.py --select RUF006
+~scratch.py:4:8: RUF006 Store a reference to the return value of `loop.create_task`
+  |
+3 | loop = new_event_loop()
+4 | task = loop.create_task(sleep(1))
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^ RUF006
+5 | loop.run_until_complete(sleep(2))
+  |
+
+Found 1 error.
+</code></pre>
+<p><strong>Expected Behavior</strong>
+Since <code>task</code> is global, storing a reference in it should not be problematic. Ruff should not flag this code.</p>
+<h3>Version</h3>
+<p>ruff 0.11.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-05-12 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-05-12 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-12 07:28</div>
+            <div class="timeline-body"><p>I think that change would be okay, considering that modules stick around forever (usually). However, this might also be a situation where it's fine to use a <code>noqa</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/5j9">@5j9</a> on 2025-05-12 08:08</div>
+            <div class="timeline-body"><p>Note that this situation is similar to issue #9262, in my opinion. Both involve storing the task in a global variable; the only difference is that, in the other case, the global declaration occurs within the function.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

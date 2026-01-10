@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip check` for extras/optional dependency groups? - astral-sh/uv #13963</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip check` for extras/optional dependency groups?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13963">#13963</a>
+        opened by <a href="https://github.com/bollwyvl">@bollwyvl</a>
+        on 2025-06-11 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bollwyvl">@bollwyvl</a> on 2025-06-11 12:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Thanks for <code>uv</code>!</p>
+<p>It would be lovely if users of <code>uv pip check</code> had a way to trigger validation optional dependencies, recursively, for a given set of specifiers.</p>
+<p><code>optional-dependencies</code>/<code>[extra]</code> are a blessing and curse for users. While these help projects keep their dependency hedges trimmed, once these are used recursively (e.g. an optional dependency of an optional dependency, maybe with some platform/tag selectors stirred in), it can become rather difficult to determine whether the state of an environment correctly fulfills all of them.</p>
+<p><code>dependency-groups</code>/<code>include-group</code> (per PEP-735) will make things <em>more</em> complicated for users, as their dependencies start using this syntax, and more terrifyingly, <em>combining</em> it with <code>optional-dependencies</code>/<code>[extra]</code>.</p>
+<p>My specific use case is testing repackaged python packages during a build for <code>conda-forge</code>, which presently has no concept of optional dependencies, much less python's specific conventions, so we're stuck with either &quot;kitchen sinking,&quot; all <code>[extras]</code> or inventing virtual packages. In either case, the <code>package</code>-with-<code>[extras]</code>-under-test should have been installed, but likely <em>won't</em> appear as the dependency of another package, so would evade detection with the current <code>uv pip check</code>, or <code>pip check</code>.</p>
+<h3>Example</h3>
+<p>For <code>[ex,tras]</code>, likely just one argument would be needed, notionally which presumably could be either be given multiple times or further comma-separated.</p>
+<pre><code class="language-bash">~$ uv pip check --help
+Verify installed packages have compatible dependencies
+
+Usage: uv pip check [OPTIONS]
+
+Options:
+      --check-with-extra &lt;PACKAGE&lt;[EXTRA&lt;,...&gt;]&gt;,...&gt;  Check given packages with (optional) optional [extra] dependencies
+      --system                                         Check packages in the system Python environment [env: UV_SYSTEM_PYTHON=]
+</code></pre>
+<p>Not sure what to do about PEP-735, as it appears that will not have a pithy <code>requirements.txt</code>-compatible representation, but perhaps <code>--check-dep-groups</code> could be entirely separate, but reuse the square bracket convention.</p>
+<p>Running against a (potentially interactively edited) environment:</p>
+<pre><code class="language-bash">~$ uv pip check --check-optional fastapi[all] --check-optional strawberry-graphql[fastapi,pydantic]
+Using Python 3.xx.xx environment at: ~/projects/my-project/.venv
+Checked xxx packages in xxxms
+
+uvicorn-standard[standard] 0.34.3 requires httptools &gt;=0.6.2 but httptools 0.6.1 is installed
+</code></pre>
+<p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @bollwyvl on 2025-06-11 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 20:09</div>
+            <div class="timeline-body"><p>I think the solution here is probably to record requested extras during installation so <code>pip check</code> can read it, rather than adding CLI flags.</p>
+<p>I'm not quite sure what you expect for dependency groups? That's not an installable unit in the same way as <code>foo[bar]</code>, so there's no environment &quot;coherence&quot; to check for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-06-11 20:51</div>
+            <div class="timeline-body"><p>I expect trying to record extras in installation metadata and trying to rely on it is going to have edge cases that don't work.</p>
+<p>What if extras was requested but wasn't met? What if extras was requested by user on one install but then not requested on the next install by a transative dependency?</p>
+<p>pip check is designed to validate if a users environment is consistent, not that it fufils certain requirements.</p>
+<p>If you want to check a users environment is consistent and fufils certain requirements maybe it makes sense for something like <code>pip check -r requirements.txt</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 22:56</div>
+            <div class="timeline-body"><blockquote>
+<p>What if extras was requested but wasn't met?</p>
+</blockquote>
+<p>What does this mean? Wouldn't the install fail?</p>
+<blockquote>
+<p>What if extras was requested by user on one install but then not requested on the next install by a transitive dependency?</p>
+</blockquote>
+<p>That's a good question, I'm not sure what the best option is there. It certainly gets complicated.</p>
+<blockquote>
+<p>pip check is designed to validate if a users environment is consistent, not that it fufils certain requirements.</p>
+</blockquote>
+<p>Yeah I agree with this — this is the crux of my confusion with the <code>dependency-groups</code> part of the request in particular.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bollwyvl">@bollwyvl</a> on 2025-06-11 23:02</div>
+            <div class="timeline-body"><blockquote>
+<p>confusion with the <code>dependency-groups</code></p>
+</blockquote>
+<p>Indeed! I just don't know <em>how</em> it will play out, once multiple tools are in the field, as the spec is <a href="https://peps.python.org/pep-0735/#overlapping-install-ux-with-extras">pretty vague</a>.</p>
+<blockquote>
+<blockquote>
+<p><strong>Overlapping Install UX with Extras</strong></p>
+<p>Tools MAY choose to provide the same interfaces for installing Dependency Groups as they do for installing extras.</p>
+</blockquote>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bollwyvl">@bollwyvl</a> on 2025-06-11 23:03</div>
+            <div class="timeline-body"><blockquote>
+<p>pip check -r requirements.txt</p>
+</blockquote>
+<p>Woooee! Might as well throw <code>--constraints</code> on the barby, too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-06-12 13:54</div>
+            <div class="timeline-body"><p>Yes, you would need all the flags that could affect what packages can be selected. Thinking about it this can already by acheived in a few steps with <code>uv pip freeze</code> and <code>uv pip compile</code>.</p>
+<ol>
+<li>Output current environment with <code>uv pip freeze</code> say to <code>current_environment.txt</code></li>
+<li>Use <code>uv pip compile</code> command with requirements and constraints specifying all the extras and dependency groups you want, where:
+a.  <code>current_environment.txt</code> is set as the output file
+b. Do not pass an <code>--upgrade</code> command or anything that eagerly updates anything
+c. Do not pass <code>--universal</code> or anything that would select for a different platform or Python version</li>
+<li>Validate <code>current_environment.txt</code> has not changed</li>
+</ol>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

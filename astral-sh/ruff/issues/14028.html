@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Detect unintended tuple creation from trailing commas in boolean expressions - astral-sh/ruff #14028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Detect unintended tuple creation from trailing commas in boolean expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14028">#14028</a>
+        opened by <a href="https://github.com/l1n">@l1n</a>
+        on 2024-10-31 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/l1n">@l1n</a> on 2024-10-31 23:11</div>
+            <div class="timeline-body"><p>While Ruff currently detects trailing commas that create unintended tuples in direct <code>if</code> statement conditions, it doesn't detect similar issues when the tuple is created in a variable assignment and then used in control flow. This can lead to subtle bugs where boolean expressions become truthy tuples instead of boolean values.</p>
+<h2>Description</h2>
+<p>Consider this code pattern:</p>
+<pre><code class="language-python"># Currently detected by Ruff
+if (condition1 or condition2(),):  # Ruff warns about this
+    ...
+
+# But not detected
+should_run_tests = (
+    condition1() or condition2(),  # No warning
+)
+if should_run_tests:  # Bug: should_run_tests is always truthy (it's a tuple)
+    ...
+</code></pre>
+<p>The trailing comma creates a single-element tuple, which is always truthy in Python boolean contexts. This is particularly problematic because:</p>
+<ol>
+<li>The code appears to be a standard boolean expression at first glance</li>
+<li>The pattern is common in multi-line boolean expressions for readability (which is how this manifested in our codebase...)</li>
+<li>The bug is subtle and may not be caught by tests (tuple is always truthy)</li>
+<li>Type checkers like PyRight only catch this with explicit type annotations (which don't really cover the if True footgun)</li>
+<li>The pattern is particularly dangerous in control flow contexts where boolean evaluation is expected</li>
+</ol>
+<h2>Current Behavior</h2>
+<ul>
+<li>Ruff detects unintended tuple creation in direct <code>if</code> statement conditions</li>
+<li>Does not detect similar issues in variable assignments</li>
+</ul>
+<h2>Proposed FR</h2>
+<p>Extend the existing rule, <a href="https://docs.astral.sh/ruff/rules/if-tuple/">F634</a> (or create a new one) to:</p>
+<ol>
+<li><p>Detect trailing commas in parenthesized boolean expressions involving:</p>
+<ul>
+<li><code>and</code>, <code>or</code> operators</li>
+<li>Function calls that typically return booleans (e.g., methods named <code>is_*</code>, <code>has_*</code>, <code>should_*</code>)</li>
+<li>Boolean constants (<code>True</code>, <code>False</code>)</li>
+</ul>
+</li>
+<li><p>Consider context clues that suggest boolean intent:</p>
+<ul>
+<li>Variable names with boolean prefixes (<code>is_*</code>, <code>has_*</code>, <code>should_*</code>)</li>
+<li>Usage in control flow contexts (<code>if</code>, <code>while</code>, etc.)</li>
+<li>Type annotations (<code>: bool</code>)</li>
+</ul>
+</li>
+</ol>
+<h2>Example Cases</h2>
+<pre><code class="language-python"># Should trigger warnings:
+should_run_tests = (
+    is_devbox() or is_local(),  # Trailing comma creates tuple
+)
+
+has_permission = (
+    check_admin() or
+    check_owner() or
+    check_write_access(),  # Trailing comma
+)
+
+# Should not trigger warnings:
+valid_tuple = (
+    1,
+)
+
+config_values = (
+    get_config(&quot;a&quot;),
+    get_config(&quot;b&quot;),
+)
+</code></pre>
+<h2>Example Error Message</h2>
+<pre><code>error: Trailing comma creates a tuple in boolean expression context, which is always truthy
+   │
+12 │     should_run_tests = (condition1() or condition2(),)
+   │                                                     ^ trailing comma creates tuple
+   │
+   = help: Remove the trailing comma to create a boolean expression
+   = note: Single-element tuples are always truthy in boolean contexts
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-01 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-11-01 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2024-11-01 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/l1n">@l1n</a> on 2024-11-11 23:14</div>
+            <div class="timeline-body"><p>Hi @MichaReiser! Sorry to bump, but I was curious whether this seemed feasible to support in F634 or something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-12 08:12</div>
+            <div class="timeline-body"><p>I don't think this should be handled by F634. That rule is explicitly scoped around if-conditions,</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

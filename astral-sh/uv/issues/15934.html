@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support read-only cache directories - astral-sh/uv #15934</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support read-only cache directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15934">#15934</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-18 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-18 16:47</div>
+            <div class="timeline-body"><p>Currently, uv fails if a populated cache is read-only. We should not need to modify a populated cache, so we should be able to support a read-only cache.</p>
+<pre><code class="language-console">$ sudo rm -rf a
+$ uv venv -c
+$ UV_CACHE_DIR=a uv pip install tqdm
+$ sudo chmod -R a-w a
+$ uv venv -c
+$ UV_CACHE_DIR=a uv pip install tqdm
+error: failed to open file `a/sdists-v9/.git`: Permission denied (os error 13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15888.html">astral-sh/uv#15888</a> on 2025-09-18 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shige-ta">@shige-ta</a> on 2025-09-20 12:28</div>
+            <div class="timeline-body"><p>I can send a Phase-1 PR that makes UV_CACHE_DIR usable even when read-only:
+– Detect RO cache and route all mutable state (indexes, temp metadata, GC markers) to a separate state dir.
+– Open cache files as read-only; skip/init-free .git in sdists-*.
+– Emit a one-line note instead of failing with EACCES.
+This keeps caches immutable and unblocks Docker/HPC images with prewarmed RO caches. Follow-ups could add multiple cache layers (ro:ro:rw) and docs. Does that sound acceptable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-20 17:46</div>
+            <div class="timeline-body"><p>That sounds great, but I think fallback to a separate temporary directory for writes should be a secondary goal, if we can avoid doing it in the first pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-09-20 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-23 11:46</div>
+            <div class="timeline-body"><p>There are two separate items: The simpler one is allowing caches to be read-only when there are no modifications necessary, and are more complex feature where we use a separate state dir. For now, I'd focus on the first, simpler one, fixing the git permission denied error to start would be a great PR on its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nguu0123">@nguu0123</a> on 2025-09-28 19:28</div>
+            <div class="timeline-body"><p>the simpler one seems to be a good first issue, can I try implementing it @konstin ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-29 09:33</div>
+            <div class="timeline-body"><p>Feel free to open a PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Oblynx">@Oblynx</a> on 2025-12-11 18:29</div>
+            <div class="timeline-body"><p>This idea would unblock a workflow where some packages are shipped with a docker image read-only, while the user should still be able to install whatever else they want on top. Currently, the 2 ways forward are:</p>
+<ol>
+<li>2-layer environment: system python + venv. This is not well supported by <code>uv</code> and needs to use the <code>uv pip</code> interface instead of <code>uv sync</code> to interact with the venv. See also: https://github.com/astral-sh/uv/issues/5737</li>
+<li>Completely separate venvs, with the packages downloaded 2 times and therefore double the disk footprint.</li>
+</ol>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In a workspace, `uv sync` does not respect some environment variables for workspace members - astral-sh/uv #10680</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>In a workspace, `uv sync` does not respect some environment variables for workspace members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10680">#10680</a>
+        opened by <a href="https://github.com/wsascha">@wsascha</a>
+        on 2025-01-16 14:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wsascha">@wsascha</a> on 2025-01-16 14:25</div>
+            <div class="timeline-body"><p>It seems that the <code>UV_INDEX_*_USERNAME</code> and <code>UV_INDEX_*_PASSWORD</code> env vars are not considered for / propagated to workspace members when calling <code>uv sync</code>.</p>
+<p>An MWE could look like the following (given that you have an index at hand that requires auth):</p>
+<h3>Workspace <code>pyproject.toml</code></h3>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;bar&quot;]
+
+[tool.uv.sources]
+bar = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;packages/bar&quot;]
+</code></pre>
+<h3>Member <code>packages/bar/pyproject.toml</code></h3>
+<pre><code class="language-toml">[project]
+name = &quot;bar&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;baz&quot;]
+
+[tool.uv.sources]
+baz = { index = &quot;my-index&quot; }
+
+[[tool.uv.index]]
+name = &quot;my-index&quot;
+# url = &quot;https://&lt;USERNAME&gt;:&lt;PASSWORD&gt;@example.com/simple&quot;
+url = &quot;https://example.com/simple&quot;
+explicit = true
+</code></pre>
+<p>If I explicitly provide <code>&lt;USERNAME&gt;</code> and <code>&lt;PASSWORD&gt;</code> in the URL (commented out line) the &quot;baz&quot; project can be retrieved.</p>
+<p>If I set the URL as is and provide the env vars as in</p>
+<pre><code class="language-sh">UV_INDEX_MY_INDEX_USERNAME=&lt;USERNAME&gt; UV_INDEX_MY_INDEX_PASSWORD=&lt;PASSWORD&gt; uv sync
+</code></pre>
+<p>the &quot;baz&quot; project download fails with <code>401 Unauthorized</code>.</p>
+<h3>Workaround</h3>
+<p>If I explicitly set the index in the workspace <code>pyproject.toml</code>, adding</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;my-index&quot;
+url = &quot;https://example.com/simple&quot;
+explicit = true
+</code></pre>
+<p>the project can be retrieved.</p>
+<h3>Conclusion</h3>
+<p>I think this is undesired behavior, thus opening this issue.</p>
+<p>Thanks for your great work, I really love <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 15:15</div>
+            <div class="timeline-body"><p>I can try it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-16 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-16 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10688.html">astral-sh/uv#10688</a> on 2025-01-16 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-17 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-17 18:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:57 UTC
+    </footer>
+</body>
+</html>

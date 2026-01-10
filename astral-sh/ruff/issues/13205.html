@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive S311 with `random` module - astral-sh/ruff #13205</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive S311 with `random` module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13205">#13205</a>
+        opened by <a href="https://github.com/DanielYang59">@DanielYang59</a>
+        on 2024-09-02 03:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-09-02 03:41</div>
+            <div class="timeline-body"><p>Hi ruff team,</p>
+<p>I noticed <code>ruff</code> might flag the following code snippet with <a href="https://docs.astral.sh/ruff/rules/suspicious-non-cryptographic-random-usage/">S311 (suspicious-non-cryptographic-random-usage) </a> when using the built-in <code>random</code> module, but not with the random generator from <code>numpy</code>:</p>
+<ul>
+<li>Is the difference in behavior between <code>random</code> and <code>numpy</code> intended?</li>
+<li>Why this would be considered a possible cryptographic usage? It just generates an array of random integers.</li>
+</ul>
+<p>With:</p>
+<pre><code class="language-python3">import random
+
+import numpy as np
+
+
+random_ints = [random.randint(0, 10) for _ in range(5)]  # triggers S311 flag
+
+rng = np.random.default_rng()
+random_ints_np_0 = [rng.integers(0, 10) for _ in range(5)]  # no S311 flag
+random_ints_np_1 = rng.integers(0, 10, size=5)  # no S311 flag
+</code></pre>
+<p>I got:</p>
+<pre><code>&gt;&gt;&gt; ruff check ruff-s311.py --select S311
+simple-ruff-crpto.py:6:16: S311 Standard pseudo-random generators are not suitable for cryptographic purposes
+  |
+6 | random_ints = [random.randint(0, 10) for _ in range(5)]
+  |                ^^^^^^^^^^^^^^^^^^^^^ S311
+7 | 
+8 | rng = np.random.default_rng()
+  |
+
+Found 1 error.
+</code></pre>
+<h3>Ruff version</h3>
+<p><code>ruff 0.6.3</code></p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 08:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the difference in behavior between random and numpy intended?</p>
+</blockquote>
+<p>I just checked, and <code>S311</code> does not support <code>numpy</code>, so the <code>numpy</code> calls aren't flagged. Adding support for <code>numpy</code> does make sense but I suspect that it may require type inference to reason about that <code>rng</code> is an instance of <code>np.random.default_rng</code>.</p>
+<blockquote>
+<p>Why this would be considered a possible cryptographic usage? It just generates an array of random integers.</p>
+</blockquote>
+<p>S311 flags all usages of random because it's hard for a static analysis tool to determine if the random number is used in a cryptographic context or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-09-02 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-09-02 09:29</div>
+            <div class="timeline-body"><p>Thanks a lot for the explanation!</p>
+<blockquote>
+<p>S311 flags all usages of random because it's hard for a static analysis tool to determine if the random number is used in a cryptographic context or not.</p>
+</blockquote>
+<p>I fully understand the difficulty, but still feels it's a bit unconvincing to suspect all usage of <code>random</code> to be cryptographic without any evidence (the var name being <code>token/password</code> for example). But I guess it's better safe than sorry, and one could globally ignore this rule if there are too many false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DanielYang59 on 2024-09-02 09:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

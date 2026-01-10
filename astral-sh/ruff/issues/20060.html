@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST003 false positive for parameters with spaces like `/{ x }` - astral-sh/ruff #20060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FAST003 false positive for parameters with spaces like `/{ x }`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20060">#20060</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-25 01:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-25 01:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/fast-api-unused-path-parameter/"><code>fast-api-unused-path-parameter</code> (FAST003)</a> trims spaces from parameters in a path, treating e.g. <code>/{ x }</code> as <code>/{x}</code>, but this leads to false positives because <a href="https://github.com/encode/starlette/blob/0.47.3/starlette/routing.py#L121">FastAPI does not recognize spaces around parameters</a>. FAST003 should only apply when FastAPI would detect a parameter. <a href="https://play.ruff.rs/f520e4b9-c4ee-4627-9e9d-56bfd6e5aed2">The following example</a> shows that FastAPI treats <code>/{ x }</code> literally and that the function parameter introduced by FAST003’s fix is detected as a query parameter, not as part of the path.</p>
+<pre><code class="language-console">$ cat &gt;fast003.py &lt;&lt;'# EOF'
+from fastapi import FastAPI
+app = FastAPI()
+@app.get(&quot;/{ x }&quot;)
+async def f():
+    return {&quot;x&quot;: x}
+# EOF
+
+$ pip install -q 'fastapi[standard]'
+
+$ fastapi dev fast003.py &gt;/dev/null 2&gt;&amp;1
+
+$ curl http://127.0.0.1:8000/foo
+{&quot;detail&quot;:&quot;Not Found&quot;}
+
+$ curl 'http://127.0.0.1:8000/%7B%20x%20%7D'
+Internal Server Error
+
+$ ruff --isolated check fast003.py --select FAST003 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ fastapi dev fast003.py &gt;/dev/null 2&gt;&amp;1
+
+$ curl http://127.0.0.1:8000/foo
+{&quot;detail&quot;:&quot;Not Found&quot;}
+
+$ curl 'http://127.0.0.1:8000/%7B%20x%20%7D'
+{&quot;detail&quot;:[{&quot;type&quot;:&quot;missing&quot;,&quot;loc&quot;:[&quot;query&quot;,&quot;x&quot;],&quot;msg&quot;:&quot;Field required&quot;,&quot;input&quot;:null}]}
+
+$ curl 'http://127.0.0.1:8000/%7B%20x%20%7D?x=1'
+{&quot;x&quot;:&quot;1&quot;}
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.10 (c68ff8d90 2025-08-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20077.html">astral-sh/ruff#20077</a> on 2025-08-25 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-25 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-25 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-08-29 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

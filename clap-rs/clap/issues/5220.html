@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The clap macro always requires the `num_args` param for clap_complete to work - clap-rs/clap #5220</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The clap macro always requires the `num_args` param for clap_complete to work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5220">#5220</a>
+        opened by <a href="https://github.com/hugoclrd">@hugoclrd</a>
+        on 2023-11-22 18:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hugoclrd">@hugoclrd</a> on 2023-11-22 18:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.74.0</p>
+<h3>Clap Version</h3>
+<p>4.4.8</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{Generator, Shell};
+
+#[derive(Subcommand, PartialEq, Clone, Debug)]
+enum Command {
+    /// Create and scaffold a new project
+    #[clap(name = &quot;new&quot;, bin_name = &quot;new&quot;)]
+    New(GenerateProject),
+}
+
+#[derive(Parser, PartialEq, Clone, Debug)]
+struct GenerateProject {
+    /// Project's name
+    // #[clap(num_args = 1)] // &lt;---- num_args must be defined, even for bool
+    pub name: String,
+}
+
+#[derive(Parser, PartialEq, Clone, Debug)]
+#[clap(version = env!(&quot;CARGO_PKG_VERSION&quot;), name = &quot;clarinet&quot;, bin_name = &quot;clarinet&quot;)]
+struct Opts {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+fn main() {
+    let cmd = Opts::command();
+    let mut output_buffer = Vec::new();
+    Shell::Zsh.generate(&amp;cmd, &amp;mut output_buffer);
+    assert!(output_buffer.len() &gt; 0);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<p>Here is my Cargo.toml</p>
+<pre><code>[package]
+name = &quot;hello_world&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = &quot;4.4.8&quot;, features = [&quot;derive&quot;] }
+clap_complete = { version = &quot;4.4.4&quot; }
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>Throws this error:</p>
+<pre><code>thread 'main' panicked at.../clap_complete-4.4.4/src/generator/utils.rs:117:39:
+built
+</code></pre>
+<p>Also, I had the error for <code>Shell::Zsh</code> but not for <code>Shell::Bash</code></p>
+<p>Because of the <code>expect(&quot;built&quot;)</code> at this line: https://github.com/clap-rs/clap/blob/master/clap_complete/src/generator/utils.rs#L117</p>
+<h3>Expected Behaviour</h3>
+<p>Two ways to avoid it:</p>
+<ul>
+<li>The <code>num_args</code> should not be required</li>
+<li>The <code>clap</code> macro shouldn't compile if it panics</li>
+</ul>
+<h3>Additional Context</h3>
+<p>I found this issue while migrating from clap@3 to clap@4, so I only have this error with clap_complete@4 (but it was working under clap_generate@3)</p>
+<h3>Debug Output</h3>
+<pre><code class="language-console">    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/hello_world`
+[  clap_complete::shells::zsh]  get_args_of
+[  clap_complete::shells::zsh]  write_opts_of
+[  clap_complete::shells::zsh]  write_flags_of;
+[clap_complete::generator::utils]       flags: name=proj
+[  clap_complete::shells::zsh]  write_positionals_of;
+[  clap_complete::shells::zsh]  get_subcommands_of: Has subcommands...true
+[clap_complete::generator::utils]       subcommands: name=proj
+[clap_complete::generator::utils]       subcommands: Has subcommands...true
+[clap_complete::generator::utils]       subcommands:iter: name=new, bin_name=new
+[  clap_complete::shells::zsh]  get_subcommands_of:iter: parent=proj, name=new, bin_name=new
+[  clap_complete::shells::zsh]  parser_of: p=proj, bin_name=new
+[  clap_complete::shells::zsh]  parser_of: p=new, bin_name=new
+[  clap_complete::shells::zsh]  get_args_of
+[  clap_complete::shells::zsh]  write_opts_of
+[  clap_complete::shells::zsh]  write_flags_of;
+[clap_complete::generator::utils]       flags: name=new
+thread 'main' panicked at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/generator/utils.rs:117:39:
+built
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/std/src/panicking.rs:597:5
+   1: core::panicking::panic_fmt
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/panicking.rs:72:14
+   2: core::panicking::panic_display
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/panicking.rs:168:5
+   3: core::panicking::panic_str
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/panicking.rs:152:5
+   4: core::option::expect_failed
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/option.rs:1988:5
+   5: core::option::Option&lt;T&gt;::expect
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/option.rs:898:21
+   6: clap_complete::generator::utils::flags::{{closure}}
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/generator/utils.rs:117:22
+   7: core::ops::function::impls::&lt;impl core::ops::function::FnMut&lt;A&gt; for &amp;mut F&gt;::call_mut
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/ops/function.rs:294:13
+   8: &lt;core::slice::iter::Iter&lt;T&gt; as core::iter::traits::iterator::Iterator&gt;::find
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/slice/iter/macros.rs:302:24
+   9: &lt;core::iter::adapters::filter::Filter&lt;I,P&gt; as core::iter::traits::iterator::Iterator&gt;::next
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/iter/adapters/filter.rs:59:9
+  10: &lt;core::iter::adapters::cloned::Cloned&lt;I&gt; as core::iter::traits::iterator::Iterator&gt;::next
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/iter/adapters/cloned.rs:40:9
+  11: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/alloc/src/vec/spec_from_iter_nested.rs:26:32
+  12: &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter::SpecFromIter&lt;T,I&gt;&gt;::from_iter
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/alloc/src/vec/spec_from_iter.rs:33:9
+  13: &lt;alloc::vec::Vec&lt;T&gt; as core::iter::traits::collect::FromIterator&lt;T&gt;&gt;::from_iter
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/alloc/src/vec/mod.rs:2749:9
+  14: core::iter::traits::iterator::Iterator::collect
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/iter/traits/iterator.rs:2053:9
+  15: clap_complete::generator::utils::flags
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/generator/utils.rs:116:5
+  16: clap_complete::shells::zsh::write_flags_of
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/shells/zsh.rs:540:14
+  17: clap_complete::shells::zsh::get_args_of
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/shells/zsh.rs:324:17
+  18: clap_complete::shells::zsh::get_subcommands_of
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/shells/zsh.rs:236:31
+  19: &lt;clap_complete::shells::zsh::Zsh as clap_complete::generator::Generator&gt;::generate
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/shells/zsh.rs:54:31
+  20: &lt;clap_complete::shells::shell::Shell as clap_complete::generator::Generator&gt;::generate
+             at &lt;path_to_crates.io&gt;/clap_complete-4.4.4/src/shells/shell.rs:89:27
+  21: hello_world::main
+             at ./src/main.rs:28:5
+  22: core::ops::function::FnOnce::call_once
+             at /rustc/79e9716c980570bfd1f666e3b16ac583f0168962/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @hugoclrd on 2023-11-22 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../stx-labs/clarinet/pulls/1263.html">stx-labs/clarinet#1263</a> on 2023-11-22 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-22 19:30</div>
+            <div class="timeline-body"><p>If you follow the <a href="https://docs.rs/clap_complete/latest/clap_complete/#example">example</a>, you need to be using the top-level <code>generate</code> and <code>generate_to</code> functions for the relevant invariants to be prepared.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hugoclrd">@hugoclrd</a> on 2023-11-23 16:05</div>
+            <div class="timeline-body"><p>Thanks for your answer @epage.
+Turns out that using <code>generate</code> fixed my issues with zsh but lead to more issues in bash, but I was able to debug that more easily.</p>
+<p>When looking  at the example in the doc of clap_complete I was a bit confused because the first arg it takes is &quot;generator&quot;, but you actually need to pass a <code>Shell</code>, but I guess it's kind of the same thing in this context.</p>
+<p>I have a question that isn't related to the issue but probably because of the way the <code>clap</code> macro is used in this project, with the code above, the <code>help</code> and <code>version</code> command return an error</p>
+<pre><code class="language-rust">    let r = cmd.try_get_matches_from_mut([&quot;proj&quot;, &quot;new&quot;, &quot;ok&quot;]);
+    println!(&quot;r: {}&quot;, r.is_ok()); // true
+    let r = cmd.try_get_matches_from_mut([&quot;proj&quot;, &quot;help&quot;]);
+    println!(&quot;r: {}&quot;, r.is_ok()); // false
+    let r = cmd.try_get_matches_from_mut([&quot;proj&quot;, &quot;version&quot;]);
+    println!(&quot;r: {}&quot;, r.is_ok()) // false
+</code></pre>
+<p>In the terminal, I do get the right help or version, but displayed in red. Any idea why? How I can fix?
+Thx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hugoclrd">@hugoclrd</a> on 2023-11-23 16:05</div>
+            <div class="timeline-body"><p>Let me know if I should rather ask on SO or in the discussions maybe?</p>
+<p>I can close this issue anyway, thanks for your help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hugoclrd on 2023-11-23 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-11-24 01:53</div>
+            <div class="timeline-body"><blockquote>
+<p>In the terminal, I do get the right help or version, but displayed in red. Any idea why? How I can fix?</p>
+</blockquote>
+<p>That is very strange.  Feel free to start an issue or discussion with a full code sample.</p>
+<p>btw</p>
+<pre><code class="language-rust">#[clap(version = env!(&quot;CARGO_PKG_VERSION&quot;), name = &quot;clarinet&quot;, bin_name = &quot;clarinet&quot;)]
+</code></pre>
+<p>can be written as</p>
+<pre><code class="language-rust">#[clap(version, name = &quot;clarinet&quot;, bin_name = &quot;clarinet&quot;)]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:32 UTC
+    </footer>
+</body>
+</html>

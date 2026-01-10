@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken `uv tool list` after updating to 0.9.15 - astral-sh/uv #16949</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Broken `uv tool list` after updating to 0.9.15</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16949">#16949</a>
+        opened by <a href="https://github.com/powercoconola">@powercoconola</a>
+        on 2025-12-03 02:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-03 02:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I have 0.9.14 installed, all packages work fine:</p>
+<pre><code>$ uv tool list
+black v25.9.0
+- black
+- blackd
+</code></pre>
+<p>After upgrading to 0.9.15, some are broken:</p>
+<pre><code>warning: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'        
+ (run `uv tool install black --reinstall` to reinstall)
+</code></pre>
+<p>Doesn't happen with all packages, just some. I tested 0.9.13 and that also works fine.</p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>0.9.15</p>
+<h3>Python version</h3>
+<p>3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @powercoconola on 2025-12-03 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-03 02:31</div>
+            <div class="timeline-body"><p>Tried to get a verbose output:</p>
+<pre><code>$ uv tool run black -vv
+error: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-03 02:32</div>
+            <div class="timeline-body"><p>Thanks for filing, we'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-03 02:34</div>
+            <div class="timeline-body"><p>Ran on 0.9.15 and 0.9.14, same output:</p>
+<pre><code>$ uv python list --only-installed
+cpython-3.14.0-windows-x86_64-none     C:\Users\username\AppData\Roaming\uv\python\cpython-3.14.0-windows-x86_64-none\python.exe
+cpython-3.13.7-windows-x86_64-none     C:\Users\username\AppData\Roaming\uv\python\cpython-3.13.7-windows-x86_64-none\python.exe
+cpython-3.12.12-windows-x86_64-none    C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none    C:\Users\username\AppData\Roaming\uv\python\cpython-3.11.13-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none    C:\Users\username\AppData\Roaming\uv\python\cpython-3.10.18-windows-x86_64-none\python.exe
+</code></pre>
+<p>Not sure why it is looking for 3.12.11 when I have 3.12.12 installed it looks like, interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 21:07</div>
+            <div class="timeline-body"><p>Still broken after updating to 0.9.16</p>
+<pre><code>&gt; powershell -NoProfile -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.9.16/install.ps1 | iex&quot;
+Downloading uv 0.9.16 (x86_64-pc-windows-msvc)
+Installing to C:\Users\username\.local\bin
+  uv.exe
+  uvx.exe
+  uvw.exe
+everything's installed!
+
+&gt; uv tool list
+warning: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+ (run `uv tool install black --reinstall` to reinstall)
+
+&gt; powershell -NoProfile -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.9.14/install.ps1 | iex&quot;
+Downloading uv 0.9.14 (x86_64-pc-windows-msvc)
+Installing to C:\Users\username\.local\bin
+  uv.exe
+  uvx.exe
+  uvw.exe
+everything's installed!
+
+&gt; uv tool list
+black v25.9.0
+- black
+- blackd
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-08 22:45</div>
+            <div class="timeline-body"><p>@samypr100 I feel like https://github.com/astral-sh/uv/pull/16894 is the only change on Windows that could be relevant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-08 22:59</div>
+            <div class="timeline-body"><p>I'll take a look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-08 23:01</div>
+            <div class="timeline-body"><p>There's just not much in the diff. It's a pretty weird regression though.</p>
+<p>@powercoconola Does running the <code>black</code> that you've installed with uv work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 23:04</div>
+            <div class="timeline-body"><blockquote>
+<p>There's just not much in the diff. It's a pretty weird regression though.</p>
+<p><a href="https://github.com/powercoconola">@powercoconola</a> Does running the <code>black</code> that you've installed with uv work?</p>
+</blockquote>
+<pre><code>&gt; uv self version
+uv 0.9.16 (a63e5b62e 2025-12-06)
+
+&gt; uv tool run black -vvv
+error: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+
+&gt; black
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 23:06</div>
+            <div class="timeline-body"><p>Also the suggested fix doesn't fix the problem, just noticed...</p>
+<pre><code>&gt; uv tool install black --reinstall
+error: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 23:11</div>
+            <div class="timeline-body"><p>Ran the suggested command with verbose output</p>
+<pre><code>&gt; uv tool install black --reinstall -vvv
+DEBUG uv 0.9.16 (a63e5b62e 2025-12-06)
+TRACE Checking lock for `C:\Users\username\AppData\Local\uv\cache` at `AppData\Local\uv\cache\.lock`
+DEBUG Acquired shared lock for `C:\Users\username\AppData\Local\uv\cache`
+DEBUG Using request timeout of 30s
+DEBUG Searching for Python 3.12 in managed installations
+DEBUG Searching for managed installations at `AppData\Roaming\uv\python`
+DEBUG Skipping managed installation `cpython-3.14.0-windows-x86_64-none`: does not satisfy `3.12`
+DEBUG Skipping managed installation `cpython-3.13.7-windows-x86_64-none`: does not satisfy `3.12`
+DEBUG Found managed installation `cpython-3.12.12-windows-x86_64-none`
+TRACE Querying interpreter executable at C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\python.exe
+DEBUG Found `cpython-3.12.12-windows-x86_64-none` at `C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\python.exe` (managed installations)
+TRACE Checking lock for `uv` at `uv\.lock`
+DEBUG Acquired exclusive lock for `uv`
+DEBUG Checking for Python environment at: `uv\black`
+TRACE Querying interpreter executable at C:\Users\username\uv\black\Scripts\python.exe
+DEBUG Released lock at `C:\Users\username\uv\.lock`
+DEBUG Released lock at `C:\Users\username\AppData\Local\uv\cache\.lock`
+TRACE Error trace: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+\x1b[31m[stderr]\x1b[39m
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+
+error: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-08 23:31</div>
+            <div class="timeline-body"><p>Does running <code>black</code> with 0.9.14 work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 23:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Does running <code>black</code> with 0.9.14 work?</p>
+</blockquote>
+<p>Yes.</p>
+<pre><code>&gt; uv self version
+uv 0.9.16 (a63e5b62e 2025-12-06)
+
+&gt; uv tool run black -vvv
+error: Querying Python at `C:\Users\username\uv\black\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+
+&gt; powershell -NoProfile -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.9.14/install.ps1 | iex&quot;
+Downloading uv 0.9.14 (x86_64-pc-windows-msvc)
+Installing to C:\Users\username\.local\bin
+  uv.exe
+  uvx.exe
+  uvw.exe
+everything's installed!
+
+&gt; uv tool run black -vvv
+Downloading black (1.4MiB)
+ Downloaded black
+Installed 8 packages in 945ms
+Usage: black [OPTIONS] SRC ...
+
+One of 'SRC' or 'code' is required.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 23:39</div>
+            <div class="timeline-body"><p>It looks like to reproduce:</p>
+<p>Install uv 0.9.14</p>
+<pre><code>UV_INDEX=&lt;private_index&gt;
+UV_NO_PROGRESS=True
+UV_PROJECT_ENVIRONMENT=.venv_username
+UV_PYTHON=3.12
+UV_PYTHON_PREFERENCE=only-managed
+UV_TOOL_BIN_DIR=C:\Users\username\.local\bin
+UV_TOOL_DIR=C:\Users\username\uv\
+</code></pre>
+<p><code>uv python install 3.12.11</code>
+<code>uv tool install black</code>
+<code>uv python install 3.12.12</code>
+<code>uv python uninstall 3.12.11</code>
+Install uv 0.9.15
+<code>uv tool run black</code> Should fail.</p>
+<p>Does that example work on your machines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-08 23:51</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like to reproduce:</p>
+<p>Install uv 0.9.14</p>
+<pre><code>UV_INDEX=&lt;private_index&gt;
+UV_NO_PROGRESS=True
+UV_PROJECT_ENVIRONMENT=.venv_username
+UV_PYTHON=3.12
+UV_PYTHON_PREFERENCE=only-managed
+UV_TOOL_BIN_DIR=C:\Users\username\.local\bin
+UV_TOOL_DIR=C:\Users\username\uv\
+</code></pre>
+<p><code>uv python install 3.12.11</code> <code>uv tool install black</code> <code>uv python install 3.12.12</code> <code>uv python uninstall 3.12.11</code> Install uv 0.9.15 <code>uv tool run black</code> Should fail.</p>
+<p>Does that example work on your machines?</p>
+</blockquote>
+<p>I tried this again but this makes both 0.9.14 and 0.9.15 fail... So I wasn't able to reproduce the exact situation where &lt; 0.9.15 is successful. Not exactly sure how to reproduce this then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-09 03:01</div>
+            <div class="timeline-body"><p>@powercoconola few questions if you have some time 🙏</p>
+<p>What's the contents of your <code>&lt;tools_dir&gt;\black\pyvenv.cfg</code>? It might be possible to repro the 103 error by having <code>home</code> point to a broken or non-existent python install.</p>
+<p>Does it fail if you explicitly set <code>UV_LINK_MODE=copy</code> as an environment variable when removing/reinstalling the tool? I can potentially see a possible scenario where hardlink or symlink never worked before and it always was falling back to <code>copy</code> (with maybe a failure along the way) but then it started &quot;working&quot; again leading to such scenarios. Which could maybe explain your last comment about failing in &lt; 0.9.15 as well.</p>
+<p>In powershell, what's the output of <code>Get-ItemProperty -Path &quot;HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem&quot; -Name LongPathsEnabled</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-09 14:00</div>
+            <div class="timeline-body"><pre><code>&gt; uv tool run black -vvv
+Downloading black (1.4MiB)
+ Downloaded black
+Installed 8 packages in 945ms
+Usage: black [OPTIONS] SRC ...
+
+One of 'SRC' or 'code' is required.
+</code></pre>
+<p>In this example, we're using an ephemeral environment for black. I wonder if <code>C:\Users\username\uv\black\Scripts\black.exe</code> runs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-09 15:48</div>
+            <div class="timeline-body"><p>Upon messing with <code>black</code> so much, it seems I &quot;fixed&quot; it and can't reproduce the exact error. However, I still have the error on other packages, so I'll use <code>ruff</code> as my example now. I'll try not to &quot;fix&quot; this one. I have numerous other PCs to test this on so I'm not exactly worried I'll run out of examples.</p>
+<p>Confirming initial symptoms:</p>
+<pre><code>&gt; uv self version
+uv 0.9.14 (05814f9cd 2025-12-01)
+
+&gt; uv tool list
+ruff v0.8.0
+- ruff.exe
+
+&gt; uv tool run ruff --version
+Downloading ruff (13.9MiB)
+ Downloaded ruff
+Installed 1 package in 66ms
+ruff 0.14.8
+
+&gt; powershell -NoProfile -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.9.16/install.ps1 | iex&quot;
+Downloading uv 0.9.16 (x86_64-pc-windows-msvc)
+Installing to C:\Users\username\.local\bin
+  uv.exe
+  uvx.exe
+  uvw.exe
+everything's installed!
+
+&gt; uv tool run ruff --version
+error: Querying Python at `C:\Users\username\uv\ruff\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.7-windows-x86_64-none\python.exe'
+
+&gt; uv python list --only-installed
+cpython-3.13.6-windows-x86_64-none     AppData\Roaming\uv\python\cpython-3.13.6-windows-x86_64-none\python.exe
+cpython-3.12.12-windows-x86_64-none    AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\python.exe
+</code></pre>
+<blockquote>
+<p>What's the contents of your &lt;tools_dir&gt;\black\pyvenv.cfg?</p>
+</blockquote>
+<pre><code>&gt; cat $env:UV_TOOL_DIR/ruff/pyvenv.cfg
+home = C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.7-windows-x86_64-none
+implementation = CPython
+uv = 0.5.4
+version_info = 3.12.7
+include-system-site-packages = false
+</code></pre>
+<blockquote>
+<p>In powershell, what's the output of Get-ItemProperty -Path &quot;HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem&quot; -Name LongPathsEnabled?</p>
+</blockquote>
+<pre><code>&gt; Get-ItemProperty -Path &quot;HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem&quot; -Name LongPathsEnabled
+
+LongPathsEnabled : 0
+PSPath           : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
+PSParentPath     : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control
+PSChildName      : FileSystem
+PSDrive          : HKLM
+PSProvider       : Microsoft.PowerShell.Core\Registry
+</code></pre>
+<blockquote>
+<p>In this example, we're using an ephemeral environment for black. I wonder if C:\Users\username\uv\black\Scripts\black.exe runs?</p>
+</blockquote>
+<p>This was an odd outcome...</p>
+<pre><code>&gt; uv self version
+uv 0.9.16 (a63e5b62e 2025-12-06)
+
+&gt; C:\Users\username\uv\ruff\Scripts\ruff.exe --version
+ruff 0.8.0
+
+&gt; uv tool run ruff --version
+error: Querying Python at `C:\Users\username\uv\ruff\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.7-windows-x86_64-none\python.exe'
+
+&gt; powershell -NoProfile -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/0.9.14/install.ps1 | iex&quot;
+Downloading uv 0.9.14 (x86_64-pc-windows-msvc)
+Installing to C:\Users\username\.local\bin
+  uv.exe
+  uvx.exe
+  uvw.exe
+everything's installed!
+
+&gt; C:\Users\username\uv\ruff\Scripts\ruff.exe --version
+ruff 0.8.0
+
+&gt; uv tool run ruff --version
+ruff 0.14.8
+</code></pre>
+<p>Still working to answer your last question</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-09 16:02</div>
+            <div class="timeline-body"><p>@zanieb Given <code>LongPathsEnabled</code> is false, I don't see how the manifest change can have any impact here 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-09 16:03</div>
+            <div class="timeline-body"><p>At a glance, the pyenv.cfg does seems to be pointing at a python that does not exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-09 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Does it fail if you explicitly set UV_LINK_MODE=copy as an environment variable when removing/reinstalling the tool?</p>
+</blockquote>
+<pre><code>&gt; uv self version
+uv 0.9.16 (a63e5b62e 2025-12-06)
+
+&gt; uv tool install &lt;private-package&gt; --reinstall
+error: Querying Python at `C:\Users\username\uv\&lt;private-package&gt;\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+
+&gt; $env:UV_LINK_MODE = &quot;copy&quot;
+
+&gt; uv tool install &lt;private-package&gt; --reinstall
+error: Querying Python at `C:\Users\username\uv\&lt;private-package&gt;\Scripts\python.exe` failed with exit status exit code: 103
+
+[stderr]
+No Python at '&quot;C:\Users\username\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\python.exe'
+
+&gt; uv tool uninstall &lt;private-package&gt;
+Uninstalled 3 executables: &lt;private-executable&gt;
+</code></pre>
+<p>After that, if I run the installation commands that seems to fix the package.</p>
+<p>@samypr100 Does this answer your question? Not sure if I captured your intent here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-10 01:27</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/samypr100">@samypr100</a> Does this answer your question? Not sure if I captured your intent here</p>
+</blockquote>
+<p>Yes, thanks! Doesn't seem to be a copy vs some other mode issue at a glance.</p>
+<p>Did you run <code>uv python upgrade</code> at some point after upgrading to 0.9.15?</p>
+<p>Whats the output of <code>Get-ChildItem $env:APPDATA\uv\data\python</code> in powershell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-10 15:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you run <code>uv python upgrade</code> at some point after upgrading to 0.9.15?</p>
+</blockquote>
+<p>I did not.</p>
+<blockquote>
+<p>Whats the output of <code>Get-ChildItem $env:APPDATA\uv\data\python</code> in powershell?</p>
+</blockquote>
+<pre><code>&gt; Get-ChildItem $env:APPDATA\uv\data\python
+Get-ChildItem: Cannot find path 'C:\Users\username\AppData\Roaming\uv\data\python' because it does not exist.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-12-10 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Whats the output of <code>Get-ChildItem $env:APPDATA\uv\data\python</code> in powershell?</p>
+</blockquote>
+<pre><code>&gt; Get-ChildItem $env:APPDATA\uv\data\python
+Get-ChildItem: Cannot find path 'C:\Users\username\AppData\Roaming\uv\data\python' because it does not exist.
+
+&gt; Get-ChildItem $env:APPDATA\uv\data
+Get-ChildItem: Cannot find path 'C:\Users\username\AppData\Roaming\uv\data' because it does not exist.
+
+&gt; Get-ChildItem $env:APPDATA\uv
+
+    Directory: C:\Users\username\AppData\Roaming\uv
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          11/25/2025  1:41 PM                python
+
+
+&gt; Get-ChildItem $env:APPDATA\uv\python
+
+    Directory: C:\Users\username\AppData\Roaming\uv\python
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          11/25/2024  1:19 PM                .cache
+d----          11/25/2025  1:41 PM                .temp
+d----          11/25/2025  1:41 PM                cpython-3.12.12-windows-x86_64-none
+d----           8/14/2025  4:59 PM                cpython-3.13.6-windows-x86_64-none
+-a---          11/25/2024  1:19 PM              1 .gitignore
+-a---           2/10/2025  8:37 AM              0 .lock
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

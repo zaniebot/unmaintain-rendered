@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken f-string formatting after ruff 0.9 - astral-sh/ruff #15459</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Broken f-string formatting after ruff 0.9</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15459">#15459</a>
+        opened by <a href="https://github.com/AlexElvers">@AlexElvers</a>
+        on 2025-01-13 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexElvers">@AlexElvers</a> on 2025-01-13 17:46</div>
+            <div class="timeline-body"><p>Ruff 0.9.0/1 are introducing syntax syntax errors in f-strings with braces.</p>
+<p>While f-strings with simple sets and dicts do not remove the necessary spaces:</p>
+<pre><code class="language-shell">$ echo 'print(f&quot;{ {1, 2, 3} }&quot;)\nprint(f&quot;{ {1: 2} }&quot;)' &gt; main.py
+
+$ ruff format --diff main.py
+1 file already formatted
+</code></pre>
+<p>the spaces around the braces are removed in version 0.9.0/1, which leads to syntax errors:</p>
+<pre><code class="language-shell">$ echo 'print(f&quot;{ {1, 2, 3} - {2} }&quot;)\nprint(f&quot;{ {1: 2}.keys() }&quot;)' &gt; main.py
+
+$ ruff format --diff main.py
+--- main.py
++++ main.py
+@@ -1,2 +1,2 @@
+-print(f&quot;{ {1, 2, 3} - {2} }&quot;)
+-print(f&quot;{ {1: 2}.keys() }&quot;)
++print(f&quot;{{1, 2, 3} - {2}}&quot;)
++print(f&quot;{{1: 2}.keys()}&quot;)
+
+1 file would be reformatted
+
+$ ruff format main.py
+1 file reformatted
+
+$ ruff check main.py
+main.py:1:18: SyntaxError: f-string: single '}' is not allowed
+  |
+1 | print(f&quot;{{1, 2, 3} - {2}}&quot;)
+  |                  ^
+2 | print(f&quot;{{1: 2}.keys()}&quot;)
+  |
+
+main.py:1:25: SyntaxError: f-string: single '}' is not allowed
+  |
+1 | print(f&quot;{{1, 2, 3} - {2}}&quot;)
+  |                         ^
+2 | print(f&quot;{{1: 2}.keys()}&quot;)
+  |
+
+main.py:2:15: SyntaxError: f-string: single '}' is not allowed
+  |
+1 | print(f&quot;{{1, 2, 3} - {2}}&quot;)
+2 | print(f&quot;{{1: 2}.keys()}&quot;)
+  |               ^
+  |
+
+main.py:2:23: SyntaxError: f-string: single '}' is not allowed
+  |
+1 | print(f&quot;{{1, 2, 3} - {2}}&quot;)
+2 | print(f&quot;{{1: 2}.keys()}&quot;)
+  |                       ^
+  |
+
+Found 4 errors.
+
+$ python main.py
+  File &quot;/tmp/foo/main.py&quot;, line 1
+    print(f&quot;{{1, 2, 3} - {2}}&quot;)
+                              ^
+SyntaxError: f-string: single '}' is not allowed
+</code></pre>
+<p>Ruff 0.8.6 kept these f-strings unchanged:</p>
+<pre><code class="language-bash">$ uvx ruff@0.8.6 format --diff main.py
+1 file already formatted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2025-01-13 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-13 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 20:00</div>
+            <div class="timeline-body"><p>Thanks for reporting this. We do have code handling dictionary and other expressions that use curly braces but it only tests the expression itself rather than the left most or right most sub-expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-01-13 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15471.html">astral-sh/ruff#15471</a> on 2025-01-14 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-15 08:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

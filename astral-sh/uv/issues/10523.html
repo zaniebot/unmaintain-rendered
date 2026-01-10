@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better support for reproducible Docker images and other artifacts? - astral-sh/uv #10523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better support for reproducible Docker images and other artifacts?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10523">#10523</a>
+        opened by <a href="https://github.com/maxfriedrich">@maxfriedrich</a>
+        on 2025-01-11 21:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maxfriedrich">@maxfriedrich</a> on 2025-01-11 21:07</div>
+            <div class="timeline-body"><p>Hi, I did some research regarding reproducibility of Python artifacts recently to speed up deployments at my work by skipping unnecessary redeploys. I saw the <a href="https://docs.astral.sh/uv/guides/integration/aws-lambda/">Lambda integration docs</a> were updated to include <code>UV_NO_INSTALLER_METADATA=1</code> so uv doesn't write metadata like timestamps, which is a good step in this direction.</p>
+<p>However the output still changes with every build that doesn't use the (same) cache, like on CI or a different developer's machine.</p>
+<p>The things that change are:</p>
+<ul>
+<li>all bytecode files, a timestamp is written into the header of each one to decide when to invalidate it</li>
+<li>the file timestamps, with <code>UV_LINK_MODE=copy</code> they are set to the time they are copied</li>
+</ul>
+<p>It is possible to work around this to create a build that &quot;reproducible&quot; in the sense that</p>
+<pre><code class="language-bash">docker build --no-cache -t a1 . &amp;&amp; docker build --no-cache -t a2 . &amp;&amp; \
+docker inspect a1 &gt; a1.txt &amp;&amp; docker inspect a2 &gt; a2.txt &amp;&amp; \
+diff a1.txt a2.txt
+</code></pre>
+<p>only includes the image metadata but the layers (e.g. <code>jq &quot;.[0].RootFS&quot; a1.txt</code>) are the same. Then, as far as I understand, pushing to a container registry would output &quot;layer already exists&quot; and skip the upload and depending on the deployment, allow skipping the deployment altogether (like with AWS CDK).</p>
+<p>This is an updated Dockerfile for the first example in the docs that achieves this, but in a very awkward way: https://gist.github.com/maxfriedrich/19b933dc5b35a08d09dc8a27c905b829</p>
+<p>Diff to the example from the docs:</p>
+<pre><code class="language-diff"> FROM ghcr.io/astral-sh/uv:0.5.18 AS uv
+ 
+ # First, bundle the dependencies into the task root.
+ FROM public.ecr.aws/lambda/python:3.13 AS builder
+ 
+ # Enable bytecode compilation, to improve cold-start performance.
+ ENV UV_COMPILE_BYTECODE=1
+ 
+ # Disable installer metadata, to create a deterministic layer.
+ ENV UV_NO_INSTALLER_METADATA=1
+ 
++# Setting source date epoch to any value enables hash-based Python bytecode invalidation
++# instead of timestamp-based for reproducibility.
++# Here, we also use the value to set the timestamps of dependencies and application code.
++ENV SOURCE_DATE_EPOCH=0
++
+ # Enable copy mode to support bind mount caching.
+ ENV UV_LINK_MODE=copy
+ 
+ # Bundle the dependencies into the Lambda task root via `uv pip install --target`.
+ #
+ # Omit any local packages (`--no-emit-workspace`) and development dependencies (`--no-dev`).
+ # This ensures that the Docker layer cache is only invalidated when the `pyproject.toml` or `uv.lock`
+ # files change, but remains robust to changes in the application code.
+ RUN --mount=from=uv,source=/uv,target=/bin/uv \
+     --mount=type=cache,target=/root/.cache/uv \
+     --mount=type=bind,source=uv.lock,target=uv.lock \
+     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+     uv export --frozen --no-emit-workspace --no-dev --no-editable -o requirements.txt &amp;&amp; \
+-    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
++    uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot; &amp;&amp; \
++    # `find` is not available in the base image, so we use Python to walk the path and set timestamps.
++    python -c &quot;import os; from pathlib import Path; \
++    base = Path(os.environ['LAMBDA_TASK_ROOT']); \
++    ts = int(os.environ['SOURCE_DATE_EPOCH']); \
++    os.utime(base, (ts, ts)); \
++    [os.utime(p, (ts, ts)) for p in base.rglob('*') if p.name not in ('pyproject.toml', 'uv.lock')]&quot;
+ 
+-FROM public.ecr.aws/lambda/python:3.13
++# Copy the application code into the builder image and set the timestamps.
++# This layer is invalidated when the application code changes.
++COPY app &quot;${LAMBDA_TASK_ROOT}&quot;/app
++RUN python -c &quot;import os; from pathlib import Path; \
++    base = Path(os.environ['LAMBDA_TASK_ROOT']); \
++    app = base / 'app'; \
++    ts = int(os.environ['SOURCE_DATE_EPOCH']); \
++    os.utime(base, (ts, ts)); \
++    os.utime(app, (ts, ts)); \
++    [os.utime(p, (ts, ts)) for p in app.rglob('*')]&quot;
+ 
+-# Copy the runtime dependencies from the builder stage.
+-COPY --from=builder ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
+ 
+-# Copy the application code.
+-COPY ./app ${LAMBDA_TASK_ROOT}/app
++FROM public.ecr.aws/lambda/python:3.13
++
++# Copy the runtime dependencies and application code into the final image.
++COPY --from=builder &quot;${LAMBDA_TASK_ROOT}&quot; &quot;${LAMBDA_TASK_ROOT}&quot;
+ 
+ # Set the AWS Lambda handler.
+ CMD [&quot;app.main.handler&quot;]
+</code></pre>
+<p>This is obviously not ideal, I think explicit support for something like this in uv would help out a lot.</p>
+<p>Concretely, I would suggest: if <code>UV_LINK_MODE=copy</code> and <code>SOURCE_DATE_EPOCH</code> is set to any value, <code>uv pip install [--target] ...</code> could set the timestamps of all written files to the <code>SOURCE_DATE_EPOCH</code>. It's a <a href="https://reproducible-builds.org/docs/source-date-epoch/">standardized environment variable</a> for purposes like this and the Python bytecode compiler already reacts to it, but it would be kind of a breaking change.</p>
+<p>The same could also be applied to <code>uv sync</code> commands.</p>
+<p>For the second step of copying the application code, uv is not playing any part, so there is nothing to improve there. In my own deployments, I'm using a workspace of library packages and running <code>uv sync</code> once for dependencies and once for application code to build Lambda artifacts, so this behavior change would mean I wouldn't have to update any file timestamps.</p>
+<p>I just used an example from the Lambda docs, I think this also applies to Docker builds in general.</p>
+<p>What do you think? Is this something that you would like to support? Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-01-11 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-01-11 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackvreeken">@jackvreeken</a> on 2025-01-14 18:45</div>
+            <div class="timeline-body"><p>That would be very useful indeed, and an issue I'm running into now as well. Unfortunately I can't really help with the solution, but I do have a related question for you if you don't mind me asking. I saw your great write-up of bundling Lambdas in CDK using uv in <a href="https://maxfriedrich.de/2025/01/02/uv-lambda-cdk/">your blog post</a> , and was wondering if you know how to apply a similar strategy for Lambda Docker images?</p>
+<p>The <a href="https://docs.astral.sh/uv/guides/integration/aws-lambda/">uv docs</a> do not cover the case that is seemingly more common for me (and you as well I think based on your blog post). In other words, the Lambdas that I want to package are workspace <strong>members</strong>. If we're not the odd ones out, it would be great to include this in the docs somewhere in the &quot;Workspace support&quot; section.</p>
+<p>Where would you put the Dockerfiles in this hypothetical case? Would you <code>docker buildx build -f packages/demo-lambda1/Dockerfile .</code> just to get the build context to include the <code>uv.lock</code> and workspace <code>pyproject.toml</code> files?</p>
+<pre><code>.
+├── cdk
+│   ├── app.py
+│   ├── cdk.json
+│   ├── pyproject.toml
+│   └── python_lambda_function.py
+├── packages
+│   ├── demo-common
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── demo_common
+│   │           └── __init__.py
+│   ├── demo-lambda1
+│   │   ├── Dockerfile
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── demo_lambda1
+│   │           ├── __init__.py
+│   │           └── lambda_function.py
+│   └── demo-lambda2 
+│       ├── Dockerfile
+│       └── ...
+├── pyproject.toml
+└── uv.lock
+
+</code></pre>
+<p>EDIT:
+Maybe I did find something, at least it <em>seems</em> to work:</p>
+<p>Instead of the Python code you added, I can do <code>docker buildx build [.....] --build-arg SOURCE_DATE_EPOCH=0 --output type=docker,buildinfo=false,rewrite-timestamp=true</code> . Most notably, the combination of <code>rewrite-timestamp=true</code> + <code>build-arg SOURCE_DATE_EPOCH=0</code>. See https://github.com/moby/buildkit/pull/4057</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10619.html">astral-sh/uv#10619</a> on 2025-01-14 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 01:00</div>
+            <div class="timeline-body"><p>Regarding the bytecode files, it looks like we respect <a href="https://docs.python.org/3/library/py_compile.html#py_compile.PycInvalidationMode"><code>PYC_INVALIDATION_MODE</code></a></p>
+<p>https://github.com/astral-sh/uv/blob/a6602ad416a922060efb3c5f19daf4977c50ace3/crates/uv-installer/src/pip_compileall.py#L25</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxfriedrich">@maxfriedrich</a> on 2025-01-15 09:15</div>
+            <div class="timeline-body"><p>@jackvreeken Nice, better than the Python command for sure! GitHub Actions doesn't have BuildKit enabled by default so I think it would still be good to have support in uv. Then we also wouldn't need to rewrite all timestamps, just the ones that matter (because they change)</p>
+<p>If you're on the Astral Discord, we can talk about the file layout there… I was using only one Dockerfile for all packages and I put it in the root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxfriedrich">@maxfriedrich</a> on 2025-01-15 09:22</div>
+            <div class="timeline-body"><p>@zanieb I think this is correct / useful behavior, the compileall module picks the default/fallback based on SOURCE_DATE_EPOCH being set: https://docs.python.org/3/library/compileall.html#cmdoption-compileall-invalidation-mode and https://github.com/python/cpython/blob/6e4f64109b0eb6c9f1b50eb7dc5f647a1d901ff4/Lib/py_compile.py#L72</p>
+<p>The file creation/modification timestamps still need my <code>python -c</code> or @jackvreeken's <code>docker ... rewrite-timestamps=true</code> workaround</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13139.html">astral-sh/uv#13139</a> on 2025-04-27 22:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:04 UTC
+    </footer>
+</body>
+</html>

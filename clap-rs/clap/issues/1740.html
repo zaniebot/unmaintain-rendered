@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add configuration to allow empty values in v3 - clap-rs/clap #1740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add configuration to allow empty values in v3</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1740">#1740</a>
+        opened by <a href="https://github.com/matchai">@matchai</a>
+        on 2020-03-11 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matchai">@matchai</a> on 2020-03-11 17:58</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>https://github.com/clap-rs/clap/blob/master/v3_changes.md has a point about:</p>
+<blockquote>
+<ul>
+<li>Allow empty values no longer default</li>
+</ul>
+</blockquote>
+<p>For <a href="https://github.com/starship/starship">starship/starship</a>, the prompt setup script may occasionally provide empty values to flags. On <code>3.0.0-alpha.1</code>, it seems that empty values surface an error to the user.
+It would be nice to have a configuration option to optionally accept empty values.</p>
+<h3>Describe the solution you'd like</h3>
+<p>A new clap attribute that would allow empty values to be passed in without surfacing an error.
+Perhaps <code>allow_empty</code>, or something along those lines.</p>
+<pre><code class="language-rust">#[derive(Clap, Debug)]
+enum Opts {
+    Prompt {
+        #[clap(short, long, allow_empty)] // &lt;-- allow_empty would allow empty strings
+        status: Option&lt;String&gt;, // Would be `Some(&quot;&quot;)`
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @matchai on 2020-03-11 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-11 18:46</div>
+            <div class="timeline-body"><p>It looks like <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.empty_values"><code>empty_values</code></a> is gone in 3.x, thus empty values are simply impossible in 3.0.</p>
+<p>I would actually expect empty values to be preserved; I don't understand why would we need to strip them at all. They should be allowed by default - and processed correctly, as any other value - and maybe an optional switch to remove them, akin <code>empty_values</code> in 2.33.</p>
+<p>@pksunkara @TeXitoi @Dylan-DPC what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-03-11 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: regression</span> added by @CreepySkeleton on 2020-03-11 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @CreepySkeleton on 2020-03-11 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-03-11 18:47</div>
+            <div class="timeline-body"><p>I think this can be done by changing <code>Option&lt;String&gt;</code> to <code>String</code> and providing a default of empty value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-03-11 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-11 18:49</div>
+            <div class="timeline-body"><p>@pksunkara I strongly disagree here, there is a real difference between &quot;default value is an empty one&quot; and &quot;no default values but the user can pass an ampty val&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-11 18:49</div>
+            <div class="timeline-body"><p>This is also not about just derive, it is also about raw clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matchai">@matchai</a> on 2020-03-11 19:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this can be done by changing <code>Option&lt;String&gt;</code> to <code>String</code> and providing a default of empty value.</p>
+</blockquote>
+<p>Unfortunately, it seems like even defaulting to an empty value surfaces the same error.</p>
+<p><img src="https://user-images.githubusercontent.com/4658208/76455426-1a994b00-63ac-11ea-9ccc-fa6cd89070b4.png" alt="image" /></p>
+<p>Code:</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap, Debug)]
+#[clap(author, version)]
+enum Opts {
+    /// Prints the full starship prompt
+    Prompt {
+        /// The status code of the last executed command
+        #[clap(short, long, default_value = &quot;&quot;)]
+        status: String
+    },
+}
+
+fn main() {
+    match Opts::parse() {
+        Opts::Prompt { status } =&gt; {
+            println!(&quot;{:?}&quot;, status);
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-11 19:25</div>
+            <div class="timeline-body"><p>@matchai I recommend you to stick with structopt + clap 2.33 for the time being (empty vals are allowed by default there):</p>
+<pre><code class="language-rust">#[derive(StructOpt, Debug)]
+enum Opts {
+    Prompt {
+        #[structopt(short, long)] 
+        status: Option&lt;String&gt;, // Would be `Some(&quot;&quot;)`
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-03-12 08:19</div>
+            <div class="timeline-body"><p>I think that empty value should even be allowed by default. Forbidding empty value can be done without any more feature, just a custom checker. I don't have any veto against having an <code>forbid_empty</code> flag, but I don't think it's really needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TeXitoi">@TeXitoi</a> on 2020-03-12 08:20</div>
+            <div class="timeline-body"><p>Is there any reference of why empty values are forbidden by default in v3?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-12 14:11</div>
+            <div class="timeline-body"><p>@kbknapp why did you removed empty values' handling in 3.0?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-20 08:51</div>
+            <div class="timeline-body"><p>Here's the situation:</p>
+<ul>
+<li>Empty values are disallowed by default</li>
+<li>User can allow them on per-arg basis via <code>ArgSetting::AllowEmptyValues</code>: https://github.com/clap-rs/clap/blob/aae96236b27d43ede24bd7e58668786cd1073c21/src/build/arg/settings.rs#L40</li>
+<li>There's no way to allow empty values globally, for all the app.</li>
+</ul>
+<p>I think we should allow empty values by default (as it used to be in clap 2) and add <code>ForbidEmptyValues</code> setting, both app-level and arg-level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-20 08:52</div>
+            <div class="timeline-body"><p>I don't think we should allow them by default because it would conflict with default values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-20 08:54</div>
+            <div class="timeline-body"><p>No, it wouldn't.</p>
+<pre><code>app --foo '' &lt; EXPLICIT EMPTY VALUE
+app --foo=   &lt; IMPLICIT EMPTY VALUE
+app --foo    &lt; NO VALUE - DEFAULT
+app          &lt; NO OPTION NO VALUE - DEFAULT
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-20 08:57</div>
+            <div class="timeline-body"><p>See also https://github.com/clap-rs/clap/pull/1587#issuecomment-568829343</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-28 18:46</div>
+            <div class="timeline-body"><p>@kbknapp While you're still here, I'd love to hear your feedback on this one. Why did you decide to disallow empty values by default in 3.0? For instance, <a href="https://stackoverflow.com/questions/13558964/passing-empty-string-to-argparse">argparse allows them</a>. What do you think about my comment above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-28 20:08</div>
+            <div class="timeline-body"><p>I'll preface this with I don't have strong feelings either way on the matter.</p>
+<p>The main reason the were removed was that in 2.x they were a source of confusion and complicated the parsing rules solely because of the way clap was implemented. If clap had parsed values slightly differently it may have been less an issue.</p>
+<p>The problem was only with implicit empty values (<code>--foo=</code> and <code>--foo</code> [with no <code>min_values(0)</code>]) and came from clap not really having much look-ahead/look-behind ability while in the &quot;value parsing&quot; state. So it was hard to distinguish between an error (missing value), or the user just not wanting a value without it being an explicit empty value <code>&quot;&quot;</code>.</p>
+<p>One thing I wanted to prevent (which could be argued was too strict or over-reaching) was to prevent typos where instead of <code>--foo=bar</code> one accidentally types <code>--foo= bar</code>. If one truly wanted an empty value they could do <code>--foo=&quot;&quot;</code>.</p>
+<p>This was somewhat compounded when parsing short arguments that coalesce (<code>-f</code> accepts a value):</p>
+<pre><code>-abcf bar --other
+-abcf= bar --other
+
+vs
+
+-abcf&quot;&quot; bar --other
+-abcf=&quot;&quot; bar --ohter
+</code></pre>
+<p>In the first case, is <code>bar</code> a positional value, or the value for <code>-f</code>?</p>
+<p>So that's a long answer for, &quot;It stemmed only from the way in which clap was implemented, and made the parsing rules more complicated if you need be able to handle when the consumer hasn't told you if they want to accept implicit empty values. It's difficult to know if the value you're parsing is really a value, or a positional argument, etc.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-29 12:01</div>
+            <div class="timeline-body"><p>Regarding to typoproof  behavior - sorry Kevin, but it never worked anyway :)</p>
+<p>As @rivy pointed in <a href="https://github.com/clap-rs/clap/pull/1587#issuecomment-568829343">that thread</a>:</p>
+<blockquote>
+<p>most shells parse and return --foo= as the resultant argument for all of --foo=, --foo='', and --foo=&quot;&quot;. These are supplied, and there is usually no reasonable way to differentiate at the level of the executable. So, generally, --foo= is / has to be interpreted as foo with an empty string argument.</p>
+<p>Notably, windows CMD is, as usual, an exception, but most option libraries for windows emulate the *nix standard.</p>
+</blockquote>
+<p>So basically, there's no way to differentiate between <code>--foo=&quot;&quot;</code> and <code>--foo=</code> on most systems. I even took some time to tests it :)</p>
+<pre><code class="language-rust">fn main() {
+    for a in std::env::args().skip(1) {
+        println!(&quot;{:?}&quot;, a);
+    }
+}
+</code></pre>
+<p>Windows:</p>
+<pre><code>D:\workspace\probe&gt;cargo run -- --foo=
+    Finished dev [unoptimized + debuginfo] target(s) in 0.18s
+     Running `target\debug\probe.exe --foo=`
+&quot;--foo=&quot;
+
+D:\workspace\probe&gt;cargo run -- --foo=&quot;&quot;
+    Finished dev [unoptimized + debuginfo] target(s) in 0.20s
+     Running `target\debug\probe.exe --foo=`
+&quot;--foo=&quot;
+
+D:\workspace\probe&gt;cargo run -- --foo=''
+    Finished dev [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target\debug\probe.exe --foo=''`
+&quot;--foo=\'\'&quot;
+</code></pre>
+<p>Ubuntu:</p>
+<pre><code>user@user-PC:/mnt/d/workspace/probe$ cargo run -- --foo=
+    Finished dev [unoptimized + debuginfo] target(s) in 0.19s
+     Running `target/debug/probe --foo=`
+&quot;--foo=&quot;
+
+user@user-PC:/mnt/d/workspace/probe$ cargo run -- --foo=&quot;&quot;
+    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
+     Running `target/debug/probe --foo=`
+&quot;--foo=&quot;
+
+user@user-PC:/mnt/d/workspace/probe$ cargo run -- --foo=''
+    Finished dev [unoptimized + debuginfo] target(s) in 0.21s
+     Running `target/debug/probe --foo=`
+&quot;--foo=&quot;
+</code></pre>
+<p>As you see, they are the same from clap's standpoint. There's no <code>-abcf bar --other vs -abcf&quot;&quot; bar --other</code> because they are identical.</p>
+<p>Well, windows doesn't special case <code>''</code>, but this is because strings on Win CMD are always written as <code>&quot;...&quot;</code>, it doesn't understand <code>'...'</code> strings (Powershell works as bash in this regard). Nobody will try it on Win because this is not how strings work on Win.</p>
+<p>It's all or nothing: empty values are either allowed (and I really think we should be) and work as I described above or empty values are disallowed and neither <code>--foo=</code> nor <code>--foo=&quot;&quot;</code> nor <code>--foo &quot;&quot;</code> work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2020-04-29 14:05</div>
+            <div class="timeline-body"><p>I agree empty values should be allowed.</p>
+<p>Thanks for taking the time to test/report all that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-06-06 11:56</div>
+            <div class="timeline-body"><p>Found the commit which removed this. https://github.com/clap-rs/clap/commit/cacc23473c64ec8a57471285b3978face05b4d86</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-06-06 13:24</div>
+            <div class="timeline-body"><p>Just found that <code>AllowEmptyValues</code> flag is still available in settings <a href="https://github.com/clap-rs/clap/blob/v3.0.0-beta.1/src/build/arg/settings.rs#L83">here</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @CreepySkeleton by @CreepySkeleton on 2020-07-08 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wchargin">@wchargin</a> on 2021-02-01 06:36</div>
+            <div class="timeline-body"><p>+1; removing values doesn’t make any sense to me. A simple example: a
+command-line tool that takes <code>--prefix</code> (for filtering), which should
+default to an empty string (to match all items).</p>
+<p>A few well-known programs that have useful empty-string options:</p>
+<ul>
+<li><code>git show --format=</code>: Show patch only, without message. Useful
+enough that I have an alias for it.</li>
+<li><code>awk -F ''</code>: Use the empty regexp as the field separator (i.e.,
+split on every character).</li>
+<li><code>printf '%s\n' a '' b</code>: Print <code>a\n\nb\n</code>, with an empty line in the
+middle.</li>
+<li>(macOS) <code>sed -i ''</code>: Overwrite input in place (i.e., no backup
+extension).</li>
+</ul>
+<p>The empty string is a string, just as zero is a number and the empty
+vector is a vector. In the vast majority of cases, when programs add
+special cases where there is a logically “continuous” behavior for zero
+values, they introduce confusion and prevent legitimate use cases.
+This case is no exception. Please consider permitting empty values
+again, preferably by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tensorflow/tensorboard/pulls/4689.html">tensorflow/tensorboard#4689</a> on 2021-02-18 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2360.html">clap-rs/clap#2360</a> on 2021-02-22 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-03-11 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../starship/starship/issues/3280.html">starship/starship#3280</a> on 2021-11-29 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../trunk-io/analytics-cli/pulls/21.html">trunk-io/analytics-cli#21</a> on 2024-02-15 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../WGUNDERWOOD/tex-fmt/pulls/41.html">WGUNDERWOOD/tex-fmt#41</a> on 2024-10-10 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:09 UTC
+    </footer>
+</body>
+</html>

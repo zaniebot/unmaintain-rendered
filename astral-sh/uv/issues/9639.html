@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nushell: Completions results in surprising expansions of arguments passed to subcommands via `uv run` - astral-sh/uv #9639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nushell: Completions results in surprising expansions of arguments passed to subcommands via `uv run`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9639">#9639</a>
+        opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a>
+        on 2024-12-04 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-12-04 13:42</div>
+            <div class="timeline-body"><p>I was trying to run a command such as</p>
+<pre><code>uv run pyright.cmd .\src\ -p pyright_ci_config.json
+</code></pre>
+<p>This fails with</p>
+<pre><code>Unexpected option --python.
+pyright --help for usage
+</code></pre>
+<p>adding verbose and I see</p>
+<pre><code>DEBUG Running `pyright.cmd --python .\pyright_ci_config.json`
+</code></pre>
+<p>It seems that since uv it self has a <code>-p/--python</code> arg the <code>-p</code> arg to powershell is expanded to <code>--python</code>
+A similar effect can be observed with <code>-m</code> which is expanded to <code>--module</code> if you run <code>uv run python -m build</code></p>
+<p>After some debugging, I found out that this only happens in nushell and only if I have source the uv generated completions.</p>
+<pre><code>uv generate-shell-completion nushell o&gt; uv.nu
+</code></pre>
+<p>in config.uv</p>
+<pre><code>source uv.nu
+</code></pre>
+<p>uv 0.5.6 (b70c4f30e 2024-12-03)
+nu 0.100.0
+Windows 11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dedebenui">@dedebenui</a> on 2024-12-04 15:20</div>
+            <div class="timeline-body"><p>I run <code>uv</code> 0.5.6 and Nushell 0.100.0 on Windows 10. I freshly generated the shell completion and ran</p>
+<pre><code class="language-nushell">uv run pyright.cmd .\src\ -p pyright_ci_config.json
+</code></pre>
+<p>Granted, I don't have Pyright in my path, nor is there a <code>pyright_ci_config.json</code> in my working directory, but in the logs I get:</p>
+<pre><code>DEBUG Running `pyright.cmd .\src\ -p pyright_ci_config.json`
+</code></pre>
+<p>as expected. Same if I run the command from PowerShell.</p>
+<p>It's also funny that the <code>.\src\</code> disappears from your logs. Does any of this happen when you run Nushell without config (<code>nu -n</code>) ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-12-05 10:58</div>
+            <div class="timeline-body"><p>@dedebenui Thanks for your comments. Yes it does also happen in a fresh shell (<code>nu -n</code>)</p>
+<p>Specifically I do</p>
+<pre><code>source nu.env
+</code></pre>
+<p>and then</p>
+<pre><code>uv run --verbose python -m build 
+</code></pre>
+<p>or</p>
+<pre><code>uv run python -m build 
+</code></pre>
+<p>fails with</p>
+<pre><code>DEBUG Running `python --module build`
+unknown option --module
+</code></pre>
+<p>However, running</p>
+<pre><code>uv --verbose run python -m build 
+</code></pre>
+<p>or</p>
+<pre><code>uv run python `-m` build 
+</code></pre>
+<p>Runs as expected.</p>
+<p>Furthermore, the syntax high lighting seems to indicate that the commands are interpreted differently.</p>
+<p>Compare</p>
+<p><img src="https://github.com/user-attachments/assets/68cc5200-b3ec-4375-9c09-8a290877b591" alt="Image" /></p>
+<p>and</p>
+<p><img src="https://github.com/user-attachments/assets/385cadf3-d306-4771-a431-9ca73a8b84c5" alt="Image" /></p>
+<p>With respect to <code>./src</code> that may have just been missed when I pasted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dedebenui">@dedebenui</a> on 2024-12-05 14:35</div>
+            <div class="timeline-body"><p>Thanks for the additional info.</p>
+<p>It seems that the completion file exports a <code>uv run</code> function with a <code>-m</code> option. Nushell supports having options provided after the argument (which it recognises as <code>python</code>) and so, it priositizes parsing the <code>-m</code> as an option of the command named <code>uv run</code>. When using <code>uv --verbose</code>, it thinks the command is just <code>uv</code>, which doesn't have a <code>-m</code> option and so everything is passed on without further parsing.</p>
+<p>I would try opening an issue in the Nushell repo, as it looks to me that the <code>export extern</code> syntax lacks some way to:</p>
+<ol>
+<li>pass options as-is, without expanding them into long-form options</li>
+<li>tell it that options come only <strong>before</strong> arguments</li>
+</ol>
+<p>I think any level of granularity can be achieved with <a href="https://www.nushell.sh/book/custom_completions.html#context-aware-custom-completions">context-aware custom completions</a>, but it's not easy to implement automatically like <a href="https://github.com/clap-rs/clap/tree/master/clap_complete_nushell"><code>clap_complete_nushell</code></a> does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @charliermarsh on 2024-12-06 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nushell/nushell/issues/14574.html">nushell/nushell#14574</a> on 2024-12-13 09:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV sync inside docker file causing doom loop - astral-sh/uv #10324</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV sync inside docker file causing doom loop</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10324">#10324</a>
+        opened by <a href="https://github.com/Goldziher">@Goldziher</a>
+        on 2025-01-06 10:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 10:01</div>
+            <div class="timeline-body"><p>Hi there,</p>
+<p>I migrated a project from PDM to UV. Everything was smooth except building the container, which now causes a doom loop. Afrer debugging this for a while, I concluded the culprit is Spacy (v3.8.*) which causes UV to loop for a very long time when running sync. It seems there are some GCC build warnings raised, which cause this loop. The result is that while my project eventually build (I had to add g++ as an explicit build dependency to make this work), It takes almost 300 seconds - 99% of which are spent in this loop.</p>
+<p>Here is a minimal reproduction of the issue: https://github.com/Goldziher/uv-issue-reproduction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 14:41</div>
+            <div class="timeline-body"><p>What is your host platform, and what Docker platform are you targeting? For me, this takes 17 seconds total: <code>DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-06 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 15:39</div>
+            <div class="timeline-body"><blockquote>
+<p>What is your host platform, and what Docker platform are you targeting? For me, this takes 17 seconds total: <code>DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain</code></p>
+</blockquote>
+<p>Platform is linux/amd64. I use an m1 pro.</p>
+<p>I'll get the actual numbers.</p>
+<p>Q: 17 seconds for the installation or the entire docker build?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 16:30</div>
+            <div class="timeline-body"><p>This takes 20 secs on my machine + the same for the system installs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 16:40</div>
+            <div class="timeline-body"><p>Here is a video demoing the issue I am seeing: #https://github.com/user-attachments/assets/983c2112-805a-4a3b-a3cf-9fe3018e0159</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 17:03</div>
+            <div class="timeline-body"><p>Hmm. It's clearly building from source (which is why it's slow), though I'm not sure why. It's hard to imagine why it would possibly be building from source on your machine but not mine when running <code>DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain</code>. Do you have the complete logs from the &quot;slow&quot; Docker build with <code>--verbose</code> that you could share?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shauneccles">@shauneccles</a> on 2025-01-06 20:19</div>
+            <div class="timeline-body"><p>You mentioned M1, which is aarch64 - are you doing a cross compile to x64?</p>
+<p><img src="https://github.com/user-attachments/assets/f8327487-b954-48fb-b889-daafe769b1ff" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 20:36</div>
+            <div class="timeline-body"><blockquote>
+<p>You mentioned M1, which is aarch64 - are you doing a cross compile to x64?</p>
+<p><img src="https://github.com/user-attachments/assets/f8327487-b954-48fb-b889-daafe769b1ff" alt="Image" /></p>
+</blockquote>
+<p>I'm not, no.</p>
+<p>Command there was <code>docker compose build</code> and the docker compose file looks like this:</p>
+<pre><code class="language-yaml">services:
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+       # ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm. It's clearly building from source (which is why it's slow), though I'm not sure why. It's hard to imagine why it would possibly be building from source on your machine but not mine when running <code>DOCKER_BUILDKIT=1 docker build --platform linux/amd64 . --progress=plain</code>. Do you have the complete logs from the &quot;slow&quot; Docker build with <code>--verbose</code> that you could share?</p>
+</blockquote>
+<p>I'll arrange this tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 20:37</div>
+            <div class="timeline-body"><p>Oh, it says in the logs that it's trying to build for ARM Linux? You can see <code>linux-aarch64-cpython</code>. Are you certain that you're setting the platform explicitly to x86_64?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 20:38</div>
+            <div class="timeline-body"><p>(None of those projects provide wheels for ARM Linux, so you'd have to build from source if you didn't override the platform.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-06 21:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, it says in the logs that it's trying to build for ARM Linux? You can see <code>linux-aarch64-cpython</code>. Are you certain that you're setting the platform explicitly to x86_64?</p>
+</blockquote>
+<p>I'm not setting the platform up locally at all. I think there is some confusion.</p>
+<p>The command in the video, and for the log file was <code>docker compose build</code>. Default behaviour for latest version of docker desktop on mac is used (docker engine version:  27.4.0).</p>
+<p>I did run the reproductions using the exact same command you used in the reproduction repository, which took me 20 seconds.</p>
+<p>Here is the log file for a build using the default architecture for mac. <a href="https://github.com/user-attachments/files/18324353/build.log">build.log</a></p>
+<p>I then added platforms to the docker compose file:</p>
+<pre><code class="language-yaml">        build:
+            context: .
+            dockerfile: Dockerfile
+            platforms:
+                - &quot;linux/amd64&quot;
+</code></pre>
+<p>And created second log file: <a href="https://github.com/user-attachments/files/18324486/build_2.log">build_2.log</a></p>
+<p>The second build took 133 seconds, which is almost a quarter of the time the first build took. Still, 133 seconds is pretty long.</p>
+<p>While this supports the fact that some libraries do not have wheels and require building, the main issue is that while PDM was pretty slow with docker, it was still faster than UV in this scenario.</p>
+<p>I can reproduce this by using a different branch. But not tonight 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 21:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not setting the platform up locally at all. I think there is some confusion.</p>
+</blockquote>
+<p>Right, I'm referring to the <code>--platform</code> argument in Docker. The first logs you posted are definitely building an ARM image. Just look at lines like <code>#12 12.65 Unpacking libatspi2.0-0:arm64 (2.46.0-5) ...</code>. It doesn't have anything to do with uv -- the package manager won't matter at all in this case. If you try to install SpaCy on an ARM Linux image like that, it <em>must</em> be built from scratch. And all the time is being spent asking SpaCy to build itself. PDM, uv, etc. It wouldn't matter.</p>
+<p>I wouldn't expect PDM to be faster than uv for the second logs (which are x86). It looks like uv took 23 seconds? That seems not-impossible given that you're running under emulation (your machine is ARM but the container is x86). It looks like <code>playwright install chromium --with-deps</code> took about 68 seconds, for reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-07 06:43</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm not setting the platform up locally at all. I think there is some confusion.</p>
+</blockquote>
+<p>Right, I'm referring to the <code>--platform</code> argument in Docker. The first logs you posted are definitely building an ARM image. Just look at lines like <code>#12 12.65 Unpacking libatspi2.0-0:arm64 (2.46.0-5) ...</code>. It doesn't have anything to do with uv -- the package manager won't matter at all in this case. If you try to install SpaCy on an ARM Linux image like that, it <em>must</em> be built from scratch. And all the time is being spent asking SpaCy to build itself. PDM, uv, etc. It wouldn't matter.</p>
+<p>I wouldn't expect PDM to be faster than uv for the second logs (which are x86). It looks like uv took 23 seconds? That seems not-impossible given that you're running under emulation (your machine is ARM but the container is x86). It looks like <code>playwright install chromium --with-deps</code> took about 68 seconds, for reference.</p>
+</blockquote>
+<p>Yes I agree that the build on ARM accounts for most of the time it requires.</p>
+<p>I'll get the PDM data. It was about twice as fast (or half as slow) as UV in building on arm. Which is the issue here I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-01-07 07:23</div>
+            <div class="timeline-body"><p>Ok, I reran this with PDM. It seems I am wrong. Thanks for all the assistance and sorry for wasting your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Goldziher on 2025-01-07 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Achyut198">@Achyut198</a> on 2025-05-26 04:23</div>
+            <div class="timeline-body"><p>im also facing same issue in my case it even worse taking 10 to 15 minutes sometimes even more than that</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv created virtual environment not working for uWSGI when using --uid --gid - astral-sh/uv #17320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv created virtual environment not working for uWSGI when using --uid --gid</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17320">#17320</a>
+        opened by <a href="https://github.com/liszca">@liszca</a>
+        on 2026-01-05 00:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/liszca">@liszca</a> on 2026-01-05 00:12</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I got stuck. Here is what I am trying to do with uv:</p>
+<pre><code>rm -r /www
+uv init /www
+cd /www
+uv add django uwsgi
+uv run django-admin startproject bikes orbea
+uv run orbea/manage.py migrate
+uv run orbea/manage.py runserver
+uv run uwsgi --chdir=/www/orbea --module=bikes.wsgi:application \
+    --home=/www/.venv --http=:8000 --uid 1000 --gid 1000
+</code></pre>
+<p>It gives me following error:</p>
+<pre><code>compiled with version: 15.2.0 on 04 January 2026 22:00:42
+os: Linux-6.8.0-64-generic #67-Ubuntu SMP PREEMPT_DYNAMIC Sun Jun 15 20:23:40 UTC 2025
+nodename: django
+machine: aarch64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /www
+detected binary path: /www/.venv/bin/uwsgi
+uWSGI running as root, you can use --uid/--gid/--chroot options
+setgid() to 1000
+setuid() to 1000
+chdir() to /www/orbea
+*** WARNING: you are running uWSGI without its master process manager ***
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on :8000 fd 4
+spawned uWSGI http 1 (pid: 1391)
+uwsgi socket 0 bound to TCP address 127.0.0.1:41423 (port auto-assigned) fd 3
+Python version: 3.14.2 (main, Dec  5 2025, 20:18:10) [Clang 21.1.4 ]
+PEP 405 virtualenv detected: /www/.venv
+Set PythonHome to /www/.venv
+Could not find platform independent libraries &lt;prefix&gt;
+Could not find platform dependent libraries &lt;exec_prefix&gt;
+Fatal Python error: Failed to import encodings module
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x0000f688ac236d20 (most recent call first):
+  &lt;no Python frame&gt;
+</code></pre>
+<p>When removing option --uid and --gid it does work.</p>
+<p>But when setting it up the old way it works with --uid and --gid:</p>
+<pre><code>rm -r /www
+python -m venv /www
+cd /www
+source bin/activate
+pip install --upgrade pip
+pip install django uwsgi
+django-admin startproject bikes orbea
+cd orbea/
+python manage.py migrate
+python manage.py runserver
+/www/bin/uwsgi --chdir=/www/orbea --module=bikes.wsgi:application \
+    --home=/www/ --http=:8000 --uid 1000 --gid 1000
+</code></pre>
+<p>I remember setting up my python project like this and then switched over to uv and all worked. But I don't get what's missing this time when only using uv.</p>
+<h3>Platform</h3>
+<p>Alpine 3.23</p>
+<h3>Version</h3>
+<p>0.9.16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @liszca on 2026-01-05 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 13:52</div>
+            <div class="timeline-body"><p>Does upgrading to the latest uv and reinstalling the Python interpreter (to the latest patch version) help? We recently fixed this error in the managed Python builds: https://github.com/astral-sh/python-build-standalone/issues/380</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liszca">@liszca</a> on 2026-01-05 15:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Does upgrading to the latest uv and reinstalling the Python interpreter (to the latest patch version) help? We recently fixed this error in the managed Python builds: <a href="https://github.com/astral-sh/python-build-standalone/issues/380">astral-sh/python-build-standalone#380</a></p>
+</blockquote>
+<p>Sadly no change.</p>
+<p>Can you reproduce it on your system?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-05 18:53</div>
+            <div class="timeline-body"><p>Can you share a reproduction in a Docker image? https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/#docker-image</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liszca">@liszca</a> on 2026-01-05 23:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share a reproduction in a Docker image? https://docs.astral.sh/uv/reference/troubleshooting/reproducible-examples/#docker-image</p>
+</blockquote>
+<p>I do not have Docker, but can you check if this actually run:</p>
+<pre><code>FROM ghcr.io/astral-sh/uv:0.5.24-debian-slim
+
+WORKDIR /www
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/www/.venv
+RUN apt update &amp;&amp; apt upgrade -y
+RUN apt install -y --no-install-recommends --no-install-suggests \
+    curl python3 build-essential libpcre2-dev
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.21/uv-installer.sh | sh
+RUN ln -s /root/.local/bin/uv /usr/bin/uv
+RUN apt install -y libpython3-dev
+RUN uv init /www \
+    &amp;&amp; cd /www \
+    &amp;&amp; uv add django uwsgi
+RUN mkdir orbea \
+    &amp;&amp; uv run django-admin startproject bikes orbea \
+    &amp;&amp; uv run orbea/manage.py migrate
+
+CMD [&quot;uv&quot;, &quot;run&quot;, &quot;uwsgi&quot;, &quot;--chdir=/www/orbea&quot;, &quot;--module=bikes.wsgi:application&quot;, &quot;--home=/www/.venv&quot;, &quot;--http=:8000&quot;, &quot;--uid&quot;, &quot;1000&quot;, &quot;--gid&quot;, &quot;1000&quot;]
+
+</code></pre>
+<p>After building it I figured out thatss working but why?</p>
+<ul>
+<li>Is it because of Debian?</li>
+<li>Is it because of x86?</li>
+</ul>
+<p>I really would like to use Alpine, smaller storage footprint and that combined with arm64 ....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liszca">@liszca</a> on 2026-01-06 02:08</div>
+            <div class="timeline-body"><p>I gave it another try, it also doesn't work with alpine on x86. But it does work using pip on alpine.</p>
+<p>Is it a bug or am I missing something? As the wired thing is it is a different Error but als in uWSGI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-06 04:08</div>
+            <div class="timeline-body"><p>Can you share the reproduction for alpine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liszca">@liszca</a> on 2026-01-06 17:33</div>
+            <div class="timeline-body"><p>After some sleep one of my Dockerfiles actually worked, except it doesn't start the service when running the container, but I can go inside, start it and it does work.</p>
+<pre><code>FROM alpine:3.23
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/www/.venv
+RUN apk add curl build-base linux-headers pcre-dev python3-dev \
+    &amp;&amp; adduser django -D \
+    &amp;&amp; mkdir /var/log/uwsgi \
+    &amp;&amp; touch /var/log/uwsgi/uwsgi.log \
+    &amp;&amp; chown -R django: /var/log/uwsgi
+RUN curl --proto '=https' --tlsv1.2 \
+    -LsSf https://github.com/astral-sh/uv/releases/download/0.9.21/uv-installer.sh | sh \
+    &amp;&amp; ln -s /root/.local/bin/uv /usr/bin/uv
+
+WORKDIR /www
+RUN uv init /www &amp;&amp; cd /www \
+    &amp;&amp; uv add django uwsgi \
+    &amp;&amp; mkdir orbea &amp;&amp; uv run django-admin startproject bikes orbea \
+    &amp;&amp; uv run orbea/manage.py migrate
+
+CMD [ &quot;uv&quot;, &quot;run&quot;, &quot;uwsgi&quot;, &quot;--chdir=/www/orbea&quot;, &quot;--module=bikes.wsgi:application&quot;, &quot;--home=/www/.venv&quot;, &quot;--http=:8000&quot;, &quot;--uid&quot;, &quot;1000&quot;, &quot;--gid&quot;, &quot;1000&quot;, &quot;--logger&quot;, &quot;file:logfile=/var/log/uwsgi/uwsgi.log,maxsize=2000000&quot;, &quot;--logto2&quot;, &quot;/var/log/uwsgi/uwsgi.log&quot; ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @liszca on 2026-01-06 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liszca">@liszca</a> on 2026-01-06 17:53</div>
+            <div class="timeline-body"><p>Ok going into the container with <code>docker run -it container1 ash</code> stopps the running CMD command. So its actually working as intended.
+But how to go inside without interrupting the containers buisness?</p>
+<p>Like this:
+<code>docker exec elastic_nobel netstat -tulpn</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unbound `max_term_width` hurts readability - clap-rs/clap #4295</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unbound `max_term_width` hurts readability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4295">#4295</a>
+        opened by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a>
+        on 2022-09-30 03:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 03:38</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>nightly</p>
+<h3>Clap Version</h3>
+<p>4.0.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#!/usr/bin/env -S rust-script --debug
+
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4.0.4&quot;, features = [&quot;derive&quot;, &quot;wrap_help&quot;] }
+//! ```
+
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+/// Generate a random directory hierarchy with some number of files
+///
+/// A pseudo-random directory hierarchy will be generated (seeded by this
+/// command's input parameters) containing approximately the target
+/// number of files. The exact configuration of files and directories in
+/// the hierarchy is probabilistically determined to mostly match the
+/// specified parameters.
+///
+/// Generated files and directories are named using monotonically increasing
+/// numbers, where files are named `n` and directories are named `n.dir`
+/// for a given natural number `n`.
+///
+/// By default, generated files are empty, but random data can be used as
+/// the file contents with the `total-bytes` option.
+struct Cli {
+  #[clap(subcommand)]
+  command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands { Foo }
+
+fn main() {
+    let mut _command = Cli::parse();
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run</p>
+<h3>Actual Behaviour</h3>
+<p>Help is way too long</p>
+<h3>Expected Behaviour</h3>
+<p>Max 100 chars</p>
+<h3>Additional Context</h3>
+<p>Workaround: manually call <code>#[command(max_term_width = 100)]</code></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 03:40</div>
+            <div class="timeline-body"><p>I tried messing around with <code>*term_width</code> but those don't do anything unless <code>wrap_help</code> is enabled which I don't want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 13:36</div>
+            <div class="timeline-body"><p>In the <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#migrating">migration guide</a>, there is this line:</p>
+<blockquote>
+<p>Run <code>cargo add clap -F wrap_help</code> unless you want to hard code line wraps</p>
+</blockquote>
+<p>We previously had a &quot;wrap_help&quot; feature flag that didn't control help wrapping but instead controlled wrapping to the terminal's width.  I moved wrapping into that feature as well as there are a lot of commands that focus on keeping their help short enough that only in small terminals do they need wrapping.</p>
+<p>For now, I left it as non-default but called it out in the migration guide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-09-30 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 16:50</div>
+            <div class="timeline-body"><p>I saw that, but it's odd to have <code>*term_width</code> functions that are broken unless a feature is enabled. I'd also rather not take on the terminal_size dependencies when it shouldn't be needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 16:56</div>
+            <div class="timeline-body"><p>Eh, actually nevermind about taking on the extra deps. Though the *term_width functions should really be behind the feature flag. In general, the clap docs are in a pretty unhealthy state right now with a lot of references to things that don't exist or don't work anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 17:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Though the *term_width functions should really be behind the feature flag</p>
+</blockquote>
+<p>They are now documented as needing <code>wrap_help</code>, see  https://github.com/clap-rs/clap/commit/c16fdbedc17a7ccac6ebc1bdfa195d8215182256</p>
+<blockquote>
+<p>In general, the clap docs are in a pretty unhealthy state right now with a lot of references to things that don't exist or don't work anymore.</p>
+</blockquote>
+<p>Thats a pretty broad comment to be making especially when it hasn't been backed up with creating issues to point out what else is the matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 18:06</div>
+            <div class="timeline-body"><blockquote>
+<p>They are now documented as needing wrap_help</p>
+</blockquote>
+<p>For 5.0, these should really be behind the feature unless there's some reasoning I'm not aware of.</p>
+<blockquote>
+<p>Thats a pretty broad comment to be making especially when it hasn't been backed up with creating issues to point out what else is the matter.</p>
+</blockquote>
+<p>Fair enough, though the *term_width functions are just one example. I must admit the upgrade to 4.0 was quite frustrating. Created https://github.com/clap-rs/clap/issues/4308. It might be worth picking some random OSS project and upgrading them to clap v4 to see what it's like for yourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>It might be worth picking some random OSS project and upgrading them to clap v4 to see what it's like for yourself.</p>
+</blockquote>
+<p>I'm familiar with <a href="https://www.reddit.com/r/rust/comments/xqiqfy/clap_400_a_rust_argument_parser_is_released/iq9yrw8/">what the upgrade is like</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 18:25</div>
+            <div class="timeline-body"><p>That's actually pretty cool, wasn't aware. Maybe the actual issue then is that there's too little info explaining how to restore old behavior. The changelog sort of reads as a &quot;Here's what changed, good luck trying to restore old behavior you liked lol.&quot; Of course I'm exaggerating, but adding the <code>wrap_help</code> feature doesn't make the CLI act like before, you also need to set the max_term_width. Why? I dunno. That kind of breakage would be fine if it was clearly explained as &quot;Here's what the old thing does: example. Here's what the new thing does: example. Here's how to restore x, y, z old behavior in the new thing.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>adding the wrap_help feature doesn't make the CLI act like before, you also need to set the max_term_width.</p>
+</blockquote>
+<p>That would be a bug.  Please create a minimal reproduction case and open an issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-09-30 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>That would be a bug. Please create a minimal reproduction case and open an issue</p>
+</blockquote>
+<p>That's what this issue was about. Run the above repro (<code>./foo help</code>) with or without the <code>wrap_help</code> feature and the help will extend through the entire terminal instead of wrapping at 100 chars. Caused by this: https://github.com/clap-rs/clap/blob/106d8f5e90952edf77f53f19ab0041712175267d/src/output/help_template.rs#L104</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-30 19:31</div>
+            <div class="timeline-body"><p>To summarize what is going on</p>
+<ul>
+<li>In clap 3 with <code>wrap_help</code>, we would wrap on the terminal's width</li>
+<li>In clap 3 without <code>wrap_help</code>, we would assume the terminal width was 100 and wrap there</li>
+<li>In clap 4 with <code>wrap_help</code>, the behavior is the same</li>
+<li>In clap 4 without <code>wrap_help</code>, we no longer wrap</li>
+</ul>
+<p>Nothing is broken per se.  The behavior for <code>wrap_help</code> has remain unchanged and we intentionally changed the behavior without <code>wrap_help</code></p>
+<p>I can understand though of changing the behavior of <code>max_term_width</code> so that we default to a set number as having too long of lines becomes unhelpful for reading.  The question is what that default <code>max_term_width</code> should be and is this innocuous enough to not be a breaking change (I think so).</p>
+<p>Re-opening, taking this as a request to change <code>max_term_width</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @epage on 2022-09-30 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Help wrapping broken in v4" to "Unbound `max_term_width` hurts readability" by @epage on 2022-09-30 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-09-30 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-09-30 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-16 03:13</div>
+            <div class="timeline-body"><p>From #4484</p>
+<blockquote>
+<p>IIRC this is what it was before. I think it's better to default things to be more readable than force everyone to pick some inconsistent max_width. The people that still want infinite max width can set it to usize::MAX manually.</p>
+</blockquote>
+<p>This was added in #654 to resolve #653.  The value does not seem to have changed in that entire time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-16 04:05</div>
+            <div class="timeline-body"><p>That issue appears to be confirming the behavior of the PR I just opened:</p>
+<blockquote>
+<p>I want to say wrap at x width <strong>unless</strong> it's smaller then wrap there instead</p>
+</blockquote>
+<p>What is there to discuss? It's basically just &quot;Should max_term_width have a default?&quot; yes/no. If the answer is no, then this issue should be closed, otherwise my PR should be merged. Clap 3 defaulted to yes and if we take <code>wrap_help</code> as the equivalent of no special config in clap 3 (since it used to wrap stuff without wrap_help), then clap 4 should have a default too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-16 12:55</div>
+            <div class="timeline-body"><blockquote>
+<p>What is there to discuss? It's basically just &quot;Should max_term_width have a default?&quot; yes/no. If the answer is no, then this issue should be closed, otherwise my PR should be merged. Clap 3 defaulted to yes and if we take wrap_help as the equivalent of no special config in clap 3 (since it used to wrap stuff without wrap_help), then clap 4 should have a default too.</p>
+</blockquote>
+<ul>
+<li>Whether we should go forward with this or not</li>
+<li>What the default should be</li>
+<li>Should we still have a term width default</li>
+<li>Whether this is a breaking change</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-16 18:26</div>
+            <div class="timeline-body"><p>Well again, I still consider this a regression, so:</p>
+<ul>
+<li>Clap 3 had a default, so yes. Regression aside, it's quite unpleasant to read something that requires turning your head, we're just not used to that.</li>
+<li>Clap 3 had it at 100.</li>
+<li>We don't? If you're talking about <code>current_width.unwrap_or(100)</code>, that 100 doesn't actually do anything since it gets ignored without wrap_help and won't be None unless there's an error with wrap_help enabled.</li>
+<li>This is a regression. Clap 4's current behavior broke clap 3 users like me. Also, you just &quot;broke&quot; the short command output to make it <a href="https://github.com/SUPERCILEX/ftzz/commit/4c1e4d97d3f4a8b48f0f4396c784beaac49e8618#diff-16c5c609cb6d69b2626e8fad281d9a3e804ec404e07b6a69183f76d2ee41e4b3">look nicer</a>, so I don't see how this is any different.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-17 01:26</div>
+            <div class="timeline-body"><p>I'm stepping away from this Issue for a cool down period as you are coming across as belligerent in responses rather than collaborating in good faith.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-17 02:52</div>
+            <div class="timeline-body"><p>I'm frustrated because a good chunk of my interactions with you have been immediately rejected without justification beyond what amounts to &quot;I don't like this.&quot; Let's take this issue as an example. We're the only two participants and I've said what I think multiple times: we should bring back the max width (because it's a clap 3 regression, hard to read, and not a breaking change). For there to be discussion, I would need to know what your opinion is, but I don't. Furthermore, you haven't acknowledged my points so there are no counterpoints I can address. Hence there is nothing for <em>me</em> to discuss. So I guess I feel like I'm being needlessly asked to waste my time repeating myself over and over again (I've sunk ~5hrs into this issue by now for what I feel should be a trivial change).</p>
+<hr />
+<p>I also think my language might be misconstrued, so I want to be super clear.</p>
+<blockquote>
+<p>What is there to discuss?</p>
+</blockquote>
+<p>This is an honest question. Again, you've put out the questions to discuss but not provided opinions. I've answered the questions several times so what else am I supposed to say? Again, honest question. I have no idea what else you're picturing in your head when you say discuss. There's nothing more for me to say.</p>
+<blockquote>
+<p>Also, you just &quot;broke&quot; the short command output to make it <a href="https://github.com/SUPERCILEX/ftzz/commit/4c1e4d97d3f4a8b48f0f4396c784beaac49e8618#diff-16c5c609cb6d69b2626e8fad281d9a3e804ec404e07b6a69183f76d2ee41e4b3">look nicer</a>, so I don't see how this is any different.</p>
+</blockquote>
+<p>Putting &quot;broke&quot; in quotes is supposed to mean I don't consider that a breaking change. When I said &quot;look nicer,&quot; I meant that sincerely though I can see how it could be seen a sarcasm. Apologies if that's how you interpreted it. I'm saying that you've already made changes to the help output to improve it and I consider that to be fine so we may as well keep doing that. Basically, &quot;eh/whatevs/don't care.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-17 03:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I would need to know what your opinion is, but I don't</p>
+</blockquote>
+<p>Actually, I take that back. To quote you: &quot;having too long of lines becomes unhelpful for reading&quot; and &quot;is this innocuous enough to not be a breaking change (I think so).&quot; So we're even in agreement? I just don't get it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-17 16:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm frustrated because a good chunk of my interactions with you have been immediately rejected without justification beyond what amounts to &quot;I don't like this.&quot; Let's take this issue as an example. We're the only two participants and I've said what I think multiple times: we should bring back the max width (because it's a clap 3 regression, hard to read, and not a breaking change). For there to be discussion, I would need to know what your opinion is, but I don't. Furthermore, you haven't acknowledged my points so there are no counterpoints I can address. Hence there is nothing for me to discuss. So I guess I feel like I'm being needlessly asked to waste my time repeating myself over and over again (I've sunk ~5hrs into this issue by now for what I feel should be a trivial change).</p>
+</blockquote>
+<p>The state of this Issue is marked in the labels, as I mentioned.  I've consistently asked for people to discuss things before moving on to PRs</p>
+<ul>
+<li>So we have a central place for the conversation as PR authors can come and go for an Issue and sometimes one author might do multiple PRs</li>
+<li>PRs put extra social pressure on maintainers to merge because of the extra commitment involved by the author.</li>
+</ul>
+<p>Another important aspect is communication.  This issue would go a lot more smoothly but</p>
+<ul>
+<li>Previous comments keep reiterating the same thing rather than answering my questions, not from one person's perspective, but from the clap project's perspective which needs to take all users into account.  This requires empathy to consider how things might impact other users.</li>
+<li>Previous comments do not clearly articulate the different cases and the how the change fits into it, making the conversation a lot harder to have</li>
+</ul>
+<p>I've also had less patience in this issue because</p>
+<ul>
+<li>My time is even more limited right now and I have to prioritize accordingly as I normally get time during work on this but I am on family leave atm</li>
+<li>A lot of assumed trust has already been lost due to behavior on other issues in other repos.  In a short period of time, I experienced a lot of combativeness that ate up a disproportionate amount of my time and zapped a significant amount of my emotional energy, requiring distance and recharge to avoid burn out.  The problems in those other PRs and Issues reflect the same kind of problems seeing here (narrow focus on one's own needs, not looking at wider project and user needs which includes narrative flow of documentation which can be hard to do, unclear communication, etc)</li>
+</ul>
+<p>I'd recommend taking a step back for a few days, and looking at this again with fresh eyes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-21 03:52</div>
+            <div class="timeline-body"><blockquote>
+<p>from the clap project's perspective which needs to take all users into account. This requires empathy to consider how things might impact other users.</p>
+</blockquote>
+<p>That's true, but under the assumption that this isn't any more of a breaking change than the other help tweaks, there are only a few options:</p>
+<ul>
+<li>People don't care (since we're the only two people in this issue, that's my hypothesis).<ul>
+<li>If I'm wrong and your fear is that trust in you/clap will be lost due to this change, I'm happy to take the blame.</li>
+</ul>
+</li>
+<li>People like the change.</li>
+<li>People don't want a max width at all.<ul>
+<li>I would find this very odd. No sane reading medium has unbound max line lengths. Strong rationale would need to be provided for why this should be the default.</li>
+</ul>
+</li>
+<li>People disagree with the default column choice.<ul>
+<li>The exact max width is very subjective and I don't have a strong opinion. If other people hate 100, let them throw tomatoes until a consensus is reached and then pick that. Or you can be the BDFL and pick something.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>My time is even more limited right now</p>
+</blockquote>
+<p>Same here, which is why it's sad that we're wasting time on this. Concerns or fears about the change <em>still</em> haven't been shared, even though it appears you are in favor the change.</p>
+<blockquote>
+<p>A lot of assumed trust has already been lost</p>
+</blockquote>
+<p>Same here, this is draining. I'm not enjoying this any more than you are.</p>
+<blockquote>
+<p>I'd recommend taking a step back for a few days, and looking at this again with fresh eyes.</p>
+</blockquote>
+<p>~I still don't get what you want from me.~ Hopefully the thoughts below are what you were looking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-21 04:21</div>
+            <div class="timeline-body"><blockquote>
+<p>People don't want a max width at all.</p>
+</blockquote>
+<p>Just thought of something: those people would probably argue that a max width requires them to scroll more vertically, so maybe the max width should be 120? Or you could argue that the terminal's actual width is the prefered width, but I've found that to rarely be the case as the terminal tends to be in-editor or tiled by a window manager these days. If not, then the default starting width for a terminal width is 80 AFAIK, so this change wouldn't affect those people.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-21 04:44</div>
+            <div class="timeline-body"><p>I'd like to also clarify why I believe this is a regression, because I don't think I'm getting through. In clap 3, the default width was 100 because the <code>wrap_help</code> feature was disabled by default. In clap 4, you <em>must</em> enabled the <code>wrap_help</code> feature to get any wrapping which means people who just want some default wrapping as before will reach for <code>wrap_help</code>. The fact that text wrapping is tied to the terminal width is actually something I'm not a huge fan of, but that's a separate discussion.</p>
+<p>My point is that by forcing people to use their terminal width to get any wrapping at all, the distinction between devs saying &quot;I want my users to be terminal wrapped&quot; vs &quot;I want wrapping of any kind&quot; has been lost. And this issue is arguing that it's better to cater to the &quot;I want wrapping of any kind&quot; people because they are necessarily a superset of the &quot;I want my users to be terminal wrapped&quot; people (though I guess that's bad logic because the set difference could still be smaller, but I don't think it is).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2022-11-21 05:18</div>
+            <div class="timeline-body"><p>Sigh, now I can't get this issue out of my head. Prior art: https://github.com/clap-rs/clap/issues/1891</p>
+<blockquote>
+<p>Side note, I think I'm just starting to hit this more personally because I have a vertical monitor and primarily use i3. So it's not uncommon for me to have a terminal window that is less than 120 characters wide (...it's 104 characters wide, I just counted...).</p>
+</blockquote>
+<blockquote>
+<p>The motivating factor behind this issue is to discuss if there is a better way to handle small terminals by default.</p>
+</blockquote>
+<p>Similar to the other quote I posted, the problem solved by using the terminal width seems to be about when it's too thin.</p>
+<blockquote>
+<p>Linus rant</p>
+</blockquote>
+<p>Seems to be about 80 chars specifically, so let's not do that. I'm leaning more towards 120?</p>
+<blockquote>
+<p>Then I believe 100 is good, especially when rust uses 100 too haha.</p>
+</blockquote>
+<p>A point in favor of 100.</p>
+<blockquote>
+<p>It doesn't matter, I guess. It's just the problem is pretty much non-pressing, it generates much more discussion than it worth, and it's not like we're making some sort of hard decision here - we can always revise it in future. We're all in agreement that 100 is a good choice, so let's just get it over with.</p>
+</blockquote>
+<p>That's a great summary of how I feel about this issue. I just sunk another 1.5 hrs into it, and for what? To me, it was self-evident that <em>some</em> max width was better than none because every modern website ever, the existence of books, newspapers, etc uses some max width. I should have been quicker to see that you don't share that axium and given you arguments to support it. But also, now I'm sad that I've lost so much time to an issue that seemed trivial to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kim">@kim</a> on 2022-12-02 08:56</div>
+            <div class="timeline-body"><p>So... why is it that setting <code>max_term_width</code> requires taking on another transitive dependency? :thinking:</p>
+<p>I would also like to point out that the documentation for <a href="https://docs.rs/clap/4.0.29/clap/builder/struct.Command.html#method.max_term_width">Command::max_term_width</a> seems to be wrong. It says</p>
+<blockquote>
+<p>Using 0 will ignore terminal widths and use source formatting (default).</p>
+</blockquote>
+<p>That would be my preference, but it is not how it behaves.  Instead, the help is wrapped to the dynamically determined terminal width.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/11895.html">rust-lang/cargo#11895</a> on 2023-03-27 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2023-07-17 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-17 14:32</div>
+            <div class="timeline-body"><p>Finally getting back to this</p>
+<blockquote>
+<p>So... why is it that setting max_term_width requires taking on another transitive dependency? thinking</p>
+</blockquote>
+<p>Originally, wrapping itself was an external dependency but was always forced on.  <code>wrap_help</code> didn't pull in the wrapping dependency but the term-width detection.</p>
+<p>We've re-implemented the text wrapping code internally but whether its internal or not makes less of a difference (besides people who play dependency golf which I disagree with).</p>
+<p>So rather than forcing a dependency to be always on, we've consolidated wrapping related features to <code>wrap_help</code>.</p>
+<blockquote>
+<p>I would also like to point out that the documentation for <a href="https://docs.rs/clap/4.0.29/clap/builder/struct.Command.html#method.max_term_width">Command::max_term_width</a> seems to be wrong. It says</p>
+</blockquote>
+<p>An upcoming change will fix this documentation bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-17 14:37</div>
+            <div class="timeline-body"><p>@SUPERCILEX</p>
+<blockquote>
+<p>That's true, but under the assumption that this isn't any more of a breaking change than the other help tweaks, there are only a few options:</p>
+</blockquote>
+<p>The case not being handled is if someone is already setting one or both values.  If someone is setting the term width to a hard coded value and we set max term width to be less than that, we've violated expectations from the given API</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5014.html">clap-rs/clap#5014</a> on 2023-07-17 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-07-17 15:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:11 UTC
+    </footer>
+</body>
+</html>

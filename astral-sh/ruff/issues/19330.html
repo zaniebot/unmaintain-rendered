@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add check for list comprehensions in any or all calls - astral-sh/ruff #19330</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add check for list comprehensions in any or all calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19330">#19330</a>
+        opened by <a href="https://github.com/tweakimp">@tweakimp</a>
+        on 2025-07-14 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tweakimp">@tweakimp</a> on 2025-07-14 15:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Problem:
+There are many cases of comprehensions inside of <code>any</code> or <code>all</code> calls that are unnecessary and should be replaced by a generator.</p>
+<p>For example:</p>
+<pre><code class="language-python">some_list = list(range(1000))
+test_old = any([x % 7 == 0 for x in some_list])
+</code></pre>
+<p>Instead, a generator would be less code, and way faster:</p>
+<pre><code class="language-python">test_new = any(x % 7 == 0 for x in some_list)
+</code></pre>
+<p>Speed comparisons:</p>
+<pre><code>64 µs ± 1.67 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each) # old
+447 ns ± 3.48 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each) # new
+</code></pre>
+<p><code>any</code> and <code>all</code> are functions that profit from that because the loop is breaking and can short cut; the remaining elements are not even looped over if the test returns a <code>True</code> in the <code>any</code> function or a <code>False</code> in the <code>all</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-07-14 15:19</div>
+            <div class="timeline-body"><p>Thanks for the suggestion! Do you have an example that isn't captured by <a href="https://docs.astral.sh/ruff/rules/unnecessary-comprehension-in-call/#unnecessary-comprehension-in-call-c419">unnecessary-comprehension-in-call (C419)</a>? The one in your post seems to be: <a href="https://play.ruff.rs/80d8426a-2112-48e3-9a20-d1acc6dfc222">Playground link</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2025-07-14 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tweakimp">@tweakimp</a> on 2025-07-14 16:02</div>
+            <div class="timeline-body"><p>Ah my bad, I didnt have all rules enabled in the default setting when just running <code>ruff check .</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tweakimp on 2025-07-14 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

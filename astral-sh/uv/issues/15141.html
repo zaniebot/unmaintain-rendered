@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uvx --from git...` doesn't respect the remote pyproject.toml's `tool.uv.default-groups` - astral-sh/uv #15141</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uvx --from git...` doesn't respect the remote pyproject.toml's `tool.uv.default-groups`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15141">#15141</a>
+        opened by <a href="https://github.com/bradbeattie">@bradbeattie</a>
+        on 2025-08-07 16:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bradbeattie">@bradbeattie</a> on 2025-08-07 16:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://docs.astral.sh/uv/guides/tools/#requesting-different-sources suggests one can run <code>uvx --from git...</code> to pull in a remote repo and run a CLI tool it defines in <code>project.scripts</code>. I have a private repo that has typer inside a <code>dependency-groups.cli</code> group and defines <code>tool.uv.default-groups = &quot;all&quot;</code>.</p>
+<p>When I run <code>uvx --from git...</code> with this repo, typer isn't brought in. It doesn't look like default-groups is being respected.</p>
+<h3>Platform</h3>
+<p>macOS 14 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.4 (Homebrew 2025-07-30)</p>
+<h3>Python version</h3>
+<p>Python 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bradbeattie on 2025-08-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 18:09</div>
+            <div class="timeline-body"><p>This is expected, <code>dependency-groups</code> are local to a project, e.g., for development, and are not available when the project is being installed as a package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-07 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-07 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Scott5S">@Scott5S</a> on 2025-10-30 09:13</div>
+            <div class="timeline-body"><p>@zanieb how would you run e.g. in a CI pipeline, uvx with a testing dependency group?</p>
+<p>say you have a &quot;tests&quot; dependency-group, with <code>uv pip install</code> you'd usually just do something like</p>
+<p><code>uv pip install . --group tests</code> or <code>uv sync --group tests</code></p>
+<p>is there a &quot;group&quot; equivalent for the <code>uvx</code> command?</p>
+<p><code>uvx --python=3.14 --with .[tests] pytest</code></p>
+<p>seems to install optional-dependencies, not dependency-groups https://github.com/astral-sh/uv/issues/9011</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-30 13:48</div>
+            <div class="timeline-body"><p>You can't, since the dependency groups are not intended to be usable in that context. In contrast, optional dependencies are a part of the published project. Why do you need to use uvx here? <code>uv run --group tests pytest</code> would be equivalent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Scott5S">@Scott5S</a> on 2025-10-30 14:01</div>
+            <div class="timeline-body"><p>Ah, thank you. Looks like we have been misusing dependency-groups instead of optional-dependencies then.</p>
+<p>The context is: we like to use <code>uv add packagename --bounds major</code> in a cookiecutter script which adds a few basic dependencies to our new brand new package repos, like pytest or coverage, etc.</p>
+<p>that way developers can just get started with <code>uv sync --groups tests</code> to get set up locally after the new package repo is made.</p>
+<p>But, in the pipelines we're trying to switch away from multiple steps like</p>
+<pre><code>uv venv --python=3.14
+source .venv/bin/activate
+uv pip install . --group tests
+uv run coverage run -m pytest
+</code></pre>
+<p>and would love to just simplify it to a single line in the CI pipeline to run the tests like:</p>
+<pre><code>uvx --python=3.14 --with . --group tests coverage run -m pytest
+</code></pre>
+<p>Note the above is incorrect. I suppose we should switch away from dependency groups for the required packages needed to run tests, and instead make them with optional-dependencies, that way we can do</p>
+<pre><code>uvx --python=3.14 --with .[tests] pytest
+</code></pre>
+<p>(Initially I thought to use dependency groups because I didn't think a released package needed a &quot;tests&quot; optional dependency in its release, but I could be convinced otherwise?)</p>
+<p>Answering the &quot;why&quot; to use <code>uvx</code>, if we want to run the same tests in parallel in the CI with different python versions, does the <code>uv run</code> command work OK without needing previous commands to make a venv, if we run it where the <code>pyproject.toml</code> is available?</p>
+<p>If so, then we can indeed not use <code>uvx</code>, though I am curious if we can do <code>uv run</code> with a specific python version in the CI and it takes care of installing everything correctly before running the tests. Hope this makes sense- it may be I'm abusing <code>uv</code> commands at the moment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-30 14:09</div>
+            <div class="timeline-body"><p>You can simplify</p>
+<pre><code>uv venv --python=3.14
+source .venv/bin/activate
+uv pip install . --group tests
+uv run coverage run -m pytest
+</code></pre>
+<p>to</p>
+<pre><code>uv run --group tests --python 3.14 coverage run -m pytest
+</code></pre>
+<p>the rest of those commands are not needed. <code>uv run</code> will setup the environment for you. If you're running them in parallel, then you can use the <code>--isolated</code> flag to ensure the virtual environments are not being shared.</p>
+<blockquote>
+<p>(Initially I thought to use dependency groups because I didn't think a released package needed a &quot;tests&quot; optional dependency in its release, but I could be convinced otherwise?)</p>
+</blockquote>
+<p>This is a good assumption, I'd leave them in the dependency groups if you can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Scott5S">@Scott5S</a> on 2025-10-30 14:12</div>
+            <div class="timeline-body"><p>Brilliant, thanks. That all makes sense, much appreciated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-30 14:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

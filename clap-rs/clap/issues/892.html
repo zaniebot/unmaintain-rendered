@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow optional values (not simply optional args with value notation) - clap-rs/clap #892</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow optional values (not simply optional args with value notation)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/892">#892</a>
+        opened by <a href="https://github.com/patcon">@patcon</a>
+        on 2017-03-09 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patcon">@patcon</a> on 2017-03-09 18:11</div>
+            <div class="timeline-body"><p>From my reading of the docs, this isn't possible, but feel free to correct me!</p>
+<p>The distinction being that an optional <em>argument</em> using value notation is currently possible</p>
+<pre><code>-b --bump=[type] 'bump the version point automatically (options: patch, minor, major)'
+</code></pre>
+<p>Which would allow all of:</p>
+<pre><code>~$ mycommand --some-arg --bump=patch
+~$ mycommand --some-arg --bump=major
+~$ mycommand --some-arg # doesn't bump version
+</code></pre>
+<p>But I don't think there's a way to allow an optional <em>value</em>, like so:</p>
+<pre><code>~$ mycommand --some-arg --bump=patch
+~$ mycommand --some-arg --bump # could be same result as above
+~$ mycommand --some-arg # doesn't bump version
+</code></pre>
+<p>Any help or guidance is appreciated! If this is already possible, I'm happy to help update the docs to better convey this distinction :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../chef-boneyard/delivery-cli/issues/33.html">chef-boneyard/delivery-cli#33</a> on 2017-03-09 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-03-09 22:40</div>
+            <div class="timeline-body"><p>Try setting <a href="https://docs.rs/clap/2.20.5/clap/struct.Arg.html#method.min_values"><code>Arg::min_values(0)</code></a>. This should work, but I also can't remember if I special cased 0 values...</p>
+<p>Let me know if that doesn't work 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-03-09 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patcon">@patcon</a> on 2017-03-10 02:32</div>
+            <div class="timeline-body"><p>Thanks so so much bunch, @kbknapp! :)</p>
+<p>EDIT: haha &quot;so so much bunch&quot;...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @patcon on 2017-03-10 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nodakai">@nodakai</a> on 2017-10-15 03:01</div>
+            <div class="timeline-body"><p>It would be great if a brief note about this use case could be added to <code>Arg::min_values()</code>.</p>
+<p>Also, in this use case the difference between <code>ArgMatches::value_of()</code> returning <code>Some</code> and <code>ArgMatches::is_present()</code> returning <code>true</code> is important, and I think this part of the documentation of <code>value_of()</code> should be revised.</p>
+<blockquote>
+<p>If the option wasn't present at runtime it returns <code>None</code>.</p>
+</blockquote>
+<p>Because it seem to suggest that it returns <code>None</code> <strong>iff</strong> the option wasn't present.</p>
+<pre><code class="language-rust">if matches.is_present(&quot;bump&quot;) {
+  if let Some(v) = matches.value_of(&quot;bump&quot;) {
+    println!(&quot;bump == {:?}&quot;, v);
+  } else {
+    println!(&quot;bump&quot;); // matters only under `min_values(0)`
+  }
+} else {
+  println!(&quot;do not bump&quot;);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-10-16 13:41</div>
+            <div class="timeline-body"><p>@nodakai I'd be good adding that blurb or updating the docs if you could open a new issue for it. Could you point out a link to the sections which should be made more clear? I have the problem of guilty knowledge and it's hard to for me to see which parts aren't exactly clear since I wrote the library and am intimately familiar with it 😜</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/pulls/2129.html">denoland/deno#2129</a> on 2019-04-20 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/123.html">TeXitoi/structopt#123</a> on 2019-05-25 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/188.html">TeXitoi/structopt#188</a> on 2019-05-27 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/364.html">TeXitoi/structopt#364</a> on 2020-03-25 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../model-checking/kani/pulls/1548.html">model-checking/kani#1548</a> on 2022-08-18 19:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:28 UTC
+    </footer>
+</body>
+</html>

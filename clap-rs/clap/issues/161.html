@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arg::multiple prior to a position variable eats the position variable as well - clap-rs/clap #161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Arg::multiple prior to a position variable eats the position variable as well</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/161">#161</a>
+        opened by <a href="https://github.com/bbatha">@bbatha</a>
+        on 2015-07-16 20:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bbatha">@bbatha</a> on 2015-07-16 20:06</div>
+            <div class="timeline-body"><p>I have this matches:</p>
+<pre><code class="language-Rust">fn main() {
+    let list_conflicts = vec![&quot;inline&quot;, &quot;command&quot;, &quot;host&quot;, &quot;host-set&quot;, &quot;nossh-ping&quot;];
+    let matches = App::new(&quot;disburse&quot;)
+                        .version(&amp;crate_version!()[..])
+                        .author(&quot;Ben Batha&quot;)
+                        .arg(Arg::with_name(&quot;config&quot;)
+                            .help(&quot;Location of the disburse config file&quot;)
+                            .short(&quot;c&quot;)
+                            .long(&quot;config&quot;)
+                            .required(true)
+                            .takes_value(true)
+                            .empty_values(false)
+                        )
+                        .arg(Arg::with_name(&quot;inline&quot;)
+                            .help(&quot;Prefix each host's output with its hostname&quot;)
+                            .long(&quot;inline&quot;)
+                            .short(&quot;i&quot;)
+                        )
+                        .arg(Arg::with_name(&quot;list&quot;)
+                            .help(&quot;List all available targets&quot;)
+                            .short(&quot;l&quot;)
+                            .long(&quot;list&quot;)
+                            .conflicts_with_all(&amp;list_conflicts)
+                        )
+                        .arg(Arg::with_name(&quot;command&quot;)
+                            .help(&quot;Command to run. May also come from STDIN&quot;)
+                        )
+                        .arg(Arg::with_name(&quot;host&quot;)
+                            .help(concat!(&quot;Specify a host to run on. &quot;,
+                                  &quot;Specify more than one host with a comma separated list&quot;))
+                            .long(&quot;host&quot;)
+                            .takes_value(true)
+                            .multiple(true)
+                            .empty_values(false)
+                            .conflicts_with(&quot;host-set&quot;)
+                            .required(true)
+                        )
+                        .arg(Arg::with_name(&quot;host-set&quot;)
+                            .help(&quot;Specify a named set of hosts to run on&quot;)
+                            .long(&quot;host-set&quot;)
+                            .takes_value(true)
+                            .empty_values(false)
+                            .conflicts_with(&quot;host&quot;)
+                            .required(true)
+                        )
+                        .arg(Arg::with_name(&quot;representative&quot;)
+                            .help(&quot;Pick a representative host to represent each host set&quot;)
+                            .short(&quot;r&quot;)
+                            .long(&quot;representative&quot;)
+                            .requires(&quot;host-set&quot;)
+                            .conflicts_with(&quot;host&quot;)
+                        )
+                        .arg(Arg::with_name(&quot;threads&quot;)
+                             .help(&quot;Number of threads to execute on&quot;)
+                             .long(&quot;num-threads&quot;)
+                             .short(&quot;n&quot;)
+                             .takes_value(true)
+                             .empty_values(false)
+                         )
+                        .get_matches();
+}
+</code></pre>
+<p>With the attempted run of:
+&quot;disburse --config hosts.json --inline --host host1 --host host2 -n 2 'sleep 10'&quot;</p>
+<p>matches.value_of(&quot;command&quot;) is populated however with:</p>
+<p>&quot;disburse --config hosts.json --inline --host host1 --host host2 'sleep 10'&quot;</p>
+<p>matches.value_of(&quot;command&quot;) is not populated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-16 21:53</div>
+            <div class="timeline-body"><p>This is because there isn't a way to determine when the multiple values stops and the next argument starts, unless you state a max or fixed number of values. <code>Arg::multiple(true)</code> by default says, &quot;this argument can appear multiple times, OR have multiple values.&quot; So this is also a valid way to run your program:</p>
+<pre><code>$ disburse --config hosts.json --inline --host host1 host2 -- 'sleep 10'
+</code></pre>
+<p>There are a few ways to tackle your problem depending on your particular situation. If the argument that accepts multiple values has a fixed or maximum number of values you can specify that by setting <code>Arg::number_of_values()</code> or <code>Arg::max_values()</code> in conjunction with <code>Arg::multiple(true)</code>. But that value must be <code>&gt; 1</code>, which may or may not help you. But if for example you knew there always had to be exactly two hosts, and only two, you could set <code>Arg::number_of_values(2)</code> and your above invocation line would work fine.</p>
+<p>The other more general option is to use <code>--</code> and place all positional arguments after that.</p>
+<pre><code>$ disburse --config hosts.json --inline --host host1 --host host2 -- 'sleep 10'
+
+OR
+
+$ disburse --config hosts.json --inline --host host1 host2 -- 'sleep 10'
+</code></pre>
+<p>Because <code>--</code> is somewhat of a unix standard and means, &quot;everything that follows is a positional&quot;</p>
+<p>Hopefully this helps, if not please let me know :) And thanks for taking the time to file the issue! :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2015-07-17 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2015-07-17 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 00:28</div>
+            <div class="timeline-body"><p>I also just noticed you are using <code>concat!()</code> but you can escape newlines to visually align help strings, or recently added in <code>clap</code> v1.1.0 you can use <code>{n}</code> inside help strings to insert newlines into help strings and ensure they're all still visually aligned when the user does a <code>--help</code></p>
+<p>Example:</p>
+<pre><code class="language-rust">// Arg with long help string which needs
+// a new line printed to the user
+Arg::with_name(&quot;long_help&quot;)
+    .short(&quot;l&quot;)
+    .help(&quot;This is a super long line that should be printed{n}one two lines to the user, yet still aligned nicely&quot;)
+
+// Arg that I just visually want to put on two lines 
+// in the source, yet printed as one line to the user
+Arg::with_name(&quot;shorter&quot;)
+    .short(&quot;s&quot;)
+    .help(&quot;This is a kind of long line which I only want \
+           on two lines in the source code.&quot;)
+</code></pre>
+<p>Assuming I had those in a proper program and ran <code>--help</code> it would look like this:</p>
+<pre><code>$ myprogram --help
+myprogram v1.0
+Does awesome things
+Me, me@mail.com
+
+Usage:
+    myprogram [FLAGS]
+
+FLAGS:
+    -h, --help    Displays this message
+    -l            This is a super long line that should be printed
+                  one two lines to the user, yet still aligned nicely
+    -s            This is a kind of long line which I only want on two lines in the source code.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bbatha">@bbatha</a> on 2015-07-17 00:45</div>
+            <div class="timeline-body"><p>That's an excellent tip with the strings, thanks!</p>
+<p>As for the argument problem. What I'd really like is to force it to be multiple option flags with a fixed number of inputs with something like required_inputs(1) to each one so this is legal:
+--host foo --host bar
+And this is illegal:
+--host foo bar</p>
+<p>Which should be sufficient to disambiguate between having multiple inputs for an option and positional arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
+            <div class="timeline-body"><p>@bbatha</p>
+<p>Actually I think you're right, and that just pointed out a logic bug in <code>clap</code>! So <code>Arg::number_of_values()</code> is supposed to allow a qty of <code>&gt;0</code>, <strong>not</strong> <code>&gt;1</code>. Once I fix this bug, add <code>Arg::number_of_values(1)</code> but keep <code>Arg::multiple()</code> for your <code>host</code> argument. This should have the exact effect you're looking for:</p>
+<p><code>--host host1 --host host2</code> is <strong>legal</strong>
+<code>--host host1 host2</code> is <strong>illegal</strong></p>
+<p>I'll post back here once it's fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2015-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2015-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2015-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2015-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2015-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/162.html">clap-rs/clap#162</a> on 2015-07-17 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:36</div>
+            <div class="timeline-body"><p>Once Travis passes #162 I'll merge into master and upload v1.1.2 to Crates.io</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-07-17 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:43</div>
+            <div class="timeline-body"><p>v1.1.2 on crates.io is now good to use :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:17 UTC
+    </footer>
+</body>
+</html>

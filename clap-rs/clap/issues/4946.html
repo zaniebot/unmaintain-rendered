@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ValueEnum` drops trailing/leading underscores - clap-rs/clap #4946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ValueEnum` drops trailing/leading underscores</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4946">#4946</a>
+        opened by <a href="https://github.com/dhruvkb">@dhruvkb</a>
+        on 2023-06-02 08:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvkb">@dhruvkb</a> on 2023-06-02 08:26</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.69.0 (84c898d65 2023-04-16)</p>
+<h3>Clap Version</h3>
+<p>4.3.0</p>
+<h3>Minimal reproducible code</h3>
+<p>I have an enum that has 4 variants, two regular, and two with a trailing underscore (to indicate reverse, in my app).</p>
+<pre><code class="language-rust">use clap::ValueEnum;
+
+#[derive(Debug, Copy, Clone, ValueEnum)]
+#[allow(non_camel_case_types)]
+pub enum SortBasis {
+  Name,
+  Age,
+  Name_,
+  Age_,
+}
+</code></pre>
+<p>I use this enum in my parser.</p>
+<pre><code>#[derive(Debug, clap::Args)]
+#[group()]
+#[clap(next_help_heading = &quot;Sorting&quot;)]
+pub struct Sorting {
+	/// the set of fields to sort by
+	#[clap(short, long, value_enum, default_values = [&quot;name&quot;, &quot;age&quot;])]
+	pub sort: Vec&lt;SortBasis&gt;,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>The output of help, which can be seen by running <code>cargo run -- -h</code> is as follows.</p>
+<pre><code>Sorting:
+  -s, --sort &lt;SORT&gt;  the set of fields to sort by [default: name age] [possible values: name, age, name, age]
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>I expect there to be a way to preserve leading/trailing underscores, while converting the variants to snake/kebab case.</p>
+<h3>Expected Behaviour</h3>
+<p>Verbatim casing only kind-of works but then I need to break convention, define every variant in lowercase and precisely how I want the user to type it.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @dhruvkb on 2023-06-02 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-06-02 14:07</div>
+            <div class="timeline-body"><p>Workaround: <code>#[value(name = &quot;name_&quot;)]</code></p>
+<p>Differentiating values based on trailing <code>_</code> seems like a UX we shouldn't be generally encouraging.  So long as we have a path for people to workaround it when they have a good reason within their application, I'm inclined to say we shouldn't change this.  If there is a reason we should reconsider this, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-06-02 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-06-02 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2023-06-02 14:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:25 UTC
+    </footer>
+</body>
+</html>

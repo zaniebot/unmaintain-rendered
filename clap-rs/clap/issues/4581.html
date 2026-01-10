@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow wrap_help without terminal_size dependency - clap-rs/clap #4581</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow wrap_help without terminal_size dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4581">#4581</a>
+        opened by <a href="https://github.com/mitsuhiko">@mitsuhiko</a>
+        on 2022-12-27 22:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2022-12-27 22:13</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.30</p>
+<h3>Describe your use case</h3>
+<p>I would like to use clap for terminal wrapping but I would like to avoid using <code>terminal_size</code> as dependency. I do not need to make it dependent on the terminal size / I have my own way to read the terminal size. As such I wish there was a way to not pull in this rather heavy dependency while still having text wrapping available.</p>
+<h3>Describe the solution you'd like</h3>
+<ul>
+<li>Make <code>terminal_size</code> something you need to opt in.</li>
+<li>Alternatively add a <code>wrap_help_core</code> feature and have <code>wrap_help</code> depend on it and <code>terminal_size</code></li>
+</ul>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @mitsuhiko on 2022-12-27 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-27 22:20</div>
+            <div class="timeline-body"><p>Could you clarify what is the problem with depending on <code>terminal_size</code>? You mention its &quot;heavy&quot; but what metric is being used and how heavy is it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2022-12-27 22:25</div>
+            <div class="timeline-body"><p><code>terminal_size</code> in the version used by <code>clap</code> depends on the following crates:</p>
+<ul>
+<li><code>rustix</code></li>
+<li><code>bitflags</code> (duplicate, can't eliminate)</li>
+<li><code>errno</code></li>
+<li><code>libc</code></li>
+<li><code>io-lifetimes</code></li>
+</ul>
+<p>This is what this looks like compile time wise for clap without default features but with <code>wrap_help</code> and <code>std</code> only:</p>
+<img width="297" alt="image" src="https://user-images.githubusercontent.com/7396/209727776-dc7f494f-dee5-4788-8a4b-e6f1de4aa382.png">
+
+<p>Out of the 2.9 seconds total compile time, more than 1 second is spent on just <code>terminal_size</code> and it's dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-12-27 22:31</div>
+            <div class="timeline-body"><p>Thanks for further quantifying.</p>
+<p>Of note, if the <code>color</code> feature is enabled, most or all of these transitive dependencies become shared.  Most of that is for <code>is-terminal</code> which we hope will be upstreamed into Rust an will then go away.  Unsure what that means for these dependencies.</p>
+<blockquote>
+<p>I have my own way to read the terminal size</p>
+</blockquote>
+<p>Could you expand on what you do for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2022-12-27 22:40</div>
+            <div class="timeline-body"><p>I'm generally always disabling the color feature. For already reading the terminal size I usually build apps with my <code>console</code> library which already provides a way to read the terminal size. This however also depends on <code>libc</code> so once you use it you don't win that much, but still a bit.</p>
+<p>The current case of mine however is just that I want to configure a fixed size for the help output without any sort of terminal width adjustments but still take advantage of text rewrapping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moschroe">@moschroe</a> on 2024-01-26 23:53</div>
+            <div class="timeline-body"><p>to throw in my niche 2¢: I recently ported a command line binary (<a href="https://moschroe.github.io/markup-convert-r/">dev tool I wrote out of necessity</a>) to wasm as an experiment, wanted to have help wrapped and there obviously is no way to do any of the low-level <code>sys</code> stuff, not to mention to compile the code.</p>
+<p>Without restricting the help width, though, the lines are too long and wrap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2024-01-29 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hanna-kruppe">@hanna-kruppe</a> on 2025-06-28 12:53</div>
+            <div class="timeline-body"><blockquote>
+<p>The current case of mine however is just that I want to configure a fixed size for the help output without any sort of terminal width adjustments but still take advantage of text rewrapping.</p>
+</blockquote>
+<p>This is exactly my use case as well.</p>
+<blockquote>
+<p>Of note, if the <code>color</code> feature is enabled, most or all of these transitive dependencies become shared. Most of that is for <code>is-terminal</code> which we hope will be upstreamed into Rust an will then go away. Unsure what that means for these dependencies.</p>
+</blockquote>
+<p>In 2025, <code>is-terminal</code> is gone and most of those dependencies aren't shared. Clap's color feature enables anstyle/anstream , which may sometimes share windows-sys with terminal_size when they agree on a semver-compatible version (currently they don't: 0.60 vs. 0.59). rustix has dropped io-lifetimes but still depends on bitflags, errno, libc, and (new since 2022) linux-raw-sys. None of those are shared under clap's default features, nor with most opt-in features. The only other sharing I could find is <code>clap/debug -&gt; backtrace -&gt; libc</code>, but that's not very interesting because the feature is rarely enabled and libc is by far the most likely to be shared with another dependency unrelated to clap.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:17 UTC
+    </footer>
+</body>
+</html>

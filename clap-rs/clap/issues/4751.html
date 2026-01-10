@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown links in the help message of a value enum causes ZSH completion to error - clap-rs/clap #4751</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Markdown links in the help message of a value enum causes ZSH completion to error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4751">#4751</a>
+        opened by <a href="https://github.com/KSXGitHub">@KSXGitHub</a>
+        on 2023-03-09 08:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KSXGitHub">@KSXGitHub</a> on 2023-03-09 08:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.67.1</p>
+<h3>Clap Version</h3>
+<p>4.1.8</p>
+<h3>Minimal reproducible code</h3>
+<p>The complete code is here: https://github.com/KSXGitHub/bug-report-clap-completion-when-help-contains-special-characters</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>The complete steps to reproduce is also here: https://github.com/KSXGitHub/bug-report-clap-completion-when-help-contains-special-characters</p>
+<h3>Actual Behaviour</h3>
+<p>The following error messages appear:</p>
+<pre><code>(eval):1: unmatched &quot;
+_arguments:465: command not found: (
+(eval):1: unmatched &quot;
+_arguments:465: command not found: (
+(eval):1: unmatched &quot;
+_arguments:465: command not found: (
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Completion works normally.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @KSXGitHub on 2023-03-09 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2023-03-09 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-03-09 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/changhc">@changhc</a> on 2023-04-08 19:52</div>
+            <div class="timeline-body"><p>Hi @epage, I would like to try to fix this bug. I confirm that I can reproduce the bug with the sample code.</p>
+<p>For now, should we just throw an error at compile time when there is markdown code in a help message, as @KSXGitHub suggested, instead of trying to escape anything? I need to look into this a bit more to understand the root cause, but at least for now I assume that it's highly likely that there will be edge cases missed out or at least cases that cannot be handled, e.g., links to images, if we try to transform the markdown code. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KSXGitHub">@KSXGitHub</a> on 2023-04-09 04:04</div>
+            <div class="timeline-body"><p>For edge cases, I think just emit an error is sufficient. If the user wants to preserve the markdown documentation, they may specify <code>#[clap(help)]</code> attribute (which should be hinted at in the error message).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KSXGitHub">@KSXGitHub</a> on 2023-04-09 04:10</div>
+            <div class="timeline-body"><p>BTW, all the transformation and error message should be done at compile time, in the derive macros, because it is highly unlikely that a user would make the silly mistake of putting markdown code in the help message if they are using the arg builder directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/changhc">@changhc</a> on 2023-04-09 21:21</div>
+            <div class="timeline-body"><p>So you are still in favour of at least converting hyperlinks? I'm not sure if it would lead to more confusion due to inconsistency. When an error is thrown and users are told that the help message with markdown is invalid, they might wonder why hyperlinks work but other markdown syntaxes don't.
+Anyway, I'll try to throw an error when markdown is detected in a help message. We figure out if we want to allow any specific case later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KSXGitHub">@KSXGitHub</a> on 2023-04-10 02:17</div>
+            <div class="timeline-body"><p>I think the user can understand that the terminal has its own limitations. If the error message explains that the terminal is incapable of displaying something, then there would be no confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-10 15:22</div>
+            <div class="timeline-body"><p>Any erroring off of content of the help message would be a breaking change.  I also do not want to get into the business of trying to outguess the user for what they can and cannot include in their help message.</p>
+<p>We should make sure we are properly escaping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4848.html">clap-rs/clap#4848</a> on 2023-04-19 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-04-20 20:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:21 UTC
+    </footer>
+</body>
+</html>

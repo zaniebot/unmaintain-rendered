@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip insall` on Windows causes &quot;thread '&lt;unknown&gt;' has overflowed its stack&quot; - astral-sh/uv #12769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip insall` on Windows causes &quot;thread '&lt;unknown&gt;' has overflowed its stack&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12769">#12769</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2025-04-09 02:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-09 02:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I was benchmarking the following scenario with pip vs. uv: https://discuss.python.org/t/pep-777-how-to-re-invent-the-wheel/67484/238 and I end up getting: &quot;thread '<unknown>' has overflowed its stack&quot; and <code>uv pip</code> fails to install the packages.</p>
+<h4>Steps to set up</h4>
+<p>There may be a simpler set up but this is what I found:</p>
+<ol>
+<li>Download https://github.com/winpython/winpython/releases/download/13.1.202502222/build_3.13._.0slim__of_23-02-2025_at_10_22.txt.packages_versions.txt as <code>requirements.txt</code></li>
+<li><code>uv venv -p 3.13</code></li>
+<li><code>.venv\Scripts\activate</code></li>
+<li><code>uv pip install pip</code></li>
+<li><code>pip download -r .\requirements.txt -d packages</code></li>
+<li><code>uv cache clean</code></li>
+</ol>
+<h4>Command that fails</h4>
+<pre><code>uv pip install -r .\requirements.txt --no-index --find-links .\packages\
+</code></pre>
+<h4>Output</h4>
+<pre><code>thread '&lt;unknown&gt;' has overflowed its stack
+</code></pre>
+<p>&quot;-vvv&quot; logs: https://gist.github.com/notatallshaw/404c6444703e5e2a14e3bd5b9994990a</p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.6.13 (a0f5c7250 2025-04-07)</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @notatallshaw on 2025-04-09 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-09 03:21</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11837</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-09 03:30</div>
+            <div class="timeline-body"><p>Ahah, reading my own comments about not being able to reproduce. Well this one is consistently reproducible for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-04-09 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-09 03:47</div>
+            <div class="timeline-body"><p>I'll take a look at the profile comments @konstin left in the other thread when I have some time (probably tomorrow or the day after).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-04-09 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-10 02:55</div>
+            <div class="timeline-body"><p>I tried following the instructions in https://github.com/astral-sh/uv/issues/11837#issuecomment-2698312043</p>
+<p>And found I get it happens in the released version of uv:</p>
+<pre><code>&gt; uv pip install -r .\requirements.txt --no-index --find-links .\packages\
+Using Python 3.13.2 environment at: .venv3
+Resolved 491 packages in 1.47s
+      Built intervaltree==3.0.2
+⠼ Preparing packages... (53/490)
+thread '&lt;unknown&gt;' has overflowed its stack
+</code></pre>
+<p>But not the profiling version of uv:</p>
+<pre><code>&gt; target\profiling\uv.exe pip install -r .\requirements.txt --no-index --find-links .\packages\                   
+Resolved 491 packages in 1.48s
+      Built intervaltree==3.0.2
+Prepared 490 packages in 2m 15s
+Installed 491 packages in 12.67s
+ + absl-py==2.0.0
+ + adbc-driver-manager==1.3.0
+ + aiofiles==23.2.1
+ + aiohappyeyeballs==2.4.4
+
+...
+
+ + yt-dlp==2023.7.6
+ + zict==3.0.0
+ + zipp==3.21.0
+ + zstandard==0.23.0
+</code></pre>
+<p>I also notice the profiling version of uv is significantly slower than the release version, if that contributes to why this doesn't happen under that mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-10 08:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I also notice the profiling version of uv is significantly slower than the release version, if that contributes to why this doesn't happen under that mode.</p>
+</blockquote>
+<p>Huh that's bad, can you try removing the line <a href="https://github.com/astral-sh/uv/blob/e0b4dfe923ee807ed2e6e9e16e101a652977ef42/Cargo.toml#L275">https://github.com/astral-sh/uv/blob/e0b4dfe923ee807ed2e6e9e16e101a652977ef42/Cargo.toml#L275</a> when compiling for profiling? It should only be a few percent at most of a difference though, the only other difference we have remaining is that the profiling binary contains debuginfo.</p>
+<p>Another option to narrow it down would be testing if the error occurs with <code>--no-build</code>, too (after removing intervaltree, pypandoc and pywin32, at least those are the source dists I see).</p>
+<hr />
+<p>I've done some testing on my linux machine, but when removing the pywin* deps I get ~1.1s for uv pip and ~24s for pip. Could it be that the benchmark is dominated by build time or IO?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-10 13:11</div>
+            <div class="timeline-body"><p>I found the big performance difference was created by Windows Defender, turning that off the performance is indeed about the same, but I still face the issue that this happens in the release build but not the profile version:</p>
+<pre><code>&gt; uv pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache
+⠸ Preparing packages... (1/490)
+thread '&lt;unknown&gt;' has overflowed its stack
+</code></pre>
+<pre><code>&gt; target\profiling\uv.exe  pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache
+Resolved 491 packages in 1.15s
+      Built intervaltree==3.0.2
+Prepared 490 packages in 8.86s
+Installed 491 packages in 14.34s
+ + absl-py==2.0.0
+ + adbc-driver-manager==1.3.0
+
+...
+
+ + zipp==3.21.0
+ + zstandard==0.23.0
+</code></pre>
+<blockquote>
+<p>Huh that's bad, can you try removing the line</p>
+<p><a href="https://github.com/astral-sh/uv/blob/e0b4dfe923ee807ed2e6e9e16e101a652977ef42/Cargo.toml#L275">uv/Cargo.toml</a></p>
+<p>Line 275 in <a href="/astral-sh/uv/commit/e0b4dfe923ee807ed2e6e9e16e101a652977ef42">e0b4dfe</a></p>
+</blockquote>
+<p>Tried, didn't help:</p>
+<pre><code>&gt; target\profiling\uv.exe  pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache
+Resolved 491 packages in 1.12s
+      Built intervaltree==3.0.2
+Prepared 490 packages in 8.84s
+Installed 491 packages in 14.44s
+ + absl-py==2.0.0
+ + adbc-driver-manager==1.3.0
+
+...
+
+ + zipp==3.21.0
+ + zstandard==0.23.0
+</code></pre>
+<blockquote>
+<p>Another option to narrow it down would be testing if the error occurs with <code>--no-build</code>, too (after removing intervaltree, pypandoc and pywin32, at least those are the source dists I see).</p>
+</blockquote>
+<p>I only had to remove spyder and intervaltree on Windows to get <code>--no-build</code> to work:</p>
+<pre><code>&gt; uv pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache --no-build
+Resolved 489 packages in 147ms
+⠋ Preparing packages... (5/489)
+thread '&lt;unknown&gt;' has overflowed its stack
+</code></pre>
+<p>But I still don't get this error under the profiling version of uv (this is with <code>lto = false</code> still removed if that makes a difference):</p>
+<pre><code>&gt; target\profiling\uv.exe  pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache --no-build
+Resolved 489 packages in 169ms
+Prepared 489 packages in 8.39s
+Installed 489 packages in 13.53s
+ + absl-py==2.0.0
+ + adbc-driver-manager==1.3.0
+ + aiofiles==23.2.1
+
+...
+
+ + zipp==3.21.0
+ + zstandard==0.23.0
+</code></pre>
+<blockquote>
+<p>Could it be that the benchmark is dominated by build time or IO?</p>
+</blockquote>
+<p>I think this use case is dominated by IO, there are nearly 500 wheels that unzip to ~2 GB of packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-10 14:04</div>
+            <div class="timeline-body"><p>Can you try if setting <code>RUST_MIN_STACK</code> to something a lot higher then the current default (4MB), e.g. <code>8388608</code>, fixes the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-10 14:09</div>
+            <div class="timeline-body"><p>The default is actually back down to 2MB, we just give the faux-main-thread in particular a min of 4MB -- so even RUST_MIN_STACK=4000000 will be a ~doubling of everything but that one. Because the thread is called &quot;unknown&quot; we know it's not the faux-main-thread (&quot;main2&quot;) causing problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-10 14:43</div>
+            <div class="timeline-body"><p>From profiling, we got our main thread, the rayon threads and (in this case one) tokio worker thread</p>
+<p><img src="https://github.com/user-attachments/assets/a2d7b77a-9c94-4136-ab7a-140965045d96" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-04-10 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-10 16:02</div>
+            <div class="timeline-body"><p>I deleted my previous comment as I realized I was in powershell rather than cmd.</p>
+<p>Setting <code>RUST_MIN_STACK=4000000</code> stops the issue from happening:</p>
+<pre><code>&gt; uv pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache --no-build
+Resolved 489 packages in 147ms
+⠋ Preparing packages... (5/489)
+thread '&lt;unknown&gt;' has overflowed its stack
+
+&gt; set RUST_MIN_STACK=4000000
+
+&gt; uv pip install -r .\requirements.txt --no-index --find-links .\packages\ --no-cache --no-build
+Resolved 489 packages in 154ms
+Prepared 489 packages in 8.82s
+Installed 489 packages in 13.68s
+ + absl-py==2.0.0
+ + adbc-driver-manager==1.3.0
+
+ ...
+
+ + zipp==3.21.0
+ + zstandard==0.23.0
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-11 15:32</div>
+            <div class="timeline-body"><p>The stacktrace from windbg: https://gist.github.com/konstin/ff30565563675ca8a4b55e4258a7b511, with the top rust frame being https://github.com/trifectatechfoundation/zlib-rs/blob/v0.5.0/zlib-rs/src/inflate.rs#L2278, and the only uv call being</p>
+<p>https://github.com/astral-sh/uv/blob/50de4644252a101d0f11f7ca8ff1767642b8d38f/crates/uv-extract/src/sync.rs#L61</p>
+<pre><code># Child-SP          RetAddr               Call Site
+00 00000071`45706fe0 00007ffe`8d2b018c     ntdll!RtlAllocateHeap+0x994
+01 00000071`45707100 00007ffe`8d2737b3     ntdll!RtlDebugAllocateHeap+0xc8
+02 00000071`45707160 00007ffe`8d207dbe     ntdll!RtlpAllocateHeap+0x2513
+03 00000071`457073d0 00007ffe`8d242b99     ntdll!RtlpAllocateNTHeapInternal+0x32e
+04 00000071`45707460 00007ff7`5d3ce63c     ntdll!RtlAllocateHeap+0x999
+05 (Inline Function) --------`--------     uv!zlib_rs::inflate::inflate+0x3459 [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\zlib-rs-0.5.0\src\inflate.rs @ 2278] 
+06 (Inline Function) --------`--------     uv!libz_rs_sys::inflate+0x34ad [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\libz-rs-sys-0.5.0\src\lib.rs @ 354] 
+07 00000071`45707580 00007ff7`5f2e22eb     uv!flate2::ffi::c::impl$10::decompress+0x350c [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\flate2-1.1.1\src\ffi\c.rs @ 270] 
+08 (Inline Function) --------`--------     uv!flate2::mem::Decompress::decompress+0x1c [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\flate2-1.1.1\src\mem.rs @ 452] 
+09 (Inline Function) --------`--------     uv!flate2::zio::impl$1::run+0x1c [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\flate2-1.1.1\src\zio.rs @ 77] 
+0a (Inline Function) --------`--------     uv!flate2::zio::read+0x4b [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\flate2-1.1.1\src\zio.rs @ 140] 
+0b (Inline Function) --------`--------     uv!flate2::deflate::bufread::impl$6::read+0x68 [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\flate2-1.1.1\src\deflate\bufread.rs @ 238] 
+
+[...]
+
+f8 (Inline Function) --------`--------     uv!rayon_core::registry::impl$6::in_worker_cold::closure$0::closure$0+0x2c [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rayon-core-1.12.1\src\registry.rs @ 522] 
+f9 (Inline Function) --------`--------     uv!rayon_core::job::impl$9::call::closure$0+0x2c [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rayon-core-1.12.1\src\job.rs @ 218] 
+fa (Inline Function) --------`--------     uv!core::panic::unwind_safe::impl$25::call_once+0x2c [C:\Users\Konsti\.rustup\toolchains\1.86-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\panic\unwind_safe.rs @ 272] 
+fb (Inline Function) --------`--------     uv!std::panicking::try::do_call+0x34 [C:\Users\Konsti\.rustup\toolchains\1.86-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\std\src\panicking.rs @ 587] 
+fc (Inline Function) --------`--------     uv!std::panicking::try+0x34 [C:\Users\Konsti\.rustup\toolchains\1.86-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\std\src\panicking.rs @ 550] 
+fd (Inline Function) --------`--------     uv!std::panic::catch_unwind+0x34 [C:\Users\Konsti\.rustup\toolchains\1.86-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\std\src\panic.rs @ 358] 
+fe (Inline Function) --------`--------     uv!rayon_core::unwind::halt_unwinding+0x34 [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rayon-core-1.12.1\src\unwind.rs @ 17] 
+ff (Inline Function) --------`--------     uv!enum2$&lt;rayon_core::job::JobResult&lt;tuple$&lt;tuple$&lt;&gt;,tuple$&lt;&gt; &gt; &gt; &gt;::call+0x34 [C:\Users\Konsti\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rayon-core-1.12.1\src\job.rs @ 218] 
+</code></pre>
+<p>We can set the higher default stack size for rayon, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../trifectatechfoundation/zlib-rs/issues/340.html">trifectatechfoundation/zlib-rs#340</a> on 2025-04-11 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12839.html">astral-sh/uv#12839</a> on 2025-04-11 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-14 09:37</div>
+            <div class="timeline-body"><p>If you have the chance, could you test #12839?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-14 12:33</div>
+            <div class="timeline-body"><p>I'll try and test it this evening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-14 12:34</div>
+            <div class="timeline-body"><p>fwiw it makes the error go away on my machine, so it'll go into the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-14 13:22</div>
+            <div class="timeline-body"><p>The bigger stacks solution is what we should do, but I'm now reasonably sure we're hitting this Fundamental Issue With Rayon where the work-stealing system can result in a thread piling up tons of tasks as every task it steals blocks. The stack ends up looking like a bunch of recursive rayon calls (each catch_unwind is another stolen rayon task) which eventually blows the stack.</p>
+<p>(Any kind of limiter on this effect would theoretically be liable to unecessarily deadlock if your tasks have enough dependencies on eachother)</p>
+<ul>
+<li>https://github.com/rayon-rs/rayon/issues/854</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rayon-rs/rayon/issues/854.html">rayon-rs/rayon#854</a> on 2025-04-14 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-16 01:20</div>
+            <div class="timeline-body"><blockquote>
+<p>If you have the chance, could you test <a href="https://github.com/astral-sh/uv/pull/12839">#12839</a>?</p>
+</blockquote>
+<p>I tested your current branch and was unable to reproduce the error, whereas I can reproduce the scenario building against main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-16 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11837.html">astral-sh/uv#11837</a> on 2025-04-16 14:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

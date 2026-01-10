@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONDA_PREFIX not leading to conda env being used - astral-sh/uv #7829</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>CONDA_PREFIX not leading to conda env being used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7829">#7829</a>
+        opened by <a href="https://github.com/mbspng">@mbspng</a>
+        on 2024-10-01 07:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mbspng">@mbspng</a> on 2024-10-01 07:43</div>
+            <div class="timeline-body"><p>The <code>CONDA_PREFIX</code> is not leading to my conda env (called <code>ssa</code>) being used with uv.</p>
+<p>I have an activated conda env:</p>
+<pre><code>-&gt; % echo $CONDA_PREFIX
+/home/&lt;user&gt;/miniconda3/envs/ssa
+</code></pre>
+<p>I run <code>uv sync</code> and do not have a <code>.venv</code> in that directory. I am expecting it to use the conda env. It does not.</p>
+<pre><code>-&gt; % l -a .venv/bin/python
+lrwxrwxrwx 1 mbs 80 okt.   1 09:36 .venv/bin/python -&gt; /home/&lt;user&gt;/.local/share/uv/python/cpython-3.10.13-linux-x86_64-gnu/bin/python3.10*
+</code></pre>
+<p>Whereas</p>
+<pre><code>-&gt; % which python
+/home/&lt;user&gt;/miniconda3/envs/ssa/bin/python
+
+-&gt; % l -a ~/miniconda3/envs/ssa/bin/python    
+lrwxrwxrwx 1 mbs 10 okt.   1 09:16 /home/&lt;user&gt;/miniconda3/envs/ssa/bin/python -&gt; python3.10*
+</code></pre>
+<p>Docs (https://docs.astral.sh/uv/pip/environments/#using-arbitrary-python-environments) say:</p>
+<blockquote>
+<p>When running a command that mutates an environment such as uv pip sync or uv pip install, uv will search for a virtual environment in the following order:</p>
+<ul>
+<li>An activated virtual environment based on the VIRTUAL_ENV environment variable.</li>
+<li>An activated Conda environment based on the CONDA_PREFIX environment variable.</li>
+<li>A virtual environment at .venv in the current directory, or in the nearest parent directory.</li>
+</ul>
+<p>If no virtual environment is found, uv will prompt the user to create one in the current directory via uv venv.</p>
+</blockquote>
+<p>Looks like incorrect behavior to me, judging by the docs. How can I make <code>uv</code> use the conda environment?</p>
+<pre><code>uv version = 0.4.13
+
+Linux &lt;name&gt; 6.8.0-45-generic #45~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep 11 15:25:05 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<p>I tried with export <code>VIRTUAL_ENV</code>. Then I am getting</p>
+<pre><code>-&gt; % uv sync
+warning: `VIRTUAL_ENV=/home/&lt;user&gt;/miniconda3/envs/ssa/` does not match the project environment path `.venv` and will be ignored
+</code></pre>
+<p>When I set the project env var (https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path), I get this:</p>
+<pre><code>-&gt; % uv sync
+error: Project virtual environment directory `/home/&lt;user&gt;/miniconda3/envs/ssa/` cannot be used because it is not a virtual environment and is non-empty
+</code></pre>
+<p>So this is also not the way to make it use the conda env.</p>
+<p>When I do this:</p>
+<pre><code>-&gt; % uv sync --python=&quot;$(which python)&quot;
+warning: `VIRTUAL_ENV=/home/&lt;user&gt;/miniconda3/envs/ssa/` does not match the project environment path `.venv` and will be ignored
+Resolved 176 packages in 3ms
+Audited 154 packages in 0.06ms
+</code></pre>
+<p>then it at least uses the right interpreter:</p>
+<pre><code>-&gt; % l -a .venv/bin/python
+lrwxrwxrwx 1 mbs 44 okt.   1 10:51 .venv/bin/python -&gt; /home/&lt;user&gt;/miniconda3/envs/ssa/bin/python3.10*
+</code></pre>
+<p>But the dependencies still end up in <code>.venv</code>. I want them to be installed into the conda env, because that is how I manage environments for my IDE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 12:43</div>
+            <div class="timeline-body"><p><code>uv sync</code> intentionally does not respect active environments. See https://docs.astral.sh/uv/concepts/projects/#project-environments for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-01 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbspng">@mbspng</a> on 2024-10-01 13:42</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv sync</code> intentionally does not respect active environments. See https://docs.astral.sh/uv/concepts/projects/#project-environments for details.</p>
+</blockquote>
+<p>Okay, thank you. I think the docs should be updated at the place I linked to, because there it sounds like <code>uv sync</code> would do that, since it says</p>
+<blockquote>
+<p>When running a command that mutates an environment such as uv pip sync or uv pip install, uv will search for a virtual environment in the following order [...]</p>
+</blockquote>
+<p>How is the user supposed to know what &quot;such as&quot; means, and that it includes <code>uv pip sync</code> but not <code>uv sync</code>. And also after reading the section you linked to, I do not understand it. Seems contradictory to the other section to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 13:57</div>
+            <div class="timeline-body"><p>The documentation you linked is in the &quot;pip interface&quot; section, it's all about <code>uv pip</code> not the commands outside of it. <code>uv sync</code> and <code>uv pip sync</code> work very differently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbspng">@mbspng</a> on 2024-10-01 13:59</div>
+            <div class="timeline-body"><p>Okay, I see, thanks. That pip-not-pip thing is also really confusing, btw.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 14:03</div>
+            <div class="timeline-body"><p>Yeah sorry it's the downside of supporting both legacy interfaces and new workflows in a single tool. I'll see if I can improve the documentation on that page to make it clear we're just talking about <code>uv pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-01 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbspng">@mbspng</a> on 2024-10-01 14:06</div>
+            <div class="timeline-body"><p>I understand. Thanks! Btw. I think it is good that it now supports the poetry / pdm style interface with lock files etc. I evaluated uv a while back before it supported that and decided not to use it at that point, because of the awkward old pip-type-of workflow. Now with the new interface, I re-evaluated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../spedas/pyspedas/issues/1265.html">spedas/pyspedas#1265</a> on 2025-11-13 19:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:58 UTC
+    </footer>
+</body>
+</html>

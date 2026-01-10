@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically add imports? - astral-sh/ruff #8679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically add imports?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8679">#8679</a>
+        opened by <a href="https://github.com/Tronic">@Tronic</a>
+        on 2023-11-14 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Tronic">@Tronic</a> on 2023-11-14 17:05</div>
+            <div class="timeline-body"><p>Since Ruff helpfully removes imports, would it be completely blasphemous if it could also add them back at times? Often some imported symbols are not needed for a while, e.g. when cut/pasteing code around and casually hitting Ctrl-S to save and losing the now unneeded imports. When the code was restored, the imports should also (at least in some cases) come back.</p>
+<p>Possible approaches include
+(1) keeping track of recently removed imports as candidates on what to add back soon, or
+(2) generally trying to guess which import is needed</p>
+<p>Option 1 needs some state storage across runs, and has limited use.</p>
+<p>Option 2 has been attempted by a number of tools but to my experience all they fail at it miserably, adding many spurious imports because of typos or incomplete names while typing in code, or just guess the wrong module. Not even <code>&lt;stdlib module&gt;.symbol</code> resolve to needing <code>import &lt;stdlib module&gt;</code> with any of the tools.</p>
+<p>My hope is for Ruff to be in general so much better aware of how the code works than any of the other tooling that it could actually solve the auto imports correctly depending on how the missing symbol is being used, and what are common import conventions (thinking of things like <code>import numpy as np</code> and resolving <code>np.&lt;something of numpy&gt;</code> as needing that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-11-22 23:38</div>
+            <div class="timeline-body"><p>For option 2: I think different projects will have a different idea of what &quot;fail at it miserably&quot; means, because it's fundamentally guesswork and can be guessed incorrectly.</p>
+<blockquote>
+<p>e.g. when cut/pasteing code around and casually hitting Ctrl-S to save and losing the now unneeded imports</p>
+</blockquote>
+<p>In at least this case it sounds like it might not be a good idea to run autofixes on save. At least, when saving but not exiting. Personally I would suggest doing autofixes as a git-pre-commit hook instead, if possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tronic">@Tronic</a> on 2023-11-24 10:58</div>
+            <div class="timeline-body"><p>Autoformat on save is very helpful, avoids a lot of manual formatting before ever getting to commits.</p>
+<p>By failing miserably I mean they very rarely are able to add the correct import but that completely spurious and unrelated symbols of some module not even used by the project get imported. In other words, these tools do more harm than good. Surely it is always guesswork, but with a proper implementation the imports could be right the majority of time - a few mistakes would be tolerable if that were the case.</p>
+<p>Needing imports is in my opinion the major usability problem with current programming languages. Ideally I would see anything listed as dependency in pyproject.toml (package.json etc) be imported as needed (by programming languages themselves). The usability problem comes primarily from that the imports need to be at top of file while the code being edited is somewhere deep down. Thus one needs to keep jumping back &amp; forth to update the imports, losing the actual context one was working with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-11-24 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>The usability problem comes primarily from that the imports need to be at top of file while the code being edited is somewhere deep down. Thus one needs to keep jumping back &amp; forth to update the imports, losing the actual context one was working with.</p>
+</blockquote>
+<p>But this is not true. You can import anywhere you want in the file.</p>
+<p>Many style guides recommend against doing this but that does not mean the language cares. It is also a critically required functionality for conditional imports, such as rarely used functions that require heavy dependencies, but only if they actually get used. Also, breaking import cycles..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tronic">@Tronic</a> on 2023-11-25 12:01</div>
+            <div class="timeline-body"><p>Of course, or even import inside the function. But Ruff itself complains about, and won't move it to top, and and we'd like to stick to good style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2023-11-27 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-27 02:39</div>
+            <div class="timeline-body"><p>Would you expect this to be a editor or CLI feature? I haven't written a lot of Python myself but I know that VS Code and many other editors automatically import symbols when they're first used. I could see Ruff's editor integration supporting this eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tronic">@Tronic</a> on 2023-11-29 23:51</div>
+            <div class="timeline-body"><p>A bit of both I suppose. I'm on VS Code and happy with the Ruff extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fightingdreamer">@fightingdreamer</a> on 2024-01-24 12:02</div>
+            <div class="timeline-body"><p>Auto import can be implemented to some degree with minimal effort by scanning other files in the project and collecting (ruff already uses AST) already provided imports, assuming that these are correct that gives <code>import</code> from <code>symbol</code> directed graph.</p>
+<p>From that point it should be quite simple to implemented lookup logic.</p>
+<p>Pros:</p>
+<ul>
+<li>probably 99% correct most of the time</li>
+<li>can be extended to propose other <code>symbol</code> from already loaded modules / imports</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>not work in empty project</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Probably is better to keep that list in memory to omit storage complexity (ruff-lsp can be a good candidate).</li>
+<li><a href="https://deshaw.github.io/pyflyby/">PyFlyby</a> uses similar approach, but requires manually defining list of known imports.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

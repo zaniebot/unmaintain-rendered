@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal resolver fails when multiple divergent constraints are provided - astral-sh/uv #4640</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Universal resolver fails when multiple divergent constraints are provided</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4640">#4640</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-28 23:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-28 23:14</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code>requests
+requests==2.32.3 ; python_version &gt;= '3.12'
+requests==2.32.0 ; python_version &lt; '3.12'
+</code></pre>
+<p>Running <code>uv pip compile requirements.txt --universal</code> fails with:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because requests{python_version &gt;= '3.12'}==2.32.3 depends on requests==2.32.3 and you require requests{python_version &gt;= '3.12'}==2.32.3, we can conclude that your requirements and requests{python_version &lt; '3.12'}==2.32.0 are
+      incompatible.
+      And because you require requests{python_version &lt; '3.12'}==2.32.0, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>This seems a bit silly, but it's maybe not quite as silly if you view it as constraints. Imagine your <code>requirements.txt</code> is:</p>
+<pre><code>requests
+</code></pre>
+<p>And then your <code>constraints.txt</code> is:</p>
+<pre><code>requests==2.32.3 ; python_version &gt;= '3.12'
+requests==2.32.0 ; python_version &lt; '3.12'
+</code></pre>
+<p>This would also fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-28 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-28 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @charliermarsh on 2024-06-28 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> removed by @charliermarsh on 2024-06-28 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-06-28 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-29 16:40</div>
+            <div class="timeline-body"><p>I added a test (that shows the failure) in https://github.com/astral-sh/uv/pull/4648.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidfritzsche">@davidfritzsche</a> on 2024-06-30 20:40</div>
+            <div class="timeline-body"><p>It would be great if the universal resolver would support situations like this. For a software package at work we would like to support a very broad range of Python versions (Python 3.7 - Python 3.12) and a common problem is the numerical Python stack (numpy, pandas) the software depends on. Quite often there is no numpy version which would offer upstream wheels for all Python versions we want to support. Having support for a forked resolution of numpy in such cases would be great. Maybe the fact of having Python version specific requirements/constraints could be a marker when forking is wished for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 20:43</div>
+            <div class="timeline-body"><p>To be clear, the resolver does support divergent requirements, for example this resolves without issue:</p>
+<pre><code>requests==2.32.3 ; python_version &gt;= '3.12'
+requests==2.32.0 ; python_version &lt; '3.12'
+</code></pre>
+<p>It's the blanket <code>requests</code> that's causing problems (for details related to the internal implementation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidfritzsche">@davidfritzsche</a> on 2024-06-30 21:24</div>
+            <div class="timeline-body"><p>I have some difficulties with <code>numpy</code> (macOS, uv 0.2.18). With a requirements.in</p>
+<pre><code>numpy &gt;=1.26; python_version&gt;=&quot;3.9&quot;
+numpy &lt;1.26; python_version&lt;&quot;3.9&quot;
+</code></pre>
+<p>I cannot univeral-lock for Python &gt;= 3.8:</p>
+<pre><code class="language-shell">$ uv pip compile -p 3.8 --universal requirements.in
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of numpy{python_version &gt;= '3.9'} are available:
+          numpy{python_version &gt;= '3.9'}&lt;=1.26.0
+          numpy{python_version &gt;= '3.9'}==1.26.1
+          numpy{python_version &gt;= '3.9'}==1.26.2
+          numpy{python_version &gt;= '3.9'}==1.26.3
+          numpy{python_version &gt;= '3.9'}==1.26.4
+          numpy{python_version &gt;= '3.9'}==2.0.0
+      and the requested Python version (3.8) does not satisfy Python&gt;=3.9, we can conclude that any of:
+          numpy{python_version &gt;= '3.9'}&gt;=1.26.0,&lt;1.26.2
+          numpy{python_version &gt;= '3.9'}&gt;1.26.2,&lt;1.26.3
+          numpy{python_version &gt;= '3.9'}&gt;1.26.3,&lt;1.26.4
+          numpy{python_version &gt;= '3.9'}&gt;1.26.4,&lt;2.0.0
+          numpy{python_version &gt;= '3.9'}&gt;2.0.0
+       are incompatible.
+      And because the requested Python version (3.8) does not satisfy Python&gt;=3.9 and you require
+      numpy{python_version &gt;= '3.9'}&gt;=1.26, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 21:27</div>
+            <div class="timeline-body"><p>Thanks, that should work but likely a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 21:29</div>
+            <div class="timeline-body"><p>It works in the general case, e.g.:</p>
+<pre><code>anyio &gt;= 3 ; python_version &gt;= '3.9'
+anyio &lt; 3 ; python_version &lt; '3.9'
+</code></pre>
+<p>My guess is that the issue in your case is that <code>numpy &gt;=1.26</code> doesn't support Python 3.8, and we're still trying to lock for your <code>requires-python</code> in that branch (i.e., we're still trying to enforce that every dependency supports Python 3.8 and later, instead of narrowing the requirement in that branch). I will create a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4669.html">astral-sh/uv#4669</a> on 2024-06-30 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-01 22:08</div>
+            <div class="timeline-body"><p>Conceptually, could we model this as:</p>
+<pre><code>requests ; sys_platform != 'darwin' and sys_platform != 'linux'
+requests==2.32.3 ; sys_platform == 'darwin'
+requests==2.32.0 ; sys_platform == 'linux'
+</code></pre>
+<p>@BurntSushi?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-02 15:14</div>
+            <div class="timeline-body"><p>The way forking works currently is that it looks for conflicting dependency specifications with non-overlapping markers. If conflicting dependency specifications are found but have overlapping markers, then a fork doesn't occur. So I think that if you start with something like:</p>
+<pre><code>requests
+requests==2.32.3 ; python_version &gt;= '3.12'
+requests==2.32.0 ; python_version &lt; '3.12'
+</code></pre>
+<p>Then because <code>requests</code> has no markers, it is considered overlapping with any other dependency specification on <code>requests</code>. So in this case, I believe no fork occurs at all. (I haven't actually confirmed that though.)</p>
+<p>The suggestion of treating the <code>requests</code> specification as if its markers are non-overlapping <em>by construction</em> with each other specification is interesting. I'm not sure we can do that in the general case, but if we have some information like &quot;<code>requests</code> was from <code>requirements.in</code>/<code>pyproject.toml</code>&quot; and &quot;the others are extra constraints added,&quot; then <em>maybe</em> it makes sense to massage the specification from <code>requirements.in</code> to be non-overlapping with the constraints given? Are there cases where we would do this and it would be undesirable?</p>
+<p>Another option, perhaps, is to improve the error message and require the user to change their dependency specification to add the non-overlapping marker. But I'm not sure how well that works with specifying constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4732.html">astral-sh/uv#4732</a> on 2024-07-02 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-07-08 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4996.html">astral-sh/uv#4996</a> on 2024-07-11 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5344.html">astral-sh/uv#5344</a> on 2024-07-23 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5488.html">astral-sh/uv#5488</a> on 2024-07-26 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5597.html">astral-sh/uv#5597</a> on 2024-07-30 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5733.html">astral-sh/uv#5733</a> on 2024-08-02 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5887.html">astral-sh/uv#5887</a> on 2024-08-07 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-13 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

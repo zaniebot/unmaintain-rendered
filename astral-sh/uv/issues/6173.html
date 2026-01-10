@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>missing default in the `--help` output. - astral-sh/uv #6173</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>missing default in the `--help` output.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6173">#6173</a>
+        opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a>
+        on 2024-08-17 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-17 19:08</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>from <code>uv pip install --help</code>:</p>
+<pre><code>      --link-mode &lt;LINK_MODE&gt;
+          The method to use when installing packages from the global cache [env: UV_LINK_MODE=] [possible
+          values: clone, copy, hardlink, symlink]
+</code></pre>
+<p>it is not immediately obvious what the default is for <code>--link-mode</code>. it's not prohibitively difficult to figure out the default from looking at the code but it would be even nicer to be able to not have to look at the code? https://github.com/astral-sh/uv/blob/ad8e3a2c323d97c83acf541453ac65725c7c2edc/crates/install-wheel-rs/src/linker.rs#L251-L259</p>
+<p>there seem to be some other flags like <code>--resolution</code> which doesn't show the default in the <code>--help</code> output, while <code>--index-url</code> does have the default included:</p>
+<pre><code>  -i, --index-url &lt;INDEX_URL&gt;
+          The URL of the Python package index (by default: &lt;https://pypi.org/simple&gt;) [env: UV_INDEX_URL=]
+      --extra-index-url &lt;EXTRA_INDEX_URL&gt;
+</code></pre>
+<p>(similar issue for other commands <code>uv pip compile --annotation-style</code>, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-17 21:04</div>
+            <div class="timeline-body"><p>Agree we should say what the default value is — though sometimes it differs based on runtime information. Is there a way we can get Clap to include this for us?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-17 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-08-17 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2024-08-17 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-17 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-17 23:28</div>
+            <div class="timeline-body"><p>seems like <code>default_value_t</code> (or something similar) should do the trick?</p>
+<pre><code>$ cat src/main.rs 
+use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Name of the person to greet
+    #[arg(short, long)]
+    name: String,
+
+    /// Number of times to greet
+    #[arg(short, long, default_value_t = 1)]
+    count: u8,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    for _ in 0..args.count {
+        println!(&quot;Hello {}!&quot;, args.name);
+    }
+</code></pre>
+<pre><code>$ cargo run --quiet -- --help
+Simple program to greet a person
+
+Usage: clap-test [OPTIONS] --name &lt;NAME&gt;
+
+Options:
+  -n, --name &lt;NAME&gt;    Name of the person to greet
+  -c, --count &lt;COUNT&gt;  Number of times to greet [default: 1]
+  -h, --help           Print help
+  -V, --version        Print version
+</code></pre>
+<p>let me see if this is easily adaptable for <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-08-18 11:30</div>
+            <div class="timeline-body"><p>You should be able to make it work by changing <code>Option&lt;LinkMode&gt;</code> to <code>LinkMode</code> and setting <code>default_value_t</code> to <code>LinkMode::default()</code>.</p>
+<pre><code>      --link-mode &lt;LINK_MODE&gt;                  The method to use when installing packages from the global cache [env: UV_LINK_MODE=] [default: clone] [possible values: clone, copy, hardlink, symlink]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-18 13:19</div>
+            <div class="timeline-body"><p>Oh interesting. So we'll need to audit all of our uses of <code>Option</code> for CLI options? Fun. I'm willing to review these — preferably one at a time? not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6183.html">astral-sh/uv#6183</a> on 2024-08-18 16:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

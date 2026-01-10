@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add first-class support for virtual projects - astral-sh/uv #6511</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add first-class support for virtual projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6511">#6511</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-23 13:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 13:00</div>
+            <div class="timeline-body"><p>A lot of users don't want to structure their projects as valid Python packages -- perhaps they're creating a web application, or a collection of scripts, etc. These all <em>can</em> be structured as valid Python packages, but users tend not to do this. Requiring that projects are valid Python packages makes it harder for existing users to adopt uv.</p>
+<p>Today, we allow &quot;virtual projects&quot; (i.e., without a build system) for workspace roots, but only for workspace roots.</p>
+<p>This has several issues...</p>
+<ol>
+<li>It <em>has</em> to be a workspace, you need <code>[tool.uv.workspace]</code> which is confusing for users.</li>
+<li>It only supports dev dependencies, also confusing for users.</li>
+<li>There's no way to define project metadata which is confusing for users since they expect a <code>[project]</code> table. For example, there's no way to define a required python version in a &quot;virtual project&quot; (i.e., a virtual workspace root with no members).</li>
+<li>There's (easy) no way to transition between the two. To convert a non-virtual <code>pyproject.toml</code> to virtual, you have to remove basically everything, move things around, etc.</li>
+</ol>
+<p>What I want to do is, allow users to set:</p>
+<pre><code class="language-toml">[tool.uv]
+virtual = true
+</code></pre>
+<p>If set, they can have a <code>[project]</code> table, they don't need a workspace definition, etc. And in this case, we don't build or install the project, just like a virtual workspace root today.</p>
+<p>In the future, we'd like to write our own build system that handles these cases better by default. But for now, this will help a lot of users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-23 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-08-23 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 13:00</div>
+            <div class="timeline-body"><p>There's an argument to be made that this should be the <em>default</em> if you don't define a build system. I'm also open to that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 13:00</div>
+            <div class="timeline-body"><p>I am going to prototype this later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6405.html">astral-sh/uv#6405</a> on 2024-08-23 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6460.html">astral-sh/uv#6460</a> on 2024-08-23 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-23 14:49</div>
+            <div class="timeline-body"><p>Thanks Charlie. This will definitely help users working in monorepos and legacy codebases that contain many nested packages/scripts without clear boundaries for various components of their applications/libraries.</p>
+<p>It’s an architectural issue for sure, and outside of massively refactoring products/projects, not really solvable in the short term, so it is nice to see <code>uv</code> bridging the gap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 14:50</div>
+            <div class="timeline-body"><p>Yeah I think this is something we missed on slightly in the initial release. I'm gonna prioritize it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6434.html">astral-sh/uv#6434</a> on 2024-08-23 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-23 14:55</div>
+            <div class="timeline-body"><p>Rather than the venv-in-project approach (which I personally prefer), lot of users just set up various OCI images for various “environments” that have the python dependencies pre-installed in a custom virtual environment location.</p>
+<p>These are effectively virtual projects, and it goes hand in hand with being able to define custom virtual environment locations (several issues about it #1495 / #5229 / #6504).</p>
+<p><a href="https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">Conda</a> is strong enabler of this type of workflow so having compatibility with it would ease migration for thousands of users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 14:56</div>
+            <div class="timeline-body"><p>Please see #1495 for that — let's try to avoid expanding the scope of this discussion :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6293.html">astral-sh/uv#6293</a> on 2024-08-23 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 21:39</div>
+            <div class="timeline-body"><p>Highly unlikely that this ships today, but I'm starting to work on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6462.html">astral-sh/uv#6462</a> on 2024-08-24 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6585.html">astral-sh/uv#6585</a> on 2024-08-24 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 16:13</div>
+            <div class="timeline-body"><p>Coming together in https://github.com/astral-sh/uv/pull/6585.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-24 18:14</div>
+            <div class="timeline-body"><p>Using uv to &quot;just manage my environment of dependencies&quot; sounds natural and useful.</p>
+<p>There was one kind of friction seen with Rye users with virtual projects, where they enable virtual project to achieve some goal (like not installing the root package, or not having to define how to create a proper wheel) but other things they want (pytest? editor support?) would benefit from installing the project as a python package in an environment.</p>
+<p>I'm just wondering how to make it very clear what's happening so that the trade-offs are apparent to the user?</p>
+<p>Are pipx and uv tool good points for why uv virtual project is not &lt;=&gt; &quot;application&quot;, because you need applications distributed through pipx/uv tool to be &quot;pip-installable&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/overfl0">@overfl0</a> on 2024-08-26 14:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Coming together in #6585.</p>
+</blockquote>
+<p>Hi, @charliermarsh does the above PR fix the &quot;issue 2&quot; mentioned in the first message so that you can have dev and non-dev dependencies?
+Also, how complete is that PR? Is it functional enough to test uv built from that branch or are there key parts that are still missing? I saw the TODO checkboxes, but it's not really obvious to me how they map to actual functionality for the end-user.</p>
+<p>I started porting my application from poetry using <code>package-mode = false</code> to uv and stumbled upon this very problem so it would be a PR that I'm eagerly awaiting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-27 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-27 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philgyford">@philgyford</a> on 2024-08-29 13:29</div>
+            <div class="timeline-body"><p>v0.4.0 is a massive jump for those of us working on &quot;application&quot; projects, thank you!</p>
+<p>But I still can't see how to install dev dependencies in my local virtualenv.</p>
+<p>From the docs I see I can do <code>uv add ruff --dev</code> which will add it to <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv]
+dev-dependencies = [
+  &quot;ruff&quot;,
+]
+</code></pre>
+<p>But I don't know how to install them along with the non-dev <code>dependencies</code> in <code>[project]</code>. My first guess would be a <code>--dev</code> flag:</p>
+<pre><code class="language-shell">$ uv pip install -r pyproject.toml --dev
+</code></pre>
+<p>but that's not a valid argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/weihenglim">@weihenglim</a> on 2024-08-29 13:38</div>
+            <div class="timeline-body"><p>You should use <code>uv sync</code> or <code>uv run</code> instead of <code>uv pip install</code> to install dependencies from a <code>pyproject.toml</code>. You can include the <code>--no-dev</code> flag to exclude dev dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-29 13:39</div>
+            <div class="timeline-body"><p>@philgyford the <code>uv pip install</code> interface will not read non-standard project metadata (like development dependencies). And... @wimglenn said everything I was going to say :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philgyford">@philgyford</a> on 2024-08-29 13:57</div>
+            <div class="timeline-body"><p>Ah, thank you! I obviously got confused, and am still not really clear about the difference. I'll have to read through all the docs again.</p>
+<p>I was probably thrown by how I use pip-tools locally (although maybe I'm doing that wrong too!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13589.html">astral-sh/uv#13589</a> on 2025-10-21 18:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to reinstall a broken package? (`--reinstall` and similar have no effect) - astral-sh/uv #14479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to reinstall a broken package? (`--reinstall` and similar have no effect)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14479">#14479</a>
+        opened by <a href="https://github.com/turbotimon">@turbotimon</a>
+        on 2025-07-07 07:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-07-07 07:50</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm stuck refreshing a broken package. What do I not understand?</p>
+<p>How to reproduce:</p>
+<ol>
+<li>Create a working project  (with <code>pip</code> as an example package)</li>
+</ol>
+<pre><code class="language-sh">$ uv init
+$ uv add pip
+# confirm is not broken
+$ uv run -m pip --version
+pip 25.1.1 from /home/uv_reinstall/.venv/lib/python3.12/site-packages/pip (python 3.12)
+</code></pre>
+<ol start="2">
+<li>Break the package</li>
+</ol>
+<pre><code class="language-sh">$ echo &quot;i'm broken&quot; &gt;&gt; /home/uv_reinstall/.venv/lib/python3.12/site-packages/pip/__main__.py
+$ uv run -m pip --version
+...
+File &quot;/home/uv_reinstall/.venv/lib/python3.12/site-packages/pip/__main__.py&quot;, line 25
+    i'm broken
+     ^
+SyntaxError: unterminated string literal (detected at line 25)
+</code></pre>
+<ol start="3">
+<li>How do completely reinstall it? None of my attempts work, e.g.</li>
+</ol>
+<pre><code class="language-sh">$ uv run --reinstall-package pip --refresh-package pip -m pip --version
+...
+File &quot;/home/uv_reinstall/.venv/lib/python3.12/site-packages/pip/__main__.py&quot;, line 25
+    i'm broken
+     ^
+SyntaxError: unterminated string literal (detected at line 25)
+</code></pre>
+<pre><code class="language-sh">$ uv pip uninstall pip
+$ uv sync --reinstall
+$ uv run -m pip --version
+...
+File &quot;/home/uv_reinstall/.venv/lib/python3.12/site-packages/pip/__main__.py&quot;, line 25
+    i'm broken
+     ^
+SyntaxError: unterminated string literal (detected at line 25)
+</code></pre>
+<p>It seems even the cache is broken ..</p>
+<pre><code class="language-sh">$ rm -r .venv/
+$ uv sync
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.68ms
+Installed 1 package in 7ms
+ + pip==25.1.1
+$ uv run -m pip --version
+...
+File &quot;/home/uv_reinstall/.venv/lib/python3.12/site-packages/pip/__main__.py&quot;, line 25
+    i'm broken
+     ^
+SyntaxError: unterminated string literal (detected at line 25)
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.12.35 x86_64 GNU/Linux
+(NixOS 25.05)</p>
+<h3>Version</h3>
+<p>uv 0.7.16 / uv 0.7.19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @turbotimon on 2025-07-07 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How to refresh a package? (`--refresh` and similar have no effect)" to "How to refresh a package? (`--reinstall` and similar have no effect)" by @turbotimon on 2025-07-07 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "How to refresh a package? (`--reinstall` and similar have no effect)" to "How to reinstall a broken package? (`--reinstall` and similar have no effect)" by @turbotimon on 2025-07-07 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-07-07 08:03</div>
+            <div class="timeline-body"><p>A <code>uv clean</code> helps, but then I do not understand the purpose of <code>--reinstall</code> <code>--refresh</code> and similar options</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-07 09:27</div>
+            <div class="timeline-body"><p>For your cache, you need <code>uv cache clean -p &lt;package&gt;</code>, <code>--reinstall</code> and <code>--refresh</code> have two different jobs:</p>
+<p>uv by default hard-links packages from the cache to the venv. The <code>--reinstall</code> option reinstalls the package into the venv, but if the package got changed in the cache (due to the hard-linking), it reinstalls the changed file again.</p>
+<p>By default, uv caches responses from an index (respecting the index' cache headers). With the <code>--refresh</code> option, uv will re-check the index, e.g. if there's a new version on the index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-07-07 10:19</div>
+            <div class="timeline-body"><p>So a what</p>
+<blockquote>
+<p><a href="https://docs.astral.sh/uv/reference/cli/#uv-run--reinstall">--reinstall</a>, --force-reinstall
+Reinstall all packages, regardless of whether they're already installed. Implies --refresh</p>
+</blockquote>
+<p>does is &quot;just&quot; recreating the hard link? I which situation would that be helpful (honest question)?</p>
+<p>And is there no option for the project (run, add, sync) or pip commands to truly reinstall (including redownload) a package? Maybe <code>--no-cache</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-07-07 10:27</div>
+            <div class="timeline-body"><p>Also, this sentence from the <a href="https://docs.astral.sh/uv/concepts/cache/#dependency-caching">cache documentation</a> would therefore be wrong in my opinion. Because it does not <em>ignore existing installed versions</em> or isn't it?</p>
+<blockquote>
+<p>If you're running into caching issues, uv includes a few escape hatches:</p>
+<ul>
+<li>To force uv to ignore existing installed versions, pass --reinstall to any installation command (e.g., uv sync --reinstall or uv pip install --reinstall ...).</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-07-09 16:21</div>
+            <div class="timeline-body"><p><code>uv add --reinstall --link-mode copy --no-cache pip</code> would at least repair the current venv, but the cache is still broken. So any other project using the same package (and version etc.) would be broken from the beginning..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/turbotimon">@turbotimon</a> on 2025-07-10 07:30</div>
+            <div class="timeline-body"><p>@konstin by the way,<code>-p &lt;package&gt;</code> is not a valid option, instead use just the package name <code>uv cache clean [package]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-16 13:56</div>
+            <div class="timeline-body"><p>Yeah, I think you need <code>uv cache clean</code>. I can amend the docs a bit.</p>
+<blockquote>
+<p>I which situation would that be helpful (honest question)?</p>
+</blockquote>
+<p>An example would be if you're working in a virtual environment in which pip installed a given package, and you want to reinstall it with uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-16 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14659.html">astral-sh/uv#14659</a> on 2025-07-16 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-16 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

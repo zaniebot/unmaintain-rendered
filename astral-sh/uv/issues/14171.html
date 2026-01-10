@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python installation fails during streamed unpack with connection reset error - astral-sh/uv #14171</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python installation fails during streamed unpack with connection reset error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14171">#14171</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-20 20:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:29</div>
+            <div class="timeline-body"><pre><code>    error: Failed to install cpython-3.10.17-windows-x86_64-none
+      Caused by: Failed to extract archive: cpython-3.10.17-20250529-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+      Caused by: failed to unpack `\\?\V:\uv-tmp\.tmp43ZfS8\temp\managed\.temp\.tmpUUY8ru\python\Lib\zoneinfo\_zoneinfo.py`
+      Caused by: failed to unpack `python/Lib/zoneinfo/_zoneinfo.py` into `\\?\V:\uv-tmp\.tmp43ZfS8\temp\managed\.temp\.tmpUUY8ru\python\Lib\zoneinfo\_zoneinfo.py`
+      Caused by: error decoding response body
+      Caused by: request or response body error
+      Caused by: error reading a body from connection
+      Caused by: connection reset
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-06-20 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:29</div>
+            <div class="timeline-body"><p>Perhaps related to https://github.com/astral-sh/uv/issues/14069</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci-flake</span> added by @zanieb on 2025-06-20 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:30</div>
+            <div class="timeline-body"><p>I presume this is both a CI stability problem, and a user-facing issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-27 17:51</div>
+            <div class="timeline-body"><p>The problem is that we don't retry once we turns the response into a stream. To fix this, we need to wrap the whole streaming logic into a retry loop.</p>
+<p>Note that the request itself already has retries, but we need a custom outside loop as we do with some of the <code>is_extended_transient_error</code>, e.g. below, except for the whole stream-and-unpack range: https://github.com/astral-sh/uv/blob/62365d4ec86c146fc1d2050bff3fa70e53abfa08/crates/uv-client/src/cached_client.rs#L632-L670</p>
+<p>See https://github.com/astral-sh/uv/issues/14069</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @zanieb on 2025-06-27 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-27 19:02</div>
+            <div class="timeline-body"><p>Correct me if I'm wrong, the relevant code that converts the request to a stream is here: https://github.com/astral-sh/uv/blob/6a5d2f1ec4b8a43a38fb29cf31d57fd9f2bc362f/crates/uv-python/src/downloads.rs#L1292-L1295</p>
+<p>If this were going to implement retrying mid-stream, it would need to transparently start a fresh request, convert that new request to a stream, and then skip the number of bytes in that new stream that the client has already read from the old one. That gets more complicated in a couple ways:</p>
+<ul>
+<li>We probably want to try to set a <code>Range: bytes=...</code> header and handle <code>206 Partial Content</code> from servers that are smart enough to support it, so that we don't unnecessarily re-fetch the same bytes? But we don't want to assume that the server supports that header?</li>
+<li>Do we care about checking whether the skipped bytes are the same as the ones we originally received, and failing if not? I guess we can't do that if we support partial content, so maybe we ignore this problem and hope for the best?</li>
+</ul>
+<p>Does it sound like I'm understanding this right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-27 19:12</div>
+            <div class="timeline-body"><p>Or maybe I shouldn't be trying to do this transparently, and instead I should just modify the caller to retry at a higher level? Though then you want to carefully distinguish network errors from downstream errors (like a corrupt ZIP file or whatever), which might be tricky?</p>
+<p>Edit: Ok no actually we already do some of this in <code>is_extended_transient_error</code>. Probably I'll just follow that approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-27 20:29</div>
+            <div class="timeline-body"><p>My current theory is that this <a href="https://github.com/astral-sh/uv/blob/6a5d2f1ec4b8a43a38fb29cf31d57fd9f2bc362f/crates/uv-client/src/base_client.rs#L900">should already be retrying</a>, but the bug is that <code>#[error(transparent)]</code> interferes with the <code>downcast_ref</code> chaining that we're doing in <code>find_source</code>/<code>find_sources</code>. I need to play with it more to be sure.</p>
+<p>Specifically this annotation right here: https://github.com/astral-sh/uv/blob/6a5d2f1ec4b8a43a38fb29cf31d57fd9f2bc362f/crates/uv-extract/src/error.rs#L9-L10</p>
+<p>I think the problem is that the type isn't <code>io::Error</code> (it's <code>uv_extract::Error</code>), but also the <code>.source()</code> is <code>None</code>. It's like we &quot;skip over&quot; the actual <code>io::Error</code> in source chaining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-27 22:58</div>
+            <div class="timeline-body"><p>Ok this is weird. When I inject a bare <code>io::ErrorKind::ConnectionReset</code> error like this, it <em>doesn't</em> get retried (I'm pretty sure because of the <code>downcast_ref</code> issue mentioned above):</p>
+<pre><code class="language-diff">diff --git a/crates/uv-python/src/downloads.rs b/crates/uv-python/src/downloads.rs
+index 51f6f1d45..0fa70813f 100644
+--- a/crates/uv-python/src/downloads.rs
++++ b/crates/uv-python/src/downloads.rs
+@@ -1254,6 +1256,21 @@ where
+     }
+ }
+ 
++struct BadReader {}
++
++impl AsyncRead for BadReader {
++    fn poll_read(
++        self: Pin&lt;&amp;mut Self&gt;,
++        _cx: &amp;mut Context&lt;'_&gt;,
++        _buf: &amp;mut ReadBuf&lt;'_&gt;,
++    ) -&gt; Poll&lt;io::Result&lt;()&gt;&gt; {
++        return Poll::Ready(Err(io::Error::new(
++            io::ErrorKind::ConnectionReset,
++            &quot;Jack reset woo&quot;,
++        )));
++    }
++}
++
+ /// Convert a [`Url`] into an [`AsyncRead`] stream.
+ async fn read_url(
+     url: &amp;Url,
+@@ -1289,11 +1308,11 @@ async fn read_url(
+             .map_err(|err| Error::from_reqwest(url, err, retry_count))?;
+ 
+         let size = response.content_length();
+-        let stream = response
++        let _stream = response
+             .bytes_stream()
+             .map_err(io::Error::other)
+             .into_async_read();
+ 
+-        Ok((Either::Right(stream.compat()), size))
++        Ok((Either::Right(BadReader {}), size))
+     }
+ }
+
+</code></pre>
+<p>If I <code>dbg!</code> the error in that case, it looks like this:</p>
+<pre><code>[crates/uv-python/src/downloads.rs:716:64] err = ExtractError(
+    &quot;cpython-3.8.20-20241002-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&quot;,
+    Io(
+        Custom {
+            kind: ConnectionReset,
+            error: &quot;Jack reset woo&quot;,
+        },
+    ),
+)
+</code></pre>
+<p>However, when I try to reproduce this over the actual network, it <em>does</em> get retried. Here's the server I'm using:</p>
+<pre><code class="language-rust">use std::io::BufReader;
+use std::io::prelude::*;
+
+const BAD_RESPONSES: u64 = 2;
+
+const ZIP_PATH: &amp;str =
+    &quot;/tmp/cpython-3.8.20+20241002-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&quot;;
+
+fn main() -&gt; anyhow::Result&lt;()&gt; {
+    let zip_bytes = std::fs::read(ZIP_PATH)?;
+    let listener = std::net::TcpListener::bind(&quot;127.0.0.1:8000&quot;)?;
+    let mut bad_responses_so_far = 0u64;
+    loop {
+        let (mut stream, _) = listener.accept()?;
+
+        // Read and print the (presumably) GET headers. NB: If we close the connection before
+        // reading all of these, the sender gets BrokenPipe or ConnectionReset on their *write*,
+        // which isn't what we want.
+        let mut reader = BufReader::new(&amp;stream);
+        let mut line = String::new();
+        while reader.read_line(&amp;mut line)? != 0 {
+            println!(&quot;{}&quot;, line.trim());
+            if line == &quot;\r\n&quot; {
+                break; // end of headers
+            }
+            line.clear();
+        }
+
+        let response_start = &quot;HTTP/1.1 200 OK\r\n\r\n&quot;;
+        stream.write_all(response_start.as_bytes())?;
+
+        // Write the first half of the ZIP bytes.
+        let half = zip_bytes.len() / 2;
+        stream.write_all(&amp;zip_bytes[..half])?;
+
+        if bad_responses_so_far &lt; BAD_RESPONSES {
+            let socket = socket2::Socket::from(stream);
+            socket.set_linger(Some(std::time::Duration::from_secs(0)))?;
+            bad_responses_so_far += 1;
+            println!(&quot;RESET THE CONNECTION 👹👹👹\n&quot;);
+        } else {
+            // Write the second half of the ZIP bytes.
+            stream.write_all(&amp;zip_bytes[half..])?;
+            println!(&quot;good response\n&quot;);
+        }
+    }
+}
+</code></pre>
+<p>When I <code>dbg!</code> the error in that case it looks like this:</p>
+<pre><code>[crates/uv-python/src/downloads.rs:975:74] err = Io(
+    Custom {
+        kind: Other,
+        error: TarError {
+            desc: &quot;failed to unpack `/home/jacko/.local/share/uv/python/.temp/.tmpTd0oSW/python/lib/libpython3.8.so.1.0`&quot;,
+            io: Custom {
+                kind: Other,
+                error: TarError {
+                    desc: &quot;failed to unpack `python/lib/libpython3.8.so.1.0` into `/home/jacko/.local/share/uv/python/.temp/.tmpTd0oSW/python/lib/libpython3.8.so.1.0`&quot;,
+                    io: Custom {
+                        kind: Other,
+                        error: reqwest::Error {
+                            kind: Decode,
+                            source: reqwest::Error {
+                                kind: Body,
+                                source: hyper::Error(
+                                    Body,
+                                    Os {
+                                        code: 104,
+                                        kind: ConnectionReset,
+                                        message: &quot;Connection reset by peer&quot;,
+                                    },
+                                ),
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+)
+</code></pre>
+<p>Repro-ing this bug seems very sensitive to exactly where the connection reset error bubbles up from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-27 23:10</div>
+            <div class="timeline-body"><p>Another possibility is that the client <em>is</em> retrying in this case, and it's exhausting all of its retries. When I set that server above to always reset the connection, and then run <code>uv python install 3.8.20 --mirror http://localhost:8000 2&gt;&amp;1 | cat</code>, the result looks like this:</p>
+<pre><code>Downloading cpython-3.8.20-linux-x86_64-gnu (download)
+Downloading cpython-3.8.20-linux-x86_64-gnu (download)
+Downloading cpython-3.8.20-linux-x86_64-gnu (download)
+Downloading cpython-3.8.20-linux-x86_64-gnu (download)
+error: Failed to install cpython-3.8.20-linux-x86_64-gnu
+  Caused by: Failed to extract archive: cpython-3.8.20-20241002-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: failed to unpack `/home/jacko/.local/share/uv/python/.temp/.tmpvnPRu8/python/lib/libpython3.8.so.1.0`
+  Caused by: failed to unpack `python/lib/libpython3.8.so.1.0` into `/home/jacko/.local/share/uv/python/.temp/.tmpvnPRu8/python/lib/libpython3.8.so.1.0`
+  Caused by: error decoding response body
+  Caused by: request or response body error
+  Caused by: error reading a body from connection
+  Caused by: Connection reset by peer (os error 104)
+</code></pre>
+<p>The only difference between that and <a href="https://github.com/astral-sh/uv/actions/runs/15929622464/job/44935399219">the observed failure here</a> is that I don't see multiple <code>Downloading...</code> messages. However, I don't see <em>any</em> messages like that, and I might've expected to see one, so maybe they're getting filtered out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-27 23:21</div>
+            <div class="timeline-body"><p>I think <code>Downloading...</code> is a progress reporter message which might be turned off during tests, e.g., from <code>UV_TEST_NO_CLI_PROGRESS</code>? or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjcarter">@mjcarter</a> on 2025-06-28 14:40</div>
+            <div class="timeline-body"><p>I'm having this issue with a poor connection trying to downloading torch, if I use PIP (without UV) the --timeout parameter prevents the connection being lost if set with a high value, but it seems like the --timeout parameter isn't supported in UV?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-28 14:50</div>
+            <div class="timeline-body"><p>@mjcarter can you open a new issue please? This one is about Python installation downloads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14069.html">astral-sh/uv#14069</a> on 2025-06-30 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14378.html">astral-sh/uv#14378</a> on 2025-06-30 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-01 16:53</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/14378 is merged, so the next time this flake happens we'll be looking to see whether it says it retried or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @oconnor663 by @oconnor663 on 2025-07-01 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14425.html">astral-sh/uv#14425</a> on 2025-07-02 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-22 19:34</div>
+            <div class="timeline-body"><p>Still seeing this</p>
+<pre><code>              5 │+error: Failed to install cpython-3.10.18-[PLATFORM]
+              6 │+  Caused by: Failed to extract archive: cpython-3.10.18-[PLATFORM]-linux-gnu-install_only_stripped.tar.gz
+              7 │+  Caused by: Invalid tar file
+              8 │+  Caused by: failed to unpack `[TEMP_DIR]/managed/.temp/[TMP]/python3.10`
+              9 │+  Caused by: failed to unpack `python/bin/python3.10` into `[TEMP_DIR]/managed/.temp/[TMP]/python3.10`
+             10 │+  Caused by: error decoding response body
+             11 │+  Caused by: request or response body error
+             12 │+  Caused by: error reading a body from connection
+             13 │+  Caused by: connection reset
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15567.html">astral-sh/uv#15567</a> on 2025-08-28 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-31 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-02 21:58</div>
+            <div class="timeline-body"><p>I think we're still seeing this</p>
+<pre><code>  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: python_install_no_cache
+    Source: V:\uv:2270
+    ───────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ───────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬──────────────────────────────────────────────────────────────────
+        0       │-success: true
+        1       │-exit_code: 0
+              0 │+success: false
+              1 │+exit_code: 1
+        2     2 │ ----- stdout -----
+        3     3 │ 
+        4     4 │ ----- stderr -----
+        5       │-Installed Python 3.13.7 in [TIME]
+        6       │- + cpython-3.13.7-[PLATFORM] (python3.13)
+              5 │+error: Failed to install cpython-3.13.7-[PLATFORM]
+              6 │+  Caused by: Failed to extract archive: cpython-3.13.7-[PLATFORM]-windows-msvc-install_only_stripped.tar.gz
+              7 │+  Caused by: Invalid tar file
+              8 │+  Caused by: failed to unpack `[TEMP_DIR]/managed/.temp/[TMP]/entities.cpython-313.pyc`
+              9 │+  Caused by: failed to unpack `python/[PYTHON-LIB]/html/__pycache__/entities.cpython-313.pyc` into `[TEMP_DIR]/managed/.temp/[TMP]/entities.cpython-313.pyc`
+             10 │+  Caused by: error decoding response body
+             11 │+  Caused by: request or response body error
+             12 │+  Caused by: error reading a body from connection
+             13 │+  Caused by: connection reset
+    ────────────┴──────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test python_install::python_install_no_cache ... FAILED
+
+</code></pre>
+<p>https://github.com/astral-sh/uv/actions/runs/17413253772/attempts/1?pr=15638</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-09-02 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-03 14:13</div>
+            <div class="timeline-body"><p>And again</p>
+<p>https://github.com/astral-sh/uv/actions/runs/17435853668/job/49505424731?pr=15663</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-03 14:18</div>
+            <div class="timeline-body"><p>Puzzled why our logic isn't catching this, connection reset are a kind of IO error we catch and this error can only come from the <code>fetch</code> which is inside of our loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15675.html">astral-sh/uv#15675</a> on 2025-09-04 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-04 11:28</div>
+            <div class="timeline-body"><p>It was h2 shadowing the <code>std::io::Error</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-09-04 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../seanmonstar/reqwest/issues/2819.html">seanmonstar/reqwest#2819</a> on 2025-09-18 07:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

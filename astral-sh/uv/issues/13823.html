@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credentials in direct URLs are not propagated to transitive URL dependencies - astral-sh/uv #13823</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Credentials in direct URLs are not propagated to transitive URL dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13823">#13823</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-06-03 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 16:12</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>[build-system]
+    requires      = [&quot;setuptools&gt;=64&quot;, &quot;setuptools_scm&gt;=8&quot;]
+    build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+    name = &quot;xxx&quot;
+    description = &quot;xxx&quot;
+    dynamic = [&quot;version&quot;]
+    readme = &quot;README.md&quot;
+    requires-python = &quot;&gt;=3.12&quot;
+    dependencies = [
+        &quot;jax[cuda,tpu]==0.6.1&quot;,
+        &quot;pandas&gt;=2.2.3&quot;,
+        &quot;xxx @ https://&lt;token&gt;@gitlab.com/api/v4/projects/&lt;project-id&gt;/packages/pypi/files/&lt;file-id&gt;/xxx.whl&quot; # this will download but the subsequent authenticated wheel url deps will not work and raise the error
+    ]
+.....
+</code></pre>
+</blockquote>
+<p><em>Originally posted by @rivershah in <a href="https://github.com/astral-sh/uv/issues/13791#issuecomment-2935411863">#13791</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13791.html">astral-sh/uv#13791</a> on 2025-06-03 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 16:13</div>
+            <div class="timeline-body"><p>@rivershah how are the URLs specified in the dependencies? Do they also hard-code the token in the <code>pyproject.toml</code>? Or they just have a URL and you want the token to be propagated from the parent <code>pyprojec.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-06-03 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-06-03 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 17:08</div>
+            <div class="timeline-body"><p>Okay after a bunch of time setting up a reproduction, I cannot reproduce this</p>
+<pre><code>uv pip install --reinstall --no-cache 'uv-private-pypackage-parent[wheel] @ https://__token__:*****@gitlab.com/api/v4/projects/70458383/packages/pypi/files/f8484dc92c86ed902a0a3fb3c5ea64eb2c9c6186544e63cb6373cd1dca3e5600/uv_private_pypackage_parent-0.1.0-py3-none-any.whl'
+</code></pre>
+<p>where the <code>uv-private-pypackage-parent</code> declares the optional dependency</p>
+<pre><code>wheel = [&quot;uv-private-pypackage @ https://gitlab.com/api/v4/projects/70458383/packages/pypi/files/33081a82c974308042ae703e1a6978b8c705bcf657b7af3afdbfd5231cb4eb20/uv_private_pypackage-0.1.0-py3-none-any.whl&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 17:12</div>
+            <div class="timeline-body"><p>Similarly,</p>
+<pre><code>[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13.2&quot;
+dependencies = [
+    &quot;uv-private-pypackage-parent[wheel] @ https://__token__:*****@gitlab.com/api/v4/projects/70458383/packages/pypi/files/f8484dc92c86ed902a0a3fb3c5ea64eb2c9c6186544e63cb6373cd1dca3e5600/uv_private_pypackage_parent-0.1.0-py3-none-any.whl&quot;
+]
+</code></pre>
+<p>works with <code>uv sync</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rivershah">@rivershah</a> on 2025-06-06 04:34</div>
+            <div class="timeline-body"><p>@zanieb Thanks for setting this up. Could I please get the token via dm or other means so I can illustrate the exact failure command line? With <code>--no-cache</code> flag removed I do get it with our internal packages but I need to be sure we can reproduce via the MRE private packages you have setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-09 00:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

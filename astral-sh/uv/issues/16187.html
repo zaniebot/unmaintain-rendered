@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build is different to uvx hatch build - astral-sh/uv #16187</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build is different to uvx hatch build</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16187">#16187</a>
+        opened by <a href="https://github.com/michealroberts">@michealroberts</a>
+        on 2025-10-08 13:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 13:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have noticed a difference between:</p>
+<pre><code class="language-bash">uv build
+</code></pre>
+<p>and</p>
+<pre><code class="language-bash">uvx hatch build
+</code></pre>
+<p>even with the following set in the project's <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p><code>uv build</code> output:</p>
+<p><img width="760" height="126" alt="Image" src="https://github.com/user-attachments/assets/431fbf1d-68dd-4b8d-9840-00f5996ecaf5" /></p>
+<p>vs</p>
+<p><code>uvx hatch build</code> output:</p>
+<p><img width="737" height="309" alt="Image" src="https://github.com/user-attachments/assets/5a3b62fe-2c9a-49dc-9fb5-39bd6cbdced9" /></p>
+<h3>Platform</h3>
+<p>Linux 6.15.11-orbstack-00539-g9885ebd8e3f4 aarch64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.0</p>
+<h3>Python version</h3>
+<p>CPython 3.13.7 interpreter at: /usr/local/bin/python3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @michealroberts on 2025-10-08 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 13:17</div>
+            <div class="timeline-body"><p>What is the output with <code>uv pip install build &amp;&amp; python -m build</code>? It looks like <code>hatch build</code> is doing something extra, likely around <code>.gitignore</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 13:40</div>
+            <div class="timeline-body"><p>@konstin Thank you for replying. However, can you give me the steps please that you would like me to test your assumption and ensure the commands you want me to run also work (the above won't work).</p>
+<p>Irregardless, I thought that <code>uv build</code> should pick up on my build backend ... ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 13:43</div>
+            <div class="timeline-body"><p>What doesn't work with the above command? Please share the output as a code block.</p>
+<blockquote>
+<p>Irregardless, I thought that <code>uv build</code> should pick up on my build backend ... ?</p>
+</blockquote>
+<p>It does! It's <code>hatch build</code> that does some special instead of running hatchling through the standard PEP 517 interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 13:44</div>
+            <div class="timeline-body"><blockquote>
+<p>What doesn't work with the above command? Please share the output as a code block.</p>
+</blockquote>
+<pre><code>/usr/local/bin/python: No module named build
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 13:45</div>
+            <div class="timeline-body"><p>In that case you need to activate the venv or run directly from the Python venv, e.g.:</p>
+<pre><code>uv venv
+uv pip install build
+.venv/bin/python -m build
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 13:49</div>
+            <div class="timeline-body"><p>@konstin That gives the same output as <code>uv build</code>. It is ignoring all python files. The relevant lines in the pyproject:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/zwo&quot;]
+exclude = [&quot;/.devcontainer&quot;, &quot;/.github&quot;, &quot;/.vscode&quot;, &quot;/docs&quot;]
+
+[tool.hatch.build.targets.wheel.force-include]
+&quot;sdk&quot; = &quot;sdk&quot;
+
+[tool.hatch.build.targets.sdist]
+packages = [&quot;src/zwo&quot;]
+exclude = [&quot;/.devcontainer&quot;, &quot;/.github&quot;, &quot;/.vscode&quot;, &quot;/docs&quot;]
+
+[tool.hatch.build.targets.sdist.force-include]
+&quot;sdk&quot; = &quot;sdk&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-08 13:51</div>
+            <div class="timeline-body"><p>This means it's something that <code>hatch build</code> does extra, not a bug in uv. You should consult with hatch over the difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-10-08 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-10-08 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michealroberts">@michealroberts</a> on 2025-10-08 13:54</div>
+            <div class="timeline-body"><p>@konstin Ok fair, I think I agree with your assessment. In my opinion, <code>uvx hatch build</code> has built the output correctly, the package is also now installing properly on the receiving side:</p>
+<p><img width="135" height="39" alt="Image" src="https://github.com/user-attachments/assets/f052a3ab-db0e-4ed2-9d46-495f2e80df71" /></p>
+<p>... whereas before just the sdist files were being installed minus the wheel.</p>
+<p>Two different outcomes with the same configuration in my <code>pyproject.toml</code>.</p>
+<p>cc @ofek FYI 👀 we have a discrepancy with hatch build processes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @michealroberts on 2025-10-08 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

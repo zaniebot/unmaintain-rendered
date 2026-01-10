@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] `...` should be an acceptable default value for any parameter in protocol methods, abstract methods and overloaded methods - astral-sh/ruff #17234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] `...` should be an acceptable default value for any parameter in protocol methods, abstract methods and overloaded methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17234">#17234</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-06 15:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-06 15:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=9a8521c5eac17c9de3af8f9a982eb858">Mypy</a>, <a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAK4MYAxmADYA0UYAbgKYgVgCGAJgFCiRSsBGpTNlz4BAZxghWpGBAYwAFmC6dSFVuPFQAYmDAAKImBLkKASgBcnKLajsGwKAA8D4hhWA04lqP30UUAC8UAB04VZh4ZxqGlpQAEKsINZ2UAACElIycgrKXGkOTq7unt6%2B-pTBUaGR4aEx6fRMLBycRS4GPlAAcmAoDNX15lAAtAB8vf0MvvWcTYzMbFwdrt2oMCMTUJIpNe2Oneso%2BAA%2BUwPVfQNbk7tQ59cz%2B0A">pyright</a> and <a href="https://pyrefly.org/try/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAK4MYAxmADYA0UYAbgKYgVgCGAJgFCiRSsBGpTNlz4BAZxghWpGBAYwAFmC6dSFVuPFQAYmDAAKImBLkKASgBcnKLajsGwKAA8D4hhWA04lqP30UUAC8UAB04VZh4ZxqGlpQAEKsINZ2UAACElIycgrKXGkOTq7unt6+-pTBUaGR4aEx6fRMLBycRS4GPlAAcmAoDNX15lAAtAB8vf0MvvWcTYzMbFwdrt2oMCMTUJIpNe2Oneso+AA+UwPVfQNbk7tQ59cz+0A">pyrefly</a> all emit 0 diagnostics on this snippet:</p>
+<pre><code class="language-py">from typing import Protocol, overload
+from abc import abstractmethod
+
+class Foo(Protocol):
+    def x(self, y: bool = ...): ...
+
+class Bar:
+    @abstractmethod
+    def x(self, y: bool = ...): ...
+
+@overload
+def x(y: None = ...) -&gt; None: ...
+@overload
+def x(y: int) -&gt; str: ...
+def x(y: int | None = None) -&gt; str | None: ...
+</code></pre>
+<p>But red-knot <a href="https://playknot.ruff.rs/d1038da7-7198-4650-8288-548a94b74c77">emits three diagnostics</a>:</p>
+<pre><code>    Default value of type `EllipsisType` is not assignable to annotated parameter type `bool` (lint:invalid-parameter-default) [Ln 5, Col 17]
+    Default value of type `EllipsisType` is not assignable to annotated parameter type `bool` (lint:invalid-parameter-default) [Ln 9, Col 17]
+    Default value of type `EllipsisType` is not assignable to annotated parameter type `None` (lint:invalid-parameter-default) [Ln 12, Col 7]
+</code></pre>
+<p>We already exempt all functions in stub files from this check. We also need to exempt:</p>
+<ul>
+<li>Functions decorated with <code>@typing.overload</code></li>
+<li>Methods decorated with <code>@abc.abstractmethod</code></li>
+<li>Methods in classes that have <code>typing.Protocol</code> in their bases tuple.</li>
+</ul>
+<p>This bug causes 7 spurious <code>invalid-parameter-default</code> diagnostics when type-checking my <a href="https://github.com/AlexWaygood/typeshed-stats">typeshed-stats project</a>, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-04-06 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-04-06 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-06 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Alpha" by @AlexWaygood on 2025-04-06 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-06 19:57</div>
+            <div class="timeline-body"><p>I'd like to give this a shot, since overloads arent supported now, i guess we can leave them out for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-06 20:01</div>
+            <div class="timeline-body"><p>We don't understand the full semantics of <code>@overload</code> yet, but we are able to answer the question &quot;is this is the <code>overload</code> decorator?&quot;, and we already apply special-casing for functions decorated with <code>@overload</code> in some other situations:</p>
+<p>https://github.com/astral-sh/ruff/blob/51bdb87fd8ec547b9f47db10b7c11bc271d435f5/crates/red_knot_python_semantic/src/types/infer.rs#L1213-L1223</p>
+<p>so I don't think that part of this issue needs to wait for full <code>@overload</code> support!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MatthewMckee4 by @AlexWaygood on 2025-04-06 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17243.html">astral-sh/ruff#17243</a> on 2025-04-06 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-07 17:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

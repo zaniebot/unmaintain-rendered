@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect debug message order when using `--system` flag to uv pip interface commands - astral-sh/uv #16453</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect debug message order when using `--system` flag to uv pip interface commands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16453">#16453</a>
+        opened by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a>
+        on 2025-10-26 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-10-26 13:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">uv pip install pysolr -v --system
+</code></pre>
+<p><strong>Observed log output:</strong></p>
+<pre><code>DEBUG uv 0.9.5
+DEBUG Acquired shared lock for `/home/dhaval/.cache/uv`
+DEBUG Searching for default Python interpreter in managed installations or search path
+DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/usr/bin/python3` (first executable in the search path)
+Using Python 3.12.3 environment at: /usr
+DEBUG Released lock at `/home/dhaval/.cache/uv/.lock`
+</code></pre>
+<hr />
+<h3>Description</h3>
+<p>The current debug message suggests that <code>uv</code> first checks <strong>managed installations</strong> and then the <strong>system search path</strong>.</p>
+<p>However, when using the <code>--system</code> flag, the behavior should logically prioritize the <strong>system search path first</strong>, since uv managed python installations (under <code>~/.local/share/uv/python/...</code>) are not supposed to be modified due to the <code>EXTERNALLY-MANAGED</code> marker.</p>
+<p>Therefore, the debug message is misleading in this context.</p>
+<hr />
+<h3>Current Behavior</h3>
+<pre><code>DEBUG Searching for default Python interpreter in managed installations or search path
+</code></pre>
+<h3>Expected Behavior (Option 1 - Swap)</h3>
+<pre><code>DEBUG Searching for default Python interpreter in search path or managed installations
+</code></pre>
+<h3>Expected Behavior (Option 2 - Limit)</h3>
+<p><strong>Removing managed installations lookup enitrely</strong></p>
+<pre><code>DEBUG Searching for default Python interpreter in search path
+</code></pre>
+<hr />
+<h3>Additional Notes</h3>
+<ul>
+<li>This is purely a <strong>logging/UX issue</strong> - functionality seems correct.</li>
+<li>Clarifying this message will help users better understand where <code>uv</code> looks for interpreters when <code>--system</code> is used.</li>
+</ul>
+<h3>Platform</h3>
+<p>Linux 5.15.153.1-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.5</p>
+<h3>Python version</h3>
+<p>Python 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @DhavalGojiya on 2025-10-26 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-10-26 13:54</div>
+            <div class="timeline-body"><p>I also have one more question:</p>
+<p>Does uv internally treat all its managed installations as “externally managed” for safety,<br />
+or is this particular Python version installed by uv itself actually configured to be marked as “externally managed”?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-26 15:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Does uv internally treat all its managed installations as “externally managed” for safety,
+or is this particular Python version installed by uv itself actually configured to be marked as “externally managed”?</p>
+</blockquote>
+<p>I don't understand the two cases you're distinguishing between here, but all Python versions managed by uv are marked as externally-managed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-26 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @zanieb on 2025-10-26 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-26 15:49</div>
+            <div class="timeline-body"><p>Regarding the OP, I think the change would be at https://github.com/astral-sh/uv/blob/1fbc1c7ff4c587292e60bf4706ca31a9dadffc3a/crates/uv-python/src/discovery.rs#L3170-L3180</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-10-26 17:14</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Does uv internally treat all its managed installations as “externally managed” for safety,
+or is this particular Python version installed by uv itself actually configured to be marked as “externally managed”?</p>
+</blockquote>
+<p>I don't understand the two cases you're distinguishing between here, but all Python versions managed by uv are marked as externally-managed.</p>
+</blockquote>
+<p>I mean, is the Python version installed by uv already marked as <code>externally-managed</code>, or does it only behave that way temporarily when uv runs its Rust code (during the any uv CLI command execution)</p>
+<p>But your reply makes it clear that it is not temporary - the Python version itself comes marked as <code>externally-managed</code> when we install it using <code>uv python install $VERSION</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16463.html">astral-sh/uv#16463</a> on 2025-10-27 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-10-27 10:51</div>
+            <div class="timeline-body"><ol>
+<li></li>
+</ol>
+<pre><code class="language-bash">dhaval@lg-ubuntu:~/.local/share/uv/python$ ls
+cpython-3.9.7-linux-x86_64-gnu
+
+dhaval@lg-ubuntu:~/.local/share/uv/python$ uv python dir  # I'm in the same directory that uv prints
+/home/dhaval/.local/share/uv/python
+
+dhaval@lg-ubuntu:~/.local/share/uv/python$ cpython-3.9.7-linux-x86_64-gnu/bin/python -m pip install pyjwt
+Collecting pyjwt
+  Using cached PyJWT-2.10.1-py3-none-any.whl (22 kB)
+Installing collected packages: pyjwt
+Successfully installed pyjwt-2.10.1
+</code></pre>
+<p>Isn’t every Python version installed by <code>uv</code> using
+<code>uv python install &lt;VERSION&gt;</code> considered <strong>externally managed</strong>?</p>
+<p>Or does that rule not apply to older Python versions installed by <code>uv</code>?
+Because here you can see that I’m able to modify the actual uv managed Python version’s <code>site-packages/</code> folder.</p>
+<ol start="2">
+<li>Try with some new python version</li>
+</ol>
+<pre><code>dhaval@lg-ubuntu:~/.local/share/uv/python$ cpython-3.13.7-linux-x86_64-gnu/bin/python -m pip install pyjwt
+
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─&gt; This Python installation is managed by uv and should not be modified.
+</code></pre>
+<p>externally managed marker works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-10-28 12:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

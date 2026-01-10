@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python.org's -intel64 suffix confuses uv pip - astral-sh/uv #7684</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>python.org's -intel64 suffix confuses uv pip</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7684">#7684</a>
+        opened by <a href="https://github.com/hynek">@hynek</a>
+        on 2024-09-25 11:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hynek">@hynek</a> on 2024-09-25 11:51</div>
+            <div class="timeline-body"><p>So this might sound a bit special, but I suspect there's more then the one of me.</p>
+<p>Context is that I have an ARM-based Mac and I need to develop certain packages and applications under Intel emulation.</p>
+<p>This is fairly easy with the official python.org builds that offer a <code>python3.12-intel64</code> which is always Intel, so creating a virtualenv solves all my problems.</p>
+<p>Therefore, when using project mode, I use the following in Direnv:</p>
+<pre><code>export UV_PYTHON=python3.12-intel64
+
+uv sync
+</code></pre>
+<p>Problems arise with <code>uv pip</code>. For one, if I'm in one of those projects and run <code>uv pip list</code>, I get what I suspect is the global output:</p>
+<pre><code>❯ uv pip list
+Package Version
+------- -------
+pip     24.2
+</code></pre>
+<p>Of course, <code>env UV_PYTHON=python3.12 uv pip list</code> or <code>env UV_PYTHON=.venv uv pip list</code> work</p>
+<p>Trying to install something (because, for example I want some debugger that isn't part of the project) fails rather opaquely:</p>
+<pre><code>❯ uv pip install ipdb
+error: No virtual environment found for executable name `python3.12-intel64`; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<p>Since <code>python3.12-intel64</code> is an official Python thing – would it be thinkable to add special support to uv for it?</p>
+<hr />
+<pre><code>❯ uv --version
+uv 0.4.16 (e81ed8ec5 2024-09-24)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:09</div>
+            <div class="timeline-body"><p>The <code>uv pip install ipdb</code> failure is that you didn't include <code>--system</code> to opt-in to mutating a non-virtual environment. We can improve the error message there.</p>
+<p>Similarly, <code>uv pip list</code> will read from a system environment if asked to and I presume <code>$PY</code> expands to the full path to the system interpreter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-25 14:22</div>
+            <div class="timeline-body"><blockquote>
+<p>The <code>uv pip install ipdb</code> failure is that you didn't include <code>--system</code> to opt-in to mutating a non-virtual environment. We can improve the error message there.</p>
+</blockquote>
+<p>yeah but I also didn’t want to. That part is 100% correct. I wanted it to look at .venv but uv pip decided that it doesn’t match Python3.12-intel64 which it totally does. My working theory for this whole ticket is that it gets confused by the suffix.</p>
+<blockquote>
+<p>Similarly, <code>uv pip list</code> will read from a system environment if asked to and I presume <code>$PY</code> expands to the full path to the system interpreter?</p>
+</blockquote>
+<p>I’m super sorry for copy-pasta — I didn’t notice it and will edit it accordingly. The effective UV_PYTHON is <code>python3.12-intel64</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:25</div>
+            <div class="timeline-body"><p>Are you activating your virtual environment? When you provide a Python executable name i.e. <code>python3.12-intel64</code> we <em>only</em> look for it on the <code>PATH</code>. We could consider that a request for a general Python interpreter instead and do full discovery, but we don't have any infrastructure for filtering interpreters by their architecture right now. Are there other variants than <code>intel64</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-25 14:42</div>
+            <div class="timeline-body"><p>Ah I can only speculate since I’m on a full train, but yes I do activate my virtualenvs and I don’t think they have an <code>python3.12-intel64</code> but that’s something you know better than me. :)</p>
+<p>But yeah that was my whole suspicion and hope that since the -intel64 suffix is official and since I don’t think I can achieve the same thing with uv tooling (?), there might be the possibility to give it special treatment? Eg ignoring it when checking a venv until you add some kind of arch intelligence.</p>
+<p>Or do you have any other suggestions how to achieve what I need? This can’t be such an exotic need?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:59</div>
+            <div class="timeline-body"><p>I think you want to avoid setting <code>UV_PYTHON</code> and pass it per-command instead. Then, when in your virtual environments, <code>uv pip</code> will work as expected.</p>
+<p>Regardless, we should add first-class support for this in discovery. I just don't know when we'll get to it.</p>
+<p>Related https://github.com/python/cpython/issues/88175</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-09-25 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-25 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-25 16:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you want to avoid setting <code>UV_PYTHON</code> and pass it per-command instead. Then, when in your virtual environments, <code>uv pip</code> will work as expected.</p>
+</blockquote>
+<p>Fair enough. I'd prefer to keep doing it because it works flawlessly with <code>uv sync</code> / <code>uv lock</code> and I don't have to pass it in two places (.envrc for Direnv <code>uv sync</code> and Justfile for recreating the venv).</p>
+<p>But I can wait and live with workarounds for now – thanks! :)  I also wanted to make sure that it doesn't break for sync/lock at some point. ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15694.html">astral-sh/uv#15694</a> on 2025-09-05 10:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:55 UTC
+    </footer>
+</body>
+</html>

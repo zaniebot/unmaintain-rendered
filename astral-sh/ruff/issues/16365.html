@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for unpacking targets in `with` statement - astral-sh/ruff #16365</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for unpacking targets in `with` statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16365">#16365</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-02-25 10:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 10:33</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>For example:</p>
+<pre><code class="language-py">class Unpacked:
+    def __enter__(self) -&gt; tuple[int, int]:
+        return (1, 2)
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        return
+
+
+with Unpacked() as (x, y):
+    reveal_type(x)  # revealed: int
+    reveal_type(y)  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-02-25 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 11:21</div>
+            <div class="timeline-body"><p>Is this something a contributor could work on or is there some hidden complexity?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 11:32</div>
+            <div class="timeline-body"><p>I plan to spend a couple of minutes today to check if it's &quot;help wanted&quot; or not. I'll revert back here once that's done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-26 09:33</div>
+            <div class="timeline-body"><p>I took a look at the inference side because the semantic side is straightforward. My main concern is about how to infer the context expression inside the <code>Unpacker</code>. See below after the linked code.</p>
+<p>The implementation would be similar to https://github.com/astral-sh/ruff/pull/15058. What needs to happen is:</p>
+<ul>
+<li>Update <code>CurrentAssignment::WithItem</code> with a <code>unpack</code> field similar to <code>For</code></li>
+<li>Update <code>WithItemDefinitionNodeRef</code> with a <code>unpack</code> field similar to <code>ForStmtDefinitionNodeRef</code></li>
+<li>Update <code>WithItemDefinitionKind</code> with a <code>unpack</code> field similar to <code>ForStmtDefinitionKind</code></li>
+<li>Update this field in <code>visit_stmt</code> inside <code>SemanticIndexBuilder</code> if the <code>optional_vars</code> is a tuple</li>
+<li>Update <code>infer_with_item_definition</code> to infer the unpacked assignment target similar to <code>infer_for_statement_definition</code></li>
+</ul>
+<p>https://github.com/astral-sh/ruff/blob/bf2c9a41cd7e5860a6aea8b9789893767ff4c1a5/crates/red_knot_python_semantic/src/types/infer.rs#L1580-L1600</p>
+<p>Now, we need to infer the context expression inside <code>Unpacker::unpack</code>. The reason for this is that <code>infer_unpack_types</code> is a salsa query for which the ingredient is <code>Unpack</code> but that doesn't contain the value type that needs to be unpacked, so the inference of that is done inside the <code>Unpacker</code>.</p>
+<p>For <code>with</code> statement, I think we'd need a new <code>UnpackValue</code> variant, extract <code>TypeInferenceBuilder::infer_context_expression</code> as a standalone function which is then called in (a) inside <code>Unpacker::unpack</code> when the definition target is <code>Sequence</code> and (b) inside <code>infer_with_item_definition</code> when the definition target is <code>Name</code>.</p>
+<p>Writing this down, it does seems straightforward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @dhruvmanila on 2025-02-26 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-03-01 04:14</div>
+            <div class="timeline-body"><p>I'd like to give this a try</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ericmarkmartin by @AlexWaygood on 2025-03-01 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16469.html">astral-sh/ruff#16469</a> on 2025-03-03 06:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-08 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-08 02:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

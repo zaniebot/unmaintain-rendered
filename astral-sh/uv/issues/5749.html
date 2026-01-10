@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install Babel - astral-sh/uv #5749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install Babel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5749">#5749</a>
+        opened by <a href="https://github.com/RomainBrault">@RomainBrault</a>
+        on 2024-08-03 13:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RomainBrault">@RomainBrault</a> on 2024-08-03 13:52</div>
+            <div class="timeline-body"><p>I cannot install Babel with</p>
+<p><code>uv tool install Babel</code></p>
+<p>I get</p>
+<pre><code class="language-console">error: Failed to find dist-info directory `babel-2.15.0.dist-info` in environment at XXX/.local/share/uv/tools/babel
+</code></pre>
+<p>However the dist-info exists:</p>
+<pre><code class="language-console">ls ~/.local/share/uv/tools/babel/lib/python3.12/site-packages/
+__pycache__  _virtualenv.pth  _virtualenv.py  babel  Babel-2.15.0.dist-info
+</code></pre>
+<p>I suspect this is due to the capital letter in the package name.</p>
+<p>Maybe related: https://github.com/astral-sh/uv/pull/4686/files</p>
+<p>Babel:</p>
+<ul>
+<li>installation guide: https://babel.pocoo.org/en/latest/installation.html</li>
+<li>pypi: https://pypi.org/project/Babel/</li>
+<li>repository: https://github.com/python-babel/babel</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RomainBrault">@RomainBrault</a> on 2024-08-03 14:02</div>
+            <div class="timeline-body"><p>NB: I am now sure. <code>babel-2.15.0.dist-info</code> is not <code>Babel-2.15.0.dist-info</code></p>
+<p>A dirty fix:</p>
+<pre><code class="language-console">uv too install Babel
+cd ~/.local/share/uv/tools/babel/lib/python3.12/site-packages/
+mv Babel-2.15.0.dist-info babel-2.15.0.dist-info
+cd &lt;my_project&gt;
+uv too install Babel
+</code></pre>
+<p>Ie: rename to remove the capital letter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RomainBrault">@RomainBrault</a> on 2024-08-03 14:13</div>
+            <div class="timeline-body"><p>I think I found the &quot;offending&quot; line:</p>
+<p>https://github.com/astral-sh/uv/blob/ba924d298f7aeb081711946e6ffc3db7c8d3b4fd/crates/uv-normalize/src/lib.rs#L31</p>
+<p>There should be no conversion to lowercase for packages names?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-03 17:07</div>
+            <div class="timeline-body"><p>Yeah we need to make that more robust.</p>
+<p>Technically it's a bug in the package itself. The <code>.dist-info</code> directory is outlined <a href="https://packaging.python.org/en/latest/specifications/recording-installed-packages/">here</a>:</p>
+<blockquote>
+<p>This directory is named as {name}-{version}.dist-info, with name and version fields corresponding to <a href="https://packaging.python.org/en/latest/specifications/core-metadata/#core-metadata">Core metadata specifications</a>. Both fields must be normalized (see the <a href="https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization">name normalization specification</a> and the <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#version-specifiers-normalization">version normalization specification</a>), and replace dash (-) characters with underscore (_) characters, so the .dist-info directory always has exactly one dash (-) character in its stem, separating the name and version fields.</p>
+</blockquote>
+<p>The Core Metadata specification asserts that the name should be normalized to lowercase. So it's correct to expect a lowercased directory, but we're supposed to be robust to it <em>not</em> being lowercase due to historical packages (and we are elsewhere).</p>
+<p>Anyway, TLDR is: it's a misbehavior by the package, but we shouldn't fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-03 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-03 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-03 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-babel/babel/issues/1109.html">python-babel/babel#1109</a> on 2024-08-03 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5756.html">astral-sh/uv#5756</a> on 2024-08-03 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-03 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-08-05 16:12</div>
+            <div class="timeline-body"><p>https://github.com/python-babel/babel/pull/1110 fixed the root cause of this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-08-08 14:27</div>
+            <div class="timeline-body"><p>Released in https://pypi.org/project/babel/2.16.0/ - sorry for the trouble!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

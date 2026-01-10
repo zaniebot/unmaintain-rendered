@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TypeError: must be str, not list` when appending subtype of `str` to a `list` in uv-managed python installation on linux - astral-sh/uv #13610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TypeError: must be str, not list` when appending subtype of `str` to a `list` in uv-managed python installation on linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13610">#13610</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2025-05-23 03:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-05-23 03:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>this is a very strange bug because the following code only seems to crash on an uv-managed python installation and only on linux:</p>
+<pre><code class="language-py">class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+</code></pre>
+<pre><code>$ uv run python3.13
+Python 3.13.3 (main, May 22 2025, 02:00:23) [Clang 20.1.4 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; class Foo(str): ...
+...
+... a = []
+... new_value = Foo(&quot;1&quot;)
+... a += new_value
+...
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 5, in &lt;module&gt;
+    a += new_value
+TypeError: must be str, not list
+</code></pre>
+<p>on the system version of python it works fine:</p>
+<pre><code>$ python3.13
+Python 3.13.3 (main, Apr  9 2025, 08:55:03) [GCC 9.4.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; class Foo(str): ...
+...
+... a = []
+... new_value = Foo(&quot;1&quot;)
+... a += new_value
+...
+&gt;&gt;&gt;
+</code></pre>
+<p>but on windows it works fine even, with the uv-managed python version:</p>
+<pre><code>&gt; uv run python
+Python 3.13.3 (main, Apr  9 2025, 04:04:49) [MSC v.1943 64 bit (AMD64)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; class Foo(str): ...
+... 
+&gt;&gt;&gt; a = []
+&gt;&gt;&gt; new_value = Foo(&quot;1&quot;)
+&gt;&gt;&gt; a += new_value
+&gt;&gt;&gt;
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>0.7.7</p>
+<h3>Python version</h3>
+<p>3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @DetachHead on 2025-05-23 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-05-23 05:15</div>
+            <div class="timeline-body"><p>Can confirm. If you use the python packaged with uv 0.7.5, it works fine:</p>
+<pre><code>uvx uv@0.7.5 python install --reinstall
+Installed 2 versions in 2.46s
+ ~ cpython-3.10.17-linux-x86_64-gnu
+ ~ cpython-3.13.3-linux-x86_64-gnu
+</code></pre>
+<pre><code>uv run python                          
+Python 3.13.3 (main, Apr  9 2025, 04:03:52) [Clang 20.1.0 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; class Foo(str): ...
+... 
+&gt;&gt;&gt; a = []
+&gt;&gt;&gt; new_value = Foo(&quot;1&quot;)
+&gt;&gt;&gt; a += new_value
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @geofft by @geofft on 2025-05-23 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-23 13:48</div>
+            <div class="timeline-body"><p>Here are some reproductions....</p>
+<p>Working:</p>
+<pre><code class="language-dockerfile">FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.7.5-debian-slim
+
+COPY &lt;&lt;EOF /mre.py
+class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+EOF
+
+RUN uv run -p 3.13 mre.py
+</code></pre>
+<p>Failing:</p>
+<pre><code class="language-dockerfile">FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.7.6-debian-slim
+
+COPY &lt;&lt;EOF /mre.py
+class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+EOF
+
+RUN uv run -p 3.13 mre.py
+</code></pre>
+<p>With error:</p>
+<pre><code>Traceback (most recent call last):
+      File &quot;//mre.py&quot;, line 5, in &lt;module&gt;
+        a += new_value
+    TypeError: must be str, not list
+</code></pre>
+<p>The python-build-standalone distribution changes between these releases are at
+https://github.com/astral-sh/python-build-standalone/compare/20250409...20250517</p>
+<p>It seems the regression is Linux-only, which makes me suspicious of
+https://github.com/astral-sh/python-build-standalone/pull/592 since we are not applying that on
+macOS.</p>
+<p>Note this also fails on uv v0.7.7 (the latest version).</p>
+<p>This appears to be x86-64 specific, e.g., the following succeeds (on aarch64):</p>
+<pre><code class="language-dockerfile">FROM --platform=linux/arm64 ghcr.io/astral-sh/uv:0.7.6-debian-slim
+
+COPY &lt;&lt;EOF /mre.py
+class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+EOF
+
+RUN uv run -p 3.13 mre.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-23 14:02</div>
+            <div class="timeline-body"><p>This does not reproduce on 3.14 aarch64</p>
+<pre><code>FROM --platform=linux/arm64 ghcr.io/astral-sh/uv:0.7.6-debian-slim
+
+COPY &lt;&lt;EOF /mre.py
+class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+EOF
+
+RUN uv run -p 3.14 mre.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-23 14:05</div>
+            <div class="timeline-body"><p>It does reproduce on 3.12 x86-64</p>
+<pre><code>FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.7.6-debian-slim
+
+COPY &lt;&lt;EOF /mre.py
+class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+EOF
+
+RUN uv run -p 3.12 mre.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-23 14:05</div>
+            <div class="timeline-body"><p>Okay, and it reproduces on 3.14 x86-64</p>
+<pre><code>FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.7.6-debian-slim
+
+COPY &lt;&lt;EOF /mre.py
+class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+EOF
+
+RUN uv run -p 3.14 mre.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13617.html">astral-sh/uv#13617</a> on 2025-05-23 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/pulls/622.html">astral-sh/python-build-standalone#622</a> on 2025-05-23 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-05-23 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-23 23:00</div>
+            <div class="timeline-body"><h1>Mitigations</h1>
+<p><code>uv 0.7.8</code> is mostly reverting python-build-standalone from 202505017 to 20250409 (the one used in <code>uv 0.7.5</code>).</p>
+<p>In particular we have reverted it on non-aarch64 Linux, and also completely removed <code>Python 3.14.0a7</code> to avoid portability issues between platforms. The net effect is the following changes have been defacto reverted:</p>
+<ul>
+<li>Add Python 3.14 on musl</li>
+<li>free-threaded Python on musl</li>
+<li>Add Python 3.14.0a7</li>
+<li>Statically link <code>libpython</code> into the interpreter on Linux for a significant performance boost</li>
+</ul>
+<h1>Future Work</h1>
+<p>We believe we have found the issue with our Python builds, and are working on testing and releasing the fix (but it's friday night on a long weekend, so we'd rather not rush out a hotfix):</p>
+<ul>
+<li>https://github.com/astral-sh/python-build-standalone/pull/622</li>
+</ul>
+<h1>Problem</h1>
+<p>On affected platforms, running the following python program with a uv-provided python would result in spurious type errors about string:</p>
+<pre><code class="language-python">class Foo(str): ...
+
+a = []
+new_value = Foo(&quot;1&quot;)
+a += new_value
+</code></pre>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 5, in &lt;module&gt;
+    a += new_value
+TypeError: must be str, not list
+</code></pre>
+<h1>Affected Platforms</h1>
+<p>Here is the testing I've seen (❌ has bug, ✅ works):</p>
+<ul>
+<li>uv version (pbs version)<ul>
+<li>✅ uv 0.7.8 (pbs 20250409)</li>
+<li>❌ uv 0.7.7 (pbs 20250521)</li>
+<li>❌ uv 0.7.6 (pbs 20250517)</li>
+<li>✅ uv 0.7.5 (pbs 20250409)</li>
+</ul>
+</li>
+<li>os<ul>
+<li>❌ linux</li>
+<li>✅ macos</li>
+<li>✅ windows</li>
+</ul>
+</li>
+<li>arch<ul>
+<li>❌ x86_64</li>
+<li>✅ aarch64</li>
+</ul>
+</li>
+<li>python version<ul>
+<li>❌ 3.12</li>
+<li>❌ 3.13</li>
+<li>❌ 3.14</li>
+</ul>
+</li>
+</ul>
+<p>Based on this testing it seemed clear that the issue was isolated to linux, and it's <em>probably</em> x64 specific, but I opted to handle that conservatively and just reverted &quot;linux, not-aarch64&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/224582.html">Homebrew/homebrew-core#224582</a> on 2025-05-24 02:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-06-01 01:23</div>
+            <div class="timeline-body"><p>uv 0.7.9, released yesterday, restores static linking of libpython but has a fix for this bug.</p>
+<p>If you are still seeing this, please do comment here (after double-checking that you're on the latest version of things with <code>uv self update &amp;&amp; uv python install --reinstall</code>).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

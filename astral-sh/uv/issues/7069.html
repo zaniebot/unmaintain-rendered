@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support git URLs in project.dependencies - astral-sh/uv #7069</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support git URLs in project.dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7069">#7069</a>
+        opened by <a href="https://github.com/daviewales">@daviewales</a>
+        on 2024-09-05 06:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/daviewales">@daviewales</a> on 2024-09-05 06:28</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><strong>EDIT</strong>
+Ignore the below. What I'm really asking for is a <code>uv</code> build backend. This will unlock the ability for private git packages to depend on other private git packages, and still be installed with <code>pip</code>, <code>pipx</code>, <code>poetry</code>, etc, without needing the package end user to change their tools.
+<strong>END EDIT</strong></p>
+<p>Currently, if I try to add my private git repository as a dependency of another project, <code>uv</code> adds the repository to <code>[tool.uv.sources]</code>.
+However, I can manually add the git dependency directly to <code>project.dependencies</code>, and it works OK:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;package_name@git+https://github.com/organisation/package-repository.git&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>This should enable packages which depend on this package, and which are installed by something other than <code>uv</code> to correctly fetch the required dependencies.</p>
+<p>This syntax is supported by the underlying hatchling build system:
+https://hatch.pypa.io/latest/config/dependency/#version-control-systems</p>
+<p>Would it make more sense for <code>uv add package_name@git+https://github.com/organisation/package-repository.git</code> to just drop this package specifier directly into <code>project.dependencies</code>, rather than putting it somewhere which won't get picked up by other tools trying to install the current package?</p>
+<pre><code>❯ uv --version
+uv 0.4.5 (42b6bfbad 2024-09-04)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daviewales">@daviewales</a> on 2024-09-05 06:36</div>
+            <div class="timeline-body"><p>This is also relevant to:</p>
+<pre><code>uv add --script example.py package_name@git+https://github.com/organisation/package-repository.git</code></pre>
+<p>I'd expect to see:</p>
+<pre><code># dependencies = [
+#     package_name@git+https://github.com/organisation/package-repository.git
+# ]
+</code></pre>
+<p>But instead I see:</p>
+<pre><code># dependencies = [
+#     package_name
+# ]
+#
+# [tool.uv.sources]
+# package_name = { git = &quot;https://github.com/organisation/package-repository.git&quot; }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 13:16</div>
+            <div class="timeline-body"><p>You can pass <code>--raw-sources</code>, like <code>uv add --raw-sources</code>, to avoid writing to <code>tool.uv.sources</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-05 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daviewales">@daviewales</a> on 2024-09-05 13:25</div>
+            <div class="timeline-body"><p>Thanks, that's good to know. It's still kind of confusing that by default it puts it somewhere that's not going to be picked up by the hatchling build system when installed as a package by other package managers, even though it works perfectly well.</p>
+<p><strong>Edit</strong>: I realise I'm assuming that the hatchling build tool doesn't know to check <code>tool.uv.sources</code>. But this may be a wrong assumption?</p>
+<p>Poetry uses its own dependencies section, rather than the standard dependencies section too.
+However, poetry also sets itself up as the build tool, so when someone else tries to install my package which depends on a git package, they will automatically run the poetry build tool, which will know to look in the poetry dependencies section.</p>
+<p>uv uses hatchling as the build tool. Does hatchling know to install git dependencies from <code>tool.uv.sources</code>?
+Or will a package which specifies git dependencies in <code>tool.uv.sources</code> not be installable with something like <code>pip install</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 13:56</div>
+            <div class="timeline-body"><p>The thinking is that if you're using uv, you likely want to use the first-class uv features -- and also, that you <em>already</em> can't publish such packages to PyPI, so there's less benefit in encoding the standardized metadata. (Whereas, e.g., the <code>tool.uv.sources</code> format is more powerful since we can encode the <em>type</em> of request (tag, branch, etc.), which is more robust and more performant.)</p>
+<p>But it's totally fine to use <code>--raw-sources</code>, there are no issues, it's just not the default.</p>
+<blockquote>
+<p>uv uses hatchling as the build tool. Does hatchling know to install git dependencies from tool.uv.sources?
+Or will a package which specifies git dependencies in tool.uv.sources not be installable with something like pip install?</p>
+</blockquote>
+<p>It's a little nuanced but hatchling is a build backend, but what you're describing would arguably be the responsibility of a build frontend (the thing that prepares the environment and calls the build hooks). I guess it's somewhat debatable who is &quot;responsible&quot; for this part actually. But regardless, <code>pip install</code> would not properly pick up anything in <code>tool.uv.sources</code> (<code>uv pip install</code> would).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daviewales">@daviewales</a> on 2024-09-06 00:17</div>
+            <div class="timeline-body"><p>Thanks, on reflection, I think your last paragraph highlights my real concern.</p>
+<p>Suppose I create a private package in GitHub which depends on another private package in GitHub.
+(This is a real thing that I do for work!)</p>
+<p>With poetry, I can add the project_one as a dependency of project_two as follows:</p>
+<pre><code>poetry add package_one@git+https://github.com/organisation/package-one-repository.git
+</code></pre>
+<p>This results in a <code>pyproject.toml</code> which looks like this:</p>
+<pre><code class="language-toml">...
+[tool.poetry.dependencies]
+package_one = {git = &quot;https://github.com/organisation/package-one-repository.git&quot;}
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+</code></pre>
+<p>On the surface, this appears to be the same thing that <code>uv</code> does.
+The dependencies are specified in the non-standard <code>tool.poetry.dependencies</code> section, similar to how <code>uv</code> specifies git dependencies in  <code>[tool.uv.sources]</code>.</p>
+<p><em>However</em>, the critical difference is that the <code>poetry-core</code> build backend <em>knows</em> about <code>tool.poetry.dependencies</code>.
+So, when I run:</p>
+<pre><code>pip install package_two@git+https://github.com/organisation/package-two-repository.git</code></pre>
+<p><code>pip</code> reads the <code>pyproject.toml</code>, fetches <code>poetry-core</code> build backend, and then <code>poetry-core</code> automatically installs my private git dependency on <code>project_one</code>.</p>
+<p>So, I can use <code>poetry</code> to build the package, and <code>poetry</code> can use whatever means to specify the dependencies it likes, but any other tool (<code>pip</code>, <code>pipx</code>, <code>uv</code>, etc) can transparantly install and use the package, including the private git dependencies.</p>
+<p>My understanding is that if I built project_one and project_two with uv, and used the preferred <code>tool.uv.sources</code> syntax for git dependencies, that everything would work if someone uses <code>uv</code> to install <code>prjoect_two</code>, but it would not be possible to run:</p>
+<pre><code>pip install package_two@git+https://github.com/organisation/package-two-repository.git</code></pre>
+<p>as the hatchling build backend doesn't know about <code>tool.uv.sources</code>, so it won't work. (Am I understanding that correctly?)</p>
+<p>Thinking about this, I retract my suggestion to include the git URLs in <code>project.dependencies</code>.
+I suspect that the real solution would be to provide a uv-aware build-backend which knows how to handle <code>tool.uv.sources</code>.
+(If hatchling can already do this, then I'm sorry for the noise, and the issue can be closed!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 00:43</div>
+            <div class="timeline-body"><p>Yes what you've written there sounds correct. We have plans to build a backend, just uncertain on the timeline, ref #3957</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3957.html">astral-sh/uv#3957</a> on 2024-09-06 03:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daviewales">@daviewales</a> on 2024-09-06 03:52</div>
+            <div class="timeline-body"><p>I've summarised this discussion on #3957, so I'll close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @daviewales on 2024-09-06 03:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:41 UTC
+    </footer>
+</body>
+</html>

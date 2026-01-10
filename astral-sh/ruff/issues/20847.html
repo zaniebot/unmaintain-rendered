@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Ignores settings from workspace folder if the folder is excluded by a configuration in an ancestor directory - astral-sh/ruff #20847</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff server`: Ignores settings from workspace folder if the folder is excluded by a configuration in an ancestor directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20847">#20847</a>
+        opened by <a href="https://github.com/lewis6991">@lewis6991</a>
+        on 2025-10-13 15:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lewis6991">@lewis6991</a> on 2025-10-13 15:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a project with this structure:</p>
+<pre><code>├── pyproject.toml
+└── sub/
+    ├── main.py
+    └── pyproject.toml
+</code></pre>
+<p><code>ruff server</code> seems to always use the <code>pyproject.toml</code> defined in the root, even if <code>ruff server</code> is called with <code>cwd</code> set to <code>sub</code>. This is inconsistent with <code>ruff check</code>.</p>
+<p>Reproduction steps:</p>
+<pre><code>mkdir ruff_issue
+cd ruff_issue
+git init
+echo '[tool.ruff]\nexclude=[&quot;sub&quot;]' &gt; pyproject.toml
+mkdir sub
+touch sub/pyproject.toml
+echo 'print &quot;Hello world!&quot;' &gt; sub/main.py
+
+git add \
+    pyproject.toml
+    sub/pyproject.toml \
+    sub/main.py
+
+git commit -m &quot;Initial commit&quot;
+
+ruff check # uses root pyproject.toml, reports no issues, expected
+# ruff server with cwd set to root, reports no issues, expected
+
+cd sub
+
+ruff check # uses sub/pyproject.toml, reports issues, expected
+# ruff server with cwd set to sub, reports no issues, NOT EXPECTED
+</code></pre>
+<p>I don't know how to get diagnostics from <code>ruff server</code> without using an editor. I'm currently using Neovim with the default config defined in https://github.com/neovim/nvim-lspconfig which simply calls <code>ruff server</code> in the directory of the closest <code>pyproject.toml</code> in a bottom-up search.</p>
+<h3>Version</h3>
+<p>ruff 0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-13 17:43</div>
+            <div class="timeline-body"><p>Can you try setting <a href="https://docs.astral.sh/ruff/editors/settings/#loglevel">`logLevel</a> to debug and share the logs. It might help us understand what's going on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-10-13 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-10-13 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lewis6991">@lewis6991</a> on 2025-10-14 08:07</div>
+            <div class="timeline-body"><p>I added the following to my Neovim configuration:</p>
+<pre><code class="language-lua">vim.lsp.log.set_level('debug')
+
+lsp.config('ruff', {
+  cmd = { 'ruff', 'server', '-v' },
+  settings = {
+    logLevel = 'debug',
+  },
+})
+</code></pre>
+<p>And the log produced after opening <code>sub/main.py</code> is:</p>
+<pre><code>[START][2025-10-14 09:04:17] LSP logging initiated
+[INFO][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;Starting RPC client&quot;	{ cmd = { &quot;ruff&quot;, &quot;server&quot;, &quot;-v&quot; }, extra = {} }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 1, jsonrpc = &quot;2.0&quot;, method = &quot;initialize&quot;, params = { capabilities = { general = { positionEncodings = { &quot;utf-8&quot;, &quot;utf-16&quot;, &quot;utf-32&quot; } }, textDocument = { callHierarchy = { dynamicRegistration = false }, codeAction = { codeActionLiteralSupport = { codeActionKind = { valueSet = { &quot;&quot;, &quot;quickfix&quot;, &quot;refactor&quot;, &quot;refactor.extract&quot;, &quot;refactor.inline&quot;, &quot;refactor.rewrite&quot;, &quot;source&quot;, &quot;source.organizeImports&quot; } } }, dataSupport = true, disabledSupport = true, dynamicRegistration = true, honorsChangeAnnotations = true, isPreferredSupport = true, resolveSupport = { properties = { &quot;edit&quot;, &quot;command&quot; } } }, codeLens = { dynamicRegistration = false, resolveSupport = { properties = { &quot;command&quot; } } }, colorProvider = { dynamicRegistration = true }, completion = { completionItem = { commitCharactersSupport = false, deprecatedSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, preselectSupport = false, resolveSupport = { properties = { &quot;additionalTextEdits&quot;, &quot;command&quot; } }, snippetSupport = true, tagSupport = { valueSet = { 1 } } }, completionItemKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 } }, completionList = { itemDefaults = { &quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot; } }, contextSupport = true, dynamicRegistration = false }, declaration = { linkSupport = true }, definition = { dynamicRegistration = true, linkSupport = true }, diagnostic = { dataSupport = true, dynamicRegistration = false, relatedDocumentSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } } }, documentHighlight = { dynamicRegistration = false }, documentSymbol = { dynamicRegistration = false, hierarchicalDocumentSymbolSupport = true, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } }, tagSupport = { valueSet = { 1 } } }, foldingRange = { dynamicRegistration = false, foldingRange = { collapsedText = true }, foldingRangeKind = { valueSet = { &quot;comment&quot;, &quot;imports&quot;, &quot;region&quot; } }, lineFoldingOnly = true }, formatting = { dynamicRegistration = true }, hover = { contentFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, dynamicRegistration = true }, implementation = { linkSupport = true }, inlayHint = { dynamicRegistration = true, resolveSupport = { properties = { &quot;textEdits&quot;, &quot;tooltip&quot;, &quot;location&quot;, &quot;command&quot; } } }, inlineCompletion = { dynamicRegistration = false }, linkedEditingRange = { dynamicRegistration = false }, onTypeFormatting = { dynamicRegistration = false }, publishDiagnostics = { dataSupport = true, relatedInformation = true, tagSupport = { valueSet = { 1, 2 } } }, rangeFormatting = { dynamicRegistration = true, rangesSupport = true }, references = { dynamicRegistration = false }, rename = { dynamicRegistration = true, honorsChangeAnnotations = true, prepareSupport = true }, selectionRange = { dynamicRegistration = false }, semanticTokens = { augmentsSyntaxTokens = true, dynamicRegistration = false, formats = { &quot;relative&quot; }, multilineTokenSupport = true, overlappingTokenSupport = true, requests = { full = { delta = true }, range = false }, serverCancelSupport = false, tokenModifiers = { &quot;declaration&quot;, &quot;definition&quot;, &quot;readonly&quot;, &quot;static&quot;, &quot;deprecated&quot;, &quot;abstract&quot;, &quot;async&quot;, &quot;modification&quot;, &quot;documentation&quot;, &quot;defaultLibrary&quot; }, tokenTypes = { &quot;namespace&quot;, &quot;type&quot;, &quot;class&quot;, &quot;enum&quot;, &quot;interface&quot;, &quot;struct&quot;, &quot;typeParameter&quot;, &quot;parameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;enumMember&quot;, &quot;event&quot;, &quot;function&quot;, &quot;method&quot;, &quot;macro&quot;, &quot;keyword&quot;, &quot;modifier&quot;, &quot;comment&quot;, &quot;string&quot;, &quot;number&quot;, &quot;regexp&quot;, &quot;operator&quot;, &quot;decorator&quot; } }, signatureHelp = { dynamicRegistration = false, signatureInformation = { activeParameterSupport = true, documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, noActiveParameterSupport = true, parameterInformation = { labelOffsetSupport = true } } }, synchronization = { didSave = true, dynamicRegistration = false, willSave = true, willSaveWaitUntil = true }, typeDefinition = { linkSupport = true } }, window = { showDocument = { support = true }, showMessage = { messageActionItem = { additionalPropertiesSupport = true } }, workDoneProgress = true }, workspace = { applyEdit = true, configuration = true, diagnostics = { refreshSupport = false }, didChangeConfiguration = { dynamicRegistration = false }, didChangeWatchedFiles = { dynamicRegistration = true, relativePatternSupport = true }, inlayHint = { refreshSupport = true }, semanticTokens = { refreshSupport = true }, symbol = { dynamicRegistration = false, symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } } }, workspaceEdit = { changeAnnotationSupport = { groupsOnLabel = true }, normalizesLineEndings = true, resourceOperations = { &quot;rename&quot;, &quot;create&quot;, &quot;delete&quot; } }, workspaceFolders = true } }, clientInfo = { name = &quot;Neovim&quot;, version = &quot;0.12.0-dev+g198c9e9bc&quot; }, processId = 16096, rootPath = &quot;/Users/lewrus01/projects/ruff_issue/sub&quot;, rootUri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub&quot;, trace = &quot;off&quot;, workDoneToken = &quot;1&quot;, workspaceFolders = { { name = &quot;/Users/lewrus01/projects/ruff_issue/sub&quot;, uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub&quot; } } } }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 1, jsonrpc = &quot;2.0&quot;, result = { capabilities = { codeActionProvider = { codeActionKinds = { &quot;quickfix&quot;, &quot;source.fixAll.ruff&quot;, &quot;source.organizeImports.ruff&quot;, &quot;notebook.source.fixAll.ruff&quot;, &quot;notebook.source.organizeImports.ruff&quot; }, resolveProvider = true, workDoneProgress = true }, diagnosticProvider = { identifier = &quot;Ruff&quot;, interFileDependencies = false, workDoneProgress = true, workspaceDiagnostics = false }, documentFormattingProvider = true, documentRangeFormattingProvider = true, executeCommandProvider = { commands = { &quot;ruff.applyFormat&quot;, &quot;ruff.applyAutofix&quot;, &quot;ruff.applyOrganizeImports&quot;, &quot;ruff.printDebugInformation&quot; }, workDoneProgress = false }, hoverProvider = true, notebookDocumentSync = { notebookSelector = { { cells = { { language = &quot;python&quot; } } } }, save = false }, positionEncoding = &quot;utf-8&quot;, textDocumentSync = { change = 2, openClose = true, willSave = false, willSaveWaitUntil = false }, workspace = { workspaceFolders = { changeNotifications = true, supported = true } } }, serverInfo = { name = &quot;ruff&quot;, version = &quot;0.14.0&quot; } } }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;initialized&quot;, params = vim.empty_dict() }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;workspace/didChangeConfiguration&quot;, params = { settings = { logLevel = &quot;debug&quot; } } }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ jsonrpc = &quot;2.0&quot;, method = &quot;textDocument/didOpen&quot;, params = { textDocument = { languageId = &quot;python&quot;, text = 'print &quot;Hello world!&quot;\n', uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;, version = 0 } } }
+[INFO][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ruff]&quot;	&quot;server_capabilities&quot;	{ server_capabilities = { codeActionProvider = { codeActionKinds = { &quot;quickfix&quot;, &quot;source.fixAll.ruff&quot;, &quot;source.organizeImports.ruff&quot;, &quot;notebook.source.fixAll.ruff&quot;, &quot;notebook.source.organizeImports.ruff&quot; }, resolveProvider = true, workDoneProgress = true }, diagnosticProvider = { identifier = &quot;Ruff&quot;, interFileDependencies = false, workDoneProgress = true, workspaceDiagnostics = false }, documentFormattingProvider = true, documentRangeFormattingProvider = true, executeCommandProvider = { commands = { &quot;ruff.applyFormat&quot;, &quot;ruff.applyAutofix&quot;, &quot;ruff.applyOrganizeImports&quot;, &quot;ruff.printDebugInformation&quot; }, workDoneProgress = false }, hoverProvider = true, notebookDocumentSync = { notebookSelector = { { cells = { { language = &quot;python&quot; } } } }, save = false }, positionEncoding = &quot;utf-8&quot;, textDocumentSync = { change = 2, openClose = true, willSave = false, willSaveWaitUntil = false }, workspace = { workspaceFolders = { changeNotifications = true, supported = true } } } }
+[ERROR][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc&quot;	&quot;ruff&quot;	&quot;stderr&quot;	&quot;2025-10-14 09:04:17.483714000  INFO No workspace options found for file:///Users/lewrus01/projects/ruff_issue/sub, using default options\n2025-10-14 09:04:17.489175000  INFO Registering workspace: /Users/lewrus01/projects/ruff_issue/sub\n&quot;
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 0, jsonrpc = &quot;2.0&quot;, method = &quot;client/registerCapability&quot;, params = { registrations = { { id = &quot;ruff-server-watch&quot;, method = &quot;workspace/didChangeWatchedFiles&quot;, registerOptions = { watchers = { { globPattern = &quot;**/.ruff.toml&quot; }, { globPattern = &quot;**/ruff.toml&quot; }, { globPattern = &quot;**/pyproject.toml&quot; } } } } } } }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ruff]&quot;	&quot;client.request&quot;	1	&quot;textDocument/diagnostic&quot;	{ textDocument = { uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot; } }	&lt;function 1&gt;	1
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 2, jsonrpc = &quot;2.0&quot;, method = &quot;textDocument/diagnostic&quot;, params = { textDocument = { uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot; } } }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;	{ id = 2, jsonrpc = &quot;2.0&quot;, result = { items = {}, kind = &quot;full&quot; } }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: callback result&quot;	{ result = vim.NIL, status = true }
+[DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;	{ id = 0, jsonrpc = &quot;2.0&quot;, result = vim.NIL }
+[ERROR][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc&quot;	&quot;ruff&quot;	&quot;stderr&quot;	&quot;2025-10-14 09:04:17.522461000  INFO Configuration file watcher successfully registered\n&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 08:44</div>
+            <div class="timeline-body"><p>I used claude to pretty print the logs</p>
+<pre><code> [START][2025-10-14 09:04:17] LSP logging initiated
+
+  [INFO][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;Starting RPC client&quot;
+  {
+    &quot;cmd&quot;: [&quot;ruff&quot;, &quot;server&quot;, &quot;-v&quot;],
+    &quot;extra&quot;: {}
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.send&quot;
+  {
+    &quot;id&quot;: 1,
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;initialize&quot;,
+    &quot;params&quot;: {
+      &quot;capabilities&quot;: {
+        &quot;general&quot;: {
+          &quot;positionEncodings&quot;: [&quot;utf-8&quot;, &quot;utf-16&quot;, &quot;utf-32&quot;]
+        },
+        &quot;textDocument&quot;: {
+          &quot;callHierarchy&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;codeAction&quot;: {
+            &quot;codeActionLiteralSupport&quot;: {
+              &quot;codeActionKind&quot;: {
+                &quot;valueSet&quot;: [
+                  &quot;&quot;,
+                  &quot;quickfix&quot;,
+                  &quot;refactor&quot;,
+                  &quot;refactor.extract&quot;,
+                  &quot;refactor.inline&quot;,
+                  &quot;refactor.rewrite&quot;,
+                  &quot;source&quot;,
+                  &quot;source.organizeImports&quot;
+                ]
+              }
+            },
+            &quot;dataSupport&quot;: true,
+            &quot;disabledSupport&quot;: true,
+            &quot;dynamicRegistration&quot;: true,
+            &quot;honorsChangeAnnotations&quot;: true,
+            &quot;isPreferredSupport&quot;: true,
+            &quot;resolveSupport&quot;: {
+              &quot;properties&quot;: [&quot;edit&quot;, &quot;command&quot;]
+            }
+          },
+          &quot;codeLens&quot;: {
+            &quot;dynamicRegistration&quot;: false,
+            &quot;resolveSupport&quot;: {
+              &quot;properties&quot;: [&quot;command&quot;]
+            }
+          },
+          &quot;colorProvider&quot;: {
+            &quot;dynamicRegistration&quot;: true
+          },
+          &quot;completion&quot;: {
+            &quot;completionItem&quot;: {
+              &quot;commitCharactersSupport&quot;: false,
+              &quot;deprecatedSupport&quot;: true,
+              &quot;documentationFormat&quot;: [&quot;markdown&quot;, &quot;plaintext&quot;],
+              &quot;preselectSupport&quot;: false,
+              &quot;resolveSupport&quot;: {
+                &quot;properties&quot;: [&quot;additionalTextEdits&quot;, &quot;command&quot;]
+              },
+              &quot;snippetSupport&quot;: true,
+              &quot;tagSupport&quot;: {
+                &quot;valueSet&quot;: [1]
+              }
+            },
+            &quot;completionItemKind&quot;: {
+              &quot;valueSet&quot;: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+            },
+            &quot;completionList&quot;: {
+              &quot;itemDefaults&quot;: [&quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot;]
+            },
+            &quot;contextSupport&quot;: true,
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;declaration&quot;: {
+            &quot;linkSupport&quot;: true
+          },
+          &quot;definition&quot;: {
+            &quot;dynamicRegistration&quot;: true,
+            &quot;linkSupport&quot;: true
+          },
+          &quot;diagnostic&quot;: {
+            &quot;dataSupport&quot;: true,
+            &quot;dynamicRegistration&quot;: false,
+            &quot;relatedDocumentSupport&quot;: true,
+            &quot;relatedInformation&quot;: true,
+            &quot;tagSupport&quot;: {
+              &quot;valueSet&quot;: [1, 2]
+            }
+          },
+          &quot;documentHighlight&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;documentSymbol&quot;: {
+            &quot;dynamicRegistration&quot;: false,
+            &quot;hierarchicalDocumentSymbolSupport&quot;: true,
+            &quot;symbolKind&quot;: {
+              &quot;valueSet&quot;: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+            },
+            &quot;tagSupport&quot;: {
+              &quot;valueSet&quot;: [1]
+            }
+          },
+          &quot;foldingRange&quot;: {
+            &quot;dynamicRegistration&quot;: false,
+            &quot;foldingRange&quot;: {
+              &quot;collapsedText&quot;: true
+            },
+            &quot;foldingRangeKind&quot;: {
+              &quot;valueSet&quot;: [&quot;comment&quot;, &quot;imports&quot;, &quot;region&quot;]
+            },
+            &quot;lineFoldingOnly&quot;: true
+          },
+          &quot;formatting&quot;: {
+            &quot;dynamicRegistration&quot;: true
+          },
+          &quot;hover&quot;: {
+            &quot;contentFormat&quot;: [&quot;markdown&quot;, &quot;plaintext&quot;],
+            &quot;dynamicRegistration&quot;: true
+          },
+          &quot;implementation&quot;: {
+            &quot;linkSupport&quot;: true
+          },
+          &quot;inlayHint&quot;: {
+            &quot;dynamicRegistration&quot;: true,
+            &quot;resolveSupport&quot;: {
+              &quot;properties&quot;: [&quot;textEdits&quot;, &quot;tooltip&quot;, &quot;location&quot;, &quot;command&quot;]
+            }
+          },
+          &quot;inlineCompletion&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;linkedEditingRange&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;onTypeFormatting&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;publishDiagnostics&quot;: {
+            &quot;dataSupport&quot;: true,
+            &quot;relatedInformation&quot;: true,
+            &quot;tagSupport&quot;: {
+              &quot;valueSet&quot;: [1, 2]
+            }
+          },
+          &quot;rangeFormatting&quot;: {
+            &quot;dynamicRegistration&quot;: true,
+            &quot;rangesSupport&quot;: true
+          },
+          &quot;references&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;rename&quot;: {
+            &quot;dynamicRegistration&quot;: true,
+            &quot;honorsChangeAnnotations&quot;: true,
+            &quot;prepareSupport&quot;: true
+          },
+          &quot;selectionRange&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;semanticTokens&quot;: {
+            &quot;augmentsSyntaxTokens&quot;: true,
+            &quot;dynamicRegistration&quot;: false,
+            &quot;formats&quot;: [&quot;relative&quot;],
+            &quot;multilineTokenSupport&quot;: true,
+            &quot;overlappingTokenSupport&quot;: true,
+            &quot;requests&quot;: {
+              &quot;full&quot;: {
+                &quot;delta&quot;: true
+              },
+              &quot;range&quot;: false
+            },
+            &quot;serverCancelSupport&quot;: false,
+            &quot;tokenModifiers&quot;: [
+              &quot;declaration&quot;,
+              &quot;definition&quot;,
+              &quot;readonly&quot;,
+              &quot;static&quot;,
+              &quot;deprecated&quot;,
+              &quot;abstract&quot;,
+              &quot;async&quot;,
+              &quot;modification&quot;,
+              &quot;documentation&quot;,
+              &quot;defaultLibrary&quot;
+            ],
+            &quot;tokenTypes&quot;: [
+              &quot;namespace&quot;,
+              &quot;type&quot;,
+              &quot;class&quot;,
+              &quot;enum&quot;,
+              &quot;interface&quot;,
+              &quot;struct&quot;,
+              &quot;typeParameter&quot;,
+              &quot;parameter&quot;,
+              &quot;variable&quot;,
+              &quot;property&quot;,
+              &quot;enumMember&quot;,
+              &quot;event&quot;,
+              &quot;function&quot;,
+              &quot;method&quot;,
+              &quot;macro&quot;,
+              &quot;keyword&quot;,
+              &quot;modifier&quot;,
+              &quot;comment&quot;,
+              &quot;string&quot;,
+              &quot;number&quot;,
+              &quot;regexp&quot;,
+              &quot;operator&quot;,
+              &quot;decorator&quot;
+            ]
+          },
+          &quot;signatureHelp&quot;: {
+            &quot;dynamicRegistration&quot;: false,
+            &quot;signatureInformation&quot;: {
+              &quot;activeParameterSupport&quot;: true,
+              &quot;documentationFormat&quot;: [&quot;markdown&quot;, &quot;plaintext&quot;],
+              &quot;noActiveParameterSupport&quot;: true,
+              &quot;parameterInformation&quot;: {
+                &quot;labelOffsetSupport&quot;: true
+              }
+            }
+          },
+          &quot;synchronization&quot;: {
+            &quot;didSave&quot;: true,
+            &quot;dynamicRegistration&quot;: false,
+            &quot;willSave&quot;: true,
+            &quot;willSaveWaitUntil&quot;: true
+          },
+          &quot;typeDefinition&quot;: {
+            &quot;linkSupport&quot;: true
+          }
+        },
+        &quot;window&quot;: {
+          &quot;showDocument&quot;: {
+            &quot;support&quot;: true
+          },
+          &quot;showMessage&quot;: {
+            &quot;messageActionItem&quot;: {
+              &quot;additionalPropertiesSupport&quot;: true
+            }
+          },
+          &quot;workDoneProgress&quot;: true
+        },
+        &quot;workspace&quot;: {
+          &quot;applyEdit&quot;: true,
+          &quot;configuration&quot;: true,
+          &quot;diagnostics&quot;: {
+            &quot;refreshSupport&quot;: false
+          },
+          &quot;didChangeConfiguration&quot;: {
+            &quot;dynamicRegistration&quot;: false
+          },
+          &quot;didChangeWatchedFiles&quot;: {
+            &quot;dynamicRegistration&quot;: true,
+            &quot;relativePatternSupport&quot;: true
+          },
+          &quot;inlayHint&quot;: {
+            &quot;refreshSupport&quot;: true
+          },
+          &quot;semanticTokens&quot;: {
+            &quot;refreshSupport&quot;: true
+          },
+          &quot;symbol&quot;: {
+            &quot;dynamicRegistration&quot;: false,
+            &quot;symbolKind&quot;: {
+              &quot;valueSet&quot;: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+            }
+          },
+          &quot;workspaceEdit&quot;: {
+            &quot;changeAnnotationSupport&quot;: {
+              &quot;groupsOnLabel&quot;: true
+            },
+            &quot;normalizesLineEndings&quot;: true,
+            &quot;resourceOperations&quot;: [&quot;rename&quot;, &quot;create&quot;, &quot;delete&quot;]
+          },
+          &quot;workspaceFolders&quot;: true
+        }
+      },
+      &quot;clientInfo&quot;: {
+        &quot;name&quot;: &quot;Neovim&quot;,
+        &quot;version&quot;: &quot;0.12.0-dev+g198c9e9bc&quot;
+      },
+      &quot;processId&quot;: 16096,
+      &quot;rootPath&quot;: &quot;/Users/lewrus01/projects/ruff_issue/sub&quot;,
+      &quot;rootUri&quot;: &quot;file:///Users/lewrus01/projects/ruff_issue/sub&quot;,
+      &quot;trace&quot;: &quot;off&quot;,
+      &quot;workDoneToken&quot;: &quot;1&quot;,
+      &quot;workspaceFolders&quot;: [
+        {
+          &quot;name&quot;: &quot;/Users/lewrus01/projects/ruff_issue/sub&quot;,
+          &quot;uri&quot;: &quot;file:///Users/lewrus01/projects/ruff_issue/sub&quot;
+        }
+      ]
+    }
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.receive&quot;
+  {
+    &quot;id&quot;: 1,
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;result&quot;: {
+      &quot;capabilities&quot;: {
+        &quot;codeActionProvider&quot;: {
+          &quot;codeActionKinds&quot;: [
+            &quot;quickfix&quot;,
+            &quot;source.fixAll.ruff&quot;,
+            &quot;source.organizeImports.ruff&quot;,
+            &quot;notebook.source.fixAll.ruff&quot;,
+            &quot;notebook.source.organizeImports.ruff&quot;
+          ],
+          &quot;resolveProvider&quot;: true,
+          &quot;workDoneProgress&quot;: true
+        },
+        &quot;diagnosticProvider&quot;: {
+          &quot;identifier&quot;: &quot;Ruff&quot;,
+          &quot;interFileDependencies&quot;: false,
+          &quot;workDoneProgress&quot;: true,
+          &quot;workspaceDiagnostics&quot;: false
+        },
+        &quot;documentFormattingProvider&quot;: true,
+        &quot;documentRangeFormattingProvider&quot;: true,
+        &quot;executeCommandProvider&quot;: {
+          &quot;commands&quot;: [
+            &quot;ruff.applyFormat&quot;,
+            &quot;ruff.applyAutofix&quot;,
+            &quot;ruff.applyOrganizeImports&quot;,
+            &quot;ruff.printDebugInformation&quot;
+          ],
+          &quot;workDoneProgress&quot;: false
+        },
+        &quot;hoverProvider&quot;: true,
+        &quot;notebookDocumentSync&quot;: {
+          &quot;notebookSelector&quot;: [
+            {
+              &quot;cells&quot;: [
+                {
+                  &quot;language&quot;: &quot;python&quot;
+                }
+              ]
+            }
+          ],
+          &quot;save&quot;: false
+        },
+        &quot;positionEncoding&quot;: &quot;utf-8&quot;,
+        &quot;textDocumentSync&quot;: {
+          &quot;change&quot;: 2,
+          &quot;openClose&quot;: true,
+          &quot;willSave&quot;: false,
+          &quot;willSaveWaitUntil&quot;: false
+        },
+        &quot;workspace&quot;: {
+          &quot;workspaceFolders&quot;: {
+            &quot;changeNotifications&quot;: true,
+            &quot;supported&quot;: true
+          }
+        }
+      },
+      &quot;serverInfo&quot;: {
+        &quot;name&quot;: &quot;ruff&quot;,
+        &quot;version&quot;: &quot;0.14.0&quot;
+      }
+    }
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.send&quot;
+  {
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;initialized&quot;,
+    &quot;params&quot;: {}
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.send&quot;
+  {
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;workspace/didChangeConfiguration&quot;,
+    &quot;params&quot;: {
+      &quot;settings&quot;: {
+        &quot;logLevel&quot;: &quot;debug&quot;
+      }
+    }
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.send&quot;
+  {
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;textDocument/didOpen&quot;,
+    &quot;params&quot;: {
+      &quot;textDocument&quot;: {
+        &quot;languageId&quot;: &quot;python&quot;,
+        &quot;text&quot;: &quot;print \&quot;Hello world!\&quot;\n&quot;,
+        &quot;uri&quot;: &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;,
+        &quot;version&quot;: 0
+      }
+    }
+  }
+
+  [INFO][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;LSP[ruff]&quot;    &quot;server_capabilities&quot;
+  {
+    &quot;server_capabilities&quot;: {
+      &quot;codeActionProvider&quot;: {
+        &quot;codeActionKinds&quot;: [
+          &quot;quickfix&quot;,
+          &quot;source.fixAll.ruff&quot;,
+          &quot;source.organizeImports.ruff&quot;,
+          &quot;notebook.source.fixAll.ruff&quot;,
+          &quot;notebook.source.organizeImports.ruff&quot;
+        ],
+        &quot;resolveProvider&quot;: true,
+        &quot;workDoneProgress&quot;: true
+      },
+      &quot;diagnosticProvider&quot;: {
+        &quot;identifier&quot;: &quot;Ruff&quot;,
+        &quot;interFileDependencies&quot;: false,
+        &quot;workDoneProgress&quot;: true,
+        &quot;workspaceDiagnostics&quot;: false
+      },
+      &quot;documentFormattingProvider&quot;: true,
+      &quot;documentRangeFormattingProvider&quot;: true,
+      &quot;executeCommandProvider&quot;: {
+        &quot;commands&quot;: [
+          &quot;ruff.applyFormat&quot;,
+          &quot;ruff.applyAutofix&quot;,
+          &quot;ruff.applyOrganizeImports&quot;,
+          &quot;ruff.printDebugInformation&quot;
+        ],
+        &quot;workDoneProgress&quot;: false
+      },
+      &quot;hoverProvider&quot;: true,
+      &quot;notebookDocumentSync&quot;: {
+        &quot;notebookSelector&quot;: [
+          {
+            &quot;cells&quot;: [
+              {
+                &quot;language&quot;: &quot;python&quot;
+              }
+            ]
+          }
+        ],
+        &quot;save&quot;: false
+      },
+      &quot;positionEncoding&quot;: &quot;utf-8&quot;,
+      &quot;textDocumentSync&quot;: {
+        &quot;change&quot;: 2,
+        &quot;openClose&quot;: true,
+        &quot;willSave&quot;: false,
+        &quot;willSaveWaitUntil&quot;: false
+      },
+      &quot;workspace&quot;: {
+        &quot;workspaceFolders&quot;: {
+          &quot;changeNotifications&quot;: true,
+          &quot;supported&quot;: true
+        }
+      }
+    }
+  }
+
+  [ERROR][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc&quot;    &quot;ruff&quot;    &quot;stderr&quot;
+  &quot;2025-10-14 09:04:17.483714000  INFO No workspace options found for file:///Users/lewrus01/projects/ruff_issue/sub, using default options
+  2025-10-14 09:04:17.489175000  INFO Registering workspace: /Users/lewrus01/projects/ruff_issue/sub
+  &quot;
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.receive&quot;
+  {
+    &quot;id&quot;: 0,
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;client/registerCapability&quot;,
+    &quot;params&quot;: {
+      &quot;registrations&quot;: [
+        {
+          &quot;id&quot;: &quot;ruff-server-watch&quot;,
+          &quot;method&quot;: &quot;workspace/didChangeWatchedFiles&quot;,
+          &quot;registerOptions&quot;: {
+            &quot;watchers&quot;: [
+              {
+                &quot;globPattern&quot;: &quot;**/.ruff.toml&quot;
+              },
+              {
+                &quot;globPattern&quot;: &quot;**/ruff.toml&quot;
+              },
+              {
+                &quot;globPattern&quot;: &quot;**/pyproject.toml&quot;
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;LSP[ruff]&quot;    &quot;client.request&quot;    1    &quot;textDocument/diagnostic&quot;
+  {
+    &quot;textDocument&quot;: {
+      &quot;uri&quot;: &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+    }
+  }
+  &lt;function 1&gt;    1
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.send&quot;
+  {
+    &quot;id&quot;: 2,
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;method&quot;: &quot;textDocument/diagnostic&quot;,
+    &quot;params&quot;: {
+      &quot;textDocument&quot;: {
+        &quot;uri&quot;: &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+      }
+    }
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.receive&quot;
+  {
+    &quot;id&quot;: 2,
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;result&quot;: {
+      &quot;items&quot;: [],
+      &quot;kind&quot;: &quot;full&quot;
+    }
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;server_request: callback result&quot;
+  {
+    &quot;result&quot;: null,
+    &quot;status&quot;: true
+  }
+
+  [DEBUG][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc.send&quot;
+  {
+    &quot;id&quot;: 0,
+    &quot;jsonrpc&quot;: &quot;2.0&quot;,
+    &quot;result&quot;: null
+  }
+
+  [ERROR][2025-10-14 09:04:17] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151    &quot;rpc&quot;    &quot;ruff&quot;    &quot;stderr&quot;
+  &quot;2025-10-14 09:04:17.522461000  INFO Configuration file watcher successfully registered
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 08:54</div>
+            <div class="timeline-body"><p>Hmm, I don't think changing the log level worked because I don't see any <code>DEBUG</code> level logs (only info).</p>
+<p>I'm not using neovim myself, but I think you have to put <code>logLevel</code> into <code>init_options</code>:</p>
+<pre><code>{init_options}? (lsp.LSPObject) Values to pass in the initialization request as initializationOptions. See initialize in the LSP spec. 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lewis6991">@lewis6991</a> on 2025-10-14 09:34</div>
+            <div class="timeline-body"><p>I think you are right, I changed my config to:</p>
+<pre><code class="language-lua">lsp.config('ruff', {
+  cmd = { 'ruff', 'server', '-v' },
+  init_options = {
+    logLevel = 'debug',
+  }
+})
+</code></pre>
+<pre><code>[START][2025-10-14 10:29:47] LSP logging initiated
+[INFO][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;Starting RPC client&quot;
+{
+  cmd = { &quot;ruff&quot;, &quot;server&quot;, &quot;-v&quot; },
+  extra = {}
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  id = 1,
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;initialize&quot;,
+  params = {
+    capabilities = {
+      general = {
+        positionEncodings = { &quot;utf-8&quot;, &quot;utf-16&quot;, &quot;utf-32&quot; }
+      },
+      textDocument = {
+        callHierarchy = { dynamicRegistration = false },
+        codeAction = {
+          codeActionLiteralSupport = {
+            codeActionKind = {
+              valueSet = {
+                &quot;&quot;, &quot;quickfix&quot;, &quot;refactor&quot;, &quot;refactor.extract&quot;, &quot;refactor.inline&quot;, &quot;refactor.rewrite&quot;, &quot;source&quot;, &quot;source.organizeImports&quot;
+              }
+            }
+          },
+          dataSupport = true,
+          disabledSupport = true,
+          dynamicRegistration = true,
+          honorsChangeAnnotations = true,
+          isPreferredSupport = true,
+          resolveSupport = { properties = { &quot;edit&quot;, &quot;command&quot; } }
+        },
+        codeLens = {
+          dynamicRegistration = false,
+          resolveSupport = { properties = { &quot;command&quot; } }
+        },
+        colorProvider = { dynamicRegistration = true },
+        completion = {
+          completionItem = {
+            commitCharactersSupport = false,
+            deprecatedSupport = true,
+            documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; },
+            preselectSupport = false,
+            resolveSupport = { properties = { &quot;additionalTextEdits&quot;, &quot;command&quot; } },
+            snippetSupport = true,
+            tagSupport = { valueSet = { 1 } }
+          },
+          completionItemKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 } },
+          completionList = { itemDefaults = { &quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot; } },
+          contextSupport = true,
+          dynamicRegistration = false
+        },
+        declaration = { linkSupport = true },
+        definition = { dynamicRegistration = true, linkSupport = true },
+        diagnostic = {
+          dataSupport = true,
+          dynamicRegistration = false,
+          relatedDocumentSupport = true,
+          relatedInformation = true,
+          tagSupport = { valueSet = { 1, 2 } }
+        },
+        documentHighlight = { dynamicRegistration = false },
+        documentSymbol = {
+          dynamicRegistration = false,
+          hierarchicalDocumentSymbolSupport = true,
+          symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } },
+          tagSupport = { valueSet = { 1 } }
+        },
+        foldingRange = {
+          dynamicRegistration = false,
+          foldingRange = { collapsedText = true },
+          foldingRangeKind = { valueSet = { &quot;comment&quot;, &quot;imports&quot;, &quot;region&quot; } },
+          lineFoldingOnly = true
+        },
+        formatting = { dynamicRegistration = true },
+        hover = { contentFormat = { &quot;markdown&quot;, &quot;plaintext&quot; }, dynamicRegistration = true },
+        implementation = { linkSupport = true },
+        inlayHint = {
+          dynamicRegistration = true,
+          resolveSupport = { properties = { &quot;textEdits&quot;, &quot;tooltip&quot;, &quot;location&quot;, &quot;command&quot; } }
+        },
+        inlineCompletion = { dynamicRegistration = false },
+        linkedEditingRange = { dynamicRegistration = false },
+        onTypeFormatting = { dynamicRegistration = false },
+        publishDiagnostics = {
+          dataSupport = true,
+          relatedInformation = true,
+          tagSupport = { valueSet = { 1, 2 } }
+        },
+        rangeFormatting = { dynamicRegistration = true, rangesSupport = true },
+        references = { dynamicRegistration = false },
+        rename = { dynamicRegistration = true, honorsChangeAnnotations = true, prepareSupport = true },
+        selectionRange = { dynamicRegistration = false },
+        semanticTokens = {
+          augmentsSyntaxTokens = true,
+          dynamicRegistration = false,
+          formats = { &quot;relative&quot; },
+          multilineTokenSupport = true,
+          overlappingTokenSupport = true,
+          requests = { full = { delta = true }, range = false },
+          serverCancelSupport = false,
+          tokenModifiers = {
+            &quot;declaration&quot;, &quot;definition&quot;, &quot;readonly&quot;, &quot;static&quot;, &quot;deprecated&quot;, &quot;abstract&quot;, &quot;async&quot;, &quot;modification&quot;, &quot;documentation&quot;, &quot;defaultLibrary&quot;
+          },
+          tokenTypes = {
+            &quot;namespace&quot;, &quot;type&quot;, &quot;class&quot;, &quot;enum&quot;, &quot;interface&quot;, &quot;struct&quot;, &quot;typeParameter&quot;, &quot;parameter&quot;, &quot;variable&quot;, &quot;property&quot;, &quot;enumMember&quot;, &quot;event&quot;, &quot;function&quot;, &quot;method&quot;, &quot;macro&quot;, &quot;keyword&quot;, &quot;modifier&quot;, &quot;comment&quot;, &quot;string&quot;, &quot;number&quot;, &quot;regexp&quot;, &quot;operator&quot;, &quot;decorator&quot;
+          }
+        },
+        signatureHelp = {
+          dynamicRegistration = false,
+          signatureInformation = {
+            activeParameterSupport = true,
+            documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; },
+            noActiveParameterSupport = true,
+            parameterInformation = { labelOffsetSupport = true }
+          }
+        },
+        synchronization = {
+          didSave = true,
+          dynamicRegistration = false,
+          willSave = true,
+          willSaveWaitUntil = true
+        },
+        typeDefinition = { linkSupport = true }
+      },
+      window = {
+        showDocument = { support = true },
+        showMessage = { messageActionItem = { additionalPropertiesSupport = true } },
+        workDoneProgress = true
+      },
+      workspace = {
+        applyEdit = true,
+        configuration = true,
+        diagnostics = { refreshSupport = false },
+        didChangeConfiguration = { dynamicRegistration = false },
+        didChangeWatchedFiles = { dynamicRegistration = true, relativePatternSupport = true },
+        inlayHint = { refreshSupport = true },
+        semanticTokens = { refreshSupport = true },
+        symbol = {
+          dynamicRegistration = false,
+          symbolKind = { valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 } }
+        },
+        workspaceEdit = {
+          changeAnnotationSupport = { groupsOnLabel = true },
+          normalizesLineEndings = true,
+          resourceOperations = { &quot;rename&quot;, &quot;create&quot;, &quot;delete&quot; }
+        },
+        workspaceFolders = true
+      }
+    },
+    clientInfo = {
+      name = &quot;Neovim&quot;,
+      version = &quot;0.12.0-dev+g198c9e9bc&quot;
+    },
+    initializationOptions = { logLevel = &quot;debug&quot; },
+    processId = 64637,
+    rootPath = &quot;/Users/lewrus01/projects/ruff_issue/sub&quot;,
+    rootUri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub&quot;,
+    trace = &quot;off&quot;,
+    workDoneToken = &quot;1&quot;,
+    workspaceFolders = {
+      {
+        name = &quot;/Users/lewrus01/projects/ruff_issue/sub&quot;,
+        uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub&quot;
+      }
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;
+{
+  id = 1,
+  jsonrpc = &quot;2.0&quot;,
+  result = {
+    capabilities = {
+      codeActionProvider = {
+        codeActionKinds = {
+          &quot;quickfix&quot;,
+          &quot;source.fixAll.ruff&quot;,
+          &quot;source.organizeImports.ruff&quot;,
+          &quot;notebook.source.fixAll.ruff&quot;,
+          &quot;notebook.source.organizeImports.ruff&quot;
+        },
+        resolveProvider = true,
+        workDoneProgress = true
+      },
+      diagnosticProvider = {
+        identifier = &quot;Ruff&quot;,
+        interFileDependencies = false,
+        workDoneProgress = true,
+        workspaceDiagnostics = false
+      },
+      documentFormattingProvider = true,
+      documentRangeFormattingProvider = true,
+      executeCommandProvider = {
+        commands = {
+          &quot;ruff.applyFormat&quot;,
+          &quot;ruff.applyAutofix&quot;,
+          &quot;ruff.applyOrganizeImports&quot;,
+          &quot;ruff.printDebugInformation&quot;
+        },
+        workDoneProgress = false
+      },
+      hoverProvider = true,
+      notebookDocumentSync = {
+        notebookSelector = {
+          {
+            cells = {
+              { language = &quot;python&quot; }
+            }
+          }
+        },
+        save = false
+      },
+      positionEncoding = &quot;utf-8&quot;,
+      textDocumentSync = {
+        change = 2,
+        openClose = true,
+        willSave = false,
+        willSaveWaitUntil = false
+      },
+      workspace = {
+        workspaceFolders = {
+          changeNotifications = true,
+          supported = true
+        }
+      }
+    },
+    serverInfo = {
+      name = &quot;ruff&quot;,
+      version = &quot;0.14.0&quot;
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;initialized&quot;,
+  params = vim.empty_dict()
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/didOpen&quot;,
+  params = {
+    textDocument = {
+      languageId = &quot;python&quot;,
+      text = 'print &quot;Hello world!&quot;\n',
+      uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;,
+      version = 0
+    }
+  }
+}
+[INFO][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ruff]&quot;
+&quot;server_capabilities&quot;
+{
+  server_capabilities = {
+    codeActionProvider = {
+      codeActionKinds = {
+        &quot;quickfix&quot;,
+        &quot;source.fixAll.ruff&quot;,
+        &quot;source.organizeImports.ruff&quot;,
+        &quot;notebook.source.fixAll.ruff&quot;,
+        &quot;notebook.source.organizeImports.ruff&quot;
+      },
+      resolveProvider = true,
+      workDoneProgress = true
+    },
+    diagnosticProvider = {
+      identifier = &quot;Ruff&quot;,
+      interFileDependencies = false,
+      workDoneProgress = true,
+      workspaceDiagnostics = false
+    },
+    documentFormattingProvider = true,
+    documentRangeFormattingProvider = true,
+    executeCommandProvider = {
+      commands = {
+        &quot;ruff.applyFormat&quot;,
+        &quot;ruff.applyAutofix&quot;,
+        &quot;ruff.applyOrganizeImports&quot;,
+        &quot;ruff.printDebugInformation&quot;
+      },
+      workDoneProgress = false
+    },
+    hoverProvider = true,
+    notebookDocumentSync = {
+      notebookSelector = {
+        {
+          cells = {
+            { language = &quot;python&quot; }
+          }
+        }
+      },
+      save = false
+    },
+    positionEncoding = &quot;utf-8&quot;,
+    textDocumentSync = {
+      change = 2,
+      openClose = true,
+      willSave = false,
+      willSaveWaitUntil = false
+    },
+    workspace = {
+      workspaceFolders = {
+        changeNotifications = true,
+        supported = true
+      }
+    }
+  }
+}
+[ERROR][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc&quot;	&quot;ruff&quot;	&quot;stderr&quot;
+&quot;2025-10-14 10:29:47.297030000  INFO No workspace options found for file:///Users/lewrus01/projects/ruff_issue/sub, using default options\n2025-10-14 10:29:47.301137000  INFO Registering workspace: /Users/lewrus01/projects/ruff_issue/sub\n&quot;
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;
+{
+  id = 0,
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;client/registerCapability&quot;,
+  params = {
+    registrations = {
+      {
+        id = &quot;ruff-server-watch&quot;,
+        method = &quot;workspace/didChangeWatchedFiles&quot;,
+        registerOptions = {
+          watchers = {
+            { globPattern = &quot;**/.ruff.toml&quot; },
+            { globPattern = &quot;**/ruff.toml&quot; },
+            { globPattern = &quot;**/pyproject.toml&quot; }
+          }
+        }
+      }
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ruff]&quot;
+&quot;client.request&quot;
+1
+&quot;textDocument/diagnostic&quot;
+{
+  textDocument = {
+    uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+  }
+}
+&lt;function 1&gt;
+1
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  id = 2,
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/diagnostic&quot;,
+  params = {
+    textDocument = {
+      uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;server_request: callback result&quot;
+{
+  result = vim.NIL,
+  status = true
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  id = 0,
+  jsonrpc = &quot;2.0&quot;,
+  result = vim.NIL
+}
+[DEBUG][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;
+{
+  id = 2,
+  jsonrpc = &quot;2.0&quot;,
+  result = {
+    items = {},
+    kind = &quot;full&quot;
+  }
+}
+[ERROR][2025-10-14 10:29:47] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc&quot;	&quot;ruff&quot;	&quot;stderr&quot;
+&quot;2025-10-14 10:29:47.353346000  INFO Configuration file watcher successfully registered\n&quot;
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/didChange&quot;,
+  params = {
+    contentChanges = {
+      {
+        range = {
+          [&quot;end&quot;] = { character = 1, line = 0 },
+          start = { character = 0, line = 0 }
+        },
+        rangeLength = 1,
+        text = &quot;&quot;
+      }
+    },
+    textDocument = {
+      uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;,
+      version = 4
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ruff]&quot;
+&quot;client.request&quot;
+1
+&quot;textDocument/diagnostic&quot;
+{
+  textDocument = {
+    uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+  }
+}
+&lt;function 1&gt;
+1
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  id = 3,
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/diagnostic&quot;,
+  params = {
+    textDocument = {
+      uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;
+{
+  id = 3,
+  jsonrpc = &quot;2.0&quot;,
+  result = {
+    items = {},
+    kind = &quot;full&quot;
+  }
+}
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/didChange&quot;,
+  params = {
+    contentChanges = {
+      {
+        range = {
+          [&quot;end&quot;] = { character = 0, line = 0 },
+          start = { character = 0, line = 0 }
+        },
+        rangeLength = 0,
+        text = &quot;p&quot;
+      }
+    },
+    textDocument = {
+      uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;,
+      version = 5
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;LSP[ruff]&quot;
+&quot;client.request&quot;
+1
+&quot;textDocument/diagnostic&quot;
+{
+  textDocument = {
+    uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+  }
+}
+&lt;function 1&gt;
+1
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.send&quot;
+{
+  id = 4,
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/diagnostic&quot;,
+  params = {
+    textDocument = {
+      uri = &quot;file:///Users/lewrus01/projects/ruff_issue/sub/main.py&quot;
+    }
+  }
+}
+[DEBUG][2025-10-14 10:29:50] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	&quot;rpc.receive&quot;
+{
+  id = 4,
+  jsonrpc = &quot;2.0&quot;,
+  result = {
+    items = {},
+    kind = &quot;full&quot;
+  }
+}
+
+</code></pre>
+<p>Setting <code>trace='verbose'</code> doesn't help much either.</p>
+<p>Is this problem not reproducible in another editor? Alternatively does ruff have the ability to write it's own log files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 09:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Alternatively does ruff have the ability to write it's own log files?</p>
+</blockquote>
+<p>You can set <a href="https://docs.astral.sh/ruff/editors/settings/#logfile">logFile</a> but that also requires using <code>init_options</code>.</p>
+<p>Oh, I think I see the issue. It's the</p>
+<pre><code>echo '[tool.ruff]\nexclude=[&quot;sub&quot;]' &gt; pyproject.toml
+</code></pre>
+<p>in the parent <code>pyproject.toml</code>. Ruff's LSP will skip over the entire project because the folder is in the <code>exclude</code> list (this prevents the LSP from traversing into very deep directories, e.g. <code>.node_moduels</code>).</p>
+<p>What's the reason for excluding <code>sub</code> in the root configuration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lewis6991">@lewis6991</a> on 2025-10-14 09:52</div>
+            <div class="timeline-body"><p>It is just how the project is laid out, the root project is independent of <code>sub</code>:</p>
+<ul>
+<li>When working at the root, tools need to ignore <code>sub</code></li>
+<li>When working in <code>sub</code>, LSP servers are run with the root directory set to <code>sub</code>.</li>
+</ul>
+<p>I'm not sure why <code>ruff</code> is traversing up to the root level. The server is invoked in <code>sub</code> which has its own <code>pyproject.toml</code>.</p>
+<p>If I wanted <code>ruff</code> to inherit the root project I would add the following to <code>sub</code>'s <code>pyproject.toml</code> as per the <a href="https://docs.astral.sh/ruff/settings/#extend">docs</a>:</p>
+<pre><code class="language-toml">[tool.ruff]
+# Extend the `pyproject.toml` file in the parent directory.
+extend = &quot;../pyproject.toml&quot;
+</code></pre>
+<p>And regardless of whether what I'm saying is correct or not, I would at least expect <code>ruff server</code> to act consistently with <code>ruff check</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 11:10</div>
+            <div class="timeline-body"><p>I just verified this with VS Code and your setup works as expected there. So this is has something to do with neovim.</p>
+<p>What looks suspicious is</p>
+<pre><code>&quot;2025-10-14 10:29:47.297030000  INFO No workspace options found for file:///Users/lewrus01/projects/ruff_issue/sub, using default options\n2
+</code></pre>
+<p>right before we initialize the workspace settings.  But I'm not sure how that request gets hanled before we finish scanning for settings. I'd need the debug logs to better understand what's happening</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lewis6991">@lewis6991</a> on 2025-10-14 11:42</div>
+            <div class="timeline-body"><p>Here's the full log:</p>
+<pre><code>2025-10-14 12:40:56.660187000  INFO No workspace options found for file:///Users/lewrus01/projects/ruff_issue/sub, using default options
+2025-10-14 12:40:56.660294000 DEBUG Negotiated position encoding: UTF8
+2025-10-14 12:40:56.660306000 DEBUG Indexing settings for workspace: /Users/lewrus01/projects/ruff_issue/sub
+2025-10-14 12:40:56.661097000 DEBUG Loaded settings from: `/Users/lewrus01/projects/ruff_issue/pyproject.toml`
+2025-10-14 12:40:56.661116000 DEBUG Loading settings from user configuration file: `/Users/lewrus01/projects/dotfiles/config/ruff/ruff.toml`
+2025-10-14 12:40:56.661265000 DEBUG No `target-version` found in `ruff.toml` log.target=&quot;ruff_workspace::pyproject&quot; log.module_path=&quot;ruff_workspace::pyproject&quot; log.file=&quot;crates/ruff_workspace/src/pyproject.rs&quot; log.line=161
+2025-10-14 12:40:56.661898000 DEBUG Ignored path via `exclude`: /Users/lewrus01/projects/ruff_issue/sub
+2025-10-14 12:40:56.665308000  INFO Registering workspace: /Users/lewrus01/projects/ruff_issue/sub
+2025-10-14 12:40:56.665484000 DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+2025-10-14 12:40:56.698740000 DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+2025-10-14 12:40:56.698825000 DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Ignored path via `exclude`: /Users/lewrus01/projects/ruff_issue/sub/main.py
+2025-10-14 12:40:56.701595000 DEBUG client_response{id=0 method=&quot;client/registerCapability&quot;}: enter
+2025-10-14 12:40:56.701604000  INFO client_response{id=0 method=&quot;client/registerCapability&quot;}: Configuration file watcher successfully registered
+</code></pre>
+<p>For AI training, I missed the <code>settings</code> key in my config:</p>
+<pre><code class="language-lua">lsp.config('ruff', {
+  cmd = { 'ruff', 'server', '-v' },
+  init_options = {
+    settings = {
+      logFile = '/Users/lewrus01/ruff.log',
+      logLevel = 'debug',
+    },
+  },
+})
+</code></pre>
+<p>The log contains:</p>
+<pre><code>2025-10-14 12:40:56.661097000 DEBUG Loaded settings from: `/Users/lewrus01/projects/ruff_issue/pyproject.toml`
+</code></pre>
+<p>Which confirms my suspicion that it is looking in the parents <code>pyproject.toml</code> first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 11:57</div>
+            <div class="timeline-body"><p>Thanks. Yeah I think this is a bug. We should skip the current directory <em>if</em> it contains a configuration file. It could be as easy as removing this line</p>
+<p>https://github.com/astral-sh/ruff/blob/9cdac2d6fb65f8d4d2818590cbfb14915003b8d7/crates/ruff_server/src/session/index/ruff_settings.rs#L184</p>
+<p>But this line seems very intentional. @dhruvmanila do you remember why it is needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-10-14 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-14 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server` appears to resolve configuration files differently to `ruff check`" to "`ruff server`: Ignores settings from workspace folder if the folder is excluded by a configuration in an ancestor directory" by @MichaReiser on 2025-10-14 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-10-21 09:25</div>
+            <div class="timeline-body"><p>I'll have to see what the code looked like before this was added because IIRC, this was added to retain the old behavior and to avoid traversing the home directory when the client didn't provide any workspace. For context, refer to https://github.com/astral-sh/ruff/pull/13770.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-10-21 09:39</div>
+            <div class="timeline-body"><p>I looked at the old code, I don't think that line would solve this issue as even without that line, this bug would still exists because we'll still skip the root directory (<code>/sub</code>) in the first loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lewis6991">@lewis6991</a> on 2025-10-21 09:39</div>
+            <div class="timeline-body"><p>In regards to #13770, in this case <code>workspaceFolders</code> is not empty (not single file mode), in fact the problem is they are not being properly respected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-10-21 10:04</div>
+            <div class="timeline-body"><p>Yeah, that's right which might mean that this is an old bug and not related to #13770.</p>
+<p>I also tested out Micha's suggestion by commenting out that line and replacing the variable usage with <code>1</code> (as seen in the old code in the diff of #13770) and the issue is still present.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

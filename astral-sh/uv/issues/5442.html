@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for editable dependencies with URLs - astral-sh/uv #5442</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for editable dependencies with URLs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5442">#5442</a>
+        opened by <a href="https://github.com/krmax44">@krmax44</a>
+        on 2024-07-25 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/krmax44">@krmax44</a> on 2024-07-25 14:01</div>
+            <div class="timeline-body"><p>While uv supports dependencies from URLs (like <code>uv pip install git+https://github.com/pallets/flask.git</code>), they can't be installed with the <code>-e</code> flag:</p>
+<pre><code>$ uv pip install -e git+https://github.com/pallets/flask.git
+error: Editable must refer to a local directory, not a Git URL
+</code></pre>
+<p>For multi-repo projects, this would be nice to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-25 14:06</div>
+            <div class="timeline-body"><p>Hi! What does it mean to have an editable installation of a remote git dependency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krmax44">@krmax44</a> on 2024-07-25 14:14</div>
+            <div class="timeline-body"><p>Thanks for your quick reply! From my understanding, there is little difference than with the <code>-e</code> flag omitted. With the <code>-e</code> flag however, an existing repository is updated upon re-running the install command (see below), without a new clone is made.</p>
+<pre><code>Updating ./.venv/src/froide-fax clone (to revision main)
+  Running command git fetch -q --tags
+  Running command git reset --hard -q 09a7bcec76d3da6b2003516a775ed5657a7cc062
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 14:18</div>
+            <div class="timeline-body"><p>As of now we intentionally don't support this. It adds a lot of complexity and we actually don't re-clone at all upon re-running the install command (we have a cache that contains a copy of each repository, and we checkout-and-install as needed with incremental fetches).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-25 14:19</div>
+            <div class="timeline-body"><p>I think we always cache git clones anyway, though I'm not sure about the nuances of our behavior here. Are you having problems with our behavior specifically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krmax44">@krmax44</a> on 2024-07-25 14:42</div>
+            <div class="timeline-body"><p>Just dropping the <code>-e</code> works fine as of now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-07-25 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-25 15:49</div>
+            <div class="timeline-body"><p>Thanks! Let us know if you have more questions / a use-case that's not addressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-25 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krmax44">@krmax44</a> on 2024-07-25 17:01</div>
+            <div class="timeline-body"><p>I found another difference: With <code>-e</code>, all files from the repository are available within <code>.venv/src</code>. WIthout, only relevant files (presumably as configured with setuptools) will be stored in <code>site-packages</code>. This is quite important to us, as we also include JavaScript files in the repo we need to access. (We can probably include these somehow with setuptools.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../avilaton/dependabot-core/pulls/2.html">avilaton/dependabot-core#2</a> on 2024-08-18 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dependabot/dependabot-core/pulls/10040.html">dependabot/dependabot-core#10040</a> on 2024-08-19 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../overhangio/tutor/pulls/1088.html">overhangio/tutor#1088</a> on 2024-10-16 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10992.html">astral-sh/uv#10992</a> on 2025-01-27 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-01-27 16:51</div>
+            <div class="timeline-body"><p>Adding some keywords since I couldn't find this issue initially:
+<code>uv add --editable</code>, Git, VCS</p>
+<pre><code>error: Failed to parse: `pyproject.toml`
+ Caused by: TOML parse error at line 12, column 12
+  |
+12 | gunicorn = { git = &quot;https://github.com/benoitc/gunicorn&quot;, editable = true }
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cannot specify both `git` and `editable`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 16:59</div>
+            <div class="timeline-body"><p>Thanks, good form!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThrawnCA">@ThrawnCA</a> on 2025-02-19 00:00</div>
+            <div class="timeline-body"><p>This can create problems if a package doesn't specify the metadata around its dependencies very well and they need manual handling.</p>
+<p>For example, https://github.com/ckan/ckanext-dcat has a <code>requirements.txt</code> file to install what it needs, but that file won't be used automatically, and if you use a non-editable install, you won't get a copy of the file to install everything manually. And <code>uv</code> cannot perform an editable install from that URL.</p>
+<p>With <code>pip</code> it's relatively straightforward:</p>
+<pre><code>pip install -e git+https://github.com/ckan/ckanext-dcat.git@v2.2.0#egg=ckanext-dcat
+cd $SRC_DIR/ckanext-dcat
+pip install -r requirements.txt</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run --project` doesn't allow resolving module imports on windows - astral-sh/uv #12270</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run --project` doesn't allow resolving module imports on windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12270">#12270</a>
+        opened by <a href="https://github.com/leokeba">@leokeba</a>
+        on 2025-03-18 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leokeba">@leokeba</a> on 2025-03-18 10:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In my python project, I have a <code>scripts</code> folder where I keep various utilities that need to import code from the main <code>app</code> folder. When running it on macOS, I just use <code>uv run scripts/test.py --project .</code> and everything works as expected. On my windows system, when I try <code>uv run scripts\test.py --project .</code> i get the following error : <code>ModuleNotFoundError: No module named 'app'</code>.</p>
+<p>I tried using an absolute path instead and various tricks to make it work, and also using the <code>--folder</code> argument instead, but nothing helps. Am I misunderstanding something or is this a bug ?</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>0.6.6</p>
+<h3>Python version</h3>
+<p>3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @leokeba on 2025-03-18 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv run --project` doesn't allow resolving module imports" to "`uv run --project` doesn't allow resolving module imports on windows" by @leokeba on 2025-03-18 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nbaju1">@nbaju1</a> on 2025-03-18 12:45</div>
+            <div class="timeline-body"><p>Isn't <code>--project .</code> the same as running without the flag, since the default behavior is to look for the project within the current directory? If so do you get the same result without it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leokeba">@leokeba</a> on 2025-03-18 13:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't <code>--project .</code> the same as running without the flag, since the default behavior is to look for the project within the current directory? If so do you get the same result without it?</p>
+</blockquote>
+<p>On macOS, running a script from a subfolder breaks module imports from the rest of the app as the python interpreter runs from the subfolder environment instead of the root project folder. The solution I found to this issue was using the <code>--project .</code> flag, but this only works on macOS.</p>
+<p>On windows, both give the same result, which is the following error : <code>ModuleNotFoundError: No module named 'app'</code></p>
+<p>In my opinion, the best solution would be not needing to use the <code>--project .</code> flag at all regardless of the OS or subfolder structure, but I figure there might be a reason things work that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nbaju1">@nbaju1</a> on 2025-03-18 13:22</div>
+            <div class="timeline-body"><p>Not able to reproduce on Windows 11.</p>
+<p>Folder structure:</p>
+<pre><code class="language-markdown">project/
+├── app/
+|   └── foo.py
+├── scripts/
+|   └── test.py
+└── pyproject.toml
+</code></pre>
+<p>foo.py</p>
+<pre><code class="language-python">def bar():
+    print(&quot;bar&quot;)
+</code></pre>
+<p>test.py</p>
+<pre><code class="language-python">from app.foo import bar
+
+bar()
+</code></pre>
+<p>Running <code>uv run .\scripts\test.py</code> (without or without <code>--project .</code>) from the root outputs <code>bar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leokeba">@leokeba</a> on 2025-03-18 13:51</div>
+            <div class="timeline-body"><p>I reproduced your example and still get the same error on Windows 11.</p>
+<p>What are the contents of your pyproject.toml ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nbaju1">@nbaju1</a> on 2025-03-18 13:53</div>
+            <div class="timeline-body"><p>pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Project&quot;
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<p>Note that I have placed the venv inside the project root and it is active before running the command, if that matters.
+Edit: Scratch that. Deleted the venv and recreated it, now I get the same error as you. Old venv on my end it seems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leokeba">@leokeba</a> on 2025-03-18 14:01</div>
+            <div class="timeline-body"><p>The only difference is that I was using python 3.13 instead of 3.12, but i tried changing the version and I still get the same result.</p>
+<p>I am using a .venv placed in the project root as well. Any ideas for a workaround ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nbaju1">@nbaju1</a> on 2025-03-18 14:05</div>
+            <div class="timeline-body"><p>Adding this to the pyproject.toml file</p>
+<pre><code class="language-toml">[project.scripts]
+test = &quot;scripts.test:main&quot;
+
+[build-system]
+requires = [&quot;uv_build&quot;]
+build-backend = &quot;uv_build&quot;
+
+[tool.uv.build-backend]
+module-root = &quot;&quot;
+module-name = &quot;app&quot;
+</code></pre>
+<p>(placing the <code>bar()</code> call in a <code>main</code> function in test.py) and running <code>uv run test</code> works though (in uv v0.6.7)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leokeba">@leokeba</a> on 2025-03-18 14:14</div>
+            <div class="timeline-body"><p>Thanks a lot, this solution does indeed fix all my issues on both OSes, and it is much more elegant than what I was doing before.</p>
+<p>You can close this issue if everything else is expected behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-15 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

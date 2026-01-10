@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive with F401 (imported but unused) for type comments - astral-sh/ruff #1619</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive with F401 (imported but unused) for type comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1619">#1619</a>
+        opened by <a href="https://github.com/sbdchd">@sbdchd</a>
+        on 2023-01-04 02:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 02:49</div>
+            <div class="timeline-body"><p>minimal example (<a href="https://github.com/chdsbd/kodiak/blob/0c1171bc8f574d7ee11ab6174036edadfbc5ec09/bot/kodiak/pull_request.py#L76-L76">of some project code</a>):</p>
+<pre><code class="language-python">from typing import List
+
+x = [] # type: List[str]
+x.append(&quot;foo&quot;)
+print(x)
+</code></pre>
+<p>This isn't a big deal since <code># type: List[str]</code> can be replaced with <code># type: list[str]</code> and mypy warns about <code>List</code> being undefined with the auto fixer removes the import</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 02:50</div>
+            <div class="timeline-body"><p>Is this in reference to the type comment? Like, that <code># type: List[str]</code> should be considered a valid reference to <code>List</code>? Just verifying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbdchd">@sbdchd</a> on 2023-01-04 02:50</div>
+            <div class="timeline-body"><p>Yeah exactly! mypy will complain that it isn't defined if the import is missing, i.e.</p>
+<pre><code>kodiak/pull_request.py:76:5: error: Name &quot;List&quot; is not defined  [name-defined]
+kodiak/pull_request.py:76:5: note: Did you forget to import it from &quot;typing&quot;? (Suggestion: &quot;from typing import List&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-01-04 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 16:06</div>
+            <div class="timeline-body"><p>Yeah we don't really support type comments right now, since they were made obsolete in Python 3.6 AFAIK. I know some projects still use them for compatibility... I'll think on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phillipuniverse">@phillipuniverse</a> on 2023-01-27 17:38</div>
+            <div class="timeline-body"><p>@charliermarsh maybe 1 area that this is still useful in Python 3.6+: type hinting the result of a context manager. Example:</p>
+<pre><code class="language-python">from types_aiobotocore_s3 import S3ServiceResource
+
+async with self.boto_session.resource(&quot;s3&quot;) as s3:  # type: S3ServiceResource
+    obj = await s3.Object(self.bucket_name, key)
+    return (await obj.get())[&quot;Body&quot;]
+</code></pre>
+<p>The <code>from types_aiobotocore_s3 import S3ServiceResource</code> part is removed by ruff.</p>
+<p>Looks like leaving it off or on is ok by Mypy, but type hinting at least in Pycharm is better with the type comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-06 11:17</div>
+            <div class="timeline-body"><p>Maybe the issue title can be change to <code>False positive with F401 (imported but unused) with mypy type comments</code> ? can faster be found when searching for this issue.</p>
+<p>Affects me as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaymegordo">@jaymegordo</a> on 2023-04-21 18:12</div>
+            <div class="timeline-body"><p>+1 would also be very helpful to be able to use type comments. IMO they're much nicer than normal type annotations in a lot of places, because they can &quot;hide&quot; as a comment out of site of the actual line of code</p>
+<img width="764" alt="image" src="https://user-images.githubusercontent.com/29611875/233706960-a3ac763e-9e9b-4d67-83a6-80f1557b2537.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/uranusjr">@uranusjr</a> on 2023-04-24 22:02</div>
+            <div class="timeline-body"><p>I’d say the comment looking nicer than a type annotation is an editor/highlighter problem, but the general point of this being useful is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2023-05-01 16:05</div>
+            <div class="timeline-body"><p>Similar to https://github.com/charliermarsh/ruff/issues/1619#issuecomment-1406845028, I still use type comments in some very rare cases where things like <code>for</code> loops don't have syntax to express a &quot;real&quot; Python 3 type hint and the type checkers can't infer the type due to limitations in the underlying libraries being used.</p>
+<pre><code class="language-py">from models import Wheel
+
+for wheel in car.wheels.all():  # type: Wheel
+    ...
+</code></pre>
+<p>I realize this is non-standard, but PyCharm will interpret this and provide intellisense/auto-complete for the loop variable, which is practically useful in these niche cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False positive with F401 (imported but unused)" to "False positive with F401 (imported but unused) for type comments" by @charliermarsh on 2023-05-20 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4166.html">astral-sh/ruff#4166</a> on 2023-05-20 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-22 08:43</div>
+            <div class="timeline-body"><p>All type comments can be replaced (c.f.: https://peps.python.org/pep-0526/#where-annotations-aren-t-allowed)</p>
+<pre><code class="language-python">from types_aiobotocore_s3 import S3ServiceResource
+
+async with self.boto_session.resource(&quot;s3&quot;) as s3:  # type: S3ServiceResource
+    obj = await s3.Object(self.bucket_name, key)
+    return (await obj.get())[&quot;Body&quot;]
+
+# Becomes
+s3: S3ServiceResource
+async with self.boto_session.resource(&quot;s3&quot;) as s3:
+    obj = await s3.Object(self.bucket_name, key)
+    return (await obj.get())[&quot;Body&quot;]
+</code></pre>
+<pre><code class="language-python">from models import Wheel
+
+for wheel in car.wheels.all():  # type: Wheel
+    ...
+# Becomes
+wheel: Wheel
+for wheel in car.wheels.all():
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2023-05-22 11:02</div>
+            <div class="timeline-body"><p>@JonathanPlasse Good point bringing that up. I've generally been a little resistant to this particular fix because it complicates the actual code just to add the hint:</p>
+<ul>
+<li>It creates a new unbound local (if the code gets refactored later it could open up the possibility that <code>s3: S3ServiceResource</code> gets &quot;separated&quot; from the loop accidentally)</li>
+<li>Python leaks loop variables into the outer scope already, but the new <code>s3: S3ServiceResource</code> could be misunderstood as <em>implying intent</em> to leak the iterator</li>
+<li>There is a DRY issue where if the loop variable <code>s3</code> is renamed but the outer typed variable isn't</li>
+</ul>
+<p>But you're right that this is the officially prescribed way of dealing with it, but hopefully the above points help explain why people may be hesitant to do it just for a hint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/V3RGANz">@V3RGANz</a> on 2023-05-24 11:56</div>
+            <div class="timeline-body"><p>Also, it's worth mentioning that if you unpack values in this manner:</p>
+<pre><code class="language-python">n: str
+p: Tensor
+r: Tensor
+f1: Tensor
+for n, p, r, f1 in zip(names, precision, recall, f1_micro):
+    ...
+</code></pre>
+<p>it seems unnecessarily complicated for such a simple functionality compared to a simpler approach like:</p>
+<pre><code class="language-python">for n, p, r, f1 in zip(names, precision, recall, f1_micro):  # type: str, Tensor, Tensor, Tensor
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2023-07-08 03:35</div>
+            <div class="timeline-body"><p>I stumbled onto this issue in the configparser project. I worked around it by converting the type comments to native type hints (jaraco/configparser@4990ba132450e218d9695ba74d4a139913459b17).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6038.html">astral-sh/ruff#6038</a> on 2023-07-24 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vors">@vors</a> on 2023-07-24 18:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah we don't really support type comments right now, since they were made obsolete in Python 3.6 AFAIK. I know some projects still use them for compatibility... I'll think on it.</p>
+</blockquote>
+<p>They are not obsolete, they are part of PEP 484 specification and are supported by all major type checkers (pyright, mypy, pyre, etc)
+https://peps.python.org/pep-0484/#type-comments</p>
+<p>There are a ton of projects that leverage them, i.e. numpy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 18:48</div>
+            <div class="timeline-body"><p>To be clear, &quot;obsolete&quot; is different from &quot;unused&quot;. I'm not claiming that type comments aren't used in existing projects or that type checkers do not support them. It would be nice to support them! But it's a matter of prioritization, and my understanding is that <a href="https://peps.python.org/pep-0526/">PEP 526</a> had the explicit goal of introducing &quot;a more readable syntax to replace type comments.&quot;</p>
+<p>Perhaps another way of framing my lack of urgency to prioritize this: is there any reason to use type comments when writing Python code <em>today</em>? (This is not a rhetorical question, I am genuinely asking.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaymegordo">@jaymegordo</a> on 2023-07-24 18:51</div>
+            <div class="timeline-body"><p>@charliermarsh personally I use them exclusively, (see my previous comment https://github.com/astral-sh/ruff/issues/1619#issuecomment-1518178907), purely because I think they make code much more readable. But thats just my 2c 🤷🏼‍♂️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2023-07-25 19:01</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<blockquote>
+<p>is there any reason to use type comments when writing Python code today?</p>
+</blockquote>
+<p>As explained in the link below, for the rare cases of needing to type hint loop variables or <code>with</code> block variables, I find type comments avoid several drawbacks:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/1619#issuecomment-1557012758</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vors">@vors</a> on 2023-07-26 02:14</div>
+            <div class="timeline-body"><blockquote>
+<p>is there any reason to use type comments when writing Python code today?</p>
+</blockquote>
+<p>The company where I work has multi-million line codebase and we just migrated to using <code>ruff</code> as THE linter. (thank you for the great project!)</p>
+<p>It's not possible to migrate the whole codebase in a one go to the py3 comments unfortunately (there are technical reasons why we cannot do that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 02:21</div>
+            <div class="timeline-body"><p>(Thank you, these comments are all welcome and helpful.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6807.html">astral-sh/ruff#6807</a> on 2023-08-23 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/129.html">astral-sh/ruff#129</a> on 2023-09-08 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vors">@vors</a> on 2023-09-15 01:21</div>
+            <div class="timeline-body"><p>FWIW flake8 has the same problem (tested on flake8 6.1.0)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2023-09-15 01:40</div>
+            <div class="timeline-body"><p>pyflakes (what Flake8 runs under the hood) used to support this (I used the feature for years before moving to Ruff). Perhaps there was a regression.</p>
+<ul>
+<li>https://github.com/PyCQA/pyflakes/pull/400</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-15 01:47</div>
+            <div class="timeline-body"><p>It looks like it was removed about a year ago: https://github.com/PyCQA/pyflakes/pull/684</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../getsentry/sentry-python/issues/2527.html">getsentry/sentry-python#2527</a> on 2023-11-23 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10501.html">astral-sh/ruff#10501</a> on 2024-03-21 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ndevenish">@ndevenish</a> on 2024-08-20 10:09</div>
+            <div class="timeline-body"><p>We have some scripts that we explicitly maintain compatibility with python 2 (generally bootstrapping-related scripts that people can run on python2 and take care of bootstrapping a full environment).</p>
+<p>This is <em>very mildly</em> annoying but easily fixed with a <code>noqa: F401</code> on the import, and is a narrow enough use case that this causes no pain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13925.html">astral-sh/ruff#13925</a> on 2024-10-25 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../facebook/pyrefly/issues/1084.html">facebook/pyrefly#1084</a> on 2025-11-28 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../getsentry/sentry-python/pulls/5206.html">getsentry/sentry-python#5206</a> on 2025-12-12 13:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

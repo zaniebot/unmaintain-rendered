@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The formatter in ruff 0.1.0 ignores `# fmt: off` pragma inside of an assert statement - astral-sh/ruff #8021</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The formatter in ruff 0.1.0 ignores `# fmt: off` pragma inside of an assert statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8021">#8021</a>
+        opened by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a>
+        on 2023-10-17 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a> on 2023-10-17 17:46</div>
+            <div class="timeline-body"><p>The formatter in ruff 0.1.0 ignores <code># fmt: off</code> pragma inside of an assert statement. Ruff respects the pragma when running <code>ruff format --isolated test.py</code> when <code>test.py</code> looks like this:</p>
+<pre><code class="language-Python"># fmt: off
+assert (
+    (1111111111111111111111111111111111111111111111111111111111111111111111111111111, 2,)
+)
+</code></pre>
+<p>But Ruff does not respect the pragma when <code>test.py</code> looks like this:</p>
+<pre><code class="language-Python">assert (
+    # fmt: off
+    (1111111111111111111111111111111111111111111111111111111111111111111111111111111, 2,)
+)
+</code></pre>
+<p>Promoting the <code># fmt: off</code> pragma outside of the assert statement is a workaround for now. This was a minimal example, but you could see how it affects a real test like this:</p>
+<pre><code class="language-Python">def test_example():
+    &quot;&quot;&quot;Example test that asserts something about a specially-formatted array.&quot;&quot;&quot;
+    assert np.allclose(
+        ...,
+        np.array(
+            [
+                # fmt: off
+                105.        , 106.02040672, 107.04081917, 108.06122589,
+                109.08163071, 110.10204124, 111.12244987, 112.14286041,
+                113.16326523, 114.18367195, 115.2040844 , 116.22449112,
+                165.3471179 , 167.69404545, 170.10337013, 172.57614547
+            ]
+        ),
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2023-10-17 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-17 23:12</div>
+            <div class="timeline-body"><p>Hy @blakeNaccarato</p>
+<p>Thanks for raising this. Ruff only supports statement-level suppression comments. This doesn't seem to be mentioned in the alpha documentation but we have a dedicated section in the soon published <a href="https://github.com/astral-sh/ruff/blob/charlie/formatter-docs/docs/formatter.md#format-suppression">formatter documentation</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a> on 2023-10-17 23:41</div>
+            <div class="timeline-body"><p>Ah, thanks for the heads up. I'm sure that this decision simplifies the bug surface area significantly, so I can understand why it wouldn't be supported.</p>
+<p>As the tool develops further, it may be helpful to have some parallel ruff linter category that warns on possible <code># fmt: off</code> sharp edges. The message could be e.g. <code>Unsupported fmt pragma usage: Ruff formatter only supports statement-level suppression</code> with some heuristic that kinda/sorta catches attempts like this (not robust enough to catch all cases, otherwise it would have just been a feature).</p>
+<p>I'm gonna close this as wont-fix then if that's alright.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @blakeNaccarato on 2023-10-17 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-17 23:57</div>
+            <div class="timeline-body"><blockquote>
+<p>As the tool develops further, it may be helpful to have some parallel ruff linter category that warns on possible # fmt: off sharp edges. The message could be e.g. Unsupported fmt pragma usage: Ruff formatter only supports statement-level suppression with some heuristic that kinda/sorta catches attempts like this (not robust enough to catch all cases, otherwise it would have just been a feature).</p>
+</blockquote>
+<p>yes, this is a great idea and something we consider implementing for the stable release.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

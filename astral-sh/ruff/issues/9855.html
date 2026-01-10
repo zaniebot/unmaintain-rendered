@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`TRIO100` does not detect async context managers - astral-sh/ruff #9855</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`TRIO100` does not detect async context managers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9855">#9855</a>
+        opened by <a href="https://github.com/CoolCat467">@CoolCat467</a>
+        on 2024-02-06 04:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/CoolCat467">@CoolCat467</a> on 2024-02-06 04:25</div>
+            <div class="timeline-body"><p>Noticed this in my work on https://github.com/python-trio/trio/pull/2947, it appears that <code>TRIO100</code> does not detect async context managers.</p>
+<p><code>minimal.py</code>:</p>
+<pre><code class="language-python3">import trio
+
+async def test_reentry_doesnt_deadlock() -&gt; None:
+    # Regression test for issue noticed in GH-2827
+    # The failure mode is to hang the whole test suite, unfortunately.
+    # XXX consider running this in a subprocess with a timeout, if it comes up again!
+
+    async def child() -&gt; None:
+        while True:
+            await trio.to_thread.run_sync(trio.from_thread.run, trio.sleep, 0, abandon_on_cancel=False)
+
+    with trio.move_on_after(2):
+        async with trio.open_nursery() as nursery:
+            for _ in range(4):
+                nursery.start_soon(child)
+</code></pre>
+<pre><code class="language-console">&gt; ruff check minimal.py --isolated --select TRIO
+minimal.py:12:5: TRIO100 A `with trio.move_on_after(...):` context does not contain any `await` statements. This makes it pointless, as the timeout can only be triggered by a checkpoint.
+</code></pre>
+<pre><code class="language-console">&gt; ruff --version
+ruff 0.2.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-06 04:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-06 04:31</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python-trio/trio/pulls/2947.html">python-trio/trio#2947</a> on 2024-02-06 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9859.html">astral-sh/ruff#9859</a> on 2024-02-06 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-06 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-06 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9934.html">astral-sh/ruff#9934</a> on 2024-02-11 23:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

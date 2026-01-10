@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync - not sync - astral-sh/uv #6745</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync - not sync</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6745">#6745</a>
+        opened by <a href="https://github.com/emcek">@emcek</a>
+        on 2024-08-28 12:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emcek">@emcek</a> on 2024-08-28 12:03</div>
+            <div class="timeline-body"><p>uv 0.3.5 (6c62d9fbf 2024-08-27) Windows 11</p>
+<p>Reproduction:</p>
+<pre><code class="language-console">$ mkdir new_proj
+$ cd new_proj
+$ uv venv
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+$ .venv\Scripts\activate
+$ (new_proj) pip install pydantic
+</code></pre>
+<p>Add <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'dcspy'
+authors = [{name = 'Michal Plichta'}]
+maintainers = [{name = 'Michal Plichta'}]
+description = ''
+license = {text = 'MIT License'}
+requires-python = '&gt;=3.9'
+readme = 'README.md'
+dynamic = ['version']
+dependencies = [
+    'pydantic==2.8.2',
+]
+</code></pre>
+<p>Make lock file:</p>
+<pre><code class="language-console">$ (new_proj) pip list
+Package           Version
+----------------- -------
+annotated-types   0.7.0
+pip               24.0
+pydantic          2.8.2
+pydantic_core     2.20.1
+typing_extensions 4.12.2
+$ uv lock
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Resolved 5 packages in 2.65s
+</code></pre>
+<p>lock file has inside:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;pydantic&quot;
+version = &quot;2.8.2&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;annotated-types&quot; },
+    { name = &quot;pydantic-core&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/8c/99/d0a5dca411e0a017762258013ba9905cd6e7baa9a3fd1fe8b6529472902e/pydantic-2.8.2.tar.gz&quot;, hash = &quot;sha256:6f62c13d067b0755ad1c21a34bdd06c0c12625a22b0fc09c6b149816604f7c2a&quot;, size = 739834 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl&quot;, hash = &quot;sha256:73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8&quot;, size = 423875 },
+]
+</code></pre>
+<p>Now I just downgrade pydantic (simulating my project is behind requirements):</p>
+<pre><code class="language-console">$ (new_proj) pip install -U pydantic==2.8.1
+Installing collected packages: pydantic
+  Attempting uninstall: pydantic
+    Found existing installation: pydantic 2.8.2
+    Uninstalling pydantic-2.8.2:
+      Successfully uninstalled pydantic-2.8.2
+Successfully installed pydantic-2.8.1
+</code></pre>
+<p>Now try update venv:</p>
+<pre><code class="language-console">(new_proj) PS C:\Users\mplichta\Projects\new_proj&gt; uv sync
+Resolved 5 packages in 2ms
+   Built dcspy @ file:///C:/Users/mplichta/Projects/new_proj
+Prepared 5 packages in 2.10s
+Installed 5 packages in 23ms
+ + annotated-types==0.7.0
+ + dcspy==0.0.0 (from file:///C:/Users/mplichta/Projects/new_proj)
+ + pydantic==2.8.2
+ + pydantic-core==2.20.1
+ + typing-extensions==4.12.2
+(new_proj) PS C:\Users\mplichta\Projects\new_proj&gt; pip list
+Package           Version
+----------------- -------
+annotated-types   0.7.0
+pip               24.2
+pydantic          2.8.1
+pydantic_core     2.20.1
+typing_extensions 4.12.2
+(new_proj) PS C:\Users\mplichta\Projects\new_proj&gt; uv sync -U
+Resolved 5 packages in 641ms
+Audited 5 packages in 0.23ms
+(new_proj) PS C:\Users\mplichta\Projects\new_proj&gt; pip list
+Package           Version
+----------------- -------
+annotated-types   0.7.0
+pip               24.2
+pydantic          2.8.1
+pydantic_core     2.20.1
+typing_extensions 4.12.2
+</code></pre>
+<p>Why <code>pydantic</code> wasn't updated? How <code>uv sync</code> supposed to work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 12:56</div>
+            <div class="timeline-body"><p>If your <code>pyproject.toml</code> contains <code>pydantic==2.8.2</code>, then we can't upgrade beyond <code>2.8.2</code>. If you <code>pyproject.toml</code> instead contained just <code>pydantic</code>, or <code>pydantic&gt;=2.8.2</code>, <em>then</em> we could upgrade Pydantic when you run <code>uv sync -U</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-28 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emcek">@emcek</a> on 2024-08-28 13:46</div>
+            <div class="timeline-body"><p>Yes, it is <code>pydantic==2.8.2</code> in <code>pyproject.toml</code> but then I downgateded to <code>2.8.1</code> and still <code>uv sync</code> didn't upgraded back to <code>2.8.2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 13:48</div>
+            <div class="timeline-body"><p>Oh, there's no <code>pip</code> in that virtual environment by default (you can run <code>uv venv --seed</code> to include pip, or use <code>uv pip list</code>). You might be modifying a different environment there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emcek">@emcek</a> on 2024-08-29 12:42</div>
+            <div class="timeline-body"><p>yes you are right... I <code>pip list</code> system wide. But I get another &quot;complain&quot; I do not see point of:</p>
+<pre><code class="language-console">$ uv venv .my_venv
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Creating virtualenv at: .my_venv
+Activate with: source .my_venv/Scripts/activate
+$ .my_venv/Scripts/activate.ps1
+</code></pre>
+<p>since <code>uv sync</code> always crate default <code>.venv</code> anyway:</p>
+<pre><code class="language-console">$ (.my_venv) ls -la
+total 17
+drwxr-xr-x 1 mplichta 1049089   0 Aug 29 14:38 ./
+drwxr-xr-x 1 mplichta 1049089   0 Aug 29 14:35 ../
+drwxr-xr-x 1 mplichta 1049089   0 Aug 29 14:35 .my_venv/
+-rw-r--r-- 1 mplichta 1049089 374 Aug 29 14:38 pyproject.toml
+
+$ (.my_venv) uv sync
+Using Python 3.12.4 interpreter at: C:\Users\mplichta\.pyenv\pyenv-win\versions\3.12.4\python.exe
+Creating virtualenv at: .venv
+Resolved 6 packages in 2.01s
+   Built dcspy @ file:///C:/Users/mplichta/Projects/new
+Prepared 6 packages in 1.88s
+Installed 6 packages in 76ms
+ + annotated-types==0.7.0
+ + dcspy==0.0.0 (from file:///C:/Users/mplichta/Projects/new)
+ + pip==24.2
+ + pydantic==2.8.2
+ + pydantic-core==2.20.1
+ + typing-extensions==4.12.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 14:10</div>
+            <div class="timeline-body"><p><code>uv venv</code> is intended for use-cases in the <code>uv pip</code> API. If you're using <code>uv sync</code> or <code>uv lock</code>, you shouldn't need <code>uv venv</code>. Check out: https://docs.astral.sh/uv/pip/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-29 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-29 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

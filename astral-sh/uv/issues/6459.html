@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run `uv sync` without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that) - astral-sh/uv #6459</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run `uv sync` without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6459">#6459</a>
+        opened by <a href="https://github.com/adiberk">@adiberk</a>
+        on 2024-08-22 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adiberk">@adiberk</a> on 2024-08-22 19:13</div>
+            <div class="timeline-body"><p>Our current Dockerfile install command with poetry - we can disable venv creation
+<code>poetry config virtualenvs.create false...</code></p>
+<p>It would be nice to be able to run <code>uv sync</code> with a similar command <code>uv sync --no-venv</code> or something.  This way we don't have to change how our app is built and run, as well as commands that get run when exec into docker
+As of now using a venv in our Dockerfile causes too much of a headache (at least from what i can tell)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Is there a way to run uv sync without creating venv (similar to poetry)" to "Run uv sync without creating venv (similar to poetry) (using --system doesn't seem to work for me)" by @adiberk on 2024-08-22 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run uv sync without creating venv (similar to poetry) (using --system doesn't seem to work for me)" to "Run uv sync without creating venv (similar to poetry) (I believe this is what uv pip --system does)" by @adiberk on 2024-08-22 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run uv sync without creating venv (similar to poetry) (I believe this is what uv pip --system does)" to "Run uv sync without creating venv (similar to poetry config) (I believe this is what uv pip --system does)" by @adiberk on 2024-08-22 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run uv sync without creating venv (similar to poetry config) (I believe this is what uv pip --system does)" to "Run uv sync without creating venv (similar to poetry config) (I believe this is what uv pip has functionality like that)" by @adiberk on 2024-08-22 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run uv sync without creating venv (similar to poetry config) (I believe this is what uv pip has functionality like that)" to "Run uv sync without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that)" by @adiberk on 2024-08-22 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run uv sync without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that)" to "Run `uv sync` without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that)" by @adiberk on 2024-08-22 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 19:26</div>
+            <div class="timeline-body"><p>Not yet but we're likely to support it soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5229.html">astral-sh/uv#5229</a> on 2024-08-22 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mike-taylor-nomihealth">@mike-taylor-nomihealth</a> on 2024-08-27 10:39</div>
+            <div class="timeline-body"><p>Just wanted to add some support for this use case - we would love to use uv sync to install at the system level so we don't have to do it separately and get the advantage of a uv sync layer in the docker build (https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers) and more consistency between our production and dev builds in docker - the uv run use case is great for a local install that doesn't conflate itself with my system packages, but it makes it more troublesome when trying to install into a container since then we have to do something like <code>uv run pip install --system -r pyproject.toml</code> instead of something like a <code>uv sync --lock --system</code> directly.</p>
+<p>It's not that we don't trust you guys to build cool stuff, it's just adding a layer of abstraction to our containers by running <code>uv run &lt;command&gt;</code> doesn't really make sense to add the risk of a <code>uv</code> bug impacting production when we could potentially use it more directly to get similar benefits in our container builds.</p>
+<p>It seems like we can do someting similar with the system layer with the <code>uv pip install -r</code> as an intermediary build instead though, so this might just be my ignorance on why we would/woudln't want to support using the <code>uv sync</code> to manage system packages and not just the venv ones</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leddy231">@leddy231</a> on 2024-08-27 11:39</div>
+            <div class="timeline-body"><p>We need this as well coming from a similar poetry setup.</p>
+<p>But perhaps it should not be a functionallity of <code>uv sync</code>, as it is designed to work with virtual envs and add / remove packages to match the lockfiles.</p>
+<p>Would it make more sense to allow <code>uv pip install</code> to be able to read <code>uv.lock</code> files? Then the command would be
+<code>uv pip install -r uv.lock --system</code>
+With an optional <code>uv lock --locked</code> to make sure the lockfile is up to date.</p>
+<p>This would also allow installing multiple projects in the same system python without it uninstalling previous packages (which im guessing <code>uv sync</code> would do?). This is also something we need, becuse we still have just a single dockerfile for our multiple projects :sweat_smile:</p>
+<p>Edit discussion for that here #6670</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-27 11:50</div>
+            <div class="timeline-body"><p>@mike-taylor-nomihealth Does the example at https://github.com/astral-sh/uv-docker-example and the <a href="https://docs.astral.sh/uv/guides/integration/docker/">latest Docker guide</a> (just updated now) help? We have support for intermediate layers and it's a one-line change to avoid using <code>uv run</code>. No need to use <code>uv pip</code>.</p>
+<blockquote>
+<p>we would love to use uv sync to install at the system level so we don't have to do it separately</p>
+</blockquote>
+<p>Can you clarify how system level syncing would improve layer caching?</p>
+<blockquote>
+<p>This would also allow installing multiple projects in the same system python without it uninstalling previous packages (which im guessing uv sync would do?).</p>
+</blockquote>
+<p>Sorry, but this is a use-case I don't think <code>uv sync</code> should support — if you need to install multiple projects side-by-side you need to use workspaces and a single lockfile otherwise you're throwing out all of the guarantees that the project interface is built on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-27 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-08-27 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leddy231">@leddy231</a> on 2024-08-27 11:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry, but this is a use-case I don't think uv sync should support — if you need to install multiple projects side-by-side you need to use workspaces and a single lockfile otherwise you're throwing out all of the guarantees that the project interface is built on.</p>
+</blockquote>
+<p>Yes thats what i meant, <code>uv sync</code> should not be able to do that, but raw <code>uv pip install</code> should (and yes it would not be good practice, but sometimes needed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-08-27 12:59</div>
+            <div class="timeline-body"><p>Right, so I guess just having the ability to run <code>uv pip install —lock</code> or something would work as well. Assuming it basically installs and resolves dependencies in the same way as uv sync (except that you can specify system etc.). It does seem that uv sync isn’t meant to allow system install, which I hear.</p>
+<p>As of now I have been able to get around it by creating a venv in a different workdir and then setting that venv in system path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xymz">@xymz</a> on 2024-08-29 06:00</div>
+            <div class="timeline-body"><p>FYI, In some cases(especially on CI), I also need something like <code>uv sync --system</code> or <code>uv pip install -r pyproject.toml --system --with-dev</code>. There is a workaround for last one(https://stackoverflow.com/a/78902981) but I think it is not follow uv standard. And it is not cool add some extra dependencies for CI(of course, It is could be meaningful if there is a difference) because it's redundant.</p>
+<p>Yes, it's clear that we need a consistent option for using uv without virtualenv in special cases. Or we'll always have to spend time finding workarounds for every edge case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 00:24</div>
+            <div class="timeline-body"><p>This is supported now via #6834</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-05 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xymz">@xymz</a> on 2024-09-05 01:54</div>
+            <div class="timeline-body"><p>@zanieb Nice and cool. Thanks for your considerate work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpnova">@dpnova</a> on 2024-11-14 09:12</div>
+            <div class="timeline-body"><p>A use case here is we're deploying to AWS lambda using their container feature. Installing things outside the system folder is a pain...</p>
+<p>I'm thinking <code>sync</code> is not for us and we should use export to get a requirements file to install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../keboola/component-generic/pulls/4.html">keboola/component-generic#4</a> on 2025-05-06 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mc51">@mc51</a> on 2025-08-16 21:39</div>
+            <div class="timeline-body"><blockquote>
+<p>A use case here is we're deploying to AWS lambda using their container feature. Installing things outside the system folder is a pain...</p>
+<p>I'm thinking <code>sync</code> is not for us and we should use export to get a requirements file to install.</p>
+</blockquote>
+<p>@dpnova: I was (probably) trying to solve the same issue. Turns out, it's possible now using <a href="https://github.com/astral-sh/uv/pull/6834">this</a> which was mentioned <a href="https://github.com/astral-sh/uv/issues/6459#issuecomment-2330368355">above</a>.</p>
+<p>In the <code>Dockerfile</code> for the lambda deployment, I'm using <code>FROM public.ecr.aws/lambda/python:3.12</code>.
+Now, we set <code>ENV UV_PROJECT_ENVIRONMENT=&quot;/var/lang/&quot;</code>.  The system python binary is in <code>/var/lang/bin/</code> for this image. So, uv will operate on the system python. Following, we can use <code>uv sync</code> with our lock file to install dependencies to the system.<br />
+However, because <code>uv sync</code> will also <a href="https://github.com/astral-sh/uv/pull/6834#issue-2495678347">delete dependencies from the system</a> which aren't defined for our project, <strong>one must be cautious</strong>. For example, we'll need to make sure <code>awslambdaric</code> is added as a dependency, otherwise lambda will fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpnova">@dpnova</a> on 2025-08-17 00:32</div>
+            <div class="timeline-body"><p>Thanks @mc51 I suspect my attempts were removing deps as you say... Good info, cheers!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch in `pyproject.toml` to use the project name as the venv name - or setting to specify `UV_PROJECT` - astral-sh/uv #15163</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Switch in `pyproject.toml` to use the project name as the venv name - or setting to specify `UV_PROJECT`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15163">#15163</a>
+        opened by <a href="https://github.com/dmrauch">@dmrauch</a>
+        on 2025-08-08 09:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dmrauch">@dmrauch</a> on 2025-08-08 09:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi all,</p>
+<p>I am aware of some related feature requests and also of some of the counter arguments (see below). Bearing those in mind, I'd like to formulate this proposal.</p>
+<h2>Motivation</h2>
+<p>My personal use case is having multiple repos, each with its own venv, and many of them containing Jupyter notebooks that I work on in VS Code using workspaces (i.e. multiple repos in a single VS Code window). My issue with a fixed venv folder name is that it is displayed as the Jupyter kernel name in VS Code. Therefore, it is hard to impossible to be sure which exact venv is used in a given notebook. Hence, I'd like to give a specific name to each venv, depending on the project to which it belongs.</p>
+<p>I am aware of the <code>UV_PROJECT</code> and <code>UV_PROJECT_ENVIRONMENT</code> env vars, but setting env variables per folder in various terminals is tedious. The way of automating env vars per folder that I am aware of seems quite hacky and suboptimal.</p>
+<h2>Proposed Solution</h2>
+<p>I could imagine two ways of addressing this</p>
+<ul>
+<li><p>Add a setting to use the project name for the venv folder as well - with a leading point. So</p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+
+[tool.uv]
+default-env-name = false  # default: true (use .venv)
+</code></pre>
+<p>would create the venv in a folder called <code>.my-project</code>. Or instead of a boolean switch, it could of course also be a string enum.</p>
+</li>
+<li><p>As an alternative that would be more flexible and - I'd argue - clearer,</p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+
+[tool.uv]
+environment = &quot;.my-project&quot;  # default: &quot;.venv&quot;
+</code></pre>
+<p>would also create the venv in a folder called <code>.my-project</code>.</p>
+</li>
+</ul>
+<h2>Related Feature Requests</h2>
+<ul>
+<li>Setting for <code>UV_PROJECT_ENVIRONMENT</code> in <code>pyproject.toml</code> or <code>uv.toml</code>: #12587 and #13931<ul>
+<li>Counterargument: Syncing to arbitrary locations on your machine</li>
+</ul>
+</li>
+<li>Central location for venvs: #1495<ul>
+<li>I see other peoples use cases - but I wouldn't like to have to use this mechanism for fixing the notebook kernel names because it is a different issue and because I find that local venvs are better handled by IDEs</li>
+<li>Plus, depending on the final mechanism used to decide on the venv folder names, I'd perhaps even like to avoid those names (e.g. if they don't contain but are completely made of hashes)</li>
+</ul>
+</li>
+</ul>
+<p>Many thanks!</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @dmrauch on 2025-08-08 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 11:37</div>
+            <div class="timeline-body"><blockquote>
+<p>My issue with a fixed venv folder name is that it is displayed as the Jupyter kernel name in VS Code</p>
+</blockquote>
+<p>Can this otherwise be customized?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 11:39</div>
+            <div class="timeline-body"><p>How is the kernel started / installed?</p>
+<p>As a note, #14937 would solve this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmrauch">@dmrauch</a> on 2025-08-08 12:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Can this otherwise be customized?</p>
+</blockquote>
+<p>No, unfortunately not afaik.</p>
+<blockquote>
+<p>How is the kernel started / installed?</p>
+</blockquote>
+<p>As far as I can tell, VS Code seems to distinguish between different &quot;discovery&quot; mechanisms. The ones that I am aware of are:</p>
+<ul>
+<li>Python environments<ul>
+<li>local venvs</li>
+<li>conda envs</li>
+<li>poetry envs</li>
+<li>pyenv envs</li>
+<li>global envs in certain other places</li>
+</ul>
+</li>
+<li>Registered Jupyter kernels</li>
+<li>Jupyter servers</li>
+</ul>
+<p>The discovery of local venvs as kernels works like a charm - with the one exception that it is not even possible to see the absolute path of the venv folder - hence the wish to customize the venv folder name.</p>
+<p>#14937 def sounds very interesting and I have subscribed to it - nonetheless, it would mean abandoning the local venv. In my experience from using Jupyter notebooks from conda envs with VS Code, the discovery works much less reliably with non-local envs and I'd often have to find out the absolute path of the venv and then point VS Code to it manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 12:41</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/14937 doesn't mean you'd have to abandon the local venv. <code>UV_PROJECT_ENVIRONMENT={project_name}</code> would be relative to your project still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 12:42</div>
+            <div class="timeline-body"><p>I think we should make a feature request to VSCode or Jupyter to respect the virtual environment prompt or some other metadata instead of just using the name of the directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmrauch">@dmrauch</a> on 2025-08-08 12:54</div>
+            <div class="timeline-body"><blockquote>
+<p>UV_PROJECT_ENVIRONMENT={project_name} would be relative to your project still.</p>
+</blockquote>
+<p>Ok, that sounds interesting indeed. The downside I can see with this is that it induces an env var that has to be coordinated and shared between developers working on the same project. And neither I myself nor the others might be in a position that this configuration holds globally on our systems. So to me the scope of the project seems to be the best possible place in which to specify the venv name.</p>
+<blockquote>
+<p>I think we should make a feature request to VSCode or Jupyter to respect the virtual environment prompt or some other metadata instead of just using the name of the directory.</p>
+</blockquote>
+<p>At least VS Code is doing this for the registered Jupyter kernels. However, like with the central venvs, this means having a central location where venvs (or rather kernel definitions in this case) are stored, registered and collected. It is manageable indeed - but nothing beats the local auto-discovery in terms of comfort and ease of use ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 13:57</div>
+            <div class="timeline-body"><p>I don't think I get what you're saying at the end. Why can't VS Code be changed to have better name inference for environments in projects?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmrauch">@dmrauch</a> on 2025-08-08 17:22</div>
+            <div class="timeline-body"><p>Let me rephrase - for uv-created venvs, there are 2 ways that VS Code can detect them as potential notebook kernels:</p>
+<ul>
+<li>the local venv folder discovery</li>
+<li>the list of registered Jupyter kernels</li>
+</ul>
+<p>The first mechanism is the one I am using and the one that suffers from the issue described in the OP. However, it is the fastest and most reliable discovery mechanism, so I'd like to keep using it and that's why I'm thinking of ways of how to improve the experience. Now I'm no VS Code dev, but since it's a folder-based discovery of a &quot;standard&quot; python venv, I don't see which information VS Code could possibly use to automatically set a reasonable kernel name - other than the name of the folder containing the venv (which is what it does). Therefore, my line of thought is that it makes most sense to name the venv folder adequately.</p>
+<p>The second mechanism, in contrast, involves the additional manual step of me registering the currently active venv as a Jupyter kernel in the central kernel list - e.g.</p>
+<pre><code class="language-sh">source .venv/bin/activate
+ipython kernel install --user --name=my-kernel-123
+</code></pre>
+<p>Then, VS Code will additionally offer me to select the registered kernel called <code>my-kernel-123</code> (which points to the venv <code>.venv</code>). The kernel definitions are collected centrally in <code>~/Library/Jupyter/kernels/</code> (on MacOS) when the <code>--user</code> argument is specified and in some system path otherwise.</p>
+<p>Ideally, I would like to avoid this second mechanism because it involves the manual kernel registration - and deletion once a kernel is no longer needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Now I'm no VS Code dev, but since it's a folder-based discovery of a &quot;standard&quot; python venv, I don't see which information VS Code could possibly use to automatically set a reasonable kernel name - other than the name of the folder containing the venv (which is what it does).</p>
+</blockquote>
+<p>I mean, they could just use the parent directory for a <code>.venv</code> directory? Or they could look in the <code>pyproject.toml</code> next to the virtual environment? Or we could write some data to the standard <code>pyvenv.cfg</code> file that they could read? There's plenty information they could use here.</p>
+<p>We're trying to move towards standardizing virtual environment names in projects to help with editor discovery. Adding more ways to change the virtual environment name feels counterproductive. We're not the only ones that are pushing for <code>.venv</code> in projects either. I would rather they invest in better name inference since it will help more users by having a better default, rather than adding workarounds that motivated users can use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geophpherie">@geophpherie</a> on 2025-10-15 17:20</div>
+            <div class="timeline-body"><p>If i'm understanding this correctly it appears to be something that <em>should</em> be solved if you set the <code>prompt</code> for the venv, but seemingly only on windows in my brief testing. If I do these steps:</p>
+<p><code>uv init my_proj</code>
+<code>cd my_proj</code>
+<code>uv venv --prompt my_prompt</code> &lt;- force creation of the venv with a prompt</p>
+<p>... uv add etc</p>
+<p>then open a notebook in vscode - on windows the kernel discovery shows in the list as
+<code>my_prompt (Python 3.13.7) .venv\Scripts\python.exe</code>
+but on Mac it doesn't pull the prefix and only says <code>.venv</code> as i think you describe.</p>
+<p>So it's possible that a potential fix is through a bugfix / feature in VSCode i guess ....</p>
+<p>If that were to be the case and VSCode ended up fixing it to show the prefix on both platforms - i could see the opportunity for an optimization around setting the prompt prefix w/o the extra <code>uv venv --prompt</code> step, but still preserve the <code>.venv</code> folder name.</p>
+<p>EDIT: Actually i don't even think setting the prompt manually matters, on Windows it'll show the name of the project folder next to the environment anyway</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

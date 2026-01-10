@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inproper F401: &quot;imported but unused&quot; for sumodule if parent module is imported with an alias. - astral-sh/ruff #373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inproper F401: &quot;imported but unused&quot; for sumodule if parent module is imported with an alias.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/373">#373</a>
+        opened by <a href="https://github.com/ghuls">@ghuls</a>
+        on 2022-10-09 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghuls">@ghuls</a> on 2022-10-09 19:59</div>
+            <div class="timeline-body"><p>Inproper F401: &quot;imported but unused&quot; for sumodule if parent module is imported with an alias.</p>
+<pre><code class="language-python">import pyarrow as pa
+
+import pyarrow.csv
+
+print(pa.csv.read_csv(&quot;test.csv&quot;))
+</code></pre>
+<pre><code class="language-bash">$ ruff test_import.py 
+No pyproject.toml found.
+Falling back to default configuration...
+Found 1 error(s).
+test_import.py:3:1: F401 `pyarrow.csv` imported but unused
+1 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-10-09 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-09 20:01</div>
+            <div class="timeline-body"><p>Good catch, will fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-10-09 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-09 20:20</div>
+            <div class="timeline-body"><p>(Found the offending code, working on fix now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/374.html">astral-sh/ruff#374</a> on 2022-10-09 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-09 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghuls">@ghuls</a> on 2022-10-09 21:21</div>
+            <div class="timeline-body"><p>Thanks. It solves the problem.
+Maybe it would be good to invalidate the ruff cache in the ruff binary is not the same between invocations as first I thought you pushed unrelated changes to master as the errors were the same after recompilation.</p>
+<p>Found another one:</p>
+<pre><code>$ ruff test_import.py 
+No pyproject.toml found.
+Falling back to default configuration...
+Found 1 error(s).
+test_import.py:3:1: F401 `numpy` imported but unused
+1 potentially fixable with the --fix option.
+</code></pre>
+<p>It might be more tricky to solve as in involves type annotations in quoted strings.</p>
+<pre><code class="language-python">import sys
+
+import numpy as np
+
+if sys.version_info &gt;= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
+
+
+CustomInt: TypeAlias = &quot;np.int8 | np.int16&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-09 21:27</div>
+            <div class="timeline-body"><p>That one should work too, let me file a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-09 21:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe it would be good to invalidate the ruff cache in the ruff binary is not the same between invocations as first I thought you pushed unrelated changes to master as the errors were the same after recompilation.</p>
+</blockquote>
+<p>Hmm yeah. We do put the Cargo version in the cache key, so it's invalidated between <em>releases</em>. But I can see how this would be confusing when running against Git etc.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packages being built even if flagged as &quot;only-binary&quot; - astral-sh/uv #8439</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Packages being built even if flagged as &quot;only-binary&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8439">#8439</a>
+        opened by <a href="https://github.com/arnaldojvg">@arnaldojvg</a>
+        on 2024-10-22 08:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-22 08:15</div>
+            <div class="timeline-body"><p>I have this minimal pyproject.toml</p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+version = &quot;0.2.0&quot;
+description = &quot;Cool project&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [ &quot;pyarrow==17.0.0&quot; ]
+
+[tool.uv]
+[tool.uv.pip]
+only-binary = [&quot;pyarrow&quot;]
+</code></pre>
+<pre><code>(venv) (base) ➜  test_uv  uv cache clean
+Clearing cache at: /Users/arnaldovarela/.cache/uv
+Removed 1770 files (200.6MiB)
+(venv) (base) ➜  test_uv  uv self update
+info: Checking for updates...
+success: You're on the latest version of uv (v0.4.25)
+(venv) (base) ➜  test_uv  uv sync       
+warning: `VIRTUAL_ENV=venv` does not match the project environment path `.venv` and will be ignored
+Using CPython 3.10.4
+Creating virtual environment at: .venv
+Resolved 3 packages in 0.92ms
+   Built numpy==2.1.2                                                                                                                                                                                                                                               error: Failed to prepare distributions
+  Caused by: Failed to download and build `pyarrow==17.0.0`
+...
+</code></pre>
+<p>And the packages are built instead of using the binaries.
+This is a problem as to build pyarrow some apache dependencies and cmake are required to be installed.</p>
+<p>I'm running this on a Mac M1 running 14.5 (23F79).</p>
+<p>When installing with Pipfile:</p>
+<pre><code>[[source]]
+url = &quot;https://pypi.org/simple&quot;
+name = &quot;pypi&quot;
+verify_ssl = true
+
+[packages]
+pyarrow = &quot;==17.0.0&quot;
+
+
+[requires]
+python_version = &quot;3.10&quot;
+</code></pre>
+<p>it takes just a few seconds and no need to build:</p>
+<pre><code>(venv) (base) ➜  test_uv  pipenv install
+Loading .env environment variables...
+Courtesy Notice:
+Pipenv found itself running within a virtual environment,  so it will automatically use that environment, instead of  creating its own for any project. You can set
+PIPENV_IGNORE_VIRTUALENVS=1 to force pipenv to ignore that environment and create  its own instead.
+You can set PIPENV_VERBOSITY=-1 to suppress this warning.
+Pipfile.lock not found, creating...
+Locking [packages] dependencies...
+Building requirements...
+Resolving dependencies...
+✔ Success!
+Locking [dev-packages] dependencies...
+Updated Pipfile.lock (9f6dbf61cecaca8a7db4e36abb151730ab51fadc17e8c779b2687808a27abe20)!
+To activate this project's virtualenv, run pipenv shell.
+Alternatively, run a command inside the virtualenv with pipenv run.
+To activate this project's virtualenv, run pipenv shell.
+Alternatively, run a command inside the virtualenv with pipenv run.
+Installing dependencies from Pipfile.lock (7abe20)...
+</code></pre>
+<p>Also i think is a bug that it tries to build the package as, according to the <a href="https://docs.astral.sh/uv/reference/settings/#pip_only-binary">docs</a></p>
+<blockquote>
+<p>but operations that require building distributions will exit with an error.</p>
+</blockquote>
+<p>And it isnt, it is trying to build and the errors depend on the build phase error:</p>
+<ol>
+<li>cmake missing</li>
+<li>apache-arrow missing</li>
+<li>Some arrow build flag missing</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:32</div>
+            <div class="timeline-body"><p>Looks like you're using <code>uv sync</code> but configuring things at the <code>tool.uv.pip</code> level. See https://docs.astral.sh/uv/configuration/files/#configuring-the-pip-interface</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-22 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-22 11:43</div>
+            <div class="timeline-body"><p>Okok that in fact makes sense @zanieb thanks a lot.</p>
+<p>Do you see anyway, then, for me to specify the package as dependency and <em>not</em> build it but taking the built wheel directly using sync? 🙏</p>
+<p>I feel there is something off, as with pipenv it definitely finds the built binary (the example in the original post ran in a few seconds)</p>
+<p>but i just ran:</p>
+<pre><code>uv sync --no-build-package pyarrow
+Resolved 3 packages in 281ms
+error: Distribution `pyarrow==17.0.0 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:53</div>
+            <div class="timeline-body"><p>Hm, interesting yeah this works fine for me</p>
+<pre><code>❯ echo pyarrow==17.0.0 | uv pip compile --only-binary pyarrow -
+Resolved 2 packages in 5ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile --only-binary pyarrow -
+numpy==2.1.2
+    # via pyarrow
+pyarrow==17.0.0
+</code></pre>
+<p>Does it work if you configure <a href="https://docs.astral.sh/uv/reference/settings/#no-build-package"><code>tool.uv.no-build-package</code></a> instead of setting it on the CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-22 12:48</div>
+            <div class="timeline-body"><p>I get the same issue of it not finding the binary 😭</p>
+<p><img src="https://github.com/user-attachments/assets/97df2677-cbe7-4d59-85d5-55e31b971d2d" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 13:23</div>
+            <div class="timeline-body"><p>Does it work with <code>uv pip compile</code> as in my example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-22 14:48</div>
+            <div class="timeline-body"><p>Nope, same error:</p>
+<pre><code>(venv) (base) ➜  pipfile_to_uv  uv cache clean                                               
+Clearing cache at: /Users/arnaldovarela/.cache/uv
+Removed 10 files (2.9MiB)
+(venv) (base) ➜  pipfile_to_uv  uv venv                                                      
+warning: `VIRTUAL_ENV=venv` does not match the project environment path `.venv` and will be ignored
+Using CPython 3.10.4
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+(venv) (base) ➜  pipfile_to_uv  source .venv/bin/activate                                    
+(pipfile_to_uv) (base) ➜  pipfile_to_uv  echo pyarrow==17.0.0 | uv pip compile --only-binary pyarrow -
+  × No solution found when resolving dependencies:
+  ╰─▶ Because pyarrow==17.0.0 has no usable wheels and building from source is disabled and you require pyarrow==17.0.0, we can conclude that your requirements are unsatisfiable.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 15:04</div>
+            <div class="timeline-body"><p>Then there must be something different about your platform. Can you provide verbose logs (i.e. <code>-v</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-23 08:07</div>
+            <div class="timeline-body"><p>This is what came out:</p>
+<pre><code>(pipfile_to_uv) (base) ➜  pipfile_to_uv  echo pyarrow==17.0.0 | uv pip compile -v --only-binary pyarrow -
+DEBUG uv 0.4.25 (97eb6ab4a 2024-10-21)
+DEBUG Starting Python discovery for a default Python
+DEBUG Looking for exact match for request a default Python
+DEBUG Searching for default Python interpreter in managed installations or system path
+DEBUG Found `cpython-3.10.4-macos-aarch64-none` at `/Users/arnaldovarela/Documents/repos/pipfile_to_uv/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.10.4 interpreter at .venv/bin/python3 for builds
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.10.4
+DEBUG Solving with target Python version: &gt;=3.10.4
+DEBUG Adding direct dependency: pyarrow==17.0.0
+DEBUG Found stale response for: https://pypi.org/simple/pyarrow/
+DEBUG Sending revalidation request for: https://pypi.org/simple/pyarrow/
+DEBUG Found not-modified response for: https://pypi.org/simple/pyarrow/
+DEBUG Searching for a compatible version of pyarrow (==17.0.0)
+  × No solution found when resolving dependencies:
+  ╰─▶ Because pyarrow==17.0.0 has no usable wheels and building from source is disabled and you require pyarrow==17.0.0, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-23 08:21</div>
+            <div class="timeline-body"><p>I think is related to the cpython version being chosen + the wheels available. Seems like the &quot;aarch&quot; versions don't properly map for mac, being &quot;manylinux&quot; in the pyarrow wheels.</p>
+<p>After a uv <code>uv python list --all-versions</code> I found that <code>cpython-3.10.15-macos-x86_64-none</code> was available.</p>
+<p>I changed my commands to:</p>
+<pre><code>uv venv --python 3.10.15
+source .venv/bin/activate
+echo pyarrow==17.0.0 | uv pip compile -v --only-binary pyarrow -
+uv sync
+uv cache clean
+uv venv --python 3.10.15
+source .venv/bin/activate
+uv sync
+</code></pre>
+<p>And it worked 🎉</p>
+<p>I think this kinda solves my problem, but i wonder if the manylinux wheels should or shouldn't have been mapped to my cpython version 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-23 13:29</div>
+            <div class="timeline-body"><p>Sweet!</p>
+<p>You can't use manylinux wheels on macOS. Are you suggesting something else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-23 16:36</div>
+            <div class="timeline-body"><p>https://pypi.org/project/pyarrow/#files  should have your explanation.</p>
+<p>You have macos and Python 3.10, these are the available wheels:</p>
+<ul>
+<li>pyarrow-17.0.0-cp310-cp310-macosx_11_0_arm64.whl (27.2 MB <a href="https://pypi.org/project/pyarrow/#copy-hash-modal-e525003f-4771-444e-9f1c-6d259288a463">view hashes</a>)</li>
+</ul>
+<p>Uploaded Jul 16, 2024 CPython 3.10 macOS 11.0+ ARM64</p>
+<ul>
+<li>pyarrow-17.0.0-cp310-cp310-macosx_10_15_x86_64.whl (29.0 MB <a href="https://pypi.org/project/pyarrow/#copy-hash-modal-768a0bed-7cb5-484e-8e21-d35499d1d5a7">view hashes</a>)</li>
+</ul>
+<p>Uploaded Jul 16, 2024 CPython 3.10 macOS 10.15+ x86-64</p>
+<p>The first one fits your arm64 configuration but it requires macos version 11, so it can't be used for you and I think that's the reason. (Screenshot says you have macos 10.16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-10-24 13:16</div>
+            <div class="timeline-body"><p>Ok, turns out i'm actually on macos 15.0.1 but there is a configuration when they went from macos 10 to 11 to show a legacy version number.
+Most recent wheels for mac are buing built for 11+ on arm64.
+Setting the environment variable SYSTEM_VERSION_COMPAT=0 changed the macos version determined by python to:
+<code>macOS-15.0.1-arm64-arm-64bit</code></p>
+<p>with this my install problems have been solved so far.</p>
+<p>thanks both!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @arnaldojvg on 2024-10-24 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaldojvg">@arnaldojvg</a> on 2024-11-05 17:06</div>
+            <div class="timeline-body"><p>I know this is closed already, but I made an article at my job on migrating Pipenv to <code>uv</code> as there were no other guides.
+I included the macOS issue and a minimal script to migrate from Pipfile to pyproject.toml</p>
+<p>In case you care:
+https://medium.com/clarityai-engineering/migrating-from-pipenv-pipfile-to-uv-59ba2846636f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ara-incom">@ara-incom</a> on 2024-12-10 13:54</div>
+            <div class="timeline-body"><p>Struggled installing pyarrow in a similar fashion (failing to find pyarrow 17 binary, on macos). Turned out I had a <code>.python-version</code> specifying 3.13, which seemingly made uv use 3.13 for resolution, even though I had used <code>uv venv -p 3.11</code> to setup venv. Setting 3.11 in <code>.python-version</code> solved the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomalf2">@tomalf2</a> on 2025-02-25 14:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Struggled installing pyarrow in a similar fashion (failing to find pyarrow 17 binary, on macos). Turned out I had a <code>.python-version</code> specifying 3.13, which seemingly made uv use 3.13 for resolution, even though I had used <code>uv venv -p 3.11</code> to setup venv. Setting 3.11 in <code>.python-version</code> solved the issue.</p>
+</blockquote>
+<p>Following the answer of @ara-incom I managed to install pyarrow also with python 3.13.2. In my case, what's in <code>.python-version</code> seems to be unimportant. The trick is to run <code>uv venv -p 3.13.2</code> before <code>uv pip install pyarrow</code>. It works also with python 3.11.11, and  might work with other python versions too, but not the 3.12.2.</p>
+<p>What's really important here is the <code>-p &lt;python-version&gt;</code>. Creating an empty dir and the file <code>.python-version</code> with the version 3.13.2 (or alternatively running <code>uv python pin 3.13.2</code>) before <code>uv venv</code> without additional options, didn't work for me. The cause of the error is that <code>uv pip install pyarrow</code> tries to build pyarrow and fails with <code>error: command 'cmake' failed: No such file or directory</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12447.html">astral-sh/uv#12447</a> on 2025-03-25 10:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:15 UTC
+    </footer>
+</body>
+</html>

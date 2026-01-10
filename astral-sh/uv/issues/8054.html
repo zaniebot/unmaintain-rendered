@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect/Confusing resolution failure message when constraint conflicts with dependency - astral-sh/uv #8054</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect/Confusing resolution failure message when constraint conflicts with dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8054">#8054</a>
+        opened by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a>
+        on 2024-10-09 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-09 19:26</div>
+            <div class="timeline-body"><p><strong>Environment</strong>: uv 0.4.20 / Linux</p>
+<p><strong>Example message</strong>:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because click-extra==4.11.0 depends on tabulate&gt;=0.9,&lt;1.dev0 and tabulate==0.8.10, we can conclude that click-extra==4.11.0 cannot be used.
+      And because only click-extra&lt;=4.11.0 is available and you require click-extra&gt;=4.11.0, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>From this message it appears that &quot;click-extra==4.11.0 depends on tabulate&gt;=0.9,&lt;1.dev0 and tabulate==0.8.10&quot;, but this isn't true, <code>tabulate==0.8.10</code> was a constraint, click-extra does not have that requirement.</p>
+<p><strong>Steps to reproduce</strong>:</p>
+<ol>
+<li>Create a <code>constraints.txt</code> file with the following content:</li>
+</ol>
+<pre><code>tabulate==0.8.10
+</code></pre>
+<ol start="2">
+<li>Run: <code>uv pip install &quot;click-extra&gt;=4.11.0&quot; -c constraints.txt</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-10-09 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 19:28</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-09 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 19:29</div>
+            <div class="timeline-body"><p>The derivation tree looks like this</p>
+<pre><code>Resolver derivation tree before reduction
+  root==0a0.dev0 depends on click-extra&gt;=4.11.0
+      click-extra==4.11.0 depends on tabulate==0.8.10
+      click-extra==4.11.0 depends on tabulate&gt;=0.9, &lt;1.dev0
+    no versions of click-extra&gt;4.11.0
+Resolver derivation tree after reduction
+  root==0a0.dev0 depends on click-extra&gt;=4.11.0
+      click-extra==4.11.0 depends on tabulate==0.8.10
+      click-extra==4.11.0 depends on tabulate&gt;=0.9, &lt;1.dev0
+    no versions of click-extra&gt;4.11.0
+</code></pre>
+<p>Looks like we're tracking this wrong in resolver, not reporting it incorrectly in the formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 19:38</div>
+            <div class="timeline-body"><p>I think this is just how constraints are modeled in the resolver. I'm not sure how hard that would be to change.</p>
+<p>@BurntSushi or @charliermarsh would one of you be able to weigh in on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 19:51</div>
+            <div class="timeline-body"><p>Yeah this is sort of inherent to how we model constraints. Perhaps possible to recognize this in our error reporter but seems hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-09 20:02</div>
+            <div class="timeline-body"><p>Ah, well, obviously not high priority by the way I never noticed or reported this before, even though  I have giant constraints files and this error isn't too unusual but I somehow missed this (actually I thought this was a regression when I saw this today, but I just grabbed a fairly old version of uv and same message).</p>
+<p>But pip gives a more useful error here:</p>
+<pre><code>ERROR: Cannot install click-extra==4.11.0 because these package versions have conflicting dependencies.
+
+The conflict is caused by:
+    click-extra 4.11.0 depends on tabulate~=0.9
+    The user requested (constraint) tabulate==0.8.10
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-10-09 20:10</div>
+            <div class="timeline-body"><p>Similarly, I guess the fact the error says &quot;click-extra==4.11.0 depends on tabulate&gt;=0.9,&lt;1.dev0&quot; is also slightly confusing, as the verbatim dependency is &quot;tabulate~=0.9&quot;.</p>
+<p>I guess it would be nice if the error to the user mapped back to the real requirements given and said where they came from. But I can imagine that might take a lot of extra work for a fairly minor benefit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 21:31</div>
+            <div class="timeline-body"><p>We can definitely fix display of <code>~=</code> specifier bounds</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:05 UTC
+    </footer>
+</body>
+</html>

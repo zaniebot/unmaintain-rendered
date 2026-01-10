@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>conflicts_with_all creates a fully connected conflict network instead of pair-wise conflicts - clap-rs/clap #5776</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>conflicts_with_all creates a fully connected conflict network instead of pair-wise conflicts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5776">#5776</a>
+        opened by <a href="https://github.com/nwalfield">@nwalfield</a>
+        on 2024-10-14 10:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nwalfield">@nwalfield</a> on 2024-10-14 10:52</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.80.1 (3f5fd8dd4 2024-08-06)</p>
+<h3>Clap Version</h3>
+<p>4.5.20</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>use clap::Parser;
+use clap::ArgGroup;
+
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+#[clap(group(ArgGroup::new(&quot;constraints&quot;).args(&amp;[&quot;regex&quot;, &quot;domain&quot;, &quot;unconstrained&quot;]).required(true)))]
+struct Cli {
+    #[clap(
+        long,
+        value_name = &quot;REGEX&quot;,
+    )]
+    regex: Vec&lt;String&gt;,
+    #[clap(
+        long,
+        value_name = &quot;DOMAIN&quot;,
+    )]
+    domain: Vec&lt;String&gt;,
+    #[clap(
+        long,
+        help = &quot;Opt out of any constraints.&quot;,
+        conflicts_with_all = vec![ &quot;regex&quot;, &quot;domain&quot; ],
+    )]
+    unconstrained: bool
+}
+
+fn main() {
+    Cli::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>$ cargo run -- --domain b --regex a
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/clap-issue --domain b --regex a`
+error: the argument '--domain &lt;DOMAIN&gt;' cannot be used with '--regex &lt;REGEX&gt;'
+
+Usage: clap-issue &lt;--regex &lt;REGEX&gt;|--domain &lt;DOMAIN&gt;|--unconstrained&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p>I can only provide <code>--domain</code> arguments or <code>--regex</code> arguments, but not a mix.</p>
+<h3>Expected Behaviour</h3>
+<p>Any number of <code>--domain</code> or <code>--regex</code> arguments should be accepted.  Currently it is possible to specify any number of domain arguments OR regex arguments, but not a mix.  <code>--unconstrained</code> should conflict with <code>--domain</code> and <code>--regex</code>, but <code>--domain</code> and <code>--regex</code> should not conflict with each other.</p>
+<h3>Additional Context</h3>
+<p>We have a command that accepts zero or more constraints (<code>--domain</code> or <code>--regex</code>).  Since not providing any constraints is dangerous, we wanted to force the user to explicitly opt in to not using any constraints using the <code>--unconstrained</code> flag.</p>
+<p>I thought that the above code would work since <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.conflicts_with"><code>conflicts_with</code> is two way</a>.  But <code>conflicts_with</code> instead seems to derive a fully connected graph.  That is, <code>--unconstrained</code> and <code>--domain</code> should conflict, <code>--unconstrained</code> and <code>--regex</code> should conflict, but <code>--domain</code> and <code>--regex</code> shouldn't.</p>
+<h3>Debug Output</h3>
+<pre><code>$ cargo run -- --domain b --domain a
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/clap-issue --domain b --domain a`
+us@alice:/tmp/clap-issue$ cargo run -- --domain b --regex a
+     Locking 10 packages to latest compatible versions
+      Adding addr2line v0.24.2
+      Adding adler2 v2.0.0
+      Adding backtrace v0.3.74
+      Adding cfg-if v1.0.0
+      Adding gimli v0.31.1
+      Adding libc v0.2.159
+      Adding memchr v2.7.4
+      Adding miniz_oxide v0.8.0
+      Adding object v0.36.5
+      Adding rustc-demangle v0.1.24
+  Downloaded addr2line v0.24.2
+  Downloaded gimli v0.31.1
+  Downloaded object v0.36.5
+  Downloaded 3 crates (646.0 KB) in 0.55s
+   Compiling libc v0.2.159
+   Compiling gimli v0.31.1
+   Compiling memchr v2.7.4
+   Compiling adler2 v2.0.0
+   Compiling cfg-if v1.0.0
+   Compiling rustc-demangle v0.1.24
+   Compiling clap_derive v4.5.18
+   Compiling miniz_oxide v0.8.0
+   Compiling object v0.36.5
+   Compiling addr2line v0.24.2
+   Compiling backtrace v0.3.74
+   Compiling clap_builder v4.5.20
+   Compiling clap v4.5.20
+   Compiling clap-issue v0.1.0 (/tmp/clap-issue)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.27s
+     Running `target/debug/clap-issue --domain b --regex a`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-issue&quot;
+[clap_builder::builder::command]Command::_propagate:clap-issue
+[clap_builder::builder::command]Command::_check_help_and_version:clap-issue expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:clap-issue
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:regex
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:domain
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:unconstrained
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:version
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--domain&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--domain&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--domain &lt;DOMAIN&gt;'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;domain&quot;): Found an arg with value 'None'
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=domain, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg Opt(&quot;domain&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;b&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=domain, pending=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=1
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--regex&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--regex&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--regex &lt;REGEX&gt;'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;regex&quot;): Found an arg with value 'None'
+[clap_builder::parser::parser]Parser::parse_opt_value; arg=regex, val=None, has_eq=false
+[clap_builder::parser::parser]Parser::parse_opt_value; arg.settings=ArgFlags(0)
+[clap_builder::parser::parser]Parser::parse_opt_value; Checking for val...
+[clap_builder::parser::parser]Parser::parse_opt_value: More arg vals required...
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;domain&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=1
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;domain&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;domain&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;domain&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Cli&quot;, source=CommandLine
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;constraints&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;b&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=domain, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_long_arg Opt(&quot;regex&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;a&quot;'
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=regex, pending=1
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=1
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;regex&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Parser::react: cur_idx:=3
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;regex&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;regex&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;regex&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Cli&quot;, source=CommandLine
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;constraints&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;a&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=4
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: o=regex, pending=0
+[clap_builder::parser::arg_matcher]ArgMatcher::needs_more_vals: expected=1, actual=0
+[clap_builder::parser::parser]Parser::react not enough values passed in, leaving it to the validator to complain
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:regex:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:regex: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:domain:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:domain: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:unconstrained:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:unconstrained: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:unconstrained: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;unconstrained&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=5
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_defaults:iter:version:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:version: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;domain&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;domain&quot;, conflicts=[&quot;regex&quot;, &quot;unconstrained&quot;]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Cli&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;constraints&quot;, conflicts=[]
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;regex&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;regex&quot;, conflicts=[&quot;domain&quot;, &quot;unconstrained&quot;]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;domain&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;Cli&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;constraints&quot;
+[clap_builder::parser::validator]Validator::validate_exclusive:iter:&quot;regex&quot;
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;domain&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;domain&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[&quot;regex&quot;, &quot;regex&quot;]
+[clap_builder::parser::validator]Validator::build_conflict_err: name=&quot;domain&quot;
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_smart_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::write_args: incls=[&quot;domain&quot;]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[&quot;constraints&quot;]
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;constraints&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;regex&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;domain&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;unconstrained&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group: group=&quot;constraints&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;regex&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;domain&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: entity=&quot;unconstrained&quot;
+[clap_builder::builder::command]Command::unroll_args_in_group:iter: this is an arg
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: clap-issue &lt;--regex &lt;REGEX&gt;|--domain &lt;DOMAIN&gt;|--unconstrained&gt;
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: the argument '--domain &lt;DOMAIN&gt;' cannot be used with '--regex &lt;REGEX&gt;'
+
+Usage: clap-issue &lt;--regex &lt;REGEX&gt;|--domain &lt;DOMAIN&gt;|--unconstrained&gt;
+
+For more information, try '--help'.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nwalfield on 2024-10-14 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nwalfield">@nwalfield</a> on 2024-10-14 13:16</div>
+            <div class="timeline-body"><p>I figured out the issue.  Even though <code>domain</code> and <code>regex</code> implicitly have <code>multiple(true)</code>, the argument group does not.  Concretely, the following works:</p>
+<pre><code>#[clap(group(ArgGroup::new(&quot;constraints&quot;).args(&amp;[&quot;regex&quot;, &quot;domain&quot;, &quot;unconstrained&quot;]).required(true).multiple(true)))]
+</code></pre>
+<p>Sorry for the noise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @nwalfield on 2024-10-14 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:41 UTC
+    </footer>
+</body>
+</html>

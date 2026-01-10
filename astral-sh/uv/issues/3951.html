@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--system` flag no longer working as documented - astral-sh/uv #3951</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--system` flag no longer working as documented</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3951">#3951</a>
+        opened by <a href="https://github.com/dpoznik">@dpoznik</a>
+        on 2024-05-31 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dpoznik">@dpoznik</a> on 2024-05-31 21:59</div>
+            <div class="timeline-body"><p>I have been using <code>uv</code> in virtual environments managed by <code>pyenv virtualenv</code>. The <code>--system</code> flag worked great with <code>uv</code> 0.1.45 but does not work with 0.2.5, and the docs still suggest that it should still work:</p>
+<blockquote>
+<p>For convenience, <code>uv pip install --system</code> will install into the system Python environment, as an approximate shorthand for, e.g., <code>uv pip install --python=$(which python3)</code>.</p>
+</blockquote>
+<p>I understand that, currently, there are two work-arounds:</p>
+<ul>
+<li><code>uv pip ... --python=$(which python)</code></li>
+<li><code>python -m uv ...</code></li>
+</ul>
+<p>But <code>--system</code> was more convenient, and it wasn't clear to me that it was intentional for it to have stopped working as previously.</p>
+<p>Successful usage of <code>--system</code> flag with 0.1.45:</p>
+<pre><code class="language-sh">$ venv_name=uv-0.1.x
+$ pyenv uninstall --force ${venv_name}
+$ pyenv virtualenv ${venv_name}
+$ pyenv shell ${venv_name}
+$ pip install uv==0.1.45
+
+[details omitted]
+
+$ uv --version
+uv 0.1.45 (a33a05e2d 2024-05-20)
+$ pyenv version
+uv-0.1.x (set by PYENV_VERSION environment variable)
+$ python -c 'import sys; print(f&quot;{(sys.prefix==sys.base_prefix)=}&quot;)'
+(sys.prefix==sys.base_prefix)=False
+$ uv pip install --system --upgrade pip setuptools wheel
+Resolved 3 packages in 299ms
+Installed 3 packages in 34ms
+ - pip==22.3.1
+ + pip==24.0
+ - setuptools==65.5.0
+ + setuptools==70.0.0
+ + wheel==0.43.0
+$ pyenv shell --unset
+</code></pre>
+<p>Unsuccessful usage of <code>--system</code> flag with 0.2.5:</p>
+<pre><code class="language-sh">$ venv_name=uv-0.2.x
+$ pyenv uninstall --force ${venv_name}
+$ pyenv virtualenv ${venv_name}
+$ pyenv shell ${venv_name}
+$ pip install uv
+
+[details omitted]
+
+$ uv --version
+uv 0.2.5 (47db418ba 2024-05-28)
+$ pyenv version
+uv-0.2.x (set by PYENV_VERSION environment variable)
+$ python -c 'import sys; print(f&quot;{(sys.prefix==sys.base_prefix)=}&quot;)'
+(sys.prefix==sys.base_prefix)=False
+$ uv pip install --system --upgrade pip setuptools wheel --verbose
+DEBUG Searching for Python interpreter in search path
+DEBUG Found CPython 3.11.3 at `/Users/dpoznik/.pyenv/versions/uv-0.2.x/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/Users/dpoznik/.pyenv/versions/uv-0.2.x/bin/python3`: system interpreter required
+DEBUG Found CPython 3.11.3 at `/Users/dpoznik/.pyenv/versions/uv-0.2.x/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/Users/dpoznik/.pyenv/versions/uv-0.2.x/bin/python`: system interpreter required
+DEBUG Found CPython 3.11.3 at `/Users/dpoznik/.pyenv/shims/python3` (search path)
+DEBUG Ignoring Python interpreter at `/Users/dpoznik/.pyenv/versions/uv-0.2.x/bin/python3`: system interpreter required
+DEBUG Found CPython 3.11.3 at `/Users/dpoznik/.pyenv/shims/python` (search path)
+DEBUG Ignoring Python interpreter at `/Users/dpoznik/.pyenv/versions/uv-0.2.x/bin/python`: system interpreter required
+DEBUG Found CPython 3.12.3 at `/usr/local/bin/python3` (search path)
+DEBUG Using Python 3.12.3 environment at /usr/local/opt/python@3.12/bin/python3.12
+error: The interpreter at /usr/local/opt/python@3.12/Frameworks/Python.framework/Versions/3.12 is externally managed, and indicates the following:
+
+[additional details omitted]
+
+$ uv pip install --python=$(which python) --upgrade pip setuptools wheel
+Resolved 3 packages in 562ms
+Uninstalled 2 packages in 654ms
+Installed 3 packages in 29ms
+ - pip==22.3.1
+ + pip==24.0
+ - setuptools==65.5.0
+ + setuptools==70.0.0
+ + wheel==0.43.0
+$ python -m uv pip install --upgrade pip setuptools wheel
+Resolved 3 packages in 1.08s
+Audited 3 packages in 0.22ms
+$ pyenv shell --unset
+</code></pre>
+<p>Thanks for your help with this issue and for developing this wonderful tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-31 23:12</div>
+            <div class="timeline-body"><p>Thanks for the clear issue. I suspect the issue here is that the Python you're using appears to be that of a virtual environment, but <code>--system</code> now ignores any virtualenv Pythons. I will defer to @zanieb though who is the expert here and is on vacation this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-05-31 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpoznik">@dpoznik</a> on 2024-05-31 23:36</div>
+            <div class="timeline-body"><p>Thanks for the quick reply! Since it sounds like the new behavior is intended, one solution may be to:</p>
+<ul>
+<li>Clarify the <code>README.md</code> discussion of <code>--system</code> to reflect the recent behavior changes</li>
+<li>Add a new flag (e.g., <code>--current-python</code>) as shorthand for <code>--python=$(which python3)</code></li>
+</ul>
+<p>However, the underlying issue is that <code>uv</code> doesn't recognize a pyenv-virtualenv as a virtual environment:</p>
+<pre><code>$ uv pip install --upgrade pip setuptools wheel --verbose
+DEBUG Searching for Python interpreter in virtual environments
+error: No Python interpreters found in virtual environments
+</code></pre>
+<p>I had been using <code>--system</code> to work around this, but if <code>uv</code> were to recognize a pyenv-virtualenv as a virtual environment, then no flag would be necessary. So that may be the best solution, if possible. I'd be happy to create a new issue if so.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4009.html">astral-sh/uv#4009</a> on 2024-06-04 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpoznik">@dpoznik</a> on 2024-06-04 02:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I had been using <code>--system</code> to work around this, but if <code>uv</code> were to recognize a pyenv-virtualenv as a virtual environment, then no flag would be necessary. So that may be the best solution, if possible. I'd be happy to create a new issue if so.</p>
+</blockquote>
+<p>Since this issue may just reduce to a request to update the documentation around <code>--system</code>, I went ahead and created a new issue specific to the pyenv-virtualenv issue: #4009.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-06-04 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4031.html">astral-sh/uv#4031</a> on 2024-06-04 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 23:56</div>
+            <div class="timeline-body"><p>Does #4031 help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4034.html">astral-sh/uv#4034</a> on 2024-06-05 01:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpoznik">@dpoznik</a> on 2024-06-05 01:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Does #4031 help?</p>
+</blockquote>
+<p>Hmm, I'm not sure. I think the primary issue is in the previous paragraph, specifically the phrase:</p>
+<blockquote>
+<p>as an approximate shorthand for, e.g., <code>uv pip install --python=$(which python3)</code></p>
+</blockquote>
+<p>In uv 0.1.x, I believe <code>--system</code> was more or less equivalent to <code>--python=$(which python3)</code>, whereas this is not the case in uv 0.2.x, rendering the phrase misleading. I get that it includes the fuzzing term &quot;approximate&quot;, but it's not currently clear in that paragraph under which conditions the equivalence holds.</p>
+<p>Since, AFAICT, <code>--python=$(which python3)</code> will install for the <em>current</em> interpreter, and <code>--system</code> will do something different, I recommend removing the phrase and commenting separately on how to install for the current interpreter.</p>
+<p>#4034 includes some suggestions. Feel free to use pieces of it or to ignore it completely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-10 16:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

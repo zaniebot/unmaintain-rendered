@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errors when querying infos for Python interpreter on OpenBSD - astral-sh/uv #2487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Errors when querying infos for Python interpreter on OpenBSD</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2487">#2487</a>
+        opened by <a href="https://github.com/lcheylus">@lcheylus</a>
+        on 2024-03-16 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lcheylus">@lcheylus</a> on 2024-03-16 14:03</div>
+            <div class="timeline-body"><p>I'm trying to package <code>uv</code> on OpenBSD current/amd64 (future version 7.5).</p>
+<p>uv version 0.1.21 built with Rust 1.76.0 via <code>cargo build --release</code> : <strong>build OK</strong></p>
+<pre><code class="language-shell">$ uv version
+uv 0.1.21
+
+$ rustc --version
+rustc 1.76.0 (07dca489a 2024-02-04) (built from a source tarball)
+</code></pre>
+<p>When I try to run <code>uv pip &lt;command&gt;</code> or <code>uv venv &lt;venv&gt;</code>, I have errors when trying to get infos for Python interpreter:</p>
+<pre><code class="language-shell">$ uv -v pip list
+DEBUG Starting interpreter discovery for default Python
+DEBUG Probing interpreter info for: /usr/local/bin/python3
+error: Querying Python at `/usr/local/bin/python3` did not return the expected data: invalid type: sequence, expected a string with exit status: 0
+--- stdout:
+{&quot;result&quot;: &quot;success&quot;, &quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.10.13&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;amd64&quot;, &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;7.5&quot;, &quot;platform_system&quot;: &quot;OpenBSD&quot;, &quot;platform_version&quot;: &quot;GENERIC.MP#73&quot;, &quot;python_full_version&quot;: &quot;3.10.13&quot;, &quot;python_version&quot;: &quot;3.10&quot;, &quot;sys_platform&quot;: &quot;openbsd7&quot;}, &quot;base_prefix&quot;: &quot;/usr/local&quot;, &quot;base_exec_prefix&quot;: &quot;/usr/local&quot;, &quot;prefix&quot;: &quot;/usr/local&quot;, &quot;base_executable&quot;: &quot;/usr/local/bin/python3&quot;, &quot;sys_executable&quot;: &quot;/usr/local/bin/python3&quot;, &quot;stdlib&quot;: &quot;/usr/local/lib/python3.10&quot;, &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/usr/local/lib/python3.10/site-packages&quot;, &quot;purelib&quot;: &quot;/usr/local/lib/python3.10/site-packages&quot;, &quot;include&quot;: &quot;/usr/local/include/python3.10&quot;, &quot;scripts&quot;: &quot;/usr/local/bin&quot;, &quot;data&quot;: &quot;/usr/local&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;: &quot;lib/python3.10/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.10/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.10&quot;, &quot;scripts&quot;: &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}, &quot;platform&quot;: {&quot;os&quot;: {&quot;name&quot;: &quot;openbsd&quot;, &quot;release&quot;: [&quot;&quot;]}, &quot;arch&quot;: &quot;amd64&quot;}}
+--- stderr:
+
+---
+</code></pre>
+<p>These errors seem to come from this commit/PR https://github.com/astral-sh/uv/pull/2381 (&quot;Move architecture and operating system probing to Python&quot;) =&gt; get Python infos from <code>crates/uv-interpreter/python/get_interpreter_info.py</code> infos.</p>
+<p>Before uv version 0.1.19, I have not these errors when running <code>uv pip</code> command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lcheylus">@lcheylus</a> on 2024-03-16 14:06</div>
+            <div class="timeline-body"><p>JSON outputs for Python interpreter with <code>crates/uv-interpreter/python/get_interpreter_info.py</code> script:</p>
+<pre><code class="language-json">{
+  &quot;result&quot;: &quot;success&quot;,
+  &quot;markers&quot;: {
+    &quot;implementation_name&quot;: &quot;cpython&quot;,
+    &quot;implementation_version&quot;: &quot;3.10.13&quot;,
+    &quot;os_name&quot;: &quot;posix&quot;,
+    &quot;platform_machine&quot;: &quot;amd64&quot;,
+    &quot;platform_python_implementation&quot;: &quot;CPython&quot;,
+    &quot;platform_release&quot;: &quot;7.5&quot;,
+    &quot;platform_system&quot;: &quot;OpenBSD&quot;,
+    &quot;platform_version&quot;: &quot;GENERIC.MP#73&quot;,
+    &quot;python_full_version&quot;: &quot;3.10.13&quot;,
+    &quot;python_version&quot;: &quot;3.10&quot;,
+    &quot;sys_platform&quot;: &quot;openbsd7&quot;
+  },
+  &quot;base_prefix&quot;: &quot;/usr/local&quot;,
+  &quot;base_exec_prefix&quot;: &quot;/usr/local&quot;,
+  &quot;prefix&quot;: &quot;/usr/local&quot;,
+  &quot;base_executable&quot;: &quot;/usr/local/bin/python3&quot;,
+  &quot;sys_executable&quot;: &quot;/usr/local/bin/python3&quot;,
+  &quot;stdlib&quot;: &quot;/usr/local/lib/python3.10&quot;,
+  &quot;scheme&quot;: {
+    &quot;platlib&quot;: &quot;/usr/local/lib/python3.10/site-packages&quot;,
+    &quot;purelib&quot;: &quot;/usr/local/lib/python3.10/site-packages&quot;,
+    &quot;include&quot;: &quot;/usr/local/include/python3.10&quot;,
+    &quot;scripts&quot;: &quot;/usr/local/bin&quot;,
+    &quot;data&quot;: &quot;/usr/local&quot;
+  },
+  &quot;virtualenv&quot;: {
+    &quot;purelib&quot;: &quot;lib/python3.10/site-packages&quot;,
+    &quot;platlib&quot;: &quot;lib/python3.10/site-packages&quot;,
+    &quot;include&quot;: &quot;include/site/python3.10&quot;,
+    &quot;scripts&quot;: &quot;bin&quot;,
+    &quot;data&quot;: &quot;&quot;
+  },
+  &quot;platform&quot;: {
+    &quot;os&quot;: {
+      &quot;name&quot;: &quot;openbsd&quot;,
+      &quot;release&quot;: [
+        &quot;&quot;
+      ]
+    },
+    &quot;arch&quot;: &quot;amd64&quot;
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-16 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:08</div>
+            <div class="timeline-body"><p>Thanks. Will need to look at how platform tags are treated in this case, since AFAIK there is no BSD standard for wheels and BSD-specific wheels aren't supported on PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-16 14:12</div>
+            <div class="timeline-body"><p>@konstin - Can you take a look at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-03-16 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @charliermarsh on 2024-03-18 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2505.html">astral-sh/uv#2505</a> on 2024-03-18 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-18 10:44</div>
+            <div class="timeline-body"><p>Could you try again with #2505 merged? I unfortunately don't have an openbsd machine around to test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> removed by @konstin on 2024-03-18 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-03-18 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lcheylus">@lcheylus</a> on 2024-03-18 16:31</div>
+            <div class="timeline-body"><p>OK, rebuild uv version 0.1.21 with this fix on OpenBSD =&gt; <code>uv pip</code> commands work as expected :)</p>
+<pre><code>$ uv pip show pytest
+Name: pytest
+Version: 7.1.3
+Location: /usr/local/lib/python3.10/site-packages
+Requires: attrs, iniconfig, packaging, pluggy, py, tomli
+</code></pre>
+<p>Thanks for your quick fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lcheylus on 2024-03-18 16:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

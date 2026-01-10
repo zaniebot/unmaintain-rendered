@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--fix for D202 removing docstring instead of line afterwards - astral-sh/ruff #795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--fix for D202 removing docstring instead of line afterwards</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/795">#795</a>
+        opened by <a href="https://github.com/actionless">@actionless</a>
+        on 2022-11-17 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/actionless">@actionless</a> on 2022-11-17 19:25</div>
+            <div class="timeline-body"><pre><code class="language-python">def function() -&gt; None:
+    '''
+    Function displays a question and reads a single character
+    from STDIN as an answer. Then returns the character as lower character.
+    Valid answers are passed as 'answers' variable (the default is in capital).
+    Invalid answer will return an empty string.
+    '''
+
+    pass
+</code></pre>
+<pre><code class="language-console">ruff ruff_docstring_D300.py --fix
+</code></pre>
+<pre><code class="language-python">def function() -&gt; None:
+    '''
+    '''
+
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-17 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 19:45</div>
+            <div class="timeline-body"><p>I don't think D300 is fixable right now so wondering what's going on here. Can you include your <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/actionless">@actionless</a> on 2022-11-17 19:53</div>
+            <div class="timeline-body"><pre><code class="language-toml">[tool.ruff]
+line-length = 100
+# Add &quot;Q&quot; to the list of enabled codes.
+select = [&quot;E&quot;, &quot;F&quot;, &quot;Q&quot;, &quot;I&quot;, &quot;D&quot;, &quot;U&quot;, &quot;N&quot;, &quot;S&quot;, &quot;C&quot;, &quot;B&quot;, &quot;A&quot;, &quot;T&quot;, &quot;ANN&quot;, &quot;YTT&quot;, &quot;RUF&quot;, &quot;M&quot;]
+ignore = [
+	# enable back later:
+	&quot;Q000&quot;,
+	&quot;D100&quot;,
+	&quot;D101&quot;,
+	&quot;D102&quot;,
+	&quot;D103&quot;,
+
+	&quot;D105&quot;,
+	&quot;D107&quot;,
+	&quot;D203&quot;, # conflicts with D211
+	&quot;D205&quot;,
+	&quot;D212&quot;, # conflicts with D213
+	&quot;D400&quot;,
+	&quot;D415&quot;,
+
+	&quot;ANN002&quot;,
+	&quot;ANN003&quot;,
+	&quot;ANN101&quot;,
+	&quot;ANN204&quot;,
+
+	&quot;T201&quot;,
+	&quot;T203&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 19:55</div>
+            <div class="timeline-body"><p>When I run <code>cargo run foo.py --fix</code> on that file, I get:</p>
+<pre><code class="language-py">def function() -&gt; None:
+    '''
+    from STDIN as an answer. Then returns the character as lower character.
+    Valid answers are passed as 'answers' variable (the default is in capital).
+    Invalid answer will return an empty string.
+    '''
+
+    pass
+</code></pre>
+<p>It deletes the first line, in trying to fix D202. So also a bug, but a little different than your output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--fix for D300 removing docstring instead of replacing quotes" to "--fix for D202 removing docstring instead of line afterwards" by @actionless on 2022-11-17 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/actionless">@actionless</a> on 2022-11-17 19:57</div>
+            <div class="timeline-body"><p>@charliermarsh thanks for clarifying, i've updated the description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/797.html">astral-sh/ruff#797</a> on 2022-11-17 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 19:58</div>
+            <div class="timeline-body"><p>Thanks! The tests didn't catch this because we only had single-line docstrings... and so the start and end line were the same 🤦 Fix will go out shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-17 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/actionless">@actionless</a> on 2022-11-17 20:10</div>
+            <div class="timeline-body"><p>thanks! i'm building git version of ruff to check it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/actionless">@actionless</a> on 2022-11-17 20:32</div>
+            <div class="timeline-body"><p>it works now 🔥</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`torch.utils.cpp_extension.CUDAExtension` is built with `uv` but symbol not found - astral-sh/uv #12288</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`torch.utils.cpp_extension.CUDAExtension` is built with `uv` but symbol not found</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12288">#12288</a>
+        opened by <a href="https://github.com/jackalcooper">@jackalcooper</a>
+        on 2025-03-18 15:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackalcooper">@jackalcooper</a> on 2025-03-18 15:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>The error</h2>
+<pre><code class="language-bash">ImportError: [the lib].cpython-312-x86_64-linux-gnu.so: undefined symbol: _ZNK3c1011StorageImpl27throw_data_ptr_access_errorEv
+</code></pre>
+<p>The symbol is from c10:</p>
+<pre><code class="language-bash">c++filt _ZNK3c1011StorageImpl27throw_data_ptr_access_errorEv
+c10::StorageImpl::throw_data_ptr_access_error() const
+</code></pre>
+<h2>Running ldd</h2>
+<ul>
+<li>appending the path manually will help ldd print right lookup</li>
+</ul>
+<pre><code class="language-bash">LD_LIBRARY_PATH=[project path]/.venv/lib/python3.12/site-packages/torch/lib:$LD_LIBRARY_PATH ldd [the lib].cpython-312-x86_64-linux-gnu.so
+        linux-vdso.so.1 (0x00007fff80fc9000)
+        libc10.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libc10.so (0x00007f46b4721000)
+        libtorch_python.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libtorch_python.so (0x00007f46b32ba000)
+        libcudart.so.12 =&gt; /usr/local/cuda-12.3/targets/x86_64-linux/lib/libcudart.so.12 (0x00007f46b2e00000)
+        libc10_cuda.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libc10_cuda.so (0x00007f46b31fb000)
+        libnccl.so.2 =&gt; /lib/x86_64-linux-gnu/libnccl.so.2 (0x00007f46a30ea000)
+        libstdc++.so.6 =&gt; /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f46a2ebe000)
+        libgcc_s.so.1 =&gt; /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f46b31d9000)
+        libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f46a2c95000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f46b486d000)
+        libm.so.6 =&gt; /lib/x86_64-linux-gnu/libm.so.6 (0x00007f46b30f0000)
+        libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f46b30eb000)
+        libtorch.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libtorch.so (0x00007f46b30c5000)
+        libshm.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libshm.so (0x00007f46b30b9000)
+        libtorch_cpu.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so (0x00007f468e062000)
+        libtorch_cuda.so =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libtorch_cuda.so (0x00007f4659153000)
+        libdl.so.2 =&gt; /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f46b30b2000)
+        libcudnn.so.9 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cudnn/lib/libcudnn.so.9 (0x00007f4658e00000)
+        librt.so.1 =&gt; /lib/x86_64-linux-gnu/librt.so.1 (0x00007f465914e000)
+        libgomp-a34b3233.so.1 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libgomp-a34b3233.so.1 (0x00007f4658a00000)
+        libcupti.so.12 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cuda_cupti/lib/libcupti.so.12 (0x00007f4658000000)
+        libcusparse.so.12 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cusparse/lib/libcusparse.so.12 (0x00007f4647000000)
+        libcufft.so.11 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cufft/lib/libcufft.so.11 (0x00007f4635400000)
+        libcusparseLt-294d6944.so.0 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/libcusparseLt-294d6944.so.0 (0x00007f4628400000)
+        libcurand.so.10 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/curand/lib/libcurand.so.10 (0x00007f4621e00000)
+        libcublas.so.12 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cublas/lib/libcublas.so.12 (0x00007f461b200000)
+        libcublasLt.so.12 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cublas/lib/libcublasLt.so.12 (0x00007f45fd200000)
+        libutil.so.1 =&gt; /lib/x86_64-linux-gnu/libutil.so.1 (0x00007f4659149000)
+        libnvJitLink.so.12 =&gt; [PROJECT PATH]/.venv/lib/python3.12/site-packages/torch/lib/../../nvidia/cusparse/lib/../../nvjitlink/lib/libnvJitLink.so.12 (0x00007f45f9c00000)
+</code></pre>
+<ul>
+<li>without appending, <code>ldd</code> doesn't print correct lookup</li>
+</ul>
+<pre><code>        linux-vdso.so.1 (0x00007ffe5b578000)
+        libc10.so =&gt; not found
+        libtorch_python.so =&gt; not found
+        libcudart.so.12 =&gt; /usr/local/cuda-12.3/targets/x86_64-linux/lib/libcudart.so.12 (0x00007ffbdf600000)
+        libc10_cuda.so =&gt; not found
+        libnccl.so.2 =&gt; /lib/x86_64-linux-gnu/libnccl.so.2 (0x00007ffbcf8ea000)
+        libstdc++.so.6 =&gt; /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007ffbcf6be000)
+        libgcc_s.so.1 =&gt; /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007ffbdfa75000)
+        libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007ffbcf495000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007ffbdfacd000)
+        libdl.so.2 =&gt; /lib/x86_64-linux-gnu/libdl.so.2 (0x00007ffbdfa70000)
+        libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007ffbdfa6b000)
+        librt.so.1 =&gt; /lib/x86_64-linux-gnu/librt.so.1 (0x00007ffbdfa66000)
+        libm.so.6 =&gt; /lib/x86_64-linux-gnu/libm.so.6 (0x00007ffbdf97d000)
+</code></pre>
+<h2>Appending <code>LD_LIBRARY_PATH</code> when running <code>uv run -m</code></h2>
+<p>doesn't help, still produce <code>undefined symbol: _ZNK3c1011StorageImpl27throw_data_ptr_access_errorEv</code></p>
+<h2>Note</h2>
+<p>Using <code>conda</code>'s pip to do dev installation and run the module was successful.</p>
+<h3>Platform</h3>
+<p>Ubuntu 2</p>
+<h3>Version</h3>
+<p>uv 0.6.7</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jackalcooper on 2025-03-18 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jackalcooper on 2025-03-19 06:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

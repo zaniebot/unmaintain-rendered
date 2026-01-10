@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is the default Python version selection strategy for ``uvx``? - astral-sh/uv #5951</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>What is the default Python version selection strategy for ``uvx``?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5951">#5951</a>
+        opened by <a href="https://github.com/FishAlchemist">@FishAlchemist</a>
+        on 2024-08-09 07:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-08-09 07:33</div>
+            <div class="timeline-body"><p>How does <code>uvx</code> determine which Python version to use when <code>--python</code> is not explicitly specified?
+I had a quick look through the document, but I couldn't find anything about it.</p>
+<p><strong>Note:</strong> The document version I'm looking for is the one generated using commit 21408c1f351b159a9b590bcfefcfe645838e33c1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-09 13:42</div>
+            <div class="timeline-body"><p>We follow the default Python discovery rules, so we'll use the first version we find either</p>
+<ol>
+<li>The newest installed managed Python version</li>
+<li>The first system Python installation on the PATH regardless of version</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-08-09 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-09 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-09 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-08-09 17:31</div>
+            <div class="timeline-body"><blockquote>
+<p>We follow the default Python discovery rules, so we'll use the first version we find either</p>
+<ol>
+<li>The newest installed managed Python version</li>
+<li>The first system Python installation on the PATH regardless of version</li>
+</ol>
+</blockquote>
+<p>If UV first analyze the requirements to determine the supported Python version range, and then run the default Python discovery rules based on the results, would it be a better way to find the Python version?</p>
+<p>However, it seems like Pip can still download packages even if they aren't explicitly categorized for a specific Python version. For instance, MonkeyType's highest categorized version is Python 3.10, but it can be installed in a Python 3.12 environment.</p>
+<p>Despite the questions I raised about this find strategy, it seems to have had no practical impact.</p>
+<h3><a href="https://pypi.org/project/MonkeyType/">MonkeyType - PyPI</a></h3>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-09 17:34</div>
+            <div class="timeline-body"><p>The supported Python range of... all possible versions of the requirements? Then we try to find out if you have that installed? I don't think that's really tractable, but we have a bigger problem: we need a Python interpreter for markers to figure out what your platform is — we usually need a Python interpreter before we can start resolution for an installation.</p>
+<p>We ignore upper bounds on package's Python requirements, generally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-08-09 17:42</div>
+            <div class="timeline-body"><blockquote>
+<p>The supported Python range of... all possible versions of the requirements? Then we try to find out if you have that installed? I don't think that's really tractable, but we have a bigger problem: we need a Python interpreter for markers to figure out what your platform is — we usually need a Python interpreter before we can start resolution for an installation.</p>
+<p>We ignore upper bounds on package's Python requirements, generally.</p>
+</blockquote>
+<p>Explicitly specifying --python for this issue might be the best solution.
+Therefore, should the document mention that uvx uses Python discovery rules?
+If a specific version is required, --python should be explicitly specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-09 17:46</div>
+            <div class="timeline-body"><p>I guess I feel like that's implicitly documented? Nearly every command uses Python discovery rules. I can try to add some clarity about that to the documentation though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-21 01:21</div>
+            <div class="timeline-body"><p>Discovery of Python versions:
+https://docs.astral.sh/uv/concepts/python-versions/#discovery-of-python-versions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @FishAlchemist on 2024-11-21 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raffaem">@raffaem</a> on 2025-10-27 13:11</div>
+            <div class="timeline-body"><p>You can specify it on the command line:</p>
+<pre><code>uv tool run --python 3.13 ocrmypdf
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

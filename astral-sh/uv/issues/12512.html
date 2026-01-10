@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` fails when using `dependency-metadata` with a URL dependency - astral-sh/uv #12512</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` fails when using `dependency-metadata` with a URL dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12512">#12512</a>
+        opened by <a href="https://github.com/object-Object">@object-Object</a>
+        on 2025-03-27 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/object-Object">@object-Object</a> on 2025-03-27 18:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>tool.uv.dependency-metadata</code> to override the dependencies for a package acquired from a URL source, <code>uv sync</code> fails with the following output:</p>
+<pre><code>(uv-hash-bug) PS C:\Users\object\uv-hash-bug&gt; uv sync
+Resolved 2 packages in 52ms                                                                                                       
+error: Since the package `hexdoc-hexal==0.3.0.1.0rc3.dev0 @ direct+https://github.com/vgskye/Hexal/raw/6a8700ec078ec716e368f8e17e32191a0e27bd46/docs/v/latest/remaint/dist/hexdoc_hexal-0.3.0.1.0rc3.dev0-py3-none-any.whl` comes from a direct dependency, a hash was expected but one was not found for wheel
+</code></pre>
+<h3>Steps to reproduce</h3>
+<p>Create a <code>pyproject.toml</code> with the following contents:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-hash-bug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;~=3.12.0&quot;
+dependencies = [
+    &quot;hexdoc-hexal&quot;,
+]
+
+[tool.uv]
+dependency-metadata = [
+    { name = &quot;hexdoc-hexal&quot;, version = &quot;0.3.0.1.0rc3.dev0&quot;, requires-dist = [] },
+]
+
+[tool.uv.sources]
+hexdoc-hexal = { url = &quot;https://github.com/vgskye/Hexal/raw/6a8700ec078ec716e368f8e17e32191a0e27bd46/docs/v/latest/remaint/dist/hexdoc_hexal-0.3.0.1.0rc3.dev0-py3-none-any.whl&quot; }
+</code></pre>
+<p>Then run <code>uv sync</code>.</p>
+<p>If the <code>dependency-metadata</code> block is commented out, <code>uv sync</code> works as expected.</p>
+<h3>Additional context</h3>
+<p>I encountered this issue here: https://github.com/object-Object/HexBug/commit/8dfd7ea829d1018c34e4a24997b4637c96e97699</p>
+<p>I need to use <code>dependency-metadata</code> here because <code>hexdoc-hexal</code> depends on <code>hexdoc-hexcasting&gt;=0.11.1.1.0rc7.dev20,&lt;0.11.1.2.dev0</code>, but HexBug depends on <code>hexdoc-hexcasting~=0.11.2.0</code>.</p>
+<h3>Logs</h3>
+<p><a href="https://github.com/user-attachments/files/19492072/sync.log">sync.log</a></p>
+<h3>Platform</h3>
+<p>Windows 11 Education 24H2 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.10 (f2a2d982b 2025-03-25)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @object-Object on 2025-03-27 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomCC7">@TomCC7</a> on 2025-05-29 20:00</div>
+            <div class="timeline-body"><p>Met the same issue here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-30 16:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I need to use dependency-metadata here because hexdoc-hexal depends on hexdoc-hexcasting&gt;=0.11.1.1.0rc7.dev20,&lt;0.11.1.2.dev0, but HexBug depends on hexdoc-hexcasting~=0.11.2.0.</p>
+</blockquote>
+<p>Can you use dependency overrides for this instead? <code>dependency-metadata</code> assumes you're providing correct metadata, while overrides are explicitly of using otherwise incompatible versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/object-Object">@object-Object</a> on 2025-05-30 16:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you use dependency overrides for this instead? <code>dependency-metadata</code> assumes you're providing correct metadata, while overrides are explicitly of using otherwise incompatible versions.</p>
+</blockquote>
+<p>I don't think so - I want to override transitive dependencies for specific packages, not for the entire workspace. If https://github.com/astral-sh/uv/issues/2686 was implemented, I agree that would be a better solution than using <code>dependency-metadata</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv sync` fails when using `dependency-metadata` with a URL dependency" to "`uv lock` fails when using `dependency-metadata` with a URL dependency" by @konstin on 2025-05-30 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-05-30 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-30 17:21</div>
+            <div class="timeline-body"><p>PyPI-only MRE:</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;anyio&quot;,
+]
+
+[tool.uv]
+dependency-metadata = [
+  { name = &quot;anyio&quot;, version = &quot;4.9.0&quot;, requires-dist = [] },
+]
+
+[tool.uv.sources]
+anyio = { url = &quot;https://files.pythonhosted.org/packages/a1/ee/48ca1a7c89ffec8b6a0c5d02b89c305671d5ffd8d3c94acf8b8c408575bb/anyio-4.9.0-py3-none-any.whl&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13736.html">astral-sh/uv#13736</a> on 2025-05-30 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-30 17:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

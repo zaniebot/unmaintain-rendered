@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run doesn't respect PEP 723 - astral-sh/uv #4726</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run doesn't respect PEP 723</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4726">#4726</a>
+        opened by <a href="https://github.com/mgaitan">@mgaitan</a>
+        on 2024-07-02 11:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgaitan">@mgaitan</a> on 2024-07-02 11:48</div>
+            <div class="timeline-body"><p>I know it is still experimental but I wanted to make use of the requirements statement via metadata for a script that was implemented in https://github.com/astral-sh/uv/pull/4656 but it doesn't work.</p>
+<p><code>rich</code> is satisfied by the venv and I expect requests to be installed automatically. However, it works using <code>--with</code></p>
+<p>I used the same example given in the PR mentioned.</p>
+<pre><code class="language-console">tin@morocha:~/lab/uv_tests$ cat example.py 
+# /// script
+# requires-python = &quot;&gt;=3.11&quot;
+# dependencies = [
+#   &quot;requests&lt;3&quot;,
+# 	&quot;rich&quot;,
+# ]
+# ///
+
+import requests
+from rich.pretty import pprint
+
+resp = requests.get(&quot;https://peps.python.org/api/peps.json&quot;)
+data = resp.json()
+pprint([(k, v[&quot;title&quot;]) for k, v in data.items()][:10])
+
+tin@morocha:~/lab/uv_tests$ uv pip tree
+rich v13.7.1
+├── markdown-it-py v3.0.0
+│   └── mdurl v0.1.2
+└── pygments v2.18.0
+
+tin@morocha:~/lab/uv_tests$ uv run example.py 
+warning: `uv run` is experimental and may change without warning.
+Traceback (most recent call last):
+  File &quot;/home/tin/lab/uv_tests/example.py&quot;, line 9, in &lt;module&gt;
+    import requests
+ModuleNotFoundError: No module named 'requests'
+
+tin@morocha:~/lab/uv_tests$ uv run --with &quot;requests&lt;3&quot; example.py 
+warning: `uv run` is experimental and may change without warning.
+Resolved 5 packages in 224ms
+Installed 5 packages in 4ms
+ + certifi==2024.6.2
+ + charset-normalizer==3.3.2
+ + idna==3.7
+ + requests==2.32.3
+ + urllib3==2.2.2
+[
+│   ('1', 'PEP Purpose and Guidelines'),
+│   ('2', 'Procedure for Adding New Modules'),
+│   ('3', 'Guidelines for Handling Bug Reports'),
+│   ('4', 'Deprecation of Standard Modules'),
+│   ('5', 'Guidelines for Language Evolution'),
+│   ('6', 'Bug Fix Releases'),
+│   ('7', 'Style Guide for C Code'),
+│   ('8', 'Style Guide for Python Code'),
+│   ('9', 'Sample Plaintext PEP Template'),
+│   ('10', 'Voting Guidelines')
+]
+
+tin@morocha:~/lab/uv_tests$ uv pip tree
+rich v13.7.1
+├── markdown-it-py v3.0.0
+│   └── mdurl v0.1.2
+└── pygments v2.18.0
+
+tin@morocha:~/lab/uv_tests$ uv --version
+uv 0.2.18
+
+tin@morocha:~/lab/uv_tests$ python --version
+Python 3.12.3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-02 11:50</div>
+            <div class="timeline-body"><p>That changed merged yesterday but it hasn’t been released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mgaitan on 2024-07-02 12:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

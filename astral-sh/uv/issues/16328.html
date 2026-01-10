@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building and installing packages from a GitHub mono repo with a uv workspace - astral-sh/uv #16328</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Building and installing packages from a GitHub mono repo with a uv workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16328">#16328</a>
+        opened by <a href="https://github.com/klet7944">@klet7944</a>
+        on 2025-10-16 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/klet7944">@klet7944</a> on 2025-10-16 09:34</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I have a mono repo with three separate projects in a single workspace. Let's call it project_x with the following repo structure:</p>
+<pre><code>project-x/
+├── xclient/
+│   ├── src/
+│   └── pyproject.toml
+├── xcore/
+│   ├── src/ 
+│   └── pyproject.toml
+├── xkit/
+│   ├── -src/
+│   └── pyproject.toml
+└── pyproject.toml
+</code></pre>
+<p>xcore has xclient as a dependency. xkit has both xclient and xcore as dependency. To summarize:</p>
+<pre><code>xcore &lt;-- xclient
+
+xkit &lt;-- xclient, xcore
+</code></pre>
+<p>The root has a pyproject.toml to setup the uv workspace. The pyproject.toml is as follows:</p>
+<pre><code>[tool.uv.workspace]
+members = [
+    &quot;xclient&quot;,
+    &quot;xcore&quot;,
+    &quot;xkit&quot;
+]
+</code></pre>
+<p>The xcore/pyproject.toml and xkit/pyproject.toml adds the dependencies as workspace dependency as such:</p>
+<pre><code># xkit/pyproject.toml
+[tool.uv.sources]
+xclient = { workspace = true }
+xcore = { workspace = true }
+
+# xcore/pyproject.toml
+[tool.uv.sources]
+xclient = { workspace = true }
+
+</code></pre>
+<p>The packages in project-x are independently released as GitHub releases (with tags) and these packages are used in other projects as individual dependencies by adding the GitHub repo with the subdirectory and tag. Sample requirements.txt file is as follows in a project called project-foo:</p>
+<pre><code>xclient @ git+https://github.com/x/project-x.git@xclient_0.1.0#subdirectory=xclient
+xcore @ git+https://github.com/x/project-x.git@xcore_0.1.0#subdirectory=xcore
+xkit @ git+https://github.com/x/project-x.git@xadk_0.1.0#subdirectory=xkit
+</code></pre>
+<h2>Observation</h2>
+<ul>
+<li>I am able to use pip to build and install these dependencies in project-foo successfully.</li>
+<li>However it is not possible to use uv to install these due to the workspace setup in project-x, uv fails to build and install dependencies and gives a multiple marker error for xclient. I think after the initial install of xclient and during the consequent install of xcore there are two different sources for xclient so it fails.</li>
+<li><code>pip install -r requirements.txt</code> succeeds while <code>uv add</code> and <code>uv run pip install -r requirements.txt</code> fails with the above error.</li>
+</ul>
+<h2>Question and help</h2>
+<p>How do I setup the project-x so that I could use a single environment like the workspace during development and use direct build and install from GitHub repo in project-foo with uv. I want to be able to use <code>uv add</code> and <code>uv sync</code> in project-foo. Any help on this is much appreciated. Thanks</p>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>uv 0.8.17 (10960bc13 2025-09-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @klet7944 on 2025-10-16 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-17 08:18</div>
+            <div class="timeline-body"><blockquote>
+<p>However it is not possible to use uv to install these due to the workspace setup in project-x, uv fails to build and install dependencies and gives a multiple marker error for xclient. I think after the initial install of xclient and during the consequent install of xcore there are two different sources for xclient so it fails.</p>
+</blockquote>
+<p>Can you share the commands you use, the error message and ideally the verbose logs (<code>-v</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klet7944">@klet7944</a> on 2025-10-17 16:34</div>
+            <div class="timeline-body"><p>@konstin see the below commands and outputs.</p>
+<ul>
+<li>uv pip install</li>
+</ul>
+<pre><code>(.venv) PS C:\project-foo&gt; uv pip install -r .\requirements.txt
+    Updated https://github.com/x/project-x.git (bd2b4)
+    Updated https://github.com/x/project-x.git (4b735)
+    Updated https://github.com/x/project-x.git (4b735)
+  × Failed to resolve dependencies for `xcore` (v0.1.0)
+  ╰─▶ Requirements contain conflicting URLs for package `xclient`:
+      - git+https://github.com/x/project-x.git@xkit_0.1.0#subdirectory=xclient
+      - git+https://github.com/x/project-x.git@xclient_0.1.0#subdirectory=xclient
+</code></pre>
+<ul>
+<li>uv add</li>
+</ul>
+<pre><code>(.venv) PS C:\project-foo&gt; uv add git+https://github.com/x/project-x.git@xclient_0.1.0#subdirectory=xclient
+    Updated https://github.com/x/project-x.git (bd2b4)
+Resolved 22 packages in 2ms
+Audited 21 packages in 2ms
+(.venv) PS C:\project-foo&gt; uv add git+https://github.com/x/project-x.git@xcore_0.1.0#subdirectory=xcore
+    Updated https://github.com/x/project-x.git (4b735)
+  × Failed to resolve dependencies for `xcore` (v0.1.0)
+  ╰─▶ Requirements contain conflicting URLs for package `xclient` in all marker environments:
+      - git+https://github.com/x/project-x.git@xclient_0.1.0#subdirectory=xclient
+      - git+https://github.com/x/project-x.git@xcore_0.1.0#subdirectory=xclient
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip
+        locking and syncing.
+</code></pre>
+<p>These are not the original project and package names. It might be difficult for me to mask all names in the verbose output at the moment. If the verbose output is required, I might have to setup a s sample repo and share it for you to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-19 09:08</div>
+            <div class="timeline-body"><p>I think I see the problem now, it's the combination of two things: uv considers <code>[tool.uv.sources]</code> for git dependencies, and it requires a single URL (with a single git hash) per file. When you add <code>git+https://github.com/x/project-x.git@xcore_0.1.0#subdirectory=xcore</code>, uv looks at the sources and infers that we need <code>git+https://github.com/x/project-x.git@xcore_0.1.0#subdirectory=xclient</code> to get an xclient that matches xcore: We want both from the same Git tag so they match. But we previously saw <code>git+https://github.com/x/project-x.git@xclient_0.1.0#subdirectory=xclient</code> so there's now a conflict.</p>
+<p>uv's assumption is that Git dependencies are for pulling in a non-release, and that if a Git dep pulls in other Git deps, their between-releases hash needs to match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klet7944">@klet7944</a> on 2025-10-21 13:49</div>
+            <div class="timeline-body"><p>@konstin I see this problem only when a workspace is defined. I think uv tries to build the package using the workspace dependencies and reaches a conflicting situation as you mentioned.</p>
+<p>pip install does not run into this conflict, obviously the uv specific configs does not apply to pip and dependencies already installed in the environment it is resolved first to build the packages. I think this should be the behaviour of uv without the workspace.</p>
+<p>Shouldn't this be case even with the workspace? I know my ask has some grey areas. But if I have already have a package installed shouldn't uv the resolve it first from the environment during building the dependency? Or an option/config to deactivate the workspace would be also perfect. I am not sure whether this violates the objective of a workspace from uv's perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-21 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't this be case even with the workspace? I know my ask has some grey areas. But if I have already have a package installed shouldn't uv the resolve it first from the environment during building the dependency? Or an option/config to deactivate the workspace would be also perfect. I am not sure whether this violates the objective of a workspace from uv's perspective.</p>
+</blockquote>
+<p>We have a <code>--no-sources</code> option, it makes sense to extend this to apply to specific dependencies only. That way you could have uv behave more similar to pip here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-10-21 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-10-21 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @konstin on 2025-10-21 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/klet7944">@klet7944</a> on 2025-10-31 17:16</div>
+            <div class="timeline-body"><p>@konstin I would like to help and contribute to this. Any pointers on how do I get involved in this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-04 16:02</div>
+            <div class="timeline-body"><p>I'm afraid this isn't just a code change, but about the sematics of Git depedencies. I'm not sure if Git tags a suited for distributing package in the way you describe, usually people use a registry for that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

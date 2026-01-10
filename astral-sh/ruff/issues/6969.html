@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Got F811 and F821 when indirectly importing Literal and overload - astral-sh/ruff #6969</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Got F811 and F821 when indirectly importing Literal and overload</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6969">#6969</a>
+        opened by <a href="https://github.com/leavers">@leavers</a>
+        on 2023-08-29 07:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leavers">@leavers</a> on 2023-08-29 07:52</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>A minimal code snippet that reproduces the bug:</p>
+<p>File <code>test.py</code></p>
+<pre><code class="language-python">from mytyping import Literal, overload
+# from typing import Literal, overload
+# from typing_extensions import Literal, overload
+
+tag: Literal[&quot;a&quot;] = &quot;a&quot;
+
+
+@overload
+def func(a: int):
+    ...
+
+
+@overload
+def func(a: int, b: int):
+    ...
+
+
+def func(a: int, b: int = 0):
+    return a, b
+</code></pre>
+<p>File <code>mytyping.py</code>:</p>
+<pre><code class="language-python">from typing import Literal, overload
+
+__all__ = [&quot;Literal&quot;, &quot;overload&quot;]
+</code></pre>
+<p>When using <code>ruff check</code> with <code>from mytyping import Literal, overload</code> enabled, I got:</p>
+<pre><code class="language-shell">$ ruff check test.py
+test.py:5:15: F821 Undefined name `a`
+test.py:14:5: F811 Redefinition of unused `func` from line 9
+test.py:18:5: F811 Redefinition of unused `func` from line 14
+Found 3 errors.
+</code></pre>
+<p>However, when uncomment either <code>typing</code> or <code>typing_extensions</code>, <code>ruff check</code> does not report above errors.</p>
+<p>Ruff version:</p>
+<pre><code class="language-shell">$ ruff --version
+ruff 0.0.286
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-29 13:41</div>
+            <div class="timeline-body"><p>Can you take a look at <a href="https://beta.ruff.rs/docs/settings/#typing-modules"><code>typing-modules</code></a>? Ruff doesn't support resolving symbols across files, so if you re-export typing symbols from one module, you need to mark it as such in your configuration. In this case, something like:</p>
+<pre><code class="language-toml">[tool.ruff]
+typing-modules = [&quot;mytyping&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-29 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leavers">@leavers</a> on 2023-08-30 05:39</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for your reply, this setting resolved my issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-30 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rj-xu">@rj-xu</a> on 2025-07-30 08:22</div>
+            <div class="timeline-body"><pre><code class="language-python"># from typing import overload
+from my_typing import overload
+
+@overload
+def func(a: str, b: int) -&gt; int: ...
+@overload
+def func(a: int, b: str) -&gt; int: ...
+def func(a: int | str, b: int | str) -&gt; int:
+    return 0
+</code></pre>
+<p>In version 0.12.5, <code>F811 Redefinition</code> still occurs, even though <code>typing-modules</code> have already been set up.
+This error will appear after v0.3.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 08:26</div>
+            <div class="timeline-body"><p>@rj-xu I do appreciate that you took the time to find this issue but please open a new issue if you need help. It will make it easier for us to keep track where users still need help with (which is hard if people comment on issues that have been closed for a long time).</p>
+<p>In the new issue, can you link to this issue for context, include a code snippet and your configuration? This should allow us to help you. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19632.html">astral-sh/ruff#19632</a> on 2025-07-30 09:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

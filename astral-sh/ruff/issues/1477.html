@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixing I001 turns file with CRLF line endings into mixed line endings - astral-sh/ruff #1477</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixing I001 turns file with CRLF line endings into mixed line endings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1477">#1477</a>
+        opened by <a href="https://github.com/rhkleijn">@rhkleijn</a>
+        on 2022-12-30 12:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rhkleijn">@rhkleijn</a> on 2022-12-30 12:42</div>
+            <div class="timeline-body"><p>When fixing <code>I001</code> import related lint errors the fix introduces <code>\n</code> line endings even if the file originally was <code>\r\n</code> only. (On windows  <code>\r\n</code> line endings are widely used.)</p>
+<p>To reproduce:</p>
+<pre><code class="language-bash">$ echo -e -n '&quot;&quot;&quot;A file with CRLF line endings.&quot;&quot;&quot;\r\nimport sys\r\nimport os\r\n' &gt; crlf.py
+
+$ python -c &quot;from pathlib import Path;print(Path('crlf.py').read_bytes())&quot;
+b'&quot;&quot;&quot;A file with CRLF line endings.&quot;&quot;&quot;\r\nimport sys\r\nimport os\r\n'
+
+$ ruff crlf.py --select I001 --fix
+Found 1 error(s) (1 fixed, 0 remaining).
+
+$ python -c &quot;from pathlib import Path;print(Path('crlf.py').read_bytes())&quot;
+b'&quot;&quot;&quot;A file with CRLF line endings.&quot;&quot;&quot;\r\nimport os\nimport sys\n'
+</code></pre>
+<p>The last output contains mixed <code>\r\n</code> and <code>\n</code> line endings.
+It results e.g. in <code>pylint</code> subsequently complaining about <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/convention/mixed-line-endings.html">mixed-line-endings / C0327</a>.</p>
+<p>If the original file consistently uses a single line ending convention it would be nice if the fix would adhere to the same convention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-30 12:43</div>
+            <div class="timeline-body"><p>Thanks. We should be able to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-30 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-30 16:06</div>
+            <div class="timeline-body"><p>I'm looking into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1482.html">astral-sh/ruff#1482</a> on 2022-12-30 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-30 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1487.html">astral-sh/ruff#1487</a> on 2022-12-30 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1490.html">astral-sh/ruff#1490</a> on 2022-12-30 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect `requires-python` upper bounds on first-party packages - astral-sh/uv #11624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect `requires-python` upper bounds on first-party packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11624">#11624</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-02-19 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 15:33</div>
+            <div class="timeline-body"><p>We ignore <code>requires-python</code> upper bounds during resolution for various reasons (discussed much elsewhere), however, it can be confusing when we apply this to a first party package, e.g.,</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12,&lt;3.13&quot;
+dependencies = []
+</code></pre>
+<pre><code>❯ uv venv -p 3.13
+Using CPython 3.13.2
+warning: The requested interpreter resolved to Python 3.13.2, which is incompatible with the project's Python requirement: `==3.12.*`
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ uv pip install -e .
+Resolved 1 package in 0.78ms
+      Built example @ file:///Users/zb/workspace/uv/example
+Prepared 1 package in 548ms
+Installed 1 package in 1ms
+ + example==0.1.0 (from file:///Users/zb/workspace/uv/example)
+</code></pre>
+<p>I think we should consider respecting <code>requires-python</code> upper bounds in this context, as an up-front check rather than a resolver behavior. I think we'd apply this to the target package of install operations (including tool installs).</p>
+<p>See</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11612#issuecomment-2668992030</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-02-19 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11612.html">astral-sh/uv#11612</a> on 2025-02-19 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-19 16:12</div>
+            <div class="timeline-body"><p>What about throwing an error or a warning when the user puts an upper bound at all? Even if it matches the current Python environment.</p>
+<p>I'm about to write a pre-PEP on the semantics of Requires-Python, and I was going to say that tools should error, warn, or ignore upper bounds. It would be good to know if there are edge cases to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 16:20</div>
+            <div class="timeline-body"><p>Well, until there's an alternative to <code>project.requires-python</code> that allows people to specify a single Python version for their application, it's not reasonable to say you can't use <code>requires-python = &quot;==3.11.*&quot;</code> or whatever. People want to be able to encode that their application runs on a single Python version, which I think is quite reasonable. Published packages are a separate problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-19 16:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Well, until there's an alternative to project.requires-python that allows people to specify a single Python version for their application</p>
+</blockquote>
+<p>Could you make a uv specific option for that?</p>
+<blockquote>
+<p>, it's not reasonable to say you can't use requires-python = &quot;==3.11.*&quot; or whatever.</p>
+</blockquote>
+<p>Oh dear, the PEP is going to say exactly that, both it's going to say the version should be on the language level not the release level (i.e. should only be 3.11, not 3.11.*) and the only operators defined will be &gt;, &gt;=, and !=.</p>
+<blockquote>
+<p>People want to be able to encode that their application runs on a single Python version, which I think is quite reasonable. Published packages are a separate problem.</p>
+</blockquote>
+<p>Understood, but the consensus is, and the direction given by the author of the spec, is that Requires-Python was not intended for that.</p>
+<p>I'll consider your feedback when I start writing the PEP (in about a week) and make sure astral are fully in the loop, might not be accepted, but the consensus was pretty strong on the last discussion thread (https://discuss.python.org/t/requires-python-and-pre-release-python-versions/62959).</p>
+<p>I'll definitely add this use case as a rejected idea, mostly because it treats Requires-Python as meaning different things on different contexts, and see what the consensus ends up being on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 17:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you make a uv specific option for that?</p>
+</blockquote>
+<p>Certainly, we're considering it. We're dragging our feet because it'd be uv-specific though and it conflicts with  the <code>.python-version</code> file which is vaguely respected by other tools.</p>
+<p>My point was mostly in response to changing the standard — the standard probably shouldn't change without an alternative? I strongly agree this isn't what <code>Requires-Python</code> is for, but that's all users have today. It would resolve all the confusion about the overlap between <code>Requires-Python</code> and the <code>.python-version</code> files though! which would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff/issues/16355.html">astral-sh/ruff#16355</a> on 2025-02-25 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8206.html">astral-sh/uv#8206</a> on 2025-03-13 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../caracal-pipeline/MosaicQueen/issues/54.html">caracal-pipeline/MosaicQueen#54</a> on 2025-11-13 12:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

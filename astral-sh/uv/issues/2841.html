@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` not recognizing existing Pytorch installed by `conda` in Pytorch docker image - astral-sh/uv #2841</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` not recognizing existing Pytorch installed by `conda` in Pytorch docker image</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2841">#2841</a>
+        opened by <a href="https://github.com/StellarStorm">@StellarStorm</a>
+        on 2024-04-05 21:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/StellarStorm">@StellarStorm</a> on 2024-04-05 21:36</div>
+            <div class="timeline-body"><p>Good afternoon!
+I've just discovered <code>uv</code> and am finding it quite helpful - thanks for all the work on it!</p>
+<p>I'm building a Docker image based on the <a href="https://hub.docker.com/layers/pytorch/pytorch/2.2.2-cuda12.1-cudnn8-runtime/images/sha256-923f687790bec78081c357e71dcd5dcef80b0cc00f6c34484902a5e83362c854?context=explore">pytorch 2.2.2 Docker image</a> and I've found something I don't expect. When trying to install certain packages that depend upon pytorch, <code>uv</code> wants to re-install torch. This is despite the Docker image being built upstream with torch already present and installed from conda.</p>
+<p>For example, this will add torch==2.2.2, despite it already being present on the system:</p>
+<p><code>CONDA_PREFIX=/opt/conda uv pip install monai[all]  </code></p>
+<p>I've also tried with the <code>--system</code> flag instead of setting <code>CONDA_PREFIX</code>, but get the same result.</p>
+<p>Looking at the output from <code>uv pip list</code>, there's a difference in what is sees vs. the system-wide <code>pip</code>:</p>
+<pre><code class="language-bash">root@colima-amd64:/workspace# CONDA_PREFIX=/opt/conda uv pip list | grep torch
+torchelastic              0.2.2
+root@colima-amd64:/workspace# pip list | grep torch
+torch                     2.2.2
+torchaudio                2.2.2
+torchelastic              0.2.2
+torchvision               0.17.2
+</code></pre>
+<p>This is my uv/pip version information:</p>
+<pre><code class="language-bash">root@colima-amd64:/workspace# uv --version
+uv 0.1.29
+root@colima-amd64:/workspace# pip --version
+pip 24.0 from /opt/conda/lib/python3.10/site-packages/pip (python 3.10)
+</code></pre>
+<p>The Docker image is based upon Ubuntu 22.04. Python is installed by the upstream Pytorch Docker devs with conda. I installed uv with pip.</p>
+<pre><code class="language-bash">root@colima-amd64:/workspace# conda --version
+conda 23.9.0
+
+root@colima-amd64:/workspace# which pip
+/opt/conda/bin/pip
+root@colima-amd64:/workspace# which conda
+/opt/conda/bin/conda
+root@colima-amd64:/workspace# which uv
+/opt/conda/bin/uv
+</code></pre>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-07 00:29</div>
+            <div class="timeline-body"><p>That's interesting... Are you able to include a minimal Dockerfile that reproduces the issue? Happy to look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-04-07 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StellarStorm">@StellarStorm</a> on 2024-04-09 18:23</div>
+            <div class="timeline-body"><p>Sure - here's the minimal dockerfile (can't attach for some reason):</p>
+<pre><code class="language-text">FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+
+RUN pip install uv \
+    &amp;&amp; CONDA_PREFIX=/opt/conda uv pip install monai --verbose
+</code></pre>
+<p>Saved to &quot;Dockerfile&quot; and built with <code>docker buildx build --platform linux/amd64 --rm --network=host --progress=plain -t uv_test .</code></p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StellarStorm">@StellarStorm</a> on 2024-04-11 13:54</div>
+            <div class="timeline-body"><p>@charliermarsh I suspect #2928  and #2991 may be related</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2928.html">astral-sh/uv#2928</a> on 2024-04-13 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-04-13 18:44</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/2928#issuecomment-2053727555 that explains this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3341.html">astral-sh/uv#3341</a> on 2024-05-03 03:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3380.html">astral-sh/uv#3380</a> on 2024-05-06 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-06 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-06 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-06 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StellarStorm">@StellarStorm</a> on 2024-05-07 22:29</div>
+            <div class="timeline-body"><p>Seems to work great now with uv 0.1.40, thanks! 🎉</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

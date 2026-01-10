@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip interop for relative packages - astral-sh/uv #2635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip interop for relative packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2635">#2635</a>
+        opened by <a href="https://github.com/serjflint">@serjflint</a>
+        on 2024-03-23 08:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-23 08:17</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hi!</p>
+<p>FIrst, I wish to say that uv is an amazing tool and works blazingly fast.</p>
+<p>I am working with an existing legacy setup and trying to use uv as a local replacement for pip.
+The biggest complication with that legacy setup that it requires a package from a local relative path.
+I have to use https://peps.python.org/pep-0440/#direct-references for it.</p>
+<p>In the issues I have found that I can use <code>${PROJECT_ROOT}</code> for the uv. But it is not really an environment variable and it is not set at the time of loading 'setup.py' file.</p>
+<p>In the end I got something like this</p>
+<pre><code class="language-python">import os
+import pathlib
+import setuptools
+import sys
+
+PACKAGE_PATH = (
+    pathlib.Path(__file__).parent.parent / 'dir' / 'package'
+)
+if sys.argv[0] == '-c':  # uv hack
+    PACKAGE_URL = r'file:///${PROJECT_ROOT}/../dir/package'
+else:
+    PACKAGE_URL = f'file://localhost/{PACKAGE_PATH}#egg=sub_package'
+</code></pre>
+<p>Is there any better way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-23 09:00</div>
+            <div class="timeline-body"><p>When I used <code>PACKAGE_URL = r'file:///${PROJECT_ROOT}/../dir/package#egg=sub_package'</code>
+and called <code>python -m pip install -e .</code> I got a following error:
+<code>ERROR: Could not install packages due to an OSError: [Errno 2] No such file or directory: '/dir/package'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-23 21:28</div>
+            <div class="timeline-body"><p>We accept relative URLs for direct references, so you can do like <code>foo @ ./bar</code>. Does that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-23 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-25 17:31</div>
+            <div class="timeline-body"><blockquote>
+<p>We accept relative URLs for direct references, so you can do like <code>foo @ ./bar</code>. Does that work?</p>
+</blockquote>
+<p>I tried <code>package @ ../dir/package</code> and got an error with pip</p>
+<p><code>error in main-package setup command: 'install_requires' must be a string or list of strings containing valid project/version requirement specifiers; Invalid URL: ../dir/package</code></p>
+<p>The question is how to get a configuration which works with both pip and uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-25 17:32</div>
+            <div class="timeline-body"><p>Yeah, unfortunately <code>pip</code> doesn't support relative references. It does expand environment variables, so you <em>could</em> use <code>PROJECT_ROOT</code> like above, but you'd have to &quot;inject&quot; it manually when running <code>pip install</code> commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-25 17:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, unfortunately <code>pip</code> doesn't support relative references. It does expand environment variables, so you <em>could</em> use <code>PROJECT_ROOT</code> like above, but you'd have to &quot;inject&quot; it manually when running <code>pip install</code> commands.</p>
+</blockquote>
+<p>Then I have to inject it each time or write a wrapper script. So the easiest way would be to ask pip to add a default for PROJECT_ROOT variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-03-25 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/issues/12597.html">pypa/pip#12597</a> on 2024-03-25 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-25 17:53</div>
+            <div class="timeline-body"><p>When I use <code>f'file://localhost/{PACKAGE_PATH}#egg=sub_package'</code> I get an error</p>
+<pre><code class="language-bash">uv pip install -e .
+error: Failed to build editables
+  Caused by: Failed to parse metadata from built wheel
+  Caused by: relative path without a working directory: localhost//abs/path/dir/package#egg=sub_package
+package @ file://localhost//abs/path/dir/package#egg=sub_package
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-25 18:01</div>
+            <div class="timeline-body"><p>I assume it is wrongly treated as a relative path by pep508-rs crate even though it is a pep440 link.
+https://github.com/astral-sh/uv/blob/7a5571fa5c4fa72a26b0754f3273f1d75f3fa7d2/crates/pep508-rs/src/verbatim_url.rs#L106</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-25 18:02</div>
+            <div class="timeline-body"><p>Why include <code>localhost/</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-25 18:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Why include <code>localhost/</code>?</p>
+</blockquote>
+<p>It is an assumed default by pep 440 https://peps.python.org/pep-0440/#file-urls</p>
+<p>Without it - <code>PACKAGE_URL = f'file:///{PACKAGE_PATH}#egg=sub_package'</code> I got an error</p>
+<pre><code class="language-bash">error in main-package setup command: 'install_requires' must be a string or list of strings containing valid project/version requirement specifiers; Invalid URL given
+</code></pre>
+<p>P.S.: the value is <code>file:////abs/path/dir/package#egg=sub_package</code> and I get the same error without egg specifier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-25 18:10</div>
+            <div class="timeline-body"><p>Thanks, we're probably just missing handling for that, although I think the problem is your <code>PACKAGE_PATH</code> has a leading slash...? The resolved URL was <code>file://localhost//abs/path/dir/package#egg=sub_package</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-03-25 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks, we're probably just missing handling for that, although I think the problem is your <code>PACKAGE_PATH</code> has a leading slash...? The resolved URL was <code>file://localhost//abs/path/dir/package#egg=sub_package</code>.</p>
+</blockquote>
+<p>Actually yes. I removed it and it solved the problem. Thank you very much for your time and patience.</p>
+<p>P.S.: even the egg part works with uv --version 0.1.24</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2652.html">astral-sh/uv#2652</a> on 2024-03-25 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-25 18:12</div>
+            <div class="timeline-body"><p>I filed an issue for the <code>localhost</code> part here: https://github.com/astral-sh/uv/issues/2652</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @serjflint on 2024-03-25 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-03-25 18:50</div>
+            <div class="timeline-body"><p>Now I don't know your project, but in general about ${PROJECT_ROOT}, there are package systems that support that variable in dependencies and can create packages using it that pip can install, and setuptools is not one of them.
+PDM seems to be one of them. In such a PDM defined pyproject, pip reads the project, starts the wheel build, pdm build hooks resolve the dependency to an absolute path and it somehow works.</p>
+<p>The general thinking would be to use a package builder that supports relative path references like that. But I'll be careful and say I don't know which way works simultaneously in both pip and uv. The way I would currently do that works in pip but falls afoul of #1808 in uv (for a file URL). (Edit: Now those problems seem to be fixed already :wink: @charliermarsh )</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

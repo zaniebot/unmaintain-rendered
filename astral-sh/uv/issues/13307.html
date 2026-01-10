@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect XDG specification on Windows - astral-sh/uv #13307</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect XDG specification on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13307">#13307</a>
+        opened by <a href="https://github.com/leni8ec">@leni8ec</a>
+        on 2025-05-06 00:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leni8ec">@leni8ec</a> on 2025-05-06 00:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Now <code>uv</code> for some reason ignores XDG variables when installing in <strong>windows</strong> and needs to manually set <code>uv_*</code> environment variables.</p>
+<p>It would be nice if windows also used  <code>XDG_*_Home</code> variables (for example as in <a href="https://github.com/jdx/mise">mise</a>).</p>
+<p>But it is interesting that <code>XDG_BIN_HOME</code> - still works in windows, although with an error.</p>
+<p><img src="https://github.com/user-attachments/assets/f7ab0e48-3f8b-4696-bd7f-48cc48096f5a" alt="Image" />
+<img src="https://github.com/user-attachments/assets/661ddbc9-748f-434f-a234-045d830bcd56" alt="Image" /></p>
+<h3>Related:</h3>
+<ul>
+<li>https://docs.astral.sh/uv/reference/cli/#uv-tool-dir</li>
+<li>https://docs.astral.sh/uv/configuration/installer/#changing-the-install-path</li>
+<li>https://docs.astral.sh/uv/configuration/environment/#xdg_bin_home</li>
+<li>https://github.com/astral-sh/uv/issues/9985</li>
+<li>https://github.com/astral-sh/uv/issues/7008</li>
+<li>https://github.com/astral-sh/uv/issues/5746</li>
+</ul>
+<blockquote>
+<p><code>XDG_DATA_HOME</code>, <code>XDG_CONFIG_HOME</code>, <code>XDG_CACHE_HOME</code></p>
+</blockquote>
+<h3>Example</h3>
+<p><code>uv</code> uses the <a href="https://specifications.freedesktop.org/basedir-spec/latest/">XDG specification</a> just as in macos/linux</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @leni8ec on 2025-05-06 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 08:38</div>
+            <div class="timeline-body"><p>We probably shouldn't read <code>XDG_BIN_HOME</code> on Windows for consistency, CC @zanieb</p>
+<p>https://github.com/astral-sh/uv/blob/797f1fbac0d5cc6820709d4703bbf3cd1569176c/crates/uv-dirs/src/lib.rs#L28-L33</p>
+<p>I think it's more likely that we keep with the Windows native paths over using XDG, but either way we decide I think we should do it consistently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-06 14:54</div>
+            <div class="timeline-body"><p>There is no equivalent tool binary directory on Windows so we <em>are</em> using the XDG location as done in <code>pipx</code>. I think <code>pipx</code> just hard-codes <code>%USERPROFILE%\.local\bin</code> though, but I'd prefer to consistently respect <code>XDG_BIN_HOME</code> — I think it'd be more confusing not to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-06 14:55</div>
+            <div class="timeline-body"><p>If the XDG_* variables are set and map clearly to the Windows native path concepts, I don't really see a compelling reason to ignore them on Windows really. Though, of course, we should use the native paths by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 15:04</div>
+            <div class="timeline-body"><p>Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-17 09:29</div>
+            <div class="timeline-body"><p>I agree that it would probably be good to just respect XDG if it <em>happens</em> to be set on windows -- it's pretty hard for those to be accidentally set!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielniccoli">@danielniccoli</a> on 2025-06-21 09:39</div>
+            <div class="timeline-body"><blockquote>
+<p>There is no equivalent tool binary directory on Windows</p>
+</blockquote>
+<p>Yes, there is: <code>FOLDERID_UserProgramFiles</code>. I also wrote about that <a href="https://github.com/astral-sh/uv/issues/7008#issuecomment-2721538187">here</a> and mentioned you.</p>
+<p>Source: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid</p>
+<p>Furthermore, for anyone's interest:</p>
+<blockquote>
+<p>Applications should not create files or folders [in the user's profile folder]; they should put their data under the locations referred to by <a href="https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0#system-environment-specialfolder-applicationdata">ApplicationData</a>.</p>
+</blockquote>
+<p>Source: https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 11:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, there is: FOLDERID_UserProgramFiles</p>
+</blockquote>
+<p>Yes, I've seen your comment there and appreciate your suggestions. However, that's not a single directory shared across programs and expected to be present on the <code>PATH</code>. Rather the suggestion is to do something like <code>%LOCALAPPDATA%\Programs\uv\scripts</code> and add it to the <code>PATH</code>. We could do that, but it's not a direct equivalent to the <code>XDG_BIN_HOME</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielniccoli">@danielniccoli</a> on 2025-06-21 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>However, that's not a single directory shared across programs and expected to be present on the PATH.</p>
+</blockquote>
+<p>Yes, you are right that there is no directory equivalent to <code>~/.local/bin</code> on Windows. Reading the comment again, I think I did mistunderstand your intention a bit.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

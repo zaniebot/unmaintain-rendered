@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N805 classmethod-decorators x Pydantic - astral-sh/ruff #769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N805 classmethod-decorators x Pydantic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/769">#769</a>
+        opened by <a href="https://github.com/g-as">@g-as</a>
+        on 2022-11-16 15:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/g-as">@g-as</a> on 2022-11-16 15:52</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I have some <strong>pydantic</strong>'s models lying around with some validation like so:</p>
+<pre><code class="language-python">import pydantic
+
+
+class MyModel(pydantic.BaseModel):
+
+    my_field: str
+
+    @pydantic.validator(&quot;my_field&quot;)
+    def _lower(cls, my_field: str) -&gt; str:
+        ...
+</code></pre>
+<p><strong>pep8-naming</strong> doesn't trigger with:</p>
+<pre><code>classmethod-decorators =
+    classmethod
+    validator
+</code></pre>
+<p>but <strong>ruff</strong> does.</p>
+<p>The trick is <code>validator</code> is not a decorator but a function that returns a classmethod.</p>
+<p>I also checked that, as expected,</p>
+<pre><code class="language-python">from pydantic import validator
+
+
+class MyModel(pydantic.BaseModel):
+
+    my_field: str
+
+    @validator
+    def _lower(cls, my_field: str) -&gt; str:
+        ...
+</code></pre>
+<p>doesn't raise any <strong>N805</strong> error (even though it's not functional).</p>
+<p>Other &quot;issue&quot;, I could not get it to work when keeping the pydantic namespace:</p>
+<pre><code class="language-python">import pydantic
+
+
+class MyModel(pydantic.BaseModel):
+
+    my_field: str
+
+    @pydantic.validator
+    def _lower(cls, my_field: str) -&gt; str:
+        ...
+</code></pre>
+<p>even with</p>
+<pre><code class="language-toml">[tool.ruff.pep8-naming]
+classmethod-decorators = [
+    &quot;classmethod&quot;,
+    &quot;validator&quot;,
+    &quot;pydantic.validator&quot;,
+]
+</code></pre>
+<p>Is parity with pep8-naming on this attainable/desirable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 15:55</div>
+            <div class="timeline-body"><p>Yeah that should work! Will take a look (but possibly tomorrow).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-16 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2022-11-16 15:58</div>
+            <div class="timeline-body"><p>Man, you're on a mission.</p>
+<p>Keep up the good work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-16 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 17:04</div>
+            <div class="timeline-body"><p>Thank you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 17:05</div>
+            <div class="timeline-body"><p>Ok yeah the logic here just wasn't general enough! Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/772.html">astral-sh/ruff#772</a> on 2022-11-16 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-16 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 17:25</div>
+            <div class="timeline-body"><p>Fixed and added that <code>pydantic</code> use-case as a dedicated test case. Will go out in the next release!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 17:25</div>
+            <div class="timeline-body"><p>Building now: https://github.com/charliermarsh/ruff/releases/tag/v0.0.124</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2022-11-16 19:15</div>
+            <div class="timeline-body"><p>cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2151.html">astral-sh/ruff#2151</a> on 2023-01-25 09:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

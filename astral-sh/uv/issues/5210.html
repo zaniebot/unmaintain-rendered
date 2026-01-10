@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-default system-installed Python versions not listed - astral-sh/uv #5210</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Non-default system-installed Python versions not listed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5210">#5210</a>
+        opened by <a href="https://github.com/mgaitan">@mgaitan</a>
+        on 2024-07-19 02:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgaitan">@mgaitan</a> on 2024-07-19 02:36</div>
+            <div class="timeline-body"><p>I have 3 different Python versions installed on my system (Ubuntu 24.04). The default is 3.12, and I have 3.8 and 3.10 installed via PPAs.</p>
+<pre><code>tin@morocha:~/lab$ ls /usr/bin/python3.*
+/usr/bin/python3.10  /usr/bin/python3.12  /usr/bin/python3.12-config  /usr/bin/python3.8  /usr/bin/python3.8-config
+</code></pre>
+<p>I expect <code>uv python list</code> to show all these versions as available. However, only the default (3.12.3) is shown, and 3.10.14 and 3.8.19 are listed as &quot;download available&quot; even though they are already installed (not uv managed).</p>
+<pre><code>tin@morocha:~/lab$ uv python list
+warning: `uv python list` is experimental and may change without warning.
+cpython-3.12.4-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python3
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python
+cpython-3.12.3-linux-x86_64-gnu     /bin/python3
+cpython-3.12.3-linux-x86_64-gnu     /bin/python
+cpython-3.11.9-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.10.14-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.9.19-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.8.19-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu      &lt;download available&gt;
+</code></pre>
+<pre><code>tin@morocha:~/lab$ python3.10 --version
+Python 3.10.14
+tin@morocha:~/lab$ python3.8 --version
+Python 3.8.19
+</code></pre>
+<p>uv version</p>
+<pre><code>tin@morocha:~/lab$ uv --version
+uv 0.2.26
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 02:54</div>
+            <div class="timeline-body"><p>Thanks for the report! I think this is solved by #5148 which will be in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-19 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgaitan">@mgaitan</a> on 2024-07-22 20:23</div>
+            <div class="timeline-body"><p>it's fixed !</p>
+<pre><code>tin@morocha:~/lab$ uv --version
+uv 0.2.27
+tin@morocha:~/lab$ uv python list
+warning: `uv python list` is experimental and may change without warning
+cpython-3.12.4-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python3.12
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python3
+cpython-3.12.3-linux-x86_64-gnu     /usr/bin/python
+cpython-3.12.3-linux-x86_64-gnu     /bin/python3.12
+cpython-3.12.3-linux-x86_64-gnu     /bin/python3
+cpython-3.12.3-linux-x86_64-gnu     /bin/python
+cpython-3.11.9-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.10.14-linux-x86_64-gnu    /usr/bin/python3.10
+cpython-3.10.14-linux-x86_64-gnu    /bin/python3.10
+cpython-3.10.14-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.9.19-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.8.19-linux-x86_64-gnu     /usr/bin/python3.8
+cpython-3.8.19-linux-x86_64-gnu     /bin/python3.8
+cpython-3.8.19-linux-x86_64-gnu     &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu      &lt;download available&gt;
+</code></pre>
+<p>QQ: Does it have sense to list  symbolic links?</p>
+<p>For instance, several of the above items points to the same executable</p>
+<pre><code>tin@morocha:~/lab$ file /usr/bin/python3.12
+/usr/bin/python3.12: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=d575bfe93b720eb1f8398b1c56ba864b3d9089bd, for GNU/Linux 3.2.0, stripped
+tin@morocha:~$ file /usr/bin/python3
+/usr/bin/python3: symbolic link to python3.12
+</code></pre>
+<p>PS: I'm eager to be able to install cpython-3.13 beta via uv!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mgaitan on 2024-07-22 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5308.html">astral-sh/uv#5308</a> on 2024-07-22 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 20:26</div>
+            <div class="timeline-body"><p>Opened https://github.com/astral-sh/uv/issues/5308 for that.</p>
+<p>Python 3.13 is WIP at https://github.com/indygreg/python-build-standalone/pull/264</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

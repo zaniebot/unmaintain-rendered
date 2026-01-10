@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename ErrorKind::{VersionDisplayed, HelpDisplayed} to present tense - clap-rs/clap #2006</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rename ErrorKind::{VersionDisplayed, HelpDisplayed} to present tense</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2006">#2006</a>
+        opened by <a href="https://github.com/davidMcneil">@davidMcneil</a>
+        on 2020-07-10 15:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davidMcneil">@davidMcneil</a> on 2020-07-10 15:41</div>
+            <div class="timeline-body"><p>Using clap version <code>2.33.1</code>. See the following program:</p>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {
+    let app = App::new(&quot;app&quot;)
+        .version(&quot;1.2.3&quot;)
+        .arg(Arg::with_name(&quot;arg&quot;).takes_value(true).long(&quot;arg&quot;));
+
+    let matches = app.get_matches_from_safe(&amp;[&quot;app&quot;, &quot;--version&quot;]);
+    println!(&quot;\nerror: {:?}&quot;, matches);
+}
+</code></pre>
+<p>The current output I get is:</p>
+<pre><code>app 1.2.3
+error: Err(Error { message: &quot;&quot;, kind: VersionDisplayed, info: None })
+</code></pre>
+<p>The output I expect is:</p>
+<pre><code>error: Err(Error { message: &quot;&quot;, kind: VersionDisplayed, info: None })
+</code></pre>
+<p>The <code>--help</code> option behaves as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @davidMcneil on 2020-07-10 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2007.html">clap-rs/clap#2007</a> on 2020-07-10 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../habitat-sh/habitat/pulls/7793.html">habitat-sh/habitat#7793</a> on 2020-07-10 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-11 11:58</div>
+            <div class="timeline-body"><p>This is fixed in 3.0.</p>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {
+    let app = App::new(&quot;app&quot;)
+        .version(&quot;1.2.3&quot;)
+        .arg(Arg::new(&quot;arg&quot;).takes_value(true).long(&quot;arg&quot;));
+
+    let matches = app.try_get_matches_from(&amp;[&quot;app&quot;, &quot;--version&quot;]);
+    println!(&quot;\nerror: {:#?}&quot;, matches);
+}
+</code></pre>
+<pre><code>error: Err(
+    Error {
+        cause: &quot;&quot;,
+        message: app 1.2.3
+        ,
+        kind: VersionDisplayed,
+        info: None,
+    },
+)
+</code></pre>
+<p>We do need to rename the kind to <code>DisplayVersion</code> (and probably <code>HelpDisplayed</code>). I'm re-purposing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`get_matches_from_safe` still prints version information to stdout" to "Rename ErrorKind::{VersionDisplayed, HelpDisplayed} to present tense" by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> added by @CreepySkeleton on 2020-07-11 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @CreepySkeleton on 2020-07-11 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2021.html">clap-rs/clap#2021</a> on 2020-07-18 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/craigpastro">@craigpastro</a> on 2020-07-20 01:00</div>
+            <div class="timeline-body"><p>This looks like something I can probably handle if that is okay? I suppose <code>HelpDisplayed</code> should be renamed to <code>DisplayHelp</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2027.html">clap-rs/clap#2027</a> on 2020-07-20 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-07-26 07:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:17 UTC
+    </footer>
+</body>
+</html>

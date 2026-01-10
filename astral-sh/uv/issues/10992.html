@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` silently ignores `--editable` when used with a Git/VCS dependency - astral-sh/uv #10992</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` silently ignores `--editable` when used with a Git/VCS dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10992">#10992</a>
+        opened by <a href="https://github.com/edmorley">@edmorley</a>
+        on 2025-01-27 16:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edmorley">@edmorley</a> on 2025-01-27 16:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi</p>
+<p>Currently <code>uv add</code> will silently drop the <code>--editable</code> option when used with a VCS URL, rather than warning or erroring about it not being supported.</p>
+<p>This is low priority - I just happened to spot it as part of porting some of our existing pip/Poetry/Pipenv tests to uv.</p>
+<h3>Steps</h3>
+<ol>
+<li><code>uv init testcase &amp;&amp; cd $_ &amp;&amp; uv add --editable 'git+https://github.com/benoitc/gunicorn'</code></li>
+<li><code>rg git pyproject.toml</code></li>
+</ol>
+<h3>Actual</h3>
+<p><code>uv add</code> silently ignores <code>--editable</code> and adds the dependency to <code>[tool.uv.sources]</code> in <code>pyproject.toml</code> without the <code>editable = true</code>:</p>
+<pre><code>$ uv init testcase &amp;&amp; cd $_ &amp;&amp; uv add --editable 'git+https://github.com/benoitc/gunicorn'
+Initialized project `testcase` at `/Users/emorley/src/testcase`
+Using CPython 3.12.8 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+Resolved 3 packages in 59ms
+Installed 2 packages in 3ms
+ + gunicorn==23.0.0 (from git+https://github.com/benoitc/gunicorn@bacbf8aa5152b94e44aa5d2a94aeaf0318a85248)
+ + packaging==24.2
+
+$ rg git pyproject.toml
+12:gunicorn = { git = &quot;https://github.com/benoitc/gunicorn&quot; }
+</code></pre>
+<p>I checked the docs here but they don't mention that editable mode isn't supported for VCS/Git dependencies:
+https://docs.astral.sh/uv/concepts/projects/dependencies/#editable-dependencies
+https://docs.astral.sh/uv/reference/cli/#uv-add</p>
+<p>I only found out it wasn't supported by manually adding <code>editable = true</code> to the gunicorn entry in <code>[tool.uv.sources]</code>, which then resulted in this error:</p>
+<pre><code>error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 12, column 12
+   |
+12 | gunicorn = { git = &quot;https://github.com/benoitc/gunicorn&quot;, editable = true }
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cannot specify both `git` and `editable`
+</code></pre>
+<p>After some GitHub issue searching I found this which suggests this combination is intentionally not supported (which makes sense; it is a bit of a counter-intuitive combination):
+https://github.com/astral-sh/uv/issues/5442</p>
+<h3>Expected</h3>
+<p>One of:</p>
+<ul>
+<li><code>uv add</code> to fail, with an error message saying ~<code>&quot;--editable cannot be used with VCS/Git dependencies&quot;</code></li>
+<li><code>uv add</code> to succeed, and omit the <code>editable = true</code> from the entry added to <code>[tool.uv.sources]</code>, but emit a warning saying ~<code>&quot;ignoring --editable since it's not supported when using VCS/Git dependencies&quot;</code></li>
+</ul>
+<p>For example, when using the <code>uv pip</code> interface, an error message is given:</p>
+<pre><code>$ uv pip install -e 'git+https://github.com/benoitc/gunicorn'
+error: Editable must refer to a local directory, not a Git URL: `git+https://github.com/benoitc/gunicorn`
+</code></pre>
+<p>It would also be good to document that editable is only supported for path dependencies, at:
+https://docs.astral.sh/uv/concepts/projects/dependencies/#editable-dependencies
+https://docs.astral.sh/uv/reference/cli/#uv-add
+https://docs.astral.sh/uv/pip/packages/#editable-packages</p>
+<p>Plus it looks like this difference between <code>pip</code> and <code>uv pip</code> is missing from:
+https://docs.astral.sh/uv/pip/compatibility/</p>
+<h3>Context</h3>
+<p>I'm writing initial testcases for our support of uv, based on those I have already for our pip/Poetry/Pipenv support - one of which tests editable VCS installations, since:</p>
+<ul>
+<li>editable installs are particularly tricky in our legacy build system (since the builds occur at one path and then the assets replayed from another at app boot), so we have to perform path rewriting of eg <code>.pth</code> files, which has been known to need adjustments across package manager and/or setuptools version changes, so I'm extra cautious with testing</li>
+<li>the other package managers support the editable-VCS combination. (I personally think it's a combination that perhaps doesn't make sense when using a lockfile/managed environment, so it's fine to me if uv doesn't support it fwiw. And if uv doesn't support it, then I don't need tests for it etc.)</li>
+</ul>
+<h3>Platform</h3>
+<p>macOS 15.2 ARM</p>
+<h3>Version</h3>
+<p>uv 0.5.24 (Homebrew 2025-01-23)</p>
+<h3>Python version</h3>
+<p>3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @edmorley on 2025-01-27 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 16:53</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-27 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10994.html">astral-sh/uv#10994</a> on 2025-01-27 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-27 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-27 19:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

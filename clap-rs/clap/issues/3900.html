@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>get_arg_conflicts_with panics if arg conflicts with group. - clap-rs/clap #3900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>get_arg_conflicts_with panics if arg conflicts with group.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3900">#3900</a>
+        opened by <a href="https://github.com/tmccombs">@tmccombs</a>
+        on 2022-07-07 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-07-07 07:45</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>3.2.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::*;
+
+fn main() {
+    let c = Arg::new(&quot;c&quot;).short('c').conflicts_with(&quot;gr&quot;);
+    let app = Command::new(&quot;test&quot;)
+        .group(ArgGroup::new(&quot;gr&quot;).args(&amp;[&quot;a&quot;, &quot;b&quot;]))
+        .arg(Arg::new(&quot;a&quot;).short('a'))
+        .arg(Arg::new(&quot;b&quot;).short('b'))
+        .arg(&amp;c);
+        
+    let res =app.clone().try_get_matches_from(vec![&quot;cmd&quot;, &quot;-c&quot;, &quot;-a&quot;]);
+    if let Err(e) = res {
+        assert_eq!(e.kind(), clap::error::ErrorKind::ArgumentConflict);
+        e.print().unwrap();
+    } else {
+        unreachable!();
+    }
+
+    println!(&quot;conflicts: {:?}&quot;, app.get_arg_conflicts_with(&amp;c));
+}
+</code></pre>
+<p>(see https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=6db4239226ac59fd07ccc37d0ce13bdd)</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the code in the minimal reproducible code section above</p>
+<h3>Actual Behaviour</h3>
+<p>Panic with `Command::get_arg_conflicts_with: The passed arg conflicts with an arg unknown to the cmd.&quot;</p>
+<h3>Expected Behaviour</h3>
+<p>Return  a vec containing the commands in the &quot;gr&quot; group.</p>
+<h3>Additional Context</h3>
+<p>I encountered this while trying to generate zsh completions for a command that has an arg that conflicts with a group, because clap_complete calls <code>get_arg_conflicts_with</code> for each argument when generating zsh completions.</p>
+<p>The correct logic for this must exist somewhere, because as can be seen in the code above, it correctly identifies the conflict when parsing a command containing a conflict with the group.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @tmccombs on 2022-07-07 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-07-07 08:05</div>
+            <div class="timeline-body"><p>Also worth pointing out that the documentation states that <code>get_arg_conflicts_with</code> gets a &quot;list of all arguments the given argument conflicts with&quot;. but from what I can tell, this isn't actually true. It just gets a list of the arguments that are listed as <code>conflicts_with</code> for this specific <code>Arg</code> value, not other arguments that are specified to conflict with this value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2022-07-07 08:22</div>
+            <div class="timeline-body"><p>If I move the <code>conflicts_with</code> from the <code>Arg</code> to the <code>ArgGroup</code>, then it no longer panics, but the zsh shell completion doesn't detect the conflict between the group and the other option. But maybe that should be a separate bug with clap_complete?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3902.html">clap-rs/clap#3902</a> on 2022-07-09 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-11 20:38</div>
+            <div class="timeline-body"><blockquote>
+<p>If I move the conflicts_with from the Arg to the ArgGroup, then it no longer panics, but the zsh shell completion doesn't detect the conflict between the group and the other option. But maybe that should be a separate bug with clap_complete?</p>
+</blockquote>
+<p>Yes, that is a separate bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-14 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-14 14:39</div>
+            <div class="timeline-body"><p>v3.2.12 is now released with this</p>
+<p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:05 UTC
+    </footer>
+</body>
+</html>

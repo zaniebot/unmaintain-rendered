@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Union rules trigger duplicates on nested violations - astral-sh/ruff #6285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Union rules trigger duplicates on nested violations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6285">#6285</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-02 19:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:45</div>
+            <div class="timeline-body"><p>In <code>expression.rs</code>, we have some logic to avoid checking nested <code>Union</code> operators, since our <code>Union</code> checks operate recursively (and so re-checking nested <code>Union</code> operators leads to duplicate diagnostics).</p>
+<p>These checks don't quite work in <code>.pyi</code> files due to the way we process deferred nodes. We <em>don't</em> store the current expression stack when snapshotting the <code>SemanticModel</code>, because that would require us to store all expressions in an <code>IndexVec</code>. This is a known source of bugs.</p>
+<p>We can store the expressions in an <code>IndexVec</code>, like we do for statements, but it will definitely hurt performance and increase memory usage.</p>
+<p>As an example, if this is put in a <code>.pyi</code> file:</p>
+<pre><code class="language-python">from typing import Union
+
+Union[int, Union[int, int]]
+</code></pre>
+<p>You'll hit duplicate violations:</p>
+<pre><code>foo.pyi:3:22: PYI016 Duplicate union member `int`
+foo.pyi:3:27: PYI016 Duplicate union member `int`
+foo.pyi:3:27: PYI016 Duplicate union member `int`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-02 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6215.html">astral-sh/ruff#6215</a> on 2023-08-02 19:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6345.html">astral-sh/ruff#6345</a> on 2023-08-04 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-07 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6399.html">astral-sh/ruff#6399</a> on 2023-08-07 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 19:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

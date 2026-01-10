@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider adding an option to supress ruff format CLI warnings - astral-sh/ruff #8185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider adding an option to supress ruff format CLI warnings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8185">#8185</a>
+        opened by <a href="https://github.com/yakMM">@yakMM</a>
+        on 2023-10-24 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-24 21:26</div>
+            <div class="timeline-body"><p>Just tried <code>ruff format</code>, it's seriously great!</p>
+<p>I'm just annoyed by the warnings showing up in console: <code>warning: The following rules may cause conflicts when used with the formatter: XXX</code></p>
+<p>I want my linter (specifically the isort part) taking priority over the formatter, so I run the linter after the formatter and never had problems.</p>
+<p>Is there any way to acknowledge / supress the CLI warnings with a configuration option or a command line parameter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-10-24 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-10-24 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2023-10-24 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-10-24 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-24 21:31</div>
+            <div class="timeline-body"><p>Thanks for reporting. Which of the conflicting rules do you want to use alongside the formatter and what's the use case for having both enabled (what do they catch in addition to the formatter)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-24 21:31</div>
+            <div class="timeline-body"><p>(It sounds like one example is: using isort with different settings; so you run the formatter, then linter, to get formatted code with different import settings (which would then be reformatted if you re-ran the formatter).)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-24 21:39</div>
+            <div class="timeline-body"><p>Yeah I use <code>force-single-line = true</code> from isort (was using it with black as well).</p>
+<p>I also have a warning about a bunch of other conflicts ('D206', 'E501', 'ISC001', 'Q000', 'Q001', 'Q002', 'Q003', 'W191').</p>
+<p>My configuration might be weird, I have <code>select = [&quot;ALL&quot;]</code> and a few groups in <code>ignore</code>. I prefer to do it this way because:</p>
+<ul>
+<li>I get to test all the new rules when updating</li>
+<li>It's a smaller config to disable the few rules I don't want.</li>
+</ul>
+<p>And actually if I stop running <code>ruff check</code>, ruff format is not reformatting anything, so I'm not too sure if there is really a conflict?</p>
+<p>Also I would not want to disable all ruff warnings, only these rule conflict warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acdha">@acdha</a> on 2023-10-24 22:27</div>
+            <div class="timeline-body"><p>I hit this as well, with a very vanilla configuration - no custom isort options, etc. but we have a blanket <code>select = [&quot;E&quot;, &quot;W&quot;, …]</code> which means I see this:</p>
+<blockquote>
+<p>warning: The following rules may cause conflicts when used with the formatter: 'E501', 'W191'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the <code>select</code> or <code>extend-select</code> configuration, or adding then to the <code>ignore</code> configuration.</p>
+</blockquote>
+<p>The W191 seems like it could only be displayed when you have customized the formatter to use tabs instead of spaces.</p>
+<p>E501 seems like a harder case since most of the time it won't be an issue but there are a difficult cases (long comments, etc.) where it might be an issue. I wonder whether this might be as simple as implementing #8175 or trying something clever see whether the <code>format + lint</code> combination is stable before emitting it so the warning could be strengthened from “may cause conflicts” to “is causing conflicts with your configuration”.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-24 23:12</div>
+            <div class="timeline-body"><p>Thanks for explaining.</p>
+<p>We intentionally allow E501 because some projects use E501 to warn about extra long lines (e.g. line-length: 80 and pycodestyle.max-line-length: 100).</p>
+<blockquote>
+<p>The W191 seems like it could only be displayed when you have customized the formatter to use tabs instead of spaces.</p>
+</blockquote>
+<p>I like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-10-24 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8196.html">astral-sh/ruff#8196</a> on 2023-10-25 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../GenericMappingTools/pygmt/pulls/2770.html">GenericMappingTools/pygmt#2770</a> on 2023-10-25 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 08:12</div>
+            <div class="timeline-body"><p>#8196 refines the rule warnings and #8192 refined the <code>isort</code> warnings. I hope that this will remove all warnings for you (at least all warnings that you can't suppress)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-25 08:40</div>
+            <div class="timeline-body"><p>!!! You guys are fast, well done! It's a bit better, I get different ones now.</p>
+<p>I'm still not convinced by the warnings. If we take the linter as an example, there is not such warning and it's up to the user to make sure they didn't activate conflicting rules isn't it?</p>
+<p>Moreover, I still don't understand how the rules included in the warning conflict with the formatter with default settings: ('D206', 'E501', 'ISC001', 'Q000', 'Q001', 'Q002', 'Q003', 'W191')</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 08:49</div>
+            <div class="timeline-body"><blockquote>
+<p>!!! You guys are fast, well done! It's a bit better, I get different ones now.</p>
+</blockquote>
+<p>Did you build from source? The changes are not yet released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-25 08:52</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>!!! You guys are fast, well done! It's a bit better, I get different ones now.</p>
+</blockquote>
+<p>Did you build from source? The changes are not yet released.</p>
+</blockquote>
+<p>Yes yes I used the master branch from a few minutes ago. I no longer have the conflict about <code>force-single-line</code> from isort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 08:56</div>
+            <div class="timeline-body"><p>Oh nice! Can you try https://github.com/astral-sh/ruff/pull/8196? It isn't yet merged. Feel free to comment directly on the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-25 09:14</div>
+            <div class="timeline-body"><p>Tested on my project, only have a warning about <code>ISC001</code> and <code>isort.split-on-trailing-comma</code> left. I will reply to your comment about this one directly in the PR.</p>
+<p>Don't know if I should open a new issue, but I feel like the warning about <code>isort.split-on-trailing-comma=false</code> is underserved since I already have <code>isort.force-single-line=true</code>, so that <code>isort.split-on-trailing-comma=false</code> will never be applied. I don't know how complicated it is to keep making exceptions to the warning on the implementation side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 09:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Don't know if I should open a new issue, but I feel like the warning about isort.split-on-trailing-comma=false is underserved since I already have isort.force-single-line=true, so that isort.split-on-trailing-comma=false will never be applied. I don't know how complicated it is to keep making exceptions to the warning on the implementation side.</p>
+</blockquote>
+<p>Could you share your configuration and what warning your seeing. It should never warn about <code>isort.split-on-trailing-comma</code> when set to <code>false</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-25 11:01</div>
+            <div class="timeline-body"><p>Ah no I don't have <code>isort.split-on-trailing-comma</code>. It's asking me to set it to false.</p>
+<p>My config:</p>
+<pre><code>[tool.ruff]
+line-length = 88
+
+# We select all rules then ignore the one we don't want
+select = [&quot;ALL&quot;]
+ignore = [
+    &quot;COM&quot;,      # Commas
+    &quot;EM&quot;,       # Err-msg
+    &quot;INP&quot;,      # No-pep420
+    &quot;TCH&quot;,      # Type-checking, don't want to nest imports under TYPE_CHECKING
+    &quot;SLF&quot;,      # Self
+    &quot;TD&quot;,       # Todos
+    &quot;FIX&quot;,      # Fix-me
+    &quot;S101&quot;,     # assert, used for type-checking
+    &quot;ANN401&quot;,   # dynamic typing, already checked by mypy
+    &quot;ANN101&quot;,   # missing-type-self
+    &quot;ANN102&quot;,   # missing-type-cls
+    &quot;D1&quot;,       # Missing docstring
+    &quot;TRY003&quot;,   # Long messages in exception class
+]
+target-version = &quot;py312&quot;
+
+[tool.ruff.isort]
+force-single-line = true
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = &quot;parents&quot;
+
+[tool.ruff.pydocstyle]
+convention = &quot;pep257&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 13:07</div>
+            <div class="timeline-body"><p>I think that's actually correct.</p>
+<p>If you add the trailing comma after the last alias as in this example:</p>
+<pre><code class="language-python">from a import (b, c,)
+</code></pre>
+<p>Then <code>isort</code> formats it like this:</p>
+<pre><code class="language-python">from a import (
+    b,
+    c,
+)
+</code></pre>
+<p>Now, <code>skip-magic-trailing-comma=false</code> is incompatible <code>split-trailing-comma=true</code> because the formatter now undoes the multline formatting, ignoring your intention of adding the trailing comma:</p>
+<pre><code class="language-python">from a import b, c
+</code></pre>
+<p>That's why you either have to override the default of <code>split-trailing-comma</code> and set it to false OR set <code>format.skip-magic-trailing-comma</code> to <code>true</code>.</p>
+<p>Either way, I think we should extend the <code>skip-magic-trailing-comma</code> documentation and mention that you have to change <code>split-trailing-comma</code> when setting it to <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8229.html">astral-sh/ruff#8229</a> on 2023-10-25 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-25 21:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Then <code>isort</code> formats it like this:</p>
+<pre><code class="language-python">from a import (
+    b,
+    c,
+)
+</code></pre>
+</blockquote>
+<p>But this will not happen because I have <code>force-single-line=True</code></p>
+<p>Instead, isort will format to:</p>
+<pre><code class="language-python">from a import b
+from a import c
+</code></pre>
+<p>Which is not a problem for the formatter. Now the question is more &quot;how far should you go in the combination of options&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 22:18</div>
+            <div class="timeline-body"><p>Perhaps we could combine this request with a mechanism by which we automatically disable conflicting lint rules and options -- something like <code>formatter-compatibility = warn | ignore | force</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 23:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps we could combine this request with a mechanism by which we automatically disable conflicting lint rules and options -- something like <code>formatter-compatibility = warn | ignore | force</code>.</p>
+</blockquote>
+<p>That sounds interesting. I recommend making such option tooling independent (e.g. disabling conflicting rules etc). Having a tool specific name also opens the question of where it should be placed in the configuration. Under <code>format</code>, or better lint?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-26 03:16</div>
+            <div class="timeline-body"><blockquote>
+<p>If we take the linter as an example, there is not such warning and it's up to the user to make sure they didn't activate conflicting rules isn't it?</p>
+</blockquote>
+<p>We actually do have warnings in the linter like this too e.g.</p>
+<pre><code>❯ ruff check . --select ALL
+warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+</code></pre>
+<blockquote>
+<p>I recommend making such option tooling independent</p>
+</blockquote>
+<p>What do you mean? Like <code>ruff.on-tool-configuration-conflict</code> instead of <code>ruff.tool.format.on-linter-conflict</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 03:24</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I recommend making such option tooling independent</p>
+</blockquote>
+<p>What do you mean? Like <code>ruff.on-tool-configuration-conflict</code> instead of <code>ruff.tool.format.on-linter-conflict</code>?</p>
+</blockquote>
+<p>Kind of, but ideally more generic: <code>configuration-conflict = &quot;warn&quot; | &quot;resolve&quot;</code> Because there are other conflicts. E.g. you could set <code>pycodestyle.line-length</code> to a lower limit than the <code>line-length</code> and that will lead to incompatibility with  <code>isort</code> and the formatter. We could probably come up with a better name. There are also conflicts between the same tool as your example shows (conflict between lint rules)</p>
+<p>Alternatives: <code>configuration-conflict-resolution = &quot;manual&quot; | &quot;automatic&quot; | &quot;silent&quot;</code> (<code>automatic</code> resolves conflicts but warns). Although I'm not sure how I feel about <code>silent</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-26 03:31</div>
+            <div class="timeline-body"><p>Hm that seems really broad... I probably want different behavior depending on the category of conflict but perhaps this is a good start. Maybe <code>on-configuration-conflict = &quot;error&quot; | &quot;warn&quot; | &quot;ignore&quot;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8244.html">astral-sh/ruff#8244</a> on 2023-10-26 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-26 07:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps we could combine this request with a mechanism by which we automatically disable conflicting lint rules and options -- something like <code>formatter-compatibility = warn | ignore | force</code>.</p>
+</blockquote>
+<p>Well I opened this issue with this in mind, but when I see all the great work aiming at making the warnings represent actual conflicts and remove false-positive, I'm not sure it's really necessary anymore.</p>
+<p>Don't know about others, but https://github.com/astral-sh/ruff/pull/8196 and https://github.com/astral-sh/ruff/pull/8244 will probably remove all the warnings for my use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 02:05</div>
+            <div class="timeline-body"><p>We shipped some improvements in the last release. Please open a new issue if you still encounter issues and would prefer having an option to suppress all format CLI warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-10-27 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 06:50</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the work this is great. I see you choose not to add <code>ISC001</code> in your PR in the end, is there a specific reason to that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8968.html">astral-sh/ruff#8968</a> on 2023-12-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2023-12-28 07:53</div>
+            <div class="timeline-body"><p>In <code>ruff check</code>, there's always an option to run <code>ruff check . --select=ALL 2&gt;/dev/null</code> if you can't fix the incompatibilities and want to ignore all warnings, as they get written to stderr.</p>
+<p>I usually do not use the ruff formatter directly, thus only talking about <code>ruff check</code>.</p>
+<p>This is a very &quot;nuclear&quot; practice, but suppresses the annoying warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yasirroni">@yasirroni</a> on 2024-03-16 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I hit this as well, with a very vanilla configuration - no custom isort options, etc. but we have a blanket <code>select = [&quot;E&quot;, &quot;W&quot;, …]</code> which means I see this:</p>
+<blockquote>
+<p>warning: The following rules may cause conflicts when used with the formatter: 'E501', 'W191'. To avoid unexpected behavior, we recommend disabling these rules, either by removing them from the <code>select</code> or <code>extend-select</code> configuration, or adding then to the <code>ignore</code> configuration.</p>
+</blockquote>
+<p>The W191 seems like it could only be displayed when you have customized the formatter to use tabs instead of spaces.</p>
+<p>E501 seems like a harder case since most of the time it won't be an issue but there are a difficult cases (long comments, etc.) where it might be an issue. I wonder whether this might be as simple as implementing #8175 or trying something clever see whether the <code>format + lint</code> combination is stable before emitting it so the warning could be strengthened from “may cause conflicts” to “is causing conflicts with your configuration”.</p>
+</blockquote>
+<p>What is the recommended solution for this @acdha?</p>
+<hr />
+<p>Edit: turns out, simply update to the latest ruff version solved it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

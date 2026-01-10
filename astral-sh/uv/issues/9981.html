@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip --global-option - astral-sh/uv #9981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pip --global-option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9981">#9981</a>
+        opened by <a href="https://github.com/bdols">@bdols</a>
+        on 2024-12-17 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bdols">@bdols</a> on 2024-12-17 19:27</div>
+            <div class="timeline-body"><p>is it possible to supply &quot;global-options&quot; to the build step?</p>
+<p>I'm looking at a project that is doing the following:
+CC=&quot;cc -mavx2&quot; pip install pillow-simd==9.0.0.post3   --global-option=&quot;build_ext&quot;    --global-option=&quot;--enable-zlib&quot;    --global-option=&quot;--enable-jpeg&quot;  --global-option=&quot;--enable-tiff&quot;</p>
+<p>If I &quot;uv add pillow-simd==9.0.0.post3&quot;, I can see the _imaging.so doesn't contain the jpeg symbols</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 19:34</div>
+            <div class="timeline-body"><p>That option is setuptools specific and is being deprecated, see</p>
+<ul>
+<li>https://github.com/pypa/pip/issues/11859</li>
+</ul>
+<p>I think the idea is to use <code>--config-settings</code> instead? But honestly I'm confused about the state of <code>setuptools</code> behaviors... e.g</p>
+<ul>
+<li>https://github.com/pypa/setuptools/issues/2491</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdols">@bdols</a> on 2024-12-18 00:10</div>
+            <div class="timeline-body"><p>with setuptools 75.6.0, I'm able to, at least, pass these options, like so:
+CC=&quot;cc -mavx2&quot; uv add -vv -n pillow-simd==9.0.0.post3 -C--build-option=&quot;build_ext&quot; -C--build-option=&quot;--enable-webp&quot; -C--build-option=&quot;--enable-webpmux&quot; -C--build-option=&quot;--enable-jpeg2000&quot; -C--build-option=&quot;--enable-zlib&quot; -C--build-option=&quot;--enable-jpeg&quot;
+I verified by adding -C--build-option=&quot;--enable-tiff&quot; and the build failed because it couldn't find libtiff.</p>
+<p>but how do I declare these options in the toml config?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xiddoc">@Xiddoc</a> on 2024-12-18 18:08</div>
+            <div class="timeline-body"><p>I just finished wrestling <code>uv</code> for a few hours on a similar problem. I was trying to download and build the latest development version of <code>mypy</code>, then building it using the <code>setup.py</code> file (compiles it with <code>mypyc</code>, making it much faster).</p>
+<p>The actual shell command I essentially wanted to run was:</p>
+<pre><code class="language-shell">python setup.py bdist_wheel --use-mypyc
+</code></pre>
+<p>And I found that the following <code>pyproject.toml</code> settings do just that:</p>
+<pre><code class="language-toml">[tool.uv]
+config-settings = { --build-option = &quot;--use-mypyc&quot; }
+</code></pre>
+<p>Hopefully this is actually the solution to the problem, and that I didn't just get lucky with my build 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-18 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-06 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brainfo">@brainfo</a> on 2025-05-20 19:01</div>
+            <div class="timeline-body"><p>Hi, anyone has exprience in installing apex?</p>
+<p>They have building https://github.com/NVIDIA/apex:</p>
+<pre><code>git clone https://github.com/NVIDIA/apex
+cd apex
+# if pip &gt;= 23.1 (ref: https://pip.pypa.io/en/stable/news/#v23-1) which supports multiple `--config-settings` with the same key... 
+pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings &quot;--build-option=--cpp_ext&quot; --config-settings &quot;--build-option=--cuda_ext&quot; ./
+# otherwise
+pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option=&quot;--cpp_ext&quot; --global-option=&quot;--cuda_ext&quot; ./
+</code></pre>
+<p>I am using uv 0.6.12. how to specify --config-settings or  --global-option?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:52 UTC
+    </footer>
+</body>
+</html>

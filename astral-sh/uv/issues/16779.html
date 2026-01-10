@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` hangs forever for complex pyproject - astral-sh/uv #16779</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` hangs forever for complex pyproject</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16779">#16779</a>
+        opened by <a href="https://github.com/alex-shapiro">@alex-shapiro</a>
+        on 2025-11-19 17:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alex-shapiro">@alex-shapiro</a> on 2025-11-19 17:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The <code>uv add</code> command is hanging forever for the following repo and commit: https://github.com/alex-shapiro/PufferLib/commit/21807b34145822e307314dd0e3b503139c6aaa97.</p>
+<p>uv version: 0.9.10
+OS version: macOS 15.6.1 (24G90)
+command: <code>uv add</code></p>
+<p>Command log:</p>
+<pre><code>uv add --dev ruff -vvv
+DEBUG uv 0.9.10 (Homebrew 2025-11-17)
+TRACE Checking shared lock for `/Users/alex/.cache/uv` at `/Users/alex/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/alex/.cache/uv`
+DEBUG Found project root: `/Users/alex/Projects/PufferLib`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/Users/alex/Projects/PufferLib` at `/var/folders/lz/jby64bjj69z_mwv96l9wz6c00000gn/T/uv-1247407c379164de.lock`
+DEBUG Acquired lock for `/Users/alex/Projects/PufferLib`
+DEBUG No Python version file found in workspace: /Users/alex/Projects/PufferLib
+DEBUG Using Python request `==3.13.*` from `requires-python` metadata
+DEBUG Checking for Python environment at: `.venv`
+TRACE Found cached interpreter info for Python 3.13.0, skipping query of: .venv/bin/python3
+DEBUG The project environment's Python version satisfies the request: `Python ==3.13.*`
+TRACE The project environment's Python version meets the Python requirement: `==3.13.*`
+TRACE The virtual environment's Python interpreter meets the Python preference: `prefer managed`
+DEBUG Released lock at `/var/folders/lz/jby64bjj69z_mwv96l9wz6c00000gn/T/uv-1247407c379164de.lock`
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired lock for `.venv`
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 15.6.1 (24G90)</p>
+<h3>Version</h3>
+<p>0.9.10 (Homebrew 2025-11-17)</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @alex-shapiro on 2025-11-19 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 18:39</div>
+            <div class="timeline-body"><p>It hangs at that log line?</p>
+<p>Does using <code>--no-sync</code> make it complete immediately?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex-shapiro">@alex-shapiro</a> on 2025-11-19 20:46</div>
+            <div class="timeline-body"><p>Yeah it hangs at exactly that log line. Adding <code>--no-sync</code> has no effect:</p>
+<pre><code>uv add --dev ruff --no-sync -vvv
+DEBUG uv 0.9.10 (Homebrew 2025-11-17)
+TRACE Checking shared lock for `/Users/alex/.cache/uv` at `/Users/alex/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/alex/.cache/uv`
+DEBUG Found project root: `/Users/alex/Projects/PufferLib`
+DEBUG No workspace root found, using project root
+DEBUG No Python version file found in workspace: /Users/alex/Projects/PufferLib
+DEBUG Using Python request `==3.13.*` from `requires-python` metadata
+DEBUG Checking for Python environment at: `.venv`
+TRACE Found cached interpreter info for Python 3.13.0, skipping query of: .venv/bin/python3
+DEBUG The project environment's Python version satisfies the request: `Python ==3.13.*`
+TRACE The project environment's Python version meets the Python requirement: `==3.13.*`
+TRACE The virtual environment's Python interpreter meets the Python preference: `prefer managed`
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired lock for `.venv`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 21:19</div>
+            <div class="timeline-body"><p>This appears to be reproducible with just <code>uv lock</code></p>
+<pre><code>❯ docker run -it astral/uv:bookworm bash -c &quot;git clone https://github.com/alex-shapiro/PufferLib &amp;&amp; cd PufferLib &amp;&amp; git checkout 21807b34145822e307314dd0e3b503139c6aaa97 &amp;&amp; uv lock -vv&quot;
+...
+TRACE Querying interpreter executable at /root/.local/share/uv/python/cpython-3.13.9-linux-aarch64-gnu/bin/python3.13
+DEBUG Released lock at `/root/.local/share/uv/python/.lock`
+Using CPython 3.13.9
+</code></pre>
+<p>In which case the last log is emitted at https://github.com/astral-sh/uv/blob/9a6eafc0431da27d6aa4d1c5a91ed80c162774b9/crates/uv/src/commands/project/mod.rs#L1009-L1015</p>
+<p>which is here in the lock logic https://github.com/astral-sh/uv/blob/2d9fe7ca701f72b35202bd48d5758dd5b5ef12fe/crates/uv/src/commands/project/lock.rs#L143</p>
+<p>If using <code>--frozen</code>, it hangs at</p>
+<pre><code>DEBUG uv 0.9.10
+TRACE Checking shared lock for `/root/.cache/uv` at `/root/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/root/.cache/uv`
+DEBUG Found workspace root: `/PufferLib`
+TRACE Discovering workspace members for: `/PufferLib`
+DEBUG Adding root workspace member: `/PufferLib`
+</code></pre>
+<p>which is just above interpreter retrieval https://github.com/astral-sh/uv/blob/2d9fe7ca701f72b35202bd48d5758dd5b5ef12fe/crates/uv/src/commands/project/lock.rs#L131-L134</p>
+<p>but the downstream logic for <code>Frozen</code> is quite simple?</p>
+<p>https://github.com/astral-sh/uv/blob/2d9fe7ca701f72b35202bd48d5758dd5b5ef12fe/crates/uv/src/commands/project/lock.rs#L331-L351</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 21:20</div>
+            <div class="timeline-body"><p>Oh, uhh this is suspicious? You have a <em>massive</em> conflict list</p>
+<pre><code>conflicts = [
+    [
+        { extra = &quot;avalon&quot; },
+        { extra = &quot;atari&quot; },
+        { extra = &quot;box2d&quot; },
+        { extra = &quot;bsuite&quot; },
+        { extra = &quot;butterfly&quot; },
+        { extra = &quot;classic_control&quot; },
+        { extra = &quot;crafter&quot; },
+        { extra = &quot;craftax&quot; },
+        { extra = &quot;dm_control&quot; },
+        { extra = &quot;dm_lab&quot; },
+        { extra = &quot;griddly&quot; },
+        { extra = &quot;kinetix&quot; },
+        { extra = &quot;magent&quot; },
+        { extra = &quot;microrts&quot; },
+        { extra = &quot;minerl&quot; },
+        { extra = &quot;minigrid&quot; },
+        { extra = &quot;minihack&quot; },
+        { extra = &quot;mujoco&quot; },
+        { extra = &quot;nethack&quot; },
+        { extra = &quot;nmmo&quot; },
+        { extra = &quot;open_spiel&quot; },
+        { extra = &quot;pokemon_red&quot; },
+        { extra = &quot;procen&quot; },
+        { extra = &quot;slimevolley&quot; },
+        { extra = &quot;vizdoom&quot; },
+        { extra = &quot;tribal-village&quot; },
+    ],
+    [
+    { extra = &quot;mujoco&quot; },
+        { extra = &quot;mujoco&quot; },
+        { extra = &quot;cleanrl&quot; }
+
+    ]
+</code></pre>
+<p>https://github.com/alex-shapiro/PufferLib/blob/21807b34145822e307314dd0e3b503139c6aaa97/pyproject.toml#L264-L300</p>
+<p>That creates a combinatorial explosion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 21:21</div>
+            <div class="timeline-body"><p>I'm still a bit confused about where we're stuck though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 21:30</div>
+            <div class="timeline-body"><p>If I delete the lockfile and resolve from scratch, we hang <em>after</em> resolution, e.g.:</p>
+<pre><code>root@33dda518e74d:/PufferLib# uv lock --dry-run    
+Using CPython 3.13.9
+Resolved 282 packages in 1.35s
+</code></pre>
+<p>Very peculiar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 22:55</div>
+            <div class="timeline-body"><p>Adding logs to trace where we're at</p>
+<p>We're stuck here
+https://github.com/astral-sh/uv/blob/ae1edef9c0a4906cd22838b30fd719723c6cb67e/crates/uv-resolver/src/lock/mod.rs#L265-L276</p>
+<p>https://github.com/astral-sh/uv/blob/ae1edef9c0a4906cd22838b30fd719723c6cb67e/crates/uv-resolver/src/lock/mod.rs#L2453-L2462</p>
+<p>This <code>Dependency::from_annotated_dist</code> does not return.</p>
+<p>I believe it's this call in <code>Dependency::new</code> that's stuck</p>
+<p>https://github.com/astral-sh/uv/blob/ae1edef9c0a4906cd22838b30fd719723c6cb67e/crates/uv-resolver/src/lock/mod.rs#L4852</p>
+<p>It looks like we're calling the following function a lot of times</p>
+<p>https://github.com/astral-sh/uv/blob/2fc5fe2ac099fa0d598c88e559ea1d034cf5a7ff/crates/uv-pep508/src/marker/algebra.rs#L561</p>
+<p>It looks like we're just doing a ton of work, so I'd expect it to finish someday but something is clearly wrong here. Even if I edit some of these functions to be no-ops, the operation takes a very long time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2025-11-19 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-19 23:10</div>
+            <div class="timeline-body"><p>I'd highly recommend trimming down the number of conflicts, are all of those packages actually mutually conflicting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex-shapiro">@alex-shapiro</a> on 2025-11-20 02:54</div>
+            <div class="timeline-body"><p>Yeah a lot of the extras have mutually incompatible dependency trees. Each extra is a reinforcement learning environment with a pinned, uniquely-outdated dependency on <code>gym</code>, <code>gymnasium</code>, <code>pettingzoo</code>, etc. The user only loads one environment at runtime (to train/eval a model on a specific environment), so the mutual exclusion block seemed like the best way to avoid dependency conflicts between multiple versions of those core package dependencies.</p>
+<p>Do we know that the exclusion block is causing the hang? Dependency resolution when creating <code>uv.lock</code> takes 2.51 seconds, which seems reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-20 14:18</div>
+            <div class="timeline-body"><p>I think it's a problem with processing all the markers that are generated to represent the conflicts.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

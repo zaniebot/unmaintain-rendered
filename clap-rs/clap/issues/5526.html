@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`num_args = 2..` does not error with 0 args and error has incorrect wording with 1 arg - clap-rs/clap #5526</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`num_args = 2..` does not error with 0 args and error has incorrect wording with 1 arg</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5526">#5526</a>
+        opened by <a href="https://github.com/qtfkwk">@qtfkwk</a>
+        on 2024-06-10 12:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qtfkwk">@qtfkwk</a> on 2024-06-10 12:46</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.78.0 (9b00956e5 2024-04-29)</p>
+<h3>Clap Version</h3>
+<p>4.5.6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    /// Args
+    #[arg(value_name = &quot;ARG&quot;, num_args = 2..)]
+    args: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!(&quot;{:#?}&quot;, cli.args);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-bash">cargo new clap-num-args-issue
+cd clap-num-args-issue
+cargo add clap -F derive
+cat &lt;&lt;EOF &gt;src/main.rs
+use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    /// Args
+    #[arg(value_name = &quot;ARG&quot;, num_args = 2..)]
+    args: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!(&quot;{:#?}&quot;, cli.args);
+}
+EOF
+cargo run # false negative: prints &quot;[]\n&quot; instead of an error because len 0 &lt; minimum of 2
+cargo run -- asdf # error is not grammatically correct; see below
+cargo run -- asdf blah # good: prints &quot;[\n    \&quot;asdf\&quot;,\n    \&quot;blah\&quot;,\n]\n&quot;
+cargo run -- asdf blah spam # good: prints &quot;[\n    \&quot;asdf\&quot;,\n    \&quot;blah\&quot;,\n    \&quot;spam\&quot;,\n]\n&quot;
+</code></pre>
+<p>Error when running <code>cargo run -- asdf</code>:</p>
+<pre><code class="language-text">error: 2 more values required by '[ARG] [ARG]...'; only 1 was provided
+</code></pre>
+<p>Shouldn't it say either of the following?</p>
+<ol>
+<li><code>error: 1 more value required by '[ARG] [ARG]...'; only 1 was provided</code></li>
+<li><code>error: 2 values required by '[ARG] [ARG]...'; only 1 was provided</code> (my personal preference is for this one)</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>There are 2 issues:</p>
+<ol>
+<li>With num_args set to <code>2..</code> and user gives 0, it does <strong>not</strong> produce an error as it should because the minimum number of args is 2</li>
+<li>If the user gives 1 arg, it errors, but the message says it needs &quot;2 <em>more</em> args&quot; which is wrong; it needs a minimum of 2 args and 1 was given, so it needs 1 more arg not 2</li>
+</ol>
+<h3>Expected Behaviour</h3>
+<ol>
+<li>With num_args set to <code>2..</code> and user gives 0, it should produce an error saying that it requires 2 args and 0 were given</li>
+<li>If the user gives 1 arg, it should say it requires 2 args and 1 was given<ul>
+<li>(or alternatively it could say it needs 1 more arg and 1 was given; but I feel this is less precise and requires calculating the diff)</li>
+</ul>
+</li>
+</ol>
+<h3>Additional Context</h3>
+<ol>
+<li><p>Unsure root cause on this one... a quick search did not find it... but I imagine that somewhere it tests the len against the num_args range (?)</p>
+</li>
+<li><p>https://github.com/clap-rs/clap/blob/2f645d3e81c783a4e76ad17f1ccf283a58b75660/clap_builder/src/error/format.rs#L340:</p>
+<p>should be:</p>
+<pre><code class="language-rust">&quot;{}{min_values}{} values required by '{}{invalid_arg}{}'; only {}{actual_num_values}{}{were_provided}&quot;,
+</code></pre>
+<p><em>remove the word &quot;more&quot;</em></p>
+</li>
+</ol>
+<h3>Debug Output</h3>
+<pre><code class="language-text">$ cargo run -- asdf
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap-num-args-issue asdf`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-num-args-issue&quot;
+[clap_builder::builder::command]Command::_propagate:clap-num-args-issue
+[clap_builder::builder::command]Command::_check_help_and_version:clap-num-args-issue expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:clap-num-args-issue
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:args
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;asdf&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;asdf&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
+[clap_builder::parser::parser]Parser::get_matches_with: Low index multiples...false
+[clap_builder::parser::parser]Parser::resolve_pending: id=&quot;args&quot;
+[clap_builder::parser::parser]Parser::react action=Append, identifier=Some(Index), source=CommandLine
+[ clap_builder::output::usage]Usage::create_usage_with_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::write_help_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=help
+[ clap_builder::output::usage]Usage::needs_options_tag:iter Option is built-in
+[ clap_builder::output::usage]Usage::needs_options_tag: [OPTIONS] not required
+[ clap_builder::output::usage]Usage::write_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::write_subcommand_usage
+[ clap_builder::output::usage]Usage::create_usage_with_title: usage=Usage: clap-num-args-issue [ARG] [ARG]...
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+error: 2 more values required by '[ARG] [ARG]...'; only 1 was provided
+
+Usage: clap-num-args-issue [ARG] [ARG]...
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @qtfkwk on 2024-06-10 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-10 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>There are 2 issues:</p>
+</blockquote>
+<p>In the future, please open an issue per concern.</p>
+<blockquote>
+<p>With num_args set to 2.. and user gives 0, it does not produce an error as it should because the minimum number of args is 2</p>
+</blockquote>
+<p>The behavior is correct.  From <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.num_args">the docs</a>:</p>
+<blockquote>
+<p>Specifies the number of arguments parsed per occurrence</p>
+</blockquote>
+<p>This isn't as obvious for positionals but for options, the behavior is more clear.</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    /// Args
+    #[arg(long, value_name = &quot;ARG&quot;, num_args = 2..)]
+    args: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!(&quot;{:#?}&quot;, cli.args);
+}
+</code></pre>
+<pre><code class="language-console">$ # good: 2+ values
+$ cmd --args asdf blah
+$ # good: 2+ values
+$ cmd --args asdf blah spam
+$ # good: 2+ values per `--arg`
+$ cmd --args asdf blah --arg spam pizza
+$ # bad: too few values
+$ cmd --args asdf
+$ # bad: too few values for last `--arg`
+$ cmd --args asdf blah --arg spam
+$ # good:  no occurrences
+$ cmd
+</code></pre>
+<p>What you are looking for is <code>required = true</code>.  You also likely want to set <code>action = ArgAction::Set</code> because a <code>Vec</code> is automatically an <code>Append</code>, see https://docs.rs/clap/latest/clap/_derive/index.html#arg-types</p>
+<pre><code class="language-rust">use clap::Parser;
+use clap::builder::ArgAction;
+
+#[derive(Parser)]
+struct Cli {
+    /// Args
+    #[arg(long, value_name = &quot;ARG&quot;, num_args = 2.., required = true, action = ArgAction::Set)]
+    args: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    println!(&quot;{:#?}&quot;, cli.args);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5527.html">clap-rs/clap#5527</a> on 2024-06-10 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-06-10 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qtfkwk">@qtfkwk</a> on 2024-06-12 13:45</div>
+            <div class="timeline-body"><p>Thank you for the detailed response, @epage! Will try your suggested fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5581.html">clap-rs/clap#5581</a> on 2024-07-15 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5948.html">clap-rs/clap#5948</a> on 2025-03-13 18:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:36 UTC
+    </footer>
+</body>
+</html>

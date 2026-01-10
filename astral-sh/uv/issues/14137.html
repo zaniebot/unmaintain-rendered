@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support reading dynamic project version with `uv version` - astral-sh/uv #14137</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support reading dynamic project version with `uv version`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14137">#14137</a>
+        opened by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a>
+        on 2025-06-18 19:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a> on 2025-06-18 19:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using dynamic project versions, for instance with <a href="https://github.com/jwodder/versioningit">versioningit</a> or <a href="https://github.com/ofek/hatch-vcs">hatch-vcs</a>, it would be really convenient to be able to read the current project version (the version that would be used when <code>uv build</code> is called) by calling <code>uv version</code>.</p>
+<h3>Example</h3>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;, &quot;versioningit&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;my-example-project&quot;
+dynamic = [&quot;version&quot;]
+
+[tool.hatch.version]
+source = &quot;versioningit&quot;
+</code></pre>
+<p>Current behavior:</p>
+<pre><code>$ uv version
+error: We cannot get or set dynamic project versions in: pyproject.toml
+</code></pre>
+<p>Desired behavior:</p>
+<pre><code>$ uv version
+my-example-project 1.1.0.post5+gc57875e.d20250618
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BartSchuurmans on 2025-06-18 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-18 19:59</div>
+            <div class="timeline-body"><p>We can support this, but it will require invoking the build backend to get the version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BartSchuurmans">@BartSchuurmans</a> on 2025-06-18 20:16</div>
+            <div class="timeline-body"><p>I've been scanning the code a bit; how hard would this be to implement for a new contributor?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-18 21:14</div>
+            <div class="timeline-body"><p>Probably not easy, but I'm actually not really sure how you'd go about it yet. If you're interested, I'd recommend posting a brief implementation plan here first and we can let you know if it sounds like the right approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdellegrazie">@bdellegrazie</a> on 2025-06-20 12:44</div>
+            <div class="timeline-body"><p>related #11718 and #14037</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 13:31</div>
+            <div class="timeline-body"><p>@bdellegrazie note both of those are feature requests for the uv build backend whereas here we're talking about reading dynamic versions from other build backends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-06-20 15:49</div>
+            <div class="timeline-body"><p>If the project is dynamic, I think we could build a Plan for the project and read the version from the Plan fields. Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-20 17:17</div>
+            <div class="timeline-body"><p>...wait I'm rereading the code and does <code>uv version --frozen</code> accidentally already support this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-06-20 17:23</div>
+            <div class="timeline-body"><p>I thought the same initially but dynamic versions are not recorded in the lockfile. 😅</p>
+<pre><code>❯ uv version --frozen
+error: Failed to find the foo's version in the frozen lockfile
+
+❯ cat uv.lock
+version = 1
+revision = 2
+requires-python = &quot;&gt;=3.13&quot;
+
+[[package]]
+name = &quot;foo&quot;
+source = { editable = &quot;.&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-20 17:24</div>
+            <div class="timeline-body"><p>(The <em>not</em> recording is intentional.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-20 17:30</div>
+            <div class="timeline-body"><p>With static versions, we can read <code>pyproject.toml</code>, know the version and know whether the lockfile is up to date. With dynamic versions, this is more complex: The version could have changed since we last called the build backend and we want to update, or we could use the cached version. This mismatch is why we don't record the version in the lockfile (https://github.com/astral-sh/uv/issues/7533). Calling the build backend is slow, so we usually try to avoid it. We can show the dynamic version numbers in <code>uv version</code>, though I'm not sure if we want to show the cached version, or if <code>uv version --package foo</code> should call the build backend and behave like a hypothetical <code>uv version --package foo --refresh-package foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-20 17:36</div>
+            <div class="timeline-body"><p>Given we already have a locked/frozen distinction, and <code>uv version 1.2.3</code> (set mode) already does a full lock+sync, I don't think it's too unreasonable for <code>uv version</code> (get mode) to invoke a build (sync?) if it has to... but if <code>--frozen</code> is passed we should probably pull out the cached METADATA in the .venv (or refuse to support it at all).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dorinclisu">@dorinclisu</a> on 2025-07-09 17:26</div>
+            <div class="timeline-body"><p>Workaround when using hatch: <code>$ uvx hatch version</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bufbuild/protovalidate-python/pulls/335.html">bufbuild/protovalidate-python#335</a> on 2025-07-14 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jharb-mirakl">@jharb-mirakl</a> on 2025-07-31 09:44</div>
+            <div class="timeline-body"><p>Workaround when using pdm: <code>uvx pdm show --version</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../geldata/gel-cli/pulls/1712.html">geldata/gel-cli#1712</a> on 2025-08-01 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2025-08-18 11:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Workaround when using hatch: <code>$ uvx hatch version</code></p>
+</blockquote>
+<p>Especially neat when combined with a plugin. I'm using <code>uvx --with hatch-vcs hatchling version</code> and have</p>
+<pre><code class="language-toml">[tool.hatch.version]
+source = &quot;vcs&quot;
+</code></pre>
+<p>In my <code>pyproject.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Jelly-RDF/pyjelly/pulls/256.html">Jelly-RDF/pyjelly#256</a> on 2025-08-18 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnoYakshi">@UnoYakshi</a> on 2025-09-14 11:29</div>
+            <div class="timeline-body"><p>I understand most of the workarounds and proposal here were, are, and will be about Python packages development and ecosystem.</p>
+<p>However, my case differs a bit. I'm developing an application (FastAPI/Django/Litestar/Robyn/whatever) and use python-semantic-release for automatic SemVer in CI. No build system (setuptools/Hatch/PDM) is involved whatsoever. The source of truth becomes a variable in a Python file:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project_name&quot;
+dynamic = [&quot;version&quot;]
+
+# ...
+
+[tool.semantic_release]
+version_variables = [&quot;src/core/__version__.py:__version__&quot;]
+</code></pre>
+<p>I presume it's not that critical for a non-[Python ]build software, but getting errors on <code>uv version</code> with provided setup disturbs me a bit, as a developer.</p>
+<p>Do I do the versioning correct way? Or should I switch to use <code>pyproject.toml:version</code> instead (PEP-621)? Do I just then import it via <code>importlib.metadata.version</code> like so?</p>
+<pre><code class="language-toml">[tool.semantic_release]
+version_toml = [&quot;pyproject.toml:project.version&quot;]
+</code></pre>
+<pre><code class="language-python"># src/core/__version__.py
+
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version('project_name')
+except PackageNotFoundError:
+    __version__ = '0.0.0'
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

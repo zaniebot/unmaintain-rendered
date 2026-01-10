@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gracefully handle missing files/directories in cache storage - astral-sh/uv #6147</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>gracefully handle missing files/directories in cache storage</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6147">#6147</a>
+        opened by <a href="https://github.com/paveldikov">@paveldikov</a>
+        on 2024-08-16 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-16 15:18</div>
+            <div class="timeline-body"><p>Not sure if this is a common pattern, but we like to store the cache directory on <code>/var/tmp</code> as the usual home directory may be on a network share (and extremely slow I/O as a result).</p>
+<p>This works great for us, but it also happens that <code>/var/tmp</code> is affected by a periodic cleanup process that deletes old files/directories. Once this happens, we get a bunch of error messages along the lines of:</p>
+<pre><code>  Caused by: Failed to install: packaging-24.1-py3-none-any.http.whl (packaging==24.1)
+  Caused by: failed to read directory `/var/tmp/pavel/.cache/uv/archive-v0/REDACTED`
+  Caused by: No such file or directory (os error 2)
+</code></pre>
+<p><code>rm -rf</code>'ing the cache dir (or <code>uv cache clean</code> -- but not <code>uv cache prune</code>) seems to work around this problem fine, but it's quite a severe thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-16 15:21</div>
+            <div class="timeline-body"><p>Agree, I think we should be robust to this. I don't know if we can be robust to <code>/var/tmp</code> being cleaned up <em>while</em> uv is running though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-16 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-16 15:26</div>
+            <div class="timeline-body"><p>I think catching ENOENT and friends (at arbitrary depth?) and re-caching the distribution from scratch should be robust enough? I am trying to think of the various types of race conditions in there, but assuming that the hardlinking/copying into venv comes right at the end, this should be reasonably complete.</p>
+<p>(symlink mode will not be helped by this, but that is probably fine?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-20 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6284.html">astral-sh/uv#6284</a> on 2024-08-20 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-20 23:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-01-03 14:12</div>
+            <div class="timeline-body"><p>Heads up, I am seeing possible regressions on this one. I wonder if it may be worth adding an integration test for this scenario:</p>
+<ol>
+<li>do a <code>uv pip install</code> of some skeleton package (iirc a bunch of these already exist as test fixtures)</li>
+<li>then vandalise the cache by removing one of the files</li>
+<li>wipe the venv (recreate as empty)</li>
+<li><code>uv pip install</code> it again. It should succeed and the removed file should be present in the installation.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-03 16:13</div>
+            <div class="timeline-body"><p>Sounds good to me. Feel free to file an issue for any regression that you've seen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-03 16:27</div>
+            <div class="timeline-body"><p>I'll add a few tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-01-03 18:05</div>
+            <div class="timeline-body"><p>Ok, I tried to repro by hand by chaos-monkeying with my <code>archive-v0</code> directory and I found two things so far:</p>
+<ul>
+<li>if I remove a file from the package itself e.g. (<code>pytest/__init__.py</code>) and then install, I get a false-positive. Install is outwardly successful, but missing <code>__init__.py</code> i.e. it's broken.</li>
+<li>if I remove stuff from <code>dist-info</code> e.g. <code>RECORD</code>, the whole installation fails non-gracefully, and I must use <code>--reinstall</code> to remedy this. Not even <code>uv cache prune</code> fixes this.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-03 18:44</div>
+            <div class="timeline-body"><p>I don’t know that we should necessarily aim to support these scenarios. Scenarios in which users modify the cache seem out of scope, and should be fixed by uv cache clean (as opposed to prune). What we <em>do</em> want to be robust to are, e.g., changes in the cache schema, or any states that can result from running uv commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-01-03 18:56</div>
+            <div class="timeline-body"><p>It's a synthetic reproduction of a real-life scenario, whereby a daemon process (e.g. <code>tmpwatch</code>) prunes files from a cache directory based on some coarse-grained criterion such as mtime/ctime.</p>
+<p>I would agree that <em>mutating</em> files would be out of scope, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-03-03 16:04</div>
+            <div class="timeline-body"><p>Ok, I had a deeper dive with the code and the problem is complicated by <code>tmpwatch</code>'s behaviour in that it will delete files but not directories.  It is the 'deleting a given archive in isolation' that will trigger this problem -- I have a test case written for it which I can push out.</p>
+<p>Applying the same treatment to the <em>whole</em> cache dir appears to sidestep the issue, presumably because some top-level lookup table is also wiped out -- and therefore everything registers as a cache miss. However, IRL this is not likely to happen as the top-level lookup table will usually have a much more recent <code>mtime</code> because it is the common denominator in all cache operations.</p>
+<p>So I am now stuck trying to do either of:</p>
+<ol>
+<li>Prevent the cache lookup from picking up 'skeleton' archive entries -- this is proving difficult because it appears that the cache mechanics are type-agnostic and unaware of archive semantics/<code>dist-info</code>. Also I'd be worried about performance impact if I was to add elements of look-before-you-leap</li>
+<li>Introduce a mechanism whereby we can safely backtrack on <code>ENOENT</code> -- this is proving difficult because the call stack is yay-deep and this would be extremely invasive in terms of function signatures 😰</li>
+</ol>
+<p>(Unfortunately in my organisation I can't quite sidestep <code>tmpwatch</code>, so that's sadly not an option)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16761.html">astral-sh/uv#16761</a> on 2025-11-17 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

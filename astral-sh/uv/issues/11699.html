@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intermediate layer multi-arch Docker builds have intermittent hang during &quot;uv sync&quot; - astral-sh/uv #11699</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Intermediate layer multi-arch Docker builds have intermittent hang during &quot;uv sync&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11699">#11699</a>
+        opened by <a href="https://github.com/vicchi">@vicchi</a>
+        on 2025-02-21 15:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-21 15:15</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using the <a href="https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers">intermediate layers approach</a> with a multi-arch Docker build causes the build to frequently hang during the second <code>uv sync</code> when building for an architecture which is not the one the build is being invoked from.</p>
+<p>Or to put it another way, building for <code>linux/arm64/v8</code> and <code>linux/amd64</code> on a <code>linux/amd64</code> machine, the build will succeed on the native architecture and roughly 50-60% of the time hang on the non-native, <code>linux/arm64/v8</code> build. And by hang I mean the build was still &quot;running&quot; an hour after it commenced where the average successful full rebuild time, without the Docker cache, is just over 1 minute.</p>
+<p>Limiting the build architectures to a single target and the builds run to completion, both for native and non-native architectures. Enabling multiple target architectures and the hangs will start to recur.</p>
+<p>In the <code>Dockerfile</code> below, it's the second invocation of <code>uv sync</code> where the hang, when it happens, will reliably occur.</p>
+<p>This is happening as part of migrating our Docker builds for <code>&lt;day-job&gt;</code> which makes a reproducible test case ... challenging as there's lots of components and private depedencies in our private GitHub repos. However, a redacted set of build components are below.</p>
+<p><code>pyproject.toml</code> :-</p>
+<pre><code>[project]
+name = &quot;refdata-api&quot;
+version = &quot;2.7.0&quot;
+description = &quot;The Kamma Reference Data API&quot;
+authors = [
+    {name = &quot;Gary Gale&quot;, email = &quot;gary@&lt;redacted&gt;&quot;}
+]
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;authlib==1.2.0&quot;,
+    &quot;cachetools==5.3.0&quot;,
+    &quot;diskcache==5.4.0&quot;,
+    &quot;fastapi==0.109.1&quot;,
+    &quot;gunicorn==22.0.0&quot;,
+    &quot;httpx==0.23.3&quot;,
+    &quot;itsdangerous==2.1.2&quot;,
+    &quot;jinja2==3.1.4&quot;,
+    &quot;meilisearch==0.25.0&quot;,
+    &quot;phonenumbers==8.13.25&quot;,
+    &quot;psycopg2-binary==2.9.10&quot;,
+    &quot;pydantic==1.10.13&quot;,
+    &quot;python-dateutil==2.8.2&quot;,
+    &quot;python-dotenv==1.0.0&quot;,
+    &quot;python-ulid==1.1.0&quot;,
+    &quot;refdata-machinetag==1.1.1&quot;,
+    &quot;refdata-models==2.1.1&quot;,
+    &quot;requests==2.31.0&quot;,
+    &quot;setproctitle==1.3.2&quot;,
+    &quot;typer[all]==0.7.0&quot;,
+    &quot;uvicorn==0.21.1&quot;,
+]
+
+[project.scripts]
+server = &quot;refdata_api.server:main&quot;
+
+[project.urls]
+Homepage = &quot;https://github.com/&lt;redacted&gt;refdata-api&quot;
+Repository = &quot;https://github.com/&lt;redacted&gt;/refdata-api.git&quot;
+
+[dependency-groups]
+dev = [
+    &quot;autopep8&gt;=2.3.2&quot;,
+    &quot;flake8&gt;=7.1.2&quot;,
+    &quot;flake8-alphabetize&gt;=0.0.21&quot;,
+    &quot;flake8-bugbear&gt;=24.12.12&quot;,
+    &quot;flake8-pyproject&gt;=1.2.3&quot;,
+    &quot;pylint&gt;=3.3.4&quot;,
+    &quot;pytest&gt;=8.3.4&quot;,
+    &quot;pytest-cov&gt;=6.0.0&quot;,
+    &quot;pytest-dotenv&gt;=0.5.2&quot;,
+    &quot;pytest-env&gt;=1.1.5&quot;,
+]
+
+[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools]
+package-dir = {&quot;&quot; = &quot;src&quot;}
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+refdata-machinetag = { git = &quot;ssh://git@github.com/&lt;redacted&gt;/refdata-machinetag.git&quot;, rev = &quot;v1.1.1&quot; }
+refdata-models = { git = &quot;ssh://git@github.com/&lt;redacted&gt;/refdata-models.git&quot;, rev = &quot;v2.1.1&quot; }
+</code></pre>
+<p>Build command (from our <code>Makefile</code>) :-</p>
+<pre><code>[ -x /usr/bin/docker-credential-ecr-login ] || aws ecr get-login-password --region &quot;eu-west-1&quot; --profile default | \
+        docker login --username AWS --password-stdin &lt;redacted&gt;.dkr.ecr.eu-west-1.amazonaws.com
+docker buildx inspect refdata-builder &gt; /dev/null 2&gt;&amp;1 || \
+        docker buildx create --name refdata-builder --bootstrap --use
+docker buildx use refdata-builder
+docker buildx build --platform=&quot;linux/arm64/v8,linux/amd64&quot; \
+        --file ./docker/refdata-api/Dockerfile \
+        --push \
+        --tag &lt;redacted&gt;.dkr.ecr.eu-west-1.amazonaws.com/refdata/refdata-api:latest \
+        --provenance=false \
+        --progress=plain \
+        --ssh default \
+        --build-arg VERSION=2.7.0-beta.1 \
+        --no-cache --build-arg UBUNTU_RELEASE=22.04 .
+</code></pre>
+<p><code>Dockerfile</code> :-</p>
+<pre><code>ARG UBUNTU_RELEASE=latest
+ARG VERSION=latest
+FROM ubuntu:${UBUNTU_RELEASE} AS builder
+
+### --------------------------------------------------------------------------------
+### Start - build prep
+
+ARG UBUNTU_RELEASE
+ARG VERSION
+
+SHELL [&quot;/bin/sh&quot;, &quot;-exc&quot;]
+ENV DEBIAN_FRONTEND=noninteractive
+
+# - install Python 3.10 including installer tools
+# - install Git and SSH to allow access to private GitHub repos as dependencies
+
+RUN &lt;&lt;EOT
+apt-get update -qy
+apt-get install -qyy \
+    -o APT::Install-Recommends=false \
+    -o APT::Install-Suggests=false \
+    git \
+    openssh-client \
+    python3 \
+    python3-setuptools
+mkdir -p &quot;${HOME}&quot;/.ssh
+chmod 0600 &quot;${HOME}&quot;/.ssh
+ssh-keyscan github.com &gt;&gt; &quot;${HOME}&quot;/.ssh/known_hosts
+EOT
+
+# - install uv, but just for this layer
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# - setup uv for this build ...
+# - copy instead of hard linking (which uv will complain about)
+# - compile to bytecode after installation for faster startup times
+# - use the just installed Python version and don't (un-helpfully) download one
+# - tell uv which Python binary to use
+# - tell uv sync where to sync to
+
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PYTHON=/usr/bin/python3.10 \
+    UV_PROJECT_ENVIRONMENT=/opt/kamma
+
+### End - build prep
+
+### --------------------------------------------------------------------------------
+### Start - dependencies and build
+
+# - install runtime dependencies only, without the application itself
+# - this layer will be cached until either uv.lock or pyproject.toml
+#   change (these are mounted here into the builder layer as we
+#   don't need them at runtime)
+
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=ssh \
+    uv sync \
+    --frozen \
+    --no-dev \
+    --no-install-project
+
+# - install everything else (the application itself), without dependencies
+# - /build is temporary to this layer and won't be copied into the runtime layer
+
+ADD . /build
+WORKDIR /build
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=ssh \
+    uv sync \
+    --frozen \
+    --no-dev \
+    --no-editable
+
+### End - dependencies and build
+### --------------------------------------------------------------------------------
+### Start - runtime
+
+ARG UBUNTU_RELEASE
+FROM ubuntu:${UBUNTU_RELEASE}
+
+ARG UBUNTU_RELEASE
+ARG VERSION
+
+SHELL [&quot;/bin/sh&quot;, &quot;-exc&quot;]
+ENV DEBIAN_FRONTEND=noninteractive
+
+# - setup runtime search paths
+
+ENV PYTHONPATH=/opt/kamma
+ENV PATH=/opt/kamma/bin:${PATH}
+ENV VIRTUAL_ENV=/opt/kamma
+
+# - install curl for health checks
+# - install Python 3.13 without installer or development tools
+# - install tini as a container init to allow signals to be correctly propagated
+
+RUN &lt;&lt;EOT
+apt-get update -qy
+apt-get install -qyy \
+    -o APT::Install-Recommends=false \
+    -o APT::Install-Suggests=false \
+    curl \
+    python3 \
+    tini
+apt-get clean
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+EOT
+
+COPY ./docker/refdata-api/files/docker-entrypoint.sh /opt/kamma/
+COPY --from=builder /opt/kamma /opt/kamma
+
+EXPOSE 80
+
+WORKDIR /opt/kamma
+
+ENTRYPOINT [&quot;/usr/bin/tini&quot;, &quot;-v&quot;, &quot;--&quot;, &quot;/opt/kamma/docker-entrypoint.sh&quot;]
+CMD [&quot;gunicorn&quot;, &quot;refdata_api.server:api&quot;, &quot;--bind&quot;, &quot;0.0.0.0:80&quot;]
+STOPSIGNAL SIGINT
+HEALTHCHECK CMD curl --silent --fail http://localhost:80/ping || exit 1
+
+### End - runtime
+
+### --------------------------------------------------------------------------------
+### Start - smoke test
+
+# - check that the installed Python version is what we expect
+# - check that one of the dependencies can be imported
+# - check that what we've installed can actually be imported
+
+RUN &lt;&lt;EOT
+python3 --version
+python3 -Ic 'import uvicorn'
+python3 -Ic 'import refdata_api'
+EOT
+
+### End - smoke test
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 22.04 - Linux 6.8.0-49-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.2 (Homebrew 2025-02-19)</p>
+<h3>Python version</h3>
+<p>Python 3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vicchi on 2025-02-21 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 10:02</div>
+            <div class="timeline-body"><p>Update ... I've managed to come up with a reproducible test case; see https://github.com/vicchi/buildtest</p>
+<p>In terms of test environments:</p>
+<p>To run the build, clone the repo above, copy <code>.env.sample</code> to <code>.env</code> and update with your GitHub API credentials. The repo assumes <code>direnv</code>, <code>uv</code> and Docker are pre-installed and available. Run <code>make build</code> to build with Docker layer caching and <code>make rebuild</code> to build without layer caching.</p>
+<h1>Build Test 1</h1>
+<ul>
+<li>Build host: Ubuntu 22.04 <code>Linux 6.8.0-49-generic x86_64 GNU/Linux</code></li>
+<li>uv version:<code>uv 0.6.2 (Homebrew 2025-02-19)</code></li>
+<li>Docker: <code>Docker version 28.0.0, build f9ced58</code></li>
+<li>Buildx: <code>github.com/docker/buildx v0.21.0 34ed52e</code></li>
+</ul>
+<p>Build for <code>linux/amd64</code> only succeeds: https://gist.github.com/vicchi/9df29f32d822a0454bba8c56e32830a0
+Build for <code>linux/arm64</code> only succeeds: https://gist.github.com/vicchi/9bbb41113ea991ef7f9a31b61de9abeb
+Build for <code>linux/amd64</code> and <code>linux/arm64</code> hangs: https://gist.github.com/vicchi/101c521e080fcb9f572b8f8540503039</p>
+<h1>Build Test 2</h1>
+<ul>
+<li>Build host: Ubuntu 24.04 <code>Linux 6.8.0-49-generic x86_64 GNU/Linux</code></li>
+<li>uv version:<code>uv 0.6.2 (Homebrew 2025-02-19)</code></li>
+<li>Docker: <code>Docker version 28.0.0, build f9ced58</code></li>
+<li>Buildx: <code>github.com/docker/buildx v0.21.0 34ed52e</code></li>
+</ul>
+<p>Build for <code>linux/amd64</code> only succeeds
+Build for <code>linux/arm64</code> only succeeds
+Build for <code>linux/amd64</code> and <code>linux/arm64</code> hangs</p>
+<h1>Build Test 3</h1>
+<ul>
+<li>Build host: macOS Sequoia 15.3.1 <code>Darwin 24.3.0 arm64</code></li>
+<li>uv version:<code>uv 0.6.2 (Homebrew 2025-02-19)</code></li>
+<li>Docker: <code>Docker version 28.0.0, Docker version 28.0.0, build f9ced58158</code></li>
+<li>Buildx: <code>github.com/docker/buildx v0.20.1-desktop.2 aaf7c2bc7f9ec3afee1cec77d671845a4b57a0c8</code></li>
+</ul>
+<p>Build for <code>linux/amd64</code> only succeeds
+Build for <code>linux/arm64</code> only succeeds
+Build for <code>linux/amd64</code> and <code>linux/arm64</code> succeeds</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 10:13</div>
+            <div class="timeline-body"><p>Thanks for the clear reproducer, this seems to be another instance of https://github.com/astral-sh/uv/issues/6105. I've transformed your example into an MRE: https://github.com/astral-sh/uv/issues/6105.</p>
+<p>Am I reading your comment correctly that only arm64 ever fails, and only if the host is also linux?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Am I reading your comment correctly that only arm64 ever fails, and only if the host is also linux?</p>
+</blockquote>
+<p>@konstin Thanks for the reply and yes ... if the build host is <code>linux/amd64</code> then the build only hangs if a) the target architecture is <code>linux/arm64</code> and b) this is a multi-arch build which also targets the build host's architecture as <code>linux/amd64</code>.</p>
+<p>This issue doesn't occur if the build host if <code>linux/arm64</code> (macOS).</p>
+<p>That said, these two architectures are the only ones we target, but I'll add another CPU architecture into the mix to see if it's <code>linux/arm64</code> which is the root cause in a multi-arch build or any architecture which isn't the host's.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 13:02</div>
+            <div class="timeline-body"><p>@konstin Ah ... <code>ghcr.io/astral-sh/uv</code> only supports <code>linux/amd64</code> and <code>linux/arm64</code> which makes testing other CPU architectures ... interesting 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 13:09</div>
+            <div class="timeline-body"><p>With cargo-zigbuild, building should work with <code>rustup target add &lt;...&gt; &amp;&amp; cargo zigbuild --profile profiling --target &lt;...&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 13:17</div>
+            <div class="timeline-body"><p>@konstin I read through #6105 and on a hunch disabled bytecode compilation in my <code>Dockerfile</code> ... so <code>UV_COMPILE_BYTECODE=0</code> ... and both architecture's builds complete successfully as evidenced by https://github.com/vicchi/buildtest/pkgs/container/buildtest</p>
+<p>It's not a fix but it's a viable workaround in the interim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 13:34</div>
+            <div class="timeline-body"><p>I assume it has something with qemu not properly handling the way we spawn the worker processes and pass their stdin/stdout, but i couldn't yet figure out yet where. With <code>RUST_LOG=&quot;uv_installer::compile=trace&quot;</code>, we show that some of the workers exit while others get stuck, but i couldn't yet figure out how to attach gdb to properly debug where its stuck (https://github.com/astral-sh/uv/issues/6105#issuecomment-2677954298). Deactivating bytecode compilation on aarch64 is a workaround for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 14:17</div>
+            <div class="timeline-body"><p>@konstin I'll take a fully functioning build, albeit one with slightly slower startup times, over a build which doesn't build any day.</p>
+<p>If there's any more diagnositics, tests or changes you'd like me to make on my environment please shout loudly at me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-28 16:51</div>
+            <div class="timeline-body"><p>I'm merging this with #6105 since we found the cause</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-28 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6105.html">astral-sh/uv#6105</a> on 2025-03-03 10:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

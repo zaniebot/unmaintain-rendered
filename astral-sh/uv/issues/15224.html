@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` with `--no-editable` should force rebuild/install packages - astral-sh/uv #15224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` with `--no-editable` should force rebuild/install packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15224">#15224</a>
+        opened by <a href="https://github.com/jackrosenthal">@jackrosenthal</a>
+        on 2025-08-11 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackrosenthal">@jackrosenthal</a> on 2025-08-11 17:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>uv sync</code> with <code>--no-editable</code>, it seems like we'd expect that we re-install packages that would've been installed as editable (for example, the main package).  Here's a simple example:</p>
+<pre><code class="language-shellsession">jrosenth ~/example-project % uv init --build-backend uv
+Initialized project `example-project`
+jrosenth ~/example-project % uv sync --no-editable
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+Resolved 1 package in 2ms
+      Built example-project @ file:///home/jrosenth/example-project
+Prepared 1 package in 15ms
+Installed 1 package in 1ms
+ + example-project==0.1.0 (from file:///home/jrosenth/example-project)
+jrosenth ~/example-project % echo 'print(&quot;changed!&quot;)' &gt;&gt; src/example_project/__init__.py 
+jrosenth ~/example-project % uv sync --no-editable                                      
+Resolved 1 package in 0.88ms
+Audited 1 package in 0.04ms
+jrosenth ~/example-project % tail .venv/lib/python3.13/site-packages/example_project/__init__.py 
+def main() -&gt; None:
+    print(&quot;Hello from example-project!&quot;)
+jrosenth ~/example-project % uv sync --no-editable --reinstall-package example-project           
+Resolved 1 package in 0.94ms
+      Built example-project @ file:///home/jrosenth/example-project
+Prepared 1 package in 15ms
+Uninstalled 1 package in 0.40ms
+Installed 1 package in 1ms
+ ~ example-project==0.1.0 (from file:///home/jrosenth/example-project)
+jrosenth ~/example-project % tail .venv/lib/python3.13/site-packages/example_project/__init__.py 
+def main() -&gt; None:
+    print(&quot;Hello from example-project!&quot;)
+print(&quot;changed!&quot;)
+</code></pre>
+<p>In this example, we notice the <code>example-project</code> package didn't sync local changes until <code>--reinstall-package</code> was manually used.</p>
+<p>With packages that have <code>path</code> dependencies, this could be a little bit more fishy, we'd expect each of those dependencies to re-build and re-install when <code>--no-editable</code> is applied.</p>
+<h3>Platform</h3>
+<p>Linux 6.15.8-arch1-2 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.8 (9a54754b0 2025-08-08)</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jackrosenthal on 2025-08-11 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-11 18:08</div>
+            <div class="timeline-body"><p>This seems the same as https://github.com/astral-sh/uv/issues/15190</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-08-13 10:39</div>
+            <div class="timeline-body"><p>This is some sort of caching problem. I guess uv reuses the already built wheel and ignores if there are changes in the project. This issue is still reproducible, if you delete the venv before <code>uv sync</code>!</p>
+<p>There are two other workarounds:</p>
+<ul>
+<li>change project version</li>
+<li>delete venv and use <code>--no-cache</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 10:57</div>
+            <div class="timeline-body"><p>Isn't this just consistent with our documented caching behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 10:57</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/uv/concepts/cache/#dependency-caching</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-13 10:58</div>
+            <div class="timeline-body"><p>We don't rebuild on arbitrary file changes. As an example, you can <code>touch pyproject.toml</code> to force a rebuild, because we <em>do</em> rebuild if the <code>pyproject.toml</code> is modified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-13 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-08-13 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2025-08-13 11:22</div>
+            <div class="timeline-body"><p>Ah interesting. I guess the <code>{ git = { commit = true }</code> cache-keys setting would help for my use case.</p>
+<p>However this still behaves pretty unexpected on a dirty repository state. In this case nothing gets updated.</p>
+<p>Maybe the correct behavior in case of a dirty repository would be to skip caching for this build?!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackrosenthal">@jackrosenthal</a> on 2025-08-14 04:13</div>
+            <div class="timeline-body"><p>It seems pretty unintuitive that using <code>uv sync --no-editable</code> could result in an older version of your package in the venv, however.  Is it worth special-casing <code>--no-editable</code> to force a rebuild of would-be editable packages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15380.html">astral-sh/uv#15380</a> on 2025-08-21 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mttbernardini">@mttbernardini</a> on 2025-10-27 06:35</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems pretty unintuitive that using uv sync --no-editable could result in an older version of your package in the venv, however.</p>
+</blockquote>
+<p>I can relate to this as it's been affecting my deployment workflow.</p>
+<p>I recently switched from <code>pdm</code> to <code>uv</code> to manage a workspace project with different deployable members. I then use <code>shiv</code> to create a deployable zip-app from a workspace member via a dedicated virtual environment (i.e. not the default <code>.venv</code>, but for the sake of this issue it doesn't really matter), installed via <code>uv sync --no-editable --package &lt;package_to_deploy&gt;</code>.</p>
+<p>I found it really surprising that changing the source code (of either the package or any of its in-worspace dependencies) and then re-triggering my deployment pipeline ends up with a stale artifacts that includes none of the changes made, because of the aggressive cache behaviour of <code>uv sync --no-editable</code>.</p>
+<p>I can understand <code>pyproject.toml</code>-based caching makes sense for editable installs since changes in <code>src/</code> would be picked up automatically. But that's not the case for non-editable installs, and having <code>uv sync --no-editable</code> not rebuild the sources feels like a broken design to me (or at least it doesn't follow the principle of least surprise).</p>
+<blockquote>
+<p>Is it worth special-casing --no-editable to force a rebuild of would-be editable packages?</p>
+</blockquote>
+<p>Or perhaps hash the source files (e.g. by default search for a <code>src/</code> directory and hash its contents), possibly with a configuration option orthogonal to <code>tool.uv.cache-keys</code> for alternative non-default scenarios? (e.g. flat layouts, where <code>src/</code> is not used). In this way you still retain caching for sources that didn't change (which is convenient for a workspace with multiple members).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16467.html">astral-sh/uv#16467</a> on 2025-10-27 08:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem upgrading to Python 3.13 - astral-sh/uv #8008</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Problem upgrading to Python 3.13</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8008">#8008</a>
+        opened by <a href="https://github.com/Odud">@Odud</a>
+        on 2024-10-08 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Odud">@Odud</a> on 2024-10-08 16:40</div>
+            <div class="timeline-body"><p>I have two alternative versions of python installed as shown below. Both were built from source, but I doubt that's relevant.</p>
+<pre><code>update-alternatives --display python
+python - auto mode
+  link best version is /usr/local/bin/python3.13
+  link currently points to /usr/local/bin/python3.13
+  link python is /usr/bin/python
+/usr/local/bin/python3.12 - priority 1
+/usr/local/bin/python3.13 - priority 2
+</code></pre>
+<p>I created a new project and uv installs version 3.13 in the venv</p>
+<pre><code>mkdir pytest
+test@Pi5 ~ $ cd pytest
+test@Pi5 ~/pytest $ uv init
+Initialized project `pytest`
+test@Pi5 ~/pytest $ uv run python
+Using Python 3.13.0 interpreter at: /usr/local/bin/python3.13
+Creating virtualenv at: .venv
+   Built pytest @ file:///home/test/pytest
+Installed 1 package in 0.51ms
+Python 3.13.0 (main, Oct  8 2024, 09:19:25) [GCC 12.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; exit
+</code></pre>
+<p>An old existing project installed version 3.12 as expected as that was the latest version at the time</p>
+<pre><code>cd albatross/
+test@Pi5 ~/albatross $ uv run python
+Python 3.12.5 (main, Aug 25 2024, 12:01:22) [GCC 12.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; exit()
+</code></pre>
+<p>I'm having a problem upgrading this environment to 3.13. uv can see the later version:</p>
+<pre><code>~/albatross $ uv python list
+cpython-3.13.0-linux-aarch64-gnu     /usr/local/bin/python3.13
+cpython-3.13.0-linux-aarch64-gnu     /usr/bin/python -&gt; /etc/alternatives/python
+cpython-3.13.0-linux-aarch64-gnu     /bin/python -&gt; /etc/alternatives/python
+cpython-3.12.5-linux-aarch64-gnu     /usr/local/bin/python3.12
+cpython-3.12.5-linux-aarch64-gnu     &lt;download available&gt;
+cpython-3.11.9-linux-aarch64-gnu     &lt;download available&gt;
+
+</code></pre>
+<p>I assumed that install was the way to go:</p>
+<pre><code>~/albatross $ uv python install 3.13
+Searching for Python versions matching: Python 3.13
+error: No download found for request: cpython-3.13-linux-aarch64-gnu
+</code></pre>
+<p>I thought perhaps it was necessary to uninstall 3.12 before installing 3.13:</p>
+<pre><code>~/albatross $ uv python uninstall 3.12
+Searching for Python versions matching: Python 3.12
+No existing installations found for: Python 3.12
+No Python installations found matching the requests
+</code></pre>
+<p>An earlier issue #7325 suggested  that the --reinstall option could be a solution</p>
+<pre><code>~/albatross $ uv python install --reinstall 3.13
+Searching for Python versions matching: Python 3.13
+error: No download found for request: cpython-3.13-linux-aarch64-gnu
+</code></pre>
+<p><strong>So I'm looking for further help/guidance TIA</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7325.html">astral-sh/uv#7325</a> on 2024-10-08 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 16:43</div>
+            <div class="timeline-body"><p>Regarding the failed <code>install</code> command; are you on the latest version of uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-08 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 16:44</div>
+            <div class="timeline-body"><p>Regarding the behavior in <code>albatross</code>, do you have a <code>.python-version</code> file pinning the version to 3.12? Does it have a <code>requires-python</code> in the <code>pyproject.toml</code> with a minimum version of 3.12?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Odud">@Odud</a> on 2024-10-08 17:00</div>
+            <div class="timeline-body"><p>I was on 0.3.2, and have just updated to 0.4.19. There is no <code>.python-version</code> file present and in <code>pyproject.toml</code> I have <code>requires-python = &quot;&gt;=3.12&quot;</code></p>
+<pre><code> ~/albatross $ uv self update
+info: Checking for updates...
+success: Upgraded uv to v0.4.19! https://github.com/astral-sh/uv/releases/tag/0.4.19
+</code></pre>
+<p>install now seems to work</p>
+<pre><code>~/albatross $ uv python install 3.13
+Searching for Python versions matching: Python 3.13
+Installed Python 3.13.0rc3 in 1.61s
+ + cpython-3.13.0rc3-linux-aarch64-gnu
+</code></pre>
+<p>Which all looks good, but <code>uv run python</code> is still launching 3.12</p>
+<pre><code> ~/albatross $ uv run python
+Python 3.12.5 (main, Aug 25 2024, 12:01:22) [GCC 12.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Odud">@Odud</a> on 2024-10-08 17:05</div>
+            <div class="timeline-body"><p>As an experiment I edited <code>pyproject.toml' to </code>requires-python &gt;=3.13`</p>
+<p>'uv run python' now tries to launch 3.13 but I am getting problems compiling the dependencies - I'll see if I can eliminate these for the moment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 17:32</div>
+            <div class="timeline-body"><p>We'll use the first compatible version we find for your <code>requires-python</code> range. You can use <code>uv python pin 3.13</code> in the project if you want to change the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Odud">@Odud</a> on 2024-10-08 18:46</div>
+            <div class="timeline-body"><p>Thanks, that makes sense. I guess just updating requires-python&gt;=3.15 will
+have the same effect?</p>
+<p>On Tue, 8 Oct 2024, 18:33 Zanie Blue, <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>We'll use the first compatible version we find for your requires-python
+range. You can use uv python pin 3.13 in the project if you want to
+change the default.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/8008#issuecomment-2400446249">https://github.com/astral-sh/uv/issues/8008#issuecomment-2400446249</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/ADXMVZYILHCQII4KV466ZRTZ2QJODAVCNFSM6AAAAABPSVUN4OVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDIMBQGQ2DMMRUHE">https://github.com/notifications/unsubscribe-auth/ADXMVZYILHCQII4KV466ZRTZ2QJODAVCNFSM6AAAAABPSVUN4OVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDIMBQGQ2DMMRUHE</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+<p>Pete Barlow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 18:56</div>
+            <div class="timeline-body"><p>Roughly yes, though one changes your required Python version (which can affect consumers of your package) and the other just changes the version you use locally by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Odud">@Odud</a> on 2024-10-09 09:28</div>
+            <div class="timeline-body"><p>Thanks for all the help and suggestions, happy to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Odud on 2024-10-09 09:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:03 UTC
+    </footer>
+</body>
+</html>

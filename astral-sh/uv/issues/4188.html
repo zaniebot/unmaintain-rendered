@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` does not create `__pycache__`  directories in virtual enviroments - astral-sh/uv #4188</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` does not create `__pycache__`  directories in virtual enviroments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4188">#4188</a>
+        opened by <a href="https://github.com/verveerpj">@verveerpj</a>
+        on 2024-06-10 07:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/verveerpj">@verveerpj</a> on 2024-06-10 07:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Steps to reproduce (Linux, Python 3.11, uv 0.2.9):</p>
+<ul>
+<li><code>uv venv venv</code></li>
+<li><code>source .venv/bin/activate</code></li>
+<li><code>uv pip install numpy</code> (or any other package)</li>
+<li>There is no <code>__pycache__</code> directory in the installation:</li>
+</ul>
+<pre><code># ls -la .venv/lib/python3.11/site-packages/numpy/__pycache__/
+ls: cannot access .venv/lib/python3.11/site-packages/numpy/__pycache__/: No such file or directory
+</code></pre>
+<p>On our system the installed packages are created writable for all users in the same group. As a result the <code>__pycache__</code> folder is created by the first user that imports the packages. This works, but it is created without write permissions for the group and as a result the user that installed the package cannot uninstall it anymore:</p>
+<ul>
+<li>As another user:</li>
+</ul>
+<pre><code># source .venv/bin/activate
+# python
+Python 3.11.4 (main, Apr 12 2024, 11:40:59) [GCC 12.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import numpy
+</code></pre>
+<ul>
+<li>As the user that installed the package:</li>
+</ul>
+<pre><code># uv pip uninstall numpy
+error: failed to remove directory `/home/user/test/.venv/lib/python3.11/site-packages/numpy/__pycache__`
+  Caused by: Permission denied (os error 13)
+</code></pre>
+<p>Although this may be a permissions issue on our systems, the behavior is different from standard <code>pip</code> which creates the <code>__pycache__</code> folder upon installations, which avoids the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-10 08:11</div>
+            <div class="timeline-body"><p>We don't compile bytecode on installation by default, you can activate bytecode compilation on installation with <code>uv pip install --compile-bytecode</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-06-10 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/verveerpj">@verveerpj</a> on 2024-06-10 08:22</div>
+            <div class="timeline-body"><p>That should resolve my issue!</p>
+<p>Thank you and apologies for not checking the <code>uv pip</code> help properly.</p>
+<p>The behavior is different from standard <code>pip</code> so that bit me. I could not find it in the <code>PIP_COMPATIBILITY.md</code>, unless I missed it, would it be worth documenting it there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-10 12:44</div>
+            <div class="timeline-body"><p>I can add a mention in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-10 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-06-10 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-06-10 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4195.html">astral-sh/uv#4195</a> on 2024-06-10 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-10 12:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

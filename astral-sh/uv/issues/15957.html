@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathological resolution error: nucliadb - astral-sh/uv #15957</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pathological resolution error: nucliadb</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15957">#15957</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-09-19 22:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 22:37</div>
+            <div class="timeline-body"><p>The <code>uv pip compile</code> error when trying to resolve <code>nucliadb&gt;=3</code> with <code>--no-build</code> on Python 3.11 is 135k lines (universal) or 133k lines (standard). This is a pathological case, as the are ~4500 release of nucliadb since.</p>
+<p>We can use this as a worst case as base for improving bad resolver error traces.</p>
+<pre><code>echo &quot;nucliadb&gt;=3&quot; | uv pip compile --universal - --no-build -p 3.13
+</code></pre>
+<p>or</p>
+<pre><code>echo &quot;nucliadb&gt;=3&quot; | uv pip compile - --no-build -p 3.13
+</code></pre>
+<p>Excerpt from the universal resolution error:</p>
+<pre><code>  × No solution found when resolving dependencies for split (markers:
+  │ python_full_version &gt;= '3.14'):
+  ╰─▶ Because only the following versions of nucliadb-telemetry[all] are
+      available:
+          nucliadb-telemetry[all]&lt;=3.0.0.post414
+          nucliadb-telemetry[all]&gt;=3.0.0.post415
+      and nucliadb-telemetry[all]&gt;=3.0.0.post414,&lt;=3.2.0.post513
+      depends on opentelemetry-proto==1.21.0, we can conclude that
+      nucliadb-telemetry[all]&gt;=3.0.0.post414,&lt;3.0.0.post415 depends on
+      opentelemetry-proto==1.21.0.
+      And because nucliadb-telemetry&gt;=5.0.0.post931 depends on pydantic&gt;=2.6
+      and pydantic&gt;=2.7, we can conclude that opentelemetry-proto!=1.21.0,
+      pydantic&lt;2.6, all of:
+          nucliadb-telemetry[all]&gt;=3.0.0.post414,&lt;3.0.0.post415
+          nucliadb-telemetry[all]&gt;=4.0.0.post515
+       are incompatible.
+      And because nucliadb-telemetry[all]&gt;=3.0.0.post415,&lt;=3.2.0.post513
+      depends on opentelemetry-proto==1.21.0 and opentelemetry-proto==1.21.0
+      depends on protobuf&gt;=3.19,&lt;5.0, we can conclude that all of:
+          protobuf&lt;3.19
+          protobuf&gt;=5.0
+      , pydantic&lt;2.6, all of:
+          nucliadb-telemetry[all]&gt;=3.0.0.post414,&lt;=3.0.3.post460
+          nucliadb-telemetry[all]&gt;=4.0.0.post515
+       are incompatible.
+      And because only the following versions of nucliadb-telemetry[all] are
+      available:
+          nucliadb-telemetry[all]&lt;=3.0.3.post460
+          nucliadb-telemetry[all]==3.0.3.post478
+          nucliadb-telemetry[all]==3.0.3.post479
+          nucliadb-telemetry[all]==3.0.3.post480
+          nucliadb-telemetry[all]==3.0.3.post481
+          nucliadb-telemetry[all]==3.0.3.post482
+          nucliadb-telemetry[all]==3.0.3.post483
+          nucliadb-telemetry[all]==3.0.3.post484
+          nucliadb-telemetry[all]==3.0.3.post485
+          nucliadb-telemetry[all]==3.0.3.post486
+          nucliadb-telemetry[all]==3.0.3.post487
+          nucliadb-telemetry[all]==3.0.3.post488
+          nucliadb-telemetry[all]==3.0.3.post489
+          nucliadb-telemetry[all]==3.0.3.post490
+          nucliadb-telemetry[all]==3.0.3.post491
+          nucliadb-telemetry[all]==3.1.0.post492
+          nucliadb-telemetry[all]==3.1.0.post493
+          nucliadb-telemetry[all]==3.1.0.post494
+          nucliadb-telemetry[all]==3.1.0.post495
+          nucliadb-telemetry[all]==3.1.0.post496
+          nucliadb-telemetry[all]==3.1.0.post497
+          nucliadb-telemetry[all]==3.1.0.post498
+          nucliadb-telemetry[all]==3.1.0.post499
+[...]
+      Because only the following versions of nucliadb-utils[cache] are available:
+          nucliadb-utils[cache]&lt;=6.8.1.post4957
+          nucliadb-utils[cache]&gt;=6.8.1.post4961
+      and nucliadb-utils&gt;=6.8.1.post4957 depends on nats-py[nkeys]&gt;=2.6.0, we can conclude that nucliadb-utils[cache]&gt;=6.8.1.post4957,&lt;6.8.1.post4961 depends
+      on nats-py[nkeys]&gt;=2.6.0.
+      And because nucliadb-utils==6.8.1.post4961 depends on nats-py[nkeys]&gt;=2.6.0, we can conclude that nucliadb-utils[cache]&gt;=6.8.1.post4957 depends on
+      nats-py[nkeys]&gt;=2.6.0. (436)
+
+      Because only the following versions of nats-py[nkeys] are available:
+          nats-py[nkeys]&lt;=2.6.0
+          nats-py[nkeys]==2.7.0
+          nats-py[nkeys]==2.7.2
+          nats-py[nkeys]==2.8.0
+          nats-py[nkeys]==2.9.0
+          nats-py[nkeys]==2.9.1
+          nats-py[nkeys]==2.10.0
+          nats-py[nkeys]==2.11.0
+      and nats-py[nkeys]&gt;=2.6.0 has no usable wheels, we can conclude that nats-py[nkeys]&gt;=2.6.0 cannot be used.
+      And because we know from (436) that nucliadb-utils[cache]&gt;=6.8.1.post4957 depends on nats-py[nkeys]&gt;=2.6.0, we can conclude that
+      nucliadb-utils[cache]&gt;=6.8.1.post4957 cannot be used.
+      And because only nucliadb-utils[cache]&lt;=6.8.1.post4961 is available and nucliadb==6.8.1.post4957 depends on nucliadb-utils[cache]&gt;=6.8.1.post4957, we
+      can conclude that nucliadb==6.8.1.post4957 cannot be used.
+      And because we know from (435) that nucliadb&gt;=3,&lt;6.8.1.post4957 cannot be used, we can conclude that nucliadb&gt;=3,&lt;6.8.1.post4961 cannot be used. (437)
+
+      Because only the following versions of nats-py[nkeys] are available:
+          nats-py[nkeys]&lt;=2.6.0
+          nats-py[nkeys]==2.7.0
+          nats-py[nkeys]==2.7.2
+          nats-py[nkeys]==2.8.0
+          nats-py[nkeys]==2.9.0
+          nats-py[nkeys]==2.9.1
+          nats-py[nkeys]==2.10.0
+          nats-py[nkeys]==2.11.0
+      and nats-py[nkeys]&gt;=2.6.0 has no usable wheels, we can conclude that nats-py[nkeys]&gt;=2.6.0 cannot be used.
+      And because nucliadb-utils==6.8.1.post4961 depends on nats-py[nkeys]&gt;=2.6.0, we can conclude that nucliadb-utils==6.8.1.post4961 cannot be used.
+      And because only nucliadb-utils[cache]&lt;=6.8.1.post4961 is available and nucliadb==6.8.1.post4961 depends on nucliadb-utils[cache]&gt;=6.8.1.post4961, we
+      can conclude that nucliadb==6.8.1.post4961 cannot be used.
+      And because we know from (437) that nucliadb&gt;=3,&lt;6.8.1.post4961 cannot be used, we can conclude that nucliadb&gt;=3 cannot be used.
+      And because you require nucliadb&gt;=3, we can conclude that your requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `grpcio-tools` in the requested range (e.g., 1.75.0rc1), but pre-releases weren't enabled (try:
+      `--prerelease=allow`)
+
+      hint: Wheels are required for `grpcio-tools` because building from source is disabled for all packages (i.e., with `--no-build`)
+
+      hint: Wheels are required for `nats-py` because building from source is disabled for all packages (i.e., with `--no-build`)
+
+      hint: While the active Python version is 3.13, the resolution failed for other Python versions supported by your project. Consider limiting your
+      project's supported Python versions using `requires-python`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-09-19 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-09-21 03:46</div>
+            <div class="timeline-body"><p>As an aside, also doesn't produce a helpful error in pip: https://github.com/pypa/pip/pull/13588</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

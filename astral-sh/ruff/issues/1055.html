@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature-request] Config inheritance - astral-sh/ruff #1055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature-request] Config inheritance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1055">#1055</a>
+        opened by <a href="https://github.com/smackesey">@smackesey</a>
+        on 2022-12-05 12:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 12:23</div>
+            <div class="timeline-body"><p>In monorepos, it can easily happen that some section of the codebase needs to maintain consistency with the rest of the code but vary in one dimension. For example, in <a href="https://github.com/dagster-io/dagster">Dagster</a> we use a line length of 100, but shorten it to 88 for our <code>docs-snippets</code> package, which includes code snippets that are incorporated into built docs. The shorter length is to ensure readers don't need to scroll horizontally when reading a code block in the browser.</p>
+<p>We're currently maintaining a separate <code>pyproject.toml</code> file in <code>docs-snippets</code> where we duplicate most of the configuration in our root <code>pyproject.toml</code> for black and isort, just so that we can change the line length. This is because neither of these tools offers any mechanism I'm aware of for config inheritance, which would allow only overriding specific settings.</p>
+<p>But it would be great to have-- for ruff, it might look something like this:</p>
+<pre><code># pyproject.toml (root)
+
+[tool.ruff]
+
+line-length = 100
+# ... rest of ruff config
+
+# examples/docs-snippets/pyproject.toml
+
+[tool.ruff]
+
+extends = &quot;../../pyproject.toml&quot;  # reads settings from root pyproject.toml
+line-length = 88
+</code></pre>
+<p>That's just a suggestion, I haven't thought about how best to implement this-- but <em>some</em> generic extension/inheritance mechanism for config would be useful. Eslint might be a good place to <a href="https://eslint.org/docs/latest/user-guide/configuring/configuration-files#extending-configuration-files">gain inspiration</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2022-12-05 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Config inheritance" to "[feature-request] Config inheritance" by @smackesey on 2022-12-05 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 14:41</div>
+            <div class="timeline-body"><p>Yeah, agree with the issue summary. (The discussion around presets would also be relevant here: #809.)</p>
+<p>I'd like it to be explicit and opt-in, like ESLint's <code>extends</code>, rather than doing anything implicit based on the filesystem hierarchy.</p>
+<p>The trickiest part is that we'd then have to use different settings for different files within a single <code>ruff</code> execution (at least, I <em>think</em> that's how ESLint works). Right now, we resolve the single project root, resolve the settings, then lint all files with those settings; but if we support configuration inheritance, we may have to resolve different settings for different subtrees of the filesystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 14:42</div>
+            <div class="timeline-body"><p>By the way: thanks for all the thoughtful and well-written issues. I also realized this morning that you wrote the Dagster article on <a href="https://dagster.io/blog/adding-python-types">type migrations</a>, which I enjoyed a lot. Great to have you hanging around the Ruff repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 15:24</div>
+            <div class="timeline-body"><p>Thanks-- yeah I've done a lot over the past 24 hours assessing <code>ruff</code> and trying to port Dagster OSS. Almost at the finish line. Your selling point of extreme speed is 100% accurate, I'm pretty excited to get linter editor feedback as instantly (even faster really) as the type-checking feedback provided by pyright/pylance. Also very nice to have something so actively developed-- that aliased import config option you added 1 hour after I requestedi it last night would've probably taken a year to get implemented in <code>isort</code>. Thanks for your hard work here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1069.html">astral-sh/ruff#1069</a> on 2022-12-05 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dagster-io/dagster/pulls/10901.html">dagster-io/dagster#10901</a> on 2022-12-06 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-06 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Release 0.1.0" by @charliermarsh on 2022-12-08 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1219.html">astral-sh/ruff#1219</a> on 2022-12-12 20:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-13 01:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 03:11</div>
+            <div class="timeline-body"><p>This is going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.178">v0.0.178</a>. For now, at least, it's explicit via <code>extends</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

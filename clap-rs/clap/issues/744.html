@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>show better error message when a validator fails - clap-rs/clap #744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>show better error message when a validator fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/744">#744</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-11-13 01:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-13 01:33</div>
+            <div class="timeline-body"><p>Let's say a valid command line invocation is this:</p>
+<pre><code>$ rg -j10 foo
+</code></pre>
+<p>but a user types this instead:</p>
+<pre><code>$ rg -j10a foo
+</code></pre>
+<p>I have a validator function on the <code>j</code> flag that checks whether it's a valid number or not. If not, it returns an error so that the output looks like this:</p>
+<pre><code>error: invalid digit found in string
+</code></pre>
+<p>This is fine as far as it goes, but let's take a look at the output of an error when I try to use a value that clap knows is wrong for a different flag:</p>
+<pre><code>$ rg --color wat foo
+error: 'wat' isn't a valid value for '--color &lt;WHEN&gt;'
+        [values: always, auto, never]
+
+
+USAGE:
+    
+    rg [OPTIONS] &lt;pattern&gt; [&lt;path&gt; ...]
+    rg [OPTIONS] -e PATTERN ... [&lt;path&gt; ...]
+    rg [OPTIONS] --files [&lt;path&gt; ...]
+    rg [OPTIONS] --type-list
+
+For more information try --help
+</code></pre>
+<p>This error message is a lot better. In particular, the really critical piece of information is the <em>name of the flag</em> that's causing the problem. For example, consider a more complex command line:</p>
+<pre><code>$ rg -C3 -j10a -maxdepth 3 -m1 foo
+</code></pre>
+<p>There are a lot more numbers here, so it's harder to match up the error message with the actual CLI usage.</p>
+<p>I think clap knows the flag name when a validator function fails. Could it include that in the error message?</p>
+<p>(This is easily my favorite benefit of clap btw. Its failure modes are oh so much better than Docopt. Of course, I knew that before, but still, it's nice. :-))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-11-14 21:44</div>
+            <div class="timeline-body"><p>Sorry for the wait, it's been a busy few days in my offline life! :smile:</p>
+<p>The unsophisticated work around is to use a different validator per argument, at which point the error you return could include the name of argument. I know that's not optimal, just saying for completeness sake :wink:</p>
+<p>I could easily add a prefix to the error such as, <code>error: argument '-j &lt;val&gt;' failed validation with message: blah</code> Or something to that effect. Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-11-14 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-11-14 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-11-14 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-11-14 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2016-11-14 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @kbknapp on 2016-11-14 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-14 22:25</div>
+            <div class="timeline-body"><p>That sounds great! I might even shorten it to <code>error: invalid argument '-j &lt;val&gt;': blah</code> but either sounds good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-11-21 04:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:20 UTC
+    </footer>
+</body>
+</html>

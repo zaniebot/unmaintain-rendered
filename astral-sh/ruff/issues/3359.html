@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCH (flake8-type-checking) not working as expected - astral-sh/ruff #3359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TCH (flake8-type-checking) not working as expected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3359">#3359</a>
+        opened by <a href="https://github.com/roansong">@roansong</a>
+        on 2023-03-06 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/roansong">@roansong</a> on 2023-03-06 13:45</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h1>Overview</h1>
+<p>Running <code>ruff</code> is great overall, but the TCH checks don't appear to be behaving correctly for me.</p>
+<pre><code>ruff version: 0.0.254
+</code></pre>
+<h2>Code Snippet</h2>
+<p>I'm using poetry here, in a minimal project.</p>
+<p><code>test.py</code></p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+def func(a: Callable) -&gt; int:
+    return 1
+</code></pre>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;test-issue&quot;
+version = &quot;0.1.0&quot;
+description = &quot;&quot;
+authors = [&quot;Roan Song &lt;roansong@gmail.com&gt;&quot;]
+readme = &quot;README.md&quot;
+packages = [{include = &quot;test_issue&quot;}]
+
+[tool.poetry.dependencies]
+python = &quot;^3.10&quot;
+ruff = &quot;^0.0.254&quot;
+</code></pre>
+<h2>Command</h2>
+<pre><code class="language-bash">poetry run ruff check . --isolated --select TCH
+test.py:4:33: TCH004 Move import `collections.abc.Callable` out of type-checking block. Import is used for more than type hinting.
+Found 1 error.
+</code></pre>
+<p>I didn't manage to reproduce the following error consistently, but here's a screenshot of the opposite happening, where the VS Code plugin correctly says I should move code into a type checking block, but running <code>ruff check . --select TCH --isolated</code> showed no errors
+<img width="964" alt="image" src="https://user-images.githubusercontent.com/14807642/223126969-4000029b-5c46-443a-8c1b-d6e8c5501190.png"></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 13:53</div>
+            <div class="timeline-body"><p>I believe the snippet above is actually correct, unless I'm misunderstanding.</p>
+<p>If I run this snippet:</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+def func(a: Callable) -&gt; int:
+    return 1
+</code></pre>
+<p>I get a runtime error:</p>
+<pre><code>❯ python foo.py
+Traceback (most recent call last):
+  File &quot;/Users/crmarsh/workspace/staging/foo.py&quot;, line 6, in &lt;module&gt;
+    def func(a: Callable) -&gt; int:
+NameError: name 'Callable' is not defined. Did you mean: 'callable'?
+</code></pre>
+<p>Type definitions used a module scope are actually required at runtime because they are exposed as <code>__annotations__</code>.</p>
+<p>If you add <code>from __future__ import annotations</code>, the TCH error be resolved <em>and</em> that code will work at runtime. But otherwise, they are considered runtime-required annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-06 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roansong">@roansong</a> on 2023-03-06 14:03</div>
+            <div class="timeline-body"><p>Ah! That's it, thanks @charliermarsh . I didn't realise that <code>from __future__ import annotations</code> was the key here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @roansong on 2023-03-06 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 16:12</div>
+            <div class="timeline-body"><p>It's super confusing :( As a tooling author, <code>from __future__ import annotations</code> is a real challenge.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

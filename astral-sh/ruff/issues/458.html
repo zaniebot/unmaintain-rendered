@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement rules in `darglint` - astral-sh/ruff #458</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement rules in `darglint`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/458">#458</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2022-10-21 01:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-10-21 01:21</div>
+            <div class="timeline-body"><p>This might be superseded by https://github.com/astral-sh/ruff/issues/12434</p>
+<hr />
+<p>https://pypi.org/project/darglint/</p>
+<blockquote>
+<p>Darglint's primary focus is to identify incorrect and missing documentationd
+of a function's signature. Checking style is a stretch goal, and is supported
+on a best-effort basis.  Darglint does not check stylistic preferences expressed
+by tools in the Python Code Quality Authority (through tools such as <code>pydocstyle</code>).
+So when using Darglint, it may be a good idea to also use <code>pydocstyle</code>, if you
+want to enforce style.  (For example, <code>pydocstyle</code> requires the short summary
+to be separated from other sections by a line break.  Darglint makes no such check.)</p>
+</blockquote>
+<h3>Error Codes</h3>
+
+<ul>
+<li><em>DAR001</em>: The docstring was not parsed correctly due to a syntax error.</li>
+<li><em>DAR002</em>: An argument/exception lacks a description</li>
+<li><em>DAR003</em>: A line is under-indented or over-indented.</li>
+<li><em>DAR004</em>: The docstring contains an extra newline where it shouldn't.</li>
+<li><em>DAR005</em>: The item contains a type section (parentheses), but no type.</li>
+<li><em>DAR101</em>: The docstring is missing a parameter in the definition.</li>
+<li><em>DAR102</em>: The docstring contains a parameter not in function.</li>
+<li><em>DAR103</em>: The docstring parameter type doesn't match function.</li>
+<li><em>DAR104</em>: (disabled) The docstring parameter has no type specified</li>
+<li><em>DAR105</em>: The docstring parameter type is malformed.</li>
+<li><em>DAR201</em>: The docstring is missing a return from definition.</li>
+<li><em>DAR202</em>: The docstring has a return not in definition.</li>
+<li><em>DAR203</em>: The docstring parameter type doesn't match function.</li>
+<li><em>DAR301</em>: The docstring is missing a yield present in definition.</li>
+<li><em>DAR302</em>: The docstring has a yield not in definition.</li>
+<li><em>DAR401</em>: The docstring is missing an exception raised.</li>
+<li><em>DAR402</em>: The docstring describes an exception not explicitly raised.</li>
+<li><em>DAR501</em>: The docstring describes a variable which is not defined.</li>
+</ul>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-10-21 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-29 22:55</div>
+            <div class="timeline-body"><p>Cool, I've never used but looks useful. Would this be an impactful plugin for you? Would it unblock any Ruff adoption? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-11-01 00:00</div>
+            <div class="timeline-body"><p>Hey @charliermarsh, yeah. I maintain a few packages with public APIs that would benefit from contributors being informed about documentation for arguments or exceptions raised being missing.</p>
+<p>A number of features would make Ruff a nice replacement for flake8: speed, compatibility with the rest of the Python ecosystem, pyproject.toml support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lsorber">@lsorber</a> on 2022-11-18 14:32</div>
+            <div class="timeline-body"><p>FWIW, <code>darglint</code> is the main blocker [1] for us to migrate Poetry Cookiecutter [2] from <code>flake8</code> to <code>ruff</code>.</p>
+<p>[1] https://github.com/radix-ai/poetry-cookiecutter/issues/125
+[2] https://github.com/radix-ai/poetry-cookiecutter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-18 15:07</div>
+            <div class="timeline-body"><p>👍 Helpful to hear! <code>darglint</code> is probably the most popular unimplemented plugin. I'd like to get around to it soon. If there's a subset of rules that are most impactful, that'd be helpful to know too for prioritization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-11-19 00:03</div>
+            <div class="timeline-body"><blockquote>
+<p>If there's a subset of rules that are most impactful, that'd be helpful to know too for prioritization.</p>
+</blockquote>
+<p>For me personally, they're probably DAR101, DAR102, DAR201, DAR202 and to a lesser extent DAR301, DAR302, DAR401 and DAR402</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/909.html">astral-sh/ruff#909</a> on 2022-11-26 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../superlinear-ai/substrate/pulls/144.html">superlinear-ai/substrate#144</a> on 2022-12-19 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2022-12-31 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @charliermarsh on 2022-12-31 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2022-12-31 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strickvl">@strickvl</a> on 2023-01-04 09:52</div>
+            <div class="timeline-body"><p>For me, I use <code>darglint</code> together with <code>pydocstyle</code> since they don't do quite the same thing. Having <code>darglint</code> absorbed into the ruff world would be really great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../superlinear-ai/substrate/issues/151.html">superlinear-ai/substrate#151</a> on 2023-01-07 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erwann-met">@erwann-met</a> on 2023-01-10 10:08</div>
+            <div class="timeline-body"><p>We just discovered ruff in my team. It's amazing, and I'd like to thank you for all the great work!</p>
+<p>We used to run flake8 along with darglint. Unfortunately since ruff does not yet implement darglint rules we still have to keep darglint alongside ruff which is a shame given how slow darglint is.</p>
+<p>Reimplementing darglint within ruff is definitely the feature we are most looking forward to!</p>
+<p>For us the most important rules are probably those related to the parameters (and returns) and their types: <code>DAR101</code>, <code>DAR102</code>, <code>DAR103</code>, <code>DAR201</code>, <code>DAR202</code>, <code>DAR203</code> and <code>DAR501</code>. I hope this helps!</p>
+<p>We understand that maintaining an open-source project can be a lot of work and we want to express our appreciation for all the effort that goes into it. We were wondering if there's any update on when this issue might be addressed? Any information would be greatly appreciated. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-10 13:05</div>
+            <div class="timeline-body"><p>Very helpful, thank you! It's not something I've started working on actively (and would make for a good contribution if there are any eager contributors reading this :)), but that set of rules at least is probably not too much work to support, and this issue has a lot of thumbs-up votes so I'll try to get to it soon-ish. I'll post here when I'm able to take it on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 04:05</div>
+            <div class="timeline-body"><p>Looking into starting on this. <code>darglint</code> has a lot of code because it defines entire grammars for the docstrings, and then lexes and parses according to those grammars. <code>pydocstyle</code>, on the other hand, does it all with regular expressions. Wondering if we could get away with the latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anthonyburdi">@anthonyburdi</a> on 2023-01-25 19:26</div>
+            <div class="timeline-body"><p>Super exciting to hear that this is in the works. We just switched to ruff instead of <code>pydocstyle</code> and are eager to replace <code>darglint</code> as well. Here are the error codes we are most interested (least overlap with <code>pydocstyle</code>):</p>
+<ul>
+<li>DAR102: The docstring contains a parameter not in function.</li>
+<li>DAR201: The docstring is missing a return from definition.</li>
+<li>DAR202: The docstring has a return not in definition.</li>
+<li>DAR301: The docstring is missing a yield present in definition.</li>
+<li>DAR302: The docstring has a yield not in definition.</li>
+<li>DAR401: The docstring is missing an exception raised.</li>
+<li>DAR402: The docstring describes an exception not explicitly raised.</li>
+<li>DAR501: The docstring describes a variable which is not defined.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyjanitor-devs/pyjanitor/issues/1236.html">pyjanitor-devs/pyjanitor#1236</a> on 2023-01-30 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2310.html">astral-sh/ruff#2310</a> on 2023-01-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2459.html">astral-sh/ruff#2459</a> on 2023-02-02 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbebb">@rbebb</a> on 2023-02-02 00:30</div>
+            <div class="timeline-body"><p>It would be great if it could add darglint’s feature that checks if docstrings match a particular style (whether it be Sphinx, Google, or something else)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mindee/tawazi/issues/85.html">mindee/tawazi#85</a> on 2023-02-27 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../meltano/sdk/pulls/1462.html">meltano/sdk#1462</a> on 2023-02-27 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2023-03-07 17:41</div>
+            <div class="timeline-body"><p>Implementing darglint could handle some flake8 exceptions, as well as part of docformatter I guess?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbebb">@rbebb</a> on 2023-03-27 13:58</div>
+            <div class="timeline-body"><p>@charliermarsh Is there an update on implementing darglint features in ruff? Thank you for all of your work on this project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/finswimmer">@finswimmer</a> on 2023-04-06 06:50</div>
+            <div class="timeline-body"><p>Hey,</p>
+<p>unfortunately <code>darglint</code> is unmaintained since December 2022. So I would be very happy to see something similar in <code>ruff</code>.</p>
+<p>Thanks a lot for all your very good work!</p>
+<p>fin swimmer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-06 17:46</div>
+            <div class="timeline-body"><p>I'm currently considering taking this on as a project over the next few weeks, but it's competing with some other priorities so not a firm commitment yet :) I definitely hear that this something users want, and it's something I want Ruff to support too -- just a question of when, will post here when I have a clear decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandro-lucarella-frequenz">@leandro-lucarella-frequenz</a> on 2023-04-12 18:24</div>
+            <div class="timeline-body"><p>Great to hear work is close to being started. We also rely a lot on <code>darglint</code> and are concerned about is current abandoned state, and were also looking to start using <code>ruff</code>, so it would be very good news if it can be a replacement for <code>darglint</code>. The rules that most often catch error in the documentation for us are:</p>
+<ul>
+<li>DAR101: The docstring is missing a parameter in the definition.</li>
+<li>DAR102: The docstring contains a parameter not in function.</li>
+<li>DAR201: The docstring is missing a return from definition.</li>
+<li>DAR202: The docstring has a return not in definition.</li>
+<li>DAR301: The docstring is missing a yield present in definition.</li>
+<li>DAR302: The docstring has a yield not in definition.</li>
+<li>DAR401: The docstring is missing an exception raised.</li>
+<li>DAR402: The docstring describes an exception not explicitly raised.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../frequenz-floss/frequenz-repo-config-python/issues/18.html">frequenz-floss/frequenz-repo-config-python#18</a> on 2023-04-12 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible-community/antsichaut/pulls/22.html">ansible-community/antsichaut#22</a> on 2023-04-24 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4362.html">astral-sh/ruff#4362</a> on 2023-05-11 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsh9">@jsh9</a> on 2023-05-16 08:47</div>
+            <div class="timeline-body"><p>Hi @charliermarsh , after I raised this issue (https://github.com/charliermarsh/ruff/issues/4362), I looked into Darglint myself.  It was extremely slow, and it can actually be unusable for large projects.</p>
+<p>Therefore I spent a few days writing a new tool, <strong><em>pydoclint</em></strong>, from scratch: https://github.com/jsh9/pydoclint</p>
+<p>I did some benchmarking using pydoclint vs Darglint, and here's the result on linting these 2 famous Python projects:</p>
+<p>|                                                              | pydoclint | darglint                          |
+| ------------------------------------------------------------ | --------- | --------------------------------- |
+| <a href="https://github.com/numpy/numpy">numpy</a>                      | 2.0 sec   | 49 min 9 sec (1,475x slower)      |
+| <a href="https://github.com/scikit-learn/scikit-learn">scikit-learn</a> | 2.4 sec   | 3 hr 5 min 33 sec (4,639x slower) |</p>
+<p>So if you and/or your team is going to port the same functionality to ruff, I'd recommend that you either write things from the ground up in Rust, or check out how I implemented it in Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akaihola">@akaihola</a> on 2023-05-28 18:31</div>
+            <div class="timeline-body"><p>Since <a href="https://pypi.org/project/darglint/">darglint</a> is archived, I've forked it as <a href="https://pypi.org/project/darglint2/">darglint2</a>. The purpose of that project is to maintain a drop-in replacement for <code>darglint</code> with any minimal bugfixes needed to keep it usable for old users who can't spend the effort to migrate to a faster alternative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kludex">@Kludex</a> on 2023-06-19 13:25</div>
+            <div class="timeline-body"><p>It would be cool to have <code>DAR102: The docstring contains a parameter not in function.</code> 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-19 13:32</div>
+            <div class="timeline-body"><p>We could probably support that without implementing all of Darglint. We already check that the docstring contains all function parameters -- that's basically the inverse?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kludex">@Kludex</a> on 2023-06-19 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>We could probably support that without implementing all of Darglint. We already check that the docstring contains all function parameters -- that's basically the inverse?</p>
+</blockquote>
+<p>Yes. That would be great. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erwann-met">@erwann-met</a> on 2023-06-26 12:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi @charliermarsh , after I raised this issue (#4362), I looked into Darglint myself. It was extremely slow, and it can actually be unusable for large projects.</p>
+<p>Therefore I spent a few days writing a new tool, <strong><em>pydoclint</em></strong>, from scratch: https://github.com/jsh9/pydoclint</p>
+<p>I did some benchmarking using pydoclint vs Darglint, and here's the result on linting these 2 famous Python projects:
+pydoclint 	darglint
+<a href="https://github.com/numpy/numpy">numpy</a> 	2.0 sec 	49 min 9 sec (1,475x slower)
+<a href="https://github.com/scikit-learn/scikit-learn">scikit-learn</a> 	2.4 sec 	3 hr 5 min 33 sec (4,639x slower)</p>
+<p>So if you and/or your team is going to port the same functionality to ruff, I'd recommend that you either write things from the ground up in Rust, or check out how I implemented it in Python.</p>
+</blockquote>
+<p>Thank you so much @jsh9 for tackling this issue!
+We've tried your tool along with <code>Ruff</code> in my team and it's very promising so far. We are very impressed that you managed to put it together so fast. For us the replacement of <code>darglint</code> and <code>flake8</code> is crucial as they currently represent about 60% of our CI costs.</p>
+<p>Having said that, I would like to provide some feedback based on our experience using <code>pydoclint</code>. While it has demonstrated great potential, we have encountered a few issues that prevent us from fully adopting it. One particular area that requires attention is the clarity of the error messages. In certain cases, the messages provided are not as informative or explicit as we would like them to be, making it difficult for us to identify the root cause of the issues. Another issue is the lack of ability to ignore some rules either project-wise or directly in the code.</p>
+<p>Sadly we prefer waiting a bit for either <code>pydoclint</code> to be mature enough or for <code>Ruff</code> to implement darglint rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsh9">@jsh9</a> on 2023-06-27 02:48</div>
+            <div class="timeline-body"><p>Hi @erwann-met , please feel free to submit new issues over at pydoclint, and I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jsh9/pydoclint/issues/38.html">jsh9/pydoclint#38</a> on 2023-06-30 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbebb">@rbebb</a> on 2023-07-25 20:09</div>
+            <div class="timeline-body"><p>Hi @charliermarsh! Just figured I check to see if there's an update on the darglint effort. Thank you again for all of your work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6887.html">astral-sh/ruff#6887</a> on 2023-08-26 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joelberkeley">@joelberkeley</a> on 2023-08-26 18:51</div>
+            <div class="timeline-body"><blockquote>
+<p>... We already check that the docstring contains all function parameters ...</p>
+</blockquote>
+<p>This appears to be true only for Google style docstrings (see <a href="https://beta.ruff.rs/docs/rules/undocumented-param/">D417</a>). I'd love for that to be available for sphinx rest style</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jrjsmrtn/cookiecutter-hypermodern-python/issues/2.html">jrjsmrtn/cookiecutter-hypermodern-python#2</a> on 2023-09-01 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbebb">@rbebb</a> on 2023-09-08 14:53</div>
+            <div class="timeline-body"><p>Hi @charliermarsh! I figured I'd circle back on this feature request to see if there are any updates on the effort!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-08 15:06</div>
+            <div class="timeline-body"><p>We will report back here if there is progress on this; we have not begun work on this — we have a lot of priorities as we grow!</p>
+<p>I'm happy to review contributions of individual rules here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pyjanitor-devs/pyjanitor/pulls/1294.html">pyjanitor-devs/pyjanitor#1294</a> on 2023-10-08 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddelange">@ddelange</a> on 2023-10-17 07:45</div>
+            <div class="timeline-body"><p>fwiw, our setup for consistent <a href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/">google style docstrings</a> using darglint and flake8-docstrings:</p>
+<p><code>setup.cfg</code></p>
+<pre><code class="language-ini">[flake8]
+ignore = B902,D10,E203,E501,W503
+max-line-length = 88
+inline-quotes = double
+docstring-convention = google
+max-cognitive-complexity = 10
+
+[darglint]
+strictness = short
+</code></pre>
+<p><code>.pre-commit-config.yaml</code></p>
+<pre><code class="language-yaml">repos:
+-   repo: https://github.com/psf/black
+    # when updating this version, also update blacken-docs hook below
+    rev: 23.1.0
+    hooks:
+    -   id: black
+
+-   repo: https://github.com/asottile/blacken-docs
+    rev: 1.13.0
+    hooks:
+    -   id: blacken-docs
+        additional_dependencies: ['black==23.1.0']
+
+-   repo: https://github.com/timothycrosley/isort
+    rev: 5.12.0
+    hooks:
+    -   id: isort
+
+-   repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
+        additional_dependencies: [
+            'darglint~=1.8.1',
+            'flake8-absolute-import~=1.0',
+            'flake8-blind-except~=0.2.0',
+            'flake8-builtins~=2.1',
+            'flake8-cognitive-complexity==0.1.0',
+            'flake8-comprehensions~=3.2',
+            'flake8-docstrings~=1.5',
+            'flake8-logging-format~=0.9',
+            'flake8-mutable~=1.2.0',
+            'flake8-print~=5.0',
+            'flake8-printf-formatting~=1.1.0',
+            'flake8-pytest-style~=1.7',
+            'flake8-quotes~=3.2',
+            'flake8-tuple~=0.4.1',
+            'pep8-naming~=0.11'
+        ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddelange">@ddelange</a> on 2023-10-25 05:29</div>
+            <div class="timeline-body"><p>Switched from flake8 + black + darglint to ruff + pydoclint.</p>
+<p>Note that for <a href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/">google style docstrings</a>:</p>
+<ul>
+<li>pydoclint needs additional config beyond style=google (below, see also <a href="https://github.com/jsh9/pydoclint/discussions/88#discussioncomment-7312021">discussion</a>) if your code is already type annotated (which doesnt need duplication into the docstrings)</li>
+<li><a href="https://docs.astral.sh/ruff/rules/dashed-underline-after-section/">D407</a> needs to be disabled.</li>
+</ul>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[tool.pydoclint]
+style = &quot;google&quot;
+arg-type-hints-in-docstring = false
+check-return-types = false
+check-yield-types = false
+
+[tool.ruff]
+select = [&quot;ALL&quot;]
+ignore = [&quot;D407&quot;, &quot;E501&quot;, &quot;ANN&quot;, &quot;TRY003&quot;, &quot;D203&quot;, &quot;D213&quot;, &quot;D100&quot;, &quot;D104&quot;, &quot;D106&quot;, &quot;FIX002&quot;, &quot;ERA001&quot;, &quot;RUF012&quot;] # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212), D100,D104 (we don't publish publick readthedocs), D106 (we have Django Meta class that doesn't need a docstring), FIX002 (we have TD002,TD003), ERA001 (we sometimes leave code for reference), RUF012 (django is full of class vars that are lists or dicts)
+target-version = &quot;py311&quot; # not needed if your pyproject.toml has `project.requires-python`
+
+[tool.ruff.extend-per-file-ignores]
+&quot;__init__.py&quot; = [&quot;E401&quot;, &quot;E402&quot;]
+&quot;**/tests/**/*.py&quot; = [&quot;S101&quot;, &quot;PT009&quot;] # ignores: S101 (assert is fine in tests), PT009 (we use django unittest framework)
+&quot;**/migrations/*.py&quot; = [&quot;D101&quot;]
+</code></pre>
+<p><code>.pre-commit-config.yaml</code></p>
+<pre><code class="language-yaml">repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.0
+  hooks:
+  - id: ruff
+    args: [--fix, --exit-non-zero-on-fix]
+  - id: ruff-format
+
+# should be replaced in the future ref https://github.com/astral-sh/ruff/issues/458
+- repo: https://github.com/jsh9/pydoclint
+  rev: 0.3.4
+  hooks:
+  - id: pydoclint
+
+# should be replaced in the future ref https://github.com/astral-sh/ruff/issues/3792
+- repo: https://github.com/asottile/blacken-docs
+  rev: 1.13.0
+  hooks:
+  - id: blacken-docs
+    additional_dependencies: ['black==23.10.0']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opentargets/gentropy/pulls/212.html">opentargets/gentropy#212</a> on 2023-10-31 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9070.html">astral-sh/ruff#9070</a> on 2023-12-10 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BigForLy">@BigForLy</a> on 2023-12-20 07:08</div>
+            <div class="timeline-body"><p>Hello @charliermarsh! I manage to convert almost all checks to ruff, except for Darling, do you have any idea whether this will be done?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zenml-io/zenml/pulls/2305.html">zenml-io/zenml#2305</a> on 2024-01-17 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strickvl">@strickvl</a> on 2024-02-27 12:55</div>
+            <div class="timeline-body"><p>As mentioned in Discord, registering my interest in taking a stab at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pandas-dev/pandas/issues/57578.html">pandas-dev/pandas#57578</a> on 2024-02-29 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2024-04-16 11:44</div>
+            <div class="timeline-body"><p>Using pydocstyle we are using the google style with typing. We strictly use typing in python, so repeating the types in the Doc string serves no purpose and is just redundant. Having rules like <em>DAR103: The docstring parameter type doesn't match function.</em> or <em>DAR105: The docstring parameter type is malformed.</em> certainly would help to keep Doc string and parameter declaration aligned, it's still redundant and we'd rather enforce that no types are specified in the Doc string. Seems darglint doesn't provide such a rule.</p>
+<p>Edit: Just found this issue which raises the same wish: https://github.com/astral-sh/ruff/issues/9070</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AloizioMacedo">@AloizioMacedo</a> on 2024-04-16 14:41</div>
+            <div class="timeline-body"><p>Hoping to see this as well! Ruff already encompasses most of my CI linting checks, this would be a great addition.</p>
+<p>Meanwhile, in case it is useful for other people, I decided to take a stab and implement a version that is sufficient for my needs: https://github.com/AloizioMacedo/pystaleds.</p>
+<p>It intends primarily to check for mismatches of the parameters in the function signature and the arguments in the docstring. It is very experimental, but I can already use it in my projects while ruff doesn't support a similar feature : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddelange">@ddelange</a> on 2024-04-16 15:15</div>
+            <div class="timeline-body"><blockquote>
+<p>we'd rather enforce that no types are specified in the Doc string</p>
+</blockquote>
+<p>@Spenhouet fwiw pydoclint has an <code>--arg-type-hints-in-signature</code> flag ref https://jsh9.github.io/pydoclint/violation_codes.html</p>
+<p>see also my config <a href="https://github.com/astral-sh/ruff/issues/458#issuecomment-1778541467">above</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2024-04-17 06:16</div>
+            <div class="timeline-body"><p>@ddelange Thanks for sharing, that would introduce a new tool just for this small requirement. Would much more prefer if this would be covered by a linting rule within ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aeturrell">@aeturrell</a> on 2024-05-15 07:21</div>
+            <div class="timeline-body"><p>Just wanted to add my voice to those saying that this would be a really useful feature. Thanks for all the amazing work on Ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11435.html">astral-sh/ruff#11435</a> on 2024-05-18 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11471.html">astral-sh/ruff#11471</a> on 2024-05-19 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2024-05-21 14:30</div>
+            <div class="timeline-body"><p>I wonder if at this point, it would be better to implement <a href="https://github.com/jsh9/pydoclint">pydoclint</a> in ruff instead of darglint? (This is prompted by the recent PR #11471.)</p>
+<p>Pydoclint has</p>
+<ul>
+<li><a href="https://jsh9.github.io/pydoclint/violation_codes.html">more error codes</a> (e.g., <code>DOC104</code> in pydoclint checks for the order of the parameters; darglint doesn't have that AFAICT),</li>
+<li><a href="https://jsh9.github.io/pydoclint/config_options.html">more config options</a> (like <code>arg-type-hints-in-signature</code> which lets you decide whether you want to include types in the docstring),</li>
+<li>and the config options of pydoclint also seem more well-thought-out to me than darglint's. (E.g., pydoclint has <code>skip-checking-short-docstrings</code> which makes sense to me, but darglint's <code>strictness=short</code> vs <code>strictness=long</code> is a bit confusing)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/ansible-dev-environment/pulls/161.html">ansible/ansible-dev-environment#161</a> on 2024-05-23 04:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/ansible-dev-environment/pulls/165.html">ansible/ansible-dev-environment#165</a> on 2024-05-23 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cjolowicz/cookiecutter-hypermodern-python/issues/1282.html">cjolowicz/cookiecutter-hypermodern-python#1282</a> on 2024-05-28 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/molecule/pulls/4236.html">ansible/molecule#4236</a> on 2024-06-26 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Goldziher">@Goldziher</a> on 2024-07-15 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if at this point, it would be better to implement <a href="https://github.com/jsh9/pydoclint">pydoclint</a> in ruff instead of darglint? (This is prompted by the recent PR #11471.)</p>
+<p>Pydoclint has</p>
+<ul>
+<li><a href="https://jsh9.github.io/pydoclint/violation_codes.html">more error codes</a> (e.g., <code>DOC104</code> in pydoclint checks for the order of the parameters; darglint doesn't have that AFAICT),</li>
+<li><a href="https://jsh9.github.io/pydoclint/config_options.html">more config options</a> (like <code>arg-type-hints-in-signature</code> which lets you decide whether you want to include types in the docstring),</li>
+<li>and the config options of pydoclint also seem more well-thought-out to me than darglint's. (E.g., pydoclint has <code>skip-checking-short-docstrings</code> which makes sense to me, but darglint's <code>strictness=short</code> vs <code>strictness=long</code> is a bit confusing)</li>
+</ul>
+</blockquote>
+<p>Strong +1 for this. pydoclint is really great and pretty fast already, but ruff could improve on this and extend it further. Also some issues might be autofixable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 16:50</div>
+            <div class="timeline-body"><p>Are there rules that are present in <code>darglint</code> but not <code>pydoclint</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Apakottur">@Apakottur</a> on 2024-07-17 16:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Are there rules that are present in <code>darglint</code> but not <code>pydoclint</code>?</p>
+</blockquote>
+<p>I know of at least two:</p>
+<ol>
+<li><code>DAR401: The docstring is missing an exception raised.</code></li>
+<li><code>DAR402: The docstring describes an exception not explicitly raised.</code></li>
+</ol>
+<p>These two rules are the only reason we use darglint, everything else that we want is covered by pydoclint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 16:55</div>
+            <div class="timeline-body"><p>Interesting, ok. Those are the exact rules added in https://github.com/astral-sh/ruff/pull/11471.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsh9">@jsh9</a> on 2024-07-17 17:03</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Are there rules that are present in <code>darglint</code> but not <code>pydoclint</code>?</p>
+</blockquote>
+<p>I know of at least two:</p>
+<ol>
+<li><code>DAR401: The docstring is missing an exception raised.</code></li>
+<li><code>DAR402: The docstring describes an exception not explicitly raised.</code></li>
+</ol>
+<p>These two rules are the only reason we use darglint, everything else that we want is covered by pydoclint.</p>
+</blockquote>
+<p>I'm the author of pydoclint.</p>
+<p>I think <a href="https://jsh9.github.io/pydoclint/violation_codes.html#5-doc5xx-violations-about-raise-statements">these two pydoclint violation codes</a> cover DAR401 and 402:</p>
+<p>| Code | Explanation
+-- | --
+DOC501 | Function/method has “raise” statements, but the docstring does not have a “Raises” section
+DOC502 | Function/method has a “Raises” section in the docstring, but there are not “raise” statements in the body</p>
+<p>If they don't cover what you want, please feel free to open an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-07-18 15:53</div>
+            <div class="timeline-body"><p>@jsh9 I don't think those check the exception types. For example, if I have a function like this, which sometimes raises a <code>ValueError</code>, but incorrectly document that it raises a <code>ZeroDivisionError</code>, darglint will report the problem while pydoclint won't:</p>
+<pre><code class="language-python">def _str_to_bool(informal_bool: str) -&gt; bool:
+    &quot;&quot;&quot;
+    Translate a commonly used boolean ``str`` into a real ``bool``.
+
+    Args:
+        informal_bool: A boolean represented as ``str``, like ``&quot;true&quot;``, ``&quot;no&quot;``, ``&quot;off&quot;``, etc.
+
+    Returns:
+        ``True`` or ``False`` to match the intent of ``informal_bool``.
+
+    Raises:
+        ZeroDivisionError: This doesn't look like enough like a ``bool`` to translate.
+    &quot;&quot;&quot;
+    if informal_bool.lower() in ('true', 't', 'yes', 'y', 'on', '1'):
+        return True
+    if informal_bool.lower() in ('false', 'f', 'no', 'n', 'off', '0'):
+        return False
+    raise ValueError(f&quot;{informal_bool} doesn't look like a boolean&quot;)  # pragma: no cover
+</code></pre>
+<pre><code class="language-console">$ darglint nt2
+nt2/casters.py:_str_to_bool:29: DAR401: -r ValueError
+nt2/casters.py:_str_to_bool:39: DAR402: +r ZeroDivisionError
+
+$ pydoclint nt2
+Loading config from user-specified .toml file: pyproject.toml
+No config found in pyproject.toml.
+Skipping files that match this pattern: \.git|\.tox
+nt2/__init__.py
+nt2/casters.py
+nt2/converters.py
+nt2/dumpers.py
+nt2/ui.py
+nt2/yamlpath_tools.py
+🎉 No violations 🎉
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jsh9/pydoclint/issues/158.html">jsh9/pydoclint#158</a> on 2024-07-18 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsh9">@jsh9</a> on 2024-07-18 20:48</div>
+            <div class="timeline-body"><p>Thanks @AndydeCleyre !</p>
+<p>I've opened a new issue (https://github.com/jsh9/pydoclint/issues/158) on pydoclint to add this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12434.html">astral-sh/ruff#12434</a> on 2024-07-21 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zenml-io/zenml/pulls/3012.html">zenml-io/zenml#3012</a> on 2024-09-13 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../AndydeCleyre/nestedtextto/issues/9.html">AndydeCleyre/nestedtextto#9</a> on 2024-10-25 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matmair">@matmair</a> on 2025-03-31 19:35</div>
+            <div class="timeline-body"><p>Is there a way to achieve results similar to DAR101 right now? The existing D* rules only seem to trigger if &quot;Args&quot; or similar is detected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-31 21:13</div>
+            <div class="timeline-body"><p>@matmair it sounds like you might be looking for the in-progress rule here: https://github.com/astral-sh/ruff/pull/13280. So there's no way currently but should be once that's resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matmair">@matmair</a> on 2025-04-02 22:11</div>
+            <div class="timeline-body"><p>Great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bis-med-it/pysdmx/pulls/254.html">bis-med-it/pysdmx#254</a> on 2025-04-03 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../narwhals-dev/narwhals/issues/2424.html">narwhals-dev/narwhals#2424</a> on 2025-04-23 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../cherrypy/cheroot/pulls/779.html">cherrypy/cheroot#779</a> on 2025-10-21 01:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

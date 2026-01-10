@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue with Installing Torch-TensorRT via `uv add` Command with External Repository Links - astral-sh/uv #7735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue with Installing Torch-TensorRT via `uv add` Command with External Repository Links</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7735">#7735</a>
+        opened by <a href="https://github.com/ChenMoFeiJin">@ChenMoFeiJin</a>
+        on 2024-09-27 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ChenMoFeiJin">@ChenMoFeiJin</a> on 2024-09-27 10:32</div>
+            <div class="timeline-body"><hr />
+<h2><strong>Platform:</strong>  Ubuntu 20.04
+<strong>Version:</strong>  uv 0.4.16</h2>
+<h3>Description:</h3>
+<p>When attempting to install <strong>Torch-TensorRT</strong> using the <code>uv add</code> command, I encountered an error. The command I ran was:</p>
+<pre><code class="language-bash">uv add torch-tensorrt
+</code></pre>
+<p>The following error was returned:</p>
+<pre><code>###########################################################################################
+The package you are trying to install is only a placeholder project on PyPI.org repository.
+To install Torch-TensorRT please run the following command:
+
+$ pip install torch-tensorrt -f https://github.com/NVIDIA/Torch-TensorRT/releases
+###########################################################################################
+</code></pre>
+<p>Installing the package manually with <code>pip</code> works perfectly fine:</p>
+<pre><code class="language-bash">pip install torch-tensorrt -f https://github.com/NVIDIA/Torch-TensorRT/releases
+</code></pre>
+<p>However, when trying to use <code>uv add</code> with the same link, the following error occurs:</p>
+<pre><code class="language-bash">$ uv add torch-tensorrt -f https://github.com/pytorch/TensorRT/releases --verbose
+DEBUG uv 0.4.16
+DEBUG Found project root: `/path/to/project`
+DEBUG Found workspace root: `/path/to/project`
+DEBUG Adding current workspace member: `/path/to/project`
+DEBUG Reading requests from `/path/to/project/.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG No cache entry for: https://github.com/pytorch/TensorRT/releases
+error: Failed to read `--find-links` URL: https://github.com/pytorch/TensorRT/releases
+  Caused by: Received some unexpected HTML from https://github.com/pytorch/TensorRT/releases
+  Caused by: Unexpected fragment (expected `#sha256=...` or similar) on URL: start-of-content
+</code></pre>
+<p>It seems that <code>uv</code> is unable to properly handle external <code>--find-links</code> URLs when installing from sources like GitHub, as it encounters an unexpected HTML response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-27 14:26</div>
+            <div class="timeline-body"><p>It seems that torch-tensorrt doesn't publish wheels for Python 3.12 (only up to 3.11), so we fall back to the 0.0.0.post1 dummy package. On the github releases page there's a Python 3.12 wheel then (https://github.com/pytorch/TensorRT/releases/download/v2.4.0/torch_tensorrt-2.4.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_34_x86_64.whl).</p>
+<p>While I'm open to extending uv's find links parser to work more like pip, i'm hesitant to specifically support github releases: The page at https://github.com/pytorch/TensorRT/releases only has a few recent releases, which means that <code>uv lock</code> could break in the future when the released you had lock is moved to the second releases page. Ideally, the would be a single flat html page with all torch-tensorrt github releases that we could use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChenMoFeiJin">@ChenMoFeiJin</a> on 2024-09-27 15:08</div>
+            <div class="timeline-body"><p>Thank you for your feedback. You raise a good point about the limitations of GitHub releases. Indeed, since <code>uv.lock</code> records the exact <code>.whl</code> or <code>.tar.gz</code> download URL, we can rebuild the environment even if the release has moved beyond GitHub's first page. The file link stays active unless removed by GitHub. (I admit I may not fully grasp the workings of <code>uv.lock</code>.)</p>
+<p>Hence, it would be wise to consider a more robust approach to managing GitHub releases. This could prove particularly useful for those dependent on specific versions not available on PyPI or other simple HTML pages. Although there's a slight risk of file removal, it's unlikely for widely used libraries such as Torch-TensorRT.</p>
+<p>I understand if you find additional processing unnecessary. Thank you for explaining that Torch-TensorRT does not have a build for version 3.12 on PyPI, and it's not just a general placeholder. With this in mind, I'm thinking of downgrading to version 3.11 as a temporary workaround. If you think this issue warrants further discussion, please feel free to leave it open. Otherwise, we can consider it resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matteo-bruni">@matteo-bruni</a> on 2024-09-27 16:58</div>
+            <div class="timeline-body"><p>torch-tensorrt is available on index https://download.pytorch.org/whl/cu124 so you can install it using --extra-index-url
+(you can also use https://download.pytorch.org/whl/cu118/ or https://download.pytorch.org/whl/cu121 for other cuda version)</p>
+<p>you also need to use --index-strategy unsafe-best-match because it needs packaging&gt;23 and in the pytorch index only packaging==22.0 is available (why they release 3rd party wheels?? same problem with pillow which is not up to date with upstream)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/goldyfruit">@goldyfruit</a> on 2024-12-22 23:08</div>
+            <div class="timeline-body"><p>Kind of having the same issue with https://whl.smartgic.io/.</p>
+<pre><code>uv pip install -f https://whl.smartgic.io/ ggwave
+Using Python 3.11.11 environment at: /home/goldyfruit/Virtualenvs/hivemind
+error: Failed to read `--find-links` URL: https://whl.smartgic.io/
+  Caused by: Received some unexpected HTML from https://whl.smartgic.io/
+  Caused by: Missing href attribute on anchor link: `/`
+</code></pre>
+<p>Not sure how to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../moreati/ansible-uv/issues/11.html">moreati/ansible-uv#11</a> on 2024-12-22 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moreati">@moreati</a> on 2025-01-02 15:36</div>
+            <div class="timeline-body"><p>In the source of https://whl.smartgic.io/, it appears the anchor that uv is complaining about <em>does</em> have an href, but the value is empty string.</p>
+<pre><code class="language-html">&lt;body onload=&quot;initPage()&quot;&gt;
+	&lt;header&gt;
+		&lt;div class=&quot;wrapper&quot;&gt;
+			&lt;div class=&quot;breadcrumbs&quot;&gt;Folder Path&lt;/div&gt;
+				&lt;h1&gt;
+					&lt;a href=&quot;&quot;&gt;/&lt;/a&gt;
+				&lt;/h1&gt;
+</code></pre>
+<p>If I'm reading the source of Python pip correctly, then it ignores empty or missing href attributes - skipping over them</p>
+<ul>
+<li><code>pip._internal.index.collector.HTMLLinkParser</code> gathers dict objects of <code>&lt;a&gt;</code> attributes in <code>self.anchors</code>
+https://github.com/pypa/pip/blob/bc553db53c264abe3bb63c6bcd6fc6f303c6f6e3/src/pip/_internal/index/collector.py#L291-L292</li>
+<li><code>pip._internal.index.collector.parse_links()</code> yields objects returned by <code>Link.from_element()</code> if not None
+https://github.com/pypa/pip/blob/bc553db53c264abe3bb63c6bcd6fc6f303c6f6e3/src/pip/_internal/index/collector.py#L245-L249</li>
+<li><code>pip._internal.model.link.Link.from_element()</code> returns None if the href attribute is absent, or the value is falsey
+https://github.com/pypa/pip/blob/bc553db53c264abe3bb63c6bcd6fc6f303c6f6e3/src/pip/_internal/models/link.py#L321-L323</li>
+</ul>
+<p>So if it was desired <code>uv pip</code> could be made more <code>pip</code> like by ignoring missing or empty <code>&lt;a href&gt;</code>, rather than treating it as an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-02 16:01</div>
+            <div class="timeline-body"><p>Ok thanks. I can fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10276.html">astral-sh/uv#10276</a> on 2025-01-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-02 17:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:57 UTC
+    </footer>
+</body>
+</html>

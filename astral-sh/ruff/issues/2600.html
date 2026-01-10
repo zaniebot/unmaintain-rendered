@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature: Support isort multi_line_output option - astral-sh/ruff #2600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature: Support isort multi_line_output option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2600">#2600</a>
+        opened by <a href="https://github.com/mikelane">@mikelane</a>
+        on 2023-02-06 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikelane">@mikelane</a> on 2023-02-06 01:41</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>The isort module provides many different ways of accomplishing the wrapping for a given project. From my experience, this is a widely used option in projects that use isort, so it would be nice to have this support in ruff.</p>
+<p>Ideally, the ruff setting would be something like this:</p>
+<pre><code class="language-python">[tool.ruff.isort]
+multi_line_output = 3  # Vertical Hanging Indent
+</code></pre>
+<p>The output options would follow the <a href="https://pycqa.github.io/isort/docs/configuration/options#multi-line-output">options settings</a> and <a href="https://pycqa.github.io/isort/docs/configuration/multi_line_output_modes.html">option values</a> listed in the isort documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-02-06 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2601.html">astral-sh/ruff#2601</a> on 2023-02-08 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-02-16 22:26</div>
+            <div class="timeline-body"><p>If we're re-engineering this, a compact grid mode would be really nice.  That is, try:</p>
+<ul>
+<li>putting everything on one line,</li>
+<li>grid, and</li>
+<li>hanging grid.</li>
+</ul>
+<p>Choose the one with the fewest lines that fit within the maximum line width.  I contributed <a href="https://github.com/PyCQA/isort/pull/695">something like this</a> for isort.  But that contribution only bumps to hanging grid when grid is impossible.  It would be nice to also bump when hanging grid is shorter.</p>
+<p>(Also, just my opinion, but mode 2 that uses line continuation <code>\</code> should probably be deprecated?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../teemtee/tmt/pulls/1973.html">teemtee/tmt#1973</a> on 2023-04-04 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-04-14 04:48</div>
+            <div class="timeline-body"><p>We need <code>multi_line_output=5</code> (<code>vert-grid-grouped</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nicwolff">@nicwolff</a> on 2023-05-02 16:29</div>
+            <div class="timeline-body"><p>Same, we'd have moved from <code>isort</code> to <code>ruff</code> if it supported <code>multi_line_output=5</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2595.html">astral-sh/ruff#2595</a> on 2023-05-10 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4346.html">astral-sh/ruff#4346</a> on 2023-05-10 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6190.html">astral-sh/ruff#6190</a> on 2023-07-31 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-08-08 21:22</div>
+            <div class="timeline-body"><p>Thinking about this more, I would like to see the options in Ruff be something like:</p>
+<pre><code class="language-toml">imports_allow_grid = true
+imports_allow_vertical = true
+imports_parenthesis_on_newline = false
+</code></pre>
+<p>Then the most common ISort modes correspond to:</p>
+<ul>
+<li>0: (true, true, false)</li>
+<li>1: (false, true, false)</li>
+<li>3: (false, false, true)</li>
+<li>4: (true, false, false)</li>
+<li>5: (true, false, true)</li>
+</ul>
+<p>And add an option to <code>imports_choose_shortest</code> that chooses the shortest representation allowed that fits the options.  So just be cause you chose (true, true, false), doesn't mean that it should do somethign crazy like:</p>
+<pre><code class="language-python">from alksdjflks_flaksjdflkajsdfljka_laskjdf_alksjdf_alksjdflaskd_skldj import (some_symbol,
+                                                                               some_other_symbol,
+                                                                               some_third_symbol,
+                                                                               some_fourth_symbol)
+# Instead:
+from alksdjflks_flaksjdflkajsdfljka_laskjdf_alksjdf_alksjdflaskd_skldj import (
+    some_symbol, some_other_symbol, some_third_symbol, some_fourth_symbol)
+</code></pre>
+<p>I'd love to stop using isort, but I don't want to lose my nice imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-13 22:45</div>
+            <div class="timeline-body"><p>Would love to see support for <code>multi_line_output=0</code>, can't ditch isort until that's available :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-13 23:04</div>
+            <div class="timeline-body"><p>@ThiefMaster That's the one I'm waiting for too.  But really, what we need is for Ruff to support <a href="https://github.com/astral-sh/ruff/issues/8197">both <em>vertical</em> and <em>grid</em> formatting</a>.  If we had that, we would have it in the code and the imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhirschfeld">@dhirschfeld</a> on 2023-11-13 23:52</div>
+            <div class="timeline-body"><p>I used to use <code>black</code>, <code>ruff</code> and <code>isort</code> to format my code. Now I just use <code>ruff</code> and <code>isort</code>.</p>
+<p>When <code>ruff</code> supports <code>multi_line_output=3</code> I'll be able to just use <code>ruff</code>.</p>
+<p>Until such time... I'll continue to monitor this issue 😜</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3206.html">astral-sh/ruff#3206</a> on 2023-11-15 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aeron">@Aeron</a> on 2023-11-24 12:30</div>
+            <div class="timeline-body"><p>@dhirschfeld, wait a second. The default formatting behavior is <code>multi_line_output=3</code>, right? It is the vertical hanging indent mode. Am I missing something? I briefly tested it against <code>isort</code> and saw no difference.</p>
+<p>Full disclosure: I started working on this feature yesterday since I have some time and attention to spare, but I don’t want to promise anything yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-11-27 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-27 02:51</div>
+            <div class="timeline-body"><p>I understand that we have different preferences when it comes to formatting code. Black and ruff's formatter have sofar been leaning towards opinionated formatting with few options whereas Ruff's linter is extremely configurable. Ruff's <code>isort</code> is somewhere in between. I believe @charliermarsh expressed once that he intentionally didn't implement all isort options and we're considering making <code>isort</code> its own tool or integrating it into the formatter. This is why I think we should be very deliberate about supporting new isort options that are incompatible with the formatter because we either need to deprecate them again in the future, or they force us to change the direction of the formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-27 03:08</div>
+            <div class="timeline-body"><blockquote>
+<p>nd we're considering making <code>isort</code> its own tool or integrating it into the formatter.</p>
+</blockquote>
+<p>I think integrating it into the formatter makes perfect sense.  After all, all of these &quot;isort modes&quot; that people are discussing are actually special cases of various formatter output preferences.  Ruff currently supports only three output types (single line, hanging single line, and hanging multi-line).</p>
+<blockquote>
+<p>This is why I think we should be very deliberate about supporting new isort options</p>
+</blockquote>
+<p>I agree.  I think it makes sense for the import statement formatting to be consistent with code formatting.  Therefore, I don't think there should be any isort options at all.  What we are really asking for is generalization of the formatter.  I understand that that may not be a priority today, but hopefully it will come eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aeron">@Aeron</a> on 2023-11-27 14:45</div>
+            <div class="timeline-body"><p>I had an idea those two could be separate things. The new built-in formatter may have a few opinionated options to organize imports or none at all, and the <code>ruff-isort</code> formatter can be its own thing for people who want a backward-compatible way of doing it.</p>
+<p>But yeah, you’re right—formatting kicks after the import organization and ruins the latter if the result is incompatible with those three output types. So the option I described above only would work if users of <code>ruff-isort</code> ditch the new formatter, which is highly unlikely, considering everybody wants a complete package.</p>
+<p>I’m good with the current vertical hanging indent approach since I’m using it anyway. But people want grids. Yet meddling with the new formatter is a different beast than adding support for <code>isort</code> modes separately.</p>
+<p>Ok, I put my implementation on pause then. It’ll wait until a decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vacanza/holidays/pulls/1671.html">vacanza/holidays#1671</a> on 2024-01-27 06:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nineteendo">@nineteendo</a> on 2024-02-10 14:27</div>
+            <div class="timeline-body"><p>I believe this would also benefit <a href="https://docs.astral.sh/ruff/rules/unsorted-dunder-all">RUF022</a>:</p>
+<pre><code class="language-python">__all__ = [
+    &quot;a&quot;, &quot;b&quot;, &quot;c&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-02-22 19:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I understand that we have different preferences when it comes to formatting code. Black and ruff's formatter have sofar been leaning towards opinionated formatting with few options whereas Ruff's linter is extremely configurable. Ruff's <code>isort</code> is somewhere in between. I believe @charliermarsh expressed once that he intentionally didn't implement all isort options and we're considering making <code>isort</code> its own tool or integrating it into the formatter. This is why I think we should be very deliberate about supporting new isort options that are incompatible with the formatter because we either need to deprecate them again in the future, or they force us to change the direction of the formatter.</p>
+</blockquote>
+<p>As someone who is currently uninterested in the formatter, but interested in the linter, I would be happy if <code>ruff check --select I</code> supported all isort modes (mode 5 for me personally), and don't have an opinion on whether <code>ruff format</code> should.</p>
+<p>Maybe it could raise a fatal error that says those modes aren't allowed in the formatter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../commaai/openpilot/pulls/31592.html">commaai/openpilot#31592</a> on 2024-02-25 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zauberzeug/nicegui/pulls/2619.html">zauberzeug/nicegui#2619</a> on 2024-02-26 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vkbo">@vkbo</a> on 2024-04-24 10:09</div>
+            <div class="timeline-body"><p>I would love to see this feature added as well. A lack of mode 5 support is pretty much the only thing preventing me from using ruff. The current formatting option for imports is incredibly wasteful for code with a lot of short imports in few modules, like my Qt5-based project where you import a lot of GUI components in every file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jazzband/django-rest-knox/pulls/344.html">jazzband/django-rest-knox#344</a> on 2024-05-06 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dipy/dipy/pulls/3216.html">dipy/dipy#3216</a> on 2024-05-17 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhirschfeld">@dhirschfeld</a> on 2025-06-02 02:03</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/dhirschfeld">@dhirschfeld</a>, wait a second. The default formatting behavior is <code>multi_line_output=3</code>, right? It is the vertical hanging indent mode. Am I missing something? I briefly tested it against <code>isort</code> and saw no difference.</p>
+</blockquote>
+<p>Circling back, <code>ruff</code> does what I want iff the imports are longer than the line length.</p>
+<p>AFAICT <code>ruff</code> will leave the below unchanged:</p>
+<pre><code class="language-python">from utils import func1, func2
+</code></pre>
+<p>But, to get cleaner diffs I want it to be:</p>
+<pre><code class="language-python">from utils import (
+    func1,
+    func2,
+)
+</code></pre>
+<p>I think, for my usecase, what is missing from <code>ruff</code> is <code>force_grid_wrap</code>:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/2601</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19078.html">astral-sh/ruff#19078</a> on 2025-07-01 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/miktuy">@miktuy</a> on 2025-07-29 17:04</div>
+            <div class="timeline-body"><p>Hi! Could you support option multi_line_output=4 like in isort?
+We have huge amount imports in our projects's tests and this option provides more readable import's section in files with tests. But isort is so slow and we would prefer to use ruff to sort the imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Unidata/MetPy/pulls/3901.html">Unidata/MetPy#3901</a> on 2025-12-04 23:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

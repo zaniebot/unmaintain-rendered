@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip installing wheels if the wheel is already installed - astral-sh/uv #35</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip installing wheels if the wheel is already installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/35">#35</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-07 01:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-07 01:56</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-07 01:57</div>
+            <div class="timeline-body"><p>I see this in <code>importlib</code>:</p>
+<pre><code class="language-python">class Lookup:
+    def __init__(self, path: FastPath):
+        base = os.path.basename(path.root).lower()
+        base_is_egg = base.endswith(&quot;.egg&quot;)
+        self.infos = FreezableDefaultDict(list)
+        self.eggs = FreezableDefaultDict(list)
+
+        for child in path.children():
+            low = child.lower()
+            if low.endswith((&quot;.dist-info&quot;, &quot;.egg-info&quot;)):
+                # rpartition is faster than splitext and suitable for this purpose.
+                name = low.rpartition(&quot;.&quot;)[0].partition(&quot;-&quot;)[0]
+                normalized = Prepared.normalize(name)
+                self.infos[normalized].append(path.joinpath(child))
+            elif base_is_egg and low == &quot;egg-info&quot;:
+                name = base.rpartition(&quot;.&quot;)[0].partition(&quot;-&quot;)[0]
+                legacy_normalized = Prepared.legacy_normalize(name)
+                self.eggs[legacy_normalized].append(path.joinpath(child))
+
+        self.infos.freeze()
+        self.eggs.freeze()
+
+    def search(self, prepared):
+        infos = (
+            self.infos[prepared.normalized]
+            if prepared
+            else itertools.chain.from_iterable(self.infos.values())
+        )
+        eggs = (
+            self.eggs[prepared.legacy_normalized]
+            if prepared
+            else itertools.chain.from_iterable(self.eggs.values())
+        )
+        return itertools.chain(infos, eggs)
+</code></pre>
+<p>It looks like packages <em>must</em> add a <code>.dist-info</code> to the site-packages: https://packaging.python.org/en/latest/specifications/recording-installed-packages/#recording-installed-packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-07 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/42.html">astral-sh/uv#42</a> on 2023-10-07 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/43.html">astral-sh/uv#43</a> on 2023-10-07 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-07 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

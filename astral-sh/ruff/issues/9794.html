@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYI036 (bad-exit-annotation) triggers on seemingly appropriate annotations - astral-sh/ruff #9794</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PYI036 (bad-exit-annotation) triggers on seemingly appropriate annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9794">#9794</a>
+        opened by <a href="https://github.com/Sachaa-Thanasius">@Sachaa-Thanasius</a>
+        on 2024-02-02 19:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Sachaa-Thanasius">@Sachaa-Thanasius</a> on 2024-02-02 19:15</div>
+            <div class="timeline-body"><p><strong>Code snippet</strong>
+For additional context: Importing from <code>types</code> outside of the <code>TYPE_CHECKING</code> block doesn't trigger this. However, I'd prefer not actually importing that at runtime ~~since it can be expensive~~. Curious if this kind of case is in scope for this rule.</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING
+
+from typing_extensions import Self
+
+
+if TYPE_CHECKING:
+    from types import TracebackType
+else:
+
+    class TracebackType:
+        pass
+
+
+class Example:
+    def __enter__(self) -&gt; Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        traceback: TracebackType | None,
+) -&gt; None:
+        return None
+</code></pre>
+<p><strong>Invoked Command</strong></p>
+<pre><code class="language-bash">ruff core\utils\_test.py --isolated --select PYI036
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">core\utils\_test.py:22:20: PYI036 The third argument in `__exit__` should be annotated with `object` or `types.TracebackType | None`
+Found 1 error.
+</code></pre>
+<p><strong>Relevant pyproject.toml Sections</strong>
+Use of the <code>--isolated</code> and <code>--select</code> flags above makes this redundant, I think? If not, I will update to include them, though the only seemingly relevant thing is <code>PYI</code>'s presence in the <code>select</code> list.</p>
+<p><strong>Version</strong>
+ruff 0.2.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-02-02 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-02-02 20:20</div>
+            <div class="timeline-body"><p>In your case I think you could also do:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from typing_extensions import Self
+
+if TYPE_CHECKING:
+    from types import TracebackType
+
+
+class Example:
+    def __enter__(self) -&gt; Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        traceback: TracebackType | None,
+) -&gt; None:
+        return None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sachaa-Thanasius">@Sachaa-Thanasius</a> on 2024-02-02 23:43</div>
+            <div class="timeline-body"><p>While that's true, I would rather not break type introspection for tools like <code>typing.get_type_hints()</code>. Having something in the type checking block's else clause prevents that, even if the type isn't exactly right. Hoping there's a &quot;best of both worlds&quot; option here, where I don't break that and also have ruff's rule recognize what's happening here. If not, though, I understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2024-11-27 00:39</div>
+            <div class="timeline-body"><p>I am running into this bug when importing the types inside a type-checking block &amp; using quoted annotations rather than <code>from __future__ import annotations</code>. A resolution for this bug would be appreciated</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

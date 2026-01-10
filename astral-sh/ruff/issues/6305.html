@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`SIM118` fix incorrectly removes `.keys()` from `xml.etree.ElementTree` object - astral-sh/ruff #6305</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`SIM118` fix incorrectly removes `.keys()` from `xml.etree.ElementTree` object</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6305">#6305</a>
+        opened by <a href="https://github.com/bouwew">@bouwew</a>
+        on 2023-08-03 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bouwew">@bouwew</a> on 2023-08-03 14:54</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>As defined here: https://docs.python.org/3/library/xml.etree.elementtree.html the <code>.keys()</code> element object is a valid one and differs from the dict <code>.keys()</code> object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-03 14:56</div>
+            <div class="timeline-body"><p>Hey @bouwew could you please include a code example as well as the rule code that's removing the <code>keys()</code> call?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bouwew">@bouwew</a> on 2023-08-03 14:57</div>
+            <div class="timeline-body"><pre><code>    def _preset(self, loc_id: str) -&gt; str | None:
+        &quot;&quot;&quot;Helper-function for smile.py: device_data_climate().
+
+        Collect the active preset based on Location ID.
+        &quot;&quot;&quot;
+        locator = &quot;./rule[active='true']/directives/when/then&quot;
+        if (
+            active_rule := self._domain_objects.find(locator)
+        ) is None or &quot;icon&quot; not in active_rule.keys():  # noqa: SIM118
+            return None
+        return str(active_rule.attrib[&quot;icon&quot;])
+</code></pre>
+<p><code>self._domain_objects</code> contains xml-data. It's typed as <code>etree</code>, from <code>from defusedxml import ElementTree as etree</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 15:01</div>
+            <div class="timeline-body"><p>IMO this is unavoidable without incorporating a full type inference engine. It will likely be a known bug for a while. Adding fix levels will help, since this fix is already marked as possibly-unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-03 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-08-03 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bouwew">@bouwew</a> on 2023-08-03 15:03</div>
+            <div class="timeline-body"><p>I think I could use <code>.items()</code> as a work-around I've found in the meantime, so not a big problem :)</p>
+<p>Tnx for the quick responses!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "BUG: ruff removes the .keys() extention incorrectly when used with xml.etree.ElementTree" to "`SIM118` fix incorrectly removes `.keys()` from `xml.etree.ElementTree` object" by @zanieb on 2023-08-03 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 14:48</div>
+            <div class="timeline-body"><p>We now mark this as unsafe if the object isn't a dictionary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-07 14:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

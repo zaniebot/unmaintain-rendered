@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The header for my examples are not colored like the others - clap-rs/clap #3108</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The header for my examples are not colored like the others</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3108">#3108</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-09 12:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-09 12:37</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>v3.0.0-rc.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+const AFTER_TEST: &amp;str = &quot;
+Examples:
+    foo --hello
+&quot;;
+
+#[derive(Parser, Debug)]
+#[clap(author, about)]
+#[clap(after_help = AFTER_TEST)]
+struct Opt {}
+
+fn main() {
+    let opt = Opt::parse();
+    dbg!(opt);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- --help</p>
+<h3>Actual Behaviour</h3>
+<p><code>Examples</code> isn't colored:</p>
+<pre><code>test-clap 
+
+Me
+
+From Cargo.toml
+
+USAGE:
+    test-clap
+
+OPTIONS:
+    -h, --help    Print help information
+
+
+Examples:
+    foo --hello
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p><code>Examples</code> is colored</p>
+<h3>Additional Context</h3>
+<p>Inspired by help2man in #3096.</p>
+<p>Including example commands is a really useful pattern and now that we color by default, doing this stands out.</p>
+<p>Something like #1790 could help.  Alternatively, we could have <code>after_help</code> take a section name, maybe as an <code>Option</code>.  Like with <code>override_usage</code>, we'd probably want the indentation to be user-defined.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2021-12-09 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-09 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-09 13:40</div>
+            <div class="timeline-body"><p>What's the reason behind categorising this as bug? I would think this would be more of an enhancement, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 14:29</div>
+            <div class="timeline-body"><p>Sometimes, its an arbitrary distinction.  From a users perspective, its a bug in the application</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 19:52</div>
+            <div class="timeline-body"><p>#1433 has a similar use case for help templates and has a different proposed solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1790.html">clap-rs/clap#1790</a> on 2021-12-09 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3174.html">clap-rs/clap#3174</a> on 2021-12-14 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-20 21:17</div>
+            <div class="timeline-body"><p>https://github.com/clap-rs/clap/issues/2389 might be the path to us exposing some formatting control.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborcsardi">@gaborcsardi</a> on 2022-01-20 21:54</div>
+            <div class="timeline-body"><p>Yet another way to solve this relatively painlessly is to allow calling <code>before_help()</code> and <code>after_help()</code> (and maybe <code>about()</code>) multiple times, each time possibly with a heading. The individual calls would be concatenated to create the final output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-18 13:36</div>
+            <div class="timeline-body"><p>My plan is for the API to accept ANSI colored strings.  When we output, we use a special stdout/stderr that adapt the ANSI color codes to the capabilities of the terminal.</p>
+<p>Blocked on https://github.com/epage/anstyle/issues/5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> removed by @epage on 2022-08-18 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2022-08-18 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4110.html">clap-rs/clap#4110</a> on 2022-08-24 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4114.html">clap-rs/clap#4114</a> on 2022-08-25 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4132.html">clap-rs/clap#4132</a> on 2022-08-27 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.x" by @epage on 2022-08-30 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3234.html">clap-rs/clap#3234</a> on 2022-10-07 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../exograph/exograph/pulls/552.html">exograph/exograph#552</a> on 2022-10-26 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2389.html">clap-rs/clap#2389</a> on 2022-11-03 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4444.html">clap-rs/clap#4444</a> on 2022-11-03 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3198.html">clap-rs/clap#3198</a> on 2022-11-13 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4611.html">clap-rs/clap#4611</a> on 2023-01-09 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4765.html">clap-rs/clap#4765</a> on 2023-03-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-03-28 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/5716.html">jj-vcs/jj#5716</a> on 2025-02-16 02:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:44 UTC
+    </footer>
+</body>
+</html>

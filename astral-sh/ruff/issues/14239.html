@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend `pytest-raises-with-multiple-statements (PT012)` to cover `pytest.warns` - astral-sh/ruff #14239</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend `pytest-raises-with-multiple-statements (PT012)` to cover `pytest.warns`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14239">#14239</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2024-11-10 04:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2024-11-10 04:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><a href="https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/"><code>pytest-raises-with-multiple-statements</code></a> only covers <code>pytest.raises</code>. It'd be nice if it covers <code>pytest.warns</code> as well.</p>
+<pre><code class="language-python">import pytest
+
+
+def test_raises():
+    with pytest.raises(Exception):  # PT012
+        f3()
+        f4()
+
+
+def test_warns():
+    with pytest.warns(UserWarning):
+        f1()  # does this warn?
+        f2()  # or perhaps this one warns?
+        # -&gt; Not obvious which line warns.
+</code></pre>
+<p>Playground to ensure <code>pytest.warns</code> is not covered: https://play.ruff.rs/271e2f8e-751a-4368-971c-322eeeb10b39</p>
+<p>References:</p>
+<ul>
+<li>https://docs.pytest.org/en/stable/reference/reference.html#pytest.warns</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extend `pytest-raises-with-multiple-statements` to cover `pytest.warns`" to "Extend `pytest-raises-with-multiple-statements (PT012)` to cover `pytest.warns`" by @harupy on 2024-11-10 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-11-10 08:40</div>
+            <div class="timeline-body"><p>Adding a new rule is another option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-11 10:11</div>
+            <div class="timeline-body"><p>I think that would have to be its own rule unless we rename the existing rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-11-11 10:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I think that would have to be its own rule unless we rename the existing rule</p>
+</blockquote>
+<p>Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-11 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-11-12 04:20</div>
+            <div class="timeline-body"><p>@MichaReiser do we need to add the same rule in https://github.com/m-burst/flake8-pytest-style to add it in ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-12 11:19</div>
+            <div class="timeline-body"><p>I think it should be fine. We just need to make sure that we use a rule code that's unlikely to collide with any new rule added to the upstream plugin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-11-17 12:20</div>
+            <div class="timeline-body"><p>Created an issue in the upstream repo: https://github.com/m-burst/flake8-pytest-style/issues/317</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-17 13:20</div>
+            <div class="timeline-body"><p>Thanks @tjkuson</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on 2024-11-22 20:54</div>
+            <div class="timeline-body"><p>This lint makes a lot of sense to me.</p>
+<p>I'll make a draft branch.</p>
+<p>I'll just use a placeholder rule code until the flake8 plugin decides on one.</p>
+<p>There could also be <code>pytest.warns</code> versions of <code>PT010</code> and <code>PT011</code> (not just <code>PT012</code>), since they are all analagous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowdrop4">@snowdrop4</a> on 2024-11-22 22:22</div>
+            <div class="timeline-body"><p>I have a finished branch: https://github.com/snowdrop4/ruff/tree/AVK/PytestWarnsWithMultipleStatements</p>
+<p>But yeah, I'll wait and see what the flake8 plugin people say before PRing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 15:23</div>
+            <div class="timeline-body"><p>The upstream issue has been closed as completed in case someone's interested to work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2025-01-10 16:37</div>
+            <div class="timeline-body"><p>I volunteer unless @snowdrop4 fancies it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15444.html">astral-sh/ruff#15444</a> on 2025-01-12 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-13 01:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-13 01:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

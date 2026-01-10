@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allow &quot;uv run&quot; to work without a project - astral-sh/uv #8666</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>allow &quot;uv run&quot; to work without a project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8666">#8666</a>
+        opened by <a href="https://github.com/mmerickel">@mmerickel</a>
+        on 2024-10-29 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-29 16:29</div>
+            <div class="timeline-body"><p>It'd be nice if this flow worked simply to avoid needing to activate a virtualenv - regardless of whether I'm using a full uv project or not.</p>
+<pre><code>$ uv venv
+$ uv pip install -e .
+$ uv run python
+</code></pre>
+<p>However as of 0.4.28 I get the following error:</p>
+<pre><code>$ uv run python
+error: No `project` table found in: `/Users/michael/work/oss/webob/pyproject.toml`
+</code></pre>
+<p>Obviously in this case I'm not asking uv to do anything except use the correct path as if I was activating the virtualenv - equivalent to <code>.venv/bin/activate; python</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 16:36</div>
+            <div class="timeline-body"><p><code>uv run --no-project</code> should work there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-29 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-29 16:57</div>
+            <div class="timeline-body"><p>Yeah thanks for pointing that out and I confirmed it works. Having to add an extra arg there on every command is a deal breaker right - <code>uv run</code> is the primary command I’m using all the time during dev. I’d instead activate the env or use <code>.venv/bin/python …</code> (my current flow). I guess this issue becomes a feature request to drop the flag and make it the default fallback behavior when no project can be found.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 17:06</div>
+            <div class="timeline-body"><p>What are you using the <code>pyproject.toml</code> for? Just want to understand the use-case more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-29 17:20</div>
+            <div class="timeline-body"><p>Things like build-system, black config, isort config, and tool.ruff config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-29 17:21</div>
+            <div class="timeline-body"><p>What build system are you using without a <code>[project]</code> table 👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-29 17:43</div>
+            <div class="timeline-body"><p>setuptools doesn’t require it - it can pull all the data from setup.py and setup.cfg like it has for decades. :-) I guess I should switch it up to use project but it’s not required by the build backend PEP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-29 17:45</div>
+            <div class="timeline-body"><p>To be clear I know it’s required to use uv sync and uv lock + lock files but that’s not my short term goal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-10-29 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-31 03:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Having to add an extra arg there on every command is a deal breaker right - uv run is the primary command I’m using all the time during dev</p>
+</blockquote>
+<p>Maybe as an alternative workaround, setup an shell alias for <code>uv run</code> to be <code>uv run --no-project</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-11-01 17:11</div>
+            <div class="timeline-body"><p>Yeah I can work around it, but this ticket is here incase y'all want a cleaner story for the larger community for &quot;older&quot; projects.</p>
+<p>In pyramid we have for years recommended for people to do the following as a simple starter sequence:</p>
+<pre><code>python3 -m venv env
+env/bin/pip install -e .
+env/bin/pshell site.ini
+</code></pre>
+<p>And I thought it'd be cool to at least have a &quot;drop in replacement&quot; story for uv where we'd recommend the following:</p>
+<pre><code>uv venv
+uv pip install -e .
+uv run pshell site.ini
+</code></pre>
+<p>As of today we need to add <code>--no-project</code> to every <code>uv run</code> command and that's no fun. :-) Personally I think the error that is raised about &quot;no project table&quot; is not worth requiring an explicit flag to get past compared to the logical fallback to just run the command in the virtualenv even if there's no project.</p>
+<p>Also mainly for my sanity and to clarify for anyone else I went back to just check and this issue occurs whether or not you have a pyproject.toml. It's just complaining about the missing <code>[project]</code> section therein.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-01 23:38</div>
+            <div class="timeline-body"><p>Fwiw I think this should probably work but doesn't</p>
+<pre><code>❯ cat pyproject.toml
+[tool.uv]
+managed = false
+
+❯ uv run python
+error: No `project` table found in: `/Users/zb/workspace/uv/example/pyproject.toml`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8764.html">astral-sh/uv#8764</a> on 2024-11-02 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mattp-">@mattp-</a> on 2024-11-05 14:48</div>
+            <div class="timeline-body"><p>👍 on this, I use uv primarily as a manager to venv's per project, but im not necessarily making changes to the projects im dropping into that would allow me to modify pyproject.toml. Being able to set an env var that silences no-project, but still works when a project dir i go to actually DOES have project settings, would be ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-11-07 01:09</div>
+            <div class="timeline-body"><p>If a directory contains nothing but a script, with no <code>pyproject.toml</code> or <code>.venv</code> in sight, <code>uv run script.py</code> works.</p>
+<p>If there's a <code>.venv</code> but no <code>pyproject.toml</code>, it also works.</p>
+<p>Is that the intended behaviour? If so it seems strange to require a <code>[project]</code> table when <code>pyproject.toml</code> is present, but not otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 03:13</div>
+            <div class="timeline-body"><p>The presence of a <code>pyproject.toml</code> is what we use to determine if you're working... in a project :) I think it does make some sense, though I can understand why you would want it to work differently. I'll be exploring some approaches to resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-11-07 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2024-11-21 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>What build system are you using without a <code>[project]</code> table 👀</p>
+</blockquote>
+<p>I have a example for this, a python backend web server doesn't need any build-system.</p>
+<p>When deploying I just need to copy everything to docker and install deps from requirements.txt, no <code>[project]</code> involved.</p>
+<p>Maybe we can add a option or env to make <code>--no-project</code> enabled by default.</p>
+<p>For example, <code>UV_RUN_NO_PROJECT=1 uv run ... </code> ( even uv doesn't load dotenv for itself direnv can still work in this case ) or <code>tool.uv.no-project = true</code> in config file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2024-11-28 05:59</div>
+            <div class="timeline-body"><p>I just find that we have a option <code>tool.uv.package</code>, maybe we can use this option when <code>tool.uv.package = false</code>?</p>
+<p>https://github.com/astral-sh/uv/blob/8a27d4d340f7dbdaeb144d4b8f80f3b27cc29ec0/docs/concepts/projects/config.md?plain=1#L147-L148</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/13311.html">python/typeshed#13311</a> on 2024-12-26 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-12-26 22:28</div>
+            <div class="timeline-body"><p>For real world examples, I've been hitting this in typeshed. Not sure if I wanna try adding a dummy project config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2025-01-17 21:45</div>
+            <div class="timeline-body"><p>In trying to use uv to prepare environments for a web application (no compilation or package involved), I noticed that <code>uv run</code> gives:</p>
+<pre><code>error: No `project` table found in: `&lt;somepath&gt;/pyproject.toml`
+</code></pre>
+<p>OK, so we add the project section to <code>pyproject.toml</code>. Now we get:</p>
+<pre><code>$ uv run make
+  × Failed to build `skyportal @ file:///&lt;path-to-project&gt;`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      error: Multiple top-level packages discovered in a flat-layout: ...
+</code></pre>
+<p>OK, so it seems I <em>have</em> to run <code>uv run --no-project</code>. Which, presumably should have been the case originally when the <code>project</code> section was missing. Having a way to configure this behavior, without a manual flag on each invocation, would be very helpful.</p>
+<p>(EDIT: To pre-empt the question of &quot;why do you have a pyproject.toml&quot; in the first place: it's where we configure project linting.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-01-23 00:36</div>
+            <div class="timeline-body"><p>Also related to #10204 and #10208</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helderco">@helderco</a> on 2025-01-31 15:08</div>
+            <div class="timeline-body"><p>Here's an example I ran into today: https://github.com/swe-bench/SWE-bench</p>
+<p>It has a <a href="https://github.com/swe-bench/SWE-bench/blob/a0536ee6f9fd5ff88acf17a36a384bf3da3d93d6/pyproject.toml"><code>pyproject.toml</code></a> but with only the following:</p>
+<pre><code class="language-toml">[build-system]
+requires = ['setuptools&gt;=42']
+build-backend = 'setuptools.build_meta'
+</code></pre>
+<p>Notice the above doesn't include a <code>[project]</code> section, but you can install it with <code>pip install -e .</code>. There's a <a href="https://github.com/swe-bench/SWE-bench/blob/a0536ee6f9fd5ff88acf17a36a384bf3da3d93d6/setup.py"><code>setup.py</code></a> where the dependencies are declared.</p>
+<p>My team member is having issues with his environment, so I wish I could tell him to just slap <code>uv run</code> in front:</p>
+<pre><code>❯ uv run -m swebench.harness.run_evaluation \
+    --predictions_path gold \
+    --max_workers 1 \
+    --instance_ids sympy__sympy-20590 \
+    --run_id validate-gold
+error: No `project` table found in: `/.../SWE-bench/pyproject.toml`
+</code></pre>
+<p>Don't want to instruct on changing that open source project's <code>pyproject.toml</code> to accomodate, and wish I wouldn't have to recommend going through the <code>uv pip</code> route.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 15:12</div>
+            <div class="timeline-body"><p>👍 We do currently plan to support this -- hopefully soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11149.html">astral-sh/uv#11149</a> on 2025-01-31 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/13599.html">python/typeshed#13599</a> on 2025-03-08 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rbavery">@rbavery</a> on 2025-05-21 05:15</div>
+            <div class="timeline-body"><p>another example https://github.com/567-labs/systematically-improving-rag/tree/main/cohort_2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-06-17 00:07</div>
+            <div class="timeline-body"><p>Does #13742 solve this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2025-06-17 17:21</div>
+            <div class="timeline-body"><p>I just tested with the current uv main commit and the sequence of commands in the ticket result in the same error so no it doesn't solve the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-06-17 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14113.html">astral-sh/uv#14113</a> on 2025-06-17 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-17 15:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:19 UTC
+    </footer>
+</body>
+</html>

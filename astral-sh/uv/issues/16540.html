@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why it looks like uv is not respecting the manylinux config from PYTHONPATH - astral-sh/uv #16540</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Why it looks like uv is not respecting the manylinux config from PYTHONPATH</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16540">#16540</a>
+        opened by <a href="https://github.com/ccoulombe">@ccoulombe</a>
+        on 2025-10-31 19:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ccoulombe">@ccoulombe</a> on 2025-10-31 19:00</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello,</p>
+<p>According to https://docs.astral.sh/uv/pip/compatibility/#manylinux_compatible-enforcement we should be able to ignore any manylinux.</p>
+<p>I have this configuration:</p>
+<pre><code>$ cat $PYTHONPATH/_manylinux.py
+manylinux1_compatible = False
+manylinux2010_compatible = False
+manylinux2014_compatible = False
+
+# Ignore any manylinux_${GLIBCMAJOR}_${GLIBCMINOR}_${ARCH}
+def manylinux_compatible(*_, **__):  # PEP 600
+    return False
+</code></pre>
+<p>But <code>uv</code> still install manylinux wheels. What am I missing?</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>0.9.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ccoulombe on 2025-10-31 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 02:35</div>
+            <div class="timeline-body"><p>I've confirmed that we successfully omit manylinux wheels with <code>uv venv</code>, <code>uv pip install no-manylinux</code>, then <code>uv pip install numpy</code> (for example), so my guess is that the <code>PYTHONPATH</code> you're setting isn't being picked up? I believe we run interpreter discovery under <code>-I</code> which ignores <code>PYTHONPATH</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ccoulombe">@ccoulombe</a> on 2025-11-03 02:20</div>
+            <div class="timeline-body"><p>It does indeed work if I install <code>no-manylinux</code> in the venv.</p>
+<pre><code>$ uv pip install --no-build numpy==2.3.4
+Installed 1 package in 804ms
+ - numpy==2.3.3+computecanada
+ ~ numpy==2.3.4
+</code></pre>
+<p>Note that the above built the sdist even with the <code>--no-build</code> argument provided, which was unexpected. But it did not install a manylinux wheel.</p>
+<p>Finally, it does not work with the one from PYTHONPATH 🤔 Here's a diff of the file</p>
+<pre><code>$ diff $VIRTUAL_ENV/lib/python3.11/site-packages/_manylinux.py $PYTHONPATH/_manylinux.py
+5c5
+&lt; 
+---
+&gt; # Ignore any manylinux_${GLIBCMAJOR}_${GLIBCMINOR}_${ARCH}
+</code></pre>
+<p>They are essentially the same. And using our <code>_manylinux.py</code> file from the <code>$PYTHONPATH</code> results in uv installing manylinux wheels.</p>
+<p>Any idea of what is going on here? How could <code>uv</code> consider the python from the <code>$PATH</code> aka the one currently available from the module load.</p>
+<pre><code>module load python/3.13
+uv venv --clear  TESTY
+source TESTY/bin/activate
+</code></pre>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 02:27</div>
+            <div class="timeline-body"><p>Yeah, as I mentioned above, we query the interpreter with <code>-I</code> which ignores <code>PYTHONPATH</code>. So we don't respect <code>_manylinux</code> if it's on <code>PYTHONPATH</code> like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ccoulombe">@ccoulombe</a> on 2025-11-03 02:55</div>
+            <div class="timeline-body"><p>Ok, how can we then exclude manylinux wheels? Thanks for the help!!</p>
+<p>Unfortunately, we cannot ask every system users to install the <code>no-manylinux</code> package :(.
+If only we could minimally seed it into the virtual env. ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 02:59</div>
+            <div class="timeline-body"><p>(Out of interest, can I ask why you want to disable manylinux wheels? It just doesn't come up very often so it's helpful for me to understand.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 03:00</div>
+            <div class="timeline-body"><p>In theory we could add an environment variable for it (like <code>UV_NO_MANYLINUX</code>). Would that help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ccoulombe">@ccoulombe</a> on 2025-11-03 03:07</div>
+            <div class="timeline-body"><p>An env. variable would greatly help here, or if it could be configured in the config.toml as workaround.</p>
+<p>On the HPC systems, we prefer that users use and install our pre-compiled wheels from a specific index (wheelhouse). Those wheels are pre-compiled and optimized for the architectures we have (cpu, gpu). Hence it is faster for users to install them in their compute jobs.
+Moreover, those wheels can be built with mpi, openmp or other optimizations,  libraries, features which in many cases the PyPI ones are not.
+Lastly, manylinux wheels often do not work on our systems because they can't find the SOs since they are not installed where they are expected (ie <code>/usr</code>) but under some lmod modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-03 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mboisson">@mboisson</a> on 2025-11-03 13:24</div>
+            <div class="timeline-body"><blockquote>
+<p>(Out of interest, can I ask why you want to disable manylinux wheels? It just doesn't come up very often so it's helpful for me to understand.)</p>
+</blockquote>
+<p>Hi @charliermarsh
+Let me provide some context. We are system administrators for large high performance computing computers across Canada. What this means is that we run large networks of computers, with nearly 20 000 users, all with various needs. It also means that we support a variety of exotic hardware that you would never find on a workstation, such as high speed network, high speed parallel filesystems, and a variety of GPUs. It also means that our software environment is completely non-standard, we need to support thousands of different scientific software packages at the same time, many of which have conflicts. In order to do so, the system libraries are in non-standard locations (and we often have multiple versions of them), and we use what's called environment modules (https://lmod.readthedocs.io/en/latest/) which leverage the users' session' environment variables to make various software packages visible or not, depending on each user's needs.</p>
+<p>The impact of all of this is that wheels that depend on compiled code and which are provided on public indexes will very often have issues, and <em>we</em> need to control/recompile them to provide them to our users. If we don't, the result is that users end up installing packages that will not work optimally, or even that will not work at all. So <em>we</em> build things like <code>mpi4py</code>, using our underlying MPI implementation, <em>we</em> build things like <code>pyarrow</code>, to leverage arrow compiled and optimized for our hardware, <em>we</em> build things like <code>h5py</code>, using the underlying compiled <code>hdf5</code> libraries, which are built to support MPI-IO, <em>we</em> build things like <code>pytorch</code> or <code>tensorflow</code> to support our CPU and GPU architectures.</p>
+<p>In short, <em>we</em> need to control how <code>pip</code> (or <code>uv pip</code>) behaves for our users, and we use the environment variables to do so. Excluding manylinux wheels (https://github.com/ComputeCanada/software-stack-custom/blob/main/python/site-packages/_manylinux.py) is one mechanism, which we inject into <code>pip</code>'s behavior using <code>PYTHONPATH</code>, but we also hook into <code>python</code> and <code>pip</code>'s system directories, using this piece of code: https://github.com/ComputeCanada/easybuild-computecanada-config/blob/main/python/site-packages/sitecustomize.py
+which will pick up environment variables that come from modules in order to find things like <code>pyarrow</code> or <code>mpi4py</code> or <code>h5py</code>, which is the reason for issue #16541.</p>
+<p>In short, we don't need <code>UV_NO_MANYLINUX</code>, we need <code>uv</code> to <em>not</em> ignore the environment, to honor <code>PYTHONPATH</code> and the site directories that are set by our <code>sitecustomize.py</code>. I believe that having a setting to <em>disable</em> &quot;querying the interpreter with <code>-I</code> to ignore <code>PYTHONPATH</code>&quot; may fix most of the issues we have with <code>uv</code>.</p>
+<p>There is no issue with using <code>uv</code> on a personal computer, but on a high performance computing cluster, system administrators simply need to be able to control its behaviour, otherwise users run into issues and open tickets.</p>
+<p>It also mean, by the way, that we do <em>not</em> want <code>uv python list</code> to list any python other than the one that is made available by the python module that the user loaded, i.e. if they load <code>python/3.13</code>, it should only see that one, not the underlying system python. It also means that having <code>uv</code> installing a different version of python than the ones we support is a big no no.</p>
+<p>P.S.: The story that I am telling here is true for supercomputers in Canada, but it is the same on most supercomputers around the world. Different sites may adopt different strategies, but it all boils down to the site administrators need to be able to hook into package managers' and control their behaviour to work with their site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-03 15:45</div>
+            <div class="timeline-body"><p>uv checks introspects each Python interpreter once, and then caches the result, to avoid the overhead of running a Python script for each <code>uv run</code>. We currently mostly ignore <code>PYTHONPATH</code> (through <code>sys.path</code>) for the technical complexity where <code>sys.path</code> changes e.g. when installing editable packages (https://github.com/astral-sh/uv/pull/11670).</p>
+<p>With your description, you can try using <code>uv.toml</code> to configure uv to only use system interpreter, not managed interpreter, and using your custom index instead of PyPI.</p>
+<p>Do you still have the specific manylinux problem with if you add the <code>_manylinux</code> module to the standard library direction of your custom Python interpreter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mboisson">@mboisson</a> on 2025-11-03 15:48</div>
+            <div class="timeline-body"><blockquote>
+<p>uv checks introspects each Python interpreter once, and then caches the result, to avoid the overhead of running a Python script for each <code>uv run</code>. We currently mostly ignore <code>PYTHONPATH</code> (through <code>sys.path</code>) for the technical complexity where <code>sys.path</code> changes e.g. when installing editable packages (<a href="https://github.com/astral-sh/uv/pull/11670">#11670</a>).</p>
+<p>With your description, you can try using <code>uv.toml</code> to configure uv to only use system interpreter, not managed interpreter, and using your custom index instead of PyPI.</p>
+</blockquote>
+<p>We do not want to use our custom index <em>instead</em> of PyPI, we want to us it <em>in preference</em> to PyPI. And not only custom indexes, existing python packages which are present through the environment (through <code>PYTHONPATH</code> and the <code>sys.path</code>). How do we configure <code>uv.toml</code> to get packages from the environment ?</p>
+<blockquote>
+<p>Do you still have the specific manylinux problem with if you add the <code>_manylinux</code> module to the standard library direction of your custom Python interpreter?</p>
+</blockquote>
+<p>Probably not, but that would be a change to installed packages, which we don't do lightly. Environment variables is the best way to to deal with this.</p>
+<p>That would also not fix the issue that <code>uv pip</code> does not see other python packages provided via the environment (which is the bigger problem), i.e. https://github.com/astral-sh/uv/issues/16541. Both issues stem from the same choice of ignoring <code>PYTHONPATH</code> and <code>sys.path</code>.</p>
+<p>We understand the default behaviour of wanting to be isolated, but this is not something compatible with using <code>uv</code> on supercomputers, so we need a way to tell <code>uv</code> to consider the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ComputeCanada/software-stack/issues/165.html">ComputeCanada/software-stack#165</a> on 2025-11-04 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

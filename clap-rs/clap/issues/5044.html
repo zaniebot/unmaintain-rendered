@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ContextKind::Custom` has no functionality - clap-rs/clap #5044</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ContextKind::Custom` has no functionality</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5044">#5044</a>
+        opened by <a href="https://github.com/benluelo">@benluelo</a>
+        on 2023-07-24 23:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benluelo">@benluelo</a> on 2023-07-24 23:45</div>
+            <div class="timeline-body"><p>As per the title, <a href="https://github.com/clap-rs/clap/blob/1f022b83958334241c47de10195a2a502d99d81b/clap_builder/src/error/context.rs#L62"><code>ContextKind::Custom</code></a> is currently useless as nothing ever reads it. I expected it to be used in a similar way to <a href="https://github.com/clap-rs/clap/blob/master/clap_builder/src/error/format.rs#L118-L121"><code>ContextKind::Usage</code></a>, in that it could be attached to any ErrorKind and be printed as <a href="https://github.com/clap-rs/clap/blob/1f022b83958334241c47de10195a2a502d99d81b/clap_builder/src/error/context.rs#L38">An opaque message to the user</a>, but it just does nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-24 23:59</div>
+            <div class="timeline-body"><p>Huh, that must have slipped through the cracks in #3402 (real don't want to dig into the 35 commits to verify)</p>
+<p>Our options</p>
+<ul>
+<li>Reserve it for use for custom formatters</li>
+<li>Define how it should be rendered in our errors</li>
+<li>Remove it on the next breaking change</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benluelo">@benluelo</a> on 2023-07-25 00:05</div>
+            <div class="timeline-body"><p>I think defining how it should be rendered would be the best option - it would be super helpful for adding additional context as to why a custom ValueParser failed (&quot;cannot parse '0xinvalid' as hex&quot;, &quot;file 'abc.xyz' should have .txt extension&quot;, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-25 00:09</div>
+            <div class="timeline-body"><p>If its for a random <code>ValueParser</code>, why not just include it in the main message?</p>
+<p>How would it show up in the regular error formatting:</p>
+<pre><code>error: Some messge
+
+Usage: ...
+
+For more information, try `--help`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benluelo">@benluelo</a> on 2023-07-25 00:26</div>
+            <div class="timeline-body"><p>A few things:</p>
+<ul>
+<li><p>I couldn't get <code>ContextKind::Usage</code> to work, but I just realized that it's because it expects a <code>ContextValue::StyledStr</code>. (documentation on what values are valid in what cases would be great!)</p>
+</li>
+<li><p>I would expect <code>ContextKind::Usage</code> to prepend <code>Usage: </code> to the provided <code>ContextValue::StyledStr</code>, considering it's doc comment of &quot;A usage string&quot;, <a href="https://github.com/clap-rs/clap/blob/master/clap_builder/src/error/format.rs#L468">which it does not(?)</a></p>
+</li>
+<li><p>Even with the above, I would still expect a way to append a general &quot;context&quot; to the error message, along with the usage. Is it expected that this is all done in the usage message, manually formatted?</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-25 00:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I couldn't get ContextKind::Usage to work, but I just realized that it's because it expects a ContextValue::StyledStr. (documentation on what values are valid in what cases would be great!)</p>
+</blockquote>
+<p>While it would be great to have everything in clap to the same degree of quality, the practical aspect is that this area isn't as much of a focus as this is fairly off the beaten path.  So long as we provide an escape hatch to work, that is sufficient.</p>
+<p>If there is interest from someone improving the docs in a way that fits within the docs and doesn't detract from higher priority workflows, it would be welcome.</p>
+<blockquote>
+<p>I would expect ContextKind::Usage to prepend Usage: to the provided ContextValue::StyledStr, considering it's doc comment of &quot;A usage string&quot;, <a href="https://github.com/clap-rs/clap/blob/master/clap_builder/src/error/format.rs#L468">which it does not(?)</a></p>
+</blockquote>
+<p>We can consider this for 5.0 though it should have its own Issue</p>
+<blockquote>
+<p>Even with the above, I would still expect a way to append a general &quot;context&quot; to the error message, along with the usage. Is it expected that this is all done in the usage message, manually formatted?</p>
+</blockquote>
+<p>What do you mean?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:27 UTC
+    </footer>
+</body>
+</html>

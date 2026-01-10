@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diverging versions without markers - astral-sh/uv #5344</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Diverging versions without markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5344">#5344</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-23 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-23 16:23</div>
+            <div class="timeline-body"><p>Take the following <code>pyproject.toml</code>, which forks:</p>
+<pre><code class="language-toml">[project]
+name = &quot;transformers&quot;
+version = &quot;4.39.0.dev0&quot;
+description = &quot;State-of-the-art Machine Learning for JAX, PyTorch and TensorFlow&quot;
+requires-python = &quot;&gt;=3.9.0&quot;
+
+dependencies = [
+  &quot;datasets&quot;,
+  &quot;dill&lt;0.3.5&quot;,
+  &quot;tensorboard&quot;,
+  &quot;tensorflow-text&lt;2.16&quot;,
+  &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
+  &quot;torch&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Delete any existing <code>uv.lock</code>, run <code>uv lock</code>. In the lockfile, we find entries with diverging versions but missing markers:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;datasets&quot;
+version = &quot;2.20.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;aiohttp&quot; },
+    { name = &quot;dill&quot; },
+    { name = &quot;filelock&quot; },
+    { name = &quot;fsspec&quot;, extra = [&quot;http&quot;] },
+    { name = &quot;huggingface-hub&quot; },
+    { name = &quot;multiprocess&quot; },
+    { name = &quot;numpy&quot;, version = &quot;1.26.4&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+    { name = &quot;numpy&quot;, version = &quot;2.0.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+    { name = &quot;packaging&quot; },
+    { name = &quot;pandas&quot; },
+    { name = &quot;pyarrow&quot; },
+    { name = &quot;pyarrow-hotfix&quot; },
+    { name = &quot;pyyaml&quot; },
+    { name = &quot;requests&quot; },
+    { name = &quot;tqdm&quot; },
+    { name = &quot;xxhash&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/d5/59/b94bfb5f6225c4c931cd516390b3f006e232a036a48337f72889c6c9ab27/datasets-2.20.0.tar.gz&quot;, hash = &quot;sha256:3c4dbcd27e0f642b9d41d20ff2efa721a5e04b32b2ca4009e0fc9139e324553f&quot;, size = 2225757 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/60/2d/963b266bb8f88492d5ab4232d74292af8beb5b6fdae97902df9e284d4c32/datasets-2.20.0-py3-none-any.whl&quot;, hash = &quot;sha256:76ac02e3bdfff824492e20678f0b6b1b6d080515957fe834b00c2ba8d6b18e5e&quot;, size = 547777 },
+]
+</code></pre>
+<p>This must not be, we can't when to install which version this way. We need to know for which markers we should pick which numpy version.</p>
+<p>#5163 does not fix this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-23 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-23 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-07-23 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-23 16:52</div>
+            <div class="timeline-body"><p>I'll look into this. It could be a dupe of #4640 since #5163 only targets the &quot;incomplete&quot; marker case, where as #4640 is a problem with markers overlapping with each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-30 13:26</div>
+            <div class="timeline-body"><p>It looks like https://github.com/astral-sh/uv/pull/5597 might have fixed this! With that PR:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;datasets&quot;
+version = &quot;2.20.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;aiohttp&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;dill&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;filelock&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;fsspec&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;fsspec&quot;, extra = [&quot;http&quot;] },
+    { name = &quot;huggingface-hub&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;multiprocess&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;numpy&quot;, version = &quot;1.26.4&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;python_version &gt;= '3.12'&quot; },
+    { name = &quot;numpy&quot;, version = &quot;2.0.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;python_version &lt;= '3.11' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;packaging&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;pandas&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;pyarrow&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;pyarrow-hotfix&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;pyyaml&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;requests&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;tqdm&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+    { name = &quot;xxhash&quot;, marker = &quot;python_version &lt;= '3.11' or python_version &gt;= '3.12' or (python_version &lt; '3.12' and python_version &gt; '3.11')&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/d5/59/b94bfb5f6225c4c931cd516390b3f006e232a036a48337f72889c6c9ab27/datasets-2.20.0.tar.gz&quot;, hash = &quot;sha256:3c4dbcd27e0f642b9d41d20ff2efa721a5e04b32b2ca4009e0fc9139e324553f&quot;, size = 2225757 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/60/2d/963b266bb8f88492d5ab4232d74292af8beb5b6fdae97902df9e284d4c32/datasets-2.20.0-py3-none-any.whl&quot;, hash = &quot;sha256:76ac02e3bdfff824492e20678f0b6b1b6d080515957fe834b00c2ba8d6b18e5e&quot;, size = 547777 },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-30 13:27</div>
+            <div class="timeline-body"><p>Looks good! Feel free to close</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-30 13:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

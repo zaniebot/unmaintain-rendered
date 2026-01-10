@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lots of time is spent in allocation in `puffin-dev resolve-many` for the top PyPI packages - astral-sh/uv #396</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>lots of time is spent in allocation in `puffin-dev resolve-many` for the top PyPI packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/396">#396</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-10 17:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 17:59</div>
+            <div class="timeline-body"><p>One thing i'm seeing is that we are spending a lot of time in allocation, around 16% for <code>malloc</code> and 11.5% for <code>free</code> of total runtime for the top 1K pypi packages:</p>
+<p><img src="https://github.com/astral-sh/puffin/assets/456674/f0383638-9f7f-49e5-a04f-65ab4539ae31" alt="malloc" /></p>
+<p>That jumps to about 18% for <code>malloc</code> and 13% for <code>free</code> in the top 4K.</p>
+<p>My hypothesis for this is that we are allocating oodles of tiny little objects everywhere. For example, <code>Version</code> has two <code>Vec</code>s in it and <code>WheelFilename</code> adds many more allocs with more indirection. There are probably other places with lots of tiny little objects.</p>
+<p>There are a variety of different approaches one can use to attack this problem (if we consider it a problem at all):</p>
+<ul>
+<li>Try container types that use inline storage for small elements and fallback to the heap for bigger elements. I'm thinking about things like <a href="https://docs.rs/smallvec/latest/smallvec/"><code>smallvec</code></a>. This is also known as a &quot;small string optimization&quot; (SSO). This might be a good first thing to try since I'm guessing it's quite relevant. I imagine many of the <code>Vec</code>s and <code>String</code>s in <code>WheelFilename</code> and <code>Version</code>, for example, are quite small.</li>
+<li>We could try different allocators. It looks like ruff uses <code>mimalloc</code>. My system is using glibc's allocator which is generally pretty fast. So I wouldn't expect an enormous gain here.</li>
+<li>We could try different allocation styles. For example, a bump allocator like <a href="https://docs.rs/bumpalo/latest/bumpalo/"><code>bumpalo</code></a>. This will likely require some refactoring of the code.</li>
+<li>We could try representational changes to our data types to make fewer allocations. For example, a <code>Version</code> could probably be represented as a <code>Vec&lt;u8&gt;</code> internally. This makes its representation more complex and <em>usually</em> will incur some kind of perf penalty when you try to <em>use</em> a <code>Vesion</code>. But it could speed up objection creation enough to make it a worthwhile trade.</li>
+<li>We could use some kind of string interning to exploit cross-package redundancy. It is very likely for example that the total number of unique version strings is far smaller than the total number of version strings. Similarly for other things such as package names. (Since some packages have a lot of releases.)</li>
+</ul>
+<p>Anyway, this is just what I have off the top of my head. I'm actually not even certain that we want to solve this problem at all. But it is worth pointing out that some of the above remedies are much easier to try than others (<code>smallvec</code> should be quite easy to slot into the existing code and <em>could</em> significantly reduce allocs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @BurntSushi on 2023-11-10 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/373.html">astral-sh/uv#373</a> on 2023-11-10 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 18:00</div>
+            <div class="timeline-body"><p>Personal opinion is that I'd love to improve this and these ideas strike me as being in the right direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 18:27</div>
+            <div class="timeline-body"><p>I'd love to try smallvec for <code>release</code>. We can also use <code>u32</code> instead of <code>usize</code> in there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 18:29</div>
+            <div class="timeline-body"><p>We could also use an enum for <code>release</code> that captures the overwhelmingly common cases of 1, 2, or 3 segments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 18:31</div>
+            <div class="timeline-body"><p>That might be strictly more work. I recall <code>smallvec</code> introduces some overhead since you need to check if an element is on the stack or the heap, but I guess an enum would have the same problem :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 19:19</div>
+            <div class="timeline-body"><p>Perfwise we shouldn't see the difference, but <code>smallvec</code> would be more ergonomic with less effort</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/399.html">astral-sh/uv#399</a> on 2023-11-10 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 19:50</div>
+            <div class="timeline-body"><p>#399 gets a ~10% perf win by switching the global allocator. I did attempt a smallvec optimization experiment (as mentioned above) but couldn't observe any measurable win. I'm not 100% convinced that smallvec has no role to play and I'm sure there is more that can still be done here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-05 04:36</div>
+            <div class="timeline-body"><p>@BurntSushi - Should we close this when merging #789 or is there more that's worth tracking here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/789.html">astral-sh/uv#789</a> on 2024-01-05 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-05 12:39</div>
+            <div class="timeline-body"><p>Ah yeah that's a good point. Yeah, I don't think this specific issue still exists once #789 gets merged. (Or even before it to be honest. I think gratuitous allocation has been removed from the happy path for the most part already.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-05 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-05 16:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run debug_asserts during compile time for derives - clap-rs/clap #2740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run debug_asserts during compile time for derives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2740">#2740</a>
+        opened by <a href="https://github.com/glittershark">@glittershark</a>
+        on 2021-08-27 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/glittershark">@glittershark</a> on 2021-08-27 14:00</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.4</p>
+<h3>Describe your use case</h3>
+<p>Consider the following app:</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap)]
+struct Opts {
+    #[clap(long, requires(&quot;foo&quot;))]
+    bar: i32
+}
+</code></pre>
+<p>That app has a bug - the <code>foo</code> argument doesn't exist - but you don't have any way of finding out about it unless you actually <em>run</em> the application! In the real world, outside of the realm of contrived example code, this happened at $work where one parallel branch renamed an argument, while another added a new argument that required the old name - and since we didn't (previously, we do now) have a test covering option parsing, this went uncaught until we actually tried to run the binary.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I was thinking it'd be awesome if <code>#[derive(Clap)]</code> could detect usages of <code>requires</code> (and other things that reference the name of another argument) and emit a compilation error if they reference arguments that don't exist. This might get a little hairy in the presence of <code>#[clap(flatten)]</code> et al, though, and I'm not super familiar with the internals of derive macros so the information may well just not be available at this point</p>
+<h3>Alternatives, if applicable</h3>
+<p>Maybe if it's not feasible to do this inside the macro itself (or not desired, because of the weird interaction with <code>#[clap(flatten)]</code> we could instead have some sort of custom clippy lint that detects this?</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @glittershark on 2021-08-27 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-27 14:05</div>
+            <div class="timeline-body"><p>Yes, this would not be possible with <code>flatten</code></p>
+<p>I was thinking maybe we could if <code>flatten</code> isn't present but that wouldn't work if we were deriving a mix-in.</p>
+<p>It looks like we do have a <a href="https://github.com/clap-rs/clap/blob/master/src/build/app/debug_asserts.rs#L128">debug_assert</a> for this case, unless there is a corner we are missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glittershark">@glittershark</a> on 2021-08-27 14:08</div>
+            <div class="timeline-body"><p>I wonder how frequently people use <code>requires</code> on a field that isn't actually defined in the struct they're defining - I'd bet it's a minority of cases. I wonder if we could get away with something like</p>
+<pre><code class="language-rust">use clap::Clap;
+
+#[derive(Clap)]
+struct Opts {
+    #[clap(long, requires(&quot;foo&quot;, allow_missing))]
+    bar: i32
+}
+</code></pre>
+<p>to opt-out of the compile-time check for the field existing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glittershark">@glittershark</a> on 2021-08-27 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like we do have a <a href="https://github.com/clap-rs/clap/blob/master/src/build/app/debug_asserts.rs?rgh-link-date=2021-08-27T14%3A05%3A16Z#L128">debug_assert</a> for this case, unless there is a corner we are missing.</p>
+</blockquote>
+<p>I'm not familiar with the structure of clap - is <code>assert_app</code> run as part of the derive macro (so at compile-time) or at runtime?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-27 14:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not familiar with the structure of clap - is assert_app run as part of the derive macro (so at compile-time) or at runtime?</p>
+</blockquote>
+<p>It happens at runtime with debug builds.  You could have your CI run <code>--help</code> to ensure all debug asserts pass which gives you at least some level of enforcement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glittershark">@glittershark</a> on 2021-08-27 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>You could have your CI run <code>--help</code> to ensure all debug asserts pass which gives you at least some level of enforcement.</p>
+</blockquote>
+<p>Yeah, I just wrote a test that calls <code>Opts::parse_from(...)</code>, but it'd be nice to have it as a compile-time check without having to remember to write a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-27 18:34</div>
+            <div class="timeline-body"><p>Thats understandable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Could `requires` and friends validate at compile-time in the new derive macro?" to "Run debug_asserts during compile time for derives" by @pksunkara on 2021-08-31 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2021-08-31 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @pksunkara on 2021-08-31 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/204.html">epage/clapng#204</a> on 2021-12-06 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 17:49</div>
+            <div class="timeline-body"><p>Note: #3133 is a subset of this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 17:49</div>
+            <div class="timeline-body"><p>Due to the challenge of <code>flatten</code>, I'm inclined to close this.</p>
+<p>Our options</p>
+<ul>
+<li>Only do the checks when <code>flatten</code> isn't present<ul>
+<li>This gives people a false sense of security as their app scales</li>
+<li>This can cause challenges with the struct you flatten into your top-level.  You could condition the assert on deriving <code>Parser</code> instead of <code>Args</code> but we let people derive <code>Parser</code> on those</li>
+</ul>
+</li>
+<li>Require cross-struct references to opt-out<ul>
+<li>This is adding API and implementation complexity</li>
+</ul>
+</li>
+</ul>
+<p>On top of this, this requires us to duplicate our debug asserts.</p>
+<p>We have added a <code>App::debug_assert()</code> for use in unit tests which is more extensive than the <code>Opt::parse_from</code> mentioned before (helps with subcommands).</p>
+<p>If there are any concerns  with us closing this, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-13 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3133.html">clap-rs/clap#3133</a> on 2021-12-13 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3202.html">clap-rs/clap#3202</a> on 2021-12-22 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publishing Internal Crates to crates.io - astral-sh/ruff #10417</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Publishing Internal Crates to crates.io</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10417">#10417</a>
+        opened by <a href="https://github.com/mfish332">@mfish332</a>
+        on 2024-03-15 02:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mfish332">@mfish332</a> on 2024-03-15 02:19</div>
+            <div class="timeline-body"><p>Hi thanks for this awesome project. I am working on a project that does dependency analysis on a very large codebase and would love to use Rust. When looking for the best Rust python parser I was led to <a href="https://github.com/RustPython/Parser">RustPython/Parser</a>. I see that Ruff originally used RustPython/Parser but it seems like the current parser has deviated quite a bit. I am wondering if you can publicly publish some of the internal crates such as the parser and ast packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 03:04</div>
+            <div class="timeline-body"><p>This is loosely a duplicate of https://github.com/astral-sh/ruff/issues/43</p>
+<p>We're hesitant to publish to crates.io at this time because the internal crates are not versioned and we are moving too fast to commit to a stable Rust API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfish332">@mfish332</a> on 2024-03-15 03:09</div>
+            <div class="timeline-body"><p>A possible solution would be to publish at a <code>0.0.x</code> version and not commit to any API. Then people consuming the package could specify an exact version. It is significantly better than forking and having to sync upstream. Ruff really has the best rust python parser around and it would be great to be able to use it in other projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 03:15</div>
+            <div class="timeline-body"><p>I'm not sure if we can deal with the overhead of versioning and releasing everything separately, maybe we could just auto-increment the patch on each Ruff release.</p>
+<p>I'll chat with the team though and report back if it feels like we can do it.</p>
+<p>Glad you're finding the project useful :) if you're interested in a parser keep an eye on #10036, we're going to replace our existing parser entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @charliermarsh on 2024-03-15 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 13:43</div>
+            <div class="timeline-body"><p>I'm open to releasing some crates (like AST and parser) without any stability guarantees to crates.io (e.g. using 0.0.x) but we probably would need help to set up the release process. But I'm deferring the decision to @zanieb who's taken the lead here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-18 13:49</div>
+            <div class="timeline-body"><p>@mfish332 Can you say more about why you need Ruff's crates on crates.io? Can you use git dependencies instead? It does mean that <em>your</em> crate won't be able to be on crates.io which is kind of a bummer. But otherwise there isn't much of a difference between a <code>0.0.x</code> release policy and git dependencies (neither really benefit from semver since every change is potentially breaking).</p>
+<p>The main concern I have here is indeed needing to worry about semver. An internal crate that isn't published is really a different beast entirely from a crate that is published that others are consuming. The former means we can iterate without any care with respect to breaking changes.</p>
+<p>I do suppose that a <code>0.0.x</code> version policy would assuage those concerns because every release will be treated as semver incompatible. And if it can be fully automated, then I think that would eliminate most or all of the overhead, aside from maintaining the automation. I don't know much work that would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mfish332">@mfish332</a> on 2024-03-22 21:20</div>
+            <div class="timeline-body"><p>Hi All, thank you for quick the responses. I was mistakenly under the impression that it was impossible to install crates from within a cargo workspace via git (due to path based links). This is not true though, See <a href="https://stackoverflow.com/questions/73233872/how-do-i-depend-on-a-crate-within-a-cargo-workspace-over-git">SO question</a> or this <a href="https://github.com/rust-lang/cargo/issues/10151">cargo issue</a></p>
+<p>For my purposes this will work great as I am not publishing to crates.io, and I can pin the ruff deps to a release tag. TLDR for those coming across this issue at a later point you can run:</p>
+<pre><code class="language-bash">cargo add ruff_python_parser ruff_python_ast --git https://github.com/astral-sh/ruff --tag v0.3.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mfish332 on 2024-03-22 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flying-sheep">@flying-sheep</a> on 2024-04-06 14:23</div>
+            <div class="timeline-body"><p>After replacing the parser, maybe this could be revisited? It would be great to have a robust Python parser on crates.io</p>
+<p>Another advantage would be having documentation on docs.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../conda-forge/deptry-feedstock/issues/5.html">conda-forge/deptry-feedstock#5</a> on 2024-06-14 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14051.html">astral-sh/ruff#14051</a> on 2024-11-01 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjsewell">@chrisjsewell</a> on 2025-04-15 04:37</div>
+            <div class="timeline-body"><p>I would note rustpython now uses the ruff parser: https://github.com/RustPython/RustPython/pull/5494
+It currently has to source from GitHub, which seems really not great at all 😅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

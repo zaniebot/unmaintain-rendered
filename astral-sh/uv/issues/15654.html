@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue: uv add downloads macOS wheel instead of Windows amd64 wheel on Win64 platform, while uv pip install works correctly - astral-sh/uv #15654</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue: uv add downloads macOS wheel instead of Windows amd64 wheel on Win64 platform, while uv pip install works correctly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15654">#15654</a>
+        opened by <a href="https://github.com/kermitbu">@kermitbu</a>
+        on 2025-09-03 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kermitbu">@kermitbu</a> on 2025-09-03 10:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Environment
+OS Platform: Windows 10 (amd64 architecture)
+uv Version: [0.8.14] (Note: --platform argument is not supported in this version)
+uv Configuration File: uv.toml (located at C:\Users\kermit\AppData\Roaming\uv\uv.toml) with the following content:</p>
+<pre><code class="language-toml">[[index]]
+url = &quot;https://test.pypi.org/simple&quot;
+default = true
+</code></pre>
+<p>Steps to Reproduce
+Initialize a project using uv init mydemo (successfully creates the mydemo project with pyproject.toml).
+Attempt to add polars dependency via uv add:</p>
+<pre><code class="language-bash">cd mydemo
+uv add polars
+</code></pre>
+<p>Result: uv downloads the macOS-specific wheel (e.g., polars-1.32.0-cp39-abi3-macosx_10_12_x86_64.whl).
+Install polars via uv pip install in the same project directory:</p>
+<pre><code class="language-bash">uv pip install polars
+</code></pre>
+<p>Result: Works correctly—downloads the Windows amd64 wheel (e.g., polars-1.32.0-cp39-abi3-win_amd64.whl) and installs successfully.
+Expected Behavior
+uv add should consistently detect the Windows amd64 platform (same as uv pip install) and download the corresponding Windows wheel, instead of defaulting to macOS.
+Actual Behavior
+uv add incorrectly resolves to macOS wheel on Windows amd64 platform, while uv pip install behaves as expected.</p>
+<h3>Platform</h3>
+<p>windows10 amd64</p>
+<h3>Version</h3>
+<p>uv0.8.14</p>
+<h3>Python version</h3>
+<p>python 3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kermitbu on 2025-09-03 10:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-03 11:28</div>
+            <div class="timeline-body"><p>Does uv actually install the MacOS wheel, or is it only downloaded for metadata? uv in universal mode (<code>uv lock</code>, <code>uv sync</code>, <code>uv add</code>, etc.), uses a consistent wheel, usually the MacOS one to get the metadata, if the index supports neither PEP 658 nor HTTP range requests. This wheel is only used to get the dependencies of a package (from the <code>.dist-info/METADATA</code> file), but should not be installed on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-09-03 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-09-03 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kermitbu">@kermitbu</a> on 2025-09-04 00:46</div>
+            <div class="timeline-body"><p>The following snippet is from the logs:
+TRACE: Request for http://test.pypi.org/repository/pypi-public/packages/polars/1.32.0/polars-1.32.0-cp39-abi3-macosx_10_12_x86_64.whl failed with Not Found, checking for credentials
+TRACE: No credentials in cache for URL http://test.pypi.org/repository/pypi-public/simple/
+TRACE: No credentials in cache for realm http://test.pypi.org/
+DEBUG: No netrc file found
+TRACE: Considering retry of response HTTP 404 Not Found for http://test.pypi.org/repository/pypi-public/packages/polars/1.32.0/polars-1.32.0-cp39-abi3-macosx_10_12_x86_64.whl
+TRACE: Cannot retry error: not an extended IO error
+This issue might be caused by the absence of the macOS package in my private repository. Are there any parameters or configurations available to force the download of a package for a specific platform?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-04 09:15</div>
+            <div class="timeline-body"><p>The URL <code>http://test.pypi.org/repository/pypi-public/packages/polars/1.32.0/polars-1.32.0-cp39-abi3-macosx_10_12_x86_64.whl</code> looks off, this should not appear when setting <code>url = &quot;https://test.pypi.org/simple&quot;</code>, is there anything else you configure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shauneccles">@shauneccles</a> on 2025-09-04 23:09</div>
+            <div class="timeline-body"><blockquote>
+<p>in my private repository</p>
+</blockquote>
+<p>Are you redacting this private repo in this issue log by replacing it with test.pypi.org?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

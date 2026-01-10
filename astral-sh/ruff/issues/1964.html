@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D407 doesn't respect indentation level? - astral-sh/ruff #1964</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>D407 doesn't respect indentation level?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1964">#1964</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-18 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-18 16:11</div>
+            <div class="timeline-body"><pre><code class="language-python">class Plugin(object):
+
+    u&quot;&quot;&quot;A wrapper for blah.
+
+    These Python modules (plugins) may have the following properties:
+
+    :attr dict actions:
+            A mapping of valid action names to function callbacks.
+            These action names can be referenced by additional displayed buttons (see :attr:`buttons`).
+            If a called actions does not exists the run() function is taken as fallback.
+            example:
+                    actions = {
+                            'remove': my_remove_funct,
+                    }
+    :attr str title:
+            A short description of the problem
+            example:
+                    title = _('No space left on device')
+    &quot;&quot;&quot;
+</code></pre>
+<p><code>ruff --isolated --select D --fix foo.py</code> turns into</p>
+<pre><code class="language-python">class Plugin(object):
+
+    u&quot;&quot;&quot;A wrapper for blah.
+
+    These Python modules (plugins) may have the following properties:
+
+    :attr dict actions:
+            A mapping of valid action names to function callbacks.
+            These action names can be referenced by additional displayed buttons (see :attr:`buttons`).
+            If a called actions does not exists the run() function is taken as fallback.
+
+    Example:
+    -------
+                    actions = {
+                            'remove': my_remove_funct,
+                    }
+    :attr str title:
+            A short description of the problem
+            example:
+                    title = _('No space left on device')
+    &quot;&quot;&quot;
+</code></pre>
+<ol>
+<li>The result is broken, the indentation is not respected. I am unsure what docstring format is that? RST based? at least in sphinx RST is used but I have not seen such thing. Don't know what I expect here. Maybe the ruff config could specify a doc-format.</li>
+<li>The second <code>example:</code> is not detected anymore at all.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-18 16:23</div>
+            <div class="timeline-body"><p>Another example:</p>
+<pre><code class="language-python">def simple_response(function=None, with_flavor=None, with_progress=False):
+    '''If your function is as simple as: &quot;Just return some variables&quot;
+    Before::
+
+            def my_func(self, request):
+                    variable1 = request.options.get('variable1')
+                    variable2 = request.options.get('variable2')
+                    flavor = request.flavor or 'default flavor'
+                    if variable1 is None:
+                            self.finished(request.id, None, message='variable1 is required', success=False)
+                            return
+                    if variable2 is None:
+                    variable2 = ''
+                    try:
+                            value = '%s_%s_%s' % (self._saved_dict[variable1], variable2, flavor)
+                    except KeyError:
+                            self.finished(request.id, None, message='Something went wrong', success=False, status=500)
+                            return
+                    self.finished(request.id, value)
+
+    After::
+
+            @simple_response(with_flavor=True)
+            def my_func(self, variable1, variable2='', flavor='default_flavor'):
+                    try:
+                            return '%s_%s_%s' % (self._saved_dict[variable1], variable2, flavor)
+                    except KeyError:
+                            raise UMC_Error('Something went wrong')
+
+    '''
+</code></pre>
+<p>turns it into:</p>
+<pre><code class="language-python">def simple_response(function=None, with_flavor=None, with_progress=False):
+    '''If your function is as simple as: &quot;Just return some variables&quot;
+    Before::
+
+            def my_func(self, request):
+                    variable1 = request.options.get('variable1')
+                    variable2 = request.options.get('variable2')
+                    flavor = request.flavor or 'default flavor'
+                    if variable1 is None:
+                            self.finished(request.id, None, message='variable1 is required', success=False)
+
+    Return:
+    ------
+                    if variable2 is None:
+                    variable2 = ''
+                    try:
+                            value = '%s_%s_%s' % (self._saved_dict[variable1], variable2, flavor)
+                    except KeyError:
+                            self.finished(request.id, None, message='Something went wrong', success=False, status=500)
+
+    Return:
+    ------
+                    self.finished(request.id, value)
+
+    After::
+
+            @simple_response(with_flavor=True)
+            def my_func(self, variable1, variable2='', flavor='default_flavor'):
+                    try:
+                            return '%s_%s_%s' % (self._saved_dict[variable1], variable2, flavor)
+                    except KeyError:
+                            raise UMC_Error('Something went wrong')
+
+    '''
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 16:37</div>
+            <div class="timeline-body"><p>There's a couple things going wrong here, but the biggest issue, I think, is that we don't support Sphinx-style docstrings (is that what those are? Pydocstyle doesn't either) -- only NumPy and Google. We do have a setting for this <code>[tool.ruff.pydocstyle.convention]</code>, but right now, I think its best-guess is that you're using NumPy-style docstrings, and so it's matching statements like <code>return</code> as section headers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-01-18 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2023-01-18 17:39</div>
+            <div class="timeline-body"><p>Pydocstyle has the <code>pep257</code> convention which I always use for sphinx-style docstrings but it doesn't enforce as much as the other two conventions in pydocstyle. <a href="https://github.com/terrencepreilly/darglint">darglint</a> has full support for sphinx-style docstrings though.</p>
+<p>Also, OP's example doesn't look like the usual sphinx style to me... here is an official example: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html For example, the type is usually specified separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 18:15</div>
+            <div class="timeline-body"><p>Yeah, we reimplemented Pydocstyle so we suffer from many of the same limitations. I want to replace it with a <code>darglint</code>-style parser that uses an actual grammar, but it's a big project and I'm prioritizing some other things above it. I know @not-my-profile is interested in that too, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-18 20:35</div>
+            <div class="timeline-body"><p>Yes, it's sphinx based.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "D407 doens't respect indentation level?" to "D407 doesn't respect indentation level?" by @spaceone on 2023-01-18 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-19 03:02</div>
+            <div class="timeline-body"><p>Yes I am working on a docstring parsing library for both a personal project and ruff, and I am planning to support all major docstring formats (epytext, google, numpy and sphinx). It will take me some time to publish that though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 15:32</div>
+            <div class="timeline-body"><p>I think this issue is larger than indentation level so going to close for now knowing that it's part of a large change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-19 15:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

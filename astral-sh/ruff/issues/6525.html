@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COM812 Appears to Still Not Quite Be Right - astral-sh/ruff #6525</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>COM812 Appears to Still Not Quite Be Right</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6525">#6525</a>
+        opened by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a>
+        on 2023-08-12 18:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a> on 2023-08-12 18:18</div>
+            <div class="timeline-body"><p>It seems that COM812 does not like when arguments overflow to a new line, but are still on a single line. It wants a trailing comma, which then activates <a href="https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#the-magic-trailing-comma">black's magic trailing comma</a>.</p>
+<p>My expectation is that it would not have a problem with this.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/3373830/91da8cbe-2a5d-4cab-ab41-5d69b3aef566" alt="image" /></p>
+<pre><code class="language-python3">long_variable_name_ayyyyyyyy = 1
+other_long_variable_nameeeee = 2
+
+hhhhhhhhhhh, jjjjjjjj, kkkkkkkk, llllllllll = range(
+    long_variable_name_ayyyyyyyy, other_long_variable_nameeeee
+)
+</code></pre>
+<p>Related to #3303</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-12 18:20</div>
+            <div class="timeline-body"><p>@benjamin-kirkbride would you mind fixing the formatting of your post (i.e. render the image) and including a minimal reproducible example as well as a description of what's happening vs what you expect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a> on 2023-08-12 18:28</div>
+            <div class="timeline-body"><p>@zanieb done :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-13 01:38</div>
+            <div class="timeline-body"><p>I believe this is working as intended -- it's the same behavior and reasoning as https://github.com/asottile/add-trailing-comma.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a> on 2023-08-13 01:46</div>
+            <div class="timeline-body"><pre><code class="language-diff"> x(
+     arg,
+-    arg
++    arg,
+ )
+</code></pre>
+<p>This makes sense to me^</p>
+<pre><code> x = [
+-    1, 2, 3
++    1, 2, 3,
+ ]
+</code></pre>
+<p>This conflicts with <code>black</code>^</p>
+<p>I guess disabling it is easy enough though, if this is truly intended behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-13 02:38</div>
+            <div class="timeline-body"><p>Yeah I think this is as-expected -- I believe the rule is intended to add trailing commas to any call that spans multiple lines in the interest of consistency and generating clear diffs, regardless of whether the arguments <em>themselves</em> are wrapped over multiple lines. It's not necessarily intended to adhere to Black's preferences in any specific way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-13 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benjamin-kirkbride">@benjamin-kirkbride</a> on 2023-08-13 03:10</div>
+            <div class="timeline-body"><p>Thanks for taking a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steve-mavens">@steve-mavens</a> on 2023-11-01 17:13</div>
+            <div class="timeline-body"><p>Is it worth documenting when rules intentionally conflict with black? I (and I suspect many others) use both black and ruff, and it would be nice not to have to look through ruff issues to establish that the conflict is a feature, not a bug :-)</p>
+<p>The motivation and example at https://docs.astral.sh/ruff/rules/missing-trailing-comma/ are entirely clear when you're putting one comma-separated item per line of source. Neither the motivation nor the example address the case where black puts multiple comma-separated items on a single source line.</p>
+<p>Although black states, &quot;Black makes code review faster by producing the smallest diffs possible.&quot;, and therefore you would think black would agree with this rule: actually in this case diff size has taken second place in priority, to some concern like &quot;fewer lines is more readable than more lines&quot;. Unusually so for black, which ordinarily prioritizes consistency over readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-01 17:33</div>
+            <div class="timeline-body"><p>@steve-mavens - Our documentation on rules that conflict with Ruff's formatter should be accurate for Black too: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8555.html">astral-sh/ruff#8555</a> on 2023-11-08 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anilsg">@anilsg</a> on 2024-01-29 05:18</div>
+            <div class="timeline-body"><p>I can't help posting here again despite the years of discussion since I find the particular scenario (below) undesirable and I don't see recognition of its merits recognised explicitly enough for me to believe it's been properly considered.</p>
+<p>[I interpret issue #8555 as not coincident with this scenario since #8555 is being discussed as applicable to situations only where a function call is initially formatted across multiple lines, therefore I post here instead of there.]</p>
+<p>I have a function call with multiple arguments initially formatted on one line, where <code>black</code> reformats the arguments on a single line without a trailing comma which triggers COM812:</p>
+<pre><code class="language-python">    some_kind_of_date: datetime.date = Field(
+        datetime.date.min, description=&quot;We normally expect fairly lengthy sentences of words here.&quot;
+    )
+</code></pre>
+<p>If I were to add a trailing comma <code>black</code> takes this as an indication to format the arguments on one line each which also deals with the COM812:</p>
+<pre><code class="language-python">    some_kind_of_date: datetime.date = Field(
+        datetime.date.min,
+        description=&quot;We normally expect fairly lengthy sentences of words here.&quot;,
+    )
+</code></pre>
+<p>It seems to me that <code>black</code> is respecting the programmer's intention to format with less vertical space but still supports both approaches. This does not seem to be a 'black' &quot;preference&quot;. These are two distinct formats triggered by hints from the programmer derived from the input formatting (all on one line, no trailing comma supplied).</p>
+<p>I evaluate Ruff's behaviour against the stated goals of COM812 which are &quot;consistency&quot; and &quot;generating clear diffs&quot;, or just <a href="https://docs.astral.sh/ruff/rules/missing-trailing-comma/">&quot;diff size&quot;</a>.</p>
+<p>I felt it's not been acknowledged that the addition of a trailing comma in the single line scenario does <em>not</em> support &quot;clearer diffs&quot; as is usually meant, since the addition of another argument on a single line already alters that line so no diff lines are saved. The trailing comma only saves diff lines if the arguments are also placed on multiple lines. To be consistent, if Ruff is going to insist on a trailing comma (because clearer diffs) then Ruff should also force multiple line arguments.</p>
+<p>Otherwise, I'm personally not clear what other scenarios &quot;consistency&quot; refers to since that is a relative term and this scenario is somewhat different from multiple lines of single arguments or what-have-you.</p>
+<p>I would expect behaviour in accordance with the stated goals would be to not insist on a trailing comma where multiple arguments all fit on a single line and programmer has hinted that vertical space should be minimised.</p>
+<p>If this argument is valid I'd be happy to formulate this specific scenario as an issue for consideration.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

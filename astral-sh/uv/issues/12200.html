@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install` insists on creating a .lock file in the current venv while `pip install` does not need this - astral-sh/uv #12200</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install` insists on creating a .lock file in the current venv while `pip install` does not need this</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12200">#12200</a>
+        opened by <a href="https://github.com/jiridanek">@jiridanek</a>
+        on 2025-03-16 10:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jiridanek">@jiridanek</a> on 2025-03-16 10:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There does not seem to be a way to deflect <code>uv</code> from creating a temporary directory (file?) in my <code>env::VIRTUAL_ENV</code> directory</p>
+<pre><code>(app-root) bash-5.1$ uv pip install cowsay -v
+DEBUG uv 0.6.6
+error: failed to create directory `/opt/app-root/src/.cache/uv`: Permission denied (os error 13)
+</code></pre>
+<pre><code>(app-root) bash-5.1$ uv pip install --no-cache cowsay -v
+DEBUG uv 0.6.6
+DEBUG Searching for default Python interpreter in virtual environments
+DEBUG Found `cpython-3.11.9-linux-x86_64-gnu` at `/opt/app-root/bin/python3` (active virtual environment)
+Using Python 3.11.9 environment at: /opt/app-root
+error: Permission denied (os error 13) at path &quot;/opt/app-root/.tmpQy7ZfT&quot;
+</code></pre>
+<p>Setting <code>env::TMPDIR</code> does not change the behavior.</p>
+<h3>Platform</h3>
+<p>podman 5.4.1 running ubi9 x86-64 image, on macOS 15.3 arm64 host</p>
+<h3>Version</h3>
+<p>uv 0.6.6</p>
+<h3>Python version</h3>
+<p>cpython-3.11.9-linux-x86_64-gnu</p>
+<h2>Notes</h2>
+<p>The equivalent pip command does succeed</p>
+<pre><code>(app-root) bash-5.1$ pip install cowsay -v
+Using pip 24.2 from /opt/app-root/lib64/python3.11/site-packages/pip (python 3.11)
+Collecting cowsay
+  Obtaining dependency information for cowsay from https://files.pythonhosted.org/packages/f1/13/63c0a02c44024ee16f664e0b36eefeb22d54e93531630bd99e237986f534/cowsay-6.1-py3-none-any.whl.metadata
+  Downloading cowsay-6.1-py3-none-any.whl.metadata (5.6 kB)
+Downloading cowsay-6.1-py3-none-any.whl (25 kB)
+Installing collected packages: cowsay
+  changing mode of /opt/app-root/bin/cowsay to 755
+Successfully installed cowsay-6.1
+
+[notice] A new release of pip is available: 24.2 -&gt; 25.0.1
+[notice] To update, run: pip install --upgrade pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jiridanek on 2025-03-16 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv insists on creating a tmp dir in the current venv" to "uv insists on creating a tmp dir (file?) in the current venv" by @jiridanek on 2025-03-16 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jiridanek">@jiridanek</a> on 2025-03-16 10:58</div>
+            <div class="timeline-body"><p>The name seems to be coming from</p>
+<pre><code>impl Default for Builder&lt;'_, '_&gt; {
+    fn default() -&gt; Self {
+        Builder {
+            random_len: crate::NUM_RAND_CHARS,
+            prefix: OsStr::new(&quot;.tmp&quot;),
+            suffix: OsStr::new(&quot;&quot;),
+            append: false,
+            permissions: None,
+            keep: false,
+        }
+    }
+}
+</code></pre>
+<p>https://github.com/Stebalien/tempfile/blob/167f544abe388d90a84aa4c2220d8c423dec2db1/src/lib.rs#L231-L242</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jiridanek">@jiridanek</a> on 2025-03-16 11:38</div>
+            <div class="timeline-body"><p>I think I understand what's happening.</p>
+<p>uv (sometimes) creates new files by creating a tempfile and then moving it to the correct place, so the apperance of the <code>.tmpXXXXXX</code> name is a red herring. The line it actually crashes when I reproduced this outside of podman is</p>
+<p>https://github.com/astral-sh/uv/blob/e843433b07db08bdabd64b4cfe822e57b3a31154/crates/uv/src/commands/pip/install.rs#L224</p>
+<p>What I'm therefore looking for is a way to disable the venv dir lockfile. Which there does not seem to be one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv insists on creating a tmp dir (file?) in the current venv" to "uv insists on creating a tmp file in the current venv while `pip install` does not need this" by @jiridanek on 2025-03-16 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv insists on creating a tmp file in the current venv while `pip install` does not need this" to "`uv pip install` insists on creating a tmp file in the current venv while `pip install` does not need this" by @jiridanek on 2025-03-16 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip install` insists on creating a tmp file in the current venv while `pip install` does not need this" to "`uv pip install` insists on creating a .lock file in the current venv while `pip install` does not need this" by @jiridanek on 2025-03-16 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-16 14:14</div>
+            <div class="timeline-body"><p>We create a file lock to prevent concurrent mutation of the environment because it is unsafe. pip just doesn't implement such safety.</p>
+<p>You're encountering a permission error when writing to the environment — given that pip succeeds I can only presume you have different permissions for the root directory of the environment and the subdirectories? I'm not sure why you'd have that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-03-16 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-03-16 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jiridanek">@jiridanek</a> on 2025-03-16 16:55</div>
+            <div class="timeline-body"><blockquote>
+<p>We create a file lock to prevent concurrent mutation of the environment because it is unsafe.</p>
+</blockquote>
+<p>I'm hitting this in a Dockerfile build, where concurrent access is more or less precluded, but I do understand that it's a reasonable safety/robustness feature to have in general.</p>
+<blockquote>
+<p>I can only presume you have different permissions for the root directory of the environment and the subdirectories?</p>
+</blockquote>
+<p>Yes, that is the case. And it seems to be done by mistake</p>
+<p>Before,</p>
+<pre><code>podman run --entrypoint /bin/bash --rm -it 7616b6ee0ff8 -c 'ls -AlFd $VIRTUAL_ENV'
+drwxrwxr-x. 1 default root 40 Mar 16 09:57 /opt/app-root/
+</code></pre>
+<p>then the Dockerfile does</p>
+<pre><code>USER 0
+COPY ${CODESERVER_SOURCE_CODE}/nginx/root/ /
+</code></pre>
+<p>The permissions on the source (local) directory being the standard Git ones</p>
+<pre><code>ls -AlFd notebooks/codeserver/ubi9-python-3.11/nginx/root/opt/app-root
+drwxr-xr-x@ 4 jdanek  staff  128 Mar 14 15:16 notebooks/codeserver/ubi9-python-3.11/nginx/root/opt/app-root/
+</code></pre>
+<p>And that results in <code>/opt/app-root/</code> (which is my <code>$VIRTUAL_ENV</code>) to end up</p>
+<pre><code>podman run --entrypoint /bin/bash --rm -it 237a5692c108 -c 'ls -AlFd $VIRTUAL_ENV'
+drwxr-xr-x. 1 root root 38 Mar 14 14:16 /opt/app-root/
+</code></pre>
+<p>so running uv as the <code>default</code> user now no longer works.</p>
+<h2>Conclusion</h2>
+<p>It appears that somebody was careless with permissions and because <code>pip install</code> did not require write access for the VIRTUAL_ENV dir itself after the venv is properly initialized, nobody needed to fix it. For uv, I'll go fix it.</p>
+<p>Thank you for your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jiridanek on 2025-03-16 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-16 22:24</div>
+            <div class="timeline-body"><p>Glad you got it worked out, thank you following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opendatahub-io/notebooks/pulls/986.html">opendatahub-io/notebooks#986</a> on 2025-03-21 15:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

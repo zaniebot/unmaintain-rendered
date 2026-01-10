@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyright language server crashes when run from inside venv created by uv - astral-sh/uv #6399</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pyright language server crashes when run from inside venv created by uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6399">#6399</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-08-22 01:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-22 01:55</div>
+            <div class="timeline-body"><p>i'm not sure what's causing this, but for some reason all of my language servers are crashing with strange errors when running from a venv created by uv (tested with both ruff and basedpyright language servers).</p>
+<h1>to reproduce</h1>
+<ol>
+<li><p>install uv using <a href="https://pyprojectx.github.io">pyprojectx</a>:</p>
+<pre><code class="language-ps1">Invoke-WebRequest https://github.com/pyprojectx/pyprojectx/releases/latest/download/wrappers.zip -OutFile wrappers.zip; Expand-Archive -Force -Path wrappers.zip -DestinationPath .; Remove-Item -Path wrappers.zip
+./pw --add uv
+</code></pre>
+</li>
+<li><p><code>./pw uv add ruff</code></p>
+</li>
+<li><p><code>./pw uv add basedpyright==1.17.0</code> (i added a workaround in a later release, see comment below)</p>
+</li>
+<li><p>install the ruff and basedpyright vscode extensions</p>
+</li>
+<li><p>set the python interpreter (<kbd>F1</kbd> &gt; &quot;Python: Select Interpreter&quot; &gt; &quot;.venv&quot;)</p>
+</li>
+<li><p>restart vscode (probably not necessary but just in case)</p>
+</li>
+<li><p>click the Output tab in the terminal and select &quot;Ruff&quot; from the dropdown</p>
+<pre><code>2024-08-22 11:34:42.274 [info] Using interpreter: c:\Users\user\project\.venv\Scripts\python.exe
+2024-08-22 11:34:42.274 [error] Error while trying to find the Ruff binary: Error: No pyvenv.cfg file
+
+2024-08-22 11:34:43.149 [info] Falling back to bundled executable: c:\Users\user\.vscode\extensions\charliermarsh.ruff-2024.42.0-win32-x64\bundled\libs\bin\ruff.exe
+</code></pre>
+<p>my venv does include the <code>pyvenv.cfg</code> file so i don't know why that error is occurring:</p>
+<p><img src="https://github.com/user-attachments/assets/44c71233-8dc7-4f20-b4eb-58ae7e3f7b2d" alt="image" /></p>
+</li>
+<li><p>check the basedpyright output:</p>
+<pre><code>[Error - 12:04:17 PM] Server process exited with code 3221225477.
+[Error - 12:04:17 PM] Server initialization failed.
+  Message: Pending response rejected since connection got disposed
+  Code: -32097 
+[Info  - 12:04:17 PM] Connection to server got closed. Server will restart.
+</code></pre>
+</li>
+</ol>
+<h1>environment info</h1>
+<p>windows 11, python 3.12, vscode 1.92.2, uv 0.3.1, ruff 0.6.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 03:35</div>
+            <div class="timeline-body"><p>Thanks, that's really strange. @dhruvmanila, would you have any ideas here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-08-22 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-22 03:42</div>
+            <div class="timeline-body"><p>Interesting, not sure. I'd need to look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-22 03:44</div>
+            <div class="timeline-body"><p>Installing <code>pyprojectx</code> requires a <code>pyproject.toml</code> file. What does that look like? Does it need to be specific to <code>pyprojectx</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-22 03:54</div>
+            <div class="timeline-body"><p>sorry i shouldve updated the issue. pyprojectx is not required to reproduce the issue, i included those steps just in case but a colleague was able to reproduce the issue by installing uv normally.</p>
+<p>i should also mention that i can't reproduce those ruff errors anymore, only the basedpyright errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-22 04:14</div>
+            <div class="timeline-body"><blockquote>
+<p>sorry i shouldve updated the issue. pyprojectx is not required to reproduce the issue, i included those steps just in case but a colleague was able to reproduce the issue by installing uv normally.</p>
+</blockquote>
+<p>So, should the steps be the following?</p>
+<ol>
+<li>Install uv</li>
+<li><code>uv init</code></li>
+<li><code>uv add ruff</code></li>
+<li><code>uv add basedpyright</code></li>
+<li>Install the &quot;basedpyright&quot; VS Code extension, disable Pylance extension</li>
+<li>Open VS Code, select the virtual environment</li>
+</ol>
+<p>It's working fine on MacOS at least, let me (or ask someone) try it on a Windows machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-22 04:25</div>
+            <div class="timeline-body"><p>hmm this is very odd, i can't seem to reproduce the issue anymore. i'll just close this issue for now and i will investigate further and reopen it once i have more info. sorry to waste your time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2024-08-22 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-22 04:40</div>
+            <div class="timeline-body"><p>nevermind it does still happen with those steps, i just forgot to restart vscode so it was using the version of basedpyright bundled with the extension instead of the one in the venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @DetachHead on 2024-08-22 04:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-22 05:31</div>
+            <div class="timeline-body"><p>also reproduced with the <a href="https://pypi.org/project/pyright/">pyright pypi package</a></p>
+<ol>
+<li><code>uv add pyright</code></li>
+<li><code>uv run pyright --version</code> to trigger the wrapper thing to install the npm package (might not be necessary)</li>
+<li>install <a href="https://marketplace.visualstudio.com/items?itemName=llllvvuu.llllvvuu-glspc">generic lsp client</a> (3rd party extension is required because <a href="https://github.com/microsoft/pyright/pull/6644">pyright/pylance doesn't have a way to run the lsp from your python environment</a>)</li>
+<li>add the following to your <code>.vscode/settings.json</code>:<pre><code class="language-json">{
+    &quot;glspc.languageId&quot;: &quot;python&quot;,
+    &quot;glspc.serverCommand&quot;: &quot;.venv\\Scripts\\pyright-langserver.exe&quot;,
+    &quot;glspc.serverCommandArguments&quot;: [
+        &quot;--stdio&quot;
+    ]
+}
+</code></pre>
+</li>
+<li>restart vscode</li>
+<li>open a python file</li>
+<li>go to the Output tab and select &quot;glspc&quot; from the dropdown:<pre><code>starting glspc...
+Server process exited with code 3221225477 and signal null
+Server process exited with code 3221225477 and signal null
+Server process exited with code 3221225477 and signal null
+Server process exited with code 3221225477 and signal null
+Server process exited with code 3221225477 and signal null
+</code></pre>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DetachHead/basedpyright/pulls/613.html">DetachHead/basedpyright#613</a> on 2024-08-24 03:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-24 03:58</div>
+            <div class="timeline-body"><p>so i tried to investigate this further on my end and came to the conclusion that it's something to do with the <code>basedpyright-langserver.exe</code> wrapper binary in <code>.venv/Scripts</code>. after installing basdepyright with uv, replacing the one created by uv with the one created by pip makes it work again.</p>
+<p>i also found that passing <code>shell: true</code> when launching the language server from the vscode extension fixes it. https://github.com/DetachHead/basedpyright/pull/613</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "language servers crash when run from inside venv created by uv" to "pyright language server crashes when run from inside venv created by uv" by @DetachHead on 2024-08-24 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../DetachHead/basedpyright/pulls/1634.html">DetachHead/basedpyright#1634</a> on 2025-11-09 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-11-09 04:17</div>
+            <div class="timeline-body"><p>looks like this was the same issue as #6464 which has been fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2025-11-09 04:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

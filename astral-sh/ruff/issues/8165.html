@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore `S324` if an insecure hash function is called with `kwargs` - astral-sh/ruff #8165</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore `S324` if an insecure hash function is called with `kwargs`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8165">#8165</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-10-24 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-10-24 13:26</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h3>Example code</h3>
+<pre><code class="language-python">import hashlib
+import sys
+
+HASHLIB_KWARGS = (
+    {&quot;usedforsecurity&quot;: False} if sys.version_info &gt;= (3, 9) else {}
+)
+hashlib.md5(**HASHLIB_KWARGS)
+# ^^^^^^^^^
+# S324
+</code></pre>
+<p>Can we ignore <code>S324</code> in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-10-24 13:26</div>
+            <div class="timeline-body"><p>Related to https://github.com/mlflow/mlflow/issues/10106</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-24 16:36</div>
+            <div class="timeline-body"><p>Seems reasonable to me 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-10-24 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-10-24 21:25</div>
+            <div class="timeline-body"><p>This should definitely be well documented though. It wasn't immediately obvious to me why using kwargs makes this secure:</p>
+<blockquote>
+<p>Changed in version 3.9: All hashlib constructors take a keyword-only argument usedforsecurity with default value True. A false value allows the use of insecure and blocked hashing algorithms in restricted environments. False indicates that the hashing algorithm is not used in a security context, e.g. as a non-cryptographic one-way compression function.</p>
+</blockquote>
+<p>Meaning if your dict doesn't include <code>usedforsecurity</code> then it stays default <code>True</code> and will be prevented in certain contexts. <code>usedforsecurity=False</code> assumes that you explicitely &quot;approved&quot; the use of insecure hash. <strong>Unless the dict comes from user/external input</strong>.</p>
+<blockquote>
+<p>Changed in version 3.9</p>
+</blockquote>
+<p>Also meaning it should still raise for Python &lt; 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-24 21:26</div>
+            <div class="timeline-body"><p>I'm mixed on this, I'd only want to allow it if we can statically verify that the <code>**kwargs</code> resolve in this way, so as to avoid introducing false negatives for security-related warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-10-24 23:56</div>
+            <div class="timeline-body"><p>Thanks for the comments! I agree. <code>hashlib.md5(**kwargs)</code> doesn't necessarily mean kwargs has <code>usedforsecurity=False</code>. Closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @harupy on 2023-10-24 23:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

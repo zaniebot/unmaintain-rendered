@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>internal package index OK with pip but NOT OK with UV - astral-sh/uv #13881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>internal package index OK with pip but NOT OK with UV</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13881">#13881</a>
+        opened by <a href="https://github.com/rv2931">@rv2931</a>
+        on 2025-06-06 11:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rv2931">@rv2931</a> on 2025-06-06 11:00</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello
+I have configured PIP to use our internal Nexus Package index
+Si I created a pip conf file:</p>
+<pre><code># .venv/pip.conf
+[global]
+index = https://user:password@mynexus.repository.local/repository/python-group/pypi
+index-url = https://user:password@mynexus.repository.local/repository/python-group/simple
+trusted-host = mynexus.repository.local
+</code></pre>
+<p>With this configuration, <code>pip install pandas</code> works well and install correctly pandas package, the pnexus proxy downloading it from official internet and caching it. So everything works fine as expected</p>
+<p>When configuring uv with equivalent</p>
+<pre><code>[[tool.uv.index]]
+name= &quot;nexus&quot;
+url = &quot;https://user:password@mynexus.repository.local/repository/python-group/simple&quot;
+default = true
+</code></pre>
+<p>Doing the command <code>uv add pandas</code>gives me the error :</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of pandas and your project depends on pandas, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>With verbose;</p>
+<pre><code>DEBUG uv 0.7.11
+DEBUG Found project root: `/myproject`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/myproject`
+DEBUG Reading Python requests from version file at `/myproject/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version satisfies the request: `Python 3.11`
+DEBUG Released lock at `/tmp/uv-b7dc2882d908d0fe.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: test-nexus @ file:///myproject
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.11.11
+DEBUG Solving with target Python version: &gt;=3.11
+DEBUG Adding direct dependency: test-nexus*
+DEBUG Searching for a compatible version of test-nexus @ file:///myproject (*)
+DEBUG Adding direct dependency: pandas*
+DEBUG Found stale response for: https://mynexus.repository.local/repository/python-group/pypi/simple/pandas/
+DEBUG Sending revalidation request for: https://mynexus.repository.local/repository/python-group/pypi/simple/pandas/
+DEBUG Found modified response for: https://mynexus.repository.local/repository/python-group/pypi/simple/pandas/
+DEBUG Unexpected fragment (expected `#sha256=...` or similar) on URL: browse/browse:python-group
+WARN Skipping file for pandas:
+WARN Skipping file for pandas:
+WARN Skipping file for pandas: ..
+DEBUG Searching for a compatible version of pandas (*)
+DEBUG No compatible version found for: pandas
+DEBUG Recording unit propagation conflict of pandas from incompatibility of (test-nexus)
+DEBUG Searching for a compatible version of test-nexus @ file:///myproject (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: myproject
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Removing `uv.lock`
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of pandas and your project depends on pandas, we can conclude that your project's requirements are unsatisfiable.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p>It is quite suprising as the pandas 2.3.0 package is available in the nexus package repository as it was previously downloaded by pip command that was working</p>
+<p>Do I have forget something to configure internal index package repository with UV ?</p>
+<p>Thank you in advance
+RV</p>
+<h3>Platform</h3>
+<p>Windows 10 + WSL Ubuntu</p>
+<h3>Version</h3>
+<p>uv 0.7.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @rv2931 on 2025-06-06 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-06 11:05</div>
+            <div class="timeline-body"><blockquote>
+<p>DEBUG Unexpected fragment (expected <code>#sha256=...</code> or similar) on URL: browse/browse:python-group</p>
+</blockquote>
+<p>uv can't parse the page at https://mynexus.repository.local/repository/python-group/pypi/simple/pandas/, is it possible for you to share the html, or at least a redacted URL around a <code>browse/browse:python-group</code> fragment in it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rv2931">@rv2931</a> on 2025-06-06 11:19</div>
+            <div class="timeline-body"><p>https://mynexus.repository.local/repository/python-group/pypi/simple/pandas/ give me an HTTP 404 error</p>
+<p>in the nexus python-group, I have a list of folders containing</p>
+<ul>
+<li>python-group/simple: that looks to be the pypi root repository. this folder contains all index files for all packages in the cache</li>
+<li>python-group/ : seems to be the root folder of packages. So I can find one folder per package/version/archive.zip</li>
+</ul>
+<p>I tried to set uv url= https://mynexus.repository.local/repository/python-group/pypi/ instead of https://mynexus.repository.local/repository/python-group/pypi/simple and https://mynexus.repository.local/repository/python-group
+but nothing works
+The error is the same <code>Unexpected fragment (expected </code>#sha256=...<code> or similar) on URL: browse/browse:python-group</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rv2931">@rv2931</a> on 2025-06-06 11:23</div>
+            <div class="timeline-body"><p>Oh, my mistake
+it's working
+I think there was a <code>/pypi</code> in the path that souldn't be there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rv2931">@rv2931</a> on 2025-06-06 11:25</div>
+            <div class="timeline-body"><p>SO yes, it was a bad path... Why I didn't use the same as pip ? I don't know
+another bad trick of my chair or my keyboard
+Thank you for answering</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @rv2931 on 2025-06-06 11:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

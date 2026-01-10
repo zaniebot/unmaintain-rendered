@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python interpreter download is a bottleneck  - astral-sh/uv #6212</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python interpreter download is a bottleneck </h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6212">#6212</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-19 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-19 16:49</div>
+            <div class="timeline-body"><p>When performing an uncached install, the majority of the time is spent on waiting for python to download and unpack. This download is a bottleneck, because nothing else happens in parallel. We should parallelize the python download to run in parallel with package downloads and unpacks, while stalling package builds. We have to add the interpreter info for each interpreter we can download to uv (or make it available online) so we start evaluating wheel tags without having a physical interpreter.</p>
+<p>Reproducer:</p>
+<p><a href="https://gist.github.com/konstin/8f1b09131885699c059973f58443463c">pyproject.toml</a>
+<a href="https://gist.github.com/konstin/d028dbb5430a4346bca546c988b847e5">uv.lock</a></p>
+<pre><code class="language-dockerfile">FROM ubuntu:latest
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends curl ca-certificates
+RUN curl -LsSf https://astral.sh/uv/install.sh &gt; /tmp/uv-installer.sh &amp;&amp; sh /tmp/uv-installer.sh &amp;&amp; rm /tmp/uv-installer.sh
+ENV PATH=&quot;/root/.cargo/bin/:$PATH&quot;
+ADD pyproject.toml pyproject.toml
+ADD uv.lock uv.lock
+RUN mkdir -p github_wikidata_bot
+RUN touch github_wikidata_bot/__init__.py &amp;&amp; echo &quot;cache bump&quot;
+RUN uv python install 3.12
+RUN uv sync
+</code></pre>
+<p><code>uv python install 3.12</code> takes 2.5s on my machine, and <code>uv sync</code> takes 1.5s, while only <code>uv sync</code> takes 4s. On a shared server i tried, i get 6.5s for python and 3.5s for the sync. While both use network, disk and io, they are still much faster running in parallel, just like parallel download and unpack for wheels is much faster than sequential wheel install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-08-19 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:52</div>
+            <div class="timeline-body"><p>Oo that sounds cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:52</div>
+            <div class="timeline-body"><p>Though wouldn't people have the <code>uv python install</code> cached in their Docker image and make this optimization irrelevant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-19 17:11</div>
+            <div class="timeline-body"><p>The docker is more for illustration purposes, i'm thinking about any uncached deployment enviroment where you also want to install python, but also the first run on a new machine experience of uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-19 17:13</div>
+            <div class="timeline-body"><p>For docker specifically, i'd recommend, in order:</p>
+<ul>
+<li>Use an image we provide that has python installed</li>
+<li>Run <code>uv python install 3.x</code> in a separate cached step like the <code>apt-get</code> invocations</li>
+<li>Install python through your image's mechanism and have it in a cached layer (make sure build stage and run stage match <em>exactly</em> on their python)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-20 00:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Use an image we provide that has python installed</p>
+</blockquote>
+<p>🤞 https://github.com/astral-sh/uv/pull/6053</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4242.html">astral-sh/uv#4242</a> on 2024-08-22 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16289.html">astral-sh/uv#16289</a> on 2025-10-13 23:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

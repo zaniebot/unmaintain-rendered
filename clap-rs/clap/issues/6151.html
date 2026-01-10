@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_builder builds non-deterministically with Bazel - clap-rs/clap #6151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_builder builds non-deterministically with Bazel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6151">#6151</a>
+        opened by <a href="https://github.com/rejuvenile">@rejuvenile</a>
+        on 2025-10-14 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rejuvenile">@rejuvenile</a> on 2025-10-14 16:04</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.92.0-nightly (f6aa851db 2025-10-07)</p>
+<h3>Clap Version</h3>
+<p>HEAD, 4.5.49</p>
+<h3>Minimal reproducible code</h3>
+<p>cargo build</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code>cd clap/cargo_builder &amp;&amp; cargo build --release
+cd ../../clap2/cargo_builder &amp;&amp; cargo build --release
+cd ../..
+bcomp (or diff) clap/target/release/libclap_builder.rlib clap2/target/release/libclap_builder.rlib
+</code></pre>
+<h3>Actual Behaviour</h3>
+<ul>
+<li>absolute paths to the source tree are embedded in the rlib, even in release mode</li>
+<li>there are at least several hundred other hex differences (some look like padding, perhaps garbage or uninitialized)</li>
+</ul>
+<h3>Expected Behaviour</h3>
+<p>Two cargo builds in different source trees on the same host on the same version result in binary-identical rlibs.</p>
+<h3>Additional Context</h3>
+<p>This causes distributed build, cache, and test systems like Bazel to be less efficient. Because the clap_builder dependency in a binary may be different across hosts, the resulting binary will hash differently and expensive tests may be rerun. No other clap crate has this issue.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @rejuvenile on 2025-10-14 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @rejuvenile on 2025-10-14 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-10-14 16:52</div>
+            <div class="timeline-body"><p>What is it that you saw that is clap specific about this problem rather than being a general cargo reproducibility problem?</p>
+<p>Note that cargo requires extra steps to create reproducible binaries.  There is unstable support for <a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#profile-trim-paths-option"><code>trim-paths</code></a> which simplifies this but even that still has known reproducibility issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rejuvenile">@rejuvenile</a> on 2025-10-14 17:07</div>
+            <div class="timeline-body"><p>Thanks for the quick response! I actually don't build using Cargo. I used Cargo as an example to simplify the repro. I actually build using Bazel and <code>rules_rust</code>. Of the hundred or so dependent crates in Bazel, <code>clap_builder</code> is the only one which doesn't build reproducibly in this setup, which is why I suspect something specific.</p>
+<p>BTW, in my build environment all of the source paths are the same across all hosts, so that's not causing the non-determinism (however, it would cause non-determinism in less hermetic environments). I've attached a binary diff of the two rlib's in the Bazel setup (without source code paths). One can see some structure to the differences.</p>
+<p><img width="2562" height="1114" alt="Image" src="https://github.com/user-attachments/assets/5e74a2fa-3500-4327-ab45-3334244c3a83" /></p>
+<p>Here's most of the cargo built diff:</p>
+<p><img width="2562" height="1114" alt="Image" src="https://github.com/user-attachments/assets/e8287d18-adbe-4434-8d00-f14f95b15995" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-10-14 17:19</div>
+            <div class="timeline-body"><p>Can't think of what would cause this.  This isn't even code that depends on <code>clap_derive</code>  in case that generated code in a non-deterministic way (e.g. using a <code>HashMap</code> which it doesn't).  I did a quick scan of what macros we invoke and I'm not seeing anything.</p>
+<p>This will likely need investigation by someone interested enough and with a reproduction case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2025-10-14 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2025-10-14 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2025-10-14 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rejuvenile">@rejuvenile</a> on 2025-10-14 17:34</div>
+            <div class="timeline-body"><p>On two separate machines with the same source path, cargo delivers deterministic builds. So I think that perhaps all the differences in the cargo version are due to different source paths, and in the Bazel version due to some interaction with <code>rules_rust</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "clap_builder builds non-deterministically" to "clap_builder builds non-deterministically with Bazel" by @rejuvenile on 2025-10-14 18:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

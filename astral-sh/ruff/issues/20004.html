@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B006 doesn’t detect mutable defaults in tuples, generators, and assignment expressions - astral-sh/ruff #20004</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B006 doesn’t detect mutable defaults in tuples, generators, and assignment expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20004">#20004</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-08-20 13:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-20 13:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/mutable-argument-default/">mutable-argument-default (B006)</a> doesn’t detect certain guaranteed-mutable expressions which should be simple to support: tuples containing mutable expressions, generator expressions, and assignment expressions containing mutable expressions. <a href="https://play.ruff.rs/280e1f9b-99c8-4c79-8d27-0e9bbff72f34">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;b006.py &lt;&lt;'# EOF'
+def f(x=([],), y=(y for y in &quot;y&quot;), z=(z := [])):
+    pass
+# EOF
+
+$ ruff --isolated check b006.py --select B006
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.9 (ef422460d 2025-08-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-20 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-21 13:42</div>
+            <div class="timeline-body"><p>I am going to work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @IDrokin117 by @ntBre on 2025-08-21 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-21 14:43</div>
+            <div class="timeline-body"><p>Supporting assignment expressions appears to be challenging for non-obvious reasons. Consider the function</p>
+<pre><code class="language-python">def f(z=(q := [])):
+    print(z)
+</code></pre>
+<p><a href="https://play.ruff.rs/da6feb34-375e-4441-96d8-f6df66e3420c">AST node <code>NamedExpr</code></a> range captures only the inner value <code>q := []</code> instead of <code>(q := [])</code>. That means, if we try to fix the code according to the default procedure, it will introduce a syntax error, because parentheses are ignored</p>
+<pre><code class="language-python">def f(z=(None)): # Parentheses are left
+    if z is None:
+        z = q := [] # Parentheses are missing
+    print(z)
+</code></pre>
+<p>While for other cases it is ok</p>
+<pre><code class="language-python"># Before fix
+def f(z=([])):
+    print(z)
+</code></pre>
+<pre><code class="language-python"># After fix
+def f(z=(None)): # Parentheses left
+    if z is None:
+        z = []
+    print(z)
+</code></pre>
+<p>but for <code>NamedExpr</code> it is not OK, because parentheses are mandatory. I guess parentheses must be part of the range, e.g. <code>NamedExpr(&quot;(q := [])&quot;)</code> or somehow signal about them.</p>
+<p>All in all, I propose the following options:</p>
+<ol>
+<li>Do not add &quot;assignment expressions containing mutable expressions&quot; to this rule.</li>
+<li>Modify the <code>NamedExpr</code> range to include parentheses or introduce a metadata flag.. (not sure about this)</li>
+<li>Add parentheses to the fix when the default value is a <code>NamedExpr</code>, while preserving the original parentheses. Ideally, the original parentheses should be removed since they are semantically bound to the <code>NamedExpr</code>, but given the implementation complexity, I favor leaving them unchanged.</li>
+</ol>
+<pre><code class="language-python">def f(z=(None)):
+    if z is None:
+        z = (q := [])
+    print(z)
+</code></pre>
+<p>@ntBre What you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-21 15:04</div>
+            <div class="timeline-body"><p>Fixing the assignment expression is tricky, but B006 should still be able to detect it without a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-21 15:41</div>
+            <div class="timeline-body"><p>Could we use <a href="https://github.com/astral-sh/ruff/blob/692be72f5aff65bfea504504c54d82112657c98a/crates/ruff_python_ast/src/parenthesize.rs#L60"><code>parenthesized_range</code></a> here? That seems like it could handle both removing and adding parentheses, but I haven't looked at the rule implementation.</p>
+<p>I'm also happy with detecting the issue and not offering a fix if it's too complicated, as @dscorbett suggested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20024.html">astral-sh/ruff#20024</a> on 2025-08-21 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-03 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20851.html">astral-sh/ruff#20851</a> on 2025-10-13 20:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

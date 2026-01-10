@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isolated failures of uv add / uv pip install using private repo - astral-sh/uv #13482</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isolated failures of uv add / uv pip install using private repo</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13482">#13482</a>
+        opened by <a href="https://github.com/mhscott64">@mhscott64</a>
+        on 2025-05-16 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mhscott64">@mhscott64</a> on 2025-05-16 03:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We proxy Pypi in Artifactory.</p>
+<p>Our UV config environment variables:</p>
+<pre><code>  UV_CERT                        C:\Users\***\prog-ca-bundle.crt
+  UV_INDEX                       https://***:***@***.jfrog.io/artifactory/api/pypi/pgr-pypi
+  UV_TRUSTED_HOST                progressive.jfrog.io
+  UV_PYTHON_INSTALL_MIRROR       https://***:***@***.jfrog.io/artifactory/***-github/astral-sh/python-build-standalone/releases/download/
+  UV_INSTALLER_GITHUB_BASE_URL   https://***.jfrog.io/artifactory/pgr-github
+  UV_GITHUB_TOKEN                ***
+  UV_DEFAULT_INDEX               https://***:***@***.jfrog.io/artifactory/api/pypi/pgr-pypi/simple
+</code></pre>
+<p>our PIP config environment variables:</p>
+<pre><code>  PIP_INDEX_URL                  https://://***:***@***.:://***:***@***.@progressive.jfrog.io/artifactory/api/pypi/***-pypi/simple
+  PIP_INDEX                      https://://***:***@***.:://***:***@***.@progressive.jfrog.io/artifactory/api/pypi/***-pypi
+  PIP_TRUSTED_HOST               ://***:***@***..jfrog.io
+  PIP_CERT                       C:\Users\://***:***@***.\***-ca-bundle.crt
+</code></pre>
+<p>version:</p>
+<blockquote>
+<p>PS C:\Users\***\python_work\uv\pytz_test&gt; <strong>uv version</strong>
+<strong><em>uv 0.6.9 (3d9460278 2025-03-20)</em></strong></p>
+</blockquote>
+<p>Attempting to install pytz with uv results in the following error:</p>
+<blockquote>
+<p>PS C:\Users\***\python_work\uv&gt; <strong>uv init pytz_test --python=3.10</strong>
+<strong><em>Initialized project `pytz-test` at `C:\Users\***\python_work\uv\pytz_test`</em></strong>
+PS C:\Users\***\python_work\uv&gt; <strong>cd .\pytz_test\</strong>
+PS C:\Users\***\python_work\uv\pytz_test&gt; <strong>uv add pytz</strong>
+<strong><em>Using CPython 3.10.16</em></strong>
+<strong><em>Creating virtual environment at: .venv</em></strong>
+<strong><em>⠸ pytz-test==0.1.0</em></strong>                                                                                                                                                                                                                    <strong><em>error: Unsupported <code>Content-Type</code> &quot;application/octet-stream&quot; for https://progressive.jfrog.io/artifactory/api/pypi/***-pypi/pytz/. Expected JSON or HTML.</em></strong></p>
+<p>PS C:\Users\***\python_work\uv\pytz_test&gt; <strong>uv pip install pytz</strong>
+<strong><em>⠹ Resolving dependencies...<br />
+error: Unsupported <code>Content-Type</code> &quot;application/octet-stream&quot; for https://progressive.jfrog.io/artifactory/api/pypi/***-pypi/pytz/. Expected JSON or HTML.</em></strong></p>
+</blockquote>
+<p>But it can be installed with pip:</p>
+<blockquote>
+<p>PS C:\Users\***\python_work\uv\pytz_test&gt; <strong>uv add pip</strong>
+<strong><em>Resolved 2 packages in 3.26s</em></strong>
+<strong><em>Prepared 1 package in 2.95s</em></strong>
+<strong><em>Installed 1 package in 84ms</em></strong>
+<strong><em>+ pip==25.1.1</em></strong>
+PS C:\Users\***\python_work\uv\pytz_test&gt; <strong>.\.venv\Scripts\activate</strong></p>
+<p>(pytz-test) PS C:\Users\***\python_work\uv\pytz_test&gt; <strong><em>python -m pip install pytz</em></strong>
+<strong><em>Looking in indexes: https://***:***@***.jfrog.io/artifactory/api/pypi/***-pypi/simple</em></strong>
+<strong><em>Collecting pytz</em></strong>
+<strong><em>Downloading https://***.jfrog.io/artifactory/api/pypi/***-pypi/packages/packages/81/c4/34e93fe5f5429d7570ec1fa436f1986fb1f00c3e0f43a589fe2bbcd22c3f/pytz-2025.2-py2.py3-none-any.whl (509 kB)</em></strong>
+<strong><em>Installing collected packages: pytz</em></strong>
+<strong><em>Successfully installed pytz-2025.2</em></strong></p>
+</blockquote>
+<p>The failure mode is identical on Mac and Windows and has been seen using Python 3.10, 3.11, 3.12</p>
+<h3>Platform</h3>
+<p>Windows 11 x64_86</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20)</p>
+<h3>Python version</h3>
+<p>Python 3.10.16</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mhscott64 on 2025-05-16 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-16 03:25</div>
+            <div class="timeline-body"><p>Unfortunately uv really isn't doing anything special here. We just hit the endpoint with the given credentials. My guess is that Artifactory is doing something strange? But I haven't seen this report before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @konstin on 2025-05-16 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mhscott64">@mhscott64</a> on 2025-05-16 11:27</div>
+            <div class="timeline-body"><p>uv looks like a great tool I'd like to get for us.  If I had the band width, I'd like nothing more than to setup a rust dev env, clone the project, step through the code, identify the failure point, do the same for pip, identify the root cause of the behavior difference, and do a PR; that's just not gonna happen.  Maybe I can find someone else here to do it.
+Thanks for looking at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 11:44</div>
+            <div class="timeline-body"><blockquote>
+<p>error: Unsupported Content-Type &quot;application/octet-stream&quot; for <a href="https://progressive.jfrog.io/artifactory/api/pypi/***-pypi/pytz/">progressive.jfrog.io/artifactory/api/pypi/***-pypi/pytz</a>. Expected JSON or HTML.</p>
+</blockquote>
+<p>If you query this URL manually, with curl and your credentials, can you check what response you get?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a087861">@a087861</a> on 2025-05-16 12:01</div>
+            <div class="timeline-body"><p>I work with @mhscott64 and just attempted to curl with credentials.  I appear to get back a valid html.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 12:35</div>
+            <div class="timeline-body"><p>Just to confirm: Is it the simple HTML format, like a page with lots of <code>&lt;a href=</code> to <code>.whl</code> files, and in curl, do you also see the response type being <code>application/octet-stream</code> instead of <code>text/html</code>? Are you running a reverse proxy or something similar that may change the response type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a087861">@a087861</a> on 2025-05-16 12:43</div>
+            <div class="timeline-body"><p>Ahh, I see what you mean.  Running a curl with creds resulted in an HTML that looked significantly more like a web page than something else.</p>
+<p>If I slightly tweak the url that I curl against to &quot;https://progressive.jfrog.io/artifactory/api/pypi/***-pypi/simple/pytz/&quot;, then it looks like what you describe.</p>
+<p>It almost looks like it's taking our pip_index or it's taking our pip_index_url and removing 'simple' before adding on the package name and thus getting an incorrect response... but that's based off of my very elementary understanding so I could be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 13:04</div>
+            <div class="timeline-body"><p>Can you try replacing</p>
+<pre><code>UV_INDEX                       https://***:***@***.jfrog.io/artifactory/api/pypi/pgr-pypi
+</code></pre>
+<p>with</p>
+<pre><code>UV_INDEX                       https://***:***@***.jfrog.io/artifactory/api/pypi/pgr-pypi/simple
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @konstin on 2025-05-16 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-16 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-05-16 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/a087861">@a087861</a> on 2025-05-16 13:11</div>
+            <div class="timeline-body"><p>That did the trick!</p>
+<p>I did a bit more testing to confirm that all other functionality seems to be working properly. Thus far everything seems to be running as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mhscott64">@mhscott64</a> on 2025-05-22 12:21</div>
+            <div class="timeline-body"><p>This resolves my issue.   Feel free to close.
+Thank you for your outstanding support!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-22 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

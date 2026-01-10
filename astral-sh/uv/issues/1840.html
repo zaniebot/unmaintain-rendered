@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't import rlax library when installed via uv install - astral-sh/uv #1840</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't import rlax library when installed via uv install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1840">#1840</a>
+        opened by <a href="https://github.com/Artur-Galstyan">@Artur-Galstyan</a>
+        on 2024-02-21 22:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Artur-Galstyan">@Artur-Galstyan</a> on 2024-02-21 22:53</div>
+            <div class="timeline-body"><p>Hi there. First off, I'm loving this project!</p>
+<p>Here's the bug and how to reproduce it.</p>
+<ol>
+<li>In an empty folder run <code>uv venv</code>. (I'm using Python 3.11.6, though I don't think that matters here)</li>
+<li>Run <code>source .venv/bin/activate</code></li>
+<li>Run <code>uv pip install rlax</code></li>
+<li>After it's installed, create a file and in it import rlax like so: <code>import rlax</code></li>
+<li>Then get this very strange error</li>
+</ol>
+<details>
+<summary>Toggle me to see the long error </summary>
+<br>
+ImportError                               Traceback (most recent call last)
+Cell In[1], line 3
+      1 import jax.numpy as jnp
+      2 import jax
+----> 3 import rlax
+
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/rlax/__init__.py#line=23">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/rlax/<strong>init</strong>.py:24</a>
+22 from rlax._src.clipping import clip_gradient
+23 from rlax._src.clipping import huber_loss
+---&gt; 24 from rlax._src.distributions import categorical_cross_entropy
+25 from rlax._src.distributions import categorical_importance_sampling_ratios
+26 from rlax._src.distributions import categorical_kl_divergence</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/rlax/_src/distributions.py#line=27">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/rlax/_src/distributions.py:28</a>
+25 import warnings
+27 import chex
+---&gt; 28 import distrax
+29 import jax.numpy as jnp
+31 Array = chex.Array</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/distrax/__init__.py#line=17">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/distrax/<strong>init</strong>.py:18</a>
+15 &quot;&quot;&quot;Distrax: Probability distributions in JAX.&quot;&quot;&quot;
+17 # Bijectors.
+---&gt; 18 from distrax._src.bijectors.bijector import Bijector
+19 from distrax._src.bijectors.bijector import BijectorLike
+20 from distrax._src.bijectors.block import Block</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/distrax/_src/bijectors/bijector.py#line=26">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/distrax/_src/bijectors/bijector.py:27</a>
+23 import jax.numpy as jnp
+24 from tensorflow_probability.substrates import jax as tfp
+---&gt; 27 tfb = tfp.bijectors
+29 Array = chex.Array
+32 class Bijector(jittable.Jittable, metaclass=abc.ABCMeta):</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/lazy_loader.py#line=52">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/lazy_loader.py:53</a>, in LazyLoader.<strong>getattr</strong>(self, item)
+52 def <strong>getattr</strong>(self, item):
+---&gt; 53   module = self._load()
+54   return getattr(module, item)</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/lazy_loader.py#line=39">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/lazy_loader.py:40</a>, in LazyLoader._load(self)
+38   self._on_first_access = None
+39 # Import the target module and insert it into the parent's namespace
+---&gt; 40 module = importlib.import_module(self.<strong>name</strong>)
+41 if self._parent_module_globals is not None:
+42   self._parent_module_globals[self._local_name] = module</p>
+<p>File <a href="http://localhost:8888/~/.pyenv/versions/3.11.6/lib/python3.11/importlib/__init__.py#line=125">~/.pyenv/versions/3.11.6/lib/python3.11/importlib/<strong>init</strong>.py:126</a>, in import_module(name, package)
+124             break
+125         level += 1
+--&gt; 126 return _bootstrap._gcd_import(name[level:], package, level)</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/substrates/jax/__init__.py#line=40">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/substrates/jax/<strong>init</strong>.py:41</a>
+39 from tensorflow_probability.python.version import <strong>version</strong>
+40 # from tensorflow_probability.substrates.jax.google import staging  # DisableOnExport  # pylint:disable=line-too-long
+---&gt; 41 from tensorflow_probability.substrates.jax import bijectors
+42 from tensorflow_probability.substrates.jax import distributions
+43 from tensorflow_probability.substrates.jax import experimental</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/substrates/jax/bijectors/__init__.py#line=18">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/substrates/jax/bijectors/<strong>init</strong>.py:19</a>
+15 &quot;&quot;&quot;Bijective transformations.&quot;&quot;&quot;
+17 # pylint: disable=unused-import,wildcard-import,line-too-long,g-importing-member
+---&gt; 19 from tensorflow_probability.substrates.jax.bijectors.absolute_value import AbsoluteValue
+20 from tensorflow_probability.substrates.jax.bijectors.ascending import Ascending
+21 # from tensorflow_probability.substrates.jax.bijectors.batch_normalization import BatchNormalization</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/substrates/jax/bijectors/absolute_value.py#line=16">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/substrates/jax/bijectors/absolute_value.py:17</a>
+1 # Copyright 2018 The TensorFlow Probability Authors.
+2 #
+3 # Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+(...)
+13 # limitations under the License.
+14 # ============================================================================
+15 &quot;&quot;&quot;AbsoluteValue bijector.&quot;&quot;&quot;
+---&gt; 17 from tensorflow_probability.python.internal.backend.jax.compat import v2 as tf
+19 from tensorflow_probability.substrates.jax.bijectors import bijector
+20 from tensorflow_probability.substrates.jax.internal import assert_util</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/__init__.py#line=17">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/<strong>init</strong>.py:18</a>
+15 &quot;&quot;&quot;Experimental Numpy backend.&quot;&quot;&quot;
+17 from tensorflow_probability.python.internal.backend.jax import <strong>internal</strong>
+---&gt; 18 from tensorflow_probability.python.internal.backend.jax import bitwise
+19 from tensorflow_probability.python.internal.backend.jax import compat
+20 from tensorflow_probability.python.internal.backend.jax import config</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/bitwise.py#line=18">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/bitwise.py:19</a>
+15 &quot;&quot;&quot;Numpy bitwise ops.&quot;&quot;&quot;
+17 import numpy as onp; import jax.numpy as np
+---&gt; 19 from tensorflow_probability.python.internal.backend.jax import _utils as utils
+21 <strong>all</strong> = [
+22     'bitwise_xor',
+23     'left_shift',
+24 ]
+27 bitwise_xor = utils.copy_docstring(
+28     'tf.bitwise.bitwise_xor',
+29     lambda x, y, name=None: np.bitwise_xor(x, y))  # pylint: disable=unused-argument</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/_utils.py#line=21">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/_utils.py:22</a>
+19 import types
+21 import numpy as onp; import jax.numpy as np
+---&gt; 22 from tensorflow_probability.python.internal.backend.jax import nest
+24 try:
+25   from tensorflow.python.ops import array_ops  # pylint: disable=g-direct-tensorflow-import,g-import-not-at-top,unused-import</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/nest.py#line=29">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tensorflow_probability/python/internal/backend/jax/nest.py:30</a>
+28 from collections import abc as collections_abc
+29 import types
+---&gt; 30 import tree as dm_tree
+32 # pylint: disable=g-import-not-at-top
+33 try:</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tree/__init__.py#line=22">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tree/<strong>init</strong>.py:23</a>
+20 import sys
+21 from typing import Mapping, Sequence, Text, TypeVar, Union
+---&gt; 23 from .sequence import _is_attrs
+24 from .sequence import _is_namedtuple
+25 from .sequence import _sequence_like</p>
+<p>File <a href="http://localhost:8888/~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tree/sequence.py#line=18">~/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tree/sequence.py:19</a>
+17 from collections import abc as collections_abc
+18 import types
+---&gt; 19 from tree import _tree
+21 # pylint: disable=g-import-not-at-top
+22 try:</p>
+<p>ImportError: dlopen(/Users/arturgalstyan/Workspace/jaxRL/.venv/lib/python3.11/site-packages/tree/_tree.cpython-311-darwin.so, 0x0002): symbol not found in flat namespace '__ZN4absl12lts_2021032416strings_internal9CatPiecesESt16initializer_listINS0_11string_viewEE'</p>
+</details>
+
+<p>If you run the exact same steps - without <code>uv</code> of course and using the vanilla <code>pip</code> experience, then this error does not happen!</p>
+<p>Edit: <a href="https://github.com/google-deepmind/rlax/tree/master">Link to the rlax package in question</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-21 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Artur-Galstyan">@Artur-Galstyan</a> on 2024-02-21 22:56</div>
+            <div class="timeline-body"><p>Probably/maybe relevant: I'm on a Mac!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 22:59</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-21 23:35</div>
+            <div class="timeline-body"><p>I was sort of able to repro (got a different error, but pip worked) when using arm64 Python on macOS. I think there's something incorrect about uv's handling of arm64 vs x86_64 deps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 00:06</div>
+            <div class="timeline-body"><p>Interesting, will take a look... Perhaps we have a bug in our tags somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 00:52</div>
+            <div class="timeline-body"><p>It looks like we're using the universal wheel for <code>dm-tree</code>, while pip is using the ARM wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-22 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1843.html">astral-sh/uv#1843</a> on 2024-02-22 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 05:00</div>
+            <div class="timeline-body"><p>Should be fixed in v0.1.7 (out now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Artur-Galstyan">@Artur-Galstyan</a> on 2024-02-22 07:05</div>
+            <div class="timeline-body"><p>Absolutely amazing! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Artur-Galstyan">@Artur-Galstyan</a> on 2024-02-24 09:09</div>
+            <div class="timeline-body"><p>@charliermarsh I think we might have to reopen this issue :(</p>
+<p>I've tested it once again on uv 0.10 and I still get the same error</p>
+<details>
+<summary> Click me to show the error </summary>
+<code>
+➜  testing_ground1 uv venv
+Using Python 3.11.6 interpreter at /Users/arturgalstyan/.pyenv/versions/3.11.6/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+➜  testing_ground1 source .venv/bin/activate
+(testing_ground1) ➜  testing_ground1 uv pip install rlax
+Resolved 19 packages in 93ms
+Installed 19 packages in 81ms
+ + absl-py==2.1.0
+ + chex==0.1.85
+ + cloudpickle==3.0.0
+ + decorator==5.1.1
+ + distrax==0.1.5
+ + dm-env==1.6
+ + dm-tree==0.1.8
+ + gast==0.5.4
+ + jax==0.4.24
+ + jaxlib==0.4.24
+ + ml-dtypes==0.3.2
+ + numpy==1.26.4
+ + opt-einsum==3.3.0
+ + rlax==0.1.6
+ + scipy==1.12.0
+ + six==1.16.0
+ + tensorflow-probability==0.23.0
+ + toolz==0.12.1
+ + typing-extensions==4.9.0
+(testing_ground1) ➜  testing_ground1 python3 test.py 
+Traceback (most recent call last):
+  File "/Users/arturgalstyan/Workspace/testing_ground1/test.py", line 1, in <module>
+    import rlax
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/rlax/__init__.py", line 24, 
+in <module>
+    from rlax._src.distributions import categorical_cross_entropy
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/rlax/_src/distributions.py",
+ line 28, in <module>
+    import distrax
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/distrax/__init__.py", line 1
+8, in <module>
+    from distrax._src.bijectors.bijector import Bijector
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/distrax/_src/bijectors/bijec
+tor.py", line 27, in <module>
+    tfb = tfp.bijectors
+          ^^^^^^^^^^^^^
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/pytho
+n/internal/lazy_loader.py", line 53, in __getattr__
+    module = self._load()
+             ^^^^^^^^^^^^
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/pytho
+n/internal/lazy_loader.py", line 40, in _load
+    module = importlib.import_module(self.__name__)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/arturgalstyan/.pyenv/versions/3.11.6/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/subst
+rates/jax/__init__.py", line 41, in <module>
+    from tensorflow_probability.substrates.jax import bijectors
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/subst
+rates/jax/bijectors/__init__.py", line 19, in <module>
+    from tensorflow_probability.substrates.jax.bijectors.absolute_value import AbsoluteValue
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/subst
+rates/jax/bijectors/absolute_value.py", line 17, in <module>
+    from tensorflow_probability.python.internal.backend.jax.compat import v2 as tf
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/pytho
+n/internal/backend/jax/__init__.py", line 18, in <module>
+    from tensorflow_probability.python.internal.backend.jax import bitwise
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/pytho
+n/internal/backend/jax/bitwise.py", line 19, in <module>
+    from tensorflow_probability.python.internal.backend.jax import _utils as utils
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/pytho
+n/internal/backend/jax/_utils.py", line 22, in <module>
+    from tensorflow_probability.python.internal.backend.jax import nest
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tensorflow_probability/pytho
+n/internal/backend/jax/nest.py", line 30, in <module>
+    import tree as dm_tree
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tree/__init__.py", line 23, 
+in <module>
+    from .sequence import _is_attrs
+  File "/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tree/sequence.py", line 19, 
+in <module>
+    from tree import _tree
+ImportError: dlopen(/Users/arturgalstyan/Workspace/testing_ground1/.venv/lib/python3.11/site-packages/tree/_tree.cpyth
+on-311-darwin.so, 0x0002): symbol not found in flat namespace '__ZN4absl12lts_2021032416strings_internal9CatPiecesESt1
+6initializer_listINS0_11string_viewEE'
+(testing_ground1) ➜  testing_ground1 uv --version
+uv 0.1.10
+</code>
+</details>
+
+<p><code>test.py</code> simply imports <code>rlax</code> and does nothing else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-24 11:50</div>
+            <div class="timeline-body"><p>Can you try running “uv cache clean” beforehand? Otherwise, uv will contain to use the universal wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Artur-Galstyan">@Artur-Galstyan</a> on 2024-02-24 13:31</div>
+            <div class="timeline-body"><p>Indeed, that did the trick! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2326.html">astral-sh/uv#2326</a> on 2024-03-10 05:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

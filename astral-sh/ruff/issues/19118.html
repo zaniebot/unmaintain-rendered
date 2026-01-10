@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICN001 import aliases should be normalized before checking against `__debug__` - astral-sh/ruff #19118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ICN001 import aliases should be normalized before checking against `__debug__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19118">#19118</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-07-03 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-03 12:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ruff should check that no alias in <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases"><code>lint.flake8-import-conventions.aliases</code></a> or <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_extend-aliases"><code>lint.flake8-import-conventions.extend-aliases</code></a> normalizes to <code>__debug__</code> under NFKC. Ruff currently only checks that no alias equals <code>__debug__</code> exactly, letting the fix for <a href="https://docs.astral.sh/ruff/rules/unconventional-import-alias/"><code>unconventional-import-alias</code> (ICN001)</a> introduce a syntax error.</p>
+<p><a href="https://play.ruff.rs/2c5a867f-3558-406e-ac12-08ca893b72ff">Playground</a></p>
+<pre><code class="language-console">$ cat &gt;icn001.py &lt;&lt;'# EOF'
+import collections
+from collections import abc
+# EOF
+
+$ ruff --isolated check --config 'lint.flake8-import-conventions.aliases = {&quot;collections&quot; = &quot;_﹏𝘥𝘦𝘣𝘶𝘨﹏﹏&quot;}' --config 'lint.flake8-import-conventions.extend-aliases = {&quot;collections.abc&quot; = &quot;_﹍𝔡𝔢𝔟𝔲𝔤﹍﹍&quot;}' icn001.py --select ICN001 --unsafe-fixes --fix
+
+$ ruff --isolated check --config 'lint.flake8-import-conventions.aliases = {&quot;collections&quot; = &quot;_﹏𝘥𝘦𝘣𝘶𝘨﹏﹏&quot;}' --config 'lint.flake8-import-conventions.extend-aliases = {&quot;collections.abc&quot; = &quot;_﹍𝔡𝔢𝔟𝔲𝔤﹍﹍&quot;}' icn001.py --select ICN001 --unsafe-fixes --fix --output-format concise
+icn001.py:1:23: SyntaxError: cannot assign to `__debug__`
+icn001.py:2:32: SyntaxError: cannot assign to `__debug__`
+Found 4 errors (2 fixed, 2 remaining).
+
+$ cat icn001.py
+import collections as _﹏𝘥𝘦𝘣𝘶𝘨﹏﹏
+from collections import abc as _﹍𝔡𝔢𝔟𝔲𝔤﹍﹍
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.1 (32c54189c 2025-06-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-03 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-03 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19411.html">astral-sh/ruff#19411</a> on 2025-07-17 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-06 06:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

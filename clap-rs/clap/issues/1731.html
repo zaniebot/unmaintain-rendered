@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pick last of multiple, conflicting occurrences - clap-rs/clap #1731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pick last of multiple, conflicting occurrences</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1731">#1731</a>
+        opened by <a href="https://github.com/wookietreiber">@wookietreiber</a>
+        on 2020-03-08 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wookietreiber">@wookietreiber</a> on 2020-03-08 12:26</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>Consider a <code>remove</code> app with the two flags <code>--interactive</code> and <code>--non-interactive</code>.</p>
+<p>As with <code>rm</code>, it's useful to to have <code>alias remove='remove --interactive'</code> in your shell to avoid accidents. However, in some situations, overriding this default interactive behavior with <code>remove --non-interactive</code> is useful when you know what you're doing. The shell would expand the alias to <code>remove --interactive --non-interactive</code>.</p>
+<p>Using <strong>clap</strong> I'm assuming an <code>ArgGroup</code> would be the way to go. However, there is no easy way (that I know of) to allow multiple, conflicting occurrences, while you're only interested in the <strong>last</strong> occurrence.</p>
+<h3>Describe the solution you'd like</h3>
+<pre><code class="language-rust">let interactive = Arg::with_name(&quot;interactive&quot;);
+let non_interactive = Arg::with_name(&quot;non-interactive&quot;);
+
+let interactivity = ArgGroup::with_name(&quot;interactivity&quot;)
+    .args(&amp;[&quot;interactive&quot;, &quot;non-interactive&quot;])
+    .multiple(true)
+    .required(false);
+
+let app = App::new(&quot;remove&quot;)
+    .arg(interactive)
+    .arg(non_interactive)
+    .group(interactivity);
+
+let args = app.get_matches();
+
+let interactive: bool = args.last_variant_of(&quot;interactivity&quot;, |variant| match variant {
+    &quot;interactive&quot; =&gt; true,
+    &quot;non-interactive&quot; =&gt; false,
+    _ =&gt; false,
+});
+</code></pre>
+<p>The function would have a signature like this:</p>
+<pre><code class="language-rust">impl ArgMatches {
+    fn last_variant_of&lt;T, F&gt;(&amp;self, group: &amp;str f: F) -&gt; T
+    where
+        F: Fn(&amp;str) -&gt; T,
+    {
+        unimplemented!()
+    }
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p>Nasty workaround without group and with manually inspecting indices the likes of:</p>
+<pre><code class="language-rust">let interactive = Arg::with_name(&quot;interactive&quot;)
+    .takes_value(false)
+    .multiple(true);
+
+let non_interactive = Arg::with_name(&quot;non-interactive&quot;)
+    .takes_value(false)
+    .multiple(true);
+
+let app = App::new(&quot;remove&quot;)
+    .arg(interactive)
+    .arg(non_interactive);
+
+let args = app.get_matches();
+
+let interactive_last_index = args
+    .indices_of(&quot;interactive&quot;)
+    .map(|indices| indices.last())
+    .flatten();
+
+let non_interactive_last_index = args
+    .indices_of(&quot;non-interactive&quot;)
+    .map(|indices| indices.last())
+    .flatten();
+
+let interactivity = match (interactive_last_index, non_interactive_last_index) {
+    (Some(interactive), Some(non_interactive)) =&gt; {
+        if interactive &gt; non_interactive {
+            true
+        } else {
+            false
+        }
+    }
+    (Some(_), None) =&gt; true,
+    (None, Some(_)) =&gt; false,
+    (None, None) =&gt; false,
+};
+</code></pre>
+<h3>Additional context</h3>
+<p>Other applicable use cases are <code>--quiet</code> vs <code>--verbose</code> or different output modes based on an <code>enum</code>. I guess <code>ArgGroup</code> is not strictly necessary for this feature, e.g. with <code>--output-mode variant-of-enum</code> and <code>matches.last_variant_of(&quot;output-mode&quot;).unwrap_or_default()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @wookietreiber on 2020-03-08 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> added by @pksunkara on 2020-03-08 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> added by @pksunkara on 2020-03-08 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @pksunkara on 2020-03-08 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-08 13:19</div>
+            <div class="timeline-body"><p>(Wow, it's apparently the first time an OP decided to <em>actually</em> fill out our issue template. Kudos for that!)</p>
+<p><code>--interactive</code> and <code>--no-interactive</code> are not actually <em>conflicting</em> but rather <em>overriding</em>. Conflicting options are options that cannot appear together, and yours very well can. Overriding is when one option cancels out some other option; in your case, <code>--interactive</code> and <code>--non-interactive</code> simply override each other.</p>
+<p><code>clap</code> already supports this use case through <code>App::overrides_with</code>:</p>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn build_app() -&gt; App&lt;'static&gt; {
+    App::new(&quot;prog&quot;)
+        .arg(Arg::with_name(&quot;interactive&quot;)
+            .long(&quot;--interactive&quot;)
+            .overrides_with(&quot;non-interactive&quot;))
+        .arg(Arg::with_name(&quot;non-interactive&quot;)
+            .long(&quot;--non-interactive&quot;)
+            .overrides_with(&quot;interactive&quot;))
+}
+
+fn main() {
+    let res = build_app()
+        .get_matches_from(&amp;[&quot;test&quot;, &quot;--interactive&quot;, &quot;--non-interactive&quot;]);
+
+    assert!(res.is_present(&quot;non-interactive&quot;));
+    assert!(!res.is_present(&quot;interactive&quot;));
+
+    let res = build_app()
+        .get_matches_from(&amp;[&quot;test&quot;, &quot;--non-interactive&quot;, &quot;--interactive&quot;]);
+
+    assert!(!res.is_present(&quot;non-interactive&quot;));
+    assert!(res.is_present(&quot;interactive&quot;));
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: settings</span> removed by @pksunkara on 2020-03-08 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new setting</span> removed by @pksunkara on 2020-03-08 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-03-11 10:07</div>
+            <div class="timeline-body"><p>Closing due to inactivity and the fact it's apparently solved; feel free to reopen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @CreepySkeleton on 2020-03-11 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wookietreiber">@wookietreiber</a> on 2020-03-11 13:38</div>
+            <div class="timeline-body"><p>@CreepySkeleton Thanks for letting me know about <code>overrides_with</code>, I totally missed that! I will take the time to read all the functions on <code>Arg</code> :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:08 UTC
+    </footer>
+</body>
+</html>

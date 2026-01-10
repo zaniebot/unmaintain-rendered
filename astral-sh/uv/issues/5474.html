@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installed package versions depend upon argument order in uv pip install - astral-sh/uv #5474</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installed package versions depend upon argument order in uv pip install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5474">#5474</a>
+        opened by <a href="https://github.com/larsevj">@larsevj</a>
+        on 2024-07-26 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/larsevj">@larsevj</a> on 2024-07-26 10:55</div>
+            <div class="timeline-body"><p>Hi, I noticed when installing a package that the versions installed using <code>uv pip install</code> depends upon the order of the packages given to uv whereas when using pip the versions installed are consistent. For instance running
+<code>uv pip install importlib_metadata pysnyk</code> produces the following environment:</p>
+<pre><code>Package            Version
+------------------ --------
+certifi            2024.7.4
+charset-normalizer 3.3.2
+idna               3.7
+importlib-metadata 8.2.0
+mashumaro          1.24
+msgpack            1.0.8
+poetry-version     0.1.5
+pysnyk             0.3.1
+pyyaml             6.0.1
+requests           2.32.3
+tomlkit            0.5.11
+typing-extensions  4.12.2
+urllib3            2.2.2
+zipp               3.19.2
+
+</code></pre>
+<p>Whereas if you run <code>uv pip install pysnyk importlib_metadata</code> you get the following environment:</p>
+<pre><code>Package            Version
+------------------ --------
+certifi            2024.7.4
+charset-normalizer 3.3.2
+decorator          5.1.1
+deprecation        2.1.0
+idna               3.7
+importlib-metadata 6.11.0
+mashumaro          3.13.1
+packaging          24.1
+py                 1.11.0
+pysnyk             0.9.19
+requests           2.32.3
+retry              0.9.2
+typing-extensions  4.12.2
+urllib3            2.2.2
+zipp               3.19.2
+</code></pre>
+<p>Pip seems to always produce the last result no matter the order of the packages, and from reading the docs I would expect <code>uv pip install</code> to produce the same result as pip here consistently?</p>
+<p>The examples above were produced with python3.11 and uv 0.2.29.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 14:09</div>
+            <div class="timeline-body"><p>I think this is reasonable. There are many equally-valid resolutions given that set of constraints, and so we have to prioritize packages in some order when solving. Modulo everything else, we prioritize in the order in which they were provided by the user. So, notice that in the first resolution, you have a newer <code>importlib-metadata</code> but an older <code>pysnyk</code>, whereas in the second, you have an older <code>importlib-metadata</code> but a newer <code>pysnyk</code>.</p>
+<p>The following would <em>not</em> be ok though:</p>
+<ol>
+<li>If we produced a resolution in which <em>both</em> <code>pysnyk</code> and <code>importlib-metadata</code> were at lower versions than in some other ordering.</li>
+<li>If we produced inconsistent resolutions for the same ordering of dependencies when run multiple times.</li>
+</ol>
+<p>But otherwise, I think this is ok. If one of the two outputs is desired, it should be encoded in the dependency constraints (e.g., <code>pysynk &gt;= 0.9.0</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-07-26 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/larsevj">@larsevj</a> on 2024-07-26 15:22</div>
+            <div class="timeline-body"><p>The difference between the two results above as I see it is that <code>pysnyk</code> depends upon <code>importlib-metadata</code> and not the other way around.
+If I understood the resolution strategy correctly, if you have for instance a package Y that depends upon numpy and has pinned it to <code>numpy&lt;2</code>.  Then if you do <code>uv pip install numpy Y</code> (or lists numpy before package Y in you requirements file), then <code>uv</code> will install the latest numpy version <code>2.0.1</code> and then it will find a version of Y that does not have numpy pinned, which is propably a version released before the announcement of the numpy 2 release, so it will most certainly not work with numpy 2?
+Maybe I am missing something here, but it seems to me like this has the potential of creating environments with incompatible versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 17:34</div>
+            <div class="timeline-body"><p>Yes, that's possible and would be correct behavior. There's a good chance that pip would do exactly the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 17:35</div>
+            <div class="timeline-body"><p>We can't invent constraints that don't exist. Who knows, the inverse order could be equally problematic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/larsevj">@larsevj</a> on 2024-07-26 19:27</div>
+            <div class="timeline-body"><p>So far pip has done the same thing consistently on the test cases I have tried, but maybe I just have not found the proper corner case.
+The thing that surprises me the most about the examples above is the fact that a package that has no dependencies itself, (e.g. numpy) will if placed properly &quot;determine&quot; the version of the package that depends upon it. I would have thought that the opposite would always be the case in simple cases like this. That you start resolving from the highest version of the package that has the other packages as dependencies.
+I guess the output I would have expected might be similar to the one uv would have produced if you did a reverse topological sort on the packages before passing them to uv (at least in these simple cases). Or since this is a situation that happens when you explicitly specify a package in your requirements that is a dependency of some of the other packages, I would expect the same result as if I had not specified the package explicitly in the requirements file.
+But this might not be reasonable, and I might have to go and read up on how dependency resolution algorithms work.
+Anyway since this seems like it is intended from <code>uv</code> side, you can probably close the issue, and I thank you for giving some answers to my question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-29 08:16</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understood the resolution strategy correctly, if you have for instance a package Y that depends upon numpy and has pinned it to numpy&lt;2. Then if you do uv pip install numpy Y (or lists numpy before package Y in you requirements file), then uv will install the latest numpy version 2.0.1 and then it will find a version of Y that does not have numpy pinned, which is propably a version released before the announcement of the numpy 2 release, so it will most certainly not work with numpy 2?</p>
+</blockquote>
+<p>As a dependency resolution algorithm, we need to trust the packages that their metadata is correct (with the escape hatches of constraints and overrides), so when a package adds a new constraint, we have to assume that the new release has become incompatible. When a package does not provide upper bounds, we have to assume it's compatible with all versions, we have no means to figure out the actual bound in uv.</p>
+<blockquote>
+<p>The thing that surprises me the most about the examples above is the fact that a package that has no dependencies itself, (e.g. numpy) will if placed properly &quot;determine&quot; the version of the package that depends upon it. I would have thought that the opposite would always be the case in simple cases like this. That you start resolving from the highest version of the package that has the other packages as dependencies.</p>
+</blockquote>
+<p>While this is possible algorithmically, it would be prohibitively expensive in uv's case. The by far slowest part is fetching metadata (even when we just read it from the cache), so we make the decision which package to prioritize without metadata. Another aspect is that the number of dependencies can change between releases, so we'd need to come up with a reliable, robust topological prioritization. Our current rules are using tighter specifiers first (<code>numpy==...</code> before <code>torch&gt;=...</code>), which helps trying fewer wrong versions, and otherwise apply them in the order we first saw a package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Enayaaa">@Enayaaa</a> on 2024-07-30 09:11</div>
+            <div class="timeline-body"><p>I recently had a quite confusing problem related to this. I don't think I understand why the resolver installs the version it does.</p>
+<p><strong>requirements.txt</strong>:</p>
+<pre><code class="language-txt">sphinx
+sphinx_rtd_theme
+</code></pre>
+<p><strong>environment</strong>:</p>
+<pre><code>Package                       Version
+----------------------------- --------
+alabaster                     1.0.0
+babel                         2.15.0
+certifi                       2024.7.4
+charset-normalizer            3.3.2
+docutils                      0.21.2
+idna                          3.7
+imagesize                     1.4.1
+jinja2                        3.1.4
+markupsafe                    2.1.5
+packaging                     24.1
+pygments                      2.18.0
+requests                      2.32.3
+snowballstemmer               2.2.0
+sphinx                        8.0.2
+sphinx-rtd-theme              0.5.1
+sphinxcontrib-applehelp       2.0.0
+sphinxcontrib-devhelp         2.0.0
+sphinxcontrib-htmlhelp        2.1.0
+sphinxcontrib-jsmath          1.0.1
+sphinxcontrib-qthelp          2.0.0
+sphinxcontrib-serializinghtml 2.0.0
+tomli                         2.0.1
+urllib3                       2.2.2
+</code></pre>
+<p><strong>requirements.txt</strong>:</p>
+<pre><code class="language-txt">sphinx_rtd_theme
+sphinx
+</code></pre>
+<p><strong>environment:</strong></p>
+<pre><code>Package                       Version
+----------------------------- --------
+alabaster                     0.7.16
+babel                         2.15.0
+certifi                       2024.7.4
+charset-normalizer            3.3.2
+docutils                      0.20.1
+idna                          3.7
+imagesize                     1.4.1
+jinja2                        3.1.4
+markupsafe                    2.1.5
+packaging                     24.1
+pygments                      2.18.0
+requests                      2.32.3
+snowballstemmer               2.2.0
+sphinx                        7.4.7
+sphinx-rtd-theme              2.0.0
+sphinxcontrib-applehelp       2.0.0
+sphinxcontrib-devhelp         2.0.0
+sphinxcontrib-htmlhelp        2.1.0
+sphinxcontrib-jquery          4.1
+sphinxcontrib-jsmath          1.0.1
+sphinxcontrib-qthelp          2.0.0
+sphinxcontrib-serializinghtml 2.0.0
+tomli                         2.0.1
+urllib3                       2.2.2
+</code></pre>
+<p>I guess I can omit listing <code>sphinx</code> here since <code>sphinx_rtd_theme</code> already requires <code>sphinx</code>, but what would be the rule of thumb here for properly listing your deps in order? Is it the package at the top of the dependency tree first, in this case <code>sphinx_rtd_theme</code>?</p>
+<p>Does anybody know what <code>pip</code> would do here, since order does not seem to matter with pip?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-30 11:41</div>
+            <div class="timeline-body"><p>We have <code>sphinx-rtd-theme==2.0.0: sphinx&gt;=5, &lt;8</code>, so a resolver has to make a decision whether to pick the highest version of the theme, or the latest version of sphinx. From a resolver's perspective, both options are equally valid, while i'd expect you want the newest theme version with sphinx 7. It seems that pip does this choice in a different order than uv, where uv considers the order in your input file, pip doesn't. Your best path moving forward is probably adding lower bounds for the theme and for sphinx, this will make any resolver produce the result you want.</p>
+<p>From a pubgrub perspective, this is an interesting problem: Pubgrub works so that we first select a package, and then try all versions for that package. That means that we select either sphinx or sphinx-rtd-theme before we know that there is a sphinx-rtd-theme -&gt; sphinx dep we want to consider. What we'd need to do to generate the desirable solution and this and the original case is: We have picked sphinx, and we have found a compatible version of sphinx. We next select sphinx-rtd-theme, and try the first version of sphinx-rtd-theme. We see a dep onto <code>sphinx</code> that is incompatible. We would now have to switch prioritization, lock in that version of sphinx-rtd-theme, remove the selection of sphinx from the partial solution (something that pubgrub doesn't support atm) and start iterating over versions of sphinx instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5796.html">astral-sh/uv#5796</a> on 2024-08-05 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6209.html">astral-sh/uv#6209</a> on 2024-08-19 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6211.html">astral-sh/uv#6211</a> on 2024-08-19 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:53</div>
+            <div class="timeline-body"><p>Discussion welcome to continue here — just closing as I've documented this now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7575.html">astral-sh/uv#7575</a> on 2024-09-20 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../HarrisonKramer/optiland/pulls/305.html">HarrisonKramer/optiland#305</a> on 2025-09-04 07:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

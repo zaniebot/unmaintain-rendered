@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uv command to show the path of the current enviroment - astral-sh/uv #13417</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Uv command to show the path of the current enviroment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13417">#13417</a>
+        opened by <a href="https://github.com/infused-kim">@infused-kim</a>
+        on 2025-05-12 21:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/infused-kim">@infused-kim</a> on 2025-05-12 21:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>first of all, thank you so much for creating such an incredible piece of software.</p>
+<p>I noticed that uv is very good at finding the right venv. I can execute <code>uv run xxx</code>  in sub-directories and it will correctly find the right venv.</p>
+<p>Would it be possible to expose that path as a command or flag?</p>
+<p>My use-case is that I would like to create a fish shell plugin that auto-activates and de-activates the venv on cd.</p>
+<p>I am able to achieve it with: <code>env -u VIRTUAL_ENV uv run python -c &quot;import sys; print(sys.prefix)&quot;</code></p>
+<p>But it has the downside that it has the overhead of executing python and since I am using <code>uv run</code>, it sometimes syncs the project and creates a delay.</p>
+<p>It would be better if I could use something like <code>uv venv --print-path</code> that only discovers the venv and prints it.</p>
+<p>Of course, there are already several fish plugins that attempt to auto-activate the venv, but they all have different logic of how to find the venv dir. Some only look at the directory that was cded into, some traverse the path, some look for the git repo and check the root, etc.</p>
+<p>But many don't consider all edge cases or are inconsistent to how uv discovers the venv.</p>
+<p>It would be great to be able to use the same logic as uv.</p>
+<p>Thank you for your consideration.</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @infused-kim on 2025-05-12 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-12 22:17</div>
+            <div class="timeline-body"><p>I think this would be covered by a JSON output format for <code>uv python find</code>. You <em>could</em> infer it by just going up two directories and testing for the existence of a <code>pyvenv.cfg</code> for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-12 22:19</div>
+            <div class="timeline-body"><p>e.g.</p>
+<pre><code>❯ test -f $(dirname $(dirname $(uv python find)))/pyvenv.cfg
+❯ echo $?
+1
+❯ uv venv
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+❯ test -f $(dirname $(dirname $(uv python find)))/pyvenv.cfg
+❯ echo $?
+0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/infused-kim">@infused-kim</a> on 2025-05-13 02:48</div>
+            <div class="timeline-body"><p>Thank you so much @zanieb. <code>uv python find</code> works perfectly and is much faster than my <code>uv run</code> method.</p>
+<p>I'll test it for a few days and will then publish a fish plugin, but for now in case anyone wants the same...</p>
+<pre><code class="language-fish"># Activate the venv when PWD changes
+function _uv_auto_env_event_on_cd --on-variable PWD -d &quot;uv-auto-env function to activate the venv when PWD changes&quot;
+    _uv_auto_env_activate_with_checks
+end
+
+# Activate the venv when the shell loads
+function _uv_auto_env_event_on_prompt --on-event fish_prompt -d &quot;uv-auto-env function to activate the venv when the shell loads&quot;
+    if not set -q _uv_auto_env_initialized
+        set -g _uv_auto_env_initialized
+        _uv_auto_env_activate_with_checks
+    end
+end
+
+function _uv_auto_env_activate_with_checks -d &quot;uv-auto-env function to activate the venv if the shell is interactive and uv is installed&quot;
+    if status --is-interactive &amp;&amp; type -q uv
+        uv_auto_env_activate
+    end
+end
+
+function uv_auto_env_activate -d &quot;uv-auto-env function to activate the venv&quot;
+    if not type -q uv
+        echo &quot;ERROR:Could not activate uv .venv because the uv command was not found&quot;
+        return
+    end
+
+    # Use uv itself to find the venv path because it correctly handles
+    # sub-directories, etc.
+    set -l venv_path (dirname (dirname (env -u VIRTUAL_ENV uv python find)))
+    if test $status -ne 0
+        echo &quot;ERROR: Could not find Python executable using uv&quot;
+        return 1
+    end
+
+    # if venv ends with .venv, activate it
+    if string match -q &quot;*/.venv&quot; $venv_path
+        if test &quot;$VIRTUAL_ENV&quot; != &quot;$venv_path&quot;
+            # echo &quot;Activating $venv_path&quot;
+            source $venv_path/bin/activate.fish
+        end
+    # If we cd into a dir without a venv and a venv is currently active,
+    # deactivate it
+    else if test -n &quot;$VIRTUAL_ENV&quot;
+        # echo &quot;Deactivating $VIRTUAL_ENV&quot;
+        deactivate
+    end
+end
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @infused-kim on 2025-05-13 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucaspar">@lucaspar</a> on 2025-12-04 14:59</div>
+            <div class="timeline-body"><p>Is there an updated (and more reliable) way to do this? This method wouldn't work when using a system/managed interpreter.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

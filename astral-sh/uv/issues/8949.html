@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add uv.workspace.dependencies to share dependency versions across workspace members - astral-sh/uv #8949</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add uv.workspace.dependencies to share dependency versions across workspace members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8949">#8949</a>
+        opened by <a href="https://github.com/BaxHugh">@BaxHugh</a>
+        on 2024-11-08 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-08 16:07</div>
+            <div class="timeline-body"><p>Support cargo like workspace.dependencies.</p>
+<p>We used cargo workspace.dependencies to ensure all our crates within a monorepo share the same versions of common dependencies. There version is specified in the root Cargo.toml file, and the project crates specify that they should use the dependency as specified in the workspace root's Cargo.toml
+Here's the <a href="https://doc.rust-lang.org/cargo/reference/workspaces.html#the-dependencies-table">Cargo Book documentation</a> on it.</p>
+<p>For the python projects in our monorepo, we'd like the same functionality across python projects, so that we know all the packages in the monorepo have the same version specification for i.e. numpy etc.</p>
+<p>I've had a dig through the docs, source code, and existing issues, and I don't think this has been proposed yet.</p>
+<p>Here's my suggestion of what I think it'd look like, i.e.:
+add a <code>tool.uv.workspace.dependencies</code> for the version spec at the workspace level, key and <code>tool.uv.dependencies</code> to specify dependencies of packages which would use the spec from the workspace.</p>
+<h3>root pyproject.toml</h3>
+<pre><code class="language-toml">[project]
+name = &quot;root&quot;
+version = &quot;0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+
+[tool.uv]
+# Package false because this is to manage a monorepo, not a package with multiple subpackages
+package = false
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+# These are the dependency versions that workspace members will use
+# since this is a package = false file, they don't go into any actual package as defined here
+dependencies = [
+    &quot;tqdm &gt;=4.66.2,&lt;5&quot;
+]
+</code></pre>
+<h3>packages/bird-feeder/pyproject.toml</h3>
+<pre><code class="language-toml">[project]
+name = &quot;bird-feeder&quot;
+requires-python = &quot;&gt;=3.12&quot;
+# Normally we'd have a dependencies field here,
+# but it's unlikely that there's a PEP 508 compliant way of storing dependency strings
+# with some workspace = true fields
+
+# specify workspace dependencies
+# in a field which allows inheriting the versions from the workspace root's dependency versions
+[tool.uv.dependencies]
+tqdm = { workspace = true }
+anyio = &quot;&gt;=4.3.0,&lt;5&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-11-09 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:30</div>
+            <div class="timeline-body"><p>Yeah we don't support this today -- thanks for filing. We'd need to come up with a clever strategy to ensure that it remains standards-compliant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeamland">@jeamland</a> on 2024-11-14 04:09</div>
+            <div class="timeline-body"><p>Is it worth trying to turn the broader workspace stuff into a PEP? It'd be awesome if this became a general part of Python packaging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/feici02">@feici02</a> on 2024-11-15 02:52</div>
+            <div class="timeline-body"><p>@charliermarsh For a monorepo of multiple microservices, I'd like to manage them as members of a workspace, should the dependencies of all these services be declared altogether at the root level pyproject.toml? Is there a better solution now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 03:00</div>
+            <div class="timeline-body"><p>@feici02 -- You can either declare them as dependencies of the root or use <code>uv sync --all-packages</code> to sync the entire workspace at once, if that's what you need. I'd generally recommend making them dependencies of the root, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/feici02">@feici02</a> on 2024-11-15 05:58</div>
+            <div class="timeline-body"><p>@charliermarsh Thank you for the quick reply. <code>uv sync --all-packages</code> is just what I want.
+My intention here is to define common dependencies at the root level, and member-specific dependencies at the member level. In this way, it is clearer to know a certain dependency is introduced by which member.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jonatha1983">@Jonatha1983</a> on 2024-12-07 12:19</div>
+            <div class="timeline-body"><p>@charliermarsh So just a clarification on this topic, if I declare a dependency in the root all members are getting it right?
+What about groups? Same behavior? optionals?</p>
+<p>Also what happens if a member a declare it needs member b from dependencies point of view?
+If member b declare a dependency on an external package is it become transitive to a?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-12-07 12:52</div>
+            <div class="timeline-body"><p>@Jonatha1983</p>
+<blockquote>
+<p>if I declare a dependency in the root all members are getting it right?
+I don't think so, the pyproject.toml for each package still declares it's own package metadata in a PEP compliant way.
+i.e., if in the root, I specify ;</p>
+</blockquote>
+<pre><code class="language-toml">dependencies = [&quot;numpy&quot;, &quot;matplotlib&quot;]
+</code></pre>
+<p>and in a workspace member, I specify</p>
+<pre><code class="language-toml">dependencies = [&quot;pandas&quot;]
+</code></pre>
+<p>Then uv tree shows:</p>
+<pre><code class="language-sh">bar v0
+└── pandas v2.2.3
+    ├── numpy v2.1.3
+    ├── python-dateutil v2.9.0.post0
+    │   └── six v1.17.0
+    ├── pytz v2024.2
+    └── tzdata v2024.2
+root v0
+├── matplotlib v3.9.3
+│   ├── contourpy v1.3.1
+│   │   └── numpy v2.1.3
+│   ├── cycler v0.12.1
+│   ├── fonttools v4.55.2
+│   ├── kiwisolver v1.4.7
+│   ├── numpy v2.1.3
+│   ├── packaging v24.2
+│   ├── pillow v11.0.0
+│   ├── pyparsing v3.2.0
+│   └── python-dateutil v2.9.0.post0 (*)
+└── numpy v2.1.3
+</code></pre>
+<p>However, if you're doing</p>
+<pre><code>uv sync --all-packages
+</code></pre>
+<p>Then your dev environment will get all of that.</p>
+<pre><code>uv sync
+</code></pre>
+<p>in just the workspace root, that will give you just the dependencies, specified in the root.</p>
+<p>I don't know if that fully answers your question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jonatha1983">@Jonatha1983</a> on 2024-12-07 13:08</div>
+            <div class="timeline-body"><p>@BaxHugh thanks for the quick reply.</p>
+<blockquote>
+<p>I don't know if that fully answers your question.</p>
+</blockquote>
+<p>I don't know either 😄</p>
+<p>I guess the fact I am coming from Java and that I am new to Python (and so new to UV) is not helping...</p>
+<p>If we take your example, both the root and the member defined only dependencies and not the dev group, so when you say:</p>
+<blockquote>
+<p>Then your dev environment will get all of that.</p>
+</blockquote>
+<p>Do you mean that I will be able to write:
+<code>from matplotlib import...</code>
+In all workspace members? Even if it doesn't declare that?
+Does the same goes for test files?</p>
+<p>What if a member A declare
+<code>dependencies = [&quot;temporalio&quot;]</code></p>
+<p>and I run:
+<code>uv sync --all-packages</code>
+Will I be able to do this in member B source files:
+<code>from temporalio import activity</code></p>
+<p>Even if it didn't declare it in its pyproject.toml?</p>
+<p>Mine may be very elementary questions. In that case, maybe you could provide me with some good documentation on the relation between member dependencies (including group dependencies)</p>
+<p>Thanks!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 13:22</div>
+            <div class="timeline-body"><blockquote>
+<p>So just a clarification on this topic, if I declare a dependency in the root all members are getting it right? What about groups? Same behavior? optionals?</p>
+</blockquote>
+<p>In a formal sense, no. If <code>root</code> depends on <code>temporalio</code>, and then you have a workspace member called <code>member</code> that doesn't depend on the root, if you run <code>uv sync --package member</code>, you won't be able to <code>import temporalio</code>.</p>
+<p><em>However</em>, lets say that instead, <code>root</code> depends on <code>temporalio</code>, and <code>root</code> depends on <code>member</code>. If you <code>uv sync</code> (to sync <code>root</code>, by default), you actually <em>will</em> be able to <code>import temporalio</code> from files in <code>member</code>, even though you shouldn't. Python doesn't have explicit module visibility, unlike Java, so all installed dependencies are equally accessible from all other modules.</p>
+<p>In other words: uv will only install the dependency tree necessary when you sync a package. But the Python runtime itself doesn't prevent you from importing transitive dependencies.</p>
+<p>If you're importing <code>temporalio</code> from a workspace member, that member should declare it as a dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jonatha1983">@Jonatha1983</a> on 2024-12-07 14:04</div>
+            <div class="timeline-body"><p>Thanks, I start getting it (I think and hope)</p>
+<pre><code>root/
+|-- packages/
+|   |-- lib/
+|   |   |-- src/
+|   |   |-- tests/
+|   |   |-- README.md
+|   |   |-- pyproject.toml
+|   |-- app/
+|       |-- src/
+|       |-- tests/
+|       |-- README.md
+|       |-- pyproject.toml
+|-- README.md
+|-- pyproject.toml
+|-- .python-version
+</code></pre>
+<p>In the root pyproject.toml:</p>
+<pre><code class="language-[tool.uv.workspace]">    members = [&quot;packages/*&quot;]
+</code></pre>
+<p>So if I want to work on both lib and app packages, I can just run:
+<code>uv sync --all-packages</code></p>
+<p>And with that, I will have all the dependencies needed for both, correct?</p>
+<p>So if that is ok, here are some more questions:</p>
+<p>Now if lib import <code>temporalio</code> and <strong>app don't</strong> after running the sync all-packages, I can (mistakenly) import temporalio in the app files right?</p>
+<p>If in app pyproject.toml I have:</p>
+<pre><code>[tool.uv.sources]
+lib = { workspace = true }
+</code></pre>
+<p>I still need to declare the <code>temporalio</code>, or will the fact that the app depends on lib make it available to the app?
+If I do need to declare, what is the right approach to help me define the version of the external third package in one place?
+If I have 20 members and 10 need <code>temporalio</code> should I declare in 10 projects the temporal dependency?</p>
+<p>Thanks again!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pnasrat">@pnasrat</a> on 2024-12-07 14:24</div>
+            <div class="timeline-body"><p>Reading this discussion and I'm wondering if for the monorepo/workspace case that uv could support using <code>dynamic</code> for dependencies  - my reading of PEP 621 https://peps.python.org/pep-0621/#dynamic is that  would allow for a monorepo workspace setup to define the versions in the root then propagate them to the wheel metadata.</p>
+<p>For this case generation of sdists might need to generate a package uv.lock file that uv would use to enable rebuildabilitly of an individual component from sdist but I think that is how other tools handle centralized deps</p>
+<p>One example that does dynamic dependencies using hatchling is airflow which is a monorepo that provides many plugins</p>
+<p>https://github.com/apache/airflow/blob/c09e9b5202ce4f1c6ba02381c0284cb4cd7a84e7/pyproject.toml#L65</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pnasrat">@pnasrat</a> on 2024-12-07 14:26</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/6422</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9811.html">astral-sh/uv#9811</a> on 2024-12-12 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11250.html">astral-sh/uv#11250</a> on 2025-03-04 08:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeel-04">@zeel-04</a> on 2025-04-10 20:24</div>
+            <div class="timeline-body"><blockquote>
+<p>If I have 20 members and 10 need <code>temporalio</code> should I declare in 10 projects the temporal dependency?</p>
+</blockquote>
+<p>Very similar to this, I have root and 5 members, and 3 need the same dependency(let's say <code>streamlit</code>)</p>
+<p>@charliermarsh How to handle this kind of situation. I know that if I declare <code>streamlit</code> in root do <code>uv sync --all-packages</code> I can access it in any members. but you told</p>
+<blockquote>
+<p>However, lets say that instead, root depends on temporalio, and root depends on member. If you uv sync (to sync root, by default), you actually will be able to import temporalio from files in member, even though you shouldn't</p>
+</blockquote>
+<p>Is there any legit way to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timos-flwls">@timos-flwls</a> on 2025-06-24 08:35</div>
+            <div class="timeline-body"><p>It would be great to have the current behaviour of root dependencies documenting on the &quot;Using workspaces&quot; page. Currently trying to infer it from the discussion in this thread.</p>
+<p>My current understanding:</p>
+<ul>
+<li><code>uv sync</code>: installs root dependencies.</li>
+<li><code>uv sync --package foo</code>: installs only foo's dependencies.</li>
+<li><code>uv sync --all-packages</code>: installs root and all members dependencies.</li>
+</ul>
+<p>However, there is no way to say &quot;install foo and root's dependencies&quot;.</p>
+<p>To make matters worse, it seems like <code>uv.sources</code> (which is documented on the &quot;Using workspaces&quot; page) propagates to workspace members, whilst root project dependencies don't which is counter-intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-09 16:59</div>
+            <div class="timeline-body"><p>As noted at https://github.com/astral-sh/uv/issues/8949#issuecomment-2465998739 — the challenge here is maintaining standards-compliance for the <code>project.dependencies</code> table. That's not a problem for <code>tool.uv.sources</code>, which is why that's easier to propagate throughout the workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-09 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>there is no way to say &quot;install foo and root's dependencies&quot;.</p>
+</blockquote>
+<p>I presume <code>uv sync &amp;&amp; uv sync --inexact --package foo</code> would work? We can probably find a better way to express that though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahmdatef">@ahmdatef</a> on 2025-07-23 17:48</div>
+            <div class="timeline-body"><p>The ways I imagine it is when run <code>uv add --project X dep-1</code> uv will be smart enough to check the dependencies of other members, and if it exists in other members it will be appended to the root TOML, else it will be appended to project X's TOML.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15808.html">astral-sh/uv#15808</a> on 2025-09-12 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylbeth">@sylbeth</a> on 2025-09-12 13:27</div>
+            <div class="timeline-body"><p>As I understand it, the steps needed to implement this are:</p>
+<ul>
+<li>Define exactly where and how workspace dependencies are configured.</li>
+</ul>
+<p>I believe the most sensible to use <code>tool.uv.workspace.dependencies</code> for definition and <code>tool.uv.sources</code> for usage. That way, it stays PEP compliant without further trouble. For example, for a workspace with a root package that requires numpy and uses ruff and a package named <code>project</code> that requires both numpy and scipy and uses ruff, the following would be used.</p>
+<pre><code class="language-toml"># /pyproject.toml
+[project]
+dependencies = [&quot;numpy&quot;]
+
+[dependency-groups]
+dev = [&quot;ruff&quot;]
+
+[tool.uv.sources]
+ruff.workspace-dep = true
+numpy.workspace-dep = true
+
+[tool.uv.workspace]
+members = [&quot;project&quot;]
+dependencies = [
+    &quot;numpy&gt;=2.3.3&quot;,
+    &quot;scipy&gt;=1.16.2&quot;,
+    &quot;ruff&gt;=0.12.7&quot;,
+]
+</code></pre>
+<pre><code class="language-toml"># /project/pyproject.toml
+[project]
+dependencies = [&quot;numpy&quot;, &quot;scipy&quot;]
+
+[dependency-groups]
+dev = [&quot;ruff&quot;]
+
+[tool.uv.sources]
+scipy.workspace-dep = true
+ruff.workspace-dep = true
+numpy.workspace-dep = true
+</code></pre>
+<p>(Here either workspace or workspace-dep would be used, but then the question arises on what to do with workspace members. Workspace members could implicitly be workspace dependencies, and that way only workspace = true would be needed)</p>
+<ul>
+<li>Change the configuration parsing to read these new options.</li>
+<li>Change <code>tool.uv.sources</code> resolution to do so.</li>
+<li>Change the <code>uv add</code> command to allow for a <code>--workspace</code> flag to add to the workspace dependencies (and maybe other commands that would make sense)</li>
+<li>Change the way <code>uv add</code> resolution works by first looking through workspace dependencies before deciding whether to add a dependency with a specified version or the workspace dependency.</li>
+<li>Document the changes (+ CLI help message).</li>
+</ul>
+<p>Did I leave anything out?</p>
+<p>(Also, maybe if workspace and package are specified in a <code>uv add</code>, it could be added as a workspace dependency and then added properly to the given package, reducing the need for <code>uv add</code> calls?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:34</div>
+            <div class="timeline-body"><p>@sylbeth the blocker to implementing this is https://github.com/astral-sh/uv/issues/8949#issuecomment-2465998739 — note your example drops the constraints from the <code>project.dependencies</code> table which isn't desirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sylbeth">@sylbeth</a> on 2025-09-12 13:41</div>
+            <div class="timeline-body"><blockquote>
+<p>The blocker to implementing this is https://github.com/astral-sh/uv/issues/8949#issuecomment-2465998739</p>
+</blockquote>
+<p>Is my proposed solution not standard-compliant? Afaik workspaces themselves aren't standard.</p>
+<blockquote>
+<p>note your example drops the constraints from the <code>project.dependencies</code> table which isn't desirable.</p>
+</blockquote>
+<p>Isn't that exactly what is desired here? Having to maintain the constraints is the problem, and afaik the standards don't allow other restrictions there. One way to maintain the contraints would be to just add them. If <code>tool.uv.sources</code> has the dependency specified, it checks if the constraints of the package and the workspace are the same, if not it updates it. That would keep the restriction in place but need no manual maintenance. If instead of a change to a more restrictive version (e.g. &gt;=1.0 to &gt;=2.0) is a change to a less restrictive version (e.g. &gt;=2.0 to &gt;=1.0) the user could always be prompted to allow for it, unless a force flag is used.</p>
+<p>I don't understand what the problem is exactly, as <code>tool.uv.sources</code> already exists and afaik it leaves version constraints empty. If easy migration to other project managers is desired, an option to migrate workspace dependencies can always be added, but the automaintained semver feels enough. It could be only changed on dependency updates and addition, if changes to pyproject on a sync / run / any other command where this could be checked is undesired.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13540.html">astral-sh/uv#13540</a> on 2025-09-23 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BERDataLakehouse/spark_notebook/pulls/43.html">BERDataLakehouse/spark_notebook#43</a> on 2025-11-11 22:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] Hex code formatting restrictions around debug f-strings are too strict on preview - astral-sh/ruff #14926</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] Hex code formatting restrictions around debug f-strings are too strict on preview</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14926">#14926</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2024-12-11 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2024-12-11 21:22</div>
+            <div class="timeline-body"><p>With preview disabled <a href="https://play.ruff.rs/68e68e62-750b-411f-b997-d1948e35a661">playground link</a>:</p>
+<pre><code class="language-py"># input:
+f&quot;{&quot;\xFF\N{space}&quot;=}&quot;
+# output:
+f&quot;{&quot;\xff\N{SPACE}&quot;=}&quot;
+
+</code></pre>
+<p>With preview enabled <a href="https://play.ruff.rs/b6cb8fdb-bdd4-414e-bb49-f2de6c05b90a">playground link</a>:</p>
+<pre><code class="language-py"># input:
+f&quot;{&quot;\xFF\N{space}&quot;=}&quot;
+# output:
+f&quot;{&quot;\xFF\N{space}&quot;=}&quot;
+
+</code></pre>
+<p>This change isn't observable, since the replacement of escapes happens before the debug applies:</p>
+<pre><code class="language-py">&gt;&gt;&gt; f&quot;{&quot;\xFF\N{space}&quot;=}&quot;
+'&quot;ÿ &quot;=\'ÿ \''
+&gt;&gt;&gt; f&quot;{&quot;\xff\N{SPACE}&quot;=}&quot;
+'&quot;ÿ &quot;=\'ÿ \''
+</code></pre>
+<p>The issue with #14766 is that the change in formatting happens inside an r-string, not specifically the f-string debug. It should be fine to apply this formatting with the usual rules on string types, regardless of where the string is.
+For completeness I have also previously opened the <a href="https://github.com/psf/black/issues/4523">same issue in black</a>, however it looks unlikely for black to have this fixed by the 2025 release, or anytime soon, as it would require resolving outstanding questions around how to handle f-string formatting.
+Also cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-12-12 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-12 07:06</div>
+            <div class="timeline-body"><p>Thanks for reporting this and the nice write up. This is interesting. While this is a missed opportunity, I don't think it's important for us to fix it because debug expressions are rare (especially in production code), and escapes are rare, too. It's also somewhat complicated to fix because we currently don't apply any formatting for debug expressions. We just preserve them as is and I think that's a good enough default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-12 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14929.html">astral-sh/ruff#14929</a> on 2024-12-12 09:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

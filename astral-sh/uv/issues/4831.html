@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Namespace package's `__init__.py` is corrupted when multiple libraries in it are installed - astral-sh/uv #4831</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Namespace package's `__init__.py` is corrupted when multiple libraries in it are installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4831">#4831</a>
+        opened by <a href="https://github.com/ods">@ods</a>
+        on 2024-07-05 11:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ods">@ods</a> on 2024-07-05 11:11</div>
+            <div class="timeline-body"><p>Given:</p>
+<ul>
+<li>Multiple libraries in the same namespace package (proprietary, developed by different teams)</li>
+<li>All those libraries have a <code>namespace/__init__.py</code> file. This is not the recommended way to proceed with namespace packages nowadays, but this is software with a long history and it’s not easy to change.</li>
+<li>The content of <code>namespace/__init__.py</code> differs from library to library. Either it’s something minor like comments, or because some of them have already started a <a href="https://github.com/pypa/sample-namespace-packages#remarks-on-staggered-migrations">staggered migration</a>.</li>
+<li>A <code>Dockerfile</code>, where we use <code>uv</code> to install packages (version 0.2.21).</li>
+<li>CI pipeline, where we build the container and run linters and tests.</li>
+</ul>
+<p>Form time to time (very rarely) we get a failed pipeline due to a syntax error in <code>namespace/__init__.py</code>. Investigation showed that it has the content from one library (of larger size) partially overwritten with the content from another library (of smaller size), leading to invalid code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-05 20:30</div>
+            <div class="timeline-body"><p>&quot;Partially overwritten&quot; is strange -- like the content is a mix of two different files...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-07-05 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ods">@ods</a> on 2024-07-06 11:31</div>
+            <div class="timeline-body"><p>The content of <code>namespace/__init__.py</code> file in one of the linraries is:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Common libraries for ...........&quot;&quot;&quot;
+
+__import__(&quot;pkg_resources&quot;).declare_namespace(__name__)
+__version__ = &quot;1.11.0&quot;
+</code></pre>
+<p>the content of it in another library:</p>
+<pre><code class="language-python"># TODO Switch to PEP-420 implicit namespace packages after moving all
+# `..........` packages to `pkgutil`.
+# About staged migration and interoperability tables:
+# https://github.com/pypa/sample-namespace-packages/pull/22/files
+
+from pkgutil import extend_path
+
+__path__ = extend_path(__path__, __name__)
+</code></pre>
+<p>and the resulting content I see in the container after install:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Common libraries for ...........&quot;&quot;&quot;
+
+__import__(&quot;pkg_resources&quot;).declare_namespace(__name__)
+__version__ = &quot;1.11.0&quot;
+ged migration and interoperability tables:
+# https://github.com/pypa/sample-namespace-packages/pull/22/files
+
+from pkgutil import extend_path
+
+__path__ = extend_path(__path__, __name__)
+</code></pre>
+<p>&quot;Partially overwritten&quot; is my interpretation of what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-06 20:14</div>
+            <div class="timeline-body"><p>That looks bad indeed! On what platform are you on, are you setting <code>--link-mode</code> and could you check the verbose log (<code>-v</code>) for messages with <code>attempting to copy files as a fallback</code> in it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ods">@ods</a> on 2024-07-07 16:47</div>
+            <div class="timeline-body"><blockquote>
+<p>On what platform are you on</p>
+</blockquote>
+<p>In docker, image is based on official python:3.12.4-slim, linux/x86_64</p>
+<blockquote>
+<p>are you setting --link-mode</p>
+</blockquote>
+<p>No. The actually used command is:</p>
+<pre><code class="language-dockerfile">RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=${HOME}/.cache,uid=${UID},gid=${GID} \
+    uv pip install --system --prefix ${HOME}/.local -r requirements.txt --require-hashes --no-deps
+</code></pre>
+<blockquote>
+<p>could you check the verbose log (-v) for messages with attempting to copy files as a fallback in it?</p>
+</blockquote>
+<p>Not sure how to achieve this. We switched back to <code>pip</code> after discovering the problem, so <code>uv</code> is not used in pipeline anymore. I'll try to find a way to reproduce the problem locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2024-07-07 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-07 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-10 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4978.html">astral-sh/uv#4978</a> on 2024-07-10 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-12 00:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hatching build suddenly not working anymore in docker - astral-sh/uv #16228</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>hatching build suddenly not working anymore in docker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16228">#16228</a>
+        opened by <a href="https://github.com/ion-elgreco">@ion-elgreco</a>
+        on 2025-10-10 14:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-10-10 14:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For some reason, hatchling is not working properly. I can see in the verbose logs it's installed but then fails to called <code>hatchling.build</code>. It worked before fine.</p>
+<p>My toml has this:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+</code></pre>
+<p>Trace when building:</p>
+<pre><code>DEBUG Installing in pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.9.11.17, packaging==25.0, pathspec==0.12.1 in /root/.cache/uv/builds-v0/.tmpmOkUJN
+DEBUG Registry requirement already cached: pluggy==1.6.0
+DEBUG Registry requirement already cached: hatchling==1.27.0
+DEBUG Registry requirement already cached: trove-classifiers==2025.9.11.17
+DEBUG Registry requirement already cached: packaging==25.0
+DEBUG Registry requirement already cached: pathspec==0.12.1
+DEBUG Installing build requirements: pluggy==1.6.0, hatchling==1.27.0, trove-classifiers==2025.9.11.17, packaging==25.0, pathspec==0.12.1
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `hatchling.build.get_requires_for_build_editable()`
+DEBUG Traceback (most recent call last):
+DEBUG   File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+DEBUG ModuleNotFoundError: No module named 'hatchling.build'
+DEBUG Released lock at `/root/.cache/uv/sdists-v9/editable/2d824ef2eb635cc1/.lock`
+  × Failed to build `doc @ file:///APP/libraries/doc`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `hatchling.build.build_editable` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'hatchling.build'
+
+      hint: This error likely indicates that `doc@0.1.0` depends on
+      `hatchling.build`, but doesn't declare it as a build dependency. If
+      `doc` is a first-party package, consider adding `hatchling.build`
+      to its `build-system.requires`. Otherwise, either add it to your
+      `pyproject.toml` under:
+
+      [tool.uv.extra-build-dependencies]
+      doc = [&quot;hatchling.build&quot;]
+
+      or `uv pip install hatchling.build` into the environment and re-run with
+      `--no-build-isolation`.
+</code></pre>
+<h3>Platform</h3>
+<p>macOS14 arm64</p>
+<h3>Version</h3>
+<p>0.9.1</p>
+<h3>Python version</h3>
+<p>3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ion-elgreco on 2025-10-10 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-10-10 14:31</div>
+            <div class="timeline-body"><p>Some extra info, when I do <code>uv sync --package &lt;&gt;</code> it works fine, but when I do it while building the container it fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "hatching build suddenly not working anymore" to "hatching build suddenly not working anymore in docker" by @ion-elgreco on 2025-10-10 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-10-10 14:52</div>
+            <div class="timeline-body"><p>Figured it out, something is wrong with my cache mount...  (<code>--mount=type=cache,target=/root/.cache/uv</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-10 15:40</div>
+            <div class="timeline-body"><p>Perhaps your cache is corrupted? If you <code>uv cache clean</code> does it work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ion-elgreco">@ion-elgreco</a> on 2025-10-10 21:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps your cache is corrupted? If you <code>uv cache clean</code> does it work?</p>
+</blockquote>
+<p>Yes it was corrupted. Uv cache clean didn't work because the podman dirs were corrupted for some reason. Resetting podman machine and purging everything did the trick. But oh my, this was annoying to track down</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ion-elgreco on 2025-10-10 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakthra">@jakthra</a> on 2025-11-06 07:48</div>
+            <div class="timeline-body"><p>Happened to me as well. Pruning the volumes was not enough - had to reset the podman machine. Pruning the builder is also enough it seems:</p>
+<pre><code>podman builder prune -a --external 
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

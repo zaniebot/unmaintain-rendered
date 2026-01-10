@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows outputs an error when showing usage - clap-rs/clap #3218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows outputs an error when showing usage</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3218">#3218</a>
+        opened by <a href="https://github.com/sigmaSd">@sigmaSd</a>
+        on 2021-12-25 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2021-12-25 16:00</div>
+            <div class="timeline-body"><p>Currently when clap shows the usage it exit with exit_code=2</p>
+<p>The problem is windows outputs an error  after it detects that the application exited with an error</p>
+<p><code>error: process didn't exit successfully: `` (exit code:2)</code></p>
+<p>This makes applications using clap on windows weird,  just by simply running the application to see its arguments, you'll always encounter an error.</p>
+<p>On linux the shells don't complain, so this is windows specific (windows 10, same behavior on cmd/powershell/windows terminal)</p>
+<p>According to the code, the usage-code is taken from python argparse, but I tested some (contrived) python examples and it doesn't seem to do that</p>
+<p>meta:
+clap: 3.0.0-beta.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-25 16:47</div>
+            <div class="timeline-body"><p>What shell and OS version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-25 16:47</div>
+            <div class="timeline-body"><p>Also, could you provide example code and command line to make sure we reproduce it the same way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2021-12-25 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2021-12-25 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2021-12-25 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2021-12-25 17:09</div>
+            <div class="timeline-body"><pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+pub struct Opts {
+ #[clap(subcommand)]
+ pub cmd: Subcommand
+}
+
+#[derive(Parser)] 
+pub enum Subcommand {}
+
+fn main() {
+ let _ = Opts::parse();
+}
+</code></pre>
+<p><code>cargo run #no arguments</code></p>
+<p>windows 10 20h2
+powershell  5.1.19041.1320</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-26 01:38</div>
+            <div class="timeline-body"><p>Alright, won't be until at least Monday before I can take a look.</p>
+<p>Bleh, having to touch powershell :/
+(I know a lot of people like it, just never really clicked for me as something useful outside of automation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2021-12-26 06:57</div>
+            <div class="timeline-body"><p>I dont use windows but just happened to test a program on it and I noticed this</p>
+<p>But I must say the dev experience is  better, I replecated my vim setup and the windows terminal looks good</p>
+<p>But the only thing I missed is fish shell xD</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-27 14:39</div>
+            <div class="timeline-body"><p>Do you only see this when running <code>cargo run</code>?</p>
+<p>I reproduced it with <code>cmd</code>.  It looks like a cargo message, so I ran the binary directly and I do not see it.  I then ran <code>cargo run -q</code> and it goes away.</p>
+<p>Digging into cargo's code:</p>
+<ol>
+<li><code>cargo run</code> calls <a href="https://github.com/rust-lang/cargo/blob/9a3c162dc3b912cde1a0f436958adb2cb8f21e5e/src/bin/cargo/commands/run.rs#L85"><code>commands::runs::exec</code></a>  which calls ...</li>
+<li><a href="https://github.com/rust-lang/cargo/blob/9a3c162dc3b912cde1a0f436958adb2cb8f21e5e/src/cargo/ops/cargo_run.rs#L100"><code>ops::runs</code></a> which calls ...</li>
+<li><a href="https://github.com/rust-lang/cargo/blob/9a3c162dc3b912cde1a0f436958adb2cb8f21e5e/crates/cargo-util/src/process_builder.rs#L198">ProcessBuilder::exec_replace</a> which calls a platform-specific implementation.  Only the Windows version calls</li>
+<li><a href="https://github.com/rust-lang/cargo/blob/9a3c162dc3b912cde1a0f436958adb2cb8f21e5e/crates/cargo-util/src/process_builder.rs#L165">ProcessBuilder::exec</a> which looks to print the relevant message</li>
+</ol>
+<p>So this seems to be Windows-specific cargo behavior.</p>
+<p>At least in my quick searches of cargo's issues, I didn't find any about this being inconsistent between platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2021-12-27 20:23</div>
+            <div class="timeline-body"><p>You're right I didn't notice it, should I close this issue since its an upstream problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-27 20:37</div>
+            <div class="timeline-body"><p>I'll go ahead.  I was waiting in case there was something I missed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-27 20:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:49 UTC
+    </footer>
+</body>
+</html>

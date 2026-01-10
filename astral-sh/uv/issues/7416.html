@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use the lockfile as constraints when doing uv run --with - astral-sh/uv #7416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use the lockfile as constraints when doing uv run --with</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7416">#7416</a>
+        opened by <a href="https://github.com/delfick">@delfick</a>
+        on 2024-09-16 01:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/delfick">@delfick</a> on 2024-09-16 01:07</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I'm using uv 0.4.10</p>
+<p>I'm trying to make my <a href="https://github.com/delfick/extended-mypy-django-plugin/pull/60">project</a> use uv project semantics and to get around uv not having support for conflicting requirements I have scripts to run my tests with either <code>uv run --with mypy==1.4.0 django-stubs==4.2.3</code> or <code>uv run --with mypy==1.11.2 --with django-stubs==5.0.2</code> and that works.</p>
+<p>However, it seems that it's not using the lock file as a constraints and so it's not respecting that I have a specific version of django in my project.</p>
+<p>Is it possible to make it so that doing a uv run using <code>--with</code> uses the lock file as a constraints?</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juftin">@juftin</a> on 2024-09-21 07:33</div>
+            <div class="timeline-body"><p>Agreed - I came looking for a very similar issue to this. In my case I'd like to run Python CLIs in my environment without installing other tools.</p>
+<p>For example, in a <code>linting</code> CI/CD job I'd like to just run <code>ruff</code> which is one of my dev dependencies, without installing everything else:</p>
+<pre><code class="language-toml">[build-system]
+build-backend = &quot;hatchling.build&quot;
+requires = [&quot;hatchling&quot;]
+
+[project]
+dependencies = [
+  &quot;requests&quot;
+]
+name = &quot;example&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11,&lt;4&quot;
+version = &quot;0.1.0&quot;
+
+[tool.uv]
+dev-dependencies = [
+  &quot;ruff&gt;=0.6.5&quot;,
+  &quot;pytest&gt;=8.3.3&quot;
+]
+</code></pre>
+<p>In this case I would want to run something like this and have it respect my lockfile:</p>
+<pre><code class="language-sh">uv run --with ruff ruff format .
+</code></pre>
+<p>Even better (for my use case), it would be nice to install ruff into my virtual environment without having to install any of my other dev dependencies:</p>
+<pre><code>uv run --only-sync ruff ruff format .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-21 12:38</div>
+            <div class="timeline-body"><p>@juftin -- Are you looking for <code>uv run --only-dev ruff format .</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2024-09-21 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juftin">@juftin</a> on 2024-09-21 13:57</div>
+            <div class="timeline-body"><p>Kind of, I'm using <code>uv run --only-dev ruff format .</code> today but it syncs all of my dev dependencies when I really only need <code>ruff</code> for the CI job.</p>
+<p>Maybe this is a niche need, but I'd like to be able to install/run just <code>ruff</code> without trying to sync the other dev dependencies (that was my idea with the <code>--only-sync</code> flag in the above example)</p>
+<p>If  <code>uv run --with ruff --no-sync ruff format .</code> respected my lock file that would also work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-21 19:06</div>
+            <div class="timeline-body"><p>Yeah I think we should respect the lockfile for the —with dependencies. At the very least we should prefer versions that are in the lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-22 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7627.html">astral-sh/uv#7627</a> on 2024-09-22 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-23 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-23 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/delfick">@delfick</a> on 2024-09-23 22:39</div>
+            <div class="timeline-body"><p>awesome, thanks for the fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../delfick/extended-mypy-django-plugin/pulls/60.html">delfick/extended-mypy-django-plugin#60</a> on 2024-09-25 03:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:49 UTC
+    </footer>
+</body>
+</html>

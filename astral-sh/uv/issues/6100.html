@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv forces unrequested package updates - astral-sh/uv #6100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv forces unrequested package updates</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6100">#6100</a>
+        opened by <a href="https://github.com/stas00">@stas00</a>
+        on 2024-08-15 01:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 01:19</div>
+            <div class="timeline-body"><p>With uv==0.2.36</p>
+<p>numpy &gt; 2 breaks many packages, so we don't want it</p>
+<pre><code>$ uv pip install numpy==1.26.4
+</code></pre>
+<p>but when I update other packages it keeps bringing it back:</p>
+<pre><code>$ uv pip install datasets -U
+Resolved 31 packages in 297ms
+Prepared 3 packages in 0.45ms
+Uninstalled 3 packages in 37ms
+░░░░░░░░░░░░░░░░░░░░ [0/3] Installing wheels...                                                                                          warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. If this is intentional, use `--link-mode=copy` to suppress this warning.
+
+hint: If the cache and target directories are on different filesystems, hardlinking may not be supported.
+Installed 3 packages in 52ms
+ - datasets==2.20.0
+ + datasets==2.21.0
+ - fsspec==2024.5.0
+ + fsspec==2024.6.1
+ - numpy==1.26.4
+ + numpy==2.0.1
+</code></pre>
+<p>why is it updating <code>numpy</code> again? <code>datasets</code> has no such requirement - it requires <code>numpy&gt;=1.17</code>. If I do:</p>
+<pre><code>pip install datasets -U
+[...]
+Requirement already satisfied: numpy&gt;=1.17 in /mnt/nvme0/anaconda3/envs/py310-pt22/lib/python3.10/site-packages (from datasets) (1.26.4)
+</code></pre>
+<p>it doesn't fetch the unwanted <code>numpy==2.0.1</code></p>
+<p>So now I have to constantly re-install <code>numpy</code> after every second <code>uv pip install</code> command.</p>
+<p>Do you think <code>uv</code> thinks it needs <code>numpy==2.0.1</code> through some dependency of <code>datasets</code>? And <code>pip</code> gets it wrong then?</p>
+<p>I'm just tired to be on the watch out for <code>uv</code> sneaking in <code>numpy==2.0.1</code> since our code breaks with it due to many 3rd party packages failing with it.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:21</div>
+            <div class="timeline-body"><p>I think the issue is that if you pass <code>--upgrade</code>, we try to upgrade everything. If you pass <code>--upgrade-package datasets</code> instead, we'll only upgrade <code>datasets</code> (or any packages that <em>must</em> be upgraded based on the <code>datasets</code> upgrade). There's an open issue to change this behavior, let me find it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:22</div>
+            <div class="timeline-body"><p>Here it is: https://github.com/astral-sh/uv/issues/4779</p>
+<p>\cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:27</div>
+            <div class="timeline-body"><p>Maybe we want <code>--upgrade-all</code>? It breaks the symmetry of the interface w/r/t other options, but it's clearly a bit confusing for users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-08-15 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-08-15 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 01:28</div>
+            <div class="timeline-body"><p>Hmm, but if the intention is to be pip-BC <code>-U</code> == update only listed packages - is there a reason to break that well-established pattern?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:37</div>
+            <div class="timeline-body"><p>I think it's reasonable to change this in the <code>uv pip</code> interface. We just probably still want a way to say &quot;Upgrade all packages&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 01:37</div>
+            <div class="timeline-body"><p>I also need to look at what happens with <code>pip install -U -r requirements.txt</code> -- does it upgrade all the listed packages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2024-08-15 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-08-15 01:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 01:47</div>
+            <div class="timeline-body"><p>I suppose most of the time we don't care if <code>-U</code> updates all packages, except when there is a situation where some package is either broken or leads to a breakage in other packages like in the current situation of <code>numpy</code> which is not backward compatible.</p>
+<p>So that's perhaps why there were no objections when it was first introduced. That is my guess is that users are oblivious to the fact that <code>uv pip install xyz -U</code> doesn't mean the same as <code>pip install xyz -U</code> - I'm not sure if it's a good thing.</p>
+<p>Looking at pip's manpage:</p>
+<pre><code>       -U, --upgrade
+              Upgrade all packages to the newest available version.  
+              This process is recursive regardless of whether a dependency  is
+              already satisfied.
+</code></pre>
+<p>So it's sort of ambiguous as it probably implies that &quot;packages&quot; are those that were listed on the command line, but one could easily interpret it as &quot;upgrade all installed packages&quot;.</p>
+<p>Not sure what is the best solution here. I suppose the problem is that you are using <code>pip</code> in your interface. If you were to say <code>uv install</code> and not <code>uv pip install</code> then really choose whatever options you think are the best, but when it pretends to be a drop in replacement - and I have just <code>s/pip/uv pip/</code> in my scripts - this is a very unexpected outcome. Not following the principle of the least surprise here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 01:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I also need to look at what happens with <code>pip install -U -r requirements.txt</code> -- does it upgrade all the listed packages?</p>
+</blockquote>
+<p>it appears to be so:</p>
+<pre><code>$ uv pip install datasets==2.20
+$ echo &quot;datasets&quot; &gt; r.txt
+$ pip install -U -r r.txt
+[...]
+Downloading datasets-2.21.0-py3-none-any.whl (527 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 527.3/527.3 kB 8.3 MB/s eta 0:00:00
+Installing collected packages: datasets
+  Attempting uninstall: datasets
+    Found existing installation: datasets 2.20.0
+    Uninstalling datasets-2.20.0:
+      Successfully uninstalled datasets-2.20.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-15 14:58</div>
+            <div class="timeline-body"><p>@stas00 Since pip says &quot;This process is recursive regardless&quot; I would think it updates all named packages and their dependencies. But this is <em>not</em> the case, if one tries it. So then what does it mean - I think it means that recursive updates are applied if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stas00">@stas00</a> on 2024-08-15 17:52</div>
+            <div class="timeline-body"><p>Indeed, recursive updates related to the listed packages - not all installed packages - we presume that is since the writing is ambiguous, but we can derive their truth/reality from the actions of pip.</p>
+<p>But I'm just sharing user's experience feedback - it's your project so you of course can do what makes the most sense to you.</p>
+<p>I'm grateful for this super fast tool and looking forward to having it replace pip completely and rewrite my muscle memory to some of the flags that are different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mosaicml/ci-testing/pulls/28.html">mosaicml/ci-testing#28</a> on 2024-08-30 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8260.html">astral-sh/uv#8260</a> on 2024-10-16 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 17:23</div>
+            <div class="timeline-body"><p>I'm going to merge into https://github.com/astral-sh/uv/issues/4779 which I believe is the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-16 17:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regression: &quot;ArgSettings::TakesValue is required when ArgSettings::MultipleValues is set&quot; - clap-rs/clap #2403</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>regression: &quot;ArgSettings::TakesValue is required when ArgSettings::MultipleValues is set&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2403">#2403</a>
+        opened by <a href="https://github.com/ensc">@ensc</a>
+        on 2021-03-10 11:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ensc">@ensc</a> on 2021-03-10 11:15</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.52.0-nightly (e37a13cc3 2021-02-28)</p>
+<h3>Clap Version</h3>
+<p>975ceed904290069b7cf65e177677ecea12e4dd6</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+    let matches = clap::App::new(&quot;test&quot;)
+	.arg(clap::Arg::new(&quot;debug&quot;)
+	     .short('D')
+	     .long(&quot;debug&quot;)
+	     .multiple(true)
+	     .takes_value(false))
+	.get_matches();
+
+    if matches.occurrences_of(&quot;debug&quot;) &gt; 3 {
+	println!(&quot;high debug level&quot;);
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- -DDDD</p>
+<h3>Actual Behaviour</h3>
+<pre><code>thread 'main' panicked at '
+ArgSettings::TakesValue is required when ArgSettings::MultipleValues is set.
+', /home/ensc/.cargo/git/checkouts/clap-78dbe9b58f9073fe/975ceed/src/build/arg/debug_asserts.rs:77:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>high debug level
+</code></pre>
+<p>(tested with rev 09009761ec5f6be4d406f70042d85fca543eeca8)</p>
+<h3>Additional Context</h3>
+<p>Worked (at last) with 09009761ec5f6be4d406f70042d85fca543eeca8</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @ensc on 2021-03-10 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-03-10 11:19</div>
+            <div class="timeline-body"><p><code>multiple</code> implies <code>multiple_values</code> and <code>multiple_occurrences</code>. and <code>MultipleValues</code> is only valid with <code>TakeValues</code> on. Please check this:</p>
+<pre><code class="language-rust">fn main() {
+    let matches = clap::App::new(&quot;test&quot;)
+	.arg(clap::Arg::new(&quot;debug&quot;)
+	     .short('D')
+	     .long(&quot;debug&quot;)
+	     .multiple_occurrences(true)
+	     .takes_value(false))
+	.get_matches();
+
+    if matches.occurrences_of(&quot;debug&quot;) &gt; 3 {
+	println!(&quot;high debug level&quot;);
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ldm0 on 2021-03-10 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @clap-rs on 2021-03-10 11:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:26 UTC
+    </footer>
+</body>
+</html>

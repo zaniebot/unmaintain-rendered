@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `value_from_arg_matches` for compatibility with `config-rs` - clap-rs/clap #5796</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `value_from_arg_matches` for compatibility with `config-rs`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5796">#5796</a>
+        opened by <a href="https://github.com/0xForerunner">@0xForerunner</a>
+        on 2024-10-31 17:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2024-10-31 17:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.20</p>
+<h3>Describe your use case</h3>
+<p>I would like to be able to use clap as a source for the <code>config-rs</code> crate. I think this is a pretty common use case for a lot of people.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I think a reasonable way to do this would be to provide a function like this:</p>
+<pre><code class="language-rust">pub trait FromArgMatches: Sized {
+    fn value_from_arg_matches( __clap_arg_matches: &amp;clap::ArgMatches) -&gt; ::std::result::Result&lt;Value, clap::Error&gt;
+</code></pre>
+<p>where <code>Value</code> is a type similar to <code>serde_json::Value</code> or <code>config-rs::Value</code></p>
+<p>It would then be pretty trivial to implement <code>config-rs::Source</code> for this new type. The end result could look something like this:</p>
+<pre><code class="language-rust">#[derive(Default, Parser, Debug, Serialize, Deserialize)]
+struct Opts {
+    #[clap(short, long)]
+    my_arg: u64,
+}
+
+let args_matches = Opts::command().ignore_errors(true).get_matches();
+let value = Opts::value_from_arg_matches(&amp;args_matches)?;
+let config = config::Config::builder()
+    .add_source(config::File::from(path).required(true))
+    .add_source(value)
+    .build()?;
+
+let opts = deserialize(config)?;
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @0xForerunner on 2024-10-31 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-10-31 17:19</div>
+            <div class="timeline-body"><p><code>ArgMatches</code> can store any type.  To put it into a <code>Value</code> would require limiting what is stored.  There is also nothing privileged about this and this wouldn't be useful for any other part of clap.  With all of that combined, I feel like this would best live in a separate crate.  As such, I'm going to close this for now.  If there is a reason we should reconsider this, let us know!</p>
+<p>btw brainstorming on how to deal with layered config is happening in #2763</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-10-31 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2024-10-31 19:23</div>
+            <div class="timeline-body"><p>Hey @epage thanks for taking a look. I think perhaps I wasn't entirely clear.</p>
+<p>I don't think it's possible to implement this outside this crate as the behaviour is specific to <code>FromArgMatches</code>.</p>
+<p>It's not possible to go form <code>ArgMatches</code> to <code>Value</code> without some additional context, and attributes like #[clap(flatten)] changes how things are laid out.</p>
+<p>This definitely isn't the only way get layered configuration to work, but I thought it might be a fairly easy one to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-10-31 19:33</div>
+            <div class="timeline-body"><p>Ok, so you are wanting to leverage <code>FromArgMatches</code> to know how to generate a value.  The problem there is that we'd then need to extend that trait to support this and create a whole new system for converting the user's data type to a <code>Value</code>.  This is starting to instead sound like deriving <code>serde::Deserialize</code> on the type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xForerunner">@0xForerunner</a> on 2024-10-31 19:45</div>
+            <div class="timeline-body"><p>Admittedly I'm unfamiliar with how complex deriving <code>FromArgMatches</code> really is, and I was hoping it would be a small change to return an incomplete <code>Value</code> instead of <code>Self</code>.</p>
+<p>There is some similarity to deriving <code>Deserialize</code>, with the main difference here being that <code>value_from_arg_matches</code> would return an <em>incomplete</em> value representation of <code>Self</code>, which would later be merged using <code>config-rs</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>failed to write to site-packages when using uv, works fine with vanilla pip - astral-sh/uv #3635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>failed to write to site-packages when using uv, works fine with vanilla pip</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3635">#3635</a>
+        opened by <a href="https://github.com/jamiekt">@jamiekt</a>
+        on 2024-05-17 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamiekt">@jamiekt</a> on 2024-05-17 09:03</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I'm trying to use <code>uv</code> in a docker image build. As <code>uv</code> is meant to be a &quot;drop-in replacement&quot; I've pretty much done that, dropped it in, and its failing with a permissions error.</p>
+<p>here is my Dockerfile, I'm aware of the new <code>--system</code> flag (https://github.com/astral-sh/uv/pull/2046) so I'm using that.</p>
+<pre><code class="language-Dockerfile">ARG AIRFLOW_VERSION=&quot;2.4.1&quot;
+FROM apache/airflow:slim-${AIRFLOW_VERSION}-python3.10 as base
+FROM base as development
+USER root
+RUN apt update &amp;&amp; apt install -y unzip libsasl2-dev build-essential &amp;&amp; \
+    curl &quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot; -o &quot;awscliv2.zip&quot; &amp;&amp; \
+    unzip awscliv2.zip &amp;&amp; \
+    ./aws/install &amp;&amp; \
+    rm -rf awscliv2.zip ./aws/
+USER airflow
+COPY requirements-dev.txt requirements-dev.txt
+RUN pip install uv &amp;&amp; uv pip install --no-cache-dir --system -r requirements-dev.txt
+</code></pre>
+<p>requirements_dev.txt is simply this:</p>
+<pre><code class="language-bash">aiofiles==23.2.1
+</code></pre>
+<p>(my actual requirements file is far more complicated than this, but this is sufficient to repro the error)</p>
+<p>The build (<code>docker build --target development  .</code>) fails with</p>
+<blockquote>
+<p>24.74   Caused by: failed to create directory <code>/usr/local/lib/python3.10/site-packages/aiofiles-23.2.1.dist-info</code>
+24.74   Caused by: Permission denied (os error 13)</p>
+</blockquote>
+<p>If I do <em>not</em> use <code>uv</code>:</p>
+<pre><code class="language-Dockerfile">ARG AIRFLOW_VERSION=&quot;2.4.1&quot;
+FROM apache/airflow:slim-${AIRFLOW_VERSION}-python3.10 as base
+FROM base as development
+USER root
+RUN apt update &amp;&amp; apt install -y unzip libsasl2-dev build-essential &amp;&amp; \
+    curl &quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot; -o &quot;awscliv2.zip&quot; &amp;&amp; \
+    unzip awscliv2.zip &amp;&amp; \
+    ./aws/install &amp;&amp; \
+    rm -rf awscliv2.zip ./aws/
+USER airflow
+COPY requirements-dev.txt requirements-dev.txt
+RUN pip install --no-cache-dir --user -r requirements-dev.txt
+</code></pre>
+<p>then it works fine.</p>
+<p>As <code>uv</code> is badged as a &quot;drop-in replacement&quot; is it fair to expect this to work? Any guidance on the best way to fix this would be appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamiekt">@jamiekt</a> on 2024-05-17 09:17</div>
+            <div class="timeline-body"><p>I got around this by adding</p>
+<pre><code class="language-Dockerfile">RUN chmod -R 775 /usr/local
+</code></pre>
+<p>after the <code>apt install</code> step (has to be <strong>/usr/local</strong> rather than <strong>/usr/local/lib/python3.10/site-packages</strong> because I have some packages that attempt to create files in <strong>/usr/local/bin</strong>), but I'd rather not have to grant extra permissions. I think this worked with <code>pip</code> because I used the <code>--user</code> flag so I'm wondering if there's an equivalent switch for <code>uv</code> (it seems <code>--system</code> is not that switch).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "failed to create directory `/usr/local/lib/python3.10/site-packages/<package-name> when using uv, works fine with vanilla pip" to "failed to write to site-packages when using uv, works fine with vanilla pip" by @jamiekt on 2024-05-17 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 13:45</div>
+            <div class="timeline-body"><p>Thanks for debugging it! pip will fallback from system installs to user installs if it doesn't have permissions but we don't support user installs yet. You can track that at https://github.com/astral-sh/uv/issues/2077</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-17 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-05-17 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-17 13:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uv script install into .venv overwrites python - astral-sh/uv #5152</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Uv script install into .venv overwrites python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5152">#5152</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-07-17 17:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-07-17 17:31</div>
+            <div class="timeline-body"><ul>
+<li>Install python 3.12.3 with uv.</li>
+<li>Create a new package (pyproject below)</li>
+<li>uv venv -p 3.12.3</li>
+<li>Uv creates a virtualenv that has symlink .venv/bin/python -&gt; ~/.local/share/uv/python/cpython-3.12.3-linux-x86_64-gnu/bin/python3</li>
+<li>Current package is named <code>python</code>. It has a script called <code>python</code></li>
+<li>uv sync -v</li>
+<li>Actual Result: When installing the script to .venv/bin/python it overwrites the target of the symlink. This ruins the installed python version.</li>
+<li>Expected Result: Don't follow the symlink. Probably throw an error somewhere before.</li>
+</ul>
+<p>Based on https://github.com/astral-sh/rye/issues/1235. I think this is could be a bug in Uv?</p>
+<p>Tested and reproduced with uv only (then uv 0.2.24, not the latest, I'm sorry).</p>
+<p>uv 0.2.24
+platform: linux (x86_64)</p>
+<pre><code class="language-toml">[project]
+name = &quot;python&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+dependencies = []
+requires-python = &quot;&gt;= 3.12&quot;
+
+[project.scripts]
+&quot;python&quot; = &quot;python:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/python&quot;]
+</code></pre>
+<pre><code class="language-python"># src/python/__init__.py
+def main() -&gt; int:
+    print(&quot;Hello from python!&quot;)
+    return 0
+</code></pre>
+<pre><code class="language-python"># src/python/__main__.py
+import python
+import sys
+
+sys.exit(python.main())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-17 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 17:46</div>
+            <div class="timeline-body"><p>Lol 🤦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-17 17:47</div>
+            <div class="timeline-body"><p>Thanks for reproducing over here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 17:56</div>
+            <div class="timeline-body"><p>I wonder what <code>pip</code> does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-17 18:10</div>
+            <div class="timeline-body"><p>I tested pip 24.0 now in the same project and it seems like it overwrites the symlink, not the symlink target. so .venv/bin/python is overwritten.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 18:11</div>
+            <div class="timeline-body"><p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-17 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5165.html">astral-sh/uv#5165</a> on 2024-07-17 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-17 19:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

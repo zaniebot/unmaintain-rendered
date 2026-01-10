@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `-t/--target` flag for `uv pip install` - astral-sh/uv #1517</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `-t/--target` flag for `uv pip install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1517">#1517</a>
+        opened by <a href="https://github.com/imdoroshenko">@imdoroshenko</a>
+        on 2024-02-16 17:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/imdoroshenko">@imdoroshenko</a> on 2024-02-16 17:28</div>
+            <div class="timeline-body"><p>This option is used a lot for vendoring and for custom build systems.</p>
+<p>From <code>pip install --help</code>:</p>
+<pre><code class="language-sh">  -t, --target &lt;dir&gt;          Install packages into &lt;dir&gt;. By
+                              default this will not replace
+                              existing files/folders in &lt;dir&gt;. Use
+                              --upgrade to replace existing
+                              packages in &lt;dir&gt; with new versions.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-16 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-02-16 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-17 13:03</div>
+            <div class="timeline-body"><p>I'd recommend <em>not</em> following pip's design here, as <code>--target</code> has some undesirable behaviours (it doesn't properly support uninstalls and upgrades, for example, even though the docs suggest it's OK). The use case is important to support, but I'd design a solution from scratch rather than simply taking pip's approach.</p>
+<p>In particular, pip's choice of where to put binaries, scripts and include files is essentially arbitrary and may not be the best approach.</p>
+<p>[^1]: I should say that it may be that uv can cleanly support uninstalls and upgrades, and that the weirdness in pip is because of how pip works internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgilton">@rgilton</a> on 2024-02-17 16:01</div>
+            <div class="timeline-body"><p>I'd like to add that a key application of this is to enable the building of standalone zipapps that contain all of their dependencies.  I have some workflows that use pip at the moment for this, and they would be massively accelerated if uv supported <code>-t</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcollingj">@jcollingj</a> on 2024-02-18 22:19</div>
+            <div class="timeline-body"><p>Added a thumbs up. I am also currently using -t from pip and would love to use uv for that use case instead!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imdoroshenko">@imdoroshenko</a> on 2024-02-19 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd recommend <em>not</em> following pip's design here, as <code>--target</code> has some undesirable behaviours (it doesn't properly support uninstalls and upgrades, for example, even though the docs suggest it's OK). The use case is important to support, but I'd design a solution from scratch rather than simply taking pip's approach.</p>
+<p>In particular, pip's choice of where to put binaries, scripts and include files is essentially arbitrary and may not be the best approach.</p>
+</blockquote>
+<p>As mentioned by other people, <code>-t</code> is mainly used in a very controlled way that does not expect uninstalls or upgrades. Like in vendoring tools (<a href="https://github.com/pradyunsg/vendoring/blob/main/src/vendoring/tasks/vendor.py">example</a>) and build systems for <a href="https://peps.python.org/pep-0441/">Zip Apps</a>. Or, In my case, for an in-house build system.</p>
+<p>Creating another solution from scratch is OK, but then <code>UV</code> should call itself &quot;Opinionated replacement for pip&quot; rather than <code>drop-in replacement</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-02-19 16:59</div>
+            <div class="timeline-body"><blockquote>
+<p>As mentioned by other people, <code>-t</code> is mainly used in a very controlled way that does not expect uninstalls or upgrades.</p>
+</blockquote>
+<p>That doesn't match with our experience on pip, where we have had a number of requests for better support for upgrades, etc. Another issue is https://github.com/pypa/pip/issues/10110, which seems to revolve around people incrementally adding to a directory populated using <code>-t</code>.</p>
+<p>But if <code>uv</code> is willing to <em>only</em> support the case where the directory specified in <code>-t</code> is empty, then yes, this is fine.</p>
+<blockquote>
+<p>but then UV should call itself &quot;Opinionated replacement for pip&quot; rather than drop-in replacement.</p>
+</blockquote>
+<p>I don't think <code>uv</code> is a &quot;drop in replacement&quot; for pip, nor should it try to be one. It should aim to be the best installer it can, and not be constrained by pip's legacy behaviours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shayanhoshyari">@shayanhoshyari</a> on 2024-02-25 00:38</div>
+            <div class="timeline-body"><p>I also heavily use this feature to make stand alone envs. In my use case they are used to bootstrap workers in a cloud service. I too am only costumer of this use case <code>the directory specified in -t is empty</code>.</p>
+<p>Other past alternatives were conda pack and embedding in container which were both even slower than pip!</p>
+<p>Now desperately looking at this issue to see when I can reduce our 40 min env packing time when everything changes (there are various envs for various workers) to minutes or perhaps seconds :)</p>
+<p>For context, we already started using uv for our dev env <code>pip sync</code> (which does not need -t support), and it went from 6 min to 16 sec. <code>pip compile</code> time went from 2-3 min to a few secs! ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthew-chambers-pushly">@matthew-chambers-pushly</a> on 2024-02-27 19:43</div>
+            <div class="timeline-body"><p>We utilize pip's <code>-t | --target</code> to vendor packages for Lambda@EDGE deployments, it would be nice to have this supported as an option, or to have some way of programmatically copying the packages from the cache without needing to script it ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tankanow">@Tankanow</a> on 2024-03-05 14:45</div>
+            <div class="timeline-body"><p>I second @matthew-chambers-pushly, @shayanhoshyari, et al. We do something similar to package for AWS Lambda.</p>
+<p>I think the general use case is:</p>
+<blockquote>
+<p>I would like to use <code>uv</code> outside a virtual environment to install dependencies into a directory consumable by common Python runtimes. This can be vendored format or otherwise, though vendored format may be useful for backwards compatibility.</p>
+</blockquote>
+<p>Essentially what I want is something equivalent to this script:</p>
+<pre><code class="language-bash">function uv.target(){
+  local target=${1?} ; shift
+  local args=(&quot;$@&quot;)
+  uv venv
+  # shellcheck source=/dev/null
+  source &quot;.venv/bin/activate&quot;
+  uv pip install &quot;${args[@]}&quot;
+  rm -rf &quot;${target}&quot; || true
+  mkdir -p &quot;${target}/&quot;
+  cp -r .venv/bin &quot;${target}/&quot;
+  cp -r .venv/lib/python3.*/site-packages/* &quot;${target}/&quot;
+  deactivate || true
+  rm -rf .venv
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../serverless/serverless-python-requirements/issues/830.html">serverless/serverless-python-requirements#830</a> on 2024-03-16 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2751.html">astral-sh/uv#2751</a> on 2024-04-01 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2752.html">astral-sh/uv#2752</a> on 2024-04-01 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpderbec">@mpderbec</a> on 2024-04-01 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>But if uv is willing to only support the case where the directory specified in -t is empty, then yes, this is fine.</p>
+</blockquote>
+<p>FWIW, this matches our use case: The directory is empty. (Largely because of all the limitations described above regarding upgrade/uninstall.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-04-02 08:29</div>
+            <div class="timeline-body"><p>This is the recipe for zip apps:</p>
+<pre><code class="language-console">$ mkdir tmp
+$ pip install --no-compile --target=tmp . dep_1 dep_2
+$ cd tmpdir
+$ python -m zipapp --compress --python=/usr/bin/env python3 --main=myapp.__main__:main --output=../myapp.pyz
+</code></pre>
+<p>Would be quite happy in this case to have the extra dirs (like bin) simply ignored, since they won't show up in the zipapp.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3076.html">astral-sh/uv#3076</a> on 2024-04-16 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acatalucci-synth">@acatalucci-synth</a> on 2024-04-18 17:06</div>
+            <div class="timeline-body"><p>without --prefix or --target it's really challenging to build multi stage images, my use case is copying packages to the final image. is there any workaround, waiting for any of these mechanisms to be supported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-18 18:04</div>
+            <div class="timeline-body"><blockquote>
+<p>is there any workaround</p>
+</blockquote>
+<p>It depends how careful you want to be. If you don't mind being somewhat imprecise, the script from <a href="https://github.com/astral-sh/uv/issues/1517#issuecomment-1978936510">the comment above</a> looks reasonable. It's Unix-specific and would need some tweaking for Windows because the <code>lib</code> directory on Windows is structured differently. But it's likely good enough for most use cases.</p>
+<p>If you want to handle wheels that have both <code>purelib</code> and <code>platlib</code> sections, on a target system where purelib != platlib, you might need some extra complexity. If you want to install other sections of the wheel, like <code>headers</code>, <code>scripts</code> or <code>data</code>, or you want to handle script wrappers (usually placed outside of the <code>lib</code> directory), then you'll need to do some more work. But these are the sorts of complicated questions that are part of the reason that (a) this isn't a simple feature to add, and (b) I'm advising the uv developers <em>not</em> to blindly follow what pip does (because I'm not sure pip gets the answers to these questions right...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acatalucci-synth">@acatalucci-synth</a> on 2024-04-22 11:20</div>
+            <div class="timeline-body"><p>Thanks for the extensive and fast answer! I'm basically trying to understand best practice for docker multi stage builds and uv, the script above won't quite do it as i cannot activate virtualenvs straight from dockerfiles. So far the only thing i managed to get working is:</p>
+<pre><code>FROM public.ecr.aws/docker/library/python:3.10-slim-bullseye AS build_artifacts
+RUN pip install uv
+RUN mkdir /workspace
+RUN chown 1000 /workspace
+WORKDIR /workspace
+USER 1000
+RUN uv venv
+ENV PATH=&quot;/workspace/.venv/bin:$PATH&quot;
+COPY setup.py /workspace/
+RUN uv pip install --no-cache-dir --quiet .
+
+FROM public.ecr.aws/docker/library/python:3.10-slim-bullseye
+RUN mkdir /workspace
+RUN chown 1000 /workspace
+WORKDIR /workspace
+USER 1000
+RUN mkdir /workspace/.venv
+COPY --from=build_artifacts /workspace/.venv /workspace/.venv
+ENV PATH=&quot;/workspace/.venv/bin:$PATH&quot;
+RUN python app.py
+</code></pre>
+<p>is this the recommended way of doing it? are there any caveats I might stumble onto? i've tried multiple avenues but the lack of support for both <code>--user</code> and <code>--target</code> closed off all the alternatives i could think about</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-22 11:30</div>
+            <div class="timeline-body"><p>I can't speak for <code>uv</code>, but my feeling is that there's no &quot;recommended&quot; way. If you want <code>--target</code> support, you can</p>
+<ol>
+<li>Use pip, and live with the fact that it's slower.</li>
+<li>Wait for <code>uv</code> to implement <code>--target</code>, which I'm sure won't be <em>that</em> far off given the pace of development here 🙂</li>
+<li>Work out some sort of solution that does what you want for now, and accept that it's clumsy and might break in edge cases.</li>
+</ol>
+<p>I'm not able to comment on your solution, as I don't really know what &quot;i cannot activate virtualenvs straight from dockerfiles&quot; means. <code>ENV PATH=&quot;/workspace/.venv/bin:$PATH&quot;</code> is pretty much all you need to activate a virtual environment anyway, and you could even just do <code>RUN /workspace/.venv/bin/python app.py</code>. Activation is only a command line convenience, after all...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acatalucci-synth">@acatalucci-synth</a> on 2024-04-22 11:32</div>
+            <div class="timeline-body"><p>i meant that i cannot source the activate script and that's why i do that ENV-setting. From your answer i understand that this should do it for now (which apparently isn't going to be long! 👍 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2024-04-22 13:57</div>
+            <div class="timeline-body"><p>You do not need to source the script. You can do <code>export VIRTUAL_ENV=.venv</code> to have something similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-22 14:00</div>
+            <div class="timeline-body"><p>I second <code>RUN /workspace/.venv/bin/python app.py</code>, this also ensures that all subprocess calls have the correct python environment. @acatalucci-synth As for general docker+python best practices, your dockerfile looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acatalucci-synth">@acatalucci-synth</a> on 2024-04-22 14:47</div>
+            <div class="timeline-body"><p>thanks for the suggestions and compliments for the Dockerfile! I'll be waiting for <code>--target</code> support 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3201.html">astral-sh/uv#3201</a> on 2024-04-22 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pixel-Minions">@Pixel-Minions</a> on 2024-04-22 22:06</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I am bringing a thumbs up for a target or equivalent workflow here. In my company we store independently each package, because we have a different package resolver. I am loving UV and I hope a workflow to offer freedom could be present in the roadmap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-22 23:35</div>
+            <div class="timeline-body"><p>I'm tempted to treat <code>--target</code> as, roughly, the root of a virtual environment, rather than its <code>site-packages</code> directory. I think that would lead to logical and consistent locations for binaries, purelib vs. platlib, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-23 08:14</div>
+            <div class="timeline-body"><p>That’s more like pip’s <code>--root</code> option. In my experience (and for my use cases) the key benefit of <code>--target</code> is that the directory specified is the one that is put directly on <code>sys.path</code>. The <code>--root</code> option (and it’s similar but subtly different partner <code>--prefix</code>) is far less commonly used than <code>--target</code>.</p>
+<p>With your proposal I would need to:</p>
+<ol>
+<li>Install to a temporary target.</li>
+<li>Locate the site-packages (which is in an OS and interpreter dependent location).</li>
+<li>Move that site-packages to my final target.</li>
+</ol>
+<p>This is basically what pip does internally to implement <code>--target</code>. (And is why anything beyond “install to an empty target directory” is incompletely supported).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Scrat94">@Scrat94</a> on 2024-04-23 08:49</div>
+            <div class="timeline-body"><p>@charliermarsh  I would also like to share our use case and why your tempted approach might not be suitable for us.</p>
+<p>For AWS Lambda Functions you need to bundle dependencies locally or in CI. For example if you need the <code>requests</code> library as part of your AWS Lambda Python Function, you need to install <code>requests</code> inside your Lambda Function Folder besides having it already in your .venv on root directory. That leads to the requirement of calling <code>pip install -r &quot;path-to-aws-function/requirements.txt&quot;  --target &quot;path-to-aws-function&quot;</code>.</p>
+<p>We mainly use the <code>--target</code> in our CI to install the respective dependencies for the Lambda Function and deploy it to AWS. So locally we completely switched to UV already, but in our CI we rely on a hybrid approach right now (uv used to install all dependencies in order to run e.g. pytest and pip for installing dependencies in the target AWS Lambda Functions folder for deployment).</p>
+<p>So its the last puzzle for us to get completely rid of pip. Big thanks to your effort, UV is already amazing and a productivity booster!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-23 13:23</div>
+            <div class="timeline-body"><p>@pfmoore - is there anywhere that I can read about the differences between <code>--prefix</code> and <code>--root</code>, and what use-cases they're intended to support?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-23 14:34</div>
+            <div class="timeline-body"><p>Nothing much that I know of beyond the bare pip help information <a href="https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-root">here</a>. They both come from the original distutils install schemes, as far as I know. There's some discussion of the <code>--prefix</code> scheme in the old distutils docs, <a href="https://docs.python.org/3.10/install/index.html#alternate-installation-unix-the-prefix-scheme">here</a>. The <code>--root</code> option was in <code>setuptools</code>, but as the command line interface is deprecated, I couldn't find any documentation that said anything more than what <code>pip install --help</code> has.</p>
+<p>From my understanding, <code>--prefix</code> is important for redistributors creating a standalone installation in a &quot;fake root&quot;. Things like RPM builds use this, I think. It's possible <code>--root</code> is used in that situation as well. To my knowledge, neither is commonly used by end users, whereas <code>--target</code> is very commonly used by end users, for vendoring dependencies, creating library directories for deployment in situations like webapps or serverless environments, building embedded Python environments, etc.</p>
+<p>My view is that <code>--target</code> is by far the most important case to support, and the key aspect of <code>--target</code> is installing all <em>importable</em> parts of a package (purelib and platlib) into the specified directory directly. I don't think installing scripts or headers is commonly needed, and while wheels can contain arbitrary data files, I think most packages these days put their runtime data in the package structure and use <code>importlib.resources</code> to access it.</p>
+<p>This is why I'd suggest that you start with a minimal approach that targets[^1] the known use cases, and extend it based on user feedback. So, for me, I'd go with:</p>
+<ol>
+<li>Install the <code>purelib</code> and <code>platlib</code> sections of the wheel to the target directory.</li>
+<li>Require the target to be empty before the install (you can create the target directory if it doesn't exist, but you should support an existing, but empty, directory).</li>
+<li>Don't support upgrades, uninstalls, or any other supporting features. No need for <code>list</code>, <code>show</code>, <code>sync</code>, or any other subcommands to grow a <code>--target</code> option.</li>
+<li>If you want to, install scripts/entry point wrappers to a <code>bin</code> directory in the target. That's purely for pip compatibility. I don't think it's needed, and the binaries almost certainly won't actually work, but it may make people a little more comfortable as they expect that from pip. But I'd personally prefer it if you took a stand and said these aren't needed or supported, so you won't include them.</li>
+</ol>
+<p>To be honest, just implementing that shouldn't be too difficult. The hardest part would probably be integrating it into the code, as it's nothing like a &quot;normal&quot; install[^2].</p>
+<p>[^1]: Excuse the pun 🙂
+[^2]: My long term idea for pip was to replace <em>all</em> of <code>--root</code>, <code>--prefix</code>, <code>--target</code> with a very generalised approach that let the user specify exactly what to do with each of the different subtrees in the wheel (see the &quot;Spread&quot; part of the spec <a href="https://packaging.python.org/en/latest/specifications/binary-distribution-format/#installing-a-wheel-distribution-1-0-py32-none-any-whl">here</a>). Then maybe add back the existing options as convenience wrappers over that. But there are so many special cases in the existing pip codebase that it may not ever be practical. You <em>might</em> be able to do something like that in <code>uv</code>, because you don't have all the historical baggage that pip does, but I haven't looked at that part of the <code>uv</code> code, so I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acatalucci-synth">@acatalucci-synth</a> on 2024-04-23 14:59</div>
+            <div class="timeline-body"><p>thanks, that sounds great! on 4 i'd recommend to still copy binaries. One example is &quot;ddtrace&quot;, it does include a binary that one is supposed to call to wrap the python app to add telemetry - with my approach above that seems to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-23 15:29</div>
+            <div class="timeline-body"><p>Related to binaries, it looks like pip's <code>--target</code> will put anything in the data dir at the top-level (e.g., the <code>notebook</code> package has <code>../../share/jupyter/lab/schemas/@jupyter-notebook/application-extension/menus.json1</code> and friends, and those just end up at <code>&lt;target&gt;/share/...</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-23 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Related to binaries, it looks like pip's <code>--target</code> will put anything in the data dir at the top-level</p>
+</blockquote>
+<p>Correct. But I don't know if that is right or helpful, which is why I suggest not doing so until there's feedback from real use cases that confirms it works and is needed.</p>
+<p>For example, I have no idea how Jupyter notebook could correctly find that path in a vendored situation - a brief search suggests that <code>jupyterlab_widgets\__init__.py</code> assumes the <code>share</code> directory will be located in <code>sys.prefix</code>, which simply won't be true in a vendored situation (or <em>any</em> situation I know of where <code>--target</code> would be appropriate).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-23 18:09</div>
+            <div class="timeline-body"><p>Thinking further about binaries, and in particular script wrappers, I don't even see how those can work in the general case. Assuming <code>uv</code> works like pip, when it generates a script wrapper it hard codes the absolute path of the Python interpreter used to do the install. But in all of the key use cases for <code>--target</code>, that interpreter probably won't even be present at runtime:</p>
+<ul>
+<li>Building a deployment for a cloud provider - the cloud provider's Python interpreter will probably be in a different location.</li>
+<li>Vendoring dependencies to build a zipapp or a standalone application - the app will be distributed to users who won't necessarily have the interpreter in the same place as the maintainer (in the case of a standalone app, the user may not even <em>have</em> a standalone Python interpreter).</li>
+<li>Populating a library directory for an embedded interpreter - the embedded interpreter may well not be invokable as a standalone process.</li>
+</ul>
+<p>So I'm unclear why there's <em>any</em> value in installing script wrappers, let alone worrying about where to save them.</p>
+<p>By the way, I'm aware that all of these points apply equally to pip - the main constraint with pip is that even if there's clearly no use for these things, if we remove them, there's <em>bound</em> to be someone whose workflow will break - https://xkcd.com/1172/. But as a new application, <code>uv</code> doesn't need to worry about that (unless you insist on being bug-for-bug compatible with pip, which is obviously your prerogative, but I don't think is warranted in this case...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-23 18:56</div>
+            <div class="timeline-body"><p>(By the way: I'm learning a lot from your comments and really appreciate you taking the time to provide input here. Thank you.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tankanow">@Tankanow</a> on 2024-04-23 19:04</div>
+            <div class="timeline-body"><p>This has been a lovely thread filled with informative helpful people. Kudos to @pfmoore, @charliermarsh, and the rest of the <code>pip</code> and <code>uv</code> teams actively helping out here. ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-23 19:05</div>
+            <div class="timeline-body"><p>@pfmoore - it could be okay though for scripts in (e.g.) <code>distribution-1.0.data/scripts</code> that don't contain the special shebang and thus won't be rewritten, right?</p>
+<p>(As opposed to (1) entrypoints and (2) scripts that hit the &quot;Rewrite <code>#!python</code> path here: https://packaging.python.org/en/latest/specifications/binary-distribution-format/#recommended-installer-features.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-23 19:24</div>
+            <div class="timeline-body"><p>Yeah, those should work. In general, they are discouraged in favour of entry points, though (for various reasons that would be a digression here). The question, I guess, is whether you want to support this for what is in my experience a very small minority of packages, while also installing the other cases which in general won't work as the user expects.</p>
+<p>I'm trying to avoid over-complicating things here. You <em>could</em> include a &quot;do you want to install scripts&quot; option. Or even a &quot;do you want to just install (possibly) safe scripts, or do you want to install everything&quot; option. You could also offer options to install other sections of the wheel that aren't typically useful in a <code>--target</code> situation. Or maybe you could simply create a subdirectory of the target directory, and dump everything except <code>purelib</code> and <code>platlib</code> in there.</p>
+<p>I'm not wedded to any particular option - even just &quot;do what pip does&quot; is an option. All I'm trying to do here is to explain that <em>apart</em> from the <code>purelib</code>/<code>platlib</code> behaviour, there's nothing particularly helpful about pip's behaviour, and in fact it may be actively misleading (in the sense that it <em>looks</em> like it works, but it doesn't).</p>
+<p>The only behaviours I strongly advise are:</p>
+<ol>
+<li>Add a <code>--target</code> option 😉</li>
+<li>Require that the target is empty (or doesn't exist) in advance.</li>
+</ol>
+<p>And a third, I guess - keep it simple and be guided by actual use cases, rather than assuming &quot;if pip has it, it must be important&quot;.</p>
+<p>(I'm also enjoying these discussions, by the way - it's nice to be able to take a fresh look at these sorts of design decisions, and actually think about what works best, rather than having to always think in terms of &quot;what can we manage to do without breaking things&quot; 🙂)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3257.html">astral-sh/uv#3257</a> on 2024-04-25 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-25 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jaraco/pip-run/issues/104.html">jaraco/pip-run#104</a> on 2024-07-16 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5952.html">astral-sh/uv#5952</a> on 2024-08-09 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justinTM">@justinTM</a> on 2025-04-10 00:30</div>
+            <div class="timeline-body"><p>it exists as of <code>uv 0.6.14</code>:</p>
+<pre><code class="language-console">$ uv pip install --help
+...
+      --target &lt;TARGET&gt;
+          Install packages into the specified directory, rather than into the virtual or system Python
+          environment. The packages will be installed at the top-level of the directory
+...
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

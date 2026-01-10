@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change project to virtual, `uv sync` still installs it - astral-sh/uv #6749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Change project to virtual, `uv sync` still installs it</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6749">#6749</a>
+        opened by <a href="https://github.com/j178">@j178</a>
+        on 2024-08-28 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/j178">@j178</a> on 2024-08-28 13:57</div>
+            <div class="timeline-body"><h2>Steps to reproduce</h2>
+<pre><code class="language-console">$ uv init project --lib
+$ cd project
+$ uv sync
+
+$ cat pyproject.toml
+[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+$ cat uv.lock
+version = 1
+requires-python = &quot;&gt;=3.12&quot;
+
+[[package]]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+source = { editable = &quot;.&quot; }
+</code></pre>
+<p>After removed the <code>[build-system]</code> section from <code>pyproject.toml</code>, the project should become virtual, but <code>uv sync</code> still build and installs the virtual project:</p>
+<pre><code class="language-console">$ cat pyproject.toml
+[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+$ uv sync -v
+DEBUG uv 0.3.5
+DEBUG Found project root: `/private/tmp/project`
+DEBUG No workspace root found, using project root
+DEBUG The virtual environment's Python version satisfies `Python &gt;=3.12`
+DEBUG Using request timeout of 30s
+DEBUG Acquired lock for `/Users/Jo/.cache/uv/built-wheels-v3/editable/a0e7529ceb99aa48`
+DEBUG Found static `pyproject.toml` for: project @ file:///private/tmp/project
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 5ms
+DEBUG Using request timeout of 30s
+DEBUG Requirement installed, but not fresh: project==0.1.0 (from file:///private/tmp/project)
+DEBUG Identified uncached requirement: project @ file:///private/tmp/project
+DEBUG Acquired lock for `/Users/Jo/.cache/uv/built-wheels-v3/editable/a0e7529ceb99aa48`
+DEBUG Building: project @ file:///private/tmp/project
+INFO Ignoring empty directory
+DEBUG Solving with installed Python version: 3.12.5
+DEBUG Adding direct dependency: setuptools&gt;=40.8.0
+DEBUG Found fresh response for: https://pypi.org/simple/setuptools/
+DEBUG Searching for a compatible version of setuptools (&gt;=40.8.0)
+DEBUG Selecting: setuptools==74.0.0 [compatible] (setuptools-74.0.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/df/b5/168cec9a10bf93b60b8f9af7f4e61d526e31e1aad8b9be0e30837746d700/setuptools-74.0.0-py3-none-any.whl.metadata
+DEBUG Tried 1 versions: setuptools 1
+DEBUG Split specific environment resolution took 0.003s
+DEBUG Installing in setuptools==74.0.0 in /Users/Jo/.cache/uv/builds-v0/.tmpJgiFHb
+DEBUG Requirement already cached: setuptools==74.0.0
+DEBUG Installing build requirement: setuptools==74.0.0
+DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_editable()`
+DEBUG Calling `setuptools.build_meta:__legacy__.build_editable(&quot;/Users/Jo/.cache/uv/built-wheels-v3/editable/a0e7529ceb99aa48/cH78NBLJe7WJ1SJlYzd2P/.tmp6a6fqx&quot;, {}, None)`
+DEBUG Finished building: project @ file:///private/tmp/project
+Prepared 1 package in 579ms
+DEBUG Uninstalled project (7 files, 1 directory)
+Uninstalled 1 package in 0.87ms
+Installed 1 package in 1ms
+ ~ project==0.1.0 (from file:///private/tmp/project)
+</code></pre>
+<h2>Environment</h2>
+<pre><code>uv 0.3.5 (53ef633c6 2024-08-28) - the master tip
+macOS 14.6.1 (23G93)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Change project to non-project, `uv sync` still installs it" to "Change project to virtual, `uv sync` still installs it" by @j178 on 2024-08-28 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 13:59</div>
+            <div class="timeline-body"><p>I don't think our changes have released yet! #6585 is in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-28 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 13:59</div>
+            <div class="timeline-body"><p>Oh sorry I see &quot;master tip&quot; now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 14:00</div>
+            <div class="timeline-body"><p>I can take a look at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 14:01</div>
+            <div class="timeline-body"><p>Presumably because the lockfile isn't treated as stale? (my naive guess haha)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 14:03</div>
+            <div class="timeline-body"><p>Probably yeah...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-28 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-28 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 14:03</div>
+            <div class="timeline-body"><p>Thank you for testing on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6754.html">astral-sh/uv#6754</a> on 2024-08-28 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-28 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-28 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12311.html">astral-sh/uv#12311</a> on 2025-03-19 11:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1419.html">astral-sh/uv#1419</a> on 2025-05-15 21:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

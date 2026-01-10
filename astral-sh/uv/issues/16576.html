@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected dependency resolving with `platform_machine` and `--python-platform` - astral-sh/uv #16576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected dependency resolving with `platform_machine` and `--python-platform`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16576">#16576</a>
+        opened by <a href="https://github.com/schlamar">@schlamar</a>
+        on 2025-11-03 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/schlamar">@schlamar</a> on 2025-11-03 10:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Passing <code>--python 3.9 --python-platform i686-pc-windows-msvc</code> to uv results in different dependency resolving than using <code>--python cpython-3.9-windows-x86-none</code>.</p>
+<p>Minimal example pyproject.toml</p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.1&quot;
+dependencies = [
+    &quot;greenlet &gt;= 1;(platform_machine=='aarch64' or (platform_machine=='ppc64le' or (platform_machine=='x86_64' or (platform_machine=='amd64' or (platform_machine=='AMD64' or (platform_machine=='win32' or platform_machine=='WIN32'))))))&quot;,
+]
+</code></pre>
+<p>Note: this is a real world example extracted from SQLAlchemy: https://github.com/sqlalchemy/sqlalchemy/blob/rel_2_0/setup.cfg#L41</p>
+<p>Running <code> uv sync --python cpython-3.9-windows-x86-none</code> results in greenlet getting installed. Running <code>uv sync --python 3.9 --python-platform i686-pc-windows-msvc</code> greenlet is missing.</p>
+<p>I would have expected that both commands would behave exactly the same and greenlet is getting installed in both cases.</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.9.7 (0adb44480 2025-10-30)</p>
+<h3>Python version</h3>
+<p>Python 3.9.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @schlamar on 2025-11-03 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-11-03 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-03 16:46</div>
+            <div class="timeline-body"><p>Can you tell me what <code>platform_machine</code> value the <code>cpython-3.9-windows-x86-none</code> Python returns? I don't have my Windows machine on me. (It's <code>import platform; platform.machine()</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-11-04 15:30</div>
+            <div class="timeline-body"><p>This returns the architecture of the machine / processor and not the architecture of the running Python interpreter:</p>
+<pre><code>&gt; py -3.9-32 -c &quot;import platform; print(platform.machine())&quot;
+AMD64
+&gt; py -3.10-64 -c &quot;import platform; print(platform.machine())&quot;
+AMD64
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-11-04 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-04 19:10</div>
+            <div class="timeline-body"><p>I think <code>Self::I686PcWindowsMsvc =&gt; &quot;x86&quot;</code> is probably wrong. We shouldn't be returning <code>x86</code> there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-04 19:14</div>
+            <div class="timeline-body"><p>Wait sorry, I think that's correct. Can you explain why you would expect Greenlet to be installed in both cases? Are you intending to use <code>x86_64</code>? <code>x86</code> on its own is quite rare now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-11-04 19:51</div>
+            <div class="timeline-body"><p><code>uv sync --python cpython-3.9-windows-x86-none</code> does install greenlet x86 wheel.</p>
+<p><code>uv sync --python 3.9 --python-platform i686-pc-windows-msvc</code> does not install x86 greenlet wheel.</p>
+<p>Both commands install x86 wheels (for example SQLAlchemy) if there is no <code>platform_machine</code> marker.</p>
+<p>So my guess is that uv is misbehaving in combination with the <code>platform_machine</code> marker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-04 23:11</div>
+            <div class="timeline-body"><p>But, to clarify, why would <code>--python-platform i686-pc-windows-msvc</code> install the x86 greenlet wheel? x86 is <em>not</em> listed in the marker set:</p>
+<pre><code>(platform_machine=='aarch64' or (platform_machine=='ppc64le' or (platform_machine=='x86_64' or (platform_machine=='amd64' or (platform_machine=='AMD64' or (platform_machine=='win32' or platform_machine=='WIN32'))))))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-04 23:13</div>
+            <div class="timeline-body"><p>(https://github.com/astral-sh/uv/issues/15060 might be relevant? The fact that <code>--python cpython-3.9-windows-x86-none</code> installs the greenlet wheel seems wrong but also hard to avoid because <code>platform_machine</code> returns the host architecture, not the Python architecture.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-11-05 07:52</div>
+            <div class="timeline-body"><p>Ah I see. I guess you are misinterpreting how the <code>platform_machine</code> marker is designed to work. I totally understand though as this is pretty weird - especially on Windows.</p>
+<p>The essential part: The platform_machine marker does not correspond to the platform part of the Python target triple.</p>
+<p>A `platform_machine=='AMD64' marker basically says I need this dependency on a Windows 64bit host. It does not say I need a wheel for a 64bit Python interpreter.</p>
+<p>If you run a 32bit interpreter on a 64bit Windows, greenlet has to be installed if the following is configured</p>
+<pre><code>&quot;greenlet;platform_machine=='AMD64'&quot;
+</code></pre>
+<p>#15060 is definitely related - I assume this has the same root cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-05 13:56</div>
+            <div class="timeline-body"><p>I think I have a good understanding of the problem, I'm just not sure that anything should actually be changed here.</p>
+<p>If you pass <code>--python-platform i686-pc-windows-msvc</code>, we have to choose some value for <code>platform_machine</code>, and it seems more incorrect to choose <code>AMD64</code> instead of <code>x86</code>. Like, if you say you're installing for a 32-bit architecture, why would we <em>assume</em> it's a 64-bit machine?</p>
+<p>Similarly, is it even intentional (from SQLAlchemy's perspective) that greenlet is installed on an i686 Python? They don't even ship wheels for that architecture beyond Python 3.9. My guess is they're using it the way that most people assume it is meant to be interpreted (i.e., that you're on a Python that can run AMD64 wheels)?</p>
+<p>Regardless, I am not really convinced that anything should change here given the limitations in the marker design. What would you expect to change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-11-05 14:27</div>
+            <div class="timeline-body"><p>Looking at the values from sqlalchemy above I assume the value for platform_machine on a 32bit Windows should be <code>WIN32</code> and not <code>x86</code>.</p>
+<p>However, I would expect if you run uv on a Windows host it reads the platform_machine from the host and not from the value passed to python-platform.</p>
+<p>This leaves only the ambiguous case where you &quot;cross&quot; target from non Windows host to a Windows host. I think AMD64 might be the better default for this case. There is no Windows 11 32bit, so a 32bit Windows host is quite rare these days. Running a 32bit interpreter on a 64bit Windows host is much more common.</p>
+<p>05.11.2025 14:58:17 Charlie Marsh <em><strong>@</strong></em>.***&gt;:</p>
+<blockquote>
+<pre><code> [Bild]*charliermarsh* left a comment (astral-sh/uv#16576)[https://github.com/astral-sh/uv/issues/16576#issuecomment-3491357744]</code></pre>
+<p>I think I have a good understanding of the problem, I'm just not sure that anything should actually be changed here.</p>
+<p>If you pass <em>--python-platform i686-pc-windows-msvc</em>, we have to choose some value for <em>platform_machine</em>, and it seems more incorrect to choose <em>AMD64</em> instead of <em>x86</em>. Like, if you say you're installing for a 32-bit architecture, why would we /assume/ it's a 64-bit machine?</p>
+<p>Similarly, is it even intentional (from SQLAlchemy's perspective) that greenlet is installed on an i686 Python? They don't even ship wheels for that architecture beyond Python 3.9. My guess is they're using it the way that most people assume it is meant to be interpreted (i.e., that you're on a Python that can run AMD64 wheels)?</p>
+<p>Regardless, I am not really convinced that anything should change here given the limitations in the marker design. What would you expect to change?</p>
+<p>—
+Reply to this email directly, view it on GitHub[https://github.com/astral-sh/uv/issues/16576#issuecomment-3491357744], or unsubscribe[https://github.com/notifications/unsubscribe-auth/AAB2IPG26UKKITBUKEXMCKD33H66RAVCNFSM6AAAAACK7AEEOGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTIOJRGM2TONZUGQ].
+You are receiving this because you authored the thread.
+[Verfolgungsbild][https://github.com/notifications/beacon/AAB2IPHKLZEAQXB6EMAQLBD33H66RA5CNFSM6AAAAACK7AEEOGWGG33NNVSW45C7OR4XAZNMJFZXG5LFINXW23LFNZ2KUY3PNVWWK3TUL5UWJTWQDHSDA.gif]</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-05 14:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Looking at the values from sqlalchemy above I assume the value for platform_machine on a 32bit Windows should be <code>WIN32</code> and not <code>x86</code>.</p>
+</blockquote>
+<p>From my research, I don't think this is true (though I don't have a machine handy to test it on), it seems that it returns <code>PROCESSOR_ARCHITECTURE</code> which is <code>x86</code> on 32-bit Windows. <code>win32</code> is commonly the <code>sys.platform</code> value, but AFAICT <code>platform.machine</code> is <code>x86</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-05 14:48</div>
+            <div class="timeline-body"><p>We could consider changing the <code>platform_machine</code> value to <code>AMD64</code> but it shouldn't be dependent on the host machine. It's very important that those values are totally independent of the host.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

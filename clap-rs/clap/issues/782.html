@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: allow specifying argument multiple value terminator - clap-rs/clap #782</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: allow specifying argument multiple value terminator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/782">#782</a>
+        opened by <a href="https://github.com/vi">@vi</a>
+        on 2016-12-21 22:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vi">@vi</a> on 2016-12-21 22:49</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p><code>rustc 1.15.0-nightly (0bd2ce62b 2016-11-19)</code></p>
+<h3>Affected Version of clap</h3>
+<p>2.19.2</p>
+<h3>Description</h3>
+<p>clap should be able to accept array of command line arguments, delimited by <code>;</code> or <code>--</code> or just end of command line arguments, suitable to be used for <a href="https://doc.rust-lang.org/std/process/struct.Command.html#args.v">spawning a command with arguments</a> specified by user without any escaping/unescaping, like in <a href="https://linux.die.net/man/1/find">find(1)</a> or <a href="https://linux.die.net/man/1/xargs">xargs(1)</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-27 04:13</div>
+            <div class="timeline-body"><p>clap already supports <code>--</code> for ending argument parsing, there are also things like <a href="https://docs.rs/clap/2.19.2/clap/enum.AppSettings.html#variant.TrailingVarArg"><code>AppSettings::TrailingVarArg</code></a> which is essentially <code>--</code> but automatically for the final positional argument.</p>
+<p>Is that what you're talking about?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-27 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2016-12-27 12:22</div>
+            <div class="timeline-body"><p>This works, but has limitations:</p>
+<ol>
+<li>It accepts only one array. How do I accept two VarArgs?</li>
+<li>It is expected to work only at the end;</li>
+<li>It is tied to positional arguments, not named arguments like with <code>myprog posarg1 posarg2 --named-vararg nva1 nva2 --nva3 nva4 \; posarg3 posarg4</code></li>
+<li>It may require additional parsing for recognizing the delimiter in application after clap returned. If there is already rich command line interface and positional arguments already have assigned meanings. TrailingVarArg may even already used.</li>
+</ol>
+<p>Is this use case (like find(1) in Rust) too tricky and justifies doing additional command line parsing outside clap, inside application?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-27 13:28</div>
+            <div class="timeline-body"><p>Can you show me an example invocation of what you're trying to do?</p>
+<pre><code>$ prog --opt one,two,three;four,five,six
+</code></pre>
+<p>Is already supported. The result is two values of <code>opt</code> <code>one,two,three</code> and <code>four,five,six</code> which you could then split on <code>,</code> to create vecs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2016-12-27 13:44</div>
+            <div class="timeline-body"><p>It requires escaping of <code>,</code> or <code>;</code>. It does not look &quot;transparent&quot; for shell scripting.</p>
+<p>It should be usable in something like this <code>script.sh</code>:</p>
+<pre><code>#!/bin/sh
+prog --delimiter ';' --opt1 some_script1 &quot;$@&quot; ';' --opt2 some_script2 &quot;$@&quot; ';'
+</code></pre>
+<p>Arguments supplied to to <code>script.sh</code> are expected to to delivered to <code>some_script1</code> and <code>some_script2</code> as is, without any escaping/unescaping. It should not remove quotation marks. Empty arguments should remain empty. Exception: argument that consists solely of the delimiter <code>;</code>. The array of arguments gets into <code>script.sh</code>, gets duplicated by usage of two <code>&quot;$@&quot;</code>s, passed as is to <code>prog</code>, travels though it (remaining as array, not serialized to string) and arrives into <code>some_script1</code> and  <code>some_script2</code> as array.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 02:52</div>
+            <div class="timeline-body"><p>Ah ok, I think I understand now. Correct me if I'm wrong (again 😜 ), but you're looking for a way to <em>end</em> an array of values with a specified character? So really, it's a way to specify the array <em>terminator</em>, not <em>delimiter</em>.</p>
+<p>I.e. you want <code>$ prog --prog-arg1 val1 val2 --passed-through-flag -o \; --prog-arg2</code> where only <code>--prog-arg1</code> and <code>--prog-arg2</code> are arguments of <code>prog</code>, but all the others are essentially captured values inside <code>--prog-arg1</code></p>
+<p>Currently, this isn't supported, as you've asserted. It would be an easy additoin though. There are a few issues slightly higher on the bucket list first, but I should be able to get this shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-12-28 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2016-12-28 14:31</div>
+            <div class="timeline-body"><p>Yes, it is array terminator.</p>
+<blockquote>
+<p>It would be an easy addition though.</p>
+</blockquote>
+<p>User-overridable separator may complicate this a bit. With fixed separator it is tricky to &quot;recursively re-enter&quot; the same program. Also currently named options don't accept array values. Also non-final positional arguments shoud be able to handle this: <code>prog pos1 trickypos2 pos2arg1 pos2arg2 \; pos3 pos4</code>. In this usage <code>pos1</code> is likely to be the user-specified delimiter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>User-overridable separator may complicate this a bit.</p>
+</blockquote>
+<p>It wouldn't be that hard depending on how exactly you define the CLI.</p>
+<blockquote>
+<p>Also currently named options don't accept array values.</p>
+</blockquote>
+<p>What do you mean by array values?</p>
+<pre><code>$ prog --arg val1 val2 val3 val4
+</code></pre>
+<p>This gives <code>arg</code> the values <code>[&quot;val1&quot;, &quot;val2&quot;, &quot;val3&quot;, &quot;val4&quot;]</code></p>
+<blockquote>
+<p><code>prog pos1 trickypos2 pos2arg1 pos2arg2 \; pos3 pos4</code>. In this usage <code>pos1</code> is likely to be the user-specified delimiter.</p>
+</blockquote>
+<p>You'd have to do a double parse of the arguments, but since that takes nanoseconds, it's not a big deal.</p>
+<p>Suppose this get implemented, you'd just do something like</p>
+<pre><code class="language-rust">let pre_matches = App::new(&quot;prog&quot;)
+    .arg(Arg::with_name(&quot;pos1&quot;)
+        .required(true))
+    .arg(Arg::with_name(&quot;dummy-arg&quot;)
+        .multiple(true)
+        .allow_hyphen_values(true))
+    .get_matches();
+
+let matchse = App::new(&quot;prog&quot;)
+    .arg(Arg::with_name(&quot;pos1&quot;)
+        .required(true))
+    .arg(Arg::with_name(&quot;pass-through&quot;)
+        .long(&quot;pass&quot;)
+        .multiple(true)
+        .terminator(pre_matches.value_of(&quot;pos1&quot;).unwrap())
+        .allow_hyphen_values(true))
+    .arg(Arg::with_name(&quot;pos2&quot;))
+    .arg(Arg::with_name(&quot;pos3&quot;))
+    .get_matches();
+</code></pre>
+<p>Then you could easily run,</p>
+<pre><code>$ prog \; --pass other --args -to pass --through \; pos2 pos3
+
+OR
+
+$ prog z --pass other --args -to pass --through z pos2 pos3
+</code></pre>
+<p>You could also do an optional terminator like so:</p>
+<pre><code class="language-rust">let pass_through_arg = Arg::with_name(&quot;pass-through&quot;)
+        .long(&quot;pass&quot;)
+        .multiple(true)
+        .allow_hyphen_values(true);
+
+let app = App::new(&quot;prog&quot;)
+    .arg(Arg::with_name(&quot;term&quot;)
+        .long(&quot;terminator&quot;)
+        .takes_value(true))
+    .arg(Arg::with_name(&quot;pos1&quot;))
+    .arg(Arg::with_name(&quot;pos2&quot;));
+
+let mut matches = app
+    .arg(pass_through_arg.terminator(&quot;;&quot;)) // Set a default terminator of ;
+    .get_matches();
+
+matches = if let Some(term) = matches.value_of(&quot;term&quot;) {
+    app.arg(pass_through_arg.terminator(term))
+        .get_matches()
+} else {
+    matches
+};
+</code></pre>
+<p>Then you could run,</p>
+<pre><code>$ prog --pass other --args -to pass --through \; pos1 pos2
+
+OR
+
+$ prog --terminator z --pass other --args -to pass --through z pos1 pos2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2016-12-28 17:30</div>
+            <div class="timeline-body"><p>Looks reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 18:03</div>
+            <div class="timeline-body"><p>OK. The only thing not implemented yet is the <code>Arg::terminator</code> part which should be easy. Named options already support arrays. :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2016-12-28 20:45</div>
+            <div class="timeline-body"><p>Are you planning to implement this yourself of will wait for a pull request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 22:54</div>
+            <div class="timeline-body"><p>I plan on implementing it once I finish the current issue I'm working on. Depending on what sort of free time I've got it could be done and merged within the next few days. Of course, if someone beats me to it I'll gladly accept :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: accepting delimited array of arguments" to "Feature request: allow specifying argument multiple value terminator" by @kbknapp on 2016-12-29 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2017-01-02 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2017-01-03 00:48</div>
+            <div class="timeline-body"><p>Should overridable terminator by double parsing pattern be documented somewhere as a best practice (to avoid flourishing of hardcoded separator command line APIs which are harmful in the long term)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-03 04:00</div>
+            <div class="timeline-body"><p>@vi it wouldn't hurt to document it somewhere, perhaps in the <code>examples/</code>, and making a call out to it in the docs page? I think it's a little too specific for the actual docs page, but I wouldn't mind if there's a callout to go look at it if applicable.</p>
+<p>I don't think there'll be a huge rush of hard-coded terminators though. 😜</p>
+<p>Once I get the big 2.20 update out, I can try to put an example together, unless someone beats me to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1125.html">clap-rs/clap#1125</a> on 2017-12-08 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/83.html">epage/clapng#83</a> on 2021-12-06 16:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:23 UTC
+    </footer>
+</body>
+</html>

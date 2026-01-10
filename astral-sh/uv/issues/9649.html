@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimize '#' usage in git dependencies - astral-sh/uv #9649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optimize '#' usage in git dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9649">#9649</a>
+        opened by <a href="https://github.com/minmax">@minmax</a>
+        on 2024-12-04 22:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/minmax">@minmax</a> on 2024-12-04 22:05</div>
+            <div class="timeline-body"><p>If i have this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+requires-python = &quot;&gt;=3.11&quot;
+version = &quot;0.0.1&quot;
+dependencies = [
+    &quot;django-types@git+https://github.com/sbdchd/django-types.git@main#d7c95ba&quot;,
+]
+</code></pre>
+<p>and run <code>uv sync</code> 5 times, the last shows:</p>
+<pre><code class="language-bash">uv sync
+# Resolved 3 packages in 131ms
+# Audited 2 packages in 0.01ms
+</code></pre>
+<p><code>0,18s</code> total</p>
+<p>but when i have this:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;django-types@git+https://github.com/sbdchd/django-types.git@main&quot;,
+]
+</code></pre>
+<p>(drop <code>#d7c95ba</code>)
+<code>uv sync</code> works as fast as expected</p>
+<pre><code class="language-bash"> uv sync
+# Resolved 3 packages in 1ms
+# Audited 2 packages in 0.01ms
+</code></pre>
+<p><code>0,06s</code> total</p>
+<pre><code>uv --version  
+uv 0.5.6 (Homebrew 2024-12-03)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-04 22:09</div>
+            <div class="timeline-body"><p>What is <code>@main#d7c95ba</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minmax">@minmax</a> on 2024-12-05 01:01</div>
+            <div class="timeline-body"><blockquote>
+<p>What is <code>@main#d7c95ba</code>?</p>
+</blockquote>
+<p><code>main</code> - branch
+<code>#d7c95ba</code> - commit hash</p>
+<p>hm, <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#direct-references">docs</a> don't say anything about branches, only about tags <code>@&lt;tag&gt;#&lt;commit-hash&gt;</code></p>
+<h2>Some more tests</h2>
+<hr>
+
+<h3>only hash variant</h3>
+<pre><code class="language-toml">dependencies = [
+    &quot;django-types@git+https://github.com/sbdchd/django-types.git@d7c95ba&quot;,
+]
+</code></pre>
+<p>fast as hell</p>
+<pre><code class="language-bash">uv sync
+# Resolved 3 packages in 1ms
+# Audited 2 packages in 0.02ms                                                                                                                                           
+</code></pre>
+<p><code>0,06s</code> total</p>
+<hr>
+
+<h3>tag + hash variant</h3>
+<pre><code class="language-toml">dependencies = [
+    &quot;gunicorn@git+https://github.com/benoitc/gunicorn.git@23.0.0#411986d6191114dd1d1bbb9c72c948dbf0ef0425&quot;,
+]
+</code></pre>
+<p>have a 3x downgrade</p>
+<pre><code class="language-bash">uv sync
+# Resolved 3 packages in 114ms
+# Audited 2 packages in 0.01ms
+</code></pre>
+<p><code>0,16s</code> total</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-05 01:02</div>
+            <div class="timeline-body"><p>I believe you just want <code>@commit</code>, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 01:17</div>
+            <div class="timeline-body"><p>I don't know what it means to provide both a branch/tag and a hash, you should just provide one or the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-06 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-06 00:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:44 UTC
+    </footer>
+</body>
+</html>

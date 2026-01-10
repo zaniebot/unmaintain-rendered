@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>universal-lock: audit data structures to ensure they can handle multiple versions of the same package - astral-sh/uv #3927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>universal-lock: audit data structures to ensure they can handle multiple versions of the same package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3927">#3927</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-05-30 18:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-30 18:27</div>
+            <div class="timeline-body"><p>Basically, it is suspected that there are some parts of our resolver that implicitly rely on the fact that there is only one version of a package available in resolution. This often leads to things like indexing on just package name. But we probably need to index on version (and possibly extra name?).</p>
+<p>This was first brought up by @charliermarsh in https://github.com/astral-sh/uv/pull/3831#pullrequestreview-2086236974</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2024-05-30 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-05-30 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3350.html">astral-sh/uv#3350</a> on 2024-05-30 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 18:55</div>
+            <div class="timeline-body"><p>Here's an example failing <code>pyproject.toml</code> that should resolve:</p>
+<pre><code class="language-toml">[project]
+name = &quot;black&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Default template for a Flit project&quot;
+authors = [
+    {name = &quot;konstin&quot;, email = &quot;konstin@mailbox.org&quot;},
+]
+dependencies = [
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= '3.12'&quot;,
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl ; python_version &lt; '3.12'&quot;
+]
+requires-python = &quot;&gt;=3.11,&lt;3.13&quot;
+license = {text = &quot;MIT&quot;}
+
+[build-system]
+requires = [&quot;flit_core&gt;=3.4,&lt;4&quot;]
+build-backend = &quot;flit_core.buildapi&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3347.html">astral-sh/uv#3347</a> on 2024-06-10 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-12 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-12 11:24</div>
+            <div class="timeline-body"><p>I see three main types we have to change:</p>
+<ul>
+<li><code>Urls</code>, manifest and lookahead resolver: <code>Urls</code> needs to change from package name -&gt; url to package name -&gt; marker -&gt; url. The lookahead resolver needs to be aware and track diverging branches and forward them to the manifest, which forwards them to the url resolver.</li>
+<li>In the same pattern as <code>Urls</code>, <code>Locals</code> needs to become branch aware.</li>
+<li><code>get_dependencies_forking</code> needs to make <code>PubGrubRequirement::from_requirement</code> aware of the marker subset we're in so we can filter <code>Urls</code> and <code>Locals</code> correctly.</li>
+<li><code>PreReleaseMode</code>: When one branch has a prerelase, a different branch with a different version range doesn't need to allow this version range.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-12 11:40</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li><code>get_dependencies_forking</code> needs to make <code>PubGrubRequirement::from_requirement</code> aware of the marker subset we're in so we can filter <code>Urls</code> and <code>Locals</code> correctly.</li>
+</ul>
+</blockquote>
+<p>I'm working on this piece today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 12:35</div>
+            <div class="timeline-body"><p>Why does the lookahead resolver or the manifest need to track diverging branches? Isn’t it enough to just track the markers, then handle divergence in Urls?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-12 12:45</div>
+            <div class="timeline-body"><p>Let's say we have</p>
+<p>root:</p>
+<pre><code>a @ https://example.org/a311 ; python_version == &quot;3.11&quot;
+a @ https://example.org/a312 ; python_version == &quot;3.12&quot;
+</code></pre>
+<p>https://example.org/a311:</p>
+<pre><code>b @ https://example.org/b311_win32 ; sys_platform == &quot;win32&quot;
+b @ https://example.org/b311_linux ; sys_platform == &quot;linux&quot;
+</code></pre>
+<p>https://example.org/a312:</p>
+<pre><code>b @ https://example.org/b312_win32 ; sys_platform == &quot;win32&quot;
+b @ https://example.org/b312_linux ; sys_platform == &quot;linux&quot;
+</code></pre>
+<p>Here we need to keep track of the markers so that when we ask &quot;what is the url of b for <code>python_version == &quot;3.11&quot; &amp;&amp; sys_platform == &quot;win32&quot;</code>?&quot;, we get <code>https://example.org/b311_win32</code>. We could try doing this in <code>Urls</code>, but i think it has to live in the lookahead resolver, which needs to keep track where a url came from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 13:05</div>
+            <div class="timeline-body"><p>It needs to track the requiring markers, just like it tracks the requiring extra, but I don't know that it needs to track <em>divergence</em>. Anyway, give it a shot, the implementation will prove out whether it's necessary or not, I might be wrong here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-12 13:10</div>
+            <div class="timeline-body"><p>Yes, the lookahead resolver does not actually need to check the divergence, it just needs to remember it which marker-conditionalized branch it currently is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @BurntSushi by @konstin on 2024-06-20 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-06-20 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4435.html">astral-sh/uv#4435</a> on 2024-06-21 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-27 09:53</div>
+            <div class="timeline-body"><p>I'm closing this in favor of the more specific #4579 and #4580</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-06-27 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @konstin on 2024-06-27 09:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

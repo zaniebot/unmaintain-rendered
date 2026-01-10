@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>find_uv_bin fails to find uv when already inside a virtualenv - astral-sh/uv #10194</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>find_uv_bin fails to find uv when already inside a virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10194">#10194</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2024-12-27 14:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2024-12-27 14:58</div>
+            <div class="timeline-body"><p>I am inside a virtualenv that was created using mise and uv where uv is installed</p>
+<p>Code to reproduce:</p>
+<pre><code class="language-shell">❯ echo $VIRTUAL_ENV
+/Users/ssbarnea/.venv
+
+❯ which python3
+/Users/ssbarnea/.venv/bin/python3
+
+❯ which uv
+/Users/ssbarnea/.config/mise/installs/python/3.13.0/bin/uv
+
+❯ python3 -c &quot;from uv._find_uv import find_uv_bin; print(find_uv_bin())&quot;
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+    from uv._find_uv import find_uv_bin; print(find_uv_bin())
+                                               ~~~~~~~~~~~^^
+  File &quot;/Users/ssbarnea/.config/mise/installs/python/3.13.0/lib/python3.13/site-packages/uv/_find_uv.py&quot;, line 37, in find_uv_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /Users/ssbarnea/.local/bin/uv
+</code></pre>
+<p>That is breaking tox-uv plugin which needs this functionality. I think that fixing this should be quite easy and I will try to propose a patch.</p>
+<p>I should mention that in this case the venv was created with use system packages option, and probably this is why <code>uv</code> module is present but fails to find its own script (executable in our case), because that script is not inside the venv own script directory but it is inside system python script directory.</p>
+<p>In fact if find_uv_bin implementation would have used <code>shutil.which</code> to find the executable it would have worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10195.html">astral-sh/uv#10195</a> on 2024-12-27 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-28 17:22</div>
+            <div class="timeline-body"><blockquote>
+<p>In fact if find_uv_bin implementation would have used <code>shutil.which</code> to find the executable it would have worked.</p>
+</blockquote>
+<p>It's very intentional that we do not use that as it would find an arbitrary uv installation rather than the one corresponding to the Python module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-06 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-06 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-16 16:22</div>
+            <div class="timeline-body"><p>@zanieb I do understand the concern about find random other uv installations but at the same time this underlines a critical architectural flaw regarding <code>uv</code>. The fact that the <code>script</code> is the binary executable. I do think that the correct way to achieve this is to keep the script as a minimal python script that just calls the <code>python -m uv</code> which translates to execution of <code>uv/__main__.py</code> which would call the embedded binary that would have to included inside the module.</p>
+<p>This bug almost renders <code>system-site-packages</code> unusable with uv, as once you try to use it, you lose access to uv and no way to fix it:</p>
+<pre><code class="language-shell"># inside the venv created by uv with system site packages:
+❯ \pip install uv
+Requirement already satisfied: uv in /Users/ssbarnea/.config/mise/installs/python/3.13.1/lib/python3.13/site-packages (0.5.18)
+
+
+❯ python -m uv
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/ssbarnea/.config/mise/installs/python/3.13.1/lib/python3.13/site-packages/uv/__main__.py&quot;, line 47, in &lt;module&gt;
+    _run()
+    ~~~~^^
+  File &quot;/Users/ssbarnea/.config/mise/installs/python/3.13.1/lib/python3.13/site-packages/uv/__main__.py&quot;, line 27, in _run
+    uv = os.fsdecode(find_uv_bin())
+                     ~~~~~~~~~~~^^
+  File &quot;/Users/ssbarnea/.config/mise/installs/python/3.13.1/lib/python3.13/site-packages/uv/_find_uv.py&quot;, line 36, in find_uv_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /Users/ssbarnea/.local/bin/uv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../easybuilders/easybuild-easyconfigs/pulls/22652.html">easybuilders/easybuild-easyconfigs#22652</a> on 2025-06-05 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-05 08:09</div>
+            <div class="timeline-body"><p>I think both the code and the error is not complete. It tries several paths and then reports FileNotFound for the first. Shouldn't it report all paths?</p>
+<p>Also: <code>target_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), &quot;bin&quot;, uv_exe)</code> can't be correct, can it?</p>
+<p><code>__file__</code> is <code>&lt;prefix&gt;/lib/python3.13/site-packages/uv/_find_uv.py</code>. So there are about 3 levels of <code>dirname</code> missing, aren't there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/pulls/214.html">tox-dev/tox-uv#214</a> on 2025-06-20 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-06-20 20:39</div>
+            <div class="timeline-body"><p>@zanieb As of today, current version of uv package is broken with mise installed pythons (and likely pyenv too) because of the faulty path logic. I am not sure what kind of python is @Flamefire using but that is the same bug.</p>
+<p>Here is a simple reproducer:</p>
+<pre><code class="language-shell">% command -v python3
+/Users/ssbarnea/.local/share/mise/installs/python/3.13.5/bin/python3
+
+% uv venv foo --system-site-packages
+Using CPython 3.13.5 interpreter at: .local/share/mise/installs/python/3.13.5/bin/python
+Creating virtual environment at: foo
+Activate with: source foo/bin/activate
+
+% source foo/bin/activate
+
+
+(foo) ~ % python -m uv
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/Users/ssbarnea/.local/share/mise/installs/python/3.13.5/lib/python3.13/site-packages/uv/__main__.py&quot;, line 47, in &lt;module&gt;
+    _run()
+    ~~~~^^
+  File &quot;/Users/ssbarnea/.local/share/mise/installs/python/3.13.5/lib/python3.13/site-packages/uv/__main__.py&quot;, line 27, in _run
+    uv = os.fsdecode(find_uv_bin())
+                     ~~~~~~~~~~~^^
+  File &quot;/Users/ssbarnea/.local/share/mise/installs/python/3.13.5/lib/python3.13/site-packages/uv/_find_uv.py&quot;, line 36, in find_uv_bin
+    raise FileNotFoundError(path)
+FileNotFoundError: /Users/ssbarnea/.local/bin/uv
+</code></pre>
+<p>There is nothing wrong with mise python installation, is perfectly valid. Is just the assumptions that where made inside find_uv_bin paths that are causing this failure.</p>
+<p>When a venv is created with using system site package, the scripts are not copied. The same bug applies to your sister tool, ruff, where find_ruff_bin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:47</div>
+            <div class="timeline-body"><p>Where is uv installed relative to that Python version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-06-20 20:50</div>
+            <div class="timeline-body"><pre><code>which -a uv
+/Users/ssbarnea/.local/share/mise/installs/python/3.13.5/bin/uv
+# it was installed using `python3 -m pip install uv`
+command -v python3   
+/Users/ssbarnea/.local/share/mise/installs/python/3.13.5/bin/python3
+
+% source foo/bin/activate
+(foo) ssbarnea@ssbarnea-mac ~ % command -v python3
+/Users/ssbarnea/foo/bin/python3
+
+(foo) % ls -la /Users/ssbarnea/foo/bin/python3
+lrwxr-xr-x  1 ssbarnea  staff  6 20 Jun 21:45 /Users/ssbarnea/foo/bin/python3 -&gt; python
+
+(foo) ~ % ls -la /Users/ssbarnea/foo/bin/python 
+lrwxr-xr-x  1 ssbarnea  staff  67 20 Jun 21:45 /Users/ssbarnea/foo/bin/python -&gt; /Users/ssbarnea/.local/share/mise/installs/python/3.13.5/bin/python
+</code></pre>
+<p>I suspect that the symlinks might be involved in confusing the directory resolution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-20 20:54</div>
+            <div class="timeline-body"><p>Can we solve this in some other way? It feels like an X-Y problem. E.g., why do you need <code>python -m uv</code> in the first place, and <code>--system-site-packages</code>? (Note that we don't really support <code>--system-site-packages</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:59</div>
+            <div class="timeline-body"><p>Oh, you're saying that <code>find_uv_bin</code> doesn't work with <code>system-site-packages</code> specifically? I don't know what that has to do with mise, but yeah that's just not a supported use-case for <code>find_uv_bin</code> I think? We could consider trying to support it, but I don't think the solution is to use <code>which</code>, instead we'd need to make sure the package is coming from the parent &quot;system&quot; Python environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-06-20 21:05</div>
+            <div class="timeline-body"><p>@charliermarsh I am one of the maintainers of https://github.com/tox-dev/tox-uv so I face lots of use cases for uv. This bug in particular seems to cause problems for some users. I suspect that the system site packages is not the only case where it happens because I almost never use it, but this was an easy way to make it reproduce.</p>
+<p>Just today I got 3 errors from find_uv_bin while tox was doing its own self-provisioning of the <code>.pkg</code> environment. The funny bit is that when I run the same command again, it passed, so there was some kind of self-fixing issue. I did not had time to dig more into it and is too late not. I can try to dig a little bit more to se what happens.</p>
+<p>I am not saying <code>which</code> is the solution, just that we should look into finding a way to prevent such an error, where python3 reports the uv module present, but uv is not really usable.</p>
+<p>IMHO, if python finds the uv module, we should be able to call uv binary. In my particular case with tox-uv, I need to get the full path to the uv executable in order to run some commands. Because <code>scripts</code> are not guaranteed to be present or in path, most reliable way is to call it as a module, we do the same with pip, always calling it via <code>python3 -m pip</code>.</p>
+<p>Any more ideas? I can try to investigate a little bit more on Sunday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-21 09:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can we solve this in some other way? It feels like an X-Y problem. E.g., why do you need <code>python -m uv</code> in the first place, and <code>--system-site-packages</code>? (Note that we don't really support <code>--system-site-packages</code>.)</p>
+</blockquote>
+<p>It is not only with vens but with a regular installation too, see https://github.com/astral-sh/uv/issues/10194#issuecomment-2943180761</p>
+<p>To me it looks like <code>find_uv_bin</code> only works by accident and/or in very narrow use cases of a system installed python &amp; uv.</p>
+<blockquote>
+<p>Where is uv installed relative to that Python version?</p>
+</blockquote>
+<p>See my comment:</p>
+<blockquote>
+<p><code>__file__</code> is <code>&lt;prefix&gt;/lib/python3.13/site-packages/uv/_find_uv.py</code></p>
+</blockquote>
+<p>So <code>target_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), &quot;bin&quot;, uv_exe)</code> yields <code>&lt;prefix&gt;/lib/python3.13/site-packages/bin/uv</code> instead of <code>&lt;prefix&gt;/bin/uv</code></p>
+<p>I can't really see in which case this path-logic does work. It seems like the folder of <code>_find_uv.py</code> needs to be a sibling of <code>bin</code> which I don't know when this would be the case.<br />
+What am I missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 11:47</div>
+            <div class="timeline-body"><p>The <code>os.path.dirname(os.path.dirname(__file__))</code> invocation is targeting a different use-case than yours, we say right above it:</p>
+<p>https://github.com/astral-sh/uv/blob/c4c5378c0bb61ecf4e73afb8919509ed9ec445ec/python/uv/_find_uv.py#L30-L31</p>
+<p>The happy path is intended to be:</p>
+<p>https://github.com/astral-sh/uv/blob/c4c5378c0bb61ecf4e73afb8919509ed9ec445ec/python/uv/_find_uv.py#L13-L15</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 11:48</div>
+            <div class="timeline-body"><p>I believe https://github.com/astral-sh/uv/pull/14181 will resolve this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14181.html">astral-sh/uv#14181</a> on 2025-06-21 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-21 12:00</div>
+            <div class="timeline-body"><p>I see thanks. We are using <code>pip install --prefix</code> for all installations. Not sure how the resulting layout of <code>--target</code> looks like.</p>
+<p>This is important e.g. if the global installation isn't writeable or should stay clean. We use a <code>sitecustomize.py</code> to make sure that prefix is found (and <code>$PATH</code> for the bin folder).<br />
+In general this is common in the HPC context where software is &quot;made available&quot; using modules that basically just set environment variables.</p>
+<p>So it would be great if the prefix layout was supported. I think this is easy to detect: <code>basename(dirname(dirname(__file__))) == &quot;site-packages&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 12:03</div>
+            <div class="timeline-body"><p>Can you share an example <code>sitecustomize.py</code> reflecting your usage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-21 12:18</div>
+            <div class="timeline-body"><p>It looks like this (reacts on the PATH-like env variable <code>$EBPYTHONPREFIXES</code>):</p>
+<pre><code>import os
+import site
+import sys
+
+ebpythonprefixes = os.getenv('EBPYTHONPREFIXES')
+
+if ebpythonprefixes:
+    postfix = os.path.join('lib', 'python' + '.'.join(map(str, sys.version_info[:2])), 'site-packages')
+
+    for prefix in ebpythonprefixes.split(os.pathsep):
+        sitedir = os.path.join(prefix, postfix)
+        if os.path.isdir(sitedir):
+            site.addsitedir(sitedir)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14184.html">astral-sh/uv#14184</a> on 2025-06-21 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 12:35</div>
+            <div class="timeline-body"><p>Alright, does something like https://github.com/astral-sh/uv/pull/14184 work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-21 17:55</div>
+            <div class="timeline-body"><p>Thanks, that should (almost) work. See my comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-06-23 15:19</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/14191 worked for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-07 18:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:57 UTC
+    </footer>
+</body>
+</html>

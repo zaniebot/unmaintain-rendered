@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N806 (non-lowercase-variable-in-function) for local variable in function - astral-sh/ruff #13550</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N806 (non-lowercase-variable-in-function) for local variable in function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13550">#13550</a>
+        opened by <a href="https://github.com/opk12">@opk12</a>
+        on 2024-09-29 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/opk12">@opk12</a> on 2024-09-29 18:16</div>
+            <div class="timeline-body"><p>mypy supports <code>Final</code> for local variables - it errors out, if <code>DIR</code> is assigned twice.</p>
+<p>Constants should be uppercase, but ruff gives <code>N806</code> <a href="https://docs.astral.sh/ruff/rules/non-lowercase-variable-in-function">non-lowercase-variable-in-function</a>.</p>
+<pre><code>import pathlib
+from typing import Final
+
+
+def require_files() -&gt; None:
+    DIR: Final = pathlib.Path(&quot;/...&quot;)
+
+    if not (DIR / &quot;file_1&quot;).exists():
+        print(&quot;Missing file 1&quot;)
+
+    if not (DIR / &quot;file_2&quot;).exists():
+        print(&quot;Missing file 2&quot;)
+</code></pre>
+<pre><code>$ ruff  check a.py  --no-cache  --select ALL  --preview --isolated
+a.py:6:5: N806 Variable `DIR` in function should be lowercase
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-29 20:36</div>
+            <div class="timeline-body"><p>Thanks for the issue! Hmm, <code>DIR</code> here isn't actually a constant, though, right? Since it's a local variable, you'll be creating a new <code>DIR</code> variable each time you call the function. I think you could make both Ruff and mypy happy here by moving it out of the function into the global scope (and your code would probably run slightly faster too!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2024-09-29 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/opk12">@opk12</a> on 2024-10-01 09:31</div>
+            <div class="timeline-body"><p>Sorry for being unclear above. The code passes mypy (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=c0e2064b8f69e27af164db0e41864b79">gist</a>). ruff is not aligned to the convention that mypy already enforces on both globals and locals. In fact, mypy errors out if a <code>Final</code> local is re-assigned (<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=2e6774b39fc9611d7e26df7667615eb9">gist</a>), because it is certainly a bug.</p>
+<p>In case of a &quot;heavy&quot; object's initialization, I can see how the <a href="https://en.wikipedia.org/wiki/Program_optimization#When_to_optimize">premature optimization</a> of moving the implementation detail out of the function can help, at the expense of readability. But this is a general case, which I stumble in for simple types, and <code>Final</code> and the all-caps are intended to be sort of a &quot;noqa&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-01 09:48</div>
+            <div class="timeline-body"><p>Sure. But if it's a local variable, then by definition it's not a constant, since you're creating it fresh every time the function is called. It's just a <code>Final</code> local variable -- so I think Ruff's complaint is correct here :-)</p>
+<p>Only global constants that are created once should be uppercase, not local variables that are created every time the function is called. <code>Final</code> indicates that a variable is not mutated after being initialised -- this can be thought of as &quot;necessary but not sufficient&quot; for a variable to satisfy the definition of a global constant.</p>
+<p>The naming convention here derives from <a href="https://peps.python.org/pep-0008/#constants">the relevant section in PEP 8</a>, which says:</p>
+<blockquote>
+<p>Constants are usually defined on a module level and written in all capital letters with underscores separating words. Examples include <code>MAX_OVERFLOW</code> and <code>TOTAL</code>.</p>
+</blockquote>
+<p>In other words, I think either of these would satisfy both mypy and Ruff:</p>
+<pre><code class="language-py">import pathlib
+from typing import Final
+
+
+DIR: Final = pathlib.Path(&quot;/...&quot;)
+
+
+def require_files() -&gt; None:
+    if not (DIR / &quot;file_1&quot;).exists():
+        print(&quot;Missing file 1&quot;)
+
+    if not (DIR / &quot;file_2&quot;).exists():
+        print(&quot;Missing file 2&quot;)
+</code></pre>
+<p>or this:</p>
+<pre><code class="language-py">import pathlib
+from typing import Final
+
+
+def require_files() -&gt; None:
+	dir: Final = pathlib.Path(&quot;/...&quot;)
+
+    if not (dir / &quot;file_1&quot;).exists():
+        print(&quot;Missing file 1&quot;)
+
+    if not (dir / &quot;file_2&quot;).exists():
+        print(&quot;Missing file 2&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/opk12">@opk12</a> on 2024-10-01 11:19</div>
+            <div class="timeline-body"><p>Yes, on a second thought, if distinguishing vars from constants is necessary for readability, it likely means the function is doing too many things. Thank you very much for your answers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @opk12 on 2024-10-01 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15721.html">astral-sh/ruff#15721</a> on 2025-01-24 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

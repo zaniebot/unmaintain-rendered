@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default value that panics only if neither `arg` nor `env` provided - clap-rs/clap #5091</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Default value that panics only if neither `arg` nor `env` provided</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5091">#5091</a>
+        opened by <a href="https://github.com/SamuelMarks">@SamuelMarks</a>
+        on 2023-08-26 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2023-08-26 21:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.4.0</p>
+<h3>Describe your use case</h3>
+<pre><code class="language-rs">use clap::{Parser, CommandFactory};
+
+use const_format::concatcp;
+use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(long, env = &quot;ROOT&quot;, default_value_t = String::from(concatcp!(
+    (
+    (if cfg!(windows) {
+    std::env::var(&quot;UserProfile&quot;)
+    } else {
+    std::env::var(&quot;HOME&quot;)
+    })
+    .unwrap()
+    ),
+    std::path::MAIN_SEPARATOR_STR, &quot;stuff&quot;,
+    std::path::MAIN_SEPARATOR_STR, &quot;name&quot;)))]
+    root: String,
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Given a system without a home directory (e.g., could not be obtained from <a href="https://doc.rust-lang.org/std/env/fn.home_dir.html"><code>std::env::home_dir</code></a>, <a href="https://crates.io/crates/dirs">dirs</a>, <a href="https://crates.io/crates/directories">directories</a>, or other crate), it should first:</p>
+<ul>
+<li>If arg is provided, use this</li>
+<li>Else if env var is provided, use this</li>
+<li>Finally, panic (if no home dir is available in environment) xor use home dir (if available)</li>
+</ul>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @SamuelMarks on 2023-08-26 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-27 00:53</div>
+            <div class="timeline-body"><p>First, I'm going to reinterpret &quot;panic&quot; as &quot;error&quot; seeing as we'd refer not to panic for user errors.</p>
+<p>This runs a bit counter to the meaning of a default value.  My first reaction is that this should be handled in the code outside of clap because its so outside of the common case.  The second thought I had is you could allow for <code>~/</code> in the user input (even though most shells will expand it for you) and a <code>value_parser</code> could then expand it and error if there isn't a home directory.  If neither works, I would lean towards #3476.  Overall we have other stuff tracking that though, so I'm going to close in favor of one of these existing options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-08-27 00:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelMarks">@SamuelMarks</a> on 2023-08-27 01:13</div>
+            <div class="timeline-body"><p>Sounds good I'll keep an eye on that issue. In the meantime I've put <code>$HOME</code> as placeholder and later on in my code I'll validate that if the value still startswith <code>$HOME</code> then look for homedir and panic if not found.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add version-aware autofix for RUF063 (access-annotations-from-class-dict) - astral-sh/ruff #18785</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add version-aware autofix for RUF063 (access-annotations-from-class-dict)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18785">#18785</a>
+        opened by <a href="https://github.com/dericcrago">@dericcrago</a>
+        on 2025-06-19 07:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dericcrago">@dericcrago</a> on 2025-06-19 07:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This rule request proposes adding an automatic fix for rule RUF063 to replace direct <code>__dict__</code> access to <code>__annotations__</code> with the correct, version-specific <code>get_annotations</code> function.</p>
+<p>The implementation should be conditional, targeting the following Python versions as specified in the rule's documentation:</p>
+<p>Current Code: <code>foo.__dict__.get(&quot;__annotations__&quot;)</code> or <code>foo.__dict__[&quot;__annotations__&quot;]</code></p>
+<ul>
+<li>Python &gt;= 3.14:<ul>
+<li>Proposed Fix: Replace with <code>annotationlib.get_annotations(foo)</code> and add the <code>import annotationlib</code> statement.</li>
+</ul>
+</li>
+<li>Python &gt;= 3.10 and &lt; 3.14:<ul>
+<li>Proposed Fix: Replace with <code>inspect.get_annotations(foo)</code> and add the <code>import inspect</code> statement.</li>
+</ul>
+</li>
+<li>Python &lt; 3.10 (with typing-extensions available):<ul>
+<li>Proposed Fix: Replace with <code>typing_extensions.get_annotations(foo)</code> and add the <code>import typing_extensions</code> statement.</li>
+</ul>
+</li>
+</ul>
+<p>This multi-version approach will ensure the autofix applies the most appropriate and future-proof solution depending on the project's configured target-version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18233.html">astral-sh/ruff#18233</a> on 2025-06-19 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 09:11</div>
+            <div class="timeline-body"><p>For anyone else trying to lookup the rule. It isn't merged yet :)</p>
+<p>This fix would have to be at least unsafe. I'm not sure if there are even cases where we can't tell what the user wants, in which case we shouldn't provide a fix.</p>
+<p>Given that this rule didn't find a single hit in our ecosystem check, I suspect that providing a fix here (while nice) would only provide little value over all.</p>
+<p>docs: https://docs.python.org/3.14/howto/annotations.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-06-19 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-06-19 09:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

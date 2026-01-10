@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Resolution` types drop urls under specific circumstances - astral-sh/uv #5294</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Resolution` types drop urls under specific circumstances</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5294">#5294</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-07-22 17:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-07-22 17:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The problem: The fields below (and the subsequent petgraph code) are missing the url, so we can't tell apart edges that are only different by their url, but equal by package name and version. This means in specific cases like the one in the section below we drop a marker and install the wrong package.</p>
+<p>https://github.com/astral-sh/uv/blob/5a23f0579962da26dbf117ca008822c26f5d15e5/crates/uv-resolver/src/resolver/mod.rs#L2375-L2380</p>
+<h2>Reproduction</h2>
+<p>Create two dependency edges in two different forks that have the same starting package name and version and the same target package name and version, but are different in their url.</p>
+<pre><code class="language-toml">[project]
+name = &quot;a3&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+  &quot;a @ file:///home/ferris/projects/uv/debug/a1 ; python_version &gt;='3.11'&quot;,
+  &quot;a @ file:///home/ferris/projects/uv/debug/a2 ; python_version &lt;'3.11'&quot;
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.metadata]
+allow-direct-references = true
+</code></pre>
+<p><code>/home/ferris/projects/uv/debug/a1</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    &quot;anyio==4.3.0&quot;,
+]
+
+[tool.uv]
+dev-dependencies = []
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p><code>/home/ferris/projects/uv/debug/a2</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    &quot;anyio==4.4.0&quot;,
+]
+
+[tool.uv]
+dev-dependencies = []
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>In the lockfile, we're indeed missing the marker:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;a&quot;
+version = &quot;0.1.0&quot;
+source = { directory = &quot;/home/konsti/projects/uv/debug/a1&quot; }
+dependencies = [
+    { name = &quot;anyio&quot;, version = &quot;4.3.0&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+    { name = &quot;anyio&quot;, version = &quot;4.4.0&quot;, source = { registry = &quot;https://pypi.org/simple&quot; } },
+]
+</code></pre>
+<p>Instead of respecting the markers, we always install <code>a3</code> and <code>anyio==4.4.0</code>  for python 3.10-3.12.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-22 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-22 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 17:26</div>
+            <div class="timeline-body"><p>Thanks, makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-22 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5301.html">astral-sh/uv#5301</a> on 2024-07-22 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5312.html">astral-sh/uv#5312</a> on 2024-07-22 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5253.html">astral-sh/uv#5253</a> on 2024-07-29 00:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

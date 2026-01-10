@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hovering over variable in jupyter notebook causes ruff server to crash - astral-sh/ruff #14768</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>hovering over variable in jupyter notebook causes ruff server to crash</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14768">#14768</a>
+        opened by <a href="https://github.com/TheOnlyWayUp">@TheOnlyWayUp</a>
+        on 2024-12-04 09:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TheOnlyWayUp">@TheOnlyWayUp</a> on 2024-12-04 09:51</div>
+            <div class="timeline-body"><p>https://files.rambhat.la/s/ySXwKiXNSLwcyde</p>
+<pre><code class="language-py">from langchain_core.prompts import ChatPromptTemplate
+
+system = &quot;&quot;&quot;...&quot;&quot;&quot;
+
+prompt = ChatPromptTemplate.from_messages([(&quot;system&quot;, system), (&quot;human&quot;, &quot;{input}&quot;)])
+
+prompted_llm = prompt | llm
+output = prompted_llm.invoke(texts[1])
+print(output)
+</code></pre>
+<pre><code>2024-12-04 09:50:35.199 [info] panicked at crates/ruff_server/src/server/api/requests/hover.rs:36:10:
+hover should only be called on text documents or notebook cells
+
+2024-12-04 09:50:35.199 [info]    0: ruff_server::server::Server::run::{{closure}}
+   1: std::panicking::rust_panic_with_hook
+   2: std::panicking::begin_panic_handler::{{closure}}
+
+2024-12-04 09:50:35.200 [info]    3: std::sys::backtrace::__rust_end_short_backtrace
+   4: rust_begin_unwind
+   5: core::panicking::panic_fmt
+   
+2024-12-04 09:50:35.200 [info] 6: core::option::expect_failed
+   7: &lt;ruff_server::server::api::requests::hover::Hover
+2024-12-04 09:50:35.200 [info]  as ruff_server::server::api::traits::BackgroundDocumentRequestHandler&gt;::run_with_snapshot
+   8: core::
+2024-12-04 09:50:35.200 [info] ops::function::FnOnce::call_once{{vtable.shim}}
+   9: core::ops
+2024-12-04 09:50:35.200 [info] ::function::FnOnce::call_once{{vtable.shim}}
+  10: std::sys::backtrace::__rust_begin_short_backtrace
+ 
+2024-12-04 09:50:35.200 [info]  11: core::ops::function::FnOnce::call_once{{vtable.shim}}
+  
+2024-12-04 09:50:35.200 [info] 12: std::sys::pal::unix::thread::Thread::new::thread_start
+  13: 
+2024-12-04 09:50:35.200 [info] start_thread
+  14: clone
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-04 11:06</div>
+            <div class="timeline-body"><p>This is most likely same as https://github.com/astral-sh/ruff-vscode/issues/644. Can you make sure you're on the latest Ruff version and provide us the detailed logs by turning on server logs using the following config?</p>
+<pre><code class="language-json">{
+	&quot;ruff.server.trace&quot;: &quot;verbose&quot;,
+	&quot;ruff.logLevel&quot;: &quot;debug&quot;,
+}
+</code></pre>
+<p>You can find more details here: https://github.com/astral-sh/ruff-vscode#troubleshooting. I'm specifically looking for a message that's been added in https://github.com/astral-sh/ruff/pull/14579.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-12-04 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-12-04 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-04 11:11</div>
+            <div class="timeline-body"><p>I think even just upgrading the Ruff version should provide us a better message when the panic occurs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheOnlyWayUp">@TheOnlyWayUp</a> on 2024-12-04 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>{
+&quot;ruff.server.trace&quot;: &quot;verbose&quot;,
+&quot;ruff.logLevel&quot;: &quot;debug&quot;,
+}</p>
+</blockquote>
+<p>I've added this to my settings.json, don't see any debug messages in Output yet. I haven't been able to replicate the error (hovering doesn't cause a crash).</p>
+<p>I'll leave the debugging enabled incase it pops up again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-04 11:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll leave the debugging enabled incase it pops up again.</p>
+</blockquote>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15398.html">astral-sh/ruff#15398</a> on 2025-01-10 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-10 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-10 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @dhruvmanila on 2025-01-10 13:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

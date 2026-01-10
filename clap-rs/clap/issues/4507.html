@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derive API: `#[arg(num_args = &lt;...&gt;)]` on `Vec&lt;T&gt;` has no effect - clap-rs/clap #4507</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Derive API: `#[arg(num_args = &lt;...&gt;)]` on `Vec&lt;T&gt;` has no effect</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4507">#4507</a>
+        opened by <a href="https://github.com/cyqsimon">@cyqsimon</a>
+        on 2022-11-24 13:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cyqsimon">@cyqsimon</a> on 2022-11-24 13:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.65.0</p>
+<h3>Clap Version</h3>
+<p>4.0.26</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn main() {
+    let CliArgs { multi } = CliArgs::parse();
+    dbg!(multi);
+}
+
+#[derive(Clone, Debug, Parser)]
+pub struct CliArgs {
+    #[arg(num_args = 1)]
+    multi: Vec&lt;String&gt;,
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- a b c d</code></p>
+<h3>Actual Behaviour</h3>
+<p>Program debug prints <code>vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]</code>.</p>
+<h3>Expected Behaviour</h3>
+<p>Errors with something like this:
+<code>error: Found argument 'b' which wasn't expected, or isn't valid in this context</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @cyqsimon on 2022-11-24 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Derive API: `#[arg(num_args = 1)]` on `Vec<T>` does not prevent multiple args" to "Derive API: `#[arg(num_args = <...>)]` on `Vec<T>` has no effect" by @cyqsimon on 2022-11-24 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyqsimon">@cyqsimon</a> on 2022-11-24 13:22</div>
+            <div class="timeline-body"><p>What I was trying to do here was to only allow comma-separated values for <code>multi</code>. So my original code looked like this:</p>
+<pre><code class="language-rust">#[derive(Clone, Debug, Parser)]
+pub struct CliArgs {
+    #[arg(num_args = 1, value_delimiter = ',')]
+    multi: Vec&lt;String&gt;,
+}
+</code></pre>
+<p>But it seems like as long as the type of <code>multi</code> is <code>Vec&lt;T&gt;</code>, <code>num_args</code> has no effect, whether I set <code>#[arg(num_args = 1)]</code> or <code>#[arg(num_args = 1..=1)]</code>.</p>
+<p>Eventually what I did was I set <code>action = ArgAction::Set</code>, which I guess is an alternate way to force the parser to reject additional arguments, but this is just a workaround in lieu of the non-functional <code>num_args</code>. This would only work if you want exactly 1 argument (like in my case). If you want to specify exactly 2 arguments for example, you would be out of luck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyqsimon">@cyqsimon</a> on 2022-11-24 13:29</div>
+            <div class="timeline-body"><p>Related discussion: https://github.com/clap-rs/clap/discussions/4469</p>
+<p>I think this is where their confusion stems from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-24 13:40</div>
+            <div class="timeline-body"><p>The weird thing is that for positionals, the derive sets both <code>num_args(1..)</code> and <code>ArgAction::Append</code>.   I left a comment but neither it nor #4020 really explain why I did that.  At minimum, <code>num_args(1..)</code> is needed for proper support for groups when #4020 is stablized and <code>Append</code> is needed to intersperse positionals and flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JMLX42">@JMLX42</a> on 2023-01-05 11:45</div>
+            <div class="timeline-body"><p>Same proble with <code>1..</code> (to have at least 1 value):</p>
+<pre><code class="language-rust">#[derive(Args)]
+pub struct DeleteFolder {
+    #[arg(help = &quot;The ID(s) of the folder(s) to delete&quot;, num_args = 1..)]
+    pub folder: Vec&lt;PathBuf&gt;,
+}
+</code></pre>
+<p>The command can be called with 0 value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-05 14:00</div>
+            <div class="timeline-body"><p>@JMLX42 <code>num_args</code> controls how many values are needed per occurrence but does not require an occurrence to be present.  For that, you would need <code>required = true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4613.html">clap-rs/clap#4613</a> on 2023-01-09 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/pixi/pulls/2282.html">prefix-dev/pixi#2282</a> on 2024-10-15 12:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:16 UTC
+    </footer>
+</body>
+</html>

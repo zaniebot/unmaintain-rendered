@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ extension with different build backend then rest of workspace - astral-sh/uv #8185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C++ extension with different build backend then rest of workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8185">#8185</a>
+        opened by <a href="https://github.com/fabiomanz">@fabiomanz</a>
+        on 2024-10-14 19:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fabiomanz">@fabiomanz</a> on 2024-10-14 19:38</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I have a Python project which uses hatchling as its default build system. I also have a C++ extension module in the same repo, which I included as a dependency in the root project of the workspace. The C++ module uses CMake with pybind11. Therefore in the pyproject.toml file of this extension, I specified the build system of the extension differently as follows:</p>
+<pre><code>[build-system]
+requires = [&quot;scikit-build-core&quot;, &quot;pybind11&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+</code></pre>
+<p>I would expect that the extension will be build with scikit-build-core. But the build doesn't build anything on the C++ side.</p>
+<p>Is this expected and am I doing something wrong completely or is this a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-14 20:10</div>
+            <div class="timeline-body"><p>Can you share a minimum example? It sounds like the child project should be built with the build system as you've defined it. Is a previous build cached?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-14 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-15 02:53</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/7857 might help since it provides a template for scikit-build-core, is there more that you can share about your setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 09:22</div>
+            <div class="timeline-body"><p>For comparison, does the package build correct when installing <code>build</code> and running <code>python -m build</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabiomanz">@fabiomanz</a> on 2024-10-15 15:21</div>
+            <div class="timeline-body"><p>Thanks for the help so far.
+I can provide some more context about my setup. I have a codebase constsing of 90% Python code. It is a PySide6 GUI. But I need to interface some hardware which can only be done from C++. So this is why I have some hardware support package which uses pybind11 to allow Python to call into the C++ functions. This is a seperate member in my uv workspace. As this mostly is a Python project, I wanted to stick to <code>hatchling</code> as my build system and only use another one for the C++ library (workspace member). All these are in one repo. In the root pyproject.toml, I have added the other folder as a dependency. The C++ library only has a CMakeLists.txt file, the C++ code and another pyproject.toml.</p>
+<p>I think <code>scikit-build-core</code> is better suited if I wouldn't have a mixed but only a C++ library, correct?</p>
+<p>Is specifiying a different build system in the pyproject.toml files ok and is it correct that I want two different build systems? Do I have to setup anything else to let uv know that this module needs to be built?
+This is my library <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;myhardwaremodule&quot;
+version = &quot;0.1.0&quot;
+description = &quot;...&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;= 3.12&quot;
+
+[build-system]
+requires = [&quot;scikit-build-core&quot;, &quot;pybind11&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+
+</code></pre>
+<p>Using the <code>build</code> module also doesn't build the library, so I seem to have something configured wrongly, but it also doesn't know about the workspace details.
+I will try to get a reproducible minimal example later, but first I would like to hear if my approach is going in the right direction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Is specifiying a different build system in the pyproject.toml files ok and is it correct that I want two different build systems?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>Do I have to setup anything else to let uv know that this module needs to be built?</p>
+</blockquote>
+<p>No, that's entirely in the hand of the build backend. The way it works (through PEP 517) is that first, uv (or <code>python -m build</code>, or pip, etc.) installs the necessary packages from <code>build-system.requires</code>. It then tells hatchling, scikit-build-core or any other configured build backend the location of the project and the location for the final artifact (source distribution or wheel), everything else happens in the build backend without uv being involved.</p>
+<p>Your approach with two packages, one with scikit-build-core and one with hatchling, sounds right from your description. You will probably get better specific help for your build problem through scikit-build-core; We can't say much from uv's side.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabiomanz">@fabiomanz</a> on 2024-10-15 20:42</div>
+            <div class="timeline-body"><p>Thank you for your helpful comment. You guided me into the right direction and I figured it out. For others with the same problem, it was a wronlgy configred path in CMakeLists.txt. Sorry to bother the <code>uv</code> maintainers, it wasn't something related to your great tool :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fabiomanz on 2024-10-15 20:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:09 UTC
+    </footer>
+</body>
+</html>

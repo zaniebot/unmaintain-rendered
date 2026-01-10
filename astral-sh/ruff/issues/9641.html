@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: Lint rule to enforce ordering of docstring sections - astral-sh/ruff #9641</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: Lint rule to enforce ordering of docstring sections</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9641">#9641</a>
+        opened by <a href="https://github.com/stinodego">@stinodego</a>
+        on 2024-01-25 13:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stinodego">@stinodego</a> on 2024-01-25 13:53</div>
+            <div class="timeline-body"><p>Here I come again with docstring requests :sweat_smile:</p>
+<p>Our project follows the NumPy docstring conventions outlined <a href="https://numpydoc.readthedocs.io/en/latest/format.html">here</a>.</p>
+<p>One extremely common mistake our contributors make is the order in which docstring sections appear. Often I'll have to correct docstrings where people put the <code>Returns</code> section after the <code>Examples</code> section, or the <code>Notes</code> section before the <code>Warnings</code> section.</p>
+<p>Could ruff autodetect/autofix this?</p>
+<p><strong>Before</strong></p>
+<pre><code class="language-python">def cool_function() -&gt; int:
+    &quot;&quot;&quot;
+    Description.
+
+    Notes
+    -----
+    Important edge case.
+
+    Warnings
+    --------
+    Be aware of this requirement!
+
+    Returns
+    -------
+    int
+    &quot;&quot;&quot;
+</code></pre>
+<p><strong>After</strong></p>
+<pre><code class="language-python">def cool_function() -&gt; int:
+    &quot;&quot;&quot;
+    Description.
+
+    Returns
+    -------
+    int
+
+    Warnings
+    --------
+    Be aware of this requirement!
+
+    Notes
+    -----
+    Important edge case.
+    &quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 04:00</div>
+            <div class="timeline-body"><p>Yeah, we should definitely lint for this given that it's part of the docstring spec.</p>
+<p>Since pydocstyle has been deprecated, I would be comfortable adding this to the <code>D</code> rules directly. We could enable it for the NumPy convention (but disable it for the Google and PEP 257 conventions).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-26 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-01-26 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2024-01-26 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpgraham4401">@dpgraham4401</a> on 2025-01-20 14:46</div>
+            <div class="timeline-body"><p>@charliermarsh, to clarify, you're thinking this should be added this as <code>D420</code> since <code>D419</code> is the last error code in the <a href="https://www.pydocstyle.org/en/stable/error_codes.html#grouping">pydocstyle Docstring Content Issues</a>? grouping</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-29 08:45</div>
+            <div class="timeline-body"><blockquote>
+<p>to clarify, you're thinking this should be added this as <code>D420</code> since <code>D419</code> is the last error code in the <a href="https://www.pydocstyle.org/en/stable/error_codes.html#grouping">pydocstyle Docstring Content Issues</a>?</p>
+</blockquote>
+<p>I'd say yes as <code>D4XX</code> are for docstring content issues (https://www.pydocstyle.org/en/stable/error_codes.html#grouping).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sebastian-altamirano">@sebastian-altamirano</a> on 2025-02-13 23:09</div>
+            <div class="timeline-body"><p>The rule should also work for Google-style docstrings:</p>
+<ul>
+<li>https://google.github.io/styleguide/pyguide.html#383-functions-and-methods</li>
+<li>https://github.com/google/styleguide/issues/847#issuecomment-2513517520</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpgraham4401">@dpgraham4401</a> on 2025-02-16 14:33</div>
+            <div class="timeline-body"><p>I'm <a href="https://github.com/dpgraham4401/ruff/blob/numpy_docstring_ordering-9641/crates/ruff_linter/src/rules/pydocstyle/rules/docstring_order.rs">working on this</a>, but it'll be my first time contributing to ruff and I'm a novice rustacean so might be a while before a PR 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpgraham4401">@dpgraham4401</a> on 2025-04-04 13:45</div>
+            <div class="timeline-body"><p>Update, life has gotten in the way and I'm not going to have time to work on this for some time. Sorry y'all.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

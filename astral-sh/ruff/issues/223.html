@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line length should be calculated by number of chars in UTF-32 (E501) - astral-sh/ruff #223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Line length should be calculated by number of chars in UTF-32 (E501)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/223">#223</a>
+        opened by <a href="https://github.com/sgryjp">@sgryjp</a>
+        on 2022-09-18 07:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sgryjp">@sgryjp</a> on 2022-09-18 07:20</div>
+            <div class="timeline-body"><p>As of v0.0.40, ruff uses <a href="https://github.com/charliermarsh/ruff/blob/v0.0.40/src/check_lines.rs#L38">number of bytes in UTF-8</a> as line length but flake8 (actually pycodestyle) uses <a href="https://github.com/PyCQA/pycodestyle/blob/2.9.1/pycodestyle.py#L279">number of characters in UTF-32</a>. Because of this difference, ruff may report E501 for lines containing characters which requires multiple bytes.</p>
+<p>In the example below, '亜' (U+4E9C, <code>E4 BA 9C</code> in UTF-8) is counted as 1 by flake8 but 3 by ruff:</p>
+<pre><code class="language-shell">$ cat linelength.py
+# -------1---------2---------3---------4---------5---------6---------7---------8----5678
+_ = &quot;---------------------------------------------------------------------------AAAAAAA&quot;
+_ = &quot;---------------------------------------------------------------------------亜亜亜亜亜亜亜&quot;
+$ flake8 --max-line-length=88 linelength.py
+$ ruff linelength.py
+Found 1 error(s).
+./linelength.py:3:89: E501 Line too long (102 &gt; 88 characters)
+</code></pre>
+<p>Note that using number of characters in UTF-32 is not the best way to measure &quot;visual&quot; width of a line but pycodestyle <a href="https://github.com/PyCQA/pycodestyle/pull/345">chose that way in 2016</a>. So, to be compatible with flake8, I think ruff should follow the same way.</p>
+<p><em>(Amended the example: '亜' is actually 3 bytes in UTF-8, not 2 bytes...)</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-18 16:45</div>
+            <div class="timeline-body"><p>Resolved by #224.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-18 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../quarylabs/sqruff/issues/1431.html">quarylabs/sqruff#1431</a> on 2025-03-19 15:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:02 UTC
+    </footer>
+</body>
+</html>

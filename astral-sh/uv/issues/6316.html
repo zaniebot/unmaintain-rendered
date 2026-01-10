@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock specifier instability? - astral-sh/uv #6316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock specifier instability?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6316">#6316</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-08-21 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-08-21 10:34</div>
+            <div class="timeline-body"><p>In some cases I see the following diff in my project's lock file. The order of the specifiers is flipping back and forth. (Both sides of the diff are using uv 0.3.0).</p>
+<p>The source is <code>pyproject.toml</code>'s dependencies = [&quot;numpy&gt;=1.25.2,&lt;2&quot;] (with more dependencies specified).</p>
+<p>Is it possible there is some leeway in the ordering for these? Using uv 0.3.0.</p>
+<pre><code class="language-diff">diff --git a/uv.lock b/uv.lock
+index 53e5a5c..e5da145 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -1329,7 +1329,7 @@ requires-dist = [
+     { name = &quot;jinja2&quot;, specifier = &quot;&gt;=3.1.2&quot; },
+     { name = &quot;jupytext&quot;, specifier = &quot;&gt;=1.15.1&quot; },
+     { name = &quot;nbconvert&quot;, specifier = &quot;&gt;=7.8.0&quot; },
+-    { name = &quot;numpy&quot;, specifier = &quot;&lt;2,&gt;=1.25.2&quot; },
++    { name = &quot;numpy&quot;, specifier = &quot;&gt;=1.25.2,&lt;2&quot; },
+     { name = &quot;openpyxl&quot;, specifier = &quot;&gt;=3.1.2&quot; },
+
+</code></pre>
+<p>Seems to reproduce with the full dependency list, after a few uv sync and uv locks.
+Using <code>uv python pin 3.11</code>. Defacto python is <code>cpython-3.11.7-linux-x86_64-gnu</code>.</p>
+<p>(Edited here: reduced problem to only two dependencies)</p>
+<pre><code class="language-toml">[project]
+name = &quot;newproj&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+
+dependencies = [
+    &quot;papermill&gt;=2.4.0&quot;,
+    &quot;numpy&gt;=1.25.2,&lt;2&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Seems to in fact correlate with adding/removing aiohttp too, which happens without change to pyproject.toml.</p>
+<pre><code>$ touch pyproject.toml  &amp;&amp; uv sync
+Resolved 96 packages in 1.28s
+   Built newproj @ file:///home/user/tmp/newproj
+Prepared 1 package in 151ms
+Uninstalled 2 packages in 0.66ms
+Installed 1 package in 0.28ms
+ - aiohttp==3.10.5
+ ~ newproj==0.1.0 (from file:///home/user/tmp/newproj)
+$ touch pyproject.toml  &amp;&amp; uv sync
+Resolved 96 packages in 2ms
+   Built newproj @ file:///home/user/tmp/newproj
+Prepared 2 packages in 155ms
+Uninstalled 1 package in 0.15ms
+Installed 2 packages in 0.77ms
+ + aiohttp==3.10.5
+ ~ newproj==0.1.0 (from file:///home/user/tmp/newproj)
+$ touch pyproject.toml  &amp;&amp; uv sync
+Resolved 96 packages in 2ms
+   Built newproj @ file:///home/user/tmp/newproj
+Prepared 1 package in 154ms
+Uninstalled 1 package in 0.16ms
+Installed 1 package in 0.34ms
+ ~ newproj==0.1.0 (from file:///home/user/tmp/newproj)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-21 11:34</div>
+            <div class="timeline-body"><p>Is this happening with a lockfile initialized with 0.3.0, i.e. does 0.3.0 ever write out <code>&lt;2,&gt;=1.25.2</code> that wasn't there before? I've seen these cases upgrading to 0.3.0, but i can't reproduce it in 0.3.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-21 11:42</div>
+            <div class="timeline-body"><p>For context, i have confirmed that hatchling flips the order of the specifier (<code>uvx --from build pyproject-build --installer uv &amp;&amp; unzip -p dist/dummy-0.1.0-py3-none-any.whl dummy-0.1.0.dist-info/METADATA | grep &quot;Requires-Dist&quot;</code>), but we shouldn't be reading metadata through hatchling (or if we do, that's probably the source of the bug)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-21 11:44</div>
+            <div class="timeline-body"><p>Yes, it happens when starting with uv 0.3.0.</p>
+<p>This whimsical sequence of commands ends up with a diff like in the issue report</p>
+<pre><code>uv init --no-config newproj
+cd newproj/
+git init .
+git add README.md  src/ pyproject.toml 
+uv add  &quot;papermill&gt;=2.4.0&quot; &quot;numpy&gt;=1.25.2,&lt;2&quot;
+git add -u
+git commit -m first
+uv sync
+git add uv.lock 
+git commit -m lockfile
+uv lock
+git diff
+uv sync
+uv sync
+git diff
+touch pyproject.toml  &amp;&amp; uv sync
+touch pyproject.toml  &amp;&amp; uv sync
+touch pyproject.toml  &amp;&amp; uv sync
+git diff
+</code></pre>
+<pre><code class="language-diff">diff --git uv.lock uv.lock
+index 1f890d7..f606d83 100644
+--- uv.lock
++++ uv.lock
+@@ -346,7 +346,7 @@ dependencies = [
+ 
+ [package.metadata]
+ requires-dist = [
+-    { name = &quot;numpy&quot;, specifier = &quot;&lt;2,&gt;=1.25.2&quot; },
++    { name = &quot;numpy&quot;, specifier = &quot;&gt;=1.25.2,&lt;2&quot; },
+     { name = &quot;papermill&quot;, specifier = &quot;&gt;=2.4.0&quot; },
+ ]
+</code></pre>
+<p>I forgot to pin python in this command sequence. So it reproduced with python 3.12.4 for me there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-21 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @charliermarsh on 2024-08-21 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @charliermarsh on 2024-08-21 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-21 14:17</div>
+            <div class="timeline-body"><p>Thank you for the great reproducer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6332.html">astral-sh/uv#6332</a> on 2024-08-21 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-08-21 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-21 20:24</div>
+            <div class="timeline-body"><p>heh, thank you, your reduced sequence was better</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC501 doesn't trigger if a custom exception imported from another module is raised - astral-sh/ruff #13383</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC501 doesn't trigger if a custom exception imported from another module is raised</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13383">#13383</a>
+        opened by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a>
+        on 2024-09-17 18:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-09-17 18:36</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>The <code>DOC501</code> lint rule catches a custom exception missing in the docstring if the exception class is in the same module, but fails to catch it if the exception is imported from a different module.</p>
+<p>The following test screenshot illustrates this:
+<img src="https://github.com/user-attachments/assets/c3ee1373-87cf-4be8-b0ed-973c29a8e39f" alt="image" /></p>
+<pre><code class="language-python">&quot;&quot;&quot;A module to illustrate ruff issue with custom exceptions.&quot;&quot;&quot;
+
+from pathlib import Path
+
+from . import exceptions as E  # noqa: N812
+
+
+class MyCustomError(Exception):
+    &quot;&quot;&quot;A custom exception class.&quot;&quot;&quot;
+
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(message)
+
+
+def test_function() -&gt; None:
+    &quot;&quot;&quot;Raise exception defined in same file.&quot;&quot;&quot;
+    raise MyCustomError(&quot;This is a custom error.&quot;)
+
+
+def test_function2() -&gt; None:
+    &quot;&quot;&quot;Raise exception defined in another module.&quot;&quot;&quot;
+    raise E.DuplicateTileDataInPerforceError({&quot;pid&quot;: [Path(&quot;/test&quot;), Path(&quot;/test2&quot;)]})
+</code></pre>
+<p>Version: <code>ruff 0.6.5</code>
+Settings:</p>
+<pre><code class="language-toml">####################################################################################################
+# Ruff
+####################################################################################################
+
+[tool.ruff]
+line-length = 100
+target-version = &quot;py311&quot;
+
+[tool.ruff.lint]
+ignore = [
+  &quot;B008&quot;, # do not perform function calls in argument defaults
+  &quot;C901&quot;, # too complex
+  &quot;E501&quot;, # line too long, handled by black
+]
+preview = true
+select = [
+  &quot;B&quot;, # flake8-bugbear
+  &quot;C4&quot;, # flake8-comprehensions
+  &quot;D&quot;, # pydocstyle
+  &quot;DOC&quot;, # pydoclint
+  &quot;E&quot;, # pycodestyle errors
+  &quot;F&quot;, # pyflakes
+  &quot;FAST&quot;, # fastapi
+  &quot;FLY&quot;, # flynt
+  &quot;FURB&quot;, # refurb
+  &quot;I&quot;, # isort
+  &quot;N&quot;, # pep8-naming
+  &quot;PERF&quot;, # perflint
+  &quot;RUF&quot;, # ruff
+  &quot;UP&quot;, # pyupgrade
+  &quot;W&quot;, # pycodestyle warnings
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;numpy&quot;
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-after-imports = 2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 02:44</div>
+            <div class="timeline-body"><p>I think this does work correctly. Given <code>foo/bar.py</code>:</p>
+<pre><code class="language-python">from . import Exceptions as E
+
+def func():
+    &quot;&quot;&quot;abc def&quot;&quot;&quot;
+    raise E.Bar()
+</code></pre>
+<p>I get:</p>
+<pre><code>foo/bar.py:5:11: DOC501 Raised exception `Bar` missing from docstring
+  |
+3 | def func():
+4 |     &quot;&quot;&quot;abc def&quot;&quot;&quot;
+5 |     raise E.Bar()
+  |           ^^^^^^^ DOC501
+  |
+  = help: Add `Bar` to the docstring
+</code></pre>
+<p>What you might be seeing is that if you put <code>from . import Exceptions as E</code> in a file that isn't in a Python module (like, a directory without an <code>__init__.py</code>), then we indeed can't resolve the import, so the violation won't be flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-18 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-09-18 17:34</div>
+            <div class="timeline-body"><p>@charliermarsh Hmm, possibly? My example is a cutdown version of what I actually ran into. The actual project where I noticed this initially has a structure like this:</p>
+<pre><code>.
+├── src
+│  └── A
+│     └── B
+│        └── C
+│           └── D
+│              ├── _private
+│              │  ├── exceptions.py
+│              │  ├── lib.py
+│              │  └── logging.py
+│              └── __init__.py
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-19 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 01:11</div>
+            <div class="timeline-body"><p>Can you come up with an MRE that includes a valid package structure, like above? (As opposed to a standalone script in the initial comment.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-09-19 02:03</div>
+            <div class="timeline-body"><p>Yes, I will try to put that together soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-09-19 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 12:03</div>
+            <div class="timeline-body"><p>I'll close this because it still  needs an mre. @taranlu-houzz feel free to comment with an mre and I'll reopen</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-20 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-11-22 19:34</div>
+            <div class="timeline-body"><p>Apologies for not getting the mre together. I can't make this a priority right now, but if I do run into the issue again, I will try to do that. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

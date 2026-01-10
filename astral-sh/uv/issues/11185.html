@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatic resolution of merge conflicts in lockfiles - astral-sh/uv #11185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatic resolution of merge conflicts in lockfiles</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11185">#11185</a>
+        opened by <a href="https://github.com/JanPokorny">@JanPokorny</a>
+        on 2025-02-03 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JanPokorny">@JanPokorny</a> on 2025-02-03 16:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Yarn does automatic merge conflict resolution in lockfiles. In practice, you just run <code>yarn install</code> and the lockfile is merged as part of that process:</p>
+<pre><code>$ yarn install
+
+yarn install v1.0.1
+info Merge conflict detected in yarn.lock and successfully merged.
+[1/4] Resolving packages...
+</code></pre>
+<p>This feature would be great for <code>uv</code>.</p>
+<p>There's already a ticket for documenting the best practices for merging <code>uv.lock</code> (https://github.com/astral-sh/uv/issues/5633), this feature request is specifically for the automated option.</p>
+<h3>Example</h3>
+<p>Currently:</p>
+<pre><code>$ uv sync
+error: Failed to parse `uv.lock`
+  Caused by: TOML parse error at line 146, column 1
+    |
+146 | &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+    | ^
+invalid key
+</code></pre>
+<p>Desired:</p>
+<pre><code>$ uv sync
+Merge conflict detected in uv.lock and successfully merged.
+Resolved 70 packages in 274ms
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @JanPokorny on 2025-02-03 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 16:52</div>
+            <div class="timeline-body"><p>Interesting idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 16:53</div>
+            <div class="timeline-body"><p>I am curious how yarn does this / how hard it is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JanPokorny">@JanPokorny</a> on 2025-02-03 17:30</div>
+            <div class="timeline-body"><p>@zanieb This seems to be the relevant code: https://github.com/yarnpkg/yarn/blob/master/src/lockfile/parse.js</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-03 17:32</div>
+            <div class="timeline-body"><p>Hm that looks like the parser, not sure where they &quot;resolve&quot; the conflict to a specific version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JanPokorny">@JanPokorny</a> on 2025-02-03 17:40</div>
+            <div class="timeline-body"><p>@zanieb You're right, this code only seems to reconstruct the two versions from the conflicted files, parse them separately, and then merge them using <code>Object.assign</code>.</p>
+<p>Given the structure of a <code>yarn.lock</code>...</p>
+<pre><code class="language-yaml">&quot;@ai-zen/node-fetch-event-source@npm:^2.1.4&quot;:
+  version: 2.1.4
+  resolution: &quot;@ai-zen/node-fetch-event-source@npm:2.1.4&quot;
+  dependencies:
+    cross-fetch: &quot;npm:^4.0.0&quot;
+  checksum: 10c0/9d2753f308bf6258c85d52328ef87e45dd4d2888f2bae7dca8b64b183d9d8f674a5f41aa57909d48f00402a0999aa7908dfa7da0f4b51ca22e82c333cd358ef5
+  languageName: node
+  linkType: hard
+
+&quot;@apidevtools/json-schema-ref-parser@npm:^11.5.5&quot;:
+  version: 11.7.0
+  resolution: &quot;@apidevtools/json-schema-ref-parser@npm:11.7.0&quot;
+  dependencies:
+    &quot;@jsdevtools/ono&quot;: &quot;npm:^7.1.3&quot;
+    &quot;@types/json-schema&quot;: &quot;npm:^7.0.15&quot;
+    js-yaml: &quot;npm:^4.1.0&quot;
+  checksum: 10c0/0ae9ced2953918a14b17874dc0515d3367a95197d58d869f44e756223e23eb9996283e21cb7ef1c7e016ae94467920b4aca705e0ea3d61a61455431572ad4ab5
+  languageName: node
+  linkType: hard
+
+&quot;@aws-crypto/crc32@npm:5.2.0&quot;:
+  version: 5.2.0
+  resolution: &quot;@aws-crypto/crc32@npm:5.2.0&quot;
+  dependencies:
+    &quot;@aws-crypto/util&quot;: &quot;npm:^5.2.0&quot;
+    &quot;@aws-sdk/types&quot;: &quot;npm:^3.222.0&quot;
+    tslib: &quot;npm:^2.6.2&quot;
+  checksum: 10c0/eab9581d3363af5ea498ae0e72de792f54d8890360e14a9d8261b7b5c55ebe080279fb2556e07994d785341cdaa99ab0b1ccf137832b53b5904cd6928f2b094b
+  languageName: node
+  linkType: hard
+</code></pre>
+<p>...I suppose that it just arbitrarily picks one of the versions over the other. Maybe this is an advantage of the Node.js ecosystem, where it can keep as many versions of any given package as it pleases, and a more complex solution would be needed in Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2025-02-03 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmvp">@hmvp</a> on 2025-05-26 12:44</div>
+            <div class="timeline-body"><p>I imagine that you typically want the newest version that is found in both versions. Also when the user has already fixed merge conflicts in pyproject.toml (or there are none) then that can also be use to resolve some of the packages...</p>
+<p>So I guess you want to do whatever <code>uv sync</code> does.  Except limit all the indirect dependencies to whatever the latest version was as found in any of the two versions of the lock file...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 12:49</div>
+            <div class="timeline-body"><p>Fwiw my usual strategy for feature branches is to accept the changes from the base branch (which often has dependency updates), then run <code>uv lock</code> to update the lockfile with the new requirements from the branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-06 18:24</div>
+            <div class="timeline-body"><p>op mentions yarn, but I'll mention that npm itself also does it. Idk if it's still the case as I enabled it months or years ago, but it prompted me to opt-in to the automated resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/namurphy">@namurphy</a> on 2025-10-17 01:34</div>
+            <div class="timeline-body"><p>If <code>uv.lock</code> contains a merge conflict or is otherwise invalid, would it make sense for <code>uv lock --upgrade</code> to issue a warning and replace <code>uv.lock</code> instead of failing?  🤔</p>
+<p>When using <code>--upgrade</code>, users are looking for an environment with the most recent versions of dependencies, so recreating <code>uv.lock</code> from scratch seems reasonable. Recreating <code>uv.lock</code> would also bypass the need to resolve merge conflicts.  This doesn't apply when running <code>uv lock</code> without <code>--upgrade</code>, though.</p>
+<p>An alternative would be to implement a new flag like <code>--recreate</code>, <code>--replace</code>, or <code>--ignore-lockfile</code> to indicate that <code>uv.lock</code> should be recreated from scratch if necessary, but I'd prefer to have <code>--upgrade</code> do this.</p>
+<p>Once again, thank you all for being awesome! 😺</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-17 08:13</div>
+            <div class="timeline-body"><blockquote>
+<p>If <code>uv.lock</code> contains a merge conflict or is otherwise invalid, would it make sense for <code>uv lock --upgrade</code> to issue a warning and replace <code>uv.lock</code> instead of failing? 🤔</p>
+</blockquote>
+<p>Can you make a separate issue for that? We can discuss this separate the specific behavior for merge conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16348.html">astral-sh/uv#16348</a> on 2025-10-17 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/namurphy">@namurphy</a> on 2025-10-17 20:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you make a separate issue for that?</p>
+</blockquote>
+<p>Good idea!  We can branch that part of the conversation off into #16348.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

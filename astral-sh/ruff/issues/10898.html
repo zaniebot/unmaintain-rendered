@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(🐞) `FURB118` (reimplemented-operator) false positive when reference in the item position - astral-sh/ruff #10898</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>(🐞) `FURB118` (reimplemented-operator) false positive when reference in the item position</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10898">#10898</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2024-04-12 06:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-04-12 06:41</div>
+            <div class="timeline-body"><pre><code class="language-py">b = 1
+def f(a):  # Use `operator.itemgetter(b)` instead of defining a function
+    return a[b]
+b = 2
+f([1, 2, 3])  # 3
+</code></pre>
+<p><a href="https://play.ruff.rs/d230918e-ada7-440b-ad19-dc378656ed86">playground</a>
+but if we follow that direction:</p>
+<pre><code class="language-py">b = 1
+f = operator.itemgetter(b)
+b = 2
+f([1, 2, 3])  # 2
+</code></pre>
+<h1>Original issue:</h1>
+<pre><code class="language-py">class A:
+    def __init__(self):
+        self.foo = 1
+    
+    @property
+    def f(self) -&gt; object:  # Use `operator.itemgetter(self.foo)` instead of defining a function
+        return self[self.foo]
+</code></pre>
+<p><a href="https://play.ruff.rs/d230918e-ada7-440b-ad19-dc378656ed86">playground</a></p>
+<p>This function references an input in the value position, making it impossible to rewrite as an attribute</p>
+<pre><code class="language-py">class A:
+    def __init__(self):
+        self.foo = 1
+
+    f = property(operator.itemgetter(self.foo))
+</code></pre>
+<p>And if we define it in the <code>__init__</code> then it would always use the intial value of <code>foo</code>:</p>
+<pre><code class="language-py">
+class A:
+    def __init__(self):
+        self.foo = 1
+        self.f = property(operator.itemgetter(self.foo))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(🐞) `FURB118` (reimplemented-operator) false positive" to "(🐞) `FURB118` (reimplemented-operator) false positive when reference in the item position" by @KotlinIsland on 2024-04-12 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-04-12 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-12 07:35</div>
+            <div class="timeline-body"><p>Yeah, that's certainly not safe. We should either mark the fix as unsafe or &quot;properly&quot; fix (although that would likely require to replace all call-sites of <code>f</code> which I don't think we can do easily)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-04-12 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-04-12 08:04</div>
+            <div class="timeline-body"><p>Or detect if there is a reference in the item then don't try to fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-04-15 02:20</div>
+            <div class="timeline-body"><p>shouldn't it just not even report the error at all in that case, since it means there's no way to properly convert it to an <code>itemgetter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-04-15 02:24</div>
+            <div class="timeline-body"><p>Could be a constant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11045.html">astral-sh/ruff#11045</a> on 2024-04-19 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11270.html">astral-sh/ruff#11270</a> on 2024-05-03 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-03 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

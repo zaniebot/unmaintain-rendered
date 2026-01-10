@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide feedback and improve doc on keyring index authentication - astral-sh/uv #12280</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide feedback and improve doc on keyring index authentication</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12280">#12280</a>
+        opened by <a href="https://github.com/LSerranoPEReN">@LSerranoPEReN</a>
+        on 2025-03-18 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LSerranoPEReN">@LSerranoPEReN</a> on 2025-03-18 14:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello,
+I tried using <code>uv</code> with custom package indexes and found the way to configure the authentication with <code>keyring</code> really very counter-intuitive.</p>
+<p>Foremost, the services names that <code>uv</code> tries to access with <code>keyring</code> is, to the best of my knowledge, not documented.
+By looking at the traces it seems that <code>uv</code> tries at least two services names:</p>
+<ul>
+<li><code>&lt;package_index_url&gt;/&lt;package_name&gt;</code></li>
+<li><code>&lt;package_index_fqdn&gt;</code></li>
+</ul>
+<p>Moreover, invalid credentials or missing credentials gives the same error:<br />
+<code>An index URL (&lt;package_index_url&gt;) could not be queried due to a lack of valid authentication credentials (401 Unauthorized)</code>. This become more confusing as <a href="https://docs.astral.sh/uv/configuration/indexes/#using-credential-providers">the documentation clearly states that:</a></p>
+<blockquote>
+<p>When authenticate is set to always, uv will eagerly search for credentials and error if credentials cannot be found.</p>
+</blockquote>
+<p>But I personally could not get <code>uv</code> to return a different error in this case.</p>
+<p>I think that using custom package indexes would be a lot less frustrating if :</p>
+<ol>
+<li>Services names looked up by <code>uv</code> were documented in the <a href="https://docs.astral.sh/uv/configuration/indexes/#authentication">authentication section</a></li>
+<li>Failures due to missing credentials printed a different error from failures due to invalid credentials.</li>
+<li>Failures due to missing credentials listed the service name tried.</li>
+<li>Failures due to invalid credentials printed the service name used for the index authentication.</li>
+</ol>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @LSerranoPEReN on 2025-03-18 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 16:01</div>
+            <div class="timeline-body"><p>Regarding (1), we do link to the providers in https://docs.astral.sh/uv/configuration/indexes/#using-credential-providers — I'm hesitant to repeat them all there because they are relevant for other requests than those for indexes. We're interested in broadly improving the credential provider experience though, I expect the documentation to be expanded.</p>
+<p>The rest sound like nice improvements to the error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-03-18 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-18 16:17</div>
+            <div class="timeline-body"><p>Would you mind sharing more details about your environment (including uv version) and what you ran using <code>authenticate = &quot;always&quot;</code>? With the latest uv, I would have expected you to see different errors if there are missing vs. incorrect credentials.</p>
+<p>With the following <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[[tool.uv.index]]
+name = &quot;example-index&quot;
+url = &quot;https://pypi-proxy.fly.dev/basic-auth/simple&quot;
+authenticate = &quot;always&quot;
+default = true
+</code></pre>
+<p>if I run <code>uv add anyio</code> with uv 0.6.7, it produces the following error for me on both macOS and ubuntu:</p>
+<pre><code>error: Failed to fetch: `https://pypi.org/simple/anyio/`
+  Caused by: Missing credentials for https://pypi.org/simple/anyio/
+</code></pre>
+<p>Whereas running with incorrect credentials produces the <code>lack of valid authentication credentials</code> error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LSerranoPEReN">@LSerranoPEReN</a> on 2025-03-19 09:22</div>
+            <div class="timeline-body"><p>@zanieb &amp; @jtfmumm thank you for taking the time to look at my issue.</p>
+<p>I think a bit more context of my use case will be useful.</p>
+<p>My team and I are using GitLab package registries to distribute our internal packages.
+If you don't already know, a GitLab package registry can hold many python packages. If the repository is private then the package registry can be accessed with a personal (or project) assess token. This token should be provided as the password for authentication and in this case the username is completely ignored by GitLab (but is by convention usually set to <code>__token__</code> in the documentation).</p>
+<p>For instance GitLab provides the following example to use package registry with <code>pip</code>:</p>
+<pre><code>pip install &lt;package_name&gt; --index-url https://__token__:&lt;your_personal_token&gt;@&lt;gitlab_domain&gt;/api/v4/projects/&lt;project_id&gt;/packages/pypi/simple
+</code></pre>
+<p>At the moment, we are using <code>poetry</code> as a package and project manager, but I'm looking for alternatives. In <code>poetry</code>, credentials are managed using <code>poetry</code> own subcommand and are stored using python <code>keyring</code> (or plaintext if no keyring is available). My understanding that <code>uv</code> does not manage credentials for you, and <a href="https://github.com/astral-sh/uv/pull/9920#issuecomment-2715144498">that this feature is not in the work pipeline at the moment</a>.</p>
+<p>Still, <code>uv</code> can retrieve credentials from <code>keyring</code> using the <code>--keyring-provider subprocess</code>, which call the following command <code>keyring get &lt;service_name&gt; &lt;username&gt;</code> internally, which is great. So as a user I can simply <code>keyring set &lt;service_name&gt; &lt;username&gt;</code> to store my credentials, and everything should work.
+But as a user, I have no idea what to set <code>&lt;service_name&gt;</code> to. By comparison, it's not a problem in <code>poetry</code> because since it can manage credentials for you, it sets its own <code>&lt;service_name&gt;</code>.</p>
+<p>Using enough verbosity when calling <code>uv</code> I can see that if <code>&quot;https://pypi-proxy.fly.dev/basic-auth/simple&quot;</code> is configured as the index URL, the following services names are tried:</p>
+<ul>
+<li><code>https://pypi-proxy.fly.dev/basic-auth/simple/&lt;package_name&gt;/</code></li>
+<li><code>pypi-proxy.fly.dev</code></li>
+</ul>
+<p>I don't think I saw this behavior in the documentation, bringing point (1).<br />
+(Weirdly <code>https://pypi-proxy.fly.dev/basic-auth/simple/</code> is not tested as a service name)</p>
+<p>Concerning @jtfmumm remark, I can indeed reproduce this behavior.
+I had made the mistake of providing a username in the URL <code>https://__token__@pypi-proxy.fly.dev/basic-auth/simple</code> to match my GitLab use case. In this situation, if no credentials are found with <code>keyring get</code>, I think <code>uv</code> still tries to connect using only a username and no password which brings the <code>401 Unauthorized</code> error.</p>
+<p>So I guess it's technically not a bug, but it is still frustrating to not be able to distinguish between credentials being invalid and credentials not being found. Keep in mind that, for <code>uv</code> to use <code>keyring</code> you need to provide a <code>username</code>, otherwise you get a <code>Skipping keyring lookup for https://pypi-proxy.fly.dev/basic-auth/simple/anyio/ with no username</code>.</p>
+<p><em>Edit:</em> all experiments were done <code>uv 0.6.7+1 (e0f81f0d4 2025-03-17)</code> on Debian 12 - amd64</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12313.html">astral-sh/uv#12313</a> on 2025-03-19 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 22:06</div>
+            <div class="timeline-body"><p>We added keyring lookups for usernames in #12316</p>
+<p>I think your other note is a case of https://github.com/astral-sh/uv/issues/4056</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LSerranoPEReN">@LSerranoPEReN</a> on 2025-03-24 12:51</div>
+            <div class="timeline-body"><p>Hi, thank you a lot for your fixes.</p>
+<p>I think #12316 fixes @jtfmumm case, but it seems not to work with <code>explicit = true</code>.</p>
+<pre><code class="language-ini">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[[tool.uv.index]]
+name = &quot;example-index&quot;
+url = &quot;https://pypi-proxy.fly.dev/basic-auth/simple&quot;
+authenticate = &quot;always&quot;
+explicit = true
+
+[tool.uv.sources]
+anyio = { index = &quot;example-index&quot; }
+</code></pre>
+<p>The following command fails with <code>401 Unauthorized</code></p>
+<pre><code>uv add anyio --keyring-provider subprocess -vvv
+</code></pre>
+<p>In this case, it seems that <code>authenticate = &quot;always&quot;</code> is not verified. Here is a relevant log excerpt:</p>
+<pre><code>TRACE Request for https://pypi-proxy.fly.dev/basic-auth/simple/anyio/ failed with 401 Unauthorized, checking for credentials
+TRACE No credentials in cache for realm https://pypi-proxy.fly.dev
+DEBUG No netrc file found
+DEBUG Skipping keyring fetch for https://pypi-proxy.fly.dev/basic-auth/simple/anyio/ without username; use `authenticate = always` to force
+</code></pre>
+<p>This was done with <code>uv 0.6.9+31 (7c57cefaa 2025-03-24)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheFriendlyCoder">@TheFriendlyCoder</a> on 2025-03-31 19:01</div>
+            <div class="timeline-body"><p>NOTE: keyring support on MacOS looks to be broken right now. Details are <a href="https://github.com/astral-sh/uv/issues/12591">here</a>. As I mentioned in my bug report, it would be helpful to include some debugging steps in the <code>uv</code> users guides explaining to people how to ensure <code>keyring</code> is installed and set up properly to support <code>uv</code> to save people time trying to debug it by hand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-04 09:30</div>
+            <div class="timeline-body"><p>@LSerranoPEReN Some updates:</p>
+<ul>
+<li>The issue you noticed regarding <code>explicit = true</code> should be addressed by #12631.</li>
+<li>#12651 will ensure that uv retrieves credentials for the index URL rather than the package URL.</li>
+<li>#12667 updates the error messages for indexes not configured as <code>authenticate = &quot;always&quot;</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12667.html">astral-sh/uv#12667</a> on 2025-04-04 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kmkolasinski">@kmkolasinski</a> on 2025-04-07 13:49</div>
+            <div class="timeline-body"><p>Hi, I think I have a similar problem and I cannot figure out how to make uv work for may case when I have some private repositories stored in the google artifact registry. I check two commands. This one works:</p>
+<pre><code class="language-bash">GOOGLE_APPLICATION_CREDENTIALS=${HOME}/.config/gcloud/application_default_credentials.json UV_EXTRA_INDEX_URL=https://us-east4-python.pkg.dev/path/path/simple/  pip install private-lib --no-cache-dir
+</code></pre>
+<p>but this one fails, I just added <code>uv</code>:</p>
+<pre><code class="language-bash">GOOGLE_APPLICATION_CREDENTIALS=${HOME}/.config/gcloud/application_default_credentials.json UV_EXTRA_INDEX_URL=https://lel-python.pkg.dev/path/path/simple/ uv pip install private-lib --no-cache-dir
+</code></pre>
+<p>with error</p>
+<pre><code>Using Python 3.11.9 environment:
+  × No solution found when resolving dependencies:
+  ╰─▶ Because private-lib was not found in the package registry and you require private-lib, we can conclude that your requirements are unsatisfiable.
+
+      hint: An index URL (https://lel-python.pkg.dev/path/path/simple/) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+</code></pre>
+<p>Interestingly, in our company we have also secondary index which is running on jfrog artifactory and the same approach works for both uv and pip.
+What is the reason for this and how can I fix it ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-07 14:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi, I think I have a similar problem and I cannot figure out how to make uv work for may case when I have some private repositories stored in the google artifact registry.</p>
+</blockquote>
+<p>Hi @kmkolasinski. Would you mind opening a separate issue for this? At first glance, I assume your pip command won't use <code>UV_EXTRA_INDEX_URL</code> for anything (but maybe you've passed it in as <code>--extra-index-url</code> when you tested?). And you've provided a different URL for that env var in the pip and uv scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kmkolasinski">@kmkolasinski</a> on 2025-04-07 14:20</div>
+            <div class="timeline-body"><p>hey, yes I changed the commands arguments I will create an issue for this if you prefere and correct the commands as indeed this can be confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kmkolasinski">@kmkolasinski</a> on 2025-04-07 14:32</div>
+            <div class="timeline-body"><p>@jtfmumm  here is the ticket I created https://github.com/astral-sh/uv/issues/12716
+thank you for the help !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-11 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LSerranoPEReN">@LSerranoPEReN</a> on 2025-09-30 16:16</div>
+            <div class="timeline-body"><p>Thank you a lot for all these great changes.</p>
+<p>I believe that all the points raised in this issue have been resolved through your commits, and that the recent introduction of <code>uv auth</code> greatly simplifies the configuration of credentials without the need to document how to use the python keyring cli.</p>
+<p>I consider this issue to be fully resolved and am therefore closing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @LSerranoPEReN on 2025-09-30 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

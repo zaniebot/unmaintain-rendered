@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --system` fails because python installation is managed by uv? - astral-sh/uv #12204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --system` fails because python installation is managed by uv?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12204">#12204</a>
+        opened by <a href="https://github.com/MillieFD">@MillieFD</a>
+        on 2025-03-16 17:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MillieFD">@MillieFD</a> on 2025-03-16 17:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Summary of the issue</h3>
+<p>Attempting to install a package for all users with the command <code>uv pip install --system</code> fails because the python installation is &quot;externally managed&quot; by uv itself.</p>
+<pre><code class="language-bash">error: The interpreter at /opt/uv/python/cpython-3.13.2-linux-aarch64-gnu is externally managed, and indicates the following:
+This Python installation is managed by uv and should not be modified.
+</code></pre>
+<h3>What am I trying to achieve?</h3>
+<p>I'm using a Raspberry Pi 5 to control a robot in our lab. I've written a Python package (called <code>thormotion</code>) which can be used to control the robot. I want to make <code>uv</code>, <code>python 3.13</code> and the <code>thormotion</code> package available by default to all users on the raspberry pi, without needing to re-install the package for each new user.</p>
+<h3>What have I done so far?</h3>
+<p>Starting from a fresh install of <strong>Raspberry Pi OS Lite 64-bit</strong>, I installed <code>uv</code> into a non-user-specific location.</p>
+<pre><code class="language-bash">curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR=&quot;/usr/local/bin&quot; sh
+</code></pre>
+<p>This works as expected. Running <code>uv --version</code> returns <code>uv 0.6.6</code> when logged in as any user.</p>
+<p>Next, I installed python 3.13, again setting the environment variables to non-user-specific locations.</p>
+<pre><code class="language-bash">sudo UV_PYTHON_INSTALL_DIR=/opt/uv/python UV_PYTHON_BIN_DIR=/usr/local/bin uv python install --default --preview
+</code></pre>
+<p>Calling <code>uv python list</code> is able to show this new python installation when logged in as any user. Note that, even though I set the <code>--default</code> flag, <code>python --version</code> still returns <code>Python 3.11.2</code> which is the default python executable that come pre-installed on Raspberry Pi OS. That's not necessarily a deal-breaker, but was unexpected from my understanding of the <code>--default</code> flag's purpose.</p>
+<h3>Exploring the issue</h3>
+<p>At this stage, I was ready to install the <code>thormotion</code> package for the new python 3.13 installation to make it available to all users.</p>
+<p>Running <code>uv pip install thormotion</code> returned the following error:</p>
+<pre><code class="language-bash">error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<p>Okay, fair enough. The hint is pretty clear that I need to add the <code>--system</code> flag to install packages into the system Python environment. Lets try it:</p>
+<pre><code class="language-bash">millie@raspberrypi:~ $ uv pip install --system --python 3.13 thormotion
+Using Python 3.13.2 environment at: /opt/uv/python/cpython-3.13.2-linux-aarch64-gnu
+error: The interpreter at /opt/uv/python/cpython-3.13.2-linux-aarch64-gnu is externally managed, and indicates the following:
+
+  This Python installation is managed by uv and should not be modified.
+
+Consider creating a virtual environment with `uv venv`.
+</code></pre>
+<p>Now this confused me. Of course the Python installation is managed by <code>uv</code>, that's why I'm running a <code>uv</code> command. What is the purpose of the <code> --system</code> flag if it can't operate on <code>uv</code> managed Python installations?</p>
+<h3>Workaround</h3>
+<p>After trying various alternatives, I was able to get the <code>thormotion</code> package to install by adding the <code>--break-system-packages</code> flag.</p>
+<pre><code class="language-bash">uv pip install --system --python 3.13 --break-system-packages thormotion
+</code></pre>
+<p>Whilst this <em>does</em> work, the fact that <code>--break-system-packages</code> is required makes me feel that I may have completely misunderstood the purpose of the <code> --system</code> flag.</p>
+<h3>Final questions</h3>
+<ol>
+<li>Is this behaviour a bug, or if not, what is the actual intended purpose for the <code>--system</code> flag?</li>
+<li>Is my <code>--break-system-packages</code> workaround the recommended solution, or is there a better way?</li>
+</ol>
+<h3>Platform</h3>
+<p>Raspberry Pi OS Lite (64-bit, based on Debian Bookworm)</p>
+<h3>Version</h3>
+<p>0.6.6</p>
+<h3>Python version</h3>
+<p>3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MillieFD on 2025-03-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-16 17:58</div>
+            <div class="timeline-body"><p>It's intentional that the global Python environment is not mutable. The <code>--system</code> flag is for targeting system environments not managed by uv, and largely exists for backwards compatibility — we wouldn't recommend using it generally.</p>
+<p>I'd create a virtual environment in a shared location, then activate it by default by placing the Python interpreter at the front of the <code>PATH</code>. Basically as described in https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment</p>
+<p>We should probably add a dedicated hint to <code>uv pip install</code> when the interpreter is managed by uv. I think that'd be better than recommending <code>--system</code>.</p>
+<blockquote>
+<p>Note that, even though I set the --default flag, python --version still returns Python 3.11.2 which is the default python executable that come pre-installed on Raspberry Pi OS. That's not necessarily a deal-breaker, but was unexpected from my understanding of the --default flag's purpose.</p>
+</blockquote>
+<p>Is the <code>UV_PYTHON_BIN_DIR</code> at the front of your <code>PATH</code>? Is there an existing <code>python</code> executable there? We won't replace an externally-managed Python executable without the <code>--force</code> flag. Was there a warning on install? The verbose logs (<code>-v</code>) would probably make what's happening clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-03-16 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-03-16 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vllm-project/vllm/pulls/15070.html">vllm-project/vllm#15070</a> on 2025-03-19 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/keramblock">@keramblock</a> on 2025-04-09 12:33</div>
+            <div class="timeline-body"><p>Hi @zanieb we want to use uv in github ci, and there is python as a shell approach:</p>
+<pre><code>      - name: Output test results
+        shell: python
+        run: |
+          import xml.etree.ElementTree as ET
+          import os
+
+          def parse_junit_report(file_path):
+              blah-blah-blah
+
+          # Call the function with your junit xml report file path
+          parse_junit_report('test-results.xml')
+</code></pre>
+<p>And for one of such actions I need pyJWT lib to make it work.</p>
+<p>I already made one python work by default using:
+<code>RUN uv python install ${DEFAULT_PYTHON_VERSION} --default --preview</code></p>
+<p>And make our dev tooling work:
+<code>RUN for req in $(cat dev-requirements.txt); do uv tool install ${req}; done</code></p>
+<p>Could you please help me to understand how should I prepare runner image with uv to have python available globally and pyjwt in it?</p>
+<p>The thing is that i do not want to any venv activated by default as every project is free to choose which venv with which python version they want to use and I do not force them.</p>
+<p>P.S. for now I managed to overcome that using:
+<code>uv pip -v install --system --break-system-packages -r requirements.txt</code>
+But this is really ugly solution IMO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../InseeFrLab/images-datascience/pulls/245.html">InseeFrLab/images-datascience#245</a> on 2025-04-19 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidghiurco">@davidghiurco</a> on 2025-07-09 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p>It's intentional that the global Python environment is not mutable. The <code>--system</code> flag is for targeting system environments not managed by uv, and largely exists for backwards compatibility — we wouldn't recommend using it generally.</p>
+<p>I'd create a virtual environment in a shared location, then activate it by default by placing the Python interpreter at the front of the <code>PATH</code>. Basically as described in https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment</p>
+<p>We should probably add a dedicated hint to <code>uv pip install</code> when the interpreter is managed by uv. I think that'd be better than recommending <code>--system</code>.</p>
+</blockquote>
+<p>So if I install a <code>uv</code>-managed python interpreter in a container ... I need 2 copies of the interpreter — one global, one venv — just to satisfy a blind &quot;must use venv&quot; requirement? That is a waste of space &amp; hardly seems reasonable.</p>
+<p>In the container scenario, containerization already achieves purpose-built isolation that is intended by <code>venv</code> — making venv obsolete.</p>
+<p>EDIT: <code>uv pip install &lt;my-package&gt; --system --break-system-packages</code> does seem to overcome this limitation, but <code>--break-system-packages</code> is not mentioned as an option in the error messages produced without it in the command invocation.</p>
+<p>EDIT 2: <code>uv tool install &lt;my-package&gt;</code> appears to be the cleaner alternative to installing a library in the global python interpreter managed by <code>uv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-09 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>That is a waste of space</p>
+</blockquote>
+<p>Can you quantify this claim? Virtual environments are really lightweight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jm-positron">@jm-positron</a> on 2025-07-29 19:44</div>
+            <div class="timeline-body"><p>I think the weight of a venv is orthogonal to whether or not it is necessary. I believe the point is that because isolation is already achieved by the containerized environment, creating a virtual environment in additional to the system environment is unnecessary duplication, and thus a waste.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15635.html">astral-sh/uv#15635</a> on 2025-09-02 18:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

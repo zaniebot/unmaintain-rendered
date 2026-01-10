@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where to find Subcommand argument values - clap-rs/clap #509</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Where to find Subcommand argument values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/509">#509</a>
+        opened by <a href="https://github.com/Cyberunner23">@Cyberunner23</a>
+        on 2016-05-20 03:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Cyberunner23">@Cyberunner23</a> on 2016-05-20 03:07</div>
+            <div class="timeline-body"><p>I'm working on a tool which takes values from an argument inside a subcommand and I'm running into the issue where clap is not giving me the value of the argument. Here is some test code that shows the issue.</p>
+<pre><code>extern crate clap; 
+use clap::{Arg, App, SubCommand};
+
+fn main() {
+
+    let matches = App::new(&quot;rustTest2&quot;)
+        .subcommand(SubCommand::with_name(&quot;sub&quot;)
+            .about(&quot;A subcommand&quot;)
+            .arg(Arg::with_name(&quot;title&quot;)
+                 .short(&quot;t&quot;)
+                 .long(&quot;title&quot;)
+                 .help(&quot;Sets the title of the card.&quot;)
+                 .takes_value(true)
+                 .required(true)))
+        .get_matches();
+
+    if matches.is_present(&quot;title&quot;) {
+        println!(&quot;title present!&quot;);
+    }
+
+    println!(&quot;Value of --title/-t: {}&quot;, matches.value_of(&quot;title&quot;).unwrap_or(&quot;Nothing!&quot;));
+
+}
+</code></pre>
+<p>Running the program with the following command:</p>
+<pre><code>rustTest2 sub --title somevalue
+</code></pre>
+<p>will not stop the program because <code>somevalue</code> is not missing but when looking for it in the program it is missing. Essentially returning</p>
+<pre><code>Value of --title/-t: Nothing!
+</code></pre>
+<p>when executing the command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-20 14:38</div>
+            <div class="timeline-body"><p>This is because the <code>title</code> argument is part of the <code>sub</code> matches, and not the top level matches. The reason for the tree hierarchy is to allow multiple subcommands to have the same arguments and not clobber each other.</p>
+<p>If you do:</p>
+<pre><code class="language-rust">extern crate clap; 
+use clap::{Arg, App, SubCommand};
+
+fn main() {
+
+    let matches = App::new(&quot;rustTest2&quot;)
+        .subcommand(SubCommand::with_name(&quot;sub&quot;)
+            .about(&quot;A subcommand&quot;)
+            .arg(Arg::with_name(&quot;title&quot;)
+                 .short(&quot;t&quot;)
+                 .long(&quot;title&quot;)
+                 .help(&quot;Sets the title of the card.&quot;)
+                 .takes_value(true)
+                 .required(true)))
+        .get_matches();
+
+    match matches.subcommand() {
+        (&quot;sub&quot;, Some(sub_matches)) =&gt; {
+            if sub_matches.is_present(&quot;title&quot;) {
+                println!(&quot;title present!&quot;);
+                println!(&quot;Value of --title/-t: {}&quot;, sub_matches.value_of(&quot;title&quot;).unwrap_or(&quot;Nothing!&quot;));
+            },
+         _ =&gt; {}, // no subcommand present, or one not tested for
+    }    
+}
+</code></pre>
+<p>Edit:</p>
+<p>In this case you could also take advantage of <a href="http://kbknapp.github.io/clap-rs/clap/struct.Arg.html#method.default_value">default_values</a> where the default is <code>&quot;Nothing!&quot;</code> :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-05-20 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-05-20 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Subcommand argument value missing when checking for values." to "Where to find Subcommand argument values" by @kbknapp on 2016-05-20 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Cyberunner23">@Cyberunner23</a> on 2016-05-20 14:42</div>
+            <div class="timeline-body"><p>Thanks! I must of missed that...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Cyberunner23 on 2016-05-20 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-20 14:43</div>
+            <div class="timeline-body"><p>No worries!</p>
+<p>Also look at the <a href="http://kbknapp.github.io/clap-rs/clap/struct.ArgMatches.html#method.subcommand_name"><code>subcommand_name()</code></a> and <a href="http://kbknapp.github.io/clap-rs/clap/struct.ArgMatches.html#method.subcommand_matches"><code>subcommand_matches()</code></a> methods if you only have a single subcommand or only want to check for a single subcommand.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

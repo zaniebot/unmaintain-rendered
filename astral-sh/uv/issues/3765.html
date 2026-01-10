@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRTUAL_ENV no longer used, giving &quot;No Python default installation found in virtual environments&quot; error - astral-sh/uv #3765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>VIRTUAL_ENV no longer used, giving &quot;No Python default installation found in virtual environments&quot; error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3765">#3765</a>
+        opened by <a href="https://github.com/thundergolfer">@thundergolfer</a>
+        on 2024-05-22 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-05-22 19:58</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>We use <code>echo &quot;VIRTUAL_ENV=${Python_ROOT_DIR}&quot; &gt;&gt; $GITHUB_ENV</code> to avoid needing a virtual env in Github Actions. As of <code>0.2.0</code> this has stopped working.</p>
+<pre><code>$ pip install uv
+Collecting uv
+  Downloading uv-0.2.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (32 kB)
+Downloading uv-0.2.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.0/13.0 MB 185.8 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.2.0
+
+$ uv pip install -U pip setuptools wheel invoke
+error: No Python default installation found in virtual environments
+Error: Process completed with exit code 2.
+</code></pre>
+<p><code>python -m uv pip install -U pip setuptools wheel invoke</code> works so it does seem there's something going on with the Python installation detection.</p>
+<ul>
+<li><code>uv --version</code> is <code>0.2.0</code> (latest)</li>
+<li>Environment is Github Actions Ubuntu 20.04 runner.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joennlae">@joennlae</a> on 2024-05-22 20:00</div>
+            <div class="timeline-body"><p>I can second that. All my builds that use to work with 0.1.45 fail with this <code>error: No Python default installation found in virtual environments</code>.</p>
+<p>We do not use the <code>$GITHUB_ENV</code> variable it just happens with normal conda envs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 20:01</div>
+            <div class="timeline-body"><p>Thanks for the report, this sounds like a regression from #3266.</p>
+<p>I think pointing to a system installation with <code>VIRTUAL_ENV</code> was a hack in the first place though and never officially supported. Why not use <code>--system</code> now that we support that?</p>
+<p>What's the value of the <code>${Python_ROOT_DIR}</code> variable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3767.html">astral-sh/uv#3767</a> on 2024-05-22 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 20:17</div>
+            <div class="timeline-body"><p>@joennlae Could you share an example of the <code>VIRTUAL_ENV</code> or <code>CONDA_PREFIX</code> you are setting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joennlae">@joennlae</a> on 2024-05-22 20:21</div>
+            <div class="timeline-body"><p>I can just share the <code>workflow.yml</code> file:</p>
+<pre><code class="language-yaml">name: Linting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.quality-command }}
+    defaults:
+      run:
+        shell: bash -el {0}
+    strategy:
+      matrix:
+        quality-command:
+          - black
+          - ruff
+          - mypy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yml
+          activate-environment: 44ai
+      - name: Install Dependencies
+        run: |
+          conda activate 44ai
+          pip install uv==0.1.45
+          uv pip install -r requirements.txt
+          uv pip install -r requirements-dev.txt
+</code></pre>
+<p>the <code>environment.yml</code>:</p>
+<pre><code class="language-yaml">
+name: 44ai
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - tesseract
+  - ffmpeg
+</code></pre>
+<p>I it is not the full environment but this should be reproducible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-05-22 20:38</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<pre><code>echo $VIRTUAL_ENV
+/opt/hostedtoolcache/Python/3.11.9/x64
+</code></pre>
+<pre><code>ls /opt/hostedtoolcache/Python/3.11.9/x64
+Python-3.11.9.tgz  build_output.txt  lib     share
+bin                include           python  tools_structure.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-05-22 20:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Why not use --system now that we support that?</p>
+</blockquote>
+<p>We could!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-22 20:48</div>
+            <div class="timeline-body"><p>@thundergolfer thanks for the details! Yeah this looks like an unintentional change but I think it's probably for the best if <code>--system</code> achieves the intent. I could see us allowing but warning if <code>VIRTUAL_ENV</code> points to something that's not actually a virtual environment but I'd rather not complicate it without more justification.</p>
+<p>@joennlae looks like you're encountering the same as #3769 which I'm fixing in #3771 — we'll have that fixed asap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-05-22 21:03</div>
+            <div class="timeline-body"><p>Yep thanks have made a PR internally to switch to <code>--system</code>. Thanks for the quick response 👌.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-22 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3771.html">astral-sh/uv#3771</a> on 2024-05-22 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3782.html">astral-sh/uv#3782</a> on 2024-05-23 01:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3787.html">astral-sh/uv#3787</a> on 2024-05-23 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../inventree/InvenTree/pulls/7309.html">inventree/InvenTree#7309</a> on 2024-05-23 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matmair">@matmair</a> on 2024-05-23 17:47</div>
+            <div class="timeline-body"><p>@zanieb <code>VIRTUAL_ENV</code> is still mentioned multiple time in the readme - should probably be removed if it is deprecated/was considered a hack</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 18:11</div>
+            <div class="timeline-body"><p>Hey @matmair — you're totally welcome and encouraged to use <code>VIRTUAL_ENV</code> still. It just should not be used to point to a standard Python installation that is <strong>not</strong> actually a virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matmair">@matmair</a> on 2024-05-23 22:58</div>
+            <div class="timeline-body"><p>Neither VIRTUAL_ENV nor the --system flag seem to work on GitHub Actions anymore, switching back to pip</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-23 23:03</div>
+            <div class="timeline-body"><p>Please share a reproduction if you can, I'm happy to help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../inventree/InvenTree/pulls/7317.html">inventree/InvenTree#7317</a> on 2024-05-23 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox-uv/pulls/57.html">tox-dev/tox-uv#57</a> on 2024-05-24 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rotki/rotki/pulls/7978.html">rotki/rotki#7978</a> on 2024-05-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zenml-io/zenml/pulls/2727.html">zenml-io/zenml#2727</a> on 2024-05-29 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7907.html">astral-sh/uv#7907</a> on 2024-10-03 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

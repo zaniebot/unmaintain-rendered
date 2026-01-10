@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify use of Error with RichFormatter (methods `print` and `exit`) - clap-rs/clap #5384</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify use of Error with RichFormatter (methods `print` and `exit`)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5384">#5384</a>
+        opened by <a href="https://github.com/vrurg">@vrurg</a>
+        on 2024-03-02 03:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vrurg">@vrurg</a> on 2024-03-02 03:22</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5</p>
+<h3>Describe your use case</h3>
+<p>I'm implementing a build helper tool for my local project. The tool needs to know the base directory of a crate which could either be provided for <code>--base</code> argument via a dedicated envvar, or guessed from a <code>CARGO_*</code> environment variable(s). When it falls through to the guessing fallback and still has no success I'd like the tool to provide a detailed message with a self-explaining error message and tips. Looks like a job for the <code>RichFormatter</code>, but it turns out that method <code>print</code> doesn't respect error's formatter. This also results in <code>exit</code> method printing simplified error.</p>
+<p>So far, I came down to the following sample to achieve my goal (the code is for use with <code>rust-script</code>):</p>
+<pre><code class="language-rust">//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4.5&quot;, features = [&quot;derive&quot;, &quot;env&quot;, &quot;wrap_help&quot;, &quot;error-context&quot;] }
+//! ```
+
+use clap::{
+    builder::StyledStr,
+    error::{ContextKind, ContextValue, ErrorFormatter, ErrorKind, RichFormatter},
+    CommandFactory, Parser,
+};
+
+#[derive(Parser)]
+#[command(name = &quot;my-builder&quot;, version, about)]
+struct Cli {
+    /// Project root
+    #[arg(long, short, env = &quot;MY_BASE&quot;, default_missing_value = &quot;none&quot;)]
+    base: Option&lt;String&gt;,
+}
+
+fn validate_cli(cli: &amp;Cli) {
+    if cli.base.is_none() {
+        use std::fmt::Write as _;
+        let mut cmd = Cli::command();
+        let mut err = cmd
+            .error(ErrorKind::MissingRequiredArgument, &quot;Can't determine base directory&quot;)
+            .apply::&lt;RichFormatter&gt;();
+        let mut suggestion = StyledStr::new();
+        let _ = write!(suggestion, &quot;try running under `cargo make`&quot;);
+        err.insert(ContextKind::Suggested, ContextValue::StyledStrs(vec![suggestion]));
+        let s = RichFormatter::format_error(&amp;err);
+        eprintln!(&quot;{}&quot;, s.ansi());
+        eprintln!(&quot;------&quot;);
+        err.exit();
+    }
+}
+
+fn main() {
+    let cli = Cli::parse();
+    validate_cli(&amp;cli);
+}
+</code></pre>
+<p>Here what it comes up with:</p>
+<img width="768" alt="image" src="https://github.com/clap-rs/clap/assets/1586992/c4f235f2-cb2f-47a9-a682-d97318b6cab3">
+
+<p>Unfortunately, despite of having the tip in the output, my custom message and <code>Usage:</code> are both lost. So far, I can compensate for the message by reporting it manually and <code>Usage:</code> isn't that critical (though pretty). But what is worse is that <code>print</code> does take into account if terminal status of stdout, whereas <code>ansi</code> doesn't:</p>
+<img width="747" alt="image" src="https://github.com/clap-rs/clap/assets/1586992/dace66bf-8405-4b86-bf2c-536725fb49b6">
+
+<p>Another annoyance is the complexity of creating a suggestion. It's not even nowhere in the docs to be found about what <code>ContextValue</code> variant is required for each of <code>ContextKind</code>.</p>
+<h3>Describe the solution you'd like</h3>
+<p>It would be best if the <code>validate_cli</code> function could be reduced to:</p>
+<pre><code class="language-rust">fn validate_cli(cli: &amp;Cli) {
+    if cli.base.is_none() {
+        let mut cmd = Cli::command();
+        let mut err = cmd
+            .error(ErrorKind::MissingRequiredArgument, &quot;Can't determine base directory&quot;)
+            .apply::&lt;RichFormatter&gt;();
+        err.insert(ContextKind::Suggested, ContextValue::String(&quot;try running under `cargo make`&quot;));
+        err.exit();
+    }
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @vrurg on 2024-03-02 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-03-03 03:07</div>
+            <div class="timeline-body"><p>The core of the confusion is that <code>Command::error</code> is meant for pre-formatted errors and the error formatter is not applied.  At this moment, I do not remember the design constraints that led to all of this.</p>
+<p>The Context and Formatter APis are generally for more advanced workflows (really more of an escape hatch) and so not as much attention as been put towards documenting and polish.</p>
+<p>Some options include:</p>
+<ul>
+<li>Write a styled string containing the information you want with <code>Command::error</code></li>
+<li>Explicitly format the error and use <code>anstream</code> to print the message (this is what clap uses under the hood)</li>
+<li>Just write your own message, looking like clap</li>
+</ul>
+<p>Some quick notes on the code sample:</p>
+<ul>
+<li>The <code>error-context</code> feature is a default feature, so it doesn't need to be called out</li>
+<li><code>Error::apply</code> is mean for changing the formatter and so that is not needed as Rich is the default</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vrurg">@vrurg</a> on 2024-03-03 21:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Some options include</p>
+</blockquote>
+<p>What I love to do is to blend in into the style of the framework I'm using. Basically, after sorting out what I learned so far, here is what I really need.</p>
+<p>When the base directory is not explicitly specified it could be guessed based on <code>cargo</code> (<code>cargo-make</code> in my case) environment. Only when this fails the error is to be printed.</p>
+<p>The task could be solved much easier with a kind of global hook on a command or subcommand. Something like <code>#[command(..., checkin = cli-checking)]</code> where <code>cli-checking</code> is <code>Fn(&amp;Cli) -&gt; Result&lt;(), Error&gt;</code>.</p>
+<blockquote>
+<p>Some quick notes on the code sample</p>
+</blockquote>
+<p>Those are actually artifacts of me experimenting. Eventually, <code>anstream</code> is the last piece of puzzle to finish my implementation. It's somewhat more compact comparing to to the test code here. But it's only thanks to three additional traits implementing conversion from <code>ContextValue</code>, <code>Display</code>, and <code>Iterator</code> into <code>ContextValue::StyledStrs</code>; and forth trait to add a method onto <code>clap::error::Error</code> to use these when adding a suggestion. I love to have simple APIs, even if they come at cost of complex-ish internals. ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-03-12 21:00</div>
+            <div class="timeline-body"><blockquote>
+<p>The task could be solved much easier with a kind of global hook on a command or subcommand. Something like #[command(..., checkin = cli-checking)] where cli-checking is Fn(&amp;Cli) -&gt; Result&lt;(), Error&gt;.</p>
+</blockquote>
+<p>More extensible validation is being discussed in #3476.  In general, I am against baking in specialized validation for every need.  Pushing too much validation onto clap would make clap both harder to read and make most clients harder to read.  In general, more I encourage more advanced configuration to be managed manually within the application.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vrurg">@vrurg</a> on 2024-03-12 22:57</div>
+            <div class="timeline-body"><blockquote>
+<p>In general, more I encourage more advanced configuration to be managed manually within the application.</p>
+</blockquote>
+<p>That's what I ended up with anyway. More friendly interface for producing errors would be nice to have, but there is no reason to insist on anything. So, I think it worth closing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vrurg on 2024-03-12 22:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:33 UTC
+    </footer>
+</body>
+</html>

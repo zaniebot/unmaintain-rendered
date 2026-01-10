@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolution Order Dependency Causes Incorrect Backtracking - astral-sh/uv #16601</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolution Order Dependency Causes Incorrect Backtracking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16601">#16601</a>
+        opened by <a href="https://github.com/qiulang">@qiulang</a>
+        on 2025-11-05 14:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qiulang">@qiulang</a> on 2025-11-05 14:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When resolving dependencies, uv makes different (incorrect) resolution decisions depending on whether transitive dependency constraints are also specified at the top level. This causes it to pick incompatible package versions and backtrack to ancient versions instead of finding valid solutions.</p>
+<h2>Minimal Reproduction</h2>
+<h3>Environment</h3>
+<ul>
+<li>Index: Any (tested with official PyPI and Chinese mirrors)</li>
+<li>What matter is the date (as in Nov.05 2025) with <strong>huggingface-hub has released 1.0.1 while transformers 4.57.1 is the latest</strong></li>
+</ul>
+<h3>Case 1: Bug - Just install xinference</h3>
+<pre><code class="language-bash">uv pip compile - &lt;&lt;EOF
+xinference
+EOF
+</code></pre>
+<p><strong>Result (WRONG):</strong></p>
+<pre><code>transformers==4.12.2       # Ancient version from 2021!
+huggingface-hub==1.0.1     # Violates transformers' &lt;1.0 constraint
+tokenizers==0.10.3         # Ancient version
+Resolution time: ~1.6s
+</code></pre>
+<h3>Case 2: Works - Add explicit transformers constraint</h3>
+<pre><code class="language-bash">uv pip compile - &lt;&lt;EOF
+transformers&gt;=4.40.0
+xinference
+EOF
+</code></pre>
+<p><strong>Result (CORRECT):</strong></p>
+<pre><code>transformers==4.57.1
+huggingface-hub==0.36.0    # Correctly satisfies both constraints
+tokenizers==0.22.1
+Resolution time: ~167ms
+</code></pre>
+<h3>Case 3: Also works - Order doesn't matter when both specified</h3>
+<pre><code class="language-bash">uv pip compile - &lt;&lt;EOF
+xinference
+transformers&gt;=4.40.0
+EOF
+</code></pre>
+<p><strong>Result (CORRECT):</strong></p>
+<pre><code>transformers==4.57.1
+huggingface-hub==0.36.0
+tokenizers==0.22.1
+Resolution time: ~21ms
+</code></pre>
+<h2>Root Cause Analysis</h2>
+<p>The dependency constraints are:</p>
+<ul>
+<li><code>xinference</code> → <code>huggingface-hub&gt;=0.19.4</code> (no upper bound)</li>
+<li><code>xinference</code> → <code>transformers</code> (via <code>peft</code>)</li>
+<li><code>transformers&gt;=4.40</code> → <code>huggingface-hub&gt;=0.34.0,&lt;1.0</code></li>
+<li><code>gradio</code> (xinference dependency) → <code>huggingface-hub&gt;=0.33.5,&lt;2.0</code></li>
+</ul>
+<p>Valid solution space: <code>huggingface-hub</code> in range <code>[0.34.0, 1.0)</code> (e.g., 0.36.0)</p>
+<h3>What uv does wrong (Case 1):</h3>
+<ol>
+<li>Processes xinference's loose <code>huggingface-hub&gt;=0.19.4</code> constraint</li>
+<li>Sees gradio's <code>&lt;2.0</code> upper bound</li>
+<li><strong>Picks <code>huggingface-hub==1.0.1</code></strong> (satisfies gradio but violates transformers)</li>
+<li>Later discovers transformers needs <code>&lt;1.0</code></li>
+<li><strong>Backtracks transformers to 4.12.2</strong> instead of reconsidering huggingface-hub</li>
+<li>Results in ancient, incompatible versions</li>
+</ol>
+<p>BTW, <code>pip install xinference</code> works</p>
+<h3>What uv does right (Cases 2 &amp; 3):</h3>
+<ol>
+<li>Has <code>transformers&gt;=4.40.0</code> as a top-level constraint</li>
+<li>Considers transformers' <code>huggingface-hub&lt;1.0</code> requirement from the start</li>
+<li><strong>Correctly picks <code>huggingface-hub==0.36.0</code></strong> (in the valid range)</li>
+<li>Everyone gets modern, compatible versions</li>
+</ol>
+<h2>Expected Behavior</h2>
+<p>The resolver should produce the same result regardless of whether transitive constraints are explicitly listed at the top level. In this case:</p>
+<ul>
+<li><code>uv pip compile &quot;xinference&quot;</code> should produce the same resolution as</li>
+<li><code>uv pip compile &quot;transformers&gt;=4.40.0\nxinference&quot;</code></li>
+</ul>
+<p>Since a valid solution exists (huggingface-hub 0.36.0), uv should find it in both cases.</p>
+<h2>Impact</h2>
+<p>This affects real-world packages like <code>xinference</code> which cannot be installed with uv without workarounds:</p>
+<pre><code class="language-bash"># Fails
+uv pip install xinference
+
+# Workaround 1: Pre-constrain huggingface-hub
+uv pip install &quot;huggingface-hub&gt;=0.34.0,&lt;1.0&quot; xinference
+
+# Workaround 2: Explicitly add transformers constraint
+uv pip install transformers xinference
+</code></pre>
+<p>Users are forced to understand the internal dependency tree and manually add constraints, which defeats the purpose of automatic dependency resolution.</p>
+<h2>Additional Notes</h2>
+<ul>
+<li><code>pip</code> resolves this correctly in all cases (always picks modern versions)</li>
+<li>The resolution time difference (1.6s vs 167ms) suggests uv is doing significant backtracking</li>
+<li>The bug occurs regardless of which package index is used</li>
+</ul>
+<h2>Suggested Fix</h2>
+<p>When uv encounters a conflict during backtracking, it should reconsider earlier choices (like huggingface-hub version) rather than always downgrading the package that exposed the conflict (transformers).</p>
+<h3>Platform</h3>
+<p>Ubuntu22 / macOS 15</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p>3.11/3/12 (does not matter)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @qiulang on 2025-11-05 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../xorbitsai/inference/issues/4215.html">xorbitsai/inference#4215</a> on 2025-11-05 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-05 17:20</div>
+            <div class="timeline-body"><p>In a case where the latest version of two packages conflict, both resolutions are valid. From uv's perspective, when the only direct dependency is xinference, the choices are downgrading transformers or downgrading huggingface-hub and both look equally bad. Either choice is a correct one: Both fulfill the requirements you set. As a heuristic, uv does prefer higher versions for direct dependencies over indirect dependencies, but for indirect dependencies it only guarantees it's deterministic (running <code>uv pip compile</code> twice on the same requirements with the same releases gives the same resolution), but not any specific order. If you need a specific resolution, you need to specify those additional constraints, as you e.g. did with by adding <code>transformers&gt;=4.40.0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-11-05 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-11-05 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qiulang">@qiulang</a> on 2025-11-06 00:41</div>
+            <div class="timeline-body"><p>I understand what you said but from end user point of view, using uv to install xinference would fail, while pip wouldn't. That is the problem. Besides, uv backtracks to a version that satisfying the requirement  but then fails to install, I can't say that is a good result.</p>
+<p>I check uv installation log and find it output these lines</p>
+<pre><code>DEBUG Recording dependency conflict of transformers==4.55.4 from incompatibility of (transformers, huggingface-hub)
+DEBUG Package transformers has too many conflicts (affected), prioritizing
+DEBUG Package huggingface-hub has too many conflicts (culprit), deprioritizing and backtracking
+</code></pre>
+<p>But in the end uv still choose huggingface-hub==1.0.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-21 12:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I understand what you said but from end user point of view, using uv to install xinference would fail, while pip wouldn't. That is the problem.</p>
+</blockquote>
+<p>pip doesn't guarantee this either, it picks the correct solution &quot;accidentally&quot;, and this may change when more packages or new versions are published.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-11-21 17:18</div>
+            <div class="timeline-body"><p>Yeah, as a pip maintainer I don't follow how pip could guarantee not to choose an older transformers and tokenizers:</p>
+<pre><code>transformers==4.12.2
+huggingface-hub==1.0.1
+tokenizers==0.10.3
+</code></pre>
+<p>Over an older huggingface-hub:</p>
+<pre><code>transformers==4.57.1
+huggingface-hub==0.36.0
+tokenizers==0.22.1
+</code></pre>
+<p>Unless I am missing something here?</p>
+<p>As a side note, I do wonder if there should be some option that would allow users to do something like: If packages have published packages with the last N years only select those packages, not older packages. But I don't have a specific proposal for that the UX of what would look like, and it would definitely be a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-21 18:01</div>
+            <div class="timeline-body"><p>The naive pattern would be <code>exclude-older</code>? I guess something like <code>exclude-stale</code> would be possible too, but harder because we need to visit the latest versions first and get their dates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-11-21 18:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess something like <code>exclude-stale</code> would be possible too, but harder because we need to visit the latest versions first and get their dates.</p>
+</blockquote>
+<p>Yeah, if the intent is for it to be an easy &quot;just fix things&quot; option there's a bunch of design choices that need to be made, I'm probably not going to propose it for pip until there is prior art.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

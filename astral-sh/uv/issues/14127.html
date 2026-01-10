@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspaces and interdependent packages? - astral-sh/uv #14127</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspaces and interdependent packages?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14127">#14127</a>
+        opened by <a href="https://github.com/tamis-laan">@tamis-laan</a>
+        on 2025-06-18 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tamis-laan">@tamis-laan</a> on 2025-06-18 12:30</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>My setup is a little different from:
+https://docs.astral.sh/uv/concepts/projects/workspaces/
+My repo roughly looks as followed:</p>
+<pre><code>├── modules
+│   ├── config
+│   │   ├── README.md
+│   │   ├── __init__.py
+│   │   └── pyproject.toml
+├── pyproject.toml
+├── services
+│   └── api
+│       ├── pyproject.toml
+│       └── src
+└── uv.lock
+</code></pre>
+<p>Now what I want to do is use the config module from inside my api service.</p>
+<p><code>/pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;MyProject&quot;
+
+[tool.uv.workspace]
+	members = [&quot;services/*&quot;, &quot;modules/*&quot;]
+
+[tool.uv.sources]
+	api = { workspace = true }
+	config = { workspace = true }
+</code></pre>
+<p><code>/services/api/pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;api&quot;
+[project]
+	dependencies = [ &quot;config&quot; ]
+[tool.setuptools]
+	package-dir = {&quot;&quot; = &quot;src&quot;}
+
+[tool.setuptools.packages.find]
+	where = [&quot;src&quot;]
+
+[tool.uv.sources]
+config = { workspace = true }
+</code></pre>
+<p><code>/modules/config/pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;config&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [ ... ]
+</code></pre>
+<p>But this doesn't work I can't <code>import config</code> from within my api code. What am I doing wrong? What would be the correct way of doing this?</p>
+<h3>Platform</h3>
+<p>osx</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @tamis-laan on 2025-06-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-18 14:23</div>
+            <div class="timeline-body"><p>For <code>import config</code> to work, you should use a package structure for the <code>config</code> project too, e.g. with <code>src/config/__init__.py</code> and define a build backend in <code>config</code>'s <code>pyproject.toml</code>. Currently, it is considered a virtual package and not installed. For an importable package, the <code>__init__.py</code> should be in a directory below the <code>pyproject.toml</code>, not in the same directory.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

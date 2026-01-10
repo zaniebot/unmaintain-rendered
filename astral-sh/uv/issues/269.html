@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Develop a caching strategy for URL dependencies - astral-sh/uv #269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Develop a caching strategy for URL dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/269">#269</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-01 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-01 13:20</div>
+            <div class="timeline-body"><p>We can either respect HTTP caching, never cache, or always cache (and provide a mechanism for ignoring the cache)...</p>
+<p>Another option is that we have one caching semantic during resolution, and then we write a SHA of some sort to the lockfile, so when we <em>install</em> we're always allowed to read from the cache in perpetuity. Needs more research.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Initial release" by @charliermarsh on 2023-11-01 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2023-11-01 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2023-11-01 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-01 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Initial release" by @charliermarsh on 2023-11-02 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Future" by @charliermarsh on 2023-11-02 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 12:55</div>
+            <div class="timeline-body"><p>I'm moving this to future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 05:06</div>
+            <div class="timeline-body"><p>@konstin - We might need a story around how to update a URL dependency that's already installed in your environment. Like, if you run <code>pip install https://some/package/that/is/flask</code> and Flask is installed already (from that URL), under what conditions do we try to reinstall it? I don't know that this is fully covered by caching, since the distribution in the virtualenv won't know anything about caching.</p>
+<p>One option is that we <em>never</em> update it unless the user explicitly requests it somehow (like <code>--force-update</code>), I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-10 11:38</div>
+            <div class="timeline-body"><p>Do we have a hash in the lock requirements.txt? If yes, we can cache a mapping url -&gt; (cache_policy, hash) and on install compare that hash with <code>direct_url.json</code>, then do a cached request (this does no actual http request if the server cache policy is immutable, otherwise it's generally a cheap 304) to check that the url would still return or cached hash.</p>
+<p>If not (i wrote this initially before realizing we may have the hash in the lockfile):</p>
+<hr />
+<p>I'm not sure, what about this: We cache a mapping url -&gt; (cache_policy, hash). When we get the request to install the url, we look at the venv. If <code>direct_url.json</code> does not exists or does not point to the url, remove the existing installation. If it exists do a cached query for the url (this does no actual http request if the server cache policy is immutable) and compare the hashes. If the there is no cache, if think we have to download and hash to compare with <code>direct_url.json</code>, the only case.</p>
+<p>The bad cases (we download the file even if we didn't have to), are</p>
+<ul>
+<li>Another tool has installed the package and it didn't change on the remote and we don't have a cache entry / the other tool didn't write a <code>direct_url.json</code> (bad caching when tool mixing)</li>
+<li>The server does not implement http caching semantics (we can't salvage bad servers)</li>
+</ul>
+<p>A small disadvantage is that we have to make one (cheap, the server replies 304) request for each url each time if the server didn't mark the file as immutable.</p>
+<p>I think we can't have a stale install that way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 04:16</div>
+            <div class="timeline-body"><p>We added a story for updating these via <code>--reinstall</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-15 04:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

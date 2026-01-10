@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff binary varies from ASLR - astral-sh/ruff #12169</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff binary varies from ASLR</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12169">#12169</a>
+        opened by <a href="https://github.com/bmwiedemann">@bmwiedemann</a>
+        on 2024-07-03 12:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bmwiedemann">@bmwiedemann</a> on 2024-07-03 12:19</div>
+            <div class="timeline-body"><p>While working on <a href="https://reproducible-builds.org/">reproducible builds</a> for <a href="https://en.opensuse.org/openSUSE:Reproducible_Builds">openSUSE</a>, I found that
+our <code>python-ruff</code> package varies from Address-Space-Layout-Randomization (ASLR).</p>
+<p>I reproduced this with both 0.5.0 and 0.4.10.</p>
+<p>It is a variation that happens with low-entropy - maybe just 1 bit, so occasionally, two identical <code>ruff</code> binaries are produced.</p>
+<p>I uploaded two 0.5.0 binaries and a diff into http://rb.zq1.de/other/python-ruff/ - maybe something related to rust/llvm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-03 12:26</div>
+            <div class="timeline-body"><p>Scanning through the diff, it seems that most (all?) are related to the <code>libCST</code> dependency.</p>
+<p>Maybe a non-determinism in their macro?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmwiedemann">@bmwiedemann</a> on 2024-07-03 12:34</div>
+            <div class="timeline-body"><p><code>grep ^- ruff-strings-diff.txt | grep -vi libcst</code> also shows</p>
+<pre><code>-anon.ea5251168591221b31fa999991ef59a1.39.llvm.6396498261944353430
+-_ZN60_$LT$alloc..string..String$u20$as$u20$core..fmt..Display$GT$3fmt17hb6d27bec17dc24a4E.llvm.1673184941240675199
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmwiedemann">@bmwiedemann</a> on 2025-01-07 06:34</div>
+            <div class="timeline-body"><p>There is indeed an issue with rust/llvm LTO in libCST https://github.com/Instagram/LibCST/pull/1213 - but not sure if this is the only issue here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

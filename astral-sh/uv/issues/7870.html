@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python interpreters inside `/.local/share/uv/python` cannot find brew libraries - astral-sh/uv #7870</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Python interpreters inside `/.local/share/uv/python` cannot find brew libraries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7870">#7870</a>
+        opened by <a href="https://github.com/agustingomes-therapieland">@agustingomes-therapieland</a>
+        on 2024-10-02 15:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/agustingomes-therapieland">@agustingomes-therapieland</a> on 2024-10-02 15:35</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hello team,</p>
+<p>First, let me thank you for your hard work so far.</p>
+<p>I am starting to experiment with UV at work to improve the way we manage our Python environments and potentially more. As part of that R&amp;D, on my Mac OS M1, I'm seeing that one of the project dependencies (WeasyPrint) is not able to find system libraries. <a href="https://github.com/Kozea/WeasyPrint/issues/1448">This bug</a> is exactly the same symptom.</p>
+<p>The reason I'm opening the issue here, is because if I use the Python installation from Brew (<code>/opt/homebrew/opt/python@3.12/bin/python3.12</code>) I don't face this issue, and the libraries seem to be found.</p>
+<p>Can you share why the UV installed Python is not able to find the libraries?</p>
+<p>Thanks in advance, and sorry if this is not the correct process for this type of issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-02 15:56</div>
+            <div class="timeline-body"><p>I presume the Brew distribution is hard-coded to automatically load Brew libraries but external distributions will need to be told where to find them.</p>
+<p>Related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/7764</li>
+<li>https://github.com/astral-sh/uv/issues/6971</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/agustingomes-therapieland">@agustingomes-therapieland</a> on 2024-10-02 16:14</div>
+            <div class="timeline-body"><p>Thank you @zanieb for the reply.</p>
+<p>I will close my issue in favor of the already opened issue.</p>
+<p>Will also check in more detail the other closed issue, especially because of the library used there to reproduce the issue, which I suspect will help me find a workaround for my context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @agustingomes-therapieland on 2024-10-02 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @agustingomes-therapieland on 2024-10-02 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @agustingomes-therapieland on 2024-10-02 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6971.html">astral-sh/uv#6971</a> on 2024-10-02 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/micahjsmith">@micahjsmith</a> on 2025-09-11 03:28</div>
+            <div class="timeline-body"><p>The only way I have found to use weasyprint generically within uv managed python is to link the weasyprint dependencies manually to a standard (non homebrew) library path. by generic use, I mean I can do the following</p>
+<ul>
+<li><code>uv run weasyprint --version</code></li>
+<li><code>/bin/sh -c &quot;uv run weasyprint --version&quot;</code></li>
+<li>create a pyinvoke task that runs a command that ends up importing weasyprint (even if I set the pyinvoke default shell to be the homebrew bash)\</li>
+<li>run a custom script that uses django management commands</li>
+<li>etc</li>
+</ul>
+<p>Since there are so many entrypoints, its not feasible to patch in all places using the fallback env var as discussed in other threads</p>
+<p>Here is my weasyprint-specific solution</p>
+<pre><code>sudo mkdir -p /usr/local/lib
+
+pkgs=(
+	&quot;libgobject-2.0&quot;
+	&quot;libpango-1.0&quot;
+	&quot;libharfbuzz&quot;
+  &quot;libpangoft2-1.0&quot;
+  &quot;libfontconfig.1&quot;
+)
+for pkg in &quot;${pkgs[@]}&quot;;
+do
+	sudo ln -s -f $(brew --prefix)/lib/$pkg.dylib /usr/local/lib/$pkg.dylib
+done
+</code></pre>
+<p>this works for weasyprint 66.0 on python 3.11.13 and uv 0.7.9</p>
+<p>use at your own risk!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nitsujri">@nitsujri</a> on 2025-10-31 00:55</div>
+            <div class="timeline-body"><p>I also arrived here due to weasyprint.</p>
+<p>I came to the same conclusion as @micahjsmith, that there are just too many entrypoints, but any direct solution felt brittle or dirty (symlinks, .profile, direnv, preloader.py). So ended at a different solution - going back to <code>pyenv</code> so I could have it built w/ the references.</p>
+<p>It feels like going backwards? would be nice if uv could build python too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-31 03:45</div>
+            <div class="timeline-body"><p>It seems pretty reasonable to symlink brew packages into a global lib directory if Apple is going to be a pain and block you from setting <code>DYLD_FALLBACK_LIBRARY_PATH</code>. You can also disable the system protections that don't let you set that variable — I understand why people wouldn't want to do that though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:59 UTC
+    </footer>
+</body>
+</html>

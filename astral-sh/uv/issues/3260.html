@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure artifacts auth fails on first attempt but works on second. - astral-sh/uv #3260</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Azure artifacts auth fails on first attempt but works on second.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3260">#3260</a>
+        opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a>
+        on 2024-04-25 08:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 08:14</div>
+            <div class="timeline-body"><p>For example running</p>
+<pre><code>uv pip install numpy --verbose
+</code></pre>
+<p>with the following env variables set</p>
+<pre><code>UV_INDEX_URL=https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/
+UV_KEYRING_PROVIDER=subprocess
+</code></pre>
+<p>the first time fails but rerunning it again works correctly.</p>
+<p>UV version 0.1.38 but has been an issue since support for this type of auth landed in #2976</p>
+<h1>Redacted log of non working execution</h1>
+<pre><code>❯ uv pip install numpy --verbose
+INFO Found a virtualenv through CONDA_PREFIX at: C:\Users\username\Miniconda3\envs\testuv
+DEBUG Probing interpreter info for: \\?\C:\Users\username\Miniconda3\envs\testuv\python.exe
+DEBUG Found Python 3.12.3 for: \\?\C:\Users\username\Miniconda3\envs\testuv\python.exe
+DEBUG Using Python 3.12.3 environment at C:\Users\username\Miniconda3\envs\testuv\python.exe
+DEBUG Trying to lock if free: C:\Users\username\AppData\Local\Temp\uv-53f2e5d017b1b435.lock
+TRACE Caching credentials for https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.12.3
+DEBUG Adding direct dependency: numpy*
+INFO add_decision: root @ 0a0.dev0
+TRACE Fetching metadata for numpy from https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE No cache entry exists for \\?\C:\Users\username\AppData\Local\uv\cache\simple-v7\cf3a2cb28c077ae5\numpy.rkyv
+DEBUG No cache entry for: https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Sending fresh GET request for https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Handling request for https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Request for https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/ is missing a password, looking for credentials
+TRACE No password in cache for realm VssSessionToken@https://pkgs.dev.azure.com
+DEBUG Checking keyring for credentials for VssSessionToken@https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Checking keyring for URL https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+DEBUG Found credentials in keyring for https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE checkout waiting for idle connection: (&quot;https&quot;, pkgs.dev.azure.com)
+DEBUG starting new connection: https://pkgs.dev.azure.com/
+TRACE Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;pkgs.dev.azure.com&quot;), port=None
+DEBUG resolving host=&quot;pkgs.dev.azure.com&quot;
+DEBUG connecting to [2620:1ec:21::20]:443
+DEBUG connected to [2620:1ec:21::20]:443
+DEBUG No cached session for DnsName(&quot;pkgs.dev.azure.com&quot;)
+DEBUG Not resuming any session
+TRACE Sending ClientHello Message {
+    ...
+}
+TRACE We got ServerHello ServerHelloPayload {
+    ...
+}
+DEBUG ALPN protocol is Some(b&quot;http/1.1&quot;)
+DEBUG Using ciphersuite TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+DEBUG Server supports tickets
+DEBUG Server may staple OCSP response
+TRACE Server stapled OCSP response is [...]
+DEBUG ECDHE curve is EcParameters { curve_type: NamedCurve, named_group: secp384r1 }
+TRACE Server cert is CertificateChain([CertificateDer(...)])
+DEBUG Server DNS name is DnsName(&quot;pkgs.dev.azure.com&quot;)
+TRACE Unvalidated OCSP response: [...]
+TRACE http1 handshake complete, spawning background dispatcher task
+TRACE checkout dropped for (&quot;https&quot;, pkgs.dev.azure.com)
+TRACE put; add idle connection for (&quot;https&quot;, pkgs.dev.azure.com)
+DEBUG pooling idle connection for (&quot;https&quot;, pkgs.dev.azure.com)
+DEBUG Sending warning alert CloseNotify
+error: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/)
+</code></pre>
+<h1>Redacted log of working execution</h1>
+<pre><code>❯ uv pip install numpy --verbose
+INFO Found a virtualenv through CONDA_PREFIX at: C:\Users\username\Miniconda3\envs\testuv
+DEBUG Cached interpreter info for Python 3.12.3, skipping probing: C:\Users\username\Miniconda3\envs\testuv\python.exe
+DEBUG Using Python 3.12.3 environment at C:\Users\username\Miniconda3\envs\testuv\python.exe
+
+DEBUG Trying to lock if free: C:\Users\username\AppData\Local\Temp\uv-53f2e5d017b1b435.lock
+TRACE Caching credentials for https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.12.3
+DEBUG Adding direct dependency: numpy*
+INFO add_decision: root @ 0a0.dev0
+TRACE Fetching metadata for numpy from https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE No cache entry exists for \\?\C:\Users\username\AppData\Local\uv\cache\simple-v7\cf3a2cb28c077ae5\numpy.rkyv
+DEBUG No cache entry for: https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Sending fresh GET request for https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Handling request for https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Request for https://VssSessionToken@pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/ is missing a password, looking for credentials
+TRACE No password in cache for realm VssSessionToken@https://pkgs.dev.azure.com
+DEBUG Checking keyring for credentials for VssSessionToken@https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE Checking keyring for URL https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+DEBUG Found credentials in keyring for https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/
+TRACE checkout waiting for idle connection: (&quot;https&quot;, pkgs.dev.azure.com)
+DEBUG starting new connection: https://pkgs.dev.azure.com/
+TRACE Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;pkgs.dev.azure.com&quot;), port=None
+DEBUG resolving host=&quot;pkgs.dev.azure.com&quot;
+DEBUG connecting to [2620:1ec:21::20]:443
+DEBUG connected to [2620:1ec:21::20]:443
+DEBUG No cached session for DnsName(&quot;pkgs.dev.azure.com&quot;)
+DEBUG Not resuming any session
+TRACE Sending ClientHello Message {
+    ...
+}
+TRACE We got ServerHello ServerHelloPayload {
+    ...
+}
+DEBUG ALPN protocol is Some(b&quot;http/1.1&quot;)
+DEBUG Using ciphersuite TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+DEBUG Server supports tickets
+DEBUG Server may staple OCSP response
+TRACE Server stapled OCSP response is [...]
+DEBUG ECDHE curve is EcParameters { curve_type: NamedCurve, named_group: secp384r1 }
+TRACE Server cert is CertificateChain([CertificateDer(...)])
+DEBUG Server DNS name is DnsName(&quot;pkgs.dev.azure.com&quot;)
+TRACE Unvalidated OCSP response: [...]
+TRACE http1 handshake complete, spawning background dispatcher task
+TRACE checkout dropped for (&quot;https&quot;, pkgs.dev.azure.com)
+TRACE Updating cached credentials for https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/ to Credentials { username: Username(Some(&quot;VssSessionToken&quot;)), password: Some(&quot;...&quot;) }
+TRACE cached request https://pkgs.dev.azure.com/project-name/_packaging/feed-name/pypi/simple/numpy/ is not storable because its response has a 'no-store' cache-control directive
+TRACE attempting to decode a frame
+TRACE frame decoded from buffer
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 14:27</div>
+            <div class="timeline-body"><p>Thanks for the logs that's super helpful for telling what's going on.</p>
+<p>So what changed in https://github.com/astral-sh/uv/pull/2976 is we use the URL as the service name for keyring before using just the host. Is it possible your keyring backend is returning different credentials in this case?</p>
+<p>I don't see anything that could be going wrong on our end in those logs. In both cases, we find credentials in the keyring and use them for the request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 15:11</div>
+            <div class="timeline-body"><p>Thanks @zanieb I don't necessarily think this broke with #2976 but before that PR cannot easily test this since there was no way for me to inject the username. If useful I can manually recompile version 0.1.33 with the hardcoded username changed to match what Azure Artifacts expects.</p>
+<p>I would not expect the keyring responsens to be different between the 2 requests but perhaps its possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 15:31</div>
+            <div class="timeline-body"><p>You could manually call <code>keyring &lt;url&gt; &lt;user&gt;</code> and see if it is idempotent.</p>
+<blockquote>
+<p>I don't necessarily think this broke with https://github.com/astral-sh/uv/pull/2976 but before that PR cannot easily test this since there was no way for me to inject the username.</p>
+</blockquote>
+<p>Ah thanks for clarifying. I wouldn't bother trying an older version in that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 19:20</div>
+            <div class="timeline-body"><p>@zanieb Found the problem by adding the credentials to the trace message when the credentials are found.
+e.g something like</p>
+<pre><code>debug!(&quot;Found credentials in keyring for {url} as {credentials:?}&quot;);
+</code></pre>
+<p>The issue is that artifacts-keyring (the keyring extension that azure artifacts uses) may print information like:</p>
+<pre><code>[Information] [CredentialProvider]VstsCredentialProvider - Acquired bearer token using 'MSAL Silent'\r\r\n[Information] [CredentialProvider]VstsCredentialProvider - Attempting to exchange the bearer token for an Azure DevOps session token.\r\r\n
+</code></pre>
+<p>On the first fetch from keyring. This currently leaks into the credentials which naturally are not valid then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 19:23</div>
+            <div class="timeline-body"><p>Oh wow, like that goes to stdout and so we consider them &quot;part of&quot; the credentials?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 19:29</div>
+            <div class="timeline-body"><p>@charliermarsh Yes that seems to be the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 19:33</div>
+            <div class="timeline-body"><p>@zanieb - We may want to instead take the last line rather than the full output? \cc @jaraco in case you have advice on the contract that we should respect from the keyring CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 19:42</div>
+            <div class="timeline-body"><p>Err, wait, it looks like we might be inspecting both <code>stdout</code> and <code>stderr</code>? I'll fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 19:43</div>
+            <div class="timeline-body"><p>Nevermind, we're only collecting <code>stdout</code>, I misread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 19:51</div>
+            <div class="timeline-body"><p>It does not look like the implementation in pip does anything special https://github.com/pypa/pip/blob/main/src/pip/_internal/network/auth.py#L145 It reads stdout and strips newline.</p>
+<p>However, for some reason that I do not understand calling keyring from uv seems to result in a token exchange much more frequently than from pip making this much easier to observe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 19:53</div>
+            <div class="timeline-body"><p>Very strange that there's any difference in behavior here then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 19:59</div>
+            <div class="timeline-body"><p>@charliermarsh I am guessing the main reason that this goes relatively unnoticed with pip is that the keyring CLI is only a fallback for the in-process keyring implementation which does not have this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-25 20:34</div>
+            <div class="timeline-body"><p>For reference the issue is likely this code https://github.com/microsoft/artifacts-keyring/blob/master/src/artifacts_keyring/plugin.py#L116-L119 which converts stderr from the .net tool that artifacts-keyring wraps to stdout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 22:55</div>
+            <div class="timeline-body"><p>Nice investigation! Thank you!</p>
+<p>I'm not sure we can just read the last line of output, there's nothing guaranteeing the password does not include new lines. We recently discussed this at https://github.com/jaraco/keyring/pull/678#discussion_r1567891980. Frankly this sounds like bad behavior by the Azure Artifacts keyring plugin — we should open an issue requesting that they change it to stream the logs to stderr as appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-04-25 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:04</div>
+            <div class="timeline-body"><p>It seems really hard to guarantee that nothing will print to <code>stdout</code> when you're loading arbitrary Python plugins and packages :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:11</div>
+            <div class="timeline-body"><p>Could it write its output to a file instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 23:16</div>
+            <div class="timeline-body"><p>That's true but like.. we're not differing from pip here and this is the contract that keyring provides. We're adding a JSON output format to keyring which might sort of help... but yeah writing to an output file seems like the only way to avoid confusion. Even if we get that added to keyring though, only the people on the latest keyring version will benefit from it and it's expensive for us to check what keyring version is being used.</p>
+<p>We should probably just provide an option to invoke a Python interpreter to call into keyring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:18</div>
+            <div class="timeline-body"><p>Yeah that's a bummer. I don't think JSON output helps either since we won't know where to delimit the JSON.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 23:23</div>
+            <div class="timeline-body"><p>No great suggestions here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-26 07:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Very strange that there's any difference in behavior here then.</p>
+</blockquote>
+<p>So I think the reason there is a difference goes like the following.</p>
+<ul>
+<li>Artifacts-keyring (and Azure Artifacts Credential Provider) maintains a pr. url based cache of session tokens locally.</li>
+<li>If there is a hit to this cache nothing is printed to stdout otherwise the above is printed and cli based auth works</li>
+<li>If there is a cache miss the two above lines are printed to stdout.</li>
+<li>Pip authenticates against the feed url which is constant. This means that you will only see this failure once pr lifetime of the sessiontoken.</li>
+<li>UV authenticates against the url of the first request and reuses this for other requests making a cache miss much more likely.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../microsoft/artifacts-keyring/pulls/73.html">microsoft/artifacts-keyring#73</a> on 2024-04-26 07:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-04-26 07:46</div>
+            <div class="timeline-body"><p>To redeem the immediate problem, I have submitted https://github.com/microsoft/artifacts-keyring/pull/73 which does resolve the issue for me but of cause does nothing to fix the general problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-04-26 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>@zanieb - We may want to instead take the last line rather than the full output? \cc @jaraco in case you have advice on the contract that we should respect from the keyring CLI.</p>
+</blockquote>
+<p>The keyring CLI hasn't been designed around having a stable interface. Moreover, it cannot in general, as the backends are pluggable (the VSTS backend and the output it emits come from the plugin). The most reliable way to use keyring as an API would be to consume its API in Python (e.g. <code>import keyring; keyring.get_credential(...)</code>), but of course, that would require to reach into a Python environment, which may not be as discoverable as an executable on the PATH.</p>
+<p>Perhaps <code>keyring</code> could offer a separate CLI API that would disable stdout and emit structured output. Or maybe it should do that by default if <code>--format json</code> is indicated. Lots of options here, probably worthy of a design discussion, given there's no obvious bug to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-04-26 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>We should probably just provide an option to invoke a Python interpreter to call into keyring.</p>
+</blockquote>
+<p>Sounds like you may be on the same page. Do be careful here, as the behavior of keyring behavior is highly dependent on the backends installed, so you'll need to be sure to have the same backends installed as the <code>keyring</code> command has.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-04-26 14:41</div>
+            <div class="timeline-body"><p>If it helps, the <code>keyring</code> command could emit its <code>PYTHONPATH</code> and <code>sys.executable</code> for an API caller to call into (not sure I love that idea 😬 ). If only our operating systems had a framework for making RPC calls into installed applications.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-05-08 22:06</div>
+            <div class="timeline-body"><p>One rather absurd but quite doable thing would be to allocate a pty and invoke <code>keyring</code> with <code>PYTHONINSPECT=1</code> and then send the python code in to use the keyring API internally.</p>
+<p>Example with <a href="https://github.com/mitsuhiko/teetty">teetty</a>:</p>
+<pre><code>PYTHONINSPECT=1 teetty -i ./stdin -- ./keyring
+</code></pre>
+<pre><code>echo 'import keyring; open(&quot;/tmp/out.txt&quot;, &quot;w&quot;).write(keyring.get_password(&quot;system&quot;, &quot;username&quot;) or &quot;&quot;); quit()' &gt; ./stdin
+cat /tmp/out.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4162.html">astral-sh/uv#4162</a> on 2024-06-08 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-06-18 13:22</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb This fix to artifacts-keyring has been merged and included in version 0.3.6. Should we close this issue or do you prefer to keep it around to track more fundamental improvements. e.g. not reading from stdout</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-18 13:54</div>
+            <div class="timeline-body"><p>Thanks for following up! We can track something like that in a more specific issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-18 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3542.html">astral-sh/uv#3542</a> on 2024-07-10 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11130.html">astral-sh/uv#11130</a> on 2025-01-31 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

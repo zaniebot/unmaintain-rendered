@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>With module in subdirectory, Git branch not picked up when using `uv add`, but works with `uv pip install ...` - astral-sh/uv #14966</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>With module in subdirectory, Git branch not picked up when using `uv add`, but works with `uv pip install ...`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14966">#14966</a>
+        opened by <a href="https://github.com/phinate">@phinate</a>
+        on 2025-07-30 08:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/phinate">@phinate</a> on 2025-07-30 08:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I want to add a dependency from git -- specifically from a subdir of a monorepo -- on a specific branch, and to a dependency group called <code>training</code>. If I try the same <code>git+...</code> syntax for <code>uv pip</code> and <code>uv add</code>, they seem to refer to different commits.</p>
+<p>Here's an example with a repo I have:</p>
+<pre><code>$ uv pip install &quot;anemoi-training @ git+https://github.com/phinate/anemoi-core.git@mlflow-azure#subdirectory=training&quot;         
+Resolved 169 packages in 437ms
+Uninstalled 1 package in 137ms
+Installed 1 package in 17ms
+ - anemoi-training==0.0.post846 (from git+https://github.com/phinate/anemoi-core.git@9f75c06c1ff8a720f05341ad055ff345306df7a6#subdirectory=training)
+ + anemoi-training==0.0.post847 (from git+https://github.com/phinate/anemoi-core.git@a27b05098df5888a4e831aa724bca65fab741305#subdirectory=training)
+</code></pre>
+<p>and</p>
+<pre><code>$ uv add --group training &quot;anemoi-training @ git+https://github.com/phinate/anemoi-core.git@mlflow-azure#subdirectory=training&quot;
+Resolved 246 packages in 26ms
+Uninstalled 1 package in 109ms
+Installed 1 package in 14ms
+ - anemoi-training==0.0.post847 (from git+https://github.com/phinate/anemoi-core.git@a27b05098df5888a4e831aa724bca65fab741305#subdirectory=training)
+ + anemoi-training==0.0.post846 (from git+https://github.com/phinate/anemoi-core.git@9f75c06c1ff8a720f05341ad055ff345306df7a6#subdirectory=training)
+</code></pre>
+<p>The results are inconsistent -- only <code>uv pip</code> installs the correct version.</p>
+<h3>Platform</h3>
+<p>macOS 14.7.6 (23H626) (M1) Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.3</p>
+<h3>Python version</h3>
+<p>Python 3.12.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @phinate on 2025-07-30 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phinate">@phinate</a> on 2025-07-30 09:42</div>
+            <div class="timeline-body"><p>As additional context, I am able to pin this for now via the specific commit to <code>rev</code>, e.g.</p>
+<pre><code class="language-toml">[tool.uv.sources]
+anemoi-training = { git = &quot;https://github.com/phinate/anemoi-core.git&quot;, subdirectory = &quot;training&quot;, rev = &quot;a27b05098df5888a4e831aa724bca65fab741305&quot; }
+</code></pre>
+<p>in the <code>pyproject.toml</code>. Ideally of course, it would be great to just get the branch directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 16:14</div>
+            <div class="timeline-body"><p>Is the previous revision of <code>anemoi-training</code> in your lockfile already during the <code>uv add</code> invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phinate">@phinate</a> on 2025-07-30 16:18</div>
+            <div class="timeline-body"><p>That's right -- I've ran those commands back-to-back a few times, so it's not a clean starting point in that sense. I originally did <code>uv add ...</code> with the subdir/branch syntax, and only noticed when the functionality didn't mirror my most recent commit. That's the origin of the <code>post846</code> version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 16:21</div>
+            <div class="timeline-body"><p>I think this behavior is sort of expected. <code>uv add</code> doesn't imply <code>--upgrade-package</code>, so we won't change a locked version of a package. The <code>uv pip</code> interface, of course, ignores the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phinate">@phinate</a> on 2025-07-30 16:25</div>
+            <div class="timeline-body"><p>Right, I think I see where you're coming from. I think the missing piece for me is likening a commit to a version number; my default assumption when installing from a repository or branch is that the latest commit would always be pulled, but perhaps I'm thinking in pip and not in lockfile? How does <code>uv add</code> determine which version to pull from a remote dependency like this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 16:34</div>
+            <div class="timeline-body"><p>Maybe this is helpful?</p>
+<p>Make a test repository...</p>
+<pre><code>❯ cd /tmp
+❯ uv init example-repo --package
+Initialized project `example-repo` at `/private/tmp/example-repo`
+❯ cd example-repo
+❯ gh repo create
+❯ git add .
+❯ git commit -am 'Initial commit'
+[main (root-commit) 8681b49] Initial commit
+❯ git push --set-upstream origin main
+</code></pre>
+<p>Make a test project, and add the test repository as a dependency...</p>
+<pre><code>❯ cd /tmp
+❯ uv init example
+Initialized project `example` at `/private/tmp/example`
+❯ cd example
+❯ uv add git+https://github.com/zanieb/example-repo.git
+Resolved 2 packages in 64ms
+    Updated https://github.com/zanieb/example-repo.git (8681b49be02c3e67d894b8a8a5ec59605170f39e)
+      Built example-repo @ git+https://github.com/zanieb/example-repo.git@8681b49be02c3e67d894b8a8a5ec59605170f39e
+Prepared 1 package in 425ms
+Installed 1 package in 1ms
+ + example-repo==0.1.0 (from git+https://github.com/zanieb/example-repo.git@8681b49be02c3e67d894b8a8a5ec59605170f39e)
+</code></pre>
+<p>Add a new commit to the test repository...</p>
+<pre><code>❯ cd /tmp/example-repo
+❯ git commit -am 'Another commit' --allow-empty
+[main b67c94e] Another commit
+❯ git push
+Enumerating objects: 1, done.
+Counting objects: 100% (1/1), done.
+Writing objects: 100% (1/1), 185 bytes | 185.00 KiB/s, done.
+Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/zanieb/example-repo.git
+   8681b49..b67c94e  main -&gt; main
+</code></pre>
+<p>A new project will use the latest commit, there's no lockfile:</p>
+<pre><code>❯ cd /tmp
+❯ uv init example-two
+Initialized project `example-two` at `/private/tmp/example-two`
+❯ cd example-two
+❯ uv add git+https://github.com/zanieb/example-repo.git
+Using CPython 3.12.9
+Creating virtual environment at: .venv
+Resolved 2 packages in 83ms
+    Updated https://github.com/zanieb/example-repo.git (b67c94e96be507a7f92c81543a3658c2492e6912)
+      Built example-repo @ git+https://github.com/zanieb/example-repo.git@b67c94e96be507a7f92c81543a3658c2492e6912
+Prepared 1 package in 502ms
+Installed 1 package in 1ms
+ + example-repo==0.1.0 (from git+https://github.com/zanieb/example-repo.git@b67c94e96be507a7f92c81543a3658c2492e6912)
+</code></pre>
+<p>The existing project will do nothing on <code>add</code>, because a commit is already locked:</p>
+<pre><code>❯ cd /tmp/example
+❯ uv add git+https://github.com/zanieb/example-repo.git
+Resolved 2 packages in 2ms
+Audited 1 package in 0.05ms
+</code></pre>
+<p>Unless <code>--upgrade-package</code> is used, to invalidate the lockfile entry:</p>
+<pre><code>❯ uv add git+https://github.com/zanieb/example-repo.git --upgrade-package example-repo
+Resolved 2 packages in 67ms
+Prepared 1 package in 48ms
+Uninstalled 1 package in 0.96ms
+Installed 1 package in 3ms
+ - example-repo==0.1.0 (from git+https://github.com/zanieb/example-repo.git@8681b49be02c3e67d894b8a8a5ec59605170f39e)
+ + example-repo==0.1.0 (from git+https://github.com/zanieb/example-repo.git@b67c94e96be507a7f92c81543a3658c2492e6912)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 16:37</div>
+            <div class="timeline-body"><p>And yeah, in short, commits are like version numbers here. This behavior should be the same for a package from a registry when a new version is released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-30 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-30 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phinate">@phinate</a> on 2025-08-12 10:57</div>
+            <div class="timeline-body"><p>Sorry for the delayed reply -- just wanted to say thank you for this crystal clear example. Knowing the same behaviour tracks across repos and versioned releases for commits/versions interchangeably is a nice mental model. Much appreciated :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @phinate on 2025-08-12 10:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

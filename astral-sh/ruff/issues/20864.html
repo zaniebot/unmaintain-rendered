@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B006 preview fix adds an annotation to a previously annotated variable - astral-sh/ruff #20864</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B006 preview fix adds an annotation to a previously annotated variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20864">#20864</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-10-14 13:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-10-14 13:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In preview, the fix for <a href="https://docs.astral.sh/ruff/rules/mutable-argument-default/"><code>mutable-argument-default</code> (B006)</a> copies the parameter’s annotation into the body of the function, causing errors in some type-checkers. Even in type-checkers which allow reannotation, it is unnecessary. <a href="https://play.ruff.rs/40ba08a1-4799-46c2-a218-4f883b9862ed">Example</a>:</p>
+<pre><code class="language-console">$ cat &lt;&lt;'# EOF' | tee &gt;b006.py b006_preview.py
+def f(x: list[int] = []) -&gt; int:
+    return sum(x)
+# EOF
+
+$ ruff --isolated check b006_preview.py --select B006,RUF013 --unsafe-fixes --fix --preview
+Found 2 errors (2 fixed, 0 remaining).
+
+$ cat b006_preview.py
+def f(x: list[int] | None = None) -&gt; int:
+    if x is None:
+        x: list[int] = []
+    return sum(x)
+
+$ mypy b006_preview.py
+b006_preview.py:3: error: Name &quot;x&quot; already defined on line 1  [no-redef]
+b006_preview.py:4: error: Argument 1 to &quot;sum&quot; has incompatible type &quot;list[int] | None&quot;; expected &quot;Iterable[bool]&quot;  [arg-type]
+Found 2 errors in 1 file (checked 1 source file)
+
+$ pyright b006_preview.py | sed 's:/.*\(b006_preview\.py\):\1:'
+b006_preview.py
+  b006_preview.py:1:7 - error: Parameter declaration &quot;x&quot; is obscured by a declaration of the same name (reportRedeclaration)
+1 error, 0 warnings, 0 informations
+</code></pre>
+<p>Compare the non-preview behavior:</p>
+<pre><code class="language-console">$ ruff --isolated check b006.py --select B006,RUF013 --unsafe-fixes --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ cat b006.py
+def f(x: list[int] | None = None) -&gt; int:
+    if x is None:
+        x = []
+    return sum(x)
+
+$ mypy b006.py
+Success: no issues found in 1 source file
+
+$ pyright b006.py
+0 errors, 0 warnings, 0 informations
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.0 (beea8cdfe 2025-10-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-14 19:44</div>
+            <div class="timeline-body"><p>Whoops that's my fault- I suggested that we do that to indicate type narrowing. I can take this, sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-10-14 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-10-14 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-10-14 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-10-14 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20877.html">astral-sh/ruff#20877</a> on 2025-10-15 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-15 01:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

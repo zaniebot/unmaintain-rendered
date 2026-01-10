@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Diagnostics attached to wrong file - astral-sh/ruff #14334</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Diagnostics attached to wrong file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14334">#14334</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-11-14 09:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 09:46</div>
+            <div class="timeline-body"><p>There are cases where we add diagnostics with a source range from file <code>A</code> to the <code>TypeCheckDiagnosticsBuilder</code> of file <code>B</code>. A small example to trigger this bug is the following:</p>
+<pre><code class="language-py"># test.py
+from subprocess import Popen
+</code></pre>
+<p>We currently emit a (false positive?) <code>invalid-base</code> diagnostic here, probably because we don't understand the definition of <code>Popen</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/924741cb11a68ed037899f9db1bea6969c48385e/crates/red_knot_vendored/vendor/typeshed/stdlib/subprocess.pyi#L1845</p>
+<p>But the actual problem here is that we attach the diagnostic to <code>test.py</code>, not to <code>typeshed/stdlib/subprocess.pyi</code> (notice the large column offset, resulting from trying to translate the byte offset into line/col on the wrong file):</p>
+<pre><code>error[invalid-base] /home/shark/playground/test.py:3:61460 Invalid class base with type `object` (all bases must be a class, `Any`, `Unknown` or `Todo`)
+</code></pre>
+<p>I noticed this, because things can go wrong bad if the byte offset from file A does not translate to a valid-UTF-8 offset in file B. Or if there are out-of-bounds accesses (which are for some reason also only triggered with non-ASCII characters):</p>
+<pre><code class="language-py"># Ä
+from subprocess import Popen
+</code></pre>
+<pre><code>thread 'main' panicked at crates/ruff_source_file/src/line_index.rs:117:28:
+byte index 61498 is out of bounds of `# ä
+from subprocess import Popen
+`
+</code></pre>
+<p>What needs to be done here?</p>
+<ul>
+<li>Add an assertion to <code>TypeCheckDiagnosticsBuilder</code> that makes sure we never attach diagnostics for nodes from a different file?</li>
+<li>Prevent raising diagnostics from different files in the first place?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2024-11-14 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-14 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14337.html">astral-sh/ruff#14337</a> on 2024-11-14 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-14 14:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

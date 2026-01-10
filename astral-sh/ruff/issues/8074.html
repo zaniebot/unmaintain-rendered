@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow safe fixes to be added in patch releases - astral-sh/ruff #8074</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow safe fixes to be added in patch releases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8074">#8074</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-19 18:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-19 18:58</div>
+            <div class="timeline-body"><p>Adding new fixes isn't really a breaking change necessitating a minor version bump, however we have it categorized as such in our <a href="https://docs.astral.sh/ruff/versioning/#version-changes">current versioning policy</a>. Somewhat asymmetrically, we allow unsafe fixes to be added in patch releases. The idea was originally that unsafe fixes required opt-in so it was okay to add them in patch releases. In general, I think new fixes should be allowed in any release.</p>
+<p>The downside here is that users may need to change their configuration to include new fixes as unfixable on patch releases if they do not want the fix. This goes against the intent to have patch releases be free of configuration changes. However, these fixes are unlikely to be applied in a context without manual review.</p>
+<p>If accepted, we should make this change as part of v0.2.0 and respect the current rules until then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.2.0" by @zanieb on 2023-10-19 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-10-24 21:36</div>
+            <div class="timeline-body"><p>There's also the risk that a &quot;safe&quot; fix is actually unsafe and that wasn't caught until out of preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @dhruvmanila on 2023-10-25 04:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-06 00:43</div>
+            <div class="timeline-body"><p>I'd like to elevate <code>SIM110</code> and <code>SIM111</code>. I'll probably add more over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-12-16 18:53</div>
+            <div class="timeline-body"><blockquote>
+<p>There's also the risk that a &quot;safe&quot; fix is actually unsafe and that wasn't caught until out of preview.</p>
+</blockquote>
+<p>#9156 is a perfect example of what I mean here. An unintended bug, but it happens, so it is to be considered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.2.0" by @zanieb on 2024-01-30 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-30 01:22</div>
+            <div class="timeline-body"><p>I don't think we have a clear consensus that this is worth changing yet. Removing this from our v0.2.0 milestone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 01:23</div>
+            <div class="timeline-body"><p>I still want this :sob:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-30 07:03</div>
+            <div class="timeline-body"><p>To me the discussion should be whether we allow adding fixes in releases in general:
+IMO, the bar for adding a manual fix in a patch release is lower than that for adding a safe fix or an unsafe fix. I'm also leaning towards the bar for adding an unsafe fix being lower than that for adding a safe fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-30 10:59</div>
+            <div class="timeline-body"><blockquote>
+<p>There's also the risk that a &quot;safe&quot; fix is actually unsafe and that wasn't caught until out of preview.</p>
+</blockquote>
+<p>To @Avasam's point here -- the fixes for RUF022 and RUF023 were both marked as &quot;safe&quot;, and were included in the most recent patch release -- but in fact, they had the potential to introduce syntax errors in some unusual edge cases: https://github.com/astral-sh/ruff/issues/8402#issuecomment-1916203707; https://github.com/astral-sh/ruff/issues/8402#issuecomment-1916213693. (The rules themselves were still in preview here, but this is a good recent example of the way that fixes we think are safe might not actually be safe.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 14:08</div>
+            <div class="timeline-body"><p>A few reactions (and not a decision):</p>
+<ul>
+<li>The current setup is strange in that we can add unsafe fixes in a patch release, but not safe fixes. So we're actually not allowed (per the versioning policy) to give users access to the safest, most trivial fixes, while they <em>can</em> get access to the much-less-safe fixes.</li>
+<li>There's a difference between what's allowed by the versioning policy, and what's a best practice. The versioning policy could allow us to ship safe fixes in a patch release, but we might still choose to gate fixes behind <code>--preview</code> if we feel they need more time (e.g., I would've gated the <code>RET</code> fixes either way).</li>
+<li>One option is to always ship &quot;safe&quot; fixes as &quot;unsafe&quot; in patch releases, and then upgrade them to &quot;safe&quot; in minor releases. (We could use &quot;safe&quot; in preview from the start -- i.e., &quot;safe&quot; in preview, &quot;unsafe&quot; in stable.) This would adhere to the versioning policy and would give users access to the fixes. It's a bit odd though, since &quot;unsafe&quot; isn't intended for &quot;unstable&quot;, it's intended to indicate that the meaning of the code might change.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19851.html">astral-sh/ruff#19851</a> on 2025-08-13 07:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

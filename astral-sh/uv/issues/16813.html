@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exclude-newer: overrides for private registries - astral-sh/uv #16813</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>exclude-newer: overrides for private registries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16813">#16813</a>
+        opened by <a href="https://github.com/acdha">@acdha</a>
+        on 2025-11-21 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/acdha">@acdha</a> on 2025-11-21 21:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>--exclude-newer</code> is a very useful feature for implementing dependency cooldown policies but it requires package registries to support the JSON view with the PEP 700 <code>upload-time</code> attribute. This currently prevents usage on projects which use <a href="https://github.com/astral-sh/uv/issues/10394">Azure</a> or <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/581770">GitLab</a> to host any dependencies.</p>
+<p>It would be useful if there was a way to disable the exclude-newer mechanism for a single registry or package so it could be used for PyPI packages, which are usually the highest concern for the kind of attacks which a minimum age policy is designed to mitigate, while still allowing private registries to be used.</p>
+<h3>Example</h3>
+<p>Using the documentation example for a custom index, one option would be something like this:</p>
+<pre><code class="language-toml">[tool.uv]
+exclude-newer = &quot;…&quot;
+skip-exclude-newer-for-indexes = [&quot;pytorch&quot;]
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+</code></pre>
+<p>… or perhaps to avoid that somewhat ugly name:</p>
+<pre><code class="language-toml">[tool.uv]
+exclude-newer = &quot;…&quot;
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+skip-exclude-newer-check = true
+</code></pre>
+<p>… or perhaps this would be best as a per-package override requiring you to manually opt-in for each package:</p>
+<pre><code class="language-toml">[tool.uv]
+exclude-newer = &quot;…&quot;
+exclude-newer-package = { pytorch = &quot;ALLOW_ANY&quot; } # This magic value can't conflict with an existing date
+# or, to make it more explicit that you only want to trust one source:
+exclude-newer-package = { pytorch = { allow-latest-from-registry = &quot;pytorch&quot; } }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @acdha on 2025-11-21 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-21 21:33</div>
+            <div class="timeline-body"><p>I think it makes more sense for <code>exclude-newer</code> to be attachable to a <code>tool.uv.index</code> definition rather than define a list of exclusions? wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acdha">@acdha</a> on 2025-11-21 22:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it makes more sense for <code>exclude-newer</code> to be attachable to a <code>tool.uv.index</code> definition rather than define a list of exclusions? wdyt?</p>
+</blockquote>
+<p>That’s my inclination as well - I liked the middle proposed syntax the most when I was thinking about this but wanted to at least think about alternatives since every packaging discussion I have ever been in seems to involve someone bringing up a use-case wildly outside of what I do 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-21 22:20</div>
+            <div class="timeline-body"><p>I'd also encourage you to let these private registries know you want this basic, standardized functionality :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acdha">@acdha</a> on 2025-11-21 22:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd also encourage you to let these private registries know you want this basic, standardized functionality :D</p>
+</blockquote>
+<p>For completeness, I opened this ticket for GitLab for that exact reason and will be escalating with our sales rep: https://gitlab.com/gitlab-org/gitlab/-/issues/581770</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16846.html">astral-sh/uv#16846</a> on 2025-11-25 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16854.html">astral-sh/uv#16854</a> on 2025-11-26 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/javiertejero">@javiertejero</a> on 2025-12-12 14:06</div>
+            <div class="timeline-body"><p>we observed the same problem with AWS CodeArtifact, which does not support JSON API  - it would be great to have this <code>uv</code> setting  to skip validation for some additional private indexes</p>
+<p>UPDATE: I opened a ticket with AWS support and they will consider implementing JSON API but unfortunately there is not ETA yet</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM905 fix fails on r-string unescapable character concatenation cases - astral-sh/ruff #19610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM905 fix fails on r-string unescapable character concatenation cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19610">#19610</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-07-29 01:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-29 01:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If an r-string contains an un-backslash-escapable character via string concatenation, the fix for <a href="https://docs.astral.sh/ruff/rules/split-static-string/#split-static-string-sim905">split-static-string (SIM905)</a> will cause a syntax error:
+https://play.ruff.rs/31b14872-6b32-481e-aded-775273a866d1</p>
+<pre><code class="language-powershell">PS &gt;echo 'r&quot;1&quot; &quot;\n&quot;.split(&quot;1&quot;)' | uvx ruff check - --select SIM905 --fix --diff 2&gt;&amp;1 | rg &quot;syntax error&quot;
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>Another example:</p>
+<pre><code class="language-powershell">PS &gt;echo @'
+r&quot;1&quot; &quot;&quot;&quot;
+&quot;&quot;&quot;.split(&quot;1&quot;)
+'@ | uvx ruff check - --select SIM905 --fix --diff 2&gt;&amp;1 | rg &quot;syntax error&quot;
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>Using the playground to see the resulting fix, both examples fix to:</p>
+<pre><code class="language-py">[r&quot;&quot;, r&quot;
+&quot;]
+</code></pre>
+<p>The issue comes from <code>\n</code> not being a valid escape sequence to put in an r-string, so a literal <code>\n</code> is inserted, but since the strings are only single quoted it causes a syntax error.</p>
+<p>Another example, using <code>\&quot;</code> instead of <code>\n</code>:</p>
+<pre><code class="language-powershell">PS &gt;echo 'r&quot;&quot; &quot;\&quot;&quot;.split(&quot;1&quot;)' | uvx ruff check - --select SIM905 --fix --diff 2&gt;&amp;1 | rg &quot;syntax error&quot;
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>This fixes to:</p>
+<pre><code class="language-py">[r&quot;&quot;&quot;]
+</code></pre>
+<p>Where the removal of the <code>\</code> for the r-string causes an unclosed triple quoted string.</p>
+<h3>Version</h3>
+<p>ruff 0.12.5 (d13228ab8 2025-07-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-29 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-29 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19702.html">astral-sh/ruff#19702</a> on 2025-08-01 23:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

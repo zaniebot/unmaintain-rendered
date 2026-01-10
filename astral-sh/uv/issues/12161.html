@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source paths aren't included in `sys.path` if they are in `.gitignore` - astral-sh/uv #12161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Source paths aren't included in `sys.path` if they are in `.gitignore`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12161">#12161</a>
+        opened by <a href="https://github.com/dusktreader">@dusktreader</a>
+        on 2025-03-14 01:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dusktreader">@dusktreader</a> on 2025-03-14 01:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Odd uv behavior with .gitignore</h1>
+<p>Basically, uv behaves oddly when the <code>.gitignore</code> file has <code>/src</code> in it.</p>
+<p>I realize that it's really weird to have <code>/src</code> in the <code>.gitignore</code>, but,
+nonetheless, it is causing strange behavior.</p>
+<p>When <code>.gitignore</code> has an entry for <code>/src</code>, uv does not include the <code>src</code>
+directory in <code>sys.path</code> on build.</p>
+<p>You can see that, in this example, after the <code>.venv</code> is built, the
+<code>.pth</code> file that uv uses to set <code>sys.path</code> is empty.</p>
+<p>This file should instead have the path to the <code>src</code> directory.</p>
+<p>If you remove the entry from <code>.gitignore</code> things build just fine.</p>
+<h2>Steps to reproduce</h2>
+<h3>1. Clone the demo repo</h3>
+<p>First, clone this demo repository to your workstation:</p>
+<pre><code class="language-bash">git clone git@github.com:dusktreader/uv-gitignore-wtf.git
+</code></pre>
+<p>Then, change to the <code>uv-gitignore-wtf</code> folder:</p>
+<pre><code class="language-bash">cd uv-gitignore-wtf
+</code></pre>
+<h3>2. Obverve the bad behavior</h3>
+<p>First, see that the <code>.gitignore</code> file has an entry for <code>/src</code>:</p>
+<pre><code class="language-bash">cat .gitignore
+</code></pre>
+<p>Next, try to import the <code>wtf</code> module. This should be included
+in the <code>.venv</code> installed by uv. To both install the local
+source package and attempt to import <code>wtf</code>, use one command:</p>
+<pre><code class="language-bash">uv run python -c &quot;import wtf&quot;
+</code></pre>
+<p>It will output something like this:</p>
+<pre><code>Using CPython 3.12.3
+Creating virtual environment at: .venv
+      Built uv-gitignore-wtf @ file:///home/dusktreader/git-repos/personal/uv-gitignore-wtf
+Installed 1 package in 0.42ms
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'wtf'
+</code></pre>
+<p>Observe that it raises a ModuleNotFoundError</p>
+<p>Next, check that the <code>.pth</code> file for the editable local package is empty:</p>
+<pre><code class="language-bash">cat .venv/lib/python3.12/site-packages/_uv_gitignore_wtf.pth
+</code></pre>
+<p>There should be no content in the file</p>
+<h3>3. Remove <code>/src</code> from <code>.gitignore</code></h3>
+<p>Now, blank out the <code>.gitignore</code> file so that there is no longer a
+<code>/src</code> entry in it.</p>
+<pre><code class="language-bash">echo &quot;&quot; &gt; .gitignore
+</code></pre>
+<p>Next, remove the <code>.venv</code> that was created by the first <code>uv</code> command. The <code>uv</code>
+cache must also be cleared. Since, apparently, it's not possible to clean
+editable source distributions from uv's cache, you have to go nuclear to
+make this work.</p>
+<pre><code class="language-bash">rm -r .venv/ &amp;&amp; uv cache clean
+</code></pre>
+<p>Finally, run the first command again:</p>
+<pre><code class="language-bash">uv run python -c &quot;import wtf&quot;
+</code></pre>
+<p>It will produce output like this:</p>
+<pre><code>Using CPython 3.12.3
+Creating virtual environment at: .venv
+      Built uv-gitignore-wtf @ file:///home/dusktreader/git-repos/personal/uv-gitignore-wtf
+Installed 1 package in 0.49ms
+</code></pre>
+<p>Notice that the final command completes without error.</p>
+<p>Finally, check that the <code>.pth</code> file now has the path to the <code>src</code> directory:</p>
+<pre><code class="language-bash">cat .venv/lib/python3.12/site-packages/_uv_gitignore_wtf.pth
+</code></pre>
+<p>The file should now have contents that look something like this:</p>
+<pre><code>/home/dusktreader/git-repos/personal/uv-gitignore-wtf/src
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 24.04 on WSL with Windows 11 x86-64</p>
+<h3>Version</h3>
+<p>0.6.6</p>
+<h3>Python version</h3>
+<p>3.12.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dusktreader on 2025-03-14 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-14 01:59</div>
+            <div class="timeline-body"><p>I think this might be a <code>hatchling</code> issue? I believe this is the responsibility of your build backend, not uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-14 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-14 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-18 02:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

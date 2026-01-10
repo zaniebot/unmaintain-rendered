@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not install dynamic build dependencies before preparing metadata - astral-sh/uv #1582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not install dynamic build dependencies before preparing metadata</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1582">#1582</a>
+        opened by <a href="https://github.com/sbidoul">@sbidoul</a>
+        on 2024-02-17 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-02-17 11:43</div>
+            <div class="timeline-body"><p>It seems <code>get_requires_for_build_wheel</code> is not invoked before <code>prepare_metadata_for_build_wheel</code>.</p>
+<p>This means dynamic build dependencies are not installed before preparing metadata.</p>
+<p>Here is a reproducer.</p>
+<p><code>uv pip  install -v --no-deps &quot;odoo-addon-mis_builder @ git+https://github.com/OCA/mis-builder@16.0#subdirectory=setup/mis_builder&quot;</code></p>
+<p>This fails about an invalid Name metadata, where it should succeed. This is most likely because the dynamic build dependency <code>setuptools-odoo</code> which is declared in <a href="https://github.com/OCA/mis-builder/blob/3aea4235697bac0f74d446e610e2b934b0994e06/setup/mis_builder/setup.py#L4">setup.py</a> has not been installed in the build environment.</p>
+<p>With setuptools, <code>setup_requires</code> entries are returned by <code>get_requires_for_build_wheel</code> and must be installed before preparing metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/861.html">astral-sh/uv#861</a> on 2024-02-17 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/halflings">@halflings</a> on 2024-02-17 11:58</div>
+            <div class="timeline-body"><p>This is maybe related to an issue I'm encountering (trying to install the LLM finetuning lib axolotl):</p>
+<pre><code>(.venv) ➜  axolotl-finetuning uv pip install &quot;axolotl[flash-attn,deepspeed] @ git+https://github.com/OpenAccess-AI-Collective/axolotl&quot;
+ Updated https://github.com/OpenAccess-AI-Collective/axolotl (5a5d474)
+ Updated https://github.com/huggingface/peft.git (8db74d4)                      error: Failed to download and build: flash-attn==2.5.0
+  Caused by: Failed to build: flash-attn==2.5.0
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel`:
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 10, in &lt;module&gt;
+  File &quot;/tmp/.tmpSjTNqD/.venv/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 366, in prepare_metadata_for_build_wheel
+    self.run_setup()
+  File &quot;/tmp/.tmpSjTNqD/.venv/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 480, in run_setup
+    super().run_setup(setup_script=setup_script)
+  File &quot;/tmp/.tmpSjTNqD/.venv/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
+    exec(code, locals())
+  File &quot;&lt;string&gt;&quot;, line 9, in &lt;module&gt;
+ModuleNotFoundError: No module named 'packaging'
+---
+</code></pre>
+<p>Running &quot;uv pip install packaging&quot; separately doesn't resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 12:42</div>
+            <div class="timeline-body"><p>@sbidoul - Thank you for this. I thought it was safe to skip <code>get_requires_for_build_wheel</code> when using the default backend but clearly not! Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-17 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-17 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stillmatic">@stillmatic</a> on 2024-02-17 14:00</div>
+            <div class="timeline-body"><p>the minimal repro for this is <code>uv pip install flash-attn</code> (https://github.com/Dao-AILab/flash-attention/tree/main?tab=readme-ov-file#installation-and-features)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 14:12</div>
+            <div class="timeline-body"><p>I think the solutions may be different. <code>mis_builder</code> I can fix trivially by ensuring we call <code>get_requires_for_build_wheel</code> in all cases. But <code>flash-attn</code> is still failing...</p>
+<p><code>python -m build .</code> also fails on <code>flash-attn</code>, which makes me think it's a problem with the package's declared metadata. And in fact, it looks like their setup script requires <code>packaging</code> (https://github.com/Dao-AILab/flash-attention/blob/5cdabc2809095b98c311283125c05d222500c8ff/setup.py#L9C6-L9C15), but that's not going to be available at the time the script runs (since the script itself declares it as a dependency at the very bottom).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1590.html">astral-sh/uv#1590</a> on 2024-02-17 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-17 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Dao-AILab/flash-attention/issues/833.html">Dao-AILab/flash-attention#833</a> on 2024-02-17 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilkersigirci">@ilkersigirci</a> on 2024-02-17 23:08</div>
+            <div class="timeline-body"><p>The official way to install flash-attn is using <code>pip install flash-attn --no-build-isolation</code>. Will there be similar feature for <code>uv</code>? I can't use the current state of <code>uv</code> for my ML projects, because it doesn't allow me to install <code>flash-attn</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 07:04</div>
+            <div class="timeline-body"><p>We might want to track that use-case in a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1715.html">astral-sh/uv#1715</a> on 2024-02-19 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taytay">@Taytay</a> on 2024-02-19 19:59</div>
+            <div class="timeline-body"><p>@zanieb : Done here: #1715</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13321.html">astral-sh/uv#13321</a> on 2025-05-06 22:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

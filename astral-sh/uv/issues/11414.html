@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace package interdependencies don't get bundled in wheels/sdist - astral-sh/uv #11414</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspace package interdependencies don't get bundled in wheels/sdist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11414">#11414</a>
+        opened by <a href="https://github.com/yashgorana">@yashgorana</a>
+        on 2025-02-11 05:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yashgorana">@yashgorana</a> on 2025-02-11 05:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a UV workspace, packages that have inter-dependencies to other workspace packages, don't get bundled in the final .whl file.</p>
+<p>Workspace setup: https://github.com/OpenMined/syft-extras/</p>
+<p>For example, syft-rpc depends on syft-core, but when we run the following,</p>
+<pre><code>uv build --package syft-rpc
+
+python -m venv .venv
+source .venv/bin/activate
+pip install ./dist/syft_rpc-0.1.0-py3-none-any.whl
+</code></pre>
+<p>fails with an error</p>
+<pre><code>Collecting pydantic&gt;=2.9.2 (from syft-rpc==0.1.0)
+  Using cached pydantic-2.10.6-py3-none-any.whl.metadata (30 kB)
+INFO: pip is looking at multiple versions of syft-rpc to determine which version is compatible with other requirements. This could take a while.
+ERROR: Could not find a version that satisfies the requirement syft-core (from syft-rpc) (from versions: none)
+
+ERROR: No matching distribution found for syft-core
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>0.5.29</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yashgorana on 2025-02-11 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yashgorana">@yashgorana</a> on 2025-02-11 05:58</div>
+            <div class="timeline-body"><p>headsup - we just pushed individual packages to pypi
+https://pypi.org/project/syft-core/
+https://pypi.org/project/syft-event/
+https://pypi.org/project/syft-rpc/</p>
+<p>and now it works - but ideally i'd want to not have them uploaded individually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-11 08:40</div>
+            <div class="timeline-body"><p>The idea of a workspace is that each package still has its own <code>pyproject.toml</code> with its own metadata and dependencies. Each of them is packaged in its own wheel with a single root module to enforce the isolation of the dependency specification.</p>
+<p>Python does not have a concept of application bundles beyond an installed venvs, so we have to write multiple files for a single workspace.</p>
+<p>You should be able to upload all of them with a single <code>uv publish</code> command though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-11 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-02-11 08:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

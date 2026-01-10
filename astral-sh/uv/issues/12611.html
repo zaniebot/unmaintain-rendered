@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticate argument ignored with explicit index - astral-sh/uv #12611</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Authenticate argument ignored with explicit index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12611">#12611</a>
+        opened by <a href="https://github.com/jdumas">@jdumas</a>
+        on 2025-04-01 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jdumas">@jdumas</a> on 2025-04-01 22:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using the following configuration:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;lagrange&gt;=6.31.0&quot;
+]
+
+[tool.uv.sources]
+lagrange = { index = &quot;artifactory&quot; }
+
+[[tool.uv.index]]
+name = &quot;artifactory&quot;
+url = &quot;https://artifactory.internal-url.com/artifactory/api/pypi/pypi-myrepo/simple&quot;
+explicit = true
+authenticate = &quot;always&quot;
+</code></pre>
+<p>It seems that the <code>authenticate</code> parameter is ignored by <code>uv</code>:</p>
+<pre><code>❯ uv sync
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only lagrange&lt;=3.0.1 is available and your project depends on lagrange&gt;=6.31.0, we can conclude that your
+      project's requirements are unsatisfiable.
+</code></pre>
+<p>If I remove the <code>explicit = true</code> I get a different error:</p>
+<pre><code>❯ uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only lagrange&lt;=3.0.1 is available and your project depends on lagrange&gt;=6.31.0, we can conclude that your
+      project's requirements are unsatisfiable.
+
+      hint: `lagrange` was found on
+      https://artifactory.corp.adobe.com/artifactory/api/pypi/pypi-lagrange-python-release/simple, but not at the
+      requested version (lagrange&gt;=6.31.0). A compatible version may be available on a subsequent index (e.g.,
+      https://pypi.org/simple). By default, uv will only consider versions that are published on the first index
+      that contains a given package, to avoid dependency confusion attacks. If all indexes are equally trusted, use
+      `--index-strategy unsafe-best-match` to consider all versions from all indexes, regardless of the order in which
+      they were defined.
+</code></pre>
+<p>Finally, by adding the <code>--index-strategy unsafe-best-match</code> it works as expected:</p>
+<pre><code>❯ uv sync --index-strategy unsafe-best-match
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+Resolved 4 packages in 7ms
+Installed 3 packages in 34ms
+ + colorama==0.4.6
+ + lagrange==6.31.0
+ + numpy==2.2.4
+</code></pre>
+<p>This seems to indicate that when <code>explicit = true</code> is used, the <code>authenticate</code> argument is ignored.</p>
+<h3>Platform</h3>
+<p>macOS 14.5</p>
+<h3>Version</h3>
+<p>0.6.11</p>
+<h3>Python version</h3>
+<p>3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jdumas on 2025-04-01 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @zanieb on 2025-04-01 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 22:13</div>
+            <div class="timeline-body"><p>Thanks for the report! We'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-02 10:17</div>
+            <div class="timeline-body"><p>Thanks @jdumas. Could you please include the trace output (<code>-vv</code>) when running against your private index?</p>
+<p>~~If authentication is failing on the index with <code>authenticate = &quot;always&quot;</code>, uv will still currently fall back to the default index (PyPI), which could explain why it's not finding the correct version. If you set <code>default = true</code> on your <code>artifactory</code> index then this fallback will not occur.~~</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 13:34</div>
+            <div class="timeline-body"><p>We shouldn't fallback if <code>lagrange = { index = &quot;artifactory&quot; }</code> is set though? Are we?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-02 14:13</div>
+            <div class="timeline-body"><p>No you're correct. Modified above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 14:41</div>
+            <div class="timeline-body"><p>I added some test coverage in https://github.com/astral-sh/uv/pull/12624 and ~it appears to be working as intended~ it looks like it reproduces the problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12624.html">astral-sh/uv#12624</a> on 2025-04-02 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-04-02 14:43</div>
+            <div class="timeline-body"><p>Hi! Here is the trace output when using <code>explicit = true</code>:</p>
+<pre><code>DEBUG uv 0.6.11 (Homebrew 2025-03-30)
+DEBUG Found project root: `/Users/jedumas/sandbox/myproject`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/Users/jedumas/sandbox/myproject` at `/var/folders/_d/n30mgrzx0933r_7bpbgb1q640000gq/T/uv-17d5ee10c504290f.lock`
+DEBUG Acquired lock for `/Users/jedumas/sandbox/myproject`
+DEBUG Using Python request `&gt;=3.12` from `requires-python` metadata
+DEBUG Checking for Python environment at `.venv`
+DEBUG Searching for Python &gt;=3.12 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/jedumas/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.2-macos-aarch64-none`
+TRACE Cached interpreter info for Python 3.13.2, skipping probing: /Users/jedumas/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+DEBUG Found `cpython-3.13.2-macos-aarch64-none` at `/Users/jedumas/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13` (managed installations)
+Using CPython 3.13.2
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /Users/jedumas/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+DEBUG Using base executable for virtual environment: /Users/jedumas/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/bin/python3.13
+DEBUG Released lock at `/var/folders/_d/n30mgrzx0933r_7bpbgb1q640000gq/T/uv-17d5ee10c504290f.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: myproject @ file:///Users/jedumas/sandbox/myproject
+DEBUG No workspace root found, using project root
+TRACE Performing lookahead for myproject @ file:///Users/jedumas/sandbox/myproject
+DEBUG Solving with installed Python version: 3.13.2
+DEBUG Solving with target Python version: &gt;=3.12
+TRACE Assigned packages:
+TRACE Chose package for decision: root. remaining choices:
+DEBUG Adding direct dependency: myproject*
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: myproject. remaining choices:
+DEBUG Searching for a compatible version of myproject @ file:///Users/jedumas/sandbox/myproject (*)
+DEBUG Adding direct dependency: lagrange&gt;=6.31.0
+TRACE Assigned packages: root==0a0.dev0, myproject==0.1.0
+TRACE Chose package for decision: lagrange. remaining choices:
+TRACE Fetching metadata for lagrange from https://artifactory.internal-url.com/artifactory/api/pypi/pypi-myrepo/simple/lagrange/
+TRACE Cached request https://artifactory.internal-url.com/artifactory/api/pypi/pypi-myrepo/simple/lagrange/ is storable because its response has an 'max-age' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 60s
+DEBUG Found fresh response for: https://artifactory.internal-url.com/artifactory/api/pypi/pypi-myrepo/simple/lagrange/
+TRACE Received package metadata for: lagrange
+DEBUG Searching for a compatible version of lagrange (&gt;=6.31.0)
+TRACE Selecting candidate for lagrange with range &gt;=6.31.0 with 9 remote versions
+TRACE Exhausted all candidates for package lagrange with range &gt;=6.31.0 after 0 steps
+DEBUG No compatible version found for: lagrange
+DEBUG Recording unit propagation conflict of lagrange from incompatibility of (myproject)
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: myproject. remaining choices:
+DEBUG Searching for a compatible version of myproject @ file:///Users/jedumas/sandbox/myproject (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: myproject
+TRACE Resolver derivation tree before reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on myproject*
+  term myproject*
+    term myproject==0.1.0
+      myproject==0.1.0 depends on lagrange&gt;=6.31.0
+      no versions of lagrange&gt;=6.31.0
+    no versions of myproject&lt;0.1.0 | &gt;0.1.0
+TRACE Resolver derivation tree after reduction
+term myproject==0.1.0
+  myproject==0.1.0 depends on lagrange&gt;=6.31.0
+  no versions of lagrange&gt;=6.31.0
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only lagrange&lt;=3.0.1 is available and your project depends on lagrange&gt;=6.31.0, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-02 15:59</div>
+            <div class="timeline-body"><p>I've investigated this and indexes configured as <code>explicit = true</code> are being excluded from the list of index URLs our auth middleware uses to check for authentication policies. That would explain why authentication is not being forced here. I'll fix this and see if it resolves your issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12631.html">astral-sh/uv#12631</a> on 2025-04-02 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-02 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdumas">@jdumas</a> on 2025-04-02 18:14</div>
+            <div class="timeline-body"><p>Thanks for the quick fix. You guys are the best!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

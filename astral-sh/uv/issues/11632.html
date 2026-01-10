@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `sources` override for `uv sync` / `uv run` by any means [command line, environment variable or config file] - astral-sh/uv #11632</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `sources` override for `uv sync` / `uv run` by any means [command line, environment variable or config file]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11632">#11632</a>
+        opened by <a href="https://github.com/jpedrick">@jpedrick</a>
+        on 2025-02-19 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jpedrick">@jpedrick</a> on 2025-02-19 18:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Without over-specifying a solution, and related to #7945, I would like to be able to functionally place a <code>uv.toml</code> in my project directory to override sources/default groups/etc. I would exclude the <code>uv.toml</code> file from my git repository, so it would only be used for local development.</p>
+<p>Currently, uv doesn't seem to allow merging of a <code>uv.toml</code> with a [tool.uv] section and it doesn't allow overriding project level settings:</p>
+<pre><code>warning: Found both a `uv.toml` file and a `[tool.uv]` section in an adjacent `pyproject.toml`. The `[tool.uv]` section will be ignored in favor of the `uv.toml` file.
+error: Failed to parse: `uv.toml`. The `sources` field is not allowed in a `uv.toml` file. `sources` is only applicable in the context of a project, and should be placed in a `pyproject.toml` file instead.
+</code></pre>
+<p>Also, secondarily, it appears the <code>[tool.uv]</code> section contains both project level settings and global/user level settings, but you can only define it in one place.</p>
+<p>This would be very useful for me in the context of working without a mono-repo in the context of several highly coupled projects. I want to temporarily override some packages as &quot;editable,&quot; but I don't want to modify my <code>pyproject.toml</code> to do so. Specifying <code>[tool.uv.sources]</code> is also not ideal, as different developers may have their sources installed at different locations.</p>
+<p>I also use direnv and Makefiles, so any suggestions using environment variables or command line arguements would be suitable.</p>
+<p>An example <code>uv.toml</code> I would want:</p>
+<pre><code>default-groups = [&quot;dev&quot;, &quot;test&quot;] # in pyproject.toml no default groups
+
+[sources]
+depa = { path = '${PROJECT_ROOT}/my-external-dep1/depa', editable=true }
+depb = { path = '${PROJECT_ROOT}/my-external-dep2/depb', editable=true }
+</code></pre>
+<pre><code>[project]
+name = 'myproject'
+dependencies = [
+  'depa',
+  'depb',
+]
+
+[dependency-groups]
+dev = [
+    'mypy',
+    'ruff',
+    'pre-commit'
+]
+test = [
+    'pytest',
+   'moto[server]',
+]
+...
+</code></pre>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jpedrick on 2025-02-19 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9258.html">astral-sh/uv#9258</a> on 2025-04-23 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13073.html">astral-sh/uv#13073</a> on 2025-04-23 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nat-n">@nat-n</a> on 2025-10-31 15:03</div>
+            <div class="timeline-body"><p>I agree it would be useful to be able to  override paths in <code>tool.uv.sources</code> (e.g. via env var, CLI option, or separate config file) when calling <code>uv pip install</code>. My use case is when performing the operation inside a docker container, it can be complicated to replicate the relative paths of sources when mounting all the relevant projects into the container, and I don't want to have to modify the pyproject.toml, hence being able to override those paths would be a nice solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ondrados">@ondrados</a> on 2025-11-16 10:51</div>
+            <div class="timeline-body"><p>I’m running into the same issue, and an override mechanism would be extremely useful.</p>
+<p>My scenario: one of my dependencies normally comes from a private index defined in <code>tool.uv.sources</code> and <code>tool.uv.index</code>. That works for normal installs, but when I’m iterating on that dependency I want to point it to a local checkout instead of publishing a new version every time.</p>
+<p>What I need is a way to temporarily override the source — via environment variables, CLI flags, or a local config file — so I can switch between “use the private index” and “use my local path” without touching tracked project settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15895.html">astral-sh/uv#15895</a> on 2025-11-20 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16853.html">astral-sh/uv#16853</a> on 2025-11-25 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oelhammouchi">@oelhammouchi</a> on 2025-12-03 08:19</div>
+            <div class="timeline-body"><p>I have the exact same problem, a fix would be very useful!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

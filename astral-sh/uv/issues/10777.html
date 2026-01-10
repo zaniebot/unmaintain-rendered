@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker - astral-sh/uv #10777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10777">#10777</a>
+        opened by <a href="https://github.com/campanya">@campanya</a>
+        on 2025-01-20 13:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/campanya">@campanya</a> on 2025-01-20 13:05</div>
+            <div class="timeline-body"><p>My dev platform is Windows; trying to deploy to a linux docker image.</p>
+<p>I have this in my pyproject.toml:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+python-ldap = { path = &quot;/uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot;, marker = &quot;sys_platform  == 'win32'&quot; }
+</code></pre>
+<p>This causes an error with Docker (even though the Docker image is Linux):</p>
+<pre><code class="language-bash">&gt; [stage-0 6/6] RUN uv sync --frozen:
+0.264 Using CPython 3.12.5 interpreter at: /usr/bin/python3.12
+0.264 Creating virtual environment at: .venv
+0.278 error: Failed to parse `uv.lock`
+0.278   Caused by: TOML parse error at line 228, column 5
+0.278     |
+0.278 228 |     { name = &quot;python-ldap&quot;, marker = &quot;sys_platform == 'win32'&quot;, path = &quot;../../uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot; },
+0.278     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0.278 path could not be normalized: /app/../../uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl
+</code></pre>
+<p>I'm not sure if this is a bug. Maybe uv could ignore the source when the marker indicates it's a dependency for another platform and avoid trying to normalize the path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 14:35</div>
+            <div class="timeline-body"><p>I'm not sure what to do here. We definitely shouldn't ignore this due to the markers. But arguably it should be a non-fatal failure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-20 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 14:54</div>
+            <div class="timeline-body"><p>Can you please share the complete <code>uv.lock</code>? I can't reproduce it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/campanya">@campanya</a> on 2025-01-20 19:38</div>
+            <div class="timeline-body"><p>The problem seems to be in the normalization of the path.  You can modify the Dockerfile to make it work:</p>
+<p><strong>Dockerfile</strong></p>
+<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:python3.12-bookworm
+
+RUN apt-get update &amp;&amp; apt-get install -y libsasl2-dev python-dev-is-python3 libldap2-dev libssl-dev
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+# **we'll get an error:** path could not be normalized: /app/../../../uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl
+# WORKDIR /app
+# COPY . /app
+
+# this works
+WORKDIR /app/projects/uv_test
+COPY . /app/projects/uv_test
+
+RUN  uv sync --frozen --no-editable
+
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+</code></pre>
+<p><strong>pyproject.toml</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;uv_test&quot;
+version = &quot;1.0&quot;
+
+dependencies = [&quot;python-ldap&quot;]
+
+[tool.uv.sources]
+python-ldap = { path = &quot;/uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot;, marker = &quot;sys_platform  == 'win32'&quot; }
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/campanya">@campanya</a> on 2025-01-20 19:51</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/18481923/uv.lock.zip">uv.lock.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 20:31</div>
+            <div class="timeline-body"><p>I sort of doubt we will support this. The lockfile is referencing an impossible path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10789.html">astral-sh/uv#10789</a> on 2025-01-20 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 21:05</div>
+            <div class="timeline-body"><p>I've fixed this in https://github.com/astral-sh/uv/pull/10789.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-20 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16156.html">astral-sh/uv#16156</a> on 2025-10-07 16:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

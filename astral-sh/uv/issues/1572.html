@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What about pixi and rip? - astral-sh/uv #1572</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>What about pixi and rip?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1572">#1572</a>
+        opened by <a href="https://github.com/olivier-lacroix">@olivier-lacroix</a>
+        on 2024-02-17 04:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/olivier-lacroix">@olivier-lacroix</a> on 2024-02-17 04:29</div>
+            <div class="timeline-body"><p>Hello there,</p>
+<p>I have been looking forward to improved package management for python, and am excited by the uv announcement. I have also been following with interest the developments made by the prefix team in <a href="https://github.com/prefix-dev/pixi">pixi</a> and <a href="https://github.com/prefix-dev/rip">rip</a>.</p>
+<p>Benchmarking uv with rip seems to show, anecdotally, that rip is as fast or faster than uv (I may be doing this completely wrong though):</p>
+<pre><code class="language-bash">❯ hyperfine --warmup 3 'cargo r install dagster /tmp/ripenv' 'source /tmp/uvenv/bin/activate;uv pip install --reinstall dagster --no-cache'
+Benchmark 1: cargo r install dagster /tmp/ripenv
+  Time (mean ± σ):      6.959 s ±  0.236 s    [User: 9.346 s, System: 0.370 s]
+  Range (min … max):    6.643 s …  7.335 s    10 runs
+
+Benchmark 2: source /tmp/uvenv/bin/activate;uv pip install --reinstall dagster --no-cache
+  Time (mean ± σ):      7.829 s ±  0.819 s    [User: 0.808 s, System: 1.080 s]
+  Range (min … max):    6.183 s …  8.809 s    10 runs
+
+Summary
+  cargo r install dagster /tmp/ripenv ran
+    1.13 ± 0.12 times faster than source /tmp/uvenv/bin/activate;uv pip install --reinstall dagster --no-cache
+</code></pre>
+<p>Pixi and uv seem to have very similar goals (albeit pixi ambitions to cater to other languages than python).</p>
+<p>I am wondering about the opportunities to share, at least, (some) underlying libraries to achieve these goals faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-17 04:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 05:01</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>We've talked to each other before and there's definitely more that we can do together, but it's worth pointing out that there has already been collaboration — it's just not obvious.</p>
+<p>For example, they are <a href="https://github.com/prefix-dev/rip/blob/main/crates/rattler_installs_packages/Cargo.toml#L42-L43">using a couple</a> foundational crates that @konstin published e.g.</p>
+<ul>
+<li><a href="https://docs.rs/pep440_rs/latest/pep440_rs/">pep440_rs</a></li>
+<li><a href="https://docs.rs/pep508_rs/latest/pep508_rs/">pep508_rs</a></li>
+</ul>
+<p>And we are using an HTTP crate from them:</p>
+<ul>
+<li><a href="https://github.com/prefix-dev/async_http_range_reader">async_http_range_reader</a></li>
+</ul>
+<p>Additionally, all of our <a href="https://github.com/astral-sh/uv/blob/main/crates/uv/tests/pip_install_scenarios.rs">test scenarios</a> have also been open source at <a href="https://github.com/zanieb/packse">packse</a> long before we announced <code>uv</code> — they recently made use of a couple of these in their <a href="https://github.com/prefix-dev/rip/pull/141">test suite</a>. I'd love to see these test cases adopted across the Python packaging ecosystem, e.g. they would be useful to ensure behavior confirms in <code>pip</code>, <code>poetry</code>, etc.</p>
+<p>One barrier to collaboration is that they use a different resolver than us; they wrote <a href="https://github.com/mamba-org/resolvo">resolvo</a> but we are using <a href="https://github.com/pubgrub-rs/pubgrub">PubGrub</a>. These solvers have some fundamental differences, and during our design phase we decided to commit to PubGrub instead of a <code>libsolv</code>-style solver. However, we're working closely with the <code>pubgrub-rs</code> maintainers who have also expressed interest in working with their team:</p>
+<ul>
+<li>https://github.com/mamba-org/resolvo/issues/2</li>
+<li>https://github.com/mamba-org/resolvo/issues/9#issuecomment-1857703964</li>
+</ul>
+<p>And work on <code>pubgrub-rs</code> has far reaching implications for resolvers across language ecosystems, e.g. the authors would love to see it used in Cargo some day:</p>
+<ul>
+<li>https://github.com/rust-lang/cargo/issues/5284</li>
+</ul>
+<p>We have more <a href="https://github.com/astral-sh/uv/tree/main/crates">crates</a> in uv that we can publish for shared-use once we stabilize them, but everything is permissively licensed and open source.</p>
+<p>We're excited to have everything public now — it's going to make collaboration a lot easier.</p>
+<p>Regarding benchmarks, it's tough to create a robust benchmark. If you're interested in exploring it, I'd recommend adding <code>rip</code> support to our <a href="https://github.com/astral-sh/uv/tree/main/scripts/bench">bench script</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 05:22</div>
+            <div class="timeline-body"><p>Thanks, I appreciate this! Agree with everything @zanieb wrote above. We've chatted with various folks on the Prefix team at different points in time, and my feeling is that we just have different goals and focus areas (though with some overlap of course). But at the very least, there will still be opportunities for us to collaborate on some of the underlying libraries (like those mentioned above).</p>
+<p>On the benchmarks... Benchmarking is tricky. We put a lot of time into the benchmark script in the repo. As a heads up, the command above seems to be comparing <code>rip</code> <em>with</em> caching against <code>uv</code> <em>without</em> caching. (<code>rip</code> has a persistent cache, but doesn't currently expose command-line flags to modify it, based on my read.) I think it's also using a debug build for <code>rip</code> but a release build for <code>uv</code>. The details are hard to get right :joy:</p>
+<p>I'm happy to produce some rigorous benchmarks if folks are interested -- we could probably add <code>rip</code> to our benchmark script. I just re-ran the command you used above, comparing release builds and clearing the cache between invocations:</p>
+<pre><code>❯ hyperfine --prepare &quot;./target/release/uv venv&quot; &quot;./target/release/uv pip install -r requirements.in -n&quot; --prepare &quot;rm -rf ~/Library/Caches/rattler/pypi/ .venv&quot; &quot;../rip/target/release/rip install dagster .venv&quot; --warmup 10 --runs 20
+Benchmark 1: ./target/release/uv pip install -r requirements.in -n
+  Time (mean ± σ):      1.267 s ±  0.129 s    [User: 0.419 s, System: 0.807 s]
+  Range (min … max):    1.070 s …  1.573 s    20 runs
+
+Benchmark 2: ../rip/target/release/rip install dagster .venv
+  Time (mean ± σ):      3.379 s ±  0.244 s    [User: 0.851 s, System: 1.003 s]
+  Range (min … max):    2.987 s …  3.927 s    20 runs
+
+Summary
+  './target/release/uv pip install -r requirements.in -n' ran
+    2.67 ± 0.33 times faster than '../rip/target/release/rip install dagster .venv'
+</code></pre>
+<p>So that shows something like a &gt; 2.5x speed-up with <code>uv</code>, but it'll vary across platform, machine, etc. (I took the median of three runs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivier-lacroix">@olivier-lacroix</a> on 2024-02-17 10:20</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh and @zanieb !</p>
+<p>Started to add pixi in the bench script in https://github.com/astral-sh/uv/pull/1581</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wolfv">@wolfv</a> on 2024-02-17 11:55</div>
+            <div class="timeline-body"><p>Hey 👋</p>
+<p>Indeed, the differences are nicely pointed out by Charlie and Zanie and we're just as happy to collaborate on some of the underlying issues.</p>
+<p>I also did some benchmarking and indeed <code>uv</code> is a little faster, for the following reasons:</p>
+<ul>
+<li><code>rip</code> rigorously checks SHA256 hashes of the RECORD files inside packages, and <code>uv</code> seems to skip that. <code>pip</code> also skips that (which is why some Python packages actually ship with broken hashes)</li>
+<li><code>rip</code>'s cache is currently storing wheels as zip files while <code>uv</code> stores the extracted files. This is something we need to change in <code>rip</code>, but shouldn't be particularly hard (we pay the cost of re-extracting the packages each install time). We also already do that for <code>conda</code> packages.</li>
+<li>We check if new packages are on PyPI everytime instead of adhering to the 10 minutes Max-Age. This is behavior that we adopted from <code>pip</code> – we'll make this configurable in <code>rip</code>.</li>
+</ul>
+<p>And lastly <code>rip</code> and <code>uv</code> share some performance problems, e.g. <code>urllib botocore</code> is pretty tough to resolve.</p>
+<p>Anyways, as Charlie and Zanie mentioned we do share a bunch of underlying crates and hopefully we can share more going forward :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-02-17 16:54</div>
+            <div class="timeline-body"><p>On the topic of resolver benchmarks, can I suggest that people take a look at the approach <a href="https://github.com/pradyunsg/pip-resolver-benchmarks">pip-resolver-benchmarks</a> takes.</p>
+<p>My understanding is the library is experimental right now, but being able to collect full real world scenarios at a point in time and elliminate network variability (without just relying on cache) are both very helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-17 16:56</div>
+            <div class="timeline-body"><p>Thanks for the reference! That project inspired our <a href="https://github.com/zanieb/packse">packaging scenarios</a> — we're very interested in being able to use those benchmark scenarios as inputs.</p>
+<p>And thanks for chiming in Wolf!</p>
+<p>Here are some issues regarding the behaviors mentioned:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/888</li>
+<li>https://github.com/astral-sh/uv/issues/505</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/rip/issues/229.html">prefix-dev/rip#229</a> on 2024-02-18 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tekumara">@tekumara</a> on 2024-02-18 07:21</div>
+            <div class="timeline-body"><blockquote>
+<p>we decided to commit to PubGrub instead of a libsolv-style solver</p>
+</blockquote>
+<p>just a question to satisfy my own intellectual curiosity around resolvers, what made you settle on PubGrub over libsolv or alternatives?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-02-19 19:38</div>
+            <div class="timeline-body"><blockquote>
+<p>just a question to satisfy my own intellectual curiosity around resolvers, what made you settle on PubGrub over libsolv or alternatives?</p>
+</blockquote>
+<p>FYI Charlie talks about that here:</p>
+<p>https://discuss.python.org/t/uv-another-rust-tool-written-to-replace-pip/46039/56</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1724.html">astral-sh/uv#1724</a> on 2024-02-20 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ruben-arts">@ruben-arts</a> on 2024-02-21 17:02</div>
+            <div class="timeline-body"><p>Following up on @wolfv's response,</p>
+<p>We've decided to integrate <code>uv</code> into <code>pixi</code> to avoid double work and to be able to contribute to the same code base. This allows us to refocus on <code>conda</code> specific work. Killing <code>rip</code> as of immediately, but taking what we've learned and hopefully being able to support <code>uv</code> with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 17:24</div>
+            <div class="timeline-body"><p>Thanks for the update! I'm going to close this as I think all the major questions here have been answered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-21 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/rip/issues/233.html">prefix-dev/rip#233</a> on 2024-04-06 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../CycloneDX/cyclonedx-conda/issues/1.html">CycloneDX/cyclonedx-conda#1</a> on 2024-04-27 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pybamm-team/PyBaMM/pulls/4353.html">pybamm-team/PyBaMM#4353</a> on 2024-08-29 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../airspeed-velocity/asv/issues/1436.html">airspeed-velocity/asv#1436</a> on 2024-10-07 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EED85">@EED85</a> on 2025-03-03 08:59</div>
+            <div class="timeline-body"><p>Hi @ruben-arts,</p>
+<blockquote>
+<p>We've decided to integrate uv into pixi</p>
+</blockquote>
+<p>Did you have success?
+Our packages are built on a conda standard, and we're looking to expedite the creation of conda environments.
+Pixi with UV integrations seems very promising!</p>
+<p>This article sounds great: https://prefix.dev/blog/uv_in_pixi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/straygar">@straygar</a> on 2025-03-04 15:54</div>
+            <div class="timeline-body"><p>@EED85 This is done, all <code>[pypi-dependencies]</code> are installed using <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cesaryuan">@cesaryuan</a> on 2025-03-15 08:13</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/EED85">@EED85</a> This is done, all <code>[pypy-dependencies]</code> are installed using <code>uv</code>.</p>
+</blockquote>
+<p>Is there a misspelling of <code>[pypi-dependencies]</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/straygar">@straygar</a> on 2025-03-15 11:55</div>
+            <div class="timeline-body"><p>@cesaryuan yup, just fixed the typo.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:22 UTC
+    </footer>
+</body>
+</html>

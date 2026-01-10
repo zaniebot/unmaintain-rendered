@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`RET504` not triggered with arbitrary calls - astral-sh/ruff #4242</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`RET504` not triggered with arbitrary calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4242">#4242</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-05-05 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-05 10:55</div>
+            <div class="timeline-body"><p>What about the following code:</p>
+<pre><code class="language-python">def func() -&gt; int:
+    match True:
+        case True:
+            x = 5
+            return x
+        case _:
+            raise ValueError(&quot;Error&quot;)
+</code></pre>
+<p>I don't get <code>RET504</code> here as well. Is that the expected behavior?</p>
+<p><em>Originally posted by @Apakottur in https://github.com/charliermarsh/ruff/issues/4240#issuecomment-1536067821</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-05 10:57</div>
+            <div class="timeline-body"><p>After giving a quick look, it's occurring as the <code>Visitor</code> is not going through the <code>match</code> statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-05 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-05-05 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-06 14:12</div>
+            <div class="timeline-body"><p>Scratch my initial analysis, visitor pattern means that it'll travel to every node <em>unless</em> explicitly avoided. We're going through the match statement, but the problem is two fold:</p>
+<ol>
+<li><code>match</code> is a mutually exclusive statement. This means that a binding in one case can't be referenced in another case. Visitor is not scope aware.</li>
+<li>The comment below means that we're considering <code>x</code> to be referenced inside the <code>ValueError</code> call which is what is creating this false negative.</li>
+</ol>
+<p>https://github.com/charliermarsh/ruff/blob/bb2cbf1f2549c7472f0caf913ea4896b2aae0dc4/crates/ruff/src/rules/flake8_return/visitor.rs#L172-L183</p>
+<p>Solving (2) seems to be a bit difficult but I think for the short term we can avoid increasing the reference count for builtin calls.</p>
+<p>For the long term, the scope will have to be implemented which can be used to increase the reference count of variables which the function has access to, either directly through the arguments or from an outer scope. We could even go further and traverse the function body to check if it's actually being referenced but there might be a challenge in differentiating between referencing the same variable name defined inside the function vs actually referencing it from outside the scope.</p>
+<p>These are just some of my thoughts after debugging this issue. I think this might not be a <em>good first issue</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`RET504` not triggered for `match` statement" to "`RET504` not triggered with arbitrary calls" by @dhruvmanila on 2023-05-06 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @charliermarsh on 2023-05-06 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 22:40</div>
+            <div class="timeline-body"><p>I am tempted to change this rule such that it only detects:</p>
+<pre><code class="language-py">x = 5
+return x
+</code></pre>
+<p>That is: such that it only detects &quot;assignment followed by return&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4997.html">astral-sh/ruff#4997</a> on 2023-06-10 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-10 04:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-10 04:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv doesn't correctly find upstream PyPI packages via Azure DevOps public index - astral-sh/uv #11440</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv doesn't correctly find upstream PyPI packages via Azure DevOps public index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11440">#11440</a>
+        opened by <a href="https://github.com/thomasaarholt">@thomasaarholt</a>
+        on 2025-02-12 09:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-02-12 09:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello! Thank you for working towards making python package management-troubles a thing of the past! 🚀</p>
+<p>I observe that uv is not able to install versions of python package versions correctly from PyPI when using an Azure DevOps (ADO) package tracker backed by an upstream index (PyPI). Pip manages to find and install these packages. I have created a public ADO index to help debug this which is backed by PyPI:
+<a href="https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/"><code>https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/</code></a> (the main page isn't useful in the browser, but you can append package names to see the versions available, e.g. <a href="https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/numpy"><code>/numpy</code></a>)</p>
+<p>I <em>believe</em> the issue is that ADO redirects from the package index on Azure Storage to <a href="https://learn.microsoft.com/en-us/azure/frontdoor/integrate-storage-account">Azure Front Door</a>, a caching service, and that this is what pip supports and uv does not. I am not certain that this is the root cause.</p>
+<p>Disclaimer: I work at Microsoft as a Data Scientist, but I do not work with Azure DevOps. My opinions are my own.</p>
+<h3>Minimal reproducible example</h3>
+<p>The repro is a little nuanced: When I run <code>uv pip install &lt;package&gt;==&lt;version&gt;</code> from my index, I get a 401 error if that unique package-version is not already added directly to the tracker via pip (not only on upstream).</p>
+<p>When I run pip, it succeeds and the ADO tracker adds an entry for that package version. If I <em>then</em> run <code>uv pip ...</code>, it successfully finds that particular version.</p>
+<p><strong>This means that you need to find a new unique package-version combination to test with every time you successfully install it with pip. You can see which versions of numpy (which I use as example below) are <a href="https://dev.azure.com/thomasaarholt/thomasaarholt-python/_artifacts/feed/thomas-python-feed/PyPI/numpy/upstreams/2.2.2">already &quot;in this feed&quot; here</a>.</strong></p>
+<p>I have purposefully not run <code>pip</code> entry in the code below, as that would add the numpy 2.0 version to the ADO tracker. You can see all the numpy versions that should be available on the <a href="https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/numpy/">feed/numpy page</a>.</p>
+<p>Note that I think you require artifacts-keyring (uv docs) available in order for pip to install a new version, which in turn may need <a href="https://dotnet.microsoft.com/en-us/download">dotnet</a>. I find it odd that authentication is needed to reach a public tracker, mentioning this internally.</p>
+<pre><code class="language-bash">export INDEX='https://pkgs.dev.azure.com/thomasaarholt/thomasaarholt-python/_packaging/thomas-python-feed/pypi/simple/'
+
+# Try with uv
+uv venv --seed
+source .venv/bin/activate.fish # or however you activate it in your shell
+uv pip install artifacts-keyring # I have already made this available on tracker. keyring from uv tool did not work with pip
+# !! You might also need to download the dotnet runtime (https://dotnet.microsoft.com/en-us/download) for it to work.
+
+uv pip install numpy==2.0 --index-url=$INDEX
+# error: Failed to fetch: `https://pkgs.dev.azure.com/thomasaarholt/5e230929-47ac-48ad-97db-15ab1d2aa0c5/_packaging/56fc1e3a-f592-420b-bd14-a8c967a65c28/pypi/download/numpy/2/numpy-2.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=a7039a136017eaa92c1848152827e1424701532ca8e8967fe480fe1569dae581`
+#   Caused by: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/thomasaarholt/5e230929-47ac-48ad-97db-15ab1d2aa0c5/_packaging/56fc1e3a-f592-420b-bd14-a8c967a65c28/pypi/download/numpy/2/numpy-2.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=a7039a136017eaa92c1848152827e1424701532ca8e8967fe480fe1569dae581)
+
+
+# Try with pip
+uv venv --seed
+source .venv/bin/activate.fish # or however you activate it in your shell
+uv pip install artifacts-keyring
+pip install numpy==2.0 --index-url=$INDEX
+# Successfully installed numpy-X.X.X # (This added numpy as an &quot;official entry&quot; to the public tracker)
+
+# Try again with uv
+uv pip install numpy==2.0 --index-url=$INDEX
+# Should now work
+</code></pre>
+<h3>Platform</h3>
+<p>Ubuntu 20.04 AMD</p>
+<h3>Version</h3>
+<p>uv 0.5.14</p>
+<h3>Python version</h3>
+<p>3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @thomasaarholt on 2025-02-12 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-02-12 11:33</div>
+            <div class="timeline-body"><p>I have just learnt more about how upstream packages work (<a href="https://learn.microsoft.com/en-us/azure/devops/artifacts/how-to/public-feeds-upstream-sources?view=azure-devops&amp;tabs=python#restore-packages">anonymous users cannot install from upstream sources via the ADO feed - they can only install packages that already are in the feed</a>).</p>
+<p>Closing this and reopening a new issue with a more correct text, as there is still missing functionality in uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thomasaarholt on 2025-02-12 11:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

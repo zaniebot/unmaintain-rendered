@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to inspect Python interpreter in conjunction with sitecustomize.py - astral-sh/uv #11508</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to inspect Python interpreter in conjunction with sitecustomize.py</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11508">#11508</a>
+        opened by <a href="https://github.com/rkoschmitzky">@rkoschmitzky</a>
+        on 2025-02-14 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rkoschmitzky">@rkoschmitzky</a> on 2025-02-14 13:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For some internal tooling we make use of a <code>sitecustomize.py</code> that invokes the discovery and execution of &quot;startup&quot; files. This execution might log to STDOUT when it executes those files. This becomes a problem with uv when it tries to check for a valid virtualenv for certain operations.</p>
+<p>As the <code>sitecustomize.py</code> is executed as soon as the python interpreter starts, this seems to confuse uv when output appears in STDOUT.</p>
+<p><em>(from activated virtualenv)</em>
+<img src="https://github.com/user-attachments/assets/539c3b8e-9c81-4063-a741-3cf483f641be" alt="Image" /></p>
+<p><em>(example with uv)</em>
+<img src="https://github.com/user-attachments/assets/de10e75b-0954-4c1c-8d82-92c76ab6b3bb" alt="Image" /></p>
+<h3>Steps To Reproduce</h3>
+<ol>
+<li>create a directory and cd into it</li>
+<li>call <code>uv venv</code></li>
+<li>create a <em>sitecustomize.py</em> file that just holds <code>print(&quot;hello world&quot;)</code> and move it into corresponding <code>site-packages</code> directory of the <em>.venv</em></li>
+<li>install some package <code>uv pip install &lt;some_package&gt;</code></li>
+</ol>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.5.31</p>
+<h3>Python version</h3>
+<p>Python 3.10.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @rkoschmitzky on 2025-02-14 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 18:11</div>
+            <div class="timeline-body"><p>Hmm... We'll need to decide whether to support this. I guess we'd have to, like, write to a file, then read the file (instead of using stdout)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-02-14 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-14 18:20</div>
+            <div class="timeline-body"><p>We could also use a semi-unique marker like <code>****** BEGIN UV QUERY BLOB ******</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 01:36</div>
+            <div class="timeline-body"><p>Or we could just always take the last line...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rkoschmitzky">@rkoschmitzky</a> on 2025-02-17 10:44</div>
+            <div class="timeline-body"><p>Without having any knowledge about how uv is invoking python to retrieve interpreter details, but maybe it would be the easiest to circumvent this by calling python with the following flag?</p>
+<blockquote>
+<p>-S     : don't imply 'import site' on initialization</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-17 11:31</div>
+            <div class="timeline-body"><p>Using only the last line could work, that would be similar to what we're doing for PEP 517. (I haven't check <code>-S</code> yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rkoschmitzky">@rkoschmitzky</a> on 2025-03-18 16:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Using only the last line could work, that would be similar to what we're doing for PEP 517. (I haven't check <code>-S</code> yet)</p>
+</blockquote>
+<p>@konstin Did you get the chance to check the <code>-S</code> flag?</p>
+<p>From what it looks like, <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/interpreter.rs#L748">this runs in isolation</a> and feels like a pretty easy and safe change to do.</p>
+<p>Happy to gain more insight from you guys. Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-15 12:52</div>
+            <div class="timeline-body"><p>We unfortunately must run without <code>-S</code> as <code>-S</code> removes directories from <code>sys.path</code> we need to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rkoschmitzky">@rkoschmitzky</a> on 2025-06-18 15:58</div>
+            <div class="timeline-body"><p>Since yesterday we run into the same issue caused by <code>azure-monitor-opentelemetry-exporter</code> due to the release from <code>1.0.0b37</code> to <code>1.0.0b38</code>.</p>
+<p><img src="https://github.com/user-attachments/assets/fc00fa58-a730-41e3-bb00-99a4cf729d0b" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-18 16:58</div>
+            <div class="timeline-body"><p>@konstin -- Maybe we should just vendor everything into a single file and run with <code>-S</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-18 17:07</div>
+            <div class="timeline-body"><p>iirc from https://github.com/astral-sh/uv/pull/11670, there are directories that are not ours that go away when using <code>-S</code>, but I'd have to check to see which platform it was that failed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

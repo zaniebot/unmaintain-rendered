@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add helpful error message for 'uv activate' - astral-sh/uv #17001</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add helpful error message for 'uv activate'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17001">#17001</a>
+        opened by <a href="https://github.com/nooscraft">@nooscraft</a>
+        on 2025-12-05 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-12-05 16:05</div>
+            <div class="timeline-body"><p>When users try to run 'uv activate', show a helpful error message
+instead of the generic unknown command error. The message explains
+that 'uv activate' is not supported and provides instructions on
+how to activate a virtual environment.</p>
+<p>This is most probably address the issue: https://github.com/astral-sh/uv/issues/16993</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-12-05 16:05</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb FYI!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-12-05 16:09</div>
+            <div class="timeline-body"><pre><code>   error `uv activate` is not supported. To activate a virtual environment, use:
+     source .venv/bin/activate
+
+   hint Create a virtual environment with: uv venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/darth-raijin">@darth-raijin</a> on <code>crates/uv/src/lib.rs</code>:2493 on 2025-12-05 17:06</div>
+            <div class="timeline-body"><p>Nit: The code already makes this intent pretty clear, so these two comments might be redundant. Fine to keep, but you could consider removing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/darth-raijin">@darth-raijin</a> reviewed on 2025-12-05 17:07</div>
+            <div class="timeline-body"><p>Small suggestion about some possibly redundant comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-05 17:27</div>
+            <div class="timeline-body"><p>I'm still not sure we should do this, but if we do, we probably need to actually use our shell detection logic as well as discover the virtual environment to ensure one exists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/darth-raijin">@darth-raijin</a> on 2025-12-05 17:32</div>
+            <div class="timeline-body"><p>+1 on the above.</p>
+<p>It feels like it could set a precedent for adding similar custom messages for other unsupported commands, instead of handling them in a more general way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-12-07 06:23</div>
+            <div class="timeline-body"><p>Hey, updated this based on @zanieb's feedback!</p>
+<p>Now it actually detects your shell and finds the venv instead of just printing static text. Walks up from cwd looking for <code>.venv/pyvenv.cfg</code>, checks <code>ZSH_VERSION</code>/<code>FISH_VERSION</code>/etc to figure out what shell you're in, and gives you the right command.</p>
+<p>Quick examples:</p>
+<pre><code>$ uv activate
+error `uv activate` is not supported. To activate a virtual environment, use:
+  source .venv/bin/activate
+</code></pre>
+<p>If you're in fish:</p>
+<pre><code>$ uv activate
+error `uv activate` is not supported. To activate a virtual environment, use:
+  source .venv/bin/activate.fish
+</code></pre>
+<p>No venv? Shows a hint:</p>
+<pre><code>$ uv activate
+error `uv activate` is not supported. To activate a virtual environment, use:
+  source .venv/bin/activate
+
+hint Create a virtual environment with: uv venv
+</code></pre>
+<p>@darth-raijin - fair point on precedent, but we already do this for <code>install</code>, <code>show</code>, <code>freeze</code> etc (they suggest <code>uv pip &lt;cmd&gt;</code>). This one's a bit different since there's no actual command to suggest - just need to explain why <code>uv activate</code> can't be a thing and point them to the shell command.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

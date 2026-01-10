@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 false positive with global - astral-sh/ruff #8691</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 false positive with global</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8691">#8691</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2023-11-15 10:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-11-15 10:40</div>
+            <div class="timeline-body"><p>It's weird code, but we had some code doing a thing like this and the autofix broke it:</p>
+<pre><code>λ cat x.py   
+import random
+from math import pi
+
+def make_math_cool():
+    global pi
+    if random.random() &lt; 0.5:
+        pi = 4
+    print(pi)
+
+make_math_cool()
+
+λ ruff check x.py
+x.py:2:18: F401 [*] `math.pi` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-15 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-15 16:24</div>
+            <div class="timeline-body"><p>I'm not sure if the right solution here is to make the fix unsafe when an import is potentially-shadowed, or avoid flagging F401 at all. If the latter, we'll almost certainly introduce false negatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-11-15 20:26</div>
+            <div class="timeline-body"><p>I think the issue here is that the symbol isn't shadowed, there is no <code>pi</code> local variable (of course if we remove <code>global</code>, then F401 is fully correct). I think use of <code>global</code> is rare enough that false negatives wouldn't really be a problem, but maybe I misunderstand.</p>
+<p>(In any case, I'm not unhappy with ruff's existing behaviour and wouldn't want to trade off too much, tbh this idiom deserves whatever happens to it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lgammo">@lgammo</a> on 2024-05-07 17:33</div>
+            <div class="timeline-body"><p>Any language processor that applies language rules to fix a program in that language has to understand the semantics of that language. Thus, for ruff to ignore the semantics of global declarations indicates that ruff is indeed rough, and not to be trusted.</p>
+<p>You can't say tough don't use globals. This type of fixes should definitely be made unsafe, but better still if global semantics were understood by ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11518.html">astral-sh/ruff#11518</a> on 2024-05-23 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

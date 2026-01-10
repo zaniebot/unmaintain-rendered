@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help text doesn't line up for options that accept multiple occurrences - clap-rs/clap #760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help text doesn't line up for options that accept multiple occurrences</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/760">#760</a>
+        opened by <a href="https://github.com/jimmycuadra">@jimmycuadra</a>
+        on 2016-12-01 00:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jimmycuadra">@jimmycuadra</a> on 2016-12-01 00:49</div>
+            <div class="timeline-body"><p>Clap version: 2.19.0</p>
+<p>Options that allow multiple occurrences have &quot;...&quot; appended to them, which results in the help text for those options not lining up with the others. Note the -i and -K options below:</p>
+<pre><code>OPTIONS:
+    -a, --ami &lt;ami&gt;                                EC2 AMI ID to use for all CoreOS instances, e.g. &quot;ami-1234&quot;
+        --availability-zone &lt;availability-zone&gt;    Availability Zone for etcd instances and EBS volumes, e.g. &quot;us-east-1a&quot;
+    -A, --aws-account-id &lt;aws-account-id&gt;          The numeric ID of the AWS account, e.g. &quot;123456789012&quot;
+    -d, --domain &lt;domain&gt;                          The base domain name for the cluster, e.g. &quot;example.com&quot;
+    -i, --iam-user &lt;iam-user&gt;...                      An IAM user name who will have access to cluster PKI secrets, e.g. &quot;alice&quot;; this option can be specified more than once
+    -v, --kubernetes-version &lt;k8s-version&gt;         Version of Kubernetes to use, e.g. &quot;1.0.0&quot;
+        --masters-max-size &lt;masters-max-size&gt;      The maximum number of EC2 instances the Kubernetes masters may autoscale to
+        --masters-min-size &lt;masters-min-size&gt;      The minimum number of EC2 instances the Kubernetes masters may autoscale to
+        --nodes-max-size &lt;nodes-max-size&gt;          The maximum number of EC2 instances the Kubernetes nodes may autoscale to
+        --nodes-min-size &lt;nodes-min-size&gt;          The minimum number of EC2 instances the Kubernetes nodes may autoscale to
+        --rbac-super-user &lt;rbac-super-user&gt;        The Kubernetes username of an administrator who will set up initial RBAC policies, e.g. &quot;jimmy&quot;
+    -r, --region &lt;region&gt;                          AWS Region to create the resources in, e.g. &quot;us-east-1&quot;
+    -s, --instance-size &lt;size&gt;                     EC2 instance size to use for all instances, e.g. &quot;m3.medium&quot;
+    -K, --ssh-key &lt;ssh-key&gt;...                        SSH public key to add to ~/.ssh/authorized_keys on each server; this option can be specified more than once
+    -z, --zone-id &lt;zone-id&gt;                        Route 53 hosted zone ID
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-02 01:09</div>
+            <div class="timeline-body"><p>Interesting, this a regression then and I'd thought I tested against it. Let me see if I can reproduce and I'll post back!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-02 01:58</div>
+            <div class="timeline-body"><p>@jimmycuadra I'm not able to reproduce this, could you like to the source that's causing it? If you look at <code>tests/help.rs</code> maybe you could also see if there's something you're doing differently than the tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jimmycuadra">@jimmycuadra</a> on 2016-12-02 02:16</div>
+            <div class="timeline-body"><p>Here is the clap code that produces the help output I pasted: https://github.com/InQuicker/kaws/blob/9c8786aebaca68bff3637973a7c6c8bf54697dda/src/cli.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-02 03:34</div>
+            <div class="timeline-body"><p>Ah ok, interesting, so it appears it only happens when those args are part of a subcommand. I've reproduced it, and should have it fixed soon 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.19.1" by @kbknapp on 2016-12-02 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-02 04:13</div>
+            <div class="timeline-body"><p>The pot thickens, it's not because of subcommands at all. It's because of the line <code>number_of_values(1)</code> Should have this fixed momentarily!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-02 04:55</div>
+            <div class="timeline-body"><p>This is fixed in #762 and once that merges I'll upload v2.19.1 to crates.io</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jimmycuadra">@jimmycuadra</a> on 2016-12-02 08:27</div>
+            <div class="timeline-body"><p>You're amazing, as always. ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-02 14:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:22 UTC
+    </footer>
+</body>
+</html>

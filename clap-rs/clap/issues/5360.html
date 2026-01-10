@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For cli option with custom types, `impl FromStr` with `FromStr::Err` set to `()` won't work - clap-rs/clap #5360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>For cli option with custom types, `impl FromStr` with `FromStr::Err` set to `()` won't work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5360">#5360</a>
+        opened by <a href="https://github.com/SteveLauC">@SteveLauC</a>
+        on 2024-02-17 06:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SteveLauC">@SteveLauC</a> on 2024-02-17 06:59</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.76.0 (07dca489a 2024-02-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.1</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::str::FromStr;
+use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(short, long)]
+    foo: Foo,
+}
+
+#[derive(Clone)]
+struct Foo;
+
+impl FromStr for Foo {
+    type Err = ();
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        todo!()
+    }
+}
+
+fn main() {}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>With the above code, run <code>cargo build</code></p>
+<h3>Actual Behaviour</h3>
+<pre><code>   Compiling rust v0.1.0 (/home/steve/Documents/workspace/rust)
+error[E0599]: the method `value_parser` exists for reference `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;`, but its trait bounds were not satisfied
+    --&gt; src/main.rs:17:5
+     |
+5    | struct Foo;
+     | ----------
+     | |
+     | doesn't satisfy `Foo: From&lt;&amp;'s std::ffi::OsStr&gt;`
+     | doesn't satisfy `Foo: From&lt;&amp;'s str&gt;`
+     | doesn't satisfy `Foo: From&lt;OsString&gt;`
+     | doesn't satisfy `Foo: From&lt;std::string::String&gt;`
+     | doesn't satisfy `Foo: ValueEnum`
+     | doesn't satisfy `Foo: ValueParserFactory`
+...
+17   |     #[arg(short, long)]
+     |     ^ method cannot be called on `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;` due to unsatisfied trait bounds
+     |
+    ::: /home/steve/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.1/src/builder/value_parser.rs:2462:1
+     |
+2462 | pub struct _AutoValueParser&lt;T&gt;(std::marker::PhantomData&lt;T&gt;);
+     | ------------------------------ doesn't satisfy `_: _ValueParserViaParse`
+     |
+     = note: the following trait bounds were not satisfied:
+             `Foo: ValueEnum`
+             which is required by `&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaValueEnum`
+             `Foo: ValueParserFactory`
+             which is required by `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFactory`
+             `Foo: From&lt;OsString&gt;`
+             which is required by `&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromOsString`
+             `Foo: From&lt;&amp;'s std::ffi::OsStr&gt;`
+             which is required by `&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromOsStr`
+             `Foo: From&lt;std::string::String&gt;`
+             which is required by `&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromString`
+             `Foo: From&lt;&amp;'s str&gt;`
+             which is required by `&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromStr`
+             `(): Into&lt;Box&lt;(dyn std::error::Error + Send + Sync + 'static)&gt;&gt;`
+             which is required by `_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaParse`
+note: the traits `ValueEnum`, `ValueParserFactory`,  and `From` must be implemented
+    --&gt; /home/steve/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.1/src/builder/value_parser.rs:2312:1
+     |
+2312 | pub trait ValueParserFactory {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: /home/steve/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.1/src/derive.rs:264:1
+     |
+264  | pub trait ValueEnum: Sized + Clone {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: /home/steve/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/mod.rs:579:1
+     |
+579  | pub trait From&lt;T&gt;: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^
+     = note: this error originates in the macro `clap::value_parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `rust` (bin &quot;rust&quot;) due to 2 previous errors
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Build without issues</p>
+<h3>Additional Context</h3>
+<p>Related issues:</p>
+<ol>
+<li><p>#4286</p>
+<p>From this issue, I found you can fix it by <code>impl From&lt;String&gt; for Foo</code>.</p>
+</li>
+</ol>
+<pre><code class="language-rs">use std::str::FromStr;
+use clap::Parser;
+
+#[derive(Clone)]
+struct Foo;
+
+impl FromStr for Foo {
+    type Err = ();
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        todo!()
+    }
+}
+
+impl From&lt;String&gt; for Foo {
+    fn from(value: String) -&gt; Self {
+        todo!()
+    }
+}
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(short, long)]
+    foo: Foo,
+}
+
+fn main() {
+    let cli = Cli::parse();
+}
+</code></pre>
+<pre><code class="language-sh">$ cargo b
+$ echo $?
+0
+</code></pre>
+<ol start="2">
+<li><p>#4994</p>
+<p>From this one, I found that you can also fix it by changing the <code>()</code> type to other types as described in <a href="https://github.com/clap-rs/clap/issues/4994#issuecomment-1658453115">this comment</a>:</p>
+</li>
+</ol>
+<pre><code class="language-rs">use std::str::FromStr;
+use clap::Parser;
+
+#[derive(Clone)]
+struct Foo;
+
+impl FromStr for Foo {
+    type Err = String;
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        todo!()
+    }
+}
+
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(short, long)]
+    foo: Foo,
+}
+
+fn main() {
+    let cli = Cli::parse();
+}
+</code></pre>
+<pre><code class="language-sh">$ cargo b 
+$ echo $?
+0
+</code></pre>
+<h3>Debug Output</h3>
+<pre><code>error[E0599]: the method `value_parser` exists for reference `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;`, but its trait bounds were not satisfied
+    --&gt; src/main.rs:17:5
+     |
+5    | struct Foo;
+     | ----------
+     | |
+     | doesn't satisfy `Foo: From&lt;&amp;'s std::ffi::OsStr&gt;`
+     | doesn't satisfy `Foo: From&lt;&amp;'s str&gt;`
+     | doesn't satisfy `Foo: From&lt;OsString&gt;`
+     | doesn't satisfy `Foo: From&lt;std::string::String&gt;`
+     | doesn't satisfy `Foo: ValueEnum`
+     | doesn't satisfy `Foo: ValueParserFactory`
+...
+17   |     #[arg(short, long)]
+     |     ^ method cannot be called on `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;` due to unsatisfied trait bounds
+     |
+    ::: /home/steve/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.1/src/builder/value_parser.rs:2462:1
+     |
+2462 | pub struct _AutoValueParser&lt;T&gt;(std::marker::PhantomData&lt;T&gt;);
+     | ------------------------------ doesn't satisfy `_: _ValueParserViaParse`
+     |
+     = note: the following trait bounds were not satisfied:
+             `Foo: ValueEnum`
+             which is required by `&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaValueEnum`
+             `Foo: ValueParserFactory`
+             which is required by `&amp;&amp;&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFactory`
+             `Foo: From&lt;OsString&gt;`
+             which is required by `&amp;&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromOsString`
+             `Foo: From&lt;&amp;'s std::ffi::OsStr&gt;`
+             which is required by `&amp;&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromOsStr`
+             `Foo: From&lt;std::string::String&gt;`
+             which is required by `&amp;&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromString`
+             `Foo: From&lt;&amp;'s str&gt;`
+             which is required by `&amp;_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaFromStr`
+             `(): Into&lt;Box&lt;(dyn std::error::Error + Send + Sync + 'static)&gt;&gt;`
+             which is required by `_AutoValueParser&lt;Foo&gt;: clap::builder::via_prelude::_ValueParserViaParse`
+note: the traits `ValueEnum`, `ValueParserFactory`,  and `From` must be implemented
+    --&gt; /home/steve/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.1/src/builder/value_parser.rs:2312:1
+     |
+2312 | pub trait ValueParserFactory {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: /home/steve/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.1/src/derive.rs:264:1
+     |
+264  | pub trait ValueEnum: Sized + Clone {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: /home/steve/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/mod.rs:579:1
+     |
+579  | pub trait From&lt;T&gt;: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^
+     = note: this error originates in the macro `clap::value_parser` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `rust` (bin &quot;rust&quot;) due to 2 previous errors
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @SteveLauC on 2024-02-17 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4994.html">clap-rs/clap#4994</a> on 2024-02-17 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4286.html">clap-rs/clap#4286</a> on 2024-02-17 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-17 16:49</div>
+            <div class="timeline-body"><p>If I'm understanding correctly, you are saying that <code>Foo::from_str</code> can fail. In that case, we need to be able to render a message but we don't know how to render a message for <code>()</code>. It seems like an error is the correct thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SteveLauC">@SteveLauC</a> on 2024-02-18 00:41</div>
+            <div class="timeline-body"><blockquote>
+<p>In that case, we need to be able to render a message but we don't know how to render a message for (). It seems like an error is the correct thing to do.</p>
+</blockquote>
+<p>This is understandable. I am wondering can we:</p>
+<ol>
+<li>Give a better error message stating that we don't know how to render the error message for the unit type.</li>
+<li><a href="https://docs.rs/clap/latest/clap/macro.value_parser.html">Document it</a></li>
+</ol>
+<p>Either will make the case better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-18 00:43</div>
+            <div class="timeline-body"><p>We can't improve the error message.</p>
+<p>As for documenting it, the challenge is finding the right places where someone is expected to look and won't add to a wall of text that will make it so no one will read any of it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:33 UTC
+    </footer>
+</body>
+</html>

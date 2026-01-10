@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue running a library that internally uses `python -m pip ...` - astral-sh/uv #7327</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue running a library that internally uses `python -m pip ...`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7327">#7327</a>
+        opened by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a>
+        on 2024-09-12 09:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-12 09:22</div>
+            <div class="timeline-body"><p>I understand the issue behind this, uv is replacing pip so there is no pip in the virtualenv, I am wondering if there is a way to ensure there is a pip in the venv using uv correctly.</p>
+<p>MRE:</p>
+<p>pyproject.toml</p>
+<pre><code>[project]
+name = &quot;uv-test&quot;
+version = &quot;0.0.0&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.11&quot;
+
+dependencies = [
+    &quot;numpy == 1.26.3&quot;,
+    &quot;great_expectations == 0.18.1&quot;,
+    &quot;spacy[transformers] == 3.6.1&quot;,
+]
+</code></pre>
+<p>lock/sync and then run:</p>
+<pre><code>&gt;&gt; uv run spacy download en_core_web_md-3.6.0 --direct
+/home/edgy/code/nrwl/scripts/uv-test/.venv/bin/python: No module named pip
+</code></pre>
+<p>Under the hood <code>spacy download</code> is firing off <code>python -m pip *args</code> which understandably blows up. In our docker images and pipelines I can <code>uv pip compile</code> to get a requirements.txt and use the system pip to install things and spacy is happy.</p>
+<p>But locally it picks up the <code>.venv</code> and triggers the error above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbernhagen">@kbernhagen</a> on 2024-09-12 22:31</div>
+            <div class="timeline-body"><p>Maybe use
+<code>uv add --dev pip</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-13 02:15</div>
+            <div class="timeline-body"><p>Or <code>uv run --with pip spacy download  ...</code> to add it temporarily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-13 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-13 02:16</div>
+            <div class="timeline-body"><p>You could also do something more controversial and alias <code>pip</code> to <code>uv pip</code> which would work fine if they're not depending on less common <code>pip</code> behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-13 05:11</div>
+            <div class="timeline-body"><p>Was coming to the realisation pip isn't a special python tool, it's just a module I can use as a dependency. Thanks for the confirmation on the solution I should have realised yesterday. I'll confirm it works shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-13 08:43</div>
+            <div class="timeline-body"><p>Adding pip as a specified dependency did work.</p>
+<p>Surprisingly <code>--with pip</code> didn't work, it did install pip before running.</p>
+<pre><code>&gt;&gt; uv run --with pip spacy download en_core_web_md-3.6.0 --direct 
+Installed 1 package in 8ms
+/uv-test/.venv/bin/python: No module named pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-13 09:36</div>
+            <div class="timeline-body"><p>Feel free to close this if <code>--with pip</code> is somehow expected behaviour, as I have a solution that works for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 00:22</div>
+            <div class="timeline-body"><p>What did you end up doing to solve it? <code>uv tool run --with pip spacy download en_core_web_md-3.6.0 --direct</code> works for me, for what it's worth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 00:26</div>
+            <div class="timeline-body"><p>I think the <code>uv run</code> version fails due to how our environment layering works... They use <code>[sys.executable, &quot;-m&quot;, &quot;pip&quot;, &quot;install&quot;]</code>, and I guess <code>sys.executable</code> refers to the base interpreter despite the fact that we layer the <code>--with</code> requirements on top as a separate environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-14 06:59</div>
+            <div class="timeline-body"><p>I did not try uv tool run, i ended up adding pip to the projects requirements, as spacy does indeed require it :)</p>
+<p>Ill keep <code>uv tool run</code> in mind next time i encounter an odd situation.</p>
+<p>At this point we have successfully migrated all projects at work to <code>uv</code>, so happy with the current state of things. Thanks for all your work on this tool. Looking forward to if/when build tooling is in house.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-14 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-09-14 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 12:35</div>
+            <div class="timeline-body"><p>Awesome, thank you @EdgyEdgemond. (We do have <code>uv build</code> but maybe you're referring to something different :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 12:35</div>
+            <div class="timeline-body"><p>I think I'd consider this a bug, though it's hard to say, arguably SpaCy should be importing / calling pip some other way than via <code>subprocess</code>... We can only fix this by redesigning the overlay system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-14 12:59</div>
+            <div class="timeline-body"><p>I think this is an edge case of a library performing under assumptions, that can be handled with existing functionality. It should have pip as a dependency in an ideal world etc. It would be nice to work around using <code>--with</code> but not a deal breaker.</p>
+<p>@charliermarsh I was thinking of publish architecture not build, twine etc :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/urvisism">@urvisism</a> on 2024-09-24 08:20</div>
+            <div class="timeline-body"><p>@EdgyEdgemond @charliermarsh
+I installed a spacy model using the given command and it worked.</p>
+<pre><code>uv tool run --with pip spacy download de_core_news_lg-3.7.0 --direct
+</code></pre>
+<p>But, when I tried to use it in the given code. It gives me an error.
+Code:</p>
+<pre><code>import spacy
+nlp = spacy.load(&quot;de_core_news_lg&quot;)
+</code></pre>
+<p>Error:</p>
+<pre><code>OSError: [E050] Can't find model 'de_core_news_lg'. It doesn't seem to be a Python package or a valid path to a data directory.
+</code></pre>
+<p>Need some help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-24 11:01</div>
+            <div class="timeline-body"><p>I solved this by adding pip as a requirement of my project (as it is a requirement of spacy), and ran spacy in the venv directly.</p>
+<p>Im not sure if uv tool puts pip somewhere else and as a result spacy download ends up in a different location. That would be my guess without understanding the internals like @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/urvisism">@urvisism</a> on 2024-09-27 07:20</div>
+            <div class="timeline-body"><p>@EdgyEdgemond
+Could you please guide me how to add pip as a requirement in project ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2024-09-27 15:17</div>
+            <div class="timeline-body"><p>Simple as adding pip to your dependencies. <code>pip</code> is just another python package.</p>
+<pre><code>dependencies = [
+    ...,
+    &quot;pip&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/realyukii">@realyukii</a> on 2025-02-01 06:56</div>
+            <div class="timeline-body"><p>I tried @kbernhagen's solution:</p>
+<pre><code>uv add --dev pip
+</code></pre>
+<p>but it throw an error:</p>
+<pre><code>error: No `project` table found in: `C:\&lt;path-to&gt;\stable-diffusion-webui\pyproject.toml`
+</code></pre>
+<p>is there a way to trick python that pip module is indeed exists? I can't figure out how to do that</p>
+<p>for context: I'm trying to install <a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui">stable diffusion webui</a> using python provided by uv and it demand pip module to be installed in the python:</p>
+<pre><code>C:\&lt;path-to&gt;stable-diffusion-webui\venv\Scripts\python.exe: No module named pip
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2025-02-01 07:32</div>
+            <div class="timeline-body"><p>If you are using this outside a dev environment you need pip as a main dependency. Ultimately pip needs to be added as a dependency in the same uv group as the thing requiring it. The same way you would solve any other missing module/package issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/realyukii">@realyukii</a> on 2025-02-01 07:38</div>
+            <div class="timeline-body"><p>Thanks for the reply, this comment: https://github.com/astral-sh/uv/issues/1551#issuecomment-2016618403 helped me solve the problem ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thewh1teagle">@thewh1teagle</a> on 2025-02-05 00:22</div>
+            <div class="timeline-body"><p>This worked for me:</p>
+<pre><code class="language-console">uv run --no-project python main.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ivan-kleshnin">@ivan-kleshnin</a> on 2025-03-06 06:55</div>
+            <div class="timeline-body"><p>In my case, surprisingly, <code>uv run --with=pip spacy download</code> fails with the same message:</p>
+<pre><code>(project_venv) ~/Projects/project $ uv run --with=pip spacy download en_core_web_md
+/Users/username/Projects/project/.venv/bin/python3: No module named pip
+</code></pre>
+<p>but</p>
+<pre><code>uv add pip
+spacy download en_core_web_md
+✔ Download and installation successful
+</code></pre>
+<p>does work normally 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2025-03-29 00:03</div>
+            <div class="timeline-body"><p>@charliermarsh i feel we can agree this is not a <code>uv</code> issue but a spacy issue. Feel free to close this. Or move it to a discussion, if you want to leave it open for people to chat about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bowenliang123">@bowenliang123</a> on 2025-04-02 13:31</div>
+            <div class="timeline-body"><p>I've got similar problem when use <code>mypy</code> uv <code>uv</code>.
+Both
+<code>uv run pip mypy --install-types --non-interactive .</code>
+and
+<code>uv run --with pip mypy --install-types --non-interactive .</code>
+failed the tests.</p>
+<p>Getting these erro logs.</p>
+<pre><code>Downloading pip (1.8MiB)
+ Downloaded pip
+Installed 1 package in 10ms
+/home/runner/work/dify/dify/api/.venv/bin/python: No module named pip
+core/ops/ops_trace_manager.py:11: error: Library stubs not installed for &quot;cachetools&quot;  [import-untyped]
+core/ops/ops_trace_manager.py:11: note: Hint: &quot;python3 -m pip install types-cachetools&quot;
+core/ops/ops_trace_manager.py:11: note: (or run &quot;mypy --install-types&quot; to install all missing stub packages)
+core/ops/ops_trace_manager.py:11: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+Installing missing stub packages:
+/home/runner/work/dify/dify/api/.venv/bin/python -m pip install types-Markdown types-PyMySQL types-Pygments types-aiofiles types-cachetools types-colorama types-oauthlib types-protobuf types-pywin32 types-simplejson types-tzlocal types-ujson
+
+
+Found 1 error in 1 file (checked 1040 source files)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 13:37</div>
+            <div class="timeline-body"><p>@bowenliang123 I'd recommend just adding that missing library stub as a development dependency? <code>uv add --dev types-cachetools</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 13:38</div>
+            <div class="timeline-body"><p>As Charlie noted, we overlay environments so <code>--with pip</code> does not make it available via a subprocess that invokes <code>python -m pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bowenliang123">@bowenliang123</a> on 2025-04-02 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/bowenliang123">@bowenliang123</a> I'd recommend just adding that missing library stub as a development dependency? <code>uv add --dev types-cachetools</code></p>
+</blockquote>
+<p>But it still requires <code>pip</code> to install all the runtime determined required pacakges <code>types-Markdown types-PyMySQL types-Pygments types-aiofiles types-cachetools types-colorama types-oauthlib types-protobuf types-pywin32 types-simplejson types-tzlocal types-ujson</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 13:58</div>
+            <div class="timeline-body"><p>@bowenliang123 you should just specify those as part of your dependencies instead of relying on mypy's hacky auto-install behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bowenliang123">@bowenliang123</a> on 2025-04-02 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/bowenliang123">@bowenliang123</a> you should just specify those as part of your dependencies instead of relying on mypy's hacky auto-install behavior.</p>
+</blockquote>
+<p>-1, disagree with this suggestion. It's a helpful feature for a collaberated open sourced project, which in my case, the Dify project (https://github.com/langgenius/dify/pull/16317).  It does block the Dify switching from Poetry to UV.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 14:13</div>
+            <div class="timeline-body"><p>Sorry you don't think it's a good suggestion. As mentioned above, you can also add <code>pip</code> as a development dependency if you want the mypy installer to work. It's better practice to have the type stubs locked alongside the rest of your dependencies, but do what you want of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bowenliang123">@bowenliang123</a> on 2025-04-02 14:21</div>
+            <div class="timeline-body"><p>My consideration is that the stub type dependencies are never properly maintained. As many dependencies in and out, there's no way to get rid of the delcared outdated stub type dependencies. As for whether they are pinned or not, it's not contribute much to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../holdonprojekt/hcc/pulls/1.html">holdonprojekt/hcc#1</a> on 2025-04-04 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bowenliang123">@bowenliang123</a> on 2025-04-06 01:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I've got similar problem when use <code>mypy</code> uv <code>uv</code>. Both <code>uv run pip mypy --install-types --non-interactive .</code> and <code>uv run --with pip mypy --install-types --non-interactive .</code> failed the tests.</p>
+<p>Getting these erro logs.</p>
+<pre><code>Downloading pip (1.8MiB)
+ Downloaded pip
+Installed 1 package in 10ms
+/home/runner/work/dify/dify/api/.venv/bin/python: No module named pip
+core/ops/ops_trace_manager.py:11: error: Library stubs not installed for &quot;cachetools&quot;  [import-untyped]
+core/ops/ops_trace_manager.py:11: note: Hint: &quot;python3 -m pip install types-cachetools&quot;
+core/ops/ops_trace_manager.py:11: note: (or run &quot;mypy --install-types&quot; to install all missing stub packages)
+core/ops/ops_trace_manager.py:11: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+Installing missing stub packages:
+/home/runner/work/dify/dify/api/.venv/bin/python -m pip install types-Markdown types-PyMySQL types-Pygments types-aiofiles types-cachetools types-colorama types-oauthlib types-protobuf types-pywin32 types-simplejson types-tzlocal types-ujson
+
+
+Found 1 error in 1 file (checked 1040 source files)
+</code></pre>
+</blockquote>
+<p>My workaround for this is that change direct use of <code>mypy</code> to <code>python -m mypy</code> with <code>uv run --with pip</code> and it works.</p>
+<p>Change from</p>
+<pre><code>uv run pip mypy --install-types --non-interactive .
+</code></pre>
+<p>to</p>
+<pre><code>uv run --with pip python -m mypy --install-types --non-interactive .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zk1989">@zk1989</a> on 2025-09-30 15:02</div>
+            <div class="timeline-body"><p>I was just struggling with this and found the thread. TBH, I'm not a huge fan of the fact that I have to install pip just to download the spaCy model. As far as I can tell, there's currently no way around it…
+Isn't the end goal of uv to eventually eliminate the need for a separate pip installation altogether?
+@EdgyEdgemond – you mentioned that spaCy requires pip, which makes sense for now, but I'd still argue that uv is aiming to handle all cases that pip does—and ideally go beyond that 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-30 15:06</div>
+            <div class="timeline-body"><p>Please take it up with spaCy. There's not much we can do about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zk1989">@zk1989</a> on 2025-09-30 15:14</div>
+            <div class="timeline-body"><p>I've also noticed that spacy model will get removed at the first instantiation of uv remove command, even when the removed package is entirely unrelated, i.e.:</p>
+<p>$ uv remove dotenv
+Resolved 60 packages in 104ms
+Uninstalled 3 packages in 27ms</p>
+<ul>
+<li>dotenv==0.9.9</li>
+<li>en-core-web-sm==3.8.0 (from https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl)</li>
+<li>python-dotenv==1.1.1</li>
+</ul>
+<p>Is this also related to the specifics of how spacy designed this and at the same time WAD from uv perspective?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../explosion/spaCy/issues/13846.html">explosion/spaCy#13846</a> on 2025-09-30 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2025-09-30 15:58</div>
+            <div class="timeline-body"><p>@zk1989 the issue is that <code>pip</code> is fundamentally just another python module, but spaCy makes the assumption that all python environments will have it already installed, which isn't a safe assumption.</p>
+<p>uv replaces your usage of pip, but other libraries can still depend on it to install things if thats how they want to behave. But they should include pip as a dependency in that case. The work around here is to add it as a dependency yourself while awaiting spaCy to fix the root issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2025-09-30 15:59</div>
+            <div class="timeline-body"><p>In regards to it being removed is it one of your dependencies? i.e. in pyproject.toml, theres no reason pip missing from dependencies would cause that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zk1989">@zk1989</a> on 2025-09-30 18:35</div>
+            <div class="timeline-body"><p>It seems to have to do with how --with flag works... As per the docs I'm only installing that package to a &quot;a separate, <em>ephemeral</em> environment&quot; (https://docs.astral.sh/uv/reference/cli/#uv-run--with).</p>
+<p>My dependencies:</p>
+<p>dependencies = [
+&quot;dotenv&gt;=0.9.9&quot;,
+&quot;google-genai&gt;=1.39.0&quot;,
+&quot;pandas&gt;=2.3.3&quot;,
+&quot;pip&gt;=25.2&quot;,
+&quot;plotly[express]&gt;=6.3.0&quot;,
+&quot;spacy&gt;=3.8.7&quot;,
+]</p>
+<p>I'm successfully installing spacy model, cause pip is there:
+$ uv run --with spacy spacy download en_core_web_sm
+Collecting en-core-web-sm==3.8.0
+Downloading https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl (12.8 MB)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.8/12.8 MB 12.3 MB/s  0:00:01<br />
+✔ Download and installation successful
+You can now load the package via spacy.load('en_core_web_sm')</p>
+<p>But if I want to later execute uv remove for whatever reason (and removing not necessarily pip, just anything), it will also remove that language package:</p>
+<p>$ uv remove pandas
+Resolved 62 packages in 1.12s
+Uninstalled 6 packages in 1.59s</p>
+<ul>
+<li>en-core-web-sm==3.8.0 (from https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl)</li>
+<li>pandas==2.3.3</li>
+<li>python-dateutil==2.9.0.post0</li>
+<li>pytz==2025.2</li>
+<li>six==1.17.0</li>
+<li>tzdata==2025.2</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2025-10-01 06:24</div>
+            <div class="timeline-body"><p>That makes sense (i think), spacy is using pip to install that module. pip is installing it in your venv. uv is detecting an untracked module when removing (will likely happen on add or sync as well) and cleaning it up.</p>
+<p>Same will happen if you <code>uv pip install xxx</code>to add a package temporarily.</p>
+<p>Why are you using --with? spacy is in your venv, it's one of your dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zk1989">@zk1989</a> on 2025-10-01 18:41</div>
+            <div class="timeline-body"><p>Yes, both spacy and pip are in my venv now, and both uv run <em>--with spacy</em> spacy download en_core_web_sm and uv run <em>--with pip</em> spacy download en_core_web_sm work. Unfortunately I'm not sure what shorter command (or one without --with) I can use to do the same. These are the ones I found in the threads relating to this issue, and so I'm using those... If you can share the better way to do that I'd be grateful :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdgyEdgemond">@EdgyEdgemond</a> on 2025-10-01 21:17</div>
+            <div class="timeline-body"><p><code>uv run spacy ...</code>,  or just <code>spacy ...</code> with the venv active. Any temporal dependency (like things installed by spacy) will get cleaned up by uv when it resyncs.</p>
+<p>Whatever commands you run that require the additional module, wrap them together in a makefile, invoke or poe etc. so it ensures the extra modules exist before running</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

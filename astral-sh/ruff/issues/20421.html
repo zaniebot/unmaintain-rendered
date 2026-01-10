@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff was not able to detect `RUF006` in this code. - astral-sh/ruff #20421</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff was not able to detect `RUF006` in this code.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20421">#20421</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-09-15 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-09-15 17:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://play.ruff.rs/0d674c65-8f9c-499b-9a34-b8735f46469e">Playground</a> | <a href="https://docs.astral.sh/ruff/rules/asyncio-dangling-task/#asyncio-dangling-task-ruf006">asyncio-dangling-task (RUF006)</a></p>
+<pre><code class="language-python">import asyncio
+from collections.abc import AsyncIterator
+
+import pytest
+import uvicorn
+from example_app import main
+
+
+@pytest.fixture(scope=&quot;session&quot;)
+async def backend() -&gt; AsyncIterator[None]:
+    app = main()
+    task = asyncio.create_task(uvicorn.Server(uvicorn.Config(app=app, port=8080)).serve())
+    yield
+    task.cancel()
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.13.0 (a1fdd66f1 2025-09-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff was not able to detect RUF006 in this code." to "Ruff was not able to detect `RUF006` in this code." by @chirizxc on 2025-09-15 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-09-15 17:52</div>
+            <div class="timeline-body"><p>I think it's because of this https://github.com/astral-sh/ruff/blob/main/crates%2Fruff_linter%2Fsrc%2Frules%2Fruff%2Frules%2Fasyncio_dangling_task.rs#L124</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-15 20:19</div>
+            <div class="timeline-body"><p>I'm not that familiar with Python async, but I would kind of expect the <code>task</code> variable to maintain a reference even after the yield. Is that not how it works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-09-15 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Eclips4">@Eclips4</a> on 2025-09-16 08:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not that familiar with Python async, but I would kind of expect the <code>task</code> variable to maintain a reference even after the yield.</p>
+</blockquote>
+<p>You're right. The <code>task</code> name here is a strong reference to the object returned by <code>asyncio.create_task(...)</code>, so we hold a strong reference for the duration of the function's execution. Now imagine there is no <code>task.cancel()</code>. In that case, when the function exits the strong reference disappears and we're left only with a weakref -&gt; a potential footgun.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 08:26</div>
+            <div class="timeline-body"><blockquote>
+<p>You're right. The task name here is a strong reference to the object returned by asyncio.create_task(...), so we hold a strong reference for the duration of the function's execution. Now imagine there is no task.cancel(). In that case, when the function exits the strong reference disappears and we're left only with a weakref -&gt; a potential footgun.</p>
+</blockquote>
+<p>RUF006 has you covered. It triggers when you remove the <code>task.cancel</code> call</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-16 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-09-16 08:28</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>You're right. The task name here is a strong reference to the object returned by asyncio.create_task(...), so we hold a strong reference for the duration of the function's execution. Now imagine there is no task.cancel(). In that case, when the function exits the strong reference disappears and we're left only with a weakref -&gt; a potential footgun.</p>
+</blockquote>
+<p>RUF006 has you covered. It triggers when you remove the <code>task.cancel</code> call</p>
+</blockquote>
+<p>what about this code?</p>
+<p>https://play.ruff.rs/0f5e4100-41b5-480a-aaec-eb80d1fab532</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-09-16 08:30</div>
+            <div class="timeline-body"><pre><code class="language-python">import asyncio
+
+
+async def _():
+    task = asyncio.create_task(asyncio.sleep(2))
+    print(task)
+    yield
+</code></pre>
+<p>Ruff doesn't detect <code>RUF006</code> because of the print, although it should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 08:37</div>
+            <div class="timeline-body"><p>The <code>task</code> variable should stay alive until the end of the <code>_</code> function because it is captured as part of the generator object. So this should work just fine as far as I can tell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> on 2025-09-16 08:45</div>
+            <div class="timeline-body"><blockquote>
+<p>The <code>task</code> variable should stay alive until the end of the <code>_</code> function because it is captured as part of the generator object. So this should work just fine as far as I can tell.</p>
+</blockquote>
+<p>if you remove print then ruff detects an error with dangling tasks, why does print disable this error if it doesn't affect anything and the task will still lose the strong reference when the function exits, i don't think it should work like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Eclips4">@Eclips4</a> on 2025-09-16 08:45</div>
+            <div class="timeline-body"><blockquote>
+<p>The <code>task</code> variable should stay alive until the end of the <code>_</code> function because it is captured as part of the generator object. So this should work just fine as far as I can tell.</p>
+</blockquote>
+<p>The problem is that the task might not complete during the execution of <code>_</code>, so we could end up with a dangling task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 08:58</div>
+            <div class="timeline-body"><p>I see. Yes, Ruff doesn't check that you do something &quot;meaningful&quot; with the task object. It only checks if it is used in some way.</p>
+<p>Checking that a task object is always cancelled or returned (or stored somewhere else) would require a full control flow analysis which Ruff currently doesn't have</p>
+<p>This is the same as https://github.com/astral-sh/ruff/issues/16811</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

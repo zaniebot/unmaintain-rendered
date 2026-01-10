@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock --locked --offline` doesn’t work with projects that use dynamic versions - astral-sh/uv #10176</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock --locked --offline` doesn’t work with projects that use dynamic versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10176">#10176</a>
+        opened by <a href="https://github.com/vivodi">@vivodi</a>
+        on 2024-12-26 17:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vivodi">@vivodi</a> on 2024-12-26 17:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<blockquote>
+<p>The requested feature, ideally, wouldn't involve actually resolving any dependencies and could be performed in a CICD pipeline that may not have the correct connections set up to update the uv.lock file
+<em>Originally posted by @butterlyn in <a href="https://github.com/astral-sh/uv/issues/7639#issuecomment-2368401456">#7639</a></em></p>
+</blockquote>
+<p>According to https://github.com/astral-sh/uv/issues/7639#issuecomment-2368419143, we can use <code>uv lock --locked --offline</code> to check if the <code>pyproject.toml</code> has been modified since the creation of the current <code>uv.lock</code> file. However, this approach does not offline work for projects with dynamic versions.</p>
+<h3>Poetry works, but uv doesn’t</h3>
+<p><code>poetry check --lock</code> can be used offline for projects with dynamic versions, while <code>uv lock --locked --offline</code> cannot. Here’s my speculation on the reasons:</p>
+<ol>
+<li><p>Poetry does not write project information (such as version numbers and project names) into the <code>poetry.lock</code> file; it only writes dependency information, so <code>hatchling</code> is not needed when locking. This information is directly read from the <code>pyproject.toml</code> file when building the project.</p>
+</li>
+<li><p>Poetry writes a hash of the contents of <code>pyproject.toml</code> into the <code>poetry.lock</code> file to offline check the consistency between <code>pyproject.toml</code> and <code>poetry.lock</code>, whereas <code>uv.lock</code> does not include a hash.</p>
+</li>
+</ol>
+<h3>Possible solutions</h3>
+<ol>
+<li><p><code>uv lock</code> could write only the dependency information into the <code>uv.lock</code> file, while the project's version information is directly read from the <code>pyproject.toml</code> during the build. This would avoid the need for the <code>hatchling</code> dependency to obtain the current project version when running <code>uv lock</code>.</p>
+</li>
+<li><p>Include a hash of the <code>pyproject.toml</code> content in the <code>uv.lock</code> file, so that the consistency between <code>uv.lock</code> and <code>pyproject.toml</code> can be verified based solely on the hash.</p>
+</li>
+</ol>
+<p>Related issues: https://github.com/astral-sh/uv/issues/7639#issuecomment-2368401456 #10167 #9653</p>
+<h3>Log</h3>
+<p><a href="https://results.pre-commit.ci/run/github/908488856/1735234912.h9kunT3vRaGetP3P1E4UBA">Log</a>:</p>
+<pre><code>uv-lock..................................................................Failed
+- hook id: uv-lock
+- exit code: 2
+
+warning: `VIRTUAL_ENV=/pc/clone/JLKubma3TtiMMhmWEG5Gxg/py_env-python3` does not match the project environment path `.venv` and will be ignored
+Using CPython 3.12.7 interpreter at: /usr/bin/python3.12
+error: Failed to generate package metadata for `myproject==1.0.0 @ editable+.`
+  Caused by: Failed to resolve requirements from `build-system.requires`
+  Caused by: No solution found when resolving: `hatchling`
+  Caused by: Because hatchling was not found in the cache and you require hatchling, we can conclude that your requirements are unsatisfiable.
+
+hint: Packages were unavailable because the network was disabled. When the network is disabled, registry packages may only be read from the cache.
+</code></pre>
+<p>pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+name = &quot;myproject&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dynamic = [&quot;version&quot;]
+
+[tool.hatch.version]
+path = &quot;myproject/version.py&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>.pre-commit-config.yaml</p>
+<pre><code class="language-yaml">repos:
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.5.11
+  hooks:
+    - id: uv-lock
+      args: [&quot;--locked&quot;, &quot;--offline&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10167.html">astral-sh/uv#10167</a> on 2024-12-26 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv lock --locked --offline` doesn't work for dynamic-versioned projects" to "`uv lock --locked --offline` doesn’t work with projects that use dynamic versions" by @vivodi on 2024-12-26 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 22:45</div>
+            <div class="timeline-body"><p>Unfortunately both of those solutions have downsides and we intentionally choose not to pursue them. For example: the first solution means that lockfiles are not sufficient to perform an install -- they're inherently coupled to the <code>pyproject.toml</code>. The second solution causes problems with Git conflict resolution -- it's no longer possible to resolve a conflict without re-resolving the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2024-12-27 09:44</div>
+            <div class="timeline-body"><p>There is a workaround for pre-commit CI:</p>
+<p>pre-commit CI only allows dependencies to be installed at <code>install time</code> and does not allow network access at <code>runtime</code>. So, can <code>uv</code> <strong>search for hatchling in the venv</strong> instead of only looking for dependencies in the cache <code>/tmp/cache/uv</code>?</p>
+<p>This way, I can use <code>additional_dependencies: [hatchling]</code> to install it in the venv during <code>install time</code>, and then <code>uv</code> can use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2024-12-27 10:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately both of those solutions have downsides and we intentionally choose not to pursue them. For example: the first solution means that lockfiles are not sufficient to perform an install -- they're inherently coupled to the <code>pyproject.toml</code>. The second solution causes problems with Git conflict resolution -- it's no longer possible to resolve a conflict without re-resolving the project.</p>
+</blockquote>
+<p>Regarding the first point, I believe that the coupling between <code>uv.lock</code> and <code>pyproject.toml</code> is not an issue, because locking dependencies is intended to ensure the project runs consistently across different environments, avoiding uncertainty and compatibility issues caused by dependency version changes. However, is it really necessary to lock the project's name and version number? I don't think so. Additionally, under normal circumstances, <code>pyproject.toml</code> should never be missing, and there should be no problem reading it directly during the build process.</p>
+<p>Regarding the second point, I believe it's necessary to re-resolve the project after resolving conflicts, because we cannot guarantee that after manually modifying the <code>pyproject.toml</code> and <code>uv.lock</code>, <code>uv.lock</code> will still be fully consistent with <code>pyproject.toml</code>, nor can we guarantee that the dependency relationships remain valid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-06 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2025-01-06 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 21:07</div>
+            <div class="timeline-body"><p>I believe this now works, by the way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-22 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opentargets/gentropy/pulls/1024.html">opentargets/gentropy#1024</a> on 2025-03-20 09:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>local package install fails, even when pip succeeds. - astral-sh/uv #7392</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>local package install fails, even when pip succeeds.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7392">#7392</a>
+        opened by <a href="https://github.com/manbango">@manbango</a>
+        on 2024-09-14 14:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/manbango">@manbango</a> on 2024-09-14 14:25</div>
+            <div class="timeline-body"><ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code>git clone https://github.com/HumanSignal/label-studio-ml-backend
+uv add ./label-studio-ml-backend
+</code></pre>
+<p>Error:</p>
+<pre><code>error: Failed to download and build: `label-studio-sdk @ git+https://github.com/HumanSignal/label-studio-sdk.git`
+  Caused by: Failed to extract static metadata from `pyproject.toml`
+  Caused by: TOML parse error at line 30, column 2
+   |
+30 | [project.urls]
+   |  ^^^^^^^
+missing field `name`
+</code></pre>
+<p>I have tried this with <code>uv pip install</code> as well. I have also tried the <code>--no-config</code> option.
+Running pip itself works on this repository so its unclear to me uv fails.</p>
+<p>I do understand the toml is missing the package name, but is there a way I can specify this during install? (I think pixi allows that for example)</p>
+<p>If pip is still able to succeed with this repo I believe uv should as well to bring parity.</p>
+<p>Tested on MacOs and ubuntu
+uv 0.4.10 (690716484 2024-09-13)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:32</div>
+            <div class="timeline-body"><p>Honestly it's correct to reject that package. It's the <em>only</em> required field, and it's in the spec:</p>
+<blockquote>
+<p>Tools MUST require users to statically define this field.</p>
+</blockquote>
+<p>We could support it, but it seems like a spec violation to allow it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-09-14 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "BUG: local package install fails, even when pip succeeds." to "local package install fails, even when pip succeeds." by @manbango on 2024-09-14 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manbango">@manbango</a> on 2024-09-14 15:04</div>
+            <div class="timeline-body"><p>So it looks like the reason for it is because that pyproject toml was made by poetry. So the name in is under <code>[tool.poetry]</code></p>
+<p>Is that an issue with poetry not following spec, or would it be reasonable for uv to also look under that heading for compatibility?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 18:58</div>
+            <div class="timeline-body"><p>We totally support Poetry projects, but the specific issue here is that in addition to <code>[tool.poetry]</code>, the <code>pyproject.toml</code> includes <code>[project.urls]</code>... If you remove the <code>[project.urls]</code>, I expect the project to build without issue. The problem is that including <em>any</em> part of the <code>[project]</code> table demands that it also include <code>project.name</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manbango">@manbango</a> on 2024-09-14 19:56</div>
+            <div class="timeline-body"><p>I’ll give that a try! I’ll go ahead and close this issue.  The specific need for the name field does make sense. I’ll close this issue and file an issue with the repo owner.</p>
+<p>thank you for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @manbango on 2024-09-14 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 21:39</div>
+            <div class="timeline-body"><p>No problem! We just merged a bunch of PRs that add much better error messages for this specific case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 21:39</div>
+            <div class="timeline-body"><p>For example: #7399</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-14 21:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:49 UTC
+    </footer>
+</body>
+</html>

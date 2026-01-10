@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic in `PYI019` autofix - astral-sh/ruff #15849</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic in `PYI019` autofix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15849">#15849</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-01-31 12:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-31 12:40</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Running <code>ruff check --select=PYI019 --preview foo.pyi</code> triggers a panic if <code>foo.pyi</code> has this contents:</p>
+<pre><code class="language-py">class F:
+    @classmethod
+    def m[S](cls: type[S], /) -&gt; S[int]: ...
+</code></pre>
+<p>The panic occurs at this line here:</p>
+<p>https://github.com/astral-sh/ruff/blob/59be5f5278d78e42a46b9e7c9306a93a3892ab29/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs#L295-L297</p>
+<p>And the reason is that, contrary to what the comment says, <code>uses_custom_typevar</code> does <em>not</em> guarantee that the return <code>Expr</code> will be an <code>ExprName</code>, due to the <code>map_subscript</code> call here: https://github.com/astral-sh/ruff/blob/59be5f5278d78e42a46b9e7c9306a93a3892ab29/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs#L187-L189</p>
+<p>(The <code>map_subscript</code> call also looks buggy, FWIW.)</p>
+<p>We should switch to a more type-safe code pattern here. Note that although the panic occurs in autofix logic, the panic occurs even if you run Ruff without <code>--fix</code>, since we create fixes for diagnostics even if <code>--fix</code> is not specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-31 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-01-31 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-31 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15821.html">astral-sh/ruff#15821</a> on 2025-01-31 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-31 13:05</div>
+            <div class="timeline-body"><p>This also triggers a panic at the same location in the Rust code:</p>
+<pre><code class="language-py">class F:
+    def m[S](self: S) -&gt; S[int]: ...
+</code></pre>
+<p>Because there's another <code>map_subscript</code> call here, which is also incorrect:</p>
+<p>https://github.com/astral-sh/ruff/blob/59be5f5278d78e42a46b9e7c9306a93a3892ab29/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs#L217-L222</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15851.html">astral-sh/ruff#15851</a> on 2025-01-31 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-31 14:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

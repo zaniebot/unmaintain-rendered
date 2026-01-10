@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument is still required even when required is set to false in derive macro. - clap-rs/clap #3958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Argument is still required even when required is set to false in derive macro.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3958">#3958</a>
+        opened by <a href="https://github.com/Atsukoro1">@Atsukoro1</a>
+        on 2022-07-19 21:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Atsukoro1">@Atsukoro1</a> on 2022-07-19 21:44</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
+<h3>Clap Version</h3>
+<p>3.2.12</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::{
+    process,
+};
+use clap::Parser;
+
+/// Command line utility to analyze packets flowing through your device
+#[derive(Parser, Debug)]
+#[clap(
+    version, 
+    about, 
+    long_about = None
+)]
+pub struct Args {
+    /// Count of packets to print
+    #[clap(short, long, value_parser, default_value_t = 1000, required = false)]
+    count: u128,
+
+    /// Set the action to sniffing packets
+    #[clap(short, long, value_parser, default_value = &quot;false&quot;, required = false)]
+    sniff: bool,
+
+    /// Interface to capture packets on
+    #[clap(short, long, value_parser, takes_value = false, required = true)]
+    interface: String,
+
+    /// Filter values only coming from specified ip address
+    #[clap(short, long, value_parser, default_value = &quot;all&quot;, required = false)]
+    from: String,
+
+    /// Filter values only coming from this specified address
+    #[clap(short, long, value_parser, default_value = &quot;all&quot;, required = false)]
+    to: String
+}
+
+#[tokio::main]
+async fn main() -&gt; process::ExitCode {
+    Args::parse();
+
+    process::exit(0);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run main.rs</p>
+<h3>Actual Behaviour</h3>
+<p>Interface field is always required even when it's set to not be.</p>
+<h3>Expected Behaviour</h3>
+<p>The interface field shouldn't be required.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @Atsukoro1 on 2022-07-19 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-07-19 21:52</div>
+            <div class="timeline-body"><p><code>interface</code> is a <code>String</code> without a <code>default_value</code> being set.  When creating the struct, clap doesn't know what to fill the <code>interface</code> field with, so it is erroring.</p>
+<p>Side note: generally, you shouldn't need to set the <code>required</code> attribute.  clap will automatically set <code>required = false</code> when a default value is provided or when the type is wrapped in <code>Option&lt;T&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-07-19 21:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:06 UTC
+    </footer>
+</body>
+</html>

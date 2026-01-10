@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error message should reference the short not long when short is used as arg - clap-rs/clap #1249</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error message should reference the short not long when short is used as arg</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1249">#1249</a>
+        opened by <a href="https://github.com/polarathene">@polarathene</a>
+        on 2018-04-18 06:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/polarathene">@polarathene</a> on 2018-04-18 06:05</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>1.25</p>
+<h3>Affected Version of clap</h3>
+<p>2.31.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>Error should reference the short when used, not the long. Or at least also reference the short.</p>
+<pre><code>./target/debug/test -g not_a_valid_value
+error: 'not_a_valid_value' isn't a valid value for '-g &lt;NAME&gt;'
+        [possible values: opengl, vulkan]
+</code></pre>
+<p>or</p>
+<pre><code>./target/debug/test -g not_a_valid_value
+error: 'not_a_valid_value' isn't a valid value for '-g / --force-renderer &lt;NAME&gt;'
+        [possible values: opengl, vulkan]
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<p>If a long is included, the error always references the long even when short is used for args.</p>
+<pre><code>./target/debug/test -g not_a_valid_value
+error: 'not_a_valid_value' isn't a valid value for '--force-renderer &lt;NAME&gt;'
+        [possible values: opengl, vulkan]
+</code></pre>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code>extern crate clap;
+use clap::{App,Arg};
+
+fn main() {
+    let matches = App::new(&quot;myapp&quot;)
+        .arg(Arg::with_name(&quot;NAME&quot;)
+            .takes_value(true)
+            .short(&quot;g&quot;)
+            .long(&quot;force-renderer&quot;)
+            .possible_values(&amp;[&quot;opengl&quot;, &quot;vulkan&quot;])
+        )
+        .get_matches();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-05 01:56</div>
+            <div class="timeline-body"><p>Agreed, however this one is slightly harder to fix than one would think as the arguments aren't stored as they're used, and clap does all error parsing at the end, so actually doens't know which version of the argument was used.</p>
+<p>This isn't un-fixable, just harder as clap would need to keep track of which version was used (long/short). Also there are strange edge cases when someone use <em>both</em> version for flags/options that allow multiple values. Consider <code>-o, --option &lt;value&gt;...</code> style argument. If used like <code>$ prog -o value1 --option value2</code> and there's an error should clap report the short or long? If one says, &quot;whichever version was used for that particular error&quot;, then clap needs to also track which version was used with <em>each value</em>.</p>
+<p>So again, it's not undoable, it's just hard :stuck_out_tongue_winking_eye: Having said all this, I'll leave this open, but only as a very low priority. I need to get 3.x out sometime in the next few months.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2018-06-05 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2018-06-05 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: hard</span> added by @kbknapp on 2018-06-05 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2018-06-05 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/94.html">epage/clapng#94</a> on 2021-12-06 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> removed by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> removed by @epage on 2021-12-09 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-hard</span> removed by @epage on 2021-12-09 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-09 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-08 05:14</div>
+            <div class="timeline-body"><p>We'd have to track this information per occurrence and track which occurrence we are validating at all times.  The extra cost of us tracking this just for the error message does not seem worth it in terms of binary size, compile times, and memory usage.</p>
+<p>In a way, the current behavior is better in that we clarify what the meaning of the short.  By using a short, the user should be able to pick up on which of their arguments is being complained about though I could see it being nice to have rustc like error showing it in the line (if replace, defaults, and envs didn't cause problems)</p>
+<p>As such, I lean towards closing this but we can re-open if people make the case for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-08 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> removed by @epage on 2022-11-08 05:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-11-08 05:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:47 UTC
+    </footer>
+</body>
+</html>

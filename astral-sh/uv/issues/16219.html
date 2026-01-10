@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build failures on python 3.14 but not 3.13.7 - astral-sh/uv #16219</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build failures on python 3.14 but not 3.13.7</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16219">#16219</a>
+        opened by <a href="https://github.com/killcoder">@killcoder</a>
+        on 2025-10-10 03:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/killcoder">@killcoder</a> on 2025-10-10 03:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>To test python 3.14 package availability, I created a brand-new project using uv init</p>
+<p>I added some (not all) packages to the toml file and added the hatchling build system.</p>
+<p>With both python 3.13.7 and 3.14.0 installed, I pinned python 3.13.7 and ran uv sync</p>
+<pre><code>uv sync
+
+Using CPython 3.13.7
+Creating virtual environment at: .venv
+Resolved 77 packages in 2ms
+Installed 77 packages in 6.93s
+</code></pre>
+<p>I then pinned python version to 3.14.0 and ran uv sync again</p>
+<pre><code>uv sync
+
+Using CPython 3.14.0
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 77 packages in 3ms
+  × Failed to build `fastcrc==0.3.3`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `maturin.build_wheel` failed (exit code: 1)
+
+      [stdout]
+      Running `maturin pep517 build-wheel -i C:\Users\xxxx\AppData\Local\uv\cache\builds-v0\.tmp1TG8TJ\Scripts\python.exe --compatibility off`   
+      Rust not found, installing into a temporary directory
+
+     ....
+
+     FileNotFoundError: [WinError 2] The system cannot find the file specified
+
+     hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<p>However this time I get build failures. I also tested using uv_build in the toml instead of hatching but it produced the same result.</p>
+<p>This issue is not specific to fastcrc it now supports <a href="https://github.com/overcat/fastcrc/issues/12">3.14</a> and I get the same results when I uncomment geoviews.</p>
+<p>Is there something wrong with my build setup?</p>
+<pre><code>[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;beautifulsoup4&quot;,
+    &quot;bokeh&quot;,
+    &quot;colorama&quot;,
+    &quot;dask&quot;,
+    &quot;datashader&quot;,
+    # &quot;geoviews&quot;, 
+    &quot;fastcrc&quot;,
+    &quot;holoviews&quot;,
+    &quot;hvplot&quot;,
+    &quot;lxml&quot;,
+    &quot;llvmlite==0.46.0b1&quot;,
+    &quot;numba==0.63.0b1&quot;,
+    &quot;numpy&quot;,
+    &quot;panel&quot;,
+    &quot;pandas&quot;,
+    &quot;pendulum&quot;,
+    &quot;plotly&quot;,
+    # &quot;pyarrow&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;ruff&quot;,
+    &quot;ty&quot;,
+    &quot;pyrefly&quot;,
+    &quot;bandit&quot;,
+    &quot;pylint&quot;,
+    &quot;invoke&quot;,
+    &quot;pytest&quot;,
+    # &quot;watchfiles&quot;,
+]
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+#[build-system]
+#requires = [&quot;uv_build&gt;=0.9.1,&lt;0.10.0&quot;]
+#build-backend = &quot;uv_build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/test&quot;]
+
+[tool.uv.build-backend]
+module-name = [&quot;test&quot;]
+</code></pre>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>v0.9.1</p>
+<h3>Python version</h3>
+<p>3.13.7, 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @killcoder on 2025-10-10 03:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iasx">@iasx</a> on 2025-10-12 18:03</div>
+            <div class="timeline-body"><p>I faced the same issue today with <code>fastapi[standard]</code> and <code>watchfiles</code>, and managed to resolve it by installing Rust with <code>rustup</code>.</p>
+<p><code>winget install Rustlang.Rustup</code></p>
+<p>Let me know if this helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-12 22:03</div>
+            <div class="timeline-body"><p>These are problems with the underlying dependencies, not uv. Presumably with 3.13 you're getting pre-built wheels. They don't provide wheels for 3.14 so you're building from source and don't have their build dependencies installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-12 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-10-12 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-12 22:04</div>
+            <div class="timeline-body"><p>(You could test with <code>--no-cache --no-binary</code> on 3.13 to verify that the issue occurs there when you don't use a pre-built wheel as well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/killcoder">@killcoder</a> on 2025-10-12 22:18</div>
+            <div class="timeline-body"><p>Installing Rust (and rebooting) as mentioned by @iasx solved the issue.</p>
+<p>Unfortunately --no-cache fails with</p>
+<pre><code>uv sync --no-cache --no-binary --prerelease=allow
+
+hint: A source distribution is required for `pywin32` because using pre-built wheels is disabled for all packages (i.e., with `--no-binary`)
+  help: `pyviz-comms` (v3.0.6) was included because `test` (v0.1.0) depends on `panel` (v1.7.5) which depends on `pyviz-comms`
+</code></pre>
+<p>However removing panel from the toml did result in a successful build</p>
+<pre><code>uv sync --no-cache --no-binary --prerelease=allow
+
+Resolved 91 packages in 593ms                                                                                                                                                                                                                                                                                 
+      Built test @ file:///C:/Users/xxxx/test
+      Built sniffio==1.3.1
+      Built watchfiles==1.1.0
+      Built anyio==4.11.0
+Prepared 4 packages in 2m 44s
+Uninstalled 1 package in 6ms
+Installed 4 packages in 41ms
+ + anyio==4.11.0
+ + sniffio==1.3.1
+ ~ test==0.1.0 (from file:///C:/Users/xxxx/test)
+ + watchfiles==1.1.0
+</code></pre>
+<p>Thanks for your help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @killcoder on 2025-10-16 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../muhammad-fiaz/logly/issues/89.html">muhammad-fiaz/logly#89</a> on 2025-10-16 05:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>'-' value argument cannot be parsed - clap-rs/clap #121</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>'-' value argument cannot be parsed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/121">#121</a>
+        opened by <a href="https://github.com/Byron">@Byron</a>
+        on 2015-05-17 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Byron">@Byron</a> on 2015-05-17 12:36</div>
+            <div class="timeline-body"><p>In an argument like the following:</p>
+<pre><code class="language-Rust">Arg::with_name(&quot;foo&quot;)
+                               .short(&quot;f&quot;)
+                               .required(true)
+                               .takes_value(true)
+</code></pre>
+<p>It seems impossible to provide a value that is or starts with a <code>-</code>. The latter is common to specify that input should be read from stdin, instead of from a file.</p>
+<p>The actual output in my current (toy) program is:</p>
+<pre><code>$ trains -n -
+The argument '--network &lt;network&gt;' requires a value but none was supplied
+
+USAGE:
+    trains --network &lt;network&gt;
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-05-17 13:13</div>
+            <div class="timeline-body"><p>Ah ok, right now <code>--</code> is special cased but <code>-</code> isn't, I just need to add it. I'm on mobile right now but its a trivial fix so I'll have it done tonight. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kbknapp on 2015-05-17 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Byron">@Byron</a> on 2015-05-17 13:48</div>
+            <div class="timeline-body"><p>Great to hear ! It would be great if you could publish that patch as well, so people building the tool tomorrow/early next week will have it. Thanks in advance.</p>
+<p>The question i'd have is why '-' would need to be a special case. What I would expect is that if the argument takes any bounded amount of arguments, one would just pick them off the argument sequence without interpreting them at all. The only difficulty, as always, occurs if there are one or more arguments, which is when some special handling would be in order to prevent parsing subcommands as arguments for instance. It's just what came to my mind, I have no clue after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-05-17 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-05-17 14:01</div>
+            <div class="timeline-body"><p>bc12e78 on master or v0.8.6 on crates.io fixes this ;)</p>
+<p>The reason it's special cased is the way it decides when to stop parsing multiple arguments, so if you had a <code>-f val val val -r other</code> it stops parsing <code>-f</code> once it reaches a value starting with <code>-</code>, the problem was <code>-</code> alone starts with <code>-</code> :P But this is fixed now.</p>
+<p>There are other ways to solve this, which I may look at in the future. The biggest issue is you can't just store the whole &quot;flag&quot; as the identifier, such as <code>-f</code> instead of simply <code>f</code> because short arguments can be combined such as <code>-rfbZ</code> is the same as <code>-r -f -b -Z</code>. I may look at this in the future, but it'd be a substantial change for an unknown gain - I'd have to test :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2015-05-17 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-05-17 14:24</div>
+            <div class="timeline-body"><p>As a side note, this issue also helped something I'd totally forgotten about. <code>-</code> is used in some Unix/Linux utilities to denote &quot;stdin&quot; so not being able to parse <code>-</code> would have been a deal breaker ;) so, thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Byron">@Byron</a> on 2015-05-17 14:41</div>
+            <div class="timeline-body"><p>Yes, I see, there is more about argument parsing :) ! Totally forgot about the short flag concatenation.</p>
+<p>Besides: You are welcome, it's always a pleasure to interact with this project !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:17 UTC
+    </footer>
+</body>
+</html>

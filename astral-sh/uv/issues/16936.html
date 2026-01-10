@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync --no-managed-python doesn't make packages available to system Python interpreter - astral-sh/uv #16936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync --no-managed-python doesn't make packages available to system Python interpreter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16936">#16936</a>
+        opened by <a href="https://github.com/SnoozeFreddo">@SnoozeFreddo</a>
+        on 2025-12-02 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SnoozeFreddo">@SnoozeFreddo</a> on 2025-12-02 18:28</div>
+            <div class="timeline-body"><p>When using uv sync --no-managed-python in a Docker container, installed packages are not accessible to the system Python interpreter (/usr/local/bin/python3), resulting in ModuleNotFoundError when trying to run scripts directly with Python.</p>
+<p>Context
+I'm building a Docker image for a FastAPI application where I need the installed packages to be available to the system Python interpreter for IDE remote debugging (IntelliJ PyCharm remote interpreter). While uv run works correctly, it's not compatible with IDE remote interpreter debugging workflows since IntelliJ doesn't offer the option to execute uv inside the container, only locally.</p>
+<p>Minimal Container:</p>
+<pre><code>FROM python:3.12.12-slim-trixie AS base
+COPY --from=ghcr.io/astral-sh/uv:0.9.13 /uv /uvx /bin/
+
+WORKDIR /someproj
+ENV UV_LINK_MODE=copy
+
+ENV UV_COMPILE_BYTECODE=1
+
+# Install dependencies
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project --no-managed-python
+
+ # Fastapi
+ENTRYPOINT [&quot;python3&quot;, &quot;-m&quot;, &quot;uvicorn&quot;, &quot;someproj:app&quot;]
+</code></pre>
+<p>Running <code>/usr/local/bin/python3 -m uvicorn</code> results in:</p>
+<p>/usr/local/bin/python3: No module named uvicorn</p>
+<p>What's the recommended approach for Docker containers where packages need to be accessible to the system Python interpreter for IDE debugging purposes? Did i get the whole thing wrong?</p>
+<p>How should i start &quot;uv run&quot; in order to use the system interpreter without installing the packages again,</p>
+<h3>Platform</h3>
+<p>Debian Trixie</p>
+<h3>Version</h3>
+<p>0.9.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @SnoozeFreddo on 2025-12-02 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-02 19:21</div>
+            <div class="timeline-body"><p>You'll need to set <code>UV_PROJECT_ENVIRONMENT</code> to the system Python environment instead. Otherwise, <code>uv sync</code> will always create a virtual environment (and <code>--no-managed-python</code> just uses the system Python interpreter to do so)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SnoozeFreddo">@SnoozeFreddo</a> on 2025-12-02 19:50</div>
+            <div class="timeline-body"><p>@zanieb I see, thanks. Got confused because there was no .venv folder when using --no-managed-python in the current dir, compared to when executed without the flag. UV_PROJECT_ENVIRONMENT doesn't work well either, because Debian splits the interpreter and packages into two folders.</p>
+<blockquote>
+<p>Project virtual environment directory <code>/usr/local/lib/python3.12</code> cannot be used because it is not a valid Python environment (no Python executable was found)</p>
+</blockquote>
+<p>Is what i get</p>
+<p>Tried to add the --python flag to tell it where it is but it didn't solve the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-02 19:55</div>
+            <div class="timeline-body"><p>I think you just want <code>UV_PROJECT_ENVIRONMENT=/usr/local</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SnoozeFreddo">@SnoozeFreddo</a> on 2025-12-02 20:23</div>
+            <div class="timeline-body"><p>Yep, this worked fine. It seems like i also don't need to use UV_NO_MANAGED_PYTHON=1 any more. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @SnoozeFreddo on 2025-12-02 20:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

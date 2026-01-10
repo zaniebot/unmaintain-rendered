@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` deletes data in non-virtualenv `UV_PROJECT_ENVIRONMENT` without warning - astral-sh/uv #7519</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` deletes data in non-virtualenv `UV_PROJECT_ENVIRONMENT` without warning</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7519">#7519</a>
+        opened by <a href="https://github.com/jodal">@jodal</a>
+        on 2024-09-18 21:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jodal">@jodal</a> on 2024-09-18 21:00</div>
+            <div class="timeline-body"><h3>Environment</h3>
+<pre><code class="language-sh">❯ uv --version
+uv 0.4.12
+</code></pre>
+<h3>Background</h3>
+<p>I have a directory <code>projects</code> containing multiple related Git repos (<code>bar</code>, <code>baz</code>, etc) with Python projects that all need to be installed into the same virtualenv because they are a core and a set of extensions.</p>
+<p>At https://docs.astral.sh/uv/configuration/environment/ I read about <code>UV_PROJECT_ENVIRONMENT</code>:</p>
+<blockquote>
+<p>Use to specify the path to the directory to use for a project virtual environment. See the <a href="https://docs.astral.sh/uv/concepts/projects/#configuring-the-project-environment-path">project documentation</a> for more details.</p>
+</blockquote>
+<p>At this point, it was a bit unclear to me if this variable was:</p>
+<ol>
+<li>supposed to point to the virtualenv directory itself, or</li>
+<li>supposed to point to a directory that would contain the <code>.venv</code> directory.</li>
+</ol>
+<p>I learned the hard way that 1 is the right interpretation, but I went with 2 without testing my assumptions.</p>
+<h3>The mishap</h3>
+<p>So, given this setup:</p>
+<pre><code class="language-sh">❯ mkdir projects
+❯ cd projects 
+~/projects ❯ uv init bar
+Initialized project `bar` at `/home/jodal/projects/bar`
+~/projects ❯ uv init baz
+Initialized project `baz` at `/home/jodal/projects/baz`
+~/projects ❯ touch valuable-data.txt
+~/projects ❯ ls -l
+total 8
+drwxrwxr-x 2 jodal jodal 4096 sep.  18 22:45 bar
+drwxrwxr-x 2 jodal jodal 4096 sep.  18 22:45 baz
+-rw-rw-r-- 1 jodal jodal    0 sep.  18 22:45 valuable-data.txt
+</code></pre>
+<p>I assumed that <code>UV_PROJECT_ENVIRONMENT</code> was supposed to point to the directory containing the <code>.venv</code>, without testing my assumption, and did the following:</p>
+<pre><code class="language-sh">~/projects ❯ cd bar 
+~/projects/bar ❯ UV_PROJECT_ENVIRONMENT=.. uv sync    
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: /home/jodal/projects/bin/python3
+Using Python 3.12.6 interpreter at: /home/jodal/.local/share/mise/installs/python/3.12/bin/python3.12
+Creating virtualenv at: ..
+error: Failed to build: `bar @ file:///home/jodal/projects/bar`
+  Caused by: /home/jodal/projects/bar does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` are present in the directory
+</code></pre>
+<p>At this point, the <code>projects</code> directory is a virtualenv. The <code>bar</code> and <code>baz</code> projects are gone, as well as the <code>valuable-data.txt</code> file.</p>
+<pre><code class="language-sh">❯ ls -l ~/projects 
+total 20
+drwxrwxr-x 2 jodal jodal 4096 sep.  18 22:45 bar
+drwxrwxr-x 2 jodal jodal 4096 sep.  18 22:45 bin
+-rw-rw-r-- 1 jodal jodal   43 sep.  18 22:45 CACHEDIR.TAG
+drwxrwxr-x 3 jodal jodal 4096 sep.  18 22:45 lib
+lrwxrwxrwx 1 jodal jodal    3 sep.  18 22:45 lib64 -&gt; lib
+-rw-rw-r-- 1 jodal jodal  173 sep.  18 22:45 pyvenv.cfg
+❯ ls -l ~/projects/bar              
+total 0
+❯ ls -l ~/projects/baz
+ls: cannot access '/home/jodal/projects/baz': No such file or directory
+❯ ls -l ~/projects/valuable-data.txt
+ls: cannot access '/home/jodal/projects/valuable-data.txt': No such file or directory
+</code></pre>
+<p>I realize that this was my fault for not testing assumptions, and no data not tracked in Git was lost. However, the behavior was surprising.</p>
+<h3>Suggestions</h3>
+<h4>Documentation</h4>
+<p>Make the documentation for <code>UV_PROJECT_ENVIRONMENT</code> even more explicit about it pointing to the virtualenv directory itself.</p>
+<h4>Behavior</h4>
+<p>Only let <code>uv sync</code> create/recreate a virtualenv if the path pointed to by <code>UV_PROJECT_ENVIRONMENT</code> either</p>
+<ol>
+<li>does not exist,</li>
+<li>is an empty directory, or</li>
+<li>is already a virtualenv.</li>
+</ol>
+<p>In any other case, abort with a message explaining the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 21:59</div>
+            <div class="timeline-body"><p>Yeah this seems like an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-18 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 22:44</div>
+            <div class="timeline-body"><p>(If someone wants to look into this feel free, otherwise I'll try to do so soon)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7522.html">astral-sh/uv#7522</a> on 2024-09-18 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jodal">@jodal</a> on 2024-09-19 12:08</div>
+            <div class="timeline-body"><p>Thanks! ❤️</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:52 UTC
+    </footer>
+</body>
+</html>

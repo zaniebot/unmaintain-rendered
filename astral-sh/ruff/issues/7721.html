@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>polars vet? - astral-sh/ruff #7721</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>polars vet?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7721">#7721</a>
+        opened by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a>
+        on 2023-09-30 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-09-30 12:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hello,</p>
+<p>I've noticed that <code>ruff</code> has a <code>pandas-vet</code> plugin. Would you open to adding a Polars-vet one?</p>
+<p>It could make suggestions such as</p>
+<pre><code class="language-diff">- pl.read_csv(file_name).lazy()
++ pl.scan_csv(file_name)
+</code></pre>
+<p>or</p>
+<pre><code class="language-diff">- df.select(pl.col('a').map_elements(lambda lst: ' '.join([str(x) for x in lst])))
++ df.select(pl.col('a').list.join(' '))
+</code></pre>
+<p>which can have a real impact on performance</p>
+<p>I could try putting something together if you'd be open to it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-30 17:13</div>
+            <div class="timeline-body"><p>I'm happy to add something like this! I'd prefer if we had a non-trivial set of rules in mind (e.g., at least five or so?) before we started to add them. I want to avoid a situation in which we create a new category, add one rule, then fail to expand it to a meaningful set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-09-30 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-09-30 18:08</div>
+            <div class="timeline-body"><p>Sure, thanks! For a start, there's all the rewrites from https://github.com/pola-rs/polars/issues/9968, such as</p>
+<pre><code class="language-diff">- pl.col('a').map_elements(lambda x: np.sin(x))
++ pl.col('a').sin()
+
+- pl.col('a').map_elements(lambda x: x+1)
++ (pl.col('a') + 1)
+
+- pl.col('a').map_elements(lambda x: json.loads(x))
++ pl.col(&quot;a&quot;).str.json_extract()
+
+- pl.col('a').map_elements(lambda x: dt.datetime.strptime(x, &quot;%Y-%m-%d&quot;))
++ pl.col('a').str.to_datetime(format='%Y-%m-%d')
+
+- pl.col('a').map_elements(lambda x: x.upper())
++ pl.col(&quot;a&quot;).str.to_uppercase()
+</code></pre>
+<p>. Within Polars, warnings are emitted for some of these by parsing the bytecode of the passed function - but as Ruff deals with the AST, then I'd expect it to be possible to cover a lot more from that list</p>
+<p>The full list of test cases is here, there's quite a few already:</p>
+<p>https://github.com/pola-rs/polars/blob/f3142ccd321873d7be5b339fd6ec5536e8c3153e/py-polars/tests/test_udfs.py#L28-L144</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ritchie46">@ritchie46</a> on 2023-09-30 18:35</div>
+            <div class="timeline-body"><p>Any read operation followed by a lazy is very fishy.</p>
+<p>E.g. <code>pl.read_parquet(..).lazy()</code> should suggest <code>pl.scan_parquet(..)</code>.</p>
+<p>And that for all our scan supported file types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-10-19 11:05</div>
+            <div class="timeline-body"><p>One more suggestion in the 'lazy' category:</p>
+<pre><code class="language-diff">- DataFrame(...).lazy()
++ LazyFrame(...)
+</code></pre>
+<p>Maybe one for assertions (the equality statements would result in an error):</p>
+<pre><code class="language-diff">- assert s1 == s2
++ assert_series_equal(s1, s2)
+
+- assert df1 == df2
++ assert_frame_equal(df1, df2)
+
+- assert lf1 == lf2
++ assert_frame_equal(lf1, lf2)
+
+- assert s1 != s2
++ assert_series_not_equal(s1, s2)
+...
+
+</code></pre>
+<p>One for <code>select</code>/<code>with_columns</code>:</p>
+<pre><code class="language-diff">- df.select(pl.all(), ...)
++ df.with_columns(...)
+
+- df.select(pl.col(&quot;*&quot;), ...)
++ df.with_columns(...)
+</code></pre>
+<p>Keyword syntax in <code>select</code>/<code>with_columns</code>:</p>
+<pre><code class="language-diff">- df.select(pl.col('a').abs().alias('abs'))
++ df.select(abs=pl.col('a').abs())
+</code></pre>
+<p>Keyword syntax in <code>filter</code>:</p>
+<pre><code class="language-diff">- df.filter(pl.col('a') == 'foo')
++ df.filter(a='foo')
+</code></pre>
+<p>Using positional args instead of lists where possible:</p>
+<pre><code class="language-diff">- df.sort(['a', 'b'])
++ df.sort('a', 'b')
+</code></pre>
+<p>...I'm sure I can come up with more :smile:
+@MarcoGorelli Is this enough input?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8686.html">astral-sh/ruff#8686</a> on 2023-11-14 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MRigal">@MRigal</a> on 2025-10-07 11:04</div>
+            <div class="timeline-body"><p>In 2025, with increasing polars adoption, this would still be very cool!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow removing unused imports from standard library only - astral-sh/ruff #6601</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow removing unused imports from standard library only</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6601">#6601</a>
+        opened by <a href="https://github.com/hotpxl">@hotpxl</a>
+        on 2023-08-15 19:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hotpxl">@hotpxl</a> on 2023-08-15 19:43</div>
+            <div class="timeline-body"><p><a href="https://github.com/PyCQA/autoflake">autoflake</a> can be configured to remove unused imports from standard library only. This is useful when we have <a href="https://beta.ruff.rs/docs/rules/non-pep604-annotation/">PEP 604</a> and <a href="https://beta.ruff.rs/docs/rules/non-pep585-annotation/">PEP 585</a> autofix enabled but not <a href="https://beta.ruff.rs/docs/rules/unused-import/">unused-import</a>. The reason I don't have unused-import enabled is because of legacy code that depends on implicit exports and/or side effects so it's not safe to just enable it yet.</p>
+<p>Can we add this feature to remove unused imports from standard library only?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-16 03:32</div>
+            <div class="timeline-body"><p>Can you describe your use-case here? From what I understand, you've enabled the 2 linked rules with auto-fix which should remove those typing imports if I'm not mistaken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 03:43</div>
+            <div class="timeline-body"><p>I think the request is to remove standard library imports <em>only</em> and leave any unused first-party imports, because the codebase seems to have effectful first-party imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-16 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-10-28 17:45</div>
+            <div class="timeline-body"><p>Pycln already considers</p>
+<blockquote>
+<p>All Python standrad modules are considered as imports without side effects except (<a href="https://www.python.org/dev/peps/pep-0020/">this</a>, <a href="http://python-history.blogspot.com/2010/06/import-antigravity.html">antigravity</a>, <a href="https://docs.python.org/3.8/library/rlcompleter.html">rlcompleter</a>).</p>
+</blockquote>
+<p>- https://hadialqattan.github.io/pycln/#/?id=side-effects</p>
+<p>So this would partially implement the &quot;Side-effect detection&quot; part of https://github.com/astral-sh/ruff/issues/8149 that doesn't need multi-file analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-29 05:17</div>
+            <div class="timeline-body"><p>An alternative to a setting is to just mark this rule's fix as unsafe in your project.</p>
+<p>However, I think this setting would be reasonable to include. Is there a name suggestion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2023-10-29 05:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-02-11 20:30</div>
+            <div class="timeline-body"><blockquote>
+<p>However, I think this setting would be reasonable to include. Is there a name suggestion?</p>
+</blockquote>
+<p>I see a lack of answer, so let me throw in something.</p>
+<ol>
+<li>Following autoflake: <code>remove-all-unused-imports</code> (defaults to True to avoid changing behaviour). Where <code>remove-all-unused-imports=False</code> only removes imports for stdlib.</li>
+<li>Using the rule's name: <code>unused-imports-stdlib-only</code> (defaults to False to avoid changing behaviour)</li>
+<li>Pycln-like approach: <code>remove-unused-imports-no-side-effect-only</code> + <code>extend-known-no-side-effect</code> where <code>remove-unused-imports-no-side-effect-only=True</code> will cause stdlib modules + those listed in <code>extend-known-no-side-effect</code> only to be removed. This would halfway implement https://github.com/astral-sh/ruff/issues/8149</li>
+</ol>
+<p>Personally I wouldn't go with option 3, because it wouldn't completely remove my need for pycln, whilst 1 or 2 would allow me to not have to disable <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">unused-import (F401)</a> in <code>pywin32</code> <em>and</em> catch some odd cases where pycln doesn't cleanup stdlib.</p>
+<p>Option 1 could be confused for enabling the import-removal behaviour in the first place. I like option 2 best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18728.html">astral-sh/ruff#18728</a> on 2025-06-18 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

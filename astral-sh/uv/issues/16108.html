@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to prefer cached package version? - astral-sh/uv #16108</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to prefer cached package version?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16108">#16108</a>
+        opened by <a href="https://github.com/pycaw">@pycaw</a>
+        on 2025-10-02 21:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pycaw">@pycaw</a> on 2025-10-02 21:32</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I essentially want to do this, <code>uv run --with rich example.py</code>, but in a way so that the version chosen is the latest stable cached one (if there is such, otherwise fall back to default behavior: latest stable -- I think). What do you recommend?</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @pycaw on 2025-10-02 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-02 21:59</div>
+            <div class="timeline-body"><p>I think you want #10380 or similar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pycaw">@pycaw</a> on 2025-10-03 08:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you want <a href="https://github.com/astral-sh/uv/issues/10380">#10380</a> or similar</p>
+</blockquote>
+<p>Sort of, but not quite. OP there writes,</p>
+<blockquote>
+<p><strong>Online with Fallback</strong>: Act like the default however, if a network request fails, fall back to --offline type behavior for that dependency and check if it exists in the local cache. If it doesn't, then fail just like how uvx --offline <package not in cache> would fail. e.g. uv --offline-fallback ruff format.</p>
+</blockquote>
+<p>Whereas I'd like to see <strong>Offline with online fallback</strong>. Point here would be to keep complexity of various scripts using <code>uvx</code>/<code>uv run</code> to the minimum (so no or minimal version specification -- unless it's warranted) and avoid unnecessary network requests to further speed things up.</p>
+<p>But, this is probably backwards thinking so for now I think I will settle with using a wrapper command that tries <code>uv</code> with <code>--offline</code> flag and then depending on that proceeds one way or another. Though... <strong>On second thought, it should be considered legitimate grounds to avoid minor/patch upgrades when running scripts AND to avoid the need to uniformly specify dependencies within them.</strong></p>
+<p><em>Question</em>: Would you happen to know a method to reliably print the packages that are in uv's cache? It being a kind of a black box is a bit disheartening -- even if expected.</p>
+<details>
+<summary>On another note, I was a bit suprised to discover this sort of redundancy:</summary>
+
+<pre><code class="language-bash">for f in $(find ~/.cache/uv -name '*.dist-info' | grep rich); do tree --noreport -L1 $(dirname $f); done
+</code></pre>
+<pre><code>~/.cache/uv/archive-v0/neb81XO1tDHvbSt4V1ZcF
+├── rich
+└── rich-14.0.0.dist-info
+~/.cache/uv/archive-v0/De0fb_wCOY0uJymcu25zD
+├── rich
+└── rich-14.0.0.dist-info
+~/.cache/uv/archive-v0/Ke2lp_lnQsgHE-N9xa6s4
+├── rich
+└── rich-14.1.0.dist-info
+~/.cache/uv/archive-v0/R1zJCwQTde-8guPw6x2CL
+├── rich
+└── rich-14.1.0.dist-info
+~/.cache/uv/archive-v0/2wMhbc3nUzWURYxv4AKDB
+├── rich
+└── rich-14.1.0.dist-info
+~/.cache/uv/archive-v0/o2bfR_w3aXNkRwq1yOElB
+├── rich
+└── rich-14.1.0.dist-info
+~/.cache/uv/archive-v0/p4ROBqHRgZk2csnJ4y7wb
+├── rich-14.1.0.dist-info
+└── rich.pth
+</code></pre>
+<p>And after prune:</p>
+<pre><code>~/.cache/uv/archive-v0/neb81XO1tDHvbSt4V1ZcF
+├── rich
+└── rich-14.0.0.dist-info
+~/.cache/uv/archive-v0/De0fb_wCOY0uJymcu25zD
+├── rich
+└── rich-14.0.0.dist-info
+~/.cache/uv/archive-v0/R1zJCwQTde-8guPw6x2CL
+├── rich
+└── rich-14.1.0.dist-info
+~/.cache/uv/archive-v0/o2bfR_w3aXNkRwq1yOElB
+├── rich
+└── rich-14.1.0.dist-info
+~/.cache/uv/archive-v0/p4ROBqHRgZk2csnJ4y7wb
+├── rich-14.1.0.dist-info
+└── rich.pth
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16286.html">astral-sh/uv#16286</a> on 2025-10-13 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10380.html">astral-sh/uv#10380</a> on 2025-12-11 13:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confusion in matching positional arguments and subcommands - clap-rs/clap #622</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Confusion in matching positional arguments and subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/622">#622</a>
+        opened by <a href="https://github.com/guiniol">@guiniol</a>
+        on 2016-08-21 10:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/guiniol">@guiniol</a> on 2016-08-21 10:15</div>
+            <div class="timeline-body"><p>If the positional argument's value starts with the same string as a subcommand, clap tries to match it as a subcommand. This can be seen with the example in the main README:</p>
+<pre><code> $ cargo run -- input
+     Running `target/debug/mwe input`
+Value for config: default.conf
+Using input file: input
+No verbose info
+
+ $ cargo run -- input test
+     Running `target/debug/mwe input test`
+Value for config: default.conf
+Using input file: input
+No verbose info
+Printing normally...
+
+ $ cargo run -- test input
+     Running `target/debug/mwe test input`
+error: The following required arguments were not provided:
+    &lt;INPUT&gt;
+
+USAGE:
+    mwe [FLAGS] [OPTIONS] &lt;INPUT&gt; [SUBCOMMAND]
+
+For more information try --help
+error: Process didn't exit successfully: `target/debug/mwe test input` (exit code: 1)
+
+ $ cargo run -- testinput
+     Running `target/debug/mwe testinput`
+error: The subcommand 'testinput' wasn't recognized
+    Did you mean 'test'?
+
+If you believe you received this message in error, try re-running with 'mwe -- testinput'
+
+USAGE:
+    mwe [FLAGS] [OPTIONS] &lt;INPUT&gt; [SUBCOMMAND]
+
+For more information try --help
+error: Process didn't exit successfully: `target/debug/mwe testinput` (exit code: 1)
+</code></pre>
+<p>The first three attempts give the expected results. However, the last attempts tries to match <code>testinput</code> as a subcommand instead of as <code>INPUT</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-21 19:34</div>
+            <div class="timeline-body"><p>That is as expected. When compiled with the <code>&quot;suggestions&quot;</code> feature, clap tries to match input that may have been typed incorrectly. Things like typing, <code>--confg</code> instead of <code>--config</code>. This has the side affect that if many subcommands, or subcommands with common names are used, it may try to match an argument with those subcommand names. So there are two options, either don't compile with the <code>&quot;suggestions&quot;</code> feature, or you can re-run like is suggested in the error message</p>
+<pre><code>$ mwe -- testinput
+</code></pre>
+<p>This is just hard to see when using <code>cargo run</code> because I don't think you can do <code>cargo run -- -- testinput</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-08-21 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guiniol">@guiniol</a> on 2016-08-24 14:10</div>
+            <div class="timeline-body"><p>Fair enough, and I think it would be pretty weird to have a positional argument before a subcommand anyhow. Also, I didn't realise it was <code>suggestions</code> telling me to do <code>mwe -- testinput</code> since I'm using <code>cargo run</code> ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @guiniol on 2016-08-24 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

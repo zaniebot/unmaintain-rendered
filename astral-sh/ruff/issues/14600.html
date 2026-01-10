@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>no UP031 fix for `&quot;%d&quot; % 1` - astral-sh/ruff #14600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>no UP031 fix for `&quot;%d&quot; % 1`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14600">#14600</a>
+        opened by <a href="https://github.com/njzjz">@njzjz</a>
+        on 2024-11-26 05:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/njzjz">@njzjz</a> on 2024-11-26 05:11</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff 0.8.0
+Minimal example:</p>
+<pre><code class="language-py">&quot;%d&quot; % 1
+</code></pre>
+<p>https://play.ruff.rs/2acb42ef-d5d7-4dc0-a649-2b7ff4e174f2</p>
+<pre><code>ruff check up031.py --select UP031 --fix --unsafe-fixes
+up031.py:1:1: UP031 Use format specifiers instead of percent format
+  |
+1 | &quot;%d&quot; % 1
+  | ^^^^ UP031
+  |
+  = help: Replace with format specifiers
+
+Found 1 error.
+</code></pre>
+<p>There is no fix, even no unsafe fix. But there is a fix if <code>%d</code> is replaced by <code>%f</code>. Isn't the logic similar here?</p>
+<p>In a real project, there are hundreds of errors like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 07:08</div>
+            <div class="timeline-body"><blockquote>
+<p>There is no fix, even no unsafe fix. But there is a fix if %d is replaced by %f. Isn't the logic similar here?</p>
+</blockquote>
+<p>The logic is similar but what's different to <code>%s</code> is that all parameters need to be wrapped in <code>int(parameter)</code> to avoid changing behavior.</p>
+<pre><code class="language-py">&gt;&gt;&gt; &quot;a %d&quot; % 2.34
+'a 2'
+&gt;&gt;&gt; f&quot;a {2.34}&quot;
+'a 2.34'
+
+&gt;&gt;&gt; &quot;a %d&quot; % &quot;test&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: %d format: a real number is required, not str
+&gt;&gt;&gt; f&quot;a {'test'}&quot;
+'a test'
+</code></pre>
+<p>We would get the same behavior when wrapping the parameter with <code>int</code></p>
+<pre><code class="language-py">&gt;&gt;&gt; f&quot;a {int(2.34)}&quot;
+'a 2'
+&gt;&gt;&gt; f&quot;a {int('test')}&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: invalid literal for int() with base 10: 'test'
+</code></pre>
+<p>Unfortunately, Ruff doesn't understand today whether the parameter is an int literal or not, which is why the fix would have to wrap all parameters with <code>int</code>, which may or may not be what users want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-26 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-11-26 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/un-pogaz">@un-pogaz</a> on 2024-12-19 10:58</div>
+            <div class="timeline-body"><p>I personaly don't think that add a int convertion is absolutly required here, and implement a simple conversion to <code>&quot;{}&quot;</code> or <code>f&quot;{value}&quot;</code> will enough. We are under <code>--unsafe-fixes</code> flag, so it's to the final user to be sure that no wrong conversion has happen.</p>
+<p>I agree that it's a partial solution, and the conversion of &quot;%d&quot; need be keep under the <code>--unsafe-fixes</code> flag until a good solution is implemented, BUT it will work perfectly fine for the 90% of user case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-12-27 19:32</div>
+            <div class="timeline-body"><p>Wouldn't just <code>f&quot;a {2.34:d}&quot;</code> be equivalent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/issues/670.html">astral-sh/ruff-vscode#670</a> on 2025-01-17 11:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

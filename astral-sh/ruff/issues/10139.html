@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can RSE102 conflict with the celery.app.task.Task.retry() method? - astral-sh/ruff #10139</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can RSE102 conflict with the celery.app.task.Task.retry() method?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10139">#10139</a>
+        opened by <a href="https://github.com/cclauss">@cclauss</a>
+        on 2024-02-26 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cclauss">@cclauss</a> on 2024-02-26 16:23</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><a href="https://docs.celeryq.dev/en/stable/reference/celery.app.task.html#celery.app.task.Task.retry"><code>celery.app.task.Task.retry()</code></a> is a strange construction that is a method call instead of the normally expected instance of an exception. This seems to confuse <a href="https://docs.astral.sh/ruff/rules/unnecessary-paren-on-raise-exception"><code>ruff rule RSE102</code></a> unnecessary-paren-on-raise-exception if <code>Task.retry()</code> is called with no parameters.</p>
+<pre><code class="language-python">@app.task(bind=True)
+def tweet(self, auth, message):
+    twitter = Twitter(oauth=auth)
+    try:
+        twitter.post_status_update(message)
+    except twitter.FailWhale:
+        raise self.retry()  # noqa: RSE102
+</code></pre>
+<p>If we leave off the <code>noqa</code> then <code>ruff --fix</code> may remove the parens which would break Celery's <code>Task.retry()</code> logic.</p>
+<pre><code class="language-diff">-        raise self.retry()
++        raise self.retry
+</code></pre>
+<p>@Nusnus</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-27 11:34</div>
+            <div class="timeline-body"><p>Maybe method calls (anything that starts with <code>self.</code>?) should just be exempted from this check? I feel like it's pretty rare that <code>method</code> is going to be an exception class if you're doing <code>raise self.method()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-02-28 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 17:42</div>
+            <div class="timeline-body"><p>Maybe we should make this fix unsafe unless it's like visibly one of the standard exception classes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2024-03-11 17:52</div>
+            <div class="timeline-body"><p>I sense that <code>RSE102</code> should ignore all instances of <code>raise self.method()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 17:53</div>
+            <div class="timeline-body"><p>Oh sorry, I think this got fixed because we now avoid all calls that don't &quot;look like&quot; exceptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-11 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-11 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

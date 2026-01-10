@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv conflicts with pyenv-virtualenv auto-activation - astral-sh/uv #6204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv conflicts with pyenv-virtualenv auto-activation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6204">#6204</a>
+        opened by <a href="https://github.com/kozlek">@kozlek</a>
+        on 2024-08-19 13:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kozlek">@kozlek</a> on 2024-08-19 13:21</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>As a python developer, I'm currently using:</p>
+<ul>
+<li><code>pyenv</code> to install specific python version</li>
+<li><code>pyenv-virtualenv</code> (official <code>pyenv</code> plugin) to manage my virtualenvs, including auto-activation</li>
+<li><code>poetry</code> for managing dependencies for bigger projects (mainly using groups)</li>
+<li><code>pip-tools</code> for managing dependencies for smaller projects</li>
+<li><code>pipx</code> for installing CLI tools</li>
+</ul>
+<p>I'm very excited about <code>uv</code> and I started to integrate it into my workflow.
+Both <code>poetry</code> and <code>pip-tools</code> can be replaced quite easily as <code>uv</code> supports most of my needs.
+<code>pipx</code> is replaced by <code>uv tool</code>.</p>
+<p>Now enter python version + virtualenvs management.
+<code>uv</code> can do a lot, but currently it lacks virtualenv auto-activation and virtualenv delocalisation.
+It's been discussed #1495, and I totally understand you cannot implement every behaviours a few months after the first release ! 😉</p>
+<p>However, I should be able to keep my existing python + virtualenv setup with <code>pyenv</code> + <code>pyenv-virtualenv</code> (which works well), while enjoying the speed of <code>uv</code> for dependencies management, as <code>pyenv-virtualenv</code> set a <code>VIRTUAL_ENV</code> variable properly.
+In reality, it's not working due to <code>uv</code> expectation from <code>.python-version</code>.
+<code>pyenv-virtualenv</code> set the name of the virtualenv in <code>.python-version</code>, while <code>uv</code> seems to expect a python version.</p>
+<p>To allow a progressive adoption of <code>uv</code>, it would great to be able to continue using <code>pyenv-virtualenv</code> auto-activation feature.</p>
+<h2>Full workflow to reproduce the bug</h2>
+<p><code>pyenv</code>, <code>pyenv-virtualenv</code> and <code>uv</code> are expected to be properly setup according their official documentation.</p>
+<pre><code class="language-sh"># install expected python version
+pyenv install 3.12.5
+
+# create a new project
+mkdir test
+cd test
+pyenv virtualenv 3.12.5 test
+pyenv local test
+
+# at that point, a .python-version has been created and the shell should have auto activate the new virtualenv
+cat .python-version  # test 
+echo $VIRTUALENV  # ~/.pyenv/versions/3.12.5/envs/test
+
+# now if we try to use uv to declare package...
+uv init  # OK
+uv add ruff  # [Error: ](error: No interpreter found for executable name `test` in managed installations or system path)
+</code></pre>
+<p>Again, my point is not about implementing a new behaviour in <code>uv</code> (yet), but instead to allow it to co-exist with existing tools like <code>pyenv-virtualenv</code>, which offer interesting features that <code>uv</code> lacks for the moment 🙂</p>
+<p>I'll be happy to help if I can !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmin764">@cmin764</a> on 2024-10-30 12:53</div>
+            <div class="timeline-body"><p>I have exactly the same problem and I think this would be a big leap in adoption if the author vouches for it. Hope for the best from the developers! 🤞🏼</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dannysteenman">@dannysteenman</a> on 2024-10-30 19:08</div>
+            <div class="timeline-body"><p>+1 for this!</p>
+<p>I have a temporary solution for anyone that has this issue. I made a fork from the zsh-autoswitch-virtualenv repo and made it work with uv venv so that it automatically switches environments once you get into a working directory containing uv virtual environment: https://github.com/dannysteenman/zsh-autoswitch-virtualenv</p>
+<p>Just load this script in your .zshrc and you're good to go!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albireox">@albireox</a> on 2024-10-30 19:17</div>
+            <div class="timeline-body"><p>Another +1 from me.</p>
+<p>So far this has been my main headache with my transition to <code>uv</code> since my project uses <code>pyenv</code> quite extensively and it will take time to transition out of it.</p>
+<p>My solution has been using <a href="https://direnv.net">direnv</a> and using this layout in the project <code>.envrc</code></p>
+<pre><code class="language-bash">layout_uv_pyenv() {
+    if [ -e &quot;.python-version&quot; ]; then
+        VENV=`cat .python-version`
+        VENV_PATH=&quot;$PYENV_ROOT/versions/$VENV&quot;
+        export UV_PYTHON=$VENV_PATH/bin/python
+        export UV_PROJECT_ENVIRONMENT=$VENV_PATH
+        export UV_ACTIVE=1
+    fi
+}
+</code></pre>
+<p>which works reasonably well, but it would be nice if <code>uv</code> could just default (or be configured) to using the environment loaded in <code>$VIRTUAL_ENV</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../modelcontextprotocol/create-python-server/issues/5.html">modelcontextprotocol/create-python-server#5</a> on 2024-11-25 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fredrikaverpil">@fredrikaverpil</a> on 2024-12-25 20:31</div>
+            <div class="timeline-body"><p>In case it helps anyone, I've got this in my <code>.zshrc</code> which seems to work pretty ok (activate/deactivate .venv on <code>cd</code>, <code>z</code> or <code>zi</code>):</p>
+<pre><code class="language-bash">function virtual_env_activate() {
+  # check the current folder belong to earlier VIRTUAL_ENV folder, potentially deactivate.
+  if [[ -n &quot;$VIRTUAL_ENV&quot; ]]; then
+    parentdir=&quot;$(dirname &quot;$VIRTUAL_ENV&quot;)&quot;
+    if [[ &quot;$PWD&quot;/ != &quot;$parentdir&quot;/* ]]; then
+      deactivate
+    fi
+  fi
+
+  # if .python-version is found, create/show .venv
+  if [ -f .python-version ] &amp;&amp; [ ! -d ./.venv ]; then
+    uv venv
+  fi
+
+  # if .venv is found and not activated, activate it
+  if [[ -z &quot;$VIRTUAL_ENV&quot; ]]; then
+    # if .venv folder is found then activate the vitualenv
+    if [ -d ./.venv ] &amp;&amp; [ -f ./.venv/bin/activate ]; then
+      source ./.venv/bin/activate
+    fi
+  fi
+}
+
+
+function cd() {
+  builtin cd &quot;$@&quot; || return
+  virtual_env_activate
+  # node_version_manager  # TODO: with pkgx, maybe nvm is no longer needed?
+}
+cd . # trigger cd overrides when shell starts
+
+function z() {
+  __zoxide_z &quot;$@&quot; &amp;&amp; cd . || return
+}
+
+function zi() {
+  __zoxide_zi &quot;$@&quot; &amp;&amp; cd . || return
+
+}
+</code></pre>
+<p>Full source: https://github.com/fredrikaverpil/dotfiles/blob/main/shell/sourcing.sh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EricPobot">@EricPobot</a> on 2025-01-02 11:34</div>
+            <div class="timeline-body"><p>+1 here too. I'm too in the process of assessing if I'll switch from pyenv (which I'm 100% satisfied with) to uv and have to manage the coexistence with projects using pyenv and that won't be modified.</p>
+<p>uv using the same .python-version file as pyenv is not a good choice because this raises the probabilities of conflicts.</p>
+<p>This doesn't help in favoring uv because the resulting hiccups tend to be annoying and prevent from using the tool in the best possible conditions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10372.html">astral-sh/uv#10372</a> on 2025-01-07 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11273.html">astral-sh/uv#11273</a> on 2025-02-06 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11544.html">astral-sh/uv#11544</a> on 2025-02-16 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erny">@erny</a> on 2025-03-09 19:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Another +1 from me.
+Another +1 from me too.</p>
+</blockquote>
+<blockquote>
+<p>So far this has been my main headache with my transition to <code>uv</code> since my project uses <code>pyenv</code> quite extensively and it will take time to transition out of it.</p>
+<p>My solution has been using <a href="https://direnv.net">direnv</a> and using this layout in the project <code>.envrc</code></p>
+<p>layout_uv_pyenv() {
+if [ -e &quot;.python-version&quot; ]; then
+VENV=<code>cat .python-version</code>
+VENV_PATH=&quot;$PYENV_ROOT/versions/$VENV&quot;
+export UV_PYTHON=$VENV_PATH/bin/python
+export UV_PROJECT_ENVIRONMENT=$VENV_PATH
+export UV_ACTIVE=1
+fi
+}
+which works reasonably well, but it would be nice if <code>uv</code> could just default (or be configured) to using the environment loaded in <code>$VIRTUAL_ENV</code>.</p>
+</blockquote>
+<p>I had problems invoking <code>uv sync</code> with the same error, so I changed the pyenv-virtualenv plugin to define UV variables on auto-activating virtuaenvs: In <code>$HOME/.pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv-init</code> near line 132, just after activating the virtualenv with <code>pyenv sh-activate</code> I added:</p>
+<pre><code>export UV_PYTHON=$VIRTUAL_ENV/bin/python
+export UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV
+export UV_ACTIVE=1</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kreuzberg-dev/kreuzberg/issues/36.html">kreuzberg-dev/kreuzberg#36</a> on 2025-04-08 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../beeware/briefcase/issues/2036.html">beeware/briefcase#2036</a> on 2025-05-04 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomAub">@ThomAub</a> on 2025-05-12 17:35</div>
+            <div class="timeline-body"><p>Hello @kozlek after our deep discussion at the bar I think you should just use uv for your project</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-12 17:44</div>
+            <div class="timeline-body"><p>We now ignore <code>pyvenv-virtualenv</code> <code>.python-version</code> files instead of failing, at least. See #12909</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brycedrennan">@brycedrennan</a> on 2025-05-12 18:02</div>
+            <div class="timeline-body"><p>Just to be clear, does this mean <code>pyenv-virtualenv</code> and <code>uv</code> now play nice together?</p>
+<p>This would be great news as I could not push switching to <code>uv</code> since it would trigger a massive single-time cost of moving all the repos over at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kozlek">@kozlek</a> on 2025-05-12 18:38</div>
+            <div class="timeline-body"><blockquote>
+<p>We now ignore <code>pyvenv-virtualenv</code> <code>.python-version</code> files instead of failing, at least. See <a href="https://github.com/astral-sh/uv/pull/12909">#12909</a></p>
+</blockquote>
+<p>Indeed, thanks to the <code>--active</code> flag, we're able to add dependencies to the active venv.
+Except the warning regarding the <code>.python-version</code> parsing error, everything seems to work well !</p>
+<p>Thanks for your help, feel free to close the issue ! 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-12 19:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15603.html">astral-sh/uv#15603</a> on 2025-08-31 08:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

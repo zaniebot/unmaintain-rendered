@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>per-file-ignores have inconsistent behavior in symlinked directories - astral-sh/ruff #6480</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>per-file-ignores have inconsistent behavior in symlinked directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6480">#6480</a>
+        opened by <a href="https://github.com/derlin">@derlin</a>
+        on 2023-08-10 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/derlin">@derlin</a> on 2023-08-10 14:27</div>
+            <div class="timeline-body"><p>I am trying to ignore the <code>S101</code> rule in tests. I have a base <code>ruff.toml</code> which is used in <code>pyproject.toml</code>.</p>
+<p>Adding this to <code>ruff.toml</code> doesn't work:</p>
+<pre><code class="language-toml">[per-file-ignores]
+&quot;**/test/**&quot; = [&quot;S101&quot;] # &lt;- still warnings in tests
+</code></pre>
+<p>However, adding the same in <code>pyproject.toml</code> works:</p>
+<pre><code class="language-toml">[tool.ruff]
+    extend = &quot;/path/to/ruff.toml&quot;
+
+[tool.ruff.per-file-ignores]
+&quot;**/test/**&quot; = [&quot;S101&quot;] # &lt;- this works as expected
+</code></pre>
+<p>I tried without wildcards as well and <code>extend-per-file-ignores</code>. Nothing added to <code>ruff.toml</code> is considered.</p>
+<p>Ruff version: <code>0.0.284</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 15:08</div>
+            <div class="timeline-body"><p>Does the pattern <code>&quot;test&quot;</code> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-08-10 15:17</div>
+            <div class="timeline-body"><p>Can you link a minimal example? Setting up a small folder set-up like:</p>
+<pre><code>some_other_folder/
+    test/
+        foo.py
+test/
+    foo.py
+foo.py
+ruff.toml
+</code></pre>
+<p>With <code>foo.py</code> being:</p>
+<pre><code class="language-python">assert 3 &gt; 1
+</code></pre>
+<p>And ruff.toml is:</p>
+<pre><code class="language-toml">[per-file-ignores]
+&quot;**/test/**&quot; = [&quot;S101&quot;]
+</code></pre>
+<p>And running <code>ruff check . --select S101</code> with version <code>0.0.284</code> only raises the error for <code>foo.py</code> in the root:</p>
+<pre><code>foo.py:1:1: S101 Use of `assert` detected
+</code></pre>
+<p>Removing the <code>[per-file-ignores]</code> raises the error for all 3 files as intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 15:40</div>
+            <div class="timeline-body"><p>I suspect it has to do with the use of <code>extend</code>, and where the paths are resolved relative to, or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derlin">@derlin</a> on 2023-08-10 17:55</div>
+            <div class="timeline-body"><p>Sorry this wasn't very clear. The problem actually seems to be when <code>ruff.toml</code> is not at the root of the python project that is linted. Find below a reproducible example.</p>
+<p>The structure is:</p>
+<pre><code>/tmp
+├── ruff-example
+│   ├── .venv   # &lt;- ruff is installed in this venv
+│   ├── pyproject.toml 
+│   └── src
+│       └── test
+│           └── foo.py
+└── ruff.toml 
+</code></pre>
+<p>The content of <code>/tmp/ruff.toml</code>:</p>
+<pre><code class="language-yaml">select = ['S']
+[per-file-ignores]
+&quot;**/test/**&quot; = [&quot;S101&quot;]
+</code></pre>
+<p>The content of <code>/tmp/ruff-example/pyproject.toml</code>:</p>
+<pre><code class="language-yaml">[tool.ruff]
+    extend = &quot;/tmp/ruff.toml&quot;
+</code></pre>
+<p>Running from the root of <code>/tmp</code> works as expected:</p>
+<pre><code class="language-python">/tmp/ruff-example/.venv/bin/ruff /tmp/ruff-example
+</code></pre>
+<p>Running it from the root of the source directory <code>ruff-example</code> fails:</p>
+<pre><code>cd /tmp/ruff-example
+/tmp/ruff-example/.venv/bin/ruff .
+
+src/test/foo.py:1:1: S101 Use of `assert` detected
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derlin">@derlin</a> on 2023-08-14 07:08</div>
+            <div class="timeline-body"><p>@qdegraaf added a minimal example of the problem: this has to do with the relative path taken from the <code>ruff.toml</code> location instead of the root of the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 13:51</div>
+            <div class="timeline-body"><p>Thanks for following up :)</p>
+<p>So, in general, paths are resolved relative to the configuration file that includes the <code>extend</code>, rather than the file that's being extended (so in this case, the paths are resolved relative to <code>pyproject.toml</code>, even if the settings themselves are defined in <code>ruff.toml</code>).</p>
+<p>This is intentional and while it may seem unintuitive in this case, it's generally preferable to the reverse, because those &quot;extended&quot; configuration files tend to be shared across projects. Imagine, e.g., that you have a global <code>pyproject.toml</code> that lives in your root directory, and a bunch of projects that extend it with project-specific modifications. In that case, it'd be hard to reuse the <code>pyproject.toml</code> if all paths like <code>./src</code> were being resolved relative to it.</p>
+<p>I feel like what you're doing here should <em>maybe</em> still be working though given the specifics of your regular expression, that part I don't quite understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-14 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 19:31</div>
+            <div class="timeline-body"><p>Interestingly, everything works fine for me if I don't do this in <code>tmp</code>, and it also works fine if I <em>do</em> do this in <code>tmp</code> but use a relative path in the the <code>pyproject.toml</code>, like:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend = &quot;../ruff.toml&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 19:35</div>
+            <div class="timeline-body"><p>For me at least, the problem is that when I use <code>extend = &quot;/private/tmp/ruff.toml&quot;</code>, internally the path gets resolved to:</p>
+<pre><code>path: &quot;/private/tmp/ruff-example/src/test/foo.py&quot;
+settings.per_file_ignores: [(GlobMatcher { pat: Glob { glob: &quot;/tmp/**/test/**&quot;, re: &quot;(?-u)^/tmp(?:/|/.*/)test/.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([Literal('/'), Literal('t'), Literal('m'), Literal('p'), RecursiveZeroOrMore, Literal('t'), Literal('e'), Literal('s'), Literal('t'), RecursiveSuffix]) }, re: Regex(&quot;(?-u)^/tmp(?:/|/.*/)test/.*$&quot;) }, GlobMatcher { pat: Glob { glob: &quot;**/test/**&quot;, re: &quot;(?-u)^(?:/?|.*/)test/.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('t'), Literal('e'), Literal('s'), Literal('t'), RecursiveSuffix]) }, re: Regex(&quot;(?-u)^(?:/?|.*/)test/.*$&quot;) }, {Assert})]
+</code></pre>
+<p>Notice how the Python file path is prefixed with <code>/private</code> but the globs are not. Using the relative path leads to them both being prefixed with <code>/private</code>. I don't really understand what's going on it but it seems specific to use the use <code>/tmp</code> and similar directories. Were you running into this in a &quot;real&quot; project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 19:36</div>
+            <div class="timeline-body"><p>Ah it must be related to symlinks? Apparently <code>/tmp</code> is a symlink to <code>/private/tmp</code> on macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 19:45</div>
+            <div class="timeline-body"><p>Alternatively, <code>ruff /tmp/ruff-example -n</code> also works for me, because then both paths omit the <code>/private</code> prefix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 19:47</div>
+            <div class="timeline-body"><p>I don't know what ideal behavior looks like here, I would need to do some research. Naively, it seems like we'd need to <em>always</em> resolve symlinks in order to have the right behavior, but then we might end up reporting diagnostics on the symlinked location, which feels a bit off. @MichaReiser, do you happen to know how Rome handled symlinks generally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-14 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 19:56</div>
+            <div class="timeline-body"><p>Actually, I think this specific case would be fixed if our <code>path.absolutize()</code> <em>didn't</em> resolve symlinks (it appears that it does). It appears that resolving the current directory (if it is a symlink) isn't even <em>possible</em> right now? https://stackoverflow.com/questions/71624942/how-to-get-the-current-working-directory-in-rust-if-it-is-a-symlink</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 21:42</div>
+            <div class="timeline-body"><p>@burntsushi - (Low priority) I notice that in <a href="https://github.com/BurntSushi/ripgrep/blob/61733f6378b62fa2dc2e7f3eff2f2e7182069ca9/crates/core/args.rs#L1808">ripgrep</a>, you query for <code>env::current_dir()</code> then fallback to <code>PWD</code>. It looks like <a href="https://github.com/atuinsh/atuin/pull/783">atuin</a> does it in the other order. I'm wondering if we should use <code>PWD</code> over <code>env::current_dir()</code> to get more reasonable behavior with symlinks 🤔 Have you ever run into problems with this in ripgrep?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "per-file-ignores not working in ruff.toml" to "per-file-ignores have inconsistent behavior in symlinked directories" by @charliermarsh on 2023-08-15 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-08-15 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-15 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 01:02</div>
+            <div class="timeline-body"><p>To summarize: there's some inconsistent behavior when the current directory contains a symlink. Otherwise, everything seems to be working as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derlin">@derlin</a> on 2023-08-15 05:42</div>
+            <div class="timeline-body"><p>Thank you for all those interesting insights. My actual setup is not using symlinks (I was just using tmp for the minimal example). Instead, ruff is running in a docker, with the ruff config located at <code>/presets/ruff.toml</code> and the project mounted in <code>/app</code>.</p>
+<p>I couldn't make it work with the <code>**/test/**</code> regex, but it works if I use <code>/app/**/test/**</code> in the <code>ruff.toml</code>. The problem is, a CI may mount the folders somewhere else in the docker container, so this is not good enough.</p>
+<p>I tried calling ruff with <code>ruff check /app</code>, but still now luck.</p>
+<p><strong>UPDATE</strong>: it seems adding a leading <code>/</code> works -&gt; <code>/**/test/**</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-15 15:34</div>
+            <div class="timeline-body"><p>@charliermarsh With respect to ripgrep, I believe that code was originally written with <code>std::env::current_dir</code>, which is a platform independent way of getting the CWD. And then an issue was filed pointing out cases where that fails, for example, when using ripgrep in a directory that had been removed. So in that context, querying for <code>PWD</code> is treated as a &quot;fallback&quot; to try and find the CWD even when <code>current_dir</code> fails. Potentially flipping this to ask for <code>PWD</code> first and falling back to <code>std::env::current_dir</code> might indeed be the better path. I don't think I considered symlinks in this context when writing <code>current_dir</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-30 08:27</div>
+            <div class="timeline-body"><p>@derlin Thanks for the workaround! Adding a leading slash does work (<code>&quot;/*/tests/*&quot;</code> seems to be sufficient)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 08:31</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser, do you happen to know how Rome handled symlinks generally?</p>
+</blockquote>
+<p>No, but the relevant PRs are https://github.com/rome/tools/pull/3706 and https://github.com/rome/tools/pull/4732</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-01-04 03:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

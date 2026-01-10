@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should `uv init` create nested workspaces? - astral-sh/uv #5251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should `uv init` create nested workspaces?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5251">#5251</a>
+        opened by <a href="https://github.com/j178">@j178</a>
+        on 2024-07-20 16:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/j178">@j178</a> on 2024-07-20 16:06</div>
+            <div class="timeline-body"><pre><code class="language-sh">$ uv init work
+Initialized project work in /tmp/work
+$ uv init work/pkg-a
+Adding pkg-a as member of workspace /tmp/work
+Initialized project pkg-a in /tmp/work/pkg-a
+$ uv init work/pkg-a/pkg-inside-a
+Adding pkg-inside-a as member of workspace /tmp/work
+Initialized project pkg-inside-a in /tmp/work/pkg-a/pkg-inside-a
+</code></pre>
+<p>Content of <code>work/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;work&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.uv.workspace]
+members = [&quot;pkg-a&quot;]
+</code></pre>
+<p>Content of <code>work/pkg-a/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;pkg-a&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+dependencies = []
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.uv.workspace]
+members = [&quot;pkg-inside-a&quot;]
+</code></pre>
+<p>The message from <code>uv init work/pkg-a/pkg-inside-a</code> indicates <code>Adding pkg-inside-a as member of workspace /tmp/work</code>. However it seems to be added to <code>/tmp/work/pkg-inside-a</code>, essentially  creating a workspace inside a workspace. Do we allow a workspace member itself being a workspace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-07-22 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-22 11:40</div>
+            <div class="timeline-body"><p>That's a bug, we should add <code>pkg-inside-a</code> to the workspace root at <code>work/pyproject.toml</code> and error when there's a workspace declaration in a workspace member.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2024-07-22 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-22 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5293.html">astral-sh/uv#5293</a> on 2024-07-22 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-22 23:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16640.html">astral-sh/uv#16640</a> on 2025-11-08 06:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

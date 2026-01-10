@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 fix causes infinite loop adding duplicates to `__all__` - astral-sh/ruff #22221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 fix causes infinite loop adding duplicates to `__all__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22221">#22221</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2025-12-27 11:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2025-12-27 11:36</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>How to reproduce:</p>
+<pre><code class="language-sh">$ mkdir foo
+$ echo '
+import foo.bar.module
+import foo.baz.module
+
+__all__ = []
+' &gt; foo/__init__.py
+
+$ cargo run --bin ruff -- check test_f401_dup/foo/__init__.py --select F401 --preview --fix foo/__init__.py
+</code></pre>
+<p><code>foo/__init__.py</code> looks like this after the fix is applied:</p>
+<pre><code class="language-python">import foo.bar.module
+import foo.baz.module
+
+__all__ = [
+    &quot;foo&quot;,
+    ...,
+    &quot;foo&quot;,
+    &quot;foo&quot;,
+    &quot;foo&quot;,
+    &quot;foo&quot;,
+]
+</code></pre>
+<p>It appears that <code>foo.baz.module</code> is never marked as used, and ruff keeps adding <code>foo</code> in <code>__all__</code>.</p>
+<h3>Version</h3>
+<p>da188d5cf654d7ac5a1ff3606d2baef78fa63d70</p>
+<h3>Context</h3>
+<p>Ran into this bug when I upgraded ruff to 0.14.10 in mlflow/mlflow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "F401 fix causes infinite loop adding duplicates to __all__" to "F401 fix causes infinite loop adding duplicates to `__all__`" by @harupy on 2025-12-27 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-27 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-27 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-27 15:05</div>
+            <div class="timeline-body"><p>Thanks for the report! I suspect this is related to our recent submodule import changes. cc @dylwil3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/22359.html">astral-sh/ruff#22359</a> on 2026-01-03 16:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

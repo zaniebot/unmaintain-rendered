@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import-related mdtests aren't isolated - astral-sh/ruff #15027</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Import-related mdtests aren't isolated</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15027">#15027</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2024-12-16 23:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-16 23:27</div>
+            <div class="timeline-body"><p>When testing #15026 I got spurious test failures that look like the different test cases within an mdtest file aren't as isolated as they should be:</p>
+<p>At commit 65da13900cd07c365159a67a6e1cda6442030e2f, the <code>Relative - Dotted</code> test fails when you test the entire file:</p>
+<pre><code>$ cargo test -p red_knot_python_semantic -- mdtest__import_relative
+[snip]
+relative.md - Relative - Dotted
+  crates/red_knot_python_semantic/resources/mdtest/import/relative.md:39 unexpected error: [unresolved-import] &quot;Cannot resolve import `.foo.bar.baz`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/import/relative.md:41 unmatched assertion: revealed: Literal[42]
+  crates/red_knot_python_semantic/resources/mdtest/import/relative.md:41 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+</code></pre>
+<p>but pass when you run that test by itself:</p>
+<pre><code>$ env MDTEST_TEST_FILTER=&quot;relative.md - Relative - Dotted&quot; cargo test -p red_knot_python_semantic -- mdtest__import_relative
+</code></pre>
+<p>Renaming the files in that one test case to be unique within the mdtest file (c5fd3c64ae94e937fb3bd2c913830d8cb246df74) also causes test to pass for both invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2024-12-16 23:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-16 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-17 07:51</div>
+            <div class="timeline-body"><p>I haven't figured out the failure yet but I think the test failing is the <em>expected</em> output because the <code>__init__.py</code> files are missing for the <code>bar</code> and <code>foo</code> package:</p>
+<pre><code>```toml
+log = true
+```
+
+```py path=package/__init__.py
+```
+
+```py path=package/foo/__init__.py
+```
+
+```py path=package/foo/bar/__init__.py
+```
+
+```py path=package/foo/bar/baz.py
+X = 42
+```
+
+```py path=package/bar.py
+from .foo.bar.baz import X
+
+reveal_type(X)  # revealed: Literal[42]
+```
+</code></pre>
+<p>Edit: Never mind, I guess it is a namespace package?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15030.html">astral-sh/ruff#15030</a> on 2024-12-17 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-17 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-17 11:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

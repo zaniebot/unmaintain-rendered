@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disallow suppressing CancelledError - astral-sh/ruff #19013</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disallow suppressing CancelledError</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19013">#19013</a>
+        opened by <a href="https://github.com/Dreamsorcerer">@Dreamsorcerer</a>
+        on 2025-06-28 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Dreamsorcerer">@Dreamsorcerer</a> on 2025-06-28 17:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Disallow suppressing a CancelledError in most cases.</p>
+<p>i.e.</p>
+<pre><code>try:
+    ...
+except asyncio.CancelledError:
+    ...  # Code without an unconditional (re-)raise.
+</code></pre>
+<h3>Reasoning</h3>
+<p>Suppressing cancellations is difficult to get right, and a developer should, at the very least, confirm they've understood the implications and different situations that a cancellation may occur.</p>
+<p>A noqa comment can be used by the developer to confirm they've understood this. Alternatively, a couple of safe code patterns may be allowed without needing the noqa. Probably, if there is both an <code>if task.done():</code> condition and an <code>if asyncio.current_task().cancelling()</code> check in the handler, then the warning is not needed (also, if there is an unconditional raise).</p>
+<p>Documentation could link to https://superfastpython.com/asyncio-task-cancellation-best-practices/#Practice_1_Do_Not_Consume_CancelledError for example.</p>
+<p>Possibly a separate rule could be to ensure that code which does suppress the exception also calls .uncancel():
+https://superfastpython.com/asyncio-cancel-task-cancellation/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wemake-services/wemake-python-styleguide/issues/2835.html">wemake-services/wemake-python-styleguide#2835</a> on 2025-06-28 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-28 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-06-28 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dreamsorcerer">@Dreamsorcerer</a> on 2025-07-28 15:17</div>
+            <div class="timeline-body"><p>Looks like this is basically covered by ASYNC103 in flake8-async, but not currently implemented in ruff. The above description also includes some potential improvements on that rule.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script inline python requirement not respected when .python-version file is in project - astral-sh/uv #9393</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Script inline python requirement not respected when .python-version file is in project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9393">#9393</a>
+        opened by <a href="https://github.com/Magglish">@Magglish</a>
+        on 2024-11-24 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Magglish">@Magglish</a> on 2024-11-24 10:30</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I'm really exicted that we can specify python version and libraries dependency for scripts in <code>uv</code> and this thing can convinced me to move from <code>poetry</code> to <code>uv</code>.</p>
+<p><strong>Description</strong></p>
+<p>Unfortunately, I've encounter an issue which I don't if it's a bug or expected behaviour.
+The problem is that script inline python requirement is not respected by <code>uv</code> when <code>.python-version</code> file is specified in the same directory.</p>
+<p><strong>Steps to reproduce:</strong></p>
+<ol>
+<li><p>OS Version: Ubuntu 22.04 LTS</p>
+</li>
+<li><p><code>uv</code> version: <strong>0.5.4</strong> (installed through official installation script as mentioned in documentation)</p>
+</li>
+<li><p><code>.python-version</code> contains:</p>
+</li>
+</ol>
+<pre><code>3.12.7
+</code></pre>
+<ol start="4">
+<li><code>example.py</code> script with dependencies:</li>
+</ol>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;==3.11.5&quot;
+# dependencies = [
+#   &quot;rich==13.9.4&quot;,
+# ]
+# ///
+
+import sys
+import time
+from rich.progress import track
+
+for i in track(range(20), description=&quot;For example:&quot;):
+    time.sleep(0.05)
+print(sys.version)
+</code></pre>
+<ol start="5">
+<li>Create venv with <code>uv</code></li>
+</ol>
+<pre><code class="language-bash">uv venv
+</code></pre>
+<ol start="6">
+<li>Run <code>example.py</code></li>
+</ol>
+<pre><code class="language-bash">uv run example.py
+</code></pre>
+<p>What we see:</p>
+<ol>
+<li>warning: The Python request from <code>.python-version</code> resolved to Python 3.12.7, which is incompatible with the script's Python requirement: <code>==3.11.5</code></li>
+<li><code>print(sys.version)</code> returns <code>3.12.7</code> but not <code>3.11.5</code></li>
+</ol>
+<p>What should we see:</p>
+<p>The script should be run with python 3.11.5, but it's not.</p>
+<p><strong>Alternative</strong></p>
+<p>We can run <code>example.py</code> with</p>
+<pre><code class="language-bash">uv run --python 3.11.5 example.py
+</code></pre>
+<p>But this means that the inline metadata requirements are not being used at all.</p>
+<p>Is this a bug or a feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-24 10:57</div>
+            <div class="timeline-body"><p>It has a warning, so I personally think it's an expected behavior.</p>
+<pre><code>warning: The Python request from `.python-version` resolved to Python 3.12.7, which is incompatible with the script's Python requirement: `==3.11.5`
+</code></pre>
+<p>Personally, I believe that if the script has a specified version, we ought to adhere to it unless a different version is explicitly defined via the CLI.
+However, since uv run is categorized as a project API, it is also reasonable for it to respect the .python-version file under the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Magglish">@Magglish</a> on 2024-11-24 12:02</div>
+            <div class="timeline-body"><p>In my opinion, if the <code>uv</code> wants to respect the inline metadata requirements presented in the scripts then all requirements should be respected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-24 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-24 16:29</div>
+            <div class="timeline-body"><p>Yeah I believe this is intentional. Another option would be to throw a hard error because you have conflicting requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 23:33</div>
+            <div class="timeline-body"><p>I think if the <code>.python-version</code> conflicts with a script's Python requirement, we should prefer the script's definition. This is consistent with projects — which won't use a <code>.python-version</code> file from a parent directory if it conflicts with their requirement. Since scripts are intended to be self-contained, I think all the <code>.python-version</code> pins could be considered as from a &quot;parent&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-11-25 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 23:35</div>
+            <div class="timeline-body"><p>So in that case, we would respect <code>.python-version</code> if it's consistent, and ignore it otherwise? (Not disagreeing, just confirming.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 00:33</div>
+            <div class="timeline-body"><p>Yeah, that's the suggestion. I think we'd at least want to log that we were ignoring it though.</p>
+<blockquote>
+<p>This is consistent with projects — which won't use a <code>.python-version</code> file from a parent directory if it conflicts with their requirement.</p>
+</blockquote>
+<p>This is actually wrong. I previously implemented this behavior, but then we decided to stop <code>.python-version</code> file discovery at the workspace boundary which eliminated this complexity.</p>
+<p>I'm not sure if this changes my mind, but it definitely lowers my certainty. I feel like <code>.python-version</code> is more project-focused than script-focused, so my intuition is that we should reverse the existing behavior.</p>
+<p>For reference, the current warning is implemented at https://github.com/astral-sh/uv/blob/5759cb9891c0d3ca8dca67f7518e7e439018beea/crates/uv/src/commands/project/run.rs#L212-L225</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Magglish">@Magglish</a> on 2024-12-09 07:25</div>
+            <div class="timeline-body"><p>@zanieb did your team had a chance to talk about this issue and decide? Is there a chance that you will revert the implementation and the script inline requirements for python version will be respected? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Magglish">@Magglish</a> on 2024-12-19 11:37</div>
+            <div class="timeline-body"><p>Bump</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ckutlu">@ckutlu</a> on 2024-12-29 18:45</div>
+            <div class="timeline-body"><p>Bump.</p>
+<p>I ran into this while writing a CLI helper for a library I'm working on. The library has to support python 3.9 while the CLI helper, being completely decoupled from the project apart from being hosted in the same repo, needs to be &gt;3.9 because of a bug in one of its dependencies for older python versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coezbek">@coezbek</a> on 2025-09-28 15:39</div>
+            <div class="timeline-body"><p>The documentation on this is currently misleading (see https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies). It says:</p>
+<pre><code>uv also respects Python version requirements:
+
+example.py
+
+# /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = []
+# ///
+
+# Use some syntax added in Python 3.12
+type Point = tuple[float, float]
+print(Point)
+
+Note: The dependencies field must be provided even if empty.
+
+uv run will search for and use the required Python version. The Python version will download if it is not 
+installed — see the documentation on [Python versions](https://docs.astral.sh/uv/concepts/python-versions/) 
+for more details.
+</code></pre>
+<p>As far as I can see, <code>uv</code> doesn't search and use the required Python version, but rather it uses the version specified in <code>.python-version</code> in the current or all parent folders and just throws a warning if there is a mismatch.</p>
+<p>If <code>.python-version</code> is missing then the resolution works as expected and documented.</p>
+<p>Maybe to summarize what I think should be the requirements of python version resolution when running scripts:</p>
+<ul>
+<li>If a script contains a version requirement, then this requirement is fulfilled or the run is aborted.</li>
+<li>If a <code>.python-version</code> is available and it matches the <code>requires-python</code>, then this version of python is used to run the script.</li>
+<li>If no <code>.python-version</code> is available, the lowest (?) version fulfilling the requirement which is already installed is used.</li>
+<li>If no python is installed fulfilling the requirement, <code>uv</code> will download the lowest (?) version fulfilling the <code>requires-python</code> version.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:37 UTC
+    </footer>
+</body>
+</html>

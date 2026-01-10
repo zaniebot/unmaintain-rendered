@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't show global options - clap-rs/clap #5355</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't show global options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5355">#5355</a>
+        opened by <a href="https://github.com/nwalfield">@nwalfield</a>
+        on 2024-02-16 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nwalfield">@nwalfield</a> on 2024-02-16 12:50</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.0</p>
+<h3>Describe your use case</h3>
+<p><a href="https://gitlab.com/sequoia-pgp/sequoia-sq"><code>sq</code></a>, the command-line frontend for <a href="https://gitlab.com/sequoia-pgp/sequoia">sequoia-openpgp</a>, has a number of global options.  These are shown in the help output of all subcommands, which makes the <code>--help</code> output of the subcommands hard to read.  In particular, the salient information is hidden.  Consider:</p>
+<pre><code>$ sq cert --help
+Manages certificates
+
+We use the term &quot;certificate&quot;, or &quot;cert&quot; for short, to refer to
+OpenPGP keys that do not contain secrets.  This subcommand provides
+primitives to generate and otherwise manipulate certs.
+
+Conversely, we use the term &quot;key&quot; to refer to OpenPGP keys that do
+contain secrets.  See `sq key` for operations on keys.
+
+Usage: sq cert [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  import  Imports certificates into the local certificate store
+  export  Exports certificates from the local certificate store
+  lint    Checks certificates for issues
+
+Options:
+      --cert-store &lt;PATH&gt;
+          Specifies the location of the certificate store.  By default, sq uses the
+          OpenPGP certificate directory at `$HOME/.local/share/pgp.cert.d`, and
+          creates it if it does not exist.
+          
+          [env: SQ_CERT_STORE=]
+
+  -f, --force
+          Overwrites existing files
+
+      --keyring &lt;PATH&gt;
+          Specifies the location of a keyring to use.  Keyrings are used in addition
+          to any certificate store.  The content of the keyring is not imported into
+          the certificate store.  When a certificate is looked up, it is looked up in
+          all keyrings and any certificate store, and the results are merged together.
+
+      --known-notation &lt;NOTATION&gt;
+          Adds NOTATION to the list of known notations. This is used when validating
+          signatures. Signatures that have unknown notations with the critical bit set
+          are considered invalid.
+
+      --no-cert-store
+          Disables the use of a certificate store.  Normally sq uses the user's
+          standard cert-d, which is located in `$HOME/.local/share/pgp.cert.d`.
+
+      --output-format &lt;FORMAT&gt;
+          Produces output in FORMAT, if possible
+          
+          [env: SQ_OUTPUT_FORMAT=]
+          [default: human-readable]
+
+          Possible values:
+          - human-readable: Output that is meant to be read by humans, instead of
+            programs
+          - json:           Output as JSON
+
+      --output-version &lt;VERSION&gt;
+          Produces output variant VERSION, such as 0.0.0. The default is the newest
+          version. The output version is separate from the version of the sq program.
+          To see the current supported versions, use output-versions subcommand.
+          
+          [env: SQ_OUTPUT_VERSION=]
+
+      --pep-cert-store &lt;PATH&gt;
+          Specifies the location of a pEp certificate store.  sq does not use a pEp
+          certificate store by default; it must be explicitly enabled using this
+          argument or the corresponding environment variable, PEP_CERT_STORE.  The pEp
+          Engine's default certificate store is at `$HOME/.pEp/keys.db`.
+          
+          [env: PEP_CERT_STORE=]
+
+      --time &lt;TIME&gt;
+          Sets the reference time as an ISO 8601 formatted timestamp.  Normally,
+          commands use the current time as the reference time.  This argument allows
+          the user to use a difference reference time.  For instance, when creating a
+          key using `sq key generate`, the creation time is normally set to the
+          current time, but can be overridden using this option.  Similarly, when
+          verifying a message, the message is verified with respect to the current
+          time.  This option allows the user to use a different time.
+          
+          TIME is interpreted as an ISO 8601 timestamp.  To set the certification time
+          to July 21, 2013 at midnight UTC, you can do:
+          
+          $ sq --time 20130721 verify msg.pgp
+          
+          To include a time, say 5:50 AM, add a T, the time and optionally the
+          timezone (the default timezone is UTC):
+          
+          $ sq --time 20130721T0550+0200 verify msg.pgp
+
+      --trust-root &lt;FINGERPRINT|KEYID&gt;
+          Considers the specified certificate to be a trust root. Trust roots are used
+          by trust models, e.g., the Web of Trust, to authenticate certificates and
+          User IDs.
+
+  -v, --verbose
+          Be more verbose.
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+</code></pre>
+<p><code>sq cert</code> has one option, <code>--help</code>; all of the other options are global options.</p>
+<p>We'd like the output of <code>--help</code> to make it easier for readers to find the most relevant information.</p>
+<h3>Describe the solution you'd like</h3>
+<p>One idea we had is that clap could provide a mechanism to have <code>--help</code> only show local arguments, and perhaps mention that global arguments are described in the top-level <code>--help</code> output.  Doing this, the above output would be changed to something like:</p>
+<pre><code>$ sq cert --help
+Manages certificates
+
+We use the term &quot;certificate&quot;, or &quot;cert&quot; for short, to refer to
+OpenPGP keys that do not contain secrets.  This subcommand provides
+primitives to generate and otherwise manipulate certs.
+
+Conversely, we use the term &quot;key&quot; to refer to OpenPGP keys that do
+contain secrets.  See `sq key` for operations on keys.
+
+Usage: sq cert [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  import  Imports certificates into the local certificate store
+  export  Exports certificates from the local certificate store
+  lint    Checks certificates for issues
+
+Options:
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+Global options:
+
+  See &quot;sq --help&quot; for a description of the global options.
+</code></pre>
+<p>from which we think it is easier to extract the most important information.</p>
+<p>I see several two ways to add support for this to <code>clap</code>:</p>
+<ul>
+<li><p>There could be an option for <code>Command</code>s similar to <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.hide_possible_values"><code>Command::hide_possible_values</code></a>, perhaps <code>Command::hide_non_local_arguments</code>.</p>
+</li>
+<li><p><a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.help_template"><code>Command::help_template</code></a> could distinguish between local and global options.  That is, in addition to <code>{options}</code>, which currently shows the local and global options, there could be <code>{local-options}</code>, <code>{global-options}</code>, and <code>{see-global-options}</code>.  The third would expand to the empty string if there are no global options and otherwise to a section, as above.</p>
+</li>
+</ul>
+<h3>Alternatives, if applicable</h3>
+<p>Another way to hide the global options in <code>--help</code> would be to change the global options into top-level options.  This changes the CLI, but may be worth it.</p>
+<p>We could also have a struct for all of the global options in which each argument is <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.hide">hidden</a>, and then manually include and flatten it into each subcommand.  The disadvantage is that it results in a bit of code duplication.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @nwalfield on 2024-02-16 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-16 13:27</div>
+            <div class="timeline-body"><p>If the argument truly is global, the user needs some kind of indication that it is supported on the command.  You mention having a pointer to users about this.  This is somewhat like #5354 where the approach is we give developer the option to not show something and the developer is responsible for adding the <code>after_help</code>.</p>
+<p>Another option not mentioned is to put the globals under their own <code>help_heading</code> and maybe even set a <code>display_order</code> on them (<code>next_display_order</code> can help) so that they appear last.</p>
+<p>You'd then get</p>
+<pre><code>$ sq cert --help
+Manages certificates
+
+We use the term &quot;certificate&quot;, or &quot;cert&quot; for short, to refer to
+OpenPGP keys that do not contain secrets.  This subcommand provides
+primitives to generate and otherwise manipulate certs.
+
+Conversely, we use the term &quot;key&quot; to refer to OpenPGP keys that do
+contain secrets.  See `sq key` for operations on keys.
+
+Usage: sq cert [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  import  Imports certificates into the local certificate store
+  export  Exports certificates from the local certificate store
+  lint    Checks certificates for issues
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')
+
+Global options:
+      --cert-store &lt;PATH&gt;
+          Specifies the location of the certificate store.  By default, sq uses the
+          OpenPGP certificate directory at `$HOME/.local/share/pgp.cert.d`, and
+          creates it if it does not exist.
+          
+          [env: SQ_CERT_STORE=]
+
+  -f, --force
+          Overwrites existing files
+
+      --keyring &lt;PATH&gt;
+          Specifies the location of a keyring to use.  Keyrings are used in addition
+          to any certificate store.  The content of the keyring is not imported into
+          the certificate store.  When a certificate is looked up, it is looked up in
+          all keyrings and any certificate store, and the results are merged together.
+
+      --known-notation &lt;NOTATION&gt;
+          Adds NOTATION to the list of known notations. This is used when validating
+          signatures. Signatures that have unknown notations with the critical bit set
+          are considered invalid.
+
+      --no-cert-store
+          Disables the use of a certificate store.  Normally sq uses the user's
+          standard cert-d, which is located in `$HOME/.local/share/pgp.cert.d`.
+
+      --output-format &lt;FORMAT&gt;
+          Produces output in FORMAT, if possible
+          
+          [env: SQ_OUTPUT_FORMAT=]
+          [default: human-readable]
+
+          Possible values:
+          - human-readable: Output that is meant to be read by humans, instead of
+            programs
+          - json:           Output as JSON
+
+      --output-version &lt;VERSION&gt;
+          Produces output variant VERSION, such as 0.0.0. The default is the newest
+          version. The output version is separate from the version of the sq program.
+          To see the current supported versions, use output-versions subcommand.
+          
+          [env: SQ_OUTPUT_VERSION=]
+
+      --pep-cert-store &lt;PATH&gt;
+          Specifies the location of a pEp certificate store.  sq does not use a pEp
+          certificate store by default; it must be explicitly enabled using this
+          argument or the corresponding environment variable, PEP_CERT_STORE.  The pEp
+          Engine's default certificate store is at `$HOME/.pEp/keys.db`.
+          
+          [env: PEP_CERT_STORE=]
+
+      --time &lt;TIME&gt;
+          Sets the reference time as an ISO 8601 formatted timestamp.  Normally,
+          commands use the current time as the reference time.  This argument allows
+          the user to use a difference reference time.  For instance, when creating a
+          key using `sq key generate`, the creation time is normally set to the
+          current time, but can be overridden using this option.  Similarly, when
+          verifying a message, the message is verified with respect to the current
+          time.  This option allows the user to use a different time.
+          
+          TIME is interpreted as an ISO 8601 timestamp.  To set the certification time
+          to July 21, 2013 at midnight UTC, you can do:
+          
+          $ sq --time 20130721 verify msg.pgp
+          
+          To include a time, say 5:50 AM, add a T, the time and optionally the
+          timezone (the default timezone is UTC):
+          
+          $ sq --time 20130721T0550+0200 verify msg.pgp
+
+      --trust-root &lt;FINGERPRINT|KEYID&gt;
+          Considers the specified certificate to be a trust root. Trust roots are used
+          by trust models, e.g., the Web of Trust, to authenticate certificates and
+          User IDs.
+
+  -v, --verbose
+          Be more verbose.
+</code></pre>
+<p>A workaround for any of this is to re-define your globals in the subcommand but hidden.  Clap will still propagate the value for these options up to the parent command, behaving the same.  For an example of cargo taking advantage of this overriding of globals, see rust-lang/cargo#12959.</p>
+<p>Considering the alternatives, the workarounds, and the niche nature of this (from my perspective), I would be hesitant to add a new toggle within clap.  Each toggle comes with a binary size, compile time, and API bloat cost and we try to weigh that against the value added.  In this case, I'm not seeing enough value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nwalfield">@nwalfield</a> on 2024-02-16 13:47</div>
+            <div class="timeline-body"><p>Thanks for the pointers.  I'll take a look and see if I can come up with something that works for us!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nwalfield">@nwalfield</a> on 2024-02-21 13:50</div>
+            <div class="timeline-body"><p><a href="https://gitlab.com/sequoia-pgp/sequoia-sq/-/merge_requests/112">Here's what we ended up doing</a>.</p>
+<p>Basically, <code>cli</code> is a <code>Clap::Command</code>, where the global options are configured to be shown.  I now use <code>cli::try_get_matches</code> to figure out if the help output should be displayed.  If the help output should be displayed, I compare the help output (<code>err.render()</code>) to <code>cli.render_long_help()</code> and <code>cli.render_help()</code> to determine if the top-level help is being displayed.  If not so, I rewrite <code>cli</code> to hide the global options (<code>cli::build</code>).</p>
+<p>If you have ideas on how to further improve this, I'd be happy to hear them!</p>
+<pre><code class="language-rust">    let mut cli = cli::build(true);
+    let matches = cli.clone().try_get_matches();
+    let c = match matches {
+        Ok(matches) =&gt; {
+            cli::SqCommand::from_arg_matches(&amp;matches)?
+        }
+        Err(err) =&gt; {
+            use clap::error::ErrorKind;
+            if err.kind() == ErrorKind::DisplayHelp
+                || err.kind() == ErrorKind::DisplayHelpOnMissingArgumentOrSubcommand
+            {
+                let output = err.render();
+                let output = if output == cli.render_long_help() {
+                    Some(cli::build(false).render_long_help())
+                } else if output == cli.render_help() {
+                    Some(cli::build(false).render_help())
+                } else {
+                    None
+                };
+
+                if let Some(output) = output {
+                    if err.use_stderr() {
+                        eprint!(&quot;{}&quot;, output);
+                    } else {
+                        print!(&quot;{}&quot;, output);
+                    }
+                    std::process::exit(err.exit_code());
+                }
+            }
+            err.exit();
+        }
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-02-21 15:15</div>
+            <div class="timeline-body"><p>... that seems a lot more brittle than what I suggested earlier</p>
+<blockquote>
+<p>A workaround for any of this is to re-define your globals in the subcommand but hidden. Clap will still propagate the value for these options up to the parent command, behaving the same. For an example of cargo taking advantage of this overriding of globals, see https://github.com/rust-lang/cargo/pull/12959.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../moonbitlang/moon/pulls/281.html">moonbitlang/moon#281</a> on 2024-09-11 02:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:33 UTC
+    </footer>
+</body>
+</html>

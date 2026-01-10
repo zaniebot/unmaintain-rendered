@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python install` should respect `pyproject.toml`'s `requires-python` value - astral-sh/uv #16621</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python install` should respect `pyproject.toml`'s `requires-python` value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16621">#16621</a>
+        opened by <a href="https://github.com/adonh">@adonh</a>
+        on 2025-11-06 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adonh">@adonh</a> on 2025-11-06 20:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As implied by documentation</p>
+<blockquote>
+<p><a href="https://docs.astral.sh/uv/concepts/python-versions/#project-python-versions">Project Python versions</a>
+uv will respect Python requirements defined in requires-python in the pyproject.toml file during project command invocations. The first Python version that is compatible with the requirement will be used, unless a version is otherwise requested, e.g., via a .python-version file or the --python flag.</p>
+</blockquote>
+<p><code>uv python install</code> should respect <code>pyproject.toml</code>'s <code>requires-python</code> value.
+As far as python install command, pyproject.toml seems to be completely ignored.
+But it does pay attention to .python-version correctly.</p>
+<p>OS reported: MacOS &amp; Debian (at least)</p>
+<p>Steps to reproduce:</p>
+<pre><code>% cat pyproject.toml
+[project]
+name = &quot;xx&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.13.9&quot;
+dependencies = []
+</code></pre>
+<pre><code>% uv python install -v
+DEBUG uv 0.9.7
+DEBUG Acquired lock for `/root/.local/share/uv/python`
+DEBUG No Python version file found in ancestors of working directory: /data/xx
+DEBUG No installation found for request `default (cpython-any-linux-aarch64-gnu)`
+DEBUG Found download `cpython-3.14.0-linux-aarch64-gnu` for request `default (cpython-any-linux-aarch64-gnu)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20251028/cpython-3.14.0%2B20251028-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.14.0-20251028-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /root/.local/share/uv/python/.temp/.tmpxJk7zx
+Downloading cpython-3.14.0-linux-aarch64-gnu (download) (28.6MiB)
+ Downloading cpython-3.14.0-linux-aarch64-gnu (download)
+DEBUG Moving /root/.local/share/uv/python/.temp/.tmpxJk7zx/python to /root/.local/share/uv/python/cpython-3.14.0-linux-aarch64-gnu
+DEBUG Installed executable at `/root/.local/bin/python3.14` for cpython-3.14.0-linux-aarch64-gnu
+Installed Python 3.14.0 in 2.34s
+ + cpython-3.14.0-linux-aarch64-gnu (python3.14)
+DEBUG Released lock at `/root/.local/share/uv/python/.lock`
+</code></pre>
+<pre><code>% echo &quot;3.13.9&quot; &gt; .python-version
+% uv python install -v
+DEBUG uv 0.9.7
+DEBUG Acquired lock for `/root/.local/share/uv/python`
+DEBUG Reading Python requests from version file at `/data/xx/.python-version`
+DEBUG Found Python version file at: .python-version
+DEBUG No installation found for request `3.13.9 (cpython-3.13.9-linux-aarch64-gnu)`
+DEBUG Found download `cpython-3.13.9-linux-aarch64-gnu` for request `3.13.9 (cpython-3.13.9-linux-aarch64-gnu)`
+DEBUG Using request timeout of 30s
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20251028/cpython-3.13.9%2B20251028-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Extracting cpython-3.13.9-20251028-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /root/.local/share/uv/python/.temp/.tmpyICnd8
+Downloading cpython-3.13.9-linux-aarch64-gnu (download) (27.7MiB)
+ Downloading cpython-3.13.9-linux-aarch64-gnu (download)
+DEBUG Moving /root/.local/share/uv/python/.temp/.tmpyICnd8/python to /root/.local/share/uv/python/cpython-3.13.9-linux-aarch64-gnu
+DEBUG Installed executable at `/root/.local/bin/python3.13` for cpython-3.13.9-linux-aarch64-gnu
+Installed Python 3.13.9 in 2.28s
+ + cpython-3.13.9-linux-aarch64-gnu (python3.13)
+DEBUG Released lock at `/root/.local/share/uv/python/.lock`
+</code></pre>
+<h3>Platform</h3>
+<p><code>Linux 6.10.14-linuxkit aarch64 GNU/Linux</code> and <code>Darwin 24.6.0 arm64 Darwin</code> at a minimum (MacOS &amp; Debian)</p>
+<h3>Version</h3>
+<p>0.9.7</p>
+<h3>Python version</h3>
+<p>irrelevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @adonh on 2025-11-06 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-11-06 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-11-06 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adonh">@adonh</a> on 2025-11-07 04:13</div>
+            <div class="timeline-body"><p>thx for the quick review.</p>
+<p>i should have noted that there is indeed a bug, either in the above behavior, or in documentation.
+the section &quot;Python versions&quot; appears to imply that uv python install will indeed respect pyproject.toml:</p>
+<blockquote>
+<p><a href="https://docs.astral.sh/uv/concepts/python-versions/#project-python-versions">Project Python versions</a>
+uv will respect Python requirements defined in requires-python in the pyproject.toml file during project command invocations. The first Python version that is compatible with the requirement will be used, unless a version is otherwise requested, e.g., via a .python-version file or the --python flag.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-07 04:19</div>
+            <div class="timeline-body"><p><code>uv python install</code> isn't one of the &quot;project&quot; commands. If you were to instead use <code>uv sync</code> or <code>uv run</code>, we would respect the <code>requires-python</code> value. It's sort of an open question if <code>uv python install</code> should read the <code>pyproject.toml</code> for this purpose, and I believe it's &quot;by design&quot; that it does not right now. I think it's definitely reasonable to consider doing so though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-11-07 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adonh">@adonh</a> on 2025-11-07 22:06</div>
+            <div class="timeline-body"><p>understood- that this is a subjective feature that does not exist today.</p>
+<p>perhaps <code>uv python install</code> could gain an optional flag to follow python version settings from a project metadata file?
+if possible, if you can turn this ticket into a feature suggestion then?</p>
+<p>at a minimum, do you think the documentation can be clarified? as it reads now, given that the section quoted above (https://docs.astral.sh/uv/concepts/python-versions/#upgrading-python-versions) sits right in between sections that are discussing various aspects of invoking <code>uv python ...</code>, it's not clear at all that the reference to &quot;during project command invocations&quot; does <strong>not</strong> apply to <code>uv python ...</code>.</p>
+<p>Thx again!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

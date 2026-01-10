@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect ANN201 autofix - astral-sh/ruff #9304</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect ANN201 autofix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9304">#9304</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2023-12-29 08:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-29 08:20</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code>from somewhere import get_cfg
+
+def lookup_cfg(cfg_description):
+    cfg = get_cfg(cfg_description)
+    if cfg is not None:
+        return cfg
+    raise AttributeError(f&quot;No cfg found matching {cfg_description}&quot;)
+</code></pre>
+<p>ANN201 suggests the following incorrect fix:</p>
+<pre><code>λ ruff check --select=ANN2 x.py --fix --unsafe-fixes --diff
+--- x.py
++++ x.py
+@@ -1,6 +1,7 @@
+ from somewhere import get_cfg
++from typing import Never
+ 
+-def lookup_cfg(cfg_description):
++def lookup_cfg(cfg_description) -&gt; Never:
+     cfg = get_cfg(cfg_description)
+     if cfg is not None:
+         return cfg
+
+Would fix 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-29 08:27</div>
+            <div class="timeline-body"><p>Presumably relates to https://github.com/astral-sh/ruff/pull/9206</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-29 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-29 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9310.html">astral-sh/ruff#9310</a> on 2023-12-29 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-29 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-12-30 09:08</div>
+            <div class="timeline-body"><p>Thanks! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-01-03 01:04</div>
+            <div class="timeline-body"><p>I think the behaviour still isn't quite right:</p>
+<pre><code>λ cat xx.py
+def foo(a):
+    if a &gt; 5:
+        raise ValueError(&quot;oops&quot;)
+    else:
+        print(&quot;nope&quot;)
+λ ruff --version
+ruff 0.1.11
+λ ruff check xx.py --select=ANN2 --fix --unsafe-fixes --diff
+--- xx.py
++++ xx.py
+@@ -1,4 +1,5 @@
+-def foo(a):
++from typing import Never
++def foo(a) -&gt; Never:
+     if a &gt; 5:
+         raise ValueError(&quot;oops&quot;)
+     else:
+
+Would fix 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-03 01:27</div>
+            <div class="timeline-body"><p>🤦 One more try...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-01-03 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9377.html">astral-sh/ruff#9377</a> on 2024-01-03 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-03 03:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

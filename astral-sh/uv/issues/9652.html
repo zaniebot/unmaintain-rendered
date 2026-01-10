@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv run --watch script.py` command to rerun `uv run` on `.py` file changes - astral-sh/uv #9652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv run --watch script.py` command to rerun `uv run` on `.py` file changes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9652">#9652</a>
+        opened by <a href="https://github.com/nikivdev">@nikivdev</a>
+        on 2024-12-05 01:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nikivdev">@nikivdev</a> on 2024-12-05 01:00</div>
+            <div class="timeline-body"><p>Essentially <a href="https://bun.sh/docs/runtime/hot">Bun watch mode</a> but with <code>uv</code>.</p>
+<p>Some more context for this <a href="https://discord.com/channels/1039017663004942429/1039017663512449056/1314035275466407976">on Discord</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-12-05 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-05 01:17</div>
+            <div class="timeline-body"><p>Sounds cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-12-05 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/posutsai">@posutsai</a> on 2025-01-17 04:10</div>
+            <div class="timeline-body"><p>Hi @nikitavoloboev,
+Do you plan to send a PR? I am also interested in this feature. Not sure if I should start the development.
+Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 04:51</div>
+            <div class="timeline-body"><p>@Gankra started looking into this and noted there was some lurking complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-17 13:29</div>
+            <div class="timeline-body"><p>Two issues to resolve:</p>
+<ul>
+<li>how do we select which files to watch (first draft can just watch the script, but it would be nice if its deps could be watched)</li>
+<li>how do we &quot;properly&quot; cancel scripts on windows to rerun them (we have code for it on unix only, possible this is trivial but the existence of bespoke unix handling has me worried there's extra complexity)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nikivdev">@nikivdev</a> on 2025-01-17 14:23</div>
+            <div class="timeline-body"><p>I would look into how bun does that and copy that for <code>uv</code>. I never had issues there, I assume the only diff is the dep part but I never needed to rerun on dep changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10781.html">astral-sh/uv#10781</a> on 2025-01-21 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/breightend">@breightend</a> on 2025-04-04 15:01</div>
+            <div class="timeline-body"><p>Any updates on this? it would be an awesome feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-04 16:48</div>
+            <div class="timeline-body"><p>@zanieb @Gankra id be interested in working on this one - don't have any experience with windows dev though - thoughts on enabling for Unix only to start?</p>
+<p>Also - is the idea to implement specifically for script file paths or any target that can be passed in to &quot;run&quot;?</p>
+<p>Was just taking a look at the notify crate - thoughts on starting out with something like that for the watcher implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-08 20:28</div>
+            <div class="timeline-body"><p>@thejchap yes the notify crate (or maybe specifically notify_debouncer_mini which wraps it) is the right tool. The impls in mdbook are in my experience pretty reasonably to base this work off of:</p>
+<p>https://github.com/rust-lang/mdBook/blob/master/src/cmd/watch.rs
+https://github.com/rust-lang/mdBook/blob/master/src/cmd/watch/native.rs</p>
+<hr />
+<p>I would prefer if it were cross-platform, I think for the most part all the logic will be portable, so sure get it working on unix first and we'll figure it out from there.</p>
+<hr />
+<p>I believe for the first draft just taking a script to run is acceptable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-08 23:53</div>
+            <div class="timeline-body"><p>sounds good - and thanks for the mdbook pointers. will get into it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12847.html">astral-sh/uv#12847</a> on 2025-04-11 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-11 22:44</div>
+            <div class="timeline-body"><p>@Gankra got an MVP implementation here: https://github.com/astral-sh/uv/pull/12847</p>
+<p>pausing here for some early feedback. i left notes on a couple specific things that came up in the description (around exit codes/clearscreen behavior/debounce behavior), but any general feedback on the direction before i get in further is appreciated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-06-04 13:01</div>
+            <div class="timeline-body"><p>@zanieb @Gankra let me know if i can help/make any more progress on this one</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:45 UTC
+    </footer>
+</body>
+</html>

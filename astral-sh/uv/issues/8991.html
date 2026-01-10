@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: uv command to add `exclude-newer` with current date - astral-sh/uv #8991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: uv command to add `exclude-newer` with current date</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8991">#8991</a>
+        opened by <a href="https://github.com/tlambert03">@tlambert03</a>
+        on 2024-11-10 16:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tlambert03">@tlambert03</a> on 2024-11-10 16:45</div>
+            <div class="timeline-body"><p>Apologies if I missed an existing feature:
+I love the <code>exclude-newer</code> feature and wonder where there is a convenience to programmatically populate the exclude-newer field with the &quot;current&quot; timestamp:</p>
+<pre><code># [tool.uv]
+# exclude-newer = &quot;&lt;RFC 3339 NOW&gt;&quot;
+</code></pre>
+<p>(something to save looking up the current timestamp and manually editing the file).
+Looks like using something like <code>uv add --script myscript.py --exclude-newer &quot;2023-10-16T00:00:00Z&quot; some-package</code> doesn't add the tool.uv section</p>
+<p><em>edit</em>:
+to clarify, I'm looking for some command:</p>
+<pre><code class="language-sh">uv &lt;command&gt; &lt;target.py | project&gt;
+</code></pre>
+<p>that would add <code>exclude-newer = &lt;NOW&gt;</code> to the target</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2024-11-10 17:13</div>
+            <div class="timeline-body"><p>probably related to the hypothetical <code>uv config set</code> mentioned in https://github.com/astral-sh/uv/pull/8553</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 15:06</div>
+            <div class="timeline-body"><p>Hm. We could write <code>exclude-newer</code> during <code>uv add</code> without a <code>uv config set</code> feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-11-11 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-11-11 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2024-11-11 15:34</div>
+            <div class="timeline-body"><p>that would be cool.  I guess the partial &quot;mismatch&quot; there is that the <code>exclude-newer = ...</code> line that would be added to the config section really doesn't have any association with the specific package that was added with <code>uv add</code>.  And if someone wanted to &quot;repin&quot; the <code>exclude-newer</code> date to the current date, they would need to pick an existing package to re-add it just so that they could add the <code>--exclude-newer</code> flag, right?   Do you agree that it's a bit of a conceptual mismatch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 15:51</div>
+            <div class="timeline-body"><p>I don't think <code>uv add --exclude-newer</code> applies the exclusion to a single package — I think that option is global to the resolution. It's possible the behavior is different when we're reading a previous resolution from the lockfile, but I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 15:52</div>
+            <div class="timeline-body"><p>cc @charliermarsh who is likely to know how that interacts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2024-11-11 15:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think uv add --exclude-newer applies the exclusion to a single package — I think that option is global to the resolution.</p>
+</blockquote>
+<p>that's exactly my point.  and that's why i'm suggesting that it would be a little bit of an awkward/misleading solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kolibril13">@kolibril13</a> on 2024-11-26 09:15</div>
+            <div class="timeline-body"><p>there is <a href="https://github.com/manzt/juv">juv</a> (A toolkit for reproducible Jupyter notebooks, powered by uv) by @manzt<br />
+which has a <code>stamp</code> command to pin dependencies.</p>
+<pre><code># Pin a timestamp to constrain dependency resolution to a specific date
+juv stamp notebook.ipynb # now
+</code></pre>
+<p>https://github.com/manzt/juv?tab=readme-ov-file#usage</p>
+<p>maybe this can be an inspiration for a potential <code>--exclude-newer</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-11-26 12:44</div>
+            <div class="timeline-body"><blockquote>
+<p>maybe this can be an inspiration for a potential --exclude-newer flag.</p>
+</blockquote>
+<p>There is discussion about this in <a href="https://github.com/astral-sh/uv/pull/8553">the PR</a> linked above.</p>
+<p>fwiw, for now <code>juv stamp</code> also works for scripts (not only notebooks), and you can invoke it with <code>uvx</code>.</p>
+<pre><code class="language-sh"># Stamp “now”
+uv init —script foo.py
+uvx juv stamp foo.py
+
+# a specific (resolves to system tz)
+uvx juv stamp foo.py --date 2022-01-03
+
+# a git commit
+uvx juv stamp foo.py --rev e20c99
+uvx juv stamp foo.py --latest
+
+# Clear the pinned timestamp
+uvx juv stamp foo.py --clear
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:28 UTC
+    </footer>
+</body>
+</html>

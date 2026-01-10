@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: multiple --python-platform arguments - astral-sh/uv #3333</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: multiple --python-platform arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3333">#3333</a>
+        opened by <a href="https://github.com/dimostenis">@dimostenis</a>
+        on 2024-05-01 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimostenis">@dimostenis</a> on 2024-05-01 19:08</div>
+            <div class="timeline-body"><h3>Quickly:</h3>
+<p>Multiple platforms like:</p>
+<pre><code class="language-sh">uv pip compile pyproject.toml --python-platform=macos --python-platform=linux
+</code></pre>
+<h3>Slowly:</h3>
+<p>In our projects we develop on <em>macos</em>/<em>windows</em>, but deploy on <em>linux</em>.
+And often platform envs cant just be the same. Typically when working with <a href="https://pypi.org/project/torch/">pytorch</a> and friends.
+For convenience we use <a href="https://pypi.org/project/pip-compile-cross-platform/">pip-compile-cross-platform</a> to generate <em>requirements.txt</em> and then <code>uv</code> when installing.</p>
+<p>It would be cool if you allow multiple <code>--python-platform</code> arguments.</p>
+<p>Requirements file is ready by leveraging its constraint syntax I believe. Like shown below.</p>
+<p>Excerpt from our <em>requirements.txt</em> generated with <a href="https://pypi.org/project/pip-compile-cross-platform/">pip-compile-cross-platform</a>:</p>
+<pre><code class="language-python">...
+mkl==2021.4.0 ; python_version &gt;= &quot;3.12&quot; and python_version &lt; &quot;4.0&quot; and platform_system == &quot;Windows&quot;
+...
+nvidia-nvtx-cu12==12.1.105 ; platform_system == &quot;Linux&quot; and platform_machine == &quot;x86_64&quot; and python_version &gt;= &quot;3.12&quot; and python_version &lt; &quot;4.0&quot;
+...
+tbb==2021.12.0 ; python_version &gt;= &quot;3.12&quot; and python_version &lt; &quot;4.0&quot; and platform_system == &quot;Windows&quot;
+...
+</code></pre>
+<p>If you would support it, we could use <code>uv</code> <strong>everywhere</strong> &amp; for <strong>everything</strong>:)</p>
+<hr />
+<p>Thx for your contribution to our python community 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-05-02 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-05-06 07:48</div>
+            <div class="timeline-body"><p>You might be interested in the script in this issue: https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimostenis">@dimostenis</a> on 2024-05-06 15:45</div>
+            <div class="timeline-body"><p>This is excellent. However I needed to add <code>platform_machine</code> (<code>x86_64</code> / <code>aarch64</code>) to the mix and then it breaks (as it breaks our venvs without it in original post). <strong>Maybe correctly</strong>.</p>
+<p>Look at the tail of my output.</p>
+<pre><code class="language-python">...
+...
+nvidia-nvtx-cu12==12.1.105; platform_system == &quot;linux&quot; and platform_machine == &quot;x86_64&quot;
+tbb==2021.12.0; platform_system == &quot;win32&quot; and platform_machine == &quot;x86_64&quot;
+torch==2.3.0; (platform_system == &quot;win32&quot; and platform_machine == &quot;x86_64&quot;) or (platform_system == &quot;darwin&quot; and platform_machine == &quot;aarch64&quot;) or (platform_system == &quot;linux&quot; and platform_machine == &quot;x86_64&quot;) or (platform_system == &quot;linux&quot; and platform_machine == &quot;aarch64&quot;)
+torch==2.2.2; platform_system == &quot;darwin&quot; and platform_machine == &quot;x86_64&quot;
+uvloop==0.19.0; (platform_system == &quot;darwin&quot; and platform_machine == &quot;aarch64&quot;) or (platform_system == &quot;darwin&quot; and platform_machine == &quot;x86_64&quot;) or (platform_system == &quot;linux&quot; and platform_machine == &quot;x86_64&quot;) or (platform_system == &quot;linux&quot; and platform_machine == &quot;aarch64&quot;)
+</code></pre>
+<p>Mind doubled <code>torch</code>, which effectively leads to ignoring <code>torch</code> on any other arch than <code>&quot;darwin&quot; + &quot;x86_64&quot;</code>.</p>
+<p>I mean - it may actually be correct, as I am combining 5 requirements architectures (trying to cover company's dev machines + cloud):</p>
+<ul>
+<li><code>x86_64-pc-windows-msvc</code></li>
+<li><code>aarch64-apple-darwin</code></li>
+<li><code>x86_64-apple-darwin</code></li>
+<li><code>x86_64-manylinux_2_28</code></li>
+<li><code>aarch64-manylinux_2_28</code></li>
+</ul>
+<p>If I go with <code>pip-compile-cross-platform</code>, it goes like <code>torch==2.3.0 ; python_version &gt;= &quot;3.12&quot; and python_version &lt; &quot;4.0&quot;</code> for all archs. And it works, but honestly I cant try it for <code>darwin/x86_64</code> 🙈.</p>
+<p>As said above - maybe this is correct that there is no unified env across all archs. But if it could, it would be nice if <code>uv</code> could handle it.</p>
+<hr />
+<h2>Reproducing my steps</h2>
+<h3>Env requirements</h3>
+<p>These are <em>requirements.in</em></p>
+<pre><code>boto3
+colorama
+fastapi
+flair
+gunicorn
+httpx
+jarowinkler
+jsonschema
+orjson
+pandas
+pre-commit
+pydantic
+pydantic-settings
+pytest
+python-json-logger
+rapidfuzz
+scipy&lt;1.13  # gensim uses scipy.triu which is in 1.13, gensim fixed that but did not publish new release yet
+snowflake-connector-python[pandas]
+torch
+transformers
+</code></pre>
+<h3>Modified version of https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602</h3>
+<p>Because it was missing <code>platform_machine</code> and that did not work with our venv. Specifically all <code>nvidia-...</code> packages are <code>x86_64</code> only.</p>
+<p><code>scripts/env.py</code></p>
+<pre><code class="language-python">&quot;&quot;&quot;
+Based on https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602
+&quot;&quot;&quot;
+
+import argparse
+import copy
+import subprocess
+import sys
+import tempfile
+from collections import defaultdict
+from functools import cache
+from pathlib import Path
+from typing import Literal
+from typing import TypedDict
+
+from packaging.markers import Marker
+from packaging.requirements import Requirement
+
+PYTHON_VERSION = &quot;.&quot;.join(map(str, sys.version_info[:2]))  # eg. 3.12
+
+type Arch = Literal[
+    &quot;x86_64-pc-windows-msvc&quot;,
+    &quot;aarch64-apple-darwin&quot;,
+    &quot;x86_64-apple-darwin&quot;,
+    &quot;x86_64-manylinux_2_28&quot;,
+    &quot;aarch64-manylinux_2_28&quot;,
+]
+
+
+class Platform(TypedDict):
+    platform_machine: Literal[&quot;x86_64&quot;, &quot;aarch64&quot;]
+    platform_system: Literal[&quot;windows&quot;, &quot;darwin&quot;, &quot;linux&quot;]
+
+
+# company dev machines + k8s pods
+ENVIRONMENTS: dict[Arch, Platform] = {
+    &quot;x86_64-pc-windows-msvc&quot;: {
+        &quot;platform_machine&quot;: &quot;x86_64&quot;,
+        &quot;platform_system&quot;: &quot;windows&quot;,
+    },
+    &quot;aarch64-apple-darwin&quot;: {
+        &quot;platform_machine&quot;: &quot;aarch64&quot;,
+        &quot;platform_system&quot;: &quot;darwin&quot;,
+    },
+    &quot;x86_64-apple-darwin&quot;: {
+        &quot;platform_machine&quot;: &quot;x86_64&quot;,
+        &quot;platform_system&quot;: &quot;darwin&quot;,
+    },
+    &quot;x86_64-manylinux_2_28&quot;: {
+        &quot;platform_machine&quot;: &quot;x86_64&quot;,
+        &quot;platform_system&quot;: &quot;linux&quot;,
+    },
+    &quot;aarch64-manylinux_2_28&quot;: {
+        &quot;platform_machine&quot;: &quot;aarch64&quot;,
+        &quot;platform_system&quot;: &quot;linux&quot;,
+    },
+}
+
+
+@cache
+def arch_to_marker(arch: Arch) -&gt; str:
+    return (
+        f'platform_system == &quot;{ENVIRONMENTS[arch][&quot;platform_system&quot;]}&quot;'
+        f' and platform_machine == &quot;{ENVIRONMENTS[arch][&quot;platform_machine&quot;]}&quot;'
+        # f' and python_version == &quot;{PYTHON_VERSION}&quot;'
+    )
+
+
+def archs_to_marker(archs: list[Arch]) -&gt; Marker:
+    return Marker(&quot; or &quot;.join(f&quot;({arch_to_marker(env)})&quot; for env in archs))
+
+
+def strip_comments(s: str) -&gt; str:
+    if &quot;#&quot; in s:
+        return s[: s.index(&quot;#&quot;)].strip()
+    return s.strip()
+
+
+def parse_requirements_txt(req_file: Path) -&gt; list[str]:
+    entries = []
+    for line in req_file.read_text().split(&quot;\n&quot;):
+        entry = strip_comments(line)
+        if entry:
+            entries.append(entry)
+    return entries
+
+
+def cross_environment_lock(src_file: Path, system_python: bool) -&gt; str:
+    environments: tuple[Arch, ...] = tuple(ENVIRONMENTS.keys())
+
+    cmd: list[str] = [
+        &quot;uv&quot;,
+        &quot;pip&quot;,
+        &quot;compile&quot;,
+        &quot;--no-header&quot;,
+        &quot;--no-annotate&quot;,
+        &quot;--python-version&quot;,
+        PYTHON_VERSION,
+    ]
+
+    if system_python:
+        cmd.append(&quot;--system&quot;)  # because I run it in container
+    else:
+        cmd.extend([&quot;--python&quot;, sys.executable])  # force venv use
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        joined: dict[Requirement, list[Arch]] = defaultdict(list)
+        for i, environment in enumerate(environments):
+            out_file = Path(tmpdir) / f&quot;{src_file}.{i}&quot;
+            env_cmd: list[str] = [
+                *cmd,
+                str(src_file),
+                &quot;--output-file&quot;,
+                str(out_file),
+                &quot;--python-platform&quot;,
+                environment,
+            ]
+            subprocess.check_call(env_cmd, stdout=subprocess.DEVNULL)
+
+            for r in parse_requirements_txt(out_file):
+                joined[Requirement(r)].append(environment)
+
+        common = [r for r, envs in joined.items() if len(envs) == len(environments)]
+        cross_environment = [
+            (r, envs) for r, envs in joined.items() if len(envs) != len(environments)
+        ]
+        cross_environment.sort(key=lambda r: r[0].name)
+
+        output = [str(r) for r in common]
+        for _req, archs in cross_environment:
+            req = copy.copy(_req)  # make a copy
+            joint_marker = archs_to_marker(archs=archs)
+            if req.marker is None:
+                req.marker = joint_marker
+            else:
+                # Note that uv currently doesn't preserve markers, so this branch is unlikely
+                # https://github.com/astral-sh/uv/issues/1429
+                req.marker._markers = [
+                    req.marker._markers,
+                    &quot;and&quot;,
+                    joint_marker._markers,
+                ]
+            output.append(str(req))
+
+        return &quot;\n&quot;.join(output)
+
+
+def main() -&gt; None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&quot;src_file&quot;)
+    parser.add_argument(&quot;--output-file&quot;)
+    parser.add_argument(
+        &quot;--system-python&quot;,
+        help=&quot;Dont check if in venv.&quot;,
+        action=&quot;store_true&quot;,
+    )
+    args = parser.parse_args()
+
+    output = cross_environment_lock(
+        src_file=Path(args.src_file),
+        system_python=args.system_python,
+    )
+    print(output)
+    if args.output_file:
+        Path(args.output_file).write_text(output)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>And I run it inside container (to try different archs):</p>
+<pre><code class="language-sh">python -m scripts.env requirements.in --system-python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-06 16:04</div>
+            <div class="timeline-body"><p>This is an interesting idea. I worry that it doesn't make sense for us to prioritize when we're developing a dedicated cross-platform lock file:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/3350</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimostenis">@dimostenis</a> on 2024-05-06 16:31</div>
+            <div class="timeline-body"><p>Oh. I missed that. That should solve it - using <code>uv</code> for cross platform reqs generation 👌🏼</p>
+<p>Hope in my example case it will pick single version of <code>torch</code> for all archs tho (on same python of course).</p>
+<p>I guess we can close this issue.
+Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dimostenis on 2024-05-06 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-06 16:34</div>
+            <div class="timeline-body"><p>cc @BurntSushi to note that request :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aws/bedrock-agentcore-starter-toolkit/pulls/361.html">aws/bedrock-agentcore-starter-toolkit#361</a> on 2025-11-20 20:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

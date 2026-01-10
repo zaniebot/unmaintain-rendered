@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing / reading metadata of workspace members from wheels - astral-sh/uv #17063</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing / reading metadata of workspace members from wheels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17063">#17063</a>
+        opened by <a href="https://github.com/ktns">@ktns</a>
+        on 2025-12-10 09:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ktns">@ktns</a> on 2025-12-10 09:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello.</p>
+<p>When running CI jobs or the renovate bot, even when the job simply calls <code>uv lock</code>, a significant amount of time is spent compiling Rust bindings within the workspace. Since our private registry contains pre-built wheel files, it would be extremely useful if we could make the switch from always building the workspace members to installing them from wheel files, and also reading metadata from wheel files during package dependency resolution.</p>
+<h3>Example</h3>
+<pre><code>uv sync --install-from-wheel=./dist/foo-0.4.1-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+</code></pre>
+<p>and</p>
+<pre><code>uv lock --read-from-wheel=./dist/foo-0.4.1-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+</code></pre>
+<p>I don't like this option names but didn't come up with better ones.</p>
+<p>It's very useful if we can specify a specific index to download wheels, but I couldn't think of clean UI for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @ktns on 2025-12-10 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-10 09:53</div>
+            <div class="timeline-body"><p>Do your workspace members use the <code>[project]</code> table with static metadata, and what tooling do they use for building Rust bindings? <code>uv lock</code> can skip the build backend altogether when there is static metadata. Even if there isn't, normally the build backend shouldn't need to actually compile native code for the metadata that <code>uv lock</code> needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17064.html">astral-sh/uv#17064</a> on 2025-12-10 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktns">@ktns</a> on 2025-12-12 08:42</div>
+            <div class="timeline-body"><p>We are using maturin build backend and it seems to invoke rust build via <code>prepare_metadata_for_build_editable</code>.</p>
+<p>Might it be because our pyroject.toml has</p>
+<pre><code class="language-toml">[project]
+dynamic = [&quot;version&quot;]
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 11:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Might it be because our pyroject.toml has</p>
+<p>[project]
+dynamic = [&quot;version&quot;]</p>
+<p>?</p>
+</blockquote>
+<p>That's most likely it, a static version should avoid this.</p>
+<blockquote>
+<p>We are using maturin build backend and it seems to invoke rust build via <code>prepare_metadata_for_build_editable</code>.</p>
+</blockquote>
+<p>That's odd still, maturin should be able to get the version from cargo without compiling any rust.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

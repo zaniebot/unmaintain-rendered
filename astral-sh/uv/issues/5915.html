@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does uv honor the no-manylinux install flags? - astral-sh/uv #5915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Does uv honor the no-manylinux install flags?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5915">#5915</a>
+        opened by <a href="https://github.com/harmstyler">@harmstyler</a>
+        on 2024-08-08 15:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harmstyler">@harmstyler</a> on 2024-08-08 15:43</div>
+            <div class="timeline-body"><p>PIP honors a flag for disabling the use of manylinux pre-built whl files. When I use uv and the no-manylinux package, my build finishes in seconds (yay), but that makes me think that uv is not building the manylinux whl files itself, as my normal pip install takes an hour.</p>
+<p>https://peps.python.org/pep-0600/
+https://github.com/asottile-archive/no-manylinux/blob/main/_manylinux.py</p>
+<blockquote>
+<p>What? Why?
+The manylinux spec requires compliant packages to vendor binary dependencies inside the wheel that is distributed. Take for example a library which would (prior to manylinux) dynamically link against libssl. As libssl received security patches, the system binaries would received updates from the OS's package manager. The python library which dynamically links would receive these updates for free without need to recompile, reinstall, etc. Under manylinux, libssl is vendored inside the wheel. To receive security updates, you have to wait for the upstream to produce a new wheel and need to know to install a new version of that library. There's almost no visibility about these vendored wheels which makes managing them at scale impossible. As such, some may choose to ignore this standard.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 15:47</div>
+            <div class="timeline-body"><p>The relevant section of the PEP is</p>
+<blockquote>
+<p>In addition, we follow previous specifications, and allow for Python distributors to manually override this check by adding a _manylinux module to their standard library. If this package is importable, and if it defines a function called manylinux_compatible, then package installers should call this function, passing in the major version, minor version, and architecture from the manylinux tag, and it will either return a boolean saying whether wheels with the given tag should be considered compatible with the current system, or else None to indicate that the default logic should be used.</p>
+</blockquote>
+<p>As far as I know, we don't support this yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harmstyler">@harmstyler</a> on 2024-08-08 15:51</div>
+            <div class="timeline-body"><blockquote>
+<p>As far as I know, we don't support this yet.</p>
+</blockquote>
+<p>Thank you for the quick response and confirmation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @harmstyler on 2024-08-08 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-08-08 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 15:52</div>
+            <div class="timeline-body"><p>We can consider supporting it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-08-08 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 15:57</div>
+            <div class="timeline-body"><p>Actually, I think I'm wrong — we do have code to check for this</p>
+<p>https://github.com/astral-sh/uv/blob/dd7da6af5fa9ad166f0b8cbd5cca93b49b823eaf/crates/uv-python/python/packaging/_manylinux.py#L181-L204</p>
+<p>I'm not sure if we're not properly enforcing it. Is it possible you're getting a cached build?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 16:02</div>
+            <div class="timeline-body"><p>@zanieb -- I think that's pulled in from the vendored packaging code. It doesn't look like we actually call it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 16:05</div>
+            <div class="timeline-body"><p>Ah we generate the compatible platform tags directly in Rust?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 16:06</div>
+            <div class="timeline-body"><p>Yeah, we wrote a <code>platform-tags</code> crate. So we probably need to (1) propagate <code>manylinux_compatible</code> back to <code>Interpreter</code> in <code>get_interpreter_info.py</code>, then (2) respect it in <code>platform-tags</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 16:07</div>
+            <div class="timeline-body"><p>Agree we should support it per the spec though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-08 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-08 16:08</div>
+            <div class="timeline-body"><p>Thanks for investigating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-08-08 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harmstyler">@harmstyler</a> on 2024-08-08 16:11</div>
+            <div class="timeline-body"><p>I ran an install of <code>cryptography</code> as a proof. Feel free to clean up/remove this comment if it muddies it any.</p>
+<pre><code>#20 [daemon-herder build-stage 14/15] RUN uv cache clean
+#20 0.273 Clearing cache at: /root/.cache/uv
+#20 0.274 Removed 5 files (872B)
+#20 DONE 0.3s
+
+#21 [daemon-herder build-stage 15/15] RUN bash -c &quot;set -e -x; uv pip install no-manylinux; uv pip install --no-cache cryptography -vvv;&quot;
+#21 0.343 + uv pip install no-manylinux
+#21 0.813 Resolved 1 package in 417ms
+#21 0.880 Prepared 1 package in 66ms
+#21 0.881 Installed 1 package in 0.59ms
+#21 0.881  + no-manylinux==3.0.0
+#21 0.882 + uv pip install --no-cache cryptography -vvv
+#21 0.888     0.000052s DEBUG uv uv 0.2.34
+#21 0.891  uv_requirements::specification::from_source source=cryptography
+#21 0.891     0.003280s DEBUG uv_python::discovery Searching for Python interpreter in system path
+#21 0.950     0.062660s DEBUG uv_python::discovery Found `cpython-3.8.10-linux-x86_64-gnu` at `/tmp/.venv/bin/python3` (virtual environment)
+#21 0.951     0.062742s DEBUG uv::commands::pip::install Using Python 3.8.10 environment at .venv/bin/python3
+#21 0.951     0.063119s DEBUG uv_fs Acquired lock for `.venv`
+#21 0.951     0.063248s DEBUG uv::commands::pip::install At least one requirement is not satisfied: cryptography
+#21 0.951  uv_client::linehaul::linehaul
+#21 0.951     0.063806s DEBUG uv_client::base_client Using request timeout of 30s
+#21 0.951  uv_resolver::flat_index::from_entries
+#21 0.953  uv_resolver::resolver::solve
+#21 0.953     0.065155s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.8.10
+#21 0.953    uv_resolver::resolver::choose_version package=root
+#21 0.953    uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+#21 0.953      uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+#21 0.953     0.065308s   0ms DEBUG uv_resolver::resolver Adding direct dependency: cryptography*
+#21 0.953    uv_resolver::resolver::choose_version package=cryptography
+#21 0.953  uv_resolver::resolver::process_request request=Versions cryptography
+#21 0.953    uv_client::registry_client::simple_api package=cryptography
+#21 0.953      uv_client::cached_client::get_cacheable
+#21 0.953        uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/simple-v11/pypi/cryptography.rkyv
+#21 0.953  uv_resolver::resolver::process_request request=Prefetch cryptography *
+#21 0.953  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/simple-v11/pypi/cryptography.rkyv&quot;
+#21 0.953         0.065903s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/cryptography/
+#21 0.953        uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/cryptography/&quot;
+#21 1.042        uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/simple-v11/pypi/cryptography.rkyv
+#21 1.042        uv_client::registry_client::parse_simple_api package=cryptography
+#21 1.148    uv_resolver::version_map::from_metadata
+#21 1.148       0.260483s 195ms DEBUG uv_resolver::resolver Searching for a compatible version of cryptography (*)
+#21 1.148    uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cryptography==43.0.0
+#21 1.148       0.260507s 195ms DEBUG uv_resolver::resolver Selecting: cryptography==43.0.0 [compatible] (cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.whl)
+#21 1.148      uv_client::registry_client::wheel_metadata built_dist=cryptography==43.0.0
+#21 1.148        uv_client::cached_client::get_serde
+#21 1.148          uv_client::cached_client::get_cacheable
+#21 1.148    uv_resolver::resolver::get_dependencies_forking package=cryptography, version=43.0.0
+#21 1.148      uv_resolver::resolver::get_dependencies package=cryptography, version=43.0.0
+#21 1.148            uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cryptography/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.msgpack
+#21 1.148  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/wheels-v1/pypi/cryptography/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.msgpack&quot;
+#21 1.148             0.260854s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/83/25/439a8ddd8058e7f898b7d27c36f94b66c8c8a2d60e1855d725845f4be0bc/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.whl.metadata
+#21 1.148            uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/83/25/439a8ddd8058e7f898b7d27c36f94b66c8c8a2d60e1855d725845f4be0bc/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.whl.metadata&quot;
+#21 1.308            uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cryptography/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.msgpack
+#21 1.308            uv_client::registry_client::parse_metadata21
+#21 1.310     0.422096s 356ms DEBUG uv_resolver::resolver Adding transitive dependency for cryptography==43.0.0: cffi{platform_python_implementation != 'PyPy'}&gt;=1.12
+#21 1.310    uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != 'PyPy'}
+#21 1.310  uv_resolver::resolver::process_request request=Versions cffi
+#21 1.310    uv_client::registry_client::simple_api package=cffi
+#21 1.310      uv_client::cached_client::get_cacheable
+#21 1.310        uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/simple-v11/pypi/cffi.rkyv
+#21 1.310  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/simple-v11/pypi/cffi.rkyv&quot;
+#21 1.310         0.422545s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/cffi/
+#21 1.310        uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/cffi/&quot;
+#21 1.347        uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/simple-v11/pypi/cffi.rkyv
+#21 1.347        uv_client::registry_client::parse_simple_api package=cffi
+#21 1.375    uv_resolver::version_map::from_metadata
+#21 1.376       0.488022s  65ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (&gt;=1.12)
+#21 1.376       0.488323s  66ms DEBUG uv_resolver::resolver Selecting: cffi==1.17.0 [compatible] (cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#21 1.376    uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != 'PyPy'}, version=1.17.0
+#21 1.376      uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != 'PyPy'}, version=1.17.0
+#21 1.376     0.488516s 423ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.17.0: cffi==1.17.0
+#21 1.376     0.488561s 423ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.17.0: cffi{platform_python_implementation != 'PyPy'}==1.17.0
+#21 1.376    uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != 'PyPy'}
+#21 1.376       0.488661s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (==1.17.0)
+#21 1.376       0.488673s   0ms DEBUG uv_resolver::resolver Selecting: cffi==1.17.0 [compatible] (cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#21 1.376    uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != 'PyPy'}, version=1.17.0
+#21 1.376      uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != 'PyPy'}, version=1.17.0
+#21 1.377  uv_resolver::resolver::process_request request=Prefetch cffi ==1.17.0
+#21 1.377  uv_resolver::resolver::process_request request=Metadata cffi==1.17.0
+#21 1.378    uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cffi==1.17.0
+#21 1.378      uv_client::registry_client::wheel_metadata built_dist=cffi==1.17.0
+#21 1.378        uv_client::cached_client::get_serde
+#21 1.378          uv_client::cached_client::get_cacheable
+#21 1.378            uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cffi/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack
+#21 1.378  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/wheels-v1/pypi/cffi/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack&quot;
+#21 1.378             0.491036s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/60/9f/0b88c6ebc1b3a32917b396140a3505efdb115b4a64e7c1e80b12ee319c10/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+#21 1.378            uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/60/9f/0b88c6ebc1b3a32917b396140a3505efdb115b4a64e7c1e80b12ee319c10/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata&quot;
+#21 1.427            uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cffi/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.msgpack
+#21 1.427            uv_client::registry_client::parse_metadata21
+#21 1.428     0.540696s 475ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.17.0: pycparser*
+#21 1.428  uv_resolver::resolver::process_request request=Versions pycparser
+#21 1.428    uv_resolver::resolver::choose_version package=cffi
+#21 1.428       0.540971s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi (==1.17.0)
+#21 1.428    uv_client::registry_client::simple_api package=pycparser
+#21 1.428       0.541079s   0ms DEBUG uv_resolver::resolver Selecting: cffi==1.17.0 [compatible] (cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
+#21 1.429      uv_client::cached_client::get_cacheable
+#21 1.429        uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/simple-v11/pypi/pycparser.rkyv
+#21 1.429  uv_resolver::resolver::process_request request=Prefetch pycparser *
+#21 1.429  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/simple-v11/pypi/pycparser.rkyv&quot;
+#21 1.429    uv_resolver::resolver::get_dependencies_forking package=cffi, version=1.17.0
+#21 1.429      uv_resolver::resolver::get_dependencies package=cffi, version=1.17.0
+#21 1.429         0.541332s   0ms DEBUG uv_client::cached_client No cache entry for: https://pypi.org/simple/pycparser/
+#21 1.429     0.541354s 476ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.17.0: pycparser*
+#21 1.429        uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/pycparser/&quot;
+#21 1.429    uv_resolver::resolver::choose_version package=pycparser
+#21 1.460        uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/simple-v11/pypi/pycparser.rkyv
+#21 1.460        uv_client::registry_client::parse_simple_api package=pycparser
+#21 1.461    uv_resolver::version_map::from_metadata
+#21 1.461       0.573866s  32ms DEBUG uv_resolver::resolver Searching for a compatible version of pycparser (*)
+#21 1.461    uv_distribution::distribution_database::get_or_build_wheel_metadata dist=pycparser==2.22
+#21 1.461      uv_client::registry_client::wheel_metadata built_dist=pycparser==2.22
+#21 1.461       0.574033s  32ms DEBUG uv_resolver::resolver Selecting: pycparser==2.22 [compatible] (pycparser-2.22-py3-none-any.whl)
+#21 1.461        uv_client::cached_client::get_serde
+#21 1.462          uv_client::cached_client::get_cacheable
+#21 1.462    uv_resolver::resolver::get_dependencies_forking package=pycparser, version=2.22
+#21 1.462      uv_resolver::resolver::get_dependencies package=pycparser, version=2.22
+#21 1.462            uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/pycparser/pycparser-2.22-py3-none-any.msgpack
+#21 1.462  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/wheels-v1/pypi/pycparser/pycparser-2.22-py3-none-any.msgpack&quot;
+#21 1.462             0.574473s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl.metadata
+#21 1.462            uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl.metadata&quot;
+#21 1.512            uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/pycparser/pycparser-2.22-py3-none-any.msgpack
+#21 1.512            uv_client::registry_client::parse_metadata21
+#21 1.513     0.625681s 560ms DEBUG uv_resolver::resolver::batch_prefetch Tried 3 versions: cffi 1, cryptography 1, pycparser 1
+#21 1.513     0.625731s 560ms DEBUG uv_resolver::resolver Split specific environment resolution took 0.561s
+#21 1.514 Resolved 3 packages in 562ms
+#21 1.515     0.626464s DEBUG uv_installer::plan Identified uncached requirement: cffi==1.17.0
+#21 1.515     0.626497s DEBUG uv_installer::plan Identified uncached requirement: cryptography==43.0.0
+#21 1.515     0.626511s DEBUG uv_installer::plan Identified uncached requirement: pycparser==2.22
+#21 1.515     0.626535s DEBUG uv_installer::plan Unnecessary package: no-manylinux==3.0.0
+#21 1.515  uv_installer::preparer::prepare total=3
+#21 1.515    uv_installer::preparer::get_wheel name=cryptography==43.0.0, size=Some(4008355), url=&quot;https://files.pythonhosted.org/packages/83/25/439a8ddd8058e7f898b7d27c36f94b66c8c8a2d60e1855d725845f4be0bc/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.whl&quot;
+#21 1.515      uv_distribution::distribution_database::get_or_build_wheel dist=cryptography==43.0.0
+#21 1.515        uv_client::cached_client::get_serde
+#21 1.515          uv_client::cached_client::get_cacheable
+#21 1.515            uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cryptography/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.http
+#21 1.515    uv_installer::preparer::get_wheel name=cffi==1.17.0, size=Some(446163), url=&quot;https://files.pythonhosted.org/packages/60/9f/0b88c6ebc1b3a32917b396140a3505efdb115b4a64e7c1e80b12ee319c10/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
+#21 1.515  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/wheels-v1/pypi/cryptography/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.http&quot;
+#21 1.515      uv_distribution::distribution_database::get_or_build_wheel dist=cffi==1.17.0
+#21 1.515        uv_client::cached_client::get_serde
+#21 1.515          uv_client::cached_client::get_cacheable
+#21 1.515            uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cffi/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.http
+#21 1.515  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/wheels-v1/pypi/cffi/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.http&quot;
+#21 1.515    uv_installer::preparer::get_wheel name=pycparser==2.22, size=Some(117552), url=&quot;https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl&quot;
+#21 1.515      uv_distribution::distribution_database::get_or_build_wheel dist=pycparser==2.22
+#21 1.515        uv_client::cached_client::get_serde
+#21 1.515          uv_client::cached_client::get_cacheable
+#21 1.515            uv_client::cached_client::read_and_parse_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/pycparser/pycparser-2.22-py3-none-any.http
+#21 1.515             0.627308s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/83/25/439a8ddd8058e7f898b7d27c36f94b66c8c8a2d60e1855d725845f4be0bc/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.whl
+#21 1.515            uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/83/25/439a8ddd8058e7f898b7d27c36f94b66c8c8a2d60e1855d725845f4be0bc/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.whl&quot;
+#21 1.515  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpoqBs3v/wheels-v1/pypi/pycparser/pycparser-2.22-py3-none-any.http&quot;
+#21 1.515             0.627413s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/60/9f/0b88c6ebc1b3a32917b396140a3505efdb115b4a64e7c1e80b12ee319c10/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+#21 1.515            uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/60/9f/0b88c6ebc1b3a32917b396140a3505efdb115b4a64e7c1e80b12ee319c10/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
+#21 1.515             0.627536s   0ms DEBUG uv_client::cached_client No cache entry for: https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl
+#21 1.515            uv_client::cached_client::fresh_request url=&quot;https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl&quot;
+#21 1.566            uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cryptography/cryptography-43.0.0-cp37-abi3-manylinux_2_28_x86_64.http
+#21 1.566            uv_distribution::distribution_database::wheel wheel=cryptography==43.0.0
+#21 1.676            uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/pycparser/pycparser-2.22-py3-none-any.http
+#21 1.676            uv_distribution::distribution_database::wheel wheel=pycparser==2.22
+#21 1.728            uv_client::cached_client::new_cache file=/tmp/.tmpoqBs3v/wheels-v1/pypi/cffi/cffi-1.17.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.http
+#21 1.728            uv_distribution::distribution_database::wheel wheel=cffi==1.17.0
+#21 5.071 Prepared 3 packages in 3.55s
+#21 5.071  uv_installer::installer::install_blocking num_wheels=3
+#21 5.071    uv_installer::installer::install num_wheels=3
+#21 5.075 Installed 3 packages in 3ms
+#21 5.075  + cffi==1.17.0
+#21 5.075  + cryptography==43.0.0
+#21 5.075  + pycparser==2.22
+#21 DONE 5.1s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6039.html">astral-sh/uv#6039</a> on 2024-08-12 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-12 19:45</div>
+            <div class="timeline-body"><p>@harmstyler do you happen to know a package that's faster to build than <code>cryptography</code> with this problem? trying to write a test 🌵</p>
+<p>~actually, nvm seems like <code>cffi</code> would do the trick.~</p>
+<p>actually 2x, not sure if there's an easy way to test this based on the output 😢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harmstyler">@harmstyler</a> on 2024-08-13 14:26</div>
+            <div class="timeline-body"><p>Maybe <a href="https://pypi.org/project/uamqp/">uamqp</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 15:08</div>
+            <div class="timeline-body"><p>We might just want to write a unit test instead of an integration test. I think we need to test various <code>_manylinux</code> definitions and assert that our platform tag list is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-14 18:31</div>
+            <div class="timeline-body"><blockquote>
+<p>We might just want to write a unit test instead of an integration test. I think we need to test various <code>_manylinux</code> definitions and assert that our platform tag list is correct.</p>
+</blockquote>
+<p>good call - added a unit test 🌵</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-21 01:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

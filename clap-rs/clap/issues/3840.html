@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imply `value_hint = ValueHint::AnyPath` for PathBuf/Option&lt;PathBuf&gt; - clap-rs/clap #3840</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Imply `value_hint = ValueHint::AnyPath` for PathBuf/Option&lt;PathBuf&gt;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3840">#3840</a>
+        opened by <a href="https://github.com/chrisduerr">@chrisduerr</a>
+        on 2022-06-16 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisduerr">@chrisduerr</a> on 2022-06-16 14:42</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.2.5</p>
+<h3>Describe your use case</h3>
+<p>Currently when generating clap completions, paths are not automatically suggested unless <code>value_hint = ValueHint::AnyPath</code> is added to the clap derive attribute.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Since a <code>PathBuf</code> clearly indicates a path should be taken as argument, it would be nice if the value hint attribute would be implied. Using <code>AnyPath</code> might not always be ideal but should provide a superior default for most users.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @chrisduerr on 2022-06-16 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3841.html">clap-rs/clap#3841</a> on 2022-06-16 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-16 15:00</div>
+            <div class="timeline-body"><p>Looks like we are on the same page! That was one of the first things I did when implementing value parser support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-16 15:01</div>
+            <div class="timeline-body"><p>If you are not seeing this behavior, please product reproduction steps as its a bug</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisduerr">@chrisduerr</a> on 2022-06-16 15:14</div>
+            <div class="timeline-body"><p>Seems like even the simplest examples don't work:</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+
+use clap::{ValueHint, Parser, CommandFactory};
+
+#[derive(Parser, Default, Debug)]
+#[clap()]
+pub struct Options {
+    path: PathBuf,
+}
+
+fn main() {
+    let options = Options::into_app();
+
+    let input = options
+        .get_arguments()
+        .find(|arg| arg.get_id() == &quot;path&quot;)
+        .unwrap();
+
+    assert_eq!(input.get_value_hint(), clap::builder::ValueHint::AnyPath);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-06-16 15:27</div>
+            <div class="timeline-body"><p>Try</p>
+<pre><code class="language-rust">use std::path::PathBuf;
+
+use clap::{ValueHint, Parser, CommandFactory};
+
+#[derive(Parser, Default, Debug)]
+#[clap()]
+pub struct Options {
+    #[clap(value_parser)]
+    path: PathBuf,
+}
+
+fn main() {
+    let options = Options::into_app();
+
+    let input = options
+        .get_arguments()
+        .find(|arg| arg.get_id() == &quot;path&quot;)
+        .unwrap();
+
+    assert_eq!(input.get_value_hint(), clap::builder::ValueHint::AnyPath);
+}
+</code></pre>
+<p>We didn't migrate people to <code>value_parser</code> by default but they need to opt-in to it out of a concern for breaking changes.  This will change with the release of clap 4.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-06-16 15:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv python spec vs pip - small differences of note? - astral-sh/uv #10753</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv python spec vs pip - small differences of note?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10753">#10753</a>
+        opened by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a>
+        on 2025-01-19 15:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2025-01-19 15:55</div>
+            <div class="timeline-body"><p>I now use <code>uv</code> as my build tool for python.  A team member needed to have my code base operate on Render, an online web hosting service that only supports <code>pip</code>.  To coordinate the two, I ran <code>uv pip freeze &gt; requirements.txt</code> to enable an install using <code>pip install -r requirements.txt</code>.  Surprisingly, there were a few &quot;errors&quot; (strictly speaking), that <code>pip</code> raised where my <code>uv run...</code> workflow worked just fine.</p>
+<p>So this is a FYI. Here is a list of places where <code>uv</code> worked, and <code>pip</code> failed.  They all have to do with how string literals can and cannot be specified on multiple lines.</p>
+<p>Note, I'm not commenting on what is right or wrong (e.g., there is a place where I used quotes inside quotes that <code>uv</code> figured out how to interpret without raising an error, but <code>pip</code> raised an error).  Here is a list of changes that needed to be made to the <code>uv</code> version in order to get the <code>pip</code> version to work:</p>
+<pre><code>-        logger.debug(f&quot;✅ top left start: { json.dumps(
+-            { &quot;top&quot;: y_start_override or y_start,
+-              &quot;left&quot;: left_margin },
+-            indent=3)}.&quot;
+-        )
++        logger.debug(f&quot;✅ top left start: {json.dumps({'top': y_start_override or y_start, 'left': left_margin}, indent=3)}&quot;)
+
+-  text = f&quot;{text} {element[&quot;Text&quot;]}&quot;
++  text = f&quot;{text} {element['Text']}&quot;
+
+
+-    logger.debug(f&quot;💫 {page_:02} data_elements_iterator { json.dumps(
+-        {
+-            'x_start': x_start,
+-            'x_end': x_end,
+-            'y_start': data_y_start,
+-            'y_end': data_y_end,
+-        }, indent=3)
+-    }&quot;)
++    debug_info = {
++        'x_start': x_start,
++        'x_end': x_end,
++        'y_start': data_y_start,
++        'y_end': data_y_end,
++    }
++    logger.debug(f&quot;💫 {page_:02}  data_elements_iterator {json.dumps(debug_info, indent=3)}&quot;)
+
+-        logger.debug(
+-            f&quot;Instantiated Transactions type: {self.amount_row_type}, &quot;
+-            f&quot;with continuation date: {self.date_value_buffer.get_text() if self.date_value_buffer else 'None'}&quot;
+-        )
++        logger.debug(f&quot;Instantiated Transactions type: {self.amount_row_type}, with continuation date: {self.date_value_buffer.get_text() if self.date_value_buffer else 'None'}&quot;)
+</code></pre>
+<p>IMO: While I value <code>uv</code> perhaps being more flexible, I suspect in the long run it makes sense to keep <code>uv</code> in-line with the pip spec.  Finally, this might all be moot if you tell me that this only happens in &quot;older&quot; versions of pip.  I cannot report on the version in question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-19 16:10</div>
+            <div class="timeline-body"><p>I believe this is just a difference in the Python version that you're using? Neither uv nor pip actually execute Python code, but the Python spec changed in the past few minor versions to be more permissive with respect to the contents of f-strings. My guess is that with whatever workflow you're using uv, you're using a greater Python version than wherever you're using pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-20 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2025-01-20 03:59</div>
+            <div class="timeline-body"><p>I don't know what it is about python that keeps me in a seemingly permanent state of confusion re build vs runtime. Notwithstanding, I don't know if we are dealing with a build or runtime issue. <code>uv run</code> is both building and referencing the python version specified in the pyproject.toml file to execute. I believe your explanation makes sense if it's a runtime issue. Yes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-20 15:33</div>
+            <div class="timeline-body"><p>My best guess is that the problem is that Render is using a different Python version than your <code>uv run</code> (at runtime). For example <code>text = f&quot;{text} {element[&quot;Text&quot;]}&quot;</code>, was introduced in 3.12, while <code>text = f&quot;{text} {element['Text']}&quot;</code> works in earlier versions too. Can you check the Python version Render and you are using (<code>uv run -v</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EdmundsEcho">@EdmundsEcho</a> on 2025-01-22 21:56</div>
+            <div class="timeline-body"><p>I think that you are correct. The version that required these changes was 3.11 (on Render).  My local build may have been using 3.12.  Thank you for the follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @EdmundsEcho on 2025-01-22 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

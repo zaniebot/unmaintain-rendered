@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] `subtype_of_implies_not_disjoint_from` property test is now flaky - astral-sh/ruff #17144</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] `subtype_of_implies_not_disjoint_from` property test is now flaky</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17144">#17144</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-02 09:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 09:36</div>
+            <div class="timeline-body"><p>I got this property test failure on a local PR branch:</p>
+<pre><code>failures:
+
+---- types::property_tests::stable::subtype_of_implies_not_disjoint_from stdout ----
+
+thread 'types::property_tests::stable::subtype_of_implies_not_disjoint_from' panicked at /Users/alexw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quickcheck-1.0.3/src/tester.rs:165:28:
+[quickcheck] TEST FAILED. Arguments: (Intersection { pos: [Callable { params: List([Param { kind: PositionalOnly, name: Some(Name(&quot;n1&quot;)), annotated_ty: Some(KnownClassInstance(Object)), default_ty: None }]), returns: Some(StringLiteral(&quot;&quot;)) }, StringLiteral(&quot;&quot;)], neg: [] }, LiteralString)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Which I minimized down to this:</p>
+<pre><code class="language-py">from typing import Callable, Literal, LiteralString
+from knot_extensions import Intersection, static_assert, is_subtype_of, is_disjoint_from
+
+static_assert(is_subtype_of(Intersection[Callable[[], None], Literal[&quot;&quot;]], LiteralString))
+static_assert(not is_disjoint_from(Intersection[Callable[[], None], Literal[&quot;&quot;]], LiteralString))  # This assertion fails, but should logically hold true if the first assertion passes!
+</code></pre>
+<p>And the minimal repro also reproduces on <code>main</code>: https://playknot.ruff.rs/8cad645a-b986-42b8-baa7-ef8b75e81b3e</p>
+<p>cc. @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-04-02 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-02 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-04-02 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-02 16:06</div>
+            <div class="timeline-body"><p>(Acknowledging, I'll look into it today. Thanks for the repro!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 18:06</div>
+            <div class="timeline-body"><p>I had a thought -- I think the issue (or at least one issue) might be that we should probably understand <code>Literal[&quot;&quot;]</code> as disjoint from all <code>Callable</code> types, but we currently don't?</p>
+<p>We know that for all <code>StringLiteral</code> types, their <code>__class__</code> is set to <em>exactly</em> <code>str</code>. Not &quot;<code>str</code> or some subclass of <code>str</code>&quot; -- <em>exactly</em> <code>str</code>. And instances of <code>str</code> are not callable; therefore all <code>StringLiteral</code> types are disjoint from all callable types. The same applies to all <code>Type::IntLiteral</code>, <code>Type::BooleanLiteral</code>, <code>Type::BytesLiteral</code> and <code>Type::SliceLiteral</code> types.</p>
+<p>If we understand these variants as being disjoint from <code>Type::Callable</code> types, I think this will mean that we'll simplify <code>Callable[[], None] &amp; Literal[&quot;&quot;]</code> to <code>Never</code>, which should fix the property test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17160.html">astral-sh/ruff#17160</a> on 2025-04-02 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-02 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

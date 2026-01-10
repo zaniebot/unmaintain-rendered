@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff not respecting python version on typing stub files? - astral-sh/ruff #9285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff not respecting python version on typing stub files?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9285">#9285</a>
+        opened by <a href="https://github.com/ktbarrett">@ktbarrett</a>
+        on 2023-12-26 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-26 18:59</div>
+            <div class="timeline-body"><p>I used mypy's stubgen to generate a <code>.pyi</code> file for a C extension module. Some functions return a tuple. It looks a bit like this.</p>
+<pre><code class="language-python">from typing import Tuple
+
+def get_sim_time() -&gt; Tuple[int, int]: ...
+</code></pre>
+<p>My project's <code>target-version = &quot;py37&quot;</code>, but I'm getting a UP006 error for not preferring the use of PEP585 annotations of <code>tuple</code>. This PEP wasn't accepted until Python 3.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-26 19:05</div>
+            <div class="timeline-body"><p>Nvm, this was fixed in a newer version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ktbarrett on 2023-12-26 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-26 19:42</div>
+            <div class="timeline-body"><p>Never never mind. Tools be gaslighting me. This is still an issue. ruff version 0.1.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ktbarrett on 2023-12-26 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-26 19:48</div>
+            <div class="timeline-body"><p>This looks intentional</p>
+<p>https://github.com/astral-sh/ruff/blob/b0ae1199e8ccab439db91ec6aa78fa51f2f591bb/crates/ruff_linter/src/checkers/ast/analyze/expression.rs#L290-L298</p>
+<p>From the documentation</p>
+<blockquote>
+<p>This rule is enabled when targeting Python 3.9 or later (see:
+[<code>target-version</code>]). By default, it's <em>also</em> enabled for earlier Python
+versions if <code>from __future__ import annotations</code> is present, as
+<code>__future__</code> annotations are not evaluated at runtime. If your code relies
+on runtime type annotations (either directly or via a library like
+Pydantic), you can disable this behavior for Python versions prior to 3.9
+by setting [<code>pyupgrade.keep-runtime-typing</code>] to <code>true</code>.</p>
+</blockquote>
+<p>I believe stub files are always treated as using future annotation semantics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-26 19:50</div>
+            <div class="timeline-body"><p>Seems corroborated by https://github.com/astral-sh/ruff/issues/5649</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-12-26 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-26 20:05</div>
+            <div class="timeline-body"><p>Does this imply that all tools that might consume a stub file are required to support the future syntax, regardless of the version of Python they may be running on/assuming?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-26 20:11</div>
+            <div class="timeline-body"><p>I see <a href="https://typing.readthedocs.io/en/latest/source/stubs.html#syntax">this</a>.</p>
+<blockquote>
+<p>Type stubs are syntactically valid Python 3.7 files with a .pyi suffix. The Python syntax used for type stubs is independent from the Python versions supported by the implementation, and from the Python version the type checker runs under (if any). Therefore, type stub authors should use the latest available syntax features in stubs (up to Python 3.7), even if the implementation supports older, pre-3.7 Python versions. Type checker authors are encouraged to support syntax features from post-3.7 Python versions, although type stub authors should not use such features if they wish to maintain compatibility with all type checkers.
+For example, Python 3.7 added the async keyword (see PEP 492 <a href="https://typing.readthedocs.io/en/latest/source/stubs.html#pep492">[3]</a>). Stub authors should use it to mark coroutines, even if the implementation still uses the @coroutine decorator. On the other hand, type stubs should not use the positional-only syntax from PEP 570 <a href="https://typing.readthedocs.io/en/latest/source/stubs.html#pep570">[7]</a>, introduced in Python 3.8, although type checker authors are encouraged to support it.
+Stubs are treated as if from <strong>future</strong> import annotations is enabled. In particular, built-in generics, pipe union syntax (X | Y), and forward references can be used.</p>
+</blockquote>
+<p>Specifically</p>
+<blockquote>
+<p>On the other hand, type stubs should not use the positional-only syntax from PEP 570 <a href="https://typing.readthedocs.io/en/latest/source/stubs.html#pep570">[7]</a>, introduced in Python 3.8, although type checker authors are encouraged to support it.</p>
+</blockquote>
+<p>This seems to imply that enforcing 3.9 syntax here is <em>not</em> correct unless the user says they are only support 3.9 and up.</p>
+<p>Mypy seems to corroborate this assumption seeing as it was the tool that spit out the above stub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-26 20:17</div>
+            <div class="timeline-body"><p>That's a good question!</p>
+<blockquote>
+<p>The Python syntax used for type stubs is independent from the Python versions supported by the implementation, and from the Python version the type checker runs under (if any).
+...
+Stubs are treated as if from future import annotations is enabled. In particular, built-in generics, pipe union syntax (X | Y), and forward references can be used.</p>
+</blockquote>
+<p>These seem to support our behavior.</p>
+<blockquote>
+<p>On the other hand, type stubs should not use the positional-only syntax from PEP 570 <a href="https://typing.readthedocs.io/en/latest/source/stubs.html#pep570">[7]</a>, introduced in Python 3.8, although type checker authors are encouraged to support it.</p>
+</blockquote>
+<p>This is different. This is a new <em>syntax</em> for declaring parameters, i.e. the introduction of <code>/</code>, not a different type annotation. This would break the assumption:</p>
+<blockquote>
+<p>Type stubs are syntactically valid Python 3.7 files with a .pyi suffix.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-26 22:47</div>
+            <div class="timeline-body"><p>So why would mypy output <code>typing.Tuple</code> rather than <code>tuple</code>? This is the most recent mypy stubgen installed into a Python 3.11 environment. And even if that goes against what was propounded above, why wouldn't implementation trump our interpretation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-26 23:52</div>
+            <div class="timeline-body"><p>To clarify, are you seeing any problem using tuple rather than typing.Tuple? Or you’re wondering why Mypy would output typing.Tuple, despite it accepting either?</p>
+<p>(As an aside, many of the quoted sections about seem to be about syntax, like the async keyword. This isn’t a question of syntax — it’s a question of semantics. And the Mypy docs make clear that you <em>can</em> use standard-library generics in type stubs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-12-27 02:37</div>
+            <div class="timeline-body"><p>Well I guess this is an issue I should file with mypy to see if they have a reason for the madness. Otherwise I guess I'll just check it in and hope it doesn't break anyone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-12-31 12:07</div>
+            <div class="timeline-body"><p>I think ruff's behaviour is correct here.</p>
+<p>If mypy, pyright, or any other type checker is rejecting PEP-585 syntax in a stub file when you're running that type checker with <code>--python-version=3.8</code> or lower, that's absolutely a bug with that type checker that you should file with them. We long ago agreed in the typing community that stub authors should be able to use newer typing idioms even if targeting older Python versions — since stubs are never executed at runtime, whether or not <code>tuple</code> is actually <em>subscriptable</em> at runtime is irrelevant in a stub file. (But note the caveat @zanieb mentioned in https://github.com/astral-sh/ruff/issues/9285#issuecomment-1869753453 w.r.t. new idioms that required changes to Python's grammar itself vs. those that didn't.)</p>
+<p>We've enforced the use of PEP-585 idioms across all of typeshed for a long time now, and stubs in typeshed are tested with mypy, pyright and pytype in CI, across a matrix of all non-EOL Python versions. (While we don't test in CI with Pyre, Pyre also vendors typeshed's stubs.) If a type checker had issues with using this syntax in stub files when targeting older Python versions, I think we would have heard about it by now 🙂</p>
+<blockquote>
+<p>Does this imply that all tools that might consume a stub file are required to support the future syntax, regardless of the version of Python they may be running on/assuming?</p>
+</blockquote>
+<p>Yes, I think so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-12-31 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>So why would mypy output <code>typing.Tuple</code> rather than <code>tuple</code>? This is the most recent mypy stubgen installed into a Python 3.11 environment.</p>
+</blockquote>
+<p>That's just a missing stubgen feature: stubgen just hasn't been updated to output PEP-585 idioms yet. It doesn't reveal anything deep about how mypy understands the type.</p>
+<p>I agree it would be great if stubgen automatically output stubs that conformed with typeshed's style guide; it would mean we'd have to rely less on autofixes in our typeshed CI :) it just needs someone to find the time to make a stubgen PR to implement it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-31 12:38</div>
+            <div class="timeline-body"><p>👍 I agree with @AlexWaygood (and thank you for chiming in). I'm gonna close this as &quot;working as intended&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-31 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12256.html">astral-sh/ruff#12256</a> on 2024-07-09 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13111.html">astral-sh/ruff#13111</a> on 2024-08-26 15:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

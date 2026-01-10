@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;uv venv&quot;  should ask for confirmation before overwriting an existing venv - astral-sh/uv #1777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;uv venv&quot;  should ask for confirmation before overwriting an existing venv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1777">#1777</a>
+        opened by <a href="https://github.com/woutervh">@woutervh</a>
+        on 2024-02-20 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woutervh">@woutervh</a> on 2024-02-20 19:26</div>
+            <div class="timeline-body"><p>using uv --version 0.16</p>
+<p>uv currently silently deletes an existing venv.</p>
+<p>creating a new venv and install a package:</p>
+<pre><code>&gt; uv venv /tmp/foo/.venv 
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: /tmp/foo/.venv
+Activate with: source /tmp/foo/.venv/bin/activate
+
+&gt;cd /tmp/foo
+&gt; uv pip install pytest
+
+&gt; ls -al .venv/bin/
+   ...
+   pytest
+   ....
+</code></pre>
+<p>executing &quot;uv venv&quot; in the same directory will delete the existing venv and replace it with a pristine one.</p>
+<pre><code>&gt; uv venv
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>Better usability:</p>
+<pre><code>&gt; uv venv
+   An existing venv is found in /tmp/foo/.venv . 
+   Replace? [y/N]
+</code></pre>
+<p>or a force-option (force/overwrite/override)</p>
+<pre><code>&gt; uv venv --force
+Using Python 3.11.6 interpreter at /opt/tools/pyenv/var/repo/versions/3.11.6/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>But virtualenv behaves differently:</p>
+<pre><code>&gt; virtualenv --version
+virtualenv 20.25.0
+
+# create new venv
+&gt; virtualenv /tmp/foo
+created virtual environment CPython3.11.5.final.0-64 in 122ms
+  creator CPython3Posix(dest=/opt/tools/uv/var/tmp/foo, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/opt/tools/virtualenv/var/cache)
+    added seed packages: pip==23.3.2, setuptools==69.0.3, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+
+
+# install a package with an executable
+&gt; /tmp/foo/bin/pip install pytest
+
+Collecting pytest
+  Using cached pytest-8.0.1-py3-none-any.whl.metadata (7.7 kB)
+...
+Successfully installed iniconfig-2.0.0 packaging-23.2 pluggy-1.4.0 pytest-8.0.1
+
+
+# the entrypoint is there:
+&gt; ls -al bin /tmp/foo/bin
+...
+-rwxr-xr-x 1 wouter wouter  241 Feb 20 20:18 pytest*
+
+
+# now try to repace this env, 
+&gt; virtualenv /tmp/foo
+
+created virtual environment CPython3.11.5.final.0-64 in 170ms
+  creator CPython3Posix(dest=/opt/tools/uv/var/tmp/foo, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/opt/tools/virtualenv/var/cache)
+    added seed packages: iniconfig==2.0.0, packaging==23.2, pip==23.3.2, pluggy==1.4.0, pytest==8.0.1, setuptools==69.0.3, wheel==0.42.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+
+# although it looks to override, the aerlier package is still there:
+/opt/tools/uv/var/tmp/foo  ls -al bin
+-rwxr-xr-x 1 wouter wouter  241 Feb 20 20:18 pytest*
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv-venv should should confirmation before overwriting an existing venv" to ""uv venv"  should ask for confirmation before overwriting an existing venv" by @woutervh on 2024-02-20 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0v00">@0v00</a> on 2024-02-20 20:49</div>
+            <div class="timeline-body"><p>same issue here <a href="https://github.com/astral-sh/uv/issues/1472">https://github.com/astral-sh/uv/issues/1472</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astelmach01">@astelmach01</a> on 2024-02-20 23:26</div>
+            <div class="timeline-body"><p>+1, I though about having <code>uv venv</code> just simply warning you that you're deleting an existing venv, but this behavior is best</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-02-21 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 00:20</div>
+            <div class="timeline-body"><p>Thanks for the thorough report but we'll track this in the original issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-21 00:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4276.html">astral-sh/uv#4276</a> on 2024-06-12 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

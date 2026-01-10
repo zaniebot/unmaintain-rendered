@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A required `ArgGroup` is satisfied by a default value - clap-rs/clap #1205</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A required `ArgGroup` is satisfied by a default value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1205">#1205</a>
+        opened by <a href="https://github.com/eternaleye">@eternaleye</a>
+        on 2018-03-09 02:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eternaleye">@eternaleye</a> on 2018-03-09 02:32</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<ul>
+<li><code>1.24.1</code></li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li><code>2.31.1</code></li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<p>I'd expect that an <code>ArgGroup</code> with <code>required(true)</code> would fail unless the user explicitly passed an argument, even if one of the arguments sets a <code>default_value</code>. The documentation notes that this can be done by checking <code>occurrences_of</code>.</p>
+<h3>Actual Behavior Summary</h3>
+<p>If one argument of the group sets a <code>default_value</code>, the group is satisfied.</p>
+<h3>Steps to Reproduce the issue</h3>
+<ul>
+<li>Define an <code>App</code> with two arguments, one of which takes a defaulted value</li>
+<li>Put the two arguments into a group with <code>.required(true)</code></li>
+<li>Run the command without passing either</li>
+</ul>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-Rust">extern crate clap;
+
+use clap::{App,Arg,ArgGroup};
+
+fn main() {
+    App::new(&quot;example&quot;)
+        .arg(Arg::with_name(&quot;foo&quot;)
+            .long(&quot;foo&quot;)
+            .takes_value(true))
+        .arg(Arg::with_name(&quot;bar&quot;)
+            .long(&quot;bar&quot;)
+            .takes_value(true))
+            .default_value(&quot;1&quot;))
+       .group(ArgGroup::with_name(&quot;baz&quot;)
+            .args(&amp;[&quot;foo&quot;, &quot;bar&quot;])
+            .required(true))
+        .get_matches();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eternaleye">@eternaleye</a> on 2018-03-09 04:06</div>
+            <div class="timeline-body"><p>Got into a discussion about this on IRC with @anp, pasting log:</p>
+<p>tl;dr: I still feel that <code>.required(true)</code> on an <code>ArgGroup</code> shouldn't count default values as present, but adding a distinct <code>.required_explicit(true)</code> with that behavior is a possible alternative.</p>
+<pre><code class="language-IRC">&lt;anp&gt; eternaleye: doesn't seem like a bug to me :P
+
+&lt;eternaleye&gt; anp: The tool in question uses --output-tests to mean &quot;output them to the default dir&quot;, --output-tests dir to mean &quot;output them to a specific dir&quot;, and not passing it as &quot;do not output tests&quot;
+&lt;eternaleye&gt; It also requires that at-least-one output option (of --output, --output-tests, and --synth-dump) is passed
+&lt;eternaleye&gt; The only way to do this currently is to code a manual check that occurrences_of(&quot;output-tests&quot;) != 0
+&lt;eternaleye&gt; But that doesn't allow using clap's logic for missing required arguments
+
+&lt;anp&gt; yeah it seems to me that a default value for an argument means that it's specified
+&lt;anp&gt; maybe there's a way for clap to provide a 0-or-1 arg version of the flag that doesn't use the default
+&lt;anp&gt; the 0 arg version would trigger the &quot;default value&quot; behavior
+&lt;anp&gt; but in application code
+&lt;anp&gt; and then the required arg group setting would handle the occurences of stuff
+
+&lt;eternaleye&gt; anp: I disagree, because the behavior you're arguing for is the same as not specifying the arg group at all :P
+&lt;eternaleye&gt; Which is a bit silly IMO
+&lt;eternaleye&gt; Since the whole point of an arg group is to require that at-least-one (or exactly-one) is passed
+
+&lt;anp&gt; if its not inside an arg group, then having both default and required on an arg is redundant
+&lt;anp&gt; bc it will always be specified
+
+&lt;eternaleye&gt; But this is an arg group
+
+&lt;anp&gt; but you shouldn't have different behavior just because you add an arg to a group
+&lt;anp&gt; its not supposed to change how an argument is interpreted
+&lt;anp&gt; just guarantee that one of the group is used
+
+&lt;eternaleye&gt; I think you misunderstand clap arg groups
+
+&lt;anp&gt; perhaps, its been a bit since i used them
+
+&lt;eternaleye&gt; &gt; Perhaps the most common use of ArgGroups is to require one and only one argument to be present out of a given set.
+&lt;eternaleye&gt; This completely breaks down if ArgGroup is satisfied by a default
+&lt;eternaleye&gt; Because now, it's illegal to pass anything except the one with the default :P
+&lt;eternaleye&gt; That line's from the docs
+
+&lt;anp&gt; yeah i'm reading them too
+&lt;anp&gt; i think the appropriate change would be to panic if you try to construct an arg group with an arg that has a default
+&lt;anp&gt; if it's a &quot;exactly one&quot; arg group
+
+&lt;eternaleye&gt; The key thing here is the ability to query the arg group for what the user passed
+&lt;eternaleye&gt; And then given that, look up the values for those args
+&lt;eternaleye&gt; Which might be a default value, even if the user passed the --option
+
+&lt;anp&gt; hm if i'm the application author
+&lt;anp&gt; i would generally like to know what my arg rules resolve to
+&lt;anp&gt; what the user passed is immaterial honestly
+&lt;anp&gt; bc what comes to my application from clap should be sanitized, parsed, etc
+&lt;anp&gt; and defaults are a part of that
+&lt;anp&gt; from my application's perspective, a default value should be no different from the user specifying a value
+
+&lt;eternaleye&gt; anp: But then you get relatively nasty commandlines, where you have to specify --tests separately from --tests-dir
+&lt;eternaleye&gt; Instead of being able to pass --tests, or --tests=dir
+&lt;eternaleye&gt; As a user, that's gross
+
+&lt;anp&gt; i think that constraint is better expressed as min_values/max_values on the arg
+&lt;anp&gt; than a default
+&lt;anp&gt; and in your validator/parser for the arg you handle the default case there
+
+&lt;eternaleye&gt; But then you lose --help printing the default value
+&lt;eternaleye&gt; Which is really nice
+&lt;eternaleye&gt; I really, really want to stay entirely declarative
+
+&lt;anp&gt; you can change the help output for that arg
+
+&lt;eternaleye&gt; Because going imperative loses features that help the user
+&lt;eternaleye&gt; anp: Yes, and now it's not DRY
+&lt;eternaleye&gt; And the help output can desync from the actual default
+
+&lt;anp&gt; not if you make it a const
+
+&lt;eternaleye&gt; anp: And then I have to dick around with concat!(), great
+
+&lt;anp&gt; how so?
+&lt;anp&gt; paths are relative to the working dir no?
+
+&lt;eternaleye&gt; Because the help output is Put generated tests into this directory [default: tests]
+&lt;eternaleye&gt; I'd need to concat!(&quot;Put generated tests into this directory [default: &quot;, TEST_DIR, &quot;]&quot;)
+
+&lt;anp&gt; help text that doesn't seem too bad, i do wish there were a const_fn format macro
+
+&lt;eternaleye&gt; And if clap ever changed its format, then it's out of sync there, and... ugh
+&lt;eternaleye&gt; It's just nasty
+
+&lt;anp&gt; anyways, dinner time
+
+&lt;eternaleye&gt; Another option is a .required_explicit(true)
+
+&lt;anp&gt; still think it should be a panic to add a defaulted arg to a group
+&lt;anp&gt; yeah that would be a good addition imo
+
+&lt;eternaleye&gt; Which is like .required(true) for arg groups, but checks that the user passed it
+&lt;eternaleye&gt; Mind if I tack this log onto the issue?
+
+&lt;anp&gt; eternaleye: not at all!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-19 17:50</div>
+            <div class="timeline-body"><p>Thanks for all the details! Yeah, unfortunately I don't want to change the behavior as a default value <em>is</em> a value. However, I can add <code>require_explicit</code> to the issue tracker if someone would like to take a stab at adding it.</p>
+<p>I can take a look at adding it once v3 is out. I'd like to think on the ramifications of <code>require_explicit</code> too to make sure the naming and implications are all correct too though. If someone wants to take a stab at this, please provide a spec for how you see this working, including how it interacts with things like ENV vars, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2018-03-19 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> added by @kbknapp on 2018-03-19 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2018-03-19 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2018-03-19 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-03-19 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../habitat-sh/habitat/pulls/6176.html">habitat-sh/habitat#6176</a> on 2019-02-20 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-04-09 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 12:41</div>
+            <div class="timeline-body"><p>This sounds like a logic problem to me: having a default value implies that the arg or group is NOT required - why the hell would it have a default value otherwise? If a default value was specified, it's implied that there's circumstance this default value would be used in, but if the arg was also required, than the default value would never be used - user would be forced to supply their own value. Having <code>default_value(&quot;some&quot;)</code> with <code>required(true)</code> is simply meaningless; it's a bug.</p>
+<p>I think we should panic (maybe only in debug?) if both have been detected on one arg/group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: maybe</span> removed by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: good first issue</span> added by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Z: mentored</span> added by @CreepySkeleton on 2020-06-30 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-01 08:17</div>
+            <div class="timeline-body"><p>This is how a normal <code>Arg</code> behaves too. If you specify <code>required(true)</code> and <code>default_value</code> it will still pass when no value is provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-14 15:54</div>
+            <div class="timeline-body"><p>@CreepySkeleton Is this issue fixed? I remember you fixing something about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eternaleye">@eternaleye</a> on 2020-08-15 19:48</div>
+            <div class="timeline-body"><p>@CreepySkeleton I disagree <em>specifically</em> in the case of <code>ArgGroup</code>, though I agree for <code>Arg</code>.</p>
+<p>I gave a specific use case in my second comment, which is inexpressible with Clap's current behavior, as far as I can tell:</p>
+<pre><code>&lt;eternaleye&gt; anp: The tool in question uses --output-tests to mean &quot;output them to the default dir&quot;, --output-tests dir to mean &quot;output them to a specific dir&quot;, and not passing it as &quot;do not output tests&quot;
+&lt;eternaleye&gt; It also requires that at-least-one output option (of --output, --output-tests, and --synth-dump) is passed
+&lt;eternaleye&gt; The only way to do this currently is to code a manual check that occurrences_of(&quot;output-tests&quot;) != 0
+&lt;eternaleye&gt; But that doesn't allow using clap's logic for missing required arguments
+</code></pre>
+<p>This is a use case that arose from me trying to re-implement an existing tool in Rust using Clap, and it is (so far as I can tell) an eminently sensible behavior. The issue here is perhaps the conflation of &quot;a default value for an optional <em>argument to</em> a flag&quot; with &quot;a default value if a flag is <em>not passed at all&quot;</em>, where the latter should satisfy an <code>ArgGroup</code> and the former should not, but the desired behavior that Clap makes inexpressible doesn't seem like a logic error to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-15 21:59</div>
+            <div class="timeline-body"><blockquote>
+<p>a default value if a flag is not passed at all</p>
+</blockquote>
+<p>Gotcha. And this is exactly why we're introducing <code>default_missing_value</code> - use the default if the flag's been passed, but otherwise don't. I think it allows for the use cause you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rivy">@rivy</a> on 2020-08-17 15:24</div>
+            <div class="timeline-body"><p>@eternaleye , to read up the impetus and semantics of the new <code>default_missing_value</code>, see PRs #1468, #1507, #1587.
+I believe it was ultimately merged into the v3 branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @pksunkara on 2020-08-23 05:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-23 05:44</div>
+            <div class="timeline-body"><p>Closing this since the needed API is already added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2020-08-23 05:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-23 08:51</div>
+            <div class="timeline-body"><p>@pksunkara This issue is a reminder to add a check:</p>
+<blockquote>
+<p>I think we should panic (maybe only in debug?) if both have been detected on one arg/group.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @pksunkara on 2020-08-23 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @pksunkara on 2020-08-23 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2020-08-23 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2020-08-23 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: asserts</span> added by @pksunkara on 2020-08-23 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @pksunkara on 2020-08-23 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2182.html">clap-rs/clap#2182</a> on 2020-10-24 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bors[bot] on 2020-10-24 12:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:45 UTC
+    </footer>
+</body>
+</html>

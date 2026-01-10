@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF029 triggers a false positive on async inner function - astral-sh/ruff #11768</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF029 triggers a false positive on async inner function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11768">#11768</a>
+        opened by <a href="https://github.com/garyj">@garyj</a>
+        on 2024-06-06 00:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/garyj">@garyj</a> on 2024-06-06 00:35</div>
+            <div class="timeline-body"><p>Hi Team,</p>
+<p>Similar to #11043 and #11218, I am getting a false positive when using an async inner function. Code snippet below (from Django project). Might be somewhat convoluted case, but I thought it's worth reporting.</p>
+<pre><code class="language-python">async def export_as_json(queryset: QuerySet, fields: list[str] | None = None) -&gt; StreamingHttpResponse: # RUF029 Triggers here
+    async def json_generator(queryset: QuerySet) -&gt; AsyncGenerator:
+        yield '['
+        first = True
+        async for product in queryset.aiterator():
+            if not first:
+                yield ','
+            else:
+                first = False
+            yield json.dumps(await serialize_product(product, fields))
+        yield ']'
+
+    response = StreamingHttpResponse(json_generator(queryset), content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename=&quot;feed.json&quot;'
+    return response
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-06-06 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-06 04:02</div>
+            <div class="timeline-body"><p>Does the outer function need to be <code>async</code> though? It returns an <code>async</code> generator, but doesn't actually <code>await</code> it. Wouldn't some caller eventually need to be <code>async</code> to <code>await</code> it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garyj">@garyj</a> on 2024-06-06 08:30</div>
+            <div class="timeline-body"><p>Thank you Charlie, you are 100% right, the outer function does not need to be <code>async</code>.</p>
+<p>Apology for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-06 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-06 13:09</div>
+            <div class="timeline-body"><p>No problem!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

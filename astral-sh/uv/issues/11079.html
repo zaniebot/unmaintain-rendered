@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add pytorch documentation section on how to install for Intel GPUs - astral-sh/uv #11079</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add pytorch documentation section on how to install for Intel GPUs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11079">#11079</a>
+        opened by <a href="https://github.com/natemcintosh">@natemcintosh</a>
+        on 2025-01-29 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/natemcintosh">@natemcintosh</a> on 2025-01-29 19:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Pytorch 2.6 <a href="https://pytorch.org/docs/main/notes/get_start_xpu.html">adds support for Intel GPUs</a>. The current <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index">uv pytorch install docs</a> include instructions for:</p>
+<ul>
+<li>CPU only</li>
+<li>Various CUDA versions</li>
+<li>ROCm</li>
+</ul>
+<p>But not yet for Intel GPUs.</p>
+<p>My current attempt at mimicking the docs for existing GPUs is</p>
+<pre><code class="language-pyproject.toml"># pyproject.toml
+[project]
+name = &quot;pytorch-intel&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;torch&gt;=2.6.0&quot;]
+
+[[tool.uv.index]]
+name = &quot;pytorch-intel-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/xpu&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-intel-gpu&quot;, marker = &quot;platform_system == 'Linux'&quot; }]
+
+</code></pre>
+<pre><code class="language-python"># hello.py
+import torch
+
+
+print(torch.xpu.is_available())
+</code></pre>
+<p>Running <code>uv run hello.py</code> produces</p>
+<pre><code class="language-sh">  × No solution found when resolving dependencies for split (sys_platform
+  │ == 'linux'):
+  ╰─▶ Because there is no version of pytorch-triton-xpu{platform_machine
+      == 'x86_64' and sys_platform == 'linux'}==3.2.0 and torch==2.6.0+xpu
+      depends on pytorch-triton-xpu{platform_machine == 'x86_64'
+      and sys_platform == 'linux'}==3.2.0, we can conclude that
+      torch==2.6.0+xpu cannot be used.
+      And because only the following versions of torch{sys_platform ==
+      'linux'} are available:
+          torch{sys_platform == 'linux'}&lt;2.6.0
+          torch{sys_platform == 'linux'}==2.6.0+xpu
+      and your project depends on torch{sys_platform == 'linux'}&gt;=2.6.0, we
+      can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @natemcintosh on 2025-01-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 00:48</div>
+            <div class="timeline-body"><p>I think this works:</p>
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;pytorch-intel&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;torch&gt;=2.6.0&quot;, &quot;pytorch-triton-xpu&quot;]
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/xpu&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch&quot;, marker = &quot;sys_platform == 'linux'&quot; }]
+pytorch-triton-xpu = [{ index = &quot;pytorch&quot; }]
+</code></pre>
+<p>Can you give it a try?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-01-30 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2025-01-30 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-30 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/natemcintosh">@natemcintosh</a> on 2025-01-30 14:34</div>
+            <div class="timeline-body"><p>Yes, this worked for me!</p>
+<p>I got a warning from pytorch that it couldn't initialize numpy. Adding numpy to the pyproject fixed the warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 16:47</div>
+            <div class="timeline-body"><p>Thanks, I'll add something to this effect to the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11109.html">astral-sh/uv#11109</a> on 2025-01-30 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-30 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-30 18:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

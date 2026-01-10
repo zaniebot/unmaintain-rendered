@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>using nox and uv only to test multiple python versions - astral-sh/uv #6579</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>using nox and uv only to test multiple python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6579">#6579</a>
+        opened by <a href="https://github.com/bartdorlandt">@bartdorlandt</a>
+        on 2024-08-24 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bartdorlandt">@bartdorlandt</a> on 2024-08-24 12:10</div>
+            <div class="timeline-body"><p>Hi,
+I'm struggling to use a pure uv only environment that can use nox for multiple python versions...</p>
+<p>Dockerfile</p>
+<pre><code>FROM ubuntu:24.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/GMT
+ENV PATH=&quot;$PATH:/root/.local/bin&quot;
+ENV NOX_DEFAULT_VENV_BACKEND=uv
+ARG VERSIONS=&quot;3.12 3.11 3.10 3.9&quot;
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+RUN uv python install ${VERSIONS} &amp;&amp; \
+    uv tool install nox[uv]
+
+RUN apt-get update -qy &amp;&amp; apt-get upgrade -qy &amp;&amp; \
+    apt-get install -qy --no-install-recommends \
+        ca-certificates curl gnupg2 git openssh-client
+</code></pre>
+<p>noxfile.py</p>
+<pre><code>&quot;&quot;&quot;noxfile.&quot;&quot;&quot;
+from nox import session
+
+py_versions = [&quot;3.12&quot;, &quot;3.11&quot;]
+
+@session(python=py_versions)
+def tests(session):
+    session.install(&quot;.&quot;)
+    session.install(&quot;pytest&quot;, &quot;pytest-cov&quot;)
+    session.run(&quot;pytest&quot;)
+</code></pre>
+<p>the <code>uv python install 3.x</code> doesn't create any shims (like you would have with pyenv), so they are not known to the shell with python3.11 ...
+I can call nox from uv per python versions, which works, but kind of beats the point of nox.</p>
+<pre><code>uv run --python 3.11 nox -s tests
+uv run --python 3.12 nox -s tests
+</code></pre>
+<p>For each of the command the other environment would be skipped. Example:</p>
+<pre><code>nox &gt; Running session tests-3.11
+nox &gt; Missing interpreters will error by default on CI systems.
+nox &gt; Session tests-3.11 skipped: Python interpreter 3.11 not found.
+</code></pre>
+<p>(therefore not specifying the different python versions in the noxfile.)
+Has anyone else played with this already? (and got it to work?)
+My goal is to use versions installed by uv only and preferably have it run automatically against all desired python versions.</p>
+<p>uv version: 0.3.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bartdorlandt">@bartdorlandt</a> on 2024-08-24 12:34</div>
+            <div class="timeline-body"><p>Additional info.</p>
+<p>Using a simpler noxfile:</p>
+<pre><code>&quot;&quot;&quot;noxfile.&quot;&quot;&quot;
+from nox import session
+
+@session()
+def tests(session):
+    session.install(&quot;.&quot;,)
+    session.install(&quot;pytest&quot;, &quot;pytest-cov&quot;)
+    session.run(&quot;pytest&quot;)
+</code></pre>
+<p>it will run fine, for the specifically requested python version.</p>
+<pre><code>root@69e959d9538c:/src# nox -s tests
+nox &gt; Running session tests
+nox &gt; Creating virtual environment (uv) using python in .nox/tests
+nox &gt; /root/.local/share/uv/tools/nox/bin/uv pip install .
+nox &gt; /root/.local/share/uv/tools/nox/bin/uv pip install pytest pytest-cov
+nox &gt; pytest
+=================================================== test session starts ====================================================
+platform linux -- Python 3.12.5, pytest-8.3.2, pluggy-1.5.0
+rootdir: /src
+configfile: pyproject.toml
+plugins: cov-5.0.0
+...
+</code></pre>
+<p>Using it specifying another version is working:</p>
+<pre><code>root@69e959d9538c:/src# uv run --python 3.11 nox -s tests
+nox &gt; Running session tests
+nox &gt; Creating virtual environment (uv) using python in .nox/tests
+nox &gt; uv pip install .
+nox &gt; uv pip install pytest pytest-cov
+nox &gt; pytest
+=================================================== test session starts ====================================================
+platform linux -- Python 3.11.9, pytest-8.3.2, pluggy-1.5.0
+rootdir: /src
+configfile: pyproject.toml
+plugins: cov-5.0.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 11:46</div>
+            <div class="timeline-body"><p>Need to find a minute to play around with this before giving a confident answer. In the meantime would love to hear from others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-25 20:51</div>
+            <div class="timeline-body"><p>@henryiii might have ideas on the ideal way to do this using Nox with uv as he was the author of the integration of nox with uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wntrblm/nox/pulls/842.html">wntrblm/nox#842</a> on 2024-08-27 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-09-09 21:51</div>
+            <div class="timeline-body"><p>I have the same need to run against multiple versions of Python, but ones that are built &quot;in-house&quot;.</p>
+<p>Currently we're using tox to drive this as opposed to another tool wrapping tox:</p>
+<pre><code class="language-ini">[tox]
+envlist = prepare,test3{10,11,12},ci
+ignore_basepython_conflict = true
+
+[testenv]
+base_python = python3.10
+...
+
+[testenv:test310]
+depends = prepare
+commands =
+    pytest test --cov src
+    mypy --config-file tox.ini src
+    ...
+
+[testenv:test311]
+depends = prepare
+commands =
+    pytest test --cov src
+
+[testenv:test312]
+depends = prepare
+commands =
+    pytest test --cov src
+
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wpk-nist-gov">@wpk-nist-gov</a> on 2024-09-20 15:03</div>
+            <div class="timeline-body"><p>I ran into the same issue.  In the meantime, I'm just adding the paths to uv pythons to the <code>os.environ</code> using the following:</p>
+<pre><code class="language-python">def add_uv_to_environ() -&gt; None:
+    import os
+    import subprocess
+    from pathlib import Path
+
+    path_to_uv_pythons = (
+        subprocess.check_output(
+            [&quot;uv&quot;, &quot;python&quot;, &quot;dir&quot;], env={&quot;NO_COLOR&quot;: &quot;1&quot;, **os.environ}
+        )
+        .decode()
+        .strip()
+    )
+    paths_new = &quot;:&quot;.join(map(str, Path(path_to_uv_pythons).glob(&quot;*/bin&quot;)))
+    paths_old = os.environ[&quot;PATH&quot;]
+    os.environ[&quot;PATH&quot;] = f&quot;{paths_new}:{paths_old}&quot;
+
+
+add_uv_to_environ()
+
+
+@nox.session
+def test(session): 
+...
+</code></pre>
+<p>Or as a bash script <code>shim-uv</code></p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+p=$PATH
+for k in &quot;$(uv python dir)&quot;/*/bin; do
+    p=&quot;${k}:${p}&quot;
+done
+
+PATH=$p &quot;$@&quot;
+</code></pre>
+<p>and run</p>
+<pre><code class="language-bash">shim-uv nox/tox ....
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-21 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Levelleor">@Levelleor</a> on 2024-11-08 20:39</div>
+            <div class="timeline-body"><p>@wpk-nist-gov, thank you for providing the script! I’m wondering if there’s a way to automate the process of pulling the necessary Python versions beforehand. Do you have any automated solution for this, and if so, how do you implement it?</p>
+<p>Currently, I'm using <code>uv tool run nox -s tests</code>, but it doesn’t automatically pull the required Python binaries when executed. I will have to install them first or parameterize the tests by injecting <code>uv python install ...</code> into every run. I could enforce developers to manually specify an array of Python distributions in something like <code>tests.py</code> file then install all pythons before executing nox: <code>uv run tests.py</code>, but that introduces an extra step that I’d prefer to avoid.</p>
+<p>From my understanding, to utilize the script you provided, I would first need to identify the specific Python versions I want, then have uv install them, and only afterward add them to the PATH. Is there a more simpler way around? Or, rather, a more standardized way that I could pass down onto users?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-11-08 20:42</div>
+            <div class="timeline-body"><p>nox is supposed to install Python automatically as needed as long as you are using the uv backend. That was added in https://github.com/wntrblm/nox/pull/842, which was released almost exactly a month ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Levelleor">@Levelleor</a> on 2024-11-08 21:13</div>
+            <div class="timeline-body"><p>Hey, this is great news actually! Just to make it clear, were you talking about setting venv backend to uv? @henryiii</p>
+<pre><code>nox --default-venv-backend uv ...
+</code></pre>
+<p>This worked for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-11-08 21:22</div>
+            <div class="timeline-body"><p>Yes, or</p>
+<pre><code class="language-python">nox.options.default_venv_backend = &quot;uv|virtualenv&quot;
+</code></pre>
+<p>(I put this in all my noxfiles)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-11-14 15:08</div>
+            <div class="timeline-body"><p>For anybody struggling with this, make sure that you are using uv &gt;= 0.4.16. We were on 0.4.4 and this line was being skipped:
+https://github.com/saucoide/nox/blob/1e01f798facd6b8b3e44cae6389e3319afe02016/nox/virtualenv.py#L564
+But now it works like a charm!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-07 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../glass-dev/glass/pulls/471.html">glass-dev/glass#471</a> on 2025-01-13 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wntrblm/nox/issues/841.html">wntrblm/nox#841</a> on 2025-03-21 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Qiskit/rustworkx/issues/1416.html">Qiskit/rustworkx#1416</a> on 2025-05-01 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../planetlabs/planet-mcp/pulls/7.html">planetlabs/planet-mcp#7</a> on 2025-09-23 15:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

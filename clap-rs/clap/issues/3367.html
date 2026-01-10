@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When deriving Parser, multi-sentence doc comments have final period removed - clap-rs/clap #3367</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>When deriving Parser, multi-sentence doc comments have final period removed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3367">#3367</a>
+        opened by <a href="https://github.com/nyanpasu64">@nyanpasu64</a>
+        on 2022-01-29 04:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nyanpasu64">@nyanpasu64</a> on 2022-01-29 04:57</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.1 (db9d1b20b 2022-01-20)</p>
+<h3>Clap Version</h3>
+<p>3.0.13</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::path::PathBuf;
+
+use clap::Parser;
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    /// If omitted, installs a shortcut to itself to the &quot;Send To&quot; menu.
+    /// If passed, installs a shortcut to the .exe to the start menu.
+    exe: Option&lt;PathBuf&gt;,
+}
+
+fn main() {
+    Cli::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- -h</code></p>
+<h3>Actual Behaviour</h3>
+<p>The doc comment consists of multiple sentences, and it's difficult to rewrite it in a single sentence without losing critical information. But the final period is removed, resulting in a jarring and ungrammatical result:</p>
+<pre><code>send-to-start 0.1.0
+
+USAGE:
+    send-to-start.exe [EXE]
+
+ARGS:
+    &lt;EXE&gt;    If omitted, installs a shortcut to itself to the &quot;Send To&quot; menu. If passed,
+             installs a shortcut to the .exe to the start menu
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+</code></pre>
+<p>In other cases, I've had to spend effort rewriting my doc comments into a single summary sentence, followed by extra paragraphs of explanation. Perhaps it's better for users, perhaps not. As an author I wish it wasn't necessary to do so to avoid structopt breaking my help output.</p>
+<p>Also as a user I dislike how <code>-h</code> prints short output and <code>--help</code> prints multi-paragraph output, even though the help output (<code>-h, --help</code>) implies that these 2 commands are interchangeable. As a result, I often don't even know that multi-paragraph help even exists in Rust apps. (Admittedly git has different -h and --help, but I don't especially like that either.)</p>
+<h3>Expected Behaviour</h3>
+<p>Either don't strip trailing periods from doc comments by default, or add a struct-wide or per-field option to disable stripping the trailing period. Ideally you could detect multi-sentence comments and avoid stripping the trailing period, but this may be difficult to implement without false positives or negatives.</p>
+<p>I'm not sure how to unify the behavior of -h and --help, or address the odd formatting of <code>--help</code> showing 1 sentence followed by paragraphs.</p>
+<h3>Additional Context</h3>
+<p>Somewhat related discussions:</p>
+<ul>
+<li>https://github.com/TeXitoi/structopt/issues/341 found this behavior unexpected.</li>
+<li>https://github.com/clap-rs/clap/discussions/2247 dislikes the current long help format (1 sentence followed by a paragraph).</li>
+</ul>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @nyanpasu64 on 2022-01-29 04:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-01-31 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-01-31 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-31 22:10</div>
+            <div class="timeline-body"><p>Thanks for reporting this!</p>
+<p>https://github.com/clap-rs/clap/issues/1015 already exists about <code>-h</code> / <code>--help</code>.</p>
+<p>TeXitoi/structopt#341 has some interesting trade offs and a workaround (<code>verbatim_doc_comment</code>), on top of manually specifying it (<code>help</code> and <code>long_help</code> attributes).  In this case, that behavior falls flat.</p>
+<p>In this specific case</p>
+<pre><code>    /// If omitted, installs a shortcut to itself to the &quot;Send To&quot; menu.
+    /// If passed, installs a shortcut to the .exe to the start menu.
+</code></pre>
+<p>Two thoughts on approaches</p>
+<ul>
+<li>This command operates in two modes.  Sounds like one is user-facing for initialization and the other is used in the initialized state?  I would make the documentation focus on the case users will interact with it</li>
+<li>Grammatically, I would put emphasis on the case where an arg is present, something like <code>Installs a shortcut to the .exe in the start menu [default this program]</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/briankung">@briankung</a> on 2022-05-15 11:33</div>
+            <div class="timeline-body"><p>Hi, just adding a link to the (presumably) upstream issue: https://github.com/TeXitoi/structopt/issues/341</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/obskyr">@obskyr</a> on 2024-05-23 14:21</div>
+            <div class="timeline-body"><p>This dovetails with #3198 in an unfortunate manner. The following are true:</p>
+<ul>
+<li>There is no way to put a period at the end of a help message without using <code>verbatim_doc_comment</code>, and</li>
+<li>There is no way to escape newlines when using <code>verbatim_doc_comment</code>.</li>
+</ul>
+<p>Together, this means that there is <strong>no way to end a help message with a period and split the doc comment across multiple lines</strong> (without also introducing manual line breaks to the help message). You essentially have to choose between having the period stripped, introducing a bunch of manual newlines into the message, or fitting the doc comment on a single line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3198.html">clap-rs/clap#3198</a> on 2024-07-07 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 13:52</div>
+            <div class="timeline-body"><p>Hi! Just want to share my use-case here — I'm wrapping Clap to generate reference documentation for my CLI and it'd be great to be able to retain periods in the website.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/uv/pulls/5869.html">astral-sh/uv#5869</a> on 2024-08-07 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:54 UTC
+    </footer>
+</body>
+</html>

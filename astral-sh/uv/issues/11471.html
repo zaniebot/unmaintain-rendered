@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`run::detect_infinite_recursion` failure (needs `python-managed` mark?) - astral-sh/uv #11471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`run::detect_infinite_recursion` failure (needs `python-managed` mark?)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11471">#11471</a>
+        opened by <a href="https://github.com/mgorny">@mgorny</a>
+        on 2025-02-13 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgorny">@mgorny</a> on 2025-02-13 07:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This time filing a bug instead of guessing the fix :-).</p>
+<pre><code>failures:
+
+---- run::detect_infinite_recursion stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+error: No interpreter found for Python 3.13.0 in virtual environments, managed installations, or search path
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: detect_infinite_recursion
+Source: crates/uv/tests/it/run.rs:4230
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    1     1 │ exit_code: 2
+    2     2 │ ----- stdout -----
+    3     3 │ 
+    4     4 │ ----- stderr -----
+    5       │-error: `uv run` was recursively invoked 6 times which exceeds the limit of 5.
+    6       │-
+    7       │-hint: If you are running a script with `uv run` in the shebang, you may need to include the `--script` flag.
+          5 │+error: No interpreter found for Python 3.13.0 in virtual environments, managed installations, or search path
+────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+thread 'run::detect_infinite_recursion' panicked at /home/mgorny/.cargo/registry/src/index.crates.io-6f17d22bba15001f/insta-1.42.1/src/runtime.rs:679:13:
+snapshot assertion for 'detect_infinite_recursion' failed in line 4230
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    run::detect_infinite_recursion
+
+test result: FAILED. 1661 passed; 1 failed; 3 ignored; 0 measured; 0 filtered out; finished in 300.10s
+</code></pre>
+<p>Curious enough, in our test environment it failed slightly differently:</p>
+<pre><code>failures:
+
+---- run::detect_infinite_recursion stdout ----
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Unfiltered output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+----- stdout -----
+
+----- stderr -----
+Downloading cpython-3.13.0-linux-x86_64-gnu (18.1MiB)
+ Downloaded cpython-3.13.0-linux-x86_64-gnu
+error: `uv run` was recursively invoked 6 times which exceeds the limit of 5.
+
+hint: If you are running a script with `uv run` in the shebang, you may need to include the `--script` flag.
+
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: detect_infinite_recursion
+Source: crates/uv/tests/it/run.rs:4230
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    1     1 │ exit_code: 2
+    2     2 │ ----- stdout -----
+    3     3 │ 
+    4     4 │ ----- stderr -----
+          5 │+Downloading cpython-3.13.0-linux-x86_64-gnu ([SIZE])
+          6 │+ Downloaded cpython-3.13.0-linux-x86_64-gnu
+    5     7 │ error: `uv run` was recursively invoked 6 times which exceeds the limit of 5.
+    6     8 │ 
+    7     9 │ hint: If you are running a script with `uv run` in the shebang, you may need to include the `--script` flag.
+────────────┴───────────────────────────────────────────────────────────────────
+To update snapshots run `cargo insta review`
+Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+thread 'run::detect_infinite_recursion' panicked at /var/tmp/portage/dev-python/uv-0.5.31/work/cargo_home/gentoo/insta-1.42.1/src/runtime.rs:679:13:
+snapshot assertion for 'detect_infinite_recursion' failed in line 4230
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    run::detect_infinite_recursion
+
+test result: FAILED^O. 1659 passed; 1 failed; 3 ignored; 0 measured; 0 filtered out; finished in 600.62s
+</code></pre>
+<h3>Platform</h3>
+<p>Gentoo Linux amd64</p>
+<h3>Version</h3>
+<p>0.5.31</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mgorny on 2025-02-13 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2025-02-13 07:09</div>
+            <div class="timeline-body"><p>(both systems have Python 3.13.2 installed too, but <code>python</code> points to 3.12)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 15:21</div>
+            <div class="timeline-body"><p>This just sounds like a bug, let me look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @zanieb on 2025-02-13 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 15:31</div>
+            <div class="timeline-body"><p>Turning on debug logs, you can see this searches for Python instead of using the test context because it's missing all of our standard test command flags</p>
+<pre><code>    DEBUG uv [VERSION] ([COMMIT] DATE)
+    DEBUG Found project root: `[WORKSPACE]/`
+    DEBUG Project `uv` is marked as unmanaged
+    DEBUG No project found; searching for Python interpreter
+    DEBUG Reading Python requests from version file at `[WORKSPACE]/.python-versions`
+    DEBUG Searching for Python 3.13.0 in virtual environments, managed installations, or search path
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11481.html">astral-sh/uv#11481</a> on 2025-02-13 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-13 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twardoch">@twardoch</a> on 2025-02-17 01:05</div>
+            <div class="timeline-body"><blockquote>
+<p>hint: If you are running a script with <code>uv run</code> in the shebang, you may need to include the <code>--script</code> flag.</p>
+</blockquote>
+<p>But include WHERE. Make the hint clear.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

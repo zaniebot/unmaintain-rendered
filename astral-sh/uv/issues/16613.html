@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv reports false dependency conflict for pywin32; sys_platform == 'win32' on Linux with private PyPI - astral-sh/uv #16613</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv reports false dependency conflict for pywin32; sys_platform == 'win32' on Linux with private PyPI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16613">#16613</a>
+        opened by <a href="https://github.com/FlyingHeNanman">@FlyingHeNanman</a>
+        on 2025-11-06 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FlyingHeNanman">@FlyingHeNanman</a> on 2025-11-06 12:47</div>
+            <div class="timeline-body"><h3><strong>Title</strong></h3>
+<p>False dependency conflict when resolving conditional dependency <code>pywin32; sys_platform == 'win32'</code> with private PyPI repository on Linux</p>
+<hr />
+<h3><strong>Description</strong></h3>
+<p>I'm using <strong>uv 0.8.22</strong> in a <strong>Linux</strong> environment, and I'm encountering a false dependency resolution failure when building with a <strong>private PyPI repository (Nexus)</strong> inside a Docker build.</p>
+<p>My project depends on <code>docker</code>, which has a conditional dependency:</p>
+<pre><code>pywin32; sys_platform == 'win32'
+</code></pre>
+<p>However, since I’m on Linux and my private repository only contains Linux packages, there is <strong>no <code>pywin32</code> package</strong> available.
+Despite this, uv still fails to resolve dependencies, reporting that <code>pywin32&gt;=304</code> cannot be found — even though that dependency should not apply on Linux.</p>
+<p>If I upload a dummy <code>pywin32</code> package to my private PyPI, the problem disappears.
+This suggests that uv’s resolver may incorrectly treat “missing platform-specific dependencies” as hard conflicts when using a private mirror that returns an empty response.</p>
+<hr />
+<h3><strong>Steps to Reproduce</strong></h3>
+<ol>
+<li><p>Use a <strong>private PyPI mirror</strong> (e.g., Nexus) with Linux-only packages.</p>
+</li>
+<li><p>Create a minimal project:</p>
+<pre><code class="language-toml">[project]
+name = &quot;mini-container-service&quot;
+version = &quot;0.1.0&quot;
+dependencies = [&quot;docker&quot;]
+</code></pre>
+</li>
+<li><p>Run:</p>
+<pre><code class="language-bash">uv sync -v
+</code></pre>
+</li>
+<li><p>Observe the dependency resolution failure.</p>
+</li>
+</ol>
+<hr />
+<h3><strong>Expected Behavior</strong></h3>
+<p>uv should <strong>ignore conditional dependencies</strong> like <code>pywin32; sys_platform == 'win32'</code> on non-Windows systems, even if the private PyPI returns no package for them.</p>
+<hr />
+<h3><strong>Actual Behavior</strong></h3>
+<p>uv fails with a false dependency conflict:</p>
+<pre><code>× No solution found when resolving dependencies:
+╰─▶ Because only pywin32{sys_platform == 'win32'}&lt;304 is available and docker==7.1.0 depends on pywin32{sys_platform == 'win32'}&gt;=304, we can conclude that docker==7.1.0 cannot be used.
+    And because only docker==7.1.0 is available and your project depends on docker, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>Full verbose log excerpt:</p>
+<details>
+<summary>Click to expand</summary>
+
+<pre><code>DEBUG uv 0.8.22
+DEBUG Found project root: `/home/mini-container-service`
+DEBUG Using Python request `3.13` from version file at `.python-version`
+DEBUG Solving with installed Python version: 3.13.7
+DEBUG Solving with target Python version: &gt;=3.13
+DEBUG Adding direct dependency: docker*
+DEBUG Adding transitive dependency for docker==7.1.0: pywin32{sys_platform == 'win32'}&gt;=304
+DEBUG No cache entry for: http://10.10.100.21:8081/repository/pypi-hosted/simple/pywin32/
+DEBUG Searching for a compatible version of pywin32{sys_platform == 'win32'} (&gt;=304)
+DEBUG No compatible version found for: pywin32{sys_platform == 'win32'}
+× No solution found when resolving dependencies:
+╰─▶ Because only pywin32{sys_platform == 'win32'}&lt;304 is available and docker==7.1.0 depends on pywin32{sys_platform == 'win32'}&gt;=304, we can conclude that docker==7.1.0 cannot be used.
+</code></pre>
+</details>
+
+<hr />
+<h3><strong>Environment</strong></h3>
+<ul>
+<li><strong>uv version:</strong> 0.8.22</li>
+<li><strong>Python version:</strong> 3.13.7</li>
+<li><strong>OS:</strong> Linux (Docker environment)</li>
+<li><strong>Private PyPI:</strong> Nexus Repository Manager</li>
+<li><strong>Network setup:</strong> Air-gapped / internal mirror (no access to pypi.org)</li>
+</ul>
+<hr />
+<h3><strong>Workaround</strong></h3>
+<p>Uploading a dummy <code>pywin32</code> wheel (or any <code>pywin32</code> version) to the private repository resolves the problem, which confirms this is not a real dependency conflict.</p>
+<hr />
+<h3><strong>Possible Cause</strong></h3>
+<p>uv’s resolver may not properly skip platform-specific dependencies when a private repository responds with an empty “simple index” for that package.
+This causes the solver to incorrectly register a conflict instead of ignoring the irrelevant dependency.</p>
+<hr />
+<h3><strong>Question</strong></h3>
+<p>Is this expected behavior, or a known limitation of uv’s resolver when using private PyPI mirrors?
+If not, I believe this should be treated as a <strong>bug</strong>.</p>
+<h3>Platform</h3>
+<p>Linux 5.15.0-119-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.22</p>
+<h3>Python version</h3>
+<p>3.13.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @FlyingHeNanman on 2025-11-06 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-06 14:37</div>
+            <div class="timeline-body"><p>In order to create, update, or validate a <code>uv.lock</code> file, uv needs to be able to access all of the declared dependencies to extract their metadata -- even those that won't ultimately be installed. So it's correct for uv to look in the internal registry even on non-Windows machines, as the lockfile is intended to be used across <em>all</em> platforms.</p>
+<p>If you create a <code>uv.lock</code> and check it in, you can (e.g.) install on a non-Windows machine using <code>uv sync --frozen</code> and we won't hit that index. In other words, if the lockfile already exists, uv can use it and doesn't require access to dependencies it won't install; but to <em>create</em> (or update, or validate) the lockfile, we need access to all of them.</p>
+<p>You could also tell uv that you don't need to resolve on Windows at all with:</p>
+<pre><code class="language-toml">[tool.uv]
+environments = [
+    &quot;sys_platform == 'linux'&quot;,
+]
+</code></pre>
+<p>(See: https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-11-06 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-11-06 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FlyingHeNanman">@FlyingHeNanman</a> on 2025-11-08 14:51</div>
+            <div class="timeline-body"><p>Thank you very much for the detailed explanation!
+It’s clear now — I misunderstood how uv handles dependency resolution across environments. I should have read the documentation on limited resolution environments more carefully.</p>
+<p>Appreciate your time and clarification! I’m closing this issue. 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @FlyingHeNanman on 2025-11-08 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-08 16:27</div>
+            <div class="timeline-body"><p>No worries, glad I could help, thank you for following up!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

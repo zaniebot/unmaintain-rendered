@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[clap_complete] use of expect causes panic since writing to stdout may fail - clap-rs/clap #5993</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[clap_complete] use of expect causes panic since writing to stdout may fail</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5993">#5993</a>
+        opened by <a href="https://github.com/gtema">@gtema</a>
+        on 2025-05-08 15:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gtema">@gtema</a> on 2025-05-08 15:09</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.86</p>
+<h3>Clap Version</h3>
+<p>4.5.50</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[derive(Parser, Debug, PartialEq)]
+#[command(name = &quot;completion-derive&quot;)]
+struct Opt {
+    // If provided, outputs the completion file for given shell
+    #[arg(long = &quot;generate&quot;, value_enum)]
+    generator: Option&lt;Shell&gt;,
+    #[command(subcommand)]
+    command: Option&lt;Commands&gt;,
+}
+
+#[derive(Subcommand, Debug, PartialEq)]
+enum Commands {
+    #[command(visible_alias = &quot;hint&quot;)]
+    ValueHint(ValueHintOpt),
+............
+}
+
+fn print_completions&lt;G: Generator&gt;(generator: G, cmd: &amp;mut Command) {
+    generate(
+        generator,
+        cmd,
+        cmd.get_name().to_string(),
+        &amp;mut io::stdout(),
+    );
+}
+
+fn main() {
+    let opt = Opt::parse();
+
+    if let Some(generator) = opt.generator {
+        let mut cmd = Opt::command();
+        eprintln!(&quot;Generating completion file for {generator:?}...&quot;);
+        print_completions(generator, &amp;mut cmd);
+    } else {
+        println!(&quot;{opt:#?}&quot;);
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>The reproducer is not really useful, it would be too big to put here. Technically completion for the big command (in my case it's 5Mb) when piped to the less (similarly to <code>cargo r -p clap_complete --example completion-derive -- --generate bash | less</code> just with the much bigger command) crashes when less aborts (i.e. quitting before reaching the end).</p>
+<h3>Actual Behaviour</h3>
+<p>failed to write completion file: Os { code: 32, kind: BrokenPipe, message: &quot;Broken pipe&quot; }</p>
+<h3>Expected Behaviour</h3>
+<p>No panic</p>
+<h3>Additional Context</h3>
+<p>https://github.com/clap-rs/clap/blob/master/clap_complete/src/aot/shells/bash.rs#L78 (and for other generators as well) use &quot;expect&quot; causing application to crash when writing to the buffer fails. Instead result should be propagated to the caller so that there is a possibility to handle (or ignore) the error.
+This is not visible with the existing examples, so I assume I face some sort of OS specific thresholds writing to the stdout.</p>
+<h3>Debug Output</h3>
+<p>clap_complete should not use expect when writing generated result into the buffer, but instead return the result</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @gtema on 2025-05-08 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2025-05-08 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2025-05-08 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-08 15:19</div>
+            <div class="timeline-body"><p>Reporting out the error with the existing functions would be a breaking change.  Maybe we could add a new <code>try_generate</code> function.  On <code>Generator</code>, it could have an inherent impl that calls <code>Generator::generate</code> to avoid breaking other implementers of the <code>Generator</code> trait.</p>
+<p>Note that the <code>eprintln!</code> in the reproduction case can also panic for the same reason :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gtema">@gtema</a> on 2025-05-08 16:27</div>
+            <div class="timeline-body"><p>oh right. Yeah, adding try_generate is absolutely fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../gtema/openstack/issues/892.html">gtema/openstack#892</a> on 2025-05-08 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6009.html">clap-rs/clap#6009</a> on 2025-05-22 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "5.0" by @epage on 2025-05-27 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-27 17:24</div>
+            <div class="timeline-body"><p>With #6009 merged, whats left is making <code>generate</code> optional or remove it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:45 UTC
+    </footer>
+</body>
+</html>

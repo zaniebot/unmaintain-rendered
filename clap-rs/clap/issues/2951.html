@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage parsing and generation should match docopt - clap-rs/clap #2951</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Usage parsing and generation should match docopt</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2951">#2951</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-10-26 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-10-26 20:53</div>
+            <div class="timeline-body"><h3>Affected Version of clap</h3>
+<p>3.0.0-beta.4</p>
+<h3>Expected Behavior Summary</h3>
+<p><code>App:from</code> parses according to http://docopt.org/</p>
+<p><code>App::render_usage</code> generates output that matches http://docopt.org/</p>
+<h3>Actual Behavior Summary</h3>
+<p>At least with &quot;required&quot;, we are using <code>&lt;&gt;</code> instead of <code>()</code></p>
+<p>See https://github.com/clap-rs/clap/discussions/2947</p>
+<h3>Notes</h3>
+<ul>
+<li>Can we do develop this behind a feature flag?<ul>
+<li>Avoid this having to be done in a breaking-change-specific branch, pushing towards large, big releases</li>
+<li>Allow people to opt-in to it early and start collecting feedback</li>
+</ul>
+</li>
+<li>Should we stablize the usage generation separate from usage parsing?   Its not a breaking change but having them match probably helps the person using <code>App::from</code></li>
+<li>Can we support parsing both grammars at once?  This would let us stablize parsing and give people room to transition</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @epage on 2021-10-26 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @epage on 2021-10-26 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @epage on 2021-10-26 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: app</span> added by @epage on 2021-10-26 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @epage on 2021-10-26 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-26 21:04</div>
+            <div class="timeline-body"><ul>
+<li>What does docopt generate?</li>
+<li>How do we differ from it?</li>
+<li>Why do we think docopt is correct in those instances?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-26 21:16</div>
+            <div class="timeline-body"><blockquote>
+<p>What does docopt generate?</p>
+</blockquote>
+<p>DocOpt is a convention for describing usage syntax, especially for creating arg parsers off of it.</p>
+<blockquote>
+<p>How do we differ from it?</p>
+</blockquote>
+<p>As mentioned in the Issue, we at least differ in syntax for required (<code>&lt;&gt;</code> vs <code>()</code>).  I've not exhaustively looked at where else we might differ, I see that as part of resolving this issue.  I have a tiny hope that there is some kind of conformance suite (&quot;tiny&quot; because I see that being difficult).</p>
+<blockquote>
+<p>Why do we think docopt is correct in those instances?</p>
+</blockquote>
+<p>I believe @kbknapp said that the goal of <code>App::from</code> was to have an API similar to the <a href="https://crates.io/crates/docopt">docopt crate</a>.  That crate, while unmaintained, was an implementation of docopt.   So by extension, clap is already meaning to support http://docopt.org/</p>
+<p>The other benefit is the closer we are to a common syntax, the more likely people will be able to translate existing knowledge when programming in Rust which makes them more successful faster and are less reliant on how perfect / complete our documentation is.</p>
+<p>If we decide docopt support isn't important, or if usage and parser can diverge, I'm fine with that.  I'm more so just describing how I see the situation.  Personally, I'll never use the docopt parser and the usage generation is good enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-26 21:37</div>
+            <div class="timeline-body"><p>I could be wrong and misremembering, but I thought I remembered @BurntSushi mentioning once that there either wasn't a real spec, or it wasn't clear?</p>
+<p>One the main issues and why I never fully pursued this further was docopt I believe relies on &quot;whole document&quot; information to infer some settings for arguments and goes through great lengths to make good guesses. clap's &quot;usage parsing&quot; is much more strict, but also tried to encode things that docopt has no concept of.</p>
+<p>Ultimately, this was something I felt could be better handled by a crate wrapping clap, than clap itself. Like our derive and generating crates, I wouldn't mind them being part of this org, but a true docopt implementation is too much for clap proper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-26 21:46</div>
+            <div class="timeline-body"><p>So, there are two things here.</p>
+<ol>
+<li>Is docopt the convention? Is there a spec for this or can we interpolate it by examining how existing non-docopt based tools behave?</li>
+<li>Usage parser in clap.</li>
+</ol>
+<p>For the second item, I think we are all aligned that it can be a separate crate. I personally don't mind either but it might be difficult because we would want to implement <code>impl From&lt;&amp;str&gt; for Arg</code> in that crate and rust doesn't allow it IIRC. Anyway, that can be a separate discussion later on.</p>
+<p>Let's focus this issue on the first item.</p>
+<p>I personally think docopt is not the convention and <code>&lt;&gt;</code> actually conveys that it is required better than <code>()</code>.</p>
+<hr />
+<blockquote>
+<p>I've not exhaustively looked at where else we might differ, I see that as part of resolving this issue.</p>
+</blockquote>
+<p>I asked the question for future so that we can actually do that when we work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-26 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>it might be difficult because we would want to implement impl From&lt;&amp;str&gt; for Arg in that crate and rust doesn't allow it IIRC</p>
+</blockquote>
+<p>Correct. For that exact method we'd have to create and expose some kind of <code>IntoArg</code> trait. However, there is nothing preventing a crate from doing this without traits and just a bare function <code>fn docopt_to_clap(&amp;str) -&gt; App</code>. Is that optimal? No, not exactly. But at least for the experimentation phase and such it's perfectly fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0x7FFFFFFFFFFFFFFF">@0x7FFFFFFFFFFFFFFF</a> on 2021-10-27 00:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I personally think docopt is not the convention and <code>&lt;&gt;</code> actually conveys that it is required better than <code>()</code>.</p>
+</blockquote>
+<p>What do you think of <code>{}</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-10-27 00:58</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you think of <code>{}</code>?</p>
+</blockquote>
+<p>The only specification I've seen only says, (paraphrasing) &quot;square brackets <code>[]</code> mean an argument is optional. Lack of square brackets mean the argument is required in that synopsis.&quot;</p>
+<p>I've anecdotally seen <code>&lt;&gt;</code> or no brackets convey meaning the argument is required in 99% of all circumstances. I'd argue against anything beyond either of those options. And the no-brackets version sometimes has parsing difficulties when writing a general parser. The reason clap originally used <code>&lt;&gt;</code> (beyond it being a decently common convention) is it helps disambiguate positional arguments from subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-27 02:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Ultimately, this was something I felt could be better handled by a crate wrapping clap, than clap itself. Like our derive and generating crates, I wouldn't mind them being part of this org, but a true docopt implementation is too much for clap proper.</p>
+</blockquote>
+<p>I only had in mind getting ours more inline with docopt.  Are you suggesting we split our existing usage parser into its own crate or if someone wanted a to go full docopt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Usage parsing and generation should match docopt.org/" to "Usage parsing and generation should match docopt" by @pksunkara on 2021-10-27 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-27 12:37</div>
+            <div class="timeline-body"><p>It's been a long time since I've even <em>thought</em> about docopt, but IIRC, docopt.org is pretty much the only thing that exists for a spec. I remember following that and the <a href="https://github.com/docopt/docopt/blob/master/testcases.docopt">test cases for the reference implementation</a>.</p>
+<p>IMO, this is a great piece of &quot;fat&quot; that could be trimmed from Clap.</p>
+<p>It's also worth noting that the docopt project itself (not just the docopt Rust library) has been effectively unmaintained for many years.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-29 16:38</div>
+            <div class="timeline-body"><blockquote>
+<p>IMO, this is a great piece of &quot;fat&quot; that could be trimmed from Clap.</p>
+</blockquote>
+<p>What are thoughts on deprecating the usage parser for 3.0, like we did the macro API?</p>
+<ul>
+<li>We'd want to revert the API changes since that is unnecessary churn.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-29 16:41</div>
+            <div class="timeline-body"><p>I have seen quite a high number of people use it. Every alternate issue that we get seems to use it. Maybe we can mark it as deprecated (without reverting changes) but offer it as a side crate later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-29 16:52</div>
+            <div class="timeline-body"><p>Thanks for the input on its usage.</p>
+<p>If we do anything but plan to keep it as-is long term, we should revert the 3.0 API changes to reduce churn for those using it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-29 16:57</div>
+            <div class="timeline-body"><p>After 3.0, maybe we can do some metric collection and then decide on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-29 17:00</div>
+            <div class="timeline-body"><p>The only easy form of metric collection is <code>crates..io</code>.  This is why I've been curious about the idea of breaking out each API into a distinct crate so we actually know what people use.  Not saying its a great idea, it optimizes for one case but pessimizes for others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-29 17:06</div>
+            <div class="timeline-body"><p>Agree, We can definitely explore in that direction after 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-29 17:13</div>
+            <div class="timeline-body"><p>If we are looking to radically change the API after 3.0, should we revert the API changes we did make?</p>
+<ul>
+<li>It leads to extra churn for the users</li>
+<li>The 3.0 API is a lot harder to search for because its implicit (implemented in <code>From</code> and the API accepts <code>impl Into</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-09 01:19</div>
+            <div class="timeline-body"><p>As an alternative, what if we expose a subset of <code>clap_app!</code>, as <code>clap_arg!</code>, to provide compile-time usage parsing as a replacement for runtime usage parsing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../kbknapp/cargo-outdated/pulls/297.html">kbknapp/cargo-outdated#297</a> on 2021-11-18 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/230.html">epage/clapng#230</a> on 2021-12-06 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-08 17:58</div>
+            <div class="timeline-body"><p>Can this be closed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-08 18:04</div>
+            <div class="timeline-body"><p>Yes, because of https://github.com/clap-rs/clap/issues/3086</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-08 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:41 UTC
+    </footer>
+</body>
+</html>

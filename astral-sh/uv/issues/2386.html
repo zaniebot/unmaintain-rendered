@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecting a Python interpreter - astral-sh/uv #2386</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Selecting a Python interpreter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2386">#2386</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-03-12 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 16:50</div>
+            <div class="timeline-body"><p>In #2338 some questions came up around Python interpreter selection. Here we'll summarize our expected behavior and have some discussion around it.</p>
+<p>Interpreters can be selected with the following formats:</p>
+<ul>
+<li>Direct path e.g. <code>/bin/python3</code></li>
+<li>Version e.g. <code>3.10</code></li>
+<li>Implementation e.g. <code>pypy</code></li>
+<li>Implementation and version e.g. <code>pypy3.10</code> or <code>cpython3.10</code></li>
+</ul>
+<p>Using <code>python</code> as the implementation should allow <em>any</em> implementation. Its behavior should be equivalent to <code>X.Y</code>.</p>
+<p>Python interpreters may be discovered via:</p>
+<ul>
+<li>Path directly provided</li>
+<li>The spawning interpreter (i.e. <code>python -m uv</code>)</li>
+<li>An activated virtual environment</li>
+<li>A virtual environment in the current directory</li>
+<li>Executable found in <code>PATH</code></li>
+</ul>
+<p>When a user does not specify an interpreter, we should do our best to infer one in the order above.</p>
+<p>When a user specifies an interpreter via a direct path:</p>
+<ul>
+<li>We should only use the exact provided interpreter</li>
+<li>We do not check the version or implementation, though they must be supported by uv</li>
+</ul>
+<p>When a user specifies an interpreter via a version:</p>
+<ul>
+<li>We do not check the interpreter implementation</li>
+<li>We should follow the discovery order, but ignore interpreters that do not satisfy the version</li>
+<li>If we are compiling dependencies, we can fallback to a mismatched version if no matching version is found</li>
+</ul>
+<p>When a user specifies an interpreter with an implementation (and version):</p>
+<ul>
+<li>If the implementation is unknown, we should error and recommend a direct path.</li>
+<li>We should follow the discovery order, but ignore interpreters that do not satisfy the implementation (and version)</li>
+<li>If we are compiling dependencies, we can fallback to a matching implementation with a mismatched version if no matching version is found</li>
+</ul>
+<p>Interpreters can either belong to a virtual environment or the system.</p>
+<p>When an interpreter belongs to the system, we will <em>not</em> modify packages (i.e. install, uninstall) in the interpreter's environment without the <code>--system</code> flag or specification of the interpreter with a direct path. We use system interpreters for compiling dependencies without opt-in.</p>
+<h2>Examples</h2>
+<p>Compile using system Python interpreter discovered by being the spawning intepreter:</p>
+<pre><code>python -m uv pip compile ...  # Ok: System Python used
+</code></pre>
+<p>Install using system Python interpreter discovered by being the spawning intepreter:</p>
+<pre><code>python -m uv pip install ...   # Error: System Python cannot be used without opt-in `--system`
+</code></pre>
+<p>Install using system Python interpreter discovered by direct path:</p>
+<pre><code>uv pip install --python /bin/python ...   # Ok: System can be used with direct path
+</code></pre>
+<p>Compile using system Python interpreter discovered by being the spawning intepreter with matching version:</p>
+<pre><code>python3.10 -m uv pip compile --python 3.10  # Ok: System Python used since version matches
+</code></pre>
+<p>Compile using Python interpreter discovered on path since spawning intepreter with mismatched version:</p>
+<pre><code>python3.10 -m uv pip compile --python 3.12  # Ok: Python 3.12 is discovered on path since version does not match spawning
+</code></pre>
+<p>Install using Python interpreter in the working directory:</p>
+<pre><code>uv venv
+uv pip install ...  # Ok: Python is discovered in the working directory
+</code></pre>
+<p>Install using Python interpreter in the active virtual environment:</p>
+<pre><code>uv venv
+source .venv/bin/activate
+mkdir foo &amp;&amp; cd foo
+uv pip install ...  # Ok: Python is discovered from `VIRTUAL_ENV`
+</code></pre>
+<p>Install using Python interpreter in the active virtual environment with mismatched version:</p>
+<pre><code>uv venv --python 3.10
+source .venv/bin/activate
+uv pip install --python 3.12  # Error: Requested Python version does not match version from virtual environment
+</code></pre>
+<p>Compile using Python interpreter in the active virtual environment with mismatched version:</p>
+<pre><code>uv venv --python 3.10
+source .venv/bin/activate
+uv pip compile --python 3.12  # Ok: Either finds 3.12 on path or uses 3.10 for compilation with a warning
+</code></pre>
+<p>Install using Python interpreter via direct path with active virtual environment:</p>
+<pre><code>uv venv --python 3.10
+source .venv/bin/activate
+uv pip install --python ~/python/python3.12  # Ok: Uses direct path and ignores virtual environment entirely
+</code></pre>
+<p>Install using Python with an unknown implementation:</p>
+<pre><code>uv pip install --python foobar3.12  # Error: Unknown implementations are only allowed via direct paths
+</code></pre>
+<p>Install using Python with an unknown implementation via direct path:</p>
+<pre><code>uv pip install --python /bin/foobar3.12  # Ok: As long as we support the discovered implementation
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-12 16:56</div>
+            <div class="timeline-body"><p>Do we support looking up <code>-p my_not_cpython3.10</code>, where <code>my_not_cpython3.10</code> is in <code>PATH</code> but <code>my_not_cpython</code> is not a known implementation (currently cpython, pypy and pyston)? If so, do we give the user indication whether a prefix was recognized or not? If not, should we remove the current PATH lookup support?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 16:58</div>
+            <div class="timeline-body"><p>@konstin I think we should explicitly not support that and require a direct path if you want to use an unknown implementation.</p>
+<p>(edited the post to reflect this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 17:01</div>
+            <div class="timeline-body"><p>(For clarity: we do support that today, I think. The behavior Zanie proposed above would be a change.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-03-12 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2388.html">astral-sh/uv#2388</a> on 2024-03-12 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-12 17:51</div>
+            <div class="timeline-body"><p>Another question from #2388: With <code>-p 3.10</code>, would we pick pypy, or should we only do cpython by default and alternative implementations be an opt-in? Given how incompatible other implementations are, i'm in favor of cpython-by-default and leaving pypy/pyston for explicit opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 17:57</div>
+            <div class="timeline-body"><p>We've got a couple discussions going about this elsewhere:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/2092#issuecomment-1987649391</li>
+<li>https://github.com/astral-sh/uv/issues/2316#issuecomment-1987088424</li>
+</ul>
+<p>I think those make it clear that we should support <code>pypy</code> without opt-in and I think the top-level post here reflects that already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-12 18:00</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/2316#issuecomment-1987088424:</p>
+<blockquote>
+<p>Yes, if no other python is present.</p>
+<p>The way I interpret it, python or the lack of the implementation basically translates to any implementation. However for historical reasons if multiple implementations are available cpython wins.</p>
+</blockquote>
+<p>That would again we very different from what we currently, this requires us to collect all python implementations and rank!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:07</div>
+            <div class="timeline-body"><p>I think it's fine to take the first one on the path and not support the historical discovery noted there. We can consider something more complicated if we hear it causes problems?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 18:45</div>
+            <div class="timeline-body"><p>When a user provides, e.g., <code>cpython3.10</code>, how we will find the relevant executables in <code>PATH</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:51</div>
+            <div class="timeline-body"><p>I think when an implementation is provided we could</p>
+<ul>
+<li>First, scan for an exact match in the PATH</li>
+<li>If not found, scan for <code>pythonX.Y</code> and <code>python</code> in PATH and check if the implementation matches</li>
+</ul>
+<p>We could also consider behavior specific to the implementation and the binaries we know they ship (this probably makes a lot of sense but I don't know what's common). Since we require you to match a known implementation we could definitely do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2338.html">astral-sh/uv#2338</a> on 2024-03-13 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-03-13 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkleinbort-ic">@mkleinbort-ic</a> on 2024-03-14 13:59</div>
+            <div class="timeline-body"><p>Just to add to this...</p>
+<p>I was having issues today where <code>python -m uv pip install --system --prerelease=allow -r pyproject.toml</code> was not updating my dependencies as per the <code>pyproject.toml</code></p>
+<p>It seems the issue is that  <code>which  python</code>
+returns <code>/c/Users/mkleinbort/AppData/Local/Programs/Python/Python311/python</code></p>
+<p>but <code>which python3</code> returns <code>/c/Users/mkleinbort/AppData/Local/Microsoft/WindowsApps/python3</code></p>
+<p>Not hard to fix, but I would have expected the original command to install the dependencies in the python as referenced by <code>python</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2488.html">astral-sh/uv#2488</a> on 2024-03-16 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2649.html">astral-sh/uv#2649</a> on 2024-03-25 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2675.html">astral-sh/uv#2675</a> on 2024-03-27 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2813.html">astral-sh/uv#2813</a> on 2024-04-03 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haarisr">@haarisr</a> on 2024-04-03 17:10</div>
+            <div class="timeline-body"><p>Might not be exactly related</p>
+<p>But how about writing to a file such as <code>pyproject.toml</code> under tool.uv or a uv specific file when the venv is created in the first place.</p>
+<p>If not uv writing to the file, let the user specify it under the toml so that uv can look it up and activate that venv/python on running a python/uv command.</p>
+<p>This also might blend well with creating a default venv when there's no venv present in the current directory in #2665  and the path of the venv can be added/appended to the toml file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-16 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3060.html">astral-sh/uv#3060</a> on 2024-04-16 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3062.html">astral-sh/uv#3062</a> on 2024-04-16 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 15:18</div>
+            <div class="timeline-body"><p>A brief proposed addendum on top of the above logic, quoting https://github.com/astral-sh/uv/issues/3060. When looking at a <code>--python</code> value...</p>
+<ul>
+<li>If the --python value is a path to an existing file, use that as the interpreter.</li>
+<li>If it's a directory, assume it's a venv and use the venv interpreter.</li>
+<li>Otherwise, if it contains a path separator, fail with an error.</li>
+<li>Finally (a filename with no path part) try a search on PATH.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3265.html">astral-sh/uv#3265</a> on 2024-04-25 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3266.html">astral-sh/uv#3266</a> on 2024-04-25 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-21 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zed-industries/zed/issues/7808.html">zed-industries/zed#7808</a> on 2024-06-03 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zed-industries/zed/issues/21743.html">zed-industries/zed#21743</a> on 2025-05-29 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

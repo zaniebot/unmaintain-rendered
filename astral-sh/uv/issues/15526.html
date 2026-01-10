@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to force not install package on one OS and install on other? - astral-sh/uv #15526</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to force not install package on one OS and install on other?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15526">#15526</a>
+        opened by <a href="https://github.com/theLastOfCats">@theLastOfCats</a>
+        on 2025-08-26 10:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/theLastOfCats">@theLastOfCats</a> on 2025-08-26 10:40</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Trying to install dependencies on Darwin platform:</p>
+<p>Repr:</p>
+<pre><code>[project]
+name = &quot;inot&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;pyinotify==0.9.6 ; sys_platform == 'linux'&quot;,
+]
+environments = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+]
+
+</code></pre>
+<p>Got an error:</p>
+<pre><code>(inot) shaziganshin@sc-mac-01156 inot % uv sync
+  × Failed to build `pyinotify==0.9.6`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      inotify is not available on macosx-11.0-arm64
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `pyinotify` (v0.9.6) was included because `inot` (v0.1.0) depends on `pyinotify==0.9.6`
+
+</code></pre>
+<p>On Linux platform installs correctly. Is this proper behavior?</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.13 (Homebrew 2025-08-21)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @theLastOfCats on 2025-08-26 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-26 11:50</div>
+            <div class="timeline-body"><p>In this case, I think uv is trying to resolve the dependencies of <code>pyinotify</code>, which doesn't publish static metadata. So we need to build it to get the dependencies. Typically, you'd solve this by checking in the <code>uv.lock</code> file that you generated on Linux; then we can avoid resolving the dependencies on macOS, and can just reuse the lockfile.</p>
+<p>Alternatively, you can declare the metadata statically for that package, to avoid the need to build it:</p>
+<pre><code class="language-toml">[project]
+name = &quot;inot&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+requires-python = &quot;&gt;=3.13&quot;
+dependencies = [
+    &quot;pyinotify==0.9.6 ; sys_platform == 'linux'&quot;,
+]
+environments = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+]
+
+[[tool.uv.dependency-metadata]]
+name = &quot;pyinotify&quot;
+version = &quot;0.9.6&quot;
+requires-dist = []
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

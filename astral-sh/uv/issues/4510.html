@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic on plugin installation from a local simple repository - astral-sh/uv #4510</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic on plugin installation from a local simple repository</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4510">#4510</a>
+        opened by <a href="https://github.com/BenediktMaag">@BenediktMaag</a>
+        on 2024-06-25 07:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BenediktMaag">@BenediktMaag</a> on 2024-06-25 07:28</div>
+            <div class="timeline-body"><p>I have setup a simple repository (https://packaging.python.org/en/latest/specifications/simple-repository-api/ | PEP503).</p>
+<p>Installing a plugin from the repository by providing a extra-index-url works with pip
+❯ : pip install --extra-index-url C:\temp\simple pyplugin
+Looking in indexes: https://pypi.org/simple, c:\temp\simple
+Processing c:\temp\simple\pyplugin\pyplugin-0.2.0-cp312-none-win_amd64.whl
+Installing collected packages: pyplugin
+Successfully installed pyplugin-0.2.0</p>
+<p>Auditing once installed works:
+❯ : uv pip install --extra-index-url C:\temp\simple pyplugin
+Audited 1 package in 0.87ms</p>
+<p>Uninstalling with uv works
+❯ : uv pip uninstall pyplugin
+Uninstalled 1 package in 4ms</p>
+<ul>
+<li>pyplugin==0.2.0</li>
+</ul>
+<p>Installing if not installed panics on as an error is unwrapped:
+❯ : uv pip install --extra-index-url C:\temp\simple pyplugin -vv
+0.000065s DEBUG uv uv 0.2.15
+uv_requirements::specification::from_source source=pyplugin
+0.004157s DEBUG uv_toolchain::discovery Searching for Python interpreter in system toolchains
+0.005540s DEBUG uv_toolchain::discovery Found cpython 3.12.0 at <code>C:\temp\test_install\.venv\Scripts\python.exe</code> (active virtual environment)
+0.006112s DEBUG uv::commands::pip::install Using Python 3.12.0 environment at .venv\Scripts\python.exe
+0.007138s DEBUG uv_fs Acquired lock for <code>.venv</code>
+0.007840s DEBUG uv::commands::pip::install At least one requirement is not satisfied: pyplugin
+uv_client::linehaul::linehaul
+0.008540s DEBUG uv_client::base_client Using request timeout of 30s
+uv_resolver::flat_index::from_entries
+uv_resolver::resolver::solve
+uv_resolver::resolver::solve_tracked
+0.012593s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.0
+uv_resolver::resolver::choose_version package=root
+uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+0.013802s   0ms DEBUG uv_resolver::resolver Adding direct dependency: pyplugin*
+uv_resolver::resolver::process_request request=Versions pyplugin
+uv_client::registry_client::simple_api package=pyplugin
+thread '     uv_resolver::resolver::choose_version package=pyplugin
+main' panicked at D:\a\uv\uv\crates\uv-client\src\registry_client.rs:273:14:
+called <code>Result::unwrap()</code> on an <code>Err</code> value: ()</p>
+<p>A minimal setup can be found here, github doesnt allow .7z files (maturin init compiled as 0.1.0 and 0.2.0):
+https://we.tl/t-WOJyEdOD1L</p>
+<p>❯ : uv --version
+uv 0.2.15 (bfc342da9 2024-06-24)
+Windows 11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 12:28</div>
+            <div class="timeline-body"><p>I think we require that you pass it as a <code>file://</code> URL, so we can distinguish it from an HTTP registry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenediktMaag">@BenediktMaag</a> on 2024-06-25 12:42</div>
+            <div class="timeline-body"><p>Indeed it works when prefixing the url with file:://
+However you might still considers prompting a more understandable error than:</p>
+<p>❯ : uv pip install --extra-index-url C:\temp\simple pyplugin
+⠙ Resolving dependencies...
+thread 'main' panicked at D:\a\uv\uv\crates\uv-client\src\registry_client.rs:273:14:
+called <code>Result::unwrap()</code> on an <code>Err</code> value: ()
+note: run with <code>RUST_BACKTRACE=1</code> environment variable to display a backtrace</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-25 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-06-25 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-25 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 17:13</div>
+            <div class="timeline-body"><p>It looks like pip's logic is:</p>
+<pre><code class="language-python">if os.path.exists(location):  # Is a local path.
+    url = path_to_url(location)
+    path = location
+elif location.startswith(&quot;file:&quot;):  # A file: URL.
+    url = location
+    path = url_to_path(location)
+elif is_url(location):
+    url = location
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4524.html">astral-sh/uv#4524</a> on 2024-06-25 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-25 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 18:15</div>
+            <div class="timeline-body"><p>Next release supports this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4527.html">astral-sh/uv#4527</a> on 2024-06-25 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenediktMaag">@BenediktMaag</a> on 2024-06-26 07:38</div>
+            <div class="timeline-body"><p>Thanks alot!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

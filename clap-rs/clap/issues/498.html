@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage string broken for ArgGroup of option and argument - clap-rs/clap #498</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Usage string broken for ArgGroup of option and argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/498">#498</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2016-05-07 02:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-05-07 02:51</div>
+            <div class="timeline-body"><p>Consider the following subcommand definition:</p>
+<pre><code class="language-rust">    SubCommand::with_name(&quot;set-base&quot;)
+        .about(&quot;Set the base commit for the patch series&quot;)
+        .arg(Arg::with_name(&quot;base&quot;).help(&quot;Base commit&quot;).required(false))
+        .arg_from_usage(&quot;-d, --delete 'Remove the base commit information'&quot;)
+        .group(ArgGroup::with_name(&quot;base_or_delete&quot;)
+            .args(&amp;[&quot;base&quot;, &quot;delete&quot;])
+            .required(true)),
+</code></pre>
+<p>(The same issue applies if I use <code>arg_from_usage</code> for <code>base</code>.)</p>
+<p>The usage string looks like this:</p>
+<pre><code>    set-base [FLAGS] [[base]|--delete] [ARGS]
+...
+    [base]    Base commit
+</code></pre>
+<p>Note the extra square brackets around <code>base</code>; that part should look like <code>base|--delete</code>.</p>
+<p>Also, the alternative between <code>base</code> and <code>--delete</code> should probably have something other than square brackets around it, since one of those two is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-05-07 02:58</div>
+            <div class="timeline-body"><p>An interesting further complication: if I add a <code>.conflicts_with(&quot;delete&quot;)</code> to base, and pass both, I get the following error:</p>
+<pre><code>error: The argument '--delete' cannot be used with '[base]'
+
+USAGE:
+    git series set-base [base] --delete [[base]|--delete] [[base]|--delete]
+</code></pre>
+<p>That seems like two too many of each argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-05-07 06:57</div>
+            <div class="timeline-body"><p>Using <code>.required_unless(&quot;delete&quot;)</code> instead of <code>.conflicts_with(&quot;delete&quot;)</code> produces slightly better results, but still a bit wrong:</p>
+<pre><code>USAGE:
+    set-base [FLAGS] &lt;base&gt; [&lt;base&gt;|--delete]
+</code></pre>
+<p><code>&lt;base&gt;</code> shouldn't appear twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-07 22:29</div>
+            <div class="timeline-body"><p>Thanks for taking the time to file these! I agree with all of the above, so it's actually like 3 bugs in 1, or a formating one for the first comment which is an easy fix that I agree with too.</p>
+<p>I'll post back here as they're completed then put out 2.4.1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg groups</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @kbknapp on 2016-05-09 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-09 00:12</div>
+            <div class="timeline-body"><p>Tracking for issues:</p>
+<ul>
+<li>[x] Duplicated args in usage string</li>
+<li>[x] formatting for required arg groups</li>
+<li>[x] formatting for positional arguments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-05-09 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-09 20:01</div>
+            <div class="timeline-body"><p>@joshtriplett All tasks done, this should be merged with #499 at which point I'll put out v2.4.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-05-10 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-10 02:50</div>
+            <div class="timeline-body"><p>due to some crazy test issues and refactoring woes, the next version is <em>actually</em> v2.4.3 and is out on crates.io. This is the version that has the changes from this issue :wink: Sorry for the confusion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage strings</span> added by @pksunkara on 2020-04-12 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: usage string parser</span> removed by @pksunkara on 2020-04-12 10:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

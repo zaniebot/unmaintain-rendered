@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Fix error, FAST002] &quot;Fix introduced a syntax error. Reverting all changes&quot; - astral-sh/ruff #22159</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Fix error, FAST002] &quot;Fix introduced a syntax error. Reverting all changes&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22159">#22159</a>
+        opened by <a href="https://github.com/tuttle">@tuttle</a>
+        on 2025-12-23 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tuttle">@tuttle</a> on 2025-12-23 10:55</div>
+            <div class="timeline-body"><p><strong>Rule:</strong> FAST002 FastAPI dependency without <code>Annotated</code></p>
+<p><strong>Ruff version:</strong> 0.14.10</p>
+<p><strong>Py module:</strong> Unfortunately, I cannot share proprietary source code publicly, but I would be happy to help solve this problem because Ruff is such a fantastic tool.</p>
+<p>I attempted to create a minimal reproduction by stripping down the module (removing endpoints and function bodies), but the syntax error disappeared in the process. It seems the full module is necessary to trigger the bug.</p>
+<p>Since GitHub doesn't support private attachments, <strong>is there an email address where I can send the file</strong>?</p>
+<p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-12-23 11:34</div>
+            <div class="timeline-body"><p>This might be completely unrelated but <code>FAST002</code> doesn't seem check positional-only parameters. This leads to a fix that would cause a syntax error:</p>
+<p>https://github.com/astral-sh/ruff/blob/5ea30c4c53894dc35fa5af2ca84757ec24f3f7d0/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs#L116-L125</p>
+<hr />
+<p>Never mind this. FastAPI doesn't support positional-only parameters.</p>
+<pre><code class="language-python">from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+app = FastAPI()
+
+@app.get('/')
+def f(a: str = '', /, b: str = ''):
+    return {'a': a, 'b': b}
+
+client = TestClient(app)
+print(client.get('/?a=x&amp;b=y').json())
+</code></pre>
+<p>throws:</p>
+<pre><code>TypeError: f() got some positional-only arguments passed as keyword arguments: 'a'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-23 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-12-23 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-23 20:42</div>
+            <div class="timeline-body"><p>Thanks for the report! And thanks @harupy for looking into it!</p>
+<p>You can email me at brent@astral.sh if you want me to take a look! I think we'll need a minimal example to fix this, but I'm happy to try minimizing and anonymizing yours if you can share it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-31 15:07</div>
+            <div class="timeline-body"><p>I minimized the example down to this code:</p>
+<pre><code class="language-py">from fastapi import APIRouter, Depends
+
+router = APIRouter()
+
+
+@router.get(&quot;/{a}/{b}/{c}&quot;)  # noqa: FAST003
+def foo(a: str, b: str): ...
+
+
+@router.get(&quot;/{baz}&quot;)
+def bar(d: D = Depends(get_one), e: E = Depends(get_two)): ...
+</code></pre>
+<p>and this command:</p>
+<pre><code class="language-shell">ruff check app.py --fix --unsafe-fixes --select FAST002,FAST003
+</code></pre>
+<p>But I still don't really understand what's going on. Deleting nearly anything else here prevents the syntax error, and selecting either of the two rules on its own also prevents the syntax error. I think the noqa comment must be involved somehow. At least we have an example to work with now.</p>
+<p>Thank you very much again @tuttle for opening this and sharing the code for me to minimize!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-12-31 16:31</div>
+            <div class="timeline-body"><p>I had Claude Code investigate the cause</p>
+<h2>Cause Analysis</h2>
+<p>Each FAST002 fix contains two edits:</p>
+<ol>
+<li>An import edit at position ~0 (adds <code>from typing import Annotated</code>)</li>
+<li>A parameter replacement edit at the parameter's position</li>
+</ol>
+<p>The bug occurred in <code>apply_fixes</code> (<code>crates/ruff_linter/src/fix/mod.rs</code>):</p>
+<ol>
+<li>Fixes were sorted by <code>min_start()</code> which returns the position of the first edit (the import edit at position 0)</li>
+<li>Both fixes had the same <code>min_start()</code>, ~making their relative order non-deterministic~</li>
+<li>If the fix for the <strong>later</strong> parameter (<code>e</code> at position ~190) was applied first:<ul>
+<li>Import edit applied, added to <code>applied</code> set</li>
+<li>Parameter edit for <code>e</code> applied</li>
+<li><code>last_pos</code> set to end of <code>e</code> parameter (~213)</li>
+</ul>
+</li>
+<li>When the fix for the <strong>earlier</strong> parameter (<code>d</code> at position ~165) was processed:<ul>
+<li>Import edit filtered out (already in <code>applied</code> set)</li>
+<li>First remaining edit is parameter edit for <code>d</code> at position ~165</li>
+<li>Overlap check: <code>last_pos (213) &gt;= first.start() (165)</code> → <strong>TRUE</strong></li>
+<li>Fix for <code>d</code> incorrectly <strong>skipped</strong> due to apparent overlap</li>
+</ul>
+</li>
+</ol>
+<p>Result: Only <code>e</code> was converted, leaving <code>d</code> with its default value, creating the syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-31 16:54</div>
+            <div class="timeline-body"><p>Interesting, thanks! That sounds plausible.</p>
+<p>Ahhh, I bet this <code>swap_remove</code> is the reason the <code>noqa</code> comment has an effect:</p>
+<p>https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ruff_linter/src/linter.rs#L346-L350</p>
+<p>All of our other sorts should be stable, so I don't think it's non-deterministic, and without this swap, the first fix we emit should stay sorted first.</p>
+<p>So a very simple fix could be using <code>remove</code> here instead, but I think we should re-examine the FAST002 fixes. I don't think they should have such a delicate interdependence. We may just be able to apply an <a href="https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ruff_diagnostics/src/fix.rs#L168"><code>IsolationLevel</code></a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2026-01-01 06:38</div>
+            <div class="timeline-body"><p>@ntBre Thanks for digging further!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2026-01-04 10:42</div>
+            <div class="timeline-body"><p>Can we adjust <code>cmp_fix</code> to break ties with the last edit (the parameter fix for FAST0002) in a fix?</p>
+<p>https://github.com/astral-sh/ruff/blob/8464aca795bc3580ca15fcb52b21616939cea9a9/crates/ruff_linter/src/fix/mod.rs#L128</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-04 17:15</div>
+            <div class="timeline-body"><blockquote>
+<p>So a very simple fix could be using remove here instead, but I think we should re-examine the FAST002 fixes. I don't think they should have such a delicate interdependence. We may just be able to apply an <a href="https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ruff_diagnostics/src/fix.rs#L168">IsolationLevel</a>?</p>
+</blockquote>
+<p>Relying on the order in which diagnostics are emitted seems very fragile. I'd prefer a fix by using the isolation level or accounting for the overlap in <code>cmp_fix</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

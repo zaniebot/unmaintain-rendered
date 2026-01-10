@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Truthiness:from_expr` has false negatives - astral-sh/ruff #20703</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Truthiness:from_expr` has false negatives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20703">#20703</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-10-05 19:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-10-05 19:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://github.com/astral-sh/ruff/blob/0.13.3/crates/ruff_python_ast/src/helpers.rs#L1217"><code>Truthiness:from_expr</code></a> has false negatives for certain expressions that are guaranteed to be truthy: generator expressions, lambda expressions, f-string interpolations containing byte strings (even if they are empty), and f-string interpolations containing debug text. This affects <a href="https://docs.astral.sh/ruff/rules/subprocess-popen-with-shell-equals-true/"><code>subprocess-popen-with-shell-equals-true</code> (S602)</a>, <a href="https://docs.astral.sh/ruff/rules/call-with-shell-equals-true/"><code>call-with-shell-equals-true</code> (S604)</a>, <a href="https://docs.astral.sh/ruff/rules/unix-command-wildcard-injection/"><code>unix-command-wildcard-injection</code> (S609)</a>, and <a href="https://docs.astral.sh/ruff/rules/expr-or-true/"><code>expr-or-true</code> (SIM222)</a>, at least. <a href="https://play.ruff.rs/3e39aaa8-8e77-4c80-866d-3cec57cfa924">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;truthiness_fn.py &lt;&lt;'# EOF'
+import subprocess
+subprocess.run(&quot;echo | xxd -p&quot;, shell=(x for x in ()))
+print(bool(dict(shell=lambda: 0)[&quot;shell&quot;]))
+print(subprocess.check_output(&quot;echo chmod 777 truthiness_*.py&quot;, shell=f&quot;{b&quot;&quot;}&quot;))
+print(f&quot;{&quot;&quot;=}&quot; or 0)
+# EOF
+
+$ python truthiness_fn.py
+0a
+True
+b'chmod 777 truthiness_fn.py\n'
+&quot;&quot;=''
+
+$ ruff --isolated check truthiness_fn.py --select S602,S604,S609,SIM222
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.13.3 (188c0dce2 2025-10-02)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20704.html">astral-sh/ruff#20704</a> on 2025-10-05 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-06 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-14 08:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

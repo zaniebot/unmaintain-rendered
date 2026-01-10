@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>thread 'main' panicked at /home/runner/work/uv/uv/crates/uv/src/lib.rs:2276:10: - astral-sh/uv #14589</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>thread 'main' panicked at /home/runner/work/uv/uv/crates/uv/src/lib.rs:2276:10:</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14589">#14589</a>
+        opened by <a href="https://github.com/sdebruyn">@sdebruyn</a>
+        on 2025-07-13 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sdebruyn">@sdebruyn</a> on 2025-07-13 18:29</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have a cronjob running <code>uv run python ...</code> in a venv every hour and I always get the following in my stderr:</p>
+<pre><code>thread 'main2' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.45.1/src/process/unix/pidfd_reaper.rs:130:14:
+pidfd is ready to read, the process should have exited
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' panicked at /home/runner/work/uv/uv/crates/uv/src/lib.rs:2276:10:
+Tokio executor failed, was there a panic?: Any { .. }
+</code></pre>
+<h3>Platform</h3>
+<p>Linux frida 6.6.44-production+truenas #1 SMP PREEMPT_DYNAMIC Mon May  5 14:30:30 UTC 2025 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.20</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sdebruyn on 2025-07-13 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tokio-rs/tokio/issues/7144.html">tokio-rs/tokio#7144</a> on 2025-07-13 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-14 14:10</div>
+            <div class="timeline-body"><p>Thanks for the report. That's weird. We're surfacing that error from tokio, thanks for linking that issue. Do you think you can get us a minimal reproduction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sdebruyn">@sdebruyn</a> on 2025-07-14 17:08</div>
+            <div class="timeline-body"><p>My Python script is called like this: <code>/mnt/hdds/homes/sam/.local/bin/uv run --directory /mnt/hdds/homes/sam/concerts-notifier python concert_notifier.py</code></p>
+<p>That directory only contains a Python script named <code>concert_notifier.py</code> and the <code>requirements.txt</code> file.</p>
+<p>This is what is in my <code>requirements.txt</code>:</p>
+<pre><code>openai
+spotipy
+nltk
+requests
+</code></pre>
+<p>I can share you a gist of the script privately if you send me a contact detail :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-14 17:33</div>
+            <div class="timeline-body"><p>Does the error occur outside of cron?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sdebruyn">@sdebruyn</a> on 2025-07-14 17:46</div>
+            <div class="timeline-body"><p>It does not seem so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-27 02:02</div>
+            <div class="timeline-body"><p>Can you log <code>[i for i in open(&quot;/proc/self/status&quot;) if i.startswith(&quot;Tracer&quot;)]</code> (or print that out in a separate cronjob)? I'm curious if your cron daemon is putting a ptracer on your program.</p>
+<p>Is this directly inside cron or inside something like a container?</p>
+<p>I have a couple of other random theories (e.g., is this accessing a slow filesystem in threads?) but the failure inside vs. outside cron is a little weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sdebruyn">@sdebruyn</a> on 2025-07-28 10:09</div>
+            <div class="timeline-body"><p>I'm not sure I'm following. Would you like me to just create a Python script with this line? In the meantime I moved to another solution and I'm no longer using a Python script in cron on that machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cangtianhuang">@cangtianhuang</a> on 2025-11-17 02:42</div>
+            <div class="timeline-body"><p>Consider reinstalling Python:</p>
+<pre><code class="language-bash">rm -r &quot;$(uv python dir)&quot;
+uv python install
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-18 10:44</div>
+            <div class="timeline-body"><p>This has been fixed in https://github.com/tokio-rs/tokio/pull/7494</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-11-18 10:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

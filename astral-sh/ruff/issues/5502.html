@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C417 auto-fixer breaks code with late-binding - astral-sh/ruff #5502</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C417 auto-fixer breaks code with late-binding</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5502">#5502</a>
+        opened by <a href="https://github.com/mrcljx">@mrcljx</a>
+        on 2023-07-04 13:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrcljx">@mrcljx</a> on 2023-07-04 13:55</div>
+            <div class="timeline-body"><p>Version: ruff 0.0.276 (no regression though)</p>
+<pre><code class="language-diff">  nums = range(4)
+
+- callbacks = map(lambda x: lambda: x, nums)
++ callbacks = (lambda: x for x in nums)
+</code></pre>
+<p>Now <code>list(callbacks)[0]()</code> will change it's result:</p>
+<pre><code class="language-diff">- 0
++ 3
+</code></pre>
+<p>Additionally, a new error appears (pointing out the issue):</p>
+<blockquote>
+<p>B023 Function definition does not bind loop variable <code>x</code></p>
+</blockquote>
+<p>My expectation is that the either the rule doesn't trigger in this case, or at least the auto-fixer doesn't break code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "C417 auto-fixer breaks with late-binding" to "C417 auto-fixer breaks code with late-binding" by @mrcljx on 2023-07-04 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-04 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-04 22:00</div>
+            <div class="timeline-body"><p>Is this the &quot;real&quot; code that triggered the violation? It'd be helpful to have some more examples to inform the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrcljx">@mrcljx</a> on 2023-07-04 22:26</div>
+            <div class="timeline-body"><p>A real (but harder to grok) code example is this:</p>
+<pre><code class="language-py">infos = map(
+    lambda aspect: ColumnInfo(
+        aspect.value,
+        ma.fields.Enum(models.Resolution, required=True, by_value=True),
+        AttributeImpl(
+            lambda d, ctx: d.aspect_resolutions(aspect).effective(
+                ctx.aspects.device_resolution_quota(aspect).fallback
+            ),
+            display_name=&quot;&quot;,
+        ),
+    ),
+    models.Aspect,
+)
+</code></pre>
+<p>which got transformed to</p>
+<pre><code class="language-py">infos = (
+    ColumnInfo(
+        aspect.value,
+        ma.fields.Enum(models.Resolution, required=True, by_value=True),
+        AttributeImpl(
+            lambda d, ctx: d.aspect_resolutions(aspect).effective(
+                ctx.aspects.device_resolution_quota(aspect).fallback
+            ),
+            display_name=&quot;&quot;,
+        ),
+    )
+    for aspect in models.Aspect
+)
+</code></pre>
+<p>for which then the following problem was caught:</p>
+<blockquote>
+<p>B023 Function definition does not bind loop variable <code>aspect</code></p>
+</blockquote>
+<hr />
+<p>The problem effectively happens if the iterator variable is used inside a <code>lambda</code>, so a some logic like the following would would be needed:</p>
+<pre><code>for lambda_node in find_lambda_nodes(map_arg_0_lambda_node):
+  if loop_variable_name in find_all_names(lambda_node):
+    # loop variable is late-bound to a lambda, using comprehension would introduce bugs, bail
+    return
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-04 22:27</div>
+            <div class="timeline-body"><p>Thanks, yeah, this makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-05 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5520.html">astral-sh/ruff#5520</a> on 2023-07-05 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-05 02:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

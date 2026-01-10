@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[IMPROVEMENT] Make `--select` other CLI short hands more lenient with whitespace - astral-sh/ruff #16755</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[IMPROVEMENT] Make `--select` other CLI short hands more lenient with whitespace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16755">#16755</a>
+        opened by <a href="https://github.com/lenormf">@lenormf</a>
+        on 2025-03-14 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lenormf">@lenormf</a> on 2025-03-14 16:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi!</p>
+<p>I would like the <code>--select</code>, <code>--ignore</code> and other short hand options passed to <code>ruff check</code> to be more lenient with whitespace characters, between rule codes.</p>
+<p>I found myself writing a PreCommit configuration, like so:</p>
+<pre><code class="language-yaml">  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.11.0
+    hooks:
+       - id: ruff
+         args:
+           - --fix
+           - |-
+               --select=
+               A,
+               B
+</code></pre>
+<p>This lead to the hook invoking <code>ruff check --fix --select=' A, B' &lt;file&gt;</code>, with the result below:</p>
+<pre><code>error: invalid value ' A' for '--select &lt;RULE_CODE&gt;'
+</code></pre>
+<p>I couldn’t find any syntax in YAML that would allow joining a string within a block sequence item <em>without</em> space characters.</p>
+<p>Therefore, I believe it would be a convenient improvement to allow whitespace in the comma-separated list of rules that <code>ruff check --&lt;shorthand&gt;</code> accepts.</p>
+<p>Thanks!</p>
+<h3>Version</h3>
+<p>0.11.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-14 17:17</div>
+            <div class="timeline-body"><p>This may not be a perfect workaround, but it looks like ruff allows multiple <code>--select</code> flags, so you could instead do something like</p>
+<pre><code class="language-yaml">  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.11.0
+    hooks:
+       - id: ruff
+         args:
+           - --fix
+           - |-
+               --select=A
+               --select=B
+</code></pre>
+<p>(If my limited YAML syntax understanding is sufficient here)</p>
+<p>Another option would be putting these in a <code>ruff.toml</code> or other config file, but maybe that doesn't work well with pre-commit.</p>
+<p>We could still consider trimming spaces, but these might help in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ntBre on 2025-03-14 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-03-14 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lenormf">@lenormf</a> on 2025-03-15 08:00</div>
+            <div class="timeline-body"><p>Thank you for the reply!</p>
+<p>Unfortunately, in my case, I cannot rely on a local <code>ruff.toml</code> file to simplify things.</p>
+<p>I also have many rules selected/ignored, so instead of passing each of them with their individual <code>--{select,ignore}=</code> flag, I have long strings <code>&quot;--{select,ignore}=A,B,C,D…&quot;</code> in the YAML manifest.</p>
+<p>It works©, but I expected my suggestion would be easy enough to implement to have thrown in with the next release.</p>
+<p>I’ll wait :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

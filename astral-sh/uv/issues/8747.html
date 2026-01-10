@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`if-modified-since` header should use `GMT` instead of `-0000` - astral-sh/uv #8747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`if-modified-since` header should use `GMT` instead of `-0000`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8747">#8747</a>
+        opened by <a href="https://github.com/camper42">@camper42</a>
+        on 2024-11-01 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/camper42">@camper42</a> on 2024-11-01 08:40</div>
+            <div class="timeline-body"><ul>
+<li>command: <code>uv lock -U</code> uses our internal registry, backed by Tencent COS.</li>
+<li>uv platform: macOS</li>
+<li>uv version: uv 0.4.29 (Homebrew, 2024-10-30)</li>
+</ul>
+<p>error log:</p>
+<pre><code>error: Failed to download `something==0.14.0`
+  Caused by: Failed to fetch: `https://pypi.internal/api/package/something/something-0.14.0-py3-none-any.whl#sha256=ab3bae4f61c0ca8a72da6836610fd1256bd203420d7ec95be43afcc73512bcff`
+  Caused by: HTTP status client error (400 Bad Request) for url (https://cos.tencent/our-bucket/packages/3751/something/something-0.14.0-py3-none-any.whl?Some_sig_params)
+</code></pre>
+<p>The issue is that COS reported: <strong>The <code>If-Modified-Since</code> you specified is not valid.</strong></p>
+<p>I checked the request header sent by UV, and it appears as follows: <code>if-modified-since: Wed, 17 Jul 2024 03:39:18 -0000</code>.</p>
+<p>According to the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since">MDN documentation</a>, <strong>HTTP dates should always be expressed in <code>GMT</code>, not in local time</strong>.</p>
+<p>Therefore, uv should adjust the header value to something like: <code>if-modified-since: Wed, 17 Jul 2024 03:39:18 GMT</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/camper42">@camper42</a> on 2024-11-01 08:57</div>
+            <div class="timeline-body"><p>RFC 2616 Hypertext Transfer Protocol -- HTTP/1.1:</p>
+<ul>
+<li>https://datatracker.ietf.org/doc/html/rfc2616#section-14.25</li>
+<li>https://datatracker.ietf.org/doc/html/rfc2616#section-3.3.1</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/camper42">@camper42</a> on 2024-11-01 09:02</div>
+            <div class="timeline-body"><p>https://datatracker.ietf.org/doc/html/rfc9110#section-13.1.3
+https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/jiff/issues/151.html">BurntSushi/jiff#151</a> on 2024-11-01 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-11-01 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-11-01 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-01 12:22</div>
+            <div class="timeline-body"><p>I responded <a href="https://github.com/BurntSushi/jiff/issues/151">here</a> with a bit more on the datetime side of things.</p>
+<p><a href="https://github.com/BurntSushi/jiff/pull/154">This PR</a> adds a new API to Jiff to make it easy to print RFC 9110 compatible timestamps. So once that's released, we just need to update uv to use that new API and I believe this should be fixed.</p>
+<blockquote>
+<p>According to the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since">MDN documentation</a>, HTTP dates should always be expressed in GMT, not in local time.</p>
+</blockquote>
+<p>One clarification here is that the existing format is not in local time. It is semantically equivalent to GMT. It's using <code>-0000</code> to express that instead of <code>GMT</code>. But they are the same thing. Interestingly, RFC 2822/5322 considers <code>GMT</code> to be obsolete. But RFC 9110 requires it specifically.</p>
+<p>(The other difference is that RFC 9110 requires a two digit day. This makes the value fixed length.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8752.html">astral-sh/uv#8752</a> on 2024-11-01 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-11-01 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-11-01 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/camper42">@camper42</a> on 2024-11-01 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>One clarification here is that the existing format is not in local time.</p>
+</blockquote>
+<p>I just copied the whole sentence, sorry for the ambiguity, I checked the time and the package was modified at the right time (<code>Jul 17 11:39:18 2024 +0800</code>).</p>
+<p>Thanks for the quick fix, it's one of the reasons why I love uv!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:21 UTC
+    </footer>
+</body>
+</html>

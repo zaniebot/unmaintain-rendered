@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_DEFAULT_INDEX overwrites pyproject tool.uv.index.url - astral-sh/uv #14796</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_DEFAULT_INDEX overwrites pyproject tool.uv.index.url</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14796">#14796</a>
+        opened by <a href="https://github.com/Halkcyon">@Halkcyon</a>
+        on 2025-07-21 17:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Halkcyon">@Halkcyon</a> on 2025-07-21 17:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>A bit surprising, configuring the <code>UV_DEFAULT_INDEX</code> envvar causes any <code>uv</code> commands to overwrite the <code>pyproject.toml</code>'s <code>tool.uv.index.url</code> value where <code>default = true</code>.  Usually the behavior is FILE_CONFIG &gt; ENV_VAR in precedence, so I'm not sure if this is a bug or not.  We want to be able to configure a &quot;default&quot; index to avoid Internet access, but not if it means that we're seeing these overwrites.</p>
+<h3>Platform</h3>
+<p>Windows 11 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.7.19</p>
+<h3>Python version</h3>
+<p>Python 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Halkcyon on 2025-07-21 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 17:46</div>
+            <div class="timeline-body"><p>The precedence in uv is FILE -&gt; ENV -&gt; CLI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-21 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-21 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Halkcyon">@Halkcyon</a> on 2025-07-21 17:48</div>
+            <div class="timeline-body"><p>@zanieb I still find this behavior of the envvar <em>overwriting</em> the file config to be unusual/confusing.  It's common in other CLI tools that FILE overwrites ENV.  Is this hierarchy difference documented somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 17:53</div>
+            <div class="timeline-body"><p>I don't think what you're saying is true, i.e., I don't think that's common. Do you have concrete examples?</p>
+<p>A brief search shows our pattern is far more common, e.g., https://chatgpt.com/share/687e7df1-f808-8011-a537-982436a6693f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Halkcyon">@Halkcyon</a> on 2025-07-21 19:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think what you're saying is true, i.e., I don't think that's common. Do you have concrete examples?</p>
+</blockquote>
+<p>Hm, I was confused on this matter and misremembered how precedence in, e.g., pip, worked.</p>
+<p>I still think it is <em>surprising</em> behavior that <code>pyproject.toml</code> is <em>overwritten</em> based on the environment configuration.  This creates diff noise when, for example, we have several Artifactory proxies/registries and those end up bleeding through based on a given contributor's configuration.</p>
+<p>I guess what I'm asking for here is a preservation of the prior, expected configuration as an additional index, and a warning of some kind that the value is being overwritten because the envvar and pyproject differ.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I still think it is surprising behavior that pyproject.toml is overwritten based on the environment configuration.</p>
+</blockquote>
+<p>Can you explain what you mean more concretely here? e.g., that the <code>pyproject.toml</code> is updated when you use <code>uv add</code> or similar? What's the actual workflow and outcome?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Halkcyon">@Halkcyon</a> on 2025-07-21 19:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain what you mean more concretely here? e.g., that the <code>pyproject.toml</code> is updated when you use <code>uv add</code> or similar?</p>
+</blockquote>
+<p>Yes.  I have a few registries configured with <code>[[tool.uv.index]]</code> in my <code>pyproject.toml</code> since one or two are private to my team/organization.  I have a <code>UV_DEFAULT_INDEX</code> that is also configured based on some corporate tooling/automated configuration.  There are other proxies which may be more out of date for some reason or another due to provisioning/replication lag.  When using <code>uv</code> commands like <code>add</code>, with a given default registry configured, if it's different from the environment variable, it's being overwritten, even if it exists as another registry source, and the previous default information is being lost.</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;primary&quot;
+url = &quot;https://pypi.org/simple&quot;
+default = true
+
+[[tool.uv.index]]
+name = &quot;sandbox&quot;
+url = &quot;https://test.pypi.org/simple&quot;
+</code></pre>
+<pre><code class="language-shell">$ UV_DEFAULT_INDEX=https://test.pypi.org/simple uv add click --index-strategy=unsafe-best-match
+</code></pre>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;primary&quot;
+url = &quot;https://test.pypi.org/simple&quot;
+default = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-21 19:54</div>
+            <div class="timeline-body"><p>I'm not sure there's something better we can do there. That's the index you asked us to solve with, that's the index that will be written to the <code>uv.lock</code> and it needs to be in the <code>pyproject.toml</code> to avoid invalidating the lockfile. I think what you're asking for, more generally, is a first-class index proxy feature, similar to https://github.com/astral-sh/uv/issues/6349</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Halkcyon">@Halkcyon</a> on 2025-07-23 18:00</div>
+            <div class="timeline-body"><p>If the original value cannot be preserved as an additional index, I think it should at least be a warning that your default is being overwritten because of a difference caused by UV_DEFAULT_INDEX.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tonnico">@tonnico</a> on 2025-07-23 18:25</div>
+            <div class="timeline-body"><p>I also got confused by this. Shouldn't the <code>uv.lock</code> not be in sync with the <code>pyproject.toml</code>? ENV over FILE may work for something less persistent things.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

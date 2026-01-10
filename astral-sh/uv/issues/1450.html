@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIP_EXTRA_INDEX_URL ignored - astral-sh/uv #1450</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PIP_EXTRA_INDEX_URL ignored</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1450">#1450</a>
+        opened by <a href="https://github.com/gwdekker">@gwdekker</a>
+        on 2024-02-16 08:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-02-16 08:14</div>
+            <div class="timeline-body"><p>Trying to run <code>uv pip compile</code> as a direct replacement for <code>python -m piptools compile</code>, it seems that the environment variable I have set for <code>PIP_EXTRA_INDEX_URL</code> is not picked up yet by <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @MichaReiser on 2024-02-16 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VMRuiz">@VMRuiz</a> on 2024-02-16 09:02</div>
+            <div class="timeline-body"><p>Also, using <code>uv pip compile --extra-index-url $PIP_EXTRA_INDEX_URL</code> doesn't work either if the URL contains credentials like: <code>https://username:password@example.com</code>.</p>
+<pre><code>error: Failed to download: private-package==0.0.1
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://example.com/packages/...)
+</code></pre>
+<p>Please let me know if this ticket is a good place to raise this or if I shall open a new one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-16 09:13</div>
+            <div class="timeline-body"><p>@VMRuiz this sounds like https://github.com/astral-sh/uv/issues/1458 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VMRuiz">@VMRuiz</a> on 2024-02-16 09:31</div>
+            <div class="timeline-body"><p>Yes, it seems like the same issue with a different error code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 15:24</div>
+            <div class="timeline-body"><p>I don't love reading environment variables that are specifically intended for other tools. It's similar to reading configuration that's intended for other tools -- it can cause problems if they change their own format. I'd prefer to have <code>UV_EXTRA_INDEX_URL</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-02-16 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1515.html">astral-sh/uv#1515</a> on 2024-02-16 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-02-16 18:49</div>
+            <div class="timeline-body"><p>That makes sense! Breaks the “drop in replacement” but only a tiny bit and for a very good reason. Thanks for the quick follow up and for this amazing package, can hardly wait to use it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-16 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pajinek">@Pajinek</a> on 2024-02-27 12:14</div>
+            <div class="timeline-body"><p>It looks that &quot;--index-url&quot; and &quot;--no-build&quot; is not support in requirements file. For example:</p>
+<pre><code># file requirements.txt
+--extra-index-url https://pypi.example.org/pypi
+--no-binary  my-package1
+
+aiohttp==3.9.1
+aioredis==2.0.1
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 13:52</div>
+            <div class="timeline-body"><p>Index URL is supported, no-build is not. This is covered in other issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pajinek">@Pajinek</a> on 2024-03-01 12:33</div>
+            <div class="timeline-body"><p>I am not sure that extra-index-url works good, because that tries to install packages only from extra-index-url</p>
+<pre><code class="language-&gt;&gt;">error: HTTP status client error (401 Unauthorized) for url (https://pypi.mysite.com/pypi/httpcore/)
+)
+</code></pre>
+<p>If I use pip install -r requirements.txt then all packages are installed without problem.</p>
+<pre><code># requirements.txt 
+--extra-index-url https://pypi.mysite.com/pypi
+
+aiofiles==0.8.0
+    # via gcloud-aio-storage
+aiohttp==3.9.3
+    # via
+    #   -r requirements.in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 13:59</div>
+            <div class="timeline-body"><p>Do you know why your index is returning a 401? If it returns an error code like 404, we would continue to search PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pajinek">@Pajinek</a> on 2024-03-06 08:25</div>
+            <div class="timeline-body"><p>Hi, I am not sure, but it works with original pip.</p>
+<pre><code>&gt;&gt; pip install -i https://pypi.example.com/simple/ aiohttp --verbose 
+Looking in indexes: https://pypi.example.com/simple/
+Collecting aiohttp
+ Downloading https://pypi.example.com/api/package/aiohttp/aiohttp-3.9.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.3 MB)
+</code></pre>
+<p>I tried to download package by wget manually and it works as well.</p>
+<pre><code>&gt;&gt; wget https://pypi.example.com/api/package/aiohttp/aiohttp-3.9.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Connecting to pypi.example.com (pypi.example.com)|...|:443... connected.
+HTTP request sent, awaiting response... 401 Unauthorized
+Authentication selected: Basic realm=&quot;pypi&quot;
+Reusing existing connection to pypi.example.com:443.
+HTTP request sent, awaiting response... 302 Found
+Location: https://storage.googleapis.com/...
+...
+HTTP request sent, awaiting response... 200 OK
+aiohttp-3.9.3-cp312-cp312-manylinux_2_17_x86 100%[============================================================================================&gt;]   1.25M  --.-KB/s    in 0.05s   
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:21 UTC
+    </footer>
+</body>
+</html>

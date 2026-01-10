@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Constraints for generating first `uv.lock` when migrating - astral-sh/uv #6425</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Constraints for generating first `uv.lock` when migrating</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6425">#6425</a>
+        opened by <a href="https://github.com/mrcljx">@mrcljx</a>
+        on 2024-08-22 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrcljx">@mrcljx</a> on 2024-08-22 12:06</div>
+            <div class="timeline-body"><p>When migrating from Poetry (or other solutions) I want to ensure that the generated <code>uv.lock</code> does not accidentally upgrade any packages.</p>
+<p>The <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-preferences">docs</a> say:</p>
+<blockquote>
+<p>If resolution output file exists, i.e. a uv lockfile (<code>uv.lock</code>) or a requirements output file (<code>requirements.txt</code>), uv will <em>prefer</em> the dependency versions listed there.</p>
+</blockquote>
+<p>So what I assumed would work is:</p>
+<ol>
+<li>Transform poetry dependencies (wrote a small script).</li>
+<li>Export a <code>requirements.txt</code> from <code>poetry.lock</code> via <code>poetry export</code>.</li>
+<li>Run <code>uv lock</code></li>
+</ol>
+<p>Sadly that didn't work (docs might be confusing here, I guess the latter just works with <code>uv pip</code>). I then assumed that maybe I can do:</p>
+<pre><code>uv lock --constraint requirements.txt
+</code></pre>
+<p>But that option does not exist.</p>
+<p>What seems to have worked is to generate a fake <code>uv.lock</code> from my script, but I'm also not sure whether that <em>really</em> worked: I get a log statement that the lockfile is ignored because <code>requires-dist</code> doesn't match (I'm not generating that one).</p>
+<p>It would be great if I could somehow provide constraints to <code>uv lock</code>. Or am I'm overlooking some existing feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 12:33</div>
+            <div class="timeline-body"><p>I think you could take the output of that <code>requirements.txt</code>, and add it to the <code>pyproject.toml</code> under <code>constraint-dependencies</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;anyio&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+constraint-dependencies = [
+    &quot;anyio==3&quot;
+]
+</code></pre>
+<p>Then run <code>uv lock</code>. Then remove the <code>constraint-dependencies</code> and run <code>uv lock</code> again, and it should preserve the versions to the extent that it can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-22 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 15:48</div>
+            <div class="timeline-body"><p>Feel free to open again if that's not working for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-22 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5605.html">astral-sh/uv#5605</a> on 2024-08-22 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrcljx">@mrcljx</a> on 2024-08-22 23:24</div>
+            <div class="timeline-body"><p>Worked like a charm. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 23:25</div>
+            <div class="timeline-body"><p>That's awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1804.html">astral-sh/uv#1804</a> on 2024-08-23 15:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server` detects config file differently to `ruff check` - astral-sh/ruff #11506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff server` detects config file differently to `ruff check`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11506">#11506</a>
+        opened by <a href="https://github.com/JaRoSchm">@JaRoSchm</a>
+        on 2024-05-23 07:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JaRoSchm">@JaRoSchm</a> on 2024-05-23 07:49</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I just tried the new <code>ruff server</code> (ruff 0.4.5) and noticed that it detects its configuration file differently to <code>ruff check</code>. I have a repo with a <code>pyproject.toml</code> containing no <code>ruff</code> configuration. In the directory above there is a <code>pyproject.toml</code> containing configuration for <code>ruff</code> (in this case enabling additional rules). If I use <code>ruff check</code> from inside the repo, it works as expected and uses the enabled rules. Using <code>ruff server</code> inside of vim using the plugin vim-lsp doesn't enable the additional rules. If I add the rules to the <code>pyproject.toml</code> inside of the repo, they are detected by <code>ruff server</code> too.</p>
+<p>From the documentation of <code>ruff server</code> it is not clear to me, if this is expected behaviour. As a user of <code>ruff check</code> and <code>ruff server</code> I would expect them to behave equivalently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JaRoSchm">@JaRoSchm</a> on 2024-05-23 08:21</div>
+            <div class="timeline-body"><p>And here a minimal example:</p>
+<p>pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;NPY&quot;]
+</code></pre>
+<p>repo/pyproject.toml: empty</p>
+<p>repo/file.py (should raise NPY002):</p>
+<pre><code class="language-py">import numpy as np
+
+np.random.uniform(100)
+</code></pre>
+<p>Relevant config in .vimrc:</p>
+<pre><code class="language-vim">if executable('ruff')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'ruff-server',
+        \ 'cmd': {server_info-&gt;['ruff', 'server', '--preview']},
+        \ 'allowlist': ['python'],
+        \ 'workspace_config': {'configurationPreference': 'filesystemFirst'},
+        \ })
+endif
+</code></pre>
+<p>Log of LSP client:</p>
+<details>
+  <summary>Log</summary>
+
+<p>Do 23 Mai 2024 10:14:57 CEST:[&quot;lsp#register_server&quot;,&quot;server registered&quot;,&quot;ruff-server&quot;]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;lsp#register_server&quot;,&quot;server registered&quot;,&quot;clangd&quot;]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;lsp#register_server&quot;,&quot;server registered&quot;,&quot;texlab&quot;]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;s:on_text_document_did_open()&quot;,1,&quot;python&quot;,&quot;/home/jschmidt/tmp/repo&quot;,&quot;file:///home/jschmidt/tmp/repo/file.py&quot;]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;Starting server&quot;,&quot;ruff-server&quot;,[&quot;ruff&quot;,&quot;server&quot;,&quot;--preview&quot;]]
+Do 23 Mai 2024 10:14:57 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;lsp_id&quot;:1,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;started lsp server successfully&quot;}}]
+Do 23 Mai 2024 10:14:57 CEST:[{&quot;response&quot;:{&quot;error&quot;:{&quot;data&quot;:{&quot;lsp_id&quot;:1,&quot;<strong>error</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;code&quot;:0,&quot;message&quot;:&quot;ignore initialization lsp server due to empty root_uri&quot;}}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;---&gt;&quot;,1,&quot;ruff-server&quot;,{&quot;method&quot;:&quot;initialize&quot;,&quot;params&quot;:{&quot;rootUri&quot;:&quot;file:///home/jschmidt/tmp/repo&quot;,&quot;capabilities&quot;:{&quot;workspace&quot;:{&quot;workspaceFolders&quot;:false,&quot;configuration&quot;:true,&quot;symbol&quot;:{&quot;dynamicRegistration&quot;:false},&quot;applyEdit&quot;:true},&quot;window&quot;:{&quot;workDoneProgress&quot;:false},&quot;textDocument&quot;:{&quot;callHierarchy&quot;:{&quot;dynamicRegistration&quot;:false},&quot;rename&quot;:{&quot;prepareSupport&quot;:true,&quot;dynamicRegistration&quot;:false,&quot;prepareSupportDefaultBehavior&quot;:1},&quot;codeAction&quot;:{&quot;isPreferredSupport&quot;:true,&quot;disabledSupport&quot;:true,&quot;codeActionLiteralSupport&quot;:{&quot;codeActionKind&quot;:{&quot;valueSet&quot;:[&quot;&quot;,&quot;quickfix&quot;,&quot;refactor&quot;,&quot;refactor.extract&quot;,&quot;refactor.inline&quot;,&quot;refactor.rewrite&quot;,&quot;source&quot;,&quot;source.organizeImports&quot;]}},&quot;dynamicRegistration&quot;:false},&quot;completion&quot;:{&quot;completionItem&quot;:{&quot;snippetSupport&quot;:false,&quot;resolveSupport&quot;:{&quot;properties&quot;:[&quot;additionalTextEdits&quot;]},&quot;documentationFormat&quot;:[&quot;markdown&quot;,&quot;plaintext&quot;]},&quot;dynamicRegistration&quot;:false,&quot;completionItemKind&quot;:{&quot;valueSet&quot;:[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,1,2,3,4,5,6,7,8,9]}},&quot;formatting&quot;:{&quot;dynamicRegistration&quot;:false},&quot;codeLens&quot;:{&quot;dynamicRegistration&quot;:false},&quot;inlayHint&quot;:{&quot;dynamicRegistration&quot;:false},&quot;hover&quot;:{&quot;dynamicRegistration&quot;:false,&quot;contentFormat&quot;:[&quot;markdown&quot;,&quot;plaintext&quot;]},&quot;rangeFormatting&quot;:{&quot;dynamicRegistration&quot;:false},&quot;declaration&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true},&quot;references&quot;:{&quot;dynamicRegistration&quot;:false},&quot;typeHierarchy&quot;:{&quot;dynamicRegistration&quot;:false},&quot;foldingRange&quot;:{&quot;rangeLimit&quot;:5000,&quot;dynamicRegistration&quot;:false,&quot;lineFoldingOnly&quot;:true},&quot;documentSymbol&quot;:{&quot;symbolKind&quot;:{&quot;valueSet&quot;:[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,1,2,3,4,5,6,7,8,9]},&quot;dynamicRegistration&quot;:false,&quot;labelSupport&quot;:false,&quot;hierarchicalDocumentSymbolSupport&quot;:false},&quot;publishDiagnostics&quot;:{&quot;relatedInformation&quot;:true},&quot;synchronization&quot;:{&quot;dynamicRegistration&quot;:false,&quot;willSaveWaitUntil&quot;:false,&quot;willSave&quot;:false,&quot;didSave&quot;:true},&quot;documentHighlight&quot;:{&quot;dynamicRegistration&quot;:false},&quot;implementation&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true},&quot;typeDefinition&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true},&quot;semanticTokens&quot;:{&quot;serverCancelSupport&quot;:false,&quot;requests&quot;:{&quot;full&quot;:false,&quot;range&quot;:false},&quot;multilineTokenSupport&quot;:false,&quot;dynamicRegistration&quot;:false,&quot;overlappingTokenSupport&quot;:false,&quot;tokenTypes&quot;:[&quot;type&quot;,&quot;class&quot;,&quot;enum&quot;,&quot;interface&quot;,&quot;struct&quot;,&quot;typeParameter&quot;,&quot;parameter&quot;,&quot;variable&quot;,&quot;property&quot;,&quot;enumMember&quot;,&quot;event&quot;,&quot;function&quot;,&quot;method&quot;,&quot;macro&quot;,&quot;keyword&quot;,&quot;modifier&quot;,&quot;comment&quot;,&quot;string&quot;,&quot;number&quot;,&quot;regexp&quot;,&quot;operator&quot;],&quot;tokenModifiers&quot;:[],&quot;formats&quot;:[&quot;relative&quot;]},&quot;signatureHelp&quot;:{&quot;dynamicRegistration&quot;:false},&quot;definition&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true}}},&quot;rootPath&quot;:&quot;/home/jschmidt/tmp/repo&quot;,&quot;clientInfo&quot;:{&quot;name&quot;:&quot;vim-lsp&quot;},&quot;processId&quot;:30822,&quot;trace&quot;:&quot;off&quot;}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;&lt;---&quot;,1,&quot;ruff-server&quot;,{&quot;response&quot;:{&quot;id&quot;:1,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;result&quot;:{&quot;capabilities&quot;:{&quot;diagnosticProvider&quot;:{&quot;identifier&quot;:&quot;Ruff&quot;,&quot;interFileDependencies&quot;:false,&quot;workDoneProgress&quot;:true,&quot;workspaceDiagnostics&quot;:false},&quot;hoverProvider&quot;:true,&quot;documentFormattingProvider&quot;:true,&quot;positionEncoding&quot;:&quot;utf-16&quot;,&quot;workspace&quot;:{&quot;workspaceFolders&quot;:{&quot;changeNotifications&quot;:true,&quot;supported&quot;:true}},&quot;codeActionProvider&quot;:{&quot;resolveProvider&quot;:true,&quot;workDoneProgress&quot;:true,&quot;codeActionKinds&quot;:[&quot;quickfix&quot;,&quot;source.fixAll.ruff&quot;,&quot;source.organizeImports.ruff&quot;,&quot;notebook.source.fixAll.ruff&quot;,&quot;notebook.source.organizeImports.ruff&quot;]},&quot;notebookDocumentSync&quot;:{&quot;save&quot;:false,&quot;notebookSelector&quot;:[{&quot;cells&quot;:[{&quot;language&quot;:&quot;python&quot;}]}]},&quot;documentRangeFormattingProvider&quot;:true,&quot;textDocumentSync&quot;:{&quot;willSaveWaitUntil&quot;:false,&quot;willSave&quot;:false,&quot;change&quot;:2,&quot;openClose&quot;:true}},&quot;serverInfo&quot;:{&quot;version&quot;:&quot;0.4.5&quot;,&quot;name&quot;:&quot;ruff&quot;}}},&quot;request&quot;:{&quot;id&quot;:1,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;initialize&quot;,&quot;params&quot;:{&quot;rootUri&quot;:&quot;file:///home/jschmidt/tmp/repo&quot;,&quot;capabilities&quot;:{&quot;workspace&quot;:{&quot;workspaceFolders&quot;:false,&quot;configuration&quot;:true,&quot;symbol&quot;:{&quot;dynamicRegistration&quot;:false},&quot;applyEdit&quot;:true},&quot;window&quot;:{&quot;workDoneProgress&quot;:false},&quot;textDocument&quot;:{&quot;callHierarchy&quot;:{&quot;dynamicRegistration&quot;:false},&quot;rename&quot;:{&quot;prepareSupport&quot;:true,&quot;dynamicRegistration&quot;:false,&quot;prepareSupportDefaultBehavior&quot;:1},&quot;codeAction&quot;:{&quot;isPreferredSupport&quot;:true,&quot;disabledSupport&quot;:true,&quot;codeActionLiteralSupport&quot;:{&quot;codeActionKind&quot;:{&quot;valueSet&quot;:[&quot;&quot;,&quot;quickfix&quot;,&quot;refactor&quot;,&quot;refactor.extract&quot;,&quot;refactor.inline&quot;,&quot;refactor.rewrite&quot;,&quot;source&quot;,&quot;source.organizeImports&quot;]}},&quot;dynamicRegistration&quot;:false},&quot;completion&quot;:{&quot;completionItem&quot;:{&quot;snippetSupport&quot;:false,&quot;resolveSupport&quot;:{&quot;properties&quot;:[&quot;additionalTextEdits&quot;]},&quot;documentationFormat&quot;:[&quot;markdown&quot;,&quot;plaintext&quot;]},&quot;dynamicRegistration&quot;:false,&quot;completionItemKind&quot;:{&quot;valueSet&quot;:[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,1,2,3,4,5,6,7,8,9]}},&quot;formatting&quot;:{&quot;dynamicRegistration&quot;:false},&quot;codeLens&quot;:{&quot;dynamicRegistration&quot;:false},&quot;inlayHint&quot;:{&quot;dynamicRegistration&quot;:false},&quot;hover&quot;:{&quot;dynamicRegistration&quot;:false,&quot;contentFormat&quot;:[&quot;markdown&quot;,&quot;plaintext&quot;]},&quot;rangeFormatting&quot;:{&quot;dynamicRegistration&quot;:false},&quot;declaration&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true},&quot;references&quot;:{&quot;dynamicRegistration&quot;:false},&quot;typeHierarchy&quot;:{&quot;dynamicRegistration&quot;:false},&quot;foldingRange&quot;:{&quot;rangeLimit&quot;:5000,&quot;dynamicRegistration&quot;:false,&quot;lineFoldingOnly&quot;:true},&quot;documentSymbol&quot;:{&quot;symbolKind&quot;:{&quot;valueSet&quot;:[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,1,2,3,4,5,6,7,8,9]},&quot;dynamicRegistration&quot;:false,&quot;labelSupport&quot;:false,&quot;hierarchicalDocumentSymbolSupport&quot;:false},&quot;publishDiagnostics&quot;:{&quot;relatedInformation&quot;:true},&quot;synchronization&quot;:{&quot;dynamicRegistration&quot;:false,&quot;willSaveWaitUntil&quot;:false,&quot;willSave&quot;:false,&quot;didSave&quot;:true},&quot;documentHighlight&quot;:{&quot;dynamicRegistration&quot;:false},&quot;implementation&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true},&quot;typeDefinition&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true},&quot;semanticTokens&quot;:{&quot;serverCancelSupport&quot;:false,&quot;requests&quot;:{&quot;full&quot;:false,&quot;range&quot;:false},&quot;multilineTokenSupport&quot;:false,&quot;dynamicRegistration&quot;:false,&quot;overlappingTokenSupport&quot;:false,&quot;tokenTypes&quot;:[&quot;type&quot;,&quot;class&quot;,&quot;enum&quot;,&quot;interface&quot;,&quot;struct&quot;,&quot;typeParameter&quot;,&quot;parameter&quot;,&quot;variable&quot;,&quot;property&quot;,&quot;enumMember&quot;,&quot;event&quot;,&quot;function&quot;,&quot;method&quot;,&quot;macro&quot;,&quot;keyword&quot;,&quot;modifier&quot;,&quot;comment&quot;,&quot;string&quot;,&quot;number&quot;,&quot;regexp&quot;,&quot;operator&quot;],&quot;tokenModifiers&quot;:[],&quot;formats&quot;:[&quot;relative&quot;]},&quot;signatureHelp&quot;:{&quot;dynamicRegistration&quot;:false},&quot;definition&quot;:{&quot;dynamicRegistration&quot;:false,&quot;linkSupport&quot;:true}}},&quot;rootPath&quot;:&quot;/home/jschmidt/tmp/repo&quot;,&quot;clientInfo&quot;:{&quot;name&quot;:&quot;vim-lsp&quot;},&quot;processId&quot;:30822,&quot;trace&quot;:&quot;off&quot;}}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;---&gt;&quot;,1,&quot;ruff-server&quot;,{&quot;method&quot;:&quot;initialized&quot;,&quot;params&quot;:{}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;---&gt;&quot;,1,&quot;ruff-server&quot;,{&quot;method&quot;:&quot;workspace/didChangeConfiguration&quot;,&quot;params&quot;:{&quot;settings&quot;:{&quot;configurationPreference&quot;:&quot;filesystemFirst&quot;}}}]
+Do 23 Mai 2024 10:14:57 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;configuration sent&quot;}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;s:update_file_content()&quot;,1]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;---&gt;&quot;,1,&quot;ruff-server&quot;,{&quot;method&quot;:&quot;textDocument/didOpen&quot;,&quot;params&quot;:{&quot;textDocument&quot;:{&quot;uri&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;,&quot;version&quot;:1,&quot;languageId&quot;:&quot;python&quot;,&quot;text&quot;:&quot;import numpy as np\n\nnp.random.uniform(100)\n&quot;}}}]
+Do 23 Mai 2024 10:14:57 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;path&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;,&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;filetype&quot;:&quot;python&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;textDocument/open sent&quot;}}]
+Do 23 Mai 2024 10:14:57 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;path&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;,&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;not dirty&quot;}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;s:on_stdout client option on_notification() error&quot;,&quot;Vim(let):E716: Key not present in Dictionary: &quot;pylsp&quot;&quot;,&quot;function <SNR>156_out_cb[1]..<SNR>155_on_stdout[67]..<SNR>126_on_notification[16]..<SNR>126_handle_initialize[25]..<SNR>154_callback[1]..<SNR>154_next[9]..<lambda>45[1]..<SNR>126_ensure_conf[14]..<SNR>154_callback[1]..<SNR>154_next[9]..<lambda>46[1]..<SNR>126_ensure_open[40]..<SNR>154_callback[1]..<SNR>154_next[9]..<lambda>47[1]..<SNR>126_ensure_changed[18]..<SNR>154_callback[1]..<SNR>154_next[9]..<lambda>48[1]..<SNR>126_fire_lsp_buffer_enabled[2]..User Autocommands for &quot;lsp_buffer_enabled&quot;..function <SNR>9_on_lsp_buffer_enabled[1]..lsp#get_server_capabilities, line 1&quot;]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;&lt;---&quot;,1,&quot;ruff-server&quot;,{&quot;response&quot;:{&quot;method&quot;:&quot;textDocument/publishDiagnostics&quot;,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;params&quot;:{&quot;diagnostics&quot;:[],&quot;uri&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;,&quot;version&quot;:1}}}]
+Do 23 Mai 2024 10:14:57 CEST:[&quot;&lt;---(stderr)&quot;,1,&quot;ruff-server&quot;,&quot;   0.019681s WARN ruff_server::server No workspace(s) were provided during initialization. Using the current working directory as a default workspace...\n   0.024632s WARN ruff_server::server LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n&quot;]
+Do 23 Mai 2024 10:14:58 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;server already started&quot;}}]
+Do 23 Mai 2024 10:14:58 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;init_result&quot;:{&quot;id&quot;:1,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;result&quot;:{&quot;capabilities&quot;:{&quot;diagnosticProvider&quot;:{&quot;identifier&quot;:&quot;Ruff&quot;,&quot;interFileDependencies&quot;:false,&quot;workDoneProgress&quot;:true,&quot;workspaceDiagnostics&quot;:false},&quot;hoverProvider&quot;:true,&quot;documentFormattingProvider&quot;:true,&quot;positionEncoding&quot;:&quot;utf-16&quot;,&quot;workspace&quot;:{&quot;workspaceFolders&quot;:{&quot;changeNotifications&quot;:true,&quot;supported&quot;:true}},&quot;codeActionProvider&quot;:{&quot;resolveProvider&quot;:true,&quot;workDoneProgress&quot;:true,&quot;codeActionKinds&quot;:[&quot;quickfix&quot;,&quot;source.fixAll.ruff&quot;,&quot;source.organizeImports.ruff&quot;,&quot;notebook.source.fixAll.ruff&quot;,&quot;notebook.source.organizeImports.ruff&quot;]},&quot;notebookDocumentSync&quot;:{&quot;save&quot;:false,&quot;notebookSelector&quot;:[{&quot;cells&quot;:[{&quot;language&quot;:&quot;python&quot;}]}]},&quot;documentRangeFormattingProvider&quot;:true,&quot;textDocumentSync&quot;:{&quot;willSaveWaitUntil&quot;:false,&quot;willSave&quot;:false,&quot;change&quot;:2,&quot;openClose&quot;:true}},&quot;serverInfo&quot;:{&quot;version&quot;:&quot;0.4.5&quot;,&quot;name&quot;:&quot;ruff&quot;}}},&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;lsp server already initialized&quot;}}]
+Do 23 Mai 2024 10:14:58 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;configuration sent&quot;}}]
+Do 23 Mai 2024 10:14:58 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;path&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;,&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;already opened&quot;}}]
+Do 23 Mai 2024 10:14:58 CEST:[{&quot;response&quot;:{&quot;data&quot;:{&quot;path&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;,&quot;<strong>data</strong>&quot;:&quot;vim-lsp&quot;,&quot;server_name&quot;:&quot;ruff-server&quot;},&quot;message&quot;:&quot;not dirty&quot;}}]
+Do 23 Mai 2024 10:14:58 CEST:[&quot;---&gt;&quot;,1,&quot;ruff-server&quot;,{&quot;method&quot;:&quot;textDocument/codeAction&quot;,&quot;on_notification&quot;:&quot;---funcref---&quot;,&quot;params&quot;:{&quot;context&quot;:{&quot;diagnostics&quot;:[],&quot;only&quot;:[&quot;&quot;,&quot;quickfix&quot;,&quot;refactor&quot;,&quot;refactor.extract&quot;,&quot;refactor.inline&quot;,&quot;refactor.rewrite&quot;]},&quot;range&quot;:{&quot;end&quot;:{&quot;character&quot;:18,&quot;line&quot;:0},&quot;start&quot;:{&quot;character&quot;:0,&quot;line&quot;:0}},&quot;textDocument&quot;:{&quot;uri&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;}}}]
+Do 23 Mai 2024 10:14:58 CEST:[&quot;&lt;---&quot;,1,&quot;ruff-server&quot;,{&quot;response&quot;:{&quot;id&quot;:2,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;result&quot;:[{&quot;edit&quot;:{&quot;changes&quot;:{}},&quot;kind&quot;:&quot;source.fixAll.ruff&quot;,&quot;title&quot;:&quot;Ruff: Fix all auto-fixable problems&quot;},{&quot;edit&quot;:{&quot;changes&quot;:{}},&quot;kind&quot;:&quot;source.organizeImports.ruff&quot;,&quot;title&quot;:&quot;Ruff: Organize imports&quot;},{&quot;edit&quot;:{&quot;changes&quot;:{}},&quot;kind&quot;:&quot;notebook.source.fixAll.ruff&quot;,&quot;title&quot;:&quot;Ruff: Fix all auto-fixable problems&quot;},{&quot;edit&quot;:{&quot;changes&quot;:{}},&quot;kind&quot;:&quot;notebook.source.organizeImports.ruff&quot;,&quot;title&quot;:&quot;Ruff: Organize imports&quot;}]},&quot;request&quot;:{&quot;id&quot;:2,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;textDocument/codeAction&quot;,&quot;params&quot;:{&quot;context&quot;:{&quot;diagnostics&quot;:[],&quot;only&quot;:[&quot;&quot;,&quot;quickfix&quot;,&quot;refactor&quot;,&quot;refactor.extract&quot;,&quot;refactor.inline&quot;,&quot;refactor.rewrite&quot;]},&quot;range&quot;:{&quot;end&quot;:{&quot;character&quot;:18,&quot;line&quot;:0},&quot;start&quot;:{&quot;character&quot;:0,&quot;line&quot;:0}},&quot;textDocument&quot;:{&quot;uri&quot;:&quot;file:///home/jschmidt/tmp/repo/file.py&quot;}}}}]
+Do 23 Mai 2024 10:15:29 CEST:[&quot;s:on_text_document_did_close()&quot;,1]</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-05-24 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-05-24 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-24 06:56</div>
+            <div class="timeline-body"><p>Thank you for opening this issue. I was able to reproduce this locally in Helix. I'll look into it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11537.html">astral-sh/ruff#11537</a> on 2024-05-24 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-26 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JaRoSchm">@JaRoSchm</a> on 2024-05-26 18:47</div>
+            <div class="timeline-body"><p>Thank you for the fast fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv self update` does not respect pre-release segments during equality checks - astral-sh/uv #13741</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv self update` does not respect pre-release segments during equality checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13741">#13741</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-05-30 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-30 19:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>i.e., trying to move from alpha to stable</p>
+<pre><code>❯ uv self update 0.7.8
+info: Checking for updates...
+success: You're on the latest version of uv (v0.7.8-alpha.1)
+❯ uv self update 0.7.7
+info: Checking for updates...
+success: Downgraded uv from v0.7.8 to v0.7.7! https://github.com/astral-sh/uv/releases/tag/0.7.7
+</code></pre>
+<h3>Platform</h3>
+<p>n/a</p>
+<h3>Version</h3>
+<p>0.7.8</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-05-30 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2025-06-02 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-02 14:29</div>
+            <div class="timeline-body"><p>I can work on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaeng02">@gaeng02</a> on 2025-06-03 02:56</div>
+            <div class="timeline-body"><p>I’m not entirely sure what you expects.
+Are they suggesting to take the tag from 0.7.7 (alpha.1) and apply it to 0.7.8 so that the alpha.1 prerelease is installed first, and if that tag doesn’t exist, fall back to installing the stable version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 03:10</div>
+            <div class="timeline-body"><p>The tags should be ordered as v0.7.7 -&gt; v0.7.8-alpha.1 -&gt; v0.7.8, but, in the above example, v0.7.8 is considered identical to v0.7.8-alpha.1. I'm not quite sure what you're asking.</p>
+<p>I don't think we should install pre-releases by default. We should definitely upgrade from a pre-release to a stable version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-03 22:03</div>
+            <div class="timeline-body"><p>@zanieb do you have any tips for how to test this? The self-update feature is only available when installed via the installation scripts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 22:07</div>
+            <div class="timeline-body"><p>I'm not sure. Maybe @Gankra knows? We could definitely test with the self-update feature turned on in CI, if that helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-04 14:14</div>
+            <div class="timeline-body"><p>The unfortunate easiest way to test this is to copy the binaries you build over your actual uv install (which you can ultimately undo by just running our hosted install scripts as normal). The updater code needs a fair amount of overhaul to allow for running in an isolated environment (the &quot;is this ok to actually run&quot; checks are unfortunately quite pervasive through our own code and axoupdater, and if you don't load a receipt at all it's missing key info to do its own job).</p>
+<p>The easiest-to-explain approach is:</p>
+<ul>
+<li>Install the version of <code>uv</code> you want to use for testing through normal means</li>
+<li>Build your changes</li>
+<li>Copy the <code>uv</code> binary over the actual installed one</li>
+<li>Run <code>uv self update</code> to test your changes<ul>
+<li>If you can reproduce the issue with <code>--dry-run</code> this will save you a lot of headache.</li>
+</ul>
+</li>
+</ul>
+<p>However this is a bit tedious, so often I would resort to hand-editing the receipt.json, which is in a platform-specific location but if on unix it will be in ~/.config/uv/uv-receipt.json</p>
+<p>Mine is here:</p>
+<pre><code>{
+    &quot;binaries&quot;: [
+        &quot;uv&quot;,
+        &quot;uvx&quot;
+    ],
+    &quot;binary_aliases&quot;: {},
+    &quot;cdylibs&quot;: [],
+    &quot;cstaticlibs&quot;: [],
+    &quot;install_layout&quot;: &quot;flat&quot;,
+    &quot;install_prefix&quot;: &quot;/Users/gankra/.local/bin&quot;,
+    &quot;modify_path&quot;: true,
+    &quot;provider&quot;: {
+        &quot;source&quot;: &quot;cargo-dist&quot;,
+        &quot;version&quot;: &quot;0.28.4&quot;
+    },
+    &quot;source&quot;: {
+        &quot;app_name&quot;: &quot;uv&quot;,
+        &quot;name&quot;: &quot;uv&quot;,
+        &quot;owner&quot;: &quot;astral-sh&quot;,
+        &quot;release_type&quot;: &quot;github&quot;
+    },
+    &quot;version&quot;: &quot;0.7.7&quot;
+}
+</code></pre>
+<p>Notable fields:</p>
+<ul>
+<li><code>version</code> is the version the updater will believe the installed version of uv to have, regardless of the actual version the binary thinks it has.<ul>
+<li>So you can change this to <code>0.7.8-alpha.1</code> to test the conditions zanie is presumably under.</li>
+<li>...actually <code>uv self update</code> prints the version in the <em>binary</em> and not the <em>receipt</em> so it's possible zanie was in this kind of state when they encountered this bug?</li>
+</ul>
+</li>
+<li><code>install_prefix</code> is where the updater will expect the binary-asking-itself-to-be-updated to be located<ul>
+<li>you can theoretically edit this to point at your target/debug/ dir to have the updater say &quot;oh yeah i can update these binaries&quot;</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-04 14:28</div>
+            <div class="timeline-body"><p>I've looked into this a bit, and this may be an issue with <code>axoupdater</code>.</p>
+<p>The code responsible for showing that message is here:
+https://github.com/astral-sh/uv/blob/e7c066cf16de38008aef1a11d3041809bcc5fbf9/crates/uv/src/commands/self_update.rs#L181-L192</p>
+<p>We only get to that code path if <code>axoupdater</code> doesn't perform the update. So in this case, the <code>uv</code> binary you were running had the version <code>0.7.8-alpha.1</code>. When <code>axoupdater</code> checked for updates, the latest version was <code>0.7.8</code>, which is <a href="https://docs.rs/axoupdater/latest/axoupdater/struct.Version.html#total-ordering">considered greater</a> than <code>0.7.8-alpha.1</code>. So in theory this should have been updated, but it wasn't. Could be a bug in the code responsible for comparing the versions in <code>axoupdater</code>.</p>
+<p>What do you guys think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-04 14:34</div>
+            <div class="timeline-body"><p>I agree it really looks like a bug in axoupdater but if so it's a baffling one because axoupdater converts to cargo <a href="https://docs.rs/semver/latest/semver/struct.Version.html">semver::Version</a> for all comparisons and that thing absolutely knows alphas are &lt; real versions.</p>
+<p>It could be a bug in axotag which does some preprocessing on a tag before turning it into a version, but I definitely heavily tested that on alphas (cargo-dist is a prerelease power user).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-04 14:58</div>
+            <div class="timeline-body"><p>I discussed this with zanie and there's no actual bugs in the normal code paths.</p>
+<p>They installed uv in a non-standard way (using <code>INSTALLER_DOWNLOAD_URL=</code> to force https://astral.sh/uv/install.sh to install a test copy of uv -- note that <code>0.7.8-alpha.1</code> isn't a published release we have!)</p>
+<p>But that install script has the latest actual version of uv baked in (at the time, 0.7.8), so it recorded to disk in the receipt.json 0.7.8, and so the updater &quot;&quot;&quot;correctly&quot;&quot;&quot; reported that the installed version was the one requested. Then the uv binary printed its own version in the success message (0.7.8-alpha.1), and not the one the updater found, creating this extra-confusing situation.</p>
+<p>So if there's a fix we want to make here, it's a bit more of a subtle one, and probably not a good first issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13840.html">astral-sh/uv#13840</a> on 2025-06-04 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-06-04 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

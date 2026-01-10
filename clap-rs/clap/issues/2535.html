@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doesn't compile in WSL with ubuntu 20.04 - clap-rs/clap #2535</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Doesn't compile in WSL with ubuntu 20.04</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2535">#2535</a>
+        opened by <a href="https://github.com/IceSentry">@IceSentry</a>
+        on 2021-06-13 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IceSentry">@IceSentry</a> on 2021-06-13 17:32</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.52.1 (9bc8c42bb 2021-05-09)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">fn main() {
+	println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>in Cargo.toml</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap-test&quot;
+version = &quot;0.1.0&quot;
+authors = [&quot;author&quot;]
+edition = &quot;2018&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = &quot;3.0.0-beta.2&quot;
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>run <code>cargo build</code> in wsl with ubuntu 20.04</p>
+<h3>Actual Behaviour</h3>
+<pre><code class="language-bash"> &gt; cargo build
+   Compiling clap v3.0.0-beta.2
+error[E0107]: this struct takes 3 type arguments but only 2 type arguments were supplied
+  --&gt; /home/&lt;username&gt;/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.0-beta.2/src/parse/matches/arg_matches.rs:77:22
+   |
+77 |     pub(crate) args: IndexMap&lt;Id, MatchedArg&gt;,
+   |                      ^^^^^^^^ --  ---------- supplied 2 type arguments
+   |                      |
+   |                      expected 3 type arguments
+   |
+note: struct defined here, with 3 type parameters: `K`, `V`, `S`
+  --&gt; /home/&lt;username&gt;/.cargo/registry/src/github.com-1ecc6299db9ec823/indexmap-1.6.2/src/map.rs:76:12
+   |
+76 | pub struct IndexMap&lt;K, V, S&gt; {
+   |            ^^^^^^^^ -  -  -
+help: add missing type argument
+   |
+77 |     pub(crate) args: IndexMap&lt;Id, MatchedArg, S&gt;,
+   |                                             ^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0107`.
+error: could not compile `clap`
+
+To learn more, run the command again with --verbose.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Compiles successfully when added as a dependency</p>
+<h3>Additional Context</h3>
+<p>I recently completely reinstalled wsl with ubuntu 20.04 and I have nothing but the rust toolchain installed on top of the default installation and anything required to compile rust projects. I can compile other projects that do not use clap. Yes, I ran an apt update and apt upgrade. I tried building a project using clap and saw this output. I then reproduced the bug by adding the dependency to an empty project and I saw the same output of clap not being able to compile.</p>
+<p>I know this works correctly in my windows install, but I also compiled that project yesterday in a ubuntu 18.04 not through wsl and it worked.</p>
+<p>I'm not sure if the issue is with WSL or ubuntu 20.04</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @IceSentry on 2021-06-13 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-06-13 18:45</div>
+            <div class="timeline-body"><p>This looks like nothing wsl or Ubuntu related. Just pure rust issue. But I
+don't understand why indexmap is failing to compile.</p>
+<p>On Sun, Jun 13, 2021, 18:32 Charles Giguere <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p>Please complete the following tasks</p>
+<ul>
+<li>I have searched the discussions
+<a href="https://github.com/clap-rs/clap/discussions">https://github.com/clap-rs/clap/discussions</a></li>
+<li>I have searched the existing issues</li>
+</ul>
+<p>Rust Version</p>
+<p>rustc 1.52.1 (9bc8c42bb 2021-05-09)
+Clap Version</p>
+<p>3.0.0-beta.2
+Minimal reproducible code</p>
+<p>fn main() {
+println!(&quot;Hello, world!&quot;);
+}</p>
+<p>in Cargo.toml</p>
+<p>[package]name = &quot;clap-test&quot;version = &quot;0.1.0&quot;authors = [&quot;author&quot;]edition = &quot;2018&quot;</p>
+<h1>See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html</h1>
+<p>[dependencies]clap = &quot;3.0.0-beta.2&quot;</p>
+<p>Steps to reproduce the bug with the above code</p>
+<p>run cargo build in wsl with ubuntu 20.04
+Actual Behaviour</p>
+<blockquote>
+<p>cargo build
+Compiling clap v3.0.0-beta.2
+error[E0107]: this struct takes 3 type arguments but only 2 type arguments were supplied
+--&gt; /home/<username>/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.0.0-beta.2/src/parse/matches/arg_matches.rs:77:22
+|
+77 |     pub(crate) args: IndexMap&lt;Id, MatchedArg&gt;,
+|                      ^^^^^^^^ --  ---------- supplied 2 type arguments
+|                      |
+|                      expected 3 type arguments
+|
+note: struct defined here, with 3 type parameters: <code>K</code>, <code>V</code>, <code>S</code>
+--&gt; /home/<username>/.cargo/registry/src/github.com-1ecc6299db9ec823/indexmap-1.6.2/src/map.rs:76:12
+|
+76 | pub struct IndexMap&lt;K, V, S&gt; {
+|            ^^^^^^^^ -  -  -
+help: add missing type argument
+|
+77 |     pub(crate) args: IndexMap&lt;Id, MatchedArg, S&gt;,
+|                                             ^^^</p>
+</blockquote>
+<p>error: aborting due to previous error</p>
+<p>For more information about this error, try <code>rustc --explain E0107</code>.
+error: could not compile <code>clap</code></p>
+<p>To learn more, run the command again with --verbose.</p>
+<p>Expected Behaviour</p>
+<p>Compiles successfully when added as a dependency
+Additional Context</p>
+<p>I recently completely reinstalled wsl with ubuntu 20.04 and I have nothing
+but the rust toolchain installed on top of the default installation and
+anything required to compile rust projects. I can compile other projects
+that do not use clap. Yes, I ran an apt update and apt upgrade. I tried
+building a project using clap and saw this output. I then reproduced the
+bug by adding the dependency to an empty project and I saw the same output
+of clap not being able to compile.</p>
+<p>I know this works correctly in my windows install, but I also compiled
+that project yesterday in a ubuntu 18.04 not through wsl and it worked.</p>
+<p>I'm not sure if the issue is with WSL or ubuntu 20.04
+Debug Output</p>
+<p><em>No response</em></p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/clap-rs/clap/issues/2535">https://github.com/clap-rs/clap/issues/2535</a>, or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AABKU345KHMNXMNE6ZLAJWDTSTTSLANCNFSM46T522JQ">https://github.com/notifications/unsubscribe-auth/AABKU345KHMNXMNE6ZLAJWDTSTTSLANCNFSM46T522JQ</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-06-13 22:59</div>
+            <div class="timeline-body"><p>Looks like it's an issue with rust and WSL and ubuntu. There's a workaround at https://github.com/bluss/indexmap/issues/144#issuecomment-666629293.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-06-13 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @clap-rs on 2021-06-13 22:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:30 UTC
+    </footer>
+</body>
+</html>

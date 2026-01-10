@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can omit parentheses layout for patterns - astral-sh/ruff #6933</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can omit parentheses layout for patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6933">#6933</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-28 07:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-28 07:37</div>
+            <div class="timeline-body"><p>Ruff avoids adding parentheses to expressions that start or end with a parenthesized node (see <code>can_omit_parentheses</code>).</p>
+<p>This is implemented by using <code>optional_parentheses</code> in conjunction with the <code>in_parentheses_only_*</code> builders. We need something similar for patterns to support</p>
+<pre><code class="language-python">match test:
+    case A | B | [&quot;Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;, &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;]: ...
+
+# Formatted
+match test:
+    case (
+        A
+        | B
+        | [&quot;Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;, &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;]
+    ):
+        ...
+
+# Instead of
+match test:
+    case A | B | [
+        &quot;Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;,
+        &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;,
+    ]:
+        ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5834.html">astral-sh/ruff#5834</a> on 2023-08-28 07:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-28 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-28 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6905.html">astral-sh/ruff#6905</a> on 2023-08-28 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7050.html">astral-sh/ruff#7050</a> on 2023-09-01 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-25 04:46</div>
+            <div class="timeline-body"><p>This seems to be fixed: https://play.ruff.rs/e7f95918-d71e-479f-8fae-29cdaa476463</p>
+<p>Closing the issue but feel free to re-open it if you think otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-25 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-25 07:14</div>
+            <div class="timeline-body"><p>This isn't fixed yet. Notice how the expression gets wrapped in parentheses.</p>
+<p>We need to avoid adding the parentheses in this case. I'm not sure why the function isn't using <code>maybe_parenthesize(IfBreaks)</code> directly</p>
+<p>https://github.com/astral-sh/ruff/blob/c05e4628b1d385d106e7e3d355f5d1d76fbfe401/crates/ruff_python_formatter/src/other/match_case.rs#L38-L58</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2023-09-25 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Beta" by @MichaReiser on 2023-09-27 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-09-27 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 14:40</div>
+            <div class="timeline-body"><p>We want to make this change (it improves consistency), but it's not blocking for the Beta.</p>
+<p>The challenge here is that we need to re-implement <code>can_omit_parentheses</code> for patterns, since that logic only applies to expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-09-27 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8678.html">astral-sh/ruff#8678</a> on 2023-11-28 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-08 14:31</div>
+            <div class="timeline-body"><p>I'm going to remove this from the stable release since it hasn't come up often.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2024-02-08 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2024-02-08 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-17 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13510.html">astral-sh/ruff#13510</a> on 2024-09-25 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-26 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/203745.html">Homebrew/homebrew-core#203745</a> on 2025-01-09 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

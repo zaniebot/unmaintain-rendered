@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python_full_version does not match pyproject.toml and .python-version - astral-sh/uv #12900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>python_full_version does not match pyproject.toml and .python-version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12900">#12900</a>
+        opened by <a href="https://github.com/oseymour">@oseymour</a>
+        on 2025-04-15 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/oseymour">@oseymour</a> on 2025-04-15 17:32</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm working on project which requires mmsegmentation and mmcv. With the <code>pyproject.toml</code> below, I can run <code>uv sync</code> and then <code>uv add mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cpu/torch2.0/index.html</code> and mmcv 2.0.0 is successfully installed into the environment. <code>.python-version</code> contains &quot;3.10&quot;.</p>
+<pre><code class="language-toml">[project]
+name = &quot;usfm&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;mmsegmentation&gt;=1.2.2&quot;,
+    &quot;torch==2.0.1&quot;,
+]
+
+[tool.uv]
+allow-insecure-host = [&quot;https://download.openmmlab.com/mmcv/dist&quot;]
+</code></pre>
+<p>I'd like to set up the project to install everything with just <code>uv sync</code> and modified the <code>pyproject.toml</code> to this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;usfm&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;mmcv==2.0.0&quot;,
+    &quot;mmsegmentation&gt;=1.2.2&quot;,
+    &quot;torch==2.0.1&quot;,
+]
+
+[tool.uv]
+allow-insecure-host = [&quot;https://download.openmmlab.com/mmcv/dist&quot;]
+
+[tool.uv.sources]
+mmcv = { index = &quot;mmcv&quot; }
+
+[[tool.uv.index]]
+name = &quot;mmcv&quot;
+url = &quot;https://download.openmmlab.com/mmcv/dist/cpu/torch2.0/index.html&quot;
+</code></pre>
+<p>But when I run <code>uv sync</code> I get this error:
+<img src="https://github.com/user-attachments/assets/e26cda70-3921-43eb-b2e9-9a02b442330b" alt="Image" /></p>
+<p><strong>My question is:</strong> Why is this error happening? I've specified Python 3.10. In the error message image I can see that Python 3.10 is being used to initialize the venv. Why is the resolver checking against Python 3.12?</p>
+<h3>Platform</h3>
+<p>Windows 10 x64</p>
+<h3>Version</h3>
+<p>uv 0.6.2 (6d3614eec 2025-02-19)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @oseymour on 2025-04-15 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-15 18:25</div>
+            <div class="timeline-body"><p>A few things:</p>
+<ol>
+<li>We resolve for all supported Python versions, not just the &quot;current&quot; version. Since your project supports <code>&gt;=3.10</code>, we still have to produce a successful resolution for Python 3.12.</li>
+<li>I think that's a red-herring. <code>https://download.openmmlab.com/mmcv/dist/cpu/torch2.0/index.html</code> isn't a valid Python package registry as-specified. You might want to try adding <code>format = &quot;flat&quot;</code> under that <code>[[tool.uv.index]]</code> entry. See: https://docs.astral.sh/uv/configuration/indexes/#flat-indexes.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-17 12:33</div>
+            <div class="timeline-body"><p>Closing, but happy to re-open if there are follow-up questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-17 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-04-17 12:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

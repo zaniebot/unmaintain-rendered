@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transitive dev dependencies of workspace packages are not installed - astral-sh/uv #7541</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Transitive dev dependencies of workspace packages are not installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7541">#7541</a>
+        opened by <a href="https://github.com/lukasbindreiter">@lukasbindreiter</a>
+        on 2024-09-19 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lukasbindreiter">@lukasbindreiter</a> on 2024-09-19 10:56</div>
+            <div class="timeline-body"><p>I just ran into an issue in our CI pipeline (after upgrading to <code>uv 0.4.10</code>), which I believe was caused by this change:
+https://github.com/astral-sh/uv/pull/7318</p>
+<p>I agree that theoretically it makes sense to not install dev dependencies transitively, however that may be different for workspace sources in a monorepo.</p>
+<p>This is the outline for the issue that came up:
+We have a monorepo, using <code>uv workspaces</code>.
+In there, we have multiple packages, all part of the same <code>workspace</code>. The root package has a dependency on all of those, so that their dependencies are all installed into the <code>venv</code> transitively.
+Now all of the packages in the monorepo have different <code>dev</code> dependencies, one of those for example <a href="https://pypi.org/project/moto/">moto</a>.</p>
+<p>Before this change, I was able to run tests by doing <code>uv run pytest &lt;package&gt;</code>, because the root <code>venv</code> also had all dev-dependencies installed. Now this is no longer the case, instead I get a <code>ModuleNotFoundError: No module named 'moto'</code>.</p>
+<p>Should we now specify all <code>dev</code> dependencies of the sub-packages also as <code>dev</code> dependency of the root package?
+Or maybe it would make sense to still install <code>dev</code> dependencies transitively for all packages where <code>workspace = true</code> is set in <code>tool.uv.sources</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 11:07</div>
+            <div class="timeline-body"><p>Sorry this broke your setup!</p>
+<blockquote>
+<p>Should we now specify all dev dependencies of the sub-packages also as dev dependency of the root package?</p>
+</blockquote>
+<p>I think this is the recommendation, if you want to use them from the workspace root.</p>
+<p>Otherwise, you can use <code>uv run --package &lt;name&gt; pytest ...</code> to run with the development dependencies of a workspace member.</p>
+<p>@charliermarsh may have more thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnhoran">@johnhoran</a> on 2024-09-19 18:40</div>
+            <div class="timeline-body"><p>Could we have a flag colocated with <code>workspace = true</code> to decide if the dev dependences should be added?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lukasbindreiter">@lukasbindreiter</a> on 2024-09-20 08:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Otherwise, you can <code>use uv run --package &lt;name&gt; pytest ...</code></p>
+</blockquote>
+<p>Thank you - this worked for us, and it's now what I did to resolve the issue for now.</p>
+<p>However, now after running tests, and then doing an <code>uv sync</code> will uninstall all the dev dependencies again. Which makes sense, but also feels a bit weird.</p>
+<p>The reason we prefer to have the <code>dev-dependencies</code> separate for each package is that they should be as standalone as possible, e.g. if at any point we want to make them their own repositories instead they should be fully self-contained.</p>
+<blockquote>
+<p>Could we have a flag colocated with <code>workspace = true</code> to decide if the dev dependences should be added?</p>
+</blockquote>
+<p>I like that suggestion a lot, e.g. something like:</p>
+<pre><code>[tool.uv.sources]
+package-a = { workspace = true, include_dev = true }
+package-b = { workspace = true, include_dev = true }
+ruff = { include_dev = true }  # if I want for whatever reason we could maybe also include dev dependencies of pypi packages?
+</code></pre>
+<p>what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnhoran">@johnhoran</a> on 2024-09-20 11:31</div>
+            <div class="timeline-body"><p>For right now my approach is to put all the dev packages into an optional package and then include that in the dev dependencies of itself and the root package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-20 11:56</div>
+            <div class="timeline-body"><p>#7487 seems related to this issue, although perhaps not exactly duplicative. It sounds like this is about adding dev-dependencies from packages in a workspace to the root, where as #7487 is about the reverse: adding dev-dependencies from the root to each package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a> on 2024-09-21 17:25</div>
+            <div class="timeline-body"><p>I think this also gets at competing notions of (1) workspace members as strict dependencies of the root, (2)  workspace members as composable &quot;mix-ins&quot;, and (3) a pseudo-rootless monorepo with first-class, root-like workspace members.</p>
+<p>In (1), workspace members should be proper dependencies (dev or otherwise) of the root, and the root shouldn't have to &quot;know&quot; anything about workspace member deps, aside from the fact that all members must &quot;live&quot; in a shared environment. Making this assumption also probably simplifies <code>uv</code>'s solver?</p>
+<p>In (2), a workspace member may function as a mix-in, in which case its dev dependencies augment the root's dev dependencies. You could imagine the isolation of different (yet not incompatible) packages isolated as workspace members which are pluggable and augment the root.</p>
+<p>Then in (3) OP's monorepo layout, an ephemeral &quot;root&quot; but the workspace members that want to share their tooling, almost as if it were a &quot;rootless&quot; shared environment with all workspace members being kind of like their own first-class root.</p>
+<p>I think we can agree that in any case, the proper <code>project.dependencies</code> of root and workspace members should be properly isolated and unaffected by each other, aside from having to solve to coexist in a single environment.</p>
+<p>And in (2) and (3) you have the question of &quot;what about <code>constraint-dependencies</code>, etc. etc.</p>
+<p>I wonder if the <code>workspace</code> concept may be too overloaded in handling all of the dependent/mixin/monorepo use cases, or if enough config flags can be tracked on to <code>source</code> tables to satisfy everyone. And even if workspaces do grow enough toggles in <code>tool.uv.sources</code> entries to support cases (1)/(2)/(3)/(etc.), that comes at the cost of more boilerplate.</p>
+<p>I like the globbing in <code>tool.uv.workspace</code>, possibly some config could &quot;group&quot; different <code>tool.uv.sources</code> with some common config, toggling e.g. <code>workspace = true</code> and <code>shared-dev-dependencies = true</code> or w/e on all members of the group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8353.html">astral-sh/uv#8353</a> on 2024-10-19 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bugzpodder">@bugzpodder</a> on 2024-10-21 22:37</div>
+            <div class="timeline-body"><p>it would be nice to have a flag that installs everything (all devDependencies in all projects and root workspace).  this is how things work by default in javascript land (npm/yarn/pnpm/bun/etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-10-21 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 22:43</div>
+            <div class="timeline-body"><p>See also</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8002</li>
+<li>https://github.com/astral-sh/uv/issues/6935</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-20 00:38</div>
+            <div class="timeline-body"><p>We now have <code>uv sync --all-packages</code>, which I think satisfies this use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-20 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-20 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7487.html">astral-sh/uv#7487</a> on 2025-08-12 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15656.html">astral-sh/uv#15656</a> on 2025-09-03 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vortex-data/vortex/pulls/4696.html">vortex-data/vortex#4696</a> on 2025-09-18 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:52 UTC
+    </footer>
+</body>
+</html>

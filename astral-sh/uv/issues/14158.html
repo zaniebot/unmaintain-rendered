@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`test pip_uninstall::uninstall*` times out on Windows (has been running for over 60 seconds) - astral-sh/uv #14158</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`test pip_uninstall::uninstall*` times out on Windows (has been running for over 60 seconds)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14158">#14158</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-06-20 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-20 15:23</div>
+            <div class="timeline-body"><ul>
+<li><p>https://github.com/astral-sh/uv/actions/runs/15781861061/job/44489244834?pr=14156</p>
+</li>
+<li><p><code>test pip_uninstall::uninstall_by_path</code> has been running for over 60 seconds</p>
+</li>
+<li><p><code>test pip_uninstall::uninstall_duplicate_by_path</code> has been running for over 60 seconds</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci-flake</span> added by @Gankra on 2025-06-20 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14156.html">astral-sh/uv#14156</a> on 2025-06-20 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-20 15:54</div>
+            <div class="timeline-body"><p>Again in https://github.com/astral-sh/uv/actions/runs/15782642131/job/44491854297?pr=14161</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:08</div>
+            <div class="timeline-body"><p>See also #14114</p>
+<p>I hope these timeouts aren't related to #14122</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:09</div>
+            <div class="timeline-body"><p>Also, the timeout is set to 90s</p>
+<p>https://github.com/astral-sh/uv/blob/647f70505ef4c0e6a2207f6f27a8f42d918b8297/.config/nextest.toml#L2-L4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14170.html">astral-sh/uv#14170</a> on 2025-06-20 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:48</div>
+            <div class="timeline-body"><p>It fails despite an increased timeout 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-20 21:03</div>
+            <div class="timeline-body"><p>Seems suspiciously timed with this PR that touched uninstall and merged an hour before I started hitting this</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/13954</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-20 21:04</div>
+            <div class="timeline-body"><p>cc @jtfmumm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-21 08:32</div>
+            <div class="timeline-body"><p>EDIT: It looks like the interaction is between #14122 (Depot change) and #14126 (redirect change). When reverting just #14126, it's back to the post-14122 35-50s. Reverting just #14122 and it's back to 7-12s.</p>
+<p>~~Interestingly, this appears to be an interaction between #14122 and #13954, which explains why I hadn't seen this on that PR in the past~~. I've looked at these tests in CI runs for the following:</p>
+<ul>
+<li>Commits on <code>main</code> prior to 14122 (Depot): Pass. 7-12s.</li>
+<li><code>main</code> after 14122 but before 14126 (redirect changes): Pass. 35-50s.</li>
+<li>Current <code>main</code> (includes 14122 and 14126): Sometimes pass. Can be ~80s.</li>
+<li>Reverting just 14122 (Depot): Pass. 7-12s.</li>
+<li>Reverting just 14126 (redirect changes): Pass. 35-50s.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14180.html">astral-sh/uv#14180</a> on 2025-06-21 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 12:54</div>
+            <div class="timeline-body"><p>The failing test is for <code>pip_uninstall</code>, not <code>python_uninstall</code> — am I missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 13:02</div>
+            <div class="timeline-body"><p>Separately, I'm confused that https://github.com/astral-sh/uv/pull/13954 could significantly regress <code>uv pip</code> performance. We're going to need to look into that. Can we tell where all that time is going?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 13:10</div>
+            <div class="timeline-body"><p>I'm poking at why the Depot runner would slow down the test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 13:15</div>
+            <div class="timeline-body"><p>In isolation, it runs in ~7s (I have it setup to fail on snapshot, ignore that)</p>
+<blockquote>
+<p>FAIL [   7.454s] uv::it pip_uninstall::uninstall_duplicate_by_path</p>
+</blockquote>
+<p>https://github.com/astral-sh/uv/actions/runs/15796024085/job/44528137607?pr=14185</p>
+<p>I suspect a locking issue?? though it could be load on the machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 13:36</div>
+            <div class="timeline-body"><p>And here's the tracing log</p>
+<p>https://gist.github.com/zanieb/edd017cddbc793c7d681b9dad49e3c0b</p>
+<p>in which we spend 80s building the nearly empty package with Poetry</p>
+<pre><code>2.280060s  DEBUG uv_build_frontend Calling `poetry.core.masonry.api.build_wheel(&quot;V:\\uv-tmp\\.tmpiZzVXZ\\cache\\builds-v0\\.tmpvd1K8I&quot;, {}, None)` uv_build_frontend::run_python_script script=&quot;build_wheel&quot;, version_id=&quot;poetry-editable @ file:///V:/uv/scripts/packages/poetry_editable&quot;
+85.864381s DEBUG uv_distribution::source Finished building: poetry-editable @ file:///V:/uv/scripts/packages/poetry_editable
+85.865997s DEBUG uv_fs Released lock at `V:\uv-tmp\.tmpiZzVXZ\cache\sdists-v9\path\23ac0958fa58eed4\.lock`
+85.866236s TRACE uv_fs Checking lock for `V:\uv-tmp\.tmpiZzVXZ\cache\sdists-v9\path\23ac0958fa58eed4\0PTMleMNzPEn5RTgS7N4H\poetry_editable-0.1.0-py3-none-any.lock` at `V:\uv-tmp\.tmpiZzVXZ\cache\sdists-v9\path\23ac0958fa58eed4\0PTMleMNzPEn5RTgS7N4H\poetry_editable-0.1.0-py3-none-any.lock`
+85.866302s DEBUG uv_fs Acquired lock for `V:\uv-tmp\.tmpiZzVXZ\cache\sdists-v9\path\23ac0958fa58eed4\0PTMleMNzPEn5RTgS7N4H\poetry_editable-0.1.0-py3-none-any.lock`
+85.868945s DEBUG uv_fs Released lock at `V:\uv-tmp\.tmpiZzVXZ\cache\sdists-v9\path\23ac0958fa58eed4\0PTMleMNzPEn5RTgS7N4H\poetry_editable-0.1.0-py3-none-any.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14188.html">astral-sh/uv#14188</a> on 2025-06-21 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14185.html">astral-sh/uv#14185</a> on 2025-06-21 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-21 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Separately, I'm confused that <a href="https://github.com/astral-sh/uv/pull/13954">#13954</a> could significantly regress <code>uv pip</code> performance. We're going to need to look into that. Can we tell where all that time is going?</p>
+</blockquote>
+<p>Ok, you're right. I tried reverting just the upgrade changes and these tests were still taking ~80s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-21 14:09</div>
+            <div class="timeline-body"><p>It looks like the interaction is really with #14126. I've updated <a href="https://github.com/astral-sh/uv/issues/14158#issuecomment-2993461346">the comment above</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 14:25</div>
+            <div class="timeline-body"><p>For comparison, here's a log when it's quick https://gist.github.com/zanieb/444d6f02de61df5acee1900410d24e88</p>
+<p>Still on the Depot runner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14284.html">astral-sh/uv#14284</a> on 2025-06-26 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14285.html">astral-sh/uv#14285</a> on 2025-06-26 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 13:16</div>
+            <div class="timeline-body"><p>I believe this was resolved by Flit and the the timeout change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-18 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

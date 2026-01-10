@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using script entry point with inline dependencies  - astral-sh/uv #7032</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using script entry point with inline dependencies </h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7032">#7032</a>
+        opened by <a href="https://github.com/samsja">@samsja</a>
+        on 2024-09-04 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/samsja">@samsja</a> on 2024-09-04 16:07</div>
+            <div class="timeline-body"><p>First thanks for the great work on uv !</p>
+<p>I have a python script that need pytorch. The dependency is defined inside the python script using the inline uv [syntax](https://docs.astral.sh/uv/guides/scripts/?query=script+dependencies#declaring-script-dependencies. The problem is that my entry point to run my code is not <code>python myscript.py</code> but <code>torchrun myscript.py</code> where torchrun is a script entrypoint install with pytorch.</p>
+<p>It's an egg and chicken problem because pytorch is not installed so the command will fail, but it won't install pytorch unless I can run the script ...</p>
+<p>I would expect to do something like:</p>
+<pre><code class="language-bash">uv run --with -R myscript.py torchrun myscript.py
+</code></pre>
+<p>that would read and install the dependencies from <code>myscript.py</code>. I could eventually distribute a separate requirement.txt but It some much cleaner in some cases to only share one file.</p>
+<p>Thanks in advance :pray:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 16:14</div>
+            <div class="timeline-body"><p>I think what you're looking for is a <code>--script-runner</code> option https://github.com/astral-sh/uv/issues/6542#issuecomment-2307709992</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samsja">@samsja</a> on 2024-09-04 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>I think what you're looking for is a <code>--script-runner</code> option <a href="https://github.com/astral-sh/uv/issues/6542#issuecomment-2307709992">#6542 (comment)</a></p>
+</blockquote>
+<p>oh yes exactly what I am looking for !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 17:03</div>
+            <div class="timeline-body"><p>Awesome. Yeah I guess we have two options here... <code>uv run --script-runner torchrun myscript.py</code> or <code>uv run --with-requirements myscript.py torchrun myscript.py</code></p>
+<p>@charliermarsh thoughts?</p>
+<p>The latter is nice and general. People have been asking for the ability to extract requirements from a script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 17:07</div>
+            <div class="timeline-body"><p>The latter seems reasonable, but should it be a dedicated flag? Like <code>--with-script-requirements</code>? I know that's long, but otherwise we have to do extension sniffing, and then it doesn't extend to scripts that (for whatever reason) don't end in a known extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 17:09</div>
+            <div class="timeline-body"><p>Don't we already do extension sniffing for <code>--with-requirements pyproject.toml</code> (and for scripts in <code>uv run</code>?). Definitely hear what you're saying, but it seems okay to have it &quot;just work&quot;? <code>--with-script-requirements</code> is also pretty reasonable as an explicit option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-09-04 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 17:11</div>
+            <div class="timeline-body"><p>We do match <code>pyproject.toml</code> exactly, I think that's ok because it's a standardized file name. I guess it's ok to just sniff <code>--with-requirements foo.py</code>, just worried about edge cases. Do we also detect the embedded settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 17:14</div>
+            <div class="timeline-body"><p>It seems safest to do the explicit option. We can always add sniffing later. Eek settings... we probably should? I don't love the complexity but <code>uvx --script-runner pytorch script.py</code> would definitely respect the settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigridjineth">@sigridjineth</a> on 2024-12-30 05:57</div>
+            <div class="timeline-body"><p>any update here, for introducing script-runner here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10381.html">astral-sh/uv#10381</a> on 2025-01-08 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12763.html">astral-sh/uv#12763</a> on 2025-04-09 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15296.html">astral-sh/uv#15296</a> on 2025-11-16 09:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:40 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` doesn't work with packages containing period in name - astral-sh/uv #6832</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` doesn't work with packages containing period in name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6832">#6832</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2024-08-29 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-29 21:13</div>
+            <div class="timeline-body"><p>I have a workspace that looks like this:</p>
+<pre><code class="language-none">.
+├── packages
+│  └── seeds
+│     ├── src
+│     │  └── albatross
+│     │     └── seeds
+│     │        ├── __init__.py
+│     │        ├── stub.py
+│     │        ├── py.typed
+│     │        └── version.py
+│     └── pyproject.toml
+├── src
+│  └── albatross
+│     ├── stub.py
+│     ├── py.typed
+│     └── version.py
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+<p>And the name of the <code>seeds</code> package is <code>albatross.seeds</code>.</p>
+<p>In my repo root's <code>pyproject.toml</code>, I have:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+albatross = {workspace = true}
+&quot;albatross.seeds&quot; = {workspace = true}
+</code></pre>
+<p>Running <code>uv lock</code>, it:</p>
+<ul>
+<li>Contains <code>albatross-seeds</code> not <code>albatross.seeds</code></li>
+<li>Running <code>pip list</code> I don't see <code>albatross-seeds</code> or <code>albatross.seeds</code> anywhere</li>
+</ul>
+<p>Here's a subset of the <code>uv.lock</code>:</p>
+<pre><code class="language-none">version = 1
+
+[manifest]
+members = [
+    &quot;albatross&quot;,
+    &quot;albatross-seeds&quot;,
+]
+
+[[package]]
+name = &quot;albatross&quot;
+version = &quot;0.1.dev7+gbe81ca2.d20240829&quot;
+source = { editable = &quot;.&quot; }
+dependencies = []
+
+[package.dev-dependencies]
+dev = [
+    { name = &quot;pytest&quot; },
+]
+
+[package.metadata]
+requires-dist = []
+
+[package.metadata.requires-dev]
+dev = [
+    { name = &quot;pytest&quot;, specifier = &quot;&gt;=8&quot; },
+]
+
+[[package]]
+name = &quot;albatross-seeds&quot;
+version = &quot;0.1.dev7+ga33449c&quot;
+source = { editable = &quot;packages/seeds&quot; }
+dependencies = [
+    { name = &quot;albatross&quot; },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = &quot;albatross&quot;, editable = &quot;.&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 22:37</div>
+            <div class="timeline-body"><p>It’s normal for us to normalize the name like that. (Those are equivalent names from the perspective of the standards — they map to the exact same package.) Though it’s confusing that you aren’t seeing it in the environment at all? I’ll try to repro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-29 23:04</div>
+            <div class="timeline-body"><blockquote>
+<p>It’s normal for us to normalize the name like that.</p>
+</blockquote>
+<p>Sounds good, though ideally the names exactly match for debugging ease.</p>
+<blockquote>
+<p>Though it’s confusing that you aren’t seeing it in the environment at all? I’ll try to repro.</p>
+</blockquote>
+<p>Yeah when I run <code>uv sync</code> the name <code>albatross-seeds</code> does not show up. I have to manually <code>uv pip install</code> it for it to work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 23:31</div>
+            <div class="timeline-body"><p>Oh sorry, just to clarify, is <code>albatross.seeds</code> declared as a dependency of <code>albatross</code>? You might be missing this from the <code>albatross</code> <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;albatross.seeds&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-30 00:40</div>
+            <div class="timeline-body"><blockquote>
+<p>is <code>albatross.seeds</code> declared as a dependency of <code>albatross</code>?</p>
+</blockquote>
+<p>Yeah it is included as a dependency 👍 thanks for checking. That's not it in this case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 02:22</div>
+            <div class="timeline-body"><p>Ok thanks! I’ll take a look tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 12:57</div>
+            <div class="timeline-body"><p>Does <code>packages/seeds/pyproject.toml</code> contain a build system? Do you mind sharing that section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-30 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Does <code>packages/seeds/pyproject.toml</code> contain a build system? Do you mind sharing that section?</p>
+</blockquote>
+<p>Yes it does, here's a minimal <code>packages/seeds/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=64&quot;, &quot;setuptools_scm&gt;=8&quot;]
+
+[project]
+dependencies = [&quot;albatross&quot;]
+dynamic = [&quot;version&quot;]
+name = &quot;albatross.seeds&quot;
+
+[tool.ruff]
+extend = &quot;../../pyproject.toml&quot;
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+
+[tool.setuptools_scm]
+root = &quot;../..&quot;
+version_file = &quot;src/seeds/albatross/version.py&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 17:27</div>
+            <div class="timeline-body"><p>Thanks. Sorry for all the back-and-forth, I'm just having trouble reproducing:</p>
+<pre><code>❯ uv sync
+Using Python 3.12.1
+Creating virtualenv at: .venv
+Resolved 2 packages in 2ms
+Installed 2 packages in 1ms
+ + albatross==0.1.0 (from file:///Users/crmarsh/workspace/puffin/scripts/workspaces/albatross-root-workspace)
+ + albatross-seeds==0.1.dev0+d20240830 (from file:///Users/crmarsh/workspace/puffin/scripts/workspaces/albatross-root-workspace/packages/seeds)
+
+❯ uv pip list
+Package         Version            Editable project location
+--------------- ------------------ ------------------------------------------------------------------------------------------
+albatross       0.1.0              /Users/crmarsh/workspace/puffin/scripts/workspaces/albatross-root-workspace
+albatross-seeds 0.1.dev0+d20240830 /Users/crmarsh/workspace/puffin/scripts/workspaces/albatross-root-workspace/packages/seeds
+</code></pre>
+<p>Are you using <code>pip list</code> or <code>uv pip list</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-30 18:07</div>
+            <div class="timeline-body"><p>Both <code>pip list</code> and <code>uv pip list</code> don't show <code>albatross.seeds</code> or <code>albatross-seeds</code>.</p>
+<p>Here is my <code>albatross</code>'s <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=64&quot;, &quot;setuptools_scm&gt;=8&quot;]
+
+[project]
+dependencies = []
+dynamic = [&quot;version&quot;]
+name = &quot;albatross&quot;
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+
+[tool.setuptools_scm]
+version_file = &quot;src/albatross/version.py&quot;
+
+[tool.uv]
+dev-dependencies = [
+    &quot;build&quot;,  # TODO: remove after https://github.com/astral-sh/uv/issues/6278
+    &quot;pytest&gt;=8&quot;,  # Pin to keep recent
+]
+
+[tool.uv.sources]
+&quot;albatross.seeds&quot; = {workspace = true}
+albatross = {workspace = true}
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+</code></pre>
+<p>Does that help?</p>
+<p>What I can do to force the install is:</p>
+<pre><code class="language-bash">uv sync
+uv pip install -e packages/seeds
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 19:43</div>
+            <div class="timeline-body"><p>Try this:</p>
+<pre><code class="language-toml">[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&gt;=64&quot;, &quot;setuptools_scm&gt;=8&quot;]
+
+[project]
+dependencies = [&quot;albatross.seeds&quot;]
+dynamic = [&quot;version&quot;]
+name = &quot;albatross&quot;
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+
+[tool.setuptools_scm]
+version_file = &quot;src/albatross/version.py&quot;
+
+[tool.uv]
+dev-dependencies = [
+    &quot;build&quot;,  # TODO: remove after https://github.com/astral-sh/uv/issues/6278
+    &quot;pytest&gt;=8&quot;,  # Pin to keep recent
+]
+
+[tool.uv.sources]
+&quot;albatross&quot; = { workspace = true }
+&quot;albatross.seeds&quot; = { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 19:44</div>
+            <div class="timeline-body"><p>I believe you're missing <code>dependencies = [&quot;albatross.seeds&quot;]</code> in <code>albatross/pyproject.toml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-30 20:38</div>
+            <div class="timeline-body"><p>Oh but <code>albatross</code> doesn't depend on <code>albatross.seeds</code>, just <code>albatross.seeds</code> depends on <code>albatross</code>. So that was not it</p>
+<p>If you can't repro, I can add you to the private repo to take a look. Are you open to that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 20:45</div>
+            <div class="timeline-body"><p>Sure, I'm happy to take a look!</p>
+<p>Can you clarify which command you're running, and from which directory, that you expect to get <code>albatross.seeds</code> into the environment? Running <code>uv sync</code> from the root will not install <code>albatross.seeds</code> if the root doesn't depend on it. You'd need to run <code>uv sync --package albatross.seeds</code> or <code>uv sync</code> from the <code>seeds</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-08-30 21:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Running <code>uv sync</code> from the root will not install <code>albatross.seeds</code> if the root doesn't depend on it. You'd need to run <code>uv sync --package albatross.seeds</code> or <code>uv sync</code> from the <code>seeds</code> directory.</p>
+</blockquote>
+<p>Ahhhhh okay that was my misunderstanding, I was thinking for workspaces that <code>uv sync</code> would automatically pull in the entire workspace.</p>
+<p>Do you think:</p>
+<ul>
+<li><code>uv sync</code> should pull in the full workspace by default? This seems intuitive to me</li>
+<li>Can we add a boolean flag to <code>tool.uv.sources</code> that marks workspaces to be included in a bare <code>uv sync</code></li>
+</ul>
+<p>Or we should document in the workspaces docs that <code>uv sync</code> doesn't pull in all workspaces by default.</p>
+<hr />
+<p>Two workaround are:</p>
+<ul>
+<li>Using <code>--package</code> arg to <code>uv sync</code> (as you suggest): <code>uv sync --package albatross.seeds</code></li>
+<li>Adding <code>albatross.seeds</code> to main package's <code>dev-dependencies</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 01:21</div>
+            <div class="timeline-body"><p>On that first question, see: https://github.com/astral-sh/uv/issues/5727. I just reopened it since it's now come up a few times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-03 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-03 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-03 01:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:35 UTC
+    </footer>
+</body>
+</html>

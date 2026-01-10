@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use new diagnostic functionality - astral-sh/ruff #17203</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use new diagnostic functionality</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17203">#17203</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-04 12:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 12:56</div>
+            <div class="timeline-body"><h2>Background</h2>
+<p>Our new diagnostic system has the ability to attach additional information to the main diagnostic. The two main types of additional information are:</p>
+<ul>
+<li><p>Secondary annotations
+These are rendered as additional underlined ranges in the snippet for the main diagnostic:</p>
+<pre><code>PLC0206 Extracting value from dictionary without calling `.items()`
+  --&gt; dict_index_missing_items.py:59:5
+   |
+58 |
+59 | for instrument in ORCHESTRA:
+   |     ^^^^^^^^^^^^^^^^^^^^^^^  &lt;- primary diagnostic range
+60 |     data = json.dumps(
+61 |         {
+62 |             &quot;instrument&quot;: instrument,
+63 |             &quot;section&quot;: ORCHESTRA[instrument],
+   |                        ---------------------  &lt;- secondary annotation
+64 |         }
+65 |     )
+help: Use `for instrument, value in ORCHESTRA.items()` instead
+</code></pre>
+<p>and can be added in most lint rules via the <a href="https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ruff_linter/src/checkers/ast/mod.rs#L3557"><code>DiagnosticGuard::secondary_annotation</code></a> helper.</p>
+<p>The example above is from #22312.</p>
+</li>
+<li><p>Sub-diagnostics
+The <code>help: ...</code> line above is actually a simple example of a sub-diagnostic without its own code snippet. For simple messages, you can use the <a href="https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ruff_db/src/diagnostic/mod.rs#L129"><code>Diagnostic::info</code></a> or <a href="https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ruff_db/src/diagnostic/mod.rs#L136"><code>Diagnostic::help</code></a> methods via the <code>DiagnosticGuard</code> deref implementation.</p>
+<p>Sub-diagnostics can, however, include almost all of the kinds of information as a primary diagnostic. We don't have any examples of this in Ruff yet, but you can find some in <a href="https://github.com/astral-sh/ruff/blob/25e480bbce6596a1d62e5243306a707aa426b5b5/crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f%E2%80%A6_-_Try_to_cover_all_pos%E2%80%A6_-_Cover_non-keyword_re%E2%80%A6_%28707b284610419a54%29.snap#L125-L141">ty</a>.</p>
+<p>I think we'll mostly be okay with secondary annotations or simple sub-diagnostics in Ruff, but it's possible to produce these if needed.</p>
+</li>
+</ul>
+<h2>Places to use new diagnostics</h2>
+<p>This is a list of places we've thought about using the new diagnostics. Note that most of these are follow-up comments on merged PRs, so the fact that they're merged doesn't mean that the diagnostics have been updated.</p>
+<ul>
+<li>[ ] https://github.com/astral-sh/ruff/pull/17121#discussion_r2022946393</li>
+<li>[ ] https://github.com/astral-sh/ruff/pull/17129#discussion_r2024242987</li>
+<li>[ ] https://github.com/astral-sh/ruff/pull/17138#discussion_r2026698681</li>
+<li>[ ] https://github.com/astral-sh/ruff/pull/15888#issuecomment-2631264843</li>
+<li>[ ] https://github.com/astral-sh/ruff/pull/18541#discussion_r2139246087</li>
+<li>[ ] https://github.com/astral-sh/ruff/issues/16490#issuecomment-3700255982
+I've already done some of the scouting work here, so it could be a great place to start :)</li>
+<li>[ ] https://github.com/astral-sh/ruff/issues/22188#issuecomment-3691531001</li>
+</ul>
+<h2>Examples</h2>
+<p>Here are a couple of example PRs showing how to use secondary annotations:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/22312</li>
+<li>https://github.com/astral-sh/ruff/pull/19900</li>
+</ul>
+<p>One thing to watch out for is that changing the <em>primary</em> diagnostic range can easily be a breaking change, so for the most part we only want to add new annotations here, not change the existing ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracking</span> added by @ntBre on 2025-04-04 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-04-04 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18516.html">astral-sh/ruff#18516</a> on 2025-06-09 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18541.html">astral-sh/ruff#18541</a> on 2025-06-11 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Multi-span diagnostics" to "Use new diagnostic functionality" by @ntBre on 2025-08-01 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/19690.html">astral-sh/ruff#19690</a> on 2025-08-01 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-08-12 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19886.html">astral-sh/ruff#19886</a> on 2025-08-12 21:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-09-16 01:16</div>
+            <div class="timeline-body"><ul>
+<li>https://github.com/astral-sh/ruff/pull/17003#discussion_r2030543917 also seems to be on hold waiting for multi-span diagnostics</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17003.html">astral-sh/ruff#17003</a> on 2025-09-16 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-22 22:04</div>
+            <div class="timeline-body"><p>While reviewing #20178, I realized that <a href="https://docs.astral.sh/ruff/rules/builtin-attribute-shadowing/#builtin-attribute-shadowing-a003">builtin-attribute-shadowing (A003)</a> might be another good candidate here. We currently emit diagnostics like this:</p>
+<pre><code>A003 Python builtin is shadowed by method `str` from line 14
+  --&gt; A003.py:17:31
+   |
+15 |         pass
+16 |
+17 |     def method_usage(self) -&gt; str:
+   |                               ^^^
+18 |         pass
+   |
+</code></pre>
+<p>underlining the <em>use</em> of the shadowed name and pointing back to the location in the message. We could now add a secondary annotation where the shadowing takes place, on line 14 in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20868.html">astral-sh/ruff#20868</a> on 2025-12-16 20:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

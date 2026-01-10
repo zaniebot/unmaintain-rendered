@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable generating arguments after double hyphen for nushell - clap-rs/clap #5592</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable generating arguments after double hyphen for nushell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5592">#5592</a>
+        opened by <a href="https://github.com/ndtoan96">@ndtoan96</a>
+        on 2024-07-21 20:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ndtoan96">@ndtoan96</a> on 2024-07-21 20:10</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.78.0 (9b00956e5 2024-04-29)</p>
+<h3>Clap Version</h3>
+<p>4.3.5</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::{ffi::OsString, io, path::PathBuf};
+
+use clap::{CommandFactory, Parser};
+use clap_complete::generate;
+use clap_complete_nushell::Nushell;
+
+#[derive(Parser, Debug)]
+pub struct RuffArgs {
+    /// List of files or directories to limit the operation to
+    paths: Vec&lt;PathBuf&gt;,
+    /// Perform the operation on all packages
+    #[arg(short, long)]
+    all: bool,
+    /// Perform the operation on a specific package
+    #[arg(short, long)]
+    package: Vec&lt;String&gt;,
+    /// Use this pyproject.toml file
+    #[arg(long, value_name = &quot;PYPROJECT_TOML&quot;)]
+    pyproject: Option&lt;PathBuf&gt;,
+    /// Enables verbose diagnostics.
+    #[arg(short, long)]
+    verbose: bool,
+    /// Turns off all output.
+    #[arg(short, long, conflicts_with = &quot;verbose&quot;)]
+    quiet: bool,
+    /// Extra arguments to ruff
+    #[arg(last = true)]
+    extra_args: Vec&lt;OsString&gt;,
+    
+}
+
+fn main() {
+    let mut cmd = RuffArgs::command();
+    generate(Nushell,  &amp;mut cmd,&quot;myapp&quot;, &amp;mut io::stdout());
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>cargo run</li>
+<li>copy the code to nushell env.nu</li>
+<li>reload nushell</li>
+<li>see error</li>
+</ol>
+<h3>Actual Behaviour</h3>
+<pre><code>Error: nu::parser::multiple_rest_params
+
+  × Multiple rest params.
+    ╭─[D:\dev_env\conf\nushell\scripts\rye.nu:85:28]
+ 84 │       # Run the code formatter on the project
+ 85 │ ╭─▶   export extern &quot;rye fmt&quot; [
+ 86 │ │       ...paths: string          # List of files or directories to limit the operation to
+ 87 │ │       --all(-a)                 # Perform the operation on all packages
+ 88 │ │       --package(-p): string     # Perform the operation on a specific package
+ 89 │ │       --pyproject: string       # Use this pyproject.toml file
+ 90 │ │       --verbose(-v)             # Enables verbose diagnostics
+ 91 │ │       --quiet(-q)               # Turns off all output
+ 92 │ │       ...extra_args: string     # Extra arguments to ruff
+ 93 │ │       --check                   # Run format in check mode
+ 94 │ │       --help(-h)                # Print help (see more with '--help')
+ 95 │ ├─▶   ]
+    · ╰──── multiple rest params
+ 96 │
+    ╰────
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Completion should not cause error in nushell.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ndtoan96 on 2024-07-21 20:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/rye/pulls/1030.html">astral-sh/rye#1030</a> on 2024-07-21 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2024-07-22 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-07-22 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-22 15:04</div>
+            <div class="timeline-body"><p>Ideally in fixing this, someone would write integration tests with completest-nu</p>
+<p>Please add the tests in the first commit with them passing, showing the current bug.  The following commit would fix the behavior and update the test so it still passes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:37 UTC
+    </footer>
+</body>
+</html>

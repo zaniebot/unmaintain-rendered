@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv export should not need to have python installed - astral-sh/uv #8634</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv export should not need to have python installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8634">#8634</a>
+        opened by <a href="https://github.com/mjpieters">@mjpieters</a>
+        on 2024-10-28 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-28 12:51</div>
+            <div class="timeline-body"><p>We are running a CI pipeline that includes a mend.io license compliance scanner, which looks for a <code>requirements.txt</code> file (it doesn't yet support uv.lock as an input file). We run the mend scanner in a minimal docker container with no Python installed. I can trivially install uv into that container, but without a python installation, I can't export the lock file to <code>requirements.txt</code> file:</p>
+<pre><code class="language-sh">$ uv --version
+uv 0.4.27
+$ uv export --output-file requirements.txt
+error: No interpreter found for Python &gt;=3.12 in managed installations or system path
+</code></pre>
+<p>Python should not be necessary here, all that is needed is that uv produces a requirements.txt file for another tool to then process.</p>
+<p>The same applies to the <code>tree</code> command; uv has all the information needed already, a Python interpreter should not be necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8635.html">astral-sh/uv#8635</a> on 2024-10-28 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-28 13:48</div>
+            <div class="timeline-body"><p>I think we could do this with <code>--frozen</code> by making this block conditional https://github.com/astral-sh/uv/blob/291c4c496d6513d1da5e4b8d7ac31d7aa536c87a/crates/uv/src/commands/project/export.rs#L84-L95</p>
+<p>Otherwise, we need an interpreter to check if the lockfile is up to date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-28 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-28 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 16:12</div>
+            <div class="timeline-body"><p>(In <code>uv tree</code>, we need an interpreter unless the user passes <code>--universal</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-28 16:20</div>
+            <div class="timeline-body"><p>~Are you talking about <code>uv pip tree</code>?~ Nevermind, I see we show the tree for the current platform by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8638.html">astral-sh/uv#8638</a> on 2024-10-28 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-28 17:02</div>
+            <div class="timeline-body"><p>Right, it didn't occur to me that <code>tree</code> would be platform dependant. I'm happy to ignore <code>uv tree</code> in this bug report, I am much more concerned with <code>uv export</code> in CI environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-28 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-28 19:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:19 UTC
+    </footer>
+</body>
+</html>

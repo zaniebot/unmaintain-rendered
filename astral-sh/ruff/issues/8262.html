@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Linter panic] Trouble handling a syntax error - astral-sh/ruff #8262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Linter panic] Trouble handling a syntax error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8262">#8262</a>
+        opened by <a href="https://github.com/chaburkland">@chaburkland</a>
+        on 2023-10-26 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chaburkland">@chaburkland</a> on 2023-10-26 19:55</div>
+            <div class="timeline-body"><p>Ruff version: <code>ruff 0.0.292</code></p>
+<p>File <code>ruff_example.py</code>:</p>
+<pre><code class="language-python">status = &quot;unknown&quot;
+job_id = 14
+
+raise RuntimeError(f&quot;Unknown {status]} for {job_id=}&quot;)
+</code></pre>
+<p>Command:</p>
+<pre><code class="language-bash">ruff ruff_example.py # NOTE: The error did not occur when using the `--isolated` flag
+</code></pre>
+<p>Config <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py38&quot;
+exclude = [
+	&quot;.git&quot;,
+	&quot;__pycache__&quot;,
+	&quot;.mypy_cache&quot;,
+	&quot;.ruff_cache&quot;,
+]
+ignore = [
+	&quot;B011&quot;,     
+	&quot;B015&quot;,     
+	&quot;B023&quot;,     
+	&quot;B028&quot;,     
+	&quot;F811&quot;,     
+	&quot;F841&quot;,     
+	&quot;PLR0911&quot;,  
+	&quot;PLR0912&quot;,  
+	&quot;PLR0913&quot;,  
+	&quot;PLR0915&quot;,  
+	&quot;PLW2901&quot;,  
+	&quot;PLW3301&quot;,  
+	&quot;RUF001&quot;,   
+	&quot;RUF002&quot;,   
+	&quot;RUF003&quot;,   
+	&quot;RUF005&quot;,   
+	&quot;RUF012&quot;,   
+	&quot;UP025&quot;,    
+	&quot;PLR1711&quot;,  
+	&quot;PLR2004&quot;,  
+	&quot;PLR5501&quot;,  
+	&quot;PIE794&quot;,
+	&quot;F821&quot;,     
+	&quot;PLC0414&quot;,  
+]
+select = [
+	&quot;F&quot;,   
+	&quot;W&quot;,   
+	&quot;UP&quot;,  
+	&quot;B&quot;,   
+	&quot;T10&quot;, 
+	&quot;EXE&quot;, 
+	&quot;ISC&quot;, 
+	&quot;ICN&quot;, 
+	&quot;PIE&quot;, 
+	&quot;RSE&quot;, 
+	&quot;TCH&quot;, 
+	&quot;PGH&quot;, 
+	&quot;PL&quot;,  
+	&quot;NPY&quot;, 
+	&quot;RUF&quot;, 
+]
+</code></pre>
+<p>Dump:</p>
+<pre><code>error: Panicked while linting ruff_example.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'called `Option::unwrap()` on a `None` value', crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs:177:22
+Backtrace:    0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+  18: __libc_start_main
+             at /build/glibc-BHL3KM/glibc-2.31/csu/../csu/libc-start.c:308:16
+  19: &lt;unknown&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 20:00</div>
+            <div class="timeline-body"><p>Thanks, reproduced!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 20:00</div>
+            <div class="timeline-body"><p>@dhruvmanila - Do you mind taking this one? Looks like it's related to an <code>fstring_ranges</code> unwrap in that rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-26 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-10-27 11:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

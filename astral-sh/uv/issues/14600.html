@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync ignores [sources] mapping from --config-file when a default index is present in pyproject.toml - astral-sh/uv #14600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync ignores [sources] mapping from --config-file when a default index is present in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14600">#14600</a>
+        opened by <a href="https://github.com/mrogowski11">@mrogowski11</a>
+        on 2025-07-14 06:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mrogowski11">@mrogowski11</a> on 2025-07-14 06:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I'm trying to use a separate configuration file (uv-nightly.toml) to sync dependencies from a special, secondary index. My main pyproject.toml defines a default index.</p>
+<p>When I run uv sync --group <name> --config-file uv-nightly.toml, it appears to ignore the [sources] mapping in the config file and only searches the default index from pyproject.toml. This prevents me from installing prerelease versions of specific packages from the correct, separate index.</p>
+<p>The expected behavior is that uv should merge the configurations and use the [sources] mapping to route the specified packages to the correct index, overriding the default search behavior for those packages.</p>
+<h2>Steps to Reproduce</h2>
+<p>Here is my current setup:</p>
+<ul>
+<li>pyproject.toml:</li>
+</ul>
+<pre><code class="language-toml">[project]
+name = &quot;ovrunner&quot;
+version = &quot;0.1.0&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;requests&quot;]
+
+[project.scripts]
+ovrunner = &quot;ovrunner.main:main&quot;
+
+[tool.setuptools]
+packages = [&quot;ovrunner&quot;, &quot;ovrunner.benchmark&quot;, &quot;ovrunner.utils&quot;]
+
+[tool.uv]
+package = true
+native-tls = true
+conflicts = [
+    [
+        { group = &quot;ov-nightly&quot;},
+        { group = &quot;ov-25-0&quot;},
+    ]
+]
+
+[[tool.uv.index]]
+url = &quot;abc&quot;
+
+[dependency-groups]
+ov-nightly = [
+    &quot;diffusers&quot;,
+    &quot;librosa&quot;,
+    &quot;matplotlib&quot;,
+    &quot;nncf&quot;,
+    &quot;numpy&quot;,
+    &quot;onnx&quot;,
+    &quot;openvino&quot;,
+    &quot;openvino-tokenizers&quot;,
+    &quot;openvino-genai&quot;,
+    &quot;optimum-intel&quot;,
+    &quot;packaging&quot;,
+    &quot;pillow&quot;,
+    &quot;psutil&quot;,
+    &quot;tiktoken&quot;,
+    &quot;timm&quot;,
+    &quot;torch&quot;,
+    &quot;tokenizers&quot;,
+    &quot;transformers&quot;,
+]
+ov-25-0 = [
+    &quot;accelerate==0.33.0&quot;,
+    &quot;aiohappyeyeballs==2.3.5&quot;,
+    &quot;aiohttp==3.10.1&quot;,
+    &quot;aiosignal==1.3.1&quot;,
+    &quot;attrs==24.2.0&quot;,
+    &quot;audioread==3.0.1&quot;,
+    &quot;bitsandbytes==0.43.3&quot;,
+    &quot;certifi==2024.7.4&quot;,
+    &quot;cffi==1.17.0&quot;,
+    &quot;charset-normalizer==3.3.2&quot;,
+    &quot;colorama==0.4.6&quot;,
+    &quot;coloredlogs==15.0.1&quot;,
+    &quot;datasets==2.20.0&quot;,
+    &quot;decorator==5.1.1&quot;,
+    &quot;diffusers==0.30.0&quot;,
+    &quot;dill==0.3.8&quot;,
+    &quot;einops==0.8.0&quot;,
+    &quot;filelock==3.15.4&quot;,
+    &quot;frozenlist==1.4.1&quot;,
+    &quot;fsspec==2024.5.0&quot;,
+    &quot;gekko==1.2.1&quot;,
+    &quot;huggingface-hub==0.24.5&quot;,
+    &quot;humanfriendly==10.0&quot;,
+    &quot;idna==3.7&quot;,
+    &quot;importlib-metadata==8.2.0&quot;,
+    &quot;jinja2==3.1.4&quot;,
+    &quot;joblib==1.4.2&quot;,
+    &quot;lazy-loader==0.4&quot;,
+    &quot;librosa==0.10.2.post1&quot;,
+    &quot;llvmlite==0.43.0&quot;,
+    &quot;markupsafe==2.1.5&quot;,
+    &quot;mpmath==1.3.0&quot;,
+    &quot;msgpack==1.0.8&quot;,
+    &quot;multidict==6.0.5&quot;,
+    &quot;multiprocess==0.70.16&quot;,
+    &quot;networkx==3.3&quot;,
+    &quot;numba==0.60.0&quot;,
+    &quot;numpy==1.26.4&quot;,
+    &quot;onnx==1.16.2&quot;,
+    &quot;opencv-python&gt;=4.11.0.86&quot;,
+    &quot;openvino==2025.0.0&quot;,
+    &quot;openvino-genai==2025.0.0&quot;,
+    &quot;openvino-telemetry==2025.0.0&quot;,
+    &quot;optimum==1.24.0&quot;,
+    &quot;optimum-intel==1.22.0&quot;,
+    &quot;packaging==24.1&quot;,
+    &quot;pandas==2.2.2&quot;,
+    &quot;peft==0.12.0&quot;,
+    &quot;pillow==10.4.0&quot;,
+    &quot;platformdirs==4.2.2&quot;,
+    &quot;pooch==1.8.2&quot;,
+    &quot;protobuf==5.27.3&quot;,
+    &quot;psutil==6.0.0&quot;,
+    &quot;pyarrow==17.0.0&quot;,
+    &quot;pyarrow-hotfix==0.6&quot;,
+    &quot;pycparser==2.22&quot;,
+    &quot;pyreadline3==3.4.1&quot;,
+    &quot;python-dateutil==2.9.0.post0&quot;,
+    &quot;pytz==2024.1&quot;,
+    &quot;pyyaml==6.0.2&quot;,
+    &quot;regex==2024.7.24&quot;,
+    &quot;requests==2.32.3&quot;,
+    &quot;rouge==1.0.1&quot;,
+    &quot;safetensors==0.4.4&quot;,
+    &quot;scikit-learn==1.5.1&quot;,
+    &quot;scipy==1.14.0&quot;,
+    &quot;sentencepiece==0.2.0&quot;,
+    &quot;six==1.16.0&quot;,
+    &quot;soundfile==0.12.1&quot;,
+    &quot;soxr==0.4.0&quot;,
+    &quot;sympy==1.13.1&quot;,
+    &quot;threadpoolctl==3.5.0&quot;,
+    &quot;tiktoken==0.7.0&quot;,
+    &quot;timm==1.0.8&quot;,
+    &quot;tokenizers==0.20.4&quot;,
+    &quot;torch==2.4.1&quot;,
+    &quot;torchvision==0.19.1&quot;,
+    &quot;tqdm==4.66.5&quot;,
+    &quot;transformers==4.46.3&quot;,
+    &quot;transformers-stream-generator==0.0.5&quot;,
+    &quot;typing-extensions==4.12.2&quot;,
+    &quot;tzdata==2024.1&quot;,
+    &quot;urllib3==2.2.2&quot;,
+    &quot;xxhash==3.4.1&quot;,
+    &quot;yarl==1.9.4&quot;,
+    &quot;zipp==3.19.2&quot;,
+]
+</code></pre>
+<ul>
+<li>uv-nightly.toml:</li>
+</ul>
+<pre><code class="language-toml">package = true
+native-tls = true
+prerelease = &quot;allow&quot;
+index-strategy = &quot;unsafe-best-match&quot;
+
+[[index]]
+name = &quot;openvino-nightly&quot;
+url = &quot;https://storage.openvinotoolkit.org/simple/wheels/nightly&quot;
+explicit = true
+
+[[index]]
+url =  &quot;abc&quot;
+
+[sources]
+openvino = { index = &quot;openvino-nightly&quot; }
+openvino-tokenizers = { index = &quot;openvino-nightly&quot; }
+openvino-genai = { index = &quot;openvino-nightly&quot; }
+</code></pre>
+<p>Used command:
+<code>uv sync --group ov-nightly --config-file uv-nightly.toml</code></p>
+<p>I have also tried using <code>prerelease = explicit</code> and setting <code>&gt;=2025.0.0.dev0</code> for the packages' versions, to no avail.</p>
+<h2>Actual Behavior</h2>
+<p><code>openvino</code>, <code>openvino-tokenizers</code>, <code>openvino-genai</code> packages are installed in released versions (at the moment that is 2025.2.0), from the <code>abc</code> index.</p>
+<h2>Expected Behavior</h2>
+<p>When I run <code>uv sync --group ov-nightly --config-file uv-nightly.toml</code> I would like the <code>openvino</code>, <code>openvino-tokenizers</code>, <code>openvino-genai</code> packages to be installed in a nightly version (at the moment that is 2025.3.0.0.dev20250711) via <code>openvino-nightly</code> index and other packages to be installed via the default index.</p>
+<p>When I run a command like this:
+<code>uv pip install --reinstall  openvino openvino-tokenizers openvino-genai --pre --index-url https://storage.openvinotoolkit.org/simple/wheels/nightly --no-cache --index-strategy=unsafe-best-match</code> it installs the packages in nightly versions. Why is my config file behaving differently (I assume merging data from pyproject.toml and config file is the reason)?</p>
+<h2>Reasoning</h2>
+<p>My project consists of multiple conflicting dependency-groups where each group is an environment with a specific version of openvino package. All groups other than <code>ov-nightly</code> use the default, single index and work perfectly with usage such as <code>uv sync --group ov-25-0</code>. The <code>ov-nightly</code> group requires a couple of packages to be installed in nightly versions, from a separate index. How can I achieve this behavior? I could reinstall the packages with <code>uv pip install</code> like mentioned before or have a separate pyproject.toml in a different directory. However that would mean multiple package installation steps (first idea) or updating two files (second idea).</p>
+<p>Is the presented behavior a bug or erroneous configuration on my part?</p>
+<h3>Platform</h3>
+<p>x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.20</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @mrogowski11 on 2025-07-14 06:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-16 13:28</div>
+            <div class="timeline-body"><p>I believe it's intentional that we (1) don't respect sources defined in <code>uv.toml</code> and (2) don't allow named indexes from &quot;outside&quot; the project. The intent is that configuration related to the project dependencies like that needs to be defined within the project, and not in a global file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-16 13:29</div>
+            <div class="timeline-body"><p>I filed https://github.com/astral-sh/uv/issues/14650 to warn on this, I thought we already did.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14694.html">astral-sh/uv#14694</a> on 2025-07-17 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-04 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-04 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-04 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-08-04 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

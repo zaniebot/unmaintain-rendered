@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ006 doesn't detect ModelForm.exclude on inherited forms - astral-sh/ruff #14147</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DJ006 doesn't detect ModelForm.exclude on inherited forms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14147">#14147</a>
+        opened by <a href="https://github.com/GitRon">@GitRon</a>
+        on 2024-11-07 07:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GitRon">@GitRon</a> on 2024-11-07 07:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h3>Issue</h3>
+<p>I use the <code>DJ</code> extension of ruff. I just found out that this doesn't work on forms that don't use ModelForm directly but an inherited class. This relates to <a href="https://docs.astral.sh/ruff/rules/django-exclude-with-model-form/#django-exclude-with-model-form-dj006">DJ006</a>.</p>
+<h3>Code example</h3>
+<pre><code class="language-python">class MyModelForm(ModelForm):
+    pass
+
+
+class MyFancyForm(MyModelForm):
+    class Meta:
+        model = MyFancyModel
+        exclude = (&quot;my_field&quot;,)
+</code></pre>
+<p>When I change the inheritance from <code>MyModelForm</code>  to <code>ModelForm</code>, it complains as expected.</p>
+<h3>List of keywords searched for</h3>
+<ul>
+<li>DJ006</li>
+</ul>
+<h3>Tried out Commands</h3>
+<ul>
+<li>ruff check .\apps\billing\forms.py --isolated</li>
+<li>pre-commit run --all-files --hook-stage push</li>
+</ul>
+<h3>Ruff version</h3>
+<p>0.7.2</p>
+<h3>Ruff settings</h3>
+<pre><code class="language-toml">[tool.ruff]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+lint.select =  [
+    &quot;E&quot;,       # pycodestyle errors
+    &quot;W&quot;,       # pycodestyle warnings
+    &quot;F&quot;,       # Pyflakes
+    &quot;D&quot;,       # Pydocstyle
+    &quot;N&quot;,       # pep8-naming
+    &quot;I&quot;,       # isort
+    &quot;B&quot;,       # flake8-bugbear
+    &quot;A&quot;,       # flake8-builtins
+    &quot;DTZ&quot;,     # flake8-datetimez
+    &quot;DJ&quot;,      # flake8-django
+    &quot;TD&quot;,      # flake8-to-do
+    &quot;LOG&quot;,     # flake8-logging
+    &quot;TID&quot;,     # flake8-tidy-imports
+    &quot;Q&quot;,       # flake8-quotes
+    &quot;RET&quot;,     # flake8-return
+    &quot;RSE&quot;,     # flake8-raise
+    &quot;RUF&quot;,     # Ruff-specific rules
+    &quot;YTT&quot;,     # Avoid non-future-prove usages of &quot;sys&quot;
+    &quot;FBT&quot;,     # Protects you from the &quot;boolean trap bug&quot;
+    &quot;C4&quot;,      # Checks for unnecessary conversions
+    &quot;PIE&quot;,     # Bunch of useful rules
+    &quot;SIM&quot;,     # Simplifies your code
+    &quot;INT&quot;,     # Validates your gettext translation strings
+    &quot;PERF&quot;,    # Perflint
+    &quot;PGH&quot;,     # No all-purpose &quot;# noqa&quot; and eval validation
+    &quot;UP&quot;,      # PyUpgrade
+    &quot;PLR2004&quot;, # Magic numbers
+    &quot;BLE&quot;,     # Checks for except clauses that catch all exceptions
+    &quot;ANN401&quot;,  # Checks that function arguments are annotated with a more specific type than Any
+    &quot;TRY&quot;,     # Clean try/except
+    &quot;ERA&quot;,     # Commented out code
+]
+lint.ignore = [
+    &quot;N999&quot;,     # Project name contains underscore, not fixable
+    &quot;A003&quot;,     # Django attributes shadow python builtins
+    &quot;DJ001&quot;,    # Django model text-based fields shouldn't be nullable
+    &quot;DJ012&quot;,    # Odd ordering of Django model methods
+    &quot;RUF012&quot;,   # Mutable class attributes should be annotated with `typing.ClassVar`
+    &quot;PERF401&quot;,  # Use a list comprehension to create a transformed list
+    &quot;TD002&quot;,    # To-Do authors
+    &quot;TD003&quot;,    # To-Do issue links
+    &quot;FBT001&quot;,   # Checks use of boolean arguments in function definitions, the presence of a bool type hint
+    &quot;FBT002&quot;,   # Checks use of boolean arguments in function definitions, the presence of a boolean default value
+    &quot;D1&quot;,       # Missing docstring
+    &quot;D200&quot;,     # fits-on-one-line - if wanted should be in it's own MR -&gt; effects nearly every doc-strings
+    &quot;D203&quot;,     # one-blank-line-before-class - incompatible to D211 no-blank-line-before-class
+    &quot;D205&quot;,     # Checks docstring summary lines not separated from the docstring description
+    &quot;D212&quot;,     # multi-line-summary-first-line - if wanted should be in it's own MR -&gt; effects nearly every doc-string
+    &quot;D213&quot;,     # multi-line-summary-second-line - incompatible to D212 multi-line-summary-first-line
+    &quot;D400&quot;,     # Checks docstrings in which the first line does not end in a period -&gt; ! ? should also be allowed
+    &quot;D401&quot;,     # Checks function docstrings that include the function's signature in the summary line
+    &quot;D415&quot;,     # Checks first line docstrings doesn't end in a punctuation mark, &quot;.&quot;, &quot;?&quot;, &quot;!&quot; -&gt; weird behavior
+    &quot;RET503&quot;,   # Missing explicit `return` at the end of function able to return non-`None` value
+    &quot;TRY002&quot;,   # Checks for code that raises Exception directly.
+    &quot;TRY003&quot;,   # Checks for long exception messages that are not defined in the exception class itself.
+]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+lint.fixable =  [
+    &quot;E&quot;,       # pycodestyle errors
+    &quot;W&quot;,       # pycodestyle warnings
+    &quot;F&quot;,       # Pyflakes
+    &quot;D&quot;,       # Pydocstyle
+    &quot;N&quot;,       # pep8-naming
+    &quot;I&quot;,       # isort
+    &quot;B&quot;,       # flake8-bugbear
+    &quot;A&quot;,       # flake8-builtins
+    &quot;DTZ&quot;,     # flake8-datetimez
+    &quot;DJ&quot;,      # flake8-django
+    &quot;TD&quot;,      # flake8-to-do
+    &quot;LOG&quot;,     # flake8-logging
+    &quot;TID&quot;,     # flake8-tidy-imports
+    &quot;Q&quot;,       # flake8-quotes
+    &quot;RET&quot;,     # flake8-return
+    &quot;RSE&quot;,     # flake8-raise
+    &quot;RUF&quot;,     # Ruff-specific rules
+    &quot;YTT&quot;,     # Avoid non-future-prove usages of &quot;sys&quot;
+    &quot;FBT&quot;,     # Protects you from the &quot;boolean trap bug&quot;
+    &quot;C4&quot;,      # Checks for unnecessary conversions
+    &quot;PIE&quot;,     # Bunch of useful rules
+    &quot;SIM&quot;,     # Simplifies your code
+    &quot;INT&quot;,     # Validates your gettext translation strings
+    &quot;PERF&quot;,    # Perflint
+    &quot;PGH&quot;,     # No all-purpose &quot;# noqa&quot; and eval validation
+    &quot;UP&quot;,      # PyUpgrade
+    &quot;PLR2004&quot;, # Magic numbers
+    &quot;BLE&quot;,     # Checks for except clauses that catch all exceptions
+    &quot;ANN401&quot;,  # Checks that function arguments are annotated with a more specific type than Any
+    &quot;TRY&quot;,     # Clean try/except
+    &quot;ERA&quot;,     # Commented out code
+]
+lint.unfixable = []
+
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.hg&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;venv&quot;,
+    &quot;*/migrations/*&quot;
+]
+
+# For linting and formatting
+line-length = 120
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+# Assume Python 3.12.
+target-version = &quot;py312&quot;
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = &quot;double&quot;
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = &quot;space&quot;
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = &quot;auto&quot;
+
+# Exclude Django migration files
+exclude = [&quot;migrations/*.py&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-07 07:49</div>
+            <div class="timeline-body"><p>It is related to https://github.com/astral-sh/ruff/issues/12865 and applies to all other Django rules. Ruff doesn't support multi-file analysis. Some rules have some hacky implementations that follow inheritance chains in the same file, but these are more one-offs and it breaks as soon as you move the classes to different files. We're working on a more refined semantic model for ruff that supports multifile analysis but it's still far out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-07 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-11-07 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GitRon">@GitRon</a> on 2024-11-07 07:51</div>
+            <div class="timeline-body"><p>@MichaReiser oh, thx! didn't know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swebra">@swebra</a> on 2024-12-18 21:56</div>
+            <div class="timeline-body"><p>@MichaReiser is there an issue or discussion that can be followed to track the general release of multi-file analysis?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-19 09:01</div>
+            <div class="timeline-body"><p>There's https://github.com/astral-sh/ruff/issues/7447</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

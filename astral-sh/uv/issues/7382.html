@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows permissions errors on `uv remove X` with clean install. - astral-sh/uv #7382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows permissions errors on `uv remove X` with clean install.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7382">#7382</a>
+        opened by <a href="https://github.com/mcteo">@mcteo</a>
+        on 2024-09-14 01:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mcteo">@mcteo</a> on 2024-09-14 01:35</div>
+            <div class="timeline-body"><p>Hi all, just following the &quot;Project management&quot; section of the &quot;Getting Started&quot; guide, and got an error:</p>
+<ul>
+<li>I'm using Windows 10.</li>
+<li>Python 3.12 is installed in <code>C:\Python312</code> and on my PATH.</li>
+<li>Creating an originally named project called &quot;project&quot; in the creatively named folder: <code>D:\Projects\project</code>.</li>
+</ul>
+<pre><code>$ powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+Downloading uv 0.4.10 (x86_64-pc-windows-msvc)
+Installing to C:\Users\#\.cargo\bin
+  uv.exe
+  uvx.exe
+everything's installed!
+
+To add C:\Users\#\.cargo\bin to your PATH, either restart your system or run:
+
+    set Path=C:\Users\#\.cargo\bin;%Path%   (cmd)
+    $env:Path = &quot;C:\Users\#\.cargo\bin;$env:Path&quot;   (powershell)
+
+$ set PATH=C:\Users\#\.cargo\bin;%PATH%
+
+$ uv init project
+Initialized project `project` at `D:\Projects\project\project`
+
+$ cd project
+
+$ uv add ruff
+Using Python 3.12.4 interpreter at: C:\Python312\python.exe
+Creating virtualenv at: .venv
+Resolved 2 packages in 212ms
+Prepared 1 package in 307ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                            warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 325ms
+ + ruff==0.6.5
+
+$ uv run ruff check
+All checks passed!
+
+$ uv remove ruff
+Resolved 1 package in 3ms
+error: failed to remove file `D:\Projects\project\project\.venv\Lib\site-packages\..\..\Scripts\ruff.exe`
+  Caused by: Access is denied. (os error 5)
+</code></pre>
+<p>Some debug details:</p>
+<pre><code>$ uv --version
+uv 0.4.10 (690716484 2024-09-13)
+
+$ which uv
+/c/Users/#/.cargo/bin/uv
+
+$ which python
+/c/Python312/python
+
+$ uv tree
+Resolved 1 package in 0.66ms
+project v0.1.0
+
+$ uv add ruff
+Resolved 2 packages in 37ms
+Audited 1 package in 0.02ms
+
+$ uv remove ruff --verbose
+DEBUG uv 0.4.10
+DEBUG Found project root: `D:\Projects\project\project`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `D:\Projects\project\project\.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: project @ file:///D:/Projects/project/project
+DEBUG No workspace root found, using project root
+DEBUG Ignoring existing lockfile due to mismatched `requires-dist` for: `project==0.1.0`
+  Expected: {}
+  Actual: {Requirement { name: PackageName(&quot;ruff&quot;), extras: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;0.6.5&quot; }]), index: None }, origin: None }}
+DEBUG Starting clean resolution
+DEBUG Found static `pyproject.toml` for: project @ file:///D:/Projects/project/project
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.4
+DEBUG Solving with target Python version: &gt;=3.12
+DEBUG Adding direct dependency: project*
+DEBUG Searching for a compatible version of project @ file:///D:/Projects/project/project (*)
+DEBUG Tried 1 versions: project 1
+DEBUG Split universal resolution took 0.000s
+Resolved 1 package in 3ms
+DEBUG Using request timeout of 30s
+DEBUG Unnecessary package: ruff==0.6.5
+error: failed to remove file `D:\Projects\project\project\.venv\Lib\site-packages\..\..\Scripts\ruff.exe`
+  Caused by: Access is denied. (os error 5)
+</code></pre>
+<p>Let me know if there's any other info I can provide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-09-14 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-09-14 03:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-14 03:07</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>Is the executable file being quarantined by an antivirus or something? I'm not a Windows expert, but what kind of permissions does the file have? Is it owned by your user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-09-14 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-09-14 12:55</div>
+            <div class="timeline-body"><p>Is this bug related only to windows. As I am a linux user and I was thinking to try it out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-14 13:00</div>
+            <div class="timeline-body"><p>Yeah we don't see bugs like this on Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcteo">@mcteo</a> on 2024-09-14 16:36</div>
+            <div class="timeline-body"><p>To make the command prompt on Windows usable, I have a few customisations in place, e.g. Windows Terminal, clink, oh-my-posh, msys, and a ton of other stuff on my PATH. I thought some of these might be the issue, so I tried removing them and using the basic cmd.exe, but still faced the same issue. I checked permissions and everything seemed uniform with the folders around it.</p>
+<p>Then today after rebooting everything worked...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mcteo on 2024-09-14 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2024-10-20 22:27</div>
+            <div class="timeline-body"><p>I am still having this issue regularly. It's always specifically <code>ruff</code>. Deleting the .venv folder and running <code>sync</code> again is a workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../usethis-python/usethis-python/issues/45.html">usethis-python/usethis-python#45</a> on 2024-10-24 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11134.html">astral-sh/uv#11134</a> on 2025-01-31 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jiggly-Balls">@Jiggly-Balls</a> on 2025-03-31 13:15</div>
+            <div class="timeline-body"><p>If someone is still having such issues and isn't able to delete their venv folder it may be because some process is holding up the files (which was also the reason why uv remove isn't working). For me <code>ruff.exe</code> was running in the background (which was most likely started from the ruff vscode extension) and had to terminate it to be able to delete the venv and fix everything</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Cmastris">@Cmastris</a> on 2025-11-10 11:18</div>
+            <div class="timeline-body"><p>I'm still encountering the issue on Windows 10 using uv 0.9.8, but not specifically for ruff. Package updates/removals (i.e. file deletions/renames within the project's /.venv) fail with <code>Access is denied. (os error 5)</code>, e.g. while using <code>uv add</code> to update the Django version.</p>
+<p>Deleting .venv (and then using <code>uv add</code> or modifying pyproject.toml and using <code>uv lock</code> &amp; <code>uv sync</code>) is a workaround, but it's a shame it doesn't &quot;just work&quot;. I've tried a couple of fresh installs following https://docs.astral.sh/uv/getting-started/installation/#standalone-installer (standalone installed via PS as admin) with no luck. I'm using Avast antivirus, but that might not be relevant. I haven't encountered this issue when using virtual environments previously.</p>
+<p>Sounds similar to https://github.com/astral-sh/uv/issues/15968, but this issue affects individual files and not necessarily directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16747.html">astral-sh/uv#16747</a> on 2025-11-15 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15108.html">astral-sh/uv#15108</a> on 2025-11-26 18:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:48 UTC
+    </footer>
+</body>
+</html>

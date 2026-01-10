@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-h short help switches from single to multiple lines when adding a value_name entry - clap-rs/clap #3300</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-h short help switches from single to multiple lines when adding a value_name entry</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3300">#3300</a>
+        opened by <a href="https://github.com/dandavison">@dandavison</a>
+        on 2022-01-16 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dandavison">@dandavison</a> on 2022-01-16 22:19</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.58.0 (02072b482 2022-01-11)</p>
+<h3>Clap Version</h3>
+<p><code>clap = { version = &quot;3.0.5&quot;, features = [&quot;derive&quot;] }</code></p>
+<h3>Minimal reproducible code</h3>
+<p>I'm sorry, I have not been able to identify a small example yet. But I do have a reproducible example:</p>
+<pre><code class="language-sh">mkdir /tmp/clap-bug-in-delta
+cd /tmp/clap-bug-in-delta
+git clone git@github.com:dandavison/delta.git
+cd delta
+git fetch origin clap-bug-maybe
+git checkout clap-bug-maybe
+git checkout clap-bug-maybe~1
+cargo build --release
+echo &quot;===========================================================================================&quot;
+echo &quot;=&gt; The following output will be formatted with one line per option. THIS IS WHAT I EXPECT.&quot;
+echo &quot;===========================================================================================&quot;
+echo
+./target/release/delta -h | head -n 20 | tail -n 10
+git checkout clap-bug-maybe
+cargo build --release
+echo &quot;======================================================================================================&quot;
+echo &quot;=&gt; The following command will be formatted with multiple lines per option. THIS IS NOT WHAT I EXPECT.&quot;
+echo &quot;======================================================================================================&quot;
+echo
+./target/release/delta -h | head -n 20 | tail -n 10
+echo
+echo &quot;===========================================&quot;
+echo &quot;=&gt; But why did it change? This is the diff:&quot;
+echo &quot;===========================================&quot;
+git -P diff clap-bug-maybe~1 clap-bug-maybe
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run the shell script provided above.</p>
+<h3>Actual Behaviour</h3>
+<p>When I run the above shell script, I get the following output:</p>
+<p><img src="https://user-images.githubusercontent.com/52205/149682334-d06a1b0b-f94c-4d29-a031-27d892c652bd.png" alt="image" /></p>
+<h3>Expected Behaviour</h3>
+<p>I expect <code>delta -h</code> to always produce help text formatted as one-line-per-option.</p>
+<p>I think that the code change made in the shell script should not cause clap to change its behavior from one-line-per-option formatting to multple-lines-per-option.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<details>
+
+<pre><code>[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:delta
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_propagate_global_args:delta
+[            clap::build::app] 	App::_derive_display_order:delta
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[         clap::parse::parser] 	Parser::add_defaults:iter:blame-code-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:blame-code-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:blame-code-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:blame-format:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:blame-format: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:blame-format: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 56CDDC4DCF7620D1]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;{timestamp:&lt;15} {author:&lt;15.14} {commit:&lt;8}&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=1
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 56CDDC4DCF7620D1]
+[         clap::parse::parser] 	Parser::add_value:iter:blame-format: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:blame-palette:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:blame-palette: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:blame-palette: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:blame-separator:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:blame-separator: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:blame-separator: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: FA4C0A49E4E824EB]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;│&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=2
+[            clap::build::app] 	App::groups_for_arg: id=[hash: FA4C0A49E4E824EB]
+[         clap::parse::parser] 	Parser::add_value:iter:blame-separator: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:blame-separator-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:blame-separator-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:blame-separator-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:blame-timestamp-format:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:blame-timestamp-format: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:blame-timestamp-format: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 384A5AE250BC4560]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;%Y-%m-%d %H:%M:%S %z&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=3
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 384A5AE250BC4560]
+[         clap::parse::parser] 	Parser::add_value:iter:blame-timestamp-format: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:commit-decoration-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:commit-decoration-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:commit-decoration-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5DD1AA0AA564F4FE]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=4
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5DD1AA0AA564F4FE]
+[         clap::parse::parser] 	Parser::add_value:iter:commit-decoration-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:commit-regex:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:commit-regex: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:commit-regex: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9B3E8EF39C82E397]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;^commit &quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=5
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9B3E8EF39C82E397]
+[         clap::parse::parser] 	Parser::add_value:iter:commit-regex: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:commit-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:commit-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:commit-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5599B14D59DA9C11]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;raw&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=6
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5599B14D59DA9C11]
+[         clap::parse::parser] 	Parser::add_value:iter:commit-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:default-language:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:default-language: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:default-language: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:diff-stat-align-width:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:diff-stat-align-width: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:diff-stat-align-width: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 1871FF364E95D4A7]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;48&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=7
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 1871FF364E95D4A7]
+[         clap::parse::parser] 	Parser::add_value:iter:diff-stat-align-width: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:features:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:features: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:features: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-added-label:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-added-label: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-added-label: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5E0D24BBCDB34988]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;added:&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=8
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5E0D24BBCDB34988]
+[         clap::parse::parser] 	Parser::add_value:iter:file-added-label: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-copied-label:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-copied-label: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-copied-label: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: A70BBAD462A5D1B2]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;copied:&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=9
+[            clap::build::app] 	App::groups_for_arg: id=[hash: A70BBAD462A5D1B2]
+[         clap::parse::parser] 	Parser::add_value:iter:file-copied-label: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-decoration-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-decoration-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-decoration-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 137B4D7D7D1881A1]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;blue ul&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=10
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 137B4D7D7D1881A1]
+[         clap::parse::parser] 	Parser::add_value:iter:file-decoration-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-modified-label:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-modified-label: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-modified-label: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DBA64F5F3C7FBF57]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=11
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DBA64F5F3C7FBF57]
+[         clap::parse::parser] 	Parser::add_value:iter:file-modified-label: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-removed-label:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-removed-label: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-removed-label: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: E77494CD87F1D2DA]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;removed:&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=12
+[            clap::build::app] 	App::groups_for_arg: id=[hash: E77494CD87F1D2DA]
+[         clap::parse::parser] 	Parser::add_value:iter:file-removed-label: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-renamed-label:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-renamed-label: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-renamed-label: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 14DA47432C8CFA60]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;renamed:&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=13
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 14DA47432C8CFA60]
+[         clap::parse::parser] 	Parser::add_value:iter:file-renamed-label: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 58E5E5E2FBEF5F00]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;blue&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=14
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 58E5E5E2FBEF5F00]
+[         clap::parse::parser] 	Parser::add_value:iter:file-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:file-regex-replacement:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:file-regex-replacement: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:file-regex-replacement: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:grep-context-line-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:grep-context-line-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:grep-context-line-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:grep-file-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:grep-file-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:grep-file-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:grep-line-number-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:grep-line-number-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:grep-line-number-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:grep-match-line-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:grep-match-line-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:grep-match-line-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:grep-match-word-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:grep-match-word-style: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:grep-match-word-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:grep-separator-symbol:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:grep-separator-symbol: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:grep-separator-symbol: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 13CED1EB3B3A0007]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;:&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=15
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 13CED1EB3B3A0007]
+[         clap::parse::parser] 	Parser::add_value:iter:grep-separator-symbol: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hunk-header-decoration-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-decoration-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-decoration-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 82F533ECABFA714B]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;blue box&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=16
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 82F533ECABFA714B]
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-decoration-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hunk-header-file-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-file-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-file-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9D90C893B76CB18B]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;blue&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=17
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9D90C893B76CB18B]
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-file-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hunk-header-line-number-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-line-number-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-line-number-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9FC6FE4D36EF8BF9]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;blue&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=18
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9FC6FE4D36EF8BF9]
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-line-number-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hunk-header-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: B38D31D507F3E90A]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;line-number syntax&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=19
+[            clap::build::app] 	App::groups_for_arg: id=[hash: B38D31D507F3E90A]
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-header-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hunk-label:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-label: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-label: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 18DD752B05658C3F]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=20
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 18DD752B05658C3F]
+[         clap::parse::parser] 	Parser::add_value:iter:hunk-label: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hyperlinks-commit-link-format:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hyperlinks-commit-link-format: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hyperlinks-commit-link-format: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:hyperlinks-file-link-format:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:hyperlinks-file-link-format: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:hyperlinks-file-link-format: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DFA80C8E158D7D7F]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;file://{path}&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=21
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DFA80C8E158D7D7F]
+[         clap::parse::parser] 	Parser::add_value:iter:hyperlinks-file-link-format: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:inline-hint-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:inline-hint-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:inline-hint-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 546A0AABF585531B]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;blue&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=22
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 546A0AABF585531B]
+[         clap::parse::parser] 	Parser::add_value:iter:inline-hint-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:inspect-raw-lines:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:inspect-raw-lines: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:inspect-raw-lines: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 41D2EAB3710EDBCF]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;true&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=23
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 41D2EAB3710EDBCF]
+[         clap::parse::parser] 	Parser::add_value:iter:inspect-raw-lines: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-buffer-size:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-buffer-size: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-buffer-size: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 15CB59E2C5B60FAB]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;32&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=24
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 15CB59E2C5B60FAB]
+[         clap::parse::parser] 	Parser::add_value:iter:line-buffer-size: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-fill-method:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-fill-method: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-fill-method: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-left-format:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-left-format: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-left-format: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: BD41D6EAA992C433]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;{nm:^4}⋮&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=25
+[            clap::build::app] 	App::groups_for_arg: id=[hash: BD41D6EAA992C433]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-left-format: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-left-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-left-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-left-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 8FB24FA5E22D8B07]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=26
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 8FB24FA5E22D8B07]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-left-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-minus-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-minus-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-minus-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5624D3D8642F6C26]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=27
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5624D3D8642F6C26]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-minus-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-plus-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-plus-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-plus-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 7D9D82C06A7A0180]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=28
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 7D9D82C06A7A0180]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-plus-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-right-format:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-right-format: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-right-format: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 43EF7A488FEFC82A]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;{np:^4}│&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=29
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 43EF7A488FEFC82A]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-right-format: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-right-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-right-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-right-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 181D448BDFC5D338]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=30
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 181D448BDFC5D338]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-right-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:line-numbers-zero-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-zero-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-zero-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 177F1774C56C3442]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=31
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 177F1774C56C3442]
+[         clap::parse::parser] 	Parser::add_value:iter:line-numbers-zero-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:map-styles:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:map-styles: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:map-styles: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:max-line-distance:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:max-line-distance: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:max-line-distance: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 73D3CD19BFF4DC1B]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;0.6&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=32
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 73D3CD19BFF4DC1B]
+[         clap::parse::parser] 	Parser::add_value:iter:max-line-distance: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:max-line-length:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:max-line-length: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:max-line-length: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 12E83F165DADB6A]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;512&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=33
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 12E83F165DADB6A]
+[         clap::parse::parser] 	Parser::add_value:iter:max-line-length: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:merge-conflict-begin-symbol:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-begin-symbol: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-begin-symbol: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: F4ABA8A495C126A4]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;▼&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=34
+[            clap::build::app] 	App::groups_for_arg: id=[hash: F4ABA8A495C126A4]
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-begin-symbol: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:merge-conflict-end-symbol:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-end-symbol: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-end-symbol: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 1178E72A4D87EF48]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;▲&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=35
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 1178E72A4D87EF48]
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-end-symbol: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:merge-conflict-ours-diff-header-decoration-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-ours-diff-header-decoration-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-ours-diff-header-decoration-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5BE7A142A6D66B90]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;box&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=36
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5BE7A142A6D66B90]
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-ours-diff-header-decoration-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:merge-conflict-ours-diff-header-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-ours-diff-header-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-ours-diff-header-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 4D2E6278BEC5F49B]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;normal&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=37
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 4D2E6278BEC5F49B]
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-ours-diff-header-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:merge-conflict-theirs-diff-header-decoration-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-theirs-diff-header-decoration-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-theirs-diff-header-decoration-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 49E296EF7CB9631A]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;box&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=38
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 49E296EF7CB9631A]
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-theirs-diff-header-decoration-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:merge-conflict-theirs-diff-header-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-theirs-diff-header-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-theirs-diff-header-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: B78D2CADB774D71D]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;normal&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=39
+[            clap::build::app] 	App::groups_for_arg: id=[hash: B78D2CADB774D71D]
+[         clap::parse::parser] 	Parser::add_value:iter:merge-conflict-theirs-diff-header-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:minus-empty-line-marker-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:minus-empty-line-marker-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:minus-empty-line-marker-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 1A356B5CE9B72F46]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;normal auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=40
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 1A356B5CE9B72F46]
+[         clap::parse::parser] 	Parser::add_value:iter:minus-empty-line-marker-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:minus-emph-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:minus-emph-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:minus-emph-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 80925DC4BC9352A9]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;normal auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=41
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 80925DC4BC9352A9]
+[         clap::parse::parser] 	Parser::add_value:iter:minus-emph-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:minus-non-emph-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:minus-non-emph-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:minus-non-emph-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5A69F0A80EA7DB13]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;minus-style&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=42
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5A69F0A80EA7DB13]
+[         clap::parse::parser] 	Parser::add_value:iter:minus-non-emph-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:minus-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:minus-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:minus-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: ECC7DC1B3D93347C]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;normal auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=43
+[            clap::build::app] 	App::groups_for_arg: id=[hash: ECC7DC1B3D93347C]
+[         clap::parse::parser] 	Parser::add_value:iter:minus-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:navigate-regex:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:navigate-regex: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:navigate-regex: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:pager:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:pager: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:pager: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:paging-mode:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:paging-mode: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:paging-mode: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5D0570B9ADC7168]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=44
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 5D0570B9ADC7168]
+[         clap::parse::parser] 	Parser::add_value:iter:paging-mode: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:plus-emph-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:plus-emph-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:plus-emph-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: C585956EEB195C27]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;syntax auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=45
+[            clap::build::app] 	App::groups_for_arg: id=[hash: C585956EEB195C27]
+[         clap::parse::parser] 	Parser::add_value:iter:plus-emph-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:plus-empty-line-marker-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:plus-empty-line-marker-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:plus-empty-line-marker-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 98090FB09CDF4FE8]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;normal auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=46
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 98090FB09CDF4FE8]
+[         clap::parse::parser] 	Parser::add_value:iter:plus-empty-line-marker-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:plus-non-emph-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:plus-non-emph-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:plus-non-emph-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9B3DF14708B1895]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;plus-style&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=47
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 9B3DF14708B1895]
+[         clap::parse::parser] 	Parser::add_value:iter:plus-non-emph-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:plus-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:plus-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:plus-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: D1D1DAD3D2E91286]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;syntax auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=48
+[            clap::build::app] 	App::groups_for_arg: id=[hash: D1D1DAD3D2E91286]
+[         clap::parse::parser] 	Parser::add_value:iter:plus-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:right-arrow:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:right-arrow: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:right-arrow: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 7738710EF51350A]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;⟶  &quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=49
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 7738710EF51350A]
+[         clap::parse::parser] 	Parser::add_value:iter:right-arrow: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:syntax-theme:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:syntax-theme: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:syntax-theme: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:tab-width:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:tab-width: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:tab-width: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: E73E3DA9AFBB160E]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;4&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=50
+[            clap::build::app] 	App::groups_for_arg: id=[hash: E73E3DA9AFBB160E]
+[         clap::parse::parser] 	Parser::add_value:iter:tab-width: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:true-color:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:true-color: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:true-color: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: CB05E52F01F539B0]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=51
+[            clap::build::app] 	App::groups_for_arg: id=[hash: CB05E52F01F539B0]
+[         clap::parse::parser] 	Parser::add_value:iter:true-color: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:whitespace-error-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:whitespace-error-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:whitespace-error-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: D4059E3D0A877EA4]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;auto auto&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=52
+[            clap::build::app] 	App::groups_for_arg: id=[hash: D4059E3D0A877EA4]
+[         clap::parse::parser] 	Parser::add_value:iter:whitespace-error-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:width:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:width: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:width: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:tokenization-regex:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:tokenization-regex: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:tokenization-regex: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 3C8F7BB37CE99C65]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;\\w+&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=53
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 3C8F7BB37CE99C65]
+[         clap::parse::parser] 	Parser::add_value:iter:tokenization-regex: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:wrap-left-symbol:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-left-symbol: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-left-symbol: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 43DF3645718DA9D5]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;↵&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=54
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 43DF3645718DA9D5]
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-left-symbol: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:wrap-max-lines:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-max-lines: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-max-lines: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: D9D802A90920E805]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;2&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=55
+[            clap::build::app] 	App::groups_for_arg: id=[hash: D9D802A90920E805]
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-max-lines: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:wrap-right-percent:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-percent: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-percent: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 3ED2737676D6557F]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;37.0&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=56
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 3ED2737676D6557F]
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-percent: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:wrap-right-prefix-symbol:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-prefix-symbol: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-prefix-symbol: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DEEB553C2C961575]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;…&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=57
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DEEB553C2C961575]
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-prefix-symbol: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:wrap-right-symbol:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-symbol: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-symbol: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DAE0BAD1EA22B0EA]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;↴&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=58
+[            clap::build::app] 	App::groups_for_arg: id=[hash: DAE0BAD1EA22B0EA]
+[         clap::parse::parser] 	Parser::add_value:iter:wrap-right-symbol: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:zero-style:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:zero-style: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:zero-style: wasn't used
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 4249AAFB8024F360]
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;syntax normal&quot;
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: cur_idx:=59
+[            clap::build::app] 	App::groups_for_arg: id=[hash: 4249AAFB8024F360]
+[         clap::parse::parser] 	Parser::add_value:iter:zero-style: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:24-bit-color:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:24-bit-color: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:24-bit-color: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:minus-file:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:minus-file: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:minus-file: doesn't have default missing vals
+[         clap::parse::parser] 	Parser::add_defaults:iter:plus-file:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:plus-file: doesn't have default vals
+[         clap::parse::parser] 	Parser::add_value:iter:plus-file: doesn't have default missing vals
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 56CDDC4DCF7620D1]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: FA4C0A49E4E824EB]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 384A5AE250BC4560]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5DD1AA0AA564F4FE]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 9B3E8EF39C82E397]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5599B14D59DA9C11]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 1871FF364E95D4A7]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5E0D24BBCDB34988]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: A70BBAD462A5D1B2]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 137B4D7D7D1881A1]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: DBA64F5F3C7FBF57]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: E77494CD87F1D2DA]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 14DA47432C8CFA60]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 58E5E5E2FBEF5F00]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 13CED1EB3B3A0007]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 82F533ECABFA714B]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 9D90C893B76CB18B]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 9FC6FE4D36EF8BF9]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: B38D31D507F3E90A]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 18DD752B05658C3F]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: DFA80C8E158D7D7F]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 546A0AABF585531B]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 41D2EAB3710EDBCF]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 15CB59E2C5B60FAB]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: BD41D6EAA992C433]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 8FB24FA5E22D8B07]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5624D3D8642F6C26]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 7D9D82C06A7A0180]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 43EF7A488FEFC82A]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 181D448BDFC5D338]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 177F1774C56C3442]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 73D3CD19BFF4DC1B]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 12E83F165DADB6A]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: F4ABA8A495C126A4]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 1178E72A4D87EF48]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5BE7A142A6D66B90]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 4D2E6278BEC5F49B]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 49E296EF7CB9631A]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: B78D2CADB774D71D]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 1A356B5CE9B72F46]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 80925DC4BC9352A9]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5A69F0A80EA7DB13]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: ECC7DC1B3D93347C]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 5D0570B9ADC7168]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: C585956EEB195C27]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 98090FB09CDF4FE8]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 9B3DF14708B1895]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: D1D1DAD3D2E91286]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 7738710EF51350A]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: E73E3DA9AFBB160E]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: CB05E52F01F539B0]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: D4059E3D0A877EA4]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 3C8F7BB37CE99C65]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 43DF3645718DA9D5]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: D9D802A90920E805]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 3ED2737676D6557F]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: DEEB553C2C961575]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: DAE0BAD1EA22B0EA]
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:[hash: 4249AAFB8024F360]
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 56CDDC4DCF7620D1]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: FA4C0A49E4E824EB]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 384A5AE250BC4560]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5DD1AA0AA564F4FE]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 9B3E8EF39C82E397]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5599B14D59DA9C11]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 1871FF364E95D4A7]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5E0D24BBCDB34988]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: A70BBAD462A5D1B2]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 137B4D7D7D1881A1]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: DBA64F5F3C7FBF57]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: E77494CD87F1D2DA]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 14DA47432C8CFA60]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 58E5E5E2FBEF5F00]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 13CED1EB3B3A0007]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 82F533ECABFA714B]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 9D90C893B76CB18B]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 9FC6FE4D36EF8BF9]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: B38D31D507F3E90A]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 18DD752B05658C3F]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: DFA80C8E158D7D7F]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 546A0AABF585531B]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 41D2EAB3710EDBCF]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 15CB59E2C5B60FAB]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: BD41D6EAA992C433]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 8FB24FA5E22D8B07]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5624D3D8642F6C26]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 7D9D82C06A7A0180]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 43EF7A488FEFC82A]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 181D448BDFC5D338]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 177F1774C56C3442]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 73D3CD19BFF4DC1B]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 12E83F165DADB6A]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: F4ABA8A495C126A4]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 1178E72A4D87EF48]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5BE7A142A6D66B90]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 4D2E6278BEC5F49B]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 49E296EF7CB9631A]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: B78D2CADB774D71D]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 1A356B5CE9B72F46]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 80925DC4BC9352A9]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5A69F0A80EA7DB13]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: ECC7DC1B3D93347C]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 5D0570B9ADC7168]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: C585956EEB195C27]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 98090FB09CDF4FE8]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 9B3DF14708B1895]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: D1D1DAD3D2E91286]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 7738710EF51350A]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: E73E3DA9AFBB160E]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: CB05E52F01F539B0]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: D4059E3D0A877EA4]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 3C8F7BB37CE99C65]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 43DF3645718DA9D5]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: D9D802A90920E805]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 3ED2737676D6557F]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: DEEB553C2C961575]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: DAE0BAD1EA22B0EA]
+[      clap::parse::validator] 	Validator::gather_requirements:iter:[hash: 4249AAFB8024F360]
+[      clap::parse::validator] 	Validator::validate_required_unless
+[      clap::parse::validator] 	Validator::validate_matched_args
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 56CDDC4DCF7620D1]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;{timestamp:&lt;15} {author:&lt;15.14} {commit:&lt;8}&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;blame-format&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;blame-format&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: FA4C0A49E4E824EB]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;│&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;blame-separator&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;blame-separator&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 384A5AE250BC4560]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;%Y-%m-%d %H:%M:%S %z&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;blame-timestamp-format&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;blame-timestamp-format&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5DD1AA0AA564F4FE]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;commit-decoration-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;commit-decoration-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 9B3E8EF39C82E397]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;^commit &quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;commit-regex&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;commit-regex&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5599B14D59DA9C11]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;raw&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;commit-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;commit-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 1871FF364E95D4A7]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;48&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;diff-stat-align-width&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;diff-stat-align-width&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5E0D24BBCDB34988]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;added:&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-added-label&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-added-label&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: A70BBAD462A5D1B2]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;copied:&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-copied-label&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-copied-label&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 137B4D7D7D1881A1]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;blue ul&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-decoration-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-decoration-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: DBA64F5F3C7FBF57]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-modified-label&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-modified-label&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: E77494CD87F1D2DA]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;removed:&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-removed-label&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-removed-label&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 14DA47432C8CFA60]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;renamed:&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-renamed-label&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-renamed-label&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 58E5E5E2FBEF5F00]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;blue&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;file-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;file-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 13CED1EB3B3A0007]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;:&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;grep-separator-symbol&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;grep-separator-symbol&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 82F533ECABFA714B]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;blue box&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;hunk-header-decoration-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;hunk-header-decoration-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 9D90C893B76CB18B]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;blue&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;hunk-header-file-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;hunk-header-file-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 9FC6FE4D36EF8BF9]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;blue&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;hunk-header-line-number-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;hunk-header-line-number-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: B38D31D507F3E90A]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;line-number syntax&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;hunk-header-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;hunk-header-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 18DD752B05658C3F]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;hunk-label&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;hunk-label&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: DFA80C8E158D7D7F]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;file://{path}&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;hyperlinks-file-link-format&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;hyperlinks-file-link-format&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 546A0AABF585531B]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;blue&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;inline-hint-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;inline-hint-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 41D2EAB3710EDBCF]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;true&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;inspect-raw-lines&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;inspect-raw-lines&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 15CB59E2C5B60FAB]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;32&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-buffer-size&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-buffer-size&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: BD41D6EAA992C433]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;{nm:^4}⋮&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-left-format&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-left-format&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 8FB24FA5E22D8B07]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-left-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-left-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5624D3D8642F6C26]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-minus-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-minus-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 7D9D82C06A7A0180]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-plus-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-plus-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 43EF7A488FEFC82A]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;{np:^4}│&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-right-format&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-right-format&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 181D448BDFC5D338]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-right-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-right-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 177F1774C56C3442]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;line-numbers-zero-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;line-numbers-zero-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 73D3CD19BFF4DC1B]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;0.6&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;max-line-distance&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;max-line-distance&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 12E83F165DADB6A]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;512&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;max-line-length&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;max-line-length&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: F4ABA8A495C126A4]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;▼&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;merge-conflict-begin-symbol&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;merge-conflict-begin-symbol&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 1178E72A4D87EF48]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;▲&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;merge-conflict-end-symbol&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;merge-conflict-end-symbol&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5BE7A142A6D66B90]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;box&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;merge-conflict-ours-diff-header-decoration-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;merge-conflict-ours-diff-header-decoration-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 4D2E6278BEC5F49B]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;normal&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;merge-conflict-ours-diff-header-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;merge-conflict-ours-diff-header-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 49E296EF7CB9631A]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;box&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;merge-conflict-theirs-diff-header-decoration-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;merge-conflict-theirs-diff-header-decoration-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: B78D2CADB774D71D]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;normal&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;merge-conflict-theirs-diff-header-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;merge-conflict-theirs-diff-header-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 1A356B5CE9B72F46]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;normal auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;minus-empty-line-marker-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;minus-empty-line-marker-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 80925DC4BC9352A9]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;normal auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;minus-emph-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;minus-emph-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5A69F0A80EA7DB13]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;minus-style&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;minus-non-emph-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;minus-non-emph-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: ECC7DC1B3D93347C]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;normal auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;minus-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;minus-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 5D0570B9ADC7168]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;paging-mode&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;paging-mode&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: C585956EEB195C27]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;syntax auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;plus-emph-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;plus-emph-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 98090FB09CDF4FE8]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;normal auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;plus-empty-line-marker-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;plus-empty-line-marker-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 9B3DF14708B1895]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;plus-style&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;plus-non-emph-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;plus-non-emph-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: D1D1DAD3D2E91286]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;syntax auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;plus-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;plus-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 7738710EF51350A]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;⟶  &quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;right-arrow&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;right-arrow&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: E73E3DA9AFBB160E]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;4&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;tab-width&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;tab-width&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: CB05E52F01F539B0]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;true-color&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;true-color&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: D4059E3D0A877EA4]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;auto auto&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;whitespace-error-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;whitespace-error-style&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 3C8F7BB37CE99C65]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;\\w+&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;tokenization-regex&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;tokenization-regex&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 43DF3645718DA9D5]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;↵&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;wrap-left-symbol&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;wrap-left-symbol&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: D9D802A90920E805]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;2&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;wrap-max-lines&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;wrap-max-lines&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 3ED2737676D6557F]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;37.0&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;wrap-right-percent&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;wrap-right-percent&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: DEEB553C2C961575]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;…&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;wrap-right-prefix-symbol&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;wrap-right-prefix-symbol&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: DAE0BAD1EA22B0EA]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;↴&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;wrap-right-symbol&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;wrap-right-symbol&quot;=0
+[      clap::parse::validator] 	Validator::validate_matched_args:iter:[hash: 4249AAFB8024F360]: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;syntax normal&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator] 	Validator::validate_arg_num_vals
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;zero-style&quot;
+[      clap::parse::validator] 	Validator::validate_arg_values: checking validator...
+[      clap::parse::validator] 	good
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;zero-style&quot;=0
+[    clap::parse::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[[hash: 59636393CFFBFE5F], [hash: 30FF0B7C4D079478]]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @dandavison on 2022-01-16 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dandavison">@dandavison</a> on 2022-01-16 22:30</div>
+            <div class="timeline-body"><p>Please note that I have updated my original submission above so that it now contains the clap debug output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dandavison/delta/pulls/915.html">dandavison/delta#915</a> on 2022-01-17 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 03:07</div>
+            <div class="timeline-body"><p>Which behavior did you have with clap2?</p>
+<p>What is happening is we have logic to guess when we overflow and should switch to next-line-help for more space.  It seems to bail out if the argument column (<code>--merge-conflict-theirs-diff-header-style &lt;STYLE_STRING&gt;</code>) is larger than the terminal (what is happening before your change).  With your change, we are no longer bailing out and clap is thinking it will fit best if we move everything to the following line.</p>
+<p>Various forms of this logic have dated back to at least 2017 (so before clap3 though clap3 made slight tweaks around it) and I've still not seen any code reference why we have that bail out or what all use cases we are concerned about for why we are not exclusively staying to one line (ie why we are out guessing the developer).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-01-18 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-01-18 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dandavison">@dandavison</a> on 2022-01-18 14:33</div>
+            <div class="timeline-body"><p>Hi @epage, thanks for the reply!</p>
+<blockquote>
+<p>Which behavior did you have with clap2?</p>
+</blockquote>
+<p>Delta has just <a href="https://github.com/dandavison/delta/pull/889">migrated</a> from StructOpt to clap v3, retaining the derive macro / StructOpt style.</p>
+<p>I think my core request is this: is it possible to make it so that the <code>-h</code> output will always be formatted with one line per option, regardless of terminal width etc?</p>
+<p>delta has 100 command line options. With one-line-per-option the <code>-h</code> output is 111 lines, but with multi-line it is 321. So I'm really hoping to be able to give users the &quot;concise&quot; (!) 111 line version with <code>-h</code>. I'm aware that other clap apps such as bat and ripgrep achieve this (but with clap2, and not using the derive macro StructOpt style).</p>
+<blockquote>
+<p>bail out if the argument column (<code>--merge-conflict-theirs-diff-header-style &lt;STYLE_STRING&gt;</code>) is larger than the terminal</p>
+</blockquote>
+<p>I don't think I yet understand the dependence on terminal size that you're referring to -- I have not yet been able to make clap switch between the two formats by changing my terminal width or font size (i.e. causing the output of <code>echo $COLUMNS</code> and <code>tput cols</code> to vary). But I might be being slow here! So this is tangential -- my main question is the one above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dandavison">@dandavison</a> on 2022-01-18 14:37</div>
+            <div class="timeline-body"><p>Incidentally, the migration to clap has definitely been an improvement to delta, for example because it allowed us to use <code>after_long_help</code> thus keeping the <code>-h</code> output minimal. And it was very easy to switch, so thanks to StructOpt and Clap developers for combining them so well -- this is the only issue I've encountered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I think my core request is this: is it possible to make it so that the -h output will always be formatted with one line per option, regardless of terminal width etc?</p>
+<p>delta has 100 command line options. With one-line-per-option the -h output is 111 lines, but with multi-line it is 321. So I'm really hoping to be able to give users the &quot;concise&quot; (!) 111 line version with -h. I'm aware that other clap apps such as bat and ripgrep achieve this (but with clap2, and not using the derive macro StructOpt style).</p>
+</blockquote>
+<p>We only auto-detect terminal size when the <code>wrap_help</code> feature flag is enabled (seems like an odd name).  Otherwise, we rely on the configured <a href="https://docs.rs/clap/latest/clap/struct.App.html#method.term_width">App::terminal_width</a>, defaulting to 100 if unset.</p>
+<p>You could set <code>App::terminal._width(0)</code> which means &quot;no wrap&quot; though that will also impact <code>--help</code>.</p>
+<p>In the future, we are looking at opening up our help generation so users can get greater control (https://github.com/clap-rs/clap/issues/2914).</p>
+<p>We can leave this issue open though for brainstorming how to improve things in this specific case.  I am hesitant to add yet another setting to toggle behavior as API bloat is a current problem with clap.  I am more open to ideas that would generally improve the existing behavior or if there are solid enough justifications for dramatic changes.  With that said, one thing we can explore is changing from a bool (next line or auto) to a enum (next line, no next line, auto).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2022-01-18 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-01-18 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4190.html">clap-rs/clap#4190</a> on 2022-09-07 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4409.html">clap-rs/clap#4409</a> on 2022-10-20 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-11-05 07:42</div>
+            <div class="timeline-body"><p>I was pointed to this issue from #4409.  I have an application where we want help to wrap at 80 characters (since that's the width of a terminal :stuck_out_tongue:) but would like to keep the compact single-line format for short help.  This has required us to aggressively limit the lengths of short help strings (we have a CI check for it) because if any one option overruns its line, the entire section gets converted to multi-line format.  For some options it'd be nice to have room for a few more words without bloating the rest of the help.</p>
+<p>I'd love for clap to be able to wrap individual help texts to a second line <em>within their column</em>.  This would allow longer texts to degrade gracefully.  So, instead of this:</p>
+<pre><code>Options:
+      --process-integer &lt;INTEGER&gt;
+          Process an integer with really complex semantics
+      --process-string &lt;STRING&gt;
+          Process a string
+  -h, --help
+          Print help information
+</code></pre>
+<p>we'd get this:</p>
+<pre><code>Options:
+      --process-integer &lt;INTEGER&gt;  Process an integer with really complex
+                                   semantics
+      --process-string &lt;STRING&gt;    Process a string
+  -h, --help                       Print help information
+</code></pre>
+<p>Presumably that'd need to be configurable, and I understand the hesitation to add more options.  I think it'd really improve readability, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-07 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd love for clap to be able to wrap individual help texts to a second line within their column. This would allow longer texts to degrade gracefully. So, instead of this:</p>
+</blockquote>
+<p>clap does that today.</p>
+<p>From <code>cargo check</code> on my machine:</p>
+<pre><code>    -Z &lt;FLAG&gt;                       Unstable (nightly-only) flags to Cargo, see 'cargo -Z help' for
+                                    details
+</code></pre>
+<p>The problem, and what this issue is about, is our heuristic for switching to next line help.</p>
+<pre><code class="language-rust">            // force_next_line
+            let h = arg.get_help().unwrap_or_default();
+            let h_w = h.display_width() + display_width(spec_vals);
+            let taken = longest + 12;
+            self.term_w &gt;= taken
+                &amp;&amp; (taken as f32 / self.term_w as f32) &gt; 0.40
+                &amp;&amp; h_w &gt; (self.term_w - taken)
+</code></pre>
+<ul>
+<li>Don't bother switching to next-line if the longest argument (without help) takes up more than the term width</li>
+<li><strong>If the longest argument (without help) takes up more than 40% of the terminal width, switch to next line</strong></li>
+<li>And if we can't fit on one line</li>
+</ul>
+<p>The 40% check is the one that prevents us from always switching to next-line help.    I assume the intent is to ensure that the second column is not too small to be very readable.  @bgilbert any thoughts on how to balance avoiding next_line_help with the second column being too narrow?</p>
+<p>I am noticing a magic number in here.  That was most likely missed when we changed the tab width and is likely too large.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4463.html">clap-rs/clap#4463</a> on 2022-11-07 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgilbert">@bgilbert</a> on 2022-11-12 22:26</div>
+            <div class="timeline-body"><p>Oof, okay.  To my mind, next-line help is a last resort, so I'd probably set the limit around 60%.  On an 80-column screen that leaves 32 columns, which is a bit narrow but still readable.  But, 55% or even 50% would still be an improvement.</p>
+<p>I'd also be completely happy with an option to disable (or, I suppose, force) next-line help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-13 04:26</div>
+            <div class="timeline-body"><p>This got me curious about the origin of auto-next-line-help</p>
+<ul>
+<li>#637 originally added it to resolve #597<ul>
+<li>The main concern was one or two excessively long arguments would cause a lot of whitespace that could make things hard to read.</li>
+</ul>
+</li>
+<li>#648 changed it from 25% to 40% (but discussed in #597?)</li>
+<li>#2174 changed it to apply to all args to resolve #2170<ul>
+<li>I'm not fully convinced it should be consistent.  I do think the inconsistent blank lines is a problem but we no longer show blank lines after <code>next_line_help</code> for short-help</li>
+<li>Also, <code>Arg::next_line_help(true)</code> will force the entire section to use <code>next_line_help</code> (without <code>help_heading</code>, this basically means all args now that unified help is used).  This seems like a bug and it goes against the  <a href="https://docs.rs/clap/latest/clap/builder/struct.Arg.html#method.next_line_help">documentation</a></li>
+</ul>
+</li>
+</ul>
+<p>In general, I've been wondering if absolute weighting might be better than relative (if the arg is too many characters or the about has too few characters).  This then becomes a fairly easy calculation that callers can do to pass in <code>Arg::next_line_help</code> or <code>Command::next_line_help</code> and get the behavior they want.  Moving this to callers would allow clap to shrink a little bit.  The question is how much and if this automation pulls its weight enough to be worth it.</p>
+<p>So a part of me leans towards removing all of these calculations (and making <code>Arg::next_line_help</code> only apply to the one arg) but I would be interested in hearing your thoughts @joshtriplett as the original filer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4550.html">clap-rs/clap#4550</a> on 2022-12-13 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4631.html">clap-rs/clap#4631</a> on 2023-01-12 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-minor-incompat</span> added by @epage on 2023-07-17 13:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:52 UTC
+    </footer>
+</body>
+</html>

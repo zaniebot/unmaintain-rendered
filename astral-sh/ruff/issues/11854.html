@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Rule: Formatted string passed to logging module PYL-W1203 - astral-sh/ruff #11854</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New Rule: Formatted string passed to logging module PYL-W1203</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11854">#11854</a>
+        opened by <a href="https://github.com/Zerotask">@Zerotask</a>
+        on 2024-06-13 08:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zerotask">@Zerotask</a> on 2024-06-13 08:42</div>
+            <div class="timeline-body"><p>Deepsource warns you, when you use a formatted string with the <a href="https://docs.python.org/3/library/logging.html">logging</a> module.</p>
+<blockquote>
+<p>Formatting the message manually before passing it to a logging call does unnecessary work if logging is disabled. Consider using the logging module's built-in formatting features to avoid that.</p>
+</blockquote>
+<p>Example:</p>
+<pre><code class="language-python">msg = &quot;test&quot;
+logger.error(f&quot;{msg} failed&quot;)
+</code></pre>
+<p>and suggest to use it with <code>%</code>like so:</p>
+<pre><code class="language-python">msg = &quot;test&quot;
+logger.error(&quot;%s failed&quot;, msg)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matteo-zanoni">@matteo-zanoni</a> on 2024-06-13 12:51</div>
+            <div class="timeline-body"><p>I'm new to working with ruff but I would like to tackle this.
+It looks similar enough to PLE1205 and PLE1206 that are already implemented an look like a good starting place.
+Is this new rule something that is approved? Can I start working on it?
+Would appreciate any further guidance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-06-13 13:17</div>
+            <div class="timeline-body"><p>This is already implemented as part of G001, G002 and G004. What is still needed though is an autofix, as we have hundreds of these violations and they are very tedious to fix manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zerotask">@Zerotask</a> on 2024-06-13 13:21</div>
+            <div class="timeline-body"><blockquote>
+<p>This is already implemented as part of G001, G002 and G004. What is still needed though is an autofix, as we have hundreds of these violations and they are very tedious to fix manually.</p>
+</blockquote>
+<p>We're using the &quot;G&quot; rule and ruff does not detect this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-13 23:54</div>
+            <div class="timeline-body"><p>I see it raised here: https://play.ruff.rs/4e92508d-36ee-476b-b67d-7bc6d8c1e457</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @charliermarsh on 2024-06-13 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zerotask">@Zerotask</a> on 2024-06-14 08:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I see it raised here: https://play.ruff.rs/4e92508d-36ee-476b-b67d-7bc6d8c1e457</p>
+</blockquote>
+<p>It seems that the error fades, when I use for example <code>import logger</code>. In our case we create a logger instance in another module and just import it then.
+If I create the logger in the same module, the error will be shown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-14 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems that the error fades, when I use for example <code>import logger</code>. In our case we create a logger instance in another module and just import it then. If I create the logger in the same module, the error will be shown.</p>
+</blockquote>
+<p>Yes, that's currently a limitation of Ruff where it doesn't know the context from other modules. Currently, Ruff only looks at one file at a time but that's going to be changed in the future where we add support for multifile analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matteo-zanoni">@matteo-zanoni</a> on 2024-06-14 13:54</div>
+            <div class="timeline-body"><p>Actually it looks like those errors are either raised or not based only on the name of the object calling the <code>error</code>, <code>info</code>, etc... function.</p>
+<p>So for example:</p>
+<pre><code class="language-py">msg = &quot;test&quot;
+
+class Foo:
+    def __init__(self):
+        ...
+
+    def error(self, msg: str):
+        raise ValueError(msg)
+
+log = Foo()
+log.error(f&quot;{msg} failed&quot;)
+</code></pre>
+<p>this raises the error but</p>
+<pre><code class="language-py">msg = &quot;test&quot;
+
+class Foo:
+    def __init__(self):
+        ...
+
+    def error(self, msg: str):
+        raise ValueError(msg)
+
+foo = Foo()
+foo.error(f&quot;{msg} failed&quot;)
+</code></pre>
+<p>this does not.
+In this case neither should be an error (since they are not calls to the logging python module), but the same holds for instances where the error should be raised:</p>
+<p>This shows an error</p>
+<pre><code class="language-py">import logging
+
+msg = &quot;test&quot;
+logger = logging.getLogger(&quot;foo&quot;)
+logger.error(f&quot;{msg} failed&quot;)
+</code></pre>
+<p>But this does not</p>
+<pre><code class="language-py">import logging
+
+msg = &quot;test&quot;
+foo = logging.getLogger(&quot;foo&quot;)
+foo.error(f&quot;{msg} failed&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-01 21:15</div>
+            <div class="timeline-body"><p>Let's merge this with https://github.com/astral-sh/ruff/issues/12613</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-01 21:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ModuleNotFoundError` when attempting to use certain `tool.uv.build-backend` settings - astral-sh/uv #11461</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ModuleNotFoundError` when attempting to use certain `tool.uv.build-backend` settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11461">#11461</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2025-02-12 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-12 21:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've noticed a recurring non-descript error message that happens when trying to set some of the backend settings like <code>tool.uv.build-backend.source-includes</code> and  <code>tool.uv.build-backend.data</code>.</p>
+<p>The only setting that doesn't cause this error to be thrown is <code>tool.uv.build-backend.module-root</code>.</p>
+<pre><code>uv pip install --no-build-isolation --offline -e .
+</code></pre>
+<pre><code class="language-cmd">  × Failed to build `albatross @ file:///C:/Users/user/dev/albatross`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `uv.build_editable` failed (exit code: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+          import uv as backend
+      ModuleNotFoundError: No module named 'uv'
+</code></pre>
+<p><code>uv</code> is available on <code>PATH</code> so I'm not sure what module the error is referring to. Is this looking for a rust crate, or a python uv build backend module?</p>
+<h3>Platform</h3>
+<p>Windows 11</p>
+<h3>Version</h3>
+<p>uv 0.5.30</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @chrisrodrigue on 2025-02-12 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11382.html">astral-sh/uv#11382</a> on 2025-02-12 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2025-02-12 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 22:00</div>
+            <div class="timeline-body"><p>\cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-02-12 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-13 13:51</div>
+            <div class="timeline-body"><p>To build with uv, you don't only need the binary, but also the Python package for PEP 517 integration. The uv Python ships both the binary and installs a <code>uv</code> module into the venv. For building with <code>--no-build-isolation</code>, the <code>uv</code> python package (<code>uv pip install uv</code>) is required, otherwise we don't have the PEP 517.</p>
+<p>The behavior should currently depending on whether preview is activated, the build backend does has a direct build mode that is a fast path that skips the PEP 517 python shims when we know that we're building a package that uses uv. This can interact oddly with <code>--no-build-isolation</code>, which is an option that only affects PEP 517. If you want to force a PEP 517 build, you can use <code>uv build --force-pep517</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-13 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-02-13 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-02-13 18:15</div>
+            <div class="timeline-body"><blockquote>
+<p>To build with uv, you don't only need the binary, but also the Python package for PEP 517 integration. The uv Python ships both the binary and installs a <code>uv</code> module into the venv. For building with <code>--no-build-isolation</code>, the <code>uv</code> python package (<code>uv pip install uv</code>) is required, otherwise we don't have the PEP 517.</p>
+<p>The behavior should currently depending on whether preview is activated, the build backend does has a direct build mode that is a fast path that skips the PEP 517 python shims when we know that we're building a package that uses uv. This can interact oddly with <code>--no-build-isolation</code>, which is an option that only affects PEP 517. If you want to force a PEP 517 build, you can use <code>uv build --force-pep517</code>.</p>
+</blockquote>
+<p>Thanks @konstin. Is this behavior supposed to be triggered automatically when installing a project with uv declared as the backend? I’m not seeing a uv module in my venv at all. I do have UV_PREVIEW env var set, maybe I also need to use the <code>--preview</code> flag? Or perhaps it is the <code>--no-build-isolation</code> messing things up here.</p>
+<p><code>--no-build-isolation</code> is pretty much a hard requirement on my offline systems that don’t have access to a package index with the build dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-13 18:27</div>
+            <div class="timeline-body"><p>Can you download the build requirements ahead of time and then use <code>--find-links &lt;dir&gt;</code> with them? This should give you a better experience than <code>--no-build-isolation</code>, which is mostly there as an escape hatch for packages that don't declare their build dependencies correctly, either because they were written pre-PEP 517 or because they depend on large packages such as torch.</p>
+<p>To walk you through the general process, as specified through PEP 517:</p>
+<p>When we see a package that we need to build, we create a temp dir. In that temp dir, we run the equivalent of <code>uv venv</code> and then <code>uv pip install </code> with the value from <code>build-system.requires</code>, plus some dynamic dependencies details I'll skip. After that, we call that Python interpreter, basically <code>.venv\bin\python -c &quot;import &lt;value of build-system.build-backend&gt;; &lt;value of build-system.build-backend&gt;.build_wheel(&lt;another temp dir&gt;, {})</code>.</p>
+<p>If the build frontend is uv and the build backend is also uv and the versions match, we can skip that: We just call the rust function of the build backend that's conveniently in the same binary. If we do this, we don't need the Python shims. If uv decides that a direct build isn't applicable (which shouldn't be the case with <code>UV_PREVIEW=1</code> set, there could be a problem here) or <code>--force-pep517</code> is set, we always go the long way, which requires that uv-the-python-package is installed so <code>import uv; uv.build_wheel(...)</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-02-18 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-17 18:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

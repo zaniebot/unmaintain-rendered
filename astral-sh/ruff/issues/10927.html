@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to `detect-same-package` for `first-party` - astral-sh/ruff #10927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to `detect-same-package` for `first-party`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10927">#10927</a>
+        opened by <a href="https://github.com/serjflint">@serjflint</a>
+        on 2024-04-14 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-14 15:44</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi!</p>
+<p>ruff 0.3.4</p>
+<p>I am trying to sort imports like <code>ruff check library/module.py --fix-only</code></p>
+<pre><code class="language-python">from plugins import a
+
+from library import b
+</code></pre>
+<p>My config is</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;I&quot;]
+
+[tool.ruff.lint.isort]
+detect-same-package = true
+
+section-order = [
+    &quot;future&quot;,
+    &quot;standard-library&quot;,
+    &quot;third-party&quot;,
+    &quot;appnexus&quot;,
+    &quot;first-party&quot;,
+    &quot;local-folder&quot;,
+]
+[tool.ruff.lint.isort.sections]
+appnexus = [
+    &quot;library&quot;,
+    &quot;plugins&quot;,
+]
+</code></pre>
+<p>In the end I receive</p>
+<pre><code class="language-python">from library import b
+from plugins import a
+</code></pre>
+<p>Instead of the file staying the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-14 15:53</div>
+            <div class="timeline-body"><p>Can you explain you expect something other than the result you showed above? You marked them as being part of the same section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-04-14 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-04-14 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-14 16:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain you expect something other than the result you showed above? You marked them as being part of the same section.</p>
+</blockquote>
+<p>I expect ruff do not change anything in the first snippet as <code>module.py</code> is a part of the <code>library</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-14 16:25</div>
+            <div class="timeline-body"><p>If <code>module.py</code> was outside of <code>library</code> (and <code>plugins</code>) it would be right to receive the second snippet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-14 16:55</div>
+            <div class="timeline-body"><p>But you have:</p>
+<pre><code class="language-toml">appnexus = [
+    &quot;library&quot;,
+    &quot;plugins&quot;,
+]
+</code></pre>
+<p>And so imports of <code>library</code> and <code>plugins</code> are being assigned to that section, correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-15 09:21</div>
+            <div class="timeline-body"><blockquote>
+<p>But you have:</p>
+<pre><code class="language-toml">appnexus = [
+    &quot;library&quot;,
+    &quot;plugins&quot;,
+]
+</code></pre>
+<p>And so imports of <code>library</code> and <code>plugins</code> are being assigned to that section, correctly.</p>
+</blockquote>
+<p>But when I write code in <code>library</code> <code>package</code> and import relative module using absolute import I expect it to be counted as <code>local-folder</code> or <code>first-party</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10989.html">astral-sh/ruff#10989</a> on 2024-04-17 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 14:50</div>
+            <div class="timeline-body"><p>If you have:</p>
+<pre><code>appnexus = [
+    &quot;library&quot;,
+    &quot;plugins&quot;,
+]
+</code></pre>
+<p>Then any imports of modules named <code>library</code> or <code>plugins</code> will be classified as <code>appnexus</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-04-17 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>If you have:</p>
+<pre><code>appnexus = [
+    &quot;library&quot;,
+    &quot;plugins&quot;,
+]
+</code></pre>
+<p>Then any imports of modules named <code>library</code> or <code>plugins</code> will be classified as <code>appnexus</code>.</p>
+</blockquote>
+<p>I see. But I think my case is valid for custom sections. Is it possible to modify this behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 03:11</div>
+            <div class="timeline-body"><p>I think in that case you'd want to omit <code>library</code> from <code>appnexus</code>, since you want library imports to be considered first-party?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 03:12</div>
+            <div class="timeline-body"><p>Going to close but I can keep answering questions if they come up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-22 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/serjflint">@serjflint</a> on 2024-05-22 08:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I think in that case you'd want to omit <code>library</code> from <code>appnexus</code>, since you want library imports to be considered first-party?</p>
+</blockquote>
+<p>It is <code>appnexus</code> for the whole project, but an absolute first-party import when inside <code>library</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

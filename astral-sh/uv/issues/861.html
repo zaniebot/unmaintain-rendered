@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip `get_requires_for_build_wheel` for build backends that always return `[]` - astral-sh/uv #861</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip `get_requires_for_build_wheel` for build backends that always return `[]`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/861">#861</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-09 22:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-09 22:53</div>
+            <div class="timeline-body"><p>This is a probably-unsafe optimization we could perform, but e.g., poetry-core always returns <code>[]</code> (https://github.com/python-poetry/poetry-core/blob/21b00338544f52df7c3ba320f5f242a2fc815b65/src/poetry/core/masonry/api.py#L20C1-L20C1). So if we're using a version of poetry-core that we <em>know</em> always returns <code>[]</code>, we could skip that step entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-01-09 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-09 22:56</div>
+            <div class="timeline-body"><p>I looked at some of the others and:</p>
+<ul>
+<li><code>flit</code> does need it (https://github.com/pypa/flit/blob/b2e3491a2f64dfac6649dce5ee20aecea9a01858/flit_core/flit_core/buildapi.py#L21).</li>
+<li><code>hatchling</code> does need it (https://github.com/pypa/hatch/blob/7b1ef02af717101d006d9801bca6f246ecb46892/backend/src/hatchling/build.py#L37)</li>
+<li><code>setuptools</code> doesn't need it (I think)</li>
+</ul>
+<p>Not sure what else is popular.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-09 22:56</div>
+            <div class="timeline-body"><p>@konstin - I feel like this would be a pretty sketchy but maybe interesting to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-09 22:57</div>
+            <div class="timeline-body"><p>(Not sure if we should do this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-09 23:16</div>
+            <div class="timeline-body"><p>maturin also has it hardcoded: https://github.com/PyO3/maturin/blob/1369b2779a05645fe5e96fec98ef2cdffb6400eb/maturin/<strong>init</strong>.py#L122-L127</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-09 23:23</div>
+            <div class="timeline-body"><p>To list our options:</p>
+<ul>
+<li>We could maintain a list of backends and versions with a static return value. We put it on a separate repo into github releases, download and cache it and only update it when we encounter a too new version.</li>
+<li>We could parse the file of the backend module (and hope they perform no import shenanigans). We know how to do this really fast from ruff, but it would pull in at least ruff's parser.</li>
+<li>We ask backend authors if they are willing to expose additional metadata that allows to skip that hook</li>
+<li>The call overhead becomes irrelevant due to https://github.com/astral-sh/puffin/issues/846</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-09 23:52</div>
+            <div class="timeline-body"><p>Hoping the last item is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-10 14:50</div>
+            <div class="timeline-body"><p>Although the first item would be my second choice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbidoul">@sbidoul</a> on 2024-02-17 11:56</div>
+            <div class="timeline-body"><blockquote>
+<p>setuptools doesn't need it (I think)</p>
+</blockquote>
+<p>Actually setuptools does need <code>get_requires_for_build_wheel</code>. By default it returns <code>wheel</code>, but it also returns <code>setup_requires</code> entries.</p>
+<p>Related: https://github.com/astral-sh/uv/issues/1582</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 12:41</div>
+            <div class="timeline-body"><p>@sbidoul -- Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-07-01 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-28 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-07-28 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-28 00:54</div>
+            <div class="timeline-body"><p>I think this isn't gonna work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-28 00:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

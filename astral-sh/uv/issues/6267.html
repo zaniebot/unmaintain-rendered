@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv failed when installing from git source - astral-sh/uv #6267</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv failed when installing from git source</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6267">#6267</a>
+        opened by <a href="https://github.com/robert1003">@robert1003</a>
+        on 2024-08-20 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/robert1003">@robert1003</a> on 2024-08-20 18:49</div>
+            <div class="timeline-body"><p>As titled, uv failed the following command while pip works. Am I missing anything here? Thank you!</p>
+<pre><code>export UV_INDEX_STRATEGY=&quot;unsafe-best-match&quot;
+export UV_NO_BUILD_ISOLATION=&quot;1&quot;
+
+mamba create \
+  --prefix $HOME/.conda/envs/test_uv2 \
+  --channel conda-forge \
+  --channel anaconda \
+  --channel pytorch \
+  --yes \
+  python==3.11.6 cmake cython libopenblas libprotobuf libunwind &quot;pip&gt;=22.2&quot; psycopg2 py-opencv==4.7.0 pybind11
+
+conda activate $HOME/.conda/envs/test_uv2
+
+TARGET_FOLDER=$(mktemp -d)
+RL_GAMES_TMPDIR=$(mktemp -d)
+git clone https://github.com/Denys88/rl_games.git $RL_GAMES_TMPDIR
+sed -i 's/python = &quot;&gt;=3.7.1,&lt;3.11&quot;/python = &quot;&gt;=3.7.1,&lt;3.12&quot;/g' $RL_GAMES_TMPDIR/pyproject.toml
+sed -i &quot;s/version='1.6.1'/version='1.6.1.ap'/g&quot; $RL_GAMES_TMPDIR/setup.py
+uv pip install --target $TARGET_FOLDER --no-deps $RL_GAMES_TMPDIR
+</code></pre>
+<p>failed with</p>
+<pre><code>❯ uv pip install --target $TARGET_FOLDER --no-deps $RL_GAMES_TMPDIR
+⠙ Resolving dependencies...                                                                                                                                                                                           error: Failed to build `rl-games @ file:///tmp/tmp.h3jt96KBny`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'poetry'
+---
+</code></pre>
+<p>while pip works:</p>
+<pre><code>❯ pip install --target $TARGET_FOLDER --no-deps $RL_GAMES_TMPDIR
+Processing /tmp/tmp.h3jt96KBny
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: rl_games
+  Building wheel for rl_games (pyproject.toml) ... done
+  Created wheel for rl_games: filename=rl_games-1.6.1-py3-none-any.whl size=235795 sha256=d39bb3c42204893dd9827e63aac04612fd583ef9bbf1a673d513ccdb115aed62
+  Stored in directory: /tmp/pip-ephem-wheel-cache-4ae9vbwt/wheels/87/a4/0f/5749b5c55fc514e636709ce26ba003bb3cc8660414797961e7
+Successfully built rl_games
+Installing collected packages: rl_games
+Successfully installed rl_games-1.6.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv pip</span> added by @zanieb on 2024-08-20 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

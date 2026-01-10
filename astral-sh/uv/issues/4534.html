@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid peer certificate: BadSignature` when installing package from private index using ECDSA SHA-512 SSL cert - astral-sh/uv #4534</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid peer certificate: BadSignature` when installing package from private index using ECDSA SHA-512 SSL cert</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4534">#4534</a>
+        opened by <a href="https://github.com/kcon-stackav">@kcon-stackav</a>
+        on 2024-06-25 23:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kcon-stackav">@kcon-stackav</a> on 2024-06-25 23:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I use a private Python package index server (anonymized as <code>pypi.internal</code> in the snippets below) that uses an <code>ecdsa-with-SHA512</code> SSL certificate:</p>
+<pre><code>❯ openssl s_client -connect pypi.internal:443 &lt; /dev/null 2&gt;/dev/null | openssl x509 -in /dev/stdin -text -noout -certopt ca_default -certopt no_validity -certopt no_serial -certopt no_subject -certopt no_extensions  -certopt no_sigdump
+        Signature Algorithm: ecdsa-with-SHA512
+</code></pre>
+<p>I am able to use <code>pip</code> to fetch and install Python packages from this index, but when I try to use <code>uv</code> it fails with the following error:</p>
+<pre><code>❯ uv pip install https://pypi.internal/pypi/package/version/package-version-py3-none-any.whl
+error: Failed to download: `package @ https://pypi.internal/pypi/package/version/package-version-py3-none-any.whl`
+  Caused by: error sending request for url (https://pypi.internal/pypi/package/version/package-version-py3-none-any.whl)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: BadSignature
+
+❯ uname -mv
+#20~22.04.1-Ubuntu SMP Wed May  1 16:10:50 UTC 2024 x86_64
+
+❯ uv --version
+uv 0.2.15
+</code></pre>
+<p>I think this may be the same issue described by https://github.com/rust-lang/rustup/issues/3820, because I understand <code>uv</code> depends on <code>reqwest</code>:</p>
+<p>https://github.com/astral-sh/uv/blob/c28a2c758321d3caeead0dd021457b773269d1b3/Cargo.toml#L112</p>
+<p>which depends on <code>rustls</code> using the <code>ring</code> feature: https://github.com/seanmonstar/reqwest/blob/c4ebb073438026e09c99469be02fc1f1a254058a/Cargo.toml#L181</p>
+<p>and <code>ring</code> does not yet support the ECDSA SHA-512 certificate signature algorithm (WIP but has been open for over 8 months so it's not clear when it would land and be released: https://github.com/briansmith/ring/pull/1631).</p>
+<p>I was reading <a href="https://github.com/seanmonstar/reqwest/pull/2225#issuecomment-2145678324">here</a> that it may be possible to configure <code>reqwest</code> to use <code>aws-lc-rs</code> (which <a href="https://github.com/rustls/rustls/pull/1706">does provide support for the ECDSA SHA-512 algorithm for <code>rustls</code></a>) instead of <code>ring</code>. Here is a draft PR where it looks like <code>rustup</code> is trying to take this approach: https://github.com/rust-lang/rustup/pull/3898</p>
+<p>Would ya'll consider switching <code>uv</code> from using <code>ring</code> to <code>aws-lc-rs</code> to support fetching Python packages from an index server whose SSL certificate uses the ECDSA SHA-512 signature algorithm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-06-26 02:20</div>
+            <div class="timeline-body"><p>Could you share your private package index TLS setup to reproduce? Are you using nginx as a reverse proxy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kcon-stackav">@kcon-stackav</a> on 2024-06-26 21:04</div>
+            <div class="timeline-body"><p>@samypr100 thank you for the quick response. 🙏 My private package index's SSL certificate is self-signed by a private CA, and yes I'm using nginx as a reverse proxy where TLS is terminated at the proxy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-06-26 23:59</div>
+            <div class="timeline-body"><p>Thanks for confirming @kcon-stackav. Would you be able to share some of the tls settings of the nginx config you're using? (e.g. <code>ssl_protocols</code>, <code>ssl_ciphers</code>, etc.) and also the <code>openssl</code> command used to generate the self-signed certificate? It would help in reproducing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-06-27 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-27 10:48</div>
+            <div class="timeline-body"><p>Thanks for the thorough write-up and cross references, that's really helpful. I'd be willing to consider changing backends, though I worry it'd be a breaking change and don't fully understand the implications yet. Would you be interested in opening a pull request to explore the change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sovietaced">@Sovietaced</a> on 2024-06-27 17:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for confirming @kcon-stackav. Would you be able to share some of the tls settings of the nginx config you're using? (e.g. <code>ssl_protocols</code>, <code>ssl_ciphers</code>, etc.) and also the <code>openssl</code> command used to generate the self-signed certificate? It would help in reproducing the issue.</p>
+</blockquote>
+<p>We are using nginx with certificates managed by cert-manager. Cert-manager is hooked up to AWS private CA as an issuer. Certificate generation is automated for us. Presumably if you use a ECDSA private key with enough bits it will sign the cert with the problematic algorithm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kcon-stackav">@kcon-stackav</a> on 2024-06-27 18:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the thorough write-up and cross references, that's really helpful. I'd be willing to consider changing backends, though I worry it'd be a breaking change and don't fully understand the implications yet. Would you be interested in opening a pull request to explore the change?</p>
+</blockquote>
+<p>Thank you! Sure I'll work on a pull request to try to make the change. 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4734.html">astral-sh/uv#4734</a> on 2024-07-02 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kcon-stackav">@kcon-stackav</a> on 2024-07-02 22:45</div>
+            <div class="timeline-body"><p>I created this PR to try out using <code>aws-lc-rs</code> instead of <code>ring</code> for TLS: https://github.com/astral-sh/uv/pull/4734</p>
+<p>Unfortunately it looks like it won't solve our issue 😞. Although <code>aws-lc-rs</code> supports the ECDSA SHA-512 certificate signature algorithm we need, our certificate trust chain's issuing CA uses ECDSA P384 for its subject public key algorithm, and I learned that <code>aws-lc-rs</code> does not support verifying that particular combination of subject public key algorithm and signature algorithm.</p>
+<p>Instead it only supports verifying a ECDSA SHA-512 signature when the subject public key algorithm is ECDSA P521:</p>
+<p>https://github.com/rustls/webpki/blob/dba3b84bcf810612a83c8fd3c750d3c4106e7b9e/src/aws_lc_rs_algs.rs#L70-L75</p>
+<p>Or otherwise verifying a ECDSA SHA-384 signature when the subject public key algorithm is ECDSA P384:</p>
+<p>https://github.com/rustls/webpki/blob/dba3b84bcf810612a83c8fd3c750d3c4106e7b9e/src/aws_lc_rs_algs.rs#L63-L68</p>
+<p>I'm not sure changing our certs to match one of those combinations will be an option, so now I'm thinking our best option may be to leverage https://github.com/astral-sh/uv/issues/1339 once it is available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpu">@cpu</a> on 2024-07-29 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately it looks like it won't solve our issue 😞. Although aws-lc-rs supports the ECDSA SHA-512 certificate signature algorithm we need, our certificate trust chain's issuing CA uses ECDSA P384 for its subject public key algorithm, and I learned that aws-lc-rs does not support verifying that particular combination of subject public key algorithm and signature algorithm.</p>
+</blockquote>
+<p>@kcon-stackav Have you tried with the recently released <a href="https://github.com/rustls/rustls/releases/tag/v%2F0.23.12">rustls 0.23.12</a> &amp; the aws-lc-rs provider? There have been a handful of related PRs across the ecosystem:</p>
+<ul>
+<li>https://github.com/rustls/rustls/pull/2050</li>
+<li>https://github.com/rustls/webpki/pull/272</li>
+<li>https://github.com/aws/aws-lc-rs/pull/461</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kcon-stackav">@kcon-stackav</a> on 2024-07-31 18:11</div>
+            <div class="timeline-body"><p>@cpu thanks for the heads-up, unfortunately it looks like <code>webpki</code> and the others are still missing support for the particular combination we need (ECDSA P384 with SHA-512 or following their naming convention in https://github.com/rustls/webpki/blob/main/src/aws_lc_rs_algs.rs, I think it would be called something like <code>ECDSA_P384_SHA512</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-31 20:04</div>
+            <div class="timeline-body"><p>@cpu Unrelated, but I just needed to take a moment and appreciate your awesome github handle 🤯</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kcon-stackav">@kcon-stackav</a> on 2024-08-27 22:18</div>
+            <div class="timeline-body"><p>I can confirm the support for <code>--allow-insecure-host</code> introduced in 0.3.5 (https://github.com/astral-sh/uv/issues/1339) enables me to use <code>uv</code> with my private Python package index server. 🥳 I'll close this issue for now since we have a workaround. Thanks so much for all of your help! 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kcon-stackav on 2024-08-27 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zed-industries/zed/pulls/24656.html">zed-industries/zed#24656</a> on 2025-02-12 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../zed-industries/zed/issues/19620.html">zed-industries/zed#19620</a> on 2025-02-12 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zoobab">@zoobab</a> on 2025-07-07 14:55</div>
+            <div class="timeline-body"><p>This issue is still there, ignoring security with &quot;--allow-insecure-host&quot; is not a solution.</p>
+<p>This should be reopened.</p>
+<p>I can reproduce the issue at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-07-07 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zoobab">@zoobab</a> on 2025-07-08 09:45</div>
+            <div class="timeline-body"><p>I have an issue with an Artifactory server that has the following cipher:</p>
+<p>ECDHE-RSA-AES128-GCM-SHA256</p>
+<p>Can someone confirm that it is supported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/1ml-coder">@1ml-coder</a> on 2025-07-31 16:43</div>
+            <div class="timeline-body"><p>I've also stumbled upon the same issue.</p>
+<p>DEBUG Transient request failure for https://pypi-local, retrying: error sending request for url (https://pypi-local/)
+Caused by: client error (Connect)
+Caused by: invalid peer certificate: BadSignature</p>
+<p>pypi-local is an internal Artifactory server with a Self-signed certificate. <strong>Signature Algorithm: ecdsa-with-SHA512</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../istio/ztunnel/issues/1613.html">istio/ztunnel#1613</a> on 2025-08-14 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lel-amri">@lel-amri</a> on 2025-08-21 07:35</div>
+            <div class="timeline-body"><p>Hello there, we also had an issue with certificates of an internal Artifactory instance.</p>
+<p>uv 0.8.3 failed with the <code>BadSignature</code> error, and uv 0.8.4 was succeeding.
+During this version bump, <code>rusttls</code> was updated from 0.23.22 to 0.23.29, which in turn updated <code>rusttls-webpki</code> from 0.102.8 to 0.103.4. By looking at the log of <code>rusttls-webpki</code> I was able to find commit https://github.com/rustls/webpki/commit/16abda163f5a643013c21d73e0577fbdec030a56, which fixes the issue.</p>
+<p>Our Artifactory certificate lacked signatures (the RSA PKCS#1 kind) parameters. The RFC forbid generating such certificates, but require verifiers to treat absent parameters as a <code>NULL</code> parameter, which <code>rusttls-webpki</code> wasn't doing until version <a href="https://github.com/rustls/webpki/releases/tag/v/0.103.3">0.103.3</a>.</p>
+<p>Anyway: <strong>In our case the issue was fixed with uv 0.8.4. I advise people with this issue to check whether the signature algorithm of their certificate is supported by <a href="https://github.com/rustls/webpki"><code>rusttls-webpki</code></a>.</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-21 11:12</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

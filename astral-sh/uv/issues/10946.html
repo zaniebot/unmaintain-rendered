@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv's cache blocks setuptools from updating strict-mode editable install sandbox symlinks - astral-sh/uv #10946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv's cache blocks setuptools from updating strict-mode editable install sandbox symlinks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10946">#10946</a>
+        opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a>
+        on 2025-01-24 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-24 20:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>&quot;strict&quot; editable installations for source-layout packages behave as follows (roughly, I might be missing steps!):</p>
+<ol>
+<li>An editable-install directory is created under the source package's <code>build</code> directory, with a name similar to <code>__editable__.package-0.0.1-py3-none-any</code>. Inside of this directory, 1 symlink is created per source file, that links to the source file contents. (This allows authors to edit source files rapidly without having to deal with the editable install process after the initial setup)</li>
+<li>A .pth file is created in the venv's site packages library directory, that contains the absolute path to the source package's symlink directory under its <code>build</code> directory.</li>
+</ol>
+<p>This structure and definition allows Python and tooling (LSPs etc) to resolve import statements directly into the source directory of a package being developed.</p>
+<p>When programmers add new files to their package, or rename files in their package, the symlinks in this special directory must be updated. If a developer renames <code>foo.py</code> to <code>bar.py</code>, they must re-run the editable install process from their package. This allows Python code from <em>other</em> packages to say <code>from package import bar</code>- under the hood, the import resolver lands in <code>package</code>'s symlink directory, and looks for <code>bar.py</code>.
+If the symlinks in this directory are not updated, the directory will contain a now-dead symlink to <code>foo.py</code>, and no entry at all for <code>bar.py</code>.</p>
+<p><code>uv pip install -e</code> appears to not invoke setuptools to update this symlink directory when source files are renamed / added / deleted, but <code>pip install -e</code> does.</p>
+<p>I've created a minimal repro case here: https://github.com/charlesnicholson/uv_editable_install_bug_repro</p>
+<p>It defines two packages: <code>repro_p1</code> and <code>repro_p2</code>. <code>repro_p2</code> depends on <code>repro_p1</code>.</p>
+<p>There are two test scripts that do the same thing, one in pip and one in uv. The steps are:</p>
+<ol>
+<li>Create a venv.</li>
+<li>Editable-install <code>repro_p1</code> and <code>repro_p2</code>, with strict mode enabled.</li>
+<li>Call a simple function in <code>repro_p2</code> that calls a simple function in <code>repro_p1</code>, to show that the packages work.</li>
+<li>Print a new source file into the <code>repro_p1</code> directory, which has another simple function.</li>
+<li>Re-run step 2, which should update the symlinks.</li>
+<li>Call a simple function in <code>repro_p2</code> that calls the new function in the new <code>repro_p1</code> file</li>
+</ol>
+<p>This process succeeds with pip (run <code>./test_with_pip.sh</code>) and fails with uv (run <code>./test_with_uv.sh</code>).</p>
+<p>I've only tested this on macOS, but if it's helpful I can port this to windows or linux.</p>
+<p>pip:
+<img src="https://github.com/user-attachments/assets/5b023892-6b4c-48dd-a72d-8255b6e7b719" alt="Image" /></p>
+<p>uv:
+<img src="https://github.com/user-attachments/assets/a133193f-ed38-475d-ad5f-bf32b7537f85" alt="Image" /></p>
+<p>See how the uv test fails because the <code>repro_p2</code> script is importing <code>repro_p1</code>'s newly-printed file, for which there exists no entry in the symlink directory.</p>
+<p>Note that if you add <code>--force-reinstall</code> to step 5, then step 6 will succeed. But, force-reinstall does a whole lot more than just updating the symlinks, so it's a reasonable short-term workaround but this still feels like a bug.</p>
+<p>Thanks for reading!</p>
+<h3>Platform</h3>
+<p>macOS 15.2 arm64</p>
+<h3>Version</h3>
+<p>uv 0.5.23</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charlesnicholson on 2025-01-24 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 20:46</div>
+            <div class="timeline-body"><p>I'm a bit confused. Adding a file should never require re-installing, assuming an editable install. But I'll have to look at your repro more closely when I have time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-24 20:50</div>
+            <div class="timeline-body"><p>From https://setuptools.pypa.io/en/latest/userguide/development_mode.html#strict-editable-installs
+<img src="https://github.com/user-attachments/assets/bded00af-58aa-47eb-80d9-a8217765969f" alt="Image" /></p>
+<p>&quot;... new files <em>won't</em> be exposed and the editable installs will try to mimic as much as possible the behavior of a regular install.&quot;</p>
+<p>I think your claim that adding a file not requiring re-installing is true for the normal &quot;development&quot; mode, but a bunch of tooling like pyright, which powers our in-editor LSPs, require &quot;strict&quot; mode to function, so we use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-24 20:51</div>
+            <div class="timeline-body"><p>There's a bit of discussion about the VSCode side of things here: https://github.com/mne-tools/mne-python/issues/12169</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 20:52</div>
+            <div class="timeline-body"><p>Ah, the controversial setuptools mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-24 20:54</div>
+            <div class="timeline-body"><p>@zanieb seriously :(</p>
+<p>Is there an alternative / better way to do this? We loved the simplicity of &quot;normal&quot; development mode but then all of our LSP tooling stopped working!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 20:56</div>
+            <div class="timeline-body"><p>Does the &quot;compat&quot; mode not work for you? I think returning to their previous behavior with that flag is a reasonable option. Otherwise, perhaps a different build backend? I wish they had not introduced a new default mode that's so antagonistic to static analysis.</p>
+<p>See also https://github.com/pypa/setuptools/issues/3518</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-24 20:59</div>
+            <div class="timeline-body"><p>Thanks for the suggestions! I'm happy to try it- we haven't re-assessed whether compat mode works since we moved to strict a few years ago. Maybe this is a free win :)</p>
+<p>(Either way, it still feels like uv should update the symlinks in strict editable re-installs; simply doing it once and then ignoring the symlink directory forever more doesn't seem ideal...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 21:01</div>
+            <div class="timeline-body"><p>Yeah it seems like there might be something for us to look into here still</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2025-01-24 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 21:04</div>
+            <div class="timeline-body"><p>Hmm, I don't think we can improve anything here without completely reconsidering how we handle caching? We don't re-build on arbitrary code changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-24 21:07</div>
+            <div class="timeline-body"><p>If this can't change easily, maybe consider having <code>uv</code> print a warning when installing, that strict editable installs stop working as soon as you rename a file? That might save a future soul the ~2h that it cost me today :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-25 17:43</div>
+            <div class="timeline-body"><p>I don't know the details of how the cache works, but would it be possible to just have uv always redo the symlink work whenever a strict editable install is requested? Maybe it's better that it works but is slow, vs not working at all...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:53</div>
+            <div class="timeline-body"><p>I'm not enthused about adding behaviors that only apply to specific build backend settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-01-28 19:05</div>
+            <div class="timeline-body"><p>Another thought- just revoke support entirely and explain to users who try to use <code>strict</code> mode that <code>compat</code> mode is probably what they want?</p>
+<p>It's kind of a bummer that it exists today but is broken, with no warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11488.html">astral-sh/uv#11488</a> on 2025-02-13 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../neutrinoceros/gpgi/pulls/269.html">neutrinoceros/gpgi#269</a> on 2025-02-16 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-02-16 10:09</div>
+            <div class="timeline-body"><p>Since this is about a setuptools mode, not a uv mode, I wonder if the ticket should have its title changed.</p>
+<p>Also not sure it's actually uv's place to warn you about <em>setuptools</em> behaviors, much less attempt to &quot;fix&quot; setuptools, except maybe to the extent that automatically applying some config settings may be apropos for known build backends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-02-16 13:45</div>
+            <div class="timeline-body"><p>Re-running <code>python -m pip install -e mypackage --config-settings editable_mode=strict</code> re-invokes setuptools, which updates the sandbox with new symlinks.</p>
+<p>Re-running <code>uv pip install -e mypackage --config-settings editable_mode=strict</code> does not re-invoke setuptools, so the sandbox is not updated, and additions/renames are not visible from the venv.</p>
+<p>The difference here is <code>uv</code>; the behavior appears to be that it checks its cache and says &quot;this is up to date&quot; when, because of the sandbox symlinks contents being stale, it is not up to date.</p>
+<p>This makes strict editable installs broken with <code>uv</code>, since <code>uv</code> is deciding that no work needs to be done. The bug here IMO is in <code>uv</code> not understanding the rules of strict editable install mode. When I suggest that <code>uv</code> warn the user, I'm suggesting that the warning should be about <code>uv</code>'s refusal to re-run the setuptools backend. That's not a setuptools problem, AFAICT.</p>
+<p>If <code>uv</code> intercepted the editable_mode option and refused to run when &quot;strict&quot; was detected, that would be a clear signal to the user that the mode is not supported. If <code>uv</code> warned a la &quot;Hey, uv's caching system is incompatible with strict editable installs, things will almost certainly break if you continue down this path but you're an adult so do what you will&quot;, that would be a clear signal to the user that they're in trouble. But <code>uv</code> is deciding that the backend simply doesn't need to be re-invoked. That's not a setuptools problem; that's <code>uv</code> incorrectly assuming that its cache represents reality, and in this case that's not correct.</p>
+<p>@eli-schwartz - I'll change the issue title to &quot;uv cache incorrectly skips critical setuptools strict-mode editable reinstalls&quot;; that's clearer- thanks for the suggestion there.</p>
+<p>Also: @zanieb - your suggestion that we use &quot;compat&quot; mode solved our problems around pyright / pylance support, so thanks a ton for that! :) I don't have a real-world use case for &quot;strict&quot; mode anymore, so this issue isn't hindering us. Maybe it's just academic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Strict `uv pip install -e` doesn't update symlinks when files change." to "uv's cache blocks setuptools from updating strict-mode editable install sandbox symlinks" by @charlesnicholson on 2025-02-16 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-02-16 13:59</div>
+            <div class="timeline-body"><p>(I made a minor edit to the top-level description to indicate that the issue is around re-running setuptools)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9637.html">astral-sh/uv#9637</a> on 2025-02-24 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

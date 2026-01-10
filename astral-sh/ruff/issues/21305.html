@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support and lints for `lazy` imports in Python 3.15+ - astral-sh/ruff #21305</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support and lints for `lazy` imports in Python 3.15+</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21305">#21305</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-11-06 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-06 20:22</div>
+            <div class="timeline-body"><p>A long ways off, but creating this tracking issue to add ideas as they arise.</p>
+<p>Python 3.15 will introduce <a href="https://peps.python.org/pep-0810">PEP 810 - Explicit lazy imports</a>. We will certainly have to do the following:</p>
+<ul>
+<li>[ ] Update the parser</li>
+<li>[ ] Update the formatter</li>
+<li>[ ] Update the semantic model (though according to <a href="https://peps.python.org/pep-0810/#typing-and-tools">this subheading</a> these will be treated the same as ordinary imports for our purposes)</li>
+</ul>
+<p>But we may also want to consider some lints. For example:</p>
+<ol>
+<li>Sorting these imports (this requires a few design decisions)</li>
+<li>Adjust the fixes in <a href="https://docs.astral.sh/ruff/rules/#flake8-type-checking-tc"><code>flake8-type-checking</code></a> to suggest that typing-only imports be <em>lazily</em> imported rather than gated behind <code>if TYPE_CHECKING</code>, as per <a href="https://peps.python.org/pep-0810/#what-about-type-annotations-and-type-checking-imports">this use-case in the PEP</a>.</li>
+<li>Relatedly - replacing existing <code>if TYPE_CHECKING: ...</code> imports with lazy imports.</li>
+<li>Suggesting lazy imports any time we see an import not at the beginning of the file. (Developers sometimes approximate lazy imports these days by importing in the body of a function, for example.)</li>
+<li>More aggressive/opinionated lints - e.g. &quot;make all imports lazy&quot;, with an unsafe autofix.</li>
+<li>Conversely, <em>removing</em> <code>lazy</code> if we can guarantee that the import will be evaluated (e.g. by a top-level statement in the module).</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python315</span> added by @dylwil3 on 2025-11-06 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-11-10 12:44</div>
+            <div class="timeline-body"><blockquote>
+<ol start="4">
+<li>Suggesting lazy imports any time we see an import not at the beginning of the file. (Developers sometimes approximate lazy imports these days by importing in the body of a function, for example.)</li>
+<li>More aggressive/opinionated lints - e.g. &quot;make all imports lazy&quot;, with an unsafe autofix.</li>
+</ol>
+</blockquote>
+<p>Somewhere in between, less aggressive: Suggesting lazy imports whenever a symbol <em>isn't</em> obviously used at the module root level (still imperfect, but less false-positives than &quot;make all imports lazy&quot;)</p>
+<p>In other words: &quot;5. Make all imports lazy, except when detected to be used at module root&quot;.</p>
+<p>Further refinement with code analysis could try to follow function calls, but that seems niche.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

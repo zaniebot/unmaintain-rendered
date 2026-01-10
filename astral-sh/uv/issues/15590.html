@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing credentials for private index when another explicit public index is configured - astral-sh/uv #15590</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing credentials for private index when another explicit public index is configured</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15590">#15590</a>
+        opened by <a href="https://github.com/ScienceWithConscience">@ScienceWithConscience</a>
+        on 2025-08-30 14:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ScienceWithConscience">@ScienceWithConscience</a> on 2025-08-30 14:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Bug Report: Missing credentials for private index when another explicit public index is configured</h3>
+<p><strong>Environment</strong></p>
+<ul>
+<li><strong>uv version:</strong> 0.7.19 (38ee6ec80 2025-07-02)</li>
+<li><strong>Operating System:</strong> macOS 15.5 (Build 24F74)</li>
+<li><strong>Python version:</strong> 3.12.7</li>
+<li><strong>Google Cloud SDK version:</strong> 536.0.1</li>
+</ul>
+<p><strong>Description of the Bug</strong></p>
+<p>uv sync fails with a &quot;Missing credentials&quot; error when trying to access a private Google Artifact Registry index. This failure occurs when the configuration is modified to fetch a public package (like torch) from a separate, explicit public index, as recommended in the official uv documentation for PyTorch.</p>
+<p>The authentication setup is confirmed to be correct, as uv sync succeeds perfectly if the pyproject.toml only contains the private index configuration. The bug is triggered the moment a second, public, explicit index is introduced and a package is sourced from it.</p>
+<p><strong>Steps to Reproduce</strong></p>
+<p>We have identified two methods that trigger the exact same bug.</p>
+<h3>Method 1: The Official uv Documentation Approach (Fails)</h3>
+<p>This method follows the guide for &quot;Using uv with PyTorch&quot;.</p>
+<ol>
+<li><p><strong>Create the following pyproject.toml file.</strong> This configuration uses [tool.uv.sources] to direct torch to a dedicated public index. <br />
+[project] <br />
+name = &quot;uv-auth-bug-repro&quot; <br />
+version = &quot;0.1.0&quot; <br />
+authors = [ { name = &quot;A. User&quot;, email = &quot;a.user@example.com&quot; } ] <br />
+requires-python = &quot;&gt;=3.12,&lt;3.13&quot; <br />
+dependencies = [ <br />
+&quot;torch&gt;=2.3.0&quot;, <br />
+&quot;my-private-package&gt;=1.0.0&quot;, <br />
+] <br />
+<br />
+[tool.uv.sources] <br />
+my-private-package = { index = &quot;private-repo-1&quot; } <br />
+torch = [ <br />
+{ index = &quot;pytorch-cpu&quot; }, <br />
+] <br />
+<br />
+[[tool.uv.index]] <br />
+name = &quot;pytorch-cpu&quot; <br />
+url = &quot;<a href="https://download.pytorch.org/whl/cpu">https://download.pytorch.org/whl/cpu</a>&quot; <br />
+explicit = true <br />
+<br />
+[[tool.uv.index]] <br />
+name = &quot;private-repo-1&quot; <br />
+url = &quot;<a href="https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple">https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple</a>&quot; <br />
+authenticate = &quot;always&quot; <br />
+explicit = true</p>
+</li>
+<li><p><strong>Ensure authentication is configured</strong> for Google Artifact Registry. <br />
+gcloud auth application-default login \</p>
+</li>
+<li><p><strong>Run uv sync</strong>. <br />
+uv venv &amp;&amp; source .venv/activate &amp;&amp; uv sync <br />
+<br />
+This fails with the &quot;Missing credentials&quot; error for my-private-package.</p>
+</li>
+</ol>
+<h3>Method 2: Direct URL Workaround (Also Fails)</h3>
+<p>As a debugging step, we tried bypassing the sources table for torch and using a direct URL instead. This surprisingly results in the exact same failure.</p>
+<ol>
+<li><p><strong>Create this alternative pyproject.toml file.</strong> <br />
+[project] <br />
+name = &quot;uv-auth-bug-repro&quot; <br />
+version = &quot;0.1.0&quot; <br />
+authors = [ { name = &quot;A. User&quot;, email = &quot;a.user@example.com&quot; } ] <br />
+requires-python = &quot;&gt;=3.12,&lt;3.13&quot; <br />
+dependencies = [ <br />
+# Direct URL dependency that triggers the same bug <br />
+&quot;torch @ <a href="https://download.pytorch.org/whl/cpu/torch-2.3.0-cp312-none-macosx_11_0_arm64.whl">https://download.pytorch.org/whl/cpu/torch-2.3.0-cp312-none-macosx_11_0_arm64.whl</a>&quot;, <br />
+&quot;my-private-package&gt;=1.0.0&quot;, <br />
+] <br />
+<br />
+[tool.uv.sources] <br />
+my-private-package = { index = &quot;private-repo-1&quot; } <br />
+<br />
+[[tool.uv.index]] <br />
+name = &quot;private-repo-1&quot; <br />
+url = &quot;<a href="https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple">https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple</a>&quot; <br />
+authenticate = &quot;always&quot; <br />
+explicit = true</p>
+</li>
+<li><p><strong>Run uv sync</strong>. This also fails with the same &quot;Missing credentials&quot; error.</p>
+</li>
+</ol>
+<p><strong>Expected Behavior</strong></p>
+<p>uv sync should successfully resolve and install all dependencies. It should fetch torch from its specified public source (either the pytorch-cpu index or the direct URL) and then use the stored Google Cloud credentials to authenticate and download my-private-package.</p>
+<p><strong>Actual Behavior</strong></p>
+<p>uv sync fails with a &quot;Missing credentials&quot; error when it tries to resolve a dependency from the private index. The error is:</p>
+<p>error: Failed to fetch: <code>https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple/my-private-package/</code> <br />
+Caused by: Missing credentials for <a href="https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple/my-private-package/">https://my-region-python.pkg.dev/my-gcp-project/my-repo-1/simple/my-private-package/</a> \</p>
+<p><strong>Additional Context &amp; Troubleshooting</strong></p>
+<ul>
+<li><strong>Authentication is Correct:</strong> Removing the torch configuration (from dependencies and tool.uv.sources/tool.uv.index) makes uv sync succeed instantly. This proves the auth setup is correct.</li>
+<li><strong>Permissions are Correct:</strong> The gcloud artifacts repositories describe ... command works correctly.</li>
+<li><strong>The Bug Trigger:</strong> The failure is triggered by the presence of a second, public package source, regardless of whether it's defined via [[tool.uv.index]] or as a direct URL. This appears to poison the authentication state for subsequent requests to the private indexes.</li>
+<li><strong>Not a Corrupt State Issue:</strong> The error persists after a full reset (rm uv.lock, rm -rf .venv, uv cache clean).</li>
+</ul>
+<p><strong>Verbose Logs</strong></p>
+<p>I can provide verbose logs by running uv sync -vvv if required. Please let me know.</p>
+<h3>Platform</h3>
+<p>macOS 15.5 (Build 24F74)</p>
+<h3>Version</h3>
+<p>0.7.19</p>
+<h3>Python version</h3>
+<p>3.12.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ScienceWithConscience on 2025-08-30 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-30 21:23</div>
+            <div class="timeline-body"><p>How are you configuring the credentials in uv? Like, how are you providing the <code>private-repo-1</code> credentials? Your example invocation only shows you authenticating with the GCP CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-30 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-08-30 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ScienceWithConscience">@ScienceWithConscience</a> on 2025-08-31 06:39</div>
+            <div class="timeline-body"><p>Thanks for looking into this.</p>
+<p>I'm relying on the standard <strong>Application Default Credentials (ADC)</strong> mechanism provided by the Google Cloud SDK.</p>
+<p>The credentials are provided to <code>uv</code> implicitly. The gcloud auth application-default login command creates a credential file at the standard location <code>(~/.config/gcloud/application_default_credentials.json)</code>. My understanding is that <code>uv</code> (likely via the underlying google-auth Python library) is designed to automatically discover and use this file to authenticate with Google Cloud services like Artifact Registry.</p>
+<p>To ensure this works seamlessly with Python packaging tools, I also have the <code>keyrings.google-artifactregistry-auth</code> library installed in the environment where I'm running <code>uv</code>. This is the officially recommended helper library from Google for authenticating tools like <code>pip</code> and <code>uv</code>.</p>
+<p>The reason I'm confident this authentication method is configured and working correctly is the key finding from the original report:</p>
+<p><strong>The authentication only fails when the second, public PyTorch index is added to the configuration.</strong></p>
+<p>If I remove the torch configuration from pyproject.toml, uv sync works perfectly and successfully downloads all private packages from <code>private-repo-1</code>. This demonstrates that <code>uv</code> <em>is</em> able to find and use the GCP credentials correctly in a simpler configuration.</p>
+<p>This leads me to believe the issue isn't with the credential provider itself, but rather that the resolver's state is being corrupted when it processes the additional public index, causing it to somehow lose the authentication context for the subsequent requests to the private index.</p>
+<p>Let me know if there's any other information I can provide about the environment or any specific uv logs you'd like me to capture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-31 14:44</div>
+            <div class="timeline-body"><p>For context, the keyring approach will <em>only</em> work if you're passing <code>--keyring-provider subprocess</code> or <code>UV_KEYRING_PROVIDER=subprocess</code> . Are you doing either of those things? It would be useful to see the <code>--verbose</code> logs from your successful and failed commands. It's possible, for example, that your <code>uv sync</code> is succeeding because the data is already cached locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ScienceWithConscience">@ScienceWithConscience</a> on 2025-08-31 20:16</div>
+            <div class="timeline-body"><p>You were right thank you very much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ScienceWithConscience on 2025-08-31 20:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

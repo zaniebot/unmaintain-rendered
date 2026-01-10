@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behaviour of `default_value_t` when `From&lt;&amp;str&gt;` impl isn't the inverse of `Display` impl - clap-rs/clap #4599</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behaviour of `default_value_t` when `From&lt;&amp;str&gt;` impl isn't the inverse of `Display` impl</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4599">#4599</a>
+        opened by <a href="https://github.com/cyqsimon">@cyqsimon</a>
+        on 2023-01-02 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cyqsimon">@cyqsimon</a> on 2023-01-02 18:24</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.66.0</p>
+<h3>Clap Version</h3>
+<p>4.0.32</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Clone, Debug, Parser)]
+struct CliArgs {
+    #[arg(long = &quot;arg&quot;, default_value_t)]
+    arg: Foo,
+}
+
+#[derive(Clone, Debug, Default)]
+enum Foo {
+    #[default]
+    A,
+    B,
+    Custom(String),
+}
+impl std::fmt::Display for Foo {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        match self {
+            Foo::A =&gt; write!(f, &quot;Variant A&quot;),
+            Foo::B =&gt; write!(f, &quot;Variant B&quot;),
+            Foo::Custom(s) =&gt; write!(f, &quot;Custom: {s}&quot;),
+        }
+    }
+}
+impl From&lt;&amp;str&gt; for Foo {
+    fn from(value: &amp;str) -&gt; Self {
+        match value {
+            &quot;A&quot; =&gt; Foo::A,
+            &quot;B&quot; =&gt; Foo::B,
+            v =&gt; Foo::Custom(v.into()),
+        }
+    }
+}
+
+fn main() {
+    let CliArgs { arg } = CliArgs::parse();
+    dbg!(arg);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p><code>arg</code> is <code>Foo::Custom(&quot;Variant A&quot;)</code>.</p>
+<h3>Expected Behaviour</h3>
+<p><code>arg</code> is <code>Foo::A</code>.</p>
+<hr />
+<p>I think the main issue here is a gap between user expectation and actual implementation. What I expected (and I think what most users would expect) is that when I use <code>default_value_t</code>, <code>Foo::default</code> is directly called to fetch the default value.</p>
+<p>However in reality, it seems like <code>clap</code> is doing a &quot;roundtrip&quot; to string and back when <code>default_value_t</code> is used. The default argument goes from <code>Foo</code> to <code>String</code> via <code>Display</code>, then back to <code>Foo</code> via <code>From&lt;&amp;str&gt;</code>.</p>
+<p>The problem with this, is that it assumes <code>Foo::from::&lt;&amp;str&gt;</code> is the inverse operation of <code>Foo::to_string</code>, when that's not necessarily the case. In which case strange behaviour like this suddenly pop up.</p>
+<p>So in my amateur opinion, either:</p>
+<ul>
+<li>the implementation of <code>default_value_t</code> should be changed to use <code>Foo::default</code> directly (this is the ideal solution, but I don't know whether this will be difficult to implement),</li>
+<li>or <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-attributes">the documentation</a> needs to explicitly clarify this requirement that <code>Foo::from::&lt;&amp;str&gt;</code> should be the inverse operation of <code>Foo::to_string</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @cyqsimon on 2023-01-02 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-01-03 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-03 04:38</div>
+            <div class="timeline-body"><p>With the current architecture, tracking things to handle this isn't ideal.  I've updated the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pronebird">@pronebird</a> on 2024-12-25 12:13</div>
+            <div class="timeline-body"><p>@epage came here being confused about the behaviour of <code>default_value_t</code>. Do you happen to know why is <code>arg(value_enum)</code> necessary for argument that conforms to <code>ValueEnum</code> or is it the same defect?</p>
+<pre><code class="language-rs">/// Arg definition
+#[arg(
+    global = true,
+    long,
+    short,
+    required = false,
+    value_enum, // &lt;- necessary
+    default_value_t
+)]
+pub table_style: TableStyle,
+
+/// TableStyle definition
+#[derive(Debug, Default, Copy, Clone, ValueEnum)]
+pub enum TableStyle {
+    #[default]
+    Psql,
+    Ascii, 
+    // [..]
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-25 15:34</div>
+            <div class="timeline-body"><p><code>value_enum</code> is a special case to take advantage of the existing trait, rather than requiring <code>Display</code> to be implemented so we can convert the default value to our internal type.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:18 UTC
+    </footer>
+</body>
+</html>

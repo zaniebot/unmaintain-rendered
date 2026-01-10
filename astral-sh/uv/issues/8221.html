@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication for private registries - astral-sh/uv #8221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Authentication for private registries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8221">#8221</a>
+        opened by <a href="https://github.com/juan-abia">@juan-abia</a>
+        on 2024-10-15 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-15 15:27</div>
+            <div class="timeline-body"><p>Hello! thanks of all, thanks for your awesome work at astral-sh!</p>
+<p>I'm trying to use uv to publish to a private registry (cloudsmith). But I'm getting Unauthorized error. The same token is working using poetry. Here is the line I execute:</p>
+<p><code>uv publish --verbose --publish-url https://python.cloudsmith.io/&lt;my_org&gt;/pip/ --token &lt;cloudsmith_api_key&gt; &lt;my_package&gt;.tar.gz</code></p>
+<p>Here is the output:</p>
+<pre><code>DEBUG uv 0.4.20
+warning: `uv publish` is experimental and may change without warning
+Publishing 1 file to https://python.cloudsmith.io/&lt;my_org&gt;/pip/
+DEBUG Using request timeout of 900s
+Uploading &lt;my_package&gt;.tar.gz (279.2KiB)
+DEBUG Using username/password basic auth
+DEBUG Response code for https://python.cloudsmith.io/&lt;my_org&gt;/pip/: 401 Unauthorized
+DEBUG Upload error response: {&quot;detail&quot;: &quot;Authentication credentials were not provided.&quot;}
+error: Failed to publish `&lt;my_package&gt;.tar.gz` to https://python.cloudsmith.io/&lt;my_org&gt;/pip/
+  Caused by: Upload failed with status code 401 Unauthorized. Server says: {&quot;detail&quot;: &quot;Authentication credentials were not provided.&quot;}
+</code></pre>
+<p>I've tried using the <code>UV_PUBLISH_TOKEN </code> env var. And also using username as <strong>token</strong> and the api key as the password.</p>
+<p>Could you please add compatibility with cloudsmith? TY!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6278.html">astral-sh/uv#6278</a> on 2024-10-15 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-10-15 16:17</div>
+            <div class="timeline-body"><p>@juan-abia Does it work if you configure a <code>.netrc</code> file?</p>
+<pre><code>$ cat ~/.netrc
+machine python.cloudsmith.io
+  login LOGIN
+  password TOKEN
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-16 07:14</div>
+            <div class="timeline-body"><p>Doesn't work @astrojuanlu :(
+I also updated to verion 0.4.22 and no luck</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lskillen">@lskillen</a> on 2024-10-16 12:52</div>
+            <div class="timeline-body"><p>Hey folks 👋 I'm representing the Cloudsmith team here, so I'm happy to help diagnose from our side, too.</p>
+<p>We also utilize <code>uv</code> (and <code>ruff</code> too, actually) at Cloudsmith extensively, so we'd be delighted to offer support. :)</p>
+<p>If you need a free account to test out, just let us know, too. Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:57</div>
+            <div class="timeline-body"><p>Thank you so much @lskillen -- really appreciate that! A test account would be super useful. I'll let @konstin follow up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-16 12:58</div>
+            <div class="timeline-body"><p>Hi @lskillen! We'd love to collaborate with you on this, and a test account would be great! You can reach me at konsti@astral.sh (or on discord as <code>konsti2849</code>) for coordinating the details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lskillen">@lskillen</a> on 2024-10-16 13:01</div>
+            <div class="timeline-body"><p>Sounds good, I'll drop you an email and intro you to our team. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zanieb on 2024-10-16 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-16 15:57</div>
+            <div class="timeline-body"><p>@astrojuanlu For cloudsmith, you need to use username and password authentication: For the username, use your username or <code>token</code>, the password is your token. For <code>--token</code> we use the PyPI default of <code>__token__</code>, which mismatches with the cloudsmith <code>token</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-16 16:30</div>
+            <div class="timeline-body"><p>@konstin just confirmed that using <code>token</code> works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-17 12:39</div>
+            <div class="timeline-body"><p>Cloudsmith updated their backend to also allow <code>__token__</code>, so you can now publish with <code>--token</code>, too. Shoutout to the cloudsmith team for adding this so quickly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lskillen">@lskillen</a> on 2024-10-17 12:49</div>
+            <div class="timeline-body"><p>Glad it worked. 😁 Happy to be included on a list if one ever exists of &quot;Supported services that work&quot;. 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-17 13:15</div>
+            <div class="timeline-body"><p>Thanks a lot team! closing the issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @juan-abia on 2024-10-17 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11032.html">astral-sh/uv#11032</a> on 2025-01-28 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:10 UTC
+    </footer>
+</body>
+</html>

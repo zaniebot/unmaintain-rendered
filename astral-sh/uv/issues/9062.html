@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenging to get started with workspaces. - astral-sh/uv #9062</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Challenging to get started with workspaces.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9062">#9062</a>
+        opened by <a href="https://github.com/chrisfougner">@chrisfougner</a>
+        on 2024-11-12 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chrisfougner">@chrisfougner</a> on 2024-11-12 15:54</div>
+            <div class="timeline-body"><p>This is probably a me thing, but I haven't had luck getting workspaces to work, and I've had a pretty detailed read through the documentation.</p>
+<p>This is what I have</p>
+<pre><code>root/
+├── pyproject.toml
+├── lib/
+│   ├── pyproject.toml
+│   ├── __init__.py
+│   └── xyz.py  
+└── tests/
+    ├── pyproject.toml
+    └── test.py
+</code></pre>
+<p>The files look like this:</p>
+<p>root/pyproject.toml</p>
+<pre><code>[project]
+...
+
+[tool.uv.workspace]
+members = [&quot;lib&quot;, &quot;tests&quot;]
+</code></pre>
+<p>root/lib/pyproject.toml</p>
+<pre><code>[project]
+name = &quot;lib&quot;
+...
+</code></pre>
+<p>root/tests/pyproject.toml</p>
+<pre><code>[project]
+...
+dependencies = [&quot;lib&quot;]
+
+[tool.uv.sources]
+lib = {workspace = true}
+</code></pre>
+<p>root/tests/test.py</p>
+<pre><code>from lib import xyz 
+...
+</code></pre>
+<p>And this is what I get:</p>
+<pre><code>$ uv run tests/test.py 
+Traceback (most recent call last):
+  File &quot;.../root/tests/test.py&quot;, line 1, in &lt;module&gt;
+    from lib import xyz
+ImportError: cannot import name 'xyz' from 'lib' (unknown location)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-12 16:22</div>
+            <div class="timeline-body"><p>The <code>lib</code> project there has a layout where <code>__init__.py</code>  and <code>pyproject.toml</code> are on the same level. While any layout <em>could</em> work, that's definitely not a recommended or regular setup for  a package project. <code>uv init --lib</code> can create a template that demonstrates an 'expected' layout. In this workspace it would look like either <code>root/lib/lib/__init__.py</code> or <code>root/lib/src/lib/__init__.py</code> together with <code>root/lib/pyproject.toml</code> for the lib part.</p>
+<p>Maybe there's more to say but I thought it might help to bring up at least this lib thing in some detail, and that could get you going in the right direction.  (Summary: before <code>lib</code> will work for you in the workspace, it needs to work as a standalone project.)</p>
+<p>(If you see that and feel you don't want that layout - then maybe workspace is not what you want? Maybe root is just one project with lib and tests, doesn't need to be a workspace?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-12 16:57</div>
+            <div class="timeline-body"><p>I agree this is confusing!</p>
+<p>I think you actually need <em>both</em> <code>lib</code> and <code>tests</code> to be packaged? At least, I wasn't able to get it to work without that. If that's true, probably this line of the <a href="https://docs.astral.sh/uv/concepts/workspaces/#getting-started">documentation on workspaces</a> should specify &quot;packaged&quot; application:</p>
+<blockquote>
+<p>Every directory included by the members globs (and not excluded by the exclude globs) must contain a pyproject.toml file. However, workspace members can be either <a href="https://docs.astral.sh/uv/concepts/projects/#applications">applications</a> or <a href="https://docs.astral.sh/uv/concepts/projects/#libraries">libraries</a>; both are supported in the workspace context.</p>
+</blockquote>
+<p>Ideally the error message would help point the way a bit better here. In fact, the messages get more confusing if you make lib packaged but not tests - then I was getting a message telling me <code>lib</code> needed to be added as a workspace source... but it was!</p>
+<p>Speaking of which, the line:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+lib = {workspace = true}
+</code></pre>
+<p>should probably go in <code>root/pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisfougner">@chrisfougner</a> on 2024-11-12 17:00</div>
+            <div class="timeline-body"><p>Thanks for taking a look so quickly @bluss! I agree the structure isn't really ideal. Unfortunately I'm in the situation where there is an existing codebase I'm working with and want to keep refactors to a minimum.</p>
+<p>I tried getting it to work with the path specifier as well: <code>lib = {path = &quot;../lib&quot;, editable = true}</code>, but am getting the same error.</p>
+<p>@dyllwil3: My understanding was that <code>[tool.uv.sources]</code> needs to be specified in each individual package. Is that not the case? Or is it only for workspace packages that they need to be specified at the root?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-12 17:09</div>
+            <div class="timeline-body"><p>@chrisfougner is the lib project already working and building a wheel for itself correctly, in isolation? I want to underline this as a way to work with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisfougner">@chrisfougner</a> on 2024-11-17 08:59</div>
+            <div class="timeline-body"><p>That was very helpful. Thank you. I tried getting it to build in isolation and couldn't figure it out, so I went down a bit of a hacky route of creating a <code>packages</code> directory with the structure <code>root/packages/lib/{src, pyproject.toml}</code> and symlinked <code>src -&gt; root/lib</code>, and <code>pyproject.toml -&gt; root/lib/pyproject.toml</code>. It seems to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @chrisfougner on 2024-11-17 08:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:30 UTC
+    </footer>
+</body>
+</html>

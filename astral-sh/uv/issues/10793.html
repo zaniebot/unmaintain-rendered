@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --frozen flag to &quot;sync-and-running&quot; documentation - astral-sh/uv #10793</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --frozen flag to &quot;sync-and-running&quot; documentation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10793">#10793</a>
+        opened by <a href="https://github.com/f0lie">@f0lie</a>
+        on 2025-01-20 22:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/f0lie">@f0lie</a> on 2025-01-20 22:51</div>
+            <div class="timeline-body"><p>https://docs.astral.sh/uv/guides/integration/github/#syncing-and-running</p>
+<p>We have:</p>
+<pre><code>name: Example
+
+jobs:
+  uv-example:
+    name: python
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Run tests
+        # For example, using `pytest`
+        run: uv run pytest tests
+</code></pre>
+<p>And it seems like it should be:</p>
+<pre><code>name: Example
+
+jobs:
+  uv-example:
+    name: python
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install the project
+        run: uv sync --all-extras --dev --frozen
+
+      - name: Run tests
+        # For example, using `pytest`
+        run: uv run pytest tests
+</code></pre>
+<p>There should also be in the docs a blurb about how by default <code>uv sync</code> updates all the lockfile and using <code>--frozen</code> ensures that the same version of the packages on the dev machine is used by the github actions VM.</p>
+<p>This behavior isn't very obvious for a newcomer reading the documentation and the integration section would be a great place to clarify that behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2025-01-21 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-01-21 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-21 07:41</div>
+            <div class="timeline-body"><p>I think we should add this, though as <code>--locked</code> instead of <code>--frozen</code> to assert that the lockfile is up-to-date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-03-21 16:55</div>
+            <div class="timeline-body"><p>I noticed this too at</p>
+<ul>
+<li>https://docs.astral.sh/uv/guides/integration/github/#syncing-and-running</li>
+</ul>
+<p>Also reading the docs, the distinction between <code>--frozen</code> and <code>--locked</code> is a bit difficult to understand.</p>
+<p>Also, in the Docker docs, <code>--frozen</code> is used rather than <code>--locked</code>:</p>
+<p>https://docs.astral.sh/uv/guides/integration/docker/#installing-a-project</p>
+<p>It seems like the user would normally want <code>--locked</code> to avoid the situation</p>
+<h3>Other Thought</h3>
+<p>I was also pretty surprised that <code>--locked</code> wasn't the default for <code>uv sync</code>. To me when someone comes to a project, whether a new developer, a CI environment, a container image etc, to me enforcing consistency of dependencies by defaul with <code>uv sync</code> seems like the most ideal situation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 17:04</div>
+            <div class="timeline-body"><p>We might want to add a note on <code>--frozen</code> in https://docs.astral.sh/uv/concepts/projects/sync/#checking-if-the-lockfile-is-up-to-date or add a section to https://docs.astral.sh/uv/concepts/projects/sync/#syncing-the-environment</p>
+<p><code>--frozen</code> is used in the Docker example because we're using the <code>uv.lock</code> as the source of truth there. <code>--locked</code> may be a better option for people to avoid surprises.</p>
+<blockquote>
+<p>was also pretty surprised that --locked wasn't the default for uv sync. To me when someone comes to a project, whether a new developer, a CI environment, a container image etc, to me enforcing consistency of dependencies by defaul with uv sync seems like the most ideal situation?</p>
+</blockquote>
+<p>We're focusing on the development experience here which is that <code>uv sync</code> and <code>uv run</code> here should &quot;just do what they're supposed to&quot; not throw an error if you have modified your <code>pyproject.toml</code>. This is the same thing that Cargo does. In contrast, the <em>deployment</em> experience is more of a &quot;write it once&quot; thing and it's reasonable to opt-in to additional safeguards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-03-21 17:13</div>
+            <div class="timeline-body"><p>@zanieb I'm sympathetic to your goals, and agree they are at odds with what I suggest in</p>
+<ul>
+<li>#12372</li>
+</ul>
+<p>I can concede the tradeoffs you're making and if Cargo works this way that is extra support to your position.</p>
+<p>I still feel unsure of this myself given the potential for an unexpected footgun, but can respect the decision you all are making.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12372.html">astral-sh/uv#12372</a> on 2025-03-21 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12818.html">astral-sh/uv#12818</a> on 2025-04-10 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12819.html">astral-sh/uv#12819</a> on 2025-04-10 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-10 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-10 19:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

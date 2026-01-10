@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to install Python  - astral-sh/uv #6067</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to install Python </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6067">#6067</a>
+        opened by <a href="https://github.com/FCamborda">@FCamborda</a>
+        on 2024-08-13 20:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-08-13 20:50</div>
+            <div class="timeline-body"><p>First and foremost thank you so much for the development of uv (and all other rust-based tools).
+I did not find a  &quot;discussion&quot;, hence why I'm creating an issue instead.</p>
+<p>I'm wondering if there is a way to install a Python interpreter for all users in a system. We're using the latest uv <code>0.2.34</code> and locally installing a Python interpreter in <code>&lt;data dir&gt;/uv/python/&lt;distribution&gt;/bin/python3</code>, irrespective on what <code>--python-preference</code> does.</p>
+<p>That is, all following commands use the same directory
+<code>uv python install 3.9</code>
+<code>uv python install 3.9 --python-preference system</code>
+<code>uv python install 3.9 --python-preference &lt;option&gt;</code></p>
+<p>The background for this is that I'm trying to setup two Docker images with uv.
+The first Docker image has a 'common' user and an installation. I'm taking advantage of the undocumented env. variable <code>CARGO_HOME</code>, but I believe this is not a problem (see https://github.com/astral-sh/uv/pull/5455)</p>
+<pre><code class="language-shell"># Production Docker image
+
+# Install uv
+ENV CARGO_HOME=/.cargo/
+ADD --chmod=755 https://astral.sh/uv/install.sh /install.sh
+RUN /install.sh &amp;&amp; rm /install.sh
+
+# Python setup
+RUN uv python install ${PYVERSION}
+
+# Python venv
+...
+</code></pre>
+<p>The other Docker image is used for local development (i.e. devcontainer) and has to setup a new user matching the local UID and GID (due to permissions in the file system, etc). Ideally, it should look something like this.</p>
+<pre><code class="language-shell"># Devcontainer
+from production:image
+# Setup new user
+...
+# Workaround
+RUN uv python install --python $(uv python find ${PYVERSION}
+# Setup another venv
+...
+</code></pre>
+<p>However since the first image installed Python in the data dir of the other user, the second image will not work. As a workaround and since the Python installations are so small, I have just done a second installation of the Python same interpreter, but it would be neat to have a single installation system-wide.</p>
+<p>Is this something that makes sense as a feature request/already in the road map? Or maybe it is already supported and I just misread the documentation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 22:12</div>
+            <div class="timeline-body"><p>Hi! You should be able to set <code>UV_PYTHON_INSTALL_DIR</code> to a shared directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-13 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-08-15 13:36</div>
+            <div class="timeline-body"><p>This worked flawlessly, thanks!
+Are there plans of making this a CLI option? Also, should this variable be documented <a href="https://github.com/astral-sh/uv?tab=readme-ov-file#environment-variables">here</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-15 13:59</div>
+            <div class="timeline-body"><p>It's not in the README because it's a preview feature — it'll be included in our new documentation.</p>
+<p>I don't think we'll make it a CLI option, you'd have to pass it to every command. We might make it available in the <code>uv.toml</code> file though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-08-16 07:32</div>
+            <div class="timeline-body"><p>Terrific, thanks for your support!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @FCamborda on 2024-08-16 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FCamborda">@FCamborda</a> on 2024-08-19 06:59</div>
+            <div class="timeline-body"><p>I have two more similar cases when using <code>uv tool</code>, hence reopening this issue.</p>
+<p>@zanieb I see there is already an environment variable <code>UV_TOOL_DIR</code> to set where uv will place the managed tools. Is there a possibility to add an equivalent environment variable for where the binaries reside? So far I see you are relying on <a href="https://github.com/astral-sh/uv/blob/15dfb660ab7f1ccca7e57c985968a18a85bb1d86/crates/uv-tool/src/lib.rs#L352">standard directories</a>, but for system-wide installations I would prefer not to change/set these env. variables, as it could have implications for other tools. Is it possible to add something like <code>UV_TOOL_INSTALLATION_DIR</code> ?</p>
+<p>I think Pipx defaults this to <code>/usr/local/bin</code>, and we would like to achieve a similar effect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @FCamborda on 2024-08-19 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 14:18</div>
+            <div class="timeline-body"><p>Sure, we can add support for that (<code>UV_TOOL_INSTALL_DIR</code>) to <code>uv-tool::find_executable_directory</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 14:42</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/6207</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6207.html">astral-sh/uv#6207</a> on 2024-08-19 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-19 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6506.html">astral-sh/uv#6506</a> on 2024-08-23 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8032.html">astral-sh/uv#8032</a> on 2024-10-09 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hipertracker">@hipertracker</a> on 2024-10-21 14:55</div>
+            <div class="timeline-body"><p><code>asdf global python 3.13.0</code>, simple. it is weird uv cannot do that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/punkpeye">@punkpeye</a> on 2024-12-30 19:15</div>
+            <div class="timeline-body"><pre><code>ENV UV_TOOL_BIN_DIR=&quot;/home/smith/.local/bin&quot;
+ENV UV_PYTHON_INSTALL_DIR=&quot;/home/smith/.local/bin&quot;
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN uv python install --verbose 3.11
+RUN python --version
+</code></pre>
+<p>I tried all of this, but still getting python not found. ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-30 19:34</div>
+            <div class="timeline-body"><p>@punkpeye you're looking for <code>uv python install --preview 3.11</code></p>
+<p>See the &quot;Important&quot; note in https://docs.astral.sh/uv/guides/install-python/#getting-started and the documentation in https://docs.astral.sh/uv/concepts/python-versions/#installing-python-executables</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/punkpeye">@punkpeye</a> on 2024-12-30 19:55</div>
+            <div class="timeline-body"><p>Thank you. For others reading this, I was also wanting <code>--default</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HernandoR">@HernandoR</a> on 2025-02-04 01:27</div>
+            <div class="timeline-body"><p>after <code>uv python install 3.10 --default --preview</code> when i want <code>uv pip install jupyter-core --system</code> it throws</p>
+<pre><code>Using Python 3.10.16 environment at: /usr/local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu
+error: The interpreter at /usr/local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu is externally managed, and indicates the following:
+
+  This Python installation is managed by uv and should not be modified.
+
+Consider creating a virtual environment with `uv venv`.
+</code></pre>
+<p>I'm preparing a docker image, so it is intended to install Jupyter (and it's extensions) system wide</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 02:48</div>
+            <div class="timeline-body"><p>Yeah, sorry about that — I need to fix a bug where the installed managed Python versions are picked up by the <code>--system</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11360.html">astral-sh/uv#11360</a> on 2025-02-09 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sti1l-0">@sti1l-0</a> on 2025-04-03 07:47</div>
+            <div class="timeline-body"><blockquote>
+<p>after <code>uv python install 3.10 --default --preview</code> when i want <code>uv pip install jupyter-core --system</code> it throws</p>
+<pre><code>Using Python 3.10.16 environment at: /usr/local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu
+error: The interpreter at /usr/local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu is externally managed, and indicates the following:
+
+  This Python installation is managed by uv and should not be modified.
+
+Consider creating a virtual environment with `uv venv`.
+</code></pre>
+<p>I'm preparing a docker image, so it is intended to install Jupyter (and it's extensions) system wide</p>
+</blockquote>
+<p>same issue, how do you fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 13:10</div>
+            <div class="timeline-body"><p>Pass <code>--python</code> to request the specific system interpreter you want to target. https://github.com/astral-sh/uv/pull/7934 tracks the fix.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

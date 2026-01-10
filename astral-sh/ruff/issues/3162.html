@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should private members be inaccessible from objects of the same type? - astral-sh/ruff #3162</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should private members be inaccessible from objects of the same type?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3162">#3162</a>
+        opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a>
+        on 2023-02-23 05:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-02-23 05:20</div>
+            <div class="timeline-body"><p>Should a class factory not be able to access the object it creates's private methods?  Should a comparison function not be able to access an object of the same type's private members?</p>
+<pre><code class="language-python">from typing import Self, Any
+
+class X:
+    _x: int
+
+    def _f(self) -&gt; None:
+        ...
+
+    @classmethod
+    def factory(cls, x: int) -&gt; Self:
+        retval = cls()
+        retval._f()  # SLF001 Private member accessed
+        return retval
+
+    def __eq__(self, other: Any) -&gt; bool:
+        if not isinstance(other, X):
+            return False
+        return other._x == self._x  # SLF001 Private member accessed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-23 06:58</div>
+            <div class="timeline-body"><p>Yes these are false positives. The problem with this is that ruff isn't a static type checker. Static type checkers understand which type <code>cls()</code> returns and they support type narrowing i.e. they understand that the type of <code>other</code> is <code>X</code> after the above <code>isinstance</code> check ... ruff doesn't.</p>
+<p>And while we could easily implement some logic to handle the exact cases of your example that logic would fail if e.g. retval was reassigned or the <code>isinstance</code> check was more complicated ... properly handling this requires proper static type checking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-02-23 08:57</div>
+            <div class="timeline-body"><p>Yes, I considered that it might be difficult.  Shall I close this issue then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-23 16:53</div>
+            <div class="timeline-body"><p>Yeah probably hard to resolve right now. Eventually, I hope!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-23 16:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

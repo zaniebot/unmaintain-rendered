@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locking depends on the current python version if `requires-python` isn't set - astral-sh/uv #4050</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Locking depends on the current python version if `requires-python` isn't set</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4050">#4050</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-06-05 15:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-06-05 15:19</div>
+            <div class="timeline-body"><p>Locking dependencies with <code>uv lock</code> or <code>uv run</code> depends on the current python version when no explicit <code>requires-python</code> is given:</p>
+<pre><code>[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+dependencies = [&quot;numpy&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>This resolves different numpy versions with <code>uv venv -p 3.8 &amp;&amp; uv run --preview</code> vs. <code>uv venv -p 3.12 &amp;&amp; uv run --preview</code>, since the latest numpy versions don't support python 3.8.</p>
+<p>When the lockfile is committed to git, it means that each invocation by a developer with a different default python version will create lockfile diff, and it destroy the shared environment promise of lockfiles.</p>
+<p>Poetry and pdm both generate a <code>require-python</code> or <code>Python</code> entry by default. When this entry is removed, they enforce compatibility with all python versions. pdm complains about this when backtracking and backtracks to 1.21.1, poetry silently backtracks to 1.16.6.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-06-05 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-05 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 15:26</div>
+            <div class="timeline-body"><p>I'm not sure this is a &quot;bug&quot; but yeah we might want to change it. I'm not particularly opposed to the behavior, although a warning may make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 15:35</div>
+            <div class="timeline-body"><p>Yeah I actually think the current behavior is reasonable though I know it could be a footgun for users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-06-05 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-05 15:58</div>
+            <div class="timeline-body"><p>You can turn this into a bug easily:</p>
+<pre><code>uv venv -p 3.12 &amp;&amp; uv lock --preview
+uv venv -p 3.8 &amp;&amp; uv sync
+</code></pre>
+<p>This ignores the <code>requires-python: &quot;&gt;=3.9&quot;</code> bound on <code>numpy-1.26.4.tar.gz</code> and errors trying to build numpy with:</p>
+<pre><code>meson-python: error: Package requires Python version &gt;=3.9, running on 3.8.18
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 16:00</div>
+            <div class="timeline-body"><p>Do we not encode the Python version range in the lock file and error if it cannot be fulfilled? That sounds like a separate issue from whatever we default to using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-05 16:08</div>
+            <div class="timeline-body"><p>We currently don't, but picking a default range and adding it to the lockfile would be one solution. Others are:</p>
+<ul>
+<li>Make specifying <code>requires-python</code> mandatory</li>
+<li>Warn when <code>requires-python</code> is missing (any behavior after, users have been warned)</li>
+<li>Pick a default <code>requires-python</code> range, say all non-EOL python versions</li>
+<li>Assume all python versions (poetry seems to do this)</li>
+</ul>
+<p>There might be more solutions, they work as long as we get a consistent range no matter from what python we invoke the locking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 16:12</div>
+            <div class="timeline-body"><p>Adding the Python requirement to the lockfile seems important yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4052.html">astral-sh/uv#4052</a> on 2024-06-05 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 16:33</div>
+            <div class="timeline-body"><p>I created a separate issue for that problem at #4052</p>
+<p>I think warning that <code>requires-python</code> is missing and requiring the current minor version seems pretty decent?</p>
+<p>I think it's totally normal for an &quot;application&quot;-style project to just rely on the current Python version being consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 16:34</div>
+            <div class="timeline-body"><p>@konstin - are you planning to do this or should I take it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-05 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-06-05 17:51</div>
+            <div class="timeline-body"><p>I'm not certain yet which options of those is the right one, you can take it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4070.html">astral-sh/uv#4070</a> on 2024-06-05 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-05 20:27</div>
+            <div class="timeline-body"><p>In https://github.com/astral-sh/uv/pull/4070, I made it such that if <code>requires-python</code> is missing, we warn and use the current minor as a minimum version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-05 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

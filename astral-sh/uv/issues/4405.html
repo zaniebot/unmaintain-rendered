@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` fails when specified dependency's extra is effectively no-op (since 0.2.12) - astral-sh/uv #4405</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` fails when specified dependency's extra is effectively no-op (since 0.2.12)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4405">#4405</a>
+        opened by <a href="https://github.com/vrslev">@vrslev</a>
+        on 2024-06-18 22:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vrslev">@vrslev</a> on 2024-06-18 22:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><code>uv lock</code> fails to resolve packages if there's a dependency with asked-for extra that <em>is</em> a no-op in current setup.</p>
+<p>I encountered this issue trying to install <code>pytest-cov</code> with <code>requires-python = &quot;&gt;=3.11&quot;</code>. <code>coverage[toml]</code> requires <code>tomli</code> if Python &lt;=3.11.0a6. From <code>coverage</code>'s METADATA:</p>
+<pre><code class="language-yaml">Provides-Extra: toml
+Requires-Dist: tomli ; (python_full_version &lt;= &quot;3.11.0a6&quot;) and extra == 'toml'
+</code></pre>
+<p><code>uv lock</code> works fine if project requires Python &gt;=3.10:</p>
+<pre><code class="language-python">[project]
+name = &quot;u&quot;
+version = &quot;0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;coverage[toml]&quot;,
+]
+</code></pre>
+<p>And breaks with Python &gt;=3.11 requirement: there won't be a situation where <code>tomli</code> will be required:</p>
+<pre><code class="language-python">[project]
+name = &quot;u&quot;
+version = &quot;0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;coverage[toml]&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../community-of-python/stompman/pulls/27.html">community-of-python/stompman#27</a> on 2024-06-18 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @zanieb on 2024-06-18 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-18 23:53</div>
+            <div class="timeline-body"><p>Thanks for the report! Could you share the error message and logs (with <code>-v</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-06-18 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-18 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vrslev">@vrslev</a> on 2024-06-19 06:55</div>
+            <div class="timeline-body"><p>Sure!</p>
+<details>
+  <summary>With `-v`</summary>
+
+<pre><code>warning: `uv lock` is experimental and may change without warning.
+DEBUG Found workspace root: `/Users/lev/Downloads/t`
+DEBUG Adding current workspace member: /Users/lev/Downloads/t
+DEBUG Interpreter meets the requested python Python &gt;=3.11
+DEBUG Using request timeout of 30s
+DEBUG Acquired lock for `/Users/lev/Library/Caches/uv/built-wheels-v3/editable/e6030ee4129d2c7b`
+DEBUG Preparing metadata for: u @ file:///Users/lev/Downloads/t
+DEBUG No static `PKG-INFO` available for: u @ file:///Users/lev/Downloads/t (MissingPkgInfo)
+DEBUG Found static `pyproject.toml` for: u @ file:///Users/lev/Downloads/t
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.4
+DEBUG Solving with target Python version: &gt;=3.11
+DEBUG Adding direct dependency: u*
+DEBUG Searching for a compatible version of u @ file:///Users/lev/Downloads/t (*)
+DEBUG Adding transitive dependency for u==0: coverage*
+DEBUG Adding transitive dependency for u==0: coverage[toml]*
+DEBUG Found fresh response for: https://pypi.org/simple/coverage/
+DEBUG Searching for a compatible version of coverage[toml] (*)
+DEBUG Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Searching for a compatible version of coverage (==7.5.3)
+DEBUG Selecting: coverage==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c1/c5/2636e073f656ccda6a6bffbc5b1803c4d64075dedaae176b7a616278f68d/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl.metadata
+DEBUG Searching for a compatible version of coverage[toml] (==7.5.3)
+DEBUG Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Tried 2 versions: coverage 1, u 1
+Resolved 2 packages in 15ms
+error: for distribution `u==0 @ editable+.`, found dependency `coverage[toml]==7.5.3 @ registry+https://pypi.org/simple` with unrecognized extra `toml`
+</code></pre>
+</details>
+
+<details>
+  <summary>With `-vv`</summary>
+
+<pre><code>warning: `uv lock` is experimental and may change without warning.
+  0.000869s DEBUG uv_distribution::workspace Found workspace root: `/Users/lev/Downloads/t`
+  0.000879s DEBUG uv_distribution::workspace Adding current workspace member: /Users/lev/Downloads/t
+  0.001697s DEBUG uv::commands::project Interpreter meets the requested python Python &gt;=3.11
+uv_client::linehaul::linehaul
+  0.002243s DEBUG uv_client::base_client Using request timeout of 30s
+uv_resolver::flat_index::from_entries
+uv_distribution::distribution_database::get_or_build_wheel_metadata dist=u @ file:///Users/lev/Downloads/t
+  0.004521s DEBUG uv_fs Acquired lock for `/Users/lev/Library/Caches/uv/built-wheels-v3/editable/e6030ee4129d2c7b`
+  uv_distribution::source::build_metadata dist=u @ file:///Users/lev/Downloads/t
+      0.005671s   0ms DEBUG uv_distribution::source Preparing metadata for: u @ file:///Users/lev/Downloads/t
+      0.005767s   0ms DEBUG uv_distribution::source No static `PKG-INFO` available for: u @ file:///Users/lev/Downloads/t (MissingPkgInfo)
+      0.006087s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: u @ file:///Users/lev/Downloads/t
+  0.006981s   2ms DEBUG uv_distribution::workspace No workspace root found, using project root
+uv_resolver::resolver::solve
+  uv_resolver::resolver::solve_tracked
+      0.007620s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.4
+      0.007623s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.11
+  uv_resolver::resolver::choose_version package=root
+  uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+      uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.007719s   0ms DEBUG uv_resolver::resolver Adding direct dependency: u*
+  uv_resolver::resolver::choose_version package=u
+      0.007788s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of u @ file:///Users/lev/Downloads/t (*)
+  uv_resolver::resolver::get_dependencies_forking package=u, version=0
+      uv_resolver::resolver::get_dependencies package=u, version=0
+        0.007814s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for u==0: coverage*
+        0.007827s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for u==0: coverage[toml]*
+uv_resolver::resolver::process_request request=Versions coverage
+  uv_resolver::resolver::choose_version package=coverage[toml]
+  uv_client::registry_client::simple_api package=coverage
+  uv_client::cached_client::get_cacheable
+      uv_client::cached_client::read_and_parse_cache file=/Users/lev/Library/Caches/uv/simple-v9/pypi/coverage.rkyv
+uv_resolver::resolver::process_request request=Prefetch coverage *
+uv_client::cached_client::from_path_sync path=&quot;/Users/lev/Library/Caches/uv/simple-v9/pypi/coverage.rkyv&quot;
+      0.010389s   2ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/coverage/
+  uv_resolver::version_map::from_metadata
+      0.011666s   3ms DEBUG uv_resolver::resolver Searching for a compatible version of coverage[toml] (*)
+      0.011774s   3ms DEBUG uv_resolver::resolver Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+  uv_distribution::distribution_database::get_or_build_wheel_metadata dist=coverage==7.5.3
+  uv_client::registry_client::wheel_metadata built_dist=coverage==7.5.3
+  uv_resolver::resolver::get_dependencies_forking package=coverage[toml], version=7.5.3
+      uv_resolver::resolver::get_dependencies package=coverage[toml], version=7.5.3
+      uv_client::cached_client::get_serde
+        uv_client::cached_client::get_cacheable
+  uv_resolver::resolver::choose_version package=coverage
+      0.011857s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of coverage (==7.5.3)
+      0.011871s   0ms DEBUG uv_resolver::resolver Selecting: coverage==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+        uv_client::cached_client::read_and_parse_cache file=/Users/lev/Library/Caches/uv/wheels-v1/pypi/coverage/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.msgpack
+uv_resolver::resolver::process_request request=Prefetch coverage ==7.5.3
+uv_client::cached_client::from_path_sync path=&quot;/Users/lev/Library/Caches/uv/wheels-v1/pypi/coverage/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.msgpack&quot;
+  uv_resolver::resolver::get_dependencies_forking package=coverage, version=7.5.3
+      uv_resolver::resolver::get_dependencies package=coverage, version=7.5.3
+            0.012277s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/c1/c5/2636e073f656ccda6a6bffbc5b1803c4d64075dedaae176b7a616278f68d/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl.metadata
+  uv_resolver::resolver::choose_version package=coverage[toml]
+      0.012405s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of coverage[toml] (==7.5.3)
+      0.012409s   0ms DEBUG uv_resolver::resolver Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+  uv_resolver::resolver::get_dependencies_forking package=coverage[toml], version=7.5.3
+      uv_resolver::resolver::get_dependencies package=coverage[toml], version=7.5.3
+      0.012466s   4ms DEBUG uv_resolver::resolver::batch_prefetch Tried 2 versions: coverage 1, u 1
+Resolved 2 packages in 9ms
+error: for distribution `u==0 @ editable+.`, found dependency `coverage[toml]==7.5.3 @ registry+https://pypi.org/simple` with unrecognized extra `toml`
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vrslev">@vrslev</a> on 2024-06-19 06:57</div>
+            <div class="timeline-body"><p>...and the case when resolving succeeds (with <code>requires-python = &quot;&gt;=3.10&quot;</code>):</p>
+<details>
+  <summary>With `-v`</summary>
+
+<pre><code>warning: `uv lock` is experimental and may change without warning.
+DEBUG Found workspace root: `/Users/lev/Downloads/t`
+DEBUG Adding current workspace member: /Users/lev/Downloads/t
+DEBUG Interpreter meets the requested python Python &gt;=3.10
+DEBUG Using request timeout of 30s
+DEBUG Acquired lock for `/Users/lev/Library/Caches/uv/built-wheels-v3/editable/e6030ee4129d2c7b`
+DEBUG Preparing metadata for: u @ file:///Users/lev/Downloads/t
+DEBUG No static `PKG-INFO` available for: u @ file:///Users/lev/Downloads/t (MissingPkgInfo)
+DEBUG Found static `pyproject.toml` for: u @ file:///Users/lev/Downloads/t
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.12.4
+DEBUG Solving with target Python version: &gt;=3.10
+DEBUG Adding direct dependency: u*
+DEBUG Searching for a compatible version of u @ file:///Users/lev/Downloads/t (*)
+DEBUG Adding transitive dependency for u==0: coverage*
+DEBUG Adding transitive dependency for u==0: coverage[toml]*
+DEBUG Found fresh response for: https://pypi.org/simple/coverage/
+DEBUG Searching for a compatible version of coverage[toml] (*)
+DEBUG Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Searching for a compatible version of coverage (==7.5.3)
+DEBUG Selecting: coverage==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c1/c5/2636e073f656ccda6a6bffbc5b1803c4d64075dedaae176b7a616278f68d/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl.metadata
+DEBUG Searching for a compatible version of coverage[toml] (==7.5.3)
+DEBUG Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+DEBUG Adding transitive dependency for coverage[toml]==7.5.3: tomli{python_full_version &lt;= '3.11.0a6'}*
+DEBUG Found stale response for: https://pypi.org/simple/tomli/
+DEBUG Sending revalidation request for: https://pypi.org/simple/tomli/
+DEBUG Found not-modified response for: https://pypi.org/simple/tomli/
+DEBUG Searching for a compatible version of tomli{python_full_version &lt;= '3.11.0a6'} (*)
+DEBUG Selecting: tomli{python_full_version &lt;= '3.11.0a6'}==2.0.1 (tomli-2.0.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of tomli{python_full_version &lt;= '3.11.0a6'} (==2.0.1)
+DEBUG Selecting: tomli{python_full_version &lt;= '3.11.0a6'}==2.0.1 (tomli-2.0.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of tomli (==2.0.1)
+DEBUG Selecting: tomli==2.0.1 (tomli-2.0.1-py3-none-any.whl)
+DEBUG Tried 3 versions: coverage 1, tomli 1, u 1
+Resolved 3 packages in 327ms
+</code></pre>
+</details>
+
+<details>
+  <summary>With `-vv`</summary>
+
+<pre><code>warning: `uv lock` is experimental and may change without warning.
+    0.001133s DEBUG uv_distribution::workspace Found workspace root: `/Users/lev/Downloads/t`
+    0.001147s DEBUG uv_distribution::workspace Adding current workspace member: /Users/lev/Downloads/t
+    0.002284s DEBUG uv::commands::project Interpreter meets the requested python Python &gt;=3.10
+uv_client::linehaul::linehaul 
+    0.003092s DEBUG uv_client::base_client Using request timeout of 30s
+uv_resolver::flat_index::from_entries 
+uv_distribution::distribution_database::get_or_build_wheel_metadata dist=u @ file:///Users/lev/Downloads/t
+    0.007573s DEBUG uv_fs Acquired lock for `/Users/lev/Library/Caches/uv/built-wheels-v3/editable/e6030ee4129d2c7b`
+  uv_distribution::source::build_metadata dist=u @ file:///Users/lev/Downloads/t
+      0.008750s   0ms DEBUG uv_distribution::source Preparing metadata for: u @ file:///Users/lev/Downloads/t
+      0.008876s   0ms DEBUG uv_distribution::source No static `PKG-INFO` available for: u @ file:///Users/lev/Downloads/t (MissingPkgInfo)
+      0.009243s   0ms DEBUG uv_distribution::source Found static `pyproject.toml` for: u @ file:///Users/lev/Downloads/t
+    0.010318s   3ms DEBUG uv_distribution::workspace No workspace root found, using project root
+uv_resolver::resolver::solve 
+  uv_resolver::resolver::solve_tracked 
+      0.011021s   0ms DEBUG uv_resolver::resolver Solving with installed Python version: 3.12.4
+      0.011027s   0ms DEBUG uv_resolver::resolver Solving with target Python version: &gt;=3.10
+    uv_resolver::resolver::choose_version package=root
+    uv_resolver::resolver::get_dependencies_forking package=root, version=0a0.dev0
+      uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+          0.011151s   0ms DEBUG uv_resolver::resolver Adding direct dependency: u*
+    uv_resolver::resolver::choose_version package=u
+        0.011217s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of u @ file:///Users/lev/Downloads/t (*)
+    uv_resolver::resolver::get_dependencies_forking package=u, version=0
+      uv_resolver::resolver::get_dependencies package=u, version=0
+          0.011255s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for u==0: coverage*
+          0.011268s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for u==0: coverage[toml]*
+uv_resolver::resolver::process_request request=Versions coverage
+    uv_resolver::resolver::choose_version package=coverage[toml]
+  uv_client::registry_client::simple_api package=coverage
+    uv_client::cached_client::get_cacheable 
+      uv_client::cached_client::read_and_parse_cache file=/Users/lev/Library/Caches/uv/simple-v9/pypi/coverage.rkyv
+uv_resolver::resolver::process_request request=Prefetch coverage *
+uv_client::cached_client::from_path_sync path=&quot;/Users/lev/Library/Caches/uv/simple-v9/pypi/coverage.rkyv&quot;
+        0.013876s   2ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/coverage/
+  uv_resolver::version_map::from_metadata 
+        0.015669s   4ms DEBUG uv_resolver::resolver Searching for a compatible version of coverage[toml] (*)
+        0.015790s   4ms DEBUG uv_resolver::resolver Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+  uv_distribution::distribution_database::get_or_build_wheel_metadata dist=coverage==7.5.3
+    uv_client::registry_client::wheel_metadata built_dist=coverage==7.5.3
+    uv_resolver::resolver::get_dependencies_forking package=coverage[toml], version=7.5.3
+      uv_resolver::resolver::get_dependencies package=coverage[toml], version=7.5.3
+      uv_client::cached_client::get_serde 
+        uv_client::cached_client::get_cacheable 
+    uv_resolver::resolver::choose_version package=coverage
+        0.015899s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of coverage (==7.5.3)
+        0.015917s   0ms DEBUG uv_resolver::resolver Selecting: coverage==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+          uv_client::cached_client::read_and_parse_cache file=/Users/lev/Library/Caches/uv/wheels-v1/pypi/coverage/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.msgpack
+uv_resolver::resolver::process_request request=Prefetch coverage ==7.5.3
+uv_client::cached_client::from_path_sync path=&quot;/Users/lev/Library/Caches/uv/wheels-v1/pypi/coverage/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.msgpack&quot;
+    uv_resolver::resolver::get_dependencies_forking package=coverage, version=7.5.3
+      uv_resolver::resolver::get_dependencies package=coverage, version=7.5.3
+            0.016384s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/c1/c5/2636e073f656ccda6a6bffbc5b1803c4d64075dedaae176b7a616278f68d/coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl.metadata
+    uv_resolver::resolver::choose_version package=coverage[toml]
+        0.016532s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of coverage[toml] (==7.5.3)
+        0.016537s   0ms DEBUG uv_resolver::resolver Selecting: coverage[toml]==7.5.3 (coverage-7.5.3-cp310-cp310-macosx_10_9_x86_64.whl)
+    uv_resolver::resolver::get_dependencies_forking package=coverage[toml], version=7.5.3
+      uv_resolver::resolver::get_dependencies package=coverage[toml], version=7.5.3
+          0.016580s   0ms DEBUG uv_resolver::resolver Adding transitive dependency for coverage[toml]==7.5.3: tomli{python_full_version &lt;= '3.11.0a6'}*
+    uv_resolver::resolver::choose_version package=tomli{python_full_version &lt;= '3.11.0a6'}
+uv_resolver::resolver::process_request request=Versions tomli
+  uv_client::registry_client::simple_api package=tomli
+    uv_client::cached_client::get_cacheable 
+      uv_client::cached_client::read_and_parse_cache file=/Users/lev/Library/Caches/uv/simple-v9/pypi/tomli.rkyv
+uv_client::cached_client::from_path_sync path=&quot;/Users/lev/Library/Caches/uv/simple-v9/pypi/tomli.rkyv&quot;
+        0.019949s   3ms DEBUG uv_client::cached_client Found fresh response for: https://pypi.org/simple/tomli/
+  uv_resolver::version_map::from_metadata 
+        0.019987s   3ms DEBUG uv_resolver::resolver Searching for a compatible version of tomli{python_full_version &lt;= '3.11.0a6'} (*)
+        0.019999s   3ms DEBUG uv_resolver::resolver Selecting: tomli{python_full_version &lt;= '3.11.0a6'}==2.0.1 (tomli-2.0.1-py3-none-any.whl)
+    uv_resolver::resolver::get_dependencies_forking package=tomli{python_full_version &lt;= '3.11.0a6'}, version=2.0.1
+      uv_resolver::resolver::get_dependencies package=tomli{python_full_version &lt;= '3.11.0a6'}, version=2.0.1
+    uv_resolver::resolver::choose_version package=tomli{python_full_version &lt;= '3.11.0a6'}
+        0.020051s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of tomli{python_full_version &lt;= '3.11.0a6'} (==2.0.1)
+        0.020057s   0ms DEBUG uv_resolver::resolver Selecting: tomli{python_full_version &lt;= '3.11.0a6'}==2.0.1 (tomli-2.0.1-py3-none-any.whl)
+uv_resolver::resolver::process_request request=Prefetch tomli ==2.0.1
+uv_resolver::resolver::process_request request=Metadata tomli==2.0.1
+  uv_distribution::distribution_database::get_or_build_wheel_metadata dist=tomli==2.0.1
+    uv_resolver::resolver::get_dependencies_forking package=tomli{python_full_version &lt;= '3.11.0a6'}, version=2.0.1
+      uv_resolver::resolver::get_dependencies package=tomli{python_full_version &lt;= '3.11.0a6'}, version=2.0.1
+    uv_client::registry_client::wheel_metadata built_dist=tomli==2.0.1
+      uv_client::cached_client::get_serde 
+        uv_client::cached_client::get_cacheable 
+          uv_client::cached_client::read_and_parse_cache file=/Users/lev/Library/Caches/uv/wheels-v1/pypi/tomli/tomli-2.0.1-py3-none-any.msgpack
+uv_client::cached_client::from_path_sync path=&quot;/Users/lev/Library/Caches/uv/wheels-v1/pypi/tomli/tomli-2.0.1-py3-none-any.msgpack&quot;
+            0.020326s   0ms DEBUG uv_client::cached_client Found fresh response for: https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl.metadata
+    uv_resolver::resolver::choose_version package=tomli
+        0.020359s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of tomli (==2.0.1)
+        0.020363s   0ms DEBUG uv_resolver::resolver Selecting: tomli==2.0.1 (tomli-2.0.1-py3-none-any.whl)
+    uv_resolver::resolver::get_dependencies_forking package=tomli, version=2.0.1
+      uv_resolver::resolver::get_dependencies package=tomli, version=2.0.1
+      0.020382s   9ms DEBUG uv_resolver::resolver::batch_prefetch Tried 3 versions: coverage 1, tomli 1, u 1
+Resolved 3 packages in 14ms
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-19 17:04</div>
+            <div class="timeline-body"><p>So the issue here is that our resolver is spitting out the <code>coverage</code> package <em>with</em> a <code>toml</code> marker. But since <code>requires-python = &quot;&gt;=3.11&quot;</code> excludes the conditional dependency <code>Requires-Dist: tomli ; (python_full_version &lt;= &quot;3.11.0a6&quot;) and extra == 'toml'</code> (since <code>3.11 &gt; 3.11.0a6</code>), it turns out that the extra doesn't actually activate any distributions in the final resolution. At this point, our lock validity checks notice that we have an extra <code>toml</code> with no corresponding optional dependencies for that extra. Specifically, this check:</p>
+<p>https://github.com/astral-sh/uv/blob/e5f061e1f1ea03504b0383033c61e8a89614e0e9/crates/uv-resolver/src/lock.rs#L421-L428</p>
+<p>I'm not totally clear yet on how best to fix this. On the one hand, a simple solution is to just omit dependencies with extras that don't activate anything, and effectively avoid this error condition by construction. On the other, I wonder whether the fact that our resolver is emitting this package with a superfluous extra is itself a problem and perhaps that is what should be fixed.</p>
+<p>I suspect @charliermarsh might have a good idea of what to do here, so I'll wait to hear from him when he's back next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 14:53</div>
+            <div class="timeline-body"><p>@BurntSushi - I'm happy to take this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-23 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @BurntSushi by @charliermarsh on 2024-06-23 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 15:23</div>
+            <div class="timeline-body"><p>You get the same error if you include a reference to a non-existent extra.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4479.html">astral-sh/uv#4479</a> on 2024-06-24 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-24 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-24 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vrslev">@vrslev</a> on 2024-06-25 05:48</div>
+            <div class="timeline-body"><p>Thanks, appreciate your work!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

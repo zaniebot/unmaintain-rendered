@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to surface Pytorch CPU/GPU config in workspace member to repo level - astral-sh/uv #10590</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to surface Pytorch CPU/GPU config in workspace member to repo level</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10590">#10590</a>
+        opened by <a href="https://github.com/bepuca">@bepuca</a>
+        on 2025-01-14 10:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bepuca">@bepuca</a> on 2025-01-14 10:55</div>
+            <div class="timeline-body"><h2>Context</h2>
+<p>I am working in a mono repo with workspaces. One of these workspace members requires PyTorch. To avoid massive environments when there is no GPU (so CI does not break), I was trying to set up PyTorch with extras as per defined in the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">PyTorch integration docs</a>.</p>
+<h2>Problem/Question</h2>
+<p>Now, this works well at the package level. I can do something like <code>uv run --package my_package --extra gpu --isolated ...</code> and it does install what it should. The problem is that when I do <code>uv sync --extra gpu</code> at the top level, it does not cascade down and torch, an optional dependency, is not installed at all.</p>
+<p>Now, I was thinking that maybe treating it the same way as any external package, I could do something like this:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+cpu = [
+    &quot;my-package[cpu]&quot;
+]
+gpu = [
+    &quot;my-package[gpu]&quot;
+]
+</code></pre>
+<p>At the top level <code>pyproject.toml</code>. But now, the <code>uv sync</code> fails on <code>error: Found conflicting extra 'cpu' unconditionally enabled in 'my-package[cpu] @ ... ; extra == 'cpu''</code>.</p>
+<p>Even with the following at the top level <code>pyproject.toml</code> it does not work:</p>
+<pre><code>[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+</code></pre>
+<p>I am not sure if this is a bug or I just can't seem to figure it out. I understand that it may be undesirable to just cascade down extras, but then it would be awesome if you could help me figure out how to enable things so I install my package with an extra. I would really like to avoid details about torch at the top level, as the whole point is to keep things somewhat isolated.</p>
+<p>Thank you very much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-14 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-14 14:49</div>
+            <div class="timeline-body"><p>I think there's a bug here unfortunately. We're looking into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-14 15:07</div>
+            <div class="timeline-body"><p>This might be a duplicate of #9942, but there could be more than one bug lurking here. But some aspect of this is at least intended behavior for now (which we should try to fix). In particular, when <code>dependency[foo]</code> is seen where <code>foo</code> is an extra declared as conflicting, then uv <em>conservatively</em> assumes that to be an unconditional enabling of a conflicting extra and thus returns an error:</p>
+<p>https://github.com/astral-sh/uv/blob/faa4481ccc4af97b6043f824224c065da55a15c2/crates/uv-resolver/src/resolver/mod.rs#L3619-L3647</p>
+<p>The comment in the code above shows why we do this.</p>
+<p>Some thoughts on future direction here:</p>
+<ul>
+<li>If we could somehow prove that <code>dependency[foo]</code> is only enabled by another conflicting extra, then I think we could allow cases like that. But the logic for an iron clad proof here (that never permits installation of more than one version of the same package) seems a little tricky? At least, it's not immediately obvious to me. I'd have to sit down and think about it.</li>
+<li>The error reporting shown in the code above is very eager. That is, it actively seeks out a <em>possible</em> conflict and hedges by returning an error. But maybe we don't need to do this eagerly and can be a bit more lazy about it? This also seems tricky to reason about.</li>
+<li>Very brainstorm-y thought: maybe we can do some workspace-level reasoning on the packages just in the workspace to do something smarter here?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2025-01-15 10:26</div>
+            <div class="timeline-body"><p>Thank you guys for such a swift response.</p>
+<p>To elaborate a bit more, to try to bypass the problem, I tried duplicating the <code>torch</code> duality as optional dependencies at the package level and at the repo level. This would be suboptimal but would unblock this approach. The problem I find when I do this is and <code>uv sync --extra gpu</code>:</p>
+<pre><code>error: Requirements contain conflicting indexes for package `torch` in all marker environments:
+- https://download.pytorch.org/whl/cpu
+- https://download.pytorch.org/whl/cu121
+</code></pre>
+<p>The error goes away when I remove the optional dependencies with the two extras CPU &amp; GPU for torch. Now, I can also make it work if I just add <code>torch</code> as a normal dependency in the package level. The problem is that when I do <code>uv run</code> in these conditions I have no control over the version installed (just default PyPI) which does not cut it.</p>
+<p>Do you guys have a workaround atm to be able to do <code>uv sync</code> at top level controlling CPU/GPU and also at package level?</p>
+<p>Anyhow, the idea of this comment is to just give more observations of behaviors I can see. Let me know if I can help somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sh1man999">@sh1man999</a> on 2025-01-21 13:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Спасибо вам, ребята, за такую оперативную реакцию.</p>
+<p>Чтобы немного уточнить, чтобы попытаться обойти проблему, я попробовал дублировать двойственность в виде необязательных зависимостей на уровне пакета и на уровне репозитория. Это было бы неоптимально, но разблокировало бы этот подход. Проблема, с которой я сталкиваюсь, когда делаю это, заключается в том, что:<code>torch``uv sync --extra gpu</code></p>
+<pre><code>error: Requirements contain conflicting indexes for package `torch` in all marker environments:
+- https://download.pytorch.org/whl/cpu
+- https://download.pytorch.org/whl/cu121
+</code></pre>
+<p>Ошибка исчезает, когда я удаляю необязательные зависимости с двумя дополнительными процессором и графическим процессором для torch. Теперь я также могу заставить его работать, если просто добавлю как обычную зависимость на уровне пакета. Проблема в том, что когда я делаю это в таких условиях, у меня нет контроля над установленной версией (только PyPI по умолчанию), которая ее не режет.<code>torch``uv run</code></p>
+<p>Есть ли у вас, ребята, обходной путь, чтобы иметь возможность управлять процессором/графическим процессором на верхнем уровне, а также на уровне пакета?<code>uv sync</code></p>
+<p>В любом случае, идея этого комментария состоит в том, чтобы просто дать больше наблюдений за поведением, которое я могу видеть. Дайте мне знать, если я могу как-то помочь.</p>
+</blockquote>
+<p>I have the same error, it seems that the documentation is not written correctly</p>
+<p>https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9942.html">astral-sh/uv#9942</a> on 2025-01-21 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2025-01-21 14:40</div>
+            <div class="timeline-body"><p>@bepuca you can try adapting my solution <a href="https://github.com/astral-sh/uv/issues/9942#issuecomment-2549041505">here</a> but including a CPU extra which requires <code>torch==&quot;X.Y.Z+cpu&quot;</code> explicitly, all from the same index (so you control CPU vs. CUDA with the local version specifier rather than the index).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reuben">@reuben</a> on 2025-01-21 14:40</div>
+            <div class="timeline-body"><p>That does mean that you have to depend on a specific patch version of Torch though, can't have any flexible resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sh1man999">@sh1man999</a> on 2025-01-22 09:10</div>
+            <div class="timeline-body"><p>Yes, I did, but the documentation is misleading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mchalecki">@mchalecki</a> on 2025-01-22 09:23</div>
+            <div class="timeline-body"><p>I have the same use case: I'm using a submodule with cpu and gpu variants and want to forward these options to the main package.</p>
+<p>Waiting on a bug fix as the current behavior makes it very complicated to integrate two such packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-22 17:04</div>
+            <div class="timeline-body"><p>I think for now, I'd like to propose that we make the error checking for conflicting extras in <code>uv sync</code> more robust and remove the error checking in the resolver for &quot;unconditional&quot; enabling of conflicting extras. This will permit things like <code>foo[extra]</code> to work even if <code>extra</code> is declared as conflicting while still preserving the property that we never permit installation of multiple versions of the same package into the same environment. The downside of this is that we will sometimes produce &quot;invalid&quot; lock files that can never be installed (because running <code>uv sync</code> will always produce a conflicting extra error).</p>
+<hr />
+<p>OK, so I'm trying to distill this down into the essential thing we want to support that we don't support today. As mentioned above, uv will pretty conservatively fail whenever a conflicting extra is found &quot;unconditionally&quot; enabled in an optional dependency specification, even if the dependency specification itself is conditional. So trying to come up with a simpler example, consider this <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.0&quot;
+dependencies = []
+
+[tool.uv.workspace]
+members = [&quot;dependency&quot;]
+
+[tool.uv.sources]
+dependency = { workspace = true }
+
+[project.optional-dependencies]
+x1 = [
+    &quot;dependency[nested-x1]&quot;
+]
+x2 = [
+    &quot;dependency[nested-x2]&quot;
+]
+</code></pre>
+<p>And this <code>dependency/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;dependency&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10.0&quot;
+dependencies = []
+
+[project.optional-dependencies]
+nested-x1 = [
+  &quot;sortedcontainers==2.3.0&quot;,
+]
+nested-x2 = [
+  &quot;sortedcontainers==2.4.0&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;nested-x1&quot; },
+    { extra = &quot;nested-x2&quot; },
+  ],
+]
+</code></pre>
+<p>Running <code>uv lock</code> with the above gets you:</p>
+<pre><code>error: Found conflicting extra `nested-x1` unconditionally enabled in `dependency[nested-x1] @ file:///home/andrew/astral/uv/play/i10590-pytorch-shenanigans/simpler/dependency ; extra == 'x1'`
+</code></pre>
+<p>The conflicts are declared on <code>nested-x1</code> and <code>nested-x2</code>. And the dependent has its own <code>x1</code> and <code>x2</code> extras that each enable <code>nested-x1</code> and <code>nested-x2</code>, respectively. If <code>x1</code> and <code>x2</code> are enabled at the same time, then uv <em>should</em> error since that configuration ultimately ends up enabling <code>nested-x1</code> and <code>nested-x2</code>. But that error checking (at install time) doesn't actually exist, so uv refuses to produce a resolution.</p>
+<p>It seems like we could just add that error path such that <code>uv sync --extra x1 --extra x2</code> would just know to fail without adding anything else to <code>pyproject.toml</code> above.</p>
+<p>I also want to consider my code comment from above as well:</p>
+<p>https://github.com/astral-sh/uv/blob/028df07c192fc0ce023a1eacdfb6b1197c6fa390/crates/uv-resolver/src/resolver/mod.rs#L3617-L3646</p>
+<p>Here, it's talking about a dependency graph like this:</p>
+<pre><code>root
+|--&gt; a
+    |--&gt; c[x1]
+|--&gt; b
+    |--&gt; c[x2]
+</code></pre>
+<p>where <code>x1</code> and <code>x2</code> are conflicting.</p>
+<p>I think this was the original example that motivated the conservative error checking that uv is doing today. I think when I wrote this, what was on my mind is that since <code>c[x1]</code> and <code>c[x2]</code> are in different parts of the dependency tree, the necessary forks inside the resolver would never be created. But I think they actually are. And I think that if we make our error checking a bit smarter during <code>uv sync</code> (i.e., &quot;does any pair of extras every get activated&quot;), then it will cover the above case as well. <strong>However, it will produce a lock file that will always fail to install.</strong> Here's a setup that emulates the above tree.</p>
+<p>First, <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10.0&quot;
+dependencies = [&quot;a&quot;, &quot;b&quot;]
+
+[tool.uv.workspace]
+members = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+
+[tool.uv.sources]
+a = { workspace = true }
+b = { workspace = true }
+c = { workspace = true }
+</code></pre>
+<p>Now <code>a/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;a&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10.0&quot;
+dependencies = [&quot;c[x1]&quot;]
+
+[tool.uv.sources]
+c = { workspace = true }
+</code></pre>
+<p>Now <code>b/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;b&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10.0&quot;
+dependencies = [&quot;c[x2]&quot;]
+
+[tool.uv.sources]
+c = { workspace = true }
+</code></pre>
+<p>And finally, <code>c/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;c&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10.0&quot;
+dependencies = []
+
+[project.optional-dependencies]
+x1 = [&quot;sortedcontainers==2.3.0&quot;]
+x2 = [&quot;sortedcontainers==2.4.0&quot;]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;x1&quot; },
+    { extra = &quot;x2&quot; },
+  ],
+]
+</code></pre>
+<p>This setup also errors today for the same reason that the simpler example above does: there is an unconditional enabling of <code>x1</code> and <code>x2</code>. And indeed, in this example, there is no real valid installation as far as I can see. So this example would result in producing a lock file that would always fail at install time.</p>
+<p>So... is there an alternative where we can correctly detect the second example above and thus fail to resolve, but simultaneously allow the first example with correct error checking at install time? I'm not quite sure to be honest. I think we would need to create a tree of reasoning with respect to the declared conflicts. i.e., From the first example above, in order to allow <code>dependency[nested-x1]</code> inside of the <code>x1</code> extra at the top-level, I think we'd basically have to behave <em>as if</em> <code>x1</code> and <code>x2</code> were also declared as conflicting? And then I think we'd need to treat, e.g., <code>x2</code> as conflicting with <code>nested-x1</code> and <code>x1</code> as conflicting with <code>nested-x2</code> too as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10875.html">astral-sh/uv#10875</a> on 2025-01-22 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-22 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-22 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mchalecki">@mchalecki</a> on 2025-01-24 09:50</div>
+            <div class="timeline-body"><p>This implemented solution installs actually both versions:</p>
+<p>I'm running uv 0.5.23</p>
+<pre><code>#26 [base 22/29] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --extra gpu 
+#26 1.839 Prepared 3 packages in 1.66s
+#26 2.863 Uninstalled 6 packages in 1.02s
+#26 14.21 Installed 6 packages in 11.35s
+#26 15.84 Bytecode compiled 29286 files in 1.62s
+#26 15.84  ~ internal-package==0.1.0 (from file:///root/work/internal-package)
+#26 15.84  + external-package==0.1.0 (from file:///root/work)
+#26 15.84  ~ torch==2.4.1
+#26 15.84  ~ torch==2.4.1+cu124
+#26 15.84  ~ torchvision==0.19.1
+#26 15.84  ~ torchvision==0.19.1+cu124
+</code></pre>
+<p>Running <code>uv pip list</code> I get both versions of torch and torchvision</p>
+<pre><code>...
+torch                              2.4.1
+torch                              2.4.1+cu124
+torchvision                        0.19.1
+torchvision                        0.19.1+cu124
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-24 11:50</div>
+            <div class="timeline-body"><p>@mchalecki Could you please include a full repro?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mchalecki">@mchalecki</a> on 2025-01-27 11:34</div>
+            <div class="timeline-body"><p>I found the problem by trying to reproduce the problem on a new repo. The problem is with package torchmetrics. When it is in the workspace package/dependency this case exists. I have yet not inspect what can be wrong with that package configuration.</p>
+<p>Minimal example:</p>
+<p>Child:</p>
+<pre><code>[project]
+name = &quot;child-surface&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;torchmetrics&gt;=1.1.0&quot;,
+]
+
+
+[project.optional-dependencies]
+cpu = [
+    &quot;torch==2.4.1&quot;, 
+    &quot;torchvision==0.19.1&quot;
+]
+gpu = [
+    &quot;torch==2.4.1&quot;, 
+    &quot;torchvision==0.19.1&quot;,
+    &quot;nvidia-dali-cuda120==1.30.0&quot;,
+]
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;gpu&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu124&quot;, extra = &quot;gpu&quot; },
+]
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>Parent:</p>
+<pre><code>[project]
+name = &quot;parent-surface&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[tool.uv.sources]
+child-surface = [{ workspace = true  },]
+
+[tool.uv.workspace]
+members = [&quot;child-surface&quot;]
+
+
+[project.optional-dependencies]
+cpu = [
+    &quot;child-surface[cpu]&gt;=0.0.1&quot;, 
+]
+gpu = [
+    &quot;child-surface[gpu]&gt;=0.0.1&quot;, 
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+</code></pre>
+<p>Full zipped example with lock file:
+<a href="https://github.com/user-attachments/files/18557374/parent-surface.zip">parent-surface.zip</a></p>
+<hr />
+<p>Edit: Looking at their repo and build system in <a href="https://github.com/Lightning-AI/torchmetrics/blob/master/setup.py#L162">setup.py</a> I see that they define <a href="https://github.com/Lightning-AI/torchmetrics/blob/master/requirements/base.txt#L6C1-L6C22">base requirements</a> which is just <code>torch &gt;=2.0.0, &lt;2.7.0</code></p>
+<p>So uv resolver has installed <code>torch==2.4.1+cu124</code> and then installs <code>torch==2.4.1</code> which is strange having two different versions of the same package</p>
+<p>This behavior changed after introducing this change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10985.html">astral-sh/uv#10985</a> on 2025-01-27 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:05</div>
+            <div class="timeline-body"><p>@mchalecki Thank you! I can indeed reproduce it. It looks like a new bug. I opened https://github.com/astral-sh/uv/issues/10985 to track it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:05 UTC
+    </footer>
+</body>
+</html>

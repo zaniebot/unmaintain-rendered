@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv build dist . cannot find requirements.txt when using setup.py - astral-sh/uv #8287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv build dist . cannot find requirements.txt when using setup.py</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8287">#8287</a>
+        opened by <a href="https://github.com/JohnStokes228">@JohnStokes228</a>
+        on 2024-10-17 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JohnStokes228">@JohnStokes228</a> on 2024-10-17 11:20</div>
+            <div class="timeline-body"><p>in my package, i have the following minimal setup.py file:</p>
+<pre><code>def list_reqs(fname=&quot;requirements.txt&quot;):
+    with open(fname) as fd:
+        return fd.read().splitlines()
+
+setuptools.setup(
+    name=&quot;my_package&quot;,
+    version=&quot;0.0.1&quot;,
+    author=&quot;ME&quot;,
+    author_email=&quot;#ME@hotmail.com&quot;,
+    description=&quot;mae'r pecyn hwn yn ffendigedig&quot;,
+    packages=setuptools.find_packages(),
+    install_requires=list_reqs(),
+    python_requires=&quot;&gt;=3.8&quot;,
+)
+</code></pre>
+<p>when run with <code>python setup.py bdist_wheel</code>, this compiles correctly as expected, however when i run the following instead:</p>
+<pre><code>pip install --upgrade uv
+uv build --no-python-downloads -o dist .
+</code></pre>
+<p>I'm greeted with the error:
+<code>FileNotFoundError: [Errno 2] No such file or directory: 'requirements.txt'</code></p>
+<p>it seems as if uv is only able to see discovered packages, and not supporting files in the parent directory? I would ideally like to be able to discover the supporting files from the parent directory during the build process if possible, in order to make the transition for older packages more seamless.</p>
+<p>cheers,</p>
+<p>John</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 12:21</div>
+            <div class="timeline-body"><p>I think this is an issue with the <code>setup.py</code> itself -- the declaration of how to find <code>requirements.txt</code> doesn't look portable. Can you try something like <code>list_reqs(fname=os.path.join(os.path.dirname(__file__), &quot;requirements.txt&quot;)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-17 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-03 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:11 UTC
+    </footer>
+</body>
+</html>

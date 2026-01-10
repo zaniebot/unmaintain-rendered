@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule proposal: enforce strict boolean types in if statements - astral-sh/ruff #9148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule proposal: enforce strict boolean types in if statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9148">#9148</a>
+        opened by <a href="https://github.com/valentincalomme">@valentincalomme</a>
+        on 2023-12-15 11:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2023-12-15 11:05</div>
+            <div class="timeline-body"><p>A code guideline I enforce in my projects is only to use boolean values or expressions resulting in a boolean in an if statement. So far, I have not found a linter that enforces this automatically, hence my proposal to add this rule to <code>ruff</code>.</p>
+<p>In essence, I would like a lint rule that allows the following.</p>
+<pre><code class="language-py">if x &lt; 0:
+    ...
+
+if isinstance(x, int):
+    ...
+
+if True:
+    ...
+</code></pre>
+<p>And disallows things like this</p>
+<pre><code class="language-py">if [1,2,3]: # list is not a boolean value
+    ...
+
+if &quot;Hello world&quot;: # str is not a boolean value
+    ...
+
+if None:
+    ...
+</code></pre>
+<p>Don't know if this is something that <code>ruff</code> could implement. If this already exists in another linter, I'd be happy to hear it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-12-15 23:13</div>
+            <div class="timeline-body"><p><code>if [1, 2, 3]</code> could be detected with simple patterns, but I assume what you’d really like to detect is <code>if some_module.some_function_that_returns_list()</code>. That can’t be done at present because Ruff is not a type checker and doesn’t have access to type information. It’d be more in scope for a type checker like mypy.</p>
+<p>Note though that <a href="https://peps.python.org/pep-0008/#programming-recommendations">PEP 8</a> recommends “For sequences, (strings, lists, tuples), use the fact that empty sequences are false”.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-15 23:38</div>
+            <div class="timeline-body"><p>Thanks for opening an issue!</p>
+<p>This feels contrary to the design of the Python language. I'm curious why you prefer this?</p>
+<p>Separately from whether or not it makes sense, I don't think we can actually do a good job implementing this until we have strong type inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-12-15 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @zanieb on 2023-12-15 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-12-15 23:49</div>
+            <div class="timeline-body"><p>The motivation does make sense. Python makes it too tempting to abbreviate <code>if foo is not None</code> to <code>if foo</code>, which introduces a subtle bug if <code>foo</code> is (say) an <code>int | None</code> that might be <code>0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2023-12-16 10:54</div>
+            <div class="timeline-body"><p>It would indeed require type inference, as in my case, I don't care what the value in the if statement is or where it comes from as long as it evaluates to a boolean.</p>
+<p>I would indeed expect to find these checks in <code>mypy</code> or even in something like <code>flake8-bugbear</code>, as it's not a mistake but a potentially hard-to-debug bug.</p>
+<p>As for the motivation, here is how I'd imagine finding this in the <code>ruff</code> documentation. (Maybe a good idea to to provide this as a template for issues dealing with rule proposals?)</p>
+<h1>implicit-conditional (RUF-0XX)</h1>
+<h2>What it does</h2>
+<p>Checks whether non-boolean expressions are used in conditional statements.</p>
+<h2>Why is it bad</h2>
+<p>Although it is allowed in Python, using non-booleans in conditional statements can have unintended consequences. For instance, a developer might intend to perform a null-check, but it might result in False if an integer equals 0, if a list or dictionary is empty, if a string is empty, etc.</p>
+<h2>Example</h2>
+<p>In the following example, an empty list or a None will be treated the same, as <code>[]</code> asserts to <code>False</code>. But it isn't clear whether it is what we intend to do.</p>
+<pre><code class="language-py">def average(x: list[int] | None = None) -&gt; float | None:
+    if x:
+        return None
+        
+    return sum(x) / len(x)
+</code></pre>
+<p>If we'd like an empty list or a None to be treated the same, use instead:</p>
+<pre><code class="language-py">def average(x: list[int] | None = None) -&gt; float | None:
+    if x is None or len(x) == 0:
+        return None
+    
+    return sum(x) / len(x)
+</code></pre>
+<p>And if we don't, use instead:</p>
+<pre><code class="language-py">def average(x: list[int] | None = None) -&gt; float | None:
+    if x is None:
+        return None
+    
+    if len(x) == 0:
+        raise ValueError(&quot;List cannot be empty.&quot;)
+    
+    return sum(x) / len(x)
+</code></pre>
+<h2>When not to use it</h2>
+<p>If you do not rely on optional types or if you want to keep your code short (i.e. in comprehensions), then, this rule might not be as useful to you.</p>
+<p>Similar scenarios may arise with:</p>
+<ul>
+<li>collections (<code>list</code>, <code>dict</code>, <code>set</code>, <code>tuple</code>, <code>frozenset</code>, etc.), as empty collections are <code>False</code></li>
+<li>numbers (<code>int</code>, <code>float</code>) as <code>0</code> or <code>0.0</code> are <code>False</code></li>
+<li>strings as empty strings are <code>False</code></li>
+<li>values marked as <code>Optional</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/mypy/issues/16734.html">python/mypy#16734</a> on 2024-01-03 15:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

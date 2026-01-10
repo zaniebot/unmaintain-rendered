@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 Undefined name when using Literal from typing - astral-sh/ruff #733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 Undefined name when using Literal from typing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/733">#733</a>
+        opened by <a href="https://github.com/adilkhash">@adilkhash</a>
+        on 2022-11-14 07:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adilkhash">@adilkhash</a> on 2022-11-14 07:09</div>
+            <div class="timeline-body"><p>Hey 👋,</p>
+<p>I discovered the problem with Literal discussed in another issue: https://github.com/charliermarsh/ruff/issues/629 but I have a slightly different use case which <code>ruff</code> doesn't like:</p>
+<pre><code class="language-python">import typing as t
+
+
+class MyClass:
+    category: t.Literal['A', 'B', 'C']
+</code></pre>
+<pre><code class="language-bash">&gt; ruff --version
+ruff 0.0.117
+
+&gt; ruff mycode.py
+Found 3 error(s).
+mycode.py:5:25: F821 Undefined name `A`
+mycode.py:5:30: F821 Undefined name `B`
+mycode.py:5:35: F821 Undefined name `C`
+</code></pre>
+<p>It is interesting that if I import Literal from typing without using an alias then everything is OK:</p>
+<pre><code class="language-python">from typing import Literal
+
+
+class MyClass:
+    category: Literal['A', 'B', 'C']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-14 14:32</div>
+            <div class="timeline-body"><p>Yeah this is a legitimate deficiency right now! It’s similar to #720 but a slightly different case. We don’t track import aliases right now. But what you have here feels like a common pattern so I’ll try to prioritize fixing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-14 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-14 15:37</div>
+            <div class="timeline-body"><p>(I'll try to fix this today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-14 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/746.html">astral-sh/ruff#746</a> on 2022-11-15 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-15 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adilkhash">@adilkhash</a> on 2022-11-15 03:33</div>
+            <div class="timeline-body"><p>Thanks for your quick responses, but I see that you've released the 0.0.119 version, but it doesn't solve the problem:</p>
+<pre><code class="language-bash">&gt; ruff --version           
+ruff 0.0.119
+
+&gt; ruff mycode.py
+Found 3 error(s).
+mycode.py:5:25: F821 Undefined name `A`
+mycode.py:5:30: F821 Undefined name `B`
+mycode.py:5:35: F821 Undefined name `C`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-15 03:50</div>
+            <div class="timeline-body"><p>🤦 I missed a one-line change specific to <code>Literal</code>, one sec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/748.html">astral-sh/ruff#748</a> on 2022-11-15 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-15 03:54</div>
+            <div class="timeline-body"><p>Cutting a new release to fix this: <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.120">v0.0.120</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crypdick">@crypdick</a> on 2024-02-15 15:40</div>
+            <div class="timeline-body"><p>This issue appears to have resurfaced. Unlike the OP, the second example is not working for me:</p>
+<pre><code class="language-python">from typing import Literal
+# same issue with`from beartype.typing import Literal`
+
+class MyClass:
+    category: Literal[&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]
+</code></pre>
+<pre><code>&gt; ruff --version
+ruff 0.2.1
+&gt; ruff tmp.py
+tmp.py:5:24: F821 Undefined name `A`
+tmp.py:5:29: F821 Undefined name `B`
+tmp.py:5:34: F821 Undefined name `C`
+Found 3 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crypdick">@crypdick</a> on 2024-09-24 13:13</div>
+            <div class="timeline-body"><p>@charliermarsh FYI this is still an issue on ruff 0.6.7
+<img src="https://github.com/user-attachments/assets/bfca0069-83b6-4073-b9f1-dff6c61626d3" alt="image" /></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

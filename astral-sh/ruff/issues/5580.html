@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for PERF402 when using `.append()` on non-list objects - astral-sh/ruff #5580</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for PERF402 when using `.append()` on non-list objects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5580">#5580</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2023-07-07 06:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2023-07-07 06:27</div>
+            <div class="timeline-body"><p>The following code emits an error despite it not being a list (or list-like):</p>
+<pre><code class="language-python">class C:
+    def append(self, x: int) -&gt; None:
+        pass
+
+c = C()
+
+for line in [1, 2, 3]:
+    c.append(line)
+</code></pre>
+<p>Running:</p>
+<pre><code>$ ruff file.py
+file.py:8:5: PERF402 Use `list` or `list.copy` to create a copy of a list
+Found 1 error.
+</code></pre>
+<p>Ruff version:</p>
+<pre><code>$ ruff --version
+ruff 0.0.277
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-07-07 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-07 13:58</div>
+            <div class="timeline-body"><p>In practice, can you say more about the class this is triggering on? Is it defined locally? Third-party? Etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-07 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dosisod">@dosisod</a> on 2023-07-07 18:49</div>
+            <div class="timeline-body"><p>The error is on a class that I defined. The code that is throwing the error is <a href="https://github.com/Cicada-Software/cicada/blob/b5ef1f2e5efc2183192c5a1e9a47af1ad8385f2d/test/api/test_terminal_session.py#L45-L53">here</a>:</p>
+<pre><code class="language-python">from cicada.api.domain.terminal_session import TerminalSession
+
+# snip
+
+async def test_terminal_session_can_be_replayed_after_closing() -&gt; None:
+    session = TerminalSession()
+
+    sent_lines = [b&quot;line 1\n&quot;, b&quot;line 2\n&quot;, b&quot;line 3\n&quot;]
+
+    for line in sent_lines:
+        session.append(line)  # noqa: PERF402
+
+    session.finish()
+
+    # snip
+</code></pre>
+<p>The code for the <code>TerminalSession</code> class is defined <a href="https://github.com/Cicada-Software/cicada/blob/main/cicada/api/domain/terminal_session.py">here</a>.</p>
+<p>It could be argued that <code>.append()</code> name should be reserved for list-like objects (in my case <code>.write()</code> would probably be a better name), though <a href="https://grep.app/search?q=def%20append%28&amp;case=true&amp;filter%5Blang%5D%5B0%5D=Python">lots of code</a> defines their own <code>append()</code> class methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 19:45</div>
+            <div class="timeline-body"><p>This got fixed -- we're now more conservative and only enforce this on known lists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-14 19:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

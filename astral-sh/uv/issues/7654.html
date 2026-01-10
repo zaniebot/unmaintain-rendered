@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install uv for all users on Linux - astral-sh/uv #7654</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Install uv for all users on Linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7654">#7654</a>
+        opened by <a href="https://github.com/bolinocroustibat">@bolinocroustibat</a>
+        on 2024-09-24 08:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bolinocroustibat">@bolinocroustibat</a> on 2024-09-24 08:14</div>
+            <div class="timeline-body"><ul>
+<li>Platform: Linux and/or MacOS</li>
+<li>uv version: 0.4.15</li>
+</ul>
+<p>When installing uv with <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code>, it puts the executables in a <code>~/.cargo/</code> directory under current user's home directory, which is loaded by the current user's shell.
+Therefore, no other users can use uv unless they install it.</p>
+<p>Is there a simple way to install user for all users?
+Wouldn't that be useful for the install script to ask if it needs to be installed for the current user or for all users?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-09-24 11:02</div>
+            <div class="timeline-body"><p>@bolinocroustibat</p>
+<p>this is my current solution using a justfile  (see https://just.systems/man/en/)
+by manipulating env-vars CARGO_HOME and HOME</p>
+<pre><code>BIN_DIR := env('BIN_DIR', '/opt/bin')
+
+CARGO_HOME := env('CARGO_HOME', '/opt/cargo')
+
+CURL_FLAGS := env(&quot;CURL_FLAGS&quot;, &quot;--create-dirs --fail --location --no-progress-bar --show-error&quot;)
+
+# install uv/uvx directly in /opt/bin
+export UV_INSTALL_DIR := parent_directory(BIN_DIR)
+
+
+# install uv/uvx systemwide in $BIN_DIR
+uv-install: 
+    curl {{CURL_FLAGS}} --proto '=https' --tlsv1.2 https://astral.sh/uv/install.sh | HOME={{CARGO_HOME}} bash -s -- --verbose --no-modify-path
+
+alias install-uv := uv-install
+
+# update uv to specific version or latest release
+uv-update target_version=&quot;&quot;:
+    HOME={{CARGO_HOME}} uv self update {{target_version}}
+
+alias update-uv := uv-update
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-24 12:19</div>
+            <div class="timeline-body"><p>Does setting <code>UV_INSTALL_DIR</code> directly not work? As in https://docs.astral.sh/uv/getting-started/installation/#configuring-installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-24 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woutervh">@woutervh</a> on 2024-09-24 12:50</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>UV_INSTALL_DIR works great for the executables,
+but the receipt is still hardcoded to go to ~/.config/uv  (which was a problem for my usecase)</p>
+<p>rye has RYE_HOME,<br />
+poetry has POETRY_HOME,
+pipx has PIPX_HOME,
+ansible has ANSIBLE_HOME,....</p>
+<p>so why not UV_HOME (or UV_CONFIG_HOME)  to be able to override the hardcoded location?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2024-09-24 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bolinocroustibat">@bolinocroustibat</a> on 2024-09-24 13:37</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>Thanks, sorry I should have better RTFM, indeed <code>UV_INSTALL_DIR</code> works fine.</p>
+<p>Although I would suggest that the installer would optionally automate the process and use a hardcoded install path for all users (<code>/usr/local/bin/uv</code> for example), as many users like myself might not be proficient enough in sysadmin to choose the right location in a Linux system for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 22:15</div>
+            <div class="timeline-body"><p>There's also now <code>UV_UNMANAGED_INSTALL</code></p>
+<blockquote>
+<p>as many users like myself might not be proficient enough in sysadmin to choose the right location in a Linux system for this.</p>
+</blockquote>
+<p>I don't think it's feasible for us to choose a proper path either, that stuff differs per Linux distribution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-21 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amoralesc">@amoralesc</a> on 2024-10-29 00:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Does setting <code>UV_INSTALL_DIR</code> directly not work? As in https://docs.astral.sh/uv/getting-started/installation/#configuring-installation.</p>
+</blockquote>
+<p>Now documented here: https://docs.astral.sh/uv/configuration/installer/#changing-the-install-path</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv add` and `uv lock` sometimes hang before exiting - astral-sh/uv #4599</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv add` and `uv lock` sometimes hang before exiting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4599">#4599</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-06-27 18:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-27 18:33</div>
+            <div class="timeline-body"><p>I can reproduce this on my machine running <code>uv cache clean &amp;&amp; uv venv &amp;&amp; uv add jupyter</code>. I've also noticed this with <code>uv lock</code>.</p>
+<p>https://github.com/astral-sh/uv/assets/34988408/4ffd54df-4514-4761-9421-3f850e90f488</p>
+<p>Samply doesn't seem to point to anything being done in that time.</p>
+<p><img src="https://github.com/astral-sh/uv/assets/34988408/7084c2dd-6b64-4f54-b1ad-e94d5b36396f" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-06-28 16:36</div>
+            <div class="timeline-body"><p>I've encountered a consistent hang when there's a circular dependency in the lock file.</p>
+<pre><code class="language-toml">name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [&quot;poetry&quot;]
+</code></pre>
+<p>When I run <code>uv lock</code> followed by <code>uv add flask</code>, the process hangs indefinitely.</p>
+<p>Did a little digging myself and I found a loop in the lock.rs file that appears to cause the issue. Adding a check to skip the loop iteration if the key already exists in the map seems to fix the problem for me.</p>
+<p>https://github.com/astral-sh/uv/blob/796171e1e6d55dae095effebb6d815ac91727c2c/crates/uv-resolver/src/lock.rs#L354-L380</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-28 16:43</div>
+            <div class="timeline-body"><p>@blueraft Thanks for the report. I've isolated the issue with <code>uv add jupyter</code> to a bug in our Tokio code where we can't exit until timing out. Can you open a separate issue for the infinite hang with cyclic dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4629.html">astral-sh/uv#4629</a> on 2024-06-28 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ibraheemdev on 2024-06-28 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ibraheemdev on 2024-06-28 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4793.html">astral-sh/uv#4793</a> on 2024-07-03 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-07-04 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-07-04 00:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

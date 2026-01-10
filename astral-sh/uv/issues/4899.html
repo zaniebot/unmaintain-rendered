@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--universal` collapses version markers for same version - astral-sh/uv #4899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--universal` collapses version markers for same version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4899">#4899</a>
+        opened by <a href="https://github.com/lbowenwest">@lbowenwest</a>
+        on 2024-07-08 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lbowenwest">@lbowenwest</a> on 2024-07-08 14:35</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Trying to use <code>uv</code> to install specific versions of <code>torch</code> on a specific platforms with a universal lock file, on macos silicon we want to install <code>2.3.1</code> but on x64 systems we want to install <code>2.3.1+cpu</code> to avoid including the gpu dependencies.</p>
+<p>A minimal reproducible example <code>requirements.txt</code> is</p>
+<pre><code>--find-links https://download.pytorch.org/whl/torch_stable.html
+
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+torch==2.3.1 ; platform_machine != 'x86_64'
+</code></pre>
+<p>When doing <code>uv pip compile requirements.txt</code> on the appropriate system it finds the correct version, however when running <code>uv pip compile requirements.txt --universal</code> it produces the following line</p>
+<pre><code>torch==2.3.1+cpu ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via -r requirements.txt
+</code></pre>
+<details>
+<summary>full verbose output</summary>
+
+<pre><code>$ uv pip compile requirements.txt --universal --verbose
+
+
+DEBUG uv 0.2.22 (Homebrew 2024-07-07)
+DEBUG Starting Python discovery for any Python
+DEBUG Looking for exact match for request any Python
+DEBUG Searching for Python interpreter in system path
+DEBUG Found cpython 3.12.4 at `/Users/lygon/Workspace/rye-test/.direnv/python-3.12/bin/python3` (active virtual environment)
+DEBUG Using Python 3.12.4 interpreter at .direnv/python-3.12/bin/python3 for builds
+DEBUG Using request timeout of 30s
+DEBUG No cache entry for: https://download.pytorch.org/whl/torch_stable.html
+DEBUG Found 5724 packages in `--find-links` entry: https://download.pytorch.org/whl/torch_stable.html
+DEBUG Solving with installed Python version: 3.12.4
+DEBUG Solving with target Python version: &gt;=3.12.4
+DEBUG Splitting resolution on root over torch
+DEBUG Adding direct dependency: torch{platform_machine != 'x86_64'}==2.3.1+cpu
+DEBUG Adding direct dependency: torch{platform_machine == 'x86_64'}==2.3.1+cpu
+DEBUG Pre-fork split universal took 0.003s
+DEBUG Solving split platform_machine == 'x86_64' (python_version &gt;= '3.12' and python_full_version &gt;= '3.12.4')
+DEBUG Found fresh response for: https://pypi.org/simple/torch/
+DEBUG Searching for a compatible version of torch{platform_machine == 'x86_64'} (==2.3.1+cpu)
+DEBUG Selecting: torch==2.3.1+cpu (torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: torch==2.3.1+cpu
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: torch{platform_machine == 'x86_64'}==2.3.1+cpu
+DEBUG Searching for a compatible version of torch{platform_machine == 'x86_64'} (==2.3.1+cpu)
+DEBUG Selecting: torch==2.3.1+cpu (torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl)
+DEBUG Found stale response for: https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp310-cp310-linux_x86_64.whl
+DEBUG Sending revalidation request for: https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp310-cp310-linux_x86_64.whl
+DEBUG Found not-modified response for: https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp310-cp310-linux_x86_64.whl
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: filelock*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: typing-extensions&gt;=4.8.0
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: sympy*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: networkx*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: jinja2*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: fsspec*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: mkl{platform_system == 'Windows'}&gt;=2021.1.1, &lt;=2021.4.0
+DEBUG Searching for a compatible version of torch (==2.3.1+cpu)
+DEBUG Selecting: torch==2.3.1+cpu (torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: filelock*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: typing-extensions&gt;=4.8.0
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: sympy*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: networkx*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: jinja2*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: fsspec*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: mkl{platform_system == 'Windows'}&gt;=2021.1.1, &lt;=2021.4.0
+DEBUG Found fresh response for: https://pypi.org/simple/filelock/
+DEBUG Searching for a compatible version of filelock (*)
+DEBUG Selecting: filelock==3.15.4 (filelock-3.15.4-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/jinja2/
+DEBUG Found fresh response for: https://pypi.org/simple/typing-extensions/
+DEBUG Found fresh response for: https://pypi.org/simple/mkl/
+DEBUG Found fresh response for: https://pypi.org/simple/fsspec/
+DEBUG Found fresh response for: https://pypi.org/simple/sympy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/ae/f0/48285f0262fe47103a4a45972ed2f9b93e4c80b8fd609fa98da78b2a5706/filelock-3.15.4-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of typing-extensions (&gt;=4.8.0)
+DEBUG Selecting: typing-extensions==4.12.2 (typing_extensions-4.12.2-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/networkx/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of sympy (*)
+DEBUG Selecting: sympy==1.12.1 (sympy-1.12.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/61/53/e18c8c97d0b2724d85c9830477e3ebea3acf1dcdc6deb344d5d9c93a9946/sympy-1.12.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/5e/44/73bea497ac69bafde2ee4269292fa3b41f1198f4bb7bbaaabde30ad29d4a/fsspec-2024.6.1-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for sympy==1.12.1: mpmath&gt;=1.1.0, &lt;1.4.0
+DEBUG Searching for a compatible version of networkx (*)
+DEBUG Selecting: networkx==3.3 (networkx-3.3-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/38/e9/5f72929373e1a0e8d142a130f3f97e6ff920070f87f91c4e13e40e0fba5a/networkx-3.3-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of jinja2 (*)
+DEBUG Selecting: jinja2==3.1.4 (jinja2-3.1.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for jinja2==3.1.4: markupsafe&gt;=2.0
+DEBUG Searching for a compatible version of fsspec (*)
+DEBUG Selecting: fsspec==2024.6.1 (fsspec-2024.6.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of mkl{platform_system == 'Windows'} (&gt;=2021.1.1, &lt;=2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Adding transitive dependency for mkl==2021.4.0: mkl==2021.4.0
+DEBUG Adding transitive dependency for mkl==2021.4.0: mkl{platform_system == 'Windows'}==2021.4.0
+DEBUG Searching for a compatible version of mkl{platform_system == 'Windows'} (==2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/mpmath/
+DEBUG Found fresh response for: https://download.pytorch.org/whl/mkl-2021.4.0-py2.py3-none-win_amd64.whl
+DEBUG Adding transitive dependency for mkl==2021.4.0: intel-openmp&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Adding transitive dependency for mkl==2021.4.0: tbb&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Searching for a compatible version of mkl (==2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Adding transitive dependency for mkl==2021.4.0: intel-openmp&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Adding transitive dependency for mkl==2021.4.0: tbb&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Searching for a compatible version of mpmath (&gt;=1.1.0, &lt;1.4.0)
+DEBUG Selecting: mpmath==1.3.0 (mpmath-1.3.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/mpmath-1.3.0-py3-none-any.whl
+DEBUG Found fresh response for: https://pypi.org/simple/tbb/
+DEBUG Found fresh response for: https://pypi.org/simple/intel-openmp/
+DEBUG Found fresh response for: https://pypi.org/simple/markupsafe/
+DEBUG Searching for a compatible version of markupsafe (&gt;=2.0)
+DEBUG Selecting: markupsafe==2.1.5 (MarkupSafe-2.1.5-cp310-cp310-macosx_10_9_universal2.whl)
+DEBUG Found fresh response for: https://download.pytorch.org/whl/intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/c9/32/9c88009a9feb81f0525bf1c4729a7b39a4523d626a40682c792c6a53e323/tbb-2021.13.0-py2.py3-none-manylinux1_i686.whl.metadata
+DEBUG Found fresh response for: https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp310-cp310-macosx_10_9_universal2.whl
+DEBUG Searching for a compatible version of intel-openmp (&gt;=2021.dev0, &lt;2022.dev0)
+DEBUG Selecting: intel-openmp==2021.4.0 (intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Searching for a compatible version of tbb (&gt;=2021.dev0, &lt;2022.dev0)
+DEBUG Selecting: tbb==2021.13.0 (tbb-2021.13.0-py2.py3-none-manylinux1_i686.whl)
+DEBUG Tried 12 versions: filelock 1, fsspec 1, intel-openmp 1, jinja2 1, markupsafe 1, mkl 1, mpmath 1, networkx 1, sympy 1, tbb 1, torch 1, typing-extensions 1
+DEBUG Split platform_machine == 'x86_64' took 0.024s
+DEBUG Solving split platform_machine != 'x86_64' (python_version &gt;= '3.12' and python_full_version &gt;= '3.12.4')
+DEBUG Searching for a compatible version of torch{platform_machine != 'x86_64'} (==2.3.1+cpu)
+DEBUG Selecting: torch==2.3.1+cpu (torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: torch==2.3.1+cpu
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: torch{platform_machine != 'x86_64'}==2.3.1+cpu
+DEBUG Searching for a compatible version of torch{platform_machine != 'x86_64'} (==2.3.1+cpu)
+DEBUG Selecting: torch==2.3.1+cpu (torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: filelock*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: typing-extensions&gt;=4.8.0
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: sympy*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: networkx*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: jinja2*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: fsspec*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: mkl{platform_system == 'Windows'}&gt;=2021.1.1, &lt;=2021.4.0
+DEBUG Searching for a compatible version of torch (==2.3.1+cpu)
+DEBUG Selecting: torch==2.3.1+cpu (torch-2.3.1+cpu-cp310-cp310-linux_x86_64.whl)
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: filelock*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: typing-extensions&gt;=4.8.0
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: sympy*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: networkx*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: jinja2*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: fsspec*
+DEBUG Adding transitive dependency for torch==2.3.1+cpu: mkl{platform_system == 'Windows'}&gt;=2021.1.1, &lt;=2021.4.0
+DEBUG Searching for a compatible version of filelock (*)
+DEBUG Selecting: filelock==3.15.4 (filelock-3.15.4-py3-none-any.whl)
+DEBUG Searching for a compatible version of typing-extensions (&gt;=4.8.0)
+DEBUG Selecting: typing-extensions==4.12.2 (typing_extensions-4.12.2-py3-none-any.whl)
+DEBUG Searching for a compatible version of sympy (*)
+DEBUG Selecting: sympy==1.12.1 (sympy-1.12.1-py3-none-any.whl)
+DEBUG Adding transitive dependency for sympy==1.12.1: mpmath&gt;=1.1.0, &lt;1.4.0
+DEBUG Searching for a compatible version of networkx (*)
+DEBUG Selecting: networkx==3.3 (networkx-3.3-py3-none-any.whl)
+DEBUG Searching for a compatible version of jinja2 (*)
+DEBUG Selecting: jinja2==3.1.4 (jinja2-3.1.4-py3-none-any.whl)
+DEBUG Adding transitive dependency for jinja2==3.1.4: markupsafe&gt;=2.0
+DEBUG Searching for a compatible version of fsspec (*)
+DEBUG Selecting: fsspec==2024.6.1 (fsspec-2024.6.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of mkl{platform_system == 'Windows'} (&gt;=2021.1.1, &lt;=2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Adding transitive dependency for mkl==2021.4.0: mkl==2021.4.0
+DEBUG Adding transitive dependency for mkl==2021.4.0: mkl{platform_system == 'Windows'}==2021.4.0
+DEBUG Searching for a compatible version of mkl{platform_system == 'Windows'} (==2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Adding transitive dependency for mkl==2021.4.0: intel-openmp&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Adding transitive dependency for mkl==2021.4.0: tbb&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Searching for a compatible version of mkl (==2021.4.0)
+DEBUG Selecting: mkl==2021.4.0 (mkl-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Adding transitive dependency for mkl==2021.4.0: intel-openmp&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Adding transitive dependency for mkl==2021.4.0: tbb&gt;=2021.dev0, &lt;2022.dev0
+DEBUG Searching for a compatible version of mpmath (&gt;=1.1.0, &lt;1.4.0)
+DEBUG Selecting: mpmath==1.3.0 (mpmath-1.3.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of markupsafe (&gt;=2.0)
+DEBUG Selecting: markupsafe==2.1.5 (MarkupSafe-2.1.5-cp310-cp310-macosx_10_9_universal2.whl)
+DEBUG Searching for a compatible version of intel-openmp (&gt;=2021.dev0, &lt;2022.dev0)
+DEBUG Selecting: intel-openmp==2021.4.0 (intel_openmp-2021.4.0-py2.py3-none-win_amd64.whl)
+DEBUG Searching for a compatible version of tbb (&gt;=2021.dev0, &lt;2022.dev0)
+DEBUG Selecting: tbb==2021.13.0 (tbb-2021.13.0-py2.py3-none-manylinux1_i686.whl)
+DEBUG Tried 24 versions: filelock 2, fsspec 2, intel-openmp 2, jinja2 2, markupsafe 2, mkl 2, mpmath 2, networkx 2, sympy 2, tbb 2, torch 2, typing-extensions 2
+DEBUG Split platform_machine != 'x86_64' took 0.000s
+Resolved 12 packages in 39ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.txt --universal
+filelock==3.15.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+fsspec==2024.6.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+intel-openmp==2021.4.0 ; platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine != 'x86_64')
+    # via mkl
+jinja2==3.1.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+markupsafe==2.1.5 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via jinja2
+mkl==2021.4.0 ; platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine != 'x86_64')
+    # via torch
+mpmath==1.3.0 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via sympy
+networkx==3.3 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+sympy==1.12.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+tbb==2021.13.0 ; platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine != 'x86_64')
+    # via mkl
+torch==2.3.1+cpu ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via -r requirements.txt
+typing-extensions==4.12.2 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+
+</code></pre>
+</details>
+
+<p>Using a different version such as</p>
+<pre><code>--find-links https://download.pytorch.org/whl/torch_stable.html
+
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+torch==2.3.0 ; platform_machine != 'x86_64'
+</code></pre>
+<p>produces the following correct output</p>
+<pre><code># This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.txt --universal
+filelock==3.15.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+fsspec==2024.6.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+intel-openmp==2021.4.0 ; (platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')
+    # via mkl
+jinja2==3.1.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+markupsafe==2.1.5 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via jinja2
+mkl==2021.4.0 ; (platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')
+    # via torch
+mpmath==1.3.0 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via sympy
+networkx==3.3 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+sympy==1.12.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+tbb==2021.13.0 ; (platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')
+    # via mkl
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+    # via -r requirements.txt
+torch==2.3.0 ; platform_machine != 'x86_64'
+    # via -r requirements.txt
+typing-extensions==4.12.2 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 14:38</div>
+            <div class="timeline-body"><p>Thanks, we might be ignoring local tags somewhere that we shouldn't be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-08 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-07-08 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-08 15:18</div>
+            <div class="timeline-body"><p>@charliermarsh hey, can I work on this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 16:28</div>
+            <div class="timeline-body"><p>@caiquejjx -- Feel free to take a look, I don't have a sense for how hard it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-08 19:15</div>
+            <div class="timeline-body"><p>@charliermarsh I took a look and was able to find the root cause of the issue and it's in this <a href="https://github.com/astral-sh/uv/blob/ed4234d52efc92856c66da4ed9ca44cf17a95bf4/crates/uv-resolver/src/pubgrub/dependencies.rs#L176">line</a>
+and as the comments suggests:</p>
+<pre><code>        // If the specifier is an exact version, and the user requested a local version that's
+        // more precise than the specifier, use the local version instead.
+</code></pre>
+<p>Since the first version has a local tag it is overriding the one without it. I don't have an good idea of solution, the one I can think is to store the requirements markers on the <code>Locals</code> object as well and compare then along the versions, if the markers don't match don't override.
+Let me know your ideas and if you want to implement yourself or want to wait someone more experienced at uv since I'm new to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-08 19:19</div>
+            <div class="timeline-body"><p>Ah yeah. We need to implement handling for locals that’s similar to how we treat URLs. @konstin has context on that. (This is a known issue, but I didn’t realize it would manifest itself this way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-08 20:52</div>
+            <div class="timeline-body"><p>Yeah this should be solved by https://github.com/astral-sh/uv/issues/4580. We implemented the ground work for this for supporting different urls when the markers are disjoint, we can implement this with the same pattern as https://github.com/astral-sh/uv/pull/4435.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 17:40</div>
+            <div class="timeline-body"><pre><code>torch==2.3.1+cpu ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via -r requirements.txt
+</code></pre>
+<p>Is this... actually wrong? It looks right to me. <code>2.3.1+cpu</code> is a valid result for <code>torch==2.3.1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caiquejjx">@caiquejjx</a> on 2024-07-15 17:50</div>
+            <div class="timeline-body"><p>it is valid but it was specified that for <code>platform_machine != 'x86_64'</code> it shouldn't have the <code>+cpu</code> tag which is not being respected here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 18:03</div>
+            <div class="timeline-body"><p>Why not, though? <code>2.3.1+cpu</code> <em>is</em> a valid version to select given a <code>torch==2.3.1</code> requirement. Local identifiers are ignored when computing equality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lbowenwest">@lbowenwest</a> on 2024-07-16 09:06</div>
+            <div class="timeline-body"><p>Huh this is odd, the <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#version-matching">version specifier docs</a> say this</p>
+<blockquote>
+<p>If the specified version identifier is a public version identifier (no local version label), then the local version label of any candidate versions MUST be ignored when matching versions.</p>
+<p>If the specified version identifier is a local version identifier, then the local version labels of candidate versions MUST be considered when matching versions, with the public version identifier being matched as described above, and the local version label being checked for equivalence using a strict string equality comparison.</p>
+</blockquote>
+<p>Which from how I've read it implies that if you ask for <code>2.3.1</code> then either <code>2.3.1+cpu</code> or <code>2.3.1</code> is valid, but if you ask for <code>2.3.1+cpu</code> then <code>2.3.1</code> is not valid.</p>
+<p>I guess the way around that would be to point to a specific download url?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/judahrand">@judahrand</a> on 2024-07-22 08:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Why not, though? <code>2.3.1+cpu</code> <em>is</em> a valid version to select given a <code>torch==2.3.1</code> requirement. Local identifiers are ignored when computing equality.</p>
+</blockquote>
+<p><code>2.3.1+cpu</code> doesn't seem to be valid on all platforms though. This is an example on arm64 MacOS:</p>
+<pre><code class="language-bash">&gt; uv pip install 'torch==2.3.1+cpu' --find-links https://download.pytorch.org/whl/torch_stable.html
+  × No solution found when resolving dependencies:
+  ╰─▶ Because torch==2.3.1+cpu has no wheels are available with a matching Python ABI and you require torch==2.3.1+cpu, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>I'm not sure if this means that the above rules are not being respected somewhere or if as @lbowenwest suggests <code>2.3.1 -&gt; 2.3.1+cpu</code> but not <code>2.3.1+cpu -&gt; 2.3.1</code>? It would make sense to me that <code>2.3.1+cpu -&gt; 2.3.1</code> is not valid because that is effectively a relaxation of the requirement bound rather than a tightening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:00</div>
+            <div class="timeline-body"><p>But <code>2.3.1</code> is also not valid on all platforms -- for example, in has no available wheels on Windows. It's a problem that's somewhat inherent to what PyTorch is doing here. If it doesn't provide a source distribution, we're basically at the mercy of whatever level of coverage they provide in their wheels. There will <em>always</em> be platforms that aren't covered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/judahrand">@judahrand</a> on 2024-07-22 14:44</div>
+            <div class="timeline-body"><blockquote>
+<p>But <code>2.3.1</code> is also not valid on all platforms -- for example, in has no available wheels on Windows. It's a problem that's somewhat inherent to what PyTorch is doing here. If it doesn't provide a source distribution, we're basically at the mercy of whatever level of coverage they provide in their wheels. There will <em>always</em> be platforms that aren't covered.</p>
+</blockquote>
+<p>But given that the initial requirements provided were:</p>
+<pre><code>--find-links https://download.pytorch.org/whl/torch_stable.html
+
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+torch==2.3.1 ; platform_machine != 'x86_64'
+</code></pre>
+<p>surely the end resolved set of dependencies could reasonably be</p>
+<pre><code># This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.txt --universal
+filelock==3.15.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+fsspec==2024.6.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+intel-openmp==2021.4.0 ; (platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')
+    # via mkl
+jinja2==3.1.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+markupsafe==2.1.5 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via jinja2
+mkl==2021.4.0 ; (platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')
+    # via torch
+mpmath==1.3.0 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via sympy
+networkx==3.3 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+sympy==1.12.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+tbb==2021.13.0 ; (platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')
+    # via mkl
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+    # via -r requirements.txt
+torch==2.3.1 ; platform_machine != 'x86_64'
+    # via -r requirements.txt
+typing-extensions==4.12.2 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:48</div>
+            <div class="timeline-body"><p>It's reasonable but I don't know that it's more correct than what we output, for two reasons... (1) On <code>platform_machine != 'x86_64'</code>, your <code>torch==2.3.1</code> version is actually unpinned, you could get <em>any</em> <code>+local</code> suffix; and (2) if you <em>did</em> guarantee that you get exactly <code>torch==2.3.1</code> on <code>platform_machine != 'x86_64'</code>, that resolution would <em>also</em> fail at install time, e.g., on ARM Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:54</div>
+            <div class="timeline-body"><p>Just to be totally clear, I don't think what you're suggesting is unreasonable. I'm just trying to point out that there are tradeoffs here and both solutions will be problematic in different ways, with the root cause being that Torch has scattered platform support (and no source distributions).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/judahrand">@judahrand</a> on 2024-07-22 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It's reasonable but I don't know that it's more correct than what we output, for two reasons... (1) On <code>platform_machine != 'x86_64'</code>, your <code>torch==2.3.1</code> version is actually unpinned, you could get <em>any</em> <code>+local</code> suffix; and (2) if you <em>did</em> guarantee that you get exactly <code>torch==2.3.1</code> on <code>platform_machine != 'x86_64'</code>, that resolution would <em>also</em> fail at install time, e.g., on ARM Windows.</p>
+</blockquote>
+<p>Yeah, I'm 100% onboard with the fact that the way <code>torch</code> specifies versions is really unhelpful (I'm not clear why the GPU packages couldn't be specified like <code>torch[cuda]</code> but maybe there are build time reasons!). And based on that changing <code>uv</code>'s behaviour to deal with the specific mess caused may not be the be the <em>obvious</em> solution.</p>
+<p>Unfortunately, it is also causing me issues so I'm a little biased 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-30 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-16 13:28</div>
+            <div class="timeline-body"><p>Do we have a solid repro for this? I can't seem to reproduce it:</p>
+<pre><code>[andrew@duff i4899]$ cat requirements.in
+--find-links https://download.pytorch.org/whl/torch_stable.html
+
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+torch==2.3.1 ; platform_machine != 'x86_64'
+[andrew@duff i4899]$ uv-0.2.36 pip compile requirements.in --universal
+Resolved 13 packages in 34ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.in --universal
+filelock==3.15.4
+    # via torch
+fsspec==2024.6.1
+    # via torch
+intel-openmp==2021.4.0 ; platform_system == 'Windows'
+    # via mkl
+jinja2==3.1.4
+    # via torch
+markupsafe==2.1.5
+    # via jinja2
+mkl==2021.4.0 ; platform_system == 'Windows'
+    # via torch
+mpmath==1.3.0
+    # via sympy
+networkx==3.3
+    # via torch
+sympy==1.13.2
+    # via torch
+tbb==2021.13.1 ; platform_system == 'Windows'
+    # via mkl
+torch==2.3.1 ; platform_machine != 'x86_64'
+    # via -r requirements.in
+torch==2.3.1+cpu ; platform_machine == 'x86_64'
+    # via -r requirements.in
+typing-extensions==4.12.2
+    # via torch
+</code></pre>
+<p>Maybe this got fixed? So I checked an older version of <code>uv</code>:</p>
+<pre><code>[andrew@duff i4899]$ uv-0.2.24 pip compile requirements.in --universal
+Resolved 12 packages in 40ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.in --universal
+filelock==3.15.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+fsspec==2024.6.1 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+intel-openmp==2021.4.0 ; platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine != 'x86_64')
+    # via mkl
+jinja2==3.1.4 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+markupsafe==2.1.5 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via jinja2
+mkl==2021.4.0 ; platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine != 'x86_64')
+    # via torch
+mpmath==1.3.0 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via sympy
+networkx==3.3 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+sympy==1.13.2 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+tbb==2021.13.1 ; platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine != 'x86_64')
+    # via mkl
+torch==2.3.1+cpu ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via -r requirements.in
+typing-extensions==4.12.2 ; platform_machine == 'x86_64' or platform_machine != 'x86_64'
+    # via torch
+</code></pre>
+<p>Which I think matches the errant behavior shown in the OP of this issue. Then <code>uv 0.2.25</code> did this:</p>
+<pre><code>[andrew@duff i4899]$ uv-0.2.25 pip compile requirements.in --universal
+Resolved 12 packages in 28ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile requirements.in --universal
+filelock==3.15.4
+    # via torch
+fsspec==2024.6.1
+    # via torch
+intel-openmp==2021.4.0 ; platform_system == 'Windows'
+    # via mkl
+jinja2==3.1.4
+    # via torch
+markupsafe==2.1.5
+    # via jinja2
+mkl==2021.4.0 ; platform_system == 'Windows'
+    # via torch
+mpmath==1.3.0
+    # via sympy
+networkx==3.3
+    # via torch
+sympy==1.13.2
+    # via torch
+tbb==2021.13.1 ; platform_system == 'Windows'
+    # via mkl
+torch==2.3.1+cpu
+    # via -r requirements.in
+typing-extensions==4.12.2
+    # via torch
+</code></pre>
+<p>And <code>uv 0.2.26</code> and all the way up to <code>main</code> appear unchanged. So this might be fixed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-16 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

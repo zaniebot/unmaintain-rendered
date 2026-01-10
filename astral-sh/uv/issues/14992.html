@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow relative `exclude-newer` values like &quot;one week ago&quot; - astral-sh/uv #14992</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow relative `exclude-newer` values like &quot;one week ago&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14992">#14992</a>
+        opened by <a href="https://github.com/GeoVizNow">@GeoVizNow</a>
+        on 2025-07-31 13:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2025-07-31 13:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I am not very experienced with <code>uv</code> yet, but see great benefits with what I have tried.</p>
+<p>Benefit of adding functionality to parse natural date into <code>exclude-newer</code> would be to easily be able to keep <code>uv</code> from puling very freshly published dependencies in case of yet to be detected malware.</p>
+<p>I would really appreciated to be able to state in pyproject.toml something like below, example:</p>
+<pre><code>[tool.uv]
+exclude-newer = &quot;one week ago&quot;
+</code></pre>
+<p>or</p>
+<pre><code>[tool.uv]
+exclude-newer = &quot;14 days ago&quot;
+</code></pre>
+<p>I do not know if this is hard to implement and if it is inconsistent with other configurations. E.g. one would not want this filter to apply for an editable package under development.</p>
+<p>Would be interesting to hear your thoughts on this or if this is already being discussed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @GeoVizNow on 2025-07-31 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 13:34</div>
+            <div class="timeline-body"><p>We can't allow this in persistent configuration today because we invalidate the lockfile whenever the <code>exclude-newer</code> value changes. We could consider changing that behavior for this use-case though... it'd be a cool feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add functionality to `exclude-newer` such that it can parse a date from a natural string such as 'one week ago' to account for and filter away malware packages just released" to "Allow relative `exclude-newer` values like "one week ago"" by @zanieb on 2025-07-31 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2025-07-31 15:00</div>
+            <div class="timeline-body"><p>Thanks for the fast reply and for considering adding such a feature:). I see there is a challenge with lock files, but great that you see possibilities. This could be one approach to try to tackle the challenge of fresh published malware not detected yet and avoid unintentionally pulling it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-07-31 15:46</div>
+            <div class="timeline-body"><p>A similar request was made before, https://github.com/astral-sh/uv/issues/3019, a workaround exists on the command line with Linux:</p>
+<pre><code>--exclude-newer $(date --utc -d &quot;7 days ago&quot; &quot;+%Y-%m-%dT%H:%M:%SZ&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2025-08-01 08:20</div>
+            <div class="timeline-body"><p>I have experimented a bit automating updating the exclude-newer with code towards <code>pyproject.toml</code> and notice how it could be beneficial to state more details into such a relative natural date string constraint.</p>
+<p>If I state &quot;7 day ago <strong>at noon</strong>&quot; it will set the date string as below and dates will jump with whole days and not seconds.</p>
+<pre><code>[tool.uv]
+exclude-newer = &quot;2025-07-25T12:00:00Z&quot;
+</code></pre>
+<p>This would help avoiding too eagerly updating the <code>uv.lock</code> and would result in making it update no more frequently than daily (which would maybe be what to prefer) due to this constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-04 16:25</div>
+            <div class="timeline-body"><p>A point against things like <code>7 days ago</code> in persistent configuration is that it lacks a time zone. Does that mean 7 days ago in UTC? Or in the time zone of whoever is running uv? This is why we require a specific and unambiguous timestamp in <code>pyproject.toml</code> (e.g., RFC 3339) but, IIRC, allow things like <code>2025-08-01</code> on the CLI where it's more obvious that the system's configured time zone would be used to resolve that civil date to an instant in time. On that token though, I think it would be cool to allow things like <code>7 days ago</code> on the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-04 17:32</div>
+            <div class="timeline-body"><p>Isn't 7 days ago the same time regardless of the time zone?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-04 17:32</div>
+            <div class="timeline-body"><p>(of course, it's probably not once you start dealing with DST?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-04 18:00</div>
+            <div class="timeline-body"><p>DST is part of it, but &quot;7 days ago&quot; is a relative datetime. So from which point do you start counting? If you start at the current UTC time you'll end up at a difference place than if you started with the current time on the East coast in 5 out of 24 hours in the day (or 4 during DST).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2025-08-05 08:07</div>
+            <div class="timeline-body"><p>I can easily see that details around time zone could lead to problems in the the details that must potentially be but solved somehow. The intention of this issue was to hopefully being able to leverage another method to tackle the ever increasing challenge of not-yet-detected malicious packages with malware. The main idea would be to secure a delay such that the risk of installing malicious sofware decreases due to chance of discovery is higher when putting a such a delay that gives researchers more time to detect issues.
+Thus I think that the date is the important constraint. Maybe one could assume UTC as a default time zone as a simplification when/if relative date is used in configuration files (is UTC what is used for pypi package publish date?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-05 13:22</div>
+            <div class="timeline-body"><p>IMO, we shouldn't assume UTC for datetimes (relative or not) without a time zone or an offset stored in a persistent configuration file. I think it makes it too easy for readers of the configuration to assume local time instead of UTC.</p>
+<blockquote>
+<p>(is UTC what is used for pypi package publish date?)</p>
+</blockquote>
+<p><code>upload_time</code> is a timestamp that is compatible with both RFC 3339 and ISO 8601. It has a time zone offset indicating UTC (<code>Z</code>), so no assumption of implied UTC is required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-05 14:20</div>
+            <div class="timeline-body"><p>Apologies, this is a slight aside, but I was thinking about assuming UTC for pip when a timezone isn't provided for the non-relative exclude newer so that it produces the same result across environments: https://github.com/pypa/pip/pull/13520</p>
+<p>In terms of relative difference, you need to decide when it comes to a DST change over does &quot;1 day ago&quot; mean the same as &quot;86400 seconds ago&quot;. This is clearly subjective as different datetime libraries have different solutions (this has been somewhat a discussion on DPO since utcnow was deprecated). One solution is perhaps to offer very limited relative syntax so o ky one way can be described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/pip/pulls/13520.html">pypa/pip#13520</a> on 2025-08-05 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-05 14:31</div>
+            <div class="timeline-body"><p>@zanieb and I were talking about something like <code>2 days ago in UTC</code> or <code>2 days ago in America/New_York</code>. A bit more verbose, but much less ambiguous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-05 15:11</div>
+            <div class="timeline-body"><p>Well, as I say, there is some ambiguity about what &quot;2 days ago in America/New_York&quot; means, at least when you also provide the option to say &quot;48 hours ago&quot;, or &quot;1.1 days ago&quot; e.g. https://discuss.python.org/t/why-is-datetime-utcnow-deprecated/86868/10</p>
+<p>But I'm not too opinionated as long it is explicitly documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-05 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p><code>upload_time</code> is a timestamp that is compatible with both RFC 3339 and ISO 8601. It has a time zone offset indicating UTC (<code>Z</code>), so no assumption of implied UTC is required.</p>
+</blockquote>
+<p>One last side note, PEP 700 says that an index MUST provide the Z UTC time zone offset, so any other time zone would be a violation of spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-05 15:54</div>
+            <div class="timeline-body"><p>Yeah Jiff (the datetime library we use) will correctly interpret <code>2 days ago</code> with respect to DST, and <code>48 hours</code> as a physical duration that is always 48 hours. The former may be longer or shorter than 48 hours.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2025-08-20 08:53</div>
+            <div class="timeline-body"><p>Just a follow up on this one. Do you see this as an enhancement that may be possible to implement/may be prioritized?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-21 11:17</div>
+            <div class="timeline-body"><p>It's possible, I built a prototype. It's not a priority though, it's a &quot;nice to have&quot; feature and there are a lot of &quot;must have&quot; things we're working on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2025-08-25 08:23</div>
+            <div class="timeline-body"><p>Great that it is possible and thanks @zanieb for putting work into a prototype! I can understand other things are more important. Thank you all for good perspectives on the topic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MartinCura">@MartinCura</a> on 2025-09-11 15:44</div>
+            <div class="timeline-body"><p>Neat idea, i'd like this.</p>
+<p>pnpm just merged a <code>minimumReleaseAge</code> setting https://github.com/pnpm/pnpm/pull/9957, they have an interesting discussion in the related issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paulzakin">@paulzakin</a> on 2025-09-16 19:19</div>
+            <div class="timeline-body"><p>@zanieb I stumbled across this issue after playing around with <code>exclude-newer</code>.</p>
+<p>In particular, <code>minimumReleaseAgeExclude</code> of pnpm seems like a crucial setting to add to <code>uv</code>. While <code>minimumReleaseAge</code> seems to mostly map to <code>exclude_newer</code>, I think you need an escape hatch of <code>minimumReleaseAgeExclude</code>. That is because (unless I do not understand something, always possible!) <code>exclude_newer</code> is a global value. Hence, if you have a package with a CVE that needs to be upgraded but you want the rest of your dependencies in your uv.lock to stay a week old, I do not think that is currently possible. However, with <code>minimumReleaseAge</code>, it becomes possible. That seems like a super useful feature!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paulzakin">@paulzakin</a> on 2025-10-01 23:54</div>
+            <div class="timeline-body"><p>After playing around with it more, it does seem that exclude-newer-package provides the escape hatch. It’s a great feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-02 02:22</div>
+            <div class="timeline-body"><p>If someone is interested in trying to clean up the branch, here's where I left it: https://github.com/astral-sh/uv/compare/zb/exclude-newer-delay — I'll revisit it eventually. I think the semantics are sort of subtle though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16803.html">astral-sh/uv#16803</a> on 2025-11-21 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16851.html">astral-sh/uv#16851</a> on 2025-11-25 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janlarres">@janlarres</a> on 2025-11-26 04:24</div>
+            <div class="timeline-body"><p>Another example of a tool that has implemented this functionality:
+https://bun.com/docs/runtime/bunfig#install-minimumreleaseage</p>
+<p>Sadly I think that the need for this feature is only going to become more relevant in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 15:10</div>
+            <div class="timeline-body"><p>The main difference with a relative release date is that I'd want it to not affect the lockfile. The absolute exclude-newer is intended to generate the same resolution each time (with the exception of yanking), freezing the world at an earlier state. With a relative exclude newer, I'd expect it not to affect the lockfile, instead operating as if I'm following the regular stream of new versions, just with a cooldown.</p>
+<p>Together with the relative cooldown, we also need an option to disable it on a per-package basis, such as https://github.com/astral-sh/uv/pull/16854, so that this option doesn't block you from pulling in selected bugfix releases.</p>
+<p>Using the data from https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns, most attacks have a short lifetime - usually hours - so that even a short cooldown can be effective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-26 15:52</div>
+            <div class="timeline-body"><p>I opened a draft at #16814</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PlasmaPy/PlasmaPy/issues/3158.html">PlasmaPy/PlasmaPy#3158</a> on 2025-11-26 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../j178/prek/issues/1152.html">j178/prek#1152</a> on 2025-11-29 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jazzband/pip-tools/issues/2288.html">jazzband/pip-tools#2288</a> on 2025-11-30 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-26 16:14</div>
+            <div class="timeline-body"><p>Triage: this was done in https://github.com/astral-sh/uv/pull/16814</p>
+<p>Docs: https://docs.astral.sh/uv/concepts/resolution/#dependency-cooldowns</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @woodruffw on 2025-12-26 16:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GeoVizNow">@GeoVizNow</a> on 2026-01-06 16:54</div>
+            <div class="timeline-body"><p>Thanks a lot for implementing this!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install fails for private index based on Artifactory - astral-sh/uv #1393</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install fails for private index based on Artifactory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1393">#1393</a>
+        opened by <a href="https://github.com/gaborbernat">@gaborbernat</a>
+        on 2024-02-15 23:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-15 23:58</div>
+            <div class="timeline-body"><p>Fails with uv:</p>
+<pre><code class="language-bash">❯ uv pip install --index-url https://magic.com/artifactory/api/pypi/internal-pypi/simple tomli==2.0.1
+error: Failed to download: tomli==2.0.1
+  Caused by: HTTP status client error (404 Not Found) for url (https://magic.com/artifactory/api/pypi/packages/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl#sha256=939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc)
+</code></pre>
+<p>Works with pip:</p>
+<pre><code class="language-bash">❯ venv/bin/pip install --index-url https://magic.com/artifactory/api/pypi/internal-pypi/simple tomli==2.0.1
+Looking in indexes: https://magic.com/artifactory/api/pypi/internal-pypi/simple
+Collecting tomli==2.0.1
+  Using cached https://magic.com/artifactory/api/pypi/internal-pypi/packages/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl (12 kB)
+Installing collected packages: tomli
+</code></pre>
+<p>Seems the formed URL is malformed...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fails for private index based of Artifactory" to "uv pip install fails for private index based on Artifactory" by @gaborbernat on 2024-02-15 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-16 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">index</span> added by @zanieb on 2024-02-16 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tafia">@tafia</a> on 2024-02-16 01:37</div>
+            <div class="timeline-body"><p>Same here.
+Also would it be possible to get /etc/pip.conf configuration automatically? (for a drop-in replacement?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 01:59</div>
+            <div class="timeline-body"><p>Sorry to hear you're encountering it too! See #1404 for <code>pip.conf</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tafia">@tafia</a> on 2024-02-16 02:47</div>
+            <div class="timeline-body"><p>No worries at all!! Thanks for the great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 04:41</div>
+            <div class="timeline-body"><p>I believe this is an authentication problem (hence the 404) the URL doesn't look malformed to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-16 05:11</div>
+            <div class="timeline-body"><p>I'm not as sure. If it would an authentication issue, it would be 403, not 404. Note the two different URLs uv and pip tries to download:</p>
+<pre><code class="language-diff">+ https://magic.com/artifactory/api/pypi/packages/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl
+- https://magic.com/artifactory/api/pypi/internal-pypi/packages/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl
+</code></pre>
+<p>Or if I align it up for you:</p>
+<pre><code class="language-diff">+ https://magic.com/artifactory/api/pypi              /packages/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl
+- https://magic.com/artifactory/api/pypi/internal-pypi/packages/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-16 05:16</div>
+            <div class="timeline-body"><p>My guess is that this is the same as https://github.com/astral-sh/uv/pull/1413 since we're missing a segment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 05:19</div>
+            <div class="timeline-body"><p>Oh thanks for lining those up for me! I stared at these pretty hard and somehow missed that... I'm unsure if #1413 will resolve this as well, if not it's probably the same kind of bug and we can track down the invalid join.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-16 16:45</div>
+            <div class="timeline-body"><p>Let me build a release of uv and check 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-02-16 16:52</div>
+            <div class="timeline-body"><p>Can confirm it fixes it 👍</p>
+<pre><code>❯ target/release/uv pip install tomli
+Resolved 1 package in 2.12s
+Downloaded 1 package in 562ms
+Installed 1 package in 2ms
+ + tomli==2.0.1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @gaborbernat on 2024-02-16 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1528.html">astral-sh/uv#1528</a> on 2024-02-16 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tafia">@tafia</a> on 2024-02-19 02:00</div>
+            <div class="timeline-body"><p>Working for me too!
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11102.html">astral-sh/uv#11102</a> on 2025-01-30 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:21 UTC
+    </footer>
+</body>
+</html>

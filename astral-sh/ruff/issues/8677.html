@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible bug: Diff flag suppresses non-fixable errors, with no clear way to enable - astral-sh/ruff #8677</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Possible bug: Diff flag suppresses non-fixable errors, with no clear way to enable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8677">#8677</a>
+        opened by <a href="https://github.com/pnovotnak">@pnovotnak</a>
+        on 2023-11-14 16:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pnovotnak">@pnovotnak</a> on 2023-11-14 16:52</div>
+            <div class="timeline-body"><p>Hello! I discovered what I think is a possible bug with the tool that I wanted to bring to your attention.</p>
+<p>I'm using this config:</p>
+<pre><code>[tool.ruff]
+extend-select = [&quot;I&quot;, &quot;F&quot;]
+target-version = 'py310'
+</code></pre>
+<p>My test case is this file (call it <code>x.py</code>):</p>
+<pre><code class="language-python">
+
+def f(x: &quot;NotImported&quot;) -&gt; None:
+    pass
+
+</code></pre>
+<p>In CI, it's useful to have the <code>--diff</code> flag enabled. However, with the following script:</p>
+<pre><code class="language-bash">#!/bin/bash
+set -ex
+
+ruff check --diff .
+ruff format --check --diff .
+</code></pre>
+<p>No errors are reported when fixes are not available. I think that makes sense, but it's <em>still</em> not reporting errors when <code>--no-fix-only</code> is passed.</p>
+<pre><code>$ ruff check --no-fix-only --diff x.py
+$ echo $?
+0
+$ ruff check x.py
+x.py:3:11: F821 Undefined name `NotImported`
+Found 1 error.
+</code></pre>
+<p>I'm not sure exactly what output should be in the <code>--no-fix-only --diff</code> case, but a non-zero exit would be nice, perhaps errors can be printed to stderr?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Possible bug: Diff flag suppresses errors, with no clear way to enable errors" to "Possible bug: Diff flag suppresses non-fixable errors, with no clear way to enable" by @pnovotnak on 2023-11-14 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-14 17:02</div>
+            <div class="timeline-body"><p>Hi! Thanks for the well written issue.</p>
+<p>This is a duplicate of https://github.com/astral-sh/ruff/issues/8584</p>
+<p>Similarly, it may be best resolved by https://github.com/astral-sh/ruff/issues/7352</p>
+<p>Perhaps it's possible for us to allow opt-in to this behavior with <code>--no-fix-only</code> but I don't think that's a very clear user experience and may prefer #7352</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-11-15 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2024-03-28 11:54</div>
+            <div class="timeline-body"><p>I ran into exactly the same problem, and just like the reporter, I tried adding <code>--diff --exit-non-zero-on-fix --no-fix-only</code> to get my exit error code to be non-zero.</p>
+<p>@zanieb Isn't it fairly standard behavior that options to the right have precedence over options to the left on the command line, so one can append more arguments (<code>$cmd --no-x --x --no-x --x --no-x</code>) to get the desired (<code>$cmd --no-x</code>) behavior?</p>
+<p>If anyone wants more context, here is an excerpt from the Makefile I'm trying to incorporate Ruff into:</p>
+<pre><code class="language-makefile">Q ?= @
+
+lint.black:
+    $(Q)poetry run black --check --diff $(PYTHON_SRC_DIRS)
+
+lint.isort:
+    $(Q)poetry run isort --check-only --filter-files --diff $(PYTHON_SRC_DIRS)
+
+ifdef CI_BUILDS_DIR
+lint.mypy: MYPY_CI_PARAMS ?= --junit-xml mypy-report.xml --junit-format=per_file
+endif
+lint.mypy:
+    $(Q)poetry run mypy --warn-unused-ignores $(MYPY_CI_PARAMS) $(PYTHON_SRC_DIRS)
+
+&lt;more lint rules that execute various tools&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7352.html">astral-sh/ruff#7352</a> on 2024-03-28 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nautobot/nautobot/pulls/7735.html">nautobot/nautobot#7735</a> on 2025-08-28 14:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Mercurial like pip - astral-sh/uv #14504</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support Mercurial like pip</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14504">#14504</a>
+        opened by <a href="https://github.com/paugier">@paugier</a>
+        on 2025-07-08 10:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/paugier">@paugier</a> on 2025-07-08 10:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With pip, one can do:</p>
+<pre><code class="language-sh">$ python3 -m venv tmp_venv_fluiddyn
+$ . tmp_venv_fluiddyn/bin/activate
+$ pip install fluiddyn@hg+https://foss.heptapod.net/fluiddyn/fluiddyn
+Collecting fluiddyn@ hg+https://foss.heptapod.net/fluiddyn/fluiddyn
+  Cloning hg https://foss.heptapod.net/fluiddyn/fluiddyn to ./pip-install-zvd68wo9/fluiddyn_02c3874ec9954bfe9db47e720d68c9fa
+  Running command hg clone --noupdate --quiet https://foss.heptapod.net/fluiddyn/fluiddyn /tmp/pip-install-zvd68wo9/fluiddyn_02c3874ec9954bfe9db47e720d68c9fa
+  Running command hg update --quiet
+[...]
+</code></pre>
+<p>Unfortunately, this gives with UV:</p>
+<pre><code class="language-sh">$ uv venv tmp_venv_fluiddyn_uv
+Using CPython 3.13.2
+Creating virtual environment at: tmp_venv_fluiddyn_uv
+Activate with: source tmp_venv_fluiddyn_uv/bin/activate
+$ . tmp_venv_fluiddyn_uv/bin/activate
+$ uv pip install fluiddyn@hg+https://foss.heptapod.net/fluiddyn/fluiddyn
+error: Failed to parse: `fluiddyn@hg+https://foss.heptapod.net/fluiddyn/fluiddyn`
+  Caused by: Unsupported URL prefix `hg` in URL: `hg+https://foss.heptapod.net/fluiddyn/fluiddyn` (Mercurial is not supported)
+fluiddyn@hg+https://foss.heptapod.net/fluiddyn/fluiddyn
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+<p>I was wondering if Mercurial could be supported which would be convenient for few Python projects.</p>
+<p><a href="https://www.mercurial-scm.org">Mercurial</a> is still active with a growing part written in Rust (https://foss.heptapod.net/mercurial/mercurial-devel/-/tree/branch/default/rust).</p>
+<p>I realize that it's easier from the UV point of view to just say &quot;just use Git&quot; however,</p>
+<ul>
+<li>Diversity can also be useful for software.</li>
+<li>It could be quite easy to support Mercurial (just following what is done in Pip), with very stable code so very little maintenance (the needed Mercurial commands will never change).</li>
+<li>Since Mercurial is partly implemented in Rust, I guess Mercurial developers (cc @Alphare) could propose a PR.</li>
+</ul>
+<p>Therefore, I'd like to ask if such PR implementing Mercurial support could be considered?</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @paugier on 2025-07-08 10:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2025-07-08 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-08 11:41</div>
+            <div class="timeline-body"><p>It could make sense to support it, it's just a matter of prioritization and I'd want to see more user demand before investing in it. Beyond the initial implementation, it's also a lot of work to maintain support over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2025-07-08 19:37</div>
+            <div class="timeline-body"><p>If it helps as as data point, we (Heroku) removed Mercurial from our build environments (when adding our Ubuntu 24.04 based images last year) due to low usage, and have currently had zero requests to add it back.</p>
+<p>Whilst there will still be the occasional Python library using Mercurial, most of our users will consume the sdist or wheels from an index rather than installing from a VCS URL.</p>
+<p>As a workaround, for most hosted VCS providers, they typically make the source available via a tarball of the branch too, eg in this case:
+<code>https://foss.heptapod.net/fluiddyn/fluiddyn/-/archive/branch/default/fluiddyn-branch-default.tar.gz</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paugier">@paugier</a> on 2025-07-09 10:50</div>
+            <div class="timeline-body"><p>I didn't realize that</p>
+<pre><code class="language-sh">uv pip install fluiddyn@https://foss.heptapod.net/fluiddyn/fluiddyn/-/archive/branch/default/fluiddyn-branch-default.tar.gz
+</code></pre>
+<p>would work, which is a very good alternative.</p>
+<p>Note that it also works with Mercurial topic (feature branches), for example <code>https://foss.heptapod.net/fluiddyn/fluiddyn/-/archive/topic/default/dct-dst/fluiddyn-topic-default-dct-dst.tar.gz</code> or tags, like <code>https://foss.heptapod.net/fluiddyn/fluiddyn/-/archive/0.8.0/fluiddyn-0.8.0.tar.gz</code>.</p>
+<p>I guess then there is no need for this feature.</p>
+<p>Aside note: in the long term, having just one solution for versioning (only Git) is very bad for user experience. A bit the same as if Python users have no other solution than <code>pip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @paugier on 2025-07-09 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15346.html">astral-sh/uv#15346</a> on 2025-08-18 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV venv doesn't work on MacOS when Rye is installed - astral-sh/uv #1791</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV venv doesn't work on MacOS when Rye is installed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1791">#1791</a>
+        opened by <a href="https://github.com/justinhauer">@justinhauer</a>
+        on 2024-02-21 02:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/justinhauer">@justinhauer</a> on 2024-02-21 02:32</div>
+            <div class="timeline-body"><p><strong>Summary:</strong>
+Out of the box, the tool doesn't work.</p>
+<p>I have Rye installed in my system. When downloading UV to test this out, as it seems like Rye will soon be dead and I'll have to migrate to this tool. I get the following error:</p>
+<p><strong>uv platform:</strong> MacOS 14.4 (Intel x86)
+<strong>uv version:</strong> uv 0.1.6</p>
+<p><strong>command:</strong>
+<code> uv venv test</code>
+× Querying Python at <code>/Users/justin/.rye/shims/rye</code> failed with status exit
+│ status: 2:
+│ --- stdout:
+--- stderr:
+│ error: unexpected argument found
+│ ---</p>
+<p>It appears that with both tools installed, UV is nerfed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-21 03:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 03:09</div>
+            <div class="timeline-body"><p>Thanks for the report! Rye won't be dead soon, we'll be helping maintain it.</p>
+<p>Regarding the error, it seems weird that we're detecting <code>rye</code> as a Python executable. Can you provide output with the <code>-v</code> flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/methane">@methane</a> on 2024-02-21 06:45</div>
+            <div class="timeline-body"><p>This is why this error happens.</p>
+<p>https://github.com/astral-sh/uv/blob/5d53040465a67bdfdd31512e2eaa0e195909855e/crates/uv-interpreter/src/python_query.rs#L174-L175</p>
+<pre><code>$ which python3
+/Users/inada-n/.rye/shims/python3
+
+$ python3 get_interpreter_info.py
+{&quot;markers&quot;: ...}
+
+$ ~/.rye/shims/rye get_interpreter_info.py
+error: unrecognized subcommand
+</code></pre>
+<p>Anyway, rye doesn't provide commands like <code>python3.12</code> so we can not <code>rye venv -p3.12</code> too.
+More effort is needed to support rye managed python interpreters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-21 06:52</div>
+            <div class="timeline-body"><p>I haven't used rye myself but I wonder if this is the suggested workflow. I think the proposed way of using <code>uv</code> with <code>rye</code> is to use <code>uv</code> through <code>rye</code>. I think you can do that by setting <code>rye config --set-bool behavior.use-uv=true</code>. See https://lucumr.pocoo.org/2024/2/15/rye-grows-with-uv/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-02-21 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-02-21 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/methane">@methane</a> on 2024-02-21 06:54</div>
+            <div class="timeline-body"><p>rye doesn't have <code>rye venv</code> command. We can not create venv without project for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-02-21 10:20</div>
+            <div class="timeline-body"><p>@zanieb i ran into that issue myself. The problem here is that the <code>python</code> and <code>python3</code> shim by <code>rye</code> is detected by name. When <code>uv</code> canonicalizes, it tries with the <code>rye</code> name instead. For <code>uv</code> usage within <code>rye</code> that's not an issue because i always bypass the paths where this shows up, but it is an issue if you point it directly to one of the rye shims.</p>
+<p>I see three options:</p>
+<ol>
+<li>pass a hidden env var as part of discovery that can force on the flag in uv</li>
+<li>always let rye hardlink the shims on all platforms to prevent the symlink resolving</li>
+<li>to not resolve symlinks in uv</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/methane">@methane</a> on 2024-02-21 11:17</div>
+            <div class="timeline-body"><p>Virtualenv can extend Python discovery and there are extensions for pyenv and rye.</p>
+<ul>
+<li>https://virtualenv.pypa.io/en/latest/extend.html</li>
+<li>https://github.com/un-def/virtualenv-pyenv</li>
+<li>https://github.com/bluss/virtualenv-rye-discovery</li>
+</ul>
+<p>Since it needs to be written in Python, difficut to support them from uv.</p>
+<p>Another idea is creating directory like what <code>scripts/bootstrap/install.py</code> creates.
+The directory containing <code>python3</code> (default), <code>python3.X</code>, and <code>python3.X.Y</code> symlinks.
+Shell script or Python script is enough for creating such directory for pyenv/rye.</p>
+<p>uv already have <code>UV_TEST_PYTHON_PATH</code> for finding python from such directory.
+By adding the directory to PATH temporary, tox and virtualenv can use it without extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-02-21 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-21 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-21 11:36</div>
+            <div class="timeline-body"><p>Possibly related to https://github.com/astral-sh/uv/issues/1795</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/methane">@methane</a> on 2024-02-22 09:13</div>
+            <div class="timeline-body"><p>I find <code>uv venv -p3.8 spam</code> doesn't canonicalize symlink.</p>
+<p>https://github.com/astral-sh/uv/blob/5d53040465a67bdfdd31512e2eaa0e195909855e/crates/uv-interpreter/src/python_query.rs#L50-L54</p>
+<p>Why only find_default_python canonicalize python? Can we just stop canonicalize?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2497.html">astral-sh/uv#2497</a> on 2024-03-17 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-08 19:25</div>
+            <div class="timeline-body"><p>We no longer canonicalize the executable path during queries, so I presume this is fixed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-08 19:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

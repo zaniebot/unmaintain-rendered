@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mono repo structure breaks uv behavior - astral-sh/uv #12973</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>mono repo structure breaks uv behavior</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12973">#12973</a>
+        opened by <a href="https://github.com/kotoroshinoto">@kotoroshinoto</a>
+        on 2025-04-18 17:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kotoroshinoto">@kotoroshinoto</a> on 2025-04-18 17:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Our repo has a structure like this one: https://github.com/kotoroshinoto/ExampleMultiRepo</p>
+<p>Uv insists on resolving paths relative to the repo root and ignores everything I have tried to point it to the actual top level pyproject.toml</p>
+<p>It's a corporate project. I have to share this repo with non-python projects. They don't want a top level pyproject.tonl.</p>
+<p>Please give us some kind of mechanism to force uv to use the location of the toml as the root like it should.</p>
+<h3>Platform</h3>
+<p>windows11</p>
+<h3>Version</h3>
+<p>0.6.14</p>
+<h3>Python version</h3>
+<p>3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @kotoroshinoto on 2025-04-18 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-21 01:56</div>
+            <div class="timeline-body"><p>I don't fully understand the issue, your report is pretty sparse, but: (1) <code>${PROJECT_ROOT}</code> always resolve to the current working directory, it doesn't do anything special beyond that -- I'm guessing you're running your commands from the repo root, and that's causing you confusion? (See https://github.com/astral-sh/uv/issues/3271, which would change that behavior).</p>
+<p>And (2) I really think you want <code>[tool.uv.sources]</code> instead of <code>${PROJECT_ROOT}</code> which is largely a legacy thing. Specifically, instead of:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+dev = [
+    &quot;example-project-package0 @ file:///${PROJECT_ROOT}/packages/package0&quot;,
+    &quot;example-project-package1 @ file:///${PROJECT_ROOT}/packages/package1&quot;,
+    &quot;example-project-package2 @ file:///${PROJECT_ROOT}/packages/package2&quot;,
+]
+</code></pre>
+<p>You want:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+dev = [
+    &quot;example-project-package0 @ file:///${PROJECT_ROOT}/packages/package0&quot;,
+    &quot;example-project-package1 @ file:///${PROJECT_ROOT}/packages/package1&quot;,
+    &quot;example-project-package2 @ file:///${PROJECT_ROOT}/packages/package2&quot;,
+]
+
+[tool.uv.sources]
+example-project-package0 = { path = &quot;packages/package0&quot; }
+...
+</code></pre>
+<p>That allows you to use relative paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kotoroshinoto">@kotoroshinoto</a> on 2025-04-21 18:54</div>
+            <div class="timeline-body"><p>At first I was trying to use pdm's experimental support to use it as a package resolver</p>
+<p>I expanded testing to the uv commands directly, which is where I started to see the issue. It would alternately try to find the sub package directly under project root (dropping the packages directory from the path like {Project_root}/package0) if the command was executed from the directory containing the outermost project.toml or if run from inside packages directory, that part of the path was doubled. {Project_root}/packages/packages/package0.</p>
+<p>If setting the source paths using [tool.uv.sources] resolves thisI will let you know. Ideally it shouldn't be maiming the paths like that even if the sources aren't set though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kotoroshinoto">@kotoroshinoto</a> on 2025-04-21 19:03</div>
+            <div class="timeline-body"><p>Additionally this is a mono repo. The packages aren't really supposed to be added as includes/sources in the external toml.</p>
+<p>The packages and package# directories will not be part of the import paths for the subprojects. The top level imports will be directories contained by the sub projects pointed to in their own toml configuration file.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Dockerfile Mac M4 Pro] exec /app/.venv/bin/gunicorn: exec format error - astral-sh/uv #13987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Dockerfile Mac M4 Pro] exec /app/.venv/bin/gunicorn: exec format error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13987">#13987</a>
+        opened by <a href="https://github.com/jakubbober">@jakubbober</a>
+        on 2025-06-12 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jakubbober">@jakubbober</a> on 2025-06-12 11:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I wanted to start using <code>uv</code> more like a pro. Before, I was simply using it exactly like <code>pip</code> by just running <code>uv pip</code> instead of <code>pip</code> for faster installs. Then, I had a Dockerfile that looked as follows:</p>
+<pre><code class="language-docker"># Use an official Python runtime as a parent image
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install uv
+RUN pip install --no-cache-dir uv
+
+COPY requirements.txt /app
+
+RUN uv pip install --system --no-cache -r requirements.txt
+
+COPY . /app
+
+EXPOSE 8000
+
+# Run app when the container launches
+CMD [&quot;gunicorn&quot;, &quot;-b&quot;, &quot;0.0.0.0:8000&quot;, &quot;-k&quot;, &quot;uvicorn.workers.UvicornWorker&quot;, &quot;--workers&quot;, &quot;4&quot;, &quot;--threads&quot;, &quot;8&quot;, &quot;--timeout&quot;, &quot;900&quot;, &quot;endpoint:app&quot;]
+</code></pre>
+<p>To move away from <code>requirements.txt</code> and start using <code>uv.lock</code>, I switched my Dockerfile to the following:</p>
+<pre><code class="language-docker"># Use an official Python runtime as a parent image
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install uv
+RUN pip install --no-cache-dir uv
+
+COPY pyproject.toml /app
+COPY uv.lock /app
+
+RUN uv sync --locked
+
+COPY . /app
+
+EXPOSE 8000
+
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+# Run app when the container launches
+CMD [&quot;gunicorn&quot;, &quot;-b&quot;, &quot;0.0.0.0:8000&quot;, &quot;-k&quot;, &quot;uvicorn.workers.UvicornWorker&quot;, &quot;--workers&quot;, &quot;4&quot;, &quot;--threads&quot;, &quot;8&quot;, &quot;--timeout&quot;, &quot;900&quot;, &quot;endpoint:app&quot;]
+</code></pre>
+<p>However, I'm then ending up with the following error after <code>docker-compose up</code>:</p>
+<pre><code>api-1  | exec /app/.venv/bin/gunicorn: exec format error
+api-1 exited with code 255
+</code></pre>
+<p>I also tried some more complicated Dockerfile setups like <a href="https://github.com/astral-sh/uv-docker-example">this</a> or <a href="https://depot.dev/docs/container-builds/how-to-guides/optimal-dockerfiles/python-uv-dockerfile">this</a>, but I was always ending up with the same error.</p>
+<p>My hypothesis is that it's the fault of my Mac M4 Pro, but I'm not sure what to do about it. Any help would be appreciated!</p>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64 (Mac M4 Pro)</p>
+<h3>Version</h3>
+<p>uv 0.7.12 (dc3fd4647 2025-06-06)</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jakubbober on 2025-06-12 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-12 13:10</div>
+            <div class="timeline-body"><p>Is your <code>.venv</code> directory being mounted? That'll break things since you're mounting a macOS environment into a Linux container.</p>
+<p>See https://docs.astral.sh/uv/guides/integration/docker/#developing-in-a-container and https://github.com/astral-sh/uv-docker-example/blob/6473a50c02f9c36dda8c29cf3e0b6fd84839d353/compose.yml#L18-L21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-06-12 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-06-12 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-16 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakubbober">@jakubbober</a> on 2025-07-18 23:45</div>
+            <div class="timeline-body"><p>Yep, thank was the issue indeed! Solved it by adding another <code>.venv</code> volume to my docker compose, so my <code>docker-compose.yml</code> ended up looking like this:</p>
+<pre><code class="language-yml">services:
+  chat:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/app
+      - /app/.venv
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+</code></pre>
+<p>Before my compose file was missing the <code>- /app/.venv</code> line, now it's mounting the entire app separately from the environment which works.
+Thanks for the help and sorry for the late reply!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401: unused imports not found with absolute imports from same namespace - astral-sh/ruff #18985</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401: unused imports not found with absolute imports from same namespace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18985">#18985</a>
+        opened by <a href="https://github.com/TimotheusBachinger">@TimotheusBachinger</a>
+        on 2025-06-27 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TimotheusBachinger">@TimotheusBachinger</a> on 2025-06-27 14:03</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi ruff-devs!</p>
+<p>Also from my side: <code>ruff</code> is great! Keep up the good work!</p>
+<p>I am unsure if this is a bug or just an expected behavior which is a result of pythons import machinery.</p>
+<p>Currently, we have a lot of unused imports in our code base but <code>ruff</code> doesn't complain about it.
+My minimal repro with no custom configuration looks like this:</p>
+<pre><code>$ cat foo.py
+import requests.exceptions
+import requests.utils
+requests.utils
+
+$ ruff -v check foo.py --select F401
+[2025-06-27][15:58:51][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-06-27][15:58:51][ruff::commands::check][DEBUG] Identified files to lint in: 5.513106ms
+[2025-06-27][15:58:51][ruff::commands::check][DEBUG] Checked 1 files in: 73.419µs
+All checks passed!
+
+$ ruff --version
+ruff 0.11.11
+</code></pre>
+<p>Expected behavior:</p>
+<ul>
+<li><code>ruff</code> would complain about <code>requests.exceptions</code> being imported but unused</li>
+</ul>
+<p>Actual behavior:</p>
+<ul>
+<li><code>ruff</code> does not complain</li>
+</ul>
+<p>Side note:
+This does the right thing:</p>
+<pre><code>$ cat foo.py                                                                                                                                                                                                                 
+from requests import exceptions
+from requests import utils
+utils
+
+$ ruff -v check foo.py --select F401
+
+[2025-06-27][16:02:57][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-06-27][16:02:57][ruff::commands::check][DEBUG] Identified files to lint in: 4.076666ms
+[2025-06-27][16:02:57][ruff::commands::check][DEBUG] Checked 1 files in: 117.9µs
+foo.py:1:22: F401 [*] `requests.exceptions` imported but unused
+  |
+1 | from requests import exceptions
+  |                      ^^^^^^^^^^ F401
+2 | from requests import utils
+3 | utils
+  |
+  = help: Remove unused import: `requests.exceptions`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<h3>Version</h3>
+<pre><code>$ ruff --version
+ruff 0.11.11
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @TimotheusBachinger on 2025-06-27 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-27 16:00</div>
+            <div class="timeline-body"><p>Thanks for the report. I think this is a duplicate of #60 and more recently #18893.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-27 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uvx doesn't respect the python version specified in the pyproject.toml - astral-sh/uv #14958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uvx doesn't respect the python version specified in the pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14958">#14958</a>
+        opened by <a href="https://github.com/jbullion-astra">@jbullion-astra</a>
+        on 2025-07-29 18:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbullion-astra">@jbullion-astra</a> on 2025-07-29 18:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>mypackage specifies <code>requires-python = &quot;&gt;=3.11,&lt;3.12&quot;</code>.</p>
+<p>This version of pyzmq==27.0.0 has a wheel available for my platform python 3.11.11. But when I try to run mypackage via uv tool it tries to build a different version of pyzmq.</p>
+<pre><code>$ uv pip install pyzmq
+Resolved 1 package in 1.13s
+Prepared 1 package in 399ms
+Installed 1 package in 48ms
+ + pyzmq==27.0.0
+
+$ uvx mypackage @myversion
+   Building pyzmq==26.0.3
+^C
+$ uvx mypackage @myversion --python 3.11.11
+   Building pyzmq==26.0.3
+^C
+
+</code></pre>
+<p>That build of pyzmq fails for my environment.</p>
+<p>Manually uninstalling all but the intended version of python worked for me.</p>
+<pre><code>$ uv python list
+cpython-3.14.0rc1-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.14.0rc1+freethreaded-windows-x86_64-none    &lt;download available&gt;
+cpython-3.13.5-windows-x86_64-none                    &lt;download available&gt;
+cpython-3.13.5+freethreaded-windows-x86_64-none       &lt;download available&gt;
+cpython-3.13.0-windows-x86_64-none                    ...\cpython-3.13.0-windows-x86_64-none\python.exe
+cpython-3.12.11-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.12.7-windows-x86_64-none                    ...\cpython-3.12.7-windows-x86_64-none\python.exe
+cpython-3.11.13-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.11.11-windows-x86_64-none                  ...\cpython-3.11.11-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.10.8-windows-x86_64-none                    C:\Program Files\Python310\python.exe
+</code></pre>
+<pre><code>$ uv python list
+cpython-3.14.0rc1-windows-x86_64-none                 &lt;download available&gt;
+cpython-3.14.0rc1+freethreaded-windows-x86_64-none    &lt;download available&gt;
+cpython-3.13.5-windows-x86_64-none                    &lt;download available&gt;
+cpython-3.13.5+freethreaded-windows-x86_64-none       &lt;download available&gt;
+cpython-3.13.0-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.12.11-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.12.7-windows-x86_64-none                    &lt;download available&gt;
+cpython-3.11.13-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.11.11-windows-x86_64-none                  ...\cpython-3.11.11-windows-x86_64-none\python.exe
+cpython-3.10.18-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.10.8-windows-x86_64-none                    C:\Program Files\Python310\python.exe
+</code></pre>
+<pre><code>$ uvx mypackage@myversion
+Installed 65 packages in 497ms
+Usage: mypackage [OPTIONS] COMMAND [ARGS]...
+...
+</code></pre>
+<p>I am building mypackage via <code>uv build</code>:</p>
+<pre><code>[build-system]
+requires = [&quot;setuptools&gt;=68&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<p>Is this not capturing the requires python key? Why doesn't specifying the python version work?</p>
+<h3>Platform</h3>
+<p>Windows 11 x86</p>
+<h3>Version</h3>
+<p>uv 0.8.3 (7e78f54e7 2025-07-24)</p>
+<h3>Python version</h3>
+<p>3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jbullion-astra on 2025-07-29 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 18:36</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/14711 and similar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbullion-astra">@jbullion-astra</a> on 2025-07-29 18:49</div>
+            <div class="timeline-body"><p>That is interesting @zanieb. But why would uvx ignore my <code> --python 3.11.11</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 19:09</div>
+            <div class="timeline-body"><p>In <code>uvx mypackage@myversion --python 3.11.11</code> you're passing that flag to <code>mypackage</code>. Use <code>uvx --python 3.11.11 mypackage@myversion</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-07-29 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-07-29 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-31 02:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

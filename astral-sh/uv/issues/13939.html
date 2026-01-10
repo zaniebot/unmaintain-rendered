@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not use project `.python-version` - astral-sh/uv #13939</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not use project `.python-version`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13939">#13939</a>
+        opened by <a href="https://github.com/Microwave-WYB">@Microwave-WYB</a>
+        on 2025-06-10 03:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Microwave-WYB">@Microwave-WYB</a> on 2025-06-10 03:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv</code> consistently ignores <code>.python-version</code> for project. It should respect the project pinned version rather than the global version.</p>
+<pre><code>❯ uv init --library --python 3.10 uvtest
+Initialized project `uvtest` at `/home/wyb/Projects/uvtest`
+❯ cd uvtest
+❯ cat .python-version
+3.10
+❯ uv sync
+Using CPython 3.13.3
+Creating virtual environment at: .venv
+Resolved 1 package in 1ms
+      Built uvtest @ file:///home/wyb/Projects/uvtest
+Prepared 1 package in 531ms
+Installed 1 package in 0.48ms
+ + uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+❯ uv sync --python 3.10
+Using CPython 3.10.15
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 1 package in 0.64ms
+Installed 1 package in 4ms
+ + uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+❯ uv add --dev ruff
+Using CPython 3.13.3
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 2 packages in 5ms
+      Built uvtest @ file:///home/wyb/Projects/uvtest
+Prepared 1 package in 181ms
+Installed 2 packages in 0.83ms
+ + ruff==0.11.13
+ + uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+❯ uv sync --python 3.10
+Using CPython 3.10.15
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Resolved 2 packages in 0.46ms
+Installed 2 packages in 5ms
+ + ruff==0.11.13
+ + uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+❯ uv run ruff --help
+Using CPython 3.13.3
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Installed 2 packages in 4ms
+Ruff: An extremely fast Python linter and code formatted.
+...
+❯ uv python pin 3.10
+Pinned `.python-version` to `3.10`
+❯ uv sync
+Resolved 2 packages in 0.53ms
+Audited 2 packages in 0.04ms
+❯ python -V
+Python 3.13.3
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.12.29-1-lts x86_64 GNU/Linux  (Arch Linux)</p>
+<h3>Version</h3>
+<p>uv 0.7.12 (dc3fd4647 2025-06-06)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Microwave-WYB on 2025-06-10 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv does not use specified `.python-version`" to "uv does not use project `.python-version`" by @Microwave-WYB on 2025-06-10 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-10 09:43</div>
+            <div class="timeline-body"><p>Can you share verbose logs (<code>uv sync -v</code>) for a case where it picks Python 3.13?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Microwave-WYB">@Microwave-WYB</a> on 2025-06-10 19:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share verbose logs (<code>uv sync -v</code>) for a case where it picks Python 3.13?</p>
+</blockquote>
+<pre><code>❯ uv sync --python 3.10 -v
+DEBUG uv 0.7.12 (dc3fd4647 2025-06-06)
+DEBUG Found project root: `/home/wyb/Projects/uvtest`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/home/wyb/Projects/uvtest`
+DEBUG Using Python request `3.10` from explicit request
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version does not satisfy the request: `Python 3.10`
+DEBUG Searching for Python 3.10 in managed installations or search path
+DEBUG Searching for managed installations at `/home/wyb/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.13.4-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.13.3-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.13.2-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.13.2+freethreaded-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.13.1-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.12.6-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.12.5-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.12.4-linux-x86_64-gnu`
+DEBUG Found managed installation `cpython-3.10.15-linux-x86_64-gnu`
+DEBUG Found `cpython-3.10.15-linux-x86_64-gnu` at `/home/wyb/.local/share/uv/python/cpython-3.10.15-linux-x86_64-gnu/bin/python3.10` (managed installations)
+Using CPython 3.10.15
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /home/wyb/.local/share/uv/python/cpython-3.10.15-linux-x86_64-gnu/bin/python3.10
+DEBUG Using base executable for virtual environment: /home/wyb/.local/share/uv/python/cpython-3.10.15-linux-x86_64-gnu/bin/python3.10
+DEBUG Released lock at `/tmp/uv-fcae5fa2a09c53f5.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uvtest @ file:///home/wyb/Projects/uvtest
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 2 packages in 0.56ms
+DEBUG Using request timeout of 30s
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1749527362, tv_nsec: 36426137 })), None, None, {}, {&quot;src&quot;: Some(Timestamp(Timestamp(SystemTime { tv_sec: 1749527336, tv_nsec: 452783680 })))}
+DEBUG Directory source requirement already cached: uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+DEBUG Registry requirement already cached: ruff==0.11.13
+Installed 2 packages in 5ms
+ + ruff==0.11.13
+ + uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+DEBUG Released lock at `/home/wyb/Projects/uvtest/.venv/.lock`
+❯ uv sync -v
+DEBUG uv 0.7.12 (dc3fd4647 2025-06-06)
+DEBUG Found project root: `/home/wyb/Projects/uvtest`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/home/wyb/Projects/uvtest`
+DEBUG Using Python request `3.13.3` from explicit request
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version does not satisfy the request: `Python 3.13.3`
+DEBUG Searching for Python 3.13.3 in managed installations or search path
+DEBUG Searching for managed installations at `/home/wyb/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.13.4-linux-x86_64-gnu`
+DEBUG Found managed installation `cpython-3.13.3-linux-x86_64-gnu`
+DEBUG Found `cpython-3.13.3-linux-x86_64-gnu` at `/home/wyb/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu/bin/python3.13` (managed installations)
+Using CPython 3.13.3
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /home/wyb/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu/bin/python3.13
+DEBUG Using base executable for virtual environment: /home/wyb/.local/share/uv/python/cpython-3.13.3-linux-x86_64-gnu/bin/python3.13
+DEBUG Released lock at `/tmp/uv-fcae5fa2a09c53f5.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: uvtest @ file:///home/wyb/Projects/uvtest
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 2 packages in 0.51ms
+DEBUG Using request timeout of 30s
+DEBUG Computed cache info: Some(Timestamp(SystemTime { tv_sec: 1749527362, tv_nsec: 36426137 })), None, None, {}, {&quot;src&quot;: Some(Timestamp(Timestamp(SystemTime { tv_sec: 1749527336, tv_nsec: 452783680 })))}
+DEBUG Directory source requirement already cached: uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+DEBUG Registry requirement already cached: ruff==0.11.13
+Installed 2 packages in 5ms
+ + ruff==0.11.13
+ + uvtest==0.1.0 (from file:///home/wyb/Projects/uvtest)
+DEBUG Released lock at `/home/wyb/Projects/uvtest/.venv/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-10 20:24</div>
+            <div class="timeline-body"><p>Sounds like you have <code>UV_PYTHON</code> set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Microwave-WYB">@Microwave-WYB</a> on 2025-06-12 20:02</div>
+            <div class="timeline-body"><p>Oh you are right! I missed it. We can close this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Microwave-WYB on 2025-06-12 20:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow literal and dynamic values for version in clap_derive - clap-rs/clap #3034</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow literal and dynamic values for version in clap_derive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3034">#3034</a>
+        opened by <a href="https://github.com/gibfahn">@gibfahn</a>
+        on 2021-11-16 22:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gibfahn">@gibfahn</a> on 2021-11-16 22:26</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.56.1 (59eed8a2a 2021-11-01)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.5</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+fn main() {
+    Opts::parse();
+}
+
+#[derive(Parser)]
+// Doesn't work unless you uncomment this line:
+// #[clap(version = env!(&quot;CARGO_PKG_VERSION&quot;))]
+pub struct Opts {}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>By default the version in the Cargo.toml is not picked up. The <code>--help</code> command doesn't show the version, and the <code>--version</code> command fails.</p>
+<pre><code class="language-console">❯ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --help`
+clap_repro 
+
+USAGE:
+    clap_repro
+
+OPTIONS:
+    -h, --help    Print help information
+</code></pre>
+<pre><code class="language-console">❯ cargo run -- --version
+
+Running `target/debug/clap_repro --version`
+error: Found argument '--version' which wasn't expected, or isn't valid in this context
+
+	If you tried to supply `--version` as a value rather than a flag, use `-- --version`
+
+USAGE:
+    clap_repro
+
+For more information try --help
+</code></pre>
+<p>If you uncomment the version line below things start to work.</p>
+<h3>Actual Behaviour</h3>
+<p>Version must be manually set.</p>
+<h3>Expected Behaviour</h3>
+<p>With structopt the version is picked up automatically:</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+fn main() {
+    Opts::from_args();
+}
+
+#[derive(StructOpt)]
+pub struct Opts {}
+</code></pre>
+<pre><code class="language-console">❯ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --help`
+clap_repro 0.1.0
+
+USAGE:
+    clap_repro
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<pre><code class="language-console">❯ cargo run -- --version
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --version`
+clap_repro 0.1.0
+</code></pre>
+<h3>Additional Context</h3>
+<p>Sorry if this was an intentional change, I didn't see anything in the docs about it.</p>
+<h3>Debug Output</h3>
+<details><summary>Debug output of <code>--version</code></summary>
+
+<pre><code class="language-console">❯ cargo run -- --help
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --help`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:clap_repro
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Removing generated version
+[            clap::build::app] 	App::_propagate_global_args:clap_repro
+[            clap::build::app] 	App::_derive_display_order:clap_repro
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--help&quot;)' ([45, 45, 104, 101, 108, 112])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr(&quot;--help&quot;)
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::parse_long_arg: Found valid opt or flag '--help'
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str
+[         clap::parse::parser] 	Parser::check_for_help_and_version_str: Checking if --RawOsStr(&quot;help&quot;) is help or version...
+[         clap::parse::parser] 	Help
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg HelpFlag
+[         clap::parse::parser] 	[         clap::parse::parser] 	Parser::use_long_help
+Parser::help_err: use_long=false
+[         clap::parse::parser] 	Parser::use_long_help
+[          clap::output::help] 	Help::new
+[          clap::output::help] 	Help::write_help
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_templated_help
+[          clap::output::help] 	Help::write_before_help
+[          clap::output::help] 	Help::write_bin_name
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap_repro
+[          clap::output::help] 	Help::write_all_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::write_args: Current Longest...2
+[          clap::output::help] 	Help::write_args: New Longest...6
+[          clap::output::help] 	should_show_arg: use_long=false, arg=help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::spec_vals: a=--help
+[          clap::output::help] 	Help::short
+[          clap::output::help] 	Help::long
+[          clap::output::help] 	Help::val: arg=help
+[          clap::output::help] 	Help::val: Has switch...
+[          clap::output::help] 	Yes
+[          clap::output::help] 	Help::val: nlh...false
+[          clap::output::help] 	Help::help
+[          clap::output::help] 	Help::help: Next Line...false
+[          clap::output::help] 	Help::help: Too long...
+[          clap::output::help] 	No
+[          clap::output::help] 	Help::write_after_help
+[           clap::output::fmt] 	is_a_tty: stderr=false
+clap_repro 
+
+USAGE:
+    clap_repro
+
+OPTIONS:
+    -h, --help    Print help information
+</code></pre>
+</details>
+
+<details><summary>Debug output of <code>--version</code></summary>
+
+<pre><code class="language-console">❯ cargo run -- --version
+    Finished dev [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/clap_repro --version`
+[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:clap_repro
+[            clap::build::app] 	App::_check_help_and_version
+[            clap::build::app] 	App::_check_help_and_version: Removing generated version
+[            clap::build::app] 	App::_propagate_global_args:clap_repro
+[            clap::build::app] 	App::_derive_display_order:clap_repro
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[clap::build::arg::debug_asserts] 	Arg::_debug_asserts:help
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--version&quot;)' ([45, 45, 118, 101, 114, 115, 105, 111, 110])
+[         clap::parse::parser] 	Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser] 	Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=RawOsStr(&quot;--version&quot;)
+[         clap::parse::parser] 	Parser::get_matches_with: sc=None
+[         clap::parse::parser] 	Parser::parse_long_arg
+[         clap::parse::parser] 	Parser::parse_long_arg: cur_idx:=1
+[         clap::parse::parser] 	Parser::parse_long_arg: Does it contain '='...
+[         clap::parse::parser] 	No
+[         clap::parse::parser] 	Parser::possible_long_flag_subcommand: arg=RawOsStr(&quot;version&quot;)
+[         clap::parse::parser] 	Parser::get_matches_with: After parse_long_arg NoMatchingArg { arg: &quot;version&quot; }
+[         clap::parse::parser] 	Parser::did_you_mean_error: arg=version
+[         clap::parse::parser] 	Parser::did_you_mean_error: longs=[&quot;help&quot;]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs={}
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[]
+[         clap::output::usage] 	Usage::needs_options_tag
+[         clap::output::usage] 	Usage::needs_options_tag:iter: f=help
+[         clap::output::usage] 	Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage] 	Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage] 	Usage::create_help_usage: usage=clap_repro
+[           clap::output::fmt] 	is_a_tty: stderr=true
+error: Found argument '--version' which wasn't expected, or isn't valid in this context
+
+	If you tried to supply `--version` as a value rather than a flag, use `-- --version`
+
+USAGE:
+    clap_repro
+
+For more information try --help
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @gibfahn on 2021-11-16 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gibfahn">@gibfahn</a> on 2021-11-16 22:29</div>
+            <div class="timeline-body"><p>Put the above into a repo in case a full repro is more useful: https://github.com/gibfahn/clap_repro</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-11-16 22:57</div>
+            <div class="timeline-body"><p>I think it works with <code>#[clap(version)]</code> instead of <code>#[clap(version = env!(&quot;CARGO_PKG_VERSION&quot;))]</code>. But isn't that supposed to be the default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gibfahn">@gibfahn</a> on 2021-11-18 11:13</div>
+            <div class="timeline-body"><p>Ahh, you're right @mkayaalp , that does work.</p>
+<p>But yeah, same question, isn't this supposed to be the default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "clap_derive doesn't pick up the version from the Cargo.toml" to "clap_derive doesn't pick up the version from the Cargo.toml by default" by @gibfahn on 2021-11-18 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-18 14:27</div>
+            <div class="timeline-body"><p>In structopt, the way you opt-out of automatic version detection is with a <code>no_version</code> attribute.</p>
+<p>Looks like this was changed in <code>clap_derive</code> in https://github.com/clap-rs/clap/pull/1676 but unfortunately there isn't an explanation as to why.</p>
+<p>My guesses</p>
+<ul>
+<li>Avoid special cased opt-out attributes</li>
+<li>Do what the user says rather than guess</li>
+<li>Some weird behavior between (what are now called) <code>clap::Parser</code> and <code>#[flatten]</code>, <code>#[subcommand]</code> or in defining the subcommand itself.</li>
+</ul>
+<p>I am personally torn on this.  Being more explicit has its benefits but requiring everyone to know a set of attributes they need to se is a pain (e.g. see the <a href="https://github.com/clap-rs/clap/discussions/2627">discussion on changing App defaults</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-18 14:29</div>
+            <div class="timeline-body"><p>Even if we keep this, we should make all example code specify <code>version</code>, etc like with #3028  to raise visibility</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-11-18 19:30</div>
+            <div class="timeline-body"><p>I think I like the following snippet from that commit. Maybe it should be in the <code>README.md</code> example:</p>
+<pre><code class="language-rust">#[derive(Clap, Debug)]
+#[clap(author, about, version)]
+//     ^^^^^^                   &lt;- derive author from Cargo.toml
+//             ^^^^^            &lt;- derive description from Cargo.toml
+//                    ^^^^^^^   &lt;- derive version from Cargo.toml
+struct Opt {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-18 19:39</div>
+            <div class="timeline-body"><p>Probably too detailed for high level examples but we should defintely talk about it where we break down all of the &quot;magic&quot; methods (methods derived from attributes after some post-processing by us)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-11-18 19:45</div>
+            <div class="timeline-body"><p>There is already an example with explicit version and author attributes (for top-level and subcommand). Top-level could be changed to show <code>Cargo.toml</code> is used by default. Current one:</p>
+<pre><code class="language-rs">#[derive(Parser)]
+#[clap(version = &quot;1.0&quot;, author = &quot;Kevin K. &lt;kbknapp@gmail.com&gt;&quot;)]
+struct Opts {
+    //...
+    #[clap(subcommand)]
+    subcmd: SubCommand,
+}
+
+#[derive(Parser)]
+enum SubCommand {
+    #[clap(version = &quot;1.3&quot;, author = &quot;Someone E. &lt;someone_else@other.com&gt;&quot;)]
+    Test(Test),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-11-18 21:00</div>
+            <div class="timeline-body"><blockquote>
+<p>In structopt, the way you opt-out of automatic version detection is with a <code>no_version</code> attribute.</p>
+<p>Looks like this was changed in <code>clap_derive</code> in #1676 but unfortunately there isn't an explanation as to why.</p>
+</blockquote>
+<p>I think the discussion was a lot fragmented, some of it happening on structopt and some of it on clap.</p>
+<blockquote>
+<p>My guesses</p>
+<ul>
+<li>Avoid special cased opt-out attributes</li>
+</ul>
+</blockquote>
+<p>Yup. Especially when we had <code>author</code> and <code>about</code>. <code>no_version</code> looks inconsistent.</p>
+<blockquote>
+<ul>
+<li>Do what the user says rather than guess</li>
+</ul>
+</blockquote>
+<p>Exactly this too. Even in normal API, we explicitly ask the author to specify <code>author</code>, <code>about</code> and <code>version</code>. We should be doing the same in derive API.</p>
+<blockquote>
+<ul>
+<li>Some weird behavior between (what are now called) <code>clap::Parser</code> and <code>#[flatten]</code>, <code>#[subcommand]</code> or in defining the subcommand itself.</li>
+</ul>
+</blockquote>
+<p>Also this, Apparently it had some issues with parsing and stuff in structopt. But I am not exactly clear on what they were.</p>
+<blockquote>
+<p>requiring everyone to know a set of attributes they need to use is a pain (e.g. see the <a href="https://github.com/clap-rs/clap/discussions/2627">discussion on changing App defaults</a>).</p>
+</blockquote>
+<p>I think this can be solved by what you said in the other comment regarding documentation.</p>
+<blockquote>
+<p>but we should defintely talk about it where we break down all of the &quot;magic&quot; methods (methods derived from attributes after some post-processing by us)</p>
+</blockquote>
+<hr />
+<p>I am tagging this for 3.1 milestone because we want to support literal and dynamic values for this method too. Similar to subcommand name in #2751</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-11-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> removed by @pksunkara on 2021-11-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> added by @pksunkara on 2021-11-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2021-11-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @pksunkara on 2021-11-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @pksunkara on 2021-11-18 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "clap_derive doesn't pick up the version from the Cargo.toml by default" to "Allow literal and dynamic values for version in clap_derive" by @pksunkara on 2021-11-18 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkayaalp">@mkayaalp</a> on 2021-11-18 23:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I am tagging this for 3.1 milestone because we want to support literal and dynamic values for this method too. Similar to subcommand name in #2751</p>
+</blockquote>
+<p>I was with you until the end there. The issue was not that <code>#[clap(version = env!(&quot;CARGO_PKG_VERSION&quot;))]</code> did not work. You <em>can</em> use dynamic values for <code>version</code> unlike in #2751.</p>
+<p>The issue was the version not being set without the <code>version</code> attribute. It seems there is agreement that it should be explicit. So, I would suggest closing the issue instead.</p>
+<p>I think the &quot;magic&quot; about the <code>version</code> attribute handling is that it defaults to <code>${CARGO_PKG_VERSION}</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-11-19 00:27</div>
+            <div class="timeline-body"><p>You are right. I misunderstood part of the issue being that dynamic values not working right now. My bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-11-19 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../informalsystems/hermes/pulls/1576.html">informalsystems/hermes#1576</a> on 2021-11-23 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3051.html">clap-rs/clap#3051</a> on 2021-11-25 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5529.html">clap-rs/clap#5529</a> on 2024-06-12 21:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:43 UTC
+    </footer>
+</body>
+</html>

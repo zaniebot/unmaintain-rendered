@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positives in 0.1.12 with RUF011 - astral-sh/ruff #9487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positives in 0.1.12 with RUF011</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9487">#9487</a>
+        opened by <a href="https://github.com/pablogamboa">@pablogamboa</a>
+        on 2024-01-12 07:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pablogamboa">@pablogamboa</a> on 2024-01-12 07:00</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>ruff: <code>0.1.12</code>
+invokation: <code>ruff foobar.py</code>
+settings:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+select = [&quot;B&quot;, &quot;C4&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;I&quot;, &quot;INP&quot;, &quot;ISC&quot;, &quot;N&quot;, &quot;T20&quot;, &quot;PIE&quot;, &quot;PT&quot;, &quot;RUF&quot;, &quot;SIM&quot;, &quot;UP&quot;, &quot;W&quot;]
+ignore = [
+  &quot;B008&quot;,  # Do not perform function call {name} in argument defaults
+  &quot;B017&quot;,  # {assertion}({exception}) should be considered evil
+  &quot;B904&quot;,  # Within an except clause, raise exceptions with raise ... from err or raise ... from None to distinguish the
+m from errors in exception handling
+  &quot;D100&quot;,  # Missing docstring in public module
+  &quot;D101&quot;,  # Missing docstring in public class
+  &quot;D102&quot;,  # Missing docstring in public method
+  &quot;D103&quot;,  # Missing docstring in public function
+  &quot;D104&quot;,  # Missing docstring in public package
+  &quot;D105&quot;,  # Missing docstring in magic method
+  &quot;D106&quot;,  # Missing docstring in public nested class
+  &quot;D107&quot;,  # Missing docstring in __init__
+  &quot;D205&quot;,  # 1 blank line required between summary line and description
+  &quot;D415&quot;,  # First line should end with a period, question mark, or exclamation point
+  &quot;E501&quot;,  # Line too long
+  &quot;ISC001&quot;, # Single line implicit string concatenation (disabled as conflicts with ruff's formatter)
+  &quot;PT004&quot;, # Fixture does not return anything, add leading underscore
+  &quot;PT011&quot;, # pytest.raises({exception}) is too broad, set the match parameter or use a more specific exception
+  &quot;PT018&quot;, # Assertion should be broken down into multiple parts
+  &quot;PT019&quot;, # Fixture {name} without value is injected as parameter, use @pytest.mark.usefixtures instead
+  &quot;RUF005&quot;, # Consider {expr} instead of concatenation
+  &quot;RUF012&quot;, # Mutable class attributes should be annotated with `typing.ClassVar`
+  &quot;RUF015&quot;, # Prefer `next(...)` over single element slice
+  &quot;SIM102&quot;, # Use a single `if` statement instead of nested `if` statements
+  &quot;SIM108&quot;, # Use ternary operator instead of `if`-`else`-block
+  &quot;SIM114&quot;, # Combine `if` branches using logical `or` operator
+  &quot;SIM117&quot;, # Use a single `with` statement with multiple contexts instead of nested `with` statements
+  &quot;N805&quot;,   # First argument of a method should be named `self`
+]
+
+fixable = [&quot;B&quot;, &quot;C4&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;I&quot;, &quot;N&quot;, &quot;PIE&quot;, &quot;PT&quot;, &quot;RUF&quot;, &quot;SIM&quot;, &quot;UP&quot;]
+unfixable = []
+</code></pre>
+<p>snippet:</p>
+<pre><code class="language-python">def _extract_local_id(foo):
+    return foo
+
+
+tokens = {&quot;a&quot;: &quot;b&quot;}
+tokens = {local_id: token for token in tokens if (local_id := _extract_local_id(token)) is not None}
+</code></pre>
+<p>output:</p>
+<pre><code class="language-bash">foobar.py:6:11: RUF011 Dictionary comprehension uses static key: `local_id`
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-12 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 16:11</div>
+            <div class="timeline-body"><p>Oops, thanks -- will fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-12 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9494.html">astral-sh/ruff#9494</a> on 2024-01-12 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-12 19:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

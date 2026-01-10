@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Autofix error] RUF005 autofix fails inside f-string: `f&quot;{a() + ['b']}&quot;` - astral-sh/ruff #4324</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Autofix error] RUF005 autofix fails inside f-string: `f&quot;{a() + ['b']}&quot;`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4324">#4324</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-05-09 19:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-05-09 19:01</div>
+            <div class="timeline-body"><p>In ruff https://github.com/charliermarsh/ruff/commit/99a755f936ebd73cdd1bfccbc121c31d4b27751e, the following snippet causes the autofix RUF005 to introduce a syntax error:</p>
+<pre><code class="language-python">f&quot;{a() + ['b']}&quot;
+</code></pre>
+<pre><code>$ ./ruff --no-cache --select RUF005 --fix code.py
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/charliermarsh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `code.py`, the rule codes RUF005, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+code.py:1:4: RUF005 Consider `[*a(), &quot;b&quot;]` instead of concatenation
+Found 1 error.
+</code></pre>
+<p>This was originally discovered in https://github.com/Mojino01/hugging_face/blob/3dae0d7b4fb8d7e9383b893e4e1799191bb2ab7b/src/transformers/pipelines/base.py#L1181</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2023-05-09 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @konstin on 2023-05-09 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix-error</span> added by @konstin on 2023-05-09 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-09 19:25</div>
+            <div class="timeline-body"><p>I think we have a few options for addressing this class of issues:</p>
+<ol>
+<li>Always skip autofix within f-strings (easiest).</li>
+<li>Skip autofix within f-strings on a rule-by-rule basis. This is fine, but we're going to have to omit most rules. Even <code>RUF005</code> only fails because we go through <code>unparse_expr</code>, which changes the quote style of the <code>'b'</code> to <code>&quot;b&quot;</code>.</li>
+<li>Improve <code>unparse_expr</code> to enforce specific quote styles within f-strings. This would require tracking the quote style of the f-string, threading it down to <code>unparse_expr</code>, and respecting it throughout the unparse logic.</li>
+</ol>
+<p>I'm honestly tempted to do (1).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-09 19:30</div>
+            <div class="timeline-body"><p>One note to add here is that most of these will valid syntax with <a href="https://peps.python.org/pep-0701/">PEP 701</a> implemented, currently targeted for python 3.12, i.e. we could very ambitiously allow autofixes in f-strings for projects with minimum python version 3.12.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4487.html">astral-sh/ruff#4487</a> on 2023-05-18 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-18 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4488.html">astral-sh/ruff#4488</a> on 2023-05-19 12:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

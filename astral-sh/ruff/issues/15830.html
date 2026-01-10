@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C420 false negative at the start of input for builtin static values - astral-sh/ruff #15830</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C420 false negative at the start of input for builtin static values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15830">#15830</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-30 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-30 16:29</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/unnecessary-dict-comprehension-for-iterable/"><code>unnecessary-dict-comprehension-for-iterable</code> (C420)</a> has a false negative in Ruff 0.9.3 when the static value is a builtin and the comprehension starts at the very beginning of the input.</p>
+<pre><code class="language-console">$ printf '{x: NotImplemented for x in &quot;XY&quot;}\n' | ruff --isolated check --preview --select C420 - --output-format=concise
+All checks passed!
+</code></pre>
+<p>If the value is not a builtin, the rule works.</p>
+<pre><code class="language-console">$ printf '{x: 1 for x in &quot;XY&quot;}\n' | ruff --isolated check --preview --select C420 - --output-format=concise --fix -q
+dict.fromkeys(&quot;XY&quot;, 1)
+
+$ printf '{x: None for x in &quot;XY&quot;}\n' | ruff --isolated check --preview --select C420 - --output-format=concise --fix -q
+dict.fromkeys(&quot;XY&quot;)
+</code></pre>
+<p>If even a single character appears before the comprehension, the rule works.</p>
+<pre><code class="language-console">$ printf '\n{x: NotImplemented for x in &quot;XY&quot;}\n' | ruff --isolated check --preview --select C420 - --output-format=concise --fix -q
+
+dict.fromkeys(&quot;XY&quot;, NotImplemented)
+
+$ printf '({x: NotImplemented for x in &quot;XY&quot;})\n' | ruff --isolated check --preview --select C420 - --output-format=concise --fix -q
+(dict.fromkeys(&quot;XY&quot;, NotImplemented))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-01-30 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-01-30 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15837.html">astral-sh/ruff#15837</a> on 2025-01-30 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-30 21:31</div>
+            <div class="timeline-body"><p>What a weird one... but I think I figured it out 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-30 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-30 21:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Python version installed by uv - astral-sh/uv #7325</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Upgrade Python version installed by uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7325">#7325</a>
+        opened by <a href="https://github.com/stuartmaxwell">@stuartmaxwell</a>
+        on 2024-09-12 08:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stuartmaxwell">@stuartmaxwell</a> on 2024-09-12 08:36</div>
+            <div class="timeline-body"><p>My apologies if this has been asked and answered before, but I have searched these issues as well as the docs.</p>
+<p>I have Python 3.12.5 installed from the following command: <code>uv python install 3.12</code>. Now that 3.12.6 is released, how do I upgrade to this version? I thought that perhaps re-running <code>uv python install 3.12</code> might install the newest minor version, but that didn't work. What is the correct workflow to upgrade to the newest version? Should I just uninstall <code>3.12</code> and then reinstall <code>3.12</code>? This doesn't appear to be addressed in the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamescooke">@jamescooke</a> on 2024-09-12 14:33</div>
+            <div class="timeline-body"><p>Docs here https://docs.astral.sh/uv/reference/cli/#uv-python-install currently state (in the description of <code>--reinstall</code>):</p>
+<blockquote>
+<p>By default, uv will exit successfully if the version is already installed.</p>
+</blockquote>
+<p>So I think you want to add <code>--reinstall</code> to get what you want - that new new latest version 👌🏻 :</p>
+<pre><code class="language-sh">uv python install --resinstall 3.12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-12 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stuartmaxwell">@stuartmaxwell</a> on 2024-09-12 22:09</div>
+            <div class="timeline-body"><p>Thanks @jamescooke - that kinda achieves what I want, but I don't think it's great. The <code>--reinstall</code> option appears to always download and reinstall the latest version, even if the latest version is already installed. This makes sense because I'm telling <code>uv</code> to specifically reinstall it. Perhaps what is missing is an <code>--upgrade</code> option that will check if a new version is available first, and then only reinstall if needed - similar to the pip resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-09-13 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-13 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Odud">@Odud</a> on 2024-10-08 09:00</div>
+            <div class="timeline-body"><p>I've got a similar issue (I think). Outside of uv and the venv I have 3.12 and 3.13 available .</p>
+<pre><code class="language-update-alternatives">python - auto mode
+  link best version is /usr/local/bin/python3.13
+  link currently points to /usr/local/bin/python3.13
+  link python is /usr/bin/python
+/usr/local/bin/python3.12 - priority 1
+/usr/local/bin/python3.13 - priority 2
+</code></pre>
+<p>If I create a new project then uv will install 3.13</p>
+<pre><code class="language-uv">Using Python 3.13.0 interpreter at: /usr/local/bin/python3.13
+Creating virtualenv at: .venv
+Built pytest @ file:///home/test/pytest
+Installed 1 package in 0.55ms
+Python 3.13.0 (main, Oct 8 2024, 09:19:25) [GCC 12.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+</code></pre>
+<p>But in an existing project I can't seem to update to 3.13</p>
+<pre><code class="language-uv">Searching for Python versions matching: Python 3.13
+error: No download found for request: cpython-3.13-linux-aarch64-gnu
+</code></pre>
+<p>Although uv seems to know that the local version is available</p>
+<pre><code class="language-uv">cpython-3.13.0-linux-aarch64-gnu     /usr/local/bin/python3.13
+cpython-3.13.0-linux-aarch64-gnu     /usr/bin/python -&gt; /etc/alternatives/python
+cpython-3.13.0-linux-aarch64-gnu     /bin/python -&gt; /etc/alternatives/python
+cpython-3.12.5-linux-aarch64-gnu     /usr/local/bin/python3.12
+cpython-3.12.5-linux-aarch64-gnu     &lt;download available&gt;
+cpython-3.11.9-linux-aarch64-gnu     &lt;download available&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamescooke">@jamescooke</a> on 2024-10-08 10:32</div>
+            <div class="timeline-body"><p>Hi @Odud - I think your problem warrants its own Issue.</p>
+<p>I would pause now and create a new Issue with a description of the problem you're experiencing with not being able to upgrade to Python 3.13.</p>
+<p>When you create that new issue by the way - sharing the output you received like from &quot;uv seems to know that the local version is available&quot; is helpful - however, it would be even more helpful to show the invocation / process to get that output. For example, are you running <code>uv python list</code> or similar? And what were the invocations before that? Is the virtualenv active? This will help people reading the issue to recreate it 🙏🏻</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Odud">@Odud</a> on 2024-10-08 11:15</div>
+            <div class="timeline-body"><p>Thanks James, I will create a new issue later today - done. Previous comment hidden. Please see new issue #8008</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8008.html">astral-sh/uv#8008</a> on 2024-10-08 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/angelo-peronio">@angelo-peronio</a> on 2025-02-10 11:09</div>
+            <div class="timeline-body"><p>Possibly a duplicate of #7892</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../topgrade-rs/topgrade/pulls/1122.html">topgrade-rs/topgrade#1122</a> on 2025-04-13 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gatto">@gatto</a> on 2025-04-16 13:59</div>
+            <div class="timeline-body"><p>I found this issue -
+Can we update the python version with <code>uv</code> without removing and remaking the entire venv?</p>
+<ul>
+<li>edit - on macOS / Linux.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13954.html">astral-sh/uv#13954</a> on 2025-06-10 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-20 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

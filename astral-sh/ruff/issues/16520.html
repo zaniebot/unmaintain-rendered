@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag starred expressions in `return` and `yield` - astral-sh/ruff #16520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flag starred expressions in `return` and `yield`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16520">#16520</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-05 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-05 16:31</div>
+            <div class="timeline-body"><p>Both of these are invalid on every Python version I've tried and should be flagged as <code>ParseError</code>s in the parser:</p>
+<pre><code class="language-python">def f(): yield *rest
+def f(): return *rest
+</code></pre>
+<p>They result in <code>SyntaxError: can't use starred expression here</code> on 3.8 and 3.13 and the less helpful <code>SyntaxError: invalid syntax</code> on 3.7.</p>
+<p>This is separate from the related case in #16485 where these are part of a tuple, which is allowed after 3.8.</p>
+<p><em>Originally posted by @ntBre in https://github.com/astral-sh/ruff/issues/16485#issuecomment-2701182623</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-03-05 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-03-05 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-05 19:22</div>
+            <div class="timeline-body"><p>Python's <code>ast</code> module parses these:</p>
+<pre><code class="language-pycon">Python 3.11.4 (main, Sep 30 2023, 10:54:38) [GCC 11.4.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import ast
+&gt;&gt;&gt; ast.parse('def f(): return *x')
+&lt;ast.Module object at 0x7d5c2433d0&gt;
+</code></pre>
+<p>which indicates to me that this syntax error is detected by CPython's compiler rather than CPython's parser. That means that this issue is a sub-issue of https://github.com/astral-sh/ruff/issues/11934.</p>
+<p>It doesn't mean that we shouldn't detect the syntax error (we absolutely should!). But it does mean that we may want a way of suppressing the diagnostic internally so that we can continue to test our parser directly against CPython's parser using e.g. the <code>py-fuzzer</code> script (which uses Python's <code>ast</code> module to generate random code).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-05 20:17</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood That would suggest that this should be implemented as a semantic syntax error, outside the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-05 21:21</div>
+            <div class="timeline-body"><p>I'll start moving some of the other errors from #6591 to #11934 too. I think the <code>global</code> declarations in <code>try</code> nodes are another example:</p>
+<pre><code class="language-pycon">Python 3.12.9 (main, Feb 12 2025, 14:50:50) [Clang 19.1.6 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import ast
+&gt;&gt;&gt; ast.parse(&quot;&quot;&quot;
+... a=5
+...
+... def f():
+...     try:
+...         pass
+...     except:
+...         global a
+...     else:
+...         print(a)
+... &quot;&quot;&quot;)
+&lt;ast.Module object at 0x79c0c0e06d10&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-05 21:23</div>
+            <div class="timeline-body"><p>Good call. Some of the existing errors listed in https://github.com/astral-sh/ruff/issues/11934 and its sub-issues may also have been introduced in recent versions of CPython; we'll need to check when implementing those semantic syntax errors whether they should be emitted for all target versions or not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16485.html">astral-sh/ruff#16485</a> on 2025-03-06 09:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-06 09:40</div>
+            <div class="timeline-body"><p>(I think from Python 3.9, you can test the CPython parser directly using <code>python -m ast path/to/file.py</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-07 19:27</div>
+            <div class="timeline-body"><p>This issue may also include <code>for</code> statements as added in 3.9 (<a href="https://github.com/python/cpython/issues/90881">BPO</a>).</p>
+<pre><code class="language-pycon">Python 3.13.1 (main, Dec  4 2024, 18:05:56) [GCC 14.2.1 20240910] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import ast
+&gt;&gt;&gt; ast.parse(&quot;for _ in *rest:...&quot;)
+&lt;ast.Module object at 0x7cd78d9bb450&gt;
+&gt;&gt;&gt; for _ in *rest: ...
+  File &quot;&lt;python-input-2&gt;&quot;, line 1
+    for _ in *rest: ...
+             ^^^^^
+SyntaxError: can't use starred expression here
+&gt;&gt;&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16558.html">astral-sh/ruff#16558</a> on 2025-03-07 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11934.html">astral-sh/ruff#11934</a> on 2025-04-01 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17134.html">astral-sh/ruff#17134</a> on 2025-04-01 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-02 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-02 12:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

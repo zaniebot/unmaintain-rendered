@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uvx` is not equivalent to `uv tool run` - astral-sh/uv #15333</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uvx` is not equivalent to `uv tool run`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15333">#15333</a>
+        opened by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a>
+        on 2025-08-17 21:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-08-17 21:25</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>When reading the <a href="https://docs.astral.sh/uv/guides/tools/">docs</a> I came across</p>
+<pre><code>$ uvx ruff
+This is exactly equivalent to:
+$ uv tool run ruff
+uvx is provided as an alias for convenience.
+</code></pre>
+<p>But that does not to seem to be fully the case. At least not after running <code>uv tool install ...</code> command.</p>
+<p>I have been experimenting with IPython and I do get following:</p>
+<ol>
+<li>First <code>uvx</code> - seems it runs from temporary cache environment.</li>
+</ol>
+<pre><code class="language-bash">uvx ipython -c 'import IPython; print(IPython.__file__)'   
+/Users/rskolasinski/.cache/uv/archive-v0/5mledyZnvLs75xlCg-2oW/lib/python3.13/site-packages/IPython/__init__.py
+</code></pre>
+<ol start="2">
+<li>Using <code>uv tool run</code> - after installing the tool - seems to run from tool location</li>
+</ol>
+<pre><code class="language-bash">uv tool run ipython -c 'import IPython; print(IPython.__file__)' 
+/Users/rskolasinski/.local/share/uv/tools/ipython/lib/python3.13/site-packages/IPython/__init__.py
+</code></pre>
+<p>and the same if I just run ipython now</p>
+<pre><code class="language-bash">ipython -c 'import IPython; print(IPython.__file__)'         
+/Users/rskolasinski/.local/share/uv/tools/ipython/lib/python3.13/site-packages/IPython/__init__.py
+</code></pre>
+<p>Note: this is what lead me to thinking that <code>uvx</code> and is not really an alias for <code>uv tool run ...</code>...
+I also tried without the tool installed:</p>
+<ol start="3">
+<li>Indeed when <code>ipython</code> is not installed as a tool I get the same as in 1.</li>
+</ol>
+<pre><code class="language-bash">uv tool uninstall ipython
+...
+
+uv tool run ipython -c 'import IPython; print(IPython.__file__)'
+/Users/rskolasinski/.cache/uv/archive-v0/5mledyZnvLs75xlCg-2oW/lib/python3.13/site-packages/IPython/__init__.py
+</code></pre>
+<hr />
+<p>TLDR; it does seem that when a tool is installed then <code>uvx</code> is not 100% just an alias to <code>uv tool run</code> as stated in docs. It'd be great to clarify this.</p>
+<h3>Platform</h3>
+<p>macOS 15.6 arm64 (Darwin 24.6.0 arm64)</p>
+<h3>Version</h3>
+<p>uv 0.8.8 (9a54754b0 2025-08-08)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @RafalSkolasinski on 2025-08-17 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-18 13:44</div>
+            <div class="timeline-body"><p>I believe it’s literally an alias. Or, specifically, uvx is a separate script that just calls uv tool run. Do which uv and which uvx show different locations, perhaps? (I’m not at a computer but will try to reproduce later.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-18 13:49</div>
+            <div class="timeline-body"><p><code>uvx</code> does literally invoke <code>uv tool uvx</code></p>
+<p>https://github.com/astral-sh/uv/blob/041c7a5e63d5559ce5571a30e177c072b1b357b2/crates/uv/src/bin/uvx.rs#L87-L96</p>
+<p>which runs the same implementation as <code>uv tool run</code></p>
+<p>https://github.com/astral-sh/uv/blob/23245c63e9d63c4916328060aed3f45c03a11a9b/crates/uv/src/lib.rs#L1113-L1115</p>
+<p>just using the <code>uvx</code> component of the command to track that <code>uvx</code> was used to improve error messages, e.g.,</p>
+<p>https://github.com/astral-sh/uv/blob/58c7cc0e0f10c0c8a904d5276c40c81c6eccd776/crates/uv/src/commands/tool/run.rs#L214-L225</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-18 13:51</div>
+            <div class="timeline-body"><p>I cannot reproduce the behavior</p>
+<pre><code>❯ uvx ipython -c 'import IPython; print(IPython.__file__)'
+/private/tmp/example/cache/archive-v0/-3NtPdstD88xs5BnNrCPM/lib/python3.13/site-packages/IPython/__init__.py
+❯ uv tool run ipython -c 'import IPython; print(IPython.__file__)'
+/private/tmp/example/cache/archive-v0/-3NtPdstD88xs5BnNrCPM/lib/python3.13/site-packages/IPython/__init__.py
+❯ uv tool install ipython
+Resolved 16 packages in 14ms
+Installed 16 packages in 27ms
+ + asttokens==3.0.0
+ + decorator==5.2.1
+ + executing==2.2.0
+ + ipython==9.4.0
+ + ipython-pygments-lexers==1.1.1
+ + jedi==0.19.2
+ + matplotlib-inline==0.1.7
+ + parso==0.8.4
+ + pexpect==4.9.0
+ + prompt-toolkit==3.0.51
+ + ptyprocess==0.7.0
+ + pure-eval==0.2.3
+ + pygments==2.19.2
+ + stack-data==0.6.3
+ + traitlets==5.14.3
+ + wcwidth==0.2.13
+Installed 2 executables: ipython, ipython3
+❯ uvx ipython -c 'import IPython; print(IPython.__file__)'
+/Users/zb/.local/share/uv/tools/ipython/lib/python3.13/site-packages/IPython/__init__.py
+❯ uv tool run ipython -c 'import IPython; print(IPython.__file__)'
+/Users/zb/.local/share/uv/tools/ipython/lib/python3.13/site-packages/IPython/__init__.py
+</code></pre>
+<p>Maybe share the output of</p>
+<pre><code>❯ which uv
+/Users/zb/.local/bin/uv
+❯ which uvx
+/Users/zb/.local/bin/uvx
+❯ uvx --version
+uvx 0.8.11 (f892276ac 2025-08-14)
+❯ uv --version
+uv 0.8.11 (f892276ac 2025-08-14)
+</code></pre>
+<p>to see if they're using different uv binaries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-08-18 14:54</div>
+            <div class="timeline-body"><p>Actually, what I documented is consistent with your test. In notes (well, the issue above -) I am missing case with <code>uvx</code> without the tool installed. When I am testing it now I do have consistent behaviour for both:</p>
+<pre><code># when tool installed
+/Users/rskolasinski/.local/share/uv/tools/ipython/lib/python3.13/site-packages/IPython/__init__.py
+
+# when uninstalled
+/Users/rskolasinski/.cache/uv/archive-v0/5mledyZnvLs75xlCg-2oW/lib/python3.13/site-packages/IPython/__init__.py
+</code></pre>
+<p>I would swear I had the case when <code>uvx</code> and <code>uv tool run</code> was giving me different output without running install/uninstall in between but also cannot reproduce it now...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @RafalSkolasinski on 2025-08-18 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RafalSkolasinski">@RafalSkolasinski</a> on 2025-08-18 14:54</div>
+            <div class="timeline-body"><p>Thanks for double checking @zanieb!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

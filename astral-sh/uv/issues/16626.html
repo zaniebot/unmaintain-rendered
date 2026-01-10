@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive bound incorrectly reported in uv conflict explanation - astral-sh/uv #16626</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclusive bound incorrectly reported in uv conflict explanation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16626">#16626</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-11-06 23:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-11-06 23:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is a bit of a nit, but:</p>
+<pre><code>λ cat r.in
+cffi&gt;=1.17
+snowflake-connector-python&gt;=3.16
+snowflake-sqlalchemy&gt;=1.7.7
+fastapi-mail&gt;=1.5.7
+uvicorn&gt;=0.38
+</code></pre>
+<pre><code>λ uv pip compile r.in
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of snowflake-connector-python are available:
+          snowflake-connector-python&lt;=3.16.0
+          snowflake-connector-python==3.17.0
+          snowflake-connector-python==3.17.1
+          snowflake-connector-python==3.17.2
+          snowflake-connector-python==3.17.3
+          snowflake-connector-python==3.17.4
+          snowflake-connector-python==3.18.0
+          snowflake-connector-python&gt;4.0.0
+      and snowflake-connector-python&gt;=3.16.0,&lt;=3.18.0 depends on cffi&gt;=1.9,&lt;2.0.0, we can conclude that
+      snowflake-connector-python&gt;=3.16.0,&lt;4.0.0 depends on cffi&gt;=1.9,&lt;2.0.0.
+...
+</code></pre>
+<p><code>snowflake-connector-python==4.0.0</code> is available, so I think the third last line in that should be <code>snowflake-connector-python&gt;=4.0.0</code> not <code>&gt;</code></p>
+<h3>Platform</h3>
+<p>macOS</p>
+<h3>Version</h3>
+<p>0.9</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @hauntsaninja on 2025-11-06 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-07 04:23</div>
+            <div class="timeline-body"><p>Thanks for the report.</p>
+<p>Dumping the derivation tree here as it's useful for debugging....</p>
+<pre><code>❯ UV_INTERNAL__SHOW_DERIVATION_TREE=1 uv pip compile r.in
+Resolver derivation tree before reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on uvicorn&gt;=0.38
+  term not uvicorn&gt;=0.37.0, &lt;0.38.0
+  term root==0a0.dev0
+    root==0a0.dev0 depends on fastapi-mail&gt;=1.5.7
+    term fastapi-mail&gt;=1.5.7
+    term not uvicorn&gt;=0.37.0, &lt;0.38.0
+    term root==0a0.dev0
+      root==0a0.dev0 depends on snowflake-sqlalchemy&gt;=1.7.7
+      term fastapi-mail&gt;=1.5.7
+      term snowflake-sqlalchemy&gt;=1.7.7
+      term not uvicorn&gt;=0.37.0, &lt;0.38.0
+      term root==0a0.dev0
+        root==0a0.dev0 depends on snowflake-connector-python&gt;=3.16
+        term fastapi-mail&gt;=1.5.7
+        term snowflake-sqlalchemy&gt;=1.7.7
+        term not uvicorn&gt;=0.37.0, &lt;0.38.0
+        term not snowflake-connector-python&lt;3.16.0
+          no versions of snowflake-sqlalchemy&gt;1.7.7
+          term fastapi-mail&gt;=1.5.7
+          term snowflake-sqlalchemy==1.7.7
+          term not uvicorn&gt;=0.37.0, &lt;0.38.0
+          term not snowflake-connector-python&lt;3.16.0
+            snowflake-sqlalchemy==1.7.7 depends on snowflake-connector-python&lt;4.0.0
+            term fastapi-mail&gt;=1.5.7
+            term not uvicorn&gt;=0.37.0, &lt;0.38.0
+            term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+              term fastapi-mail&gt;=1.5.7, &lt;1.5.8 | &gt;1.5.8
+              term not uvicorn&gt;=0.37.0, &lt;0.38.0
+                no versions of fastapi-mail&gt;1.5.7, &lt;1.5.8 | &gt;1.5.8
+                fastapi-mail==1.5.7 depends on uvicorn&gt;=0.37.0, &lt;0.38.0
+              term fastapi-mail==1.5.7 | ==1.5.8
+              term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                fastapi-mail==1.5.7 | ==1.5.8 depends on cryptography&gt;=46.0.3, &lt;47.0.0
+                term cryptography&gt;=46.0.3, &lt;47.0.0
+                term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                  no versions of cryptography&gt;46.0.3, &lt;47.0.0
+                  term cryptography==46.0.3
+                  term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                    cryptography==46.0.3 depends on cffi{platform_python_implementation != 'PyPy'}&gt;=2.0.0
+                    term not cffi&gt;=1.9, &lt;2.0.0
+                    term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                      snowflake-connector-python==3.16.0 | ==3.17.0 | ==3.17.1 | ==3.17.2 | ==3.17.3 | ==3.17.4 | ==3.18.0 depends on cffi&gt;=1.9, &lt;2.0.0
+                      no versions of snowflake-connector-python&gt;3.16.0, &lt;3.17.0 | &gt;3.17.0, &lt;3.17.1 | &gt;3.17.1, &lt;3.17.2 | &gt;3.17.2, &lt;3.17.3 | &gt;3.17.3, &lt;3.17.4 | &gt;3.17.4, &lt;3.18.0 | &gt;3.18.0, &lt;4.0.0
+Resolver derivation tree after reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on uvicorn&gt;=0.38
+  term not uvicorn&gt;=0.37.0, &lt;0.38.0
+  term root==0a0.dev0
+    root==0a0.dev0 depends on fastapi-mail&gt;=1.5.7
+    term fastapi-mail&gt;=1.5.7
+    term not uvicorn&gt;=0.37.0, &lt;0.38.0
+    term root==0a0.dev0
+      root==0a0.dev0 depends on snowflake-sqlalchemy&gt;=1.7.7
+      term fastapi-mail&gt;=1.5.7
+      term snowflake-sqlalchemy&gt;=1.7.7
+      term not uvicorn&gt;=0.37.0, &lt;0.38.0
+      term root==0a0.dev0
+        root==0a0.dev0 depends on snowflake-connector-python&gt;=3.16
+        term fastapi-mail&gt;=1.5.7
+        term snowflake-sqlalchemy&gt;=1.7.7
+        term not uvicorn&gt;=0.37.0, &lt;0.38.0
+        term not snowflake-connector-python&lt;3.16.0
+          no versions of snowflake-sqlalchemy&gt;1.7.7
+          term fastapi-mail&gt;=1.5.7
+          term snowflake-sqlalchemy==1.7.7
+          term not uvicorn&gt;=0.37.0, &lt;0.38.0
+          term not snowflake-connector-python&lt;3.16.0
+            snowflake-sqlalchemy==1.7.7 depends on snowflake-connector-python&lt;4.0.0
+            term fastapi-mail&gt;=1.5.7
+            term not uvicorn&gt;=0.37.0, &lt;0.38.0
+            term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+              term fastapi-mail&gt;=1.5.7, &lt;1.5.8
+              term not uvicorn&gt;=0.37.0, &lt;0.38.0
+                no versions of fastapi-mail&gt;1.5.7, &lt;1.5.8 | &gt;1.5.8
+                fastapi-mail==1.5.7 depends on uvicorn&gt;=0.37.0, &lt;0.38.0
+              term fastapi-mail&gt;=1.5.7
+              term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                fastapi-mail&gt;=1.5.7 depends on cryptography&gt;=46.0.3
+                term cryptography&gt;=46.0.3
+                term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                  no versions of cryptography&gt;46.0.3, &lt;47.0.0
+                  term cryptography==46.0.3
+                  term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                    cryptography==46.0.3 depends on cffi{platform_python_implementation != 'PyPy'}&gt;=2.0.0
+                    term not cffi&gt;=1.9, &lt;2.0.0
+                    term snowflake-connector-python&gt;=3.16.0, &lt;4.0.0
+                      snowflake-connector-python&gt;=3.16.0, &lt;=3.18.0 depends on cffi&gt;=1.9, &lt;2.0.0
+                      no versions of snowflake-connector-python&gt;3.16.0, &lt;3.17.0 | &gt;3.17.0, &lt;3.17.1 | &gt;3.17.1, &lt;3.17.2 | &gt;3.17.2, &lt;3.17.3 | &gt;3.17.3, &lt;3.17.4 | &gt;3.17.4, &lt;3.18.0 | &gt;3.18.0, &lt;4.0.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-07 05:00</div>
+            <div class="timeline-body"><p>Alright this is sort of a wild one... the <code>contains</code> calls at</p>
+<p>https://github.com/astral-sh/uv/blob/857827da14499b610ffca9731916e3aae041b446/crates/uv-resolver/src/pubgrub/report.rs#L1960</p>
+<p>and</p>
+<p>https://github.com/astral-sh/uv/blob/857827da14499b610ffca9731916e3aae041b446/crates/uv-resolver/src/pubgrub/report.rs#L1966</p>
+<p>can return <code>false</code> because if <code>min</code> components of the versions don't match</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16629.html">astral-sh/uv#16629</a> on 2025-11-07 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-07 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

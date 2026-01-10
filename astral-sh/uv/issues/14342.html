@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV not respecting environment variables following installation - astral-sh/uv #14342</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV not respecting environment variables following installation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14342">#14342</a>
+        opened by <a href="https://github.com/sodium-hydroxide">@sodium-hydroxide</a>
+        on 2025-06-28 21:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sodium-hydroxide">@sodium-hydroxide</a> on 2025-06-28 21:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Potentially related to issue  #7117</p>
+<p>Installing uv with the following command:</p>
+<pre><code class="language-{sh}">&gt; curl -LsSf https://astral.sh/uv/install.sh | env \
+  UV_INSTALL_DIR=&quot;/opt/uv/bin&quot; \
+  UV_TOOL_DIR=&quot;/opt/uv/share&quot; \
+  UV_CACHE_DIR=&quot;/opt/uv/cache&quot; \
+  UV_PYTHON_BIN_DIR=&quot;/opt/uv/python/bin&quot; \
+  UV_COMPILE_CONFIG=1 \
+  sh
+</code></pre>
+<p>Returns the following:</p>
+<pre><code>downloading uv 0.7.16 aarch64-apple-darwin
+no checksums to verify
+installing to /opt/uv/bin
+  uv
+  uvx
+everything's installed!
+[1]   Done                    mkdir -p /opt/uv/bin
+[2]   Done                    mkdir -p /opt/uv/share
+[3]-  Done                    mkdir -p /opt/uv/cache
+[4]+  Done                    mkdir -p /opt/uv/python/bin
+</code></pre>
+<p>However, when those same environment variables are set in .bash_profile and uv tool install ... or uv python install ... are executed, they still install to $HOME/.local/{bin, shared}</p>
+<h3>Platform</h3>
+<p>macOS 14 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.16 (b6b7409d1 2025-06-27)</p>
+<h3>Python version</h3>
+<p>Python 3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sodium-hydroxide on 2025-06-28 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-28 22:03</div>
+            <div class="timeline-body"><p>I'm not sure I follow. Are you using <code>export</code> for your variables in your bash profile?</p>
+<p>e.g.</p>
+<pre><code>❯ UV_CACHE_DIR=/tmp/foo uv cache dir
+/tmp/foo
+❯ UV_CACHE_DIR=/tmp/foo
+❯ uv cache dir
+/Users/zb/.cache/uv
+❯ export UV_CACHE_DIR=/tmp/foo
+❯ uv cache dir
+/tmp/foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-06-28 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-06-28 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sodium-hydroxide">@sodium-hydroxide</a> on 2025-06-29 01:16</div>
+            <div class="timeline-body"><p>My .bash_profile contains the following lines:</p>
+<pre><code class="language-bash">UV_INSTALL_DIR=&quot;/opt/uv/bin&quot;
+UV_TOOL_DIR=&quot;/opt/uv/share&quot;
+UV_CACHE_DIR=&quot;/opt/uv/cache&quot;
+UV_PYTHON_BIN_DIR=&quot;/opt/uv/python/bin&quot;
+UV_COMPILE_CONFIG=1
+export UV_INSTALL_DIR
+export UV_TOOL_DIR
+export UV_PYTHON_BIN_DIR
+export UV_COMPILE_CONFIG
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:32</div>
+            <div class="timeline-body"><p>Sorry, I suspect this is an error in your own configuration somewhere. Note that you need to make sure those variables are set when you run <code>uv</code>, not just at install time. <code>UV_INSTALL_DIR</code> dictates the directory that uv itself is installed into, so that one <em>should</em> be set at install time. But setting <code>UV_TOOL_DIR</code> at install time has no effect. You need to make sure that's set when you run <code>uv tool install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-29 16:25</div>
+            <div class="timeline-body"><p>You can also try to see if these are set at runtime with a query like <code>env | grep UV_</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-07-11 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

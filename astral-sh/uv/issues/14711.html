@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv seems to ignore python-requires upper-binding - astral-sh/uv #14711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv seems to ignore python-requires upper-binding</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14711">#14711</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2025-07-18 10:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-18 10:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When installing a package that has upper-binding of Python version, it seems that this upper-binding is ignored.</p>
+<p>We encountered it in Airflow when <code>uv</code> installed <code>snowflake-snowpark-python</code>  in our newly released Python 3.13 image, but <code>pip</code> refuses to install it. After some investigation it turned out that <code>uv</code> seems to ignore explicit upper-binding for Python &lt; 3.13 tha <code>snowflake-snowpark-python</code> has.</p>
+<p>In the metadata of the <code>snowflake-snowpark-python==1.34.0</code>  - all versions seem to have upper binding as well you can find this:</p>
+<pre><code>Requires-Python: &gt;=3.9, &lt;3.13
+</code></pre>
+<p>See: https://pypi.org/project/snowflake-snowpark-python/1.34.0/</p>
+<p>When you attempt to install it in python 3.13.5 with <code>pip</code>, it correctly refuses to install it (both when we specify the version and when we do not):</p>
+<pre><code class="language-bash">root@10ca61626a43:/opt/airflow# pip install snowflake-snowpark-python==1.34.0
+ERROR: Ignored the following versions that require a different python version: 0.10.0 Requires-Python ==3.8.*; 0.11.0 Requires-Python ==3.8.*; 0.12.0 Requires-Python ==3.8.*; 0.6.0 Requires-Python ==3.8.*; 0.7.0 Requires-Python ==3.8.*; 0.8.0 Requires-Python ==3.8.*; 0.9.0 Requires-Python ==3.8.*; 1.0.0 Requires-Python ==3.8.*; 1.1.0 Requires-Python ==3.8.*; 1.10.0 Requires-Python &gt;=3.8, &lt;3.12; 1.11.0 Requires-Python &gt;=3.8, &lt;3.12; 1.11.1 Requires-Python &gt;=3.8, &lt;3.12; 1.12.0 Requires-Python &gt;=3.8, &lt;3.12; 1.12.1 Requires-Python &gt;=3.8, &lt;3.12; 1.13.0 Requires-Python &gt;=3.8, &lt;3.12; 1.14.0 Requires-Python &lt;3.12,&gt;=3.8; 1.15.0 Requires-Python &lt;3.12,&gt;=3.8; 1.16.0 Requires-Python &lt;3.12,&gt;=3.8; 1.17.0 Requires-Python &lt;3.12,&gt;=3.8; 1.18.0 Requires-Python &lt;3.12,&gt;=3.8; 1.19.0 Requires-Python &lt;3.12,&gt;=3.8; 1.2.0 Requires-Python ==3.8.*; 1.20.0 Requires-Python &lt;3.12,&gt;=3.8; 1.21.0 Requires-Python &lt;3.12,&gt;=3.8; 1.21.1 Requires-Python &lt;3.12,&gt;=3.8; 1.22.0 Requires-Python &lt;3.12,&gt;=3.8; 1.22.1 Requires-Python &lt;3.12,&gt;=3.8; 1.23.0 Requires-Python &lt;3.12,&gt;=3.8; 1.24.0 Requires-Python &lt;3.12,&gt;=3.8; 1.25.0 Requires-Python &lt;3.12,&gt;=3.8; 1.26.0 Requires-Python &lt;3.12,&gt;=3.8; 1.27.0 Requires-Python &lt;3.13,&gt;=3.8; 1.28.0 Requires-Python &lt;3.13,&gt;=3.8; 1.29.0 Requires-Python &lt;3.13,&gt;=3.8; 1.29.1 Requires-Python &lt;3.13,&gt;=3.8; 1.3.0 Requires-Python ==3.8.*; 1.30.0 Requires-Python &lt;3.13,&gt;=3.8; 1.31.0 Requires-Python &lt;3.13,&gt;=3.9; 1.31.1 Requires-Python &lt;3.13,&gt;=3.9; 1.32.0 Requires-Python &lt;3.13,&gt;=3.9; 1.33.0 Requires-Python &lt;3.13,&gt;=3.9; 1.34.0 Requires-Python &lt;3.13,&gt;=3.9; 1.4.0 Requires-Python ==3.8.*; 1.5.0 Requires-Python &gt;=3.8, &lt;3.10; 1.5.1 Requires-Python &gt;=3.8, &lt;3.11; 1.6.0 Requires-Python &gt;=3.8, &lt;3.11; 1.6.1 Requires-Python &gt;=3.8, &lt;3.11; 1.7.0 Requires-Python &gt;=3.8, &lt;3.11; 1.8.0 Requires-Python &gt;=3.8, &lt;3.11; 1.9.0 Requires-Python &gt;=3.8, &lt;3.12
+ERROR: Could not find a version that satisfies the requirement snowflake-snowpark-python==1.34.0 (from versions: none)
+ERROR: No matching distribution found for snowflake-snowpark-python==1.34.0
+root@10ca61626a43:/opt/airflow# pip install snowflake-snowpark-python
+ERROR: Ignored the following versions that require a different python version: 0.10.0 Requires-Python ==3.8.*; 0.11.0 Requires-Python ==3.8.*; 0.12.0 Requires-Python ==3.8.*; 0.6.0 Requires-Python ==3.8.*; 0.7.0 Requires-Python ==3.8.*; 0.8.0 Requires-Python ==3.8.*; 0.9.0 Requires-Python ==3.8.*; 1.0.0 Requires-Python ==3.8.*; 1.1.0 Requires-Python ==3.8.*; 1.10.0 Requires-Python &gt;=3.8, &lt;3.12; 1.11.0 Requires-Python &gt;=3.8, &lt;3.12; 1.11.1 Requires-Python &gt;=3.8, &lt;3.12; 1.12.0 Requires-Python &gt;=3.8, &lt;3.12; 1.12.1 Requires-Python &gt;=3.8, &lt;3.12; 1.13.0 Requires-Python &gt;=3.8, &lt;3.12; 1.14.0 Requires-Python &lt;3.12,&gt;=3.8; 1.15.0 Requires-Python &lt;3.12,&gt;=3.8; 1.16.0 Requires-Python &lt;3.12,&gt;=3.8; 1.17.0 Requires-Python &lt;3.12,&gt;=3.8; 1.18.0 Requires-Python &lt;3.12,&gt;=3.8; 1.19.0 Requires-Python &lt;3.12,&gt;=3.8; 1.2.0 Requires-Python ==3.8.*; 1.20.0 Requires-Python &lt;3.12,&gt;=3.8; 1.21.0 Requires-Python &lt;3.12,&gt;=3.8; 1.21.1 Requires-Python &lt;3.12,&gt;=3.8; 1.22.0 Requires-Python &lt;3.12,&gt;=3.8; 1.22.1 Requires-Python &lt;3.12,&gt;=3.8; 1.23.0 Requires-Python &lt;3.12,&gt;=3.8; 1.24.0 Requires-Python &lt;3.12,&gt;=3.8; 1.25.0 Requires-Python &lt;3.12,&gt;=3.8; 1.26.0 Requires-Python &lt;3.12,&gt;=3.8; 1.27.0 Requires-Python &lt;3.13,&gt;=3.8; 1.28.0 Requires-Python &lt;3.13,&gt;=3.8; 1.29.0 Requires-Python &lt;3.13,&gt;=3.8; 1.29.1 Requires-Python &lt;3.13,&gt;=3.8; 1.3.0 Requires-Python ==3.8.*; 1.30.0 Requires-Python &lt;3.13,&gt;=3.8; 1.31.0 Requires-Python &lt;3.13,&gt;=3.9; 1.31.1 Requires-Python &lt;3.13,&gt;=3.9; 1.32.0 Requires-Python &lt;3.13,&gt;=3.9; 1.33.0 Requires-Python &lt;3.13,&gt;=3.9; 1.34.0 Requires-Python &lt;3.13,&gt;=3.9; 1.4.0 Requires-Python ==3.8.*; 1.5.0 Requires-Python &gt;=3.8, &lt;3.10; 1.5.1 Requires-Python &gt;=3.8, &lt;3.11; 1.6.0 Requires-Python &gt;=3.8, &lt;3.11; 1.6.1 Requires-Python &gt;=3.8, &lt;3.11; 1.7.0 Requires-Python &gt;=3.8, &lt;3.11; 1.8.0 Requires-Python &gt;=3.8, &lt;3.11; 1.9.0 Requires-Python &gt;=3.8, &lt;3.12
+ERROR: Could not find a version that satisfies the requirement snowflake-snowpark-python (from versions: none)
+ERROR: No matching distribution found for snowflake-snowpark-python
+</code></pre>
+<p>However <code>uv</code> will happily install it - both with and without specified version:</p>
+<pre><code>root@10ca61626a43:/opt/airflow# uv pip install snowflake-snowpark-python
+Using Python 3.13.5 environment at: /usr/local
+Resolved 32 packages in 8ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                                                                                                                                                                                
+Installed 1 package in 13ms
+ + snowflake-snowpark-python==1.34.0
+</code></pre>
+<pre><code>root@10ca61626a43:/opt/airflow# uv pip install snowflake-snowpark-python==1.34.0
+Using Python 3.13.5 environment at: /usr/local
+Resolved 32 packages in 119ms
+░░░░░░░░░░░░░░░░░░░░ [0/1] Installing wheels...                                                                                                                                                                                                                                                
+Installed 1 package in 16ms
+ + snowflake-snowpark-python==1.34.0
+</code></pre>
+<h3>Platform</h3>
+<p>Debian Bookworm with Python 3.13 installed</p>
+<h3>Version</h3>
+<p>uv 0.7.21</p>
+<h3>Python version</h3>
+<p>3.13.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @potiuk on 2025-07-18 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/53489.html">apache/airflow#53489</a> on 2025-07-18 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-18 12:03</div>
+            <div class="timeline-body"><p>We intentionally ignore upper-bounds on <code>requires-python</code>, as considering it would lead to undesirable outcomes, see https://github.com/astral-sh/uv/issues/4022 and https://discuss.python.org/t/requires-python-upper-limits/12663 for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-18 14:45</div>
+            <div class="timeline-body"><p>Sure - I see that this is kind of difficult problem, I recently started to understand complexity of this so I understand where it comes  from - the discussion and earlier issues :</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/14481</li>
+<li>https://github.com/astral-sh/uv/issues/14422</li>
+</ul>
+<p>And yeah - I see https://docs.astral.sh/uv/pip/compatibility/#requires-python-enforcement where it is clearly described, so I do not complain about it.</p>
+<p>But I would love to understand two things:</p>
+<ol>
+<li>Seems that <code>pip</code> behaviour here is different (it refuses to install the package) and the docs says:</li>
+</ol>
+<blockquote>
+<p>While this is not strictly compliant with <a href="https://peps.python.org/pep-0440/">PEP 440</a>, it is consistent with <a href="https://github.com/pypa/pip/blob/24.1.1/src/pip/_internal/resolution/resolvelib/candidates.py#L540">pip</a>.</p>
+</blockquote>
+<p>Is there something you or <code>pip</code> missing here? I know you cannot respond for <code>pip</code> but seems that the behaviour is inconsistent. And this is actually led me to this issue - because we are using <code>uv</code> to resolve matching dependencies but then using constraints generated to install it using <code>pip</code> and - those two are inconsistent.</p>
+<ol start="2">
+<li>I guess (would love to clarify) that this does not include <code>!=</code> in Python Requires. In our case we would like to have an explicit way of stating that <code>airflow</code> does not support Python 3.14 when it gets released (because we know it won't work for 4-7 months because many of our dependencies will not work either). So far we were using &lt; 3.14 - following earlier discussions but then it might actually mean that we should use <code>!=3.14</code> - though possibly it makes no sense as well because it means that someone will be able to install it on 3.15. Is there any other way to &quot;hard&quot; stop from installing on unsupported Python version? Or maybe the only &quot;good&quot; way is runtime check ?</li>
+</ol>
+<p>What is your take and suggestion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 14:48</div>
+            <div class="timeline-body"><blockquote>
+<p>While this is not strictly compliant with <a href="https://peps.python.org/pep-0440/">PEP 440</a>, it is consistent with <a href="https://github.com/pypa/pip/blob/24.1.1/src/pip/_internal/resolution/resolvelib/candidates.py#L540">pip</a>.</p>
+</blockquote>
+<p>That piece only applies to: &quot;When evaluating Python versions against requires-python specifiers, uv truncates the candidate version to the major, minor, and patch components, ignoring (e.g.) pre-release and post-release identifiers.&quot; (as in the linked snippet to pip source). We can make that clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-18 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>That piece only applies to: &quot;When evaluating Python versions against requires-python specifiers, uv truncates the candidate version to the major, minor, and patch components, ignoring (e.g.) pre-release and post-release identifiers.&quot; (as in the linked snippet to pip source). We can make that clearer.</p>
+</blockquote>
+<p>Makes sense, yeah, it would be great to clarify, because it's a separate paraghraph and it looks like conclusion on the whole &quot;chapter&quot;.</p>
+<p>I understand now that <code>uv</code> behaves differently than <code>pip</code> then, because (despite all the discussions) pip has not decided to simply drop the &quot;upper-bound&quot; requirements. I understand why, but I think it should be quite clearly spelled out that it is different than <code>pip</code>. And yeah - in this case I think you are perfectly free to decide how your solver works for this, becaus this is indeed super ambiguous and the behaviour of upper-bining or != is not really what makes sense long term.</p>
+<p>I think also (in relation to https://github.com/astral-sh/uv/issues/14422) - It might be worth to correct the message  that is printed now (and yes I was one of the reason for this message to be changed). I think it would be worth telling in the message not that <code>~</code> is ambiguous, but more because it introduced upper-binding which is considered as &quot;bad&quot; widely (and possibly linking to the discussion). That might have better educational effect.</p>
+<p>Coming back to the second question though - is there <strong>any</strong> portable way to say &quot;please don't even try to install me on Python 3.14+&quot; at the resolve time? It looks to me that there is no (and It's not a judgment of whethere it's good or bad, rather question that we need to find an answer to) ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 16:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Coming back to the second question though - is there any portable way to say &quot;please don't even try to install me on Python 3.14+&quot; at the resolve time? It looks to me that there is no (and It's not a judgment of whethere it's good or bad, rather question that we need to find an answer to) ?</p>
+</blockquote>
+<p>No, I don't believe so. What some libraries will do is <em>not</em> ship wheels for those versions, then error out during the build process if someone attempts to build with an unsupported Python version. But we can't make use of that during resolution; instead, the resolution would fail. But you could prompt users to add a lower or upper bound on their dependency declaration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-18 19:16</div>
+            <div class="timeline-body"><blockquote>
+<p>But you could prompt users to add a lower or upper bound on their dependency declaration.</p>
+</blockquote>
+<p>Yep, and I understand difficulty there. That would work for libraries, but not for apps lke airflow (you just <strong>install</strong> airflow not depend on airflow).</p>
+<p>But - it's not a big issue for now for us. I at least know the strategy we should take. That further stresses the &quot;usage&quot; that at least we in aifrlow have -  where for us uv is mostly a &quot;developer&quot; tool, and not &quot;end user tool&quot;. Simply our recommendation is still &quot;only use pip and best - also use --constraints` for installing airflow, rather than also recommending uv or other tools (and I do not see it changing any time soon).</p>
+<p>So we can easily rely on pip actually not allowing to install airflow for upper-bound python in python requires and reject any issues of people who will use uv on not supported version and direct them to &quot;use pip&quot;. That's fairly ok for us. We have experience with that - we have been alreahady communicating similarly to our users that for example installing with poetry or pipenv or other tools is not something we support nor recommend and using <code>pip</code> is the only thing that we support and help our users with. I guess it will have to stay like that for a while.</p>
+<p>I know you are thinking (?) developing(?)  some uv.tool entry in pyproject.toml entry - which further underlines how uv  (at least in this case) is more a &quot;development&quot; than &quot;end user&quot; tool - and it will allow maintainers to locally limit their python versions - but this will not propagate to end users. Which is fine, I think the &quot;development&quot; story of uv is much stronger than &quot;end user&quot; story (and there are good reasons for that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-18 20:26</div>
+            <div class="timeline-body"><p>For installation of tools or &quot;applications&quot;, I'm sort of interested in respecting first-party <code>requires-python</code> constraints, e.g., <code>uv tool install foo</code> would respect a <code>requires-python</code> upper bound in <code>foo</code> when selecting an interpreter to use but not during resolution.</p>
+<p>I'm not sure how feasible it is though, and whether it would be more confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-18 20:34</div>
+            <div class="timeline-body"><blockquote>
+<p>For installation of tools or &quot;applications&quot;, I'm sort of interested in respecting first-party <code>requires-python</code> constraints, e.g., <code>uv tool install foo</code> would respect a <code>requires-python</code> upper bound in <code>foo</code> when selecting an interpreter to use but not during resolution.</p>
+</blockquote>
+<p>Might be quite an idea actually. I don't think that would be too confusing if desribed well and failing with a proper error message  (and possibly an option to --override-upper-bound-python-limits flag - yeah I know ... far too long name ;) , Naming is hard :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-18 20:39</div>
+            <div class="timeline-body"><p>And yes. Actually I quite agree <code>uv tool install</code> is a fantastic &quot;end-user&quot; side of uv that probably can behave differently. I really like the idea ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-07-18 22:05</div>
+            <div class="timeline-body"><blockquote>
+<p>When you attempt to install it in python 3.13.5 with pip, it correctly refuses to install it</p>
+</blockquote>
+<p>Pip's behavior has lots of buggy edge cases, such as installing on Python <code>3.14.0b2</code> when you specify <code>Requires-Python: &lt;= 3.14.0b1</code>. But as there is no standard to comply to here it's not possible to justify a fix in behavior, including with adding the &quot;recommended&quot; ignore upper bounds.</p>
+<blockquote>
+<blockquote>
+<p>Coming back to the second question though - is there any portable way to say &quot;please don't even try to install me on Python 3.14+&quot; at the resolve time? It looks to me that there is no (and It's not a judgment of whethere it's good or bad, rather question that we need to find an answer to) ?</p>
+</blockquote>
+<p>No, I don't believe so.</p>
+</blockquote>
+<p>Well... you could write:</p>
+<pre><code class="language-toml">requires-python = &quot;&gt;=3.9,!=3.13,!=3.14,!=3.15,!=3.16,!=3.17,!=3.18,!=3.19,!=3.20,!=3.21,!=3.22,!=3.23,!=3.24,!=3.25,!=3.26,!=3.27,!=3.28,!=3.29,!=3.30,!=3.31,!=3.32&quot;  # Hopefully no one is checking this package in Python 3.33+ 😉 
+</code></pre>
+<blockquote>
+<p>there something you or <code>pip</code> missing here? I know you cannot respond for <code>pip</code> but seems that the behaviour is inconsistent.</p>
+</blockquote>
+<p>uv offers features pip does not, such as universal resolution, so there's no comparison there that can be made about consistency with those.</p>
+<p>And  <code>requires-python</code> has no defined semantics in the standards, and it is useful to use different semantics in different contexts (resolution, library installation, tool installation, script in-line metadata, lock files, etc.). This came up again discussing a new possible standard just a couple of days ago: https://discuss.python.org/t/pre-pep-locking-a-pep-723-single-file-script/98034/54</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-19 08:34</div>
+            <div class="timeline-body"><blockquote>
+<p>This came up again discussing a new possible standard just a couple of days ago: https://discuss.python.org/t/pre-pep-locking-a-pep-723-single-file-script/98034/54</p>
+</blockquote>
+<p>Thanks for the pointer interesting discussions - indeed I am learning new things about requires-python every day it seems :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14752.html">astral-sh/uv#14752</a> on 2025-07-20 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-20 22:34</div>
+            <div class="timeline-body"><p>(I amended the docs in https://github.com/astral-sh/uv/pull/14752.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-21 08:52</div>
+            <div class="timeline-body"><blockquote>
+<p>(I amended the docs in <a href="https://github.com/astral-sh/uv/pull/14752">#14752</a>.)</p>
+</blockquote>
+<p>Nice! Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14958.html">astral-sh/uv#14958</a> on 2025-07-29 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 17:32</div>
+            <div class="timeline-body"><p>@potiuk -- Okay to close this out for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-08-24 20:45</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @potiuk on 2025-08-24 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15666.html">astral-sh/uv#15666</a> on 2025-09-03 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/58653.html">apache/airflow#58653</a> on 2025-11-25 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/58657.html">apache/airflow#58657</a> on 2025-11-25 00:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nondeterministic behavior of `uv pip` - astral-sh/uv #13435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nondeterministic behavior of `uv pip`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13435">#13435</a>
+        opened by <a href="https://github.com/yjsongamz">@yjsongamz</a>
+        on 2025-05-13 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yjsongamz">@yjsongamz</a> on 2025-05-13 19:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Minimal reproducible example: https://github.com/yjsongamz/uv-mre
+Expected behavior: when I run <code>run.sh</code>, I expect it to always succeed (or at least be deterministic), but it sometimes fail randomly.
+When I run <code>diff -r</code> on the <code>.venv</code> of the successful run and unsuccessful run, I found this diff:</p>
+<pre><code>&gt; from .z3 import *
+&gt;
+&gt; from . import z3num
+&gt; from . import z3poly
+&gt; from . import z3printer
+&gt; from . import z3rcf
+&gt; from . import z3types
+&gt; from . import z3util
+&gt;
+&gt; # generated files
+&gt; from . import z3core
+&gt; from . import z3consts
+</code></pre>
+<p>(successful run has 9 more SLOC in <code>.venv</code>)</p>
+<p>OS version:</p>
+<pre><code>~/mre$ sw_vers
+ProductName:		macOS
+ProductVersion:		15.3.1
+BuildVersion:		24D70
+~/mre$ uname -orsm
+Darwin 24.3.0 arm64
+</code></pre>
+<p>I tested it also on linux virtual machine and was able to reproduce there.</p>
+<p>UV version:</p>
+<pre><code>~/mre$ uv self version
+uv 0.7.3 (Homebrew 2025-05-07)
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 15.3.1 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.3 (Homebrew 2025-05-07)</p>
+<h3>Python version</h3>
+<p>Python 3.8.20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @yjsongamz on 2025-05-13 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2025-05-13 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-13 19:16</div>
+            <div class="timeline-body"><p>Are there two packages in the environment that are overwriting each other?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 19:18</div>
+            <div class="timeline-body"><p>Thank you for the MRE!</p>
+<p>Both z3 and z3-solver contain the the <code>z3</code> module, which means that they write an overlapping set of files. As uv installs in parallel, you may get either installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yjsongamz">@yjsongamz</a> on 2025-05-13 19:30</div>
+            <div class="timeline-body"><p>@charliermarsh @konstin Aha, thank you for the clarification!
+I believe I can fix this specific issue (e.g., by splitting the installation into two phases or by just removing <code>z3</code> in <code>pyprojects.toml</code> - <code>z3-solver</code> already installs <code>z3</code>) since I know which specific packages are conflicting.
+That said, would there be a systematic way to detect and avoid this type of issue? (to rule out this kind of issue in the future)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 19:37</div>
+            <div class="timeline-body"><p>A proper solution could be https://discuss.python.org/t/pre-pep-import-name-metadata/90506</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13437.html">astral-sh/uv#13437</a> on 2025-05-13 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15357.html">astral-sh/uv#15357</a> on 2025-08-18 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bitbier">@bitbier</a> on 2025-09-16 21:13</div>
+            <div class="timeline-body"><p>Is there a way to define the ordering of such packages. There is another example of <code>jmespath</code> and <code>jmespath_community</code>. The first one is used by <code>boto</code> and other tools but we use the community version because it has some extra features that we use in our code. We recently switched to <code>uv pip</code> instead of <code>pip</code> but in this specific instances. We started seeing nondeterministic build failures because of the issue above with <code>z3</code>.</p>
+<p>We unfortunately don't control <code>jmespath_community</code> implementation and we can ask for a package the has a separate namespace, but short of forking and doing our own is there another solution?</p>
+<p>I was looking for a way to turn off parallelization for now until we can have more time to fix the issue, but I don't see this option anywhere.</p>
+<p>We are looking for some way to make the order deterministic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 21:33</div>
+            <div class="timeline-body"><p>You can use #4422 to drop <code>jmespath</code> entirely, or you could turn off <a href="https://docs.astral.sh/uv/concepts/projects/config/#disabling-build-isolation">build isolation</a> for <code>jmsepath_community</code> which would cause it to be installed in a second stage (which is really a hack, but might unblock you).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bitbier">@bitbier</a> on 2025-09-16 21:41</div>
+            <div class="timeline-body"><p>I think to unblock ourselves, we are just using a one liner to re-install <code>jmespath-community</code> after the initial install of our requirements. We can also drop <code>jmespath</code> but we use <code>uv pip compile</code> to generate the requirements.txt file. It will always get pulled in because <code>boto</code> and other libraries just depends on <code>jmespath</code> is there a way to prevent <code>uv pip compile</code> from including that and include the other one instead?</p>
+<p>Just trying to figure out which end the hack needs to go so that everything works again until we can reassess and do the right thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 21:55</div>
+            <div class="timeline-body"><p>The override at https://github.com/astral-sh/uv/issues/4422#issuecomment-2254182800 will drop jmsepath from your transitive dependencies as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bitbier">@bitbier</a> on 2025-09-16 22:09</div>
+            <div class="timeline-body"><p>Thank you for being responsive. This helps us greatly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path of generated completion - clap-rs/clap #2422</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Path of generated completion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2422">#2422</a>
+        opened by <a href="https://github.com/dalance">@dalance</a>
+        on 2021-03-26 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dalance">@dalance</a> on 2021-03-26 16:29</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p>Currently, <code>clap_generate::generate_to</code> ( v3 ) and <code>clap::gen_completions</code> ( v2 ) don't provide the file path of the generated file.
+So user can't show the verbose message like below:</p>
+<pre><code>$ app --generate-completion bash
+completion file is generated: /home/user/app.bash
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>I think <code>PathBuf</code> of the generated file can be returned like below.
+<code>Result&lt;PathBuf, std::io::Error&gt;</code> may be better than <code>panic!</code>.</p>
+<pre><code class="language-rust">pub fn generate_to&lt;G, S, T&gt;(app: &amp;mut clap::App, bin_name: S, out_dir: T) -&gt; PathBuf
+where
+    G: Generator,
+    S: Into&lt;String&gt;,
+    T: Into&lt;OsString&gt;,
+{
+    let out_dir = PathBuf::from(out_dir.into());
+    let file_name = G::file_name(app.get_bin_name().unwrap());
+
+    let path = out_dir.join(file_name);
+    let mut file = match File::create(&amp;path) {
+        Err(why) =&gt; panic!(&quot;couldn't create completion file: {}&quot;, why),
+        Ok(file) =&gt; file,
+    };
+
+    generate::&lt;G, S&gt;(app, bin_name, &amp;mut file);
+    path
+}
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>A related issue: https://github.com/dalance/procs/issues/130</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @dalance on 2021-03-26 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-04-03 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: generator</span> added by @pksunkara on 2021-04-03 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-04-03 21:16</div>
+            <div class="timeline-body"><p>Should be an easy fix. Would welcome a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2434.html">clap-rs/clap#2434</a> on 2021-04-05 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-04-06 08:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff check --fix` to stdout when reading from stdin - astral-sh/ruff #20460</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`ruff check --fix` to stdout when reading from stdin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20460">#20460</a>
+        opened by <a href="https://github.com/pelson">@pelson</a>
+        on 2025-09-18 03:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pelson">@pelson</a> on 2025-09-18 03:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It looks like when running <code>ruff</code> with <code>--fix</code> and stdin input, the fixed code is not written to stdout - only a summary message is shown. For example:</p>
+<pre><code>$ echo &quot;import os, sys&quot; | ruff check --fix --stdin-filename example.py -
+Found 3 errors (3 fixed, 0 remaining).
+</code></pre>
+<p>I would expect that when reading from stdin, <code>ruff</code> could emit the fixed code to stdout, similar to how <code>ruff format -</code> behaves. I tried the <code>--output-file</code> flag, but got the summary rather than the changes (plus I couldn't specify stdout there...).</p>
+<p>There were a few other relate discussions, but not covering the <code>--fix</code> and stdout expectation: #17307 #13690,</p>
+<p>I discovered this whilst trying to prepare a simple reproducer for a fixer issue, and assumed that chaining via pipes between <code>format</code> and <code>check</code> would be fine.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2389.html">astral-sh/ruff#2389</a> on 2025-09-18 03:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-09-18 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-09-18 07:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:02</div>
+            <div class="timeline-body"><p>Thanks for the nice write up.</p>
+<p>I guess that simply hasn't come up yet. I quickly checked if ruff-lsp had some clever way of doing this (it calls <code>ruff check -</code> internally to get the file diagnostics) but it uses the JSON output and applies the edits manually (or more precisely, it forwards the edits to the editor that applies them)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-10-23 10:55</div>
+            <div class="timeline-body"><p>Workaround using bash:</p>
+<pre><code class="language-bash">$ ruff check --isolated --diff --fix --extend-select UP034 &lt;(echo 'import os; str( u&quot;&quot;, errors=(&quot;strict&quot;))')
+--- /dev/fd/63
++++ /dev/fd/63
+@@ -1 +1 @@
+-import os; str( u&quot;&quot;, errors=(&quot;strict&quot;))
++str( u&quot;&quot;, errors=(&quot;strict&quot;))
+
+Would fix 1 error.
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

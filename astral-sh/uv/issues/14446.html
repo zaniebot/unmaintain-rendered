@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name of entity from `importlib.metadata.files` inconsistent between win and linux platforms - astral-sh/uv #14446</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Name of entity from `importlib.metadata.files` inconsistent between win and linux platforms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14446">#14446</a>
+        opened by <a href="https://github.com/anmyachev">@anmyachev</a>
+        on 2025-07-03 17:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/anmyachev">@anmyachev</a> on 2025-07-03 17:09</div>
+            <div class="timeline-body"><p>This issue was originally posted in https://github.com/intel/intel-xpu-backend-for-triton/issues/4465</p>
+<p><strong>I would expect <code>{str(f.name)}</code> to return the same as <code>{f.locate().name}&quot;)</code>.</strong></p>
+<p>From @e87tn95h:</p>
+<p>I have found that the difference come from using <code>uv pip</code> instead of using <code>pip</code> or <code>python -m pip</code> to install packages. So, it's a magic from pyenv.</p>
+<p>However, I would say that it's not issue of <code>uv pip</code> because this behavior allows in &quot;Recording installed projects&quot; context which is metadata source.</p>
+<blockquote>
+<p>On Windows, directories may be separated either by forward- or backslashes (<code>/</code> or <code>\</code>).</p>
+</blockquote>
+<p>Ref: https://packaging.python.org/en/latest/specifications/recording-installed-packages/#the-record-file</p>
+<h3>How to</h3>
+<ol start="0">
+<li>Get astral-sh/uv: https://docs.astral.sh/uv/</li>
+</ol>
+<pre><code>winget install --id=astral-sh.uv --exact
+</code></pre>
+<ol>
+<li>Make virtualenv explicitly. If have not installed specific version python, uv will download it automatically and put local without breaking global environment.</li>
+</ol>
+<pre><code>PS C:\sandbox&gt; uv venv --python 3.11.13 test-uvpip
+Using CPython 3.11.13
+Creating virtual environment at: test-uvpip
+Activate with: test-uvpip\Scripts\activate
+</code></pre>
+<ol start="2">
+<li>Activate and install <code>intel-sycl-rt</code> with <code>uv pip</code></li>
+</ol>
+<pre><code>PS C:\sandbox&gt; test-uvpip\Scripts\activate
+
+(test-uvpip) PS C:\sandbox&gt; uv pip install &quot;intel-sycl-rt==2025.0.5&quot;
+Using Python 3.11.13 environment at: test-uvpip
+Resolved 6 packages in 510ms
+Installed 6 packages in 3.07s
+ + intel-cmplr-lib-rt==2025.0.5
+ + intel-cmplr-lib-ur==2025.0.5
+ + intel-cmplr-lic-rt==2025.0.5
+ + intel-sycl-rt==2025.0.5
+ + tcmlib==1.2.0
+ + umf==0.9.1
+</code></pre>
+<ol start="3">
+<li>Run python and testcase</li>
+</ol>
+<pre><code>(test-uvpip) PS C:\sandbox&gt; uv run python
+Python 3.11.13 (main, Jun 12 2025, 12:41:34) [MSC v.1943 64 bit (AMD64)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; # libsycl_check.py
+&gt;&gt;&gt; import importlib.metadata
+&gt;&gt;&gt;
+&gt;&gt;&gt; def test():
+...     for f in importlib.metadata.files(&quot;intel-sycl-rt&quot;):
+...         for name in [&quot;sycl.hpp&quot;, &quot;libsycl.so&quot;, &quot;sycl8.dll&quot;, &quot;sycl8.lib&quot;]:
+...             if name in str(f):
+...                 print(f&quot;{str(f)}  {str(f.name)}  {f.locate().name}&quot;)
+...                 break
+...
+&gt;&gt;&gt; if __name__ == &quot;__main__&quot;:
+...     test()
+...
+..\..\Library\bin\sycl8.dll  ..\..\Library\bin\sycl8.dll  sycl8.dll
+..\..\Library\include\sycl\CL\sycl.hpp  ..\..\Library\include\sycl\CL\sycl.hpp  sycl.hpp
+..\..\Library\include\sycl\sycl.hpp  ..\..\Library\include\sycl\sycl.hpp  sycl.hpp
+..\..\Library\lib\sycl8.lib  ..\..\Library\lib\sycl8.lib  sycl8.lib
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../intel/intel-xpu-backend-for-triton/issues/4465.html">intel/intel-xpu-backend-for-triton#4465</a> on 2025-07-03 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-03 17:14</div>
+            <div class="timeline-body"><p>This bit from the linked issue seems critical</p>
+<blockquote>
+<p>The result of [calling .name (second field from your output)] contradicts the documentation. https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.name. Namely: A string representing the final path component, excluding the drive and root, if any.</p>
+<p>That is, it should be like sycl8.dll and not like this:  ....\Library\bin\sycl8.dll. Do you agree with this?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2025-07-03 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pytorch/pytorch/issues/156303.html">pytorch/pytorch#156303</a> on 2025-07-21 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anmyachev">@anmyachev</a> on 2025-11-17 11:53</div>
+            <div class="timeline-body"><p>Hi @zanieb, are there any plans to fix this in the next sprints?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/importlib_metadata/issues/528.html">python/importlib_metadata#528</a> on 2025-11-17 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-17 16:12</div>
+            <div class="timeline-body"><p>This is not a uv bug, but in <code>importlib.metadata</code>: https://github.com/python/importlib_metadata/issues/528</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-11-17 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anmyachev">@anmyachev</a> on 2025-11-17 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>This is not a uv bug, but in <code>importlib.metadata</code>: <a href="https://github.com/python/importlib_metadata/issues/528">python/importlib_metadata#528</a></p>
+</blockquote>
+<p>@konstin thanks for further research!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

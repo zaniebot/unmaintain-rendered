@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM108 turns readable code into unreadable code - astral-sh/ruff #5528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM108 turns readable code into unreadable code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5528">#5528</a>
+        opened by <a href="https://github.com/karolinepauls">@karolinepauls</a>
+        on 2023-07-05 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/karolinepauls">@karolinepauls</a> on 2023-07-05 09:14</div>
+            <div class="timeline-body"><p>The rule should only apply to trivial conditions with the simplest expressions (e.g. even having 2 sub-expressions joined with <code>and</code> or <code>or</code> is too much).</p>
+<p>a.py:</p>
+<pre><code>from typing import Optional
+
+# an ugly but realistic type
+something: Optional[list] = None
+
+if something is not None and len(something) &gt; 1:
+    runner_image = something[0].url
+else:
+    runner_image = None
+</code></pre>
+<p>cmd: <code>ruff --isolated --select SIM --line-length=120  a.py</code></p>
+<p>Output:</p>
+<pre><code>a.py:5:1: SIM108 [*] Use ternary operator `runner_image = something[0].url if something is not None and len(something) &gt; 1 else None` instead of `if`-`else`-block
+</code></pre>
+<p>My eyes refuse to read <code>runner_image = something[0].url if something is not None and len(something) &gt; 1 else None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-07-05 10:27</div>
+            <div class="timeline-body"><p>Perhaps I am in the minority on this, but I prefer the ternary syntax in the example here, so I would prefer any change to this to be optional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-05 13:36</div>
+            <div class="timeline-body"><p>I'm open to an argument that we should only apply this rule when the test is a single condition (since the <code>and</code> in the ternary makes it harder to parse), but I don't want to make it configurable -- we should either change it or not. I'll leave this open to give folks a chance to chime in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-07-05 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssweber">@ssweber</a> on 2023-07-08 01:37</div>
+            <div class="timeline-body"><p>Can’t you just use noqa as needed?</p>
+<p>The simplify rules are opinionated. Usually those long expressions are ‘variable = value condition or None’ anyway - my mental model has adjusted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dorschw">@dorschw</a> on 2023-08-02 10:00</div>
+            <div class="timeline-body"><p>Devs in our organization also complained about it. While great for simple conditions and expressions, the longer they become, the messier and harder to read it makes the code.</p>
+<p>I see @charliermarsh is not a fan of configurability for this one, but imo any way to control a maximal complexity level (of either the condition or the return values) would make it a great addition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jankatins">@jankatins</a> on 2023-10-12 17:02</div>
+            <div class="timeline-body"><p>In a former company we had the (code style) rule that ternary expression could only be a single line and only &quot;simple&quot; conditions or assignments (e.g. something like <code>x.x if single_comparison else y.y</code>). I like the idea of measuring the complexity and only apply if it less than a (low) default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karolinepauls">@karolinepauls</a> on 2024-01-06 13:28</div>
+            <div class="timeline-body"><p>@ssweber</p>
+<blockquote>
+<p>Can’t you just use noqa as needed?</p>
+</blockquote>
+<p>This style of response isn't helpful. It fits the pattern: &quot;Can't you just use &lt;an inferior solution the requester certainly knows about and has rejected it&gt; instead? &lt;here goes an explanation why the troublesome feature should stay as it is and we shouldn't try to improve it&gt;&quot;</p>
+<p>It should be clear that the person reporting the issue knows about noqa, and finds the use of noqa to be deficient, hence they're reporting the issue.</p>
+<p>Why is noqa a non-solution:</p>
+<ol>
+<li>You have to place it in advance, before autofix rewrites your code. What about disabling autofix to this rule? Someone may still want this rule to autofix trivial conditions and leave non-trival conditions intact.</li>
+<li>There will always be some devs in a team who adhere to lint rules uncritically. You cannot control that. Tools to help devs write better code interact with all devs in the project, not only the observant ones.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssweber">@ssweber</a> on 2024-01-06 19:18</div>
+            <div class="timeline-body"><blockquote>
+<p>@ssweber</p>
+<blockquote>
+<p>Can’t you just use noqa as needed?</p>
+</blockquote>
+<p>This style of response isn't helpful.</p>
+</blockquote>
+<p>You’re right, that wasn’t a very considerate suggestion. I’ve enjoyed SIM108, but I’d understand if someone else wanted a more robust solution than “use noqa”.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14017.html">astral-sh/ruff#14017</a> on 2024-10-31 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14019.html">astral-sh/ruff#14019</a> on 2024-10-31 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-12-28 19:58</div>
+            <div class="timeline-body"><p>I find the issue to be formatting related with long ternary conditionals. For example in JS/TS with ESLint I force-wrap all ternaries, but with Python having to add extra parenthesis (which are formatted on their own lines), or <code>\</code> (which Ruff and Black disallow), even such an option wouldn't work that great.
+Here's some more thoughts: https://github.com/astral-sh/ruff/issues/11753</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-01-01 04:03</div>
+            <div class="timeline-body"><blockquote>
+<p>My eyes refuse to read <code>runner_image = something[0].url if something is not None and len(something) &gt; 1 else None</code>.</p>
+</blockquote>
+<p>I agree, but I suggest writing the ternary expression as:</p>
+<pre><code class="language-python">runner_image = (something[0].url 
+                if something is not None and len(something) &gt; 1 
+                else None)
+</code></pre>
+<p>I propose that this is more legible and briefer than the original code.</p>
+<p>(I hope we keep SIM108 in all cases.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16104.html">astral-sh/ruff#16104</a> on 2025-02-11 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2025-02-21 13:21</div>
+            <div class="timeline-body"><blockquote>
+<p>we should only apply this rule when the test is a single condition</p>
+</blockquote>
+<p>yes, IMO, it's only case when ternary operator is readable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paylogic-blaise">@paylogic-blaise</a> on 2025-05-22 07:27</div>
+            <div class="timeline-body"><p>Even single conditions become less readable if they have function calls with multiple arguments, or contain expressions like <code>message[search_term][0][&quot;errors&quot;][0][&quot;message&quot;]</code>. Of course it's up to people's personal preference, but in my team we disliked SIM108 being applied to non-trivial if-statements, so we globally ignored SIM108.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

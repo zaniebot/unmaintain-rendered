@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv hangs on install from JFrog Artifactory, but only when building source distributions - astral-sh/uv #2315</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv hangs on install from JFrog Artifactory, but only when building source distributions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2315">#2315</a>
+        opened by <a href="https://github.com/skellys">@skellys</a>
+        on 2024-03-09 03:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/skellys">@skellys</a> on 2024-03-09 03:34</div>
+            <div class="timeline-body"><p><code>uv</code> version 0.1.16 hangs indefinitely on certain installs for me when using <code>--index-url</code> to install from JFrog Artifactory. I am not able to get this to happen when installing from the usual Internet/pypi.org. Fortunately, I am able to reliably reproduce my issue with a particular mix of 3 old, simple packages together, or when they're a part of a larger <code>requirements.txt</code>:</p>
+<h2>Repro</h2>
+<p>to repro, run in the official <code>python:3.11-slim</code> docker image:</p>
+<pre><code class="language-shell">python3 -m venv testenv
+. testenv/bin/activate
+
+# install uv from Internet
+pip install uv
+
+# install these 3 packages from an Artifactory cache endpoint
+uv pip install --index-url &quot;https://$USERNAME:$TOKEN@subdomainnamegoeshere.jfrog.io/artifactory/api/pypi/pypi/simple&quot; binpacking==1.5.2 expbackoff==0.1.1 frozendict==2.4.0 --no-deps --no-cache --verbose
+</code></pre>
+<p>the end of the verbose logs before it hangs:</p>
+<pre><code>...
+&lt;similar for expbackoff==0.1.1&gt;
+...
+&lt;similar for binpacking==1.5.2&gt;
+...
+DEBUG uv_distribution::source::download_source_dist filename=&quot;frozendict-2.4.0.tar.gz&quot;, source_dist=frozendict==2.4.0
+uv_distribution::source::build_source_dist
+DEBUG uv_distribution::source Building: frozendict==2.4.0
+uv_dispatch::setup_build package_id=&quot;frozendict==2.4.0&quot;, subdirectory=None
+</code></pre>
+<h2>Workaround</h2>
+<p>Pretty simple - just do regular <code>pip install</code> for those upfront, then <code>uv pip install</code> for the rest!</p>
+<p>Can anyone else using JFrog Artifactory reproduce this issue? I ran this on an EC2 instance in AWS region us-east-1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 13:05</div>
+            <div class="timeline-body"><p>Thanks, I think I'll need to setup an Artifactory repo to reproduce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @charliermarsh on 2024-03-09 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-03-09 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmwetherell">@cmwetherell</a> on 2024-03-09 15:57</div>
+            <div class="timeline-body"><p>Tangential, is there a way to specify the index-url for a project? Without needing to specify it for each new package install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-09 16:00</div>
+            <div class="timeline-body"><p>You can use an environment variable e.g. <code>UV_INDEX_URL</code> — we'll add support for reading a persistent configuration file in the future too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skellys">@skellys</a> on 2024-04-22 20:27</div>
+            <div class="timeline-body"><p>@charliermarsh Following up - I think we can close this issue. I'm no longer able to repro this as of version 0.1.18. There was another (separate) issue where I got HTTP 401 (unauthorized) errors for versions 0.1.22, 0.1.23, but I didn't observe that behavior again as of 0.1.24. Everything seems to work as of the latest version (at time of writing: 0.1.35).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-22 20:27</div>
+            <div class="timeline-body"><p>Oh great! Thank you for following up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-22 20:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX: `uv run`'s `--frozen` flag silently ignores `--resolution` (and presumably `--prerelease`) arguments - astral-sh/uv #9772</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UX: `uv run`'s `--frozen` flag silently ignores `--resolution` (and presumably `--prerelease`) arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9772">#9772</a>
+        opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a>
+        on 2024-12-10 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2024-12-10 12:17</div>
+            <div class="timeline-body"><p>setup</p>
+<pre><code class="language-shell">export UV_NO_CONFIG=1
+uv init --lib test
+cd test
+uv add &quot;pytest&gt;=7.0&quot;
+uv lock
+</code></pre>
+<p>now</p>
+<pre><code>uv run --frozen --resolution=lowest-direct pytest
+</code></pre>
+<p>outputs</p>
+<pre><code>=========================================== test session starts ===========================================
+platform darwin -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
+rootdir: /private/tmp/test
+configfile: pyproject.toml
+collected 0 items
+
+========================================== no tests ran in 0.00s ==========================================
+</code></pre>
+<p>(evidently we still have pytest 8.3.4 != 7.0)
+Arguably the behavior is correct, assuming <code>--frozen</code> is expected to take precedent over <code>--resolution</code>, but my issue is that this happens silently, whereas a helpful warning is shown if I drop the <code>--frozen</code> flag</p>
+<pre><code>uv run --frozen --resolution=lowest-direct pytest
+</code></pre>
+<pre><code>Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+Uninstalled 1 package in 16ms
+Installed 1 package in 9ms
+=========================================== test session starts ===========================================
+platform darwin -- Python 3.13.1, pytest-7.0.0, pluggy-1.5.0
+rootdir: /private/tmp/test
+collected 0 items
+
+========================================== no tests ran in 0.01s ==========================================
+</code></pre>
+<p>I think the same problem might exist with <code>--frozen</code> + <code>--prerelease</code> options (although I'm not sure how to check it right now).</p>
+<p>In hindsight, it's pretty obvious to me what I did wrong here, but it took me a couple minutes to figure it out the first time I made this mistake because I wanted to call <code>uv run</code> exclusively with the <code>--frozen</code> flag, and conditionally included <code>--resolution</code> arguments.
+It might also bite anyone who sets the <code>UV_FROZEN</code> environment variables.</p>
+<p>I think a warning might be sufficient to pin point the issue, although an error would make sense too. Whatever type of message is emitted, it should probably pop up only when the value attached to <code>--resolution</code> (or <code>--prerelease</code>) isn't compatible with the existing lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-12-10 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-12-10 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 13:37</div>
+            <div class="timeline-body"><p>I'm a little torn... I guess we could show a warning like the above. Erroring seems potentially problematic since it would lead to errors if both or one were set via an environment variable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:47 UTC
+    </footer>
+</body>
+</html>

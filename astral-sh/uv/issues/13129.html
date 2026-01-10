@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request for `--root` Support for Multi-Stage Docker Builds - astral-sh/uv #13129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request for `--root` Support for Multi-Stage Docker Builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13129">#13129</a>
+        opened by <a href="https://github.com/vivodi">@vivodi</a>
+        on 2025-04-27 13:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vivodi">@vivodi</a> on 2025-04-27 13:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3>Feature Request</h3>
+<p>Currently, <code>uv</code> does not support an equivalent to <code>pip install --root</code>, which would allow users to install packages with a specific root directory, ensuring they are placed in the appropriate system-wide path.</p>
+<h3>Why is this important?</h3>
+<p>In Docker <strong>multi-stage builds</strong>, it is <em>impossible</em> to use <code>UV_PROJECT_ENVIRONMENT=/usr/local</code> to <strong>install packages to the system-wide path across stages</strong>.<br />
+A <code>uv sync --root</code> option would allow for efficient package installation into a system-wide directory, ensuring the packages are available for use in later build stages without relying on virtual environments.</p>
+<h3>Suggested Solution</h3>
+<p>It would be helpful to have a <code>--root</code> parameter (e.g., <code>uv sync --root</code>) to install packages directly into a specific directory structure like <code>/usr/local/lib/python3.x/site-packages/</code>.</p>
+<h3>Example Usage</h3>
+<pre><code class="language-bash">uv sync --root /tmp/custom-root
+</code></pre>
+<p>This would install the packages into <code>/tmp/custom-root/usr/local/lib/python3.x/site-packages/</code>.</p>
+<h3>Dockerfile Example</h3>
+<pre><code class="language-dockerfile">FROM python:3.12-alpine
+RUN pip install flexget --root /root-dir    # something like `uv sync --root /root-dir` not supported
+
+FROM python:3.12-alpine
+COPY --from=0 /root-dir /
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @vivodi on 2025-04-27 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 12:46</div>
+            <div class="timeline-body"><p>Can you use <code>--system</code> and copy the relevant system directories?</p>
+<p>For <code>--root</code>, can you describe how it is different from a venv and why you prefer it over using a venv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-28 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-05-01 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you use <code>--system</code> and copy the relevant system directories?</p>
+</blockquote>
+<p>First, <code>uv sync</code> does not support the <code>--system</code> argument; only <code>uv pip install</code> supports it. Second, using the <code>--system</code> argument and then copying the relevant system directories will copy other unrelated files and Python packages, whereas <code>--root</code> only includes files relevant to the current command, ensuring that no unrelated files are included.</p>
+<blockquote>
+<p>For <code>--root</code>, can you describe how it is different from a venv and why you prefer it over using a venv?</p>
+</blockquote>
+<p>The <code>--root</code> option is used to install packages to the system-wide path, rather than installing them into a virtual environment (venv). Installing them into a venv would unnecessarily increase space usage, and for a single-function Docker image, installing them into a venv doesn't make sense because it adds unnecessary complexity and overhead, especially when the image is intended to perform a specific task efficiently without managing isolated environments.</p>
+<p>Additionally, installing into a venv would prevent our users from installing additional packages in the entrypoint, because the packages installed in the entrypoint would not be present in the venv.</p>
+<p>If you still don't understand the necessity of the <code>--root</code> option, think about why pip provides this option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @konstin on 2025-05-02 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 09:13</div>
+            <div class="timeline-body"><p>(i didn't mean to close this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 09:16</div>
+            <div class="timeline-body"><p>There are setups using <code>UV_PROJECT_ENVIRONMENT</code> with their multi-stage Dockerfiles (https://github.com/search?q=path%3A**%2FDockerfile*+UV_PROJECT_ENVIRONMENT&amp;type=code), what makes it impossible for you to use this option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-05-04 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-05-04 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-09-09 19:21</div>
+            <div class="timeline-body"><blockquote>
+<p>There are setups using UV_PROJECT_ENVIRONMENT with their multi-stage Dockerfiles (https://github.com/search?q=path%3A**%2FDockerfile*+UV_PROJECT_ENVIRONMENT&amp;type=code), what makes it impossible for you to use this option?</p>
+</blockquote>
+<p>Using <code>uv sync</code> with <code>UV_PROJECT_ENVIRONMENT</code> in multi-stage Dockerfiles is problematic because it creates a virtual environment structure, including unnecessary files like <code>pyvenv.cfg</code> and activate scripts. This is not ideal for building minimal Docker images, which only require a single, global package installation.</p>
+<p>The <code>pip install --root &lt;directory&gt;</code> command is better suited for this. It installs packages into a clean staging directory that mirrors the final system path, perfect for being copied into the next Docker stage (<code>COPY --from=0 /stagingdir /</code>). This method avoids any venv-related overhead.</p>
+<p>Currently, <code>uv sync</code> lacks a direct equivalent to this behavior.</p>
+<p><strong>Feature Proposal:</strong> Add a <code>--root</code> option to <code>uv</code>, such as <strong><code>uv sync --root &lt;directory&gt;</code></strong>, to directly emulate <code>pip install --root</code>. This would allow developers to leverage <code>uv</code>'s speed to create clean, relocatable package directories, greatly simplifying the creation of lean, production-ready Docker images.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-09-09 19:26</div>
+            <div class="timeline-body"><p>In short, <code>pip install --root</code> has two advantages over using <code>uv sync</code> with <code>UV_PROJECT_ENVIRONMENT</code>:</p>
+<ol>
+<li>It doesn't generate superfluous files that unnecessarily increase the Docker image size.</li>
+<li>Its output can be easily copied into the next Docker stage to serve as system-wide site packages, whereas the approach with <code>UV_PROJECT_ENVIRONMENT</code> requires manual path handling.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8085.html">astral-sh/uv#8085</a> on 2025-09-16 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-09-16 13:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think the virtual environment itself will add much size to your artifact, but understand the desire for zero ambiguity :)</p>
+<p>Setting <code>UV_PROJECT_ENVIRONMENT</code> to the system environment should also work, without the <code>export</code> and <code>pip</code> hacks — no need to have uv around after that.</p>
+<p><em>Originally posted by @zanieb in https://github.com/astral-sh/uv/issues/8085#issuecomment-2707864546</em></p>
+</blockquote>
+<p>@konstin</p>
+<p>I think @zanieb’s comment also illustrates that currently, uv cannot avoid creating a virtual environment in a non-system environment, which would help reduce artifact size.</p>
+<p>Installing into the system environment in multi-stage Docker builds doesn’t work either, because the system environment may contain other unnecessary packages that you don’t want to copy into the final stage Docker image.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-16 14:57</div>
+            <div class="timeline-body"><p>For what it's worth, venvs are tiny. A freshly created Python 3.13 on my Ubuntu 24.04 machine is 88KB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vivodi">@vivodi</a> on 2025-09-16 15:20</div>
+            <div class="timeline-body"><p>Although a venv is not large, in principle it is unnecessary to use a venv in a single-purpose container.</p>
+<p>Moreover, implementing an equivalent of <code>pip install --root &lt;directory&gt;</code> as <code>uv sync --root &lt;directory&gt;</code> is not complicated.</p>
+<p>Therefore, there is no need to compromise on this issue merely because a venv is small.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-16 19:16</div>
+            <div class="timeline-body"><p>I think you're underestimating the complexity of maintaining support for something like <code>--root</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Flexget/Flexget/issues/4372.html">Flexget/Flexget#4372</a> on 2025-10-11 04:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../linuxserver/docker-flexget/issues/25.html">linuxserver/docker-flexget#25</a> on 2025-10-17 14:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

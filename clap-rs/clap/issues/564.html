@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--clap-X arguments - clap-rs/clap #564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--clap-X arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/564">#564</a>
+        opened by <a href="https://github.com/hgrecco">@hgrecco</a>
+        on 2016-07-03 01:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hgrecco">@hgrecco</a> on 2016-07-03 01:52</div>
+            <div class="timeline-body"><p>This proposal is to introduce automagically a family of arguments to scripts using clap. They would be used to support some of the new features at run time (instead of compile time).</p>
+<p>For example:</p>
+<pre><code>  $ myscript --clap-manpage
+</code></pre>
+<p>would output the manpage. An installation script could just run this to generate and install it where it is appropriate.</p>
+<p>In a similar way with TAB completion:</p>
+<pre><code>  $ myscript --clap-complete &lt;text typed by the user before the tab was pressed&gt;
+</code></pre>
+<p>would output a list of possible values separated by new lines. This would make the completion script much smaller and easier to port to other terminals as all logic is in clap and not in a shell script.</p>
+<p>This clap arguments will be hidden by default (i.e. will not show up in the help)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-07-03 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-07-03 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: man page gen</span> added by @kbknapp on 2016-07-03 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @kbknapp on 2016-07-03 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-03 16:01</div>
+            <div class="timeline-body"><p>I'm not a huge fan of adding flags/args to end user programs, hidden or not. But if enough people think it'd be useful, I'm not against adding a setting that builds these additional flags so long as it's not on by default.</p>
+<p>My other thought is that this type of thing is doable in the end user code, so perhaps just some details examples or blog posts on how to do this would be more appropriate. Assuming we have all the infrastructure in place, a lo <code>App::gen_completions</code>, <code>App::gen_manpage</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hgrecco">@hgrecco</a> on 2016-07-03 23:39</div>
+            <div class="timeline-body"><p>Thanks for being open even if at first sight does not sound right to you. What drove me to this is the need to support multiple terminals for completion in simple way. I dislike complicated shell scripts. Using what I have proposed the <strong>bash</strong> completion script will be:</p>
+<pre><code class="language-shell">_myscript_complete() {
+  COMPREPLY=()
+  local word=&quot;${COMP_WORDS[COMP_CWORD]}&quot;
+  local completions=&quot;$(myscript --clap-complete &quot;$word&quot;)&quot;
+  COMPREPLY=( $(compgen -W &quot;$completions&quot; -- &quot;$word&quot;) )
+}
+
+complete -f -F _myscript_complete myscript
+</code></pre>
+<p>Porting this to <strong>zsh</strong> is trivial:</p>
+<pre><code class="language-shell">_myscript_complete() {
+  local word completions
+  word=&quot;$1&quot;
+  completions=&quot;$(myscript --clap-complete &quot;${word}&quot;)&quot;
+  reply=( &quot;${(ps:\n:)completions}&quot; )
+}
+
+compctl -f -K _myscript_complete myscript
+</code></pre>
+<p>Supporting other terminals (maybe even Windows PowerShell) should as easy to do. The trick is that the logic is in <code>myscript</code> keeping the shell script very minimal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-07-04 22:40</div>
+            <div class="timeline-body"><p>@hgrecco I think you can simplify that even further for bash; <code>complete</code> supports a <code>-C</code> option to specify a command to run, which generates completions on stdout (one per line, with backslashes to escape newlines if necessary).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hgrecco">@hgrecco</a> on 2016-07-06 02:22</div>
+            <div class="timeline-body"><p>@joshtriplett cool, thanks for the tip!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-08-21 19:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

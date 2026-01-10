@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ephemeral environments are not ephemeral - astral-sh/uv #13431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ephemeral environments are not ephemeral</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13431">#13431</a>
+        opened by <a href="https://github.com/engpas">@engpas</a>
+        on 2025-05-13 13:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/engpas">@engpas</a> on 2025-05-13 13:55</div>
+            <div class="timeline-body"><h1>Expectation</h1>
+<p>The <a href="https://docs.astral.sh/uv/reference/cli/#uv-run">documentation</a> of  the <code>uv run</code> command states</p>
+<blockquote>
+<p>If the script contains inline dependency metadata, it will be installed into an isolated, <strong>ephemeral</strong> environment.</p>
+</blockquote>
+<p>Thus my expectation upon running a python script with script header via</p>
+<pre><code>uv run script.py
+</code></pre>
+<p>is that uv will generate a virtual environment, install the declared dependencies in this environment, execute the script in this environment, and finally clean up the environment.</p>
+<h1>Observation</h1>
+<p>In my (HPC) use case, everything is organized in projects (not in the uv sense). Per project, I run the same script in hundreds to thousands of different folders. There is no upper limit on the number of projects.</p>
+<p>After several ten thousand script runs via <code>uv run script.py</code> over the timeframe of roughly a week, I realized that the uv cache directory had grown to the order of a hundred gigabytes in size. Apparently, the <code>environments-v2</code> subfolder had cached one environment per script that was run, not ephemerally, but forever. While the dependencies were indeed hardlinked into the venvs, each virtual environment directory still occupied several megabytes of disk space.</p>
+<h1>Reproduction</h1>
+<p>This can be reproduced with the following steps:</p>
+<ul>
+<li>Take the following script.py:</li>
+</ul>
+<pre><code># /// script
+# requires-python = &quot;&gt;=3.10,&lt;=3.10&quot;
+# dependencies = [
+#      &quot;scipy&quot;,
+#      &quot;numpy&quot;,
+#      &quot;matplotlib&quot;,
+#      &quot;pandas&quot;,
+# ]
+# ///
+
+import sys
+
+print(&quot;Hello World!&quot;)
+print(sys.executable)
+</code></pre>
+<ul>
+<li>Execute the script via <code>uv run --cache-dir ~/uv-testing/local-cache script.py</code></li>
+<li>Check the cache size: <code>ncdu ~/uv-testing/local-cache</code>
+<img src="https://github.com/user-attachments/assets/0395fa87-662a-46bc-9b79-b2a24f4d2441" alt="Image" /></li>
+<li>Check contents of environments-v2: <code>ls ~/uv-testing/local-cache/environments-v2/</code></li>
+</ul>
+<pre><code>script-54e2783e35ec760d
+</code></pre>
+<ul>
+<li>Copy script to several directories and execute all copies:</li>
+</ul>
+<pre><code>mkdir -p dir{0..9}
+for i in {0..9}; do cp script.py dir$i/; done
+for i in {0..9}; do uv run --cache-dir ~/uv-testing/local-cache dir$i/script.py; done
+</code></pre>
+<ul>
+<li>Check the cache size: <code>ncdu ~/uv-testing/local-cache/</code>
+<img src="https://github.com/user-attachments/assets/4c36672d-375b-48a9-9ab1-849481aaeadf" alt="Image" /></li>
+<li>Check contents of environments-v2: <code>ls ~/uv-testing/local-cache/environments-v2/</code></li>
+</ul>
+<pre><code>script-4307683faee53c3a  script-54e2783e35ec760d  script-660d48cc284811d8  script-a55279b276551a9d  script-c7fbf7307ec17a5b  script-e836ce8ccbde9e79
+script-4d1c98669ed66fd6  script-5fceb63b378a5dfc  script-9bec0282f392db27  script-c79e51d570cd5f5a  script-e266d49a4b608c66
+</code></pre>
+<p>In this example, each venv adds ~3 MB, this quickly adds up to a problematic environments-v2 folder in my use case.</p>
+<h1>Proposed resolution</h1>
+<p>If the observed behaviour is desired, maybe the wording in the documentation could be changed to something like &quot;<strong>disposable</strong> environment&quot;, as it doesn't disappear once execution is over. One could then think about maybe adding an option to have the disposable environment cleaned up after execution, e.g. <code>uv run --ephemeral-environment script.py</code>, or adding an option to clean the cached environments, e.g. <code>uv cache --environments clean</code>. Alternatively, there may be a different recommended way to deal with my use case.</p>
+<p>If the behaviour is not desired, automatic deletion of the environment once execution finishes would be a solution.</p>
+<h3>Platform</h3>
+<p>Ubuntu 20.04.6 LTS</p>
+<h3>Version</h3>
+<p>uv 0.6.17</p>
+<h3>Python version</h3>
+<p>3.10.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @engpas on 2025-05-13 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 14:13</div>
+            <div class="timeline-body"><p>When we say ephemeral, we mean that you can't rely on this environment being there when you check the next time. uv may remove ephemeral venvs, and they may be in a new location next time. You can also remove them by clearing the user cache directory (and uv will recreate it). For script environments specifically, we're currently in a transition to &quot;more real&quot; environments with stable paths to help IDEs and other tools interacting with script metadata. The docs will be updated when we finalize that.</p>
+<blockquote>
+<p>In my (HPC) use case, everything is organized in projects (not in the uv sense). Per project, I run the same script in hundreds to thousands of different folders. There is no upper limit on the number of projects.</p>
+</blockquote>
+<p>For this use case, I would recommend building a venv and reusing it. You can use <code>uv sync --script</code> to install the dependencies for a script in an environment. Inline script metadata is targeted at having a bunch of helper script in a project or on a machine, and potentially running it often, but isn't meant to hundreds of thousands of scripts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-13 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-05-13 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-13 14:15</div>
+            <div class="timeline-body"><p>I'm surprised the script environments use that much space despite the hard links. Do you know what's actually consuming space there?</p>
+<p>This is related to https://github.com/astral-sh/uv/issues/5731 — which probably captures your need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansys/pyhps/pulls/619.html">ansys/pyhps#619</a> on 2025-06-30 10:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

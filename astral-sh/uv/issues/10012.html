@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv.lock local cache path which causes sync fail when cache is empty - astral-sh/uv #10012</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv.lock local cache path which causes sync fail when cache is empty</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10012">#10012</a>
+        opened by <a href="https://github.com/jhurlb">@jhurlb</a>
+        on 2024-12-18 23:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jhurlb">@jhurlb</a> on 2024-12-18 23:50</div>
+            <div class="timeline-body"><h1>Environment</h1>
+<p>Platform: MacOS (M2)
+Python: 3.13.1
+UV: 0.5.10</p>
+<h1>Commands Run</h1>
+<pre><code>uv init
+
+uv add git+https://github.com/vmware/vsphere-automation-sdk-python.git --tag v8.0.3.0
+
+cat uv.lock | grep .cache
+  source = { path = &quot;../../../.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-policy-python-sdk/nsx_policy_python_sdk-4.2.0-py2.py3-none-any.whl&quot; }
+  source = { path = &quot;../../../.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-python-sdk/nsx_python_sdk-4.2.0-py2.py3-none-any.whl&quot; }
+  source = { path = &quot;../../../.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-vmc-aws-integration-python-sdk/nsx_vmc_aws_integration_python_sdk-4.1.2.0.1-py2.py3-none-any.whl&quot; }
+  source = { path = &quot;../../../.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-vmc-policy-python-sdk/nsx_vmc_policy_python_sdk-4.1.2.0.1-py2.py3-none-any.whl&quot; }
+  source = { path = &quot;../../../.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/vmwarecloud-aws/vmwarecloud_aws-1.64.1-py2.py3-none-any.whl&quot; }
+  source = { path = &quot;../../../.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/vmwarecloud-draas/vmwarecloud_draas-1.23.1-py2.py3-none-any.whl&quot; }
+
+rm -rf .venv
+
+uv sync
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Resolved 24 packages in 1ms
+Installed 23 packages in 325ms
+ + certifi==2024.12.14
+ + cffi==1.17.1
+ + charset-normalizer==3.4.0
+ + cryptography==44.0.0
+ + idna==3.10
+ + lxml==5.3.0
+ + nsx-policy-python-sdk==4.2.0 (from file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-policy-python-sdk/nsx_policy_python_sdk-4.2.0-py2.py3-none-any.whl)
+ + nsx-python-sdk==4.2.0 (from file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-python-sdk/nsx_python_sdk-4.2.0-py2.py3-none-any.whl)
+ + nsx-vmc-aws-integration-python-sdk==4.1.2.0.1 (from file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-vmc-aws-integration-python-sdk/nsx_vmc_aws_integration_python_sdk-4.1.2.0.1-py2.py3-none-any.whl)
+ + nsx-vmc-policy-python-sdk==4.1.2.0.1 (from file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-vmc-policy-python-sdk/nsx_vmc_policy_python_sdk-4.1.2.0.1-py2.py3-none-any.whl)
+ + pycparser==2.22
+ + pyopenssl==24.3.0
+ + pyvmomi==8.0.3.0.1
+ + requests==2.32.3
+ + setuptools==75.6.0
+ + six==1.17.0
+ + urllib3==2.2.3
+ + vmware-vapi-common-client==2.52.0
+ + vmware-vapi-runtime==2.52.0
+ + vmware-vcenter==8.0.3.0
+ + vmwarecloud-aws==1.64.1 (from file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/vmwarecloud-aws/vmwarecloud_aws-1.64.1-py2.py3-none-any.whl)
+ + vmwarecloud-draas==1.23.1 (from file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/vmwarecloud-draas/vmwarecloud_draas-1.23.1-py2.py3-none-any.whl)
+ + vsphere-automation-sdk==1.87.0 (from git+https://github.com/vmware/vsphere-automation-sdk-python.git@0e0b9321122e404cb49f6812dcea5bea792c49b2)
+
+rm -rf .venv
+
+uv cache clean
+
+uv sync
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Resolved 24 packages in 0.80ms
+error: Failed to determine installation plan
+  Caused by: Distribution not found at: file:///Users/testuser/.cache/uv/git-v0/checkouts/3a7c78869eb8297a/0e0b932/lib/nsx-policy-python-sdk/nsx_policy_python_sdk-4.2.0-py2.py3-none-any.whl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv.lock has local cache for path which fails when cache is empty" to "uv.lock local cache path which causes sync fail when cache is empty" by @jhurlb on 2024-12-18 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 00:07</div>
+            <div class="timeline-body"><p>The paths you're seeing are indicative of a bug. We should never be writing relative paths to the cache like that. Can you come up with a reproduction that we can use to debug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-19 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-12-19 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhurlb">@jhurlb</a> on 2024-12-19 00:18</div>
+            <div class="timeline-body"><pre><code>uv init
+uv add git+https://github.com/vmware/vsphere-automation-sdk-python.git --tag v8.0.3.0
+uv cache clean
+uv sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 00:53</div>
+            <div class="timeline-body"><p>Thanks, I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 01:52</div>
+            <div class="timeline-body"><p>Ah yeah, this is known -- there's a TODO for it, but we don't have any way to represent &quot;local wheel file within a Git repository&quot; today. (The problem is the references to the wheels in <code>lib</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-12-19 01:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-19 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhurlb">@jhurlb</a> on 2024-12-19 02:21</div>
+            <div class="timeline-body"><p>Thank you! Is there an alternative installation method to work around this issue that you know of?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 03:44</div>
+            <div class="timeline-body"><p>Unfortunately I think we just need to fix it. A long-shot option is that you could use URL sources for your pre-built wheels instead of path sources... That would probably work, but it's pretty inconvenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10072.html">astral-sh/uv#10072</a> on 2024-12-21 04:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 13:44</div>
+            <div class="timeline-body"><p>I looked into this a bit more and unfortunately I misdiagnosed the issue. There <em>is</em> a real limitation to relying on wheel paths in Git repositories, which I've fixed in #10072. But the repo you linked is doing something very specific that I doubt we'll be able to support, in that the metadata it generates on-the-fly encodes the current working directory: https://github.com/vmware/vsphere-automation-sdk-python/blob/145786b88fec3c0f59335d7dd683c1017a1fe626/setup.py#L20-L25 (e.g., <code>vmwarecloud-aws @ file://localhost/{}/lib/vmwarecloud-aws/vmwarecloud_aws-1.64.1-py2.py3-none-any.whl'.format(os.getcwd())</code>).</p>
+<p>That will always encode the path to the build directory. In some sense pip suffers from the same problem, if you look at the <code>direct_url.json</code> -- it just doesn't appear in pip because they don't write a lockfile:</p>
+<pre><code>❯ cat bar/lib/python3.12/site-packages/vmwarecloud_aws-1.64.1.dist-info/direct_url.json
+{&quot;archive_info&quot;: {&quot;hash&quot;: &quot;sha256=91a153af25eb52cad950ecddf5b53caaf09777cc0ed4d313c9aa58635551b6e6&quot;, &quot;hashes&quot;: {&quot;sha256&quot;: &quot;91a153af25eb52cad950ecddf5b53caaf09777cc0ed4d313c9aa58635551b6e6&quot;}}, &quot;url&quot;: &quot;file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/vmwarecloud-aws/vmwarecloud_aws-1.64.1-py2.py3-none-any.whl&quot;}
+</code></pre>
+<p>But it does show up in <code>pip freeze</code>:</p>
+<pre><code>❯ bar/bin/pip freeze
+certifi==2024.12.14
+cffi==1.17.1
+charset-normalizer==3.4.0
+cryptography==44.0.0
+idna==3.10
+lxml==5.3.0
+nsx-vmc-aws-integration-python-sdk @ file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/nsx-vmc-aws-integration-python-sdk/nsx_vmc_aws_integration_python_sdk-4.1.2.0.1-py2.py3-none-any.whl#sha256=94db4bb6720c28a4fdfb7a55197b0dec97cb01a384bddcf51927f9694071d65d
+nsx-vmc-policy-python-sdk @ file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/nsx-vmc-policy-python-sdk/nsx_vmc_policy_python_sdk-4.1.2.0.1-py2.py3-none-any.whl#sha256=a1f5a3153d4eb3282fb6b3b409343ce6e260cf4555c22f1e381a1bc8acfbc4b8
+nsx_policy_python_sdk @ file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/nsx-policy-python-sdk/nsx_policy_python_sdk-4.2.0-py2.py3-none-any.whl#sha256=cb37240933b391d903ef83b5e0658661aba691ff05822f929f399ba7b5d27fe8
+nsx_python_sdk @ file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/nsx-python-sdk/nsx_python_sdk-4.2.0-py2.py3-none-any.whl#sha256=c40cedaaad3637947625e858f81f305d048625cd4459ce970bf3ef69dc17bb5f
+pycparser==2.22
+pyOpenSSL==24.3.0
+pyvmomi==8.0.3.0.1
+requests==2.32.3
+setuptools==75.6.0
+six==1.17.0
+urllib3==2.3.0
+vmware-vapi-common-client==2.52.0
+vmware-vapi-runtime==2.52.0
+vmware_vcenter==8.0.3.0
+vmwarecloud-aws @ file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/vmwarecloud-aws/vmwarecloud_aws-1.64.1-py2.py3-none-any.whl#sha256=91a153af25eb52cad950ecddf5b53caaf09777cc0ed4d313c9aa58635551b6e6
+vmwarecloud-draas @ file://localhost//private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/pip-req-build-uavdf4zk/lib/vmwarecloud-draas/vmwarecloud_draas-1.23.1-py2.py3-none-any.whl#sha256=d979e1a5335d1c5144591c916fc9404781456d669b92e494c31ab0975949f351
+vsphere-automation-sdk @ git+https://github.com/vmware/vsphere-automation-sdk-python.git@145786b88fec3c0f59335d7dd683c1017a1fe626
+</code></pre>
+<p>So I think this is something that needs to change in the package itself, unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-12-22 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @charliermarsh on 2024-12-22 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-22 13:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:52 UTC
+    </footer>
+</body>
+</html>

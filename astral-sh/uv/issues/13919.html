@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv enters infinite `KeyboardInterrupt` loop in interactive shell - astral-sh/uv #13919</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv enters infinite `KeyboardInterrupt` loop in interactive shell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13919">#13919</a>
+        opened by <a href="https://github.com/piehld">@piehld</a>
+        on 2025-06-09 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/piehld">@piehld</a> on 2025-06-09 15:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I am in the interactive Python shell (<code>uv run python</code>) and type <code>Ctrl</code> + <code>c</code> to issue a <code>KeyboardInterrupt</code>, the shell enters an infinite loop that's impossible to get out of. Below is a GIF demonstrating the behavior:</p>
+<p><img src="https://github.com/user-attachments/assets/741c3fb7-dd4e-4544-8967-9429470db1fc" alt="Image" /></p>
+<p>I believe this relates to these other issues: https://github.com/astral-sh/uv/issues/12108 and https://github.com/astral-sh/uv/issues/13429. However, I didn't see this particular example being shared, so I wanted to provide a simple demonstration of the issue I'm observing. Please feel free to close this as a duplicate, but thought this example case might helpful.</p>
+<h3>Platform</h3>
+<p>macOS 15.4, Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.9 (Homebrew 2025-05-30)</p>
+<h3>Python version</h3>
+<p>Python 3.12.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @piehld on 2025-06-09 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 15:30</div>
+            <div class="timeline-body"><p>Interesting, I can reproduce this — but it doesn't happen on 3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piehld">@piehld</a> on 2025-06-09 15:46</div>
+            <div class="timeline-body"><p>Oh, interesting. That would probably explain why I wasn't seeing this before, since I recently had to downgrade to 3.12 for a project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-06-09 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 16:33</div>
+            <div class="timeline-body"><p>I'd definitely appreciate help understanding why this differs across Python versions. I think we'll need to know that before we can try to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13925.html">astral-sh/uv#13925</a> on 2025-06-09 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-10 20:27</div>
+            <div class="timeline-body"><p>One of the culprits here is libedit. CPython uses GNU readline by default, but <a href="https://gregoryszorc.com/docs/python-build-standalone/20211017/quirks.html#use-of-libedit-on-linux">our standalone builds substitude libedit on Linux</a>. (You can reproduce this by building CPython from source with <code>./configure --with-readline=edit</code>.) Separately, Python 3.13 is <a href="https://docs.python.org/3/whatsnew/3.13.html#a-better-interactive-interpreter">replacing the default REPL implementation</a>, so you only get this behavior under 3.13 if you link it to libedit <em>and</em> set <code>PYTHON_BASIC_REPL=1</code>.</p>
+<p>What libedit is doing is reacting to <code>SIGINT</code> (at least) by signaling its entire process group. Here's <a href="https://salsa.debian.org/debian/libedit/-/blob/08da76b7e6d925652df0bfc49b085446bbd993bc/src/sig.c#L110">the line of code where it does that</a> (<code>0</code> in the first argument position <a href="https://man7.org/linux/man-pages/man2/kill.2.html">means the entire pgroup</a>):</p>
+<pre><code class="language-c">```c
+/* sig_handler():
+ *	This is the handler called for all signals
+ *	XXX: we cannot pass any data so we just store the old editline
+ *	state in a private variable
+ */
+static void
+sig_handler(int signo)
+{
+        // ...
+	// [many lines omitted]
+        // ...
+	(void) kill(0, signo);
+	errno = save_errno;
+}
+</code></pre>
+<p>Libedit does this regardless of whether you signal it with ^C in the terminal (which already signals the whole pgroup) or with e.g. <code>kill -INT $PID</code>. I <em>believe</em> the original intention was that libedit would clear the terminal's <code>ISIG</code> mode flag, so that ^C would be delivered as a character instead of as a signal, in which case libedit would need to take responsibility for sending the group signal. However, as far as I can tell, current (within the last decade?) versions of libedit do <em>not</em> clear <code>ISIG</code>, at least not by default. This behavior might be vestigial, or there only to support an uncommon libedit mode? It's hard to tell, in part because libedit isn't on GitHub :p</p>
+<p>This interacts poorly with our current <code>SIGINT</code> forwarding (which incidentally is <a href="https://github.com/astral-sh/uv/pull/13925">about to change</a>):</p>
+<p>https://github.com/astral-sh/uv/blob/90a7208a73a2050fe06ff37db11bbc60a7919ef9/crates/uv/src/commands/run.rs#L165-L169</p>
+<ol>
+<li><code>uv</code> gets <code>SIGINT</code> from ^C. (Currently we <a href="https://github.com/astral-sh/uv/blob/90a7208a73a2050fe06ff37db11bbc60a7919ef9/crates/uv/src/commands/run.rs#L160-L163">ignore the first one we see</a>, so this only applies to subsequent ones.)</li>
+<li>We wait 200ms.</li>
+<li>We forward <code>SIGINT</code> to the child.</li>
+<li>In this case the child is running libedit and signals its entire pgroup, which includes <code>uv</code>.</li>
+<li>Repeat.</li>
+</ol>
+<p>This sequence of events isn't the whole picture, because for example <code>SIGINT</code> is <em>also</em> delivered to the child in step 1, which means <code>uv</code> probably gets a second <code>SIGINT</code> immediately. Depending on who goes first, this could end up getting &quot;coalesced&quot; with the first one, or it could kick us into the infinite loop after a single Ctrl-C. I think the first case is more common, but I also think I see the second case happen sometimes? Really hard to say.</p>
+<p>What <em>should</em> we be doing here? I'm not sure I fully understand all the end user cases that led us to write this code, but my current guess is that we should always forward <code>SIGINT</code> when the child's PGID has changed, and never otherwise. (This is separate from <code>SIGTERM</code>, which both requires special Docker / PID 1 handling, and also isn't usually delivered to a group.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/pulls/652.html">astral-sh/python-build-standalone#652</a> on 2025-06-11 03:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-06-11 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piehld">@piehld</a> on 2025-06-11 14:11</div>
+            <div class="timeline-body"><p>Wow, @oconnor663 and @zanieb thank you so much for the thorough investigation and super quick patch! I look forward to trying it out in the next Brew release.</p>
+<p>Thank you again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13983.html">astral-sh/uv#13983</a> on 2025-06-12 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piehld">@piehld</a> on 2025-06-16 13:44</div>
+            <div class="timeline-body"><p>Just confirmed—I upgraded to <code>uv 0.7.13 (Homebrew 2025-06-12)</code>, and the <code>Ctrl</code> + <code>c</code> keyboard interrupt works as expected now. Thank you again for the immediate fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13429.html">astral-sh/uv#13429</a> on 2025-06-23 15:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

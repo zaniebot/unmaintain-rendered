@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `UP028` always fixable again - astral-sh/ruff #16496</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make `UP028` always fixable again</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16496">#16496</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-03-04 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-04 11:34</div>
+            <div class="timeline-body"><p>After #16451, <a href="https://docs.astral.sh/ruff/rules/yield-in-for-loop/"><code>UP028</code></a> is no longer always fixable. However, a different kind of fix can be offered in such cases:</p>
+<pre><code class="language-python">for some_global, some_nonlocal in iterable:
+    yield some_global, some_nonlocal
+</code></pre>
+<pre><code class="language-python">for _element in iterable:
+    some_global, some_nonlocal = _element
+    yield some_global, some_nonlocal
+</code></pre>
+<p>I can't think of any edge cases, other than that adding a new name to the scope might break runtime inspections:</p>
+<pre><code class="language-python">nonlocal some_nonlocal
+
+for some_nonlocal in iterable:
+    yield some_nonlocal
+
+print(locals())  # {'some_nonlocal': ...}
+</code></pre>
+<pre><code class="language-python">nonlocal some_nonlocal
+
+for _element in iterable:
+    some_nonlocal = _element
+    yield some_nonlocal
+
+print(locals())  # {'some_nonlocal': ..., '_element': ...}
+</code></pre>
+<p>Also consider the case where the new name is the same as an existing one:</p>
+<pre><code class="language-python">_element = ...
+
+for _element in iterable:
+    some_global, some_nonlocal = _element
+    yield some_global, some_nonlocal
+
+print(_element)  # !!!
+</code></pre>
+<p>Generating a new, unique variable name is trivial, but it does, however, necessitate the fix being marked as unsafe to give the user a chance to review that name (along with everything else).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 12:24</div>
+            <div class="timeline-body"><p>I consider adding such a fix low priority as this pattern should be rare. I'm okay adding it if it has low complexity.</p>
+<p>I believe Ruff already has a functionality to introduce new names but that can fail (because of overlaps?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-03-04 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-03-04 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-04 12:35</div>
+            <div class="timeline-body"><p>@MichaReiser Generating a new name can never fail: Ruff just needs to check all names of the form <code>var_{number}</code> from 0 to infinity, stopping as soon as it finds one available (I think I did this once in a PR).</p>
+<p>The examples above are all about <code>global</code>/<code>nonlocal</code>, but the same also applies to subscripts and attributes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-03-04 15:25</div>
+            <div class="timeline-body"><p>The point of UP028 is to recommend <code>yield from</code> where possible. The fix proposed here doesn’t use <code>yield from</code> so it isn’t an appropriate fix for UP028: it only fixes it in that it adds an extra statement to the loop so UP028 doesn’t apply. It could be an appropriate fix for a new style rule against assigning to globals via <code>for</code> targets, which is unrelated to <code>yield</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-04 16:22</div>
+            <div class="timeline-body"><p>That's a much better idea. Consider this a rule request then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> removed by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-03-04 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 17:06</div>
+            <div class="timeline-body"><p>I'll close this. Feel free to open a new issue if you want to request a rule. A new issue makes it easier to find and should document its motivation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-04 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16507.html">astral-sh/ruff#16507</a> on 2025-03-04 18:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

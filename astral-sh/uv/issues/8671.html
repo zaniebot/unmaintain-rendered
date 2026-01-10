@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `uv` w/ Databricks - astral-sh/uv #8671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `uv` w/ Databricks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8671">#8671</a>
+        opened by <a href="https://github.com/soneill-pure">@soneill-pure</a>
+        on 2024-10-29 17:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/soneill-pure">@soneill-pure</a> on 2024-10-29 17:13</div>
+            <div class="timeline-body"><p>Has anyone had success using <code>uv</code> with Databricks? I'm loving <code>uv</code> for local project development and I'd like the ability to quickly offload heavy ML compute jobs to Databricks which would involve replicating my local virtual env on Databricks. I'd prefer to use <code>uv</code> to replicate the env for speed and parity. My initial thoughts are to create a <a href="https://docs.databricks.com/en/compute/custom-containers.html">custom docker container</a> that uses <code>uv</code> instead of vanilla <code>virtualenv</code> &amp; <code>pip</code> that they currently use in their <a href="https://github.com/databricks/containers/blob/master/ubuntu/python/Dockerfile">base images</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/soneill-pure">@soneill-pure</a> on 2024-10-29 21:18</div>
+            <div class="timeline-body"><p>Here is one workaround that worked for me in Databricks</p>
+<pre><code class="language-python">%pip install uv
+
+# need to use non-default virtual env location for `uv` on Databricks. will piggyback on the existing virtual env Databricks has setup automatically.
+# python version specified in pyproject.toml should match Databricks Runtime python version (no known workaround).
+import os
+os.environ[&quot;UV_PROJECT_ENVIRONMENT&quot;] = os.environ[&quot;VIRTUAL_ENV&quot;]
+
+# reproduce `uv` environment on Databricks.
+%sh uv sync --locked --no-editable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @samypr100 on 2024-10-31 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-31 03:44</div>
+            <div class="timeline-body"><p>I haven't tried this yet, but might do so eventually. Your workaround seems correct to me.
+You may avoid the issue with editable by passing <code>--no-editable</code> to uv sync, although it may depend on your pyproject.toml setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/soneill-pure">@soneill-pure</a> on 2024-10-31 05:46</div>
+            <div class="timeline-body"><p>Thanks for the <code>--no-editable</code> tip. That worked for my project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-31 13:28</div>
+            <div class="timeline-body"><p>Nice, that seems reasonable. Let us know if you have more questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-31 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-11-11 12:32</div>
+            <div class="timeline-body"><p>Similar to #4379</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frbelotto">@frbelotto</a> on 2025-07-29 13:23</div>
+            <div class="timeline-body"><p>Sorry do reopen it, but does it still work?
+I am really struggling to using UV as package manager for my project on databricks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 11:56</div>
+            <div class="timeline-body"><p>@frbelotto open an issue with details please.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16583.html">astral-sh/uv#16583</a> on 2025-11-03 20:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:19 UTC
+    </footer>
+</body>
+</html>

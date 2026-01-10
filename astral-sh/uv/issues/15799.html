@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrongly recognized platform, unnecessary rebuilds - astral-sh/uv #15799</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrongly recognized platform, unnecessary rebuilds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15799">#15799</a>
+        opened by <a href="https://github.com/fleetingbytes">@fleetingbytes</a>
+        on 2025-09-12 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fleetingbytes">@fleetingbytes</a> on 2025-09-12 01:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a Python project which depends on <a href="https://pypi.org/project/cryptography/">cryptography</a> and <a href="https://pypi.org/project/cffi/">cffi</a> I am facing unnecessary rebuilds with every <code>uv run</code> or <code>uv sync</code> because there appears to be a platform mismatch. My platform is <code>FreeBSD 14.2-RELEASE amd64</code> (that's the output of <code>uname -srm</code>), yet in the log of <code>uv sync --verbose</code> I read:</p>
+<pre><code>The distribution is compatible with \x1b[36mFreeBSD\x1b[39m (`\x1b[36mfreebsd_14_2_release_amd64\x1b[39m`), but you're on \x1b[36mFreeBSD\x1b[39m (`\x1b[36mfreebsd_14_2_RELEASE_x86_64\x1b[39m`)
+</code></pre>
+<p>Here is a minimal reproducible example. cffi suffices as a dependency. We omit cryptography as it produces the same issue but a longer build time and longer log output:</p>
+<pre><code class="language-sh">uv init rebuild
+cd rebuild
+uv add cffi
+RUST_LOG=trace uv sync --verbose
+</code></pre>
+<p>and here is the beginning of that log:</p>
+<pre><code>DEBUG uv 0.8.17 (21a92c163 2025-09-11)
+DEBUG Found project root: `/home/fleetingbytes/src/rebuild`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/home/fleetingbytes/src/rebuild` at `/tmp/uv-6ba0532bfdeb457a.lock`
+DEBUG Acquired lock for `/home/fleetingbytes/src/rebuild`
+DEBUG Reading Python requests from version file at `/home/fleetingbytes/src/rebuild/.python-version`
+DEBUG Using Python request `3.11` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+TRACE Found cached interpreter info for Python 3.11.13, skipping query of: .venv/bin/python3
+DEBUG The project environment's Python version satisfies the request: `Python 3.11`
+TRACE The project environment's Python version meets the Python requirement: `&gt;=3.11`
+TRACE The virtual environment's Python interpreter meets the Python preference: `prefer managed`
+DEBUG Released lock at `/tmp/uv-6ba0532bfdeb457a.lock`
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired lock for `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: rebuild @ file:///home/fleetingbytes/src/rebuild
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 3 packages in 0.98ms
+DEBUG Using request timeout of 30s
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName(&quot;cffi&quot;), version: &quot;2.0.0&quot;, path: &quot;/home/fleetingbytes/src/rebuild/.venv/lib/python3.11/site-packages/cffi-2.0.0.dist-info&quot;, cache_info: None, build_info: Some(BuildInfo { config_settings: ConfigSettings({}), extra_build_requires: [], extra_build_variables: {} }) }), metadata_cache: OnceLock(&lt;uninit&gt;), tags_cache: OnceLock(&lt;uninit&gt;) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.0.0&quot; }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Platform tags mismatch for cffi==2.0.0: The distribution is compatible with \x1b[36mFreeBSD\x1b[39m (`\x1b[36mfreebsd_14_2_release_amd64\x1b[39m`), but you're on \x1b[36mFreeBSD\x1b[39m (`\x1b[36mfreebsd_14_2_RELEASE_x86_64\x1b[39m`)
+DEBUG Requirement installed, but mismatched:
+  Installed: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName(&quot;cffi&quot;), version: &quot;2.0.0&quot;, path: &quot;/home/fleetingbytes/src/rebuild/.venv/lib/python3.11/site-packages/cffi-2.0.0.dist-info&quot;, cache_info: None, build_info: Some(BuildInfo { config_settings: ConfigSettings({}), extra_build_requires: [], extra_build_variables: {} }) }), metadata_cache: OnceLock(&lt;uninit&gt;), tags_cache: OnceLock(Some(ExpandedTags([Small { small: WheelTagSmall { python_tag: CPython { python_version: (3, 11) }, abi_tag: CPython { gil_disabled: false, python_version: (3, 11) }, platform_tag: FreeBsd { release_arch: &quot;14_2_release_amd64&quot; } } }]))) }
+  Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.0.0&quot; }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Identified uncached distribution: cffi==2.0.0
+TRACE Comparing installed with source: InstalledDist { kind: Registry(InstalledRegistryDist { name: PackageName(&quot;pycparser&quot;), version: &quot;2.23&quot;, path: &quot;/home/fleetingbytes/src/rebuild/.venv/lib/python3.11/site-packages/pycparser-2.23.dist-info&quot;, cache_info: None, build_info: None }), metadata_cache: OnceLock(&lt;uninit&gt;), tags_cache: OnceLock(&lt;uninit&gt;) } Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;2.23&quot; }]), index: Some(IndexMetadata { url: Pypi(VerbatimUrl { url: DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pypi.org&quot;)), port: None, path: &quot;/simple&quot;, query: None, fragment: None }, given: None }), format: Simple }), conflict: None }
+DEBUG Requirement already installed: pycparser==2.23
+TRACE Checking lock for `/home/fleetingbytes/.cache/uv/sdists-v9/pypi/cffi/2.0.0` at `/home/tejul/.cache/uv/sdists-v9/pypi/cffi/2.0.0/.lock`
+DEBUG Acquired lock for `/home/fleetingbytes/.cache/uv/sdists-v9/pypi/cffi/2.0.0`
+TRACE Response from https://files.pythonhosted.org/packages/eb/56/b1ba7935a17738ae8453301356628e8147c79dbb825bcbc73dc7401f9846/cffi-2.0.0.tar.gz is storable because it has a 'public' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 365000000s
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/eb/56/b1ba7935a17738ae8453301356628e8147c79dbb825bcbc73dc7401f9846/cffi-2.0.0.tar.gz
+   Building cffi==2.0.0
+</code></pre>
+<p>The full log is attached</p>
+<p><a href="https://github.com/user-attachments/files/22287886/full_log.txt">full_log.txt</a></p>
+<p>The same rebuild errors happen with <a href="https://astral.sh/ruff/">ruff</a> and <a href="https://astral.sh/ty/">ty</a> dependencies 😟.</p>
+<h3>Platform</h3>
+<p>FreeBSD 14.2-RELEASE amd64</p>
+<h3>Version</h3>
+<p>uv 0.8.17 (21a92c163 2025-09-11)</p>
+<h3>Python version</h3>
+<p>Python 3.11.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @fleetingbytes on 2025-09-12 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-12 14:58</div>
+            <div class="timeline-body"><p>Thanks. Out of curiosity, what's the exact name of the wheel that gets built here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-12 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fleetingbytes">@fleetingbytes</a> on 2025-09-12 17:04</div>
+            <div class="timeline-body"><p>@charliermarsh do you mean the contents of the cffi WHEEL file?:</p>
+<pre><code>Wheel-Version: 1.0
+Generator: setuptools (80.9.0)
+Root-Is-Purelib: false
+Tag: cp311-cp311-freebsd_14_2_release_amd64
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-12 17:06</div>
+            <div class="timeline-body"><p>Yeah that's good enough, thanks. I was curious if it was <code>freebsd_14_2_release_amd64</code> or something else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15829.html">astral-sh/uv#15829</a> on 2025-09-14 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-14 11:21</div>
+            <div class="timeline-body"><p>@fleetingbytes Could you share the output of <code>python -m sysconfig</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-09-14 13:30</div>
+            <div class="timeline-body"><p>Because someone is adding variables with ANSI graphic codes into a case sensitive RegEx check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-14 13:39</div>
+            <div class="timeline-body"><p>(The graphic codes aren't relevant here, that's just from copy-pasting the error message.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-14 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15840.html">astral-sh/uv#15840</a> on 2025-09-14 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fleetingbytes">@fleetingbytes</a> on 2025-09-14 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>(The graphic codes aren't relevant here, that's just from copy-pasting the error message.)</p>
+</blockquote>
+<p>@charliermarsh actually, they are not an artifact of copy-pasting. It is really how the log output looked like. It had correctly interpreted color codes around the word <code>DEBUG</code> or <code>TRACE</code> at the beginning of the line (they appeared in their respective colors) but there were still some uninterpreted color codes in the following message.</p>
+<p><a href="https://github.com/user-attachments/files/22321197/system-python-sysconfig.txt">system-python-sysconfig.txt</a> I thing I will post it as a separate issue: #15840</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michael-o">@michael-o</a> on 2025-10-24 22:23</div>
+            <div class="timeline-body"><p>@fleetingbytes Thank you so much for raising and @charliermarsh for fixing it. I had the exact same issue this summer on FreeBSD 13.5 and wanted to report this, but didn't find time. I reported the same issue with maturin and provided the fix in August: https://github.com/PyO3/maturin/commit/43527f2aef4e84ab1c7fab104681e577aff4b94d</p>
+<p>As far as I can see in the commit you referenced maturin so, all setuptools, maturin and uv are in line with the platform tag generation on FreeBSD.</p>
+<p>Thank again, guys!</p>
+<p>For the other FreeBSD guys: I am currently working on improving the ports system to autogenerate wheels and collect by poudriere which can be feed into pypi-server and consumed by uv. Some hefty Fortran-/rust-based deps (usual suspects) now take with uv only seconds to resolve:</p>
+<pre><code>$ UNAME_r=13.5-RELEASE NETRC=.netrc uv  --cache-dir=uv-cache sync
+Using CPython 3.10.18 interpreter at: /usr/local/bin/python3
+Creating virtual environment at: .venv
+Resolved 48 packages in 3.27s
+Prepared 46 packages in 1.87s
+Installed 46 packages in 53ms
+ + amqp==5.2.0
+ + annotated-types==0.7.0
+ + attrs==25.4.0
+ + billiard==4.2.1
+ + cafe-client-python==0.1.1
+ + celery==5.3.6
+ + certifi==2025.10.5
+ + charset-normalizer==3.4.4
+ + click==8.1.7
+ + click-didyoumean==0.3.0
+ + click-plugins==1.1.1.2
+ + click-repl==0.3.0
+ + decorator==5.2.1
+ + greenlet==3.2.4
+ + gssapi==1.8.3
+ + idna==3.11
+ + joblib==1.5.1
+ + jsonschema==4.25.1
+ + jsonschema-specifications==2025.9.1
+ + kombu==5.3.7
+ + numpy==1.26.4
+ + pandas==2.2.3
+ + pip-system-certs==5.0
+ + prompt-toolkit==3.0.52
+ + pydantic==2.11.10
+ + pydantic-core==2.33.2
+ + pyodbc==5.0.1
+ + python-dateutil==2.9.0
+ + pytz==2025.2
+ + pyyaml==6.0.3
+ + referencing==0.37.0
+ + requests==2.32.5
+ + requests-gssapi==1.4.0
+ + rpds-py==0.27.1
+ + scikit-learn==1.4.0
+ + scipy==1.11.1
+ + six==1.17.0
+ + sqlalchemy==2.0.44
+ + threadpoolctl==3.6.0
+ + truststore==0.10.4
+ + typing-extensions==4.15.0
+ + typing-inspection==0.4.2
+ + tzdata==2025.2
+ + urllib3==2.5.0
+ + vine==5.1.0
+ + wcwidth==0.2.8
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

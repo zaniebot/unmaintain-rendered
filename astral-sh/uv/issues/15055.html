@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relative indexes are stored as absolute in the lockfile - astral-sh/uv #15055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Relative indexes are stored as absolute in the lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15055">#15055</a>
+        opened by <a href="https://github.com/cwiede">@cwiede</a>
+        on 2025-08-04 11:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cwiede">@cwiede</a> on 2025-08-04 11:11</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi,</p>
+<p>I have a project which (transitively) depends on PySide6. Since the aarch64 build of PySide6 depends on manylinux_2_39 which is not satisfied for our use case, we decided to build our own wheels for the use case. I want to use <code>uv lock</code> to generate a lock file suitable for all the platforms (i.e. windows/amd64, linux/x86_64, linux/aarch64). Therefore I use</p>
+<pre><code>environments = [
+    &quot;sys_platform == 'win32' and implementation_name == 'cpython' and platform_machine == 'AMD64'&quot;,
+    &quot;sys_platform == 'linux' and implementation_name == 'cpython' and (platform_machine == 'x86_64' or platform_machine == 'aarch64')&quot;
+]
+</code></pre>
+<p>and I also played around with required-environments instead. Unfortunately, there seems to be no way to specify the python-platform (e.g. <code>aarch64-manylinux_2_35</code>) in these definitions, or at least I didn't find one.</p>
+<p>The problem I'm facing is that I can't convince uv to use our self-build wheel for the linux aarch64 platform and the pypi wheels for all other platforms. I have tried to play around with</p>
+<ul>
+<li>index-strategy = &quot;unsafe-best-match&quot; (but it seems to either use pypi or the local wheel)</li>
+<li>required-environments</li>
+<li>platform-specific indices with marker = &quot;platform_machine == 'aarch64'&quot;:</li>
+</ul>
+<pre><code>[tool.uv.sources]
+pyside6 = [
+    {index = &quot;nexus&quot;, marker = &quot;platform_machine == 'AMD64'&quot;},
+    {index = &quot;flat-pyside6&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
+]
+
+[[tool.uv.index]]
+name=&quot;flat-pyside6&quot;
+url=&quot;./path/to/pyside6-aarch64&quot;
+</code></pre>
+<p>Are there any workarounds or suggestions for this use case?</p>
+<p>Thanks!</p>
+<h3>Platform</h3>
+<p>windows/amd64, linux/x86_64, linux/aarch64</p>
+<h3>Version</h3>
+<p>uv 0.8.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @cwiede on 2025-08-04 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 11:38</div>
+            <div class="timeline-body"><p>Does adding <code>format = &quot;flat&quot;</code> help? The following works for me if I place <code>numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl</code> in the current directory.</p>
+<p>Another option to consider is to vendor all wheels for the version you need and only use the flat index for PySide6 (or publishing your custom built wheel to nexus), this avoids having the divergent index declaration.</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.0.1&quot;
+requires-python = &quot;==3.13.*&quot;
+dependencies = [&quot;numpy&quot;]
+
+[tool.uv.sources]
+numpy = [
+  { index = &quot;flat&quot;, marker = &quot;platform_machine == 'x86_64'&quot; },
+  { index = &quot;pypi&quot;, marker = &quot;platform_machine != 'x86_64'&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;flat&quot;
+url = &quot;.&quot;
+format = &quot;flat&quot;
+
+[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+publish-url = &quot;https://upload.pypi.org/legacy/&quot;
+</code></pre>
+<pre><code class="language-toml">version = 1
+revision = 3
+requires-python = &quot;==3.13.*&quot;
+resolution-markers = [
+    &quot;platform_machine == 'x86_64'&quot;,
+    &quot;platform_machine != 'x86_64'&quot;,
+]
+
+[[package]]
+name = &quot;debug&quot;
+version = &quot;0.0.1&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;numpy&quot;, version = &quot;2.3.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;platform_machine != 'x86_64'&quot; },
+    { name = &quot;numpy&quot;, version = &quot;2.3.2&quot;, source = { registry = &quot;.&quot; }, marker = &quot;platform_machine == 'x86_64'&quot; },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = &quot;numpy&quot;, marker = &quot;platform_machine != 'x86_64'&quot;, index = &quot;https://pypi.org/simple&quot; },
+    { name = &quot;numpy&quot;, marker = &quot;platform_machine == 'x86_64'&quot;, index = &quot;file:///home/konsti/projects/uv/debug&quot; },
+]
+
+[[package]]
+name = &quot;numpy&quot;
+version = &quot;2.3.2&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+resolution-markers = [
+    &quot;platform_machine != 'x86_64'&quot;,
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/37/7d/3fec4199c5ffb892bed55cff901e4f39a58c81df9c44c280499e92cad264/numpy-2.3.2.tar.gz&quot;, hash = &quot;sha256:e0486a11ec30cdecb53f184d496d1c6a20786c81e55e41640270130056f8ee48&quot;, size = 20489306, upload-time = &quot;2025-07-24T21:32:07.553Z&quot; }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/1c/c0/c6bb172c916b00700ed3bf71cb56175fd1f7dbecebf8353545d0b5519f6c/numpy-2.3.2-cp313-cp313-macosx_10_13_x86_64.whl&quot;, hash = &quot;sha256:c8d9727f5316a256425892b043736d63e89ed15bbfe6556c5ff4d9d4448ff3b3&quot;, size = 20949074, upload-time = &quot;2025-07-24T20:43:07.813Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/20/4e/c116466d22acaf4573e58421c956c6076dc526e24a6be0903219775d862e/numpy-2.3.2-cp313-cp313-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:efc81393f25f14d11c9d161e46e6ee348637c0a1e8a54bf9dedc472a3fae993b&quot;, size = 14177311, upload-time = &quot;2025-07-24T20:43:29.335Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/78/45/d4698c182895af189c463fc91d70805d455a227261d950e4e0f1310c2550/numpy-2.3.2-cp313-cp313-macosx_14_0_arm64.whl&quot;, hash = &quot;sha256:dd937f088a2df683cbb79dda9a772b62a3e5a8a7e76690612c2737f38c6ef1b6&quot;, size = 5106022, upload-time = &quot;2025-07-24T20:43:37.999Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/9f/76/3e6880fef4420179309dba72a8c11f6166c431cf6dee54c577af8906f914/numpy-2.3.2-cp313-cp313-macosx_14_0_x86_64.whl&quot;, hash = &quot;sha256:11e58218c0c46c80509186e460d79fbdc9ca1eb8d8aee39d8f2dc768eb781089&quot;, size = 6640135, upload-time = &quot;2025-07-24T20:43:49.28Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/34/fa/87ff7f25b3c4ce9085a62554460b7db686fef1e0207e8977795c7b7d7ba1/numpy-2.3.2-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl&quot;, hash = &quot;sha256:5ad4ebcb683a1f99f4f392cc522ee20a18b2bb12a2c1c42c3d48d5a1adc9d3d2&quot;, size = 14278147, upload-time = &quot;2025-07-24T20:44:10.328Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/1d/0f/571b2c7a3833ae419fe69ff7b479a78d313581785203cc70a8db90121b9a/numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl&quot;, hash = &quot;sha256:938065908d1d869c7d75d8ec45f735a034771c6ea07088867f713d1cd3bbbe4f&quot;, size = 16635989, upload-time = &quot;2025-07-24T20:44:34.88Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/24/5a/84ae8dca9c9a4c592fe11340b36a86ffa9fd3e40513198daf8a97839345c/numpy-2.3.2-cp313-cp313-musllinux_1_2_aarch64.whl&quot;, hash = &quot;sha256:66459dccc65d8ec98cc7df61307b64bf9e08101f9598755d42d8ae65d9a7a6ee&quot;, size = 16053052, upload-time = &quot;2025-07-24T20:44:58.872Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/57/7c/e5725d99a9133b9813fcf148d3f858df98511686e853169dbaf63aec6097/numpy-2.3.2-cp313-cp313-musllinux_1_2_x86_64.whl&quot;, hash = &quot;sha256:a7af9ed2aa9ec5950daf05bb11abc4076a108bd3c7db9aa7251d5f107079b6a6&quot;, size = 18577955, upload-time = &quot;2025-07-24T20:45:26.714Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/ae/11/7c546fcf42145f29b71e4d6f429e96d8d68e5a7ba1830b2e68d7418f0bbd/numpy-2.3.2-cp313-cp313-win32.whl&quot;, hash = &quot;sha256:906a30249315f9c8e17b085cc5f87d3f369b35fedd0051d4a84686967bdbbd0b&quot;, size = 6311843, upload-time = &quot;2025-07-24T20:49:24.444Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/aa/6f/a428fd1cb7ed39b4280d057720fed5121b0d7754fd2a9768640160f5517b/numpy-2.3.2-cp313-cp313-win_amd64.whl&quot;, hash = &quot;sha256:c63d95dc9d67b676e9108fe0d2182987ccb0f11933c1e8959f42fa0da8d4fa56&quot;, size = 12782876, upload-time = &quot;2025-07-24T20:49:43.227Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/65/85/4ea455c9040a12595fb6c43f2c217257c7b52dd0ba332c6a6c1d28b289fe/numpy-2.3.2-cp313-cp313-win_arm64.whl&quot;, hash = &quot;sha256:b05a89f2fb84d21235f93de47129dd4f11c16f64c87c33f5e284e6a3a54e43f2&quot;, size = 10192786, upload-time = &quot;2025-07-24T20:49:59.443Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/80/23/8278f40282d10c3f258ec3ff1b103d4994bcad78b0cba9208317f6bb73da/numpy-2.3.2-cp313-cp313t-macosx_10_13_x86_64.whl&quot;, hash = &quot;sha256:4e6ecfeddfa83b02318f4d84acf15fbdbf9ded18e46989a15a8b6995dfbf85ab&quot;, size = 21047395, upload-time = &quot;2025-07-24T20:45:58.821Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/1f/2d/624f2ce4a5df52628b4ccd16a4f9437b37c35f4f8a50d00e962aae6efd7a/numpy-2.3.2-cp313-cp313t-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:508b0eada3eded10a3b55725b40806a4b855961040180028f52580c4729916a2&quot;, size = 14300374, upload-time = &quot;2025-07-24T20:46:20.207Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/f6/62/ff1e512cdbb829b80a6bd08318a58698867bca0ca2499d101b4af063ee97/numpy-2.3.2-cp313-cp313t-macosx_14_0_arm64.whl&quot;, hash = &quot;sha256:754d6755d9a7588bdc6ac47dc4ee97867271b17cee39cb87aef079574366db0a&quot;, size = 5228864, upload-time = &quot;2025-07-24T20:46:30.58Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/7d/8e/74bc18078fff03192d4032cfa99d5a5ca937807136d6f5790ce07ca53515/numpy-2.3.2-cp313-cp313t-macosx_14_0_x86_64.whl&quot;, hash = &quot;sha256:a9f66e7d2b2d7712410d3bc5684149040ef5f19856f20277cd17ea83e5006286&quot;, size = 6737533, upload-time = &quot;2025-07-24T20:46:46.111Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/19/ea/0731efe2c9073ccca5698ef6a8c3667c4cf4eea53fcdcd0b50140aba03bc/numpy-2.3.2-cp313-cp313t-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl&quot;, hash = &quot;sha256:de6ea4e5a65d5a90c7d286ddff2b87f3f4ad61faa3db8dabe936b34c2275b6f8&quot;, size = 14352007, upload-time = &quot;2025-07-24T20:47:07.1Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/cf/90/36be0865f16dfed20f4bc7f75235b963d5939707d4b591f086777412ff7b/numpy-2.3.2-cp313-cp313t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl&quot;, hash = &quot;sha256:a3ef07ec8cbc8fc9e369c8dcd52019510c12da4de81367d8b20bc692aa07573a&quot;, size = 16701914, upload-time = &quot;2025-07-24T20:47:32.459Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/94/30/06cd055e24cb6c38e5989a9e747042b4e723535758e6153f11afea88c01b/numpy-2.3.2-cp313-cp313t-musllinux_1_2_aarch64.whl&quot;, hash = &quot;sha256:27c9f90e7481275c7800dc9c24b7cc40ace3fdb970ae4d21eaff983a32f70c91&quot;, size = 16132708, upload-time = &quot;2025-07-24T20:47:58.129Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/9a/14/ecede608ea73e58267fd7cb78f42341b3b37ba576e778a1a06baffbe585c/numpy-2.3.2-cp313-cp313t-musllinux_1_2_x86_64.whl&quot;, hash = &quot;sha256:07b62978075b67eee4065b166d000d457c82a1efe726cce608b9db9dd66a73a5&quot;, size = 18651678, upload-time = &quot;2025-07-24T20:48:25.402Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/40/f3/2fe6066b8d07c3685509bc24d56386534c008b462a488b7f503ba82b8923/numpy-2.3.2-cp313-cp313t-win32.whl&quot;, hash = &quot;sha256:c771cfac34a4f2c0de8e8c97312d07d64fd8f8ed45bc9f5726a7e947270152b5&quot;, size = 6441832, upload-time = &quot;2025-07-24T20:48:37.181Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/0b/ba/0937d66d05204d8f28630c9c60bc3eda68824abde4cf756c4d6aad03b0c6/numpy-2.3.2-cp313-cp313t-win_amd64.whl&quot;, hash = &quot;sha256:72dbebb2dcc8305c431b2836bcc66af967df91be793d63a24e3d9b741374c450&quot;, size = 12927049, upload-time = &quot;2025-07-24T20:48:56.24Z&quot; },
+    { url = &quot;https://files.pythonhosted.org/packages/e9/ed/13542dd59c104d5e654dfa2ac282c199ba64846a74c2c4bcdbc3a0f75df1/numpy-2.3.2-cp313-cp313t-win_arm64.whl&quot;, hash = &quot;sha256:72c6df2267e926a6d5286b0a6d556ebe49eae261062059317837fda12ddf0c1a&quot;, size = 10262935, upload-time = &quot;2025-07-24T20:49:13.136Z&quot; },
+]
+
+[[package]]
+name = &quot;numpy&quot;
+version = &quot;2.3.2&quot;
+source = { registry = &quot;.&quot; }
+resolution-markers = [
+    &quot;platform_machine == 'x86_64'&quot;,
+]
+wheels = [
+    { path = &quot;numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl&quot; },
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cwiede">@cwiede</a> on 2025-08-04 12:24</div>
+            <div class="timeline-body"><p>Thanks for the quick response!</p>
+<p>Indeed I have missed the <code>format=&quot;flat&quot;</code> part. Now in principle I can get this to work, but now I see that relative paths are converted to absolute paths in the lock file (see also the /home/konsti part above), which is in contrast to the paths given by <code>find-links</code>; this is undesired for our use case.</p>
+<p>I also played around to select a wheel explicitely with the <code>path</code> setting in [tool.uv.sources] instead of a flat index, and this seems to be the way to go at the moment (even though a flat relative index would be less redundant). I.e.:</p>
+<pre><code>[tool.uv.sources]
+pyside6 = [
+    {path = &quot;./PySide6-6.8.3-cp39-abi3-manylinux_2_31_aarch64.whl&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
+    {index = &quot;nexus&quot;, marker = &quot;platform_machine != 'aarch64'&quot;},
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Wheel for one platform from a local dir, other platforms from index" to "Relative indexes are stored as absolute in the lockfile" by @konstin on 2025-08-04 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-08-04 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-08-04 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2025-08-04 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 18:05</div>
+            <div class="timeline-body"><p>We should make flat index paths relative in the lockfile in the same way that we do for all other relative paths in the lockfile, this is an oversight. With that fix <code>format = &quot;flat&quot;</code> should work just like using <code>path</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-08-08 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @konstin on 2025-09-12 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15870.html">astral-sh/uv#15870</a> on 2025-09-15 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-09-25 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterchristofferholm">@peterchristofferholm</a> on 2026-01-06 15:16</div>
+            <div class="timeline-body"><p>Ran into this as well. I'm using a relative path to a local wheelhouse in my pyproject.toml, but the lockfile still ends up with the absolute path resolved at generation time. When running <code>uv sync --locked</code> in Docker (where the wheelhouse is mounted at a different absolute path), it fails with &quot;mismatched requirements&quot; even though the packages and versions are identical. I can see that there is a practically complete PR waiting to get merged, any progress on getting that in?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-07 01:35</div>
+            <div class="timeline-body"><p>@konstin are you working on this? If not I can have another look at this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2026-01-07 08:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-07 08:39</div>
+            <div class="timeline-body"><p>I'm not currently working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-07 10:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not currently working on this.</p>
+</blockquote>
+<p>What about the PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-07 10:40</div>
+            <div class="timeline-body"><p>That's stuck on https://github.com/astral-sh/uv/pull/15870/changes#r2514491656, the logic seems to be having some issues. It's not something where we can use an approximate logic, we need to make sure all cases across operating systems.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

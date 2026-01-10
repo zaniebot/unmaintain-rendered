@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overwrite pyproject when workspaces have same normalized name - astral-sh/uv #8702</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overwrite pyproject when workspaces have same normalized name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8702">#8702</a>
+        opened by <a href="https://github.com/juan-abia">@juan-abia</a>
+        on 2024-10-30 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-30 15:42</div>
+            <div class="timeline-body"><p>I have the following folder structure:</p>
+<pre><code>/private/tmp/super-project git:[main]
+tree
+.
+├── README.md
+├── pyproject.toml
+├── super_project
+│   ├── README.md
+│   └── pyproject.toml
+└── uv.lock
+</code></pre>
+<p>This is a common use case in my company. The repo name is <code>super-project</code> and the name of the python package we publish is <code>super_project</code>.</p>
+<p>This is the content of the root pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;super-project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;super_project&quot;
+]
+
+[tool.uv.workspace]
+members = [&quot;super_project&quot;]
+
+[tool.uv.sources]
+super_project = { workspace = true }
+
+[group-dependencies]
+dev = [
+    &quot;pytest &gt;=7.2.2&quot;,
+]
+</code></pre>
+<p>This is the pyproject of the package:</p>
+<pre><code>[project]
+name = &quot;super_project&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;matplotlib&quot;
+]
+</code></pre>
+<p>When I run <code>uv run pytest</code> y get the next error:</p>
+<pre><code>error: Failed to spawn: `pytest`
+  Caused by: No such file or directory (os error 2
+</code></pre>
+<p>And worse. If I try to do uv add pytest, my root pyproject gets overwriten with the pyproject of the package.</p>
+<p>I guess the issue is related to https://github.com/astral-sh/uv/issues/8591</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarlosRicGuerrero">@CarlosRicGuerrero</a> on 2024-10-30 16:06</div>
+            <div class="timeline-body"><p>I got the same issue too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex47ST3">@alex47ST3</a> on 2024-10-30 16:12</div>
+            <div class="timeline-body"><p>same problem here as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 16:18</div>
+            <div class="timeline-body"><p>I don't think you can have an outer and inner <code>pyproject.toml</code> with the same name — those names must be unique when normalized and we must normalize them for comparison per the Python standards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-30 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 16:18</div>
+            <div class="timeline-body"><p>Can you explain more about how it's overwritten? And why you're using this structure in the first place?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 16:45</div>
+            <div class="timeline-body"><p>Yeah that's not a valid structure. It's like saying you want two packages on PyPI called <code>foo_bar</code> and <code>foo-bar</code>, and you want to be able to use them distinctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-31 09:26</div>
+            <div class="timeline-body"><p>So for this example:</p>
+<pre><code>/private/tmp/super-project git:[main]
+tree
+.
+├── super_project
+│   ├── README.md
+│   └── pyproject.toml
+├── super_project_2
+│   ├── README.md
+│   └── pyproject.toml
+├── README.md
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+<p>I want only two packages published to Pypi: <code>super-project</code> and <code>super-project-2</code>.</p>
+<p>I'd like the two folders to be uv workspaces. When I'm developing locally I'd like to install dependencies of both packages. Is there any way I can do this with uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juan-abia">@juan-abia</a> on 2024-10-31 09:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain more about how it's overwritten?</p>
+</blockquote>
+<p>With this structure, if I do <code>uv add --dev pytest</code> for example. The pyproject of the root folder gets completely overwritten by:</p>
+<p>pyproject of <code>super_project</code> (with underscore, the package) <strong>+</strong> dev group dependency with pytest</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:20 UTC
+    </footer>
+</body>
+</html>

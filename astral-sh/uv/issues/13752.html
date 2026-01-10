@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presence of UV_CONFIG_FILE disables keyring provider in pyproject.toml - astral-sh/uv #13752</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Presence of UV_CONFIG_FILE disables keyring provider in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13752">#13752</a>
+        opened by <a href="https://github.com/eegli">@eegli</a>
+        on 2025-05-31 09:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eegli">@eegli</a> on 2025-05-31 09:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Assume this pyproject.toml with <code>keyring-proivider = &quot;subprocess&quot;</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.11, &lt;4&quot;
+dependencies = []
+[tool.uv]
+keyring-provider = &quot;subprocess&quot;
+</code></pre>
+<p>and an <strong>empty</strong> <code>custom-uv.toml</code> in the same directory.</p>
+<p>✅ Keyring is picked up from pyproject.toml when no config file is specified:</p>
+<pre><code class="language-sh">uv sync --show-settings | grep keyring
+&gt;             keyring_provider: Subprocess,
+</code></pre>
+<p>❌ Specifying a config file with no keyring sets <code>keyring_provider</code> to disabled:</p>
+<pre><code class="language-sh">uv sync --config-file custom-uv.toml --show-settings | grep keyring
+&gt;            keyring_provider: Disabled,
+</code></pre>
+<p>likewise</p>
+<pre><code class="language-sh">UV_CONFIG_FILE=custom-uv.toml uv sync --show-settings | grep keyring
+&gt;            keyring_provider: Disabled,
+</code></pre>
+<p>This is related to #13490.</p>
+<h3>Platform</h3>
+<p>MINGW64_NT-10.0-26100 3.5.7-463ebcdc.x86_64 x86_64 Msys</p>
+<h3>Version</h3>
+<p>uv 0.7.8 (0ddcc1905 2025-05-23)</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @eegli on 2025-05-31 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-31 09:43</div>
+            <div class="timeline-body"><p>Here's a snapshot test to be used:</p>
+<pre><code class="language-rs">#[test]
+#[cfg_attr(
+    windows,
+    ignore = &quot;Configuration tests are not yet supported on Windows&quot;
+)]
+fn add_keyring_provider_conflict() -&gt; anyhow::Result&lt;()&gt; {
+    let context = TestContext::new(&quot;3.12&quot;);
+
+    let config = context.temp_dir.child(&quot;custom-uv.toml&quot;);
+    config.write_str(indoc::indoc! {r#&quot;
+    &quot;#})?;
+
+    let pyproject_toml = context.temp_dir.child(&quot;pyproject.toml&quot;);
+    pyproject_toml.write_str(indoc::indoc! {r#&quot;
+        [project]
+        name = &quot;project&quot;
+        version = &quot;0.1.0&quot;
+        requires-python = &quot;&gt;=3.12&quot;
+        [tool.uv]
+        keyring-provider = &quot;subprocess&quot;
+    &quot;#})?;
+
+    uv_snapshot!(context.filters(), add_shared_args(context.lock(), context.temp_dir.path())
+        .arg(&quot;--show-settings&quot;)
+        .arg(&quot;--config-file&quot;)
+        .arg(config.path()),
+        @r#&quot;
+    success: true
+    exit_code: 0
+    ----- stdout -----
+    GlobalSettings {
+        required_version: None,
+        quiet: 0,
+        verbose: 0,
+        color: Auto,
+        network_settings: NetworkSettings {
+            connectivity: Online,
+            native_tls: false,
+            allow_insecure_host: [],
+        },
+        concurrency: Concurrency {
+            downloads: 50,
+            builds: 16,
+            installs: 8,
+        },
+        show_settings: true,
+        preview: Disabled,
+        python_preference: Managed,
+        python_downloads: Automatic,
+        no_progress: false,
+        installer_metadata: true,
+    }
+    CacheSettings {
+        no_cache: false,
+        cache_dir: Some(
+            &quot;[CACHE_DIR]/&quot;,
+        ),
+    }
+    LockSettings {
+        locked: false,
+        frozen: false,
+        dry_run: Disabled,
+        script: None,
+        python: None,
+        install_mirrors: PythonInstallMirrors {
+            python_install_mirror: None,
+            pypy_install_mirror: None,
+            python_downloads_json_url: None,
+        },
+        refresh: None(
+            Timestamp(
+                SystemTime {
+                    tv_sec: [TIME],
+                    tv_nsec: [TIME],
+                },
+            ),
+        ),
+        settings: ResolverSettings {
+            build_options: BuildOptions {
+                no_binary: None,
+                no_build: None,
+            },
+            config_setting: ConfigSettings(
+                {},
+            ),
+            dependency_metadata: DependencyMetadata(
+                {},
+            ),
+            exclude_newer: None,
+            fork_strategy: RequiresPython,
+            index_locations: IndexLocations {
+                indexes: [],
+                flat_index: [],
+                no_index: false,
+            },
+            index_strategy: FirstIndex,
+            keyring_provider: Subprocess,
+            link_mode: Clone,
+            no_build_isolation: false,
+            no_build_isolation_package: [],
+            prerelease: IfNecessaryOrExplicit,
+            resolution: Highest,
+            sources: Enabled,
+            upgrade: None,
+        },
+    }
+
+    ----- stderr -----
+    &quot;#);
+
+    Ok(())
+}
+</code></pre>
+<p>This fails with:</p>
+<pre><code class="language-sh">-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────
+   65    65 │             flat_index: [],
+   66    66 │             no_index: false,
+   67    67 │         },
+   68    68 │         index_strategy: FirstIndex,
+   69       │-        keyring_provider: Subprocess,
+         69 │+        keyring_provider: Disabled,
+   70    70 │         link_mode: Clone,
+   71    71 │         no_build_isolation: false,
+   72    72 │         no_build_isolation_package: [],
+   73    73 │         prerelease: IfNecessaryOrExplicit,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-31 14:13</div>
+            <div class="timeline-body"><p>Is this not the same as https://github.com/astral-sh/uv/issues/13490? Using a config file disables reading configuration from the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-31 14:27</div>
+            <div class="timeline-body"><p>I see it now:</p>
+<blockquote>
+<p>uv also accepts a --config-file command-line argument, which accepts a path to a uv.toml to use as the configuration file. When provided, this file will be used in place of any discovered configuration files (e.g., user-level configuration will be ignored).</p>
+</blockquote>
+<p>Sorry for the fuzz - I always assumed a (partial) <code>uv.toml</code> would be merged with <code>pyproject.toml</code> when specified via <code>--config-file</code> because user/system/project level settings are also merged.</p>
+<p>In short, if I want to merge settings from <code>uv.toml</code> files, I have to place them <em>exactly</em> in the default user/system config locations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @eegli on 2025-05-31 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

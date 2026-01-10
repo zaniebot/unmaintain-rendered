@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traversing wildcard files is sometimes slow - astral-sh/ruff #6092</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Traversing wildcard files is sometimes slow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6092">#6092</a>
+        opened by <a href="https://github.com/aqeelat">@aqeelat</a>
+        on 2023-07-26 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aqeelat">@aqeelat</a> on 2023-07-26 11:44</div>
+            <div class="timeline-body"><p>I don't know how to explain it, but I noticed that <code>ruff check */tests/* --select=&quot;ARG002&quot;</code> is very fast but <code>ruff check */test*/* --select=&quot;ARG002&quot;</code> is very slow.</p>
+<pre><code class="language-bash">start=`date +%s`;ruff check */tests/* --select=&quot;ARG002&quot;;end=`date +%s`; echo `expr $end - $start`
+&gt;&gt;&gt; 0
+start=`date +%s`;ruff check */test*/* --select=&quot;ARG002&quot;;end=`date +%s`; echo `expr $end - $start`
+&gt;&gt;&gt; 25
+</code></pre>
+<p>I'm using version 280</p>
+<details><summary>Details</summary>
+<p>
+
+<pre><code class="language-toml">[tool.ruff]
+extend-select = [&quot;B&quot;, &quot;Q&quot;, &quot;N&quot;, &quot;W&quot;, &quot;DJ&quot;, &quot;PL&quot;, &quot;PIE&quot;, &quot;ARG&quot;, &quot;INT&quot;, &quot;TCH&quot;, &quot;SIM&quot;, &quot;PERF&quot;, &quot;I&quot;]
+line-length = 120
+target-version = &quot;py310&quot;
+extend-exclude = [&quot;./scripts_old/&quot;]
+fixable = [&quot;I001&quot;]
+ignore = [
+    # This list includes all of the errors we had at the time of running `ruff check . --statistics`
+    # We should slowly remove them 1 by 1 until the ignore list is empty.
+#    &quot;E501&quot;,
+#    &quot;ARG002&quot;,
+#    &quot;DJ001&quot;,
+#    &quot;PLR2004&quot;,
+#    &quot;ARG001&quot;,
+#    &quot;PLC1901&quot;,
+#    &quot;PLR0913&quot;,
+#    &quot;PLR0912&quot;,
+#    &quot;SIM108&quot;,
+#    &quot;B904&quot;,
+#    &quot;PLR0915&quot;,
+#    &quot;N806&quot;,
+#    &quot;TCH001&quot;,
+#    &quot;PLR5501&quot;,
+#    &quot;E722&quot;,
+#    &quot;N815&quot;,
+#    &quot;N818&quot;,
+#    &quot;SIM102&quot;,
+#    &quot;B007&quot;,
+#    &quot;DJ007&quot;,
+#    &quot;TCH003&quot;,
+#    &quot;SIM105&quot;,
+#    &quot;PLR0911&quot;,
+#    &quot;TCH002&quot;,
+#    &quot;DJ008&quot;,
+#    &quot;ARG004&quot;,
+#    &quot;DJ006&quot;,
+#    &quot;PERF401&quot;,
+#    &quot;PERF203&quot;,
+#    &quot;B905&quot;,
+]
+
+[tool.ruff.per-file-ignores]
+&quot;*/__init__.py&quot; = [&quot;F401&quot;]
+&quot;*/test*/*&quot; = [&quot;N802&quot;]
+
+[tool.ruff.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.isort]
+combine-as-imports = true
+lines-after-imports = 2
+force-single-line = true
+split-on-trailing-comma = true
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 13:58</div>
+            <div class="timeline-body"><p>I believe that pattern is expanded by your shell, not by Ruff, so two things could be happening: first, that could be time spent by your shell doing the expansion; second, it could be that you're including far more files when using that pattern.</p>
+<p>Can check the latter with something like:</p>
+<pre><code class="language-shell">❯ echo */tests*
+example/tests example/tests-foo
+❯ echo */tests*/*
+example/tests-foo/bar example/tests/foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-07-26 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 04:28</div>
+            <div class="timeline-body"><p>Closing for now, can always re-open if new information comes in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-28 04:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

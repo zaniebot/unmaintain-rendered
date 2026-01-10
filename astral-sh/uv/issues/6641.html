@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot solve an environment with platform_system == Emscripten on Linux/OSX - astral-sh/uv #6641</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot solve an environment with platform_system == Emscripten on Linux/OSX</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6641">#6641</a>
+        opened by <a href="https://github.com/maartenbreddels">@maartenbreddels</a>
+        on 2024-08-26 10:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maartenbreddels">@maartenbreddels</a> on 2024-08-26 10:28</div>
+            <div class="timeline-body"><p>Given https://github.com/posit-dev/py-shiny/blob/77a679271ee94a64af597ad1159f6ab6bdeb1b51/pyproject.toml
+The following requirements file should be solvable for <code>&quot;platform_system == 'Emscripten'&quot;</code></p>
+<pre><code>shiny&gt;=1.0
+watchfiles &lt; 0.18
+</code></pre>
+<p>Since one of its dependencies is:</p>
+<pre><code>&quot;watchfiles&gt;=0.18.0;platform_system!='Emscripten'&quot;,
+</code></pre>
+<p>$ uv pip compile requirements-conflict.txt correctly gives:</p>
+<pre><code>uv pip compile requirements-conflict.txt            ✘ 2 feat_improve_resolver ✭ ✱ ◼
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of watchfiles{platform_system != 'Emscripten'} are available:
+          watchfiles{platform_system != 'Emscripten'}&lt;=0.18.0
+          watchfiles{platform_system != 'Emscripten'}==0.18.1
+          watchfiles{platform_system != 'Emscripten'}==0.19.0
+          watchfiles{platform_system != 'Emscripten'}==0.20.0
+          watchfiles{platform_system != 'Emscripten'}==0.21.0
+          watchfiles{platform_system != 'Emscripten'}==0.22.0
+          watchfiles{platform_system != 'Emscripten'}==0.23.0
+      and shiny==1.0.0 depends on watchfiles{platform_system != 'Emscripten'}&gt;=0.18.0, we can conclude that
+      shiny==1.0.0 depends on watchfiles&gt;=0.18.0.
+      And because only shiny&lt;=1.0.0 is available, we can conclude that shiny&gt;=1.0.0 depends on
+      watchfiles&gt;=0.18.0.
+      And because you require shiny&gt;=1.0 and watchfiles&lt;0.18, we can conclude that your requirements are
+      unsatisfiable.
+</code></pre>
+<p>On Linux or OSX.</p>
+<p>The seemingly only way to do 'cross-solving' would be to use the <code>--python-platform</code> flag, however, this is limited only to a particular set of values.</p>
+<p>If it was possible to override the values for the environment marker (and ENV_VAR would suffice) it would allow cross solving for non-supported platforms.</p>
+<p>My questions are:</p>
+<ul>
+<li>Can I do what I want with the current version (0.3.3) of uv?</li>
+<li>If not, is there a plan for, or interest in, allowing users to tweak/change the environment marker values, like <code>platform_system</code>?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 12:19</div>
+            <div class="timeline-body"><p>This is doable in <code>uv lock</code>, but not <code>uv pip compile</code> right now. With <code>uv lock</code>, you can hint uv to explicitly solve for certain environments, like:</p>
+<pre><code class="language-toml">[tool.uv]
+environments = [&quot;platform_system == 'Emscripten'&quot;, &quot;platform_system != 'Emscripten'&quot;]
+</code></pre>
+<p>There's a hack you can use right now to unblock, but it's a little ridiculous. If you just repeat the dependency, it <em>should</em> work -- as in, just put <code>&quot;watchfiles&gt;=0.18.0;platform_system!='Emscripten'&quot;</code> in there twice. That's because the resolver &quot;forks&quot; if it identifies multiple declared dependencies for a given package, and within each &quot;fork&quot;, we correctly respect the platform markers. It's something we're working on improving.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-26 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-08-26 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 12:20</div>
+            <div class="timeline-body"><p>(It's a known issue but I'll mark it as a bug and keep it open.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maartenbreddels">@maartenbreddels</a> on 2024-08-26 14:02</div>
+            <div class="timeline-body"><p>Thanks for the quick reply.</p>
+<p><em>(Note that I am not per-se interested in solving this environment, it's a more general issue with solving emscripten environment at https://py.cafe)</em></p>
+<p>I've played around a bit, and here is what I found:
+I started with just the shiny dependency</p>
+<pre><code>[project]
+name = &quot;conflict&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;shiny&gt;=1.0.0&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+environments = [&quot;platform_system == 'Emscripten'&quot;, &quot;platform_system != 'Emscripten'&quot;]
+</code></pre>
+<p>Adding the watchfiles dependency two different ways fails:</p>
+<pre><code>$ uv add &quot;watchfiles&lt;0.18&quot; 
+Ignoring existing lockfile due to change in supported environments
+  × No solution found when resolving dependencies for split (platform_system != 'Emscripten'):
+  ╰─▶ Because only the following versions of watchfiles{platform_system != 'Emscripten'} are available:
+          watchfiles{platform_system != 'Emscripten'}&lt;=0.18.0
+          watchfiles{platform_system != 'Emscripten'}==0.18.1
+          watchfiles{platform_system != 'Emscripten'}==0.19.0
+          watchfiles{platform_system != 'Emscripten'}==0.20.0
+          watchfiles{platform_system != 'Emscripten'}==0.21.0
+          watchfiles{platform_system != 'Emscripten'}==0.22.0
+          watchfiles{platform_system != 'Emscripten'}==0.23.0
+      and shiny==1.0.0 depends on watchfiles{platform_system != 'Emscripten'}&gt;=0.18.0, we can conclude that
+      shiny==1.0.0 depends on watchfiles&gt;=0.18.0.
+      And because only shiny&lt;=1.0.0 is available, we can conclude that shiny&gt;=1.0.0 depends on
+      watchfiles&gt;=0.18.0.
+      And because your project depends on shiny&gt;=1.0.0 and watchfiles&lt;0.18, we can conclude that your
+      project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+</code></pre>
+<p>Same here:</p>
+<pre><code>$ uv add &quot;watchfiles&lt;0.18;platform_system!='Emscripten'&quot;
+  × No solution found when resolving dependencies for split (platform_system != 'Emscripten'):
+  ╰─▶ Because only shiny&lt;=1.0.0 is available and shiny==1.0.0 depends on watchfiles{platform_system !=
+      'Emscripten'}&gt;=0.18.0, we can conclude that shiny&gt;=1.0.0 depends on watchfiles{platform_system !=
+      'Emscripten'}&gt;=0.18.0.
+      And because your project depends on shiny&gt;=1.0.0 and watchfiles{platform_system != 'Emscripten'}&lt;0.18,
+      we can conclude that your project's requirements are unsatisfiable.
+  help: If this is intentional, run `uv add --frozen` to skip the lock and sync steps.
+</code></pre>
+<p>No problem for us, because that is now how we will be using uv, but  that might be information that relevant for a bugfix/issue in <code>uv add</code>.</p>
+<p>The way we'll probably use this, is to write out all dependencies in one go:</p>
+<pre><code>[project]
+name = &quot;conflict&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;shiny&gt;=1.0.0&quot;,
+    &quot;watchfiles&lt;0.18&quot;
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+environments = [&quot;platform_system == 'Emscripten'&quot;]
+</code></pre>
+<p><em>(Note that I only have 1 environment, which seems to work)</em></p>
+<p>On this will, we can run <code>uv lock</code>, successfully 🎉 .</p>
+<p>However, if we do a requirement.in -&gt; pyproject.toml -&gt; uv.lock, we are left with a non-standard file (ideally, it's a requirements file format). Is there an easy to transform/parse the uv.lock file so we can pull out the data?</p>
+<p>Or do you see the support for this also coming to <code>uv pip compile</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 14:09</div>
+            <div class="timeline-body"><p>Oh sorry, you <em>only</em> want to solve for Emscripten. Then yes, I think what you're doing is correct. The requirements you describe aren't actually solvable on other platforms, IIUC, since any other platform needs <code>watchfiles &lt; 0.18</code> and <code>watchfiles &gt;= 0.18</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>However, if we do a requirement.in -&gt; pyproject.toml -&gt; uv.lock, we are left with a non-standard file (ideally, it's a requirements file format). Is there an easy to transform/parse the uv.lock file so we can pull out the data?</p>
+</blockquote>
+<p>We're considering enabling export to <code>requirements.txt</code>. But it would also be reasonable for us to respect the <code>environment</code> settings in <code>uv pip compile</code> -- we probably should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-26 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maartenbreddels">@maartenbreddels</a> on 2024-08-26 14:55</div>
+            <div class="timeline-body"><p>I think that with both, it would be a holy grail of cross-solving environments.</p>
+<p>PS: Having the lock file in JSON or YAML would also work for us since it would require more advanced post-processing if/when needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 16:21</div>
+            <div class="timeline-body"><p>The lockfile is valid TOML so you can post-process it yourself if you want :) Though agree we should support the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maartenbreddels">@maartenbreddels</a> on 2024-08-26 17:28</div>
+            <div class="timeline-body"><p>Ah, I actually read the documentation on this part, but for some reason missed that it was TOML, so ignore the JSON/YAML request. I think the part in the documentation &quot;There is no Python standard for lockfiles at this time, so the format of this file is specific to uv and not usable by other tools.&quot; reset my expectations that it was possible.</p>
+<p>But this is great news, that probably means we can do everything we want. Excellent tool, thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6663.html">astral-sh/uv#6663</a> on 2024-08-26 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-26 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-26 23:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

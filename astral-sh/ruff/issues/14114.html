@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] fix handling of known instances in `Type` relation methods - astral-sh/ruff #14114</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] fix handling of known instances in `Type` relation methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14114">#14114</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-11-05 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-11-05 17:50</div>
+            <div class="timeline-body"><p>We currently represent &quot;known instances&quot; (e.g. special forms like <code>typing.Literal</code>, which are an instance of <code>typing._SpecialForm</code>, but need to be handled differently from other instances of <code>typing._SpecialForm</code>) as an <code>InstanceType</code> with a <code>known</code> field that is <code>Some(...)</code>.</p>
+<p>This makes it easy to handle a known instance as if it were a regular instance type (by ignoring the <code>known</code> field), and in some cases (e.g. <code>Type::member</code>) that is correct and convenient. But in other cases (e.g. <code>Type::is_equivalent_to</code>) it is not correct, and we currently have a bug that we would consider the known-instance type of <code>typing.Literal</code> as equivalent to the general instance type for <code>typing._SpecialForm</code>, and we would fail to consider it a singleton type or a single-valued type (even though it is both.)</p>
+<p>An instance type with <code>known.is_some()</code> is semantically quite different from an instance type with <code>known.is_none()</code>. The former is a singleton type that represents exactly one runtime object; the latter is an open type that represents many runtime objects, including instances of unknown subclasses. It is too error-prone to represent these very-different types as a single <code>Type</code> variant. We should instead introduce a dedicated <code>Type::KnownInstance</code> variant and force ourselves to handle these explicitly in all <code>Type</code> variant matches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-11-05 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14108.html">astral-sh/ruff#14108</a> on 2024-11-05 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-11-07 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14154.html">astral-sh/ruff#14154</a> on 2024-11-07 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14155.html">astral-sh/ruff#14155</a> on 2024-11-07 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot 2024" by @carljm on 2024-11-07 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-11-07 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-11-07 22:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

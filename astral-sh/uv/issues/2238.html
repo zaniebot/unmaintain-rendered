@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip` installs a broken package while `pip` works correctly - astral-sh/uv #2238</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip` installs a broken package while `pip` works correctly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2238">#2238</a>
+        opened by <a href="https://github.com/stinodego">@stinodego</a>
+        on 2024-03-06 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stinodego">@stinodego</a> on 2024-03-06 11:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>This is on Python 3.12.0 with a virtual environment with <code>uv</code> 0.1.15 installed:</p>
+<h4><code>pip</code> works</h4>
+<pre><code>$ pip install --force-reinstall xlsx2csv==0.8.2 &amp;&amp; python -c 'import xlsx2csv'
+Collecting xlsx2csv==0.8.2
+  Using cached xlsx2csv-0.8.2-py3-none-any.whl
+Installing collected packages: xlsx2csv
+  Attempting uninstall: xlsx2csv
+    Found existing installation: xlsx2csv 0.8.2
+    Uninstalling xlsx2csv-0.8.2:
+      Successfully uninstalled xlsx2csv-0.8.2
+Successfully installed xlsx2csv-0.8.2
+</code></pre>
+<h4><code>uv pip</code> fails</h4>
+<p>Installation succeeds, but importing the package doesn't work.</p>
+<pre><code>$ uv --no-cache pip install --force-reinstall xlsx2csv==0.8.2 &amp;&amp; python -c 'import xlsx2csv'
+Resolved 1 package in 1ms
+Installed 1 package in 7ms
+ - xlsx2csv==0.8.2
+ + xlsx2csv==0.8.2
+/home/stijn/code/polars/.venv/lib/python3.12/site-packages/xlsx2csv.py:836: SyntaxWarning: invalid escape sequence '\['
+  '.*\[.*[dmhys].*\]', format_str):
+</code></pre>
+<p>No idea what's going on here, but I thought I'd report it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 13:43</div>
+            <div class="timeline-body"><p>So, I believe this is explained here: https://github.com/astral-sh/uv/issues/1928#issuecomment-1968857514. Which is that pip does bytecode compilation by default, and they swallow all errors. So that warning is present in both cases, it's just swallowed by the <code>pip install</code>.</p>
+<p>Relatedly, you can enable bytecode compilation with <code>uv</code> if you'd like as of the latest release:</p>
+<pre><code>❯ cargo run pip install --compile --force-reinstall xlsx2csv==0.8.2 &amp;&amp; source .venv/bin/activate &amp;&amp; python -c 'import xlsx2csv'
+    Finished dev [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/uv pip install --compile --force-reinstall xlsx2csv==0.8.2`
+Resolved 1 package in 2ms
+Installed 1 package in 8ms
+Bytecode compiled 196 files in 65ms
+ - xlsx2csv==0.8.2
+ + xlsx2csv==0.8.2
+</code></pre>
+<p>(But again, it's a real warning in the package; Python just don't show them if bytecode already exists for the file, and pip swallows the warnings when compiling.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-06 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2024-03-06 15:49</div>
+            <div class="timeline-body"><p>Thanks, <code>--compile</code> indeed the resolves the issue. And I learned something new about <code>pip install</code>.</p>
+<p>Thanks and keep up the great work!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

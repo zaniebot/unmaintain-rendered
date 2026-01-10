@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `allow_hyphen_values` in native completions - clap-rs/clap #5594</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support `allow_hyphen_values` in native completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5594">#5594</a>
+        opened by <a href="https://github.com/shannmu">@shannmu</a>
+        on 2024-07-24 05:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shannmu">@shannmu</a> on 2024-07-24 05:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>master</p>
+<h3>Describe your use case</h3>
+<pre><code>use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = &quot;dynamic&quot;, about = &quot;A dynamic command line tool&quot;)]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option&lt;CompleteCommand&gt;,
+    /// Output format
+    #[clap(short = 'F', long, value_parser = [&quot;--json&quot;, &quot;--yaml&quot;, &quot;--toml&quot;], allow_hyphen_values = true)]
+    format: Option&lt;String&gt;,
+    #[clap(long)]
+    json: Option&lt;String&gt;,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&amp;mut Cli::command());
+    }
+    // normal logic continues...
+}
+</code></pre>
+<p>For the command line:</p>
+<pre><code>dynamic --format --json --js[TAB]
+</code></pre>
+<p>There is no completion generated.
+it should be:</p>
+<pre><code>dynamic --format --json --json 
+</code></pre>
+<p>This seems to be a very specific use case, but it shows that there is an error in parsing during dynamic completion when the allow_hyphen_values setting is enabled, or that allow_hyphen_values is not being considered.</p>
+<h3>Describe the solution you'd like</h3>
+<p>https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_complete/src/dynamic/completer.rs#L76
+https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_complete/src/dynamic/completer.rs#L79
+https://github.com/clap-rs/clap/blob/5efa52ad4501393d50e236d10a979313a61d4929/clap_complete/src/dynamic/completer.rs#L112
+do something more in these branches</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>There are also user cases related to the mistaken parsing.</p>
+<h2>Case 1</h2>
+<pre><code>use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = &quot;dynamic&quot;, about = &quot;A dynamic command line tool&quot;)]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option&lt;CompleteCommand&gt;,
+    /// Output format
+    #[clap(short = 'F', long, value_parser = [&quot;json&quot;, &quot;yaml&quot;, &quot;toml&quot;], allow_hyphen_values = true)]
+    format: Option&lt;String&gt;,
+    #[clap(value_parser = [&quot;--pos_a&quot;], index = 1)]
+    positional_a: Option&lt;String&gt;,
+    #[clap(value_parser = [&quot;pos_b&quot;], index = 2)]
+    positional_b: Option&lt;String&gt;,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&amp;mut Cli::command());
+    }
+    // normal logic continues...
+}
+</code></pre>
+<p>For the command line</p>
+<pre><code>dynamic --format json --pos_a [TAB]
+</code></pre>
+<p>completions are:</p>
+<pre><code>--format  --help    --pos_a   -F        -h        help
+</code></pre>
+<p>it should be:</p>
+<pre><code>pos_b --format  --help    -F        -h        help
+</code></pre>
+<h2>Case 2</h2>
+<pre><code>use clap::{CommandFactory, Parser};
+use clap_complete::dynamic::shells::CompleteCommand;
+#[derive(Parser, Debug)]
+#[clap(name = &quot;dynamic&quot;, about = &quot;A dynamic command line tool&quot;)]
+struct Cli {
+    /// The subcommand to run complete
+    #[command(subcommand)]
+    complete: Option&lt;CompleteCommand&gt;,
+    /// Output format
+    #[clap(short = 'F', long, value_parser = [&quot;json&quot;, &quot;yaml&quot;, &quot;toml&quot;], allow_hyphen_values = true)]
+    format: Option&lt;String&gt;,
+    #[clap(value_parser = [&quot;-a&quot;], index = 1)]
+    positional_a: Option&lt;String&gt;,
+    #[clap(value_parser = [&quot;pos_b&quot;], index = 2)]
+    positional_b: Option&lt;String&gt;,
+}
+fn main() {
+    let cli = Cli::parse();
+    if let Some(completions) = cli.complete {
+        completions.complete(&amp;mut Cli::command());
+    }
+    // normal logic continues...
+}
+</code></pre>
+<p>For the command line</p>
+<pre><code>dynamic --format json -a [TAB]
+</code></pre>
+<p>completions are:</p>
+<pre><code>--format  --help    -F        -a        -h        help
+</code></pre>
+<p>it should be:</p>
+<pre><code>pos_b --format  --help    -F        -h        help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @shannmu on 2024-07-24 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-07-24 05:50</div>
+            <div class="timeline-body"><p>Track issue: https://github.com/clap-rs/clap/issues/3166</p>
+<ul>
+<li><a href="https://github.com/clap-rs/clap/blob/master/clap_complete/src/dynamic">code</a></li>
+<li><a href="https://github.com/clap-rs/clap/blob/master/clap_complete/tests/testsuite/dynamic.rs">tests</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-07-24 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2024-07-24 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5628.html">clap-rs/clap#5628</a> on 2024-08-06 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5602.html">clap-rs/clap#5602</a> on 2024-08-06 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-08-06 09:35</div>
+            <div class="timeline-body"><p>There is a related case https://github.com/clap-rs/clap/pull/5602#discussion_r1705107817.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-09-05 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:38 UTC
+    </footer>
+</body>
+</html>

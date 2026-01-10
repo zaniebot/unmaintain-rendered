@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error: wanted string or inline table for key `tool.ruff.target-version` - astral-sh/ruff #1924</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error: wanted string or inline table for key `tool.ruff.target-version`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1924">#1924</a>
+        opened by <a href="https://github.com/thisfred">@thisfred</a>
+        on 2023-01-16 22:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-16 22:03</div>
+            <div class="timeline-body"><p>Since today I'm suddenly getting this error when I run ruff (either standalone or under pre-commit):</p>
+<pre><code>Error: wanted string or inline table for key `tool.ruff.target-version`
+</code></pre>
+<p>The strange thing is, it makes no difference whether that string is present in my pyproject.toml, like:</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py38&quot;
+</code></pre>
+<p>or whether I remove it (or entirely remove pyproject.toml), and run either:</p>
+<pre><code class="language-bash">ruff --target-version=py38 some_file.py
+</code></pre>
+<p>or:</p>
+<pre><code class="language-bash">ruff some_file.py
+</code></pre>
+<p>I am entirely willing to believe I somehow messed up my virtual environment, but I've rebuilt it from scratch several times now, and also tried running ruff as part of pre-commit, which installs its own dependencies, so I'm really mystified.</p>
+<p>I've tried going back versions, and it doesn't seem to make a difference either, always the same error.</p>
+<p>On Friday this was all working for me. I did update to a newer version of ruff today, so I'm wondering if something changed, and that something is being cached outside of the python env even when I try to downgrade to older versions using pip.</p>
+<p>versions I've tried:</p>
+<p>0.0.223
+0.0.219
+0.0.209</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-16 22:04</div>
+            <div class="timeline-body"><p>I've tried running with <code>-v</code> or <code>--verbose</code> but no more information is output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 22:07</div>
+            <div class="timeline-body"><p>Very strange... What happens if you create a file like:</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py38&quot;
+</code></pre>
+<p>And then run explicitly with <code>ruff --config ./pyproject.toml some_file.py</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-16 22:17</div>
+            <div class="timeline-body"><p>Explicitly passing the config file does seem to work, so that's a  workaround, but I'm still completely baffled as to why it doesn't work with the default file location. (I am sure it is able to find the file there, because when in desperation I changed the option name to <code>target_version</code> (with an underscore instead of a dash), it complained that that option doesn't exist...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-16 22:32</div>
+            <div class="timeline-body"><p>As another data point, if I pass pyproject.toml explicitly with --config, it doesn't complain, even when <code>target-version</code> is not set in that file at all, and additionally, if I name the file anything other than <code>pyproject.toml</code>, it fails with</p>
+<pre><code>Unrecognized settings file: `/path/to/project/mypyproject.toml`
+</code></pre>
+<p>no matter the contents of that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 22:35</div>
+            <div class="timeline-body"><p>(Yeah I believe we rely on the name, because we have to distinguish between <code>ruff.toml</code> and <code>pyproject.toml</code> files.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 22:37</div>
+            <div class="timeline-body"><p>Is it possible that you have a &quot;user&quot; pyproject.toml file in the global config dir specified <a href="https://github.com/dirs-dev/directories-rs#basedirs">here</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-17 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-17 17:39</div>
+            <div class="timeline-body"><p>I don't think so: I do have one, one directory level up from the project I'm working in, but that's above the git root, yet still below my home directory, and not in one of the locations specified there. I'll do some more digging.</p>
+<p>What I wonder is if it is somehow related to <code>target-version</code> being specified in other (non-ruff) stanzas in the pyproject.toml. Black has its own key by that name, which takes an array rather than a string, for instance, but I would expect ruff's parser to ignore everything that doesn't start with <code>[tool.ruff...]</code>, so that's probably also not it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-17 17:42</div>
+            <div class="timeline-body"><p>oh, ok, actually your suggestion was correct. With the following directory structure:</p>
+<pre><code>~/
+  all_projects/
+    pyproject.toml
+    the_project/
+      .git
+      pyproject.toml
+</code></pre>
+<p>the pyproject.toml one level above the working directory does seem to get picked up when running ruff from within <code>the_project/</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thisfred">@thisfred</a> on 2023-01-17 17:43</div>
+            <div class="timeline-body"><p>Maybe this is intended behavior and I can see it being useful in some cases, but it did surprise me a little. Thanks for your patience in helping me figure this out, I appreciate it, and all your work on this amazing tool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 18:28</div>
+            <div class="timeline-body"><p>Oh, ok, great! (And thanks for the kind words :))</p>
+<p>Yeah, that behavior <em>is</em> intended. When we check a given file, we find the first <code>pyproject.toml</code> in the same directory, or any parent directory.</p>
+<p>I totally understand how that could be surprising. It does have some benefits though. For one thing, it makes it possible to run Ruff across a bunch of separate Python projects with a single <code>ruff</code> invocation, since each file will use the &quot;right&quot; <code>pyproject.toml</code>. It also means that you can run <code>ruff</code> from any directory, and it'll lint any given file the same way (which wouldn't be true if, e.g., we used the <code>pyproject.toml</code> from the current working directory).</p>
+<p>There's a little bit more on that strategy in <a href="https://github.com/charliermarsh/ruff#pyprojecttoml-discovery">the docs</a>. As always, suggestions welcome on how to make it clearer or less surprising :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-17 18:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

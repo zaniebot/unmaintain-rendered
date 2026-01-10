@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Report for Optional PyTorch Dependencies in `pyproject.toml` - astral-sh/uv #9221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug Report for Optional PyTorch Dependencies in `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9221">#9221</a>
+        opened by <a href="https://github.com/orkhank">@orkhank</a>
+        on 2024-11-19 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/orkhank">@orkhank</a> on 2024-11-19 11:43</div>
+            <div class="timeline-body"><h4>Issue Description</h4>
+<p>The example configuration for optional PyTorch dependencies introduced in #9210 is causing errors during execution. Specifically, <code>uv</code> does not recognize the <code>extra</code> key used for specifying sources, resulting in a TOML parse error.</p>
+<h4>Steps to Reproduce</h4>
+<ol>
+<li><p>Create the problematic pyproject.toml file:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+&quot;torch&gt;=2.5.1&quot;,
+&quot;torchvision&gt;=0.20.1&quot;,
+]
+cu124 = [
+&quot;torch&gt;=2.5.1&quot;,
+&quot;torchvision&gt;=0.20.1&quot;,
+]
+
+[tool.uv]
+conflicts = [
+[
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+],
+]
+
+[tool.uv.sources]
+torch = [
+{ index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+{ index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+{ index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+{ index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+</li>
+<li><p>Use the following command to sync with the optional PyTorch dependencies:</p>
+<pre><code class="language-sh">$ uv sync --extra cpu --verbose
+</code></pre>
+</li>
+<li><p>Observe the debug output:</p>
+<pre><code class="language-sh">DEBUG uv 0.5.2
+DEBUG Found project root: `/home/user/dev/project`
+error: Failed to parse: `pyproject.toml`
+Caused by: TOML parse error at line 16, column 30
+|
+16 |     { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+|                              ^^^^^
+unknown field `extra`, expected one of `git`, `subdirectory`, `rev`, `tag`, `branch`, `url`, `path`, `editable`, `index`, `workspace`, `marker`
+</code></pre>
+</li>
+</ol>
+<h4>Problematic Code Snippet</h4>
+<p>The part of the <code>pyproject.toml</code> file that causes the error is as follows:</p>
+<pre><code class="language-toml">[tool.uv.dependencies]
+my_package = { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; }
+</code></pre>
+<p>For reference, you can find the original example in the documentation here: <a href="https://github.com/astral-sh/uv/blob/821f3de09590a66146f2152f97c6bc19b2e022db/docs/guides/integration/pytorch.md#L286-L294">PyTorch Integration Guide</a>.</p>
+<h4>Environment Details</h4>
+<ul>
+<li><p><strong>Current <code>uv</code> platform</strong>: WSL</p>
+<ul>
+<li><strong>Distributor ID</strong>: Ubuntu</li>
+<li><strong>Description</strong>: Ubuntu 24.04.1 LTS</li>
+<li><strong>Release</strong>: 24.04</li>
+<li><strong>Codename</strong>: noble</li>
+</ul>
+</li>
+<li><p><strong>Current <code>uv</code> version</strong>:</p>
+<pre><code class="language-sh">$ uv --version
+uv 0.5.2
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-19 12:53</div>
+            <div class="timeline-body"><p>This feature hasn't been released yet, so you won't be able to test it with the released version of UV.
+The PR that has this feature is https://github.com/astral-sh/uv/pull/9160, and it's not included in the 0.5.2 release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9224.html">astral-sh/uv#9224</a> on 2024-11-19 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-19 18:43</div>
+            <div class="timeline-body"><p>Yeah this isn't out yet, sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-19 19:39</div>
+            <div class="timeline-body"><p>Out now in v0.5.3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-19 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orkhank">@orkhank</a> on 2024-11-20 10:34</div>
+            <div class="timeline-body"><p>Thanks for the information and updates.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:33 UTC
+    </footer>
+</body>
+</html>

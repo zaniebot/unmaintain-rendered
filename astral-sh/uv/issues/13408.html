@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tool install mercurial succeeds for Windows on GitHub Actions but fails to run - astral-sh/uv #13408</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tool install mercurial succeeds for Windows on GitHub Actions but fails to run</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13408">#13408</a>
+        opened by <a href="https://github.com/nth10sd">@nth10sd</a>
+        on 2025-05-12 11:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nth10sd">@nth10sd</a> on 2025-05-12 11:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I first installed uv via on Windows on GitHub Actions:</p>
+<pre><code>Run pip install --upgrade uv
+  pip install --upgrade uv
+  shell: C:\Program Files\PowerShell\7\pwsh.EXE -command &quot;. '{0}'&quot;
+  env:
+    pythonLocation: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.10.11\x64/lib/pkgconfig
+    Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.10.11\x64
+    SSH_AUTH_SOCK: /tmp/ssh-mFNvKyRcmejn/agent.1756
+    SSH_AGENT_PID: 1757
+Requirement already satisfied: uv in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (0.7.3)
+</code></pre>
+<p>I tried installing Mercurial 7.0.2 via <code>uv tool install</code>:</p>
+<pre><code>$env:PATH = &quot;$env:USERPROFILE`\.local`\bin;$env:PATH&quot; ; uv tool install mercurial ; hg --version -q
+</code></pre>
+<p>And got the following:</p>
+<pre><code>Resolved 1 package in 29ms
+Downloading mercurial (6.3MiB)
+ Downloading mercurial
+Prepared 1 package in 749ms
+Installed 1 package in 392ms
+ + mercurial==7.0.2
+Installed 2 executables: hg, hg.exe
+abort: couldn't find mercurial libraries in [C:\Users\runneradmin\.local\bin C:\hostedtoolcache\windows\Python\3.10.11\x64\python310.zip C:\hostedtoolcache\windows\Python\3.10.11\x64\Lib C:\hostedtoolcache\windows\Python\3.10.11\x64\DLLs C:\Users\runneradmin\.local\bin C:\hostedtoolcache\windows\Python\3.10.11\x64 C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages]
+(check your install and PYTHONPATH)
+</code></pre>
+<p>How should the &quot;couldn't find mercurial libraries&quot; message be solved? Mercurial installed via other methods (e.g. choco) seem to run fine.</p>
+<p>I'm not sure if this is a uv or a Mercurial or a GitHub Actions runner image issue:</p>
+<pre><code>Current runner version: '2.323.0'
+Operating System
+  Microsoft Windows Server 2022
+  10.0.20348
+  Datacenter
+Runner Image
+  Image: windows-2022
+  Version: 20250504.1.0
+  Included Software: https://github.com/actions/runner-images/blob/win22/20250504.1/images/windows/Windows2022-Readme.md
+  Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20250504.1
+Runner Image Provisioner
+  2.0.422.1
+</code></pre>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>uv 0.7.3</p>
+<h3>Python version</h3>
+<p>Python 3.10.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @nth10sd on 2025-05-12 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-12 11:59</div>
+            <div class="timeline-body"><p>Does mercurial work after being installed with <code>pip install mercurial</code>? This can tell us whether it's a uv bug or a mercurial bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nth10sd">@nth10sd</a> on 2025-05-12 12:08</div>
+            <div class="timeline-body"><p>It seems to work properly via <code>pip install</code>.</p>
+<pre><code>Run pip install --upgrade mercurial ; which hg ; hg --version -q || true
+Collecting mercurial
+  Downloading mercurial-7.0.2-cp310-cp310-win_amd64.whl.metadata (2.3 kB)
+Downloading mercurial-7.0.2-cp310-cp310-win_amd64.whl (6.6 MB)
+   ---------------------------------------- 6.6/6.6 MB 101.2 MB/s eta 0:00:00
+Installing collected packages: mercurial
+Successfully installed mercurial-7.0.2
+/c/hostedtoolcache/windows/Python/3.10.11/x64/Scripts/hg
+Mercurial Distributed SCM (version 7.0.2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nth10sd">@nth10sd</a> on 2025-05-12 12:19</div>
+            <div class="timeline-body"><pre><code>$env:PATH = &quot;$env:pythonLocation`\Scripts;$env:PATH&quot; ; uv tool install mercurial ; hg --version -q || true
+</code></pre>
+<p>Didn't seem to work either. Neither did <code>uv tool update-shell</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-05-12 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-06-12 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @Gankra by @konstin on 2025-09-26 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16034.html">astral-sh/uv#16034</a> on 2025-09-26 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 13:04</div>
+            <div class="timeline-body"><p>This seems to be an upstream bug: https://foss.heptapod.net/mercurial/mercurial-devel/-/issues/6635.</p>
+<p>As a workaround, <code>python -m mercurial</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-09-26 13:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

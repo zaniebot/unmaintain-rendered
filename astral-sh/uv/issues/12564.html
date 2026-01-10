@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting of CLICOLOR_FORCE breaks build backends - astral-sh/uv #12564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Setting of CLICOLOR_FORCE breaks build backends</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12564">#12564</a>
+        opened by <a href="https://github.com/jaraco">@jaraco</a>
+        on 2025-03-30 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaraco">@jaraco</a> on 2025-03-30 21:03</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>In https://github.com/coherent-oss/system/issues/20, I've root caused an issue when using <code>uv pip install</code> on a project using a <a href="https://pypi.org/project/coherent.build"><code>coherent.build</code></a> project.</p>
+<p>To summarize, it seems that <code>uv</code> sets the environment variable <code>CLICOLOR_FORCE=1</code>, which when that is inherited by the build backend and its subprocess call to <code>gh repo view --json url,description</code>, the <code>gh</code> CLI emits colored output and the JSON can't be parsed.</p>
+<p>What's the proper solution here? I can think of a few approaches.</p>
+<ol>
+<li>Build backends should filter or override CLICOLOR_FORCE when invoking subprocesses.</li>
+<li><code>uv</code> should filter CLICOLOR_FORCE when invoking build backends.</li>
+<li>Backends should expect and filter colored output.</li>
+</ol>
+<h3>Platform</h3>
+<p>macOS 15.3</p>
+<h3>Version</h3>
+<p>uv 0.6.10 (Homebrew 2025-03-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jaraco on 2025-03-30 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 21:28</div>
+            <div class="timeline-body"><p>It seems weird that <code>gh repo view</code> emits color codes in the JSON output?</p>
+<p>Anyway, I'm not sure why we set <code>CLICOLOR_FORCE</code> at all. cc @charliermarsh / @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-04-01 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-04-01 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 21:32</div>
+            <div class="timeline-body"><p>I have no idea why we set that. I'd have to look in the Git history.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 21:38</div>
+            <div class="timeline-body"><ul>
+<li>https://github.com/astral-sh/uv/pull/3032</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 09:02</div>
+            <div class="timeline-body"><p>We initially added this to improve the error output of build subprocess, this variable e.g. gets implicitly propagated from the maturin build backend to cargo (and the same should apply for C/C++ build backends). I consider it a bug in the <code>gh</code> CLI that the JSON output is colored, but OTOH the <code>CLICOLOR_FORCE</code> is only a cosmetic feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15415.html">astral-sh/uv#15415</a> on 2025-08-22 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-22 19:14</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/15415</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15472.html">astral-sh/uv#15472</a> on 2025-08-23 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zsol on 2025-08-27 15:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

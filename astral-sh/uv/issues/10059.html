@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` finds incorrect wheels for sys_platform == 'darwin' (pytorch) - astral-sh/uv #10059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` finds incorrect wheels for sys_platform == 'darwin' (pytorch)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10059">#10059</a>
+        opened by <a href="https://github.com/patrickhulce">@patrickhulce</a>
+        on 2024-12-20 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/patrickhulce">@patrickhulce</a> on 2024-12-20 15:36</div>
+            <div class="timeline-body"><p><strong>Background</strong>
+I'm trying to run the same project on macOS and Ubuntu. For that, I have two sources for pytorch as described in the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index">uv docs</a>. I'm using uv version <code>uv 0.5.11 (c4d0caaee 2024-12-19)</code> on macOS 14.4.1</p>
+<p><strong>Steps to Reproduce</strong></p>
+<pre><code class="language-bash">uv init
+cat &gt; pyproject.toml &lt;&lt;EOF
+[project]
+name = &quot;testuv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;torch&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cu118&quot;, marker = &quot;sys_platform != 'darwin'&quot; },
+    { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+]
+
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu118&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+EOF
+uv lock
+uv sync
+</code></pre>
+<p><strong>What Happens</strong></p>
+<p>uv incorrectly resolves the macOS to version <code>2.5.1+cpu</code> (only available on linux) instead of <code>2.5.1</code>. When you attempt to <code>uv sync</code> then it fails with this message.</p>
+<pre><code>error: Distribution `torch==2.5.1+cpu @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>Specifically, the lock file contains this block.</p>
+<pre><code>[[package]]
+name = &quot;torch&quot;
+version = &quot;2.5.1+cpu&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }
+resolution-markers = [
+    &quot;sys_platform == 'darwin'&quot;,
+]
+dependencies = [
+    { name = &quot;filelock&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;fsspec&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;jinja2&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;networkx&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;setuptools&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;sympy&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+    { name = &quot;typing-extensions&quot;, marker = &quot;sys_platform == 'darwin'&quot; },
+]
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.5.1%2Bcpu-cp312-cp312-linux_x86_64.whl&quot;, hash = &quot;sha256:4856f9d6925121d13c2df07aa7580b767f449dfe71ae5acde9c27535d5da4840&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.5.1%2Bcpu-cp313-cp313-linux_x86_64.whl&quot;, hash = &quot;sha256:5dbbdf83caa90d0bcaa50e4933ca424889133b35226db79000877d4ec5d9ea37&quot; },
+]
+</code></pre>
+<p><strong>What Did I Expect to Happen</strong>
+I expected uv to resolve the version to <code>2.5.1</code> and the wheels to</p>
+<pre><code>wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.5.1-cp312-none-macosx_11_0_arm64.whl&quot;, hash = &quot;sha256:8c712df61101964eb11910a846514011f0b6f5920c55dbf567bff8a34163d5b1&quot; },
+]
+</code></pre>
+<p><strong>Workarounds</strong></p>
+<p>If I manually replace the <code>version</code> and <code>wheels</code> properties with the correct values, then<code>uv sync</code> works as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-20 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @charliermarsh on 2024-12-20 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-20 16:48</div>
+            <div class="timeline-body"><p>This is tracked in https://github.com/astral-sh/uv/issues/9711. There are a variety of linked issues that are describing the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9711.html">astral-sh/uv#9711</a> on 2024-12-20 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-20 19:14</div>
+            <div class="timeline-body"><p>Fixed by https://github.com/astral-sh/uv/pull/10046.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-20 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-20 19:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't uv add netifaces (but after uv pip install netifaces it works) - astral-sh/uv #7288</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't uv add netifaces (but after uv pip install netifaces it works)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7288">#7288</a>
+        opened by <a href="https://github.com/romaia">@romaia</a>
+        on 2024-09-11 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/romaia">@romaia</a> on 2024-09-11 13:10</div>
+            <div class="timeline-body"><p>Using uv version 0.4.9 on linux, I cant <code>uv add netifaces</code>, but if I install it with <code>uv pip install netifaces</code> before hand, it works.</p>
+<p>Steps to reproduce. On a new project:</p>
+<pre><code>uv init
+uv add netifaces
+</code></pre>
+<p>results in:</p>
+<pre><code>Using Python 3.10.14
+Creating virtualenv at: .venv
+Resolved 2 packages in 1ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: netifaces==0.11.0
+  Caused by: Build backend failed to build wheel through `build_wheel()` with exit status: 1
+--- stdout:
+running bdist_wheel
+running build
+running build_ext
+checking for getifaddrs...not found. (cached)
+checking for getnameinfo...not found. (cached)
+checking for socket IOCTLs...not found. (cached)
+checking for optional header files...none found. (cached)
+checking whether struct sockaddr has a length field...no. (cached)
+checking which sockaddr_xxx structs are defined...none! (cached)
+checking for routing socket support...no. (cached)
+checking for sysctl(CTL_NET...) support...no. (cached)
+checking for netlink support...no. (cached)
+building 'netifaces' extension
+clang -pthread -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -g -fwrapv -O3 -Wall -fPIC -fPIC -DNETIFACES_VERSION=0.11.0 -I/home/romaia/.cache/uv/builds-v0/.tmpbYhrAX/include -I/home/romaia/.local/share/uv/python/cpython-3.10.14-linux-x86_64-gnu/include/python3.10 -c netifaces.c -o build/temp.linux-x86_64-cpython-310/netifaces.o
+--- stderr:
+netifaces.c:210:6: error: You need to add code for your platform.
+  210 | #    error You need to add code for your platform.
+      |      ^
+netifaces.c:1469:22: warning: unused variable 'defaults' [-Wunused-variable]
+ 1469 |   PyObject *result, *defaults;
+      |                      ^~~~~~~~
+1 warning and 1 error generated.
+error: command '/usr/bin/clang' failed with exit code 1
+</code></pre>
+<p>but if I run:</p>
+<pre><code>uv pip install netifaces
+Resolved 1 package in 1ms
+Installed 1 package in 0.61ms
+ + netifaces==0.11.0
+</code></pre>
+<p>It install successfully, and after that, uv add works:</p>
+<pre><code>uv add netifaces
+Resolved 2 packages in 2ms
+Audited 1 package in 0.01ms
+</code></pre>
+<p>I am not sure if its a problem with netifaces itself, but since uv pip works, seems like a issue with uv add</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 13:16</div>
+            <div class="timeline-body"><p>For whatever reason, that <code>uv pip install netifaces</code> is not building the package. It must've already been built and cached by the time you ran that command (otherwise, we'd see <code>Prepared 1 package in...</code>). So I suspect something else is going on here...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-11 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @charliermarsh on 2024-09-11 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> removed by @charliermarsh on 2024-09-11 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/romaia">@romaia</a> on 2024-09-11 17:48</div>
+            <div class="timeline-body"><p>Indeed, testing on 3 fresh vms (ubuntu 24/22/20), the problem does not happen, so I guess something in my current setup is kinda of broken.</p>
+<p>Will try to dig deeper to find out what.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-11 20:23</div>
+            <div class="timeline-body"><p>netifaces has wheels for python 3.8 (all platforms?) and 3.9 (not all platforms)? And no pre-built wheels available for newer pythons (&gt;=3.10). So python version will be important for what happens there. You can use a strength of uv - easy to switch python version - configure python 3.8 for the project and that should work well for netifaces - judging from the wheel list on PyPI (See the download files view).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-27 14:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:46 UTC
+    </footer>
+</body>
+</html>

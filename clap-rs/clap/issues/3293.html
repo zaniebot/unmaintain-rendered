@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`SocketAddr` can not be parsed from env - clap-rs/clap #3293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`SocketAddr` can not be parsed from env</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3293">#3293</a>
+        opened by <a href="https://github.com/benthillerkus">@benthillerkus</a>
+        on 2022-01-13 19:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/benthillerkus">@benthillerkus</a> on 2022-01-13 19:02</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.57.0 (f1edd0429 2021-11-29)</p>
+<h3>Clap Version</h3>
+<p>3.0.6</p>
+<h3>Minimal reproducible code</h3>
+<p><em><code>src/main.rs</code></em></p>
+<pre><code class="language-rust">use clap::Parser;
+use std::net::SocketAddr;
+
+#[derive(Parser)]
+pub struct Args {
+    #[clap(short)]
+    address: SocketAddr,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    println!(&quot;{}&quot;, args.address);
+}
+
+</code></pre>
+<p><em><code>Cargo.toml</code></em></p>
+<pre><code class="language-TOML">[package]
+edition = &quot;2021&quot;
+name = &quot;clap-socket-address-from-env&quot;
+version = &quot;0.1.0&quot;
+
+[dependencies]
+clap = {version = &quot;3.0.6&quot;, features = [&quot;derive&quot;, &quot;env&quot;]}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Set environment variable <code>address</code><ul>
+<li>For example in PowerShell as <code>$ENV:address = 127.0.0.1:1234</code></li>
+<li>Or use the dotenv crate to load the vars from a file before parsing</li>
+</ul>
+</li>
+<li><code>cargo run</code></li>
+</ol>
+<h3>Actual Behaviour</h3>
+<pre><code>error: The following required arguments were not provided:
+    -a &lt;ADDRESS&gt;
+
+USAGE:
+    clap-socket-address-from-env.exe -a &lt;ADDRESS&gt;
+
+For more information try --help
+error: process didn't exit successfully: `target\debug\clap-socket-address-from-env.exe` (exit code: 2)
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>127.0.0.1:1234
+</code></pre>
+<h3>Additional Context</h3>
+<ul>
+<li>I'm on Windows 10 Pro 21H2 19044.1415</li>
+<li><code>cargo run -- -a 127.0.0.1:1234</code> works as expected</li>
+</ul>
+<h3>Debug Output</h3>
+<pre><code>     Running `target\debug\clap-socket-address-from-env.exe`
+[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:clap-socket-address-from-env
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_check_help_and_version: Removing generated version
+[            clap::build::app]  App::_propagate_global_args:clap-socket-address-from-env
+[            clap::build::app]  App::_derive_display_order:clap-socket-address-from-env
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:address
+[clap::build::app::debug_asserts]       App::_verify_positionals
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::_build
+[      clap::parse::validator]  Validator::validate
+[         clap::parse::parser]  Parser::add_env: Checking arg `--help`
+[         clap::parse::parser]  Parser::add_env: Checking arg `-a &lt;ADDRESS&gt;`
+[         clap::parse::parser]  Parser::add_defaults
+[         clap::parse::parser]  Parser::add_defaults:iter:address:
+[         clap::parse::parser]  Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser]  Parser::add_value:iter:address: doesn't have default vals
+[         clap::parse::parser]  Parser::add_value:iter:address: doesn't have default missing vals 
+[      clap::parse::validator]  Validator::validate_conflicts
+[      clap::parse::validator]  Validator::validate_exclusive
+[      clap::parse::validator]  Validator::validate_required: required=ChildGraph([Child { id: address, children: [] }])
+[      clap::parse::validator]  Validator::gather_requirements
+[      clap::parse::validator]  Validator::validate_required:iter:aog=address
+[      clap::parse::validator]  Validator::validate_required:iter: This is an arg
+[      clap::parse::validator]  Validator::is_missing_required_ok: address
+[      clap::parse::validator]  Validator::validate_arg_conflicts: a=&quot;address&quot;
+[      clap::parse::validator]  Validator::missing_required_error; incl=[]
+[      clap::parse::validator]  Validator::missing_required_error: reqs=ChildGraph([Child { id: address, children: [] }])
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=true, incl_last=true
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs={address}
+[         clap::output::usage]  Usage::get_required_usage_from:iter:address
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val=[&quot;-a &lt;ADDRESS&gt;&quot;]
+[      clap::parse::validator]  Validator::missing_required_error: req_args=[
+    &quot;-a &lt;ADDRESS&gt;&quot;,
+]
+[         clap::output::usage]  Usage::create_usage_with_title
+[         clap::output::usage]  Usage::create_usage_no_title
+[         clap::output::usage]  Usage::create_help_usage; incl_reqs=true
+[         clap::output::usage]  Usage::get_required_usage_from: incls=[], matcher=false, incl_last=false
+[         clap::output::usage]  Usage::get_required_usage_from: unrolled_reqs={address}
+[         clap::output::usage]  Usage::get_required_usage_from:iter:address
+[         clap::output::usage]  Usage::get_required_usage_from: ret_val=[&quot;-a &lt;ADDRESS&gt;&quot;]
+[         clap::output::usage]  Usage::needs_options_tag
+[         clap::output::usage]  Usage::needs_options_tag:iter: f=help
+[         clap::output::usage]  Usage::needs_options_tag:iter Option is built-in
+[         clap::output::usage]  Usage::needs_options_tag:iter: f=address
+[         clap::output::usage]  Usage::needs_options_tag:iter Option is required
+[         clap::output::usage]  Usage::needs_options_tag: [OPTIONS] not required
+[         clap::output::usage]  Usage::create_help_usage: usage=clap-socket-address-from-env.exe -a &lt;ADDRESS&gt;
+[            clap::build::app]  App::color: Color setting...
+[            clap::build::app]  Auto
+error: The following required arguments were not provided:
+    -a &lt;ADDRESS&gt;
+
+USAGE:
+    clap-socket-address-from-env.exe -a &lt;ADDRESS&gt;
+
+For more information try --help
+error: process didn't exit successfully: `target\debug\clap-socket-address-from-env.exe` (exit code: 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @benthillerkus on 2022-01-13 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benthillerkus">@benthillerkus</a> on 2022-01-13 19:05</div>
+            <div class="timeline-body"><p>Sorry, this was user error, forgot the env macro argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @benthillerkus on 2022-01-13 19:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:52 UTC
+    </footer>
+</body>
+</html>

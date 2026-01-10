@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `uv venv` to throw error instead of prompting - astral-sh/uv #15475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `uv venv` to throw error instead of prompting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15475">#15475</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2025-08-23 17:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-23 17:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I often use imperative  commands as part of a script, e.g. <code>uv pip</code>, <code>uv venv</code>.</p>
+<p>I therefore want them to fail with a non-zero status code when they can't complete an action.</p>
+<p>But it appears <code>uv venv</code> only has two options when the directory it's writing to is non-empty:</p>
+<ul>
+<li>Automatically delete everything in the directory,</li>
+<li>Prompt for user interaction.</li>
+</ul>
+<p>But I want <code>uv venv</code> to fail without user prompt, is that currently possible? I don't see an option.</p>
+<h3>Example</h3>
+<pre><code class="language-bash">cd /
+uv venv .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @notatallshaw on 2025-08-23 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-23 18:45</div>
+            <div class="timeline-body"><p><code>uv venv</code> should fail without a tty instead of prompting, are you seeing otherwise?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-23 18:46</div>
+            <div class="timeline-body"><p>Anyway, the fix is to add <code>--no-clear</code> which will always error if it needs to clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-08-23 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-23 19:22</div>
+            <div class="timeline-body"><blockquote>
+<p><code>uv venv</code> should fail without a tty instead of prompting, are you seeing otherwise?</p>
+</blockquote>
+<p>Don't think that's relevant to my use case of running a bash script locally?</p>
+<p>Create <code>test_tty.sh</code>:</p>
+<pre><code class="language-bash">if tty -s; then
+  echo &quot;Has a TTY&quot;
+else
+  echo &quot;No TTY&quot;
+fi
+</code></pre>
+<p>Then:</p>
+<pre><code class="language-bash">$ bash test_tty.sh 
+Has a TTY
+</code></pre>
+<p>As a side note, as someone who has wrote far too many shell scripts, I don't love commands behaving differently based on environment output capabilities, at most I would only want the output to change, and even then I would always want an option to make it the same regardless of environment.</p>
+<p>This kind of magic, where a command tries to preempt the user and &quot;do the right thing&quot;, can cause a lot of pain to script users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-23 19:23</div>
+            <div class="timeline-body"><p>The alternative was going straight to a hard-failure, which we didn't want to do since it's a disruptive breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "All `uv venv` to throw error instead of prompting" to "Allow `uv venv` to throw error instead of prompting" by @notatallshaw on 2025-08-23 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-08-23 19:35</div>
+            <div class="timeline-body"><blockquote>
+<p>The alternative was going straight to a hard-failure, which we didn't want to do since it's a disruptive breaking change.</p>
+</blockquote>
+<p>I personally would have preferred this, it's consistent and logical, though I understand the compromise it has made <code>uv venv</code> magical in a way that other imperative commands aren't.</p>
+<p>And it's incorrectly documented:</p>
+<p><a href="https://docs.astral.sh/uv/reference/cli/#uv-venv">uv venv docs</a> still document old behavior:</p>
+<blockquote>
+<p>If a virtual environment exists at the target path, it will be removed and a new, empty virtual environment will be created.</p>
+</blockquote>
+<p>And <a href="https://docs.astral.sh/uv/reference/cli/#uv-venv--clear">clear flag docs</a> actually state <code>uv venv</code> will exit with an error, nothing about the user prompt:</p>
+<blockquote>
+<p>Remove any existing files or directories at the target path.</p>
+<p>By default, uv venv will exit with an error if the given path is non-empty. The --clear option will instead clear a non-empty path before creating a new virtual environment.</p>
+<p>May also be set with the UV_VENV_CLEAR environment variable.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15485.html">astral-sh/uv#15485</a> on 2025-08-24 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15538.html">astral-sh/uv#15538</a> on 2025-08-26 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshithvh">@harshithvh</a> on 2025-09-11 14:10</div>
+            <div class="timeline-body"><p>@notatallshaw is this fixed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-09-11 14:14</div>
+            <div class="timeline-body"><p>@harshithvh No</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-22 13:36</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/uv/pull/15795</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-22 13:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

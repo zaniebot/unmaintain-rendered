@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positional bool panics - clap-rs/clap #5135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Positional bool panics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5135">#5135</a>
+        opened by <a href="https://github.com/gierens">@gierens</a>
+        on 2023-09-25 10:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gierens">@gierens</a> on 2023-09-25 10:37</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>stable-x86_64-unknown-linux-gnu unchanged - rustc 1.72.0 (5680fa18f 2023-08-23)</p>
+<h3>Clap Version</h3>
+<p>clap v4.4.4 and clap_derive 4.4.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+#[clap(name = &quot;MyApp&quot;, version = &quot;1.0&quot;)]
+struct Args {
+    #[clap(help = &quot;Enable or disable something&quot;)]
+    enabled: bool,
+}
+
+fn main() {
+    let _ = Args::parse();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code> panics while <code>cargo build</code> does not complain about anything.</p>
+<h3>Actual Behaviour</h3>
+<pre><code class="language-console">$ cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/clap-bug-positional-bool`
+thread 'main' panicked at 'Argument 'enabled` is positional, it must take a value', /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/debug_asserts.rs:747:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Ideally this should work as if <code>enabled</code> were some other type like <code>i64</code> for example, or this should already fail on compilation rather than during runtime.</p>
+<h3>Additional Context</h3>
+<p>I'm working on a CLI client that has the command <code>user tfa &lt;id&gt; &lt;enabled&gt;</code> to either enable or disable TFA for a user. Due to this panic this is not possible however, or at least not with a positional bool.</p>
+<p>Or is there any more argument for the attribute needed to accomplish this?</p>
+<h3>Debug Output</h3>
+<p>With debug and backtrace:</p>
+<pre><code class="language-console">$ RUST_BACKTRACE=1 cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/clap-bug-positional-bool`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;MyApp&quot;
+[clap_builder::builder::command]Command::_propagate:MyApp
+[clap_builder::builder::command]Command::_check_help_and_version:MyApp expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --version
+[clap_builder::builder::command]Command::_propagate_global_args:MyApp
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:enabled
+thread 'main' panicked at 'Argument 'enabled` is positional, it must take a value', /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/debug_asserts.rs:747:9
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:593:5
+   1: core::panicking::panic_fmt
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:67:14
+   2: clap_builder::builder::debug_asserts::assert_arg
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/debug_asserts.rs:747:9
+   3: clap_builder::builder::debug_asserts::assert_app
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/debug_asserts.rs:58:9
+   4: clap_builder::builder::command::Command::_build_self
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/command.rs:3984:13
+   5: clap_builder::builder::command::Command::_do_parse
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/command.rs:3855:9
+   6: clap_builder::builder::command::Command::try_get_matches_from_mut
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/command.rs:791:9
+   7: clap_builder::builder::command::Command::get_matches_from
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/command.rs:662:9
+   8: clap_builder::builder::command::Command::get_matches
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/builder/command.rs:571:9
+   9: clap_builder::derive::Parser::parse
+             at /home/sandro/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.4.4/src/derive.rs:27:27
+  10: clap_bug_positional_bool::main
+             at ./src/main.rs:12:13
+  11: core::ops::function::FnOnce::call_once
+             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @gierens on 2023-09-25 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-09-25 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-09-25 11:59</div>
+            <div class="timeline-body"><p>The relevant piece of documentation is the <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-types">arg types</a>.  What you need to do is override the implicit <code>action = ArgAction::SetTrue</code> with <code>action = ArgAction::Set</code>.</p>
+<p><code>SetTrue</code> with flags is common enough that I wouldn't want to change that.  I'm also concerned with the communication problems of specializing this based on positional or not.  We could move this error to being a compilation error but then we start duplicating a lot of work (see also #3864).</p>
+<p>Closing in favor of #4467 which is tracking this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-09-25 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gierens">@gierens</a> on 2023-09-25 15:01</div>
+            <div class="timeline-body"><p>Ah alright, thanks for the quick and precise response. Yeah, <code>ArgAction::SetTrue</code> is definitely more common than positional bools and thus makes sense as default.</p>
+<p>While I am satisfied with all the infos now, I still fear that more people could fall into this trap and especially with a rare thing such as positional bools easily assume this runtime warning is an actual bug and report it. Would it maybe make sense to add a hint regarding the arg types to the assert message here? Or does it handle to many other cases as well for this to be too specific?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5136.html">clap-rs/clap#5136</a> on 2023-09-25 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-09-25 15:19</div>
+            <div class="timeline-body"><p>Good idea.  #5136 is at least a slight improvement</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:30 UTC
+    </footer>
+</body>
+</html>

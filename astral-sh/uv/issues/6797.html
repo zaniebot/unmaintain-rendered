@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` does not install a workspace member's dependency with extra - astral-sh/uv #6797</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` does not install a workspace member's dependency with extra</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6797">#6797</a>
+        opened by <a href="https://github.com/shunichironomura">@shunichironomura</a>
+        on 2024-08-29 09:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shunichironomura">@shunichironomura</a> on 2024-08-29 09:04</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h2>Context</h2>
+<p>Consider the following project structure where:</p>
+<ul>
+<li>The root project is the workspace root with two members: <code>a-lib</code> and <code>an-app</code></li>
+<li>The root project has <code>a-lib</code> as a dependency</li>
+<li>The <code>a-lib</code> library has an optional dependency <code>network = [&quot;httpx&gt;=0.27.2&quot;]</code></li>
+<li>The <code>an-app</code> application has a dependency <code>&quot;a-lib[network]&quot;</code></li>
+</ul>
+<pre><code>.
+├── README.md
+├── a-lib
+│   ├── README.md
+│   ├── pyproject.toml
+│   └── src
+│       └── a_lib
+│           └── __init__.py
+├── an-app
+│   ├── app.py
+│   └── pyproject.toml
+├── hello.py
+├── pyproject.toml
+└── uv.lock
+</code></pre>
+<h2>Expected behavior</h2>
+<ul>
+<li><code>uv sync</code> should install <code>httpx</code> as:<ul>
+<li><code>httpx</code> is in the <code>network</code> extra of <code>a-lib</code></li>
+<li><code>a-lib[network]</code> is a dependency of <code>an-app</code>, which is a workspace member</li>
+</ul>
+</li>
+</ul>
+<h2>Actual behavior</h2>
+<ul>
+<li>Running <code>uv sync</code> in the repository root does not install <code>httpx</code>.</li>
+</ul>
+<p>Output of <code>uv sync -v</code>:</p>
+<pre><code>DEBUG uv 0.4.0
+DEBUG Found project root: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Found workspace root: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding current workspace member: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/a-lib`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/an-app`
+DEBUG Searching for Python &gt;=3.12 in managed installations or system path
+DEBUG Searching for managed installations at `/Users/nomura/Library/Application Support/uv/python`
+DEBUG Found managed installation `cpython-3.12.5-macos-aarch64-none`
+DEBUG Found `cpython-3.12.5-macos-aarch64-none` at `/Users/nomura/Library/Application Support/uv/python/cpython-3.12.5-macos-aarch64-none/bin/python3` (managed installations)
+Using Python 3.12.5
+Creating virtualenv at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Acquired lock for `/Users/nomura/Library/Caches/uv/built-wheels-v3/editable/927367c801095033`
+DEBUG Found static `pyproject.toml` for: a-lib @ file:///Users/nomura/tmp/uv-opt-dep/a-lib
+DEBUG Found workspace root: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding root workspace member: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding current workspace member: `/Users/nomura/tmp/uv-opt-dep/a-lib`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/an-app`
+DEBUG Acquired lock for `/Users/nomura/Library/Caches/uv/built-wheels-v3/path/380ad038dfb54863`
+DEBUG Found static `pyproject.toml` for: an-app @ file:///Users/nomura/tmp/uv-opt-dep/an-app
+DEBUG Found workspace root: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding root workspace member: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding current workspace member: `/Users/nomura/tmp/uv-opt-dep/an-app`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/a-lib`
+DEBUG Acquired lock for `/Users/nomura/Library/Caches/uv/built-wheels-v3/path/f80ace0e74a88082`
+DEBUG Found static `pyproject.toml` for: uv-opt-dep @ file:///Users/nomura/tmp/uv-opt-dep
+DEBUG Found workspace root: `/Users/nomura/tmp/uv-opt-dep/`
+DEBUG Adding current workspace member: `/Users/nomura/tmp/uv-opt-dep/`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/a-lib`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/an-app`
+DEBUG Acquired lock for `/Users/nomura/Library/Caches/uv/built-wheels-v3/editable/927367c801095033`
+DEBUG Found static `pyproject.toml` for: a-lib @ file:///Users/nomura/tmp/uv-opt-dep/a-lib
+DEBUG Found workspace root: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding root workspace member: `/Users/nomura/tmp/uv-opt-dep`
+DEBUG Adding current workspace member: `/Users/nomura/tmp/uv-opt-dep/a-lib`
+DEBUG Adding discovered workspace member: `/Users/nomura/tmp/uv-opt-dep/an-app`
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 10 packages in 1ms
+DEBUG Using request timeout of 30s
+DEBUG Directory source requirement already cached: a-lib==0.1.0 (from file:///Users/nomura/tmp/uv-opt-dep/a-lib)
+Installed 1 package in 0.78ms
+ + a-lib==0.1.0 (from file:///Users/nomura/tmp/uv-opt-dep/a-lib)
+</code></pre>
+<ul>
+<li>If you remove the <code>project.optional-dependencies</code> section from <code>a-lib/pyproject.toml</code> and run <code>uv add httpx --optional network</code>, it <em>will</em> install <code>httpx</code> as expected. However, running <code>uv sync</code> will remove <code>httpx</code> again.</li>
+</ul>
+<h2>For reproduction</h2>
+<p>For reproduction, please follow the instruction on this repository: https://github.com/shunichironomura/uv-opt-dep</p>
+<h2>Environment</h2>
+<ul>
+<li>uv platform: macOS</li>
+<li>uv version: <code>uv 0.4.0 (d9bd3bc7a 2024-08-28)</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv sync` does not install a member's dependency with extra" to "`uv sync` does not install a workspace member's dependency with extra" by @shunichironomura on 2024-08-29 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 13:01</div>
+            <div class="timeline-body"><p>Thanks for the thorough writeup and repro, I will read it closely and take a look today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-29 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 14:08</div>
+            <div class="timeline-body"><p>I cloned the repo, but the root <code>pyproject.toml</code> was missing the extra:</p>
+<pre><code class="language-diff">--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -4,7 +4,7 @@ version = &quot;0.1.0&quot;
+ description = &quot;Add your description here&quot;
+ readme = &quot;README.md&quot;
+ requires-python = &quot;&gt;=3.12&quot;
+-dependencies = [&quot;a-lib&quot;]
++dependencies = [&quot;a-lib[network]&quot;]
+
+ [tool.uv.sources]
+ a-lib = { workspace = true }
+</code></pre>
+<p>After that, it works as expected. Can you give it a try?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-29 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shunichironomura">@shunichironomura</a> on 2024-08-29 14:47</div>
+            <div class="timeline-body"><p>Thank you for the comment, it worked. However, although adding the extra in the root <code>pyproject.toml</code> is a valid workaround, my intention was to reflect the actual requirements that the extra is only required by the <code>an-app</code>, and not required by the root project (i.e., the <code>hello.py</code> script in the above example).</p>
+<p>Or maybe specifying different extras for one dependency across workspace members is invalid in the first place?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 14:51</div>
+            <div class="timeline-body"><p>You may be looking for <code>uv sync --package an-app</code>? This would sync the dependencies of <code>an-app</code>, rather than the workspace root. (They use the same lockfile though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shunichironomura">@shunichironomura</a> on 2024-08-29 15:09</div>
+            <div class="timeline-body"><p>Now I realized that I had a wrong mental model of how <code>uv</code> workspace works. I assumed running <code>uv sync</code> will install the union of workspace members' dependencies into the virtualenv where you can work on all the workspace member packages at the same time. But you actually select which project's dependencies to install from the lock file, which is shared by the workspace members... Sorry for taking your time.</p>
+<p>So in the development phase, do I need to run <code>uv sync (--package ...)</code> every time I change the workspace member to work on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-29 15:26</div>
+            <div class="timeline-body"><p>If you use <code>uv run</code> or <code>uv run --package</code>, uv will automatically sync prior to running the command (if you're out-of-sync). Alternatively, if you <code>uv run</code> or <code>uv sync</code> from <em>within</em> the member directory (like, in <code>./an-app</code>), it will automatically sync that member.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shunichironomura">@shunichironomura</a> on 2024-08-29 15:39</div>
+            <div class="timeline-body"><p>Understood. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @shunichironomura on 2024-08-29 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vvuk">@vvuk</a> on 2024-10-30 20:29</div>
+            <div class="timeline-body"><p>Hmm -- this behaviour was pretty unexpected. I've got a workspace set up with a number of members that are plugins (comfyui custom node directories) to comfyui. I've got a pyproject.toml set up for each of them, but comfyui doesn't actually directly depend on them; they're discovered dynamically.</p>
+<p>I'd really like <code>uv sync</code> in the workspace root to install all dependencies (basically, everything in the lock file) up front. Is there any reason to not do this? Otherwise I'd need to manually uv sync every single plugin. Worst case a flag like <code>uv sync --all</code>, but I'd think that should be the default in the workspace root and there should be a flag to limit to just the workspace root. (Rough-and-very-imperfect analogy to <code>cargo</code> -- a <code>cargo build</code> in the workspace root builds all projects; it's explicitly a workspace after all.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 20:37</div>
+            <div class="timeline-body"><p>@vvuk -- You might be interested in https://github.com/astral-sh/uv/issues/5727 -- probably better to discuss there than in this closed issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:35 UTC
+    </footer>
+</body>
+</html>

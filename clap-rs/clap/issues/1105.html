@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A `.required(true).takes_value(true)` arg is successfully assigned no value if followed by a recognized option - clap-rs/clap #1105</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A `.required(true).takes_value(true)` arg is successfully assigned no value if followed by a recognized option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1105">#1105</a>
+        opened by <a href="https://github.com/ExpHP">@ExpHP</a>
+        on 2017-11-13 03:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ExpHP">@ExpHP</a> on 2017-11-13 03:53</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<ul>
+<li><code>rustc 1.23.0-nightly (ee2286149 2017-11-07)</code></li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li>2.27.1</li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<p>If an argument has the following settings:</p>
+<pre><code class="language-yaml">required: true
+takes_value: true
+multiple: false
+</code></pre>
+<p>then <code>value_of(&quot;argument&quot;)</code> should never be <code>None</code>. (<code>get_matches</code> should fail before that ever happens)</p>
+<h3>Actual Behavior Summary</h3>
+<p>If such an argument <em>is followed by a valid option</em>, then <code>get_matches()</code> succeeds, but <code>value_of(&quot;argument&quot;)</code> is <code>None</code>.</p>
+<p>(note: arguments with <code>allow_hyphen_values(true)</code> are not affected, as in that case it interprets the option as being the argument's value)</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p><a href="https://play.rust-lang.org/?gist=19d09e2558dac2eae65f4a75a6b03f20&amp;version=stable">playground</a></p>
+<pre><code class="language-rust">extern crate clap;
+
+fn main() {
+    use ::clap::{App, Arg};
+    let matches = App::new(&quot;prog&quot;)
+        .arg(Arg::with_name(&quot;pat&quot;)
+            .takes_value(true)
+            .required(true)
+            .multiple(false)
+            .allow_hyphen_values(false)
+            .long(&quot;pattern&quot;))
+        .arg(Arg::with_name(&quot;force&quot;)
+            .short(&quot;f&quot;))
+        .get_matches_from(vec![
+            &quot;prog&quot;, &quot;--pattern&quot;, &quot;-f&quot;
+        ]);
+    
+    assert!(matches.value_of(&quot;pat&quot;).is_some());
+}
+</code></pre>
+<pre><code>thread 'main' panicked at 'assertion failed: matches.value_of(&quot;pat&quot;).is_some()', src/main.rs:17:4
+</code></pre>
+<h3>Debug output</h3>
+<details>
+
+<pre><code>DEBUG:clap:Parser::propagate_settings: self=prog, g_settings=AppFlags(                                                                                       
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO                                                                            
+)                                                                                                                                                            
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--pattern&quot;' ([45, 45, 112, 97, 116, 116, 101, 114, 110])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;--pattern&quot;, Needs Val of=NotFound
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--pattern&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:OptBuilder::fmt:pat
+DEBUG:clap:Parser::parse_long_arg: Found valid opt '--pattern &lt;pat&gt;'
+DEBUG:clap:Parser::parse_opt; opt=pat, val=None
+DEBUG:clap:Parser::parse_opt; opt.settings=ArgFlags(REQUIRED | EMPTY_VALS | TAKES_VAL | DELIM_NOT_SET)
+DEBUG:clap:Parser::parse_opt; Checking for val...None
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=pat
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=pat
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:Parser::parse_opt: More arg vals required...
+DEBUG:clap:arg_post_processing!;
+DEBUG:clap:OptBuilder::fmt:pat
+DEBUG:clap:arg_post_processing!: Is '--pattern &lt;pat&gt;' in overrides...No
+DEBUG:clap:OptBuilder::fmt:pat
+DEBUG:clap:arg_post_processing!: Does '--pattern &lt;pat&gt;' have overrides...No
+DEBUG:clap:OptBuilder::fmt:pat
+DEBUG:clap:arg_post_processing!: Does '--pattern &lt;pat&gt;' have conflicts...No
+DEBUG:clap:OptBuilder::fmt:pat
+DEBUG:clap:arg_post_processing!: Does '--pattern &lt;pat&gt;' have requirements...No
+DEBUG:clap:_handle_group_reqs!;
+DEBUG:clap:Parser:get_matches_with: After parse_long_arg Opt(&quot;pat&quot;)
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;-f&quot;' ([45, 102])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;-f&quot;, Needs Val of=Opt(&quot;pat&quot;)
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: - found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::parse_short_arg: full_arg=&quot;-f&quot;
+DEBUG:clap:Parser::parse_short_arg:iter:f
+DEBUG:clap:Parser::parse_short_arg:iter:f: Found valid flag
+DEBUG:clap:Parser::check_for_help_and_version_char;
+DEBUG:clap:Parser::check_for_help_and_version_char: Checking if -f is help or version...Neither
+DEBUG:clap:Parser::parse_flag;
+DEBUG:clap:ArgMatcher::inc_occurrence_of: arg=force
+DEBUG:clap:ArgMatcher::inc_occurrence_of: first instance
+DEBUG:clap:Parser::groups_for_arg: name=force
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:arg_post_processing!;
+DEBUG:clap:arg_post_processing!: Is '-f' in overrides...No
+DEBUG:clap:arg_post_processing!: Does '-f' have overrides...No
+DEBUG:clap:arg_post_processing!: Does '-f' have conflicts...No
+DEBUG:clap:arg_post_processing!: Does '-f' have requirements...No
+DEBUG:clap:_handle_group_reqs!;
+DEBUG:clap:Parser:get_matches_with: After parse_short_arg Flag
+DEBUG:clap:Validator::validate;
+DEBUG:clap:Parser::add_defaults;
+DEBUG:clap:Parser::add_defaults:iter:pat: doesn't have conditional defaults
+DEBUG:clap:Parser::add_defaults:iter:pat: doesn't have default vals
+DEBUG:clap:Validator::validate_blacklist: blacklist=[]
+DEBUG:clap:Validator::validate_required: required=[&quot;pat&quot;];
+DEBUG:clap:Validator::validate_required:iter:pat:
+DEBUG:clap:Validator::validate_matched_args;
+DEBUG:clap:Validator::validate_matched_args:iter:pat: vals=[]
+DEBUG:clap:Validator::validate_arg_num_vals;
+DEBUG:clap:Validator::validate_values: arg=&quot;pat&quot;
+DEBUG:clap:Validator::validate_arg_requires;
+DEBUG:clap:Validator::validate_arg_num_occurs: a=pat;
+DEBUG:clap:Validator::validate_matched_args:iter:force: vals=[]
+DEBUG:clap:Validator::validate_arg_requires;
+DEBUG:clap:Validator::validate_arg_num_occurs: a=force;
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;pat&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;pat&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:pat:
+DEBUG:clap:OptBuilder::fmt:pat
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=force;
+DEBUG:clap:Parser::groups_for_arg: name=force
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::needs_flags_tag:iter: [FLAGS] required
+DEBUG:clap:usage::create_help_usage: usage=prog [FLAGS] --pattern &lt;pat&gt;
+DEBUG:clap:ArgMatcher::get_global_values: global_arg_vec=[]
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ExpHP">@ExpHP</a> on 2017-11-13 04:00</div>
+            <div class="timeline-body"><p>Note: This looks suspiciously like #665 which was supposedly fixed.</p>
+<p>Adding <code>.empty_values(false)</code> as mentioned by @kbknapp near the end causes it to (correctly) fail with</p>
+<pre><code>error: The argument '--pattern &lt;pat&gt;' requires a value but none was supplied
+</code></pre>
+<p>but I don't see how there is an &quot;empty value&quot; here, nor can I possibly imagine why an empty value would produce <code>None</code> instead of <code>Some(&quot;&quot;)</code>.</p>
+<pre><code class="language-rust">// by my measure...
+[&quot;prog&quot;, &quot;--pattern=&quot;, &quot;-f&quot;]    // has an empty value
+[&quot;prog&quot;, &quot;--pattern&quot;, &quot;&quot;, &quot;-f&quot;] // has an empty value
+[&quot;prog&quot;, &quot;--pattern&quot;, &quot;-f&quot;]     // no empty value here (args in sample code above)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-13 20:13</div>
+            <div class="timeline-body"><p>Thanks for reporting this and all the details!</p>
+<p>You've correctly assessed everything. The problem stems from clap conflating two subjectively distinct versions of &quot;empty values.&quot;</p>
+<p>As time has gone on, I've grown more opinionated about what an &quot;empty value&quot; is, and what should be allowed by default. I'll spare the history of why it is the way it is currently, and just state what I think it should be going forward to fix this.</p>
+<p>An empty value is one that is <em>explicitly and intentionally</em> blank. This would mean <strong>only</strong> the following would qualify as an empty value:</p>
+<ul>
+<li><code>--option &quot;&quot;</code></li>
+<li><code>--option=&quot;&quot;</code></li>
+<li><code>--option=</code></li>
+<li><code>-o=&quot;&quot;</code></li>
+<li><code>-o=</code></li>
+<li><code>-o &quot;&quot;</code></li>
+<li><code>-o&quot;&quot;</code></li>
+</ul>
+<p>Note: <code>--option=&quot;&quot;</code> and <code>--option=</code> are actually the same thing as the shell strips <code>&quot;&quot;</code> from the end. Same with <code>-o=</code> and <code>-o=&quot;&quot;</code>. This also means <code>-o&quot;&quot;</code> and <code>-o</code> are actually the same as well.</p>
+<p>Note 2: depending on the shell a single quote may work as well (<code>'</code>)`</p>
+<p>Currently, the following <em>also</em> qualify as an empty value, which I'm finally declaring as a bug:</p>
+<ul>
+<li><code>--option</code></li>
+<li><code>-o</code></li>
+</ul>
+<p>Here's the summary in table form (assuming <code>empty_values(true)</code>, which is default):</p>
+<p>| Invocation | Current | Future |
+| ------------- | ---------- | -------- |
+| <code>--option</code>  | <code>None</code>  | Bug |
+| <code>--option &quot;&quot;</code>  | <code>Some(&quot;&quot;)</code>  | :white_check_mark: |
+| <code>--option=</code> / <code>--option=&quot;&quot;</code>  | <code>Some(&quot;&quot;)</code>  | :white_check_mark: |
+| <code>-o</code>  | <code>None</code>  | Bug |
+| <code>-o &quot;&quot;</code>  | <code>Some(&quot;&quot;)</code>  | :white_check_mark: |
+| <code>-o&quot;&quot;</code>  | <code>None</code>  | Bug |
+| <code>-o=</code> / <code>-o=&quot;&quot;</code>  | <code>Some(&quot;=&quot;)</code>  | Bug |</p>
+<p>Note the strange findings with <code>-o=</code> and <code>o=&quot;&quot;</code> which is absolutely a bug, but of a different nature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: options</span> added by @kbknapp on 2017-11-13 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-11-13 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2017-11-13 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2017-11-13 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-11-13 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ExpHP">@ExpHP</a> on 2017-11-13 21:23</div>
+            <div class="timeline-body"><p>In my opinion, it feels funny to even be considering <code>&quot;&quot;</code> as having its own meaning in arguments, since my mind just naturally runs through the shell expansion rules; when you write <code>-o&quot;&quot;</code>, I see <code>-o</code>. :stuck_out_tongue_winking_eye: (or perhaps, &quot;-o&quot;)</p>
+<p>I'm glad that you plan to change this case to an error, because it feels to me like a recipe for trouble to be trying to guess the user's intent based on guessing where quotes <em>used to be</em> in the input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-13 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>In my opinion, it feels funny to even be considering &quot;&quot; as having its own meaning in arguments, since my mind just naturally runs through the shell expansion rules; when you write -o&quot;&quot;, I see -o</p>
+</blockquote>
+<p>The way Rust (or shells in general?) pass the argv to clap, <code>--option &quot;&quot;</code> sends two distinct values, <code>--option</code> and <code>&quot;&quot;</code>. Whereas <code>--option=&quot;&quot;</code> the shell strips the <code>&quot;&quot;</code> as you stated.</p>
+<p>Some users want the ability to pass in empty values (i.e. when a value <em>should</em> be required, however sometimes a blank value is what is desired).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-13 22:08</div>
+            <div class="timeline-body"><p>This is fixed in #1109</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-11-14 00:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2017-11-14 00:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:41 UTC
+    </footer>
+</body>
+</html>

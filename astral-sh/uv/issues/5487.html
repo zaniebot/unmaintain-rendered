@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for the `pip-compile-multi` use case? - astral-sh/uv #5487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for the `pip-compile-multi` use case?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5487">#5487</a>
+        opened by <a href="https://github.com/mistercrunch">@mistercrunch</a>
+        on 2024-07-26 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-07-26 17:44</div>
+            <div class="timeline-body"><p>For <a href="https://github.com/apache/superset/">Apache Superset</a>, we have fairly complex dependency management and have to use <a href="https://pip-compile-multi.readthedocs.io/en/latest/why.html">pip-compile-multi</a> as a result.</p>
+<p><code>pip-compile-multi</code> is pretty much simply pip-compile with support for <code>.in</code> files to reference other <code>.in</code> files, making it such that you can create say a <code>base.in</code> file and build say a <code>ci.in</code> file or <code>dev.in</code> file that references that base file, allowing use to do a bit of composition with dependencies and keeping things DRY.</p>
+<p>The main issue with pip-compile-multi are that 1. it's slow, 2. it's not compatible with <code>dependabot</code> and 3. I don't think it's actively maintained</p>
+<p>I'm curious whether <code>uv</code> has support for this use case and/or whether it may be on the roadmap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/superset/pulls/28158.html">apache/superset#28158</a> on 2024-07-26 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 18:34</div>
+            <div class="timeline-body"><p>We support those kinds of <code>-r</code> references in <code>.in</code> files. Is the benefit of <code>pip-compile-multi</code> that the <em>output</em> file <em>also</em> contains a <code>-r</code>, to avoid duplicating the dependencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-07-26 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-07-26 21:08</div>
+            <div class="timeline-body"><p>Yes that's exactly it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-10-07 00:31</div>
+            <div class="timeline-body"><p>Hey, so say in the simple/common case where I want to manage a prod and dev setup (as documented here https://docs.astral.sh/uv/pip/compile/#locking-requirements):</p>
+<p>So presumably I would do both</p>
+<pre><code># for prod
+uv pip compile pyproject.toml -o requirements-dev.txt
+# and for dev
+uv pip compile pyproject.toml requirements-dev.in -o requirements-dev.txt
+
+</code></pre>
+<p>That's all dandy, but now how do i guarantee that dev stays aligned with prod for the dependencies that they have in common? Presumably if i run both at the same time, with a little bit of luck they should stay aligned, though that's unless there's a conflict between the two. Say dev may have a sub-dependency that forces an older version of a shared/common dependency.</p>
+<p>It's not a simple problem to solve, but it's a common/important use case.</p>
+<p>Any way to provide these guarantees using uv currently? Any hope that'd get on the roadmap? Also what would be the best solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-08 21:59</div>
+            <div class="timeline-body"><p>@mistercrunch -- I think the common solution here would be to do something like this:</p>
+<pre><code># For prod...
+uv pip compile pyproject.toml -o requirements-prod.txt
+# For dev
+uv pip compile pyproject.toml requirements-dev.in -c requirements-prod.txt -o requirements-dev.txt
+</code></pre>
+<p>So, you use the output of the first command as a <em>constraint</em> for the second command. Then the versions will be kept in sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-10-11 03:25</div>
+            <div class="timeline-body"><p>Oh, smart! I should have thought of that. Is it guaranteed to produce matching version for all common libs and fail if somehow it can't find a match? I guess if it's not 100% guaranteed I could write a simple script to assert that common libs match as part of our CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adRn-s">@adRn-s</a> on 2024-10-11 13:17</div>
+            <div class="timeline-body"><p>I'm going through some effort myself trying to adopt <code>uv</code> in my workflow. It would be great if there was a <code>uv pip compile-multi -d ./requirements/</code> available that one could use as drop-in... I was having multiple requirements folders, preparing the requirements.txt for multiple python versions (<a href="https://github.com/maxplanck-ie/parkour2/blob/20c205eae4493b51ea2d0bdecec7b3a2a9e03f49/.github/workflows/deps.yml#L34">here</a>) (Yes, in the past I was bitten by the fact that a requirements.txt wouldn't &quot;compile&quot; in a given python version that I wasn't using but thought it was supporting, hence this workflow..).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-10-11 17:45</div>
+            <div class="timeline-body"><p>One thing on my side is ensuring my future <code>uv</code> setup is going to work nicely with @dependabot. Related to this I found this here -&gt; https://github.com/dependabot/dependabot-core/issues/10039. In the past, with <code>pip-compile-multi</code>, I had to write my own dependabot replacement to account for our <code>pip-compile-multi</code> setup.</p>
+<p>Clearly there's more traction with <code>uv</code> (I think <code>pip-compile-multi</code> is on life-support and the dependabot integration ticket doesn't have traction). So it makes more sense to push for a uv/dependabot integration as opposed to a pip-compile-multi/dependabot integration. From my understanding, in its current state, dependabot is probably going to look at our <code>pyproject.toml</code> in isolation while running a pip-compile behind the scene (it simply doesn't know about our specific needs around pinning multiple package sets)</p>
+<p>Ideally the dependency management system would have semantics/conventions about supporting different setups (while keeping common libs on the same version). Ideally <code>uv</code> would understand those semantics and dependabot would integrate deeply enough with <code>uv</code> to support those requirements.</p>
+<p>Stepping back, it seems like this should be a very common need and arguably should be in-scope for <code>uv</code> (?) Does anyone know how it works in other mature languages/dependency-management tools? Maybe we could get some inspiration from other ecosystems (?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dependabot/dependabot-core/issues/10039.html">dependabot/dependabot-core#10039</a> on 2024-10-11 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mistercrunch">@mistercrunch</a> on 2024-10-11 17:55</div>
+            <div class="timeline-body"><p>Taking a deeper look into the <a href="https://github.com/dependabot/dependabot-core/pull/10040/files#diff-cfdfa62e3736b300829e12892bda75558e1b396be42cd340ff0d58000b3c335dR257">PR adding uv support to dependabot</a> (open Pr as of the time of this comment), it looks like it's set up to have dependabot run a simple <code>uv pip compile</code> command. So if we add semantics in <code>uv</code> about supporting &quot;atomic multi-outputs&quot;, dependabot should do the right thing. Here there any existing config file or env vars we could use to make it such that <code>uv</code> would run a series of commands (as suggested in the comment above https://github.com/astral-sh/uv/issues/5487#issuecomment-2400895477)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-10-21 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-10-21 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-21 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/superset/pulls/30750.html">apache/superset#30750</a> on 2024-10-30 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../dependabot/dependabot-core/pulls/10040.html">dependabot/dependabot-core#10040</a> on 2024-10-30 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

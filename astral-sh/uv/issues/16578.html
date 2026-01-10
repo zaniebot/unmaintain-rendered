@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--no-project` has no effect if a project virtual environment already exists (.venv) - astral-sh/uv #16578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--no-project` has no effect if a project virtual environment already exists (.venv)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16578">#16578</a>
+        opened by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a>
+        on 2025-11-03 11:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-03 11:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When running <code>uv run</code> with the <code>--no-project</code> flag, it should ignore the project’s virtual environment (<code>.venv</code>).</p>
+<p>However, if a <code>.venv</code> already exists in the project directory, <code>uv</code> still includes it in <code>sys.path</code>, causing the project’s dependencies to be accessible - even when explicitly using <code>--no-project</code>.</p>
+<hr />
+<h4><strong>Steps to Reproduce</strong></h4>
+<ol>
+<li><p>Create a project with uv:</p>
+<pre><code class="language-bash">uv init venus
+cd venus
+
+uv sync
+uv add django
+</code></pre>
+</li>
+<li><p>Run a Python file using:</p>
+<pre><code class="language-bash">uv run --no-project --with pyjwt -- python main.py
+</code></pre>
+</li>
+<li><p>Inside <code>main.py</code>, print <code>sys.path</code> and import a dependency installed in <code>.venv</code>:</p>
+<pre><code class="language-python">import sys
+print(sys.path)
+
+import django
+print(django)
+</code></pre>
+</li>
+</ol>
+<hr />
+<h4><strong>Observed Output</strong></h4>
+<pre><code class="language-python">['/home/dhaval/Open-Source/venus',
+ '/usr/local/lib/python38.zip',
+ '/usr/local/lib/python3.8',
+ '/usr/local/lib/python3.8/lib-dynload',
+ '/home/dhaval/.cache/uv/builds-v0/.tmphekDoG/lib/python3.8/site-packages',
+ '/home/dhaval/.cache/uv/archive-v0/U2tMbkpBCr3aqAMJz6gD6/lib/python3.8/site-packages',
+ '/home/dhaval/Open-Source/venus/.venv/lib/python3.8/site-packages']
+</code></pre>
+<p>Notice the last line - the project’s <code>.venv</code> site-packages directory is still added to <code>sys.path</code>, and because of this Django can be imported even though it is not included in the <code>--with</code> flag:</p>
+<pre><code class="language-python">&lt;module 'django' from '/home/dhaval/Open-Source/venus/.venv/lib/python3.8/site-packages/django/__init__.py'&gt;
+</code></pre>
+<hr />
+<h4><strong>Expected Behavior</strong></h4>
+<p>When <code>--no-project</code> is used:</p>
+<ul>
+<li>The project’s <code>.venv</code> <strong>should not</strong> be added to <code>sys.path</code>.</li>
+<li>Only packages specified with <code>--with</code> should be accessible.</li>
+</ul>
+<hr />
+<h4><strong>Workaround</strong></h4>
+<p>If we delete virtual environment manually at <code>.venv</code>:</p>
+<pre><code class="language-bash">rm -rf .venv
+uv run --no-project --with pyjwt -- python main.py
+</code></pre>
+<h4><strong>Observed Output</strong></h4>
+<pre><code class="language-python">['/home/dhaval/Open-Source/venus',
+ '/usr/local/lib/python38.zip',
+ '/usr/local/lib/python3.8',
+ '/usr/local/lib/python3.8/lib-dynload',
+ '/home/dhaval/.cache/uv/builds-v0/.tmphekDoG/lib/python3.8/site-packages',
+ '/home/dhaval/.cache/uv/archive-v0/U2tMbkpBCr3aqAMJz6gD6/lib/python3.8/site-packages'
+</code></pre>
+<p>Then, the behavior is correct:
+The project's <code>.venv</code> is not added to <code>sys.path</code> , and Django is not accessible.</p>
+<pre><code class="language-python">ModuleNotFoundError: No module named 'django'
+</code></pre>
+<hr />
+<h4><strong>Summary</strong></h4>
+<ul>
+<li>✅ Works correctly when <code>.venv</code> <strong>does not exist</strong></li>
+<li>❌ Fails when <code>.venv</code> <strong>already exists</strong></li>
+<li>Expected: <code>--no-project</code> should fully ignore the existing <code>.venv</code>, even if present.</li>
+</ul>
+<hr />
+<h4><strong>Additional Context</strong></h4>
+<p>This issue makes it impossible to isolate ephemeral runs with <code>--no-project</code> if a local <code>.venv</code> already exists - which defeats the purpose of <code>--no-project</code> when testing isolated dependency contexts.</p>
+<h3>Platform</h3>
+<p>Linux 6.8.0-45-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.7</p>
+<h3>Python version</h3>
+<p>Python 3.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @DhavalGojiya on 2025-11-03 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-03 11:52</div>
+            <div class="timeline-body"><p>I think the reason this happens when <code>.venv</code> is available and gets appended to <code>sys.path</code> is that - even after specifying
+<code>--no-project</code> - <strong>uv</strong> still needs a Python interpreter to run the file.</p>
+<p>From the verbose log (When <code>.venv</code> exists):</p>
+<pre><code>&gt; uv run -v --no-project --with pyjwt -- python main.py
+
+DEBUG uv 0.9.7
+DEBUG Acquired shared lock for `/home/dhaval/.cache/uv`
+DEBUG Found project root: `/home/dhaval/Open-Source/venus`
+DEBUG No workspace root found, using project root
+DEBUG Ignoring discovered project due to `--no-project`
+DEBUG No project found; searching for Python interpreter
+DEBUG Reading Python requests from version file at `/home/dhaval/Open-Source/venus/.python-version`
+DEBUG Searching for Python 3.8 in virtual environments, managed installations, or search path
+
+DEBUG Found `cpython-3.8.10-linux-x86_64-gnu` at `/home/dhaval/Open-Source/venus/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.8.10 interpreter at: /home/dhaval/Open-Source/venus/.venv/bin/python3
+
+DEBUG At least one requirement is not satisfied in the base environment: pyjwt
+DEBUG Syncing `--with` requirements to cached environment
+DEBUG Assessing Python executable as base candidate: /home/dhaval/Open-Source/venus/.venv/bin/python3
+DEBUG Assessing Python executable as base candidate: /home/dhaval/Open-Source/venus/.venv/bin/python
+DEBUG Assessing Python executable as base candidate: /usr/local/bin/python3.8
+DEBUG Caching via base interpreter: `/usr/local/bin/python3.8`
+</code></pre>
+<p>It finds the Python interpreter at:</p>
+<pre><code>DEBUG Found `cpython-3.8.10-linux-x86_64-gnu` at `/home/dhaval/Open-Source/venus/.venv/bin/python3` (virtual environment)
+</code></pre>
+<p>And because of how Python works under the hood, the interpreter itself adds its own <code>/site-packages</code> directory to <code>sys.path</code>, which causes this issue.</p>
+<p>Not sure whether this is an actual bug or expected behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-03 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>When running uv run with the --no-project flag, it should ignore the project’s virtual environment (.venv).</p>
+</blockquote>
+<p>This only disables project discovery, but not general <code>.venv</code> discovery.</p>
+<p>It sounds like you want <code>uv run --no-project --isolated</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-03 16:30</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>When running uv run with the --no-project flag, it should ignore the project’s virtual environment (.venv).</p>
+</blockquote>
+<p>This only disables project discovery, but not general <code>.venv</code> discovery.</p>
+<p>It sounds like you want <code>uv run --no-project --isolated</code>?</p>
+</blockquote>
+<p>Thanks for your reply, zanieb.<br />
+Yes, I am familiar with <code>--isolated</code>.<br />
+It creates a completely isolated virtual environment without installing any project dependencies.</p>
+<p>While working with <code>uv run</code>, I came across this behavior and decided to post it to verify whether it's a bug or expected behavior.<br />
+Since your answer clarifies that <code>.venv</code> discovery isn’t disabled when using <code>--no-project</code>, that clears up a lot.</p>
+<p>If this is the intended behavior, I can close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-03 17:23</div>
+            <div class="timeline-body"><p>Yeah let's close this as intended for now unless we hear from other people that are confused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-03 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivierdelree">@olivierdelree</a> on 2025-11-04 13:00</div>
+            <div class="timeline-body"><p>I would like to +1 the confusion.
+From my point of view, passing <code>--no-project</code> also sounds like it would run in an environment that has nothing to do with the project. Still using the <code>.venv</code> directory is unexpected but I don't think a behaviour change is really required. Instead, specifying in the CLI help that <code>.venv</code> discovery still happens and/or that <code>--isolated</code> might be desired for a truly clean environment should be enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-04 13:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I would like to +1 the confusion. From my point of view, passing <code>--no-project</code> also sounds like it would run in an environment that has nothing to do with the project. Still using the <code>.venv</code> directory is unexpected but I don't think a behaviour change is really required. Instead, specifying in the CLI help that <code>.venv</code> discovery still happens and/or that <code>--isolated</code> might be desired for a truly clean environment should be enough.</p>
+</blockquote>
+<p>I think it would be great if, in the <code>uv</code> documentation, they wrote a note like:</p>
+<blockquote>
+<p><strong>Note:</strong> Specifying <code>--no-project</code> will only disable project discovery and <strong>not</strong> the normal Python search resolution order (i.e., virtual environments, managed installations, and search path discovery).</p>
+</blockquote>
+<p>CC: @zanieb</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install --python 3.9 does not find correct Python - astral-sh/uv #3837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install --python 3.9 does not find correct Python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3837">#3837</a>
+        opened by <a href="https://github.com/aaltat">@aaltat</a>
+        on 2024-05-26 12:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aaltat">@aaltat</a> on 2024-05-26 12:29</div>
+            <div class="timeline-body"><p>In GitHub actions, I install uv with pip and then run command: <code>uv pip install wheel --python 3.9</code>. Before the 0.2.0 release, this used to work fine and uv did discover Python. Now after 0.2.0 release, I see error: <code>error: No interpreter found for Python 3.9 in all sources</code> also with the latest 0.2.3 release. If I enable <code>--verbose</code> flag in the command, I see this</p>
+<pre><code class="language-bash">DEBUG Searching for Python 3.9 in all sources
+DEBUG Found CPython 3.9.19 at `/opt/hostedtoolcache/Python/3.9.19/x64/bin/python3.9` (search path)
+DEBUG Ignoring Python interpreter at `/opt/hostedtoolcache/Python/3.9.19/x64/bin/python3.9`: system interpreter not explicit
+DEBUG Found CPython 3.9.19 at `/opt/hostedtoolcache/Python/3.9.19/x64/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/opt/hostedtoolcache/Python/3.9.19/x64/bin/python3`: system interpreter not explicit
+DEBUG Found CPython 3.9.19 at `/opt/hostedtoolcache/Python/3.9.19/x64/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/opt/hostedtoolcache/Python/3.9.19/x64/bin/python`: system interpreter not explicit
+DEBUG Found CPython 3.9.19 at `/opt/hostedtoolcache/Python/3.9.19/x64/python` (search path)
+DEBUG Ignoring Python interpreter at `/opt/hostedtoolcache/Python/3.9.19/x64/python`: system interpreter not explicit
+DEBUG Found CPython 3.10.12 at `/usr/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/usr/bin/python3`: system interpreter not explicit
+DEBUG Found CPython 3.10.12 at `/usr/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/usr/bin/python`: system interpreter not explicit
+DEBUG Found CPython 3.10.12 at `/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/bin/python3`: system interpreter not explicit
+DEBUG Found CPython 3.10.12 at `/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/bin/python`: system interpreter not explicit
+error: No interpreter found for Python 3.9 in all sources
+
+</code></pre>
+<p>Based on the debug log, it seems to find Python3.9, but it seems that ti does not use it, which is somewhat strange. I also tried with <code>--python python3.9</code>  and with <code>--python python3.9.19</code> but it gives same results.</p>
+<p>The following error from Github provided latest Ubuntu (https://github.com/MarketSquare/robotframework-browser/actions/runs/9243009654/job/25426578331), but I can see similar error also with Mac and Linux too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-26 13:14</div>
+            <div class="timeline-body"><p>Assuming this is CI, try adding <code>--system</code> (e.g. <code>uv pip install wheel --python 3.9 --system</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-26 14:52</div>
+            <div class="timeline-body"><p>Thanks for the report. You can either provide the full path e.g. <code>--system /opt/hostedtoolcache/Python/3.9.19/x64/bin/python3.9</code> which will opt-in to that system interpreter since it is explicitly selected or, as @samypr100 noted, use the <code>--system</code> flag. You currently can't provide <em>both</em> the <code>--system</code> and <code>--python</code> flags, though we just enabled this in https://github.com/astral-sh/uv/pull/3830.</p>
+<p>~We should update the behavior when <code>--system</code> and <code>--python</code> are used together to &quot;allow&quot; system interpreters to be selected by version requests.~ edit: Now that we support passing both flags, you <em>can</em> request specific criteria for the system interpreter. It should be available in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-05-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3841.html">astral-sh/uv#3841</a> on 2024-05-26 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-26 17:12</div>
+            <div class="timeline-body"><p>This should be fixed in 0.2.4 which is going out right now. Let us know if you have any more questions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-05-26 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaltat">@aaltat</a> on 2024-05-26 17:45</div>
+            <div class="timeline-body"><p>So I should use <code>uv pip install wheel --python 3.9 —system</code> with 0.2.4 release</p>
+<p>And thank you for speedy fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-26 17:53</div>
+            <div class="timeline-body"><p>@zanieb - Do we not allow system Pythons to be discovered with <code>--python 3.9</code>? Why not? It seems like it makes <code>--python 3.9</code> not very useful, since otherwise it can effectively only be used to validate the virtualenv? Perhaps I'm misunderstanding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaltat">@aaltat</a> on 2024-05-26 19:08</div>
+            <div class="timeline-body"><p>I did try 0.2.4 in my GitHub Actions and it seems to work with --system flag.</p>
+<p>Although I do agree also with previous comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-26 19:27</div>
+            <div class="timeline-body"><p>@charliermarsh I don't think we should modify system environments without the <code>--system</code> flag or <em>explicit</em> selection of the interpreter (I think specifying a version is too implicit). <code>--python 3.9</code> is still useful for things like <code>pip compile</code> and <code>uv venv</code> in which we will happily select the system interpreter without opt-in because we are not going to modify its environment. I imagine in the future we will detect multiple virtual environments or user-level environments and <code>--python 3.9</code> will be useful for mutating commands (like <code>pip install</code>) without the additional <code>--system</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaltat">@aaltat</a> on 2024-05-26 19:46</div>
+            <div class="timeline-body"><p>Well, I was too hasty, it did not work in Windows (although this looks like different issue), I run <code>uv pip install wheel --python 3.9  --system --verbose</code>.</p>
+<pre><code class="language-cmd">DEBUG Searching for Python 3.9 in search path or `py` launcher output
+DEBUG Found CPython 3.9.13 at `C:\hostedtoolcache\windows\Python\3.9.13\x64\python3.exe` (search path)
+DEBUG Using Python 3.9.13 environment at C:\hostedtoolcache\windows\Python\3.9.13\x64\python3.exe
+DEBUG Acquired lock for `C:\hostedtoolcache\windows\Python\3.9.13\x64`
+DEBUG At least one requirement is not satisfied: wheel
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.9.13
+DEBUG Adding direct dependency: wheel*
+DEBUG No cache entry for: https://pypi.org/simple/wheel/
+DEBUG Searching for a compatible version of wheel (*)
+DEBUG Selecting: wheel==0.43.0 (wheel-0.43.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7d/cd/d7460c9a869b16c3dd4e1e403cce337df165368c71d6af229a74699622ce/wheel-0.43.0-py3-none-any.whl.metadata
+DEBUG Tried 2 versions: root 1, wheel 1
+Resolved 1 package in 24ms
+DEBUG Identified uncached requirement: wheel==0.43.0
+DEBUG Unnecessary package: argcomplete==3.3.0
+DEBUG Unnecessary package: click==8.1.7
+DEBUG Unnecessary package: colorama==0.4.6
+DEBUG Unnecessary package: packaging==24.0
+DEBUG Preserving seed package: pip==24.0
+DEBUG Unnecessary package: pipx==1.5.0
+DEBUG Unnecessary package: platformdirs==4.2.1
+DEBUG Preserving seed package: setuptools==58.1.0
+DEBUG Unnecessary package: tomli==2.0.1
+DEBUG Unnecessary package: userpath==1.9.2
+DEBUG Preserving seed package: uv==0.2.4
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/7d/cd/d7460c9a869b16c3dd4e1e403cce337df165368c71d6af229a74699622ce/wheel-0.43.0-py3-none-any.whl
+Downloaded 1 package in 161ms
+Installed 1 package in 122ms
+ + wheel==0.43.0
+Resolved 94 packages in 11.27s
+Downloaded 87 packages in 14.49s
+error: failed to remove file `C:\hostedtoolcache\windows\Python\3.9.13\x64\Lib\site-packages\../../Scripts/uv.exe`
+  Caused by: Access is denied. (os error 5)
+Error: Process completed with exit code 1.
+</code></pre>
+<p>But 0.2.4 works in Linux and Mac.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-26 20:10</div>
+            <div class="timeline-body"><p>Can you please provide a full reproduction for that? The trace alone isn’t really enough. You’re trying to uninstall uv itself from the environment that it’s running in, so I need to understand how you got into that state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaltat">@aaltat</a> on 2024-05-27 14:38</div>
+            <div class="timeline-body"><p>Our project is public one: https://github.com/MarketSquare/robotframework-browser/blob/main/.github/workflows/on-push.yml#L22. I get windows latest from GitHub</p>
+<p>Then we setup few dependencies, like NodeJS and Python (which should not affect, hopefully). After that we update pip, install uv with pip and try to install wheel with uv, where it fails. The latest try, where the last debug log was pasted is from my PR https://github.com/MarketSquare/robotframework-browser/pull/3620/files#diff-1627952414787bd2f89d526459771a1f2c92a48d7309f7b4e307f81753eedb04R46</p>
+<p>But in practice PR does <code>uv pip install wheel --python 3.9  --system --verbose</code>. I can try to create minimalist example, if you need one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 14:55</div>
+            <div class="timeline-body"><p>Thanks, I'll take a look at your exact project! Unfortunately that command / flow works totally fine on my own Windows machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3865.html">astral-sh/uv#3865</a> on 2024-05-27 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:40</div>
+            <div class="timeline-body"><p>@aaltat -- I think I diagnosed the issue here: https://github.com/astral-sh/uv/issues/3865#issuecomment-2133815563</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

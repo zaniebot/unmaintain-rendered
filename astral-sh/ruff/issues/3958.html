@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`S101` should ignore `assert` statements in `if TYPE_CHECKING` blocks - astral-sh/ruff #3958</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`S101` should ignore `assert` statements in `if TYPE_CHECKING` blocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3958">#3958</a>
+        opened by <a href="https://github.com/bryanforbes">@bryanforbes</a>
+        on 2023-04-13 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-13 14:11</div>
+            <div class="timeline-body"><p>Ruff version: 0.0.261</p>
+<p>When writing type-checked code, it is sometimes necessary to let the type checker know about conditions it cannot be aware of using <code>if TYPE_CHECKING</code> blocks. Here's a (contrived) example:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+
+class Thing:
+    some_prop: str | None
+
+    def _init(self) -&gt; None:
+        self.some_prop = 'set'
+
+    def _internal_method(self, arg: str) -&gt; None:
+        print(arg)
+
+    def start(self) -&gt; None:
+        self._init()
+
+        if TYPE_CHECKING:
+            assert self.some_prop is not None
+
+        self._internal_method(self.some_prop)
+</code></pre>
+<p>There is no way for the type checker to know that <code>_init()</code> set <code>some_prop</code>, so it still thinks <code>some_prop</code> is <code>str | None</code>, so we have to help it out with an assert statement. Obviously, <code>if TYPE_CHECKING</code> blocks don't run at runtime, so the <code>assert</code> will never run. It would be nice if <code>ruff</code> ignored <code>assert</code> statements in <code>if TYPE_CHECKING</code> blocks for the <code>S101</code> rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3960.html">astral-sh/ruff#3960</a> on 2023-04-13 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-13 18:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

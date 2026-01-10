@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Bug]: Clap grabs the description from the sub crate in the workspace instead of the main crate the sub crate is being compiled into - clap-rs/clap #5834</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Bug]: Clap grabs the description from the sub crate in the workspace instead of the main crate the sub crate is being compiled into</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5834">#5834</a>
+        opened by <a href="https://github.com/lexi-the-cute">@lexi-the-cute</a>
+        on 2024-12-02 09:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lexi-the-cute">@lexi-the-cute</a> on 2024-12-02 09:18</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.83.0 (90b35a623 2024-11-26)</p>
+<h3>Clap Version</h3>
+<p>version = &quot;4.5.21&quot;</p>
+<h3>Minimal reproducible code</h3>
+<p>main.rs root crate</p>
+<pre><code class="language-rust">fn main() {
+    sub::process_args();
+
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>Cargo.toml root crate</p>
+<pre><code class="language-toml">[package]
+name = &quot;clap-test&quot;
+description = &quot;The main crate in the workspace&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[workspace]
+members = [
+    &quot;sub&quot;
+]
+
+[dependencies]
+sub = { version = &quot;0.1.0&quot;, package = &quot;sub&quot;, path = &quot;sub&quot; }
+</code></pre>
+<p>lib.rs sub crate</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug, Clone)]
+#[command(
+    author,
+    about,
+    long_about = None
+)]
+/// List of possible command line arguments
+pub struct Args {}
+
+pub fn process_args() {
+    Args::parse();
+}
+</code></pre>
+<p>Cargo.toml sub crate</p>
+<pre><code class="language-toml">[package]
+name = &quot;sub&quot;
+description = &quot;The sub crate in the workspace&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+clap = { version = &quot;~4&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+<p>Full minimal test crate can be found at https://github.com/lexi-the-cute/clap-test</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- --help</p>
+<h3>Actual Behaviour</h3>
+<pre><code>$ cargo run -- --help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/clap-test --help`
+The sub crate in the workspace
+
+Usage: clap-test
+
+Options:
+  -h, --help  Print help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The output should follow the same convention as the name of the root crate listed in the Usage line. It should display the description from <code>clap-test</code> and not <code>sub</code></p>
+<pre><code>$ cargo run -- --help
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/clap-test --help`
+The main crate in the workspace
+
+Usage: clap-test
+
+Options:
+  -h, --help  Print help
+</code></pre>
+<h3>Additional Context</h3>
+<p>The issue can be worked around with the below code</p>
+<pre><code class="language-rust">#[command(
+    author,
+    about=&quot;The main crate in the workspace&quot;,
+    long_about = None
+)]
+</code></pre>
+<h3>Debug Output</h3>
+<pre><code>$ cargo run -- --help
+    Blocking waiting for file lock on build directory
+   Compiling adler2 v2.0.0
+   Compiling gimli v0.31.1
+   Compiling memchr v2.7.4
+   Compiling libc v0.2.167
+   Compiling rustc-demangle v0.1.24
+   Compiling cfg-if v1.0.0
+   Compiling miniz_oxide v0.8.0
+   Compiling object v0.36.5
+   Compiling addr2line v0.24.2
+   Compiling backtrace v0.3.74
+   Compiling clap_builder v4.5.21
+   Compiling clap v4.5.21
+   Compiling sub v0.1.0 (/home/alexis/Documents/software/clap-test/sub)
+   Compiling clap-test v0.1.0 (/home/alexis/Documents/software/clap-test)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.85s
+     Running `target/debug/clap-test --help`
+[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;sub&quot;
+[clap_builder::builder::command]Command::_propagate:sub
+[clap_builder::builder::command]Command::_check_help_and_version:sub expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:sub
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;--help&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;--help&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_long_arg
+[clap_builder::parser::parser]Parser::parse_long_arg: Does it contain '='...
+[clap_builder::parser::parser]Parser::parse_long_arg: Found valid arg or flag '--help'
+[clap_builder::parser::parser]Parser::parse_long_arg(&quot;help&quot;): Presence validated
+[clap_builder::parser::parser]Parser::react action=Help, identifier=Some(Long), source=CommandLine
+[clap_builder::parser::parser]Help: use_long=true
+[clap_builder::builder::command]Command::long_help_exists: false
+[clap_builder::builder::command]Command::write_help_err: sub, use_long=false
+[clap_builder::builder::command]Command::long_help_exists: false
+[  clap_builder::output::help]write_help
+[clap_builder::output::help_template]HelpTemplate::new cmd=sub, use_long=false
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_templated_help
+[clap_builder::output::help_template]HelpTemplate::write_before_help
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::create_usage_no_title
+[ clap_builder::output::usage]Usage::write_help_usage
+[ clap_builder::output::usage]Usage::write_arg_usage; incl_reqs=true
+[ clap_builder::output::usage]Usage::needs_options_tag
+[ clap_builder::output::usage]Usage::needs_options_tag:iter: f=help
+[ clap_builder::output::usage]Usage::needs_options_tag:iter Option is built-in
+[ clap_builder::output::usage]Usage::needs_options_tag: [OPTIONS] not required
+[ clap_builder::output::usage]Usage::write_args: incls=[]
+[ clap_builder::output::usage]Usage::get_args: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::write_subcommand_usage
+[ clap_builder::output::usage]Usage::create_usage_no_title: usage=clap-test
+[clap_builder::output::help_template]HelpTemplate::write_all_args
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_args Options
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::write_args: arg=&quot;help&quot; longest=6
+[clap_builder::output::help_template]should_show_arg: use_long=false, arg=help
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--help
+[clap_builder::output::help_template]HelpTemplate::spec_vals: a=--help
+[clap_builder::output::help_template]HelpTemplate::short
+[clap_builder::output::help_template]HelpTemplate::long
+[clap_builder::output::help_template]HelpTemplate::align_to_about: arg=help, next_line_help=false, longest=6
+[clap_builder::output::help_template]HelpTemplate::align_to_about: positional=false arg_len=6, spaces=2
+[clap_builder::output::help_template]HelpTemplate::help
+[clap_builder::output::help_template]HelpTemplate::help: help_width=14, spaces=10, avail=86
+[clap_builder::output::help_template]HelpTemplate::write_after_help
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+[clap_builder::builder::command]Command::color: Color setting...
+[clap_builder::builder::command]Auto
+The sub crate in the workspace
+
+Usage: clap-test
+
+Options:
+  -h, --help  Print help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @lexi-the-cute on 2024-12-02 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-12-02 16:00</div>
+            <div class="timeline-body"><p>This is not a bug but expected behavior.  The only way for us to get the description is from Cargo and Cargo very intentionally only tells you about your own package and not the packages that depend on you.</p>
+<p>You can workaround this by</p>
+<ul>
+<li>Having the <code>lib</code> expose the <code>Args</code> and flattening it in an <code>Args</code> in your bin</li>
+<li>Having the <code>lib</code> accept a parameter and manually create the <code>Command</code> from <code>Args</code> to pass it in</li>
+<li>Hand write the <code>about</code> as you said.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-12-02 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:42 UTC
+    </footer>
+</body>
+</html>

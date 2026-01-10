@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `--config` in ecosystem checks - astral-sh/ruff #10345</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use `--config` in ecosystem checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10345">#10345</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-03-11 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 21:27</div>
+            <div class="timeline-body"><p>Our ecosystem checks manually overwrite the <code>pyproject.toml</code> file to perform some overrides but now that we have <code>--config</code> support we should use that instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-03-11 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @zanieb on 2024-03-11 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-03-13 14:13</div>
+            <div class="timeline-body"><p>I haven't touched at this part of the ruff codebase yet, but I would be interested in trying to fix this issue.</p>
+<p>Would you have links to help me get started ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 14:24</div>
+            <div class="timeline-body"><p>Yeah basically I think we can replace this whole blurb</p>
+<p>https://github.com/astral-sh/ruff/blob/c269c1a7063bb27e75dc81c2a598eab13aa8b754/python/ruff-ecosystem/ruff_ecosystem/projects.py#L89-L165</p>
+<p>with appending a <code>--config</code> option at</p>
+<p>https://github.com/astral-sh/ruff/blob/c269c1a7063bb27e75dc81c2a598eab13aa8b754/python/ruff-ecosystem/ruff_ecosystem/projects.py#L204-L225</p>
+<p>The idea is to provide the options directly instead of writing them to a file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-03-17 01:51</div>
+            <div class="timeline-body"><p>@zanieb I started looking into this, and I have a few things I would like to ask:</p>
+<h4>1. How to unset / restore to default using <code>--config</code></h4>
+<p>One of the overrides is <code>required-version = null</code>. Currently this just removes the entry from the toml file, however I don't know how to do that from the CLI with <code>--config</code> (since toml does not have <code>null</code>).</p>
+<h4>2. Where to make the changes</h4>
+<p>In order to keep <code>CheckOptions</code> and <code>ConfigOverrides</code> separated, I'm thinking of adding the overrides to the list returned by <code>CheckOptions.to_ruff_args()</code>:</p>
+<pre><code class="language-python">    ruff_args = options.to_ruff_args()
+    ruff_args.append(overrides)
+</code></pre>
+<p>But I could also do it inside of the <code>to_ruff_args</code> method by changing its signature to the one below.</p>
+<pre><code class="language-python">
+    def to_ruff_args(
+        self,
+        config_overrides: ConfigOverrides | None = None,
+    ) -&gt; list[str]:
+</code></pre>
+<p>What do you think about it ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-17 03:48</div>
+            <div class="timeline-body"><ol>
+<li>I'm not sure, I'd have to check. @AlexWaygood added that feature, I presume there's a way to unset keys.</li>
+<li>I don't have a strong preference. <code>options.to_ruff_args() + overrides.to_ruff_args()</code> seems reasonable to start.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10436.html">astral-sh/ruff#10436</a> on 2024-03-17 12:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

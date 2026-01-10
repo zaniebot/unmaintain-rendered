@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff is removing used imports since 0.0.173 version  - astral-sh/ruff #1227</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff is removing used imports since 0.0.173 version </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1227">#1227</a>
+        opened by <a href="https://github.com/Czaki">@Czaki</a>
+        on 2022-12-13 09:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-13 09:01</div>
+            <div class="timeline-body"><p>Since version 0.0.173 (up to 0.0.178 - newest when create this issue) the ruff is removing used imports</p>
+<p>I have two examples:</p>
+<p>https://github.com/4DNucleome/PartSeg/blob/fadc4f8ad9b552386de21bbc2a1ab3e0159f52e7/package/PartSegCore/analysis/io_utils.py#L10-L24</p>
+<p>is converted to:</p>
+<p><img src="https://user-images.githubusercontent.com/3826210/207272087-d57797bc-d27f-4de2-9029-13b4187ec7ea.png" alt="obraz" /></p>
+<p>and remove the type used in type annotation:
+https://github.com/4DNucleome/PartSeg/blob/fadc4f8ad9b552386de21bbc2a1ab3e0159f52e7/package/PartSegCore/mask/io_functions.py#L725</p>
+<p>The <code>ProjectInfoBase</code> is a Protocol if this information is important. In the second case, such import could be hidden under <code>if typing.TYPE_CHECKING:</code> but I use in code other things from this module.</p>
+<p>And even if it should be moved under the type checking clause, the autofix should not just remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-13 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 14:26</div>
+            <div class="timeline-body"><p>Thanks! Will fix. Sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 14:38</div>
+            <div class="timeline-body"><p>In both cases the cause is the same, which is that the import appears to be redefined-while-unused (hence the NoQA), so we then mark the import as unused.</p>
+<p>I could suggest a variety of workarounds… e.g., you could rebind it to a variable of the same name (“Foo = Foo” before the if-statement), or add a NoQA for that case. But, of course, we shouldn’t be removing those.</p>
+<p>I may just have to disable this behavior (of marking redefined-while-unused imports as unused) until we have more extensive branch analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 14:40</div>
+            <div class="timeline-body"><p>(I probably won’t be able to resolve this today just given my schedule but hopefully a NoQA will be ok for you for now?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-14 21:09</div>
+            <div class="timeline-body"><p>Do you mean add noqua to the import line? It may be ok.</p>
+<p>name conditionally redefined should not be removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 21:10</div>
+            <div class="timeline-body"><p>Yeah, I mean adding a <code>noqa</code> to the import line, to avoid marking it as unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-14 23:47</div>
+            <div class="timeline-body"><p>I'm ok with this solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-15 13:18</div>
+            <div class="timeline-body"><p>I try to move problematic imports under if clause and i could create commit that pass <code>pre-commit</code> but when run pre-commit on all files then ruff creates multiple warnings:</p>
+<pre><code>ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+warning: `U` has been remapped to `UP`
+warning: `U` has been remapped to `UP`
+warning: `U` has been remapped to `UP`
+warning: `U` has been remapped to `UP`
+warning: `U` has been remapped to `UP`
+warning: `U` has been remapped to `UP`
+warning: `U` has been remapped to `UP`
+
+</code></pre>
+<p>https://results.pre-commit.ci/run/github/166421141/1671109943.V-T5M9gkRhOblSlqIfxcUA</p>
+<p>That hides real error (in this case E501) because the output is truncated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-19 21:41</div>
+            <div class="timeline-body"><p>@Czaki - Can you try upgrading? I made some improvements to how <code>noqa</code> are handled in those cases <em>and</em> modified the warnings to only omit once per code (you can just change <code>U</code> to <code>UP</code> in your <code>pyproject.toml</code> though hopefully to suppress them entirely).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-19 22:21</div>
+            <div class="timeline-body"><p>I see that pre-commit hook is in version 186 and this repository is in 188. Did I correctly understand that I need to use at least 188 to test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-19 22:48</div>
+            <div class="timeline-body"><p>188 is now up. (There’s a slight delay between the two repos.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-19 22:54</div>
+            <div class="timeline-body"><p>What is the expected change in behavior? <code>noqa</code> in both lines preventing removal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-20 00:53</div>
+            <div class="timeline-body"><p>Yeah, if you apply this diff, Ruff won't touch that member:</p>
+<pre><code class="language-diff">diff --git a/foo.py b/foo.py
+index d72d8d6e..d5d7a367 100644
+--- a/foo.py
++++ b/foo.py
+@@ -7,7 +7,11 @@ import numpy as np
+ import packaging.version
+ 
+ from PartSegCore.mask_create import MaskProperty
+-from PartSegCore.project_info import AdditionalLayerDescription, HistoryElement, ProjectInfoBase
++from PartSegCore.project_info import (
++    AdditionalLayerDescription,
++    HistoryElement,
++    ProjectInfoBase,  # noqa: F401
++)
+ from PartSegCore.roi_info import ROIInfo
+ from PartSegCore.utils import numpy_repr
+ from PartSegImage import Image
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 01:15</div>
+            <div class="timeline-body"><p>Closing for now, but let me know if you continue to run into this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-26 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-12-27 16:11</div>
+            <div class="timeline-body"><p>Thanks :heart:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-27 16:16</div>
+            <div class="timeline-body"><p>You're welcome :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

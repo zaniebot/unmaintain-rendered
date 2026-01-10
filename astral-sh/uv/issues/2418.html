@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question: How to install local python package? - astral-sh/uv #2418</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question: How to install local python package?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2418">#2418</a>
+        opened by <a href="https://github.com/mkleinbort-ic">@mkleinbort-ic</a>
+        on 2024-03-13 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mkleinbort-ic">@mkleinbort-ic</a> on 2024-03-13 15:14</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hi, just struggling with the uv pip install syntax...</p>
+<p>I have a folder called <code>src/</code> with a sub folder <code>projectlib</code> which itself contains a bunch of .py files and folders of .py files</p>
+<p>The directory structure is more or less:</p>
+<pre><code>PROJECT-SOME-RANDOM-NAME/
+   |-&gt; pyproject.toml
+   |-&gt; notebooks/...
+   └-&gt; src/
+         |-&gt; projectlib/
+         |    |-&gt; __init__.py
+         |    |-&gt; data_loading.py
+         |    |-&gt; models/...
+         |    |-&gt; features.py
+         |    └-&gt; analysis/...
+         |
+         └&gt; otherlib/...
+</code></pre>
+<p>Then in a bunch of jupyter notebooks and scripts I simply import things as</p>
+<pre><code class="language-python">from projectlib.data_loading import get_users_from_db
+</code></pre>
+<p>So far I've been installing this via</p>
+<p><code>python -m pip install --user .</code></p>
+<p>ran on the top level folder <code>PROJECT-SOME-RANDOM-NAME</code> (outside <code>src</code>)</p>
+<p>But looking to move to <code>uv</code> (for the obvious reasons)</p>
+<p>I see I can install all the dependencies described in <code>pyproject.toml</code> using</p>
+<p><code>python -m uv pip install --system --prerelease=allow -r pyproject.toml</code></p>
+<p>But not clear on how I can install the <code>projectlib/</code> folder (and maybe also <code>otherlib/</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 15:16</div>
+            <div class="timeline-body"><p>Hi! You're looking for <code>uv pip install -e .</code> or <code>uv pip install &quot;your-project@.&quot;</code></p>
+<p>See #313 for some more details on the second syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-03-13 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkleinbort-ic">@mkleinbort-ic</a> on 2024-03-13 15:25</div>
+            <div class="timeline-body"><p>Yes, that worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mkleinbort-ic on 2024-03-13 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkleinbort-ic">@mkleinbort-ic</a> on 2024-03-15 02:23</div>
+            <div class="timeline-body"><p>Ok, just in case someone comes across this issue...</p>
+<p>I had the problem that when I modified <code>projectlib</code> some changes would not be applied. Meaning that after running</p>
+<p><code>python -m uv pip install --system -e . </code></p>
+<p>I was still loading the previous version installed with <code>python -m pip install . </code></p>
+<p>The issue was that at some point pip had installed <code>projectlib</code> in  <code>~/AppData/Roaming/Python/Python310/site-packages/</code></p>
+<p>Deleting that folder fixed my issue - it had nothing to do with <code>uv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-22 21:28</div>
+            <div class="timeline-body"><p>This is supported as of <code>v0.1.24</code>. You can <code>uv pip install .</code> directly, without including a package name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kazemihabib">@kazemihabib</a> on 2025-03-12 18:08</div>
+            <div class="timeline-body"><p>Is it possible to use a local python package when running a script using <code>uv run --isolated --no-project  --with</code> command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bityob">@bityob</a> on 2025-05-04 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it possible to use a local python package when running a script using <code>uv run --isolated --no-project --with</code> command?</p>
+</blockquote>
+<p>Yes, you can like this -</p>
+<pre><code>uv run --isolated --no-project --with . python
+
+uv run --isolated --no-project --with /path/to/package/directory python
+
+uv run --isolated --no-project --with /path/to/package/directory/foo-0.1.0-py3-none-any.whl python
+</code></pre>
+<p>Source:
+https://docs.astral.sh/uv/concepts/projects/dependencies/#path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpita-mutt">@cpita-mutt</a> on 2025-10-12 16:19</div>
+            <div class="timeline-body"><blockquote>
+<p>You're looking for uv pip install -e . or uv pip install &quot;your-project@.&quot;</p>
+</blockquote>
+<p>Is is possible to achieve the same thing but listing the package directory under dependencies as for everything else, so as to avoid manually calling uv pip install -e . ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

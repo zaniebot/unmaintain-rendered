@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip compile --universal gives contradictory versions of same packages - astral-sh/uv #6269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip compile --universal gives contradictory versions of same packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6269">#6269</a>
+        opened by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a>
+        on 2024-08-20 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-08-20 18:54</div>
+            <div class="timeline-body"><p>Affected versions: uv 0.2.30 to uv 0.3.0+</p>
+<p>Steps to reproduce:</p>
+<ol>
+<li>Create <code>requirements.in</code>:</li>
+</ol>
+<pre><code>alembic==1.8.1
+ipython&gt;=8.4.0
+pylint&gt;=2.14.5
+</code></pre>
+<ol start="2">
+<li>Create <code>constraints.txt</code>:</li>
+</ol>
+<pre><code>dill==0.3.1.1
+exceptiongroup==1.0.0rc8
+</code></pre>
+<ol start="3">
+<li>Run the uv command:</li>
+</ol>
+<pre><code>$ uv pip compile requirements.in -c constraints.txt --universal --python-version 3.10 --annotation-style line 2&gt;/dev/null | grep &quot;astroid==&quot;
+astroid==2.13.5           # via pylint
+astroid==3.2.4 ; python_full_version &lt; '3.11'  # via pylint
+</code></pre>
+<p>Which, if you try and install on Python 3.10 gives you:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because you require astroid==2.13.5 and astroid{python_full_version &lt; '3.11'}==3.2.4, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @zanieb on 2024-08-20 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 18:55</div>
+            <div class="timeline-body"><p>I'll look now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-20 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-08-20 18:56</div>
+            <div class="timeline-body"><p>Very slightly changing the <code>requirements.in</code> or <code>constraints.txt</code>, or moving the constraints into the requirements produces the correct:</p>
+<pre><code>astroid==2.13.5 ; python_full_version &gt;= '3.11'  # via pylint
+astroid==3.2.4 ; python_full_version &lt; '3.11'  # via pylint
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 18:56</div>
+            <div class="timeline-body"><p>Wow very interesting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-20 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 18:59</div>
+            <div class="timeline-body"><p>It looks like #6268 fixes this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-20 18:59</div>
+            <div class="timeline-body"><p>@charliermarsh How are you so fast?!?! Indeed, I just confirmed it's fixed in #6268 too:</p>
+<pre><code>$ cargo r --manifest-path ~/astral/uv/Cargo.toml -p uv -- pip compile requirements.in -c constraints.txt --universal --python-version 3.10 --annotation-style line 2&gt;/dev/null | grep &quot;astroid==&quot;
+astroid==2.13.5 ; python_full_version &gt;= '3.11'  # via pylint
+astroid==3.2.4 ; python_full_version &lt; '3.11'  # via pylint
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 19:01</div>
+            <div class="timeline-body"><p>He has two clones of the repo so he can do twice as much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-20 19:01</div>
+            <div class="timeline-body"><p>Correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6268.html">astral-sh/uv#6268</a> on 2024-08-20 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6412.html">astral-sh/uv#6412</a> on 2024-08-22 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-03 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-03 22:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

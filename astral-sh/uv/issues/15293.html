@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV fails a PySpark resolution - astral-sh/uv #15293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV fails a PySpark resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15293">#15293</a>
+        opened by <a href="https://github.com/tigerhawkvok">@tigerhawkvok</a>
+        on 2025-08-14 23:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tigerhawkvok">@tigerhawkvok</a> on 2025-08-14 23:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider this constraint:</p>
+<p><code>&quot;pyspark~=3.5.2 ; python_version ~= '3.12.0'&quot;</code></p>
+<p>This is derived from the Databricks runtime release: https://docs.databricks.com/aws/en/release-notes/runtime/16.4lts#system-environment</p>
+<blockquote>
+<h2>Apache Spark</h2>
+<p>Databricks Runtime 16.4 LTS includes Apache Spark 3.5.2. [...]</p>
+<h2>System environment</h2>
+<p>[...]</p>
+<ul>
+<li>Python: 3.12.3</li>
+</ul>
+</blockquote>
+<p>The <code>setup.cfg</code> for 3.5.2 and 3.5.6 both allow Python 3.12.x:</p>
+<p>https://github.com/apache/spark/blob/bb7846dd487f259994fdc69e18e03382e3f64f42/python/setup.py#L331</p>
+<p>https://github.com/apache/spark/blob/303c18c74664f161b9b969ac343784c088b47593/python/setup.py#L331</p>
+<p>but the resolver claims:</p>
+<pre><code>  × No solution found when resolving dependencies for split (python_full_version == '3.12.*'):                                                                                                                                              
+  ╰─▶ Because pyhelpers:databricks depends on pyspark{python_full_version == '3.12.*'}==3.5.6 and pyspark{python_full_version == '3.12.*'}==4.0.0, we can conclude that pyhelpers:databricks's requirements are unsatisfiable.
+      And because your project requires pyhelpers:databricks, we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+<p>which, quite clearly, is wrong.</p>
+<h3>Platform</h3>
+<p>windows x64</p>
+<h3>Version</h3>
+<p>uv 0.7.21 (77c771c7f 2025-07-14)</p>
+<h3>Python version</h3>
+<p>Python 3.10.6 (for this build)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @tigerhawkvok on 2025-08-14 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-14 23:13</div>
+            <div class="timeline-body"><p>Can you share your <code>pyproject.toml</code>? I believe that error is saying that the <code>databricks</code> group depends on both <code>pyspark==3.5.6</code> and <code>pyspark==4.0.0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-08-14 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tigerhawkvok">@tigerhawkvok</a> on 2025-08-14 23:27</div>
+            <div class="timeline-body"><p>I used <code>migrate-to-uv</code> to go from this Poetry resolution (that works):</p>
+<pre><code>pyspark = [
+    # We can't support Py3.9 due to `match` statements and issues with
+    # Mosaic 0.3.11 builds on Databricks, which bumps minimum DBR to 13.3
+    # {version= &quot;~3.3.0&quot;, python= &quot;~3.9.0&quot;}, # DBR: 11.3 LTS and DBR: 12.2 LTS
+    # {version= &quot;~3.4.0&quot;, python= &quot;~3.10.0&quot;}, # DBR: 13.3 LTS # for planning
+    # {version= &quot;~3.5.0&quot;, python= &quot;~3.10.0&quot;}, # DBR: 14.3 LTS # for planning
+    {version= &quot;&gt;=3.4.0, &lt;3.6&quot;, python= &quot;~3.10.0&quot;},
+    {version= &quot;~3.5.0&quot;, python= &quot;~3.11.0&quot;}, # DBR: 15.4 LTS
+    {version= &quot;~3.5.2&quot;, python= &quot;~3.12.0&quot;}, # DBR: 16.4 LTS
+]
+</code></pre>
+<p>to this one in uv-land</p>
+<pre><code>requires-python = &quot;&gt;=3.10,&lt;3.14&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    &quot;numpy&gt;=1.26.4,&lt;2&quot;,
+    &quot;pandas[plot, output-formatting, performance, excel, xml, postgresql, sql-other, parquet, feather, aws, compression]&gt;=1.4.0,&lt;2.1&quot;,
+    &quot;pyarrow&gt;=16&quot;,
+    &quot;py4j&gt;=0.10.9.5&quot;,
+    &quot;pyspark&gt;=3.4.0, &lt;3.6 ; python_version ~= '3.10.0'&quot;,
+    &quot;pyspark~=3.5.0 ; python_version ~= '3.11.0'&quot;,
+    &quot;pyspark~=3.5.2 ; python_version ~= '3.12.0'&quot;,
+    &quot;delta-spark&gt;=2.1.0,&lt;3 ; python_version ~= '3.9.0'&quot;,
+    &quot;delta-spark&gt;=2.1.0 ; python_version &gt;= '3.10'&quot;,
+    &quot;typing-extensions&gt;=4.8.0&quot;,
+    &quot;setuptools&gt;=60&quot;,
+    &quot;shapely~=2.0.6&quot;,
+    &quot;folium~=0.20.0&quot;,
+    &quot;toml&gt;=0.10.2,&lt;0.11&quot;,
+]
+</code></pre>
+<p>For Python 3.13+ this might go to pyspark 4 (unclear as there's no LTS runtime yet, but some coworkers use this locally and there's no issue with spark compatibility there), but that shouldn't affect the 3.12 resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-15 09:20</div>
+            <div class="timeline-body"><p>That resolution resolved for me without error. I used this <code>pyproject.toml</code>, then ran <code>uv lock</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.14&quot;
+readme = &quot;README.md&quot;
+dependencies = [
+    &quot;numpy&gt;=1.26.4,&lt;2&quot;,
+    &quot;pandas[plot, output-formatting, performance, excel, xml, postgresql, sql-other, parquet, feather, aws, compression]&gt;=1.4.0,&lt;2.1&quot;,
+    &quot;pyarrow&gt;=16&quot;,
+    &quot;py4j&gt;=0.10.9.5&quot;,
+    &quot;pyspark&gt;=3.4.0, &lt;3.6 ; python_version ~= '3.10.0'&quot;,
+    &quot;pyspark~=3.5.0 ; python_version ~= '3.11.0'&quot;,
+    &quot;pyspark~=3.5.2 ; python_version ~= '3.12.0'&quot;,
+    &quot;delta-spark&gt;=2.1.0,&lt;3 ; python_version ~= '3.9.0'&quot;,
+    &quot;delta-spark&gt;=2.1.0 ; python_version &gt;= '3.10'&quot;,
+    &quot;typing-extensions&gt;=4.8.0&quot;,
+    &quot;setuptools&gt;=60&quot;,
+    &quot;shapely~=2.0.6&quot;,
+    &quot;folium~=0.20.0&quot;,
+    &quot;toml&gt;=0.10.2,&lt;0.11&quot;,
+]
+</code></pre>
+<pre><code class="language-shell">❯ uv lock
+Using CPython 3.13.6
+Resolved 74 packages in 25.17s
+</code></pre>
+<p>Anything I might be missing, to reproduce?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-08-15 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tigerhawkvok">@tigerhawkvok</a> on 2025-08-15 17:43</div>
+            <div class="timeline-body"><p>I came back this morning and suddenly it was working. I blame gremlins.</p>
+<p>~~I'll end up not using uv for this project as <a href="https://docs.astral.sh/uv/concepts/build-backend/#file-inclusion-and-exclusion">UV doesn't support wheel inclusions</a> and multi-root doesn't play nicely with workspaces; so I can't wholesale include a <code>git subtree</code> as a co-equal member, which <a href="https://python-poetry.org/docs/pyproject/#packages">Poetry's package directive</a> handles nicely.~~</p>
+<p>~~This is a moderately common pattern for me (a sub-project that should be entirely self-contained and runnable, but 90% of the time will be used co-equally / as a dependency of a greater project) that requires the &quot;workspace&quot; object to export when building, though perhaps~~</p>
+<pre><code>[tool.uv.build-backend]
+data = { purelib = &quot;path/to/subtree/src/code&quot; }
+</code></pre>
+<p>~~will work, though I'll need to play with that .... seems that specifying a directory includes only that directory's <em>members</em> , rather than the directory itself~~</p>
+<p>Welp I didn't realize I can still use the <code>poetry_core</code> backend to build, so that's delightful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tigerhawkvok on 2025-08-15 17:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[UV ADD] How does it perform in cyclic dependencies?? - astral-sh/uv #10302</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[UV ADD] How does it perform in cyclic dependencies??</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10302">#10302</a>
+        opened by <a href="https://github.com/dsantiago">@dsantiago</a>
+        on 2025-01-05 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dsantiago">@dsantiago</a> on 2025-01-05 16:38</div>
+            <div class="timeline-body"><p>I will try to put here each step done to make sense when trying to install a package...</p>
+<pre><code class="language-bash">
+uv init -p 3.11 AAA # Created a new project for test with python 3.11
+cd AAA # Moved to project folder
+
+uv add genaibook # 1st try. Tried to add desired package but got ERROR for for bitsandbytes package wheel
+uv add bitsandbytes # Tried direct but ofc same error
+uv add https://github.com/bitsandbytes-foundation/bitsandbytes.git # So added via git and now it's OK
+
+uv add genaibook # 2nd try. Now appear to have some cyclic dependencies problem (llvmlite)
+uv add llvmlite # Ok (adding previously mentioned packages)
+
+uv add genaibook # 3rd try. Still more packages  cyclic problem (numba)
+uv add numba # Ok
+
+uv add genaibook # 4th try. Now it runs!!
+
+ uv run python # So now I could run python and import it
+</code></pre>
+<p>Also pyproject was like this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;aaa&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;bitsandbytes&quot;,
+    &quot;genaibook&gt;=0.1.1&quot;,
+    &quot;llvmlite&gt;=0.43.0&quot;,
+    &quot;numba&gt;=0.60.0&quot;,
+]
+
+[tool.uv.sources]
+bitsandbytes = { git = &quot;https://github.com/bitsandbytes-foundation/bitsandbytes.git&quot; }
+</code></pre>
+<p>The question is if all these errors are because this is the <strong>right</strong> way to add dependencies or is there alternative ways to do it with <strong>less</strong> workaround?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[UV ADD] How does it perform in ciclic dependencies??" to "[UV ADD] How does it perform in cyclic dependencies??" by @dsantiago on 2025-01-06 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-07 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:38</div>
+            <div class="timeline-body"><p>Might need more information to help here, like logs on the errors. In general, we'll do our best to solve the dependencies despite cycles. I don't know why changing the installation order would help, other than changing the priority of the packages or constraining the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsantiago">@dsantiago</a> on 2025-01-08 01:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Might need more information to help here, like logs on the errors. In general, we'll do our best to solve the dependencies despite cycles. I don't know why changing the installation order would help, other than changing the priority of the packages or constraining the problem.</p>
+</blockquote>
+<p>Yeah I agree, but the errors sometimes are text massive... I tried to put exactly the commands I did in a fresh project. What I did in the end was to install the dependencies alone from the <code>genaibook</code>. I will put here the sequence screenshoots:</p>
+<p><img width="1437" alt="Image" src="https://github.com/user-attachments/assets/27397197-f62f-4b85-81ac-3fba02662a77" /></p>
+<p><img width="1438" alt="Image" src="https://github.com/user-attachments/assets/fefc8f1c-1da3-4f32-a791-3dd8dfdc23d1" /></p>
+<p><img width="1423" alt="Image" src="https://github.com/user-attachments/assets/b2ab5548-694e-4a20-a261-30549765a9cf" /></p>
+<p>And now it worked:</p>
+<p><img width="1217" alt="Image" src="https://github.com/user-attachments/assets/55f34f3b-76d4-4749-bf78-4de167be01d2" /></p>
+<p>Cuirous this time <code>llvmlite</code> didn't appear in the circular dependency, just <code>numba</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-08 01:41</div>
+            <div class="timeline-body"><p>That error isn't a dependency cycle, that's a build failure; https://docs.astral.sh/uv/reference/build_failures/ provides details on troubleshooting those. Presumably adding the other dependencies first constrained the version of numba to avoid the one that can't build? i.e., uv used <code>numba==0.60.0</code> when installed alone but the build failure was for <code>numba==0.53.1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsantiago">@dsantiago</a> on 2025-01-09 02:00</div>
+            <div class="timeline-body"><p>Ohhh I see, I would not notice it that easily... Thanks for explaining the scenario @zanieb. I will close this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dsantiago on 2025-01-09 05:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dsantiago">@dsantiago</a> on 2025-01-10 06:43</div>
+            <div class="timeline-body"><p>I found out that the problem that was happening here was the same one in this issue https://github.com/astral-sh/uv/issues/7020</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:00 UTC
+    </footer>
+</body>
+</html>

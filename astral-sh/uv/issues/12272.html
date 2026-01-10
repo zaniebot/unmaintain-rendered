@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependency resolution failure in workspaces with identical dependency lists that work in standalone packages - astral-sh/uv #12272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dependency resolution failure in workspaces with identical dependency lists that work in standalone packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12272">#12272</a>
+        opened by <a href="https://github.com/rayanramoul">@rayanramoul</a>
+        on 2025-03-18 10:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rayanramoul">@rayanramoul</a> on 2025-03-18 10:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>First of all thanks Astral team for the amazing tool UV is!</p>
+<h1>Summary</h1>
+<p>The issue is rather simple, the same dependency lists does work if they are in a single package, but does not if the same package is part of a workspace</p>
+<h1>Reproduction</h1>
+<p>Having this <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;subexample&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = []
+
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch==2.3.0&quot;,
+  &quot;torchvision==0.18.0&quot;,
+  &quot;torchmetrics==0.11.*&quot;,
+  &quot;jax==0.4.13&quot;,
+  &quot;jaxlib==0.4.13&quot;,
+]
+gpu = [
+  &quot;torch==2.3.0&quot;,
+  &quot;torchvision==0.18.0&quot;,
+  &quot;torchmetrics==0.11.*&quot;,
+  &quot;jax[cuda11_local]==0.4.13; platform_system != 'Darwin'&quot;,
+  &quot;jaxlib==0.4.13+cuda11.cudnn86; platform_system != 'Darwin'&quot;,
+  &quot;nvidia-cudnn-cu11&gt;=8.6.0; platform_system != 'Darwin'&quot;,
+]
+tpu = [
+  &quot;torch==2.3.0&quot;,
+  &quot;torchvision==0.18.0&quot;,
+  &quot;torchmetrics==0.11.*&quot;,
+  &quot;jax[tpu]==0.4.13; platform_system != 'Darwin'&quot;,
+  &quot;jaxlib===0.4.13; platform_system != 'Darwin'&quot;,
+]
+
+tpu-torch = [
+  &quot;torch==2.3.0&quot;,
+  &quot;torchvision==0.18.0&quot;,
+  &quot;torchmetrics==0.11.*&quot;,
+  &quot;torch_xla[tpu]==2.3.0&quot;,
+]
+
+
+
+[[tool.uv.index]]
+name = &quot;pytorch-cuda11&quot;
+
+
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+
+explicit = true
+
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cuda11&quot;, extra = &quot;gpu&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+]
+
+
+torchvision = [
+  { index = &quot;pytorch-cuda11&quot;, extra = &quot;gpu&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+]
+
+
+[tool.uv]
+prerelease = &quot;allow&quot;
+find-links = [
+  &quot;https://storage.googleapis.com/jax-releases/jax_releases.html&quot;,
+
+  &quot;https://storage.googleapis.com/jax-releases/libtpu_releases.html&quot;,
+  &quot;https://storage.googleapis.com/jax-releases/jax_cuda_releases.html&quot;,
+  &quot;https://storage.googleapis.com/libtpu-releases/index.html&quot;,
+
+]
+
+conflicts = [ # so uv will resolve the groups independently
+  [
+    { extra = &quot;gpu&quot; },
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;tpu&quot; },
+    { extra = &quot;tpu-torch&quot; },
+  ],
+]
+
+
+package = true 
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/subexample&quot;]
+</code></pre>
+<p>in a simple package <code>uv sync</code>  would work, but if this same package is part of a root workspace it would raise the following error when doing <code>uv sync</code> without or without specifying <code>--all-packages</code></p>
+<pre><code>Using CPython 3.10.15
+Creating virtual environment at: .venv
+x No solution found when resolving dependencies:
+  `-&gt; Because there is no version of libtpu-nightly==0.1.dev20240322 and torch-xla[tpu]==2.3.0 depends on libtpu-nightly==0.1.dev20240322, we can conclude that
+      torch-xla[tpu]==2.3.0 cannot be used.
+      And because subexample[tpu-torch] depends on torch-xla[tpu]==2.3.0 and your workspace requires subexample[tpu-torch], we can conclude that your
+      workspace's requirements are unsatisfiable.
+</code></pre>
+<p>I created this <a href="https://github.com/rayanramoul/uv-issue-repo/tree/master">reproduction repository </a> in which the folder  <code>simple-package-working/</code> reproduces the single package version which works, and the  <code>workspace-not-working/</code> reproduces the one wrapped in a workspace which does not work</p>
+<p>Thank you!</p>
+<h3>Platform</h3>
+<p>macOS arm64 and Ubuntu x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.7 (029b9e1fc 2025-03-17)</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @rayanramoul on 2025-03-18 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 13:55</div>
+            <div class="timeline-body"><p>I think the issue here is that we (intentionally) don't look at <code>tool.uv</code> configuration outside of the workspace root (except for <code>tool.uv.sources</code>, which can be defined per member). Does it work as expected if you lift the <code>find-links</code> setting into the root <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-18 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-18 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rayanramoul">@rayanramoul</a> on 2025-03-18 14:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the issue here is that we (intentionally) don't look at <code>tool.uv</code> configuration outside of the workspace root (except for <code>tool.uv.sources</code>, which can be defined per member). Does it work as expected if you lift the <code>find-links</code> setting into the root <code>pyproject.toml</code>?</p>
+</blockquote>
+<p>It solves it to a degree, but then it raises the same issue as mentioned in <a href="https://github.com/astral-sh/uv/issues/12116">this issue</a> which makes the CI and the <a href="https://github.com/astral-sh/uv-pre-commit">uv-lock action</a> fail each time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 14:33</div>
+            <div class="timeline-body"><p>Okay, that makes sense. That's the bug to fix though -- I don't think there's anything to change here specifically.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

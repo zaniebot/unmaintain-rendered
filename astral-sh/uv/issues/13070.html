@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`tool.uv.conflicts` changes dependency resolution even without conflicts - astral-sh/uv #13070</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`tool.uv.conflicts` changes dependency resolution even without conflicts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13070">#13070</a>
+        opened by <a href="https://github.com/rambip">@rambip</a>
+        on 2025-04-23 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rambip">@rambip</a> on 2025-04-23 15:22</div>
+            <div class="timeline-body"><h1>Problem</h1>
+<p>In some situations, adding a dummy <code>tool.uv.conflicts</code> changes the package resolution with specified sources.</p>
+<p>It is a completely undocumented behaviour, and in the specific case below, the only way to implement what I want is very hacky.</p>
+<h1>Reproduce:</h1>
+<p>First, create a pyproject.toml with this content:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;bar&quot;
+dependencies = [&quot;torch==2.6.0&quot;]
+requires-python = &quot;&gt;=3.10&quot;
+
+[project.optional-dependencies]
+cpu = [&quot;torch==2.6.0&quot;]
+
+[tool.uv.sources]
+torch = [{ index = &quot;torch-cpu&quot;, extra = &quot;cpu&quot; }]
+
+[[tool.uv.index]]
+name = &quot;torch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv]
+conflicts = [[{ extra = &quot;cpu&quot; }, { extra = &quot;this_extra_does_not_even_exist&quot; }]]
+</code></pre>
+<p>This works as expected: if you do <code>uv sync</code>, it install the gpu version of pytorch. If you try <code>uv sync --extra cpu</code>, it installs the cpu version from pytorch.org.</p>
+<p><strong>Note 1</strong>: you don't need the name of the extra to exist !</p>
+<p><strong>Note 2</strong>: In a real world scenario, <code>torch</code> would be deeper in the dependency tree. I did not find any other workaround to specify &quot;install the cpu version only when this extra is enabled&quot;.</p>
+<p>Now, just comment out the last line of the config:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;bar&quot;
+dependencies = [&quot;torch==2.6.0&quot;]
+requires-python = &quot;&gt;=3.10&quot;
+
+[project.optional-dependencies]
+cpu = [&quot;torch==2.6.0&quot;]
+
+[tool.uv.sources]
+torch = [{ index = &quot;torch-cpu&quot;, extra = &quot;cpu&quot; }]
+
+[[tool.uv.index]]
+name = &quot;torch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv]
+# conflicts = [[{ extra = &quot;cpu&quot; }, { extra = &quot;this_extra_does_not_even_exist&quot; }]]
+</code></pre>
+<p>Now, <code>uv sync</code> will download the cpu version even though the index is specified for</p>
+<h1>Expected behaviour</h1>
+<p>They are 2 misleading things in this situation:</p>
+<ul>
+<li>first, <code>uv</code> should complain that the extra <code>this_extra_does_not_even_exist</code> is invalid</li>
+<li>more importantly, <code>uv</code> sould not use the specified index if the extra is not enabled.</li>
+</ul>
+<p>It may be an issue with the python PEP, but I have to say it is very confusing.</p>
+<h3>Platform</h3>
+<p>Linux (fedora)</p>
+<h3>Version</h3>
+<p>0.6.15</p>
+<h3>Python version</h3>
+<p>3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @rambip on 2025-04-23 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`tool.uv.conflicts` change dependency resolution even without conflicts" to "`tool.uv.conflicts` changes dependency resolution even without conflicts" by @rambip on 2025-04-23 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13073.html">astral-sh/uv#13073</a> on 2025-04-23 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 01:38</div>
+            <div class="timeline-body"><p>Yeah it does seem like a bug that the Torch index is being used in the second snippet -- I'd expect it to fall back to PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 02:06</div>
+            <div class="timeline-body"><p>I think we need the presence of the <code>extra</code> marker on the source to initiate a fork.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv venv doesn't find requires-python for python interpreter with an upper limit - astral-sh/uv #11825</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv venv doesn't find requires-python for python interpreter with an upper limit</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11825">#11825</a>
+        opened by <a href="https://github.com/toppk">@toppk</a>
+        on 2025-02-27 07:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/toppk">@toppk</a> on 2025-02-27 07:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have <code>requires-python = &quot;&gt;=3.12.7,&lt;3.13&quot;</code> in my pyproject.toml.  and it will not find the right python.  If I switch to just <code>&lt;3.13</code> it works.  I've seen some documentation about uv ignoring upper bounds on versioning, which I suppose that is for dependencies, and not the python interpreter selection itself.</p>
+<pre><code class="language-shell">$  uv python list  --verbose  --python-preference only-system
+DEBUG uv 0.6.3
+DEBUG Searching for any Python interpreter in search path
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python` (first executable in the search path)
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Found `cpython-3.12.9-linux-x86_64-gnu` at `/usr/bin/python3.12` (search path)
+DEBUG Found `cpython-3.8.20-linux-x86_64-gnu` at `/usr/bin/python3.8` (search path)
+DEBUG Found `cpython-3.9.21-linux-x86_64-gnu` at `/usr/bin/python3.9` (search path)
+DEBUG Found `cpython-3.10.16-linux-x86_64-gnu` at `/usr/bin/python3.10` (search path)
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python3.13` (search path)
+DEBUG Found `cpython-3.11.11-linux-x86_64-gnu` at `/usr/bin/python3.11` (search path)
+cpython-3.13.2-linux-x86_64-gnu     /usr/bin/python3.13
+cpython-3.13.2-linux-x86_64-gnu     /usr/bin/python3 -&gt; python3.13
+cpython-3.13.2-linux-x86_64-gnu     /usr/bin/python -&gt; ./python3
+cpython-3.12.9-linux-x86_64-gnu     /usr/bin/python3.12
+cpython-3.11.11-linux-x86_64-gnu    /usr/bin/python3.11
+cpython-3.10.16-linux-x86_64-gnu    /usr/bin/python3.10
+cpython-3.9.21-linux-x86_64-gnu     /usr/bin/python3.9
+cpython-3.8.20-linux-x86_64-gnu     /usr/bin/python3.8
+</code></pre>
+<p>with <code>requires-python = &quot;&gt;=3.12.7,&lt;3.13&quot;</code></p>
+<pre><code class="language-shell">$  uv venv  --verbose --python-preference only-system
+DEBUG uv 0.6.3
+DEBUG Found project root: `/home/toppk/myproj`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `&gt;=3.12.7, &lt;3.13` from `requires-python` metadata
+DEBUG Searching for Python &gt;=3.12.7, &lt;3.13 in search path
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from first executable in the search path: does not satisfy request `&gt;=3.12.7, &lt;3.13`
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `&gt;=3.12.7, &lt;3.13`
+  × No interpreter found for Python &gt;=3.12.7, &lt;3.13 in search path
+</code></pre>
+<p><code>requires-python = &quot;&lt;3.13&quot;</code></p>
+<pre><code class="language-shell">$  uv venv  --verbose --python-preference only-system
+DEBUG uv 0.6.3
+DEBUG Found project root: `/home/toppk/myproj`
+DEBUG No workspace root found, using project root
+DEBUG Using Python request `&lt;3.13` from `requires-python` metadata
+DEBUG Searching for Python &lt;3.13 in search path
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/usr/bin/python3` from first executable in the search path: does not satisfy request `&lt;3.13`
+DEBUG Found `cpython-3.13.2-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+DEBUG Skipping interpreter at `/usr/bin/python` from search path: does not satisfy request `&lt;3.13`
+DEBUG Found `cpython-3.12.9-linux-x86_64-gnu` at `/usr/bin/python3.12` (search path)
+Using CPython 3.12.9 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv
+DEBUG Using base executable for virtual environment: /usr/bin/python3.12
+Activate with: source .venv/bin/activate
+
+</code></pre>
+<h3>Platform</h3>
+<p>fedora 41 Linux 6.12.7-200.fc41.x86_64 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.6.3</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @toppk on 2025-02-27 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-28 00:17</div>
+            <div class="timeline-body"><p>That's very strange, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-28 03:12</div>
+            <div class="timeline-body"><p>Huh weird. I can look into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-28 03:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toppk">@toppk</a> on 2025-03-04 07:47</div>
+            <div class="timeline-body"><p>I tihnk the issue is that python_executables_from_search_path -&gt; find_all_minor -&gt; matches_major_minor</p>
+<p>which due to Range, calls: VersionSpecifiers.contains</p>
+<p>This is the issue, because does `&gt;=3.12.7,&lt;3.13' contain [3,12] ?   Maybe the fix is to create a wider range for this comparision, or just skip this &quot;optimization 2 for range...&quot;</p>
+<p>https://github.com/astral-sh/uv/commit/7beae77283fe49f55c6bfc2f6b3e4d3d82278111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-04 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @charliermarsh on 2025-03-04 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11952.html">astral-sh/uv#11952</a> on 2025-03-04 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-04 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-04 23:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

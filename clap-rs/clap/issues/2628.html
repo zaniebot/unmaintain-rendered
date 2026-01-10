@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplement clap::Error.info with helper methods - clap-rs/clap #2628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Supplement clap::Error.info with helper methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2628">#2628</a>
+        opened by <a href="https://github.com/TheDaemoness">@TheDaemoness</a>
+        on 2021-07-27 00:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TheDaemoness">@TheDaemoness</a> on 2021-07-27 00:09</div>
+            <div class="timeline-body"><p>Maintainer's notes</p>
+<ul>
+<li>Ideally we'd make dynamic member access the API for this but that is still going through the RFC process</li>
+<li>If we want a jump start on that API, we could provide our own &quot;any map&quot; that allows attaching arbitrary enums to the error struct.</li>
+<li>Overall, this avoids limiting ourselves to each error kind having an exact set of data in every case</li>
+</ul>
+<hr />
+<h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Describe your use case</h3>
+<p>Preface: thank you very much for your work on clap so far, it has saved me countless hours of tedium.</p>
+<p><code>ErrorKind</code> is a fieldless enum, so additional contextual information required for someone to provide their own custom error messages is provided as a <code>Vec&lt;String&gt;</code> in <code>Error</code>, named <code>info</code>.</p>
+<p>Using a <code>Vec</code> to carry this information not self-explanatory in regards to what each element of the <code>Vec</code> represents (e.g. which element represents the invalid value that triggers an <code>InvalidValue</code> or <code>ValueValidation</code>). This would be okay-ish if clap had any of the following:</p>
+<ul>
+<li>Methods or associated functions on <code>Error</code> or <code>ErrorKind</code> to retrieve specific information</li>
+<li>Functions, named constants, or an enum that can be used with <code>info</code> to retrieve specific information based on where it should be in the vector.</li>
+<li>Documentation describing what the values of <code>info</code> will be for a given <code>ErrorKind</code>.</li>
+</ul>
+<p>As far as I can tell, none of these are present, which means that in order to write one's own error reporting, one needs to either <a href="https://github.com/clap-rs/clap/blob/master/src/parse/errors.rs#L509">read the source code of the functions that construct these <code>Error</code>s</a> or do their own testing. I don't think either should be necessary.</p>
+<h3>Describe the solution you'd like</h3>
+<p>The solution I'd prefer the most is a significant breaking change (described under Alternatives). I acknowledge that's not desirable, even considering the upcoming <code>3.0.0</code> release.</p>
+<p>A compromise is to add ways to retrieve this information safely, such as by adding methods to <code>Error</code> that return the relevant information. A few possible examples with placeholder names:</p>
+<ul>
+<li><code>pub fn get_arg_or_subcmd(&amp;self) -&gt; Option&lt;&amp;str&gt;</code></li>
+<li><code>pub fn get_missing(&amp;self) -&gt; &amp;[String]</code></li>
+<li><code>pub fn get_value_counts(&amp;self) -&gt; Option&lt;(usize,usize)&gt; //Found, expected</code>.</li>
+</ul>
+<p>Implementing each method should be fairly simple, if perhaps a bit repetitive considering the number of variants on <code>ErrorKind</code> that need to be matched. The bodies would mostly be pattern matches followed by accesses to <code>info</code>.</p>
+<p>One caveat in the implementation is that <code>Error</code> should contain a private flag to indicate whether the <code>Error</code> was constructed by <code>Error::with_description</code> or not. If so, these functions should return empty values.</p>
+<h3>Alternatives, if applicable</h3>
+<p>This problem can technically be solved by improving documentation, but I'm of the mind that doing only that is the worst solution. <code>info</code> being a Vec is fragile and typo-prone, and there should be better ways to interact with it than as a <code>Vec</code>.</p>
+<p>Ideally, keeping <code>ErrorKind</code> as a fieldless enum, <code>info</code>'s type would change to an enum with fields that store the relevant information for each kind of error. Some of the methods described above could still be implemented for convenience.</p>
+<p>However, I acknowledge that this would be a significant breaking change that would take more than a few renames for users of clap to fix. Solutions like making <code>info</code> a method that generates a <code>Vec&lt;String&gt;</code> from data in this enum or providing both <code>info</code> and the enum in another field aren't entirely compelling either.</p>
+<h3>Additional Context</h3>
+<p>I am very willing to work with you fine folks to implement any of these changes, if approved. Have a good day!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @TheDaemoness on 2021-07-27 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Supplement crate::Error.info with helper methods" to "Supplement clap::Error.info with helper methods" by @TheDaemoness on 2021-07-27 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-08-11 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @pksunkara on 2021-08-11 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-11 18:56</div>
+            <div class="timeline-body"><p>@epage Do you think you can take care of this after the utf8 thing you are currently working on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-11 18:58</div>
+            <div class="timeline-body"><p>If we are breaking it, I would actually love the variants in <code>ErrorKind</code> to be tuples of fields that can contain the metadata of the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-11 19:04</div>
+            <div class="timeline-body"><p>After iterating with different error designs, I think our approach of a tag-only Kind with auxiliary data is the best approach (granted, how we expose that auxiliary data can be improved).  The problem with enum fields is its brittle (can't add fields without breaking compat) and harder to check for just the kind (<code>matches!</code> helps some but not completely).</p>
+<p>The error working group is working on a general API for querying information from errors.  Something like that seems like the best long-term solution.  Short term, we can add our own query methods if we really need this before the Error WG gets their feature landed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-08-11 19:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Error WG gets their feature landed.</p>
+</blockquote>
+<p>Which feature is that?</p>
+<blockquote>
+<p>we can add our own query methods</p>
+</blockquote>
+<p>In that case, shall I mark this as non 3.0 since it wont be breaking change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-08-11 19:13</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Error WG gets their feature landed.
+Which feature is that?</p>
+</blockquote>
+</blockquote>
+<p>Dynamic member access, https://github.com/rust-lang/rfcs/pull/2895</p>
+<p>The RFC is old but it looks like work has restarted on this.  Just today they were talking about this on their Zulip channel.</p>
+<blockquote>
+<p>In that case, shall I mark this as non 3.0 since it wont be breaking change?</p>
+</blockquote>
+<p>Agreed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-08-11 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2827.html">clap-rs/clap#2827</a> on 2021-10-07 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/193.html">epage/clapng#193</a> on 2021-12-06 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> removed by @epage on 2021-12-08 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-08 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2021-12-13 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-13 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2021-12-14 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1365.html">clap-rs/clap#1365</a> on 2022-02-01 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3227.html">clap-rs/clap#3227</a> on 2022-02-02 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3395.html">clap-rs/clap#3395</a> on 2022-02-02 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3402.html">clap-rs/clap#3402</a> on 2022-02-04 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-04 18:27</div>
+            <div class="timeline-body"><p>Mind taking a look at #3402 to see if it'd work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-02-07 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3444.html">clap-rs/clap#3444</a> on 2022-02-11 01:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:32 UTC
+    </footer>
+</body>
+</html>

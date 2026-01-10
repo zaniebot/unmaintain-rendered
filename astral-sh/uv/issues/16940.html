@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarify UV_HTTP_TIMEOUT format in error message - astral-sh/uv #16940</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clarify UV_HTTP_TIMEOUT format in error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16940">#16940</a>
+        opened by <a href="https://github.com/wrp">@wrp</a>
+        on 2025-12-02 19:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wrp">@wrp</a> on 2025-12-02 19:43</div>
+            <div class="timeline-body"><h1>Feature Request: Clarify UV_HTTP_TIMEOUT format in error message</h1>
+<h2>Problem</h2>
+<p>The error message for network timeouts is misleading about the expected format:</p>
+<pre><code>Failed to download distribution due to network timeout.
+Try increasing UV_HTTP_TIMEOUT (current value: 30s).
+</code></pre>
+<p>This suggests users should set values like <code>120s</code> or <code>180s</code>, but the actual required format is a plain integer representing seconds.</p>
+<h2>Current Behavior</h2>
+<p><strong>Error message shows:</strong></p>
+<pre><code>current value: 30s
+</code></pre>
+<p><strong>Users naturally try:</strong></p>
+<pre><code class="language-bash">export UV_HTTP_TIMEOUT=120s  # Doesn't work
+</code></pre>
+<p><strong>But must use:</strong></p>
+<pre><code class="language-bash">export UV_HTTP_TIMEOUT=120  # Correct - integer seconds
+</code></pre>
+<h2>Proposed Solution</h2>
+<h3>Option 1: Clarify the error message (recommended)</h3>
+<pre><code>Failed to download distribution due to network timeout (30s).
+Try increasing UV_HTTP_TIMEOUT to a larger integer value (in seconds).
+Example: export UV_HTTP_TIMEOUT=120
+</code></pre>
+<h3>Option 2: Support duration suffixes</h3>
+<p>Accept values with suffixes:</p>
+<ul>
+<li><code>120</code> or <code>120s</code> (seconds)</li>
+<li><code>2m</code> (minutes = 120 seconds)</li>
+</ul>
+<p>This follows common CLI conventions (Docker timeout flags, curl --max-time, etc.)</p>
+<h2>Impact</h2>
+<p>The misleading format causes user confusion - the error displays <code>30s</code> which implies the <code>s</code> suffix is part of the format, leading users to try <code>UV_HTTP_TIMEOUT=120s</code> which fails.</p>
+<h2>Environment</h2>
+<ul>
+<li>uv version: (latest as of 2025-11-29)</li>
+<li>OS: Multiple (affects all platforms)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-12-02 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-12-02 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anoop-rehman">@anoop-rehman</a> on 2025-12-02 22:02</div>
+            <div class="timeline-body"><p>Hi! I'm a first-time contributor and I'd love to take this on. I'll create a quick pr for Option 1 right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-02 22:43</div>
+            <div class="timeline-body"><p>I think I'd either strip the trailing <code>s</code> at parse time (i.e., just accept it) or emit a special error message when the value ends in <code>s</code>. I don't think we should accept arbitrary time units, though it'd probably be easy with Jiff I think the complexity isn't merited here.</p>
+<p>We could also improve the original hint, yeah, I'd probably style it different for consistency with the rest of uv... maybe</p>
+<blockquote>
+<p>Try increasing UV_HTTP_TIMEOUT to a larger integer value (in seconds), e.g., <code>UV_HTTP_TIMEOUT=60</code>.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anoop-rehman">@anoop-rehman</a> on 2025-12-02 22:50</div>
+            <div class="timeline-body"><p>Thanks @zanieb for the advice! ~~Would you prefer stripping the trailing <code>s</code> or emitting the improved error message you suggested (or both)? I'm leaning towards just emitting the improved error message as it seems like the simplest fix.~~</p>
+<p>EDIT: Ohh I think I misunderstood your comment - what I'm envisioning now is two changes:</p>
+<ul>
+<li>Update the original hint from <code>Try increasing UV_HTTP_TIMEOUT (current value: {}s).</code> to <code>Try increasing UV_HTTP_TIMEOUT to a larger integer value (in seconds), e.g., UV_HTTP_TIMEOUT=60</code></li>
+<li>At parse time, emit a special error message if the UV_HTTP_TIMEOUT value ends in <code>s</code></li>
+</ul>
+<p>Please let me know if there's anything I'm not quite understanding correctly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-03 03:37</div>
+            <div class="timeline-body"><p>@anoop-rehman if it helps, might be worth starting with adjusting the existing error message item 1 and we can follow up / iterate on item 2 separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16952.html">astral-sh/uv#16952</a> on 2025-12-03 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16953.html">astral-sh/uv#16953</a> on 2025-12-03 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anoop-rehman">@anoop-rehman</a> on 2025-12-03 04:31</div>
+            <div class="timeline-body"><p>@samypr100 Good point! I've opened a pr #16953 for just item 1 by itself for now. It passed all the checks, please let me know if it looks ok.</p>
+<p>Should I open a separate issue to discuss how to best do item 2? I have a draft pr for it that I was working on here: #16952</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tysoncung">@tysoncung</a> on 2025-12-15 02:24</div>
+            <div class="timeline-body"><p>I noticed this issue. Have you tried checking the error logs or console output? That might help narrow down the root cause. I'd be happy to help investigate if you can share more details about your environment (OS, version, etc.).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

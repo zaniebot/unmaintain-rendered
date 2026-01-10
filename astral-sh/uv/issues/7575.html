@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different version pins compared to pip-compile when multiple equivalent resolutions are possible - astral-sh/uv #7575</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Different version pins compared to pip-compile when multiple equivalent resolutions are possible</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7575">#7575</a>
+        opened by <a href="https://github.com/jf2">@jf2</a>
+        on 2024-09-20 09:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jf2">@jf2</a> on 2024-09-20 09:28</div>
+            <div class="timeline-body"><p>I've been trying out uv to use as replacement for my workflows and so far, am very impressed by how much has been achieved in such a short period of time.</p>
+<h1>Problem Description and Reproduction</h1>
+<p>The issue below is somewhat tricky, as the behavior is not <em>wrong</em> per se, but the outputs are different when comparing with pip-compile output. To demonstrate, below the simple requirements manifest:</p>
+<pre><code class="language-requirements.in">numpy
+pandas &lt; 2.2
+</code></pre>
+<h2>Using uv</h2>
+<p><code>uv pip compile requirements.in</code></p>
+<p>Which yields the following output:</p>
+<pre><code class="language-compiled-reqs.txt">numpy==2.1.1
+    # via
+    #   -r requirements.in
+    #   pandas
+pandas==2.1.1
+    # via -r requirements.in
+...
+</code></pre>
+<h2>Using pip-compile</h2>
+<p><code>pip-compile requirements.in</code></p>
+<p>Which yields the following output:</p>
+<pre><code>numpy==1.26.4
+
+    # via
+    #   -r test-requirements.in
+    #   pandas
+pandas==2.1.4
+    # via -r test-requirements.in
+...
+</code></pre>
+<p>I think that both resolutions are satisfying constraints. The original sin is that <code>pandas 2.1.1</code> did not limit <code>numpy &lt; 2</code>, whereas <code>2.1.4</code> does. <code>uv</code> first takes <code>numpy</code> and finds the latest possible version. It then tries to find a <code>pandas</code> version for which the <code>numpy == 2.1.1</code> is satisfied, which correctly resolves to <code>pandas == 2.1.1</code> (since this one doesn't limit numpy below 2 yet). pip-compile appears to resolve it differently, but also correctly.</p>
+<p>Interestingly, if you change the order in the requirements manifest file:</p>
+<pre><code>pandas &lt; 2.2
+numpy
+</code></pre>
+<p>then <code>uv</code> also yields the same output as <code>pip-compile</code>. So this is now a tangential issue whereby the order of dependencies influences how the versions are resolved (should that be the case?)</p>
+<h1>How to Fix</h1>
+<ul>
+<li>Make version resolution independent of the dependency order (possibly enforcing just by sorting the dependency list after parsing)</li>
+<li>(opinionated) When dependency <code>A == vA</code> limits dependency <code>B &lt; vB</code>, do not check whether a lower version of A (<code>A &lt; vA</code>) satisfies <code>B == vB</code>.</li>
+</ul>
+<h1>System</h1>
+<ul>
+<li>pip-compile: 7.4.1</li>
+<li>uv: 0.4.8</li>
+<li>Python: 3.11.7</li>
+<li>OS: AlmaLinux 8.9</li>
+</ul>
+<h1>Additional clarifications</h1>
+<p>This particular can easily be fixed by removing <code>numpy</code> as a dependency, which will ensure equivalent output to pip-compile. In this particular case it's easy, since the dependency list is easy. In more general case, an app might specify dependency <code>A</code> and <code>B</code> as they are both needed in the project, with the author being fully oblivious to the fact that <code>A</code> also depends on <code>B</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 17:14</div>
+            <div class="timeline-body"><p>Thanks for the clear write-up. I think this is roughly by-design. Absent other information, we prioritize dependencies in the order in which they're provided. See, e.g., #5474. IMO, if you want to ensure that you get a certain resolution, the best thing to do is add an additional constraint. (It's also documented, see https://github.com/astral-sh/uv/pull/6211.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-20 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-20 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jf2">@jf2</a> on 2024-09-20 17:36</div>
+            <div class="timeline-body"><p>Yes, after reading through some comments and issues I’ve come to the same conclusion, being that this behaviour is intended.</p>
+<p>I think we can close this issue, it will possibly serve as a reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jf2 on 2024-09-20 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:53 UTC
+    </footer>
+</body>
+</html>

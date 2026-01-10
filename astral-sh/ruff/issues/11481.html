@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff gives unhelpful error message for all commands when pyproject.toml is invalid - astral-sh/ruff #11481</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff gives unhelpful error message for all commands when pyproject.toml is invalid</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11481">#11481</a>
+        opened by <a href="https://github.com/mscheifer">@mscheifer</a>
+        on 2024-05-21 02:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mscheifer">@mscheifer</a> on 2024-05-21 02:57</div>
+            <div class="timeline-body"><p>When my <code>pyproject.toml</code> file is invalid, every <code>ruff</code> command gives the same somewhat confusing error message.</p>
+<pre><code class="language-shell">$ poetry run ruff check
+
+Invalid statement (at line 9, column 1)
+$ poetry run ruff --help
+
+Invalid statement (at line 9, column 1)
+$ poetry run ruff --version
+
+Invalid statement (at line 9, column 1)
+$ poetry run ruff server --preview
+
+Invalid statement (at line 9, column 1)
+</code></pre>
+<p>My <code>pyproject.toml</code> (reduced down for simplicity) looks like:</p>
+<pre><code class="language-toml">[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = &quot;^3.10&quot;
+
+[tool.poetry.group.dev.dependencies]
+ruff = &quot;^0.4.4&quot;
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+hypothesis = &quot;^6.102.4&quot;
+=======
+pytest = &quot;^8.2.1&quot;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; main
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+</code></pre>
+<p>The error message doesn't make it clear that this is caused by the<code>pyproject.toml</code> file. I think the message should say</p>
+<pre><code>Failed to parse pyproject.toml. Aborting
+Invalid statement (at line 9, column 1)
+</code></pre>
+<p>or something.</p>
+<p>Less importantly, it would be nice if some commands like <code>--help</code> and <code>--version</code> still worked even when it can't parse <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 19:12</div>
+            <div class="timeline-body"><p>In my terminal I see this:</p>
+<pre><code>❯ ruff check
+ruff failed
+  Cause: Failed to parse /Users/crmarsh/workspace/ruff/pyproject.toml
+  Cause: TOML parse error at line 123, column 1
+    |
+123 | &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+    | ^
+invalid key
+</code></pre>
+<p>Which seems pretty good...</p>
+<p>I think this is a Poetry error? If I run <code>poetry run</code>:</p>
+<pre><code>❯ poetry run ruff
+
+Invalid statement (at line 123, column 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-05-21 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mscheifer">@mscheifer</a> on 2024-05-21 19:51</div>
+            <div class="timeline-body"><p>Ahh you're right. I think this happens for any <code>poetry run</code> command.</p>
+<pre><code>$ poetry run echo foo
+
+Invalid statement (at line 9, column 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mscheifer on 2024-05-21 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mscheifer on 2024-05-21 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mscheifer">@mscheifer</a> on 2024-06-04 03:43</div>
+            <div class="timeline-body"><p>This error message should be improved in newer versions of poetry https://github.com/python-poetry/poetry-core/commit/1459c57c825cda5f9a286bffaf233b77583427b9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 03:56</div>
+            <div class="timeline-body"><p>Thanks @mscheifer!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

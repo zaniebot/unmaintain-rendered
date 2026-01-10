@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>demo.md is doesn't match the output of `demo --help` - clap-rs/clap #6098</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>demo.md is doesn't match the output of `demo --help`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6098">#6098</a>
+        opened by <a href="https://github.com/winksaville">@winksaville</a>
+        on 2025-08-09 22:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-09 22:22</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.89.0 (29483883e 2025-08-04)</p>
+<h3>Clap Version</h3>
+<p>4.5.43</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Name of the person to greet
+    #[arg(short, long)]
+    name: String,
+
+    /// Number of times to greet
+    #[arg(short, long, default_value_t = 1)]
+    count: u8,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    for _ in 0..args.count {
+        println!(&quot;Hello {}!&quot;, args.name);
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>I created a new repo with:</p>
+<pre><code>cargo new demo
+cd demo
+cargo add clap --features derive`
+</code></pre>
+<p>Changed main.rs to the above code and then installed it:</p>
+<pre><code>$ cargo install --path .
+  Installing demo v0.1.0 (/home/wink/data/prgs/clap/demo)
+    Updating crates.io index
+     Locking 30 packages to latest Rust 1.89.0 compatible versions
+   Compiling proc-macro2 v1.0.95
+   Compiling unicode-ident v1.0.18
+   Compiling utf8parse v0.2.2
+   Compiling anstyle-query v1.1.4
+   Compiling anstyle v1.0.11
+   Compiling is_terminal_polyfill v1.70.1
+   Compiling colorchoice v1.0.4
+   Compiling strsim v0.11.1
+   Compiling heck v0.5.0
+   Compiling clap_lex v0.7.5
+   Compiling anstyle-parse v0.2.7
+   Compiling anstream v0.6.20
+   Compiling clap_builder v4.5.43
+   Compiling quote v1.0.40
+   Compiling syn v2.0.104
+   Compiling clap_derive v4.5.41
+   Compiling clap v4.5.43
+   Compiling demo v0.1.0 (/home/wink/data/prgs/clap/demo)
+    Finished `release` profile [optimized] target(s) in 3.18s
+   Replacing /home/wink/.cargo/bin/demo
+    Replaced package `demo v0.1.0 (/home/wink/data/prgs/clap/demo)` with `demo v0.1.0 (/home/wink/data/prgs/clap/demo)` (executable `demo`)
+</code></pre>
+<h3>Actual Behaviour</h3>
+<pre><code>$ demo --help
+Simple program to greet a person
+
+Usage: demo [OPTIONS] --name &lt;NAME&gt;
+
+Options:
+  -n, --name &lt;NAME&gt;    Name of the person to greet
+  -c, --count &lt;COUNT&gt;  Number of times to greet [default: 1]
+  -h, --help           Print help
+  -V, --version        Print version
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Based on the the documentation behavior should be:</p>
+<pre><code>$ demo --help
+A simple to use, efficient, and full-featured Command Line Argument Parser
+
+Usage: demo[EXE] [OPTIONS] --name &lt;NAME&gt;
+
+Options:
+  -n, --name &lt;NAME&gt;    Name of the person to greet
+  -c, --count &lt;COUNT&gt;  Number of times to greet [default: 1]
+  -h, --help           Print help
+  -V, --version        Print version
+</code></pre>
+<h3>Additional Context</h3>
+<p>Actually, this can be fixed by changing demo.md or demo.rs, I am preparing a PR.</p>
+<h3>Debug Output</h3>
+<p>N/A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @winksaville on 2025-08-09 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6099.html">clap-rs/clap#6099</a> on 2025-08-09 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-11 14:28</div>
+            <div class="timeline-body"><p>As seen by #6099, we have tests that verify the content of <code>demo.md</code>.</p>
+<p>Also, based on #6099, I suspect the Actual and Expected might be backwards.</p>
+<p>Anyways.</p>
+<p>Whats happening is that the <code>#[command(about)]</code> attribute defaults the crate description, per <a href="https://docs.rs/clap/latest/clap/_derive/index.html#command-attributes">the reference</a>.  If that attribute was missing, then clap would use the doc comment.  And the crate description can be found at https://github.com/clap-rs/clap/blob/0096ace8b15b20a77e71806eab4c8df10cae278c/Cargo.toml#L113.</p>
+<p>Doing the reverse and updating the doc comment to match the crate description I feel would confuse the matter further since it would look like it might be using the doc comment when reality it isn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-docs</span> added by @epage on 2025-08-11 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-11 16:34</div>
+            <div class="timeline-body"><p>I believe I've gone through the steps a new user would do while reading the  first page of the docs and the result does not match what is documented.</p>
+<p>I've tried changing demo.md, but that breaks the build. Then I changed demo.rs doc comment to match demo.md, you seem to not like that.</p>
+<p>As a user I think the most important consideration is that the documentation matches what a user would most likely do. Since the current example has a Doc comment and a default Cargo.toml doesn't have a description field the Doc comment will be used for about.</p>
+<p>This can be fixed in multiple ways, what is your preference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-11 16:45</div>
+            <div class="timeline-body"><blockquote>
+<p>the result does not match what is documented.</p>
+</blockquote>
+<p>Could you point to the documentation in question?</p>
+<blockquote>
+<p>default Cargo.toml doesn't have a description field</p>
+</blockquote>
+<p>Note that the examples do not say to do <code>cargo new &amp;&amp; cargo add clap &amp;&amp; echo ... src/main.rs</code>.  We shouldn't make assumptions of whether <code>package.description</code> is specified or not in the users manifest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-11 17:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you point to the documentation in question?</p>
+</blockquote>
+<p>On the <a href="https://docs.rs/clap/latest/clap/index.html">first page</a> there is code with a Doc comment. That doc comment will be used for the about line in the --help when compiled with a default Cargo.toml as there would be no description field. That output does not match the contents of demo.md shown on that first page.</p>
+<blockquote>
+<p>We shouldn't make assumptions of whether package.description is specified or not in the users manifest.</p>
+</blockquote>
+<p>But demo.md is assuming the string &quot;A simple to use, efficient, and full-featured Command Line Argument Parser&quot; is set somewhere, how is a person reading the first page know where that line comes from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-11 18:31</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>I believe I've gone through the steps a new user would do while reading the first page of the docs and the result does not match what is documented.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>Could you point to the documentation in question?</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>On the <a href="https://docs.rs/clap/latest/clap/index.html">first page</a> there is code with a Doc comment. That doc comment will be used for the about line in the --help when compiled with a default Cargo.toml as there would be no description field. That output does not match the contents of demo.md shown on that first page.</p>
+</blockquote>
+<p>Huh, I think there was confusion.  When you said the example + output didn't match what was documented, I took that to mean that where was some text documenting what the behavior should be that didn't match the results for that example.</p>
+<blockquote>
+<p>But demo.md is assuming the string &quot;A simple to use, efficient, and full-featured Command Line Argument Parser&quot; is set somewhere, how is a person reading the first page know where that line comes from?</p>
+</blockquote>
+<p>That is a frontpage example on a library meant to quickly show what can be done.  It doesn't any of its behavior, instead needing to go to the reference or tutorial which is linked immediately after.</p>
+<p>We could drop the <code>#[command(about)]</code> attribute so the doc comment is used but then that would be a little less idiomatic (depending on what the user is trying to do).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-11 19:11</div>
+            <div class="timeline-body"><blockquote>
+<p>We could drop the #[command(about)] attribute so the doc comment is used but then that would be a little less idiomatic (depending on what the user is trying to do).</p>
+</blockquote>
+<p>Personally, I think the example on the first page should be idiomatic, let me know what you'd like me to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-11 19:54</div>
+            <div class="timeline-body"><p>If we're in agreement that the demo should be idiomatic, then I'm not seeing what there is to change and would be inclined to close this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-11 22:16</div>
+            <div class="timeline-body"><p>Yes we're in agreement it should be idiomatic.</p>
+<p>That first page says &quot;And try it out&quot; and they do, likely without a description, and they will not see &quot;A simple to use, efficient, and full-featured Command Line Argument Parser&quot; in the <code>--help</code> output, that feels wrong to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-12 13:21</div>
+            <div class="timeline-body"><p>So I feel we've come to a common understanding, even if not agreement, on several points but I worry this is going to be spinning in circles, so let's summarize our options to see if there is reasonable way forward</p>
+<p>Options</p>
+<ul>
+<li>Remove <code>#[command(about)]</code> making it non-idiomatic</li>
+<li>Make the doc-comment match <code>package.description</code>, adding a layer of confusion</li>
+<li>Stop validating the example (increasing risk that examples do not do what we expect)</li>
+<li>Remove the doc-comment (maybe move it to a mod comment), still having a discrepancy when there isn't a <code>package.description</code> but its more apparent</li>
+<li>Close this issue as not-planned</li>
+</ul>
+<p>Any others that I'm missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-12 14:24</div>
+            <div class="timeline-body"><p>I'd add one other:</p>
+<ul>
+<li>Add a test case specifically for demo.rs/demo.md and change demo.md to have the correct about message.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-12 16:43</div>
+            <div class="timeline-body"><p><code>demo.md</code> <strong>is</strong> a test.  We use the <code>trycmd</code> crate to execute the <code>console</code> blocks in our <code>md</code> files.  That is why tests failed when #6099 tried to change <code>demo.md</code> only.  So <code>demo.md</code> does have the correct usage for <code>demo.rs</code> as an example within the <code>clap</code> package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/winksaville">@winksaville</a> on 2025-08-12 17:42</div>
+            <div class="timeline-body"><p>Actually l, I thought of another approach, add a sentence in the first page the possible sources for the version/about/... commands, maybe something like; &quot;The contents for #command(<a href="URL">version</a>, <a href="URL">about</a>) come multiple sources, click the links for details.&quot; And those links would go directly to the appropriate docs for those commands. Just a thought.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-08-12 17:51</div>
+            <div class="timeline-body"><p>I would lean against that as it opens the question for explaining other parts which is the point of the docs we then link to after the example</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uvx and uv tool not respecting python version in packaged app - astral-sh/uv #8206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uvx and uv tool not respecting python version in packaged app</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8206">#8206</a>
+        opened by <a href="https://github.com/my1e5">@my1e5</a>
+        on 2024-10-15 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-15 09:48</div>
+            <div class="timeline-body"><p>Now that Python 3.13 has been released I'm seeing this behaviour and wondered if I was doing something wrong.</p>
+<p>Say I want to create a <a href="https://docs.astral.sh/uv/concepts/projects/#packaged-applications">packaged application</a> that only runs on Python 3.12.</p>
+<pre><code class="language-py">uv init --app --package example-packaged-app --python 3.12
+</code></pre>
+<p>This creates a <code>.python-version</code> pinned at <code>3.12</code>. I also go into the <code>pyproject.toml</code> file and change <code>requires-python</code> to</p>
+<pre><code class="language-diff">- requires-python = &quot;&gt;=3.12&quot;
++ requires-python = &quot;~=3.12&quot;
+</code></pre>
+<p>When I run the app within the working directory it uses a suitable version of 3.12</p>
+<pre><code>$ uv run example-packaged-app
+Using CPython 3.12.4 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: .venv
+   Built example-packaged-app @ file:///Users/User/example-packaged-app
+Installed 1 package in 2ms
+Hello from example-packaged-app!
+</code></pre>
+<p>I will also add a PyPi project which currently does not have 3.13 support.</p>
+<pre><code>uv add dearpygui
+Resolved 2 packages in 2ms
+   Built example-packaged-app @ file:///Users/User/example-packaged-app
+Prepared 1 package in 379ms
+Uninstalled 1 package in 0.87ms
+Installed 2 packages in 4ms
+ + dearpygui==1.11.1
+ ~ example-packaged-app==0.1.0 (from file:///Users/User/example-packaged-app)
+</code></pre>
+<p>But my problem is when I try to run the app with uvx (or if I try to install the app as a uv tool)</p>
+<pre><code>uvx -v --from file:///Users/User/example-packaged-app example-packaged-app
+DEBUG uv 0.4.21
+DEBUG Searching for default Python interpreter in managed installations or system path
+DEBUG Searching for managed installations at `/Users/rd/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.0-macos-aarch64-none`
+DEBUG Found `cpython-3.13.0-macos-aarch64-none` at `/Users/rd/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3` (managed installations)
+DEBUG Using request timeout of 30s
+DEBUG Found PEP 621 metadata for /Users/User/example-packaged-app in `pyproject.toml` (example-packaged-app)
+DEBUG Acquired lock for `/Users/rd/.local/share/uv/tools`
+DEBUG Released lock at `/Users/rd/.local/share/uv/tools/.lock`
+DEBUG Caching via interpreter: `/Users/rd/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: example-packaged-app @ file:///Users/User/example-packaged-app
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: &gt;=3.13.0
+DEBUG Adding direct dependency: example-packaged-app*
+DEBUG Searching for a compatible version of example-packaged-app @ file:///Users/User/example-packaged-app (*)
+DEBUG Adding transitive dependency for example-packaged-app==0.1.0: dearpygui&gt;=1.11.1
+DEBUG Found fresh response for: https://pypi.org/simple/dearpygui/
+DEBUG Searching for a compatible version of dearpygui (&gt;=1.11.1)
+DEBUG Searching for a compatible version of dearpygui (&gt;1.11.1)
+DEBUG No compatible version found for: dearpygui
+DEBUG Searching for a compatible version of example-packaged-app @ file:///Users/User/example-packaged-app (&lt;0.1.0 | &gt;0.1.0)
+DEBUG No compatible version found for: example-packaged-app
+  × No solution found when resolving tool dependencies:
+  ╰─▶ Because only dearpygui&lt;=1.11.1 is available and dearpygui==1.11.1 has no wheels with a matching Python ABI tag, we can conclude that dearpygui&gt;=1.11.1 cannot be used.
+      And because example-packaged-app==0.1.0 depends on dearpygui&gt;=1.11.1, we can conclude that example-packaged-app==0.1.0 cannot be used.
+      And because only example-packaged-app==0.1.0 is available and you require example-packaged-app, we can conclude that your requirements are unsatisfiable.
+
+      hint: Pre-releases are available for dearpygui in the requested range (e.g., 2.0.0b1), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>How can I get uvx to respect the requirement that Python 3.12 must be used? My use case is I have this packaged app hosted on a local private git server and I want my colleagues to be able to download/install it as a tool.</p>
+<p>My assumption was that uv would look at the <code>.python-version</code> file first and if that wasn't present then it would look at the <code>requires-python</code> field? But it seems to be going straight to 3.13.0 without checking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-15 10:19</div>
+            <div class="timeline-body"><p>Ok, I see now that I can pass <code>--python 3.12</code> into the <code>uvx</code> command. And this does solve my issue. But it doesn't seem fully satisfactory.</p>
+<p>If you are installing a packaged app from a local folder or git repo, you'd want it to just work. For example,</p>
+<pre><code>$ uv tool install file:///Users/User/example-packaged-app
+error: Because only dearpygui&lt;=1.11.1 is available and dearpygui==1.11.1 has no wheels with a matching Python ABI tag, we can conclude that dearpygui&gt;=1.11.1 cannot be used.
+And because example-packaged-app==0.1.0 depends on dearpygui&gt;=1.11.1, we can conclude that example-packaged-app==0.1.0 cannot be used.
+And because only example-packaged-app==0.1.0 is available and you require example-packaged-app, we can conclude that your requirements are unsatisfiable.
+</code></pre>
+<p>To an uninformed end user this error can be confusing. How do you know you need to specify <code>--python 3.12</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8229.html">astral-sh/uv#8229</a> on 2024-10-15 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6381.html">astral-sh/uv#6381</a> on 2024-10-16 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-16 10:23</div>
+            <div class="timeline-body"><p>A simpler MRE. Create a packaged app with <code>.python-version</code> pinned to 3.11 (and 3.11 is downloaded already on the system). But uvx is using 3.13.0.</p>
+<pre><code>$ uv python list
+cpython-3.13.0-windows-x86_64-none     C:\Users\User\AppData\Roaming\uv\data\python\cpython-3.13.0-windows-x86_64-none\python.exe
+cpython-3.12.7-windows-x86_64-none     &lt;download available&gt;
+cpython-3.12.4-windows-x86_64-none     C:\Users\User\AppData\Roaming\uv\data\python\cpython-3.12.4-windows-x86_64-none\python.exe
+cpython-3.11.10-windows-x86_64-none    &lt;download available&gt;
+cpython-3.11.4-windows-x86_64-none     C:\Users\User\AppData\Local\Programs\Python\Python311\python.exe
+cpython-3.10.15-windows-x86_64-none    &lt;download available&gt;
+cpython-3.10.0-windows-x86_64-none     C:\Users\User\AppData\Local\Programs\Python\Python310\python.exe
+cpython-3.9.20-windows-x86_64-none     &lt;download available&gt;
+cpython-3.9.7-windows-x86_64-none      C:\Users\User\AppData\Local\Programs\Python\Python39\python.exe
+cpython-3.8.20-windows-x86_64-none     &lt;download available&gt;
+cpython-3.8.12-windows-x86_64-none     C:\Users\User\AppData\Local\Programs\Python\Python38\python.exe
+cpython-3.7.9-windows-x86_64-none      &lt;download available&gt;
+cpython-3.7.5-windows-x86_64-none      C:\Program Files\Python37\python.exe
+pypy-3.10.14-windows-x86_64-none       &lt;download available&gt;
+pypy-3.9.19-windows-x86_64-none        &lt;download available&gt;
+pypy-3.8.16-windows-x86_64-none        &lt;download available&gt;
+pypy-3.7.13-windows-x86_64-none        &lt;download available&gt;
+
+$ uv init --app --package foo --python 3.11
+Initialized project `foo` at `C:\Users\User\Projects\Test\foo`
+
+$ uvx -v --from foo/ foo
+DEBUG uv 0.4.22 (34be3af84 2024-10-15)
+DEBUG Searching for default Python interpreter in managed installations, system path, or `py` launcher
+DEBUG Searching for managed installations at `C:\Users\User\AppData\Roaming\uv\data\python`
+DEBUG Found managed installation `cpython-3.13.0-windows-x86_64-none`
+DEBUG Found `cpython-3.13.0-windows-x86_64-none` at `C:\Users\User\AppData\Roaming\uv\data\python\cpython-3.13.0-windows-x86_64-none\python.exe` (managed installations)
+DEBUG Using request timeout of 30s
+DEBUG Found PEP 621 metadata for C:\Users\User\Projects\Test\foo in `pyproject.toml` (foo)
+DEBUG Acquired lock for `C:\Users\User\AppData\Roaming\uv\data\tools`
+DEBUG Released lock at `C:\Users\User\AppData\Roaming\uv\data\tools\.lock`
+DEBUG Caching via interpreter: `C:\Users\User\AppData\Roaming\uv\data\python\cpython-3.13.0-windows-x86_64-none\python.exe`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: foo @ file:///C:/Users/User/Projects/Test/foo
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: &gt;=3.13.0
+DEBUG Adding direct dependency: foo*
+DEBUG Searching for a compatible version of foo @ file:///C:/Users/User/Projects/Test/foo (*)
+DEBUG Tried 1 versions: foo 1
+DEBUG Split specific environment resolution took 0.001s
+Resolved 1 package in 4ms
+DEBUG Ignoring empty directory
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: foo @ file:///C:/Users/User/Projects/Test/foo
+DEBUG Acquired lock for `C:\Users\User\AppData\Local\uv\cache\sdists-v4\path\e9b4b6a9e9eb107a`
+DEBUG Building: foo @ file:///C:/Users/User/Projects/Test/foo
+DEBUG No workspace root found, using project root
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.13.0
+DEBUG Solving with target Python version: &gt;=3.13.0
+DEBUG Adding direct dependency: hatchling*
+DEBUG Found fresh response for: https://pypi.org/simple/hatchling/
+DEBUG Searching for a compatible version of hatchling (*)
+DEBUG Selecting: hatchling==1.25.0 [compatible] (hatchling-1.25.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/0c/8b/90e80904fdc24ce33f6fc6f35ebd2232fe731a8528a22008458cf197bc4d/hatchling-1.25.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for hatchling==1.25.0: packaging&gt;=23.2
+DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec&gt;=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy&gt;=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.25.0: trove-classifiers*
+DEBUG Found fresh response for: https://pypi.org/simple/packaging/
+DEBUG Found fresh response for: https://pypi.org/simple/pathspec/
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
+DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
+DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://pypi.org/simple/trove-classifiers/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/4b/5c/65ae209acac6038f9576893e983b1abcdd6268cab7f5ab124103f4dde701/trove_classifiers-2024.10.13-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
+DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of pluggy (&gt;=1.0.0)
+DEBUG Selecting: pluggy==1.5.0 [compatible] (pluggy-1.5.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of trove-classifiers (*)
+DEBUG Selecting: trove-classifiers==2024.10.13 [compatible] (trove_classifiers-2024.10.13-py3-none-any.whl)
+DEBUG Tried 5 versions: hatchling 1, packaging 1, pathspec 1, pluggy 1, trove-classifiers 1
+DEBUG Split specific environment resolution took 0.007s
+DEBUG Installing in hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.10.13 in C:\Users\User\AppData\Local\uv\cache\builds-v0\.tmpVLpN99
+DEBUG Requirement already cached: hatchling==1.25.0
+DEBUG Requirement already cached: packaging==24.1
+DEBUG Requirement already cached: pathspec==0.12.1
+DEBUG Requirement already cached: pluggy==1.5.0
+DEBUG Requirement already cached: trove-classifiers==2024.10.13
+DEBUG Installing build requirements: hatchling==1.25.0, packaging==24.1, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.10.13
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `hatchling.build.get_requires_for_build_wheel()`
+DEBUG No workspace root found, using project root
+DEBUG Calling `hatchling.build.build_wheel(&quot;C:\\Users\\User\\AppData\\Local\\uv\\cache\\sdists-v4\\path\\e9b4b6a9e9eb107a\\d-QOBkfdZKPxrelgX-oX8\\.tmplT1L5H&quot;, {}, None)`
+DEBUG Finished building: foo @ file:///C:/Users/User/Projects/Test/foo
+DEBUG Released lock at `C:\Users\User\AppData\Local\uv\cache\sdists-v4\path\e9b4b6a9e9eb107a\.lock`
+Prepared 1 package in 890ms
+Installed 1 package in 13ms
+ + foo==0.1.0 (from file:///C:/Users/User/Projects/Test/foo)
+DEBUG Running `foo`
+DEBUG Looking at `.dist-info` at: C:\Users\User\AppData\Local\uv\cache\archive-v0\f-oVDTBZALXPvVuNI7m51\Lib\site-packages\foo-0.1.0.dist-info
+Hello from foo!
+DEBUG Command exited with code: 0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:46</div>
+            <div class="timeline-body"><p>I think right now you would need to have the <code>.python-version</code> file in the user's directory, rather than just in the project directory. https://github.com/astral-sh/uv/pull/7827 might unlock doing something better here. \cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-10-16 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavidCEllis">@DavidCEllis</a> on 2024-10-16 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>This creates a <code>.python-version</code> pinned at <code>3.12</code>. I also go into the <code>pyproject.toml</code> file and change <code>requires-python</code> to</p>
+<pre><code class="language-diff">- requires-python = &quot;&gt;=3.12&quot;
++ requires-python = &quot;~=3.12&quot;
+</code></pre>
+</blockquote>
+<p>@my1e5</p>
+<p>I don't know if respecting <code>pyproject.toml</code> is intended, but <code>~=3.12</code> here means <code>&gt;=3.12, ==3.*</code> and not <code>==3.12.*</code> so this wouldn't stop Python 3.13 from being used.</p>
+<p>https://packaging.python.org/en/latest/specifications/version-specifiers/#compatible-release</p>
+<pre><code class="language-python">&gt;&gt;&gt; from packaging.specifiers import SpecifierSet
+&gt;&gt;&gt; spec = SpecifierSet(&quot;~=3.12&quot;)
+&gt;&gt;&gt; &quot;3.13&quot; in spec
+True
+&gt;&gt;&gt; spec2 = SpecifierSet(&quot;~=3.12.0&quot;)
+&gt;&gt;&gt; &quot;3.13&quot; in spec2
+False
+&gt;&gt;&gt; &quot;3.12.7&quot; in spec2
+True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-16 15:04</div>
+            <div class="timeline-body"><p>Thanks @DavidCEllis - good to know, I didn't realise this.</p>
+<p>It seems uvx isn't respecting the <code>requires-python</code> field at the moment anyway (https://github.com/astral-sh/uv/issues/6381#issuecomment-2303072011). But that might change with PR https://github.com/astral-sh/uv/pull/7827?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11612.html">astral-sh/uv#11612</a> on 2025-02-19 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-02-19 10:58</div>
+            <div class="timeline-body"><p>Seems to still be an issue in uv <code>0.6.1</code>. New MRE in https://github.com/my1e5/uv-tool-python-version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bbeaudreault">@bbeaudreault</a> on 2025-03-13 15:20</div>
+            <div class="timeline-body"><p>Any update here? It sort of ruins the promise of &quot;makes it easy to run a package on anyone's computer&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-03-13 16:21</div>
+            <div class="timeline-body"><p>@bbeaudreault - see</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/11624</li>
+</ul>
+<p>This is the most relevant tracking issue now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ForsakenRei">@ForsakenRei</a> on 2025-04-10 14:07</div>
+            <div class="timeline-body"><p>I noticed this recently after switching to uv but not sure if I'm understanding the <code>uvx</code> interface correctly. When I have a <code>.python-version</code> in the working dir, <code>uv</code> does respect the python version I pinned, however <code>uvx</code> is not.
+For example if I run <code>uv python pin 3.11.11</code> then run <code>uv run python</code> I will get into a python 3.11.11 console, but if I run <code>uvx python</code> I will get into a different python console, for my case it is 3.12.10 but I have never pinned 3.12.10 globally with <code>--global</code> flag. Is this by design since <code>uvx</code> is <code>uv tool run</code> which run tools in an isolated environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helmut-hoffer-von-ankershoffen">@helmut-hoffer-von-ankershoffen</a> on 2025-12-02 09:47</div>
+            <div class="timeline-body"><p>It's leads to a very bad customer experience that <code>uvx &lt;tool&gt;</code> ignores the upper bound defined in <code>requires-python</code> of the tool's <code>pyproject.toml,</code> in light of 3.14 having been released and some dependencies not having been built for that.</p>
+<p>What happens is that customers call <code>uvx &lt;tool&gt;</code> on their notebook with python 3.14.0 system installed. Some dependency of tool is not yet built for 3.14. On MacOS X compilation fails because the customer does not have xcode license agreement accepted; on Windows no tool chain present to build.</p>
+<p>The only mitigation seems to be to have the user do a <code>uv python install 3.13</code> first as uvx seems to prefer managed installations by default over the system installed 3.14.</p>
+<p>What's holding back to respect the upper bound defined in requires-python? @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2025-12-02 09:58</div>
+            <div class="timeline-body"><blockquote>
+<p>The only mitigation seems to be to have the user do a <code>uv python install 3.13</code> first as uvx seems to prefer managed installations by default over the system installed 3.14.</p>
+</blockquote>
+<p>You can also do <code>uvx -p 3.13 &lt;tool&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/helmut-hoffer-von-ankershoffen">@helmut-hoffer-von-ankershoffen</a> on 2025-12-02 10:01</div>
+            <div class="timeline-body"><p>@my1e5 Sure, but that's something the user would have to do on every tool call, and would have to change when 3.14 is supported. So not great experience.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:09 UTC
+    </footer>
+</body>
+</html>

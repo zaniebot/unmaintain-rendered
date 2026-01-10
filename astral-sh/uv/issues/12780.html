@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv python install 3.12 fails on an arm system, despite its being a supported platform - astral-sh/uv #12780</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv python install 3.12 fails on an arm system, despite its being a supported platform</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12780">#12780</a>
+        opened by <a href="https://github.com/johndunderhill">@johndunderhill</a>
+        on 2025-04-09 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-09 13:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>(venv) pi@GKOS49:~ $ curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.6.13 arm-unknown-linux-musl-staticeabihf
+no checksums to verify
+installing to /home/pi/.local/bin
+  uv
+  uvx
+everything's installed!
+
+(venv) pi@GKOS49:~ $ uv --version
+uv 0.6.13
+
+(venv) pi@GKOS49:~ $ RUST_LOG=trace uv python install 3.12 --verbose
+DEBUG uv 0.6.13
+TRACE Found `ld` path: /lib/ld-linux-armhf.so.3
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]
+You have invoked `ld.so', the helper program for shared library executables.
+This program usually lives in the file `/lib/ld.so', and special directives
+in executable files using ELF shared libraries tell the system's program
+loader to load the helper program from this file.  This helper program loads
+the shared libraries needed by the program executable, prepares the program
+to run, and runs it.  You may invoke this helper program directly from the
+command line to load and run an ELF executable file; this is like executing
+that file itself, but always uses this helper program from the file you
+specified, instead of the helper program file specified in the executable
+file you run.  This is mostly of use for maintainers to test new versions
+of this helper program; chances are you did not intend to run this program.
+
+  --list                list all dependencies and how they are resolved
+  --verify              verify that given object really is a dynamically linked
+                        object we can handle
+  --inhibit-cache       Do not use /etc/ld.so.cache
+  --library-path PATH   use given PATH instead of content of the environment
+                        variable LD_LIBRARY_PATH
+  --inhibit-rpath LIST  ignore RUNPATH and RPATH information in object names
+                         in LIST
+  --audit LIST          use objects named in LIST as auditors
+  --preload LIST        preload objects named in LIST&quot;
+
+TRACE Tried to find musl version by running `&quot;/lib/ld-linux-armhf.so.3&quot;`, but failed:
+Could not find musl version in output of: `/lib/ld-linux-armhf.so.3`
+error: No download found for request: cpython-3.12-linux-arm-gnueabi
+
+(venv) pi@GKOS49:~ $ uname -rmo
+6.1.21-v8+ aarch64 GNU/Linux
+
+(venv) pi@GKOS49:~ $ getconf LONG_BIT
+32
+
+(venv) pi@GKOS49:~ $ lscpu
+Architecture:                    aarch64
+Byte Order:                      Little Endian
+CPU(s):                          4
+On-line CPU(s) list:             0-3
+Thread(s) per core:              1
+Core(s) per socket:              4
+Socket(s):                       1
+Vendor ID:                       ARM
+Model:                           3
+Model name:                      Cortex-A72
+Stepping:                        r0p3
+CPU max MHz:                     1800.0000
+CPU min MHz:                     600.0000
+BogoMIPS:                        108.00
+L1d cache:                       128 KiB
+L1i cache:                       192 KiB
+L2 cache:                        1 MiB
+Vulnerability Itlb multihit:     Not affected
+Vulnerability L1tf:              Not affected
+Vulnerability Mds:               Not affected
+Vulnerability Meltdown:          Not affected
+Vulnerability Mmio stale data:   Not affected
+Vulnerability Retbleed:          Not affected
+Vulnerability Spec store bypass: Vulnerable
+Vulnerability Spectre v1:        Mitigation; __user pointer sanitization
+Vulnerability Spectre v2:        Vulnerable
+Vulnerability Srbds:             Not affected
+Vulnerability Tsx async abort:   Not affected
+Flags:                           fp asimd evtstrm crc32 cpuid
+
+(venv) pi@GKOS49:~ $ cat /etc/os-release
+PRETTY_NAME=&quot;Raspbian GNU/Linux 11 (bullseye)&quot;
+NAME=&quot;Raspbian GNU/Linux&quot;
+VERSION_ID=&quot;11&quot;
+VERSION=&quot;11 (bullseye)&quot;
+VERSION_CODENAME=bullseye
+ID=raspbian
+ID_LIKE=debian
+HOME_URL=&quot;http://www.raspbian.org/&quot;
+SUPPORT_URL=&quot;http://www.raspbian.org/RaspbianForums&quot;
+BUG_REPORT_URL=&quot;http://www.raspbian.org/RaspbianBugs&quot;
+</code></pre>
+<p>HOWEVER:</p>
+<pre><code>(venv) pi@GKOS49:~ $ uv python install cpython-3.12.8-linux-armv7-gnueabihf
+Installed Python 3.12.8 in 3m 39s
+ + cpython-3.12.8-linux-armv7-gnueabihf
+(venv) pi@GKOS49:~ $ ls ~/.local/share/uv/python/cpython-3.12.8-linux-armv7-gnueabihf/bin/python3
+/home/pi/.local/share/uv/python/cpython-3.12.8-linux-armv7-gnueabihf/bin/python3
+(venv) pi@GKOS49:~ $ ~/.local/share/uv/python/cpython-3.12.8-linux-armv7-gnueabihf/bin/python3
+Python 3.12.8 (main, Jan 14 2025, 22:38:28) [GCC 6.3.0 20170516] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 1+1
+2
+&gt;&gt;&gt;
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.1.21-v8+ aarch64 GNU/Linux (in 32-bit mode)</p>
+<h3>Version</h3>
+<p>uv 0.6.13</p>
+<h3>Python version</h3>
+<p>3.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @johndunderhill on 2025-04-09 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-09 13:24</div>
+            <div class="timeline-body"><p>@zanieb per discussion under https://github.com/astral-sh/uv/issues/6873</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-09 13:26</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>cc @Gankra the installer is downloading <code>arm-unknown-linux-musl-staticeabihf</code> but I don't quite know why. It's an ARMv8 system but that binary corresponds to ARMv6 HF.</p>
+<p>@johndunderhill Could you try downloading</p>
+<ul>
+<li>https://github.com/astral-sh/uv/releases/download/0.6.13/uv-aarch64-unknown-linux-gnu.tar.gz</li>
+<li>https://github.com/astral-sh/uv/releases/download/0.6.13/uv-aarch64-unknown-linux-musl.tar.gz</li>
+</ul>
+<p>and confirm that they work on your system?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2025-04-09 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-09 14:24</div>
+            <div class="timeline-body"><p>First one <em>does not</em> work, second one does.</p>
+<pre><code>pi@GKOS49:~/temp/uv1/uv-aarch64-unknown-linux-gnu $ ls -l
+total 34132
+-rwxr-xr-x 1 pi pi 34605312 Apr  7 14:53 uv
+-rwxr-xr-x 1 pi pi   340512 Apr  7 14:53 uvx
+
+pi@GKOS49:~/temp/uv1/uv-aarch64-unknown-linux-gnu $ ./uv
+-bash: ./uv: No such file or directory
+
+pi@GKOS49:~/temp/uv1/uv-aarch64-unknown-linux-gnu $ file uv
+uv: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 4.10.17, stripped
+</code></pre>
+<pre><code>pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ ls -l
+total 32840
+-rwxr-xr-x 1 pi pi 33211992 Apr  7 14:53 uv
+-rwxr-xr-x 1 pi pi   413568 Apr  7 14:53 uvx
+
+pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ ./uv --version
+uv 0.6.13
+
+pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ file uv
+uv: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, stripped
+</code></pre>
+<p>The second one may be able to install Python, but I'm not sure if the selected Python will work, because the download is timing out.  It's attempting to download <code>cpython-3.12.9-linux-aarch64-gnu</code> in response to <code>./uv python install 3.12</code>.  This unit is one of a fleet of machines deployed throughout the country; some have spotty Internet access.  I'll try again later, or see if I can find a similar unit with better access.</p>
+<p>John</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-09 14:38</div>
+            <div class="timeline-body"><p>Nah, didn't pick the right one.</p>
+<pre><code>pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ ./uv python install 3.12
+Installed Python 3.12.9 in 2m 33s
+ + cpython-3.12.9-linux-aarch64-gnu
+
+pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ ./uv python list
+error: Failed to inspect Python interpreter from managed installations at `/home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12`
+  Caused by: Failed to query Python interpreter at `/home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12`
+  Caused by: No such file or directory (os error 2)
+
+pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ ls /home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12
+/home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12
+
+pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ /home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12
+-bash: /home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12: No such file or directory
+
+pi@GKOS49:~/temp/uv2/uv-aarch64-unknown-linux-musl $ file /home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12
+/home/pi/.local/share/uv/python/cpython-3.12.9-linux-aarch64-gnu/bin/python3.12: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=54c37326ccd9e6e2e10a1c0857b5977aecfdc103, not stripped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-09 15:03</div>
+            <div class="timeline-body"><p>We don't have <code>aarch64-musl</code> Python versions yet, it's non-trivial but can be tracked in https://github.com/astral-sh/python-build-standalone/pull/569</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-09 15:05</div>
+            <div class="timeline-body"><p>I'm surprised that the GNU Libc version isn't working, don't pis have GNU Libc installed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-09 15:13</div>
+            <div class="timeline-body"><p>I expect the issue is connected to the fact that your aarch64 is &quot;in 32-bit mode&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-09 15:27</div>
+            <div class="timeline-body"><p>Alright yeah. Specifically at the end of <a href="https://astral.sh/uv/install.sh">platform selection (get_architecture)</a> we do this (deleted a bunch of irrelevant parts):</p>
+<pre><code class="language-sh">    # Detect 64-bit linux with 32-bit userland
+    if [ &quot;${_ostype}&quot; = unknown-linux-gnu ] &amp;&amp; [ &quot;${_bitness}&quot; -eq 32 ]; then
+        case $_cputype in
+            aarch64)
+                _cputype=armv7
+                _ostype=&quot;${_ostype}eabihf&quot;
+                ;;
+        esac
+    fi
+
+    # treat armv7 systems without neon as plain arm
+    if [ &quot;$_ostype&quot; = &quot;unknown-linux-gnueabihf&quot; ] &amp;&amp; [ &quot;$_cputype&quot; = armv7 ]; then
+        if ensure grep '^Features' /proc/cpuinfo | grep -q -v neon; then
+            # At least one processor does not have NEON.
+            _cputype=arm
+        fi
+    fi
+</code></pre>
+<ul>
+<li>So at first we correctly identify this is <code>aarch64-unknown-linux-gnu</code>.</li>
+<li>Then &quot;hey wait this is a 32-bit userland... we should use <code>armv7-unknown-linux-gnueabihf</code>&quot;</li>
+<li>Then &quot;hey wait we couldn't find universal NEON support... then <code>arm-unknown-linux-gnueabihf</code>&quot;</li>
+<li>Then &quot;hey the only thing I have that MAYBE supports that is <code>uv-arm-unknown-linux-musleabihf</code>&quot;</li>
+</ul>
+<p>So you hit like, 3 levels of &quot;I'm trying my best to make this work&quot; fallback, and, evidently it doesn't really work. Between this and the python fetching I'm not sure we really support your platform, on several levels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-09 15:38</div>
+            <div class="timeline-body"><p>These days rustup has the neon check enhanced:</p>
+<pre><code>if ! (ensure grep '^Features' /proc/cpuinfo | grep -E -q 'neon|simd') ; then
+    # Either `/proc/cpuinfo` is malformed or unavailable, or
+    # at least one processor does not have NEON (which is asimd on armv8+).
+    _cputype=arm
+fi
+</code></pre>
+<p>Possible that would fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-09 15:39</div>
+            <div class="timeline-body"><p>Does https://github.com/astral-sh/uv/releases/download/0.6.13/uv-armv7-unknown-linux-gnueabihf.tar.gz work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/cargo-dist/issues/15.html">astral-sh/cargo-dist#15</a> on 2025-04-09 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-09 15:44</div>
+            <div class="timeline-body"><p>Filed https://github.com/astral-sh/cargo-dist/issues/15 for potential installer improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-10 06:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Does https://github.com/astral-sh/uv/releases/download/0.6.13/uv-armv7-unknown-linux-gnueabihf.tar.gz work?</p>
+</blockquote>
+<p>Yes, it does.</p>
+<pre><code>(venv) pi@GKOS49:~/temp/uv3/uv-armv7-unknown-linux-gnueabihf $ ./uv --version
+uv 0.6.13
+
+(venv) pi@GKOS49:~/temp/uv3/uv-armv7-unknown-linux-gnueabihf $ file uv
+uv: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.101, stripped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johndunderhill">@johndunderhill</a> on 2025-04-10 06:23</div>
+            <div class="timeline-body"><blockquote>
+<p>We don't have <code>aarch64-musl</code> Python versions yet, it's non-trivial but can be tracked in <a href="https://github.com/astral-sh/python-build-standalone/pull/569">astral-sh/python-build-standalone#569</a></p>
+</blockquote>
+<p>Ok, but bear in mind, per the initial post, <code>cpython-3.12.8-linux-armv7-gnueabihf</code> appears to work on this platform.  That was a guess on my part; I'm not entirely clear about the details, nor if this is even the best choice here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12852.html">astral-sh/uv#12852</a> on 2025-04-13 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12949.html">astral-sh/uv#12949</a> on 2025-04-17 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-17 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-17 23:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

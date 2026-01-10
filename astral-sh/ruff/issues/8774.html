@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[D417] Documenting Functions that `Unpack` - astral-sh/ruff #8774</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[D417] Documenting Functions that `Unpack`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8774">#8774</a>
+        opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a>
+        on 2023-11-20 05:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2023-11-20 05:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><a href="https://peps.python.org/pep-0692/">PEP 692</a> introduced a way define the keyword arguments are runtime using <code>Unpack</code> on a <code>TypedDict</code>. This allows for the <code>TypedDict</code>'s attributes to be used directly as keyword arguments, and the actual keyword argument shouldn't be used.</p>
+<p>This causes issues when Ruff tries to check that the arguments are documented in a docstring.</p>
+<h2>Example</h2>
+<p>The PEP document gives the following example which suffices for this example:</p>
+<pre><code class="language-python">from typing import TypedDict, Unpack
+
+class Movie(TypedDict):
+    name: str
+    year: int
+
+def foo(**kwargs: Unpack[Movie]) -&gt; None:
+    &quot;&quot;&quot;
+    Foo a movie.
+
+    Args:
+        name: The name of the movie.
+        year: The year the movie was released.
+    &quot;&quot;&quot;
+    assert kwargs[&quot;year&quot;] &gt; 0
+
+movie: Movie = {&quot;name&quot;: &quot;Life of Brian&quot;, &quot;year&quot;: 1979}
+
+foo(movie)                                  # Invalid
+foo(kwargs=movie)                           # Invalid
+foo(**movie)                                # OK!
+foo(name=&quot;The Meaning of Life&quot;, year=1983)  # OK!
+</code></pre>
+<p>In effect, the use of <code>Unpack[Movie]</code> is meant to replace the <code>kwargs</code> with the relevant keyword arguments as inferred from the <code>Movie</code> <code>TypedDict</code> and as a result:</p>
+<pre><code class="language-python">def foo(**kwargs: Unpack[Movie]) -&gt; None: ...
+</code></pre>
+<p>becomes essentially equivalent to:</p>
+<pre><code class="language-python">def foo(*, name: str, year: int) -&gt; None: ...
+</code></pre>
+<p>The above example (using Google style) will raise the following error:</p>
+<pre><code class="language-log">ruff-unpack-example.py:7:5: D417 Missing argument description in the docstring for `foo`: `**kwargs`
+</code></pre>
+<h2>Solution</h2>
+<h3>Ideal World</h3>
+<p>The most ideal solution would be for Ruff to parse the <code>TypedDict</code> and adjust the keyword arguments accordingly. I suspect this is beyond the scope of Ruff's current capabilities.</p>
+<h3>Compromise</h3>
+<p>If Ruff sees specifically the pattern <code>**{arg}: Unpack[{class}]</code>, then:</p>
+<ul>
+<li>Ruff should <em>not</em> require that <code>arg</code> be documented.</li>
+<li>Better yet, Ruff should perform a check in case <code>arg</code> is documented, and raise a warning as the documentation is misleading.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-11-20 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-11-20 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 15:27</div>
+            <div class="timeline-body"><p>Thanks for this well written issue!</p>
+<p>The example seems a little weird to me, wouldn't the parameters be documented in <code>Movie</code> rather than each function that uses it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2023-11-20 20:42</div>
+            <div class="timeline-body"><p>The specific issue raised is in relation to <a href="https://docs.astral.sh/ruff/rules/undocumented-param/"><code>D417</code> Undocumented Param</a> which targets specifically the documenting (or lack thereof) of function arguments, and therefore is independent of <code>Movie</code> being documented or not.</p>
+<p>Your suggestion of having the parameters documented in the <code>Movie</code> class rather than each function is exactly the 'Ideal World' solution I mention above. The problem with this is that it would require some quite deep understanding of Python code from Ruff; and I am not sure that Ruff does/can do this. What would happen if the <code>Movie</code> class is defined in a separate Python module or library? Should Ruff parse all imports? This is why I mentioned it as an 'Ideal World' solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 21:08</div>
+            <div class="timeline-body"><p>Is there even an editor which supports reading docstrings from the unpacked class? It looks like PyCharm has no support for <code>Unpack</code> and VSCode will only document the parameters if you duplicate them in the function.</p>
+<p>Given that VSCode requires the example format we should avoid raising an error if it's documented that way. We should probably not require it though, allowing <code>**kwargs: ...</code> still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2023-11-20 21:56</div>
+            <div class="timeline-body"><p>I don't quite understand your point here, but I'll try and respond and feel free to correct any misunderstanding.</p>
+<blockquote>
+<p>Is there even an editor which supports reading docstrings from the unpacked class?</p>
+</blockquote>
+<p>I do not know what you mean specifically. So I will answer a couple of interpretations:</p>
+<ul>
+<li><p>Are you asking whether editors will auto-suggest the various keyword arguments based on parsing the <code>TypedDict</code>? If so, VSCode supports this as explained in <a href="https://github.com/microsoft/pylance-release/discussions/3046">this completed feature request</a></p>
+</li>
+<li><p>Are you asking whether editors will read the <code>TypedDict</code>'s docstrings and update the function's docstring? I'm not aware of any which do this, nor do I know how this would be achieved. In any case, the function's docstring should probably indicate how the function should be used (as opposed to how it is literally written).</p>
+</li>
+</ul>
+<p>In case there's any confusion (and I've added the below to the original post), from a typing and documentation perspective, the following should be equivalent:</p>
+<pre><code class="language-python">def foo(**kwargs: Unpack[Movie]) -&gt; None: ...
+def foo(*, name: str, year: int) -&gt; None: ...
+</code></pre>
+<blockquote>
+<p>It looks like PyCharm has no support for <code>Unpack</code></p>
+</blockquote>
+<p>This would indicated that PyCharm does not support <a href="https://peps.python.org/pep-0692/">PEP 692</a>. There is in fact <a href="https://youtrack.jetbrains.com/issue/PY-55044">a tracked issue</a> requesting for this to be implemented properly.</p>
+<blockquote>
+<p>VSCode will only document the parameters if you duplicate them in the function.</p>
+</blockquote>
+<p>This would indicate that VSCode is incorrect here, as I don't think this is compliant with PEP 692. I guess this might also depend on which extension you are using, since, as mentioned above, Pylance does support parsing <code>TypedDict</code> and updating the suggested keyword arguments based on this.</p>
+<blockquote>
+<p>Given that VSCode requires the example format we should avoid raising an error if it's documented that way.</p>
+</blockquote>
+<p>I quite disagree with this. I think we should base Ruff's behaviour on how Python is intended to work, as per the PEPs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 23:55</div>
+            <div class="timeline-body"><p>Hm I think we did indeed misunderstand each other so I'll try again.</p>
+<p>I was attempting to agree with your original suggestion. Basically, we should allow <code>kwargs</code> to be missing if <code>Unpack</code> is used. When we can find the attributes of the inner type, we should enforce that they are each present in the docstring — we cannot do so if the definition is in another file at this time. I'm unsure if this should be required by default, since in an &quot;ideal world&quot; the members would be documented on the inner type and displayed by the IDE. If someone prefers to use <code>kwargs</code> in their documentation, we should probably allow that instead of forcing them to copy the definition repeatedly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2023-11-22 09:41</div>
+            <div class="timeline-body"><p>Yeah, all good then, completely agree :)</p>
+<p>I think for now the time being, it would be sufficient to adjust <code>D417</code> to ignore any argument which correspond to an <code>Unpack[...]</code> argument (whether it is called <code>kwargs</code> or not).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @zanieb on 2023-11-22 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2023-11-22 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-04 22:34</div>
+            <div class="timeline-body"><p>Hey @zanieb 👋 I've run into the same issue in my current project. Even though this issue's two years old, I can take it on if you don’t mind 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-04 23:12</div>
+            <div class="timeline-body"><p>@ntBre is a better person now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-04 23:20</div>
+            <div class="timeline-body"><p>Sounds good to me! I think it makes sense to suppress <code>D417</code> for parameters with <code>Unpack</code> annotations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @phongddo by @ntBre on 2025-12-04 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21816.html">astral-sh/ruff#21816</a> on 2025-12-05 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phongddo">@phongddo</a> on 2025-12-05 16:26</div>
+            <div class="timeline-body"><p>Hey @ntBre 👋 thanks for taking a look! I've opened https://github.com/astral-sh/ruff/pull/21816 to suppress the rule for params with <code>Unpack</code> annotation. Please review it when you have a moment. Thanks! 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-08 19:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:10 UTC
+    </footer>
+</body>
+</html>

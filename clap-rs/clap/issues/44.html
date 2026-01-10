@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positional args with multiple values - clap-rs/clap #44</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Positional args with multiple values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/44">#44</a>
+        opened by <a href="https://github.com/jhelwig">@jhelwig</a>
+        on 2015-03-29 19:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jhelwig">@jhelwig</a> on 2015-03-29 19:42</div>
+            <div class="timeline-body"><p>I'm working on a command that allows a user to specify an arbitrary number of files/directories on the command line (Ex: <code>dupe-finder /path/to/dir1 /path/to/dir2 /path/to/dir3</code>).  I know I could do this currently, if I changed the form to use an option that allowed multiple values (<code>dupe-finder -d /path/to/dir1 -d /path/to/dir2 -d /path/to/dir3</code>), but it would be handy to be able to have a positional argument that captured any positional arguments at &amp; after its index into a vector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-03-29 20:13</div>
+            <div class="timeline-body"><p>Ah ok, I got what you're saying. I've been throwing this idea around for a while. It's easy to implement, but my worry is that troubleshooting developer (not end user) error where they specify <code>multiple(true)</code> on any positional argument which <em>isn't</em> the last index is harder. Maybe an assert can help with this...sorry thinking out loud :P</p>
+<p>It may also create harder to find bugs where the dev specifies a positional with multiple values, when they really should just use two positionals (but this obviously isn't always the case, as your use case as an example of when it <em>would</em> be helpful)</p>
+<p>I'll work on this, and include it for now unless it starts causing issues ;) The user-base is small enough now that it shouldn't be an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhelwig">@jhelwig</a> on 2015-03-29 20:19</div>
+            <div class="timeline-body"><p>Assertions to make sure that</p>
+<ul>
+<li>There is only one positional with <code>multiple(true)</code>.</li>
+<li>The positional with <code>multiple(true)</code> has the highest index.</li>
+</ul>
+<p>makes complete sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature request</span> added by @kbknapp on 2015-03-29 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2015-03-29 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-03-30 00:00</div>
+            <div class="timeline-body"><p>@jhelwig Try out master here, or v0.5.3 on crates.io and let me know if it works for you ;)</p>
+<p>Positional arguments now support <code>is_present()</code>, <code>.occurrences_of()</code>, <code>.value_of()</code> and <code>.values_of()</code> provided they are the last positional argument (i.e highest index).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhelwig">@jhelwig</a> on 2015-03-30 02:56</div>
+            <div class="timeline-body"><p>Works great!  I think the only nit I have is that it would be nice if the generated help for the positional multiple argument indicated that it could be specified multiple times.  Something like how <code>git add -h</code> indicates multiple <code>&lt;pathspec&gt;</code> are allowed:</p>
+<pre><code>% git add -h
+usage: git add [options] [--] &lt;pathspec&gt;...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-03-30 03:03</div>
+            <div class="timeline-body"><p>:+1:
+Good point, that should be an easy include in the usage string.</p>
+<pre><code>USAGE:
+    myprog &lt;LOCATIONS&gt;...
+</code></pre>
+<p>I think the full help text is harder because it doesn't use <code>&lt;</code> or <code>&gt;</code>. Maybe a <code>[multiple allowed]</code> appended to the <code>.help()</code>?</p>
+<pre><code>$ myprog -h
+[.. omitted..]
+
+POSITIONAL ARGUMENTS:
+    LOCATIONS        Locations to search [multiple allowed]
+</code></pre>
+<p>or is <code>...</code> widely accepted enough to do this:</p>
+<pre><code>$ myprog -h
+[.. omitted ..]
+POSITIONAL ARGUMENTS:
+    LOCATIONS...        Locations to search
+</code></pre>
+<p>Now that I see it, I'm kind of leaning towards option two. Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/47.html">clap-rs/clap#47</a> on 2015-03-30 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhelwig">@jhelwig</a> on 2015-03-30 03:08</div>
+            <div class="timeline-body"><p>I think the <code>...</code> is common enough that it's probably fine to stick with that.  For example, both grep and awk use it (first two I though of off-hand to check), and I'm sure I could find dozens of other CLI apps that do.</p>
+<pre><code>% grep -h
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+    [-e pattern] [-f file] [--binary-files=value] [--color=when]
+    [--context[=num]] [--directories=action] [--label] [--line-buffered]
+    [--null] [pattern] [file ...]
+% awk -h
+awk: option requires an argument -- h
+Usage: awk [POSIX or GNU style options] -f progfile [--] file ...
+Usage: awk [POSIX or GNU style options] [--] 'program' file ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhelwig">@jhelwig</a> on 2015-03-30 03:11</div>
+            <div class="timeline-body"><p>Initially accidentally said &quot;both sed and awk&quot; in my comment, but thought I may as well add sed as another data-point in favor of using <code>...</code> everywhere:</p>
+<pre><code>% sed -h
+sed: illegal option -- h
+usage: sed script [-Ealn] [-i extension] [file ...]
+       sed [-Ealn] [-i extension] [-e script] ... [-f script_file] ... [file ...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-03-30 03:22</div>
+            <div class="timeline-body"><p>I agree after looking it.</p>
+<p>See master <a href="https://github.com/kbknapp/clap-rs/commit/0617b8517716374bf3850df5bd21c999157689e0">0617b851</a> or 0.5.4 on crates.io</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:17 UTC
+    </footer>
+</body>
+</html>

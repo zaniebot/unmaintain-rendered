@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uvx with index url does use the cache and fetches data from reporistory. - astral-sh/uv #10541</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Uvx with index url does use the cache and fetches data from reporistory.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10541">#10541</a>
+        opened by <a href="https://github.com/matejsp">@matejsp</a>
+        on 2025-01-12 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matejsp">@matejsp</a> on 2025-01-12 14:08</div>
+            <div class="timeline-body"><p>We have corporate Nexus as pypi proxy that we use instead pypi index. We really liked that you can have multiple versions of each tool.
+However this only works with default index pypi.org and not with our Nexus:</p>
+<pre><code>uvx --python 3.11.6 --default-index https://nexus.company.net/repostiory/pypi/simple --with poetry-dynamic-versioning==1.5.0 --with poetry-plugin-export==1.8.0 poetry@2.0.1 --help
+</code></pre>
+<p>Now when using our nexus proxy it seems that uvx is not able to cache it and instead tries to call nexus for each call.</p>
+<pre><code>➜  projects uvx --python 3.11.6 --default-index https://nexus.company.net/repostiory/pypi/simple --with poetry-dynamic-versioning==1.5.0 --with poetry-plugin-export==1.8.0 poetry@2.0.1 --help
+⠼ poetry==2.0.1                                                                                                                                                                                                                                                                                 error: Failed to fetch: `https://nexus.company.net/repostiory/pypi/simple/keyring/`
+  Caused by: Could not connect, are you offline?
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://nexus.company.nett/repository/pypi/simple/keyring/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: nodename nor servname provided, or not known
+  Caused by: failed to lookup address information: nodename nor servname provided, or not known
+</code></pre>
+<p>I would expect that when running uvx tool multiple times with the same version they would be cached offline and just work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-13 02:40</div>
+            <div class="timeline-body"><p>I believe we refresh the tool on each invocation (this is typically a no-op if run in succession due to the caching headers). If you want <code>uvx</code> to avoid doing that, I'd suggest running <code>uv tool install --with poetry-dynamic-versioning==1.5.0 --with poetry-plugin-export==1.8.0 poetry@2.0.1</code>. Then, subsequent <code>uvx poetry</code> invocations will use that installed tool.</p>
+<p>I guess we could try to make uvx robust to these kinds of failures, though it's hard to know when they should or shouldn't be shown. Like, we'd probably at least want to show a user-facing warning? \cc @zanieb</p>
+<p>I'm a little confused though -- why does the authentication fail in the second invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-13 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-01-13 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matejsp">@matejsp</a> on 2025-01-13 07:29</div>
+            <div class="timeline-body"><p>It fails at second invocation because I deliberately disconnected my computer from the internet to show the problem that caching does not work (or just disconnecting from my work VPN).</p>
+<p>Yes without --default-index caching works but then it is not using our whitelisted packages in nexus.</p>
+<p>We don't want to use install since it is installed globally and poetry 2.x introduced some breaking changes that's why we want to use it like this (without install) relying on caching behavior that currently only works with pypi.org.</p>
+<p>We want to use 1.8.4 and 2.0.1 based on what each microservice is currently using.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:04 UTC
+    </footer>
+</body>
+</html>

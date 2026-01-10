@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package installation fails with os error 61 - astral-sh/uv #15304</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Package installation fails with os error 61</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15304">#15304</a>
+        opened by <a href="https://github.com/srdecny">@srdecny</a>
+        on 2025-08-15 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/srdecny">@srdecny</a> on 2025-08-15 12:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When installing packages, I get the following error:</p>
+<pre><code>(env) srdecny@bender7 ~/meaning4 (master)&gt; uv pip install torch torchaudio
+Using Python 3.11.8 environment at: env
+Resolved 26 packages in 68ms
+error: Failed to install: torch-2.8.0-cp311-cp311-manylinux_2_28_x86_64.whl (torch==2.8.0)
+  Caused by: failed to copy file from /fsx_home/homes/srdecny/.cache/uv/archive-v0/kow9mkBtE1FIwZCcXJYyP/torch-2.8.0.dist-info/RECORD to /fsx_home/homes/srdecny/meaning4/env/lib/python3.11/site-packages/torch-2.8.0.dist-info/RECORD: No data available (os error 61)
+</code></pre>
+<p>The <code>/fsx_home</code> is a FSx for Lustre drive hosted on AWS. I assume this is relevant here. It seems to happen with any package, and it persists even if I delete the <code>~.cache/uv</code> folder and start with a fresh virtual env. The package it errors out also seems to be different every time. Maybe some race condition here?</p>
+<h3>Platform</h3>
+<p>Linux 6.5.0-1024-aws x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.21</p>
+<h3>Python version</h3>
+<p>3.11.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @srdecny on 2025-08-15 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blaylockbk">@blaylockbk</a> on 2025-08-26 20:13</div>
+            <div class="timeline-body"><p>I've had the same issue on a Lustre FS. Usually running <code>uv cache clean</code> first fixes the issue. But this isn't ideal as clearing a rebuilding the cache takes time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-26 20:51</div>
+            <div class="timeline-body"><p>Interesting thanks for the report.</p>
+<p>Does it persist after the initial failure? e.g., you get <code>No data available (os error 61)</code> on the same file every time once it occurs? Or do we just need to add retries here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-26 20:51</div>
+            <div class="timeline-body"><p>(It'd be great if you could loop in someone from the AWS FSx team as they're likely to have domain knowledge we do not here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnikolic">@bnikolic</a> on 2025-09-17 13:43</div>
+            <div class="timeline-body"><p>Not to do with <em>uv</em> per se, but I've had very similar recurring issue building Rust itself (v1.85) on Amazon FSx/Lustre.</p>
+<pre><code>  &gt;&gt; 6281    failed to copy `/shared/fsx1/bntemp/spack/opt/spack/linux-x86_64_v3/rust-bootstrap-1.85.0-llhzwidyz4uj4dekylhf5hdemfc7rezw/lib/
+             rustlib/x86_64-unknown-linux-gnu/bin/llvm-ar` to `/tmp/b.nikolic/spack-stage/spack-stage-rust-1.85.0-wf2ccbxnnerjkdihdbjiexxf56
+             ifwfzi/spack-src/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-ar`: No data avail
+             able (os error 61)
+</code></pre>
+<p>I did not see a similar error in many many hours of compilation of other packages....  Suggests something about how Rust copies file which triggers an unsupported feature or weakness in Lustre implementation of FSx. Perhaps something about how  Lustre uses extended attribute lustre.lov  ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-09-17 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 13:58</div>
+            <div class="timeline-body"><p>Could you raise this with AWS, e.g. through a support ticket? This seems like a bug in FSx for Lustre, where the AWS team help with, especially when reported by their costumers directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnikolic">@bnikolic</a> on 2025-09-18 08:52</div>
+            <div class="timeline-body"><p>I have traced this issue to the use of the sendfile(2) system call to do a file copy without getting the data into user space. Somewhere between the expected semantics in implementations (I've traced issues both to python's shutils and rusts fs::copy) and the actual semantics of FSx there is an issue and ENODATA error code is not handled correctly (by falling back to read()/write() or retrying).</p>
+<p>I'm not going to have a chance to look into this further personally but one of the team here may , I'll post a note here if that happens. In mean time, workaround can be achieved by turning off attempt to sendfile() copy files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnikolic">@bnikolic</a> on 2025-10-29 10:00</div>
+            <div class="timeline-body"><p>I've made a patch for Python's shutil to fix this issue: https://github.com/python/cpython/pull/139417 . I think this is the best way to deal with this issue, rather than relying on all FS implementations to never return ENODATA .</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

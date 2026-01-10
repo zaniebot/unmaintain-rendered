@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically remove .encode(&quot;utf-8&quot;) - astral-sh/ruff #641</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically remove .encode(&quot;utf-8&quot;)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/641">#641</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-11-07 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 14:56</div>
+            <div class="timeline-body"><p>See: https://github.com/asottile/pyupgrade#encodeutf-8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2022-11-07 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-11-07 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove .encode("utf-8")" to "Automatically remove .encode("utf-8")" by @charliermarsh on 2022-11-07 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-07 14:58</div>
+            <div class="timeline-body"><p>If interested, there are some instructions on adding new rules in the <code>CONTRIBUTING.md</code> and <a href="https://github.com/charliermarsh/ruff/issues/312#issuecomment-1280008634">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-07 21:04</div>
+            <div class="timeline-body"><p>Note that pyupgrade only does this on string <em>literals</em>: <a href="https://github.com/asottile/pyupgrade/issues/138#issuecomment-496044965">rationale</a>, <a href="https://github.com/asottile/pyupgrade/blob/v3.2.0/pyupgrade/_plugins/default_encoding.py">source</a>, <a href="https://github.com/asottile/pyupgrade/blob/v3.2.0/tests/features/default_encoding_test.py">tests</a>.</p>
+<p>And, for string literals with only ASCII characters, it actually rewrites <code>&quot;foo&quot;.encode(&quot;utf-8&quot;)</code> to <code>b&quot;foo&quot;</code>: <a href="https://github.com/asottile/pyupgrade/tree/v3.2.0#encode-to-bytes-literals">documentation</a>, <a href="https://github.com/asottile/pyupgrade/blob/v3.2.0/pyupgrade/_main.py#L225">source</a>, <a href="https://github.com/asottile/pyupgrade/blob/v3.2.0/tests/features/binary_literals_test.py">tests</a>.</p>
+<p><a href="https://docs.python.org/3/library/codecs.html#standard-encodings">Synonyms</a> of <code>utf-8</code>: <code>utf_8</code>, <code>u8</code>, <code>utf</code>, <code>utf8</code>, <code>cp65001</code> (all case-insensitive).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-10 09:23</div>
+            <div class="timeline-body"><p>Hi there! I'm quite interested in giving this one a try</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-10 13:36</div>
+            <div class="timeline-body"><p>@martinlehoux - Awesome! Let me know if you have any questions at all. Happy to help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-11 12:42</div>
+            <div class="timeline-body"><p>Hi! I have a first draft, but I wonder how you provide &quot;complex&quot; fixes for a piece of code.</p>
+<p>For instance, to fix this</p>
+<pre><code class="language-py">&quot;foo&quot;.encode(&quot;utf-8&quot;) # b&quot;foo&quot;
+</code></pre>
+<p>I tried to do something like this, only to discover that you can have only a single fix</p>
+<pre><code class="language-rust">check.amend(Fix::insertion(&quot;b&quot;.to_string(), expr.location));
+let mut after_variable = variable.end_location.unwrap();
+after_variable.go_right();
+check.amend(Fix::deletion(
+	after_variable,
+	expr.end_location.unwrap(),
+));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 15:10</div>
+            <div class="timeline-body"><p>I would structure that as a <code>Fix::replacement</code> of the entire string: <code>&quot;foo&quot;.encode(&quot;utf-8&quot;)</code> -&gt; <code>b&quot;foo&quot;</code>. <a href="src/flake8_bugbear/plugins/assert_false.rs"><code>assert_false.rs</code></a> could be a good example -- you'd basically build a new AST, then use <code>SourceGenerator</code> to convert that AST to source code, and use <em>that</em> output as your replacement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/686.html">astral-sh/ruff#686</a> on 2022-11-11 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-11 18:46</div>
+            <div class="timeline-body"><p>Hi, I submitted a PR so we can discuss about it. Obviously I had no idea about error code, name or message ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-16 04:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

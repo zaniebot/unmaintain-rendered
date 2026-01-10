@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flaking test `red_knot::file_watching directory_renamed` - astral-sh/ruff #14473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flaking test `red_knot::file_watching directory_renamed`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14473">#14473</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-11-20 02:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-20 02:21</div>
+            <div class="timeline-body"><pre><code>--- STDOUT:              red_knot::file_watching directory_renamed ---
+
+running 1 test
+test directory_renamed ... FAILED
+
+failures:
+
+failures:
+    directory_renamed
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 23 filtered out; finished in 0.23s
+
+
+--- STDERR:              red_knot::file_watching directory_renamed ---
+thread 'directory_renamed' panicked at crates/red_knot/tests/file_watching.rs:646:5:
+assertion failed: resolve_module(case.db().upcast(),
+        &amp;ModuleName::new_static(&quot;sub.a&quot;).unwrap()).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>e.g. https://github.com/astral-sh/ruff/actions/runs/11925007919/attempts/1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @zanieb on 2024-11-20 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> removed by @MichaReiser on 2024-11-20 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @MichaReiser on 2024-11-20 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-20 07:19</div>
+            <div class="timeline-body"><p>Thanks. I think that was now the first time that it flaked and maybe it's related to the depot runner change. I don't plan on investing time unless it flakes more often (because it's very time intensive and mostly impossible to reproduce locally)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-20 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-21 18:55</div>
+            <div class="timeline-body"><p>Also happened here:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/actions/runs/11959330641/job/33340901595?pr=14357</li>
+<li>https://github.com/astral-sh/ruff/actions/runs/11968243934/job/33366788713?pr=14357</li>
+<li>https://github.com/astral-sh/ruff/actions/runs/11968243934/job/33367106490?pr=14357</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-21 19:57</div>
+            <div class="timeline-body"><p>Sort of obvious, but you can reproduce the same error by removing the <code>rename</code> call</p>
+<pre><code>--- STDERR:              red_knot::file_watching directory_renamed ---
+thread 'directory_renamed' panicked at crates/red_knot/tests/file_watching.rs:646:5:
+assertion failed: resolve_module(case.db().upcast(),
+        &amp;ModuleName::new_static(&quot;sub.a&quot;).unwrap()).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+   Canceling due to test failure
+------------
+     Summary [   0.181s] 1 test run: 0 passed, 1 failed, 3609 skipped
+        FAIL [   0.181s] red_knot::file_watching directory_renamed
+error: test run failed
+❯ gd
+diff --git a/crates/red_knot/tests/file_watching.rs b/crates/red_knot/tests/file_watching.rs
+index 5c2880e0b..236d64b8d 100644
+--- a/crates/red_knot/tests/file_watching.rs
++++ b/crates/red_knot/tests/file_watching.rs
+@@ -635,8 +635,8 @@ fn directory_renamed() -&gt; anyhow::Result&lt;()&gt; {
+     let foo_baz = case.workspace_path(&quot;foo/baz&quot;);
+ 
+     std::fs::create_dir(case.workspace_path(&quot;foo&quot;).as_std_path())?;
+-    std::fs::rename(sub_path.as_std_path(), foo_baz.as_std_path())
+-        .with_context(|| &quot;Failed to move the sub directory&quot;)?;
++    // std::fs::rename(sub_path.as_std_path(), foo_baz.as_std_path())
++    //     .with_context(|| &quot;Failed to move the sub directory&quot;)?;
+ 
+     let changes = case.stop_watch();
+</code></pre>
+<p>or by removing the <code>stop_watch</code> call</p>
+<pre><code>--- STDERR:              red_knot::file_watching directory_renamed ---
+thread 'directory_renamed' panicked at crates/red_knot/tests/file_watching.rs:646:5:
+assertion failed: resolve_module(case.db().upcast(),
+        &amp;ModuleName::new_static(&quot;sub.a&quot;).unwrap()).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+   Canceling due to test failure
+------------
+     Summary [   0.162s] 1 test run: 0 passed, 1 failed, 3609 skipped
+        FAIL [   0.162s] red_knot::file_watching directory_renamed
+error: test run failed
+❯ gd
+diff --git a/crates/red_knot/tests/file_watching.rs b/crates/red_knot/tests/file_watching.rs
+index 5c2880e0b..12eb698c0 100644
+--- a/crates/red_knot/tests/file_watching.rs
++++ b/crates/red_knot/tests/file_watching.rs
+@@ -638,9 +638,9 @@ fn directory_renamed() -&gt; anyhow::Result&lt;()&gt; {
+     std::fs::rename(sub_path.as_std_path(), foo_baz.as_std_path())
+         .with_context(|| &quot;Failed to move the sub directory&quot;)?;
+ 
+-    let changes = case.stop_watch();
++    // let changes = case.stop_watch();
+ 
+-    case.apply_changes(changes);
++    // case.apply_changes(changes);
+ 
+     // `import sub.a` should no longer resolve
+     assert!(resolve_module(
+</code></pre>
+<p>So one of these two things could be failing (or something in the assertion like <code>resolve_module</code>). It seems dubious that the rename is not working as intended, so it's probably one of the other two? I'm not familiar with the process, so I can't guess why but it sounds like getting more information on failure in CI is a good next step.</p>
+<p>I'd highly recommend setting up <code>test-log</code> and setting <code>RUST_LOG</code> so you can get some logs. I did this locally to see if there's more context and there's quite a bit of output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14533.html">astral-sh/ruff#14533</a> on 2024-11-22 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-22 16:39</div>
+            <div class="timeline-body"><p>I enabled extra logging in https://github.com/astral-sh/ruff/pull/14533. Please let me know if you see the flake in a future run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14543.html">astral-sh/ruff#14543</a> on 2024-11-22 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-11-23 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-03 07:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

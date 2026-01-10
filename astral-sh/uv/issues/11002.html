@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrent cache access causes errors on Windows - astral-sh/uv #11002</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Concurrent cache access causes errors on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11002">#11002</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-27 21:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 21:09</div>
+            <div class="timeline-body"><p>See the comments in https://github.com/astral-sh/uv/issues/7434#issuecomment-2615798114.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-27 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-27 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2025-01-27 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7434.html">astral-sh/uv#7434</a> on 2025-01-27 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11007.html">astral-sh/uv#11007</a> on 2025-01-27 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-28 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-28 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petamas">@petamas</a> on 2025-04-08 21:03</div>
+            <div class="timeline-body"><p>@charliermarsh: I have some bad news - there are some concurrency issues still present in uv 0.6.13.</p>
+<p>Could you reopen this issue and take another look?</p>
+<h2>Repro steps</h2>
+<ol>
+<li>Put the following in <code>repro.bat</code>:</li>
+</ol>
+<pre><code>@echo off
+setlocal
+
+set UV_CACHE_DIR=%CD%\cache
+set UV_PYTHON_INSTALL_DIR=%CD%\python
+
+if exist &quot;%UV_CACHE_DIR%&quot; rmdir /S /Q &quot;%UV_CACHE_DIR%&quot;
+if exist &quot;%UV_PYTHON_INSTALL_DIR%&quot; rmdir /S /Q &quot;%UV_PYTHON_INSTALL_DIR%&quot;
+if exist *.log del *.log
+
+for /L %%i in (1,1,20) do start cmd /c &quot;uv run hello.py &gt;%%i.log 2&gt;&amp;1&quot;
+</code></pre>
+<ol start="2">
+<li>Put the following in <code>hello.py</code>:</li>
+</ol>
+<pre><code># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#   &quot;oslex==0.1.3&quot;,
+#   &quot;comtypes==1.4.9&quot;,
+# ]
+# ///
+
+print(&quot;Hello, world!&quot;)
+</code></pre>
+<ol start="3">
+<li>Run <code>repro.bat</code></li>
+</ol>
+<h2>Errors</h2>
+<p>In the generated log files, the following errors can be observed:</p>
+<pre><code>error: Failed to install: comtypes-1.4.9-py3-none-any.whl (comtypes==1.4.9)
+  Caused by: RECORD file is invalid
+  Caused by: The process cannot access the file because it is being used by another process. (os error 32)
+</code></pre>
+<p>and</p>
+<pre><code>error: Failed to install: comtypes-1.4.9-py3-none-any.whl (comtypes==1.4.9)
+  Caused by: failed to copy file from d:\code\experiments\uv-parallel-issue\cache\archive-v0\Tn2MVVxErMR6qBVuAcGGi\comtypes-1.4.9.dist-info\RECORD to d:\code\experiments\uv-parallel-issue\cache\environments-v2\hello-8b8d8853a364cdcc\Lib\site-packages\comtypes-1.4.9.dist-info\RECORD: The process cannot access the file because it is being used by another process. (os error 32)
+</code></pre>
+<p>The number of failed runs vary, as does the exact wheel that fails.</p>
+<h2>Notes</h2>
+<p>Note1: I haven't ran into these exact errors with earlier uv versions; 0.4.15 usually failed with issues related to .rkyv files, while 0.5.26 failes with &quot;The file or directory is not a reparse point. (os error 4390)&quot; or &quot;The process cannot access the file because it is being used by another process. (os error 32)&quot; (without additional details).</p>
+<p>Note2: I tried reproducing using the Powershell script in https://github.com/astral-sh/uv/pull/11007, but I couldn't reproduce the issue that way. I don't know whether the key difference lies between <code>uv run</code> and <code>uv pip install</code>, or something else entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petamas">@petamas</a> on 2025-04-08 22:24</div>
+            <div class="timeline-body"><p>I took a peek under the hood. I think the issue might be happening within this call to <code>synchronized_copy()</code>: https://github.com/astral-sh/uv/blob/3ece75fc123088bf7f29ff44a7ae1837271c93e0/crates/uv-install-wheel/src/linker.rs#L303</p>
+<p>I don't really know Rust, and I'm not familiar with the locking policies within <code>uv</code>, but is it possible that <code>synchronized_copy()</code> should be extended with locking the <code>from</code> directory in addition to the <code>to</code> directory? (My theory is that the source <code>RECORD</code> file gets written to from one process while the other is trying to copy it. I assume that writing to the source directory, which is in the archive cache, is already lock-protected.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-04-08 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-08 23:05</div>
+            <div class="timeline-body"><p>cc @Gankra who has touched the cache recently</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @zanieb on 2025-04-08 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/majutsushi">@majutsushi</a> on 2025-05-16 01:38</div>
+            <div class="timeline-body"><p>I just ran into this while trying to get a colleague set up who was using Windows. Trying to install any moderately complex library would result in the &quot;file is used by another process&quot; error. We had to resort to using pip to get things unblocked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petamas">@petamas</a> on 2025-06-06 13:37</div>
+            <div class="timeline-body"><p>@majutsushi: Which <code>uv</code> version are you using?</p>
+<p>~I can no longer reproduce the issue with <code>uv</code> 0.7.11, it might've been fixed as a side effect of some other change.~</p>
+<p>~Edit: Strike that, I can't seem to reproduce it using <code>uv</code> 0.6.13 either, even though I was able to a couple hours ago.~</p>
+<p>Edit: see next comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petamas">@petamas</a> on 2025-06-06 15:14</div>
+            <div class="timeline-body"><p>Managed to reproduce in Windows Sandbox using <code>uv</code> 0.7.11 with these exact repro steps: https://github.com/astral-sh/uv/issues/11002#issuecomment-2787658535</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13883.html">astral-sh/uv#13883</a> on 2025-06-06 15:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

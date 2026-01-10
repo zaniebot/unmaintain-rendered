@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variant of allow_hyphen_values that treats `--` like a regular value - clap-rs/clap #5055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Variant of allow_hyphen_values that treats `--` like a regular value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5055">#5055</a>
+        opened by <a href="https://github.com/RalfJung">@RalfJung</a>
+        on 2023-07-30 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RalfJung">@RalfJung</a> on 2023-07-30 20:30</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.2.7</p>
+<h3>Describe your use case</h3>
+<p>I would like to write a program with various subcommands that mostly wrap various <code>cargo</code> commands. So for instance <code>./miri clippy &lt;args&gt;</code> should just forward all <code>&lt;args&gt;</code> completely unaltered to the underlying <code>cargo clippy</code> invocations. I was hoping that enabling <code>trailing_var_arg</code> and <code>allow_hyphen_values</code> achieves this, but sadly that is not the case: <code>./miri clippy -- -D warnings</code> leads to <code>-D warnings</code> being forwarded, the leading <code>--</code> is dropped.</p>
+<p>Interestingly, <code>./miri clippy --all-features -- -D warnings</code> behaves correctly, and <code>--</code> ends up as part of the arguments. Only a leading <code>--</code> is not handled as desired.</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+pub struct Args {
+    #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+    pub args: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args = Args::parse_from([&quot;program&quot;, &quot;--all-features&quot;, &quot;--&quot;, &quot;-D&quot;, &quot;warnings&quot;]);
+    println!(&quot;{:?}&quot;, args.args); // [&quot;--all-features&quot;, &quot;--&quot;, &quot;-D&quot;, &quot;warnings&quot;]: exactly what I want
+    let args = Args::parse_from([&quot;program&quot;, &quot;--&quot;, &quot;-D&quot;, &quot;warnings&quot;]);
+    println!(&quot;{:?}&quot;, args.args); // [&quot;-D&quot;, &quot;warnings&quot;]: I was hoping for [&quot;--&quot;, &quot;-D&quot;, &quot;warnings&quot;]
+}
+</code></pre>
+<h3>Describe the solution you'd like</h3>
+<p>Some way to indicate that an argument should just consume all remaining tokens into a <code>Vec&lt;String&gt;</code> would be great. I first thought maybe that's what <code>raw</code> does, but raw seems to actually <em>require</em> a <code>--</code> (and then strips it) so that doesn't help.</p>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>This is basically re-opening https://github.com/clap-rs/clap/issues/1236.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @RalfJung on 2023-07-30 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1236.html">clap-rs/clap#1236</a> on 2023-07-30 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-31 20:49</div>
+            <div class="timeline-body"><p>Generally, a (sub)command will have some of its own arguments besides those that get forwarded.</p>
+<p>When it doesn't, external subcommands might be more appropriate (though custom help output might be needed to get quality output).  Maybe there are things we can do for that help output...</p>
+<p>When it does, the general approach is what you did with <code>trailing_var_arg(true).allow_hyphen_values(true)</code> as this will allows built-in arguments to be used but to start capturing as soon as the first non-built-in argument is used.  Clap handling an initial <code>--</code> is important so users can &quot;escape&quot; arguments that are meant to be forwarded vs the built-in.  I hope this explains why the initial <code>--</code> isn't captured but the later <code>--</code> is captured.</p>
+<p>I'm assuming the request here is a way to completely forward a command with good help output.   <code>trailing_var_arg(true).allow_hyphen_values(true)</code> is only a solution if you also do <code>disable_help_flag(true)</code> unless you are intentionally wanting to provide your own help for the command.</p>
+<p>At this point, it might be good to get further clarification on the use case before diving more into potential solutions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/miri/pulls/3008.html">rust-lang/miri#3008</a> on 2023-08-03 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RalfJung">@RalfJung</a> on 2023-08-04 17:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Generally, a (sub)command will have some of its own arguments besides those that get forwarded.</p>
+</blockquote>
+<p>Yes. I would like it to do that, and then stop parsing on the first unexpected token and put all the rest into the trailing argument.</p>
+<blockquote>
+<p>Clap handling an initial -- is important so users can &quot;escape&quot; arguments that are meant to be forwarded vs the built-in. I hope this explains why the initial -- isn't captured but the later -- is captured.</p>
+</blockquote>
+<p>Yes I know I am losing generality here. For instance <code>./miri test</code> should take a <code>--bless</code> flag that is interpreted by the script, but everything else is forwarded. So in general I might need <code>./miri test -- --bless</code> to indicate that it should please forward <code>--bless</code> (put it in the trailing vararg) rather than interpreting it as a flag itself. I am okay with breaking that case -- the arguments after the <code>--</code> are passed to <code>cargo test</code> and <code>--bless</code> is not a valid flag there. I'd rather lose the ability to pass <code>--bless</code> into the vararg than having to write <code>./miri test -- -- filter1 filter2</code> to invoke <code>cargo test -- filter1 filter2</code>.</p>
+<blockquote>
+<p>At this point, it might be good to get further clarification on the use case before diving more into potential solutions.</p>
+</blockquote>
+<p>Basically: having a script wrap another command (that already takes <code>--</code>, such as in <code>cargo test -- filter1 filter2</code> or <code>cargo clippy -- -D warnings</code>) with perfect argument forwarding, <em>without</em> requiring another nesting of <code>--</code>. I am aware that this loses some expressivity, but that still seems preferable over <code>-- --</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2023-08-05 17:53</div>
+            <div class="timeline-body"><p>I'm interested in this as well. I have a subcommand that takes a few options and then the name and arguments for another program. It's fine if program names starting with <code>-</code> are more awkward and require <code>./</code> or similar. I want <code>--</code> in the trailing arguments to be passed to the command verbatim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-08 02:38</div>
+            <div class="timeline-body"><p>Thanks for the explanations!</p>
+<p>The part i find messy here is that the way the command wrapping is being done here is trying to be transparent to the user but it requires all new arguments to be placed first.</p>
+<p>That only weighs in depending on how the options look.</p>
+<p>In this case, I think the way this makes the most sense is the ability to turn off escaping, so <code>--</code> doesn't get treated specially by clap and it can naturally be consumed by <code>allow_hyphen_values</code>.  This can then also tie into other areas like error reporting (e.g. #2766).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-08-08 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2023-08-08 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/miri/issues/3592.html">rust-lang/miri#3592</a> on 2024-05-09 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/39555">@39555</a> on 2024-08-06 08:51</div>
+            <div class="timeline-body"><p>As a use case: a lot of unix tools can work with <code>--</code> as an argument. For example:</p>
+<pre><code class="language-sh"># as a placeholder for the command_name
+sh -c 'echo $0 $1' -- arg
+#&gt; -- arg
+
+echo --
+#&gt; --
+</code></pre>
+<p>However with clap now in projects such as</p>
+<ul>
+<li><code>uecho</code> https://github.com/uutils/coreutils</li>
+<li><code>echo</code> and command line <code>brush -c ... --</code> https://github.com/reubeno/brush</li>
+</ul>
+<p>the hyphen <code>--</code> is missing despite <code>allow_hyphen_values</code>  being set:</p>
+<pre><code class="language-sh">brush -c 'echo $0 $1' -- arg
+#&gt; arg
+
+uecho --
+#&gt;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../reubeno/brush/pulls/147.html">reubeno/brush#147</a> on 2024-08-06 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/miri/pulls/4036.html">rust-lang/miri#4036</a> on 2024-11-17 02:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:27 UTC
+    </footer>
+</body>
+</html>

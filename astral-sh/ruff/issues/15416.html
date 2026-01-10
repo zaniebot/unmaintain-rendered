@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP045 rule don't respect target-version after upgrage to 0.9.1 from 0.8.5 - astral-sh/ruff #15416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP045 rule don't respect target-version after upgrage to 0.9.1 from 0.8.5</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15416">#15416</a>
+        opened by <a href="https://github.com/57an">@57an</a>
+        on 2025-01-11 07:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/57an">@57an</a> on 2025-01-11 07:54</div>
+            <div class="timeline-body"><p>I've upgraded from 0.8.5 to 0.9.1.
+When check python 3.8 code with pyproject.toml field tool.ruff.target-version = 'py38' now shows invalid errors from UP045:</p>
+<pre><code>C:\Python38\Scripts\ruff.exe check D:\py\core --fix --preview
+source\analyzer\backend\analysis_card\card.py:120:10: UP045 Use `X | None` for type annotations
+    |
+118 |     async def calculate(
+119 |         self, storage, progress_bar: AnalysisProgressBar, level=AnalysisPullCalculationLevel.condition
+120 |     ) -&gt; Optional[CardData]:
+    |          ^^^^^^^^^^^^^^^^^^ UP045
+121 |         if self._status == AnalysisCardStatus.calculations_ended:
+122 |             return
+    |
+    = help: Convert to `X | None`
+</code></pre>
+<p>same behaviour on project.requires-python = '==3.8'</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-11 08:57</div>
+            <div class="timeline-body"><p>Thanks for reporting this.</p>
+<p>That's interesting. Both rules (<code>UP007</code> and <code>UP045</code> use the exact same check). Any chance that your file contains a <code>from __future__ import annotations</code>?</p>
+<p>https://github.com/astral-sh/ruff/blob/8c620b9b4b69e228347ca6e882c46f4c37ebff43/crates/ruff_linter/src/checkers/ast/analyze/expression.rs#L51-L59</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-01-11 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/57an">@57an</a> on 2025-01-11 10:02</div>
+            <div class="timeline-body"><p>It looks like you are right, I do use <strong>annotations</strong> in such places.
+I studied changelog and now see that in ruff 0.9.0 you split UP007 with UP045. UP007 is disabled in my project, so UP045 I've just disabled too.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @57an on 2025-01-11 10:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

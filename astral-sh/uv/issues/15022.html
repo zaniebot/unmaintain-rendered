@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv-trampoline`'d entrypoint .exes are not robust to being signed - astral-sh/uv #15022</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv-trampoline`'d entrypoint .exes are not robust to being signed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15022">#15022</a>
+        opened by <a href="https://github.com/paveldikov">@paveldikov</a>
+        on 2025-08-01 23:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-01 23:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The current trampoline binary relies on a <code>UVSC</code> magic literal being found at the very end of the self-file, for it to be able to locate the inline Python script contents. As per the README (although it seems a bit stale, so I have tweaked this slightly), you'd have:</p>
+<p>| vendored pre-built .exe blob -- this is a constant |
+| ------ |
+| inline python script |
+| length of the inline script |
+| <code>U</code> <code>V</code> <code>S</code> <code>C</code> |</p>
+<p>In many enterprise contexts, only binaries signed by a trusted PKI can be executed. The signing process will generally append stuff at the end of the file, breaking the whole thing with the following kind of error:</p>
+<blockquote>
+<p>Magic number 'UVSC' or 'UVPY' not found at the end of the file. Did you append the magic number, the length and the path to the python executable at the end of the file?</p>
+</blockquote>
+<p>It would be nice if the binary instead used a more conventional mechanism of vendoring this content, perhaps using a formal PE section or similar. (Unfortunately I don't really grok PE binaries, so I don't have a proper idea as to how to implement this)</p>
+<p>There appear to be at least 2 commonly used implementations of code signing on Windows:</p>
+<ul>
+<li><code>signtool</code></li>
+<li><code>Set-AuthenticodeSignature</code></li>
+</ul>
+<p>The latter is readily available on any Windows host, so that's handy for testing purposes.</p>
+<h3>Platform</h3>
+<p>Windows</p>
+<h3>Version</h3>
+<p>0.8.4</p>
+<h3>Python version</h3>
+<p>-- not relevant --</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @paveldikov on 2025-08-01 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-02 00:07</div>
+            <div class="timeline-body"><p>Is this resolved by https://github.com/astral-sh/uv/pull/8649 which moves the magic number further up in the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-08-02 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-02 00:43</div>
+            <div class="timeline-body"><p>Ooooh. Not sure, but it sounds like it might. Happy to try out a pre-release build? (and I could even contrib an integration test if all goes well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-02 02:30</div>
+            <div class="timeline-body"><p>There is a build at the bottom of the CI summary at https://github.com/astral-sh/uv/actions/runs/15441918416?pr=8649</p>
+<p>If you want to contribute a test that fails now, that'd be a helpful first step anyway!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-08-02 11:05</div>
+            <div class="timeline-body"><blockquote>
+<p>There is a build at the bottom of the CI summary at https://github.com/astral-sh/uv/actions/runs/15441918416?pr=8649</p>
+</blockquote>
+<p>(That build's files are now expired, it must be re-triggered)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-02 12:04</div>
+            <div class="timeline-body"><p>Alas, then it's either <code>cargo build</code> or contribute the test and we can use that to test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-04 12:13</div>
+            <div class="timeline-body"><p>I have a trivial reproducer in powershell (not a proper test case yet, because my ageing PC is struggling to compile the codebase)</p>
+<pre><code>$cert = New-SelfSignedCertificate -Subject &quot;CN=IntegrationTest&quot; -CertStoreLocation &quot;Cert:\CurrentUser\My&quot; -KeyExportPolicy Exportable -KeySpec Signature -KeyLength 2048 -KeyAlgorithm RSA -HashAlgorithm SHA256 -Type &quot;CodeSigningCert&quot;
+
+Set-AuthenticodeSignature -FilePath &quot;C:\path\to\file.exe&quot; -Certificate $cert
+</code></pre>
+<p>Replace path to exe as desired. Currently it will indeed break any/all trampoline'd executable -- I tried with <code>black</code>'s entrypoint.</p>
+<p>I will now try to muster all the CPU power on my box to make this into a proper test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-04 13:56</div>
+            <div class="timeline-body"><p>I have a test!</p>
+<pre><code>diff --git a/crates/uv-trampoline-builder/src/lib.rs b/crates/uv-trampoline-builder/src/lib.rs
+index 1a25b9454..ad65dcdbf 100644
+--- a/crates/uv-trampoline-builder/src/lib.rs
++++ b/crates/uv-trampoline-builder/src/lib.rs
+@@ -540,6 +540,50 @@ if __name__ == &quot;__main__&quot;:
+         assert!(launcher.kind == LauncherKind::Script);
+         assert!(launcher.python_path == python_executable_path);
+
++        // Now sign the launcher using Set-AuthenticodeSignature...
++        #[cfg(windows)]
++        {
++            Command::new(&quot;powershell&quot;)
++                .args([
++                    &quot;-NoProfile&quot;,
++                    &quot;-NonInteractive&quot;,
++                    &quot;-Command&quot;,
++                    &amp;format!(
++                        r#&quot;
++                        $ErrorActionPreference = 'Stop'
++                        $store = 'Cert:\CurrentUser\My'
++                        $cert = New-SelfSignedCertificate `
++                            -Subject 'CN=UvTrampolineTest' `
++                            -Type CodeSigning `
++                            -KeyUsage DigitalSignature `
++                            -KeyAlgorithm RSA `
++                            -KeyLength 2048 `
++                            -CertStoreLocation $store;
++                        try {{
++                            Set-AuthenticodeSignature -FilePath '{}' -Certificate $cert;
++                        }} finally {{
++                            Remove-Item -Path &quot;$store\$($cert.Thumbprint)&quot; -Force;
++                        }}&quot;#,
++                        console_bin_path
++                            .path()
++                            .display()
++                            .to_string()
++                            .replace(&quot;'&quot;, &quot;''&quot;)
++                    ),
++                ])
++                .assert()
++                .success();
++
++            // ...and verify that it still runs as it did.
++            let stdout_predicate = &quot;Hello from uv-trampoline-console.exe\r\n&quot;;
++            let stderr_predicate = &quot;Hello from uv-trampoline-console.exe\r\n&quot;;
++            Command::new(console_bin_path.path())
++                .assert()
++                .success()
++                .stdout(stdout_predicate)
++                .stderr(stderr_predicate);
++        }
++
+         Ok(())
+     }
+
+</code></pre>
+<p>Currently fails as expected with</p>
+<pre><code>command=`&quot;C:\\Users\\Pavel\\AppData\\Local\\Temp\\.tmpAsnlot\\launcher.console.exe&quot;`
+code=1
+stdout=&quot;&quot;
+stderr=&quot;Magic number \'UVSC\' or \'UVPY\' not found at the end of the file. Did you append the magic number, the length and the path to the python executable at the end of the file?\n&quot; 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-04 18:01</div>
+            <div class="timeline-body"><p>I tried running the test against #8649 (<code>72fe3dec</code> to be precise) and it still fails with the same error. Bonus points for the error message being unchanged and confusing me to no end... until I realised what was happening 😰</p>
+<p>The trampoline binary in there still depends on the EOF being unmodified. It's just that, instead of <code>UVSC</code> it now expects EOCD:
+|       <code>launcher.exe</code>        | |
+| :-------------------------: | :-: |
+|   <code>&lt;path to python.exe&gt;</code>    | |
+| <code>&lt;len(path to python.exe)&gt;</code> | |
+| <code>&lt;b'U', b'V', b'S', b'C'&gt;</code>  | &lt;--- [3] ... here, then it goes on as usual. |
+|  <code>&lt;zipped python script&gt;</code>   | &lt;----- [1] Search starts at the end of here.  [2] Try to parse EOCD, which tells it how far to backtrack to get to... |</p>
+<p>With code signing you'd get:
+|       <code>launcher.exe</code>        | |
+| :-------------------------: | :-: |
+|   <code>&lt;path to python.exe&gt;</code>    | |
+| <code>&lt;len(path to python.exe)&gt;</code> | |
+| <code>&lt;b'U', b'V', b'S', b'C'&gt;</code>  | &lt;----- how do I get here? |
+|  <code>&lt;zipped python script&gt;</code>   | |
+| code signing metadata | &lt;----- [1] Search starts at the end of here; [2] Try to parse EOCD, which fails. It then goes down the <code>UVPY</code> code path (spuriously), and fails very ungracefully. |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-04 18:11</div>
+            <div class="timeline-body"><p>Alas okay, we can look into another fix — I was just curious if this issue would give us more motivation to pursue that change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-04 19:44</div>
+            <div class="timeline-body"><p>I wonder if it's more 'proper' to use a resource (<code>.rsrc</code>) section in the PE file instead. I think this should be vastly more robust (incl. to the zip extraction problem that #8649 tries to address) though it will possibly be harder to construct this file.</p>
+<p>Perhaps easiest to pre-compile the binary with a placeholder resource already embedded &amp; then altering the file post-hoc using <code>goblin</code>, <code>pe</code> or <code>exe</code> to insert the path to python + zipped script?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15068.html">astral-sh/uv#15068</a> on 2025-08-04 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-04 22:44</div>
+            <div class="timeline-body"><p>I have something (hacky, unpolished, vibe-coded) on the <code>uv-trampoline</code> end; see #15068</p>
+<p>I haven't done the <code>uv-trampoline-builder</code> end (yet), but have tested it by hand with manual edits using Resource Hacker and <code>cat</code> (to append zip file) and it appears to work alright!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-13 19:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

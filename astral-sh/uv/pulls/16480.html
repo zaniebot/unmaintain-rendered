@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't allow local versions when a non-local version is pinned - astral-sh/uv #16480</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't allow local versions when a non-local version is pinned</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16480">#16480</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-10-28 11:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-10-28 11:42</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/16368</p>
+<p>Current behavior of <code>uv sync</code>:</p>
+<ul>
+<li>Requested: <code>1.0.0+cpu</code>, Installed: <code>1.0.0</code>: Install new package</li>
+<li>Requested: <code>1.0.0+cpu</code>, Installed: <code>1.0.0+cu128</code>: Install new package</li>
+<li>Requested: <code>1.0.0</code>, Installed: <code>1.0.0+cpu</code>: Keep installed package</li>
+</ul>
+<p>The new behavior is to always reinstall when the local version part is different, for consistency and to fix torch.</p>
+<p>This behavior happens because internally, we translate the version from the lockfile to an <code>=={version}</code> request, and version matching says local versions are allowed if the specifier has no local version.</p>
+<p>This is a (minor) behavior change: When running <code>uv sync</code> in a venv with a package after installing the same package with the same version except the local version, uv will now remove the installed package and use the one from the lockfile instead. This seems more correct, as the other version was not matching the lockfile. There is still a gap as what we actually want to track is the index URL (or even better, the package hash), but as that information is not tracked in the venv, checking the local version is the next bests thing we can do. The main motivation is fixing torch, our main user of packages with both local and non-local versions (https://github.com/astral-sh/uv/issues/16368).</p>
+<p>Fix #16368</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-10-28 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-10-28 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-28 12:12</div>
+            <div class="timeline-body"><p>So</p>
+<ul>
+<li>Requested: 1.0.0, Installed: 1.0.0+cpu: Keep installed package</li>
+</ul>
+<p>Will now install a new package?</p>
+<p>I'm a little worried that specific case will break use-cases where people are using local versions for non-accelerator purposes.</p>
+<p>Does this change <code>uv pip install</code> behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-28 12:30</div>
+            <div class="timeline-body"><blockquote>
+<p>So</p>
+<pre><code>* Requested: 1.0.0, Installed: 1.0.0+cpu: Keep installed package</code></pre>
+<p>Will now install a new package?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>I'm a little worried that specific case will break use-cases where people are using local versions for non-accelerator purposes.</p>
+</blockquote>
+<p>Do you have a specific example?</p>
+<blockquote>
+<p>Does this change <code>uv pip install</code> behavior?</p>
+</blockquote>
+<p>All cases of using <code>uv pip install</code> with direct dependencies or <code>requirements.txt</code> I know use a specifier, and we don't change specifier semantics. The change only applies to cases using a lockfile, afaik exactly <code>pylock.toml</code>, where the same change as <code>uv.lock</code> applies.</p>
+<pre><code>$ uv pip list
+Using Python 3.14.0 environment at: debug/.venv
+Package Version
+------- -----------
+project 1.0.0+local
+$ uv pip install --find-links debug/local/dist/ --no-index &quot;project==1.0.0&quot;
+Using Python 3.14.0 environment at: debug/.venv
+Audited 1 package in 0.91ms
+</code></pre>
+<p>For <code>pylock.toml</code>, we can replicate the <code>uv.lock</code> case, starting with the setup in the test case:</p>
+<pre><code>uv export -o pylock.local.toml --extra local
+uv export -o pylock.non-local.toml --extra non-local
+uv pip install -r pylock.local.toml
+# Installs project==1.0.0+local
+uv pip install -r pylock.non-local.toml
+# main: noop
+# branch: Installs project==1.0.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-29 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a specific example?</p>
+</blockquote>
+<p>Unfortunately no. I think the user story would be roughly that the override a dependency in their requirements file with some local version then perform a sync with the requirements file and expect their locally patched version to be retained.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-30 09:09</div>
+            <div class="timeline-body"><p>Another case where we observe this is https://github.com/karpathy/nanochat (<code>at1ccbaf4416bc39dfb75f0e4fe934363278adcfda</code>). There's a PyPI torch version (from <code>project.dependencies</code>) and there are CPU and GPU extras that point to the respective torch indexes:</p>
+<ul>
+<li><code>uv sync --extra cpu</code> and <code>uv sync --extra gpu</code> switch between CPU and GPU versions <code>torch==2.9.0+cpu</code> and <code>torch==2.8.0+cu128</code></li>
+<li><code>uv sync --extra gpu</code>, then <code>uv sync</code> will switch from <code>torch==2.8.0+cu128</code> to <code>torch==2.9.0</code> (different release)</li>
+<li><code>uv sync --extra cpu</code>, then <code>uv sync</code> does NOT switch from <code>torch==2.9.0+cpu</code> to <code>torch==2.9.0</code> (same release)</li>
+</ul>
+<p>It's arguable that you don't actually want the PyPI version, but it seems counterintuitive that <code>uv sync</code> would install it when run first, but not after running with <code>--extra cpu</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../wheelnext/peps/pulls/12.html">wheelnext/peps#12</a> on 2025-12-05 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2025-12-05 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

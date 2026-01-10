@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot resolve `tensorflow` - astral-sh/uv #13262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot resolve `tensorflow`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13262">#13262</a>
+        opened by <a href="https://github.com/cbrnr">@cbrnr</a>
+        on 2025-05-02 10:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cbrnr">@cbrnr</a> on 2025-05-02 10:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following script <code>hello.py</code>:</p>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.12&quot;
+# dependencies = [
+#     &quot;tensorflow&quot;,
+# ]
+# ///
+
+print(&quot;Hello, world!&quot;)
+</code></pre>
+<p>Running this with <code>uv run hello.py</code> results in the following error:</p>
+<pre><code>  × No solution found when resolving script dependencies:
+  ╰─▶ Because all versions of tensorflow have no wheels with a matching Python ABI tag (e.g., `cp313`) and you require
+      tensorflow, we can conclude that your requirements are unsatisfiable.
+
+      hint: Pre-releases are available for `tensorflow` in the requested range (e.g., 2.19.0rc0), but pre-releases
+      weren't enabled (try: `--prerelease=allow`)
+
+      hint: You require CPython 3.13 (`cp313`), but we only found wheels for `tensorflow` (v2.19.0) with the following
+      Python ABI tags: `cp39`, `cp310`, `cp311`, `cp312`
+</code></pre>
+<p>I do not understand this error, since I am requiring Python &gt;= 3.12 and not 3.13.</p>
+<h3>Platform</h3>
+<p>macOS 15.4.1</p>
+<h3>Version</h3>
+<p>uv 0.7.2</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @cbrnr on 2025-05-02 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 10:24</div>
+            <div class="timeline-body"><p>Requiring <code>&gt;=3.12</code> supports Python versions 3.12 and up. Currently, Python 3.12 and 3.13 have stable releases, so uv may select either. For example, if the <code>python</code> in your <code>PATH</code> is a Python 3.13, uv will use this over Python 3.12.</p>
+<p>If you want to use a specific Python version, you can use <code>uv run -p 3.12</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-02 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-05-02 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2025-05-02 10:43</div>
+            <div class="timeline-body"><p>Thanks for the quick response! It's not that I <em>want</em> to use a specific Python version, but I have to 😄. I was confused because if there is <em>no</em> Python installed, uv will download and use 3.13 (the latest), and therefore fail. If there is <em>only</em> 3.12 installed (via <code>uv python install 3.12</code>), everything works. However, if I have 3.12 <em>and</em> 3.13 installed, uv will always pick 3.13 and fail. I find this to be not ideal, because the result depends on the state of the user's system. Also, the error message said that I required 3.13, which I certainly did not. Not sure if it's just me, but maybe either the message or uv's behavior could be improved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-05-02 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-05-02 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 10:49</div>
+            <div class="timeline-body"><p>The error message can definitely be improved here to hint the user to request a different Python version.</p>
+<p>It's hard to determine what the right default Python is: Is it the lowest version, because the developer wants to ensure that the package doesn't use newer features and because wheels are likely available when the package was created? Or is it the latest version, as we generally prefer the latest version for packages, too, and after some time wheels may only be available for newer version? uv tries to strike a compromise by reusing a compatible installed, preferring the <code>python</code> on PATH, looking for installations in a deterministic order and only installing an additional Python version if required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2025-05-02 10:54</div>
+            <div class="timeline-body"><p>Yep, makes sense, for the sake of reproducibility it's best to lock everything (including the Python version) anyways. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cbrnr on 2025-05-02 10:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

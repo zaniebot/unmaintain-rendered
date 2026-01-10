@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `ArgAction::Help` and `ArgAction::Version` disables `conflicts_with` and `exclusive` - clap-rs/clap #6062</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `ArgAction::Help` and `ArgAction::Version` disables `conflicts_with` and `exclusive`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/6062">#6062</a>
+        opened by <a href="https://github.com/ntrypoint">@ntrypoint</a>
+        on 2025-07-07 13:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntrypoint">@ntrypoint</a> on 2025-07-07 13:13</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.88.0 (6b00bc388 2025-06-23)</p>
+<h3>Clap Version</h3>
+<p>4.5.40</p>
+<h3>Minimal reproducible code</h3>
+<p>main.rs:</p>
+<pre><code class="language-rust">#[allow(dead_code)]
+
+use clap::{Arg, ArgAction, Command};
+
+fn clap_parse() {
+    let matches: clap::ArgMatches = Command::new(&quot;goto&quot;)
+        .about(&quot;Jump between known directories&quot;)
+        .author(&quot;My Name&quot;)
+        .version(clap::crate_version!())
+
+        // Because its not possible with clap to have
+        //  goto [global options] [subcommand] [subcommand options] [positional args]
+        // (at least from my understanding), use this structure:
+        //  goto [subcommand] [global options + subcommand options] [positional args]
+        .args_conflicts_with_subcommands(true)
+
+        // I disable the auto-supplied stuff here because I want
+        // to make help and version conflict with any other arguments
+        // and need to know their ID (= create them) to do that
+        .disable_help_subcommand(true)
+        .disable_help_flag(true)
+        .disable_version_flag(true)
+
+        // The user can either use one of these subcommands ...
+        .subcommand(
+            Command::new(&quot;learn&quot;)
+                .visible_alias(&quot;l&quot;)
+                .arg(Arg::new(&quot;learn_dirs&quot;).num_args(1..).value_name(&quot;dir&quot;)),
+        )
+        .subcommand(
+            Command::new(&quot;forget&quot;)
+                .visible_alias(&quot;f&quot;)
+                .arg(Arg::new(&quot;forget_dirs&quot;).num_args(1..).value_name(&quot;dir&quot;)),
+        )
+        .subcommand(
+            Command::new(&quot;match&quot;)
+                .visible_alias(&quot;m&quot;)
+                .arg(Arg::new(&quot;match_dirs&quot;).num_args(1..).value_name(&quot;dir&quot;)),
+        )
+        .subcommand(
+            Command::new(&quot;edit&quot;)
+                .visible_alias(&quot;e&quot;)
+                .arg(Arg::new(&quot;edit_dirs&quot;).num_args(1..).value_name(&quot;dir&quot;)),
+        )
+
+        // ... or no subcommand, which tries to change directory to &quot;target&quot;.
+        .arg(
+            Arg::new(&quot;target&quot;)
+                .num_args(1)
+                .value_name(&quot;target&quot;)
+                .conflicts_with_all([&quot;help&quot;, &quot;version&quot;])
+                .help(&quot;The query string to jump to&quot;),
+        )
+
+        // These boolean/value flags should work in all cases:
+        .arg(
+            Arg::new(&quot;cwd&quot;)
+                .global(true)
+                .num_args(1)
+                .short('C')
+                .long(&quot;working-dir&quot;)
+                .value_name(&quot;dir&quot;)
+                .help(&quot;Work from this directory&quot;),
+        )
+        .arg(
+            Arg::new(&quot;verbose&quot;)
+                .global(true)
+                .short('v')
+                .long(&quot;verbose&quot;)
+                .action(ArgAction::SetTrue)
+                .help(&quot;Print extra information&quot;),
+        )
+
+        // Using --version should only be possible like this:
+        //   goto --version &lt;--no trailing stuff here--&gt;
+        .arg(
+            Arg::new(&quot;version&quot;)
+                .exclusive(true)
+                .short('V')
+                .long(&quot;version&quot;)
+                .action(ArgAction::Version)
+                .help(&quot;Print the version&quot;),
+        )
+
+        // Using --help should only be possible like this:
+        //   goto --help &lt;--no trailing stuff here--&gt;
+        //   (and if possible also)  goto &lt;subcommand&gt; --help &lt;--no trailing stuff here--&gt;
+        // Although that is a little silly since it would probably be
+        // ok to display the help anyway. I'd prefer the message
+        // saying the combination of arguments is illegal still.
+        .arg(
+            Arg::new(&quot;help&quot;)
+                .exclusive(true)
+                .short('h')
+                .long(&quot;help&quot;)
+                .action(ArgAction::Help)
+                .help(&quot;Print the version&quot;),
+        )
+        .get_matches();
+
+    println!(&quot;Debug output: {:?}&quot;, matches);
+
+    if matches.get_flag(&quot;verbose&quot;) {
+        println!(&quot;verbose mode active&quot;);
+    }
+}
+
+fn main() {
+    clap_parse();
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ol>
+<li>Compile and run the above code to make sure it works</li>
+<li>Run the compiled binary with arguments <code>cargo run -- foo --help</code> or <code>cargo run -- foo --version</code></li>
+</ol>
+<h3>Actual Behaviour</h3>
+<p>I observe that these inputs display the help / version just fine even though they should lead to an error based on what the builder code here reads. Something like <code>goto Documents --version</code> should just be an error, but it seems the <code>target</code> argument is assigned the string &quot;Documents&quot; and then the ´ArgAction::Version´ runs, even though <code>--version</code> is supposed to be exclusive.</p>
+<h3>Expected Behaviour</h3>
+<p>There should be a runtime error along the lines of <code>error: the argument ... cannot be used with one or more of the other specified arguments</code>.</p>
+<h3>Additional Context</h3>
+<p>I am aware that running help/version terminates early. However I still think this behaviour is confusing and wrong. Replacing the two <code>ArgAction</code>s with the <code>SetTrue</code> action, everything just works as intended. But I would very much like to use the automatic help / version display... ☹️</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @ntrypoint on 2025-07-07 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-07 14:25</div>
+            <div class="timeline-body"><p>Could you explain the context for why you want to setup these conflicts?</p>
+<p>There are two parts to this behavior:</p>
+<ul>
+<li>The mechanism: <code>ArgAction</code>s are what happens when you encounter an argument and are processed before conflicts or overrides</li>
+<li>The policy: this ensures someone can always append the help to any command and see it, rather than having to edit the command down to what works</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2025-07-07 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2025-07-07 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2025-07-07 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntrypoint">@ntrypoint</a> on 2025-07-07 19:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you explain the context for why you want to setup these conflicts?</p>
+</blockquote>
+<p>There is not a lot of context here, this is my first Rust project and first time using this (pretty neat) library. The reason I thought something was broken is simply because</p>
+<pre><code>$ ./my_program &lt;other args...&gt; --version
+</code></pre>
+<p>looks to me like it should be an error, because it is semantically ambiguous/wrong. And looking at the code, it seems this is precisely the thing being forbidden. Should the command do its thing or the version be printed?</p>
+<p>Maybe I'm using clap wrong. Is there a way to print the version information and help using clap's facilities manually? Then I might just do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-07 20:01</div>
+            <div class="timeline-body"><p><code>--version</code> is a little but different than <code>--help</code> though I imagine being able to append it could still be useful for a bug report.  I would be open to considering changing <code>--version</code> though us making that breaking change would then be a breaking change in all applications that use <code>clap</code>.</p>
+<p>For <code>--version</code>, we just print back the information you give us (though for the derive, we do take care of the <code>env!(&quot;CARGO_PKG_VERSION&quot;)</code> for you).  You can call <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.render_version"><code>Command::render_version</code></a> (and from the derive you can get a <code>Command</code> via the <a href="https://docs.rs/clap/latest/clap/trait.CommandFactory.html"><code>CommandFactory</code></a> trait that is <code>impl</code>ed for you).</p>
+<p>For <code>--help</code>, I would again advice against changing this as appending <code>--help</code> to any existing command is a very beneficial feature for your users.  If you still insist, then you can call <code>Command::render_help</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2025-07-07 20:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:36:27 UTC
+    </footer>
+</body>
+</html>

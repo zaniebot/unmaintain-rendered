@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive ERA001 with `# nuitka-project:` configuration - astral-sh/ruff #4618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive ERA001 with `# nuitka-project:` configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4618">#4618</a>
+        opened by <a href="https://github.com/bersbersbers">@bersbersbers</a>
+        on 2023-05-24 07:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-05-24 07:13</div>
+            <div class="timeline-body"><p>https://github.com/Nuitka/Nuitka allows in-file configurations:</p>
+<pre><code class="language-python"># nuitka-project: --onefile
+# nuitka-project: --onefile-windows-splash-screen-image={MAIN_DIRECTORY}/Splash-Screen.png
+
+# Whatever this is obviously
+print(&quot;Delaying startup by 10s...&quot;)
+import time, tempfile, os
+time.sleep(10)
+
+# Use this code to signal the splash screen removal.
+if &quot;NUITKA_ONEFILE_PARENT&quot; in os.environ:
+   splash_filename = os.path.join(
+      tempfile.gettempdir(),
+      &quot;onefile_%d_splash_feedback.tmp&quot; % int(os.environ[&quot;NUITKA_ONEFILE_PARENT&quot;]),
+   )
+
+   if os.path.exists(splash_filename):
+      os.unlink(splash_filename)
+
+print(&quot;Done... splash should be gone.&quot;)
+...
+
+# Rest of your program goes here.
+</code></pre>
+<p>I find lines starting with <code># nuitka-project: </code> should not be flagged as ERA001 (and not be removed by <code>--fix</code>).</p>
+<p>(If there was an option to disable ERA001 for certain keywords, users could configure that themselves.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-05-24 07:17</div>
+            <div class="timeline-body"><p>Alternatively, being able to disable ERA001 for this block would also be an option. I know how to suppress it for a single line or the whole file, but not a block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-24 08:33</div>
+            <div class="timeline-body"><p>You can use <a href="https://beta.ruff.rs/docs/settings/#task-tags">task-tags</a></p>
+<pre><code class="language-toml">task-tags = [&quot;nuitka-project&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-05-24 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>You can use <a href="https://beta.ruff.rs/docs/settings/#task-tags">task-tags</a></p>
+</blockquote>
+<p>This is great! It would be even greater if that was documented at https://beta.ruff.rs/docs/rules/commented-out-code/ and https://beta.ruff.rs/docs/rules/line-too-long/, then I would have found it without opening this issue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-24 12:36</div>
+            <div class="timeline-body"><p>Would you be open to making a pull-request for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4644.html">astral-sh/ruff#4644</a> on 2023-05-24 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-05-24 20:11</div>
+            <div class="timeline-body"><p>@JonathanPlasse sure, see #4644.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-24 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 20:31</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

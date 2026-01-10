@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make docstring convention a global setting - astral-sh/ruff #9043</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make docstring convention a global setting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9043">#9043</a>
+        opened by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a>
+        on 2023-12-07 07:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a> on 2023-12-07 07:00</div>
+            <div class="timeline-body"><p>Pydocstyle has a setting to specify the used docstring convention:</p>
+<pre><code>[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>Pylint also has rules for docstrings and profits from setting the used convention. #8843 introduces one of those rules and adds a convention setting specific to Pylint.</p>
+<p>I think that having two different settings for the convention is not very intuitive as a user and might hinder efforts to unify settings and rules later on if someone actually selects two different conventions for Pydocstyle and Pylint checks (no idea why someone would do that but there's always someone out there). Having a other tools, like a docstring formatter, in the future would further complicate things. The setting should therefore not only be global to linting, but global to all tools.</p>
+<p>I propose to turn Pydocstyle's convention setting into a global setting to make it usable by the Pylint rules and other tools, like formatters. A strategy could look like the following:</p>
+<ul>
+<li>Add a <code>docstring-convention</code> setting under <code>[tool.ruff]</code></li>
+<li>Deprecate the Pydocstyle setting (and Pylint's if #8843 gets merged in its current form)  in favor of the new setting</li>
+<li>Only mention the global setting in the docs</li>
+<li>Remove the original setting at some point in the future (is Ruff's deprecation process based on time or releases?)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8843.html">astral-sh/ruff#8843</a> on 2023-12-07 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-07 07:36</div>
+            <div class="timeline-body"><p>That makes sense to me. I wonder if it even should become a global (tool agnostic) setting, so that a docstring formatter could pick it up in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mr-Pepe">@Mr-Pepe</a> on 2023-12-08 03:16</div>
+            <div class="timeline-body"><p>I had to read through some issues and PRs (#8449, #7549, #7651) to figure out what the current state and trend regarding the settings structure is. Making the setting global to ruff and not only linting seems reasonable if there are plans to make use of the setting in the formatter. I have updated my original post.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @dhruvmanila on 2023-12-08 05:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-01-14 17:06</div>
+            <div class="timeline-body"><p>Probably related to this (let me know if this is a separate issue), but pydocstyle allows for specifying convention using it's own config:</p>
+<pre><code class="language-toml">[tool.pydocstyle]
+convention = &quot;google&quot;
+match = '((?!_test).)*\.py'
+</code></pre>
+<p>There is some inconsistently currently because (at least from what I can tell), ruff would in this case appropriately use the pydocstyle config for <code>match</code> but disregards the <code>convention</code> config. Instead, we need to also set <code>convention</code> in a ruff-specific config</p>
+<pre><code class="language-toml">[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>Without knowing too much on ruff's philosophy towards configs, it feels like the path of least complexity would be to rely on and respect the pydocstyle configs where applicable, since that allows single-sourcing configs between the two tools. Right now the mix of some configs being respected and others not feels like it could lead to confusion and potentially duplication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:42</div>
+            <div class="timeline-body"><p>Generally our philosophy is that we will read Python standards i.e. <code>[project]</code> but not other tool's configuration formats.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-03-12 19:23</div>
+            <div class="timeline-body"><p>It makes sense, I just ran into this reading another issue regarding e.g. <code>pip.conf</code> and I see where you're coming from. But this philosophy is not without downsides, unfortunately, which are duplication and possible confusing configs.</p>
+<p>It feels like it could be worth issuing a warning from ruff if other/conflicting configs are detected in pyproject.toml. Even something like &quot;this warning is just a heads up that what happens might be different than what you expected&quot;, just to get people used to this paradigm, since you'd have to do some issue diving to understand this nuance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-03-12 19:26</div>
+            <div class="timeline-body"><p>That said, there does seem to be some inconsistency - it's been a bit, but when I wrote that comment it appeared that ruff does use <em>some</em> of the configs from these other sections (<code>match</code> in this case), just not all of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 19:28</div>
+            <div class="timeline-body"><p>Yeah unfortunately there are trade-offs in both directions.</p>
+<p>I'd be more willing to support a hint / warning if we detect the other configuration since then we're not as firmly on the hook for changes to the format.</p>
+<blockquote>
+<p>it appeared that ruff does use some of the configs from these other sections (match in this case), just not all of them.</p>
+</blockquote>
+<p>I'm honestly not familiar if it does. If you know where we read that could you link to the code? Our philosophy around these things is ever-evolving of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 19:29</div>
+            <div class="timeline-body"><blockquote>
+<p>... but when I wrote that comment it appeared that ruff does use some of the configs from these other sections (<code>match</code> in this case), just not all of them.</p>
+</blockquote>
+<p>I'm very confident that we don't read <code>match</code> or anything from <code>tool.pydocstyle</code> -- I think it's ~impossible` since that's not encoded in our deserializer. Maybe there was something else going on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-03-12 19:37</div>
+            <div class="timeline-body"><p>Apologies -  you're correct. I had a separate config for ruff that was basically doing the same thing:</p>
+<pre><code class="language-toml">[tool.ruff.lint.per-file-ignores]
+&quot;test/*&quot; = [
+  &quot;D&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-03-13 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 14:51</div>
+            <div class="timeline-body"><p>Adding a global setting is open for contribution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EwoutH">@EwoutH</a> on 2024-09-13 12:02</div>
+            <div class="timeline-body"><p>What would be the steps needed to implement this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-13 13:28</div>
+            <div class="timeline-body"><p>@EwoutH</p>
+<ul>
+<li>Add a global configuration option for the docstring convention</li>
+<li>Define and implement a merging logic that respects both the <code>pydocstyle</code> local and the global configuration</li>
+<li>Possibly: Make it a preview only change.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server setting to enable code actions / formatting on save - astral-sh/ruff #11756</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Server setting to enable code actions / formatting on save</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11756">#11756</a>
+        opened by <a href="https://github.com/DanCardin">@DanCardin</a>
+        on 2024-06-05 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanCardin">@DanCardin</a> on 2024-06-05 15:03</div>
+            <div class="timeline-body"><p>In the PR for adding the organizeImports code action, i saw a reference to:</p>
+<pre><code>  &quot;[python]&quot;: {
+    &quot;editor.formatOnSave&quot;: true,
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;explicit&quot;,
+      &quot;source.organizeImports&quot;: &quot;explicit&quot;
+    },
+    &quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;
+  }
+</code></pre>
+<p>which, as far as i can tell, is a VSCode specific thing. Per https://github.com/astral-sh/ruff-lsp/issues/409 or https://github.com/astral-sh/ruff-lsp/issues/335, I'd love for there to be a <code>ruff server</code>-specific setting that optionally enables either/or both of <code>organizeImports</code> or <code>fixAll</code> actions on lsp format.</p>
+<p>Personally, I'd likely enable just the <code>organizeImports</code>  on save (which i see no reason ever to not run, which is why i'd rather have it automatic than a code action i need to remember to perform), perhaps not fixAll.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-06-05 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-05 17:59</div>
+            <div class="timeline-body"><p>Thanks for opening this feature request, @DanCardin!</p>
+<p>I do think this would a setting worth exploring for editors that don't have a way to run code actions / commands on save.</p>
+<blockquote>
+<p>I'd love for there to be a ruff server-specific setting that optionally enables either/or both of organizeImports or fixAll actions on lsp format.</p>
+</blockquote>
+<p>Just to clarify - are you <em>also</em> proposing that we introduce a separate setting to enable running <code>organizeImports</code> / <code>fixAll</code> when we format?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2024-06-05 18:36</div>
+            <div class="timeline-body"><p>Per my parenthesis block in the OP, i'd personally be happy with an <code>organizeImportsOnFormat = true</code> or <code>onFormat = {organizeImports = true}}</code> or whatever server setting (separate from the normal project-specific ruff config).</p>
+<p>But with that said, I could imagine (by looking at https://github.com/astral-sh/ruff-lsp/issues/335) that <strong>someone</strong> might also want to enable <code>fixAll</code> on save too. They're essentially the same feature request. i'm just not personally invested in having both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-05 18:43</div>
+            <div class="timeline-body"><p>Okay, thanks for clarifying 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-06-08 00:22</div>
+            <div class="timeline-body"><p>Another usecase at here is you always trigger format action manually and you didn't set code actions on save. I usually organize imports, format, and fix violations after I complemented the source of target module.
+Currently I most use 3 actions each time I finished coding, it'd be nice to have three into one command.</p>
+<h2>Proposal</h2>
+<h3>ruff server</h3>
+<p>Editor settings:</p>
+<pre><code class="language-jsonc">{
+    &quot;ruff.format.action&quot;: {
+        &quot;fix&quot;: true,
+        &quot;isort&quot;: true,
+        &quot;style&quot;: true,
+    }
+}
+</code></pre>
+<ul>
+<li>By default, ONLY <code>style</code> enabled.</li>
+<li><code>Format Document</code> will respect these settings, <code>Format Selection</code> ignores these settings.</li>
+<li>When <code>ruff.organizeImports</code> and/or <code>ruff.fixAll</code> editor settings are disabled, revealment enabled options don't have affect in format actions.</li>
+<li>Priority on which should be applied first when multi actions enabled: <code>isort &gt; fix &gt; style</code>. We could have separated settings for prioritization, but I think this is good default for now.</li>
+</ul>
+<h3>ruff cli</h3>
+<p>The Ruff CLI needs further discussion around new command (e.g. <code>ruff action --fix --isort--no-style</code>).
+Also, see this most-wanted feature request: https://github.com/astral-sh/ruff/issues/8232</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11803.html">astral-sh/ruff#11803</a> on 2024-06-08 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-03-01 12:16</div>
+            <div class="timeline-body"><p>@DanCardin Any chances that this work for you?</p>
+<blockquote>
+<p>Thanks!  I was able to put this together with this keybind:</p>
+<pre><code> {
+    &quot;command&quot;: &quot;runCommands&quot;,
+    &quot;key&quot;: &quot;ctrl+shift+i&quot;,
+    &quot;args&quot;: {
+      &quot;commands&quot;: [
+        &quot;editor.action.formatDocument&quot;,
+        &quot;ruff.executeOrganizeImports&quot;
+        // If you want autofix also - this won't let you specify a subset of rules (e.g. for only
+        // docstring format rules) until https://github.com/astral-sh/ruff/issues/12709
+        // &quot;ruff.executeAutofix&quot;
+      ]
+    },
+    &quot;when&quot;: &quot;editorLangId == python&quot;
+  }
+</code></pre>
+<p>which replaces the <code>Format Document</code> keybind for python, to run format + isort</p>
+<p><em>Originally posted by @aaron-skydio in https://github.com/astral-sh/ruff/discussions/15991#discussioncomment-12193766</em></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2025-03-03 14:46</div>
+            <div class="timeline-body"><p>I dont use vscode, which is why i'm looking for a generic lsp setting for this behavior.</p>
+<p>With that said, it's not necessarily obvious to me why they're separate in the first place. The behavior I'm looking for is <code>ruff format</code>. So it <strong>does</strong> sort of feel odd that that's not the default behavior of the ruff lsp on format. Although i can certainly see the value in there <strong>being</strong> separate lsp actions for the standalone lint/organizeImports actions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-18 10:58</div>
+            <div class="timeline-body"><p>The reason this is VS Code specific is because VS Code utilizes these capabilities that the server provides and exposes a setting to use them. Other editors require user to implement this in their configuration. For example, if you're using Neovim, you can update your config such that these code actions are run whenever you save the file.</p>
+<p>We do want to provide a unified interface (https://github.com/astral-sh/ruff/issues/8232) but that requires a larger design discussion which involves looking at both the command-line and the server interface. Additional context: https://github.com/astral-sh/ruff/pull/11803#issuecomment-2162182083.</p>
+<p>I believe the request here is not specific to code actions but it also involves formatting and applying the autofixes on save as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server` setting enabling code actions on save" to "Server setting to enable code actions / formatting on save" by @dhruvmanila on 2025-03-18 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @dhruvmanila on 2025-03-18 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2025-03-18 14:01</div>
+            <div class="timeline-body"><p>yes and no (i think). I did originally request lint fixing as well, so that's the yes.</p>
+<p>but the default format option does not organize imports, whereas <code>ruff format</code> both formats and organizes imports. even just making the save action (optionally or not) match what <code>ruff format</code> does, would be a step in the right direction imo. and <strong>i think</strong> that's besides the point of unifiying the lint/format interface</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-19 12:05</div>
+            <div class="timeline-body"><blockquote>
+<p><code>ruff format</code> both formats and organizes imports.</p>
+</blockquote>
+<p>This is not correct, the formatter does not organize your imports. It's the linter that organizes your import. In an editor context related to automation, it would be the code actions (<code>source.organizeImports</code>) that does it which in turn calls the linter. You can see this on the [playground] in the formatter tab that it's unchanged but opening the quick fix menu will provide a &quot;Organize imports&quot; action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2025-03-19 13:20</div>
+            <div class="timeline-body"><p>ahhaaa (i was fooled by my own <code>make format</code> command which runs both 🤦). although i definitely would have expected isort to be a formatting concern rather than a linting one. certainly the line is fuzzy either way.</p>
+<p>okay so i take it back, it is exactly about unifying the interface i guess. because while I am perfectly happy with individualized code actions for things like organizeImports, the point of format-on-save is to normalize the format such that I dont require any separate action to ensure my linter will only report &quot;real&quot; issues (which aren't unambiguously fixed formatting problems).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vanntile">@vanntile</a> on 2025-03-29 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, if you're using Neovim, you can update your config such that these code actions are run whenever you save the file.</p>
+</blockquote>
+<p>@dhruvmanila how do you recommend that is done? For example, I am trying to run organizeImports (and later add the fixAll code action) on both a &quot;format now&quot; keymap and on save, and I see that this version does end up running it, in two steps:</p>
+<pre><code class="language-lua">vim.api.nvim_create_autocmd(&quot;BufWritePre&quot;, {
+	pattern = &quot;*.py&quot;,
+	callback = function()
+		vim.lsp.buf.code_action({
+			context = {
+				diagnostics = {},
+				only = { &quot;source.organizeImports&quot; },
+			},
+			apply = true,
+		})
+		vim.lsp.buf.format({ async = false })
+	end,
+})
+</code></pre>
+<p>While using the following, for compatibility with the similar behavior from gopls and to make sure the code is run synchronously, does not run the action</p>
+<pre><code class="language-lua">if client and formatting_lsps[client.name] then
+	local enc = client.offset_encoding or &quot;utf-16&quot;
+	local params = vim.lsp.util.make_range_params(0, enc)
+	params.context = { diagnostics = {}, only = { &quot;source.organizeImports&quot; } }
+
+	local result = vim.lsp.buf_request_sync(0, &quot;textDocument/codeAction&quot;, params, 1200)
+	for _, res in pairs(result or {}) do
+		for _, r in pairs(res.result or {}) do
+			if r.edit then
+				vim.lsp.util.apply_workspace_edit(r.edit, enc)
+			end
+		end
+	end
+	vim.lsp.buf.format({ async = false })
+end
+</code></pre>
+<p>I am thinking it's possible the ruff organizeImports action does not take positional arguments, which makes something in the <code>buf_request_sync</code> fail.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

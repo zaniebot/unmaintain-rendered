@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable private-member-access in the tests folder - astral-sh/ruff #16892</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable private-member-access in the tests folder</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16892">#16892</a>
+        opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a>
+        on 2025-03-21 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-03-21 11:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We can't do good tests if we use this rule of Ruff. Let's put an example:</p>
+<p>In this repository https://github.com/AndreuCodina/test-private-member I have the <code>UserService</code> class I want to test, and the public method <code>sign_up</code> uses private methods.</p>
+<pre><code class="language-python">class UserService:
+    def sign_up(self, email: str) -&gt; None:
+        ...
+
+    def _is_valid_email(self, email: str) -&gt; bool:
+        ...
+
+    def _exists(self, email: str) -&gt; bool:
+        ...
+
+    def _associate_bank_account(self) -&gt; None:
+        ...
+</code></pre>
+<p>An example of a test is to try to sign up an user, but we need to mock the private method <code>_associate_bank_account</code> because it accesses the bank and it's not something we want to test. So, we have this test:</p>
+<pre><code class="language-python">from pytest_mock import MockerFixture
+
+from src.services.user_service import UserService
+
+
+class TestUserService:
+    def test_associate_bank_account(self, mocker: MockerFixture) -&gt; None:
+        user_service = UserService()
+
+        # Option 1
+        associate_bank_account_mock = mocker.create_autospec(
+            user_service._associate_bank_account
+        )
+        user_service._associate_bank_account = associate_bank_account_mock
+
+        # Option 2
+        # associate_bank_account_mock = mocker.MagicMock()
+        # user_service._associate_bank_account = associate_bank_account_mock
+
+        # Option 3
+        # associate_bank_account_mock = mocker.patch(
+        #     f&quot;{UserService.__module__}.{UserService._associate_bank_account.__qualname__}&quot;,
+        # )
+
+        user_service.sign_up(&quot;fran@gmail.com&quot;)
+
+        associate_bank_account_mock.assert_called_once()
+</code></pre>
+<p>Developers usually use</p>
+<pre><code class="language-python">associate_bank_account_mock = mocker.patch(
+    &quot;src.services.user_service.UserService._associate_bank_account&quot;
+)
+</code></pre>
+<p>but it's a really bad practice: they're using magic strings. So, for this reason I'm using type-safe ways (options 1, 2 or 3), but Ruff complains with this rule: https://docs.astral.sh/ruff/rules/private-member-access/</p>
+<p>This rule should be disabled when we are in the <code>tests</code> folder, or better, when we access code that is outside of the <code>tests</code> folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-21 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-24 16:01</div>
+            <div class="timeline-body"><p>I can see how this is frustrating, but I'm not entirely sure whether disabling the rule here is necessarily the right solution because it also silences all private member access for types for which you may want to detect the access still. There's also the argument that the accessors for mocking should be public (if that's the intended API). I don't want to discuss whether that's best practice, but I could see people at either end of that argument.</p>
+<p>That's why I'm somewhat leaning towards users making an explicit call on whether they want to allow this rule for their test code (use <code>per-file-ignore</code>) or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-03-24 16:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I can see how this is frustrating, but I'm not entirely sure whether disabling the rule here is necessarily the right solution because it also silences all private member access for types for which you may want to detect the access still. There's also the argument that the accessors for mocking should be public (if that's the intended API). I don't want to discuss whether that's best practice, but I could see people at either end of that argument.</p>
+<p>That's why I'm somewhat leaning towards users making an explicit call on whether they want to allow this rule for their test code (use <code>per-file-ignore</code>) or not.</p>
+</blockquote>
+<p>Could you provide an example of a case where you want to detect the access from the <code>tests</code> folder? I can only think about preventing access from the <code>src</code> folder, not <code>tests</code>.
+I'm speaking about the <code>src</code> folder of the repository, not external libraries, in case you were thinking of that case.</p>
+<p>For example, in .NET, we edit the pyproject.toml equivalent to say &quot;the private code of each folder will be visible to its test folder&quot;, but IMO it should be the default (this ecosystem usually doesn't make breaking changes).</p>
+<p>I don't see that adding an ignore in each file is better than making all methods public.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-24 16:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you provide an example of a case where you want to detect the access from the tests folder? I can only think about preventing access from the src folder, not tests.</p>
+</blockquote>
+<p>I'd be more hesitant to allow private access to modules that come from third-party dependencies.</p>
+<blockquote>
+<p>I don't see that adding an ignore in each file is better than making all methods public.</p>
+</blockquote>
+<p>You can ignore the rule at the project level using <a href="https://docs.astral.sh/ruff/settings/#lint_per-file-ignores"><code>per-file-ignores</code></a> which roughly is the equivalent to what you do in .net (except that it allows all private member access and not just for one or some assemblies)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2025-03-24 17:06</div>
+            <div class="timeline-body"><p>Cool! I'll tell my company, and let them choose.</p>
+<p>But, in my opinion, this is technical debt. In my company, one of the top complaints about the Python projects is the amount of configurations to create a new project, and also update them later.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong pep508 error message when moving a package from a mandatory to an optional dependency. - astral-sh/uv #13183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong pep508 error message when moving a package from a mandatory to an optional dependency.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13183">#13183</a>
+        opened by <a href="https://github.com/facundoq">@facundoq</a>
+        on 2025-04-28 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/facundoq">@facundoq</a> on 2025-04-28 18:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When moving a dependency from the mandatory to the optional section in <code>pyproject.toml</code>, subsequent uv sync calls fail claiming that the syntax of the dependency does not conform to pep508. Maybe I'm using uv incorrectly but in any case the error message does not make sense.</p>
+<p>When this error appeared locally, removing the package with <code>uv remove &lt;package&gt;</code> and adding it with <code>uv add &lt;package&gt; --optional &lt;group&gt;</code> fixes the error. However, it still happens in github actions when caching is enabled!</p>
+<p>Output:</p>
+<pre><code>Run uv sync --locked --all-extras --dev
+  uv sync --locked --all-extras --dev
+  shell: /usr/bin/bash -e {0}
+  env:
+    UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+    pythonLocation: /opt/hostedtoolcache/Python/3.13.3/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.3/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.3/x64
+    Python[2](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:2)_ROOT_DIR: /opt/hostedtoolcache/Python/[3](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:3).13.3/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.3/x6[4](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:4)
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.3/x64/lib
+Using CPython 3.13.3 interpreter at: /opt/hostedtoolcache/Python/3.13.3/x64/bin/python3
+Creating virtual environment at: .venv
+error: Failed to generate package metadata for `sklearnmodels @ editable+.`
+  Caused by: The build backend returned an error
+  Caused by: Call to `setuptools.build_meta.build_editable` failed (exit status: 1)
+
+[stdout]
+configuration error: `project.optional-dependencies.classifiers[0]` must be pep[5](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:5)08
+DESCRIPTION:
+    Project dependency specification according to PEP 508
+
+GIVEN VALUE:
+    &quot;Programming Language :: Python :: 3&quot;
+
+OFFENDING RULE: 'format'
+
+DEFINITION:
+    {
+        &quot;$id&quot;: &quot;#/definitions/dependency&quot;,
+        &quot;title&quot;: &quot;Dependency&quot;,
+        &quot;type&quot;: &quot;string&quot;,
+        &quot;format&quot;: &quot;pep508&quot;
+    }
+
+For more details about `format` see
+https://validate-pyproject.readthedocs.io/en/latest/api/validate_pyproject.formats.html
+
+
+[stderr]
+/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools_scm/git.py:1[6](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:6)7: UserWarning: &quot;/home/runner/work/sklearnmodels/sklearnmodels&quot; is shallow and may cause errors
+  warnings.warn(f'&quot;{wd.path}&quot; is shallow and may cause errors')
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+    requires = get_requires_for_build({})
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 4[7](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:7)3, in get_requires_for_build_editable
+    return self.get_requires_for_build_wheel(config_settings)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 331, in get_requires_for_build_wheel
+    return self._get_build_requires(config_settings, requirements=[])
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 301, in _get_build_requires
+    self.run_setup()
+    ~~~~~~~~~~~~~~^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
+    exec(code, locals())
+    ~~~~^^^^^^^^^^^^^^^^
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+    import sys
+    
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/__init__.py&quot;, line 117, in setup
+    return distutils.core.setup(**attrs)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/_distutils/core.py&quot;, line 160, in setup
+    dist.parse_config_files()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/_virtualenv.py&quot;, line 20, in parse_config_files
+    result = old_parse_config_files(self, *args, **kwargs)
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/dist.py&quot;, line 756, in parse_config_files
+    pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 72, in apply_configuration
+    config = read_configuration(filepath, True, ignore_option_errors, dist)
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 140, in read_configuration
+    validate(subset, filepath)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File &quot;/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpBghUUC/lib/python3.13/site-packages/setuptools/config/pyprojecttoml.py&quot;, line 61, in validate
+    raise ValueError(f&quot;{error}\n{summary}&quot;) from None
+ValueError: invalid pyproject.toml config: `project.optional-dependencies.classifiers[0]`.
+configuration error: `project.optional-dependencies.classifiers[0]` must be pep50[8](https://github.com/facundoq/sklearnmodels/actions/runs/14714665612/job/41295174058#step:5:8)
+
+hint: This usually indicates a problem with the package or the build environment.
+
+</code></pre>
+<h3>Platform</h3>
+<p>ubuntu  24.04.2</p>
+<h3>Version</h3>
+<p>uv 0.6.17</p>
+<h3>Python version</h3>
+<p>python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @facundoq on 2025-04-28 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-28 18:15</div>
+            <div class="timeline-body"><p>That isn't a uv error. That error is coming from <code>setuptools</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/facundoq">@facundoq</a> on 2025-04-28 18:40</div>
+            <div class="timeline-body"><p>You are right. Still, the package was added to <code>pyproject.toml</code> via <code>uv add</code> with a <code>setuptools</code> build backend project, which seemingly does not support optional dependencies, with no error. When <code>uv sync</code> runs, the error appears. It's a bit counter intuitive, since <code>uv</code> is adding an optional dependency, but then setuptools seemingly does not support it (changing to <code>hatchling</code> removes the issue).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-28 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 19:07</div>
+            <div class="timeline-body"><p>Can you share your pyproject.toml? <code>&quot;Programming Language :: Python :: 3&quot;</code> is not valid requirement, that's a trove classifier. Did you manually rewrite your <code>pyproject.toml</code> in a way that <code>classifiers</code> is now under <code>[project.optional-dependencies]</code> instead of <code>[project]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-28 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/facundoq">@facundoq</a> on 2025-04-28 23:47</div>
+            <div class="timeline-body"><p>Sure,</p>
+<p><a href="https://github.com/facundoq/sklearnmodels/blob/953031df3893b8456bb4b1521f482e910726229b/pyproject.toml">version with setuptools that doesn't work</a>,</p>
+<p><a href="https://github.com/facundoq/sklearnmodels/blob/d622c95f78617435cf98e83c50dab5e4437b5b25/pyproject.toml">Version with hatchling that works</a></p>
+<p>The only change is the build system.</p>
+<p>The file has a lot of stuff because it's the one provided by the sklearn team to contrib models (It has some pixy stuff and other things i'd personally do differently/remove). I may be able to provide a mwe tomorrow.</p>
+<p>Note that the error happens when i'm syncing (didn't try building)</p>
+<p>Also, everything was working properly, project went under many changes, it only broke when moving pygraphviz to an optional dependency; and only when syncing the dependency. If instead of syncing i remove and re-add the optional dependency, there's no error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/facundoq">@facundoq</a> on 2025-04-28 23:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you share your pyproject.toml? <code>&quot;Programming Language :: Python :: 3&quot;</code> is not valid requirement, that's a trove classifier. Did you manually rewrite your <code>pyproject.toml</code> in a way that <code>classifiers</code> is now under <code>[project.optional-dependencies]</code> instead of <code>[project]</code>?</p>
+</blockquote>
+<p>That was not intentional, but I'm sure the error happens with our without that line. I'll double check tomorrow at the office</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-29 08:42</div>
+            <div class="timeline-body"><p>Your <code>classifiers</code> entry is in the wrong spot, where it's parsed as optional dependencies entry: https://github.com/facundoq/sklearnmodels/blob/953031df3893b8456bb4b1521f482e910726229b/pyproject.toml#L28.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-29 08:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

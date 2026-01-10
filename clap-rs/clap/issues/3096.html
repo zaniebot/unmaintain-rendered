@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Too much whitespace in output - clap-rs/clap #3096</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Too much whitespace in output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3096">#3096</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-12-08 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-12-08 21:57</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-rc.0</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+#[structopt(author, about)]
+struct Opt {}
+
+fn main() {
+    let opt = Opt::from_args();
+    dbg!(opt);
+}
+
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run -- --help</p>
+<h3>Actual Behaviour</h3>
+<pre><code>test-clap 0.1.0      
+                                                                         
+Me                                                                       
+                                    
+From Cargo.toml
+                                                                         
+USAGE:                                                                   
+    test-clap                       
+                                                                         
+OPTIONS:             
+    -h, --help       Print help information                              
+    -V, --version    Print version information                
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Note quite but similar to clap2 which is</p>
+<pre><code>test-clap 0.1.0                                                          
+Me                   
+From Cargo.toml
+                                                                         
+USAGE:                                                                   
+    test-clap                       
+                                                                         
+FLAGS:               
+    -h, --help       Prints help information                             
+    -V, --version    Prints version information
+</code></pre>
+<p>Maybe</p>
+<pre><code>test-clap 0.1.0                                                          
+Me                   
+
+From Cargo.toml
+                                                                         
+USAGE:                                                                   
+    test-clap                       
+                                                                         
+FLAGS:               
+    -h, --help       Prints help information                             
+    -V, --version    Prints version information
+</code></pre>
+<p>or</p>
+<pre><code>test-clap 0.1.0 - From Cargo.toml 
+Me                   
+                                                                         
+USAGE:                                                                   
+    test-clap                       
+                                                                         
+FLAGS:               
+    -h, --help       Prints help information                             
+    -V, --version    Prints version information
+</code></pre>
+<h3>Additional Context</h3>
+<p>This came from <a href="https://www.reddit.com/r/rust/comments/rbyi41/ann_clap_300rc0/hnri0lw/">reddit</a>.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2021-12-08 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2021-12-08 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-09 01:28</div>
+            <div class="timeline-body"><p>This is intentional IIRC because of https://github.com/clap-rs/clap/issues/1432</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 01:51</div>
+            <div class="timeline-body"><p>Thanks for the context; I had assumed it was done for a reason but hadn't looked yet.</p>
+<p>I still think this is worth having as an issue as it is a regression.  We are balancing competing needs and maybe we can find a third way (without just adding a flag)</p>
+<p>Granted, once we get proper man generation, it'll lower the reliance on help2man</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2021-12-09 07:14</div>
+            <div class="timeline-body"><p>This seems like a regression to me as well. Vertical space is precious in help output, especially for commands with lots of options or subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 12:31</div>
+            <div class="timeline-body"><p>Here is an example of what help2man parses</p>
+<pre><code>$ foo --version
+GNU foo 1.1
+
+Copyright (C) 2011 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Written by A. Programmer.
+$ foo --help
+GNU `foo' does nothing interesting except serve as an example for
+`help2man'.
+
+Usage: foo [OPTION]...
+
+Options:
+  -a, --option      an option
+  -b, --another-option[=VALUE]
+                    another option
+
+      --help        display this help and exit
+      --version     output version information and exit
+
+Examples:
+  foo               do nothing
+  foo --option      the same thing, giving `--option'
+
+Report bugs to &lt;bug-gnu-utils@gnu.org&gt;.
+</code></pre>
+<p>From https://www.gnu.org/software/help2man/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3108.html">clap-rs/clap#3108</a> on 2021-12-09 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1431.html">clap-rs/clap#1431</a> on 2021-12-10 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/I60R">@I60R</a> on 2021-12-12 11:46</div>
+            <div class="timeline-body"><p>Looks ugly enough to stay with the current version of <code>structopt</code> instead.</p>
+<p>Also, what is the point in having man page that completely mirrors --help output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, what is the point in having man page that completely mirrors --help output?</p>
+</blockquote>
+<p>I don't think the intent is to be exactly <code>--help</code> but to be a superset.  help2man supports <a href="https://www.gnu.org/software/help2man/#Including-text">including additional content</a>.   Its fairly standard for man pages to include a <code>--help</code> like output, so its reasonable for wanting to generate that to keep it up to date just like people generate <code>--help</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2021-12-13 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @epage on 2021-12-13 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-14 21:59</div>
+            <div class="timeline-body"><p>Random notes as I research <code>help2man</code> to see if there is any way to reconcile the two needs</p>
+<p><a href="https://www.gnu.org/software/help2man/">help2man's docs</a> sound like they want the organization to be</p>
+<ol>
+<li>usage</li>
+<li>about</li>
+<li>args</li>
+<li>additional help text (our <code>after_long_help</code>)</li>
+<li>examples</li>
+<li>contact or bug reporting</li>
+</ol>
+<p>I'm also seeing this pattern in <code>docker</code>.  <code>vim</code> shows <code>user-facing name - version</code> first with no about.  <code>git</code> doesn't seem to provide a name or about.  Trying to think of what other programs to look <strong>at.</strong></p>
+<p>I wonder what we can do to encourage examples</p>
+<p>From <a href="https://www.gnu.org/software/help2man/">help2man's docs</a></p>
+<blockquote>
+<p>Use argv[0] for the program name in these synopses, just as it is, with no directory stripping. This is in contrast to the canonical (constant) name of the program which is used in --version.</p>
+</blockquote>
+<p>Interesting.  They want the usage to use <code>argv[0]</code> but everywhere else to the use actual name.</p>
+<p>For us, we show the bin name as the application name (see https://github.com/clap-rs/clap/issues/992).  Our bin name is <code>argv[0].file_name()</code> though with https://github.com/clap-rs/clap/issues/992 I am considering changing it to <code>argv[0].file_stem()</code> or similar.</p>
+<p>From <a href="https://www.gnu.org/software/help2man/">help2man's docs</a></p>
+<blockquote>
+<p>It is usually best to alphabetise (by short option name first, then long) within each section, or the entire list if there are no sections.</p>
+</blockquote>
+<p>Interesting input for #2808</p>
+<p>Now in running <code>help2man</code></p>
+<p>clap2 output</p>
+<pre><code class="language-roff">.\&quot; DO NOT MODIFY THIS FILE!  It was generated by help2man 1.47.13.
+.TH TEST-CLAP &quot;1&quot; &quot;December 2021&quot; &quot;test-clap 0.1.0&quot; &quot;User Commands&quot;      
+.SH NAME
+test-clap \- manual page for test-clap 0.1.0
+.SH DESCRIPTION                  
+test\-clap 0.1.0                                                         
+Me                                                                       
+From Cargo.toml                     
+.SS &quot;USAGE:&quot;                                                             
+.IP                                                                      
+test\-clap                                                               
+.SS &quot;FLAGS:&quot;                       
+.TP                                 
+\fB\-h\fR, \fB\-\-help\fR
+Prints help information
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Prints version information
+.SH &quot;SEE ALSO&quot;
+The full documentation for
+.B test-clap
+is maintained as a Texinfo manual.  If the
+.B info
+and
+.B test-clap
+programs are properly installed at your site, the command
+.IP
+.B info test-clap
+.PP
+should give you access to the complete manual.
+</code></pre>
+<p>clap3 output</p>
+<pre><code class="language-roff">.\&quot; DO NOT MODIFY THIS FILE!  It was generated by help2man 1.47.13.
+.TH TEST-CLAP &quot;1&quot; &quot;December 2021&quot; &quot;test-clap 0.1.0&quot; &quot;User Commands&quot;
+.SH NAME
+test-clap \- manual page for test-clap 0.1.0
+.SH DESCRIPTION
+test\-clap 0.1.0
+.PP
+Me
+.PP
+From Cargo.toml
+.SS &quot;USAGE:&quot;
+.IP
+test\-clap
+.SS &quot;OPTIONS:&quot;
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help information
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print version information
+.SH &quot;SEE ALSO&quot;
+The full documentation for
+.B test-clap
+is maintained as a Texinfo manual.  If the
+.B info
+and
+.B test-clap
+programs are properly installed at your site, the command
+.IP
+.B info test-clap
+.PP
+should give you access to the complete manual.
+</code></pre>
+<p>The only difference is the insertion of <code>.PP</code>.  It looks like this is just about having paragraph marks between distinct data so it doesn't merge the lines.</p>
+<p>Between people being able to override the help template (including when just code-genning their man page) and #3174, I'm inclined to revert the template change in #2369, so we go back to the clap2 output.</p>
+<p>That said, I am all for ideas for overall improvement of the help output!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1474.html">clap-rs/clap#1474</a> on 2021-12-14 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3179.html">clap-rs/clap#3179</a> on 2021-12-15 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-15 16:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff extension does not respect lines-after-imports from ruff.toml - astral-sh/ruff #17558</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff extension does not respect lines-after-imports from ruff.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17558">#17558</a>
+        opened by <a href="https://github.com/rjwalters">@rjwalters</a>
+        on 2025-04-15 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rjwalters">@rjwalters</a> on 2025-04-15 19:55</div>
+            <div class="timeline-body"><p>For a <code>ruff.toml</code> file at the root of my repo:</p>
+<pre><code>line-length = 120
+target-version = &quot;py311&quot;
+[lint.isort]
+lines-after-imports = 1
+</code></pre>
+<p>... it appears that the setting to use a single line after the imports is ignored by the extension, resulting in the file that is formatted on save having errors according to the command line tool</p>
+<p>I am fairly sure the file is being loaded because I am able to change the line-length parameter, restart the extension, and see matching fixes being applied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Metta-AI/metta/pulls/144.html">Metta-AI/metta#144</a> on 2025-04-15 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-17 14:06</div>
+            <div class="timeline-body"><p>Thanks for the report! I think I can reproduce this with both <code>formatOnSave</code> and <code>codeActionsOnSave</code> enabled but need to double check. Just wanted to let you know we are looking into it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 20:11</div>
+            <div class="timeline-body"><p>@rjwalters can you provide additional details for us to reproduce this? I'm looking for a minimal code snippet where you're observing this behavior and the server logs. You can also checkout the settings that will be used for a specific document using the &quot;Ruff: Print debug information&quot; command (refer to the <a href="https://github.com/astral-sh/ruff-vscode#troubleshooting">troubleshooting</a> guide).</p>
+<p><img width="1728" alt="Image" src="https://github.com/user-attachments/assets/8390303a-0135-48db-a349-20a18f6c06ad" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @dhruvmanila on 2025-04-17 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @dhruvmanila on 2025-04-17 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-04-17 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 20:29</div>
+            <div class="timeline-body"><p>I'm currently looking into this, I can reproduce it but seems a bit tricky to discover the root cause. I think I have a hunch of what might be going on, will verify it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 20:44</div>
+            <div class="timeline-body"><p>So, what I've found (and what @ntBre also noticed) is that the <code>lines-after-imports</code> config option is incompatible with the formatter when set to any non-default value. The default value is <code>-1</code> so the custom value <code>1</code> is incompatible with the formatter. Refer to https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules. We've also noticed that the docs for the config option (https://docs.astral.sh/ruff/settings/#lint_isort_lines-after-imports) says &quot;When using the formatter, only the values -1, 1, and 2 are compatible...&quot; but that seems incorrect (cc @MichaReiser). Micha is currently on PTO and is going to be back on the coming Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @dhruvmanila on 2025-04-17 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2025-04-17 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 17:35</div>
+            <div class="timeline-body"><p>Yes, I think your finding is correct. <code>lines-after-imports=1</code> is only compatible if what comes after the imports isn't a function or class.</p>
+<p>For example, this is fine:</p>
+<pre><code class="language-py">import os
+import sys
+
+a = 1
+ 
+def test():
+    pass
+
+</code></pre>
+<p>But this isn't:</p>
+<pre><code class="language-py">import os
+import sys
+
+def test():
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-04-22 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-04-22 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-04-22 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">incompatibility</span> added by @MichaReiser on 2025-04-22 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2025-04-22 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-04-22 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run --python=... removes log folder - astral-sh/uv #16381</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run --python=... removes log folder</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16381">#16381</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2025-10-21 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-10-21 10:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Apparently the moment you mention a specific python version when trying to executed <code>uv run --python=3.13 toolname</code> it will have the side effect of removing the log folder.</p>
+<p>I found this while running this from inside tox where magically tox log folder vanished. I guess that the reason for this is that <code>$VIRTUAL_ENV/log</code> is removed, and that also happens to be where tox is keeping its logs.</p>
+<h3>Platform</h3>
+<p>any</p>
+<h3>Version</h3>
+<p>uv 0.9.4 (88f519a3b 2025-10-18)</p>
+<h3>Python version</h3>
+<ul>
+<li></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ssbarnea on 2025-10-21 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tox-dev/tox/issues/3632.html">tox-dev/tox#3632</a> on 2025-10-21 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ansible/actions/pulls/48.html">ansible/actions#48</a> on 2025-10-21 10:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-21 11:18</div>
+            <div class="timeline-body"><p>The uv project mode (mainly <code>uv sync</code> and <code>uv run</code>) treats the venv as ephemeral: It will install and remove package to make the venv conform to the CLI arguments, and it recreates the venv when the venv Python doesn't match the Python requirement. The venv isn't a good location for storing persistent data, I'd move the logs directory out of the venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-10-22 13:40</div>
+            <div class="timeline-body"><p>@gaborbernat What do you think about this in regards to tox. That kinda creates a tricky situation as both tox and uv seem to be the master of that same log location and afaik tox created logs there even before the venv is created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-10-22 14:12</div>
+            <div class="timeline-body"><p>These logs are meant to be used after the command runs, and before uv runs again, so the logs should still be around at the end of the run, but then be removed at next run?</p>
+<blockquote>
+<p>The uv project mode (mainly <code>uv sync</code> and <code>uv run</code>) treats the venv as ephemeral: It will install and remove package to make the venv conform to the CLI arguments, and it recreates the venv when the venv Python doesn't match the Python requirement. The venv isn't a good location for storing persistent data, I'd move the logs directory out of the venv.</p>
+</blockquote>
+<p>I'd say historically a lot of tooling (such as tox) is putting data into the virtual environment because that's already excluded, and these logs are tied to runs in that environment. This stance is making <code>uv</code> not play well with historical tooling 🤔 That might be fine, but wanted to note.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-10-22 15:50</div>
+            <div class="timeline-body"><p>If uv (sync or run) decides that it needs to
+recreate the env, it will wipe everything including existing logs.
+Otherwise it will keep them.</p>
+<p>The tricky bit comes if you happen to run something like “uv run
+—python=some-ver-diff-than-current-venv tool”. This will trigger
+recreation.</p>
+<p>I happened to have some pre-commit hooks doing this while missing to add
+the —isolated argument. I fixed them but I can see how easy is to encounter
+this issue again and I have no idea what we can do to improve the
+experience. Is worse as you loose the execution logs and have no clue what
+happened.</p>
+<p>I wonder if there are some UV_ env vars we could define inside tox-uv
+plugin to prevent this from happening.</p>
+<p>--
+/zbr</p>
+<p>On Wed, 22 Oct 2025 at 15:14, Bernát Gábor <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p><em>gaborbernat</em> left a comment (astral-sh/uv#16381)
+<a href="https://github.com/astral-sh/uv/issues/16381#issuecomment-3432573623">https://github.com/astral-sh/uv/issues/16381#issuecomment-3432573623</a></p>
+<p>These logs are meant to be used after the command runs, and before uv runs
+again, so the logs should still be around at the end of the run, but then
+be removed at next run?</p>
+<p>The uv project mode (mainly uv sync and uv run) treats the venv as
+ephemeral: It will install and remove package to make the venv conform to
+the CLI arguments, and it recreates the venv when the venv Python doesn't
+match the Python requirement. The venv isn't a good location for storing
+persistent data, I'd move the logs directory out of the venv.</p>
+<p>I'd say historically a lot of tooling (such as tox) is putting data into
+the virtual environment because that's already excluded, and these logs are
+tied to runs in that environment. This stance is making uv not play well
+with historical tooling 🤔 That might be fine, but wanted to note.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/uv/issues/16381#issuecomment-3432573623">https://github.com/astral-sh/uv/issues/16381#issuecomment-3432573623</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAAZAX55ABYPXDIKNKPC6ND3Y6GIRAVCNFSM6AAAAACJYUQV6KVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTIMZSGU3TGNRSGM">https://github.com/notifications/unsubscribe-auth/AAAZAX55ABYPXDIKNKPC6ND3Y6GIRAVCNFSM6AAAAACJYUQV6KVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTIMZSGU3TGNRSGM</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2025-10-22 16:48</div>
+            <div class="timeline-body"><p>Why is this an issue? Why do you want logs across runs?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;uv build --all&quot; command not working? - astral-sh/uv #8530</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;uv build --all&quot; command not working?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8530">#8530</a>
+        opened by <a href="https://github.com/lucas-labs">@lucas-labs</a>
+        on 2024-10-24 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lucas-labs">@lucas-labs</a> on 2024-10-24 15:11</div>
+            <div class="timeline-body"><p>I don't know if this is a bug or if I'm doing something wrong, but I can't get the <code>uv build --all</code> command to work.</p>
+<p>According to the <code>uv build --help</code> command, the <code>--all</code> flag should build all packages in the workspace.</p>
+<pre><code class="language-diff">$ uv build --help
+...
+
+Options:
+      --package &lt;PACKAGE&gt; Build a specific package in the workspace
++     --all               Builds all packages in the workspace
+</code></pre>
+<p>I have a workspace with two packages, <code>lib1</code> and <code>lib2</code>.</p>
+<pre><code>workspace
+├── packages/
+│   ├── lib1/
+│   │   ├── hello.py
+│   │   ├── pyproject.toml
+│   │   └── README.md
+│   └── lib2/
+│       ├── hello.py
+│       ├── pyproject.toml
+│       └── README.md
+└── pyproject.toml
+</code></pre>
+<p>In the root <code>pyproject.toml</code>, I have the following configuration to define the members of the workspace (I also tried specifying the path to each package individually, like <code>members = [&quot;packages/lib1&quot;, &quot;packages/lib2&quot;]</code> but it didn't work either):</p>
+<pre><code class="language-toml">...
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+</code></pre>
+<p>When I run <code>uv build --all</code>, the following error is raised:</p>
+<pre><code class="language-sh">$ uv build --all
+error: No packages found in workspace
+</code></pre>
+<p>If I run <code>uv build --package lib1</code>, it works as expected, but we are forced to build each package individually.</p>
+<pre><code class="language-sh">$ uv build --package lib1
+Building source distribution...
+...
+Successfully built dist\lib1-0.1.0.tar.gz and dist\lib1-0.1.0-py3-none-any.whl
+
+$ uv build --package lib2
+Building source distribution...
+...
+Successfully built dist\lib2-0.1.0.tar.gz and dist\lib2-0.1.0-py3-none-any.whl
+</code></pre>
+<p>Is this a bug or am I missing something / misinterpreting what the <code>--all</code> flag is supposed to do?</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "" uv build --all" command not working?" to ""uv build --all" command not working?" by @lucas-labs on 2024-10-24 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 15:34</div>
+            <div class="timeline-body"><p>Interesting... this works as expected for me:</p>
+<pre><code>❯ uv init --package foo
+Initialized project `foo` at `/Users/crmarsh/workspace/uv/foo`
+
+❯ cd foo
+
+❯ uv init --package bar
+Adding `bar` as member of workspace `/Users/crmarsh/workspace/uv/foo`
+Initialized project `bar` at `/Users/crmarsh/workspace/uv/foo/bar`
+
+❯ uv init --package baz
+Adding `baz` as member of workspace `/Users/crmarsh/workspace/uv/foo`
+Initialized project `baz` at `/Users/crmarsh/workspace/uv/foo/baz`
+
+❯ uv build --all
+[bar] Building source distribution...
+[baz] Building source distribution...
+[foo] Building source distribution...
+[bar] Building wheel from source distribution...
+[baz] Building wheel from source distribution...
+[foo] Building wheel from source distribution...
+Successfully built dist/bar-0.1.0.tar.gz and dist/bar-0.1.0-py3-none-any.whl
+Successfully built dist/baz-0.1.0.tar.gz and dist/baz-0.1.0-py3-none-any.whl
+Successfully built dist/foo-0.1.0.tar.gz and dist/foo-0.1.0-py3-none-any.whl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 15:35</div>
+            <div class="timeline-body"><p>Oh, do your projects have a <code>[build-system]</code> field? If not, they're probably being skipped by <code>--all</code> (but unintentionally working with <code>--package</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-24 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 15:41</div>
+            <div class="timeline-body"><p>I'm going to add some error messages to fix this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-24 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucas-labs">@lucas-labs</a> on 2024-10-24 15:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, do your projects have a <code>[build-system]</code> field? If not, they're probably being skipped by <code>--all</code></p>
+</blockquote>
+<p>Nope they didn't have a <code>[build-system]</code> 😅, they are working now after adding a build system. Makes sense.</p>
+<blockquote>
+<p>(but unintentionally working with <code>--package</code>).
+I'm going to add some error messages to fix this up.</p>
+</blockquote>
+<p>Yes, that would be great, in order to avoid confusion.</p>
+<p>Thanks for your help again, Charlie!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8537.html">astral-sh/uv#8537</a> on 2024-10-24 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-25 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-25 19:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:17 UTC
+    </footer>
+</body>
+</html>

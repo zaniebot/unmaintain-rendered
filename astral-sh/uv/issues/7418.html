@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression on tolerance for older Pythons - astral-sh/uv #7418</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression on tolerance for older Pythons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7418">#7418</a>
+        opened by <a href="https://github.com/garthk">@garthk</a>
+        on 2024-09-16 02:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/garthk">@garthk</a> on 2024-09-16 02:05</div>
+            <div class="timeline-body"><p>Edit: I'm sorry; this top comment was a mess. I've revised it for clarity <a href="#issuecomment-2506861641">below</a>.</p>
+<hr />
+<p>Having only just recently improved uv's tolerance for Python 3.6 in #6996 merged @charliermarsh 2024-09-04, I'm dismayed to have the rug pulled out by #7266 merged @zanieb 2024-09-11.</p>
+<p>As I've said before: while I appreciate the Python team no longer support Python 3.6, RedHat-style Linux distributions will support Python 3.6 in their<code>/usr/libexec/platform-python</code> until <a href="https://access.redhat.com/support/policy/updates/errata#RHEL8_Planning_Guide">releasever 8 expires in 2029</a>.</p>
+<p>It strikes me as off brand for Astral to provide Python programmers with excellent tooling, except for <em>those</em> Python programmers, over there. (They're an &quot;edge case&quot;, if you know what I mean. Cough.) If they'd personally earned a disregard bordering on spite, maybe, but not if they're helping? #6996 for example fixes the problem underlying #3371, which prompted this defensive work in <code>get_operating_system_and_architecture</code>.</p>
+<p>I'm not asking for uv to provide a managed Python 3.6, but would appreciate a fix starting with a unit test ensuring <code>--python=3.6</code> works if the following are all true:</p>
+<ul>
+<li><code>--python-preference</code> isn't <code>only-managed</code></li>
+<li>python3.6 is on the PATH</li>
+<li><a href="https://reproducible-builds.org/docs/source-date-epoch/">SOURCE_DATE_EPOCH</a> &lt; 1877558400</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-16 14:32</div>
+            <div class="timeline-body"><p>Some thoughts on having worked a lot with RHEL and legacy versions of software (and just being an outside observer here, I have no connection to Astral):</p>
+<p>My understanding is the Python distro that RedHat supports only supports installing 3rd party libraries via RedHat, e.g. <code>yum install python3-requests</code>, if you're using pip or uv to instal you won't get RedHat support, and if you don't care about RedHat support why not upgrade your Python?</p>
+<p>RHEL often supports things long past the unpaid support for an open source product ends, e.g. Python 2 support in RHEL ended just this year. If you would like a similar support that RHEL provides, perhaps consider emailing Astral and see if you can come to a paid service arrangenent like Red Hat does with it's customers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 14:42</div>
+            <div class="timeline-body"><p>Sorry about that. https://github.com/astral-sh/uv/pull/7266 was fixing a clear oversight, in which we applied the Python version restriction on a subset of platforms. I'm fine with not erroring if we query a Python 3.6 interpreter, I'm not sure why we need that in the first place cc @konstin. The simple fix here may just be to lower that to <code>&lt;3.6</code> since we know the interpreter query script works with 3.6.</p>
+<p>I don't have qualms with some form of 3.6 support if we're not spending a significant amount of time maintaining it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-16 14:49</div>
+            <div class="timeline-body"><p>That checks catches cases where machines have ancient versions of Python installed which would subsequently error in our discovery script and break discovery. If we want to allow Python 3.6, we need to have a platform check for 3.6 to ensure the script doesn't fail on those versions when evolving the discovery scripts, regressing for users that want to skip EOL versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-16 14:52</div>
+            <div class="timeline-body"><p>My only comment here is that if we're going to offer even &quot;informal&quot; support for this, we need a system test for it. Otherwise, it'll keep breaking. So that would be a welcome contribution (even if it's failing for now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-16 14:53</div>
+            <div class="timeline-body"><p>I believe now if the query script fails we always skip the interpreter so I don't think that's as big of a deal as it was before. It's mostly about messaging around the failure of the query script, which I think is a tracing log anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-09-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-16 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garthk">@garthk</a> on 2024-09-18 23:25</div>
+            <div class="timeline-body"><blockquote>
+<p>My understanding is the Python distro that RedHat supports only supports installing 3rd party libraries via <code>yum install</code></p>
+</blockquote>
+<p>@notatallshaw Fedora et al prefer any package shared across the system to use their packaging system. It's a plain Python distribution, though. You develop your Python package like any other: it's only after you build the wheel that anything changes.</p>
+<p>Side note: Ruff's <code>flake8-tidy-imports</code> is a great way to make sure you don't use API surface added between the version of a package available as an RPM and the version that dropped support for your Python.</p>
+<pre><code class="language-toml">[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;re.Match&quot;.msg = &quot;from typing import Match&quot;
+&quot;re.Pattern&quot;.msg = &quot;from typing import Pattern&quot;
+&quot;typing_extensions.NotRequired&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+&quot;typing_extensions.OrderedDict&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+&quot;typing_extensions.override&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+&quot;typing_extensions.ParamSpec&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+&quot;typing_extensions.ReadOnly&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+&quot;typing_extensions.Required&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+&quot;typing_extensions.Self&quot;.msg = &quot;python3-typing-extensions-3.7.4.3-2&quot;
+</code></pre>
+<p>While we're developing a Python package with all those arms tied behind our backs, it's the same as you're used to. We take our deps and dev-deps from PyPi while we're developing, re-testing against the deps' RPMs before we pack our own.</p>
+<p>If I wanted you to work, I'd certainly expect to pay for it somehow, but I don't want your work. Kinda the opposite, really. If you're aware 3.6 matters to your users and customers, you won't break it, you won't be asked to fix it, and you won't risk tarnishing your brand in an attempt to justify why breaking it was fine actually.</p>
+<hr />
+<blockquote>
+<p>Sorry about that. […] I'm not sure why we need that in the first place.</p>
+</blockquote>
+<p>Thanks, @zanieb. #3371 reports a confusing error caused by the info script breaking on Python 3.6. #3398 delivers a less confusing error message by gating the version on Linux. #6996 fixes the info script so it works on Python 3.6. #7266 applies #3398's version gate to other platforms.</p>
+<p>I should emphasise #3398 and #7266 were good calls given the information on hand at the time. I wish I had a time machine, but only so I could tell #6996 me to look wider.</p>
+<hr />
+<blockquote>
+<p>I don't have qualms with some form of 3.6 support if we're not spending a significant amount of time maintaining it.</p>
+</blockquote>
+<p>Yeah, nah, any load should be borne by those of us that need it. This week is a wreck, but perhaps next week I'll file a PR to relax the gate and add that test.</p>
+<hr />
+<blockquote>
+<p>If we want to allow Python 3.6, we need to have a platform check for 3.6 to ensure the script doesn't fail on those versions when evolving the discovery script.</p>
+</blockquote>
+<p>Quite true, @konstin. I think I remember seeing them in your PRs? I'll check.</p>
+<hr />
+<blockquote>
+<p>If we're going to offer even &quot;informal&quot; support for this, we need a system test for it.</p>
+</blockquote>
+<p>I love &quot;informal&quot;, @charliermarsh: it's appropriate, and gentler than my &quot;tolerate&quot;. Very on brand.</p>
+<p>Would the test I described in my top post count as a &quot;system test&quot;, or is there more you'd want to see in the PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-18 23:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Kinda the opposite, really. If you're aware 3.6 matters to your users and customers, you won't break it, you won't be asked to fix it, and you won't risk tarnishing your brand in an attempt to justify why breaking it was fine actually.</p>
+</blockquote>
+<p>Everything has a cost associated with it, adding 3.6 to the test matrix costs real money to a CI bill, and if it breaks for 3.6 only that costs real money in developer time.</p>
+<p>At some point you have to decide when something is no longer worth supporting, most of the Python ecosystem has dropped support for Python 3.6 and 3.7, and numpy stack has dropped support for Python 3.8 and 3.9.</p>
+<p>Astral may be happy to support 3.6 because the calculus makes sense to them, but it is a calculus, not a free ride, so as someone who supports and maintains OSS it's a bit frustrating to hear users who provide no support throw phrases around like &quot;tarnishing your brand&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8649.html">astral-sh/uv#8649</a> on 2024-10-29 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garthk">@garthk</a> on 2024-11-23 23:07</div>
+            <div class="timeline-body"><blockquote>
+<p>users who provide no support</p>
+</blockquote>
+<p>#6996</p>
+<p>I dropped in to say I was going to work on a fix for this at the PyConAU 2024 sprints, and now I have to put extra effort into maintaining motivation despite people throwing phrases around like &quot;no support' and &quot;free ride&quot;. Dude, could you not?</p>
+<p>Not a bad point about CI, though. While I'm not sure it's worth my time maintaining a list of things I didn't ask for—a hostile reader will either skip it or read it only to find reasons to throw another elbow—but I'll make a note here to start with these if I do:</p>
+<ul>
+<li>I'm not asking for all projects support Python 3.6</li>
+<li>I'm not asking for all projects to invest their own time in fixing things when they break Python 3.6</li>
+<li>I'm not sure adding Python 3.6 to the CI matrix for every check and balance is a good use of compute, either</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garthk">@garthk</a> on 2024-11-23 23:07</div>
+            <div class="timeline-body"><p>Back to matters of #7418 specifically: @charliermarsh @konstin @zanieb anything about <code>get_interpreter_info.py</code> and <code>interpreter.rs</code> I should know before I have a shot at this tomorrow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-24 03:10</div>
+            <div class="timeline-body"><p>@garthk -- Nothing specific. It looks like we added that gating in https://github.com/astral-sh/uv/pull/3398 (due to https://github.com/astral-sh/uv/issues/3371), but then it was expanded beyond Linux in https://github.com/astral-sh/uv/pull/7266 although I'm not certain why, the PR doesn't say much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 00:24</div>
+            <div class="timeline-body"><p>I believe it was expanded in https://github.com/astral-sh/uv/pull/7266 because it was not intentionally limited to a single platform (as mentioned at https://github.com/astral-sh/uv/issues/7418#issuecomment-2353124885) and I pointed this out while doing some related work, e.g., https://github.com/astral-sh/uv/pull/7264. I also don't remember the exact details though.</p>
+<p>I don't think it should be complicated or controversial to change.</p>
+<blockquote>
+<p>I'm not sure adding Python 3.6 to the CI matrix for every check and balance is a good use of compute, either</p>
+</blockquote>
+<p>We have a lot of edge-case tests that do not run the full test suite, e.g., https://github.com/astral-sh/uv/blob/77116bef26f60ca3c9acfba9e5bd16f80bf3333c/.github/workflows/ci.yml#L1284-L1308 or https://github.com/astral-sh/uv/blob/77116bef26f60ca3c9acfba9e5bd16f80bf3333c/.github/workflows/ci.yml#L698-L749 — something like that seems like a reasonable trade-off for compute time / preventing regressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garthk">@garthk</a> on 2024-11-28 23:53</div>
+            <div class="timeline-body"><p>G'day again! I've sought and taken feedback, and would like re-state my issue for clarity by removing anything poorly chosen or regulated, un-necessary, distracting, or all of the above. I'll leave it up there for the accountability. Sorry for the confusion and delay.</p>
+<hr />
+<p>I improved uv's tolerance for Python 3.6 in #6996 merged @charliermarsh 2024-09-04. It came undone in #7266 merged @zanieb 2024-09-11. I'd like to fix it again.</p>
+<p>The Python team no longer support Python 3.6, but RedHat-style Linux distributions will support Python 3.6 in their<code>/usr/libexec/platform-python</code> until <a href="https://access.redhat.com/support/policy/updates/errata#RHEL8_Planning_Guide">releasever 8 expires in 2029</a>. SuSE 15 also has Python 3.6 as its default python3.</p>
+<p>#6996 fixed the problem underlying #3371, which'll help.</p>
+<p>I'm not asking for uv to provide a managed Python 3.6—@charliermarsh's “informal support” sounds about right—but will attempt a fix including a unit test ensuring <code>--python=3.6</code> works if:</p>
+<ul>
+<li><code>--python-preference</code> isn't <code>only-managed</code></li>
+<li>python3.6 is on the PATH</li>
+<li><a href="https://reproducible-builds.org/docs/source-date-epoch/">SOURCE_DATE_EPOCH</a> &lt; 1877558400</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garthk">@garthk</a> on 2024-11-28 23:59</div>
+            <div class="timeline-body"><p>@zanieb that'll come in handy; thanks! I've got the easy work in <code>get_interpreter_info.py</code> done; it'll be the tests that are the tricky bit. I might open the PR early so we've got the diff as a backdrop for Q&amp;A; please do advise otherwise if getting there a failed build at a time won't match the house style.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:49 UTC
+    </footer>
+</body>
+</html>

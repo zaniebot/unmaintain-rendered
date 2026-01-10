@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(🐞) bad `unnecessary-dunder-call` report for `object.__getattribute__(self` within a `__getattribute__` implementation - astral-sh/ruff #9486</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>(🐞) bad `unnecessary-dunder-call` report for `object.__getattribute__(self` within a `__getattribute__` implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9486">#9486</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2024-01-12 04:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-01-12 04:49</div>
+            <div class="timeline-body"><pre><code class="language-py">class A:
+    a = 1
+
+    def __getattribute__(self, item):
+        return object.__getattribute__(self, item)  # PLC2801 Unnecessary dunder call to `__getattribute__`. Access attribute directly or use getattr built-in function..
+
+A().a
+</code></pre>
+<p>Ah yes, better use <code>getattr</code> built-in function..</p>
+<pre><code class="language-py">class A:
+    a = 1
+
+    def __getattribute__(self, item):
+        return getattr(self, item)
+
+A().a
+#   File &quot;C:\Users\charlie_marsh(parody)\rust_based_python_typechecker\__init__.py&quot;, line 5, in __getattribute__
+#    return getattr(self, item)
+#           ^^^^^^^^^^^^^^^^^^^
+#  [Previous line repeated 745 more times]
+#RecursionError: maximum recursion depth exceeded
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(🐞) bad `unnecessary-dunder-call` report for `object.__getattribute__(self` with a `__getattribute__` implementation" to "(🐞) bad `unnecessary-dunder-call` report for `object.__getattribute__(self` within a `__getattribute__` implementation" by @KotlinIsland on 2024-01-12 04:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-12 04:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 05:00</div>
+            <div class="timeline-body"><p>What is going on with that filename lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2024-01-12 17:43</div>
+            <div class="timeline-body"><p>Other example of a false-positive:</p>
+<pre><code class="language-python">class A:
+    def __repr__(self):
+        return &quot;Prints this text&quot;
+
+a = A()
+object.__repr__(a)  # PLC2801
+</code></pre>
+<p>Generally, for <code>T.__dunder__(obj, *args, **kwargs)</code> to be redundant (assuming <code>isinstance(T, type)</code>), I think we necessarily need <code>type(obj).__dunder__ is T.__dunder__</code> to be true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 17:46</div>
+            <div class="timeline-body"><p>Need to understand how pylint handles this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 17:47</div>
+            <div class="timeline-body"><p>So for one thing, they omit dunder calls <em>within</em> dunder methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 17:49</div>
+            <div class="timeline-body"><p>It looks like they also skip dunder calls on non-instantiated classes? Which includes <code>object</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bastimeyer">@bastimeyer</a> on 2024-01-12 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>So for one thing, they omit dunder calls <em>within</em> dunder methods.</p>
+</blockquote>
+<p>This is the main cause of <code>PLC2801</code> being raised in our project after updating ruff to <code>0.1.13</code>.</p>
+<p>Another false positive report (IMO) after upgrading to the latest version is the explicit call of dunder methods in test cases. Imagine a <code>__getitem__</code> method which gets tested for a specific exception in a <code>with pytest.raises(...)</code> block. Ruff now wants me to use the subscript notation (<code>foo[bar]</code> instead of <code>foo.__getitem__(bar)</code>), which is then reported as a &quot;statement without an effect&quot; by other linters (like the one built into pycharm for example). Calling the <code>__getitem__</code> method explicitly should be ok in test cases and shouldn't require an annotation for suppressing <code>PLC2801</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 19:13</div>
+            <div class="timeline-body"><p>Yeah we can easily fix that part. The second part is harder and will require us to greatly limit the scope of the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 19:16</div>
+            <div class="timeline-body"><p>(I'll fix the first part now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9496.html">astral-sh/ruff#9496</a> on 2024-01-12 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-12 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-12 19:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

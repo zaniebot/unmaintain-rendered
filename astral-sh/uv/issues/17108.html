@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>torch and torchvision do not install correctly when multiple index are used - astral-sh/uv #17108</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>torch and torchvision do not install correctly when multiple index are used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17108">#17108</a>
+        opened by <a href="https://github.com/ZidongLiu">@ZidongLiu</a>
+        on 2025-12-12 19:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZidongLiu">@ZidongLiu</a> on 2025-12-12 19:05</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here is my project.toml</p>
+<pre><code>[project]
+name = &quot;decomfl&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+	&quot;transformers&gt;=4.57.0&quot;,
+	&quot;accelerate&quot;,
+	&quot;datasets&quot;,
+	&quot;numpy&quot;,
+	&quot;peft&quot;,
+	&quot;tensorboardx&quot;,
+	&quot;tqdm&quot;,
+	&quot;pydantic&quot;,
+	&quot;pydantic-settings&quot;,
+	&quot;python-dotenv&quot;,
+	&quot;ruff==0.6&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+	&quot;isort==5.13.2&quot;,
+	&quot;pytest==8.3&quot;,
+	&quot;mypy==1.11&quot;,
+]
+cuda = [
+	&quot;torch&gt;=2.7.0&quot;,
+	&quot;torchvision&gt;=0.22.0&quot;,
+]
+cpu = [
+	&quot;torch&gt;=2.7.0&quot;,
+	&quot;torchvision&gt;=0.22.0&quot;,
+]
+
+[tool.uv.sources]
+# CUDA PyTorch sources - only used when --extra cuda is specified
+# For CPU-only installation (--extra cpu), PyPI will be used instead
+torch = { index = &quot;pytorch-cu126&quot;, marker = &quot;extra == 'cuda'&quot; }
+torchvision = { index = &quot;pytorch-cu126&quot;, marker = &quot;extra == 'cuda'&quot; }
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu126&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+
+</code></pre>
+<p>I tried <code>uv sync --extra cuda</code>, it could install torch and torchvision correctly</p>
+<p><img width="574" height="169" alt="Image" src="https://github.com/user-attachments/assets/98351b33-4b10-4399-a336-74dfebbcbe3f" /></p>
+<p>But when I type <code>uv sync --extra cpu</code>, there are 2 unexpected behavior:</p>
+<ol>
+<li>torchvision is not installed at all</li>
+<li>torch still installs as cu126, while it should actually install from PyPI</li>
+</ol>
+<p><img width="566" height="210" alt="Image" src="https://github.com/user-attachments/assets/79a96431-dfc6-42e6-9ded-3c6eba2e3b43" /></p>
+<h3>Platform</h3>
+<p>Windows 10</p>
+<h3>Version</h3>
+<p>uv 0.9.17 (2b5d65e61 2025-12-09)</p>
+<h3>Python version</h3>
+<p>3.10.19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ZidongLiu on 2025-12-12 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-13 03:00</div>
+            <div class="timeline-body"><p>The use of <code>torch = { index = &quot;pytorch-cu126&quot;, marker = &quot;extra == 'cuda'&quot; }</code> is incorrect. I think you're looking for:</p>
+<pre><code class="language-toml">torch = { index = &quot;pytorch-cu126&quot;, extra = &quot;cuda&quot; }
+</code></pre>
+<p>You also need to tell uv to use conflicting (different) versions across the two extras:</p>
+<pre><code class="language-toml">[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cuda&quot; },
+    { extra = &quot;cpu&quot; },
+  ],
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-13 03:01</div>
+            <div class="timeline-body"><p>(Note however that the Linux wheel on PyPI is not a CPU-only wheel; it includes CUDA.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-12-13 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-12-13 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-12-13 03:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-13 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-13 03:40</div>
+            <div class="timeline-body"><p>Here's a complete working example:</p>
+<pre><code class="language-toml">[project]
+name = &quot;decomfl&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;transformers&gt;=4.57.0&quot;,
+    &quot;accelerate&quot;,
+    &quot;datasets&quot;,
+    &quot;numpy&quot;,
+    &quot;peft&quot;,
+    &quot;tensorboardx&quot;,
+    &quot;tqdm&quot;,
+    &quot;pydantic&quot;,
+    &quot;pydantic-settings&quot;,
+    &quot;python-dotenv&quot;,
+    &quot;ruff==0.6&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;isort==5.13.2&quot;,
+    &quot;pytest==8.3&quot;,
+    &quot;mypy==1.11&quot;,
+]
+cuda = [
+    &quot;torch&gt;=2.7.0&quot;,
+    &quot;torchvision&gt;=0.22.0&quot;,
+]
+cpu = [
+    &quot;torch&gt;=2.7.0&quot;,
+    &quot;torchvision&gt;=0.22.0&quot;,
+]
+
+[tool.uv.sources]
+torch = [{ index = &quot;pytorch-cu126&quot;, extra = &quot;cuda&quot; }, { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; }]
+torchvision = [{ index = &quot;pytorch-cu126&quot;, extra = &quot;cuda&quot; }, { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; }]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu126&quot;
+url = &quot;https://download.pytorch.org/whl/cu126&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cuda&quot; },
+    { extra = &quot;cpu&quot; },
+  ],
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> removed by @charliermarsh on 2025-12-13 03:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

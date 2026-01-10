@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv cache clean package` is very slow for me - astral-sh/uv #13667</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv cache clean package` is very slow for me</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13667">#13667</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-05-26 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-05-26 21:47</div>
+            <div class="timeline-body"><p>Cleaning up one package takes about 3 minutes</p>
+<pre><code>λ uv cache clean mpi4py
+Removed 541 files (36.2MiB)
+uv cache clean mpi4py  5.12s user 97.29s system 56% cpu 3:01.32 total
+</code></pre>
+<pre><code>λ uv cache clean requests
+Removed 27 files (313.4KiB)
+uv cache clean requests  4.79s user 92.41s system 56% cpu 2:52.68 total
+</code></pre>
+<p>uv 0.7.0 on macOS 15.5</p>
+<p>Bit of a noob when it comes to profiling native code on macOS. Taking a few different samples with the inbuilt profiler all give me stuff that looks like this (lots of opendir/readdir):</p>
+<pre><code>Call graph:
+    2350 Thread_10627789   DispatchQueue_1: com.apple.main-thread  (serial)
+    + 2350 start  (in dyld) + 6076  [0x19011ab98]
+    +   2350 ???  (in uv)  load address 0x102eac000 + 0xf326c4  [0x103dde6c4]
+    +     2350 ???  (in uv)  load address 0x102eac000 + 0x996108  [0x103842108]
+    +       2350 ???  (in uv)  load address 0x102eac000 + 0xf32cdc  [0x103ddecdc]
+    +         2350 _pthread_join  (in libsystem_pthread.dylib) + 608  [0x1904bd0b0]
+    +           2350 __ulock_wait  (in libsystem_kernel.dylib) + 8  [0x19047a9b8]
+    2350 Thread_10627794: main2
+      2350 thread_start  (in libsystem_pthread.dylib) + 8  [0x1904b5b80]
+        2350 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1904bac0c]
+          2350 ???  (in uv)  load address 0x102eac000 + 0x49be24  [0x103347e24]
+            2350 ???  (in uv)  load address 0x102eac000 + 0x99aa5c  [0x103846a5c]
+              2350 ???  (in uv)  load address 0x102eac000 + 0x99b870  [0x103847870]
+                2350 ???  (in uv)  load address 0x102eac000 + 0x79293c  [0x10363e93c]
+                  2350 ???  (in uv)  load address 0x102eac000 + 0x7aa84c  [0x10365684c]
+                    2350 ???  (in uv)  load address 0x102eac000 + 0x600754  [0x1034ac754]
+                      2350 ???  (in uv)  load address 0x102eac000 + 0x108111c  [0x103f2d11c]
+                        2340 ???  (in uv)  load address 0x102eac000 + 0x1084130  [0x103f30130]
+                        ! 1852 ???  (in uv)  load address 0x102eac000 + 0x186076c  [0x10470c76c]
+                        ! : 1850 ???  (in uv)  load address 0x102eac000 + 0x1860d88  [0x10470cd88]
+                        ! : | 1850 ???  (in uv)  load address 0x102eac000 + 0x186163c  [0x10470d63c]
+                        ! : |   1849 ???  (in uv)  load address 0x102eac000 + 0x46918c  [0x10331518c]
+                        ! : |   + 1812 __opendir2  (in libsystem_c.dylib) + 48  [0x19039b8e0]
+                        ! : |   + ! 1812 open$NOCANCEL  (in libsystem_kernel.dylib) + 64  [0x19048d6dc]
+                        ! : |   + !   1812 __open_nocancel  (in libsystem_kernel.dylib) + 8  [0x190479808]
+                        ! : |   + 36 __opendir2  (in libsystem_c.dylib) + 72  [0x19039b8f8]
+                        ! : |   + ! 32 __opendir_common  (in libsystem_c.dylib) + 320  [0x1903514d0]
+                        ! : |   + ! : 32 fstatfs  (in libsystem_kernel.dylib) + 8  [0x190484734]
+                        ! : |   + ! 2 __opendir_common  (in libsystem_c.dylib) + 80  [0x1903513e0]
+                        ! : |   + ! : 1 DYLD-STUB$$malloc_type_malloc  (in libsystem_c.dylib) + 0  [0x1903c4f58]
+                        ! : |   + ! : 1 nanov2_malloc_type  (in libsystem_malloc.dylib) + 68  [0x1902dfac4]
+                        ! : |   + ! 2 __opendir_common  (in libsystem_c.dylib) + 356  [0x1903514f4]
+                        ! : |   + !   1 szone_malloc_should_clear  (in libsystem_malloc.dylib) + 120  [0x1902bbc0c]
+                        ! : |   + !   | 1 small_malloc_should_clear  (in libsystem_malloc.dylib) + 176  [0x1902bbdc8]
+                        ! : |   + !   |   1 small_malloc_from_free_list  (in libsystem_malloc.dylib) + 68  [0x1902bc434]
+                        ! : |   + !   1 szone_malloc_should_clear  (in libsystem_malloc.dylib) + 0  [0x1902bbb94]
+                        ! : |   + 1 __opendir2  (in libsystem_c.dylib) + 0  [0x19039b8b0]
+                        ! : |   1 ???  (in uv)  load address 0x102eac000 + 0x469088  [0x103315088]
+                        ! : 2 ???  (in uv)  load address 0x102eac000 + 0x1861d7c  [0x10470dd7c]
+                        ! 296 ???  (in uv)  load address 0x102eac000 + 0x1860644  [0x10470c644]
+                        ! : 296 ???  (in uv)  load address 0x102eac000 + 0x469328  [0x103315328]
+                        ! :   293 readdir_r  (in libsystem_c.dylib) + 72  [0x19039c4d0]
+                        ! :   | 292 _readdir_unlocked  (in libsystem_c.dylib) + 220  [0x19039c384]
+                        ! :   | + 292 __getdirentries64  (in libsystem_kernel.dylib) + 8  [0x19047a884]
+                        ! :   | 1 _readdir_unlocked  (in libsystem_c.dylib) + 140  [0x19039c334]
+                        ! :   |   1 szone_malloc_should_clear  (in libsystem_malloc.dylib) + 120  [0x1902bbc0c]
+                        ! :   |     1 small_malloc_should_clear  (in libsystem_malloc.dylib) + 176  [0x1902bbdc8]
+                        ! :   |       1 small_malloc_from_free_list  (in libsystem_malloc.dylib) + 544  [0x1902bc610]
+                        ! :   |         1 small_free_list_add_ptr  (in libsystem_malloc.dylib) + 476  [0x1902c0964]
+                        ! :   2 readdir_r  (in libsystem_c.dylib) + 112  [0x19039c4f8]
+                        ! :   | 2 pthread_mutex_unlock  (in libsystem_pthread.dylib) + 0,68  [0x1904b58a4,0x1904b58e8]
+                        ! :   1 readdir_r  (in libsystem_c.dylib) + 48  [0x19039c4b8]
+                        ! :     1 DYLD-STUB$$__error  (in libsystem_c.dylib) + 8  [0x1903c4620]
+                        ! 185 ???  (in uv)  load address 0x102eac000 + 0x1860574  [0x10470c574]
+                        ! : 185 ???  (in uv)  load address 0x102eac000 + 0x1861228  [0x10470d228]
+                        ! :   185 ???  (in uv)  load address 0x102eac000 + 0x46940c  [0x10331540c]
+                        ! :     184 ???  (in uv)  load address 0x102eac000 + 0x477a04  [0x103323a04]
+                        ! :     | 183 __close_nocancel  (in libsystem_kernel.dylib) + 8  [0x19047a444]
+                        ! :     | 1 closedir  (in libsystem_c.dylib) + 52  [0x190351638]
+                        ! :     |   1 _szone_free  (in libsystem_malloc.dylib) + 140  [0x1902d31b0]
+                        ! :     1 ???  (in uv)  load address 0x102eac000 + 0x4779e4  [0x1033239e4]
+                        ! 3 ???  (in uv)  load address 0x102eac000 + 0x18606ac  [0x10470c6ac]
+                        ! : 3 _platform_memmove  (in libsystem_platform.dylib) + 180  [0x1904f4304]
+                        ! 2 ???  (in uv)  load address 0x102eac000 + 0x18606bc  [0x10470c6bc]
+                        ! : 2 ???  (in uv)  load address 0x102eac000 + 0x18625f0  [0x10470e5f0]
+                        ! :   2 ???  (in uv)  load address 0x102eac000 + 0x46958c  [0x10331558c]
+                        ! :     2 ???  (in uv)  load address 0x102eac000 + 0x18ff610  [0x1047ab610]
+                        ! :       2 ???  (in uv)  load address 0x102eac000 + 0x18ff6e8  [0x1047ab6e8]
+                        ! :         1 ???  (in uv)  load address 0x102eac000 + 0x18bdc5c  [0x104769c5c]
+                        ! :         | 1 ???  (in uv)  load address 0x102eac000 + 0x18c65bc  [0x1047725bc]
+                        ! :         |   1 ???  (in uv)  load address 0x102eac000 + 0x18d7508  [0x104783508]
+                        ! :         1 ???  (in uv)  load address 0x102eac000 + 0x18bda1c  [0x104769a1c]
+                        ! 1 ???  (in uv)  load address 0x102eac000 + 0x1860684  [0x10470c684]
+                        ! : 1 _platform_memmove  (in libsystem_platform.dylib) + 180  [0x1904f4304]
+                        ! 1 ???  (in uv)  load address 0x102eac000 + 0x1860674  [0x10470c674]
+                        4 ???  (in uv)  load address 0x102eac000 + 0x108428c  [0x103f3028c]
+                        ! 4 ???  (in uv)  load address 0x102eac000 + 0x4659a4  [0x1033119a4]
+                        !   1 ???  (in uv)  load address 0x102eac000 + 0x481318  [0x10332d318]
+                        !   : 1 ???  (in uv)  load address 0x102eac000 + 0x481464  [0x10332d464]
+                        !   1 ???  (in uv)  load address 0x102eac000 + 0x481300  [0x10332d300]
+                        !   1 ???  (in uv)  load address 0x102eac000 + 0x481334  [0x10332d334]
+                        !   1 ???  (in uv)  load address 0x102eac000 + 0x48134c  [0x10332d34c]
+                        4 ???  (in uv)  load address 0x102eac000 + 0x10842c0  [0x103f302c0]
+                        ! 2 ???  (in uv)  load address 0x102eac000 + 0x12c4430  [0x104170430]
+                        ! : 1 ???  (in uv)  load address 0x102eac000 + 0x18bc47c  [0x10476847c]
+                        ! : | 1 pthread_getspecific  (in libsystem_pthread.dylib) + 0  [0x1904b5bf0]
+                        ! : 1 ???  (in uv)  load address 0x102eac000 + 0x18bc4c8  [0x1047684c8]
+                        ! 1 ???  (in uv)  load address 0x102eac000 + 0x12c7378  [0x104173378]
+                        ! : 1 ???  (in uv)  load address 0x102eac000 + 0x465a38  [0x103311a38]
+                        ! :   1 ???  (in uv)  load address 0x102eac000 + 0x481334  [0x10332d334]
+                        ! 1 ???  (in uv)  load address 0x102eac000 + 0x12c4354  [0x104170354]
+                        1 ???  (in uv)  load address 0x102eac000 + 0x10842e8  [0x103f302e8]
+                        ! 1 ???  (in uv)  load address 0x102eac000 + 0x18bf418  [0x10476b418]
+                        1 ???  (in uv)  load address 0x102eac000 + 0x12c50c0  [0x1041710c0]
+
+Total number in stack (recursive counted multiple, when &gt;=5):
+
+Sort by top of stack, same collapsed (when &gt;= 5):
+        __ulock_wait  (in libsystem_kernel.dylib)        2350
+        __open_nocancel  (in libsystem_kernel.dylib)        1812
+        __getdirentries64  (in libsystem_kernel.dylib)        292
+        __close_nocancel  (in libsystem_kernel.dylib)        183
+        fstatfs  (in libsystem_kernel.dylib)        32
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-05-26 21:50</div>
+            <div class="timeline-body"><p>It looks like my uv cache has gotten pretty big, looks like it's about 80G</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-05-26 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-05-27 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13669.html">astral-sh/uv#13669</a> on 2025-05-27 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-27 01:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

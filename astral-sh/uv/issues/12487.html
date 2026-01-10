@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specifying macOS platform breaks pip install - astral-sh/uv #12487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specifying macOS platform breaks pip install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12487">#12487</a>
+        opened by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a>
+        on 2025-03-26 14:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a> on 2025-03-26 14:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When <code>--python-platform macos</code> is specified for <code>uv pip install</code> or <code>uv pip compile</code>, <code>uv</code> tries to install package build for macOS 12 even if it is not available and there is a build for macOS 15. This applies to both installation from PyPI and from a local wheel file.</p>
+<p>Minimal example:</p>
+<pre><code>pip download numpy  # for me it downloaded numpy-2.2.4-cp310-cp310-macosx_14_0_arm64.whl
+uv pip install --python-platform macos numpy-2.2.4-cp310-cp310-macosx_14_0_arm64.whl  # error
+uv pip install numpy-2.2.4-cp310-cp310-macosx_14_0_arm64.whl  # no error
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 15 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.9 (3d9460278 2025-03-20)</p>
+<h3>Python version</h3>
+<p>Python 3.10.14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @itymchyshyn-sc on 2025-03-26 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 15:33</div>
+            <div class="timeline-body"><p>You should set a target macOS version: https://docs.astral.sh/uv/configuration/environment/#macosx_deployment_target. By default, we assume the most recent non-EOL version (12).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-03-26 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-26 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a> on 2025-03-26 17:08</div>
+            <div class="timeline-body"><p>@charliermarsh - I see, thanks!</p>
+<p>In that case, isn't the macOS 15 the most recent non-EOL version?
+Here https://endoflife.date/macos I see that macOS 12 support has ended, so isn't it EOL?
+Also, from the security perspective, it seems safer to default to the latest macOS version.
+And from the user perspective, it's unexpected that there is a difference between <code>uv pip install</code> and <code>uv pip install --python-platform macos</code> on Mac.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 17:25</div>
+            <div class="timeline-body"><p>Sorry, it’s actually “least-recent non-EOL version” (correct in the docs, but not in my comment). So it should be bumped to macOS 13.</p>
+<p>Hmm, I don’t know that changing the default would be more secure, since if anything this means you’re building from source strictly more often?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/itymchyshyn-sc">@itymchyshyn-sc</a> on 2025-03-26 19:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, I don’t know that changing the default would be more secure, since if anything this means you’re building from source strictly more often?</p>
+</blockquote>
+<p>Indeed, from a stability standpoint, it's safer not to use build for the newest version.</p>
+<p>Another thing is that engineers often need to upgrade to the latest macOS for security reasons. And if they have internal PyPI index in their company, they will be uploading packages built for their latest macOS version to it. This means that <code>uv pip install --python-platform macos</code> or <code>uv pip compile --python-platform macos</code> will not be able to find that package.</p>
+<p>IMO a good solution here would be to switch from &quot;least-recent non-EOL version&quot; to &quot;least-recent non-EOL version s.t. there is a corresponding build for the package&quot;. For example, <code>uv pip install --python-platform macos &lt;package&gt;</code> could do the following:</p>
+<pre><code>for mac_version in sorted(non_eol_mac_versions):
+    if there is the &lt;package&gt; build for mac_version:
+        choose that build
+        break
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12518.html">astral-sh/uv#12518</a> on 2025-03-27 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-27 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-28 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-28 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bazel-contrib/rules_uv/issues/236.html">bazel-contrib/rules_uv#236</a> on 2025-04-11 05:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

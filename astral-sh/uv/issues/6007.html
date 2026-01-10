@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Generate `requirements.txt` from `uv.lock` - astral-sh/uv #6007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Generate `requirements.txt` from `uv.lock`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6007">#6007</a>
+        opened by <a href="https://github.com/zeevro">@zeevro</a>
+        on 2024-08-11 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zeevro">@zeevro</a> on 2024-08-11 14:32</div>
+            <div class="timeline-body"><p>It would be beneficial to me (and I think in general) to be able to generate a <code>requirements.txt</code> file from the <code>uv.lock</code> file. It would be useful for installing requirements without having to resolve dependencies using a different installer in environments where <code>uv</code> is not installed, and also for having other tools that don't support the <code>uv.lock</code> file format (e.g. Dependabot) be able to know the project's pinned dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-08-11 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-11 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-11 18:53</div>
+            <div class="timeline-body"><p>I think something like this is reasonable but it probably won't happen immediately. (<a href="https://peps.python.org/pep-0751/">PEP 751</a> is ultimately a better solution but I'd still support <code>requirements.txt</code> in the short-term.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeevro">@zeevro</a> on 2024-08-12 07:06</div>
+            <div class="timeline-body"><p>Also, we already have a way to generate <code>requirements.txt</code> in the form of <code>uv pip compile</code> but it's rather tricky to have that match my <code>uv.lock</code>, especially if it's done after a while and some dependencies have had new versions released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-12 12:28</div>
+            <div class="timeline-body"><p>It doesn't really seem like a great outcome for users to have <em>both</em> a <code>uv.lock</code> and <code>requirements.txt</code> though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelT-Beslogic">@SamuelT-Beslogic</a> on 2024-08-14 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>It doesn't really seem like a great outcome for users to have <em>both</em> a <code>uv.lock</code> and <code>requirements.txt</code> though</p>
+</blockquote>
+<p>If using <code>uv sync</code> which creates a <code>uv.lock</code> file in a Docker, does <code>uv sync</code> take care of setting up references to the venv correctly ?
+https://docs.astral.sh/uv/guides/integration/docker/#installing-a-package makes no mention of <code>uv sync</code> or <code>uv.lock</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-14 19:02</div>
+            <div class="timeline-body"><p>Can you clarify what you mean by &quot;references to the venv&quot;?</p>
+<p>I haven't written documentation for using the new APIs in Docker yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamuelT-Beslogic">@SamuelT-Beslogic</a> on 2024-08-14 19:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you clarify what you mean by &quot;references to the venv&quot;?</p>
+</blockquote>
+<p>I'm talking about this section of the doc:</p>
+<blockquote>
+<p>To use the system Python environment by default, set the UV_SYSTEM_PYTHON variable:</p>
+<pre><code class="language-Dockerfile">ENV UV_SYSTEM_PYTHON=1
+</code></pre>
+<p>Alternatively, a virtual environment can be created and activated:</p>
+<pre><code class="language-Dockerfile">RUN uv venv /opt/venv
+# Use the virtual environment automatically
+ENV VIRTUAL_ENV=/opt/venv
+# Place entry points in the environment at the front of the path
+ENV PATH=&quot;/opt/venv/bin:$PATH&quot;
+</code></pre>
+</blockquote>
+<p>I'm assuming if I use <code>RUN uv sync --locked</code> instead (to make sure the installation respects the lock file), that I don't need to mess around with venv setup ? (I just need to update my docker entry point command to use <code>uv run</code> instead of <code>python</code>, ref to our current transition to UV https://github.com/BesLogic/releaf-canopeum/pull/195/files#diff-1fc9c5328b5af6b1065537cb89aa7298eb7ba1d338b5bee8fd07553b6f56576f )</p>
+<blockquote>
+<p>I haven't written documentation for using the new APIs in Docker yet.</p>
+</blockquote>
+<p>That's a simple explanation as to why it's not referenced ^^</p>
+<hr />
+<p>I'm just ensuring that the <code>uv.lock</code> file should be usable in Docker. Which removes the need for this feature request for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-14 19:45</div>
+            <div class="timeline-body"><p><code>uv sync</code> always creates a virtual environment right now, so yeah you'd either need to opt for configuring it (as described above) or use <code>uv run</code> instead of invoking <code>python</code>.</p>
+<p>We may add support for syncing to a system environment (as requested in https://github.com/astral-sh/uv/issues/5964) to make this a little simpler in CI and containers.</p>
+<blockquote>
+<p>I'm just ensuring that the uv.lock file should be usable in Docker</p>
+</blockquote>
+<p>Yeah it definitely is. I'll try to update the documentation soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matmair">@matmair</a> on 2024-08-20 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>It doesn't really seem like a great outcome for users to have <em>both</em> a <code>uv.lock</code> and <code>requirements.txt</code> though</p>
+</blockquote>
+<p>I have this use case right now; maybe the insight is useful. There are strict requirements only to deploy stable software in the deployment targets. That rules out uv on the deployment targets by our current rules. The devs still want to use uv and uv project management and it is pretty confusing to have the <code>requirements.txt</code> that is used for deployments and the <code>uv.lock</code> within the repo.</p>
+<p>This can be solved by CI/CD but reducing steps and complexity is the signature of uv/ruff for me.
+Loving the tools btw, y'all are doing gods work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 19:16</div>
+            <div class="timeline-body"><p>What makes uv unstable?</p>
+<p>Thanks for sharing your use-case! Glad you like the tools :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matmair">@matmair</a> on 2024-08-20 19:17</div>
+            <div class="timeline-body"><p>SemVer. I do not make the rules sadly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfgordon2">@jfgordon2</a> on 2024-08-22 05:23</div>
+            <div class="timeline-body"><p>I also am finding a need to produce a <code>requirements.txt</code>, but just for non-dev packages.  The current path I have in our pipeline looks something like:</p>
+<pre><code class="language-shell">uv sync --no-dev
+uv pip freeze &gt; requirements.txt
+</code></pre>
+<p>Then we can check that requirements file against <code>safety</code> (or dependabot) for vulnerabilities, then do a <code>uv pip install -r requirements.txt --target dist</code> so we can package it up along with src into a zip file to deploy to a lambda function.</p>
+<p>It definitely would be easier to operate directly against the <code>uv.lock</code>, but in the meantime converting that directly into a <code>requirements.txt</code> for compatibility with other tools would be great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-22 11:19</div>
+            <div class="timeline-body"><p>+1 to what @jfgordon2 said.</p>
+<p>I think supporting <code>requirements.txt</code> input and output is wise to maintain compatibility with legacy tooling that isn’t yet caught up with PEP 621.</p>
+<p>I have documented one such use case for <code>requirements.txt</code> here: #6422</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6429.html">astral-sh/uv#6429</a> on 2024-08-22 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-25 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phi-friday">@phi-friday</a> on 2024-08-26 02:14</div>
+            <div class="timeline-body"><p>As you mentioned in #6429 , will there be a feature to create a <code>requirements.txt</code> including <code>tool.uv.dev-dependencies</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 02:16</div>
+            <div class="timeline-body"><p>Yeah, that would probably be included in the scope of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zeevro">@zeevro</a> on 2024-08-26 19:55</div>
+            <div class="timeline-body"><p>I'm using this as a make-shift solution for now.</p>
+<pre><code class="language-sh">uvx --from=yq tomlq -r '.package[]|.name+((.source|&quot; @ &quot;+(.url//&quot;git+\(.git//empty)&quot;))//&quot;==\(.version)&quot;)' uv.lock &gt;requirements.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 20:07</div>
+            <div class="timeline-body"><p>Respect!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6778.html">astral-sh/uv#6778</a> on 2024-08-28 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SamEdwardes">@SamEdwardes</a> on 2024-08-28 22:29</div>
+            <div class="timeline-body"><p>I like the idea of <code>uv export</code>!</p>
+<p>I am curious what are the implications of doing this:</p>
+<pre><code class="language-bash">uv pip compile pyproject.toml -o requirements.txt
+</code></pre>
+<p>In this case is my <code>uv.lock</code> ignored and there is a risk the generated requirements.txt will be different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 22:34</div>
+            <div class="timeline-body"><blockquote>
+<p>In this case is my uv.lock ignored and there is a risk the generated requirements.txt will be different?</p>
+</blockquote>
+<p>Yeah, the <code>uv pip</code> interface never touches the lockfile. You <em>can</em> use the <code>uv pip</code> workflow if you want, but you lose the benefits of the unified <code>uv sync</code>, <code>uv lock</code>, <code>uv run</code> APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-29 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6989.html">astral-sh/uv#6989</a> on 2024-09-04 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/C-Loftus">@C-Loftus</a> on 2024-12-16 15:31</div>
+            <div class="timeline-body"><p>Curious if anyone has tips / tools they like to keep requirements.txt in sync with uv.lock so you get the benefits of uv while still being easy to use for code reviewers. Even though I know it is recommended to just use uv, I develop libraries where it is easier to team members to quickly use pip and might not be familiar with uv.</p>
+<p>I am just using a simple github action but wasnt sure if there is a better way.</p>
+<pre><code class="language-yml">name: Validate Requirements
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - &quot;pyproject.toml&quot;  # Trigger on changes to pyproject.toml
+      - &quot;requirements.txt&quot;
+  pull_request:
+    paths:
+      - &quot;pyproject.toml&quot;  # Trigger on changes to pyproject.toml
+      - &quot;requirements.txt&quot;
+
+jobs:
+  validate-requirements:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: &quot;Set up Python&quot;
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: &quot;.python-version&quot;
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+        
+      - name: Generate new requirements.txt
+        run: |
+          uv export --format requirements-txt &gt; new_requirements.txt
+
+      - name: Compare requirements.txt
+        run: |
+          if ! diff -q new_requirements.txt requirements.txt; then
+            echo &quot;requirements.txt is out of sync with the project configuration:&quot;
+            diff -u requirements.txt new_requirements.txt
+            exit 1
+          fi
+        shell: bash
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-16 19:44</div>
+            <div class="timeline-body"><p>There's also support in the uv-pre-commit project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2025-01-21 11:01</div>
+            <div class="timeline-body"><p>@C-Loftus,</p>
+<blockquote>
+<pre><code class="language-yaml">name: Validate Requirements
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - &quot;pyproject.toml&quot;  # Trigger on changes to pyproject.toml
+      - &quot;requirements.txt&quot;
+  pull_request:
+    paths:
+      - &quot;pyproject.toml&quot;  # Trigger on changes to pyproject.toml
+      - &quot;requirements.txt&quot;
+</code></pre>
+</blockquote>
+<p>Shouldn't you also validate on changes to <code>uv.lock</code>? It's possible to do a dependency package update without touching <code>pyproject.toml</code>, after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../juliancoffee/django-blog/pulls/46.html">juliancoffee/django-blog#46</a> on 2025-01-31 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../juliancoffee/django-blog/issues/50.html">juliancoffee/django-blog#50</a> on 2025-02-09 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/simonprovost">@simonprovost</a> on 2025-04-11 01:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Curious if anyone has tips / tools they like to keep requirements.txt in sync with uv.lock so you get the benefits of uv while still being easy to use for code reviewers. Even though I know it is recommended to just use uv, I develop libraries where it is easier to team members to quickly use pip and might not be familiar with uv.</p>
+<p>I am just using a simple github action but wasnt sure if there is a better way.</p>
+<p>name: Validate Requirements</p>
+<p>on:
+workflow_dispatch:
+push:
+paths:
+- &quot;pyproject.toml&quot;  # Trigger on changes to pyproject.toml
+- &quot;requirements.txt&quot;
+pull_request:
+paths:
+- &quot;pyproject.toml&quot;  # Trigger on changes to pyproject.toml
+- &quot;requirements.txt&quot;</p>
+<p>jobs:
+validate-requirements:
+runs-on: ubuntu-latest</p>
+<pre><code>steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+
+  - name: Install uv
+    uses: astral-sh/setup-uv@v4
+
+  - name: &quot;Set up Python&quot;
+    uses: actions/setup-python@v5
+    with:
+      python-version-file: &quot;.python-version&quot;
+
+  - name: Install the project
+    run: uv sync --all-extras --dev
+    
+  - name: Generate new requirements.txt
+    run: |
+      uv export --format requirements-txt &gt; new_requirements.txt
+
+  - name: Compare requirements.txt
+    run: |
+      if ! diff -q new_requirements.txt requirements.txt; then
+        echo &quot;requirements.txt is out of sync with the project configuration:&quot;
+        diff -u requirements.txt new_requirements.txt
+        exit 1
+      fi
+    shell: bash</code></pre>
+</blockquote>
+<p>Are you sure that this is not outdated now? @C-Loftus</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codejoey">@codejoey</a> on 2025-05-26 00:17</div>
+            <div class="timeline-body"><p><code>uv export --no-emit-workspace --no-dev --no-annotate --no-header --no-hashes --output-file requirements.txt</code>
+thanks for the implement, this worked for me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilovefreesw">@ilovefreesw</a> on 2025-07-03 07:58</div>
+            <div class="timeline-body"><pre><code>(talitrain) root@aa0d5ec39dd8:~/talitrain# uv export --no-emit-workspace --no-dev --no-annotate --no-header --no-hashes --output-file requirements.txt
+error: unexpected argument '--no-annotate' found
+
+Usage: uv export --no-emit-workspace --no-dev
+
+For more information, try '--help'.
+</code></pre>
+<p>I am sticking with: <code>uv pip freeze &gt; requirements.txt</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vesnikos">@vesnikos</a> on 2025-09-19 09:51</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>(talitrain) root@aa0d5ec39dd8:~/talitrain# uv export --no-emit-workspace --no-dev --no-annotate --no-header --no-hashes --output-file requirements.txt
+error: unexpected argument '--no-annotate' found
+
+Usage: uv export --no-emit-workspace --no-dev
+
+For more information, try '--help'.
+</code></pre>
+<p>I am sticking with: <code>uv pip freeze &gt; requirements.txt</code></p>
+</blockquote>
+<p>your uv version might be outdated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hbelmiro">@hbelmiro</a> on 2025-12-06 00:11</div>
+            <div class="timeline-body"><p>I built a GitHub Action that specifically validates if your requirements.txt is in sync with pyproject.toml so you don't deploy stale dependencies.</p>
+<p>https://github.com/hbelmiro/uv-lock-check</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

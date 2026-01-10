@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clap_derive ignores the value_delimiter - clap-rs/clap #2760</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>clap_derive ignores the value_delimiter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2760">#2760</a>
+        opened by <a href="https://github.com/ufoscout">@ufoscout</a>
+        on 2021-09-09 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ufoscout">@ufoscout</a> on 2021-09-09 10:30</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.54.0 (a178d0322 2021-07-26)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#[derive(Clap)]
+pub struct Config {
+   #[clap(
+        long,
+        default_value = &quot;first;second&quot;,
+        value_delimiter = ';'
+    )]
+    pub values: Vec&lt;String&gt;,
+
+}
+
+#[test]
+fn should_split_values() {
+    let args: Vec&lt;std::ffi::OsString&gt; = vec![];
+    let config = Config::parse_from(args);
+    assert_eq!(vec![&quot;first&quot;.to_owned(), &quot;second&quot;.to_owned()], config.values);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Execute the <code>should_split_values()</code> test</p>
+<h3>Actual Behaviour</h3>
+<p>The test fails because the <code>default_value</code> was not split using the provided <code>value_delimiter</code>.
+This is the test error:</p>
+<pre><code>'should_split_values' panicked at 'assertion failed: `(left == right)`
+  left: `[&quot;first&quot;, &quot;second&quot;]`,
+ right: `[&quot;first;second&quot;]`',
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>The test should pass and the <code>Config.values</code> field should contain the two values <code>&quot;first&quot;</code> and <code> &quot;second&quot;</code></p>
+<h3>Additional Context</h3>
+<p>This code works as expected with structopt 0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @ufoscout on 2021-09-09 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-09-09 14:16</div>
+            <div class="timeline-body"><p>Looks like this is specifically with handling of defaults, regardless of which API is used</p>
+<pre><code class="language-rust">use clap::{App, Arg, Clap};
+
+#[derive(Clap)]
+pub struct Config {
+    #[clap(long, default_value = &quot;first;second&quot;, value_delimiter = ';')]
+    pub values: Vec&lt;String&gt;,
+}
+
+#[test]
+fn should_split_default() {
+    let args: Vec&lt;std::ffi::OsString&gt; = vec![&quot;&quot;.into()];
+    let config = Config::parse_from(args);
+    assert_eq!(vec![&quot;first&quot;.to_owned(), &quot;second&quot;.to_owned()], config.values);
+}
+
+#[test]
+fn should_split_args() {
+    let args: Vec&lt;std::ffi::OsString&gt; = vec![&quot;&quot;.into(), &quot;--values=two;three&quot;.into()];
+    let config = Config::parse_from(args);
+    assert_eq!(vec![&quot;two&quot;.to_owned(), &quot;three&quot;.to_owned()], config.values);
+}
+
+#[test]
+fn builder_should_split_default() {
+    let m = App::new(&quot;multiple_values&quot;)
+        .arg(
+            Arg::new(&quot;option&quot;)
+                .long(&quot;option&quot;)
+                .about(&quot;multiple options&quot;)
+                .value_delimiter(';')
+                .default_value(&quot;first;second&quot;),
+        )
+        .try_get_matches_from(vec![&quot;&quot;]);
+
+    assert!(m.is_ok());
+    let m = m.unwrap();
+
+    assert_eq!(
+        m.values_of(&quot;option&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;(),
+        [&quot;first&quot;, &quot;second&quot;]
+    );
+}
+
+#[test]
+fn builder_should_split_args() {
+    let m = App::new(&quot;multiple_values&quot;)
+        .arg(
+            Arg::new(&quot;option&quot;)
+                .long(&quot;option&quot;)
+                .about(&quot;multiple options&quot;)
+                .value_delimiter(';')
+                .default_value(&quot;first;second&quot;),
+        )
+        .try_get_matches_from(vec![&quot;&quot;, &quot;--option=two;three&quot;]);
+
+    assert!(m.is_ok());
+    let m = m.unwrap();
+
+    assert_eq!(
+        m.values_of(&quot;option&quot;).unwrap().collect::&lt;Vec&lt;_&gt;&gt;(),
+        [&quot;two&quot;, &quot;three&quot;]
+    );
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-09-09 14:16</div>
+            <div class="timeline-body"><pre><code>running 4 tests
+test builder_should_split_args ... ok
+test should_split_args ... ok
+test should_split_default ... FAILED
+test builder_should_split_default ... FAILED
+
+failures:
+
+---- should_split_default stdout ----
+thread 'should_split_default' panicked at 'assertion failed: `(left == right)`
+  left: `[&quot;first&quot;, &quot;second&quot;]`,
+ right: `[&quot;first;second&quot;]`', tests/repo.rs:13:5
+
+---- builder_should_split_default stdout ----
+thread 'builder_should_split_default' panicked at 'assertion failed: `(left == right)`
+  left: `[&quot;first;second&quot;]`,
+ right: `[&quot;first&quot;, &quot;second&quot;]`', tests/repo.rs:38:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @pksunkara on 2021-09-18 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2021-09-18 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @pksunkara on 2021-09-18 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2775.html">clap-rs/clap#2775</a> on 2021-09-18 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-09-18 23:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:36 UTC
+    </footer>
+</body>
+</html>

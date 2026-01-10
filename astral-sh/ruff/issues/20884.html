@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff ruleset D ignores protected python files. - astral-sh/ruff #20884</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff ruleset D ignores protected python files.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20884">#20884</a>
+        opened by <a href="https://github.com/Jtachan">@Jtachan</a>
+        on 2025-10-15 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jtachan">@Jtachan</a> on 2025-10-15 07:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><strong>Summary</strong>
+The command <code>ruff check</code> seems to ignore all D rules at protected python modules as <code>_my_module.py</code>.
+I have not been able to find within the documentation any rule that specifies that this is a feature, so I assume it is a bug.</p>
+<p><strong>Requested solution</strong>
+Add a new parameter for pydocstyle: <code>ignore-protected-modules = false</code> allowing any user of ruff to decide whether to ignore the D rules at protected modules.</p>
+<p><strong>Complete description</strong>
+I realized that I had a protected module with a method without a docstring, and ruff was not printing any warning.</p>
+<p>The <strong>playground</strong> does not reproduce the issue, but I was able to reproduce it with the following file:</p>
+<pre><code class="language-python"># my_class.py
+
+class MyClass:
+    def __init__(self, data: float):
+        self.data = [data]
+
+    def add_new_data(self, value):  # Missing type of 'value' on purpose to get always some lint warning
+        self.data.append(value)
+</code></pre>
+<p>Here the linter printed the following warnings:</p>
+<pre><code>my_class.py:1:1: D100 Missing docstring in public module
+my_class.py:2:7: D101 Missing docstring in public class
+my_class.py:6:9: D102 Missing docstring in public method
+my_class.py:6:28: ANN001 Missing type annotation for function argument `value`
+Found 4 errors.
+</code></pre>
+<p>However, when the module is renamed to <code>_my_class.py</code>, only the following messages are printed:</p>
+<pre><code>_my_class.py:6:28: ANN001 Missing type annotation for function argument `value`
+Found 1 error.
+</code></pre>
+<p><strong>ruff.toml</strong></p>
+<pre><code>output-format = &quot;concise&quot;
+
+[lint]
+select = [
+    &quot;A&quot;,    # flake8-builtins
+    &quot;ANN&quot;,  # flake8-annotations
+    &quot;ARG&quot;,  # flake8-unused-arguments
+    &quot;B&quot;,    # flake8-bugbear
+    &quot;BLE&quot;,  # flake8-blind-except
+    &quot;C4&quot;,   # flake8-comprehensions
+    &quot;D&quot;,    # pydocstyle
+    &quot;E&quot;,    # pycodestyle error
+    &quot;F&quot;,    # Pyflakes
+    &quot;FA&quot;,   # flake8-future-annotations
+    &quot;I&quot;,    # isort
+    &quot;ICN&quot;,  # flake8-import-conventions
+    &quot;ISC&quot;,  # flake8-implicit-str-concat
+    &quot;N&quot;,    # pep8-naming
+    &quot;NPY&quot;,  # NumPy-specific rules
+    &quot;PD&quot;,   # pandas-vet
+    &quot;PIE&quot;,  # flake8-pie
+    &quot;PL&quot;,   # pylint
+    &quot;PT&quot;,   # flakeru8-pytest
+    &quot;RET&quot;,  # flake8-return
+    &quot;RUF&quot;,  # Ruff-specific rules
+    &quot;SIM&quot;,  # flake8-simplify
+    &quot;TC&quot;,   # flake8-type-checking
+    &quot;W&quot;,    # pycodestyle warning
+]
+ignore = [
+    &quot;ANN002&quot;,   # missing type for *args
+    &quot;ANN003&quot;,   # missing type for **kwargs
+    &quot;D401&quot;,     # first line in docstring as imperative mood
+    &quot;PLR6301&quot;,  # no-self-use
+    &quot;PLR0913&quot;,  # too-many-arguments
+    &quot;PLR0904&quot;,  # too-many-public-methods
+    &quot;PLR0916&quot;,  # too-many-boolean-expressions
+    &quot;PLR0912&quot;,  # too-many-branches
+    &quot;PLR0904&quot;,  # too-many-public-methods
+    &quot;PLR0911&quot;,  # too-many-return-statements
+    &quot;PLR0914&quot;,  # too-many-local-variables
+    &quot;PLR0915&quot;,  # too-many-statements
+    &quot;PLR0917&quot;,  # too-many-positional-arguments
+    &quot;PLC1901&quot;,  # compare-to-empty-string
+    &quot;PLR2004&quot;,  # magic-value-comparison
+]
+preview = true
+
+[lint.flake8-annotations]
+allow-star-arg-any = true
+mypy-init-return = true
+suppress-none-returning = true
+
+[lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[lint.isort]
+split-on-trailing-comma=false
+
+[lint.pycodestyle]
+ignore-overlong-task-comments = true
+</code></pre>
+<h3>Version</h3>
+<p>0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-16 13:37</div>
+            <div class="timeline-body"><p>It looks like this is a duplicate of https://github.com/astral-sh/ruff/issues/9946, but I think it makes sense to have a configuration option here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-16 13:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

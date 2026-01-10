@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unit test / pytest slow down exponentially after migrating from poetry to uv - astral-sh/uv #9765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unit test / pytest slow down exponentially after migrating from poetry to uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9765">#9765</a>
+        opened by <a href="https://github.com/parfaire">@parfaire</a>
+        on 2024-12-10 07:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/parfaire">@parfaire</a> on 2024-12-10 07:23</div>
+            <div class="timeline-body"><p>hi first of all would like to thank everyone hardwork to build an amazing uv package manager.</p>
+<p>I have one project's build that significantly increased after migrating, however for some unknown reasons, the tests (<code>TESTING=pytest pytest -x -vv --cov=./src</code>) are in the opposite. Here is what I am experiencing:</p>
+<h2>in Local Environment</h2>
+<pre><code>Poetry (build: 2 mins, tests: ~1.5 mins)
+UV: (build: 1 mins, tests: ~1.5 mins)
+</code></pre>
+<h2>in Github Actions (!!where the issues are!!)</h2>
+<pre><code>Poetry (build: 4 mins, tests: ~4 mins)
+UV: (build: 3 mins, tests: ~15 mins)
+</code></pre>
+<h1>Here is the snippets of my pyproject:</h1>
+<h2>Poetry</h2>
+<pre><code>[tool.poetry.dependencies]
+python = &quot;^3.13.0&quot;
+uvicorn = &quot;&gt;=0.27.0&quot;
+gunicorn = &quot;^21.2.0&quot;
+sqlalchemy = &quot;^1.4.51&quot;
+fastapi = &quot;&gt;=0.109.2&quot;
+mysqlclient = &quot;&gt;=2.2.3&quot;
+
+jsql = &quot;&gt;=0.7&quot;
+py-spy = &quot;&gt;=0.3.11&quot;
+pylint = &quot;&gt;=2.7.1&quot;
+toml = &quot;&gt;=0.10.0&quot;
+requests = &quot;&gt;=2.31.0&quot;
+sentry-sdk = &quot;&gt;=1.31.0&quot;
+boltons = &quot;&gt;=23.0.0&quot;
+mysql-connector-python = &quot;&gt;=8.0.26&quot;
+google-cloud-logging = &quot;&gt;=3.5.0&quot;
+opentelemetry-instrumentation-fastapi = &quot;&gt;=0.26b1&quot;
+opentelemetry-sdk = &quot;&gt;=1.7.1&quot;
+opentelemetry-instrumentation-requests = &quot;&gt;=0.26b1&quot;
+opentelemetry-instrumentation-sqlalchemy = &quot;&gt;=0.26b1&quot;
+google-cloud-secret-manager = &quot;&gt;=2.15.1&quot;
+python-json-logger = &quot;&gt;=2.0.2&quot;
+google-cloud-storage = &quot;&gt;=2.4.0&quot;
+google-cloud-core = &quot;&gt;=2.3.2&quot;
+google-api-core = &quot;&gt;=2.11.0&quot;
+pytest-cov = &quot;&gt;=4.0.0&quot;
+redis = &quot;&gt;=3.5.3&quot;
+google-cloud-bigquery = &quot;&gt;=3.11.4&quot;
+jinja2 = &quot;&gt;=2.11.3&quot;
+markupsafe = &quot;&gt;=2.0.1&quot;
+httpx = &quot;&gt;=0.25.0&quot;
+querystring-parser = &quot;&gt;=1.2.4&quot;
+transitions = &quot;&gt;=0.9.0&quot;
+python-multipart = &quot;&gt;=0.0.6&quot;
+retrying = &quot;&gt;=1.3.4&quot;
+google-cloud-pubsub = &quot;&gt;=2.18.4&quot;
+xlsxwriter = &quot;&gt;=3.1.9&quot;
+pandas = &quot;&gt;=2.1.2&quot;
+openpyxl = &quot;&gt;=3.1.2&quot;
+alembic = &quot;&gt;=1.12.1&quot;
+google-cloud-tasks = &quot;&gt;=2.14.2&quot;
+google-cloud-spanner = &quot;&gt;=3.41.0&quot;
+sqlalchemy-spanner = &quot;&gt;=1.6.2&quot;
+pre-commit = &quot;&gt;=2.19.0&quot;
+sqlalchemy-views = &quot;&gt;=0.3.2&quot;
+temporalio = &quot;1.1.0&quot;
+pytest-asyncio = &quot;&gt;=0.20.3&quot;
+openpyxl-image-loader = &quot;&gt;=1.0.5&quot;
+pillow = &quot;&gt;=10.3.0&quot;
+mo-sql-parsing = &quot;&gt;=10.646.24152&quot;
+google-cloud-monitoring = &quot;&gt;=2.21.0&quot;
+genbadge = &quot;&gt;=1.1.1&quot;
+coverage = &quot;&gt;=7.4.3&quot;
+defusedxml = &quot;^0.7.1&quot;
+google-cloud-bigquery-storage = &quot;&gt;=2.25.0&quot;
+protobuf = &quot;4.23.3&quot;
+retry = &quot;&gt;=0.9.2&quot;
+nltk = &quot;&gt;=3.9.1&quot;
+</code></pre>
+<h2>UV</h2>
+<pre><code>[project]
+dependencies = [
+    &quot;uvicorn&gt;=0.27.0&quot;,
+    &quot;gunicorn&lt;22.0.0,&gt;=21.2.0&quot;,
+    &quot;sqlalchemy&lt;2.0.0,&gt;=1.4.51&quot;,
+    &quot;fastapi&gt;=0.109.2&quot;,
+    &quot;mysqlclient&gt;=2.2.3&quot;,
+    &quot;jsql&gt;=0.7&quot;,
+    &quot;py-spy&gt;=0.3.11&quot;,
+    &quot;pylint&gt;=2.7.1&quot;,
+    &quot;toml&gt;=0.10.0&quot;,
+    &quot;requests&gt;=2.31.0&quot;,
+    &quot;sentry-sdk&gt;=1.31.0&quot;,
+    &quot;boltons&gt;=23.0.0&quot;,
+    &quot;mysql-connector-python&gt;=8.0.26&quot;,
+    &quot;google-cloud-logging&gt;=3.5.0&quot;,
+    &quot;opentelemetry-instrumentation-fastapi&gt;=0.26b1&quot;,
+    &quot;opentelemetry-sdk&gt;=1.7.1&quot;,
+    &quot;opentelemetry-instrumentation-requests&gt;=0.26b1&quot;,
+    &quot;opentelemetry-instrumentation-sqlalchemy&gt;=0.26b1&quot;,
+    &quot;google-cloud-secret-manager&gt;=2.15.1&quot;,
+    &quot;python-json-logger&gt;=2.0.2&quot;,
+    &quot;google-cloud-storage&gt;=2.4.0&quot;,
+    &quot;google-cloud-core&gt;=2.3.2&quot;,
+    &quot;google-api-core&gt;=2.11.0&quot;,
+    &quot;pytest-cov&gt;=4.0.0&quot;,
+    &quot;redis&gt;=3.5.3&quot;,
+    &quot;google-cloud-bigquery&gt;=3.11.4&quot;,
+    &quot;jinja2&gt;=2.11.3&quot;,
+    &quot;markupsafe&gt;=2.0.1&quot;,
+    &quot;httpx&gt;=0.25.0&quot;,
+    &quot;querystring-parser&gt;=1.2.4&quot;,
+    &quot;transitions&gt;=0.9.0&quot;,
+    &quot;python-multipart&gt;=0.0.6&quot;,
+    &quot;retrying&gt;=1.3.4&quot;,
+    &quot;google-cloud-pubsub&gt;=2.18.4&quot;,
+    &quot;xlsxwriter&gt;=3.1.9&quot;,
+    &quot;pandas&gt;=2.1.2&quot;,
+    &quot;openpyxl&gt;=3.1.2&quot;,
+    &quot;alembic&gt;=1.12.1&quot;,
+    &quot;google-cloud-tasks&gt;=2.14.2&quot;,
+    &quot;google-cloud-spanner&gt;=3.41.0&quot;,
+    &quot;sqlalchemy-spanner&gt;=1.6.2&quot;,
+    &quot;pre-commit&gt;=2.19.0&quot;,
+    &quot;sqlalchemy-views&gt;=0.3.2&quot;,
+    &quot;temporalio==1.1.0&quot;,
+    &quot;pytest-asyncio&gt;=0.20.3&quot;,
+    &quot;openpyxl-image-loader&gt;=1.0.5&quot;,
+    &quot;pillow&gt;=10.3.0&quot;,
+    &quot;mo-sql-parsing&gt;=10.646.24152&quot;,
+    &quot;google-cloud-monitoring&gt;=2.21.0&quot;,
+    &quot;genbadge&gt;=1.1.1&quot;,
+    &quot;coverage&gt;=7.4.3&quot;,
+    &quot;defusedxml&lt;1.0.0,&gt;=0.7.1&quot;,
+    &quot;google-cloud-bigquery-storage&gt;=2.25.0&quot;,
+    &quot;protobuf==4.23.3&quot;,
+    &quot;retry&gt;=0.9.2&quot;,
+    &quot;nltk&gt;=3.9.1&quot;,
+]
+</code></pre>
+<p>which if i go line by line they are all the same</p>
+<h2>Dockerfile</h2>
+<pre><code>FROM python:3.13.0
+
+WORKDIR /src
+EXPOSE 8080
+
+RUN apt-get update &amp;&amp; apt-get install -y curl make jq &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install uv==0.5.4
+COPY uv.lock /src/
+COPY pyproject.toml /src/
+RUN uv sync
+
+COPY . /src
+RUN chmod +x /src/bin/run.sh
+ENV PYTHONPATH=&quot;${PYTHONPATH}:/src/src&quot;
+ENV PATH=&quot;/src/.venv/bin:${PATH}&quot;
+CMD [&quot;/src/bin/run.sh&quot;]
+</code></pre>
+<p>I have tried to debug and change a few things but im afraid nothing ive done so far makes any improvement, so I hope someone can help/advise 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TurtleOrangina">@TurtleOrangina</a> on 2024-12-10 09:02</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>to me it does not make sense that the execution of the tests would take much longer depending on the package manager used. Once the virtual environment is built, there should be nothing that either poetry or uv have to do with the execution of the tests.</p>
+<p>Can you create a minimal reproducible example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-10 09:35</div>
+            <div class="timeline-body"><p>Poetry and uv resolve the same dependency versions, so it's not about that. Could it be that the github actions workflow has another difference, e.g. the uv version uses a different python version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2024-12-10 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/parfaire">@parfaire</a> on 2024-12-10 11:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi,</p>
+<p>to me it does not make sense that the execution of the tests would take much longer depending on the package manager used. Once the virtual environment is built, there should be nothing that either poetry or uv have to do with the execution of the tests.</p>
+<p>Can you create a minimal reproducible example?</p>
+</blockquote>
+<p>I am afraid I can't even reproduce this in my local for the exact same code and command, slow-down only happens on github action job</p>
+<blockquote>
+<p>Poetry and uv resolve the same dependency versions, so it's not about that. Could it be that the github actions workflow has another difference, e.g. the uv version uses a different python version?</p>
+</blockquote>
+<p>Yes, I believe so. There is something that github action does it differently. as for python version, pytest does output the lib version before it starts testing and both are consistent between poetry and uv, however I just noticed they use different binary
+<code>platform linux -- Python 3.13.0, pytest-8.3.3, pluggy-1.5.0 -- /src/.venv/bin/python</code> # uv
+<code>platform linux -- Python 3.13.0, pytest-8.3.3, pluggy-1.5.0 -- /usr/local/bin/python3.13</code> # poetry
+but again even in my local the binaries used are also different and it yields the same durations</p>
+<p>I am not sure what other information I could share in order to help debugging this, please let me know I am happy to provide</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 14:26</div>
+            <div class="timeline-body"><p>Are you using this Docker image in CI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/parfaire">@parfaire</a> on 2024-12-10 16:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you using this Docker image in CI?</p>
+</blockquote>
+<p>yes I am</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TurtleOrangina">@TurtleOrangina</a> on 2024-12-11 07:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I am afraid I can't even reproduce this in my local for the exact same code and command, slow-down only happens on github action job</p>
+</blockquote>
+<p>That would be fine, create a minimal example that reproduces the issue on github actions. A minimal repo that I can clone and run the github actions to see the issue. I know creating minimal examples is a lot of work, but I don't see a way of us &quot;guessing&quot; what this issue is without more concrete information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/parfaire">@parfaire</a> on 2025-07-24 08:25</div>
+            <div class="timeline-body"><p>Hey let me try to create something with this, however, just a quick update:</p>
+<p>I can get around it with using <code>requirements.txt</code> instead of <code>pyproject.toml</code> which is unideal because I can't use the command like <code>uv add</code> conveniently, but it does make the tests run normally</p>
+<pre><code>....
+COPY requirements.txt ./
+RUN uv pip install --system -r requirements.txt
+</code></pre>
+<p>instead of</p>
+<pre><code>...
+COPY uv.lock pyproject.toml ./
+RUN uv sync
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:47 UTC
+    </footer>
+</body>
+</html>

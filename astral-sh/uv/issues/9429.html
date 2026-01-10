@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv suffers dependency confusion if user forgets to put username:password on internal index url - astral-sh/uv #9429</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv suffers dependency confusion if user forgets to put username:password on internal index url</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9429">#9429</a>
+        opened by <a href="https://github.com/dhandy2013">@dhandy2013</a>
+        on 2024-11-25 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhandy2013">@dhandy2013</a> on 2024-11-25 21:42</div>
+            <div class="timeline-body"><p>I accidentally triggered a dependency confusion vulnerability in uv just by forgetting to add credentials to our company's internal package index URL.</p>
+<p>Steps to reproduce:</p>
+<ul>
+<li>Run an internal Python package index that requires basic HTTP auth to connect</li>
+<li>Put a package on this internal package index named <code>example-component</code> (seriously, this is what I named it, I was testing!)</li>
+<li>Run these commands:</li>
+</ul>
+<pre><code class="language-bash">$ uv venv scratchenv
+Using CPython 3.11.10
+Creating virtual environment at: scratchenv
+Activate with: source scratchenv/bin/activate
+$ uv pip install --python=scratchenv --index=https://internal.example.com/repository/production/simple example-component
+Using Python 3.11.10 environment at scratchenv
+Resolved 1 package in 870ms
+Installed 1 package in 1ms
+ + example-component==0.0.1
+$ uv pip list --python=scratchenv
+Using Python 3.11.10 environment at scratchenv
+Package           Version
+----------------- -------
+example-component 0.0.1
+</code></pre>
+<p>Expected result:</p>
+<p>Either <code>example-component</code> is installed from my internal Python package index, or else I get some kind of error message if something was wrong with the package index URL.</p>
+<p>Actual result:</p>
+<p>As you can see from the command output above, <code>uv</code> silently and happily ignored my internal package index URL, gave no warning, and installs <a href="https://pypi.org/project/example-component/">example-component from pypi</a>! The only reason I knew something was wrong is that <code>uv pip list</code> reported an unexpected version number.</p>
+<p>Something was very wrong with my internal package index URL: It was missing the required credentials. So <code>uv</code> just silently ignored the error and went on to the default index URL, causing dependency confusion.</p>
+<p>(Fortunately the example-component from pypi.org does not seem to be any kind of malware.)</p>
+<p>It seems from the uv docs about <a href="https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes">Packages that exist on multiple indexes</a> that uv prides itself on being better than pip at avoiding dependency confusion. So I thought you would want to hear about this case where uv is easily vulnerable to it.</p>
+<p>Operating system: Ubuntu 24.04</p>
+<pre><code class="language-bash">$ uv version
+uv 0.5.4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 21:46</div>
+            <div class="timeline-body"><p>Thanks. I'm not certain what we should change here if anything. Are you for <code>--default-index=</code> rather than <code>--index=</code>? <code>--index=</code> allows fallback to PyPI, <em>if</em> a package isn't found on a preceding index (in other words, it prevents dependency confusion attacks by disallowing packages to shadow packages on other indexes).</p>
+<p>I don't know if there's actually anything we can do about erroring if we fail to connect to your index, because indexes in general are so bad and so inconsistent in how they handle these cases. Some indexes return 403 when you provide valid credentials but request a non-existent package; some indexes return 404 when you provide invalid credentials. No matter what we do, we'll break something. We do show a dedicated hint if we fail to resolve and see (e.g.) a 403. I guess we could consider showing that warning even if the installation completes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-11-25 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 21:51</div>
+            <div class="timeline-body"><p>We should probably <em>at least</em> warn when we fail to connect to an index. We may want to special-case the indexes that we <em>know</em> return 403 consistently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhandy2013">@dhandy2013</a> on 2024-11-25 21:56</div>
+            <div class="timeline-body"><p>A warning would be helpful. Something in the docs to warn users would also be helpful.</p>
+<p>Speaking of the docs, I really hate putting credentials in the package index URL. I would much rather put them in environment variables. I saw the docs for <a href="https://docs.astral.sh/uv/configuration/environment/#uv_index_name_password">UV_INDEX_{name}_PASSWORD</a> and was wondering how on earth to set the name of an index given on the command line, given that configuring the index in a pyproject.toml file wasn't going to work for me.</p>
+<p>So I searched the source code (Thanks for writing <code>uv</code> in Rust!) and found in crates/uv-distribution-types/src/index.rs the implementation for <code>Index::from_str</code> that apparently lets you put <code>name=</code> in front of an index URL on the command line! I'm going to try this out right now. If this works, then I humbly request that you please document this feature!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 21:57</div>
+            <div class="timeline-body"><p>I documented it here recently: https://docs.astral.sh/uv/configuration/indexes/#defining-an-index. Take a look at &quot;When providing an index on the command line...&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhandy2013">@dhandy2013</a> on 2024-11-25 22:00</div>
+            <div class="timeline-body"><p>Thank you. The docs are good, I don't know why I missed that. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-11-26 19:58</div>
+            <div class="timeline-body"><p>What happens when a user configures
+<code>UV_DEFAULT_INDEX</code> to a PyPI mirror URL that does not contain credentials?</p>
+<p><code>UV_INDEX_INTERNAL_PROXY_USERNAME</code> and <code>UV_INDEX_INTERNAL_PROXY_PASSWORD</code> do not appear to work with the default index.</p>
+<p>Should the variables <code>UV_INDEX_DEFAULT_USERNAME</code> and <code>UV_INDEX_DEFAULT_PASSWORD</code> apply to the default index? Or should they be <code>UV_DEFAULT_INDEX_USERNAME</code> and <code>UV_DEFAULT_INDEX_PASSWORD</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhandy2013">@dhandy2013</a> on 2024-11-26 23:00</div>
+            <div class="timeline-body"><p>Answering this previous question from @charliermarsh :</p>
+<blockquote>
+<p>Are you for --default-index= rather than --index=? --index= allows fallback to PyPI, if a package isn't found on a preceding index</p>
+</blockquote>
+<p>In my case I wanted <code>example-component</code> to come from my internal package index, but its dependencies to come from PyPI. That's why I used <code>--index</code> rather than <code>--default-index</code> to point to the internal package index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12805.html">astral-sh/uv#12805</a> on 2025-04-10 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-11 08:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-29 21:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:38 UTC
+    </footer>
+</body>
+</html>

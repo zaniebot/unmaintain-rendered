@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed up cache size command - astral-sh/uv #17015</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Speed up cache size command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17015">#17015</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-12-06 14:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-12-06 14:20</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p><code>uv cache size</code> can be quite slow. Here i use https://github.com/sharkdp/diskus to walk the cache directory with in multiple threads.</p>
+<p>Add cli option to set the number of threads and default to <code> std::thread::available_parallelism()</code> or 1.</p>
+<h2>Test Plan</h2>
+<p>Added cli statement with info log test.</p>
+<p>I believe this is a fair test, where i set cache dir to a large directory.</p>
+<pre><code class="language-bash">matthew@matthew-main ~/develop/personal/uv                                                                                                                                                                                                                 [14:17:50]                                                                                                                                                                                                                                       [±cache-size-speed-up ✓▴]
+&gt; $ uv cache size --preview-features cache-size -H --cache-dir ~/develop/                                                                                                                                                                   [±cache-size-speed-up ✓▴]
+75.7GiB
+
+matthew@matthew-main ~/develop/personal/uv                                                                                                                                                                                                                 [14:18:24]
+&gt; $ hyperfine 'uv cache size --preview-features cache-size -H --cache-dir ~/develop/' 'target/debug/uv cache size --preview-features cache-size -H --cache-dir ~/develop/'                                                                  [±cache-size-speed-up ✓▴]
+Benchmark 1: uv cache size --preview-features cache-size -H --cache-dir ~/develop/
+  Time (mean ± σ):      1.059 s ±  0.014 s    [User: 0.171 s, System: 0.884 s]
+  Range (min … max):    1.048 s …  1.097 s    10 runs
+
+Benchmark 2: target/debug/uv cache size --preview-features cache-size -H --cache-dir ~/develop/
+  Time (mean ± σ):     413.8 ms ±  17.1 ms    [User: 5789.2 ms, System: 1682.0 ms]
+  Range (min … max):   386.3 ms … 441.6 ms    10 runs
+
+Summary
+  target/debug/uv cache size --preview-features cache-size -H --cache-dir ~/develop/ ran
+    2.56 ± 0.11 times faster than uv cache size --preview-features cache-size -H --cache-dir ~/develop/  
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-06 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:206 on 2025-12-06 14:22</div>
+            <div class="timeline-body"><p>We can't add Git dependencies, it'll break our crates.io publish</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-12-06 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>Cargo.toml</code>:206 on 2025-12-06 14:22</div>
+            <div class="timeline-body"><p>Ah, okay, happy for me to copy most of David's code over then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MatthewMckee4 on 2025-12-06 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-06 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:206 on 2025-12-06 14:25</div>
+            <div class="timeline-body"><p>I'm not sure yet.</p>
+<p>@sharkdp are you interested in publishing the crate? Do you think we should just vendor the parts we need?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-12-06 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:206 on 2025-12-06 14:35</div>
+            <div class="timeline-body"><p>I think we should just vendor any speed-ups because this is pulling in a bunch of new dependencies (e.g., a second version of Clap).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-12-06 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-07 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>Cargo.toml</code>:206 on 2025-12-07 00:01</div>
+            <div class="timeline-body"><p>I <a href="https://github.com/sharkdp/diskus/releases/tag/v0.9.0">updated diskus</a> today (it has always been published on crates.io, so no need for Git dependencies). You should now be able to pull it in as a relatively lightweight dependency using <code>default-features = false</code>. I also made an update specifically for counting <em>apparent file size</em> (which is what uv did here before: sum up <code>metadata.len()</code>), to make that more consistent with what <code>du -sb</code> does (exclude the size of directory entries themselves). I also cleaned up the diskus API a bit. If you want to depend on it here, the code should be something like:</p>
+<pre><code class="language-rs">let result = DiskUsage::new(&amp;[cache.root()]).apparent_size().count();
+let total_bytes = result.ignore_errors().size_in_bytes();
+</code></pre>
+<p>(or leave out the call to <code>.apparent_size()</code> if you'd rather want to count disk usage).</p>
+<p>Note that diskus uses <a href="https://github.com/sharkdp/diskus/blob/9f33dfce45d5a819ab314f3c4bd586d27be7ae24/src/walk.rs#L162-L175">a heuristic for the default number of workers</a> which should ideally not be overwritten for the best possible performance (at least according to <a href="https://github.com/sharkdp/diskus/issues/38#issuecomment-612772867">benchmarks</a> I did years ago).</p>
+<p>I am also completely fine with uv vendoring diskus. It's not a lot of code. In that case, you should potentially make those two updates mentioned above, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-12-08 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/cache_size.rs</code>:41 on 2025-12-08 04:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let disk_usage = if let Some(n) = threads {
+        tracing::info!(&quot;Using {} threads to calculate cache size&quot;, n);
+        DiskUsage::new(vec![cache.root().to_path_buf()]).num_workers(n)
+    } else {
+        DiskUsage::new(vec![cache.root().to_path_buf()])
+    };
+</code></pre>
+<p>nit: avoid the mut</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-12-08 04:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-cli/src/lib.rs</code>:941 on 2025-12-08 04:16</div>
+            <div class="timeline-body"><p>suggestion(non-blocking): Assuming this flag does get added, I believe this be should be named something like <code>concurrency</code> to align with other similarly named sibling settings (e.g. concurrent-installs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/Cargo.toml</code>:118 on 2025-12-08 04:16</div>
+            <div class="timeline-body"><p>nit: sort</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-12-08 04:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-08 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-12-08 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-12-11 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:941 on 2025-12-11 15:28</div>
+            <div class="timeline-body"><p>Does it auto-detect by default? (If so, I think we should just remove.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-12-11 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:941 on 2025-12-11 15:31</div>
+            <div class="timeline-body"><p>Yeah let's omit this, then we can merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-12-11 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-12-11 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-12-11 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-12-11 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-11 17:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal feature request: extend fuzzer `ruff_fix_validity` to non-default linter settings - astral-sh/ruff #12785</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Internal feature request: extend fuzzer `ruff_fix_validity` to non-default linter settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12785">#12785</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-08-09 13:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-09 13:21</div>
+            <div class="timeline-body"><p>The fuzzer looks very cool and I'd love to use it!</p>
+<p>When adding new preview rules, it would help catch edge cases faster if we were able to fuzz test against them. My understanding of the fuzzer documentation (which could be wrong!) is that it is not currently possible to do this.</p>
+<p>Related to #4972.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-09 13:56</div>
+            <div class="timeline-body"><p>Yes, that's correct. The fuzzer uses the default linter settings:</p>
+<p>https://github.com/astral-sh/ruff/blob/1f51048fa4a5954526e68a45cd4781040b502254/fuzz/fuzz_targets/ruff_fix_validity.rs#L18-L19</p>
+<p>Is the feature request to manually create a config which the fuzzer uses? I think this would be really useful. While I was working on the parser, I manually updated the default settings in the code to reflect the config I wanted.</p>
+<p>We could either use a command-line flag (if it's even possible) or an environment variable (<code>RUFF_FUZZ_CONFIG</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-08-09 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @dhruvmanila on 2024-08-09 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-10 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the feature request to manually create a config which the fuzzer uses?</p>
+</blockquote>
+<p>Yes, exactly!</p>
+<p>The tasks it would be nice to easily perform would be:</p>
+<ol>
+<li>Fuzz with <em>all</em> (compatible) rules, including preview rules, turned on.</li>
+<li>Fuzz with just a single new rule turned on.</li>
+<li>(1) and (2) but with different target version.</li>
+<li>(1) and (2) but iterated through all possible (or maybe randomly generated if the set is prohibitively large) auxiliary settings.</li>
+</ol>
+<p>I'm not super familiar with <code>cargo fuzz</code>, but it seems like (1) would be the simplest to implement because it could just be a separate fuzzer (alternatively, we could replace the default linter settings in <code>ruff_fix_validity</code> with this setting).</p>
+<p>The remaining ones seem more difficult... could <a href="https://rust-fuzz.github.io/book/cargo-fuzz/structure-aware-fuzzing.html">this section of the docs</a> be relevant, or am I not understanding it very well?</p>
+<p>I'm agnostic about whether this is callable via a command-line flag, environment variable, or even a reference to a <code>ruff.toml</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-12 05:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm agnostic about whether this is callable via a command-line flag, environment variable, or even a reference to a <code>ruff.toml</code> file.</p>
+</blockquote>
+<p>The reason I suggested a command-line flag or an environment variable is because we don't run any fuzzer as part of the CI. It needs to be run locally. This means it might be more useful (and easier?) to just read a local config file which would be git-ignored but can be used to run the fuzzer for a limited time locally to catch any bugs if the contributor wants to.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

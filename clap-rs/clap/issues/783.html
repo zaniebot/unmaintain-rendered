@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: Add a crate_feature to disable macros that depend on cargo env vars - clap-rs/clap #783</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: Add a crate_feature to disable macros that depend on cargo env vars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/783">#783</a>
+        opened by <a href="https://github.com/acmcarther">@acmcarther</a>
+        on 2016-12-24 05:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/acmcarther">@acmcarther</a> on 2016-12-24 05:55</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/kbknapp/clap-rs/blob/83bacb87bb854be8b559f9e9c4bda5c3f47a0489/src/macros.rs#L389">crate_*! macros</a> make a fairly valid assumption that consumers use <code>cargo</code> to build Rust projects by expecting certain environment variables to be present. Unfortunately, I am one of the very few not using <code>Cargo</code>. I'm actually experimenting with <a href="https://www.bazel.io/">Bazel</a> to build my Rust projects -- but <code>clap</code> fails to compile because bazel is not providing the expected environment variables.</p>
+<p>As of posting, the macros causing me issues are &quot;crate_version!&quot; and &quot;crate_authors!&quot;, which seem to be provided as a convenience to <code>clap</code> users and aren't used internally.</p>
+<p>If this proposal is rejected, I do have mitigation options -- faking those values or patching clap locally -- so please reject if you feel that not enough users are impacted.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-27 04:23</div>
+            <div class="timeline-body"><p>Wow, I wasn't aware of Bazel, that's interesting.</p>
+<p>Although I'm not against adding these to a feature, and simply adding said feature to the defaults but I <em>do</em> worry that there are people who have opted out of <code>default-features</code> and are using <code>crate_*!</code> macros. The problem is that would potentially be a silent breaking change.</p>
+<p>Because of that concern, I think the best way forward is to add this to the 3x timeline, which hopefully isn't too far off (waiting on Macros 1.1).</p>
+<p>I believe all you should have to do on your end is export those environmental variables while building, and it should work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: macros</span> added by @kbknapp on 2016-12-27 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-27 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @kbknapp on 2016-12-27 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-27 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-12-27 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2016-12-27 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @kbknapp on 2016-12-27 04:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acmcarther">@acmcarther</a> on 2016-12-27 04:39</div>
+            <div class="timeline-body"><p>No worries, thanks for the quick response! Exporting fake values during my build step solves my problem and is no trouble for any length of time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nabijaczleweli">@nabijaczleweli</a> on 2016-12-27 12:18</div>
+            <div class="timeline-body"><blockquote>
+<p>do worry that there are people who have opted out of default-features and are using crate_*! macros.</p>
+</blockquote>
+<p>Valid, but unnecessary concern. Consider:</p>
+<pre><code class="language-toml">[features]
+no_cargo = []
+</code></pre>
+<p>Then:</p>
+<pre><code class="language-rust">#[cfg(not(feature=&quot;no_cargo&quot;))]
+macro_rules! crate_authors {
+  // magic
+}
+</code></pre>
+<p>That way you need an explicit opt-in to remove the macros, granting full backwards compatibility</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/786.html">clap-rs/clap#786</a> on 2016-12-27 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-12-28 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rust-roadmap-2017/issues/12.html">rust-lang/rust-roadmap-2017#12</a> on 2017-02-07 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsgf">@jsgf</a> on 2017-02-10 16:07</div>
+            <div class="timeline-body"><p>This might cover the same territory: https://github.com/rust-lang/rust/issues/39656</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:23 UTC
+    </footer>
+</body>
+</html>

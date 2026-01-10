@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exclude pattern with `*` in file name incorrectly matches entire file path - astral-sh/ruff #6262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>exclude pattern with `*` in file name incorrectly matches entire file path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6262">#6262</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-08-02 04:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-02 04:21</div>
+            <div class="timeline-body"><pre><code>ruff --exclude foo*.py
+</code></pre>
+<p>this incorrectly excludes the file <code>foo/bar/baz.py</code>.</p>
+<p>since <code>excludes</code> takes globs (as mentioned <a href="https://beta.ruff.rs/docs/configuration/#pyprojecttoml-discovery">here</a>), i would expect it to only match python files with names starting with <code>foo</code>.</p>
+<p>i'm on windows (which uses <code>\</code> as path separators instead of <code>/</code>), that may be related</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6225.html">astral-sh/ruff#6225</a> on 2023-08-02 04:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 14:54</div>
+            <div class="timeline-body"><p>We use <code>globset</code> which lets <code>*</code> match the path separator by default, but is configurable to disable that behavior (https://docs.rs/globset/latest/globset/#syntax).</p>
+<p>@zanieb - could use a second opinion, any objection to changing that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-02 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-02 19:26</div>
+            <div class="timeline-body"><p>What are you expected to do to get the desired behavior without <code>literal_separator</code> set? What's the point of <code>**</code> then?</p>
+<p>I'm a little confused that this is the default in <code>globset</code> @burntsushi is probably best for a second opinion :D</p>
+<p>It'd be a breaking change for us to change this, but I think it'd probably be best to match Unix shell behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-02 20:00</div>
+            <div class="timeline-body"><p>On mobile so apologies for short reply.</p>
+<p>Globbing is pretty tricky because it depends on the context in which it is run. For example, at a shell, you might expect <code>*.py</code> to only match Python files in the current directory, but in a <code>.gitignore</code> file you would expect (and is what happens) <code>*.py</code> to exclude both <code>foo.py</code> and <code>bar/foo.py</code>. In the gitignore world, you would restrict your glob to the current directory (relative to the <code>.gitignore</code> file) by prefixing the glob with a <code>/</code>. So, <code>/*.py</code> would match <code>foo.py</code> but not <code>bar/foo.py</code>.</p>
+<p>So whether <code>*.py</code> is supposed to match a path separator or not depends a lot on the context in which a glob is applied. But generally speaking, for exclude rules I would try to follow what gitignore does. (With that said, I haven't looked at in detail the context here, so take what I'm saying with a grain of salt.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 20:03</div>
+            <div class="timeline-body"><p>Thanks! I'm impressed that you can manage code formatting on mobile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 20:12</div>
+            <div class="timeline-body"><p>We have kind of a weird thing going on, which I think I followed from Flake8 or Black. When given a pattern like <code>foo*.py</code>, we match against <em>both</em> the basename and the absolute path (when testing to exclude a given file or directory).</p>
+<p>So it may make sense to turn on <code>literal_separator</code>, since we'd still match <code>*.py</code> on the cases described above. Or we may want to reconsider our behavior here more holistically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-02 20:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Or we may want to reconsider our behavior here more holistically.</p>
+</blockquote>
+<p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-08-02 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-02 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-02 22:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! I'm impressed that you can manage code formatting on mobile.</p>
+</blockquote>
+<p>I'm not sure about Android, but if you long-press the <code>'</code> key on the standard iPhone keyboard it will give you a contextual menu of other apostrophe-like characters, including <code>`</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-08-03 02:06</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Thanks! I'm impressed that you can manage code formatting on mobile.</p>
+</blockquote>
+<p>I'm not sure about Android, but if you long-press the <code>'</code> key on the standard iPhone keyboard it will give you a contextual menu of other apostrophe-like characters, including <code>`</code>.</p>
+</blockquote>
+<p>On Android, the long press variations for <code>'</code> do not include <code>`</code>, but you can instead do:
+<code>?123</code> -&gt; <code>=\&lt;</code> -&gt; <code>`</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2023-11-03 01:00</div>
+            <div class="timeline-body"><p>Came here because I was having an issue with the globs unexpectedly including subdirectories.</p>
+<p>In my case, I am trying to exclude <code>tests/*.py</code> (which contains an old codebase which will be deprecated) while including <code>tests/v3/*.py</code>. Following the documentation:</p>
+<blockquote>
+<ul>
+<li>Relative patterns, like <code>directory/foo.py</code> (to exclude that specific file) or <code>directory/*.py</code> (to exclude any Python files in directory). Note that these paths are relative to the project root (e.g., the directory containing your <code>pyproject.toml</code>).</li>
+</ul>
+</blockquote>
+<p>I added:</p>
+<pre><code class="language-toml">[tool.ruff]
+extend-exclude = [&quot;tests/*.py&quot;]
+</code></pre>
+<p>I was surprised to find out that this excluded all Python files in <code>tests/</code> <em>and subdirectories thereof</em>. As pointed out above, it brings into question the purpose of having both <code>*</code> and <code>**</code>. Being a glob pattern, Ruff's behaviour also doesn't match a standard shell glob (e.g., <code>ls tests/*.py</code> does not list files in <code>tests/v3/</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pact-foundation/pact-python/issues/458.html">pact-foundation/pact-python#458</a> on 2023-11-06 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11139.html">astral-sh/ruff#11139</a> on 2024-04-25 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 10:47</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/8267</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-sixty">@max-sixty</a> on 2024-09-18 23:59</div>
+            <div class="timeline-body"><p>Is it currently possible to exclude python files in the root directory without excluding python files in every subdirectory?</p>
+<p>The current approach seems different from both gitignore and standard globs, instead a third thing:</p>
+<blockquote>
+<p>Globbing is pretty tricky because it depends on the context in which it is run. For example, at a shell, you might expect <code>*.py</code> to only match Python files in the current directory, but in a <code>.gitignore</code> file you would expect (and is what happens) <code>*.py</code> to exclude both <code>foo.py</code> and <code>bar/foo.py</code>. In the gitignore world, you would restrict your glob to the current directory (relative to the <code>.gitignore</code> file) by prefixing the glob with a <code>/</code>. So, <code>/*.py</code> would match <code>foo.py</code> but not <code>bar/foo.py</code>.</p>
+</blockquote>
+<p>...in no case would we expect <code>/*.py</code> to match all python files — which IIUC is what ruff currently does?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2024-09-19 01:07</div>
+            <div class="timeline-body"><p>For visibility, I think <a href="https://github.com/astral-sh/ruff/pull/11139#issuecomment-2188635361">my comment</a> to my (closed) PR addressing this is quite relevant here:</p>
+<blockquote>
+<p>While I am open to suggestions for this PR, I do think that it would be good to follow a widely accepted convention such as the <a href="https://git-scm.com/docs/gitignore#_pattern_format"><code>gitignore</code> specification</a>. Specifically the following from the specification:</p>
+<blockquote>
+<ul>
+<li>An asterisk <code>*</code> matches anything except a slash. The character <code>?</code> matches any one character except <code>/</code>. The range notation, e.g. <code>[a-zA-Z]</code>, can be used to match one of the characters in a range. See fnmatch(3) and the FNM_PATHNAME flag for a more detailed description.</li>
+</ul>
+<p>Two consecutive asterisks (<code>**</code>) in patterns matched against full pathname may have special meaning:</p>
+<ul>
+<li>A leading <code>**</code> followed by a slash means match in all directories. For example, <code>**/foo</code> matches file or directory <code>foo</code> anywhere, the same as pattern <code>foo</code>. <code>**/foo/bar</code> matches file or directory <code>bar</code> anywhere that is directly under directory <code>foo</code>.</li>
+<li>A trailing <code>/**</code> matches everything inside. For example, <code>abc/**</code> matches all files inside directory <code>abc</code>, relative to the location of the <code>.gitignore</code> file, with infinite depth.</li>
+<li>A slash followed by two consecutive asterisks then a slash matches zero or more directories. For example, <code>a/**/b</code> matches <code>a/b</code>, <code>a/x/b</code>, <code>a/x/y/b</code> and so on.</li>
+<li>Other consecutive asterisks are considered regular asterisks and will match according to the previous rules.</li>
+</ul>
+</blockquote>
+</blockquote>
+<p>Implementing the <code>.gitignore</code> logic as to the meaning of a leading forward slash, <code>/</code>, would be good as well to distinguish <code>/*.py</code> and <code>*.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2025-04-12 08:09</div>
+            <div class="timeline-body"><p>I'm wondering what the desire is for implementing this (given my PR was closed)?</p>
+<p>I understand it <em><strong>is</strong></em> a breaking change, so I am sympathetic with the reluctance; but I also would like to avoid cumbersome patterns <a href="https://github.com/pact-foundation/pact-python/blob/2e2a0861c57618c316ae50d345d603a9c9071783/pyproject.toml#L247-L283">like these</a>.</p>
+<p>Is this perhaps planned for an eventual <code>v1</code> release? Or could we introduce new <code>include</code> and <code>exclude</code> config keys as an opt-in way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-15 20:21</div>
+            <div class="timeline-body"><p>I think @konstin and @MichaReiser have also been thinking about this recently</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 09:32</div>
+            <div class="timeline-body"><p>Our plan for red knot is to have either an <code>include</code> and <code>exclude</code> (or both?) that support git patterns. Whether we bring this behavior to ruff depends on how it proves in practice and the timeline for using Red Knot's infrastructure for Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/176.html">astral-sh/ty#176</a> on 2025-06-02 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nedbat">@nedbat</a> on 2025-08-01 20:26</div>
+            <div class="timeline-body"><p>I tried to only format Python files in the top-level directories, so used <code>include = [&quot;*/*.py&quot;]</code>   This found all Python files in the whole tree.  As @zanieb points out earlier, the way globset is being used, &quot;<em>&quot; and &quot;**&quot; are the same, removing power from the user.   &quot;</em>&quot; should not match path separators.</p>
+<p>BTW: The docs say, &quot;go read the globset docs&quot; without mentioning what options are in use, making this behavior difficult to read about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19841.html">astral-sh/ruff#19841</a> on 2025-08-10 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/21425.html">astral-sh/ruff#21425</a> on 2025-11-13 23:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

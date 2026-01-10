@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv add results in relative path for a local package - astral-sh/uv #17307</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv add results in relative path for a local package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17307">#17307</a>
+        opened by <a href="https://github.com/need47">@need47</a>
+        on 2026-01-02 19:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/need47">@need47</a> on 2026-01-02 19:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using uv to add a local package that is specified by absolute path:</p>
+<pre><code>uv add /path/to/local/package
+</code></pre>
+<p>It resulted in a relative path in pyproject.toml and uv.lock:</p>
+<pre><code>[tool.uv.sources]
+pymore = { path = &quot;../../../path/to/local/package&quot;}
+</code></pre>
+<p>Is this expected? I think keeping the absolute path makes more sense</p>
+<h3>Platform</h3>
+<p>Linux 64</p>
+<h3>Version</h3>
+<p>uv 0.9.21</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @need47 on 2026-01-02 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-04 04:58</div>
+            <div class="timeline-body"><p>I looked into this and can confirm this is <strong>currently expected behavior</strong>, though I completely understand why it's surprising! 🙂</p>
+<p>When you run <code>uv add /absolute/path/to/package</code>, uv intentionally converts it to a relative path. This happens in the code here:</p>
+<p><strong><code>crates/uv-workspace/src/pyproject.rs</code></strong></p>
+<pre><code class="language-rust">path: PortablePathBuf::from(
+    relative_to(&amp;install_path, root)
+        .or_else(|_| std::path::absolute(&amp;install_path))
+        // ...
+),
+</code></pre>
+<p>The logic is try to make it relative first, only keep it absolute if that fails (like when paths are on different drives on Windows). The design uses PortablePathBuf for cross-platform path serialization - converting Windows backslashes to forward slashes and making paths relative to the project root for portability.</p>
+<p>I think we have two options:</p>
+<ul>
+<li>Preserve user intent: If the user provides an absolute value, retain it. If it’s relative, keep it relative.</li>
+<li>Improve documentation: Clearly explain the current behavior and the reasoning behind it.</li>
+</ul>
+<p>@zanieb fyi!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-04 16:12</div>
+            <div class="timeline-body"><p>Hm yeah it does seem important to allow absolute paths here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2026-01-04 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17316.html">astral-sh/uv#17316</a> on 2026-01-04 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-04 18:51</div>
+            <div class="timeline-body"><p>@zanieb I have raised a PR with a fix based on my knowledge. Please take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-04 18:53</div>
+            <div class="timeline-body"><p>Hmm, why do we want to retain absolute paths here? Note that even if we change the <code>pyproject.toml</code>, they'll probably be converted to relative in the <code>uv.lock</code> unless we make a more holistic change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-04 19:02</div>
+            <div class="timeline-body"><p>@charliermarsh good catch, I missed that the lock file generation still normalizes paths to relative. I’m not too sure about the best way to preserve absolute paths during lock file generation, so I’ll leave this in the hands of the experts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-04 23:02</div>
+            <div class="timeline-body"><p>I think we'd need to retain it in the lockfile too.</p>
+<p>I think it's a fair use-case to be able to move around your local project while depending on another project on your system. I'm not really sure how we should go about exposing it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 18:24</div>
+            <div class="timeline-body"><p>I'm in favor of preserving absolute and relative paths as absolute and relative through all types and inputs and output files, (incrementally) doing the more holistic change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-06 04:28</div>
+            <div class="timeline-body"><p>I have updated the PR with a few more changes. I was trying to implement a holistic solution. The change preserves absolute/relative paths throughout the entire pipeline, from user input through <code>pyproject.toml</code> to <code>uv.lock</code>. Both files now respect the user’s original path format.
+@konstin @zanieb fyi!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

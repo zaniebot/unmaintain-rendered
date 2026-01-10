@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`Pylint`] `PLE2510` fix causes syntax error inside pre-3.12 f-strings - astral-sh/ruff #18816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[`Pylint`] `PLE2510` fix causes syntax error inside pre-3.12 f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18816">#18816</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-20 06:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-20 06:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If a backspace is inside an f-string replacement while a pre-3.12 version is targeted, the fix for <a href="https://docs.astral.sh/ruff/rules/invalid-character-backspace/#invalid-character-backspace-ple2510">invalid-character-backspace (PLE2510)</a> will introduce a syntax error. This happens both inside a string inside the replacement, and inside the format specs. <a href="https://play.ruff.rs/79ed94ae-5031-4d55-a53c-5a7fabe26700">playground</a></p>
+<pre><code>PS D:\python_projects&gt; Get-Content issue.py
+</code></pre>
+<pre><code class="language-py">f&quot;{'␈'}&quot;
+</code></pre>
+<p>^ note: I'm cheating here, PowerShell does not actually display the backspace character as <code>␈</code>, it actually gets displayed as <code>f&quot;{'}&quot;</code></p>
+<pre><code>PS D:\python_projects&gt; uvx ruff check issue.py --isolated --select PLE --target-version py39
+</code></pre>
+<pre><code class="language-snap">issue.py:1:5: PLE2510 [*] Invalid unescaped character backspace, use &quot;\b&quot; instead
+  |
+1 | f&quot;{'␈'}&quot;
+  |     ^ PLE2510
+  |
+  = help: Replace with escape sequence
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<pre><code>PS D:\python_projects&gt; uvx ruff check issue.py --isolated --select PLE --target-version py39 --fix
+</code></pre>
+<pre><code class="language-snap">issue.py:1:5: SyntaxError: Cannot use an escape sequence (backslash) in f-strings on Python 3.9 (syntax was added in Python 3.12)
+  |
+1 | f&quot;{'\b'}&quot;
+  |     ^
+  |
+
+Found 2 errors (1 fixed, 1 remaining).
+</code></pre>
+<p>This also applies to <code>PLE2512</code>, <code>PLE2513</code>, and <code>PLE2515</code> <a href="https://play.ruff.rs/dc2bc095-7f43-4f4c-ba03-a1167e147196">playground</a>, as well as <code>PLE2514</code>, but the playground does not support null chars.</p>
+<h3>Version</h3>
+<p>ruff 0.12.0 (87f0feb 2025-06-17) + playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18817.html">astral-sh/ruff#18817</a> on 2025-06-20 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-20 07:33</div>
+            <div class="timeline-body"><p>This might be a bit annoying to fix but we can disable the fix if inside an interpolated element and the target version is older than 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-06-20 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-06-20 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-20 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-21 21:11</div>
+            <div class="timeline-body"><blockquote>
+<p>This might be a bit annoying to fix but we can disable the fix if inside an interpolated element and the target version is older than 3.12</p>
+</blockquote>
+<p>The <code>PLE2510</code> check operates on the token stream, is there anyway of knowing if it's inside an interpolated element just with that information? The only way I could think of was getting the f-string text and using <code>parse_expression</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-22 08:11</div>
+            <div class="timeline-body"><p>There are probably two options:</p>
+<ol>
+<li>Rewrite to an AST based rule</li>
+<li>Look for <code>FSTRING_START</code> tokens and then ignore the middle tokens, https://play.ruff.rs/19ca2208-50b9-45ad-a41b-240b49eb2f6d</li>
+</ol>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

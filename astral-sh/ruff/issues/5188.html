@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Jupyter notebook integration - astral-sh/ruff #5188</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Complete Jupyter notebook integration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5188">#5188</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-06-19 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 18:30</div>
+            <div class="timeline-body"><p>Meta issue to keep track of the remaining tasks before shipping Jupyter notebook native integration:</p>
+<ul>
+<li>[x] #4727</li>
+<li>[ ] #5189</li>
+<li>[ ] Add support for viewing Jupyter Notebooks in the playground</li>
+<li>[x] #5190</li>
+</ul>
+<h2>Formatter Support</h2>
+<ul>
+<li>[ ] ~Add support for <code>IpyEscapeCommand</code> token in <a href="https://github.com/astral-sh/ruff/blob/036035bc502cd13dbb555385a3e6398f89b977a5/crates/ruff_python_trivia/src/tokenizer.rs"><code>SimpleTokenizer</code></a> (if required)~</li>
+<li>[x] Add support for formatting <code>StmtIpyEscapeCommand</code></li>
+<li>[x] Add support for formatting <code>ExprIpyEscapeCommand</code></li>
+<li>[x] https://github.com/astral-sh/ruff/pull/7749</li>
+</ul>
+<h2>Editor Integrations</h2>
+<ul>
+<li>[x] https://github.com/astral-sh/ruff-vscode/issues/256 - I think this will probably involve changes in <code>ruff-lsp</code> so that other editors can benefit as well.</li>
+</ul>
+<h2>IPython Syntax Handling (<code>%</code>, <code>!</code>, etc.)</h2>
+<ul>
+<li>[x] #5030</li>
+</ul>
+<h3>Ruff</h3>
+<ul>
+<li>[x] #6090</li>
+<li>[x] #6087</li>
+</ul>
+<h3>Proposed new rules</h3>
+<ul>
+<li>[ ] Empty magic command (<code>%</code>) (Autofix: remove the statement)</li>
+<li>[ ] Magic command contains whitespace between the prefix and command value (<code>% matplotlib inline</code>) (Autofix: remove all the whitespaces) (Only valid for <code>%</code> magic prefix)</li>
+</ul>
+<h3>Existing rule changes</h3>
+<ul>
+<li>[x] #6116</li>
+<li>[x] #6672</li>
+</ul>
+<p><em>I'll be looking at other related rules and update this issue accordingly</em></p>
+<h3>Parser</h3>
+<ul>
+<li>[x] #6359</li>
+<li>[x] #6357</li>
+<li>[x] https://github.com/astral-sh/RustPython-Parser/pull/23</li>
+<li>[x] https://github.com/astral-sh/RustPython-Parser/pull/30</li>
+<li>[x] https://github.com/astral-sh/RustPython-Parser/pull/31</li>
+</ul>
+<h2>Autofix for Jupyter Notebook</h2>
+<ul>
+<li>[x] https://github.com/astral-sh/ruff/issues/1218</li>
+</ul>
+<h3>Implementation</h3>
+<ul>
+<li>[x] https://github.com/astral-sh/ruff/pull/5114</li>
+<li>[x] https://github.com/astral-sh/ruff/pull/5076</li>
+<li>[x] https://github.com/astral-sh/ruff/pull/5028</li>
+<li>[x] https://github.com/astral-sh/ruff/pull/4665</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-06-19 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1218.html">astral-sh/ruff#1218</a> on 2023-06-20 05:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-20 20:54</div>
+            <div class="timeline-body"><p>My main question would be: at what point do you think we can remove the feature flag, and open this up to users? (Maybe we're already past that point!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-06-20 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-21 03:00</div>
+            <div class="timeline-body"><p>I do think we're ready except that without the (1) task above Ruff might give false positives. Without that we would ignore any cell which contains magic commands. Now, we would also ignore if it contains valid Python code. It could be that a variable is defined in that cell and is being referenced in another cell. Here, we might trigger undefined variable. Similar example can be given for imports.</p>
+<p>I see this a lot for <code>%matplotlib inline</code> command: https://sourcegraph.com/search?q=context:global+lang:%22Jupyter+Notebook%22+%25matplotlib+inline&amp;patternType=standard&amp;sm=1&amp;groupBy=repo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-21 03:06</div>
+            <div class="timeline-body"><p>What do you think about releasing this under experimental? I'm not sure what would that look like but maybe we don't add the <code>*.ipynb</code> to <code>include</code> and ask users to explicitly opt in to that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 03:13</div>
+            <div class="timeline-body"><p>Yeah, I think it would be reasonable to release it now (even without magic handling) and omit <code>*.ipynb</code> in <code>include</code>, so users need to opt-in explicitly. We can market it as experimental to get feedback. We can include it in the next release IMO.</p>
+<p>We should also add the magic command support, but doesn't have to block if it's opt-in :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 03:25</div>
+            <div class="timeline-body"><p>(To be explicit: we could just remove the flag now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5363.html">astral-sh/ruff#5363</a> on 2023-06-26 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-vscode/issues/256.html">astral-sh/ruff-vscode#256</a> on 2023-08-28 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8094.html">astral-sh/ruff#8094</a> on 2023-10-20 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpmckinney">@jpmckinney</a> on 2023-10-30 19:43</div>
+            <div class="timeline-body"><p>I'm not sure if this deserves its own issue, but: Would it be possible to use <code>extend-include = [&quot;*.ipynb&quot;]</code> and <code>ruff format</code> to <strong>only</strong> re-format the Python code in cells, and <strong>not</strong> the ipynb file itself?</p>
+<p>My users typically edit notebooks in Google Colab. Google Colab uses two-space indentation in the ipynb file, instead of the typical one-space indentation. <code>ruff format</code> currently re-indents with one space. As such, edit history becomes difficult/impossible to track, because effectively every line gets rewritten between the user saving from Google Colab (changing to 2 spaces) and CI running <code>ruff format</code> (changing to 1 space).</p>
+<p>Google Colab also puts keys like metadata, nbformat, nbformat_minor at the top of the file, but <code>ruff format</code> moves these to the bottom. <code>ruff format</code> also changes the order of <code>execution_count</code>, <code>outputs</code>, etc.</p>
+<p>I would love to be able to opt out of ipynb formatting, so that only the Python code inside cells is reformatted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8370.html">astral-sh/ruff#8370</a> on 2023-10-31 02:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-31 02:23</div>
+            <div class="timeline-body"><p>(I think it deserves its own issue, we can discuss it there :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PyLops/pylops/issues/485.html">PyLops/pylops#485</a> on 2023-11-26 06:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-06 12:13</div>
+            <div class="timeline-body"><p>Closing this as completed. The only thing remaining is to support <code>--add-noqa</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-02-06 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rapidsai/deployment/pulls/348.html">rapidsai/deployment#348</a> on 2024-03-19 16:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

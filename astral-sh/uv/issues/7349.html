@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unclear `uvx --with` help text / how to include a bunch of requirements? - astral-sh/uv #7349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unclear `uvx --with` help text / how to include a bunch of requirements?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7349">#7349</a>
+        opened by <a href="https://github.com/dimaqq">@dimaqq</a>
+        on 2024-09-13 00:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-09-13 00:32</div>
+            <div class="timeline-body"><p>Here's the help snippet:</p>
+<pre><code>      --with &lt;WITH&gt;                            Run with the given packages installed
+</code></pre>
+<p>It seems to suggest that multiple deps can be specified with a single <code>--with</code>, but that doesn't seem to be the case.</p>
+<p>(Or maybe I didn't figure out the syntax yet)</p>
+<pre><code># non of these work
+uvx --with &quot;requests tomli&quot; pytest
+uvx --with &quot;requests,tomli&quot; pytest
+uvx --with &quot;requests;tomli&quot; pytest
+</code></pre>
+<pre><code># this works
+uvx --with requests --with tomli pytest --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-13 01:29</div>
+            <div class="timeline-body"><p>Yes, it's one at a time or <code>--with-requirements</code> to provide a file.</p>
+<p>We can try to tweak the docs here, but I haven't seen anyone else run into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-09-13 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-13 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-09-13 02:42</div>
+            <div class="timeline-body"><p>I guess I keep expecting just a tad too much from a relatively fresh tool 🙈</p>
+<p>I wanted to reproduce a CI failure where the list of installed pacakges was dumped, so I tried to just add all of those with a single <code>--with</code>...</p>
+<p>My work-around was this:</p>
+<pre><code class="language-command">&gt; set packages &quot;annotated-types==0.7.0,asttokens==2.4.1,attrs==24.2.0,bcrypt==4.2.0,cachetools==5.5.0,certifi==2024.8.30,cffi==1.17.1,charset-normalizer==3.3.2,cryptography==43.0.1,decorator==5.1.1,exceptiongroup==1.2.2,executing==2.1.0,google-auth==2.34.0,hvac==2.3.0,idna==3.8,iniconfig==2.0.0,ipdb==0.13.9,ipython==8.27.0,jedi==0.19.1,Jinja2==3.1.4,juju==3.5.2.0,kubernetes==30.1.0,macaroonbakery==1.3.4,MarkupSafe==2.1.5,matplotlib-inline==0.1.7,mypy-extensions==1.0.0,oauthlib==3.2.2,ops==2.16.1,packaging==24.1,paramiko==3.4.1,parso==0.8.4,pexpect==4.9.0,pip==24.2,pluggy==1.5.0,prompt_toolkit==3.0.47,protobuf==5.28.0,ptyprocess==0.7.0,pure_eval==0.2.3,py==1.11.0,pyasn1==0.6.1,pyasn1_modules==0.4.1,pycparser==2.22,pydantic==2.9.1,pydantic_core==2.23.3,Pygments==2.18.0,pymacaroons==0.13.0,PyNaCl==1.5.0,pyRFC3339==1.1,pytest==7.1.3,pytest-asyncio==0.21.0,pytest-operator==0.35.0,python-dateutil==2.9.0.post0,pytz==2024.2,PyYAML==6.0.2,requests==2.32.3,requests-oauthlib==2.0.0,rsa==4.9,setuptools==74.1.2,six==1.16.0,stack-data==0.6.3,temporalio==1.6.0,toml==0.10.2,tomli==2.0.1,toposort==1.10,traitlets==5.14.3,types-protobuf==5.27.0.20240907,typing-inspect==0.9.0,typing_extensions==4.12.2,urllib3==2.2.2,wcwidth==0.2.13,websocket-client==1.8.0,websockets==13.0.1,wheel==0.44.0&quot;
+ set args (echo $packages | sed -e 's/,/ --with /g')
+ eval uvx --with $args pytest -v -s --model testing --other-flags
+</code></pre>
+<p>🦄🦄🦄 The upside of doing this, is that <code>uvx</code> is blazing fast 🚀🚀🚀</p>
+<p>I've certainly saved time compared to manually recreating a venv using standard tools!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-09-18 13:49</div>
+            <div class="timeline-body"><p>This should illustrate the actual case and avoid the confusion.</p>
+<dt><code>--with</code> <i>with</i></dt>
+<dd>
+<p>Run with the given package installed with a single dependency. To include multiple dependencies, use the <code>--with</code> flag for each dependency individually:</p>
+<p>Using <code>--with <i>with1</i> --with <i>with2</i> --with <i>with3</i></code>...</p>
+
+<p>will install all the dependencies of the package.</p>
+</dd>
+
+<p>Is this description fine or something else to be incorporate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 13:51</div>
+            <div class="timeline-body"><p>That's too verbose for the short-help menu, unfortunately. I'm planning on taking a look at this soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2024-09-18 14:00</div>
+            <div class="timeline-body"><dt><code>--with</code> <i>with</i></dt>
+<dd>
+<p>Run with the specified package and its dependencies. To include multiple dependencies, use the --with flag for each one:</p>
+<code>--with <i>dep1</i> --with <i>dep2</i> --with <i>dep3</i></code>...</p>
+
+<p>This installs all specified dependencies.</p>
+</dd>
+
+<p>Is this good. I think this is less verbose.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add option to add files that need to be considered for the cache key in pyproject.toml - astral-sh/uv #6255</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add option to add files that need to be considered for the cache key in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6255">#6255</a>
+        opened by <a href="https://github.com/albertferras-vrf">@albertferras-vrf</a>
+        on 2024-08-20 15:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/albertferras-vrf">@albertferras-vrf</a> on 2024-08-20 15:36</div>
+            <div class="timeline-body"><p>Consider the following <code>pyproject.toml</code> file, which uses dynamic metadata to reference <code>requirements.in</code> files.</p>
+<pre><code>[project]
+name = &quot;myproject&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dynamic = [&quot;dependencies&quot;]
+
+[tool.setuptools.dynamic]
+dependencies = {file = [&quot;requirements.in&quot;]}
+</code></pre>
+<p>When invoking the command <code>uv pip compile -o requirements.txt pyproject.toml</code> then setuptools is used to build the project, which is the tool that understands the <code>dynamic</code> and <code>tool.setuptools.dynamic</code> configuration. Once the build is finished, uv reads the package's <code>requires.txt</code> and generates <code>requirements.txt</code>.
+The problem is that after (only) modifying <code>requirements.in</code>, the command <code>uv pip compile</code> does not update the <code>requirements.txt</code>file. This is because the content <code>pyproject.toml</code> did not change and <code>uv</code> decide to not reinstall the package (call setuptools) again.
+The current workaround is to add <code>--reinstall</code> or <code>--reinstall-package=myproject</code> to the command or configuration and force setuptools to run.</p>
+<p>This was discussed in discord, and the user <code>@ThiefMaster</code> suggested that we could add a new configuration under <code>[tool.uv]</code> which allows specifying which files have to be considered as part of 'pyproject.toml's cache key.
+One example would be:</p>
+<pre><code>[tool.uv]
+cache_key_files = [&quot;requirements.in&quot;, &quot;requirements.dev.in&quot;]
+</code></pre>
+<p>Worth mentioning also (not part of this ticket) that it would be good if <code>uv</code> supported popular dynamic implementations natively and not need to invoke setuptools for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-08-20 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6964.html">astral-sh/uv#6964</a> on 2024-09-03 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 02:38</div>
+            <div class="timeline-body"><p>I want to work on this but I don't yet have a good solution for <code>setuptools_scm</code> or other things that depend on the Git state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 02:49</div>
+            <div class="timeline-body"><p>I could special-case <code>.git</code> in the array though it's not a great API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 02:51</div>
+            <div class="timeline-body"><p>@konstin @zanieb -- any ideas? If we're gonna support this, I think we need an answer for <code>setuptools_scm</code> too since it's so popular.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 02:53</div>
+            <div class="timeline-body"><p>Well... something like <code>cache_key_paths = [&quot;path.txt&quot;, { file = &quot;other-path.txt }, { git = &quot;.&quot; })</code> is an option? e.g. allow dictionaries so we can define types and default to paths if a simple value is provided? (<code>git = &quot;.&quot;</code> being a Git repository rooted in the project directory, we could also do like <code>git = true</code> but I'm not sure it's better)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 02:58</div>
+            <div class="timeline-body"><p>That seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 03:01</div>
+            <div class="timeline-body"><p>How complicated does support for Git state need to be? Like... the commit hash changed? There are unstaged changes? The tree is dirty? Number of commits since a tag? etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 03:03</div>
+            <div class="timeline-body"><p>I <em>think</em> &quot;commit hash changed&quot; is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 03:07</div>
+            <div class="timeline-body"><p>I guess <code>setuptools-scm</code> will also reflect uncommitted changes, but that may not be necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7136.html">astral-sh/uv#7136</a> on 2024-09-06 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-06 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-09 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-10 01:43</div>
+            <div class="timeline-body"><p>This exists as of v0.4.8. You can do things like:</p>
+<pre><code class="language-toml">[tool.uv]
+cache-keys = [{ file = &quot;pyproject.toml&quot; }, { file = &quot;requirements.txt&quot; }, { git = true }]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:33 UTC
+    </footer>
+</body>
+</html>

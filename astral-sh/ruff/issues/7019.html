@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto fix for RUF015 is not safe - astral-sh/ruff #7019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto fix for RUF015 is not safe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7019">#7019</a>
+        opened by <a href="https://github.com/jaap3">@jaap3</a>
+        on 2023-08-31 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-31 12:59</div>
+            <div class="timeline-body"><p>Using <code>ruff 0.0.286</code> the following:</p>
+<pre><code class="language-python">bar = (n for n in ())
+try:
+    foo = list(bar)[0]
+except IndexError:
+    pass
+else:
+    print(foo)
+</code></pre>
+<p>is rewritten to:</p>
+<pre><code class="language-python">bar = (n for n in ())
+try:
+    foo = next(iter(bar))
+except IndexError:
+    pass
+else:
+    print(foo)
+</code></pre>
+<p>The rewritten code is now prone to raising an uncaught <code>StopIteration</code> error.</p>
+<p>Same thing goes for the rewrite of:</p>
+<pre><code class="language-python">import contextlib
+
+bar = (n for n in ())
+
+with contextlib.suppress(IndexError):
+    foo = list(bar)[0]
+    print(foo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 13:01</div>
+            <div class="timeline-body"><p>Thanks — this is mentioned in the documentation (https://beta.ruff.rs/docs/rules/unnecessary-iterable-allocation-for-first-element/) and the rule is marked internally as a suggested fix. In the future, suggested fixes will require a dedicated flag to run rather than running automatically, which should help with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-31 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-31 13:08</div>
+            <div class="timeline-body"><p>👍 thanks, didn't think to check the docs for this. I will mark it as unfixable in our config for now (with a reference to this ticket). Looking forward to a version that doesn't apply this fix by default, any idea how far in the future that might be? Can I watch an issue/PR to stay updated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-31 13:09</div>
+            <div class="timeline-body"><p>You can track the applicability work here https://github.com/astral-sh/ruff/issues/4185 (or the parent issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7769.html">astral-sh/ruff#7769</a> on 2023-10-03 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:08 UTC
+    </footer>
+</body>
+</html>

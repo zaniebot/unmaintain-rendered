@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git operation fails if cache exists in subsequent uv pip compile runs - astral-sh/uv #6484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Git operation fails if cache exists in subsequent uv pip compile runs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6484">#6484</a>
+        opened by <a href="https://github.com/nth10sd">@nth10sd</a>
+        on 2024-08-23 02:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nth10sd">@nth10sd</a> on 2024-08-23 02:18</div>
+            <div class="timeline-body"><p>In a <code>requirements.in</code> file:</p>
+<pre><code>git+https://github.com/astral-sh/uv.git@main
+</code></pre>
+<p>Any pyproject.toml file should do.</p>
+<p>Run the following:</p>
+<pre><code>uv pip compile pyproject.toml requirements.in --all-extras --no-strip-extras --no-strip-markers --universal --output-file requirements.txt ;
+</code></pre>
+<p>The first run should succeed, assuming the uv cache does not exist. On subsequent runs, the following occurs:</p>
+<pre><code>⠼ Resolving dependencies...                                                                                                                                                                                      error: Git operation failed
+  Caused by: failed to fetch into: /home/USERNAME/.cache/uv/git-v0/db/5d8dbe36cd6ea14f
+  Caused by: failed to fetch branch or tag `main`
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok 'https://github.com/astral-sh/uv.git' '+refs/tags/main:refs/remotes/origin/tags/main'` (exit status: 128)
+--- stderr
+fatal: couldn't find remote ref refs/tags/main
+</code></pre>
+<p>This issue can be bypassed by doing a <code>rm -rf /home/USERNAME/.cache/uv/git-v0/db/5d8dbe36cd6ea14f</code>.</p>
+<p>The same issue does not seem to exist for <code>git+ssh</code> links.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nth10sd">@nth10sd</a> on 2024-08-23 02:20</div>
+            <div class="timeline-body"><p>Oh wait, the cache seems like a red herring. I re-run the <code>uv pip compile</code> command and sometimes it works, sometimes it doesn't (without clearing the cache).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 02:21</div>
+            <div class="timeline-body"><p>Interesting, I can't reproduce this:</p>
+<p><img src="https://github.com/user-attachments/assets/483075d1-de25-41ca-b33b-2b78b3c30096" alt="Screenshot 2024-08-22 at 10 21 42 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-08-23 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nth10sd">@nth10sd</a> on 2024-08-23 02:47</div>
+            <div class="timeline-body"><pre><code>--- stderr
+fatal: couldn't find remote ref refs/tags/main
+</code></pre>
+<p>Ran into it again - this time, clearing the cache helped.</p>
+<p>I can't tell if this is <code>uv</code> failing or if it's the underlying <code>git</code> command failing, or if it's the server acting up, or even my internet connection. Any clues?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-23 02:49</div>
+            <div class="timeline-body"><p>Hmm... it's possible that <code>--verbose</code> gives you more information, but I'm not certain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nth10sd">@nth10sd</a> on 2024-08-23 02:57</div>
+            <div class="timeline-body"><pre><code>DEBUG Performing a Git fetch for: https://github.com/astral-sh/uv
+DEBUG failed to fetch refspec `+refs/heads/main:refs/remotes/origin/main`: process didn't exit successfully: `git fetch --force --update-head-ok 'https://github.com/astral-sh/uv' '+refs/heads/main:refs/remotes/origin/main'` (exit status: 128)
+--- stderr
+fatal: unable to access 'https://github.com/astral-sh/uv/': Could not resolve host: github.com
+
+DEBUG failed to fetch refspec `+refs/tags/main:refs/remotes/origin/tags/main`: process didn't exit successfully: `git fetch --force --update-head-ok 'https://github.com/astral-sh/uv' '+refs/tags/main:refs/remotes/origin/tags/main'` (exit status: 128)
+--- stderr
+fatal: couldn't find remote ref refs/tags/main
+
+error: Failed to download and build: `uv @ git+https://github.com/astral-sh/uv@main`
+  Caused by: Git operation failed
+  Caused by: failed to clone into: /home/USERNAME/.cache/uv/git-v0/db/5d8dbe36cd6ea14f
+  Caused by: failed to fetch branch or tag `main`
+  Caused by: process didn't exit successfully: `git fetch --force --update-head-ok 'https://github.com/astral-sh/uv' '+refs/tags/main:refs/remotes/origin/tags/main'` (exit status: 128)
+--- stderr
+fatal: couldn't find remote ref refs/tags/main
+</code></pre>
+<p>Hit it again. Sometimes removing the listed cache folder e.g. <code>5d8dbe36cd6ea14f/</code> works, sometimes it doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-28 18:13</div>
+            <div class="timeline-body"><p>Are you still hitting this consistently?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nth10sd">@nth10sd</a> on 2024-08-28 18:28</div>
+            <div class="timeline-body"><p>Yes, still hitting it. I'm usually removing the cache folder and retrying till I get past the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steinwaywhw">@steinwaywhw</a> on 2025-07-08 02:28</div>
+            <div class="timeline-body"><p>Interestingly I ran into this too. I have the following in pyproject.toml</p>
+<pre><code>fire = { git = &quot;https://github.com/google/python-fire&quot;, rev = &quot;master&quot; }
+</code></pre>
+<p>I'm running some scripts in CI where it does <code>uv sync --frozen</code>. The first CI job would succeed, and upload a cache (via GitLab). And the subsequent job will load the cache and ran <code>uv sync --frozen</code> again.</p>
+<p>And I see this</p>
+<pre><code>Failed to download and build `fire @
+  │ git+https://github.com/google/python-fire@dba7e1d0da014e555d174225fdf5ab4c4574b18b`
+  ├─▶ Git operation failed
+  ╰─▶ process didn't exit successfully: `/usr/bin/git clone --no-hardlinks
+      /builds/noetica-projects/data-platform/.cache/uv/git-v0/db/c43925f9ca44b9ea
+      /builds/noetica-projects/data-platform/.cache/uv/git-v0/checkouts/c43925f9ca44b9ea/dba7e1d`
+      (exit status: 128)
+      --- stderr
+      fatal: repository
+      '/builds/noetica-projects/data-platform/.cache/uv/git-v0/db/c43925f9ca44b9ea'
+      does not exist
+</code></pre>
+<p>I'm sorry that I'm not able to describe what is going on precisely and I can't provide more details easily since I don't control the CI component that I included. I can only confirm that I ran into a similar situation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

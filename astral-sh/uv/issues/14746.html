@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv tool install --in` to add packages to an existing tool environment - astral-sh/uv #14746</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv tool install --in` to add packages to an existing tool environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14746">#14746</a>
+        opened by <a href="https://github.com/mgaitan">@mgaitan</a>
+        on 2025-07-19 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mgaitan">@mgaitan</a> on 2025-07-19 14:00</div>
+            <div class="timeline-body"><p>When using <code>uv tool</code>, it's great that we can install tools in an isolated virtual environment with a single command. For example</p>
+<pre><code>uv tool install llm
+</code></pre>
+<p>And it's also possible to install a tool with some plugins as &quot;extras&quot; right away:</p>
+<pre><code>uv tool install --with llm-tr llm
+</code></pre>
+<p>This works perfectly for fresh installs. However, it's not clear how to <strong>add a plugin or extra package later</strong>, into the same environment where the main tool was installed.</p>
+<p>For example, if I’ve already installed <code>llm</code> (another frequent case is <code>jupyter</code>), and now I want to install <code>llm-tr</code> into the same environment, there’s no direct way to do that with <code>uv tool</code>.</p>
+<p>For the particular case of  <code>llm</code>, it provides a workaround via its own plugin installation command:</p>
+<pre><code>llm install llm-tr
+</code></pre>
+<p>This works because <code>llm</code> internally calls <code>pip install</code> using its own Python runtime. But this is not a general solution, and it relies on <code>pip</code>, which I’d like to avoid when using <code>uv</code>.</p>
+<h3>Proposal</h3>
+<p>I'm wondering if we could allow commands like this:</p>
+<pre><code>uv tool install --in llm llm-tr
+</code></pre>
+<p>This would install <code>llm-tr</code> inside the existing environment where <code>llm</code> was installed.</p>
+<p>It could also work for upgrading or uninstalling:</p>
+<pre><code>uv tool upgrade --in llm llm-tr
+uv tool uninstall --in llm llm-tr
+</code></pre>
+<p>This would let users manage plugins or extensions of a tool cleanly, without exposing internal paths or relying on tool-specific behaviors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @mgaitan on 2025-07-19 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pygarap">@pygarap</a> on 2025-07-22 22:08</div>
+            <div class="timeline-body"><p>@mgaitan That's a great idea!
+I think it would be more convenient to use the 'add' keyword:</p>
+<pre><code>&gt;&gt; uv tool install &quot;ipython[matplotlib]&quot;
+&gt;&gt; uv tool add ipython --with &quot;rich[jupyter]&quot;
+&gt;&gt; uv tool add ipython --with &quot;jupyter-ai-magics[all]&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 22:17</div>
+            <div class="timeline-body"><p>It's sort of by-design that this isn't allowed, e.g., this was previously discussed at https://github.com/astral-sh/uv/issues/7312</p>
+<p>https://github.com/astral-sh/uv/issues/12533 might be a better path forward for this use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pygarap">@pygarap</a> on 2025-07-22 22:39</div>
+            <div class="timeline-body"><p>@zanieb I believe the &quot;pipx inject&quot; functionality will be very useful for uv. Often, when using a tool, you may want to install additional dependencies later on. In such cases, it's preferable to add only the specific dependencies you need at that moment, rather than reinstalling everything from scratch.</p>
+<p>#12533 is a very good improvement, but it's not going to add the ability of &quot;pipx inject&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-23 00:09</div>
+            <div class="timeline-body"><p>The concept of injecting dependencies into an existing environment is against our design goal of having declarative environments. That's why it's not a part of the interface, and that's why a declarative interface and backend for tools feels like the solution. It's plausible something similar to what you want could come after #12533, but I'm wary of adding imperative interfaces before there's a user-facing declarative backend for that information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15330.html">astral-sh/uv#15330</a> on 2025-08-19 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Arcitec">@Arcitec</a> on 2025-09-19 20:31</div>
+            <div class="timeline-body"><p>The tools should be advertising proper <code>extras</code> for their extra dependencies, instead of forcing you to manually inject extras via <code>--with</code>. So contact upstreams, contribute pull requests to them.</p>
+<p>Then you can just do:</p>
+<pre><code>uv tool install &quot;yt-dlp[default,curl-cffi,secretstorage]&quot;
+</code></pre>
+<p>Or whatever combination of extras you want. And uv always remembers this during <code>uv tool upgrade</code> actions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slacksystem">@slacksystem</a> on 2025-10-08 21:26</div>
+            <div class="timeline-body"><p>Hi I'm coming here after needing to modify the environment of a tool I've installed a while ago, and, not remembering packages I'd originally installed to the environment, just did a new install wtih <code>uv tool install --with &lt;new package&gt;</code> and ended up removing the old ones. I totally respect the design of having decalarative installs, but is there a way to look at an installed tool and see what packages I included in the original <code>--with ____</code> in my original install, not including dependencies of the executable and dependencies of the original &quot;with&quot; packages  that weren't explicit in the install. That way I can just do <code>uv tool install --with &lt;new package&gt; --with &lt;old package&gt; &lt;tool&gt;</code> and everything works out fine. Is there currently a way to do that and if  not is this something that might be an alternate solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-08 21:29</div>
+            <div class="timeline-body"><p>Yeah you can do <code>uv tool list --show-with</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:09 UTC
+    </footer>
+</body>
+</html>

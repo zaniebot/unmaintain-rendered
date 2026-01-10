@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP006: Incorrect autofix when shadowing builtin - astral-sh/ruff #3284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP006: Incorrect autofix when shadowing builtin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3284">#3284</a>
+        opened by <a href="https://github.com/jdahlin">@jdahlin</a>
+        on 2023-02-28 23:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jdahlin">@jdahlin</a> on 2023-02-28 23:13</div>
+            <div class="timeline-body"><p>The autofix for UP006 is not working correctly when shadowing a builtin such as <code>type</code>.</p>
+<p>Test case</p>
+<pre><code class="language-python">from typing import Type
+
+class F:
+    type = &quot;abc&quot;
+    def foo(self) -&gt; Type[list]:
+        return list
+</code></pre>
+<p>Expected code after autofix:</p>
+<pre><code class="language-python">import builtins
+
+
+class F:
+    type = &quot;abc&quot;
+    def foo() -&gt; builtins.type[list]:
+        return list
+</code></pre>
+<p>Actual code after autofix:</p>
+<pre><code class="language-python">class F:
+    type = &quot;abc&quot;
+    def foo() -&gt; type[list]:
+        return list
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-28 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 23:14</div>
+            <div class="timeline-body"><p>Thanks, you're right! These should check for redefined builtins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3286.html">astral-sh/ruff#3286</a> on 2023-02-28 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-28 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdahlin">@jdahlin</a> on 2023-03-01 08:25</div>
+            <div class="timeline-body"><p>Wow, thanks for the quick fix! Should I open up a new issue to handle the case when the builtins are overriden/shadowed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 16:02</div>
+            <div class="timeline-body"><p>What do you think the ideal behavior would be in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdahlin">@jdahlin</a> on 2023-03-01 23:12</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you think the ideal behavior would be in that case?</p>
+</blockquote>
+<p>To fetch the original object via the builtin module, e.g:</p>
+<pre><code class="language-python">import builtins
+
+
+class F:
+    type = &quot;abc&quot;
+    def foo() -&gt; builtins.type[list]:
+        return list
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 23:28</div>
+            <div class="timeline-body"><p>Yeah we can open an issue for that. It will be tricky to do right now because fixes can't introduce <em>new</em> imports. So for now, we could support this in the event that a module <em>already</em> imports <code>builtins</code>, but we couldn't &quot;import <code>builtins</code> and change the reference&quot;. (Part of #835.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdahlin">@jdahlin</a> on 2023-03-02 11:31</div>
+            <div class="timeline-body"><p>@charliermarsh original builtins can also be found in <code>__builtins__</code> which is always present in the current globals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 21:05</div>
+            <div class="timeline-body"><p>@jdahlin - True! Although that can <em>also</em> be overridden :joy: Feel free to open an issue for it :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

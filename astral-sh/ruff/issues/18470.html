@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stacking `# noqa` with other ignore comments causes an E501 (line too long) violation - astral-sh/ruff #18470</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stacking `# noqa` with other ignore comments causes an E501 (line too long) violation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18470">#18470</a>
+        opened by <a href="https://github.com/user27182">@user27182</a>
+        on 2025-06-04 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/user27182">@user27182</a> on 2025-06-04 19:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The docs for <a href="https://docs.astral.sh/ruff/rules/line-too-long/#line-too-long-e501">E501</a> states that  &quot;a line will not be flagged as overlong if a pragma comment causes it to exceed the line length.&quot;</p>
+<p>This works if the comment is <code># noqa</code>, but seems to fail if there's any other preceding <code>#</code> (with some exceptions for  <code># type: ignore</code>, see below).</p>
+<p>Reproducible with source:</p>
+<pre><code class="language-python">def foo(arg=True):... ## noqa: FBT002
+</code></pre>
+<p>and settings:</p>
+<pre><code class="language-json">{
+  &quot;line-length&quot;: 35,
+  &quot;lint&quot;: {
+    &quot;select&quot;: [
+      &quot;E501&quot;,
+      &quot;FBT&quot;
+    ]
+  },
+  &quot;format&quot;: {}
+}
+</code></pre>
+<p>The practical real-world use-case for this is when multiple linting tools and ignore comments are used, e.g. adding <code># noqa</code> here where the line was previously not too long will cause a violation (but should not):</p>
+<pre><code># numpydoc ignore=PR01  # noqa: FBT002
+</code></pre>
+<p>Interestingly, the <code># type: ignore</code> case is handled properly, and does <em>not</em> cause a violation:</p>
+<pre><code># type: ignore  # noqa: FBT002
+</code></pre>
+<h3>Version</h3>
+<p>ruff v0.11.12 (using the ruff playground)</p>
+<p>EDIT: For clarity:</p>
+<p>This line is not too long:</p>
+<pre><code class="language-python">def foo(arg=True):... #
+</code></pre>
+<p>But this line is:</p>
+<pre><code class="language-python">def foo(arg=True):... ## noqa: FBT002
+</code></pre>
+<p>But, simply adding <code># noqa: FBT002</code> should not cause the line to be too long.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-04 21:06</div>
+            <div class="timeline-body"><p>It looks like we use this <code>is_pragma_comment</code> function, which doesn't recognize <code>numpydoc</code> but does recognize <code>type</code>.</p>
+<p>https://github.com/astral-sh/ruff/blob/a3ee6bb3b5f4f375e606d3bc12094549bb46a98b/crates/ruff_python_trivia/src/pragmas.rs#L13</p>
+<p>There's an <a href="https://github.com/astral-sh/ruff/issues/11941">open issue</a> for the formatter to allow specifying custom pragmas, but I don't see one for the linter.</p>
+<p>(Although this is still arguably a duplicate since we'd likely use the same option)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-06-04 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/user27182">@user27182</a> on 2025-06-04 21:21</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like we use this <code>is_pragma_comment</code> function, which doesn't recognize <code>numpydoc</code> but does recognize <code>type</code>.</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/a3ee6bb3b5f4f375e606d3bc12094549bb46a98b/crates/ruff_python_trivia/src/pragmas.rs#L13">ruff/crates/ruff_python_trivia/src/pragmas.rs</a></p>
+<p>Line 13 in <a href="/astral-sh/ruff/commit/a3ee6bb3b5f4f375e606d3bc12094549bb46a98b">a3ee6bb</a></p>
+<p>pub fn is_pragma_comment(comment: &amp;str) -&gt; bool {
+There's an <a href="https://github.com/astral-sh/ruff/issues/11941">open issue</a> for the formatter to allow specifying custom pragmas, but I don't see one for the linter.</p>
+<p>(Although this is still arguably a duplicate since we'd likely use the same option)</p>
+</blockquote>
+<p>Perhaps this issue is more general than allowing custom pragma ignores? I would have expected <em>any</em> comment to be allowed before <code># noqa</code>, without requiring any special config. E.g. this should also work</p>
+<pre><code class="language-python">def foo(arg=True):... # a comment  # noqa: FBT002
+</code></pre>
+<p>Basically, if a line isn't too long before adding <code># noqa</code>, it should <em>still</em> be not too long after adding <code># noqa</code>, regardless of whatever precedes it. This is my interpretation/understanding of the statement &quot;a line will not be flagged as overlong if a pragma comment causes it to exceed the line length.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/user27182">@user27182</a> on 2025-06-04 21:23</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>There's an <a href="https://github.com/astral-sh/ruff/issues/11941">open issue</a> for the formatter to allow specifying custom pragmas, but I don't see one for the linter.
+(Although this is still arguably a duplicate since we'd likely use the same option)</p>
+</blockquote>
+<p>Perhaps this issue is more general than allowing custom pragma ignores? I would have expected <em>any</em> comment to be allowed before <code># noqa</code>, without requiring any special config. E.g. this should also work</p>
+<p>def foo(arg=True):... # a comment  # noqa: FBT002
+Basically, if a line isn't too long before adding <code># noqa</code>, it should <em>still</em> be not too long after adding <code># noqa</code>, regardless of whatever precedes it. This is my interpretation/understanding of the statement &quot;a line will not be flagged as overlong if a pragma comment causes it to exceed the line length.&quot;</p>
+</blockquote>
+<p>Of course, adding special pragmas would also be nice to ensure that a comment like <code># numpydoc ignore=PR01</code> would not cause a E501 violation by itself</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-04 22:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Basically, if a line isn't too long before adding <code># noqa</code>, it should <em>still</em> be not too long after adding <code># noqa</code>, regardless of whatever precedes it. This is my interpretation/understanding of the statement &quot;a line will not be flagged as overlong if a pragma comment causes it to exceed the line length.&quot;</p>
+</blockquote>
+<p>Oh I see what you mean. Looking at the implementation again, it does sound like that's the intention. Maybe there's a more subtle bug here than I thought.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> removed by @ntBre on 2025-06-04 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-04 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-05 06:14</div>
+            <div class="timeline-body"><p>I think the problem is that <a href="https://github.com/astral-sh/ruff/blob/ff6f0b6ab8fef4df5a14651cf9ef86f016ec0367/crates/ruff_python_trivia/src/pragmas.rs#L13-L30"><code>is_pragma_comment</code></a> doesn't handle nested comments like <code># test # noqa: RUF100</code>. It only matches on <code>test</code>, which isn't a pragma comment and bails. Instead, it should split comments by <code>#</code> and test every element if it is a pragma comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-05 06:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CodeMan62">@CodeMan62</a> on 2025-06-05 10:58</div>
+            <div class="timeline-body"><p>will try to fix it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @CodeMan62 by @ntBre on 2025-06-05 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18604.html">astral-sh/ruff#18604</a> on 2025-06-10 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CodeMan62">@CodeMan62</a> on 2025-07-04 04:59</div>
+            <div class="timeline-body"><p>i will try again and try to purpose a better fix this time</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're on Linux (`manylinux_2_39_x86_64`),  but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64` - astral-sh/uv #11418</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>You're on Linux (`manylinux_2_39_x86_64`),  but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11418">#11418</a>
+        opened by <a href="https://github.com/sglbl">@sglbl</a>
+        on 2025-02-11 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sglbl">@sglbl</a> on 2025-02-11 11:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I try to install requirements (that has pytorch with cuda) from pyproject.toml, I got this error.
+<img src="https://github.com/user-attachments/assets/22b90f0e-031b-42cf-810d-0cbc667739bd" alt="Image" /></p>
+<pre><code class="language-txt">$ uv sync --extra gpu
+error: Distribution `torch==2.5.1 @ registry+https://download.pytorch.org/whl/cu124` can't be installed 
+because it doesn't have a source distribution or wheel for the current platform
+hint: You're on Linux (`manylinux_2_39_x86_64`), 
+but `torch` (v2.5.1) only has wheels for the following platform: `linux_aarch64`
+</code></pre>
+<p>No one on other machine has touched to this <code>pyproject toml / uv.lock</code> file. I solved the issue by removing <code>uv.lock</code>.
+The problem is all the time I have this kind of problems with uv.lock, when I remove it it works.
+But since I installed torch==2.5.1 before and <code>uv</code> added this as <code>&quot;torch&gt;=2.5.1&quot;</code> , after removing uv.lock it insalls <code>torch==2.6.0+cu124</code>.</p>
+<p>Other than this <code>many_linux</code> and <code>linux</code> uncompatibility bug, is there a way to add a specific version to pyproject.toml with uv (without editing toml file by hand)?</p>
+<h3>Platform</h3>
+<p>Linux Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>uv 0.5.29</p>
+<h3>Python version</h3>
+<p>Python 3.10.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sglbl on 2025-02-11 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 13:29</div>
+            <div class="timeline-body"><p>You mean like <code>uv add torch==2.6.0</code>? Or <code>uv add torch==2.6.0+cu124</code>?</p>
+<p>(Unfortunately I can't help further without a complete reproduction, like a <code>pyproject.toml</code> and a series of commands that reproduces the issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-11 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-02-11 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 14:36</div>
+            <div class="timeline-body"><p>Note the <code>manylinux_2_39_x86_64</code> tag is <code>x86_64</code> while the other is <code>linux_aarch64</code> which is <code>arm64</code> — that's the incompatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldng">@ldng</a> on 2025-02-11 20:05</div>
+            <div class="timeline-body"><p>Same issue.</p>
+<p>Archlinux | glibc-2.41+r6+gcf88351b685d-1 | linux-6.13.2.arch1-1 | Arch: X86_64</p>
+<p>Minimal pyproject.toml to reproduce :</p>
+<pre><code>[project]
+name = &quot;aarch64-issue&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = [
+    &quot;torch&quot;,
+]
+
+
+[[tool.uv.index]]
+name = &quot;pytorch-rocm&quot;
+url = &quot;https://download.pytorch.org/whl/rocm6.2&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-rocm&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+</code></pre>
+<p>$ uv sync --verbose</p>
+<pre><code>DEBUG uv 0.5.30 (ddbc6e315 2025-02-10)
+DEBUG Found project root: `/tmp/aarch64_issue`
+DEBUG No workspace root found, using project root
+DEBUG Acquired lock for `/tmp/aarch64_issue`
+DEBUG Reading Python requests from version file at `/tmp/aarch64_issue/.python-version`
+DEBUG Using Python request `3.10` from version file at `.python-version`
+DEBUG Checking for Python environment at `.venv`
+DEBUG Searching for Python 3.10 in managed installations or search path
+DEBUG Searching for managed installations at `~/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.14.0a4-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.12.8-linux-x86_64-gnu`
+DEBUG Skipping incompatible managed installation `cpython-3.11.11-linux-x86_64-gnu`
+DEBUG Found managed installation `cpython-3.10.16-linux-x86_64-gnu`
+DEBUG Found `cpython-3.10.16-linux-x86_64-gnu` at `~/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10` (managed installations)
+Using CPython 3.10.16
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: ~/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10
+DEBUG Using base executable for virtual environment: ~/.local/share/uv/python/cpython-3.10.16-linux-x86_64-gnu/bin/python3.10
+DEBUG Released lock at `/tmp/uv-6ac5999c7feb2517.lock`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: aarch64-issue @ file:///tmp/aarch64_issue
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 10 packages in 0.34ms
+error: Distribution `torch==2.0.1 @ registry+https://download.pytorch.org/whl/rocm6.2` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on Linux (`manylinux_2_40_x86_64`), but `torch` (v2.0.1) only has wheels for the following platform: `manylinux2014_aarch64`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 20:08</div>
+            <div class="timeline-body"><p>You need this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;aarch64-issue&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.10.*&quot;
+dependencies = [
+    &quot;torch&gt;=2.5.1&quot;,
+    &quot;pytorch-triton-rocm&quot;,
+]
+
+
+[[tool.uv.index]]
+name = &quot;pytorch-rocm&quot;
+url = &quot;https://download.pytorch.org/whl/rocm6.2&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-rocm&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+pytorch-triton-rocm = [
+  { index = &quot;pytorch-rocm&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+]
+</code></pre>
+<p>You're using an explicit index, but <code>pytorch-triton-rocm</code> doesn't exist on PyPI at the version you need, so the resolver is backtracking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 20:08</div>
+            <div class="timeline-body"><p>(I don't think your issue is related? OP is asking about the <code>cu124</code> index.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-02-11 20:27</div>
+            <div class="timeline-body"><p>This is my toml file.</p>
+<pre><code class="language-python">[project]
+name = &quot;ex&quot;
+version = &quot;0.1.0&quot;
+description = &quot;example Project&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;aiohttp&gt;=3.11.11&quot;,
+    &quot;fastapi&gt;=0.115.6&quot;,
+    &quot;gradio==5.6.0&quot;,
+    &quot;gradio-log&gt;=0.0.8&quot;,
+    &quot;haystack-ai==2.4.0&quot;,
+    &quot;lingua-language-detector==2.0.2&quot;,
+    &quot;loguru&gt;=0.7.3&quot;,
+    &quot;msal&gt;=1.31.1&quot;,
+    &quot;munch&gt;=4.0.0&quot;,
+    &quot;ollama-haystack==0.0.7&quot;,
+    &quot;openai&gt;=1.59.4&quot;,
+    &quot;openpyxl&gt;=3.1.5&quot;,
+    &quot;psycopg2&gt;=2.9.10&quot;,
+    &quot;pypdf&gt;=5.1.0&quot;,
+    &quot;pytest&gt;=8.3.4&quot;,
+    &quot;python-dotenv&gt;=1.0.1&quot;,
+    &quot;qdrant-haystack&gt;=7.0.0&quot;,
+    &quot;ring&gt;=0.10.1&quot;,
+    &quot;sentence-transformers&gt;=3.3.1&quot;,
+    &quot;sqlalchemy==2.0.31&quot;,
+    &quot;sqlitedict&gt;=2.1.0&quot;,
+    &quot;tabulate&gt;=0.9.0&quot;,
+    &quot;tiktoken&gt;=0.8.0&quot;,
+    &quot;transformers&gt;=4.47.1&quot;,
+    &quot;unidecode&gt;=1.3.8&quot;,
+    &quot;xlsxwriter&gt;=3.2.1&quot;,
+]
+
+
+[dependency-groups]
+dev = [
+    &quot;jupyter&gt;=1.1.1&quot;,
+    &quot;pypdf2&gt;=3.0.1&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch==2.5.1&quot;,
+]
+gpu = [
+  &quot;torch==2.5.1&quot;,
+]
+
+[tool.uv]
+conflicts = [ # type:ignore
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;gpu&quot; },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-gpu&quot;, extra = &quot;gpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+[tool.pytest.ini_options]
+pythonpath = &quot;.&quot; # Add the project root path to the pythonpath [to be able to import the 'src' module]
+filterwarnings = [&quot;ignore::DeprecationWarning&quot;, &quot;ignore::FutureWarning&quot;, &quot;ignore::PendingDeprecationWarning&quot;]
+</code></pre>
+<p>On the first install everything is fine (always). But when I add a new package and change from gpu to cpu version makes some changes on uv.lock file and then new installations create problem. So I need to remove uv.lock. (Unfortunately I don't remember the exact order of reproducing the issue or if it was because of an exact package(such as lingua..)) But both of my computers that I use for this project is has x86_64 so it shouldn't even have <code>linux_aarch64</code>:</p>
+<pre><code class="language-bash">~$ uname -m
+x86_64
+</code></pre>
+<p>@charliermarsh My second question was: when I use uv add torch, it will install last version (for example 2.6.0+cu124) and add &gt;=2.6.0+cu124 to toml. But if I remove the lock and some months later if I reinstall from my toml, it might install a uncompatible newer version which I don't want. So is there a way to add it to toml without specifying the version? (This question is not that important for me, just a side question)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldng">@ldng</a> on 2025-02-12 15:51</div>
+            <div class="timeline-body"><blockquote>
+<p>(I don't think your issue is related? OP is asking about the <code>cu124</code> index.)</p>
+</blockquote>
+<p>I'll take your word for it. Still, the &quot;aarch64&quot; hint is confusing in both cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 15:58</div>
+            <div class="timeline-body"><p>@ldng The hint is just a fact about what wheels are available for that version...</p>
+<p><img width="389" alt="Image" src="https://github.com/user-attachments/assets/7d122a88-8b61-4f5d-ba28-f626ad978c65" /></p>
+<p>You're on x86-64, only aarch64 wheels are available for the version in the lockfile — those are incompatible architectures.</p>
+<p>The fix is to adjust your dependencies so we do not lock a version that cannot be used on your current platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 16:06</div>
+            <div class="timeline-body"><p>I'm happy to improve the hint though, do you have a suggestion that would clarify things for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-02-15 15:13</div>
+            <div class="timeline-body"><p>@charliermarsh If you cannot reproduce, if you want I can close the issue until somebody else encounters this issue and opens it again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 01:45</div>
+            <div class="timeline-body"><p>I think this could plausibly be improved by #11546 which I just merged. If you encounter it again and have a reproduction, I'm always happy to re-open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-16 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheMrCodes">@TheMrCodes</a> on 2025-04-03 10:17</div>
+            <div class="timeline-body"><p>Had the same error when using <code>torch==2.5.1</code>. Solved it by writing <code>torch==2.5.1+cu124</code> into the exta dependencies.</p>
+<p>Final and workingpyproject.toml</p>
+<pre><code class="language-pyproject.toml">[project]
+name = &quot;experiments&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;pydantic&gt;=2.10.4&quot;,
+    &quot;setuptools&gt;=75.6.0&quot;,
+    &quot;ujson&gt;=5.10.0&quot;,
+    &quot;tqdm&gt;=4.67.1&quot;,
+    &quot;tensorboard&gt;=2.18.0&quot;,
+    &quot;transformers&gt;=4.47.1&quot;,
+    &quot;scikit-learn&gt;=1.6.0&quot;,
+    &quot;ipykernel&gt;=6.29.5&quot;,
+    &quot;einops&gt;=0.8.1&quot;,
+    &quot;pillow&gt;=11.1.0&quot;,
+    &quot;orjson&gt;=3.10.15&quot;,
+    &quot;pandas&gt;=2.2.3&quot;,
+    &quot;pyarrow&gt;=18.1.0&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+    &quot;torch==2.5.1+cpu&quot;,
+    &quot;torchvision==0.20.1+cpu&quot;,
+]
+cu124 = [
+    &quot;torch==2.5.1+cu124&quot;,                 # 'torch==2.5.1' caused the error here and +cu124 solved it
+    &quot;torchvision==0.20.1+cu124&quot;,
+]
+
+[tool.uv]
+conflicts = [ [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu124&quot; },
+] ]
+
+
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+    { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+torchvision = [
+    { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+    { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/experiments&quot;]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12852.html">astral-sh/uv#12852</a> on 2025-04-13 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

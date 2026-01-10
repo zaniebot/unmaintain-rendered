@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLR1736` yields invalid suggestion and unsafe fix that changes semantics. - astral-sh/ruff #8969</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`PLR1736` yields invalid suggestion and unsafe fix that changes semantics.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8969">#8969</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2023-12-02 17:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-02 17:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">l = list(range(1, 10))
+b = []
+for i, a in enumerate(l):
+    if a &lt; 5:
+        a = -a
+    b.append(l[i])
+assert b == l, &quot;b and l should match&quot;
+</code></pre>
+<p>but it gets flagged and transform by the fixes into</p>
+<pre><code class="language-python">l = list(range(1, 10))
+b = []
+for i, a in enumerate(l):
+    if a &lt; 5:
+        a = -a
+    b.append(a)
+assert b == l, &quot;b and l should match&quot;
+</code></pre>
+<p>which is wrong and now fails the assert. Seems like the refactor may have missed this test case. I ran this test on the PR before it was merged a few weeks agi and it ran fine so it might have something to do with either last minute changes to the PR or changes @charliermarsh made to the PR after it was merged (https://github.com/astral-sh/ruff/pull/8932). This is a contrived example with an unused, but it's simplified from a real failure case in <code>torch/optim/adamw.py</code> in the pytorch repo.</p>
+<p>Current ruff version is a build done on the latest master as of today 2023/12/2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-02 17:18</div>
+            <div class="timeline-body"><p>I flagged a similar issue here: https://github.com/astral-sh/ruff/pull/7999#issuecomment-1793503531 in the PR, but that one appeared to be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-02 17:24</div>
+            <div class="timeline-body"><p>Thanks, will fix. Just confirming, this isn’t released yet, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-02 17:34</div>
+            <div class="timeline-body"><p>Correct, and it's still a preview rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8970.html">astral-sh/ruff#8970</a> on 2023-12-02 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-02 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-02 18:15</div>
+            <div class="timeline-body"><p>Awesome, thanks for reporting from <code>main</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-02 18:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

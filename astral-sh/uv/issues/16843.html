@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Index with inline credentials breaks lock files - astral-sh/uv #16843</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV Index with inline credentials breaks lock files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16843">#16843</a>
+        opened by <a href="https://github.com/g0t00">@g0t00</a>
+        on 2025-11-25 12:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/g0t00">@g0t00</a> on 2025-11-25 12:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I tried to embedded authentification credentials directly into the index definition as shown here: https://docs.astral.sh/uv/concepts/indexes/#providing-credentials-directly
+This breaks behaviour in combination with lock files <code>uv run --locked</code> does not work anymore. Also <code>uv lock --check</code> failes, even when I just run <code>uv lock</code> (And another uv lock, does result in identical file)</p>
+<pre><code class="language-bash">❯ uv lock --check
+Resolved 97 packages in 1.22s
+The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+<p>The documentation provides info on how the credentials are removed for the lock file. I would assume this somehow breaks checking for the lockfile. But the current behaviour makes lockfiles completly unusable. I would assume this is unintended behaviour.
+At least there should be a clear warning in the documentation</p>
+<h3>Platform</h3>
+<p>Many different linux distributions (Ubuntu 22, 24, current Manjaro Releases...)</p>
+<h3>Version</h3>
+<p>uv 0.9.11 (8d8aabb88 2025-11-20)</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @g0t00 on 2025-11-25 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-28 14:32</div>
+            <div class="timeline-body"><p>I'm unable to reproduce this. Can you include a minimal reproducible example please? Here's the <code>pyproject.toml</code> I used, which hits our &quot;authenticated but actually public&quot; proxy that only exists for testing:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.14.0&quot;
+dependencies = [&quot;anyio&quot;]
+
+[[tool.uv.index]]
+name = &quot;internal&quot;
+url = &quot;https://public:heron@pypi-proxy.fly.dev/basic-auth/simple/&quot;
+</code></pre>
+<p>Running <code>uv lock --check</code> from that <code>pyproject.toml</code> is clean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-11-28 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-11-28 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-03 03:43</div>
+            <div class="timeline-body"><p>Closing but can always reopen with a reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-03 03:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g0t00">@g0t00</a> on 2025-12-05 15:44</div>
+            <div class="timeline-body"><p>After some research I managed to reproduce the issue with a MWE. It seems to be a lot more specific than we initally thought:
+So we require a private repository that actually enforces the auth, and and both indices need to be marked as default and the dependency need to be marked as dev.</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = []
+
+[dependency-groups]
+dev = [&quot;uv-dummy==0.1.0&quot;]
+[[tool.uv.index]]
+name = &quot;PyPI&quot;
+url = &quot;https://pypi.org/simple/&quot;
+default = true
+[[tool.uv.index]]
+name = &quot;internal&quot;
+url = &quot;http://public:heron@localhost:8080/simple&quot;
+default = true
+
+[tool.uv.sources]
+uv-dummy = { index= &quot;internal&quot; }
+</code></pre>
+<p>With the above <code>pyproject.toml</code> I get the wrong behaviour:</p>
+<pre><code class="language-bash">$ uv lock
+Resolved 2 packages in 6ms
+$ uv lock --check
+Resolved 2 packages in 7ms
+The lockfile at `uv.lock` needs to be updated, but `--check` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+<p>I used the <code>pypiserver</code> to get the required pypi repository. The following snippet can be used to spin up a docker container with a dummy package and the required authentification</p>
+<pre><code class="language-bash">#Generate uv dummy
+mkdir uv-dummy
+cd uv-dummy
+uv init
+uv build
+cd ..
+echo &quot;public:$apr1$puwk0l7n$JMspOWN9hjyNLcnJAsy7I/&quot; &gt; htpasswd.txt
+docker run -p 8080:8080 -v ./uv-dummy/dist:/data/packages -v ./htpasswd.txt:/data/.htpasswd pypiserver/pypiserver:latest run -a update,download,list -P /data/.htpasswd
+</code></pre>
+<p>This seems to be a bit of an edge case which we randomly hit in our internal setup, but I still think this should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-05 19:22</div>
+            <div class="timeline-body"><p>It's because you have the second <code>default = true</code>. Do you know why that's present? Removing either of the two <code>default = true</code> resolves the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2025-12-05 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2025-12-05 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-12-05 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-05 19:31</div>
+            <div class="timeline-body"><p>We should either handle this correctly or make repeated <code>default = true</code> in the same file an error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17011.html">astral-sh/uv#17011</a> on 2025-12-06 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-06 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17012.html">astral-sh/uv#17012</a> on 2025-12-06 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-06 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff fails to build in Termux on Android 14, unable to find -lgcc - astral-sh/ruff #17527</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff fails to build in Termux on Android 14, unable to find -lgcc</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17527">#17527</a>
+        opened by <a href="https://github.com/bdegreve">@bdegreve</a>
+        on 2025-04-21 17:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bdegreve">@bdegreve</a> on 2025-04-21 17:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When trying to build Ruff in Termux on Android, it fails with the error <code>unable to find library -lgcc</code></p>
+<p>First, the following message is repeated many times:</p>
+<pre><code>'+fpmr' is not a recognized feature for this target (ignoring feature)
+</code></pre>
+<p>To finally conclude with:</p>
+<pre><code>...
+'+fpmr' is not a recognized feature for this target (ignoring feature)
+'+fpmr' is not a recognized feature for this target (ignoring feature)
+error: linking with `cc` failed: exit status: 1
+  |
+  = note:  &quot;cc&quot; &quot;&lt;sysroot&gt;/tmp/rustc7xXo1P/symbols.o&quot; &quot;&lt;2201 object files omitted&gt;&quot; &quot;-Wl,--as-needed&quot; &quot;-Wl,-Bstatic&quot; &quot;&lt;sysroot&gt;/tmp/rustc7xXo1P/{libtikv_jemalloc_sys-*,libzstd_sys-*}.rlib&quot; &quot;&lt;sysroot&gt;/lib/rustlib/aarch64-linux-android/lib/{libcompiler_builtins-*}.rlib&quot; &quot;-Wl,-Bdynamic&quot; &quot;-lgcc&quot; &quot;-ldl&quot; &quot;-llog&quot; &quot;-lunwind&quot; &quot;-ldl&quot; &quot;-lm&quot; &quot;-lc&quot; &quot;-Wl,--eh-frame-hdr&quot; &quot;-Wl,-z,noexecstack&quot; &quot;-L&quot; &quot;/data/data/com.termux/files/home/ruff/target/release/build/zstd-sys-8e4a345f2fc1e8e3/out&quot; &quot;-L&quot; &quot;/data/data/com.termux/files/home/ruff/target/release/build/tikv-jemalloc-sys-c141053eefecffab/out/build/lib&quot; &quot;-L&quot; &quot;/data/data/com.termux/files/home/ruff/target/release/build/tikv-jemalloc-sys-c141053eefecffab/out&quot; &quot;-o&quot; &quot;/data/data/com.termux/files/home/ruff/target/release/deps/ruff-b7c7594f40f7712c&quot; &quot;-Wl,--gc-sections&quot; &quot;-pie&quot; &quot;-Wl,-z,relro,-z,now&quot; &quot;-Wl,-O1&quot; &quot;-Wl,--strip-debug&quot; &quot;-nodefaultlibs&quot;
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: ld.lld: error: unable to find library -lgcc
+          cc: error: linker command failed with exit code 1 (use -v to see invocation)
+</code></pre>
+<p>I've found a similar issue reported to termux about <a href="https://github.com/termux/termux-packages/issues/20063">vim-clap</a> [1],
+which was resolved upstream by <a href="https://github.com/liuchengxu/vim-clap/pull/1079">disabling tikv-jemallocator on Android</a> [2].</p>
+<p>When duplicating that resolution by also disabling tikv-jemallocator in Ruff, <code>cargo build --release</code> will succeed, and running <code>cargo run -p ruff -- check /path/to/file.py --no-cache</code> also succeeds.</p>
+<p>I don't know if that's the best solution, or even an acceptable (I'm not familiar with the Rust nor Android ecosystem), but I can create a PR with my changes for consideration.</p>
+<p>I know there's a pre-built termux package that I can install with <code>pkg install ruff</code>, but I'd like to install ruff as part of a venv, for which it needs to be able to build from source.</p>
+<p><strong>Steps to reproduce in Termux:</strong></p>
+<pre><code>pkg install build-essential rust
+git clone https://github.com/astral-sh/ruff.git
+cd ruff
+cargo build --release
+</code></pre>
+<p><strong>Environment:</strong></p>
+<ul>
+<li>TERMUX_VERSION=0.118.1</li>
+<li>Android version: 14</li>
+<li>Kernel build information: <code>Linux localhost 5.15.153-android13-3-29539737 #1 SMP PREEMPT Fri Feb 14 18:09:51 KST 2025 aarch64 Android</code></li>
+<li>Device: Samsung Galaxy Tab S9 FE (SM-X510)</li>
+<li>SUPPORTED_ABIS: arm64-v8a,armeabi-v7a,armeabi</li>
+<li>cargo: 1.86.0 (adf9b6ad1 2025-02-28)</li>
+<li>ruff: main branch, g1918c6162</li>
+</ul>
+<p>[1] https://github.com/termux/termux-packages/issues/20063
+[2] https://github.com/liuchengxu/vim-clap/pull/1079</p>
+<h3>Version</h3>
+<p>ruff 0.11.6 (1918c6162 2025-04-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-23 07:22</div>
+            <div class="timeline-body"><p>Thanks for the nice write up. Disabling jemalloc is an option, but it will result in a slower version of Ruff. I'd have to do some more research but jemalloc at least claims that android is supported. But maybe only if gcc is installed (which doesn't seem to be the case anymore for newer andorid ndks?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-04-23 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdegreve">@bdegreve</a> on 2025-04-23 15:56</div>
+            <div class="timeline-body"><p>I've found this stating libgcc is indeed no longer available: https://blog.rust-lang.org/2023/01/09/android-ndk-update-r25/
+But I'm honestly unsure what that means for tikv-jemallocator.</p>
+<p>In meantime, I could try that workaround that the blog post mentions, and and redirect libgcc.a to libunwind.a.  I'll keep you posted on how that goes...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bdegreve">@bdegreve</a> on 2025-04-23 21:58</div>
+            <div class="timeline-body"><p>@MichaReiser I'm happy to report that the workaround metiond in that blog post works.  Ruff correctly builds, and <code>pip install ruff</code> now also works (pip needs to build it from source on Termux)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-24 06:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laguill">@laguill</a> on 2025-04-26 21:25</div>
+            <div class="timeline-body"><p>Hi @bdegreve,</p>
+<p>Can you elaborate a bit more how you did to solve this issue ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18016.html">astral-sh/ruff#18016</a> on 2025-05-11 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18033.html">astral-sh/ruff#18033</a> on 2025-05-12 07:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

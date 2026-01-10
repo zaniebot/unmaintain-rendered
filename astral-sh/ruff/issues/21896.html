@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relexing logical tokens and unclosed interpolated strings - astral-sh/ruff #21896</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Relexing logical tokens and unclosed interpolated strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21896">#21896</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-10 15:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 15:38</div>
+            <div class="timeline-body"><p>Our logical-line error recovery doesn't work as expected for unclosed interpolated strings. I'm also not sure if it works as expected in other cases but more below.</p>
+<p>We call <code>re_lex_logical_token</code> during list parsing recovery if the next token is a valid list element or list terminator of any active recovery context, and we use list parsing (or the comma-separated variant thereof) for interpolated strings, lists, dictionaries, statements, etc.</p>
+<p>Here are a few thoughts after trying to &quot;quickly&quot; make it work for interpolated strings:</p>
+<ul>
+<li><code>re_lex_logical_token</code> always decrements the nesting but this can lead to inconsistencies where the interpolated string on the top of the stack now has a deeper nesting than the Lexer's nesting. I think <code>re_lex_logical_token</code> should pop the interpolated string in that case.</li>
+<li>Similarly, an interpolated string can have a format-specifier that we track based on the nesting. Should it probably end those?</li>
+<li>Always decrementing <code>self.nesting</code> by one feels incorrect. We should only do so if we've seen a <code>(</code>, <code>[</code> or <code>{</code> because it's only then that we increment the <code>nesting</code>. E.g. the tuple parsing shouldn't decrement if the tuple has no parentheses of its own.</li>
+<li>The other part that feels off about always decrementing <code>nesting</code> regardless of what the current parsing function (error context) is that we only want to decrement <code>nesting</code> if the parentheses belong to the current context.</li>
+<li>It's very easy to forget syncing the lexer's <code>self.nesting</code> with the parser's understanding during manual error recovery: e.g., after a manual <code>self.expect(']').</code></li>
+<li>The base promise of <code>re_lex_logical_token</code> is that it only lexes <code>NonLogicalNewline</code> tokens to <code>Newline</code> but that's not guaranteed because changing the nesting can move the lexer in/out of interpolated strings.</li>
+<li>If the only purpose of <code>re_lex_logical_token</code> is to change <code>NonLogicalNewline</code> to <code>Newline</code>, then it should early return when <code>self.nesting &gt; 0</code> because the newline token will never be lexed differently, if <code>nesting</code> isn't zero</li>
+<li>A base assumption of the list error recovery is that <code>re_lex_logical_token</code> would be called <code>N</code> times by unwinding the recovery context so that <code>self.nesting</code> ultimately reaches 0 and the re-lexing happens. This has two issues a) more inner context doesn't see the re-lexed token, even if it's pretty clear that we should reset <code>nesting</code> to <code>0</code> when we see a <code>def</code> statement, and b) I don't think we call the recovery function for every nesting level. Using the following rather broken code:</li>
+</ul>
+<pre><code class="language-py"># Regression test for https://github.com/astral-sh/ty/issues/1828
+(c: int = 1,f&quot;&quot;&quot;{d=[
+def a(
+class A:
+    pass
+</code></pre>
+<p>I don't fully understand what's happening but this is what I'm seeing:</p>
+<ul>
+<li>We hit error recovery the first time after the <code>Lsqb</code>. Nesting is already 3 at this point (because of the <code>[</code>. The lexer decrements <code>nesting</code> but it doesn't re-lex because there's no preceding <code>NonLogicalNewline</code> (the next token is <code>Lsqb</code>)</li>
+<li>The next recovery is already <code>Arguments</code> from <code>def a(</code>. There's no recovery from the unclosed <code>(</code></li>
+</ul>
+<p>A few things seem to go wrong here:</p>
+<ul>
+<li>The parser never pushes an error recovery context for <code>(</code> because we parse parenthesized expressions manually</li>
+<li>The lexer bumps nesting for <code>(</code>, <code>{</code>, and <code>[</code> but the parser never enters the list parsing for <code>[</code>.</li>
+</ul>
+<p>This inevitably leads the parser to call <code>re_lex_logical_token</code> too few times (once instead of three), so the error recovery doesn't kick in.</p>
+<p>This makes me wonder if we need more carefully placed <code>re_lex</code> calls rather than a catch-all during error recovery (similar to what we do with unclosed interpolated strings).</p>
+<p>For example, we could accept that the lexer and parser state diverge during expression parsing. Instead, we could have a manual <code>relex</code> call that resets the lexer into a &quot;start of a logical line&quot; (no interpolated strings, no nesting, no nothing) before parsing any statement or other logical line.</p>
+<p>Syncing interpolated strings seems tricky because the parser and lexer state are so intertwined, maybe even so much, that there's an argument that the interpolated string state tracking should be within the parser.</p>
+<p>I don't have any concrete solution here and what we have sort of works but it's also very easy to make it get out of sync, of which it sometimes never recovers from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-12-10 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2025-12-10 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21898.html">astral-sh/ruff#21898</a> on 2025-12-10 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 09:30</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/11946</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 10:35</div>
+            <div class="timeline-body"><p>@dhruvmanila discussed this a bit during our 1:1 and we were wondering if we could move most state out of the lexer and into the <code>Parser</code> instead.</p>
+<ul>
+<li>The parser tells the lexer when it enters a parenthesized context so that it can set its state to <code>Parenthesized</code> and lex whitespace as whitespace rather than indents.</li>
+<li>The parser tells the lexer when it leaves the last parenthesized context so that it can lex whitespace as indent.</li>
+<li>The parser tells the lexer when it enters a format spec</li>
+<li>The parser tells the lexer when it leaves the format spec</li>
+<li>I'm not sure if we could do the same with interpolated strings in general.</li>
+</ul>
+<p>The downside is that the <code>Lexer</code> could no longer be used on its own because it now depends on an external driver, but it should be trivial to extract the existing logic from the <code>Lexer</code> that increments and decrements the nesting based on parentheses into an adapter in front of the <code>Lexer</code>.</p>
+<p>The main advantage is that the parser and lexer states are guaranteed to always be in sync.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:19 UTC
+    </footer>
+</body>
+</html>

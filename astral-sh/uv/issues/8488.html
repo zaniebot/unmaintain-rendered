@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confusing failure to deserialize cache entry when running older uv with uv - astral-sh/uv #8488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Confusing failure to deserialize cache entry when running older uv with uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8488">#8488</a>
+        opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a>
+        on 2024-10-23 06:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2024-10-23 06:30</div>
+            <div class="timeline-body"><p>The error I see:</p>
+<pre><code>&gt; uv --version
+uv 0.4.25 (Homebrew 2024-10-21)
+&gt; uv run --with=uv==0.4.21 uv run python
+warning: No `requires-python` value found in the workspace. Defaulting to `&gt;=3.13`.
+warning: `VIRTUAL_ENV=/Users/adam/Library/Caches/uv/archive-v0/sbP0Zf_rJKTe35hA0v5yT` does not match the project environment path `.venv` and will be ignored
+warning: No `requires-python` value found in the workspace. Defaulting to `&gt;=3.13`.
+error: Failed to generate package metadata for `example==0.0.0 @ editable+.`
+  Caused by: Failed to deserialize cache entry
+  Caused by: data did not match any variant of untagged enum CacheInfoWire
+</code></pre>
+<p>A minimal setup for this:</p>
+<pre><code class="language-toml"># pyproject.toml
+[build-system]
+build-backend = &quot;setuptools.build_meta&quot;
+requires = [&quot;setuptools&quot;]
+
+[project]
+name = &quot;example&quot;
+dynamic = [&quot;version&quot;]
+
+[tool.setuptools.packages.find]
+where = [&quot;src&quot;]
+</code></pre>
+<pre><code class="language-python"># src/example/__init__.py
+
+print(&quot;Hello&quot;)
+</code></pre>
+<p>I spent some time debugging that a script called by <code>uv run</code> was running a different version of <code>uv</code>.</p>
+<p>I expect that either this will &quot;just work&quot;, or that the error message would be clearer to help me understand the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2024-10-23 06:32</div>
+            <div class="timeline-body"><p>The policy / documentation which comes from https://github.com/astral-sh/uv/issues/8367 is helpful for understanding, but I think it would be better to have <code>uv</code> output something more understandable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-10-23 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2024-10-23 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-10-23 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 12:54</div>
+            <div class="timeline-body"><p>(Relabeling since this isn't a bug, it's just an error message issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8500.html">astral-sh/uv#8500</a> on 2024-10-23 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-23 13:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:15 UTC
+    </footer>
+</body>
+</html>

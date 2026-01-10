@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv use wrong interpreter when `uv venv`, and activated wrong environment when activate venv - astral-sh/uv #2649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv use wrong interpreter when `uv venv`, and activated wrong environment when activate venv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2649">#2649</a>
+        opened by <a href="https://github.com/kevindaffaarr">@kevindaffaarr</a>
+        on 2024-03-25 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kevindaffaarr">@kevindaffaarr</a> on 2024-03-25 15:07</div>
+            <div class="timeline-body"><!--
+
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><strong>Run On</strong>
+uv version: 0.1.24
+OS: Windows 11</p>
+<h2>Problem Reproducing</h2>
+<p>I have multiple python version in my PC with aliases python, python310, and python311. I already install uv in python311 by</p>
+<pre><code>python311 -m pip install uv
+</code></pre>
+<p>And then I check the other python</p>
+<pre><code>python -m pip freeze // there is no uv installed
+
+python310 -m pip freeze // there is no uv installed
+</code></pre>
+<p>which is expected.</p>
+<p>Then I trigger command for creating a virtual environment:</p>
+<pre><code>python311 -m v venv
+</code></pre>
+<h2>First Problem</h2>
+<p>The first problem is, uv use python alias (which is python 3.10.8) as interpreter.</p>
+<h2>Second Problem</h2>
+<p>After I activate the venv and pip freeze</p>
+<pre><code>source ./.venv/Scripts/Activate
+pip freeze
+</code></pre>
+<p>It resulted the activated python interpreter of my other folder with installed packages, meanwhile my current Lib folder is empty.</p>
+<details>
+<summary>Below is the full terminal interactions</summary>
+<br>
+
+<pre><code>kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ python311 -m pip install uv
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: uv in c:\users\kevin\appdata\roaming\python\python311\site-packages (0.1.24)
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 24.0
+[notice] To update, run: python311.exe -m pip install --upgrade pip
+
+
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ python311 -m pip freeze
+// truncated because too long
+pexpect==4.9.0
+pip-tools==7.4.0
+pkginfo==1.9.6
+platformdirs==3.11.0
+poetry==1.7.1
+poetry-core==1.8.1
+poetry-plugin-export==1.6.0
+ptyprocess==0.7.0
+pyproject_hooks==1.0.0
+pywin32-ctypes==0.2.2
+rapidfuzz==3.6.1
+requests==2.31.0
+requests-toolbelt==1.0.0
+shellingham==1.5.4
+tomlkit==0.12.3
+trove-classifiers==2024.1.8
+urllib3==2.1.0
+uv==0.1.24
+virtualenv==20.25.0
+zipp==3.17.0
+// truncated because too long
+
+
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ python311 -m uv venv
+Using Python 3.10.8 interpreter at: C:\Program Files\Python310\python.exe
+Creating virtualenv at: .venv
+Activate with: source .venv\bin\activate
+
+
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ source ./.venv/Scripts/activate
+
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ pip freeze
+// truncated because too long
+pywin32==306
+pywin32-ctypes==0.2.2
+pyzmq==25.1.1
+rapidfuzz==3.6.1
+requests==2.31.0
+requests-toolbelt==1.0.0
+rsa==4.9
+shellingham==1.5.4
+six==1.16.0
+soupsieve==2.5
+SQLAlchemy==2.0.27
+sqlalchemy-bigquery @ git+https://github.com/googleapis/python-bigquery-sqlalchemy.git@0c4cf07dce7e70cd04b196ca72193a65f95e3567
+stack-data==0.6.2
+tomli==2.0.1
+tomlkit==0.12.3
+tornado==6.3.3
+traitlets==5.10.0
+trove-classifiers==2024.1.8
+typing_extensions==4.7.1
+tzdata==2023.3
+urllib3==2.0.5
+virtualenv==20.24.5
+wcwidth==0.2.6
+zipp==3.17.0
+// truncated because too long
+
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ uv pip freeze
+bash: uv: command not found
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$ uv
+bash: uv: command not found
+
+(testing)
+kevin@DESKTOP-G3K95A5 MINGW64 /d/Quantist/testing
+$
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-25 17:11</div>
+            <div class="timeline-body"><p>This sounds like it would be resolved by https://github.com/astral-sh/uv/pull/2338 and looks like a duplicate of https://github.com/astral-sh/uv/issues/2222</p>
+<p>See also #2386</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-03-25 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 03:03</div>
+            <div class="timeline-body"><p>Closing in favor of those related issues. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-26 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3736.html">astral-sh/uv#3736</a> on 2024-05-22 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

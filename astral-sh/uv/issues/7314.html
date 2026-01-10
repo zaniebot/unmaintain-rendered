@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support working on multiple projects in the same venv - astral-sh/uv #7314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support working on multiple projects in the same venv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7314">#7314</a>
+        opened by <a href="https://github.com/cdwilson">@cdwilson</a>
+        on 2024-09-11 22:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cdwilson">@cdwilson</a> on 2024-09-11 22:47</div>
+            <div class="timeline-body"><p>I'd like to be able to install multiple projects in &quot;development mode&quot; (editable install) into the same virtual environment.</p>
+<p>For example, let's say I'm developing projects <code>A</code>, <code>B</code>, and <code>C</code> simultaneously. Each of these projects are stored in separate git repos, published separately to PyPI, etc. However, the following dependencies exist:</p>
+<ul>
+<li><code>B</code> depends on <code>A</code></li>
+<li><code>C</code> depends on <code>B</code></li>
+</ul>
+<p>When working on <code>A</code>, I'd like to use a venv where <code>A</code> is installed in &quot;development mode&quot; (editable install).</p>
+<p>When working on <code>B</code>, I'd like to use a venv where <code>A</code> and <code>B</code> are installed in &quot;development mode&quot; (editable install).</p>
+<p>When working on <code>C</code>, I'd like to use a venv where <code>A</code>, <code>B</code>, and <code>C</code> are installed in &quot;development mode&quot; (editable install).</p>
+<p>I tried adding the dependencies for each project to <code>[tool.uv.sources]</code> by specifying a relative path for each. While this appears to be the solution, I don't really want to commit this into git because it requires anybody else who clones the project to have the dependencies located in the exact same relative paths.</p>
+<p>I think what I might be looking for is some way to specify a set of <code>[tool.uv.sources]</code> for each project that are only local to my machine (not checked into git).</p>
+<p><strong>Is there a recommended way to achieve this workflow using uv?</strong> (It's also totally possible my workflow is bad and I'm missing the obvious correct way to work on multiple packages simultaneously.)</p>
+<p>BTW, I'm coming from pyenv where this was simple to do. I could just create a single virtualenv for each project (which was stored outside of the project dir) and do an editable install of all dependencies into the active virtualenv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 00:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I could just create a single virtualenv for each project (which was stored outside of the project dir) and do an editable install of all dependencies into the active virtualenv.</p>
+</blockquote>
+<p>So, we still support this via <code>uv venv</code> and <code>uv pip install -e</code> but if you want to use a higher-level API then I think you want to declare a workspace.</p>
+<p>I think the idea would roughly be to a create an empty project, clone the three projects as subdirectories (or link them?), and add them as dependencies / workspace members to the root workspace project. Does that make sense?</p>
+<p>The workspace documentation is available at https://docs.astral.sh/uv/concepts/workspaces/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-12 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdwilson">@cdwilson</a> on 2024-09-12 01:26</div>
+            <div class="timeline-body"><blockquote>
+<p>So, we still support this via uv venv and uv pip install -e</p>
+</blockquote>
+<p>The issue I ran into with this is that when <code>A</code> is installed via <code>pip install -e</code> into <code>B</code>'s virtual environment, running <code>uv sync</code> in <code>B</code> will remove the editable install of <code>A</code> (because it is not listed as a dependency in <code>B</code>'s <code>pyproject.toml</code>).</p>
+<blockquote>
+<p>I think you want to declare a workspace.</p>
+</blockquote>
+<p>The issue with workspaces is that it seems to require that each project is a subdirectory of some top-level workspace project.</p>
+<p>Imagine the example above, but extended with another project <code>D</code>, where <code>D</code> also depends on <code>A</code>, but is totally unrelated to <code>B</code> or <code>C</code>. In this case putting everything into the same workspace doesn't make much sense.</p>
+<p>To work on <code>D</code>, I would have to create a second workspace project with a second copy of <code>A</code> in a subdirectory of <code>D</code>'s workspace. Now, I have to maintain separate copies of all the same dependencies in each workspace. As you suggested, maybe symlinking the dependencies from a central location instead of copying them might work, but it starts to feel like a lot of overhead vs. what I can do very easily/simply with pyenv.</p>
+<p>Ideally, I'd like to just have a single development copy of <code>A</code> on my system, but install it as an editable-install in multiple other project's virtualenvs. I suppose this would require some user-specific (i.e. not checked into git) mechanism outside of the <code>pyproject.toml</code> file to record these dependency sources.</p>
+<p>I'm totally open to changing my workflow, but just trying to find a way that is similarly low overhead to what I'm doing now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-12 01:33</div>
+            <div class="timeline-body"><p>Yeah you can't really intermix <code>uv sync</code> and <code>uv pip install</code>. You can use <code>uv sync --inexact</code> to retain the existing install if you want to mix them, but they're generally not designed for that.</p>
+<blockquote>
+<p>I'm totally open to changing my workflow, but just trying to find a way that is similarly low overhead to what I'm doing now.</p>
+</blockquote>
+<p>I feel that. We're happy to help! I'm not sure if we have great support for the situation you've described yet. @konstin might have some better ideas for you. We've also considered ways to make it easier to &quot;patch&quot; dependencies of projects with local versions, but I think in that case we'd still require modifying the <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdwilson">@cdwilson</a> on 2024-09-12 01:37</div>
+            <div class="timeline-body"><blockquote>
+<p>We're happy to help!</p>
+</blockquote>
+<p>Thanks for the ideas and help so far! I'll try out the workspace/symlink idea you suggested and see how that works out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdwilson">@cdwilson</a> on 2024-09-12 02:19</div>
+            <div class="timeline-body"><blockquote>
+<p>We've also considered ways to make it easier to &quot;patch&quot; dependencies of projects with local versions, but I think in that case we'd still require modifying the pyproject.toml.</p>
+</blockquote>
+<p>Now that you mention it, I think this workflow is similar (if not essentially the same) to what I'm looking for, i.e. the ability to &quot;patch&quot; a project with a local copy of a dependency (usually via an editable install). It seems like there are two use cases in both of these workflows:</p>
+<ol>
+<li>Dependency sources need to be recorded in <code>pyproject.toml</code> and checked into git (implying that <a href="https://docs.astral.sh/uv/concepts/dependencies/#path">Path dependency sources</a> always have the same hard-coded paths on every system)</li>
+<li>Dependency sources need to be configured locally, but Path dependency sources may vary across systems (i.e. not checked into git).</li>
+</ol>
+<p>I don't have a sense for how much of an edge case the 2nd one of these is or whether it's worth supporting in some way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juan11iguel">@juan11iguel</a> on 2024-09-17 08:30</div>
+            <div class="timeline-body"><p>I am also facing this issue, I would like to have a &quot;development&quot; environment where some (editable) dependencies are local paths, and a &quot;production&quot; environment where the sources are different (a git repo or any other really). All handled via the same <code>pyproject.toml</code>.</p>
+<p>A possible interface might be:</p>
+<pre><code class="language-toml">[project]
+...
+dependencies = [
+    &quot;numpy&gt;=1.26.4&quot;,
+    &quot;pandas&gt;=2.2.2&quot;,
+    ...,
+    &quot;project_A&quot;,
+    &quot;project_B&quot;
+]
+
+[tool.uv]
+dev-dependencies = [
+    &quot;project_A&quot;,
+    &quot;project_B&quot;,
+]
+
+[tool.uv.sources]
+project_A = { git = &quot;https://github.com/username/project_A&quot;, branch = &quot;main&quot;, &quot;dev&quot;: { path = &quot;../project_A&quot;, editable = true} }
+project_B = { git = &quot;https://github.com/username/project_B&quot;, branch = &quot;main&quot;, &quot;dev&quot;: { path = &quot;../project_B&quot;, editable = true} }
+</code></pre>
+<p>Here for the same dependency there is a default source and and a <code>dev</code> source that might be used when the project is run with a <code>--dev</code> argument</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ckutlu">@ckutlu</a> on 2025-04-30 12:28</div>
+            <div class="timeline-body"><p>We have a similar workflow: we have A and B where B depends on A and we would like to quickly iterate on changes of A when developing B. We are doing what @zanieb suggested:</p>
+<blockquote>
+<p>So, we still support this via <code>uv venv</code> and <code>uv pip install -e</code> ...</p>
+</blockquote>
+<p>We are looking for a lightweight solution, so telling people &quot;put A and B into some folder and keep a pyproject.toml there that declares A and B as workspace packages&quot; would be fine. I.e.:</p>
+<blockquote>
+<p>but if you want to use a higher-level API then I think you want to declare a workspace.</p>
+</blockquote>
+<p>This approach didn't work for us unfortunately because A has its own workspace and currently nested workspaces aren't supported.</p>
+<p>Not sure how well it would work, but I'm considering adding A as a path based development dependency <em>as well</em> to B, i.e. <code>uv add --editable ../A</code>. Haven't played with this yet, but I'm thinking there may be issues because A build is relatively complicated with multiple rust subpackages 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lascott">@lascott</a> on 2025-06-25 18:16</div>
+            <div class="timeline-body"><p>Consider the case where each project has its own .env, and projects A,B and C are all quite similar in their dependencies.
+Q1: Am I downloading the dependencies once or three times?
+Q2: A predates B by three months, C predates B by three months. But I have modified each in the last week.
+Now how many dependencies am I generating not using a workspace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../thromer/uv-monorepo-example/pulls/1.html">thromer/uv-monorepo-example#1</a> on 2025-06-29 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../datalab-org/datalab-app-plugin-insitu/issues/48.html">datalab-org/datalab-app-plugin-insitu#48</a> on 2025-07-14 10:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joeyjurjens">@joeyjurjens</a> on 2025-10-21 21:25</div>
+            <div class="timeline-body"><p>I have a similar use case coming from Buildout. We maintain a “kitchensink” development environment where we need to work on multiple packages simultaneously, each in their own separate Git repository.</p>
+<p>In Buildout, we used the <code>[sources]</code> section with <code>mr.developer</code> to:</p>
+<ul>
+<li>Clone all Git repos into a <code>sources/</code> directory</li>
+<li>Automatically install them all as editable/development mode</li>
+<li>Allow developers to commit changes to any package directly</li>
+</ul>
+<p>The current <code>[tool.uv.sources]</code> approach doesn’t work for this because:</p>
+<ul>
+<li>Git sources install from the remote repo (not editable)</li>
+<li>Path sources require repos to already be cloned and hardcode relative paths (which we don’t want committed to git)</li>
+</ul>
+<p>Maybe <code>[tool.uv.sources]</code> can be extended to support cloning Git repos locally and installing them as editable. For example:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+package-a = { git = &quot;https://github.com/org/package-a&quot;, dest = &quot;sources/&quot;, editable = true }
+package-b = { git = &quot;https://github.com/org/package-b&quot;, dest = &quot;sources/&quot;, editable = true }
+</code></pre>
+<p>This would clone the repos to the specified path if they don’t exist, then install them as editable from the local path.</p>
+<p>Above is just an idea, no idea how doable and good of an approach it would actually be.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:46 UTC
+    </footer>
+</body>
+</html>

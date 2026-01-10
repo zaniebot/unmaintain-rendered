@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV_LOCKED enables both `--check` and `--locked` - astral-sh/uv #16517</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UV_LOCKED enables both `--check` and `--locked`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16517">#16517</a>
+        opened by <a href="https://github.com/AlexVndnblcke">@AlexVndnblcke</a>
+        on 2025-10-30 16:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexVndnblcke">@AlexVndnblcke</a> on 2025-10-30 16:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After an update to the latest version 0.9.6, a recent change in #16322 enables both flags <code>--check</code> and <code>--locked</code> when <code>UV_LOCKED</code> is set as environment variable.</p>
+<p>Minimal example:</p>
+<pre><code>uv lock  # OK
+uv lock --check  # OK
+uv lock --locked # OK
+UV_LOCKED=true uv lock  #FAIL
+</code></pre>
+<p>This yields the following error:</p>
+<pre><code>error: the argument '--check' cannot be used with '--locked'
+
+Usage: uv lock --check
+</code></pre>
+<p>The culprit seems to be that env variable <code>UV_LOCKED</code> is shared between the <code>--check</code> and <code>--locked</code> flag (see <a href="https://github.com/astral-sh/uv/pull/16322/files#diff-285d078c58cc5dc2d9330d2b9973fea0e3e076ea258a836c8c3b31690fd33a21L3722-R3732">diff</a>)</p>
+<p><em>uv-cli/src/lib.rs:3716-3732</em></p>
+<pre><code>    /// Check if the lockfile is up-to-date.
+    ///
+    /// Asserts that the `uv.lock` would remain unchanged after a resolution. If the lockfile is
+    /// missing or needs to be updated, uv will exit with an error.
+    ///
+    /// Equivalent to `--locked`.
+    #[arg(long, env = EnvVars::UV_LOCKED, value_parser = clap::builder::BoolishValueParser::new(), conflicts_with_all = [&quot;check_exists&quot;, &quot;upgrade&quot;, &quot;locked&quot;])]
+    pub check: bool,
+
+    /// Check if the lockfile is up-to-date.
+    ///
+    /// Asserts that the `uv.lock` would remain unchanged after a resolution. If the lockfile is
+    /// missing or needs to be updated, uv will exit with an error.
+    ///
+    /// Equivalent to `--check`.
+    #[arg(long, env = EnvVars::UV_LOCKED, value_parser = clap::builder::BoolishValueParser::new(), conflicts_with_all = [&quot;check_exists&quot;, &quot;upgrade&quot;, &quot;check&quot;], hide = true)]
+    pub locked: bool,
+</code></pre>
+<p>So I assume clap enables both conflicting flags when <code>UV_LOCKED</code> is being used.</p>
+<h3>Platform</h3>
+<p>Darwin 24.6.0 arm64</p>
+<h3>Version</h3>
+<p>0.9.6</p>
+<h3>Python version</h3>
+<p>3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexVndnblcke on 2025-10-30 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-30 16:24</div>
+            <div class="timeline-body"><p>Thanks! This should be a trivial fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2025-10-30 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-30 16:24</div>
+            <div class="timeline-body"><p>(We should remove the environment variable from the <code>check</code> argument)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16521.html">astral-sh/uv#16521</a> on 2025-10-30 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-10-30 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pbrousseau-sdx">@pbrousseau-sdx</a> on 2025-10-30 20:04</div>
+            <div class="timeline-body"><p>Not to push, but do you know when this will be released?  It seems to have broken our workflows.   (Workaround being to pin our workflows to the prior version of <code>uv</code>...)  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-30 20:07</div>
+            <div class="timeline-body"><p>We'll try to get this out today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pbrousseau-sdx">@pbrousseau-sdx</a> on 2025-10-31 15:57</div>
+            <div class="timeline-body"><p>I suspect I ought to create a new ticket, but there is still a regression in my usecase.  My pipeline is using <code>0.9.7</code>, but I still get the above error.  I am not the author of this workflow, so I suspect there's things here that I don't understand, but it worked with <code>0.9.5</code>.  This is the workflow output:</p>
+<pre><code>Run astral-sh/setup-uv@v6
+  with:
+    activate-environment: false
+    working-directory: [REDACTED]
+    server-url: https://github.com/
+    github-token: ***
+    enable-cache: auto
+    cache-dependency-glob: **/*requirements*.txt
+  **/*requirements*.in
+  **/*constraints*.txt
+  **/*constraints*.in
+  **/pyproject.toml
+  **/uv.lock
+  **/*.py.lock
+  
+    restore-cache: true
+    save-cache: true
+    prune-cache: true
+    ignore-nothing-to-cache: false
+    ignore-empty-workdir: false
+    add-problem-matchers: true
+  env:
+    UV_LOCKED: true
+    pythonLocation: /opt/hostedtoolcache/Python/3.13.9/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib
+    AWS_DEFAULT_REGION: us-east-1
+    AWS_REGION: us-east-1
+    AWS_ACCESS_KEY_ID: ***
+    AWS_SECRET_ACCESS_KEY: ***
+    AWS_SESSION_TOKEN: ***
+    CODEARTIFACT_TOKEN: ***
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_USERNAME: aws
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_PASSWORD: ***
+    PIP_INDEX_URL: [REDACTED]
+    UV_INDEX_PYTHON_PACKAGES_USERNAME: aws
+    UV_INDEX_PYTHON_PACKAGES_PASSWORD: ***
+  
+Trying to find version for uv in: /home/runner/work/[REDACTED]
+Could not find file: /home/runner/work/[REDACTED]
+Trying to find version for uv in: /home/runner/work/[REDACTED]
+Could not determine uv version from uv.toml or pyproject.toml. Falling back to latest.
+Getting latest version from GitHub API...
+manifest-file not provided, reading from local file.
+manifest-file does not contain version 0.9.7, arch x86_64, platform unknown-linux-gnu. Falling back to GitHub releases.
+Downloading uv from &quot;https://github.com/astral-sh/uv/releases/download/0.9.7/uv-x86_64-unknown-linux-gnu.tar.gz&quot; ...
+/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/dff6fc2b-84aa-4af3-ac63-489137107ca1 -f /home/runner/work/_temp/2f0494cb-700c-47e2-abc7-f381aefe948f
+Added /home/runner/.local/bin to the path
+Added /opt/hostedtoolcache/uv/0.9.7/x86_64 to the path
+Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+Successfully installed uv version 0.9.7
+Searching files using cache dependency glob: [REDACTED]
+[REDACTED]
+Found 4 files to hash.
+Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13.9-pruned-abb420bcb3b50b53cff205d1c1b04b8b674491cfe39214fae678ed6b72f6448e
+No GitHub Actions cache found for key: setup-uv-1-x86_64-unknown-linux-gnu-3.13.9-pruned-abb420bcb3b50b53cff205d1c1b04b8b674491cfe39214fae678ed6b72f6448e
+Run uv lock --check
+  uv lock --check
+  echo &quot;PACKAGE_MANAGER=uv&quot; &gt;&gt; ${GITHUB_ENV}
+  echo &quot;INSTALL_COMMAND=uv sync&quot; &gt;&gt; ${GITHUB_ENV}
+  echo &quot;UV_LOCKED=1&quot; &gt;&gt; ${GITHUB_ENV}
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+  env:
+    UV_LOCKED: true
+    pythonLocation: /opt/hostedtoolcache/Python/3.13.9/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.9/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.9/x64/lib
+    AWS_DEFAULT_REGION: us-east-1
+    AWS_REGION: us-east-1
+    AWS_ACCESS_KEY_ID: ***
+    AWS_SECRET_ACCESS_KEY: ***
+    AWS_SESSION_TOKEN: ***
+    CODEARTIFACT_TOKEN: ***
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_USERNAME: aws
+    POETRY_HTTP_BASIC_PYTHON_PACKAGES_PASSWORD: ***
+    PIP_INDEX_URL: [REDACTED]
+    UV_INDEX_PYTHON_PACKAGES_USERNAME: aws
+    UV_INDEX_PYTHON_PACKAGES_PASSWORD: ***
+    UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+error: the argument '--check' cannot be used with '--locked'
+Usage: uv lock --check --cache-dir &lt;CACHE_DIR&gt;
+For more information, try '--help'.
+Error: Process completed with exit code 2.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-31 16:20</div>
+            <div class="timeline-body"><p>@pbrousseau-sdx can you share more about the workflow that was used there? Using <code>uv lock --check</code> with <code>UV_LOCKED=1</code> set is redundant.</p>
+<p>We can make the options non-conflicting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16538.html">astral-sh/uv#16538</a> on 2025-10-31 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pbrousseau-sdx">@pbrousseau-sdx</a> on 2025-10-31 17:09</div>
+            <div class="timeline-body"><p>I can share what we have in the pipeline, but I don't know enough to speak its full intent.  You can also say, &quot;you're using it wrong&quot;.  :D</p>
+<p>We have a pipeline that is supposed to run a suite of tests:</p>
+<pre><code>name: Run tests
+
+[SNIP]
+
+env:
+  UV_LOCKED: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+[SNIP]
+
+      - name: Pytest
+        uses: myorg/actions/actions/project-pytest@main # see below
+        with:
+          python_ver: 3.13
+          addopts: &quot;--cov-report=xml:./pytest-coverage.xml --junitxml=pytest.xml&quot;
+
+      - name: Pytest code coverage report
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-xml-coverage-path: ./pytest-coverage.xml
+          junitxml-path: ./pytest.xml
+</code></pre>
+<p>So that action looks like...</p>
+<pre><code>name: &quot;Project pytest&quot;
+
+inputs:
+  python_ver:
+    type: string
+    default: &quot;3.11&quot; 
+
+[SNIP]
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      id: python
+      uses: actions/setup-python@v5
+      with:
+        python-version: &quot;${{ inputs.python_ver }}&quot;
+
+[SNIP]
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+
+    - name: Detect UV Environment
+      id: detect-uv
+      working-directory: ${{ inputs.working_dir }}
+      continue-on-error: true
+      run: |
+        uv lock --check
+        echo &quot;PACKAGE_MANAGER=uv&quot; &gt;&gt; ${GITHUB_ENV}
+        echo &quot;INSTALL_COMMAND=uv sync&quot; &gt;&gt; ${GITHUB_ENV}
+        echo &quot;UV_LOCKED=1&quot; &gt;&gt; ${GITHUB_ENV}
+      shell: bash
+
+[SNIP]
+
+    - name: Install dependencies
+      working-directory: ${{ inputs.working_dir }}
+      run: eval ${{ env.INSTALL_COMMAND }}
+      shell: bash
+</code></pre>
+<p>And that <code>uv lock --check</code> step is what's failing.</p>
+<p>I don't know why we have <code>UV_LOCKED</code> set at the top level; though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

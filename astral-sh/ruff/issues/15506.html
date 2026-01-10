@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Python 3.14 - astral-sh/ruff #15506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support Python 3.14</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15506">#15506</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-15 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-15 15:44</div>
+            <div class="timeline-body"><p>This is the tracking issue for updates required to support Python 3.14.</p>
+<p>The major changes are (so far) as follows:</p>
+<ul>
+<li><a href="https://peps.python.org/pep-0750/">PEP 750 – Template Strings</a> #17851</li>
+<li><a href="https://peps.python.org/pep-0758/">PEP 758 – Allow except and except* expressions without parentheses</a><ul>
+<li>https://github.com/astral-sh/ruff/pull/17660</li>
+</ul>
+</li>
+<li><a href="https://peps.python.org/pep-0649/">PEP 649 – Deferred Evaluation Of Annotations Using Descriptors</a> (and <a href="https://peps.python.org/pep-0749/">PEP 749</a>)<ul>
+<li>https://github.com/astral-sh/ruff/pull/17658</li>
+</ul>
+</li>
+<li><a href="https://peps.python.org/pep-0765/">PEP 765 – Disallow return/break/continue that exit a finally block</a></li>
+</ul>
+<h1>Parser Updates</h1>
+<ul>
+<li>Support for <a href="https://peps.python.org/pep-0750/">template strings</a><ul>
+<li>Let's delay opening an issue for this until the implementation is actually merged in to CPython</li>
+</ul>
+</li>
+<li><a href="https://peps.python.org/pep-0758/">PEP 758 – Allow except and except* expressions without parentheses</a><ul>
+<li>Might be a quick fix to <a href="https://github.com/astral-sh/ruff/blob/58807b2980f3f79e6d16d4f1b05231bd66807ee5/crates/ruff_python_parser/src/parser/statement.rs#L1575-L1600">these lines</a></li>
+</ul>
+</li>
+</ul>
+<h1>Formatter Updates</h1>
+<ul>
+<li>Support for <a href="https://peps.python.org/pep-0750/">template strings</a><ul>
+<li>Let's delay opening an issue for this until the implementation is actually merged in to CPython</li>
+</ul>
+</li>
+<li>Decide how to handle formatting for unparenthesized except tuples</li>
+</ul>
+<h1>Syntax Errors</h1>
+<ul>
+<li><a href="https://peps.python.org/pep-0765/">PEP 765 – Disallow return/break/continue that exit a finally block</a><ul>
+<li>At the moment, similar errors are only detected by lint rules and may or may not be folded into the more general checks for compiler-emitted syntax errors (see the excellent #17412 for a discussion). It might make sense to implement this as a lint rule until and unless things like &quot;<code>break</code> outside of loop&quot; are detected as syntax errors.</li>
+</ul>
+</li>
+</ul>
+<h1>Semantic Model</h1>
+<ul>
+<li>Visit template strings in a similar manner to f-strings; in particular we will need to read the &quot;interpolated values&quot; as references</li>
+<li>#15100</li>
+</ul>
+<h1>Affected Rules</h1>
+<p>It is probably best to wait until the first round of changes to the semantic model have been made before tackling these.</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/missing-f-string-syntax/#missing-f-string-syntax-ruf027">missing-f-string-syntax (RUF027)</a></li>
+<li><a href="https://github.com/astral-sh/ruff/blob/55a7f72035390cf1093e4da0cf2462e793bfbce1/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/invalid_pathlib_with_suffix.rs#L52-L55">invalid-pathlib-with-suffix (<code>PTH210</code>)</a> https://github.com/astral-sh/ruff/pull/19331</li>
+<li><a href="https://github.com/astral-sh/ruff/pull/15483">starmap-zip (<code>RUF058</code>)</a> https://github.com/astral-sh/ruff/pull/19333</li>
+<li>Many of the rules in <a href="https://docs.astral.sh/ruff/rules/#flake8-type-checking-tc">`flake8-type-checking</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/#flake8-future-annotations-fa"><code>flake8-future-annotations-fa</code></a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-future-import/#unnecessary-future-import-up010">unnecessary-future-import (UP010)</a></li>
+</ul>
+<p>More generally - we should grep for documentation or rules that suggest or mention <code>from __future__ import annotations</code> and see if these need to be updated to exclude Python 3.14+.</p>
+<p>Below the fold is a list of rules that may need to be adjusted to handle t-strings correctly.</p>
+<details markdown="1">
+<summary> Rules possibly affected by t-strings </summary>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/unused-method-argument">unused-method-argument (ARG002)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/useless-expression">useless-expression (B018)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/f-string-docstring">f-string-docstring (B021)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-generator-set">unnecessary-generator-set (C401)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-collection-call">unnecessary-collection-call (C408)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-map">unnecessary-map (C417)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/call-datetime-strptime-without-zone">call-datetime-strptime-without-zone (DTZ007)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/whitespace-before-close-bracket">whitespace-before-close-bracket (E202)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/whitespace-before-punctuation">whitespace-before-punctuation (E203)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/missing-whitespace">missing-whitespace (E231)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unexpected-spaces-around-keyword-parameter-equals">unexpected-spaces-around-keyword-parameter-equals (E251)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/raw-string-in-exception">raw-string-in-exception (EM101)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/f-string-in-exception">f-string-in-exception (EM102)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/f-string-missing-placeholders">f-string-missing-placeholders (F541)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/f-string-number-format">f-string-number-format (FURB116)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/logging-f-string">logging-f-string (G004)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/f-string-in-get-text-func-call">f-string-in-get-text-func-call (INT001)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation">single-line-implicit-string-concatenation (ISC001)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/multi-line-implicit-string-concatenation">multi-line-implicit-string-concatenation (ISC002)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/explicit-string-concatenation">explicit-string-concatenation (ISC003)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/single-string-slots">single-string-slots (PLC0205)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/invalid-character-backspace">invalid-character-backspace (PLE2510)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/invalid-character-sub">invalid-character-sub (PLE2512)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/invalid-character-esc">invalid-character-esc (PLE2513)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/invalid-character-nul">invalid-character-nul (PLE2514)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/invalid-character-zero-width-space">invalid-character-zero-width-space (PLE2515)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/no-self-use">no-self-use (PLR6301)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/assert-on-string-literal">assert-on-string-literal (PLW0129)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/pytest-raises-too-broad">pytest-raises-too-broad (PT011)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/pytest-assert-always-false">pytest-assert-always-false (PT015)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/pytest-fail-without-message">pytest-fail-without-message (PT016)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/pytest-warns-too-broad">pytest-warns-too-broad (PT030)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/explicit-f-string-type-conversion">explicit-f-string-type-conversion (RUF010)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/invalid-index-type">invalid-index-type (RUF016)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/in-empty-collection">in-empty-collection (RUF060)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unused-noqa">unused-noqa (RUF100)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/hardcoded-bind-all-interfaces">hardcoded-bind-all-interfaces (S104)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/hardcoded-temp-file">hardcoded-temp-file (S108)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-mark-safe-usage">suspicious-mark-safe-usage (S308)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/suspicious-url-open-usage">suspicious-url-open-usage (S310)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/hardcoded-sql-expression">hardcoded-sql-expression (S608)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unsafe-markup-use">unsafe-markup-use (S704)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/multiple-with-statements">multiple-with-statements (SIM117)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/expr-or-true">expr-or-true (SIM222)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/expr-and-false">expr-and-false (SIM223)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/raise-vanilla-args">raise-vanilla-args (TRY003)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unnecessary-encode-utf8">unnecessary-encode-utf8 (UP012)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/native-literals">native-literals (UP018)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unicode-kind-prefix">unicode-kind-prefix (UP025)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/printf-string-formatting">printf-string-formatting (UP031)</a></li>
+</ul>
+</details>
+
+<h1>Miscellaneous To-Dos</h1>
+<ul>
+<li>[x] Run <a href="https://github.com/astral-sh/ruff/blob/main/scripts/generate_known_standard_library.py">generate_known_standard_library.py</a> and make sure <code>annotationlib</code> is added</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15483.html">astral-sh/ruff#15483</a> on 2025-01-15 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python314</span> added by @MichaReiser on 2025-01-15 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 16:22</div>
+            <div class="timeline-body"><p>Thanks. The PEP outlining the release schedule says that the first beta is scheduled for May 6th. I think adding support before then would be premature, as interfaces will be constantly changing until then, but we can add support as soon as we enter the beta period. https://peps.python.org/pep-0745/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-17 20:12</div>
+            <div class="timeline-body"><p>(@InSyncWithFoo I hope you don't mind me hijacking this issue as the official tracking issue 😄 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracking</span> added by @dylwil3 on 2025-04-17 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-17 20:49</div>
+            <div class="timeline-body"><p>@dylwil3 You can't exactly &quot;hijack&quot; it when it was created for this very purpose in the first place, can you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 07:50</div>
+            <div class="timeline-body"><p>We may also need to go through all string related rules to determine if they should apply to the new template strings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17906.html">astral-sh/ruff#17906</a> on 2025-05-07 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18014.html">astral-sh/ruff#18014</a> on 2025-05-11 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rogdham">@Rogdham</a> on 2025-05-11 08:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Run <a href="https://github.com/astral-sh/ruff/blob/main/scripts/generate_known_standard_library.py">generate_known_standard_library.py</a> and make sure annotationlib is added</p>
+</blockquote>
+<p>I have created the PR #18014 after upgrading upstream Python library <em>stdlibs</em>.</p>
+<p>I can confirm that <code>annotationlib</code> and <code>compression</code> are both added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19331.html">astral-sh/ruff#19331</a> on 2025-07-14 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19333.html">astral-sh/ruff#19333</a> on 2025-07-14 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19355.html">astral-sh/ruff#19355</a> on 2025-07-15 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19358.html">astral-sh/ruff#19358</a> on 2025-07-15 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-07 13:15</div>
+            <div class="timeline-body"><p>@dylwil3 should we close this given that we completed all the work on our end or is there some remaining work that needs doing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-08-08 12:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

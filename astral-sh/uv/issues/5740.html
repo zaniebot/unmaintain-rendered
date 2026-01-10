@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run --isolated does not use .python-version - astral-sh/uv #5740</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run --isolated does not use .python-version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5740">#5740</a>
+        opened by <a href="https://github.com/bluss">@bluss</a>
+        on 2024-08-02 22:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bluss">@bluss</a> on 2024-08-02 22:08</div>
+            <div class="timeline-body"><p>From the description, it could be expected that uv run --isolated derives some of its settings from the active project, like python version. Here's a strange situation, with an active virtualenv, but it was from a real situation.</p>
+<p>I was thinking <code>uv run</code> is anchored in the project and an active virtualenv should not matter for its behaviour.</p>
+<p>Problem seen here: <code>uv run python</code> launches py 3.12, but <code>uv run --isolated python</code> runs 3.11.
+Why this could be a problem: the current project is requires-python&gt;=3.12, and we want to run it, so we should start in that end (?)</p>
+<pre><code class="language-shell">uv init uvpy12 -p 3.12
+cd uvpy12/
+uv python pin 3.12
+uv venv -p 3.11 py311
+# Using Python 3.11.9
+# Creating virtualenv at: py311
+# Activate with: source py311/bin/activate
+source py311/bin/activate
+# (py311)
+uv run python
+# Python 3.12.4 (main, Jul 25 2024, 22:42:01) [Clang 18.1.8 ] on linux
+# Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+# &gt;&gt;&gt; ^D
+
+uv run --isolated python
+</code></pre>
+<pre><code>warning: `uv run` is experimental and may change without warning
+  × No solution found when resolving dependencies:
+  ╰─▶ Because the current Python version (3.11.9) does not satisfy Python&gt;=3.12 and uvpy12==0.1.0
+      depends on Python&gt;=3.12, we can conclude that uvpy12==0.1.0 cannot be used.
+      And because only uvpy12==0.1.0 is available and you require uvpy12, we can conclude that the
+      requirements are unsatisfiable.
+
+</code></pre>
+<p>Version: uv 0.2.33</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 22:51</div>
+            <div class="timeline-body"><p>I think <code>--isolated</code> should still discover a <code>.python-version</code>, that was the intent at least. Will look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-02 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-02 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-02 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5741.html">astral-sh/uv#5741</a> on 2024-08-02 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 23:22</div>
+            <div class="timeline-body"><p>Nice bug, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-02 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-02 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:31 UTC
+    </footer>
+</body>
+</html>

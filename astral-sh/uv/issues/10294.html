@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation assumes I know the Python ecosystem - astral-sh/uv #10294</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Documentation assumes I know the Python ecosystem</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10294">#10294</a>
+        opened by <a href="https://github.com/tringenbach">@tringenbach</a>
+        on 2025-01-03 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tringenbach">@tringenbach</a> on 2025-01-03 20:48</div>
+            <div class="timeline-body"><p>My more recent background is Javascript, Typescript, and Java, where I mainly use <code>yarn</code> as a package manager.  I've touched Python a little over the years, but only recently have really focused on it and needed to care about tools like <code>uv</code>.</p>
+<p>uv is designed to replace a bunch of existing tools, so it's not surprising that the documentation leans towards assuming I'm familiar with these existing tools. But for the most part, I am not.</p>
+<p>I'll try to document in this issue some points that I found confusing, in hopes it can be clarified for everyone.</p>
+<p>Just to be clear, when I compare things to other ecosystems, I am NOT saying one ecosystem is better than another. I am only trying to rely how I, with a background in that ecosystem, implicitly expect things to work. The hope is that this information can be used to write better documentation, not to suggest changes to how uv works.</p>
+<h3>build system</h3>
+<p>Build systems in python are not something I've explored yet, so most of the references to them are confusing to me. It sounds like uv wants to eventually also be or include its own build system? Perhaps that will make things less confusing.</p>
+<p>https://docs.astral.sh/uv/concepts/projects/config/#build-systems
+https://docs.astral.sh/uv/concepts/projects/build/</p>
+<p>What does <code>uv build</code> actually do? Or put another way, what are uv's responsibilities and what are the build system's responsibilities?</p>
+<p>Here https://docs.astral.sh/uv/guides/publish/#preparing-your-project-for-packaging it says uv won't build without a <code>[build-system]</code> but elsewhere it says it defaults to setup-tools for legacy reasons.</p>
+<p>In Javascript-land, you might have a build system with <code>tsc</code>, <code>webpack</code>, <code>vite</code>, and maybe some in-repo custom scripting. That is mostly outside of <code>npm</code> / <code>yarn</code> though. You might invoke it with a <code>package.json</code> <code>scripts</code> entry, and might configure <code>npm</code> to include <code>dist/</code> when you publish, but that's about that. You wouldn't normally &quot;install&quot; after &quot;building&quot;. (Usually &quot;install&quot; refer to what <code>uv</code> calls &quot;sync&quot;.) And <code>dist/</code> is usually used only for publishing. So I know that <code>yarn build</code> just runs whatever I put in <code>&quot;scripts&quot;: { &quot;build&quot;: &quot;&quot;&quot; }</code>. For <code>uv</code>, it sounds like it does more, but I'm not sure what.</p>
+<h3><code>[project.scripts]</code> and &quot;scripts&quot;</h3>
+<ul>
+<li>&quot;scripts&quot; https://docs.astral.sh/uv/guides/scripts/</li>
+<li>https://docs.astral.sh/uv/concepts/projects/config/#entry-points</li>
+</ul>
+<p>This might be my <code>npm</code> ecosystem background confusing me. In that world, in <code>package.json</code>, there is a <code>scripts</code> key.</p>
+<p>I was looking for a way to define a package.json style &quot;script&quot;. For example, maybe I want to be able to write <code>uv run test</code> and have it run <code>pytest</code>, or maybe <code>ruff</code> and <code>pytest</code>, or maybe I want a separate <code>uv run lint</code> for <code>ruff</code>. Maybe that's just not something python folks do?</p>
+<p><code>[project.scripts]</code> is what I originally thought I wanted, but I didn't have a build system so that was off limits to me. But I am starting to realize that project.script is actually closer to <a href="https://docs.npmjs.com/cli/v11/configuring-npm/package-json#bin">bin</a> in <code>package.json</code>, and so is not what I want for this. (I wouldn't want my <code>test</code> script example installed globally in <code>$PATH</code>!)</p>
+<p>I've noticed that a lot of tools support being configured in <code>pyproject.toml</code>. It seems that instead of having a &quot;scripts&quot; that specifies what arguments or chain of commands to run, that in Python-land folks typically just do <code>pytest</code> or <code>uv run pytest</code>, and have it configured in <code>pyproject.toml</code> (or else its own config file).</p>
+<h3>the <code>.venv</code> folder</h3>
+<p>Should I prefix all my commands with <code>uv</code>, or should I <code>source .venv/bin/activate</code>? I didn't really see the latter mentioned, but it occurred to me to do that at some point, so that's what I'm been doing.</p>
+<p>Actually, I take that back, I see it's mentioned here: https://docs.astral.sh/uv/guides/projects/#running-commands</p>
+<p>Still, I wonder if sourcing it is typical, or if I'm doing something weird, and it matters at all.</p>
+<p>I was aware of python virtual environments coming into this. But for some reason I was thinking that people normally created only one or two virtual envs at the user level. I wasn't aware of the <code>.venv/</code> convention. I was thinking of virtual environments as a way to avoid stomping on <code>brew</code> or <code>apt</code>, or for specialized purposes. But it ends up being more like <code>node_modules/</code>. That actually makes a lot of sense.</p>
+<p>Also, I originally assumed having a <code>.venv</code> folder in my project was a uv thing. But then I noticed VsCode picking it up, and some other references to it, so now I suspect it is a common, though not universal, convention.</p>
+<h3>misc</h3>
+<p>I was surprised reading through https://docs.astral.sh/uv/getting-started/features/ that &quot;projects&quot; is the third thing listed and not the first.</p>
+<p>To me, managing the Python version is just a particularly special dependency of my project. (And it's awesome that uv can manage it! In node-land, <code>nvm</code> is its own thing, and not integrated into npm/yarn, and much time is wasted as a result of folks running the wrong node version)</p>
+<p>The emphasis on &quot;scripts&quot; I don't entirely get either. I guess it must be common in Python-land to have many scripts that depend on a different set of dependencies than the rest of your project?</p>
+<p>I find that confusing, because the docs don't mention why that is important, or when I would use it, or what the community practice is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-03 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-03 21:51</div>
+            <div class="timeline-body"><p>Thanks for the comprehensive feedback! I wrote the docs — I'll see what I can do to address these. The newcomer perspective is really valuable.</p>
+<p>You may find this third-party overview helpful: https://reinforcedknowledge.com/a-comprehensive-guide-to-python-project-management-and-packaging-concepts-illustrated-with-uv-part-i/</p>
+<blockquote>
+<p>Should I prefix all my commands with uv, or should I source .venv/bin/activate? I didn't really see the latter mentioned, but it occurred to me to do that at some point, so that's what I'm been doing.</p>
+</blockquote>
+<p>We generally try to avoid recommend activating environments, since you can easily leave the current project with the environment still activated. I'd use something like <code>direnv</code> to automatically activate the environment if you want that.</p>
+<p>See:</p>
+<ul>
+<li>#1910</li>
+</ul>
+<blockquote>
+<p>I was looking for a way to define a package.json style &quot;script&quot;. For example, maybe I want to be able to write uv run test and have it run pytest, or maybe ruff and pytest, or maybe I want a separate uv run lint for ruff. Maybe that's just not something python folks do?</p>
+</blockquote>
+<p>See:</p>
+<ul>
+<li>#5903</li>
+</ul>
+<blockquote>
+<p>What does uv build actually do? Or put another way, what are uv's responsibilities and what are the build system's responsibilities?</p>
+</blockquote>
+<p><code>uv build</code> is a build <em>frontend</em>. It invokes the build <em>backend</em> as defined by your project. The build system is primarily for creating distributable artifacts like source distributions and binary distributions (wheels). Unfortunately, a build system is also necessary to install the <em>project itself</em> into the environment.</p>
+<p>See:</p>
+<ul>
+<li><a href="https://peps.python.org/pep-0517/">PEP 517 – A build-system independent format for source trees</a></li>
+<li>#3957</li>
+</ul>
+<blockquote>
+<p>Here https://docs.astral.sh/uv/guides/publish/#preparing-your-project-for-packaging it says uv won't build without a [build-system] but elsewhere it says it defaults to setup-tools for legacy reasons.</p>
+</blockquote>
+<p>The nuance here in particular is that we are <em>required</em> to use setuptools to build dependencies if they do not declare a build system (this is part of PEP 517). However, for the project itself we skirt the specification and do not do this by default because the experience is bad.</p>
+<blockquote>
+<p>I was surprised reading through https://docs.astral.sh/uv/getting-started/features/ that &quot;projects&quot; is the third thing listed and not the first.</p>
+<p>...</p>
+<p>The emphasis on &quot;scripts&quot; I don't entirely get either. I guess it must be common in Python-land to have many scripts that depend on a different set of dependencies than the rest of your project?</p>
+</blockquote>
+<p>Python beginners often have a progression like...</p>
+<ol>
+<li>Write code interactively in a <code>python</code> REPL</li>
+<li>Write a script</li>
+<li>Write a <em>project</em> with modules</li>
+<li>Distribute a project</li>
+</ol>
+<p>The guides are roughly organized to get you going in that order, from simple to advanced use-cases.</p>
+<p>Even as an advanced Python user, I do a lot of (1) and (2)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-01-03 21:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:59 UTC
+    </footer>
+</body>
+</html>

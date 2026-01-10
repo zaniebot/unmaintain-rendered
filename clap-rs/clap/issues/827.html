@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index out of range in get_matches with certain arguments - clap-rs/clap #827</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Index out of range in get_matches with certain arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/827">#827</a>
+        opened by <a href="https://github.com/ShadowNinja">@ShadowNinja</a>
+        on 2017-01-29 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ShadowNinja">@ShadowNinja</a> on 2017-01-29 18:50</div>
+            <div class="timeline-body"><p>Rust Version: Tested with both 1.14.0 stable and 1.16.0-nightly (2017-01-03)
+Clap version: 2.20.0</p>
+<h3>Steps to Reproduce</h3>
+<p>Compile my sample code and run it with any options except the default help and version options</p>
+<p><a href="https://gist.github.com/ShadowNinja/11b5d35988dddd090596ad17e6e2c882">Sample Code</a> | <a href="https://gist.github.com/ShadowNinja/ed1b58d88867e8dce9951a5af6744cfc">Debug output with backtrace</a></p>
+<p>Removing <code>requires(&quot;media_transfer&quot;)</code> fixes the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SuperFluffy">@SuperFluffy</a> on 2017-01-29 19:52</div>
+            <div class="timeline-body"><p>It looks like I ran into a similar problem with this code:</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate clap;
+
+use clap::{App,Arg,ArgGroup};
+
+fn main() {
+    let matches = App::new(&quot;myapp&quot;)
+        .arg(Arg::with_name(&quot;req_a&quot;).required(true).takes_value(true))
+        .arg(Arg::with_name(&quot;req_b&quot;).required(true).takes_value(true))
+        .arg(Arg::with_name(&quot;req_c&quot;).required(true).takes_value(true))
+        .arg(Arg::with_name(&quot;group_a&quot;).short(&quot;a&quot;))
+        .arg(Arg::with_name(&quot;group_b&quot;).short(&quot;b&quot;))
+        .group(ArgGroup::with_name(&quot;group&quot;).args(&amp;[&quot;group_a&quot;, &quot;group_b&quot;]))
+    .get_matches();
+}
+</code></pre>
+<p>The error seems to be connected to the interaction between required arguments and arg groups. In the code above, you need at least 3 required options to trigger the error. The <code>ArgGroup</code> only needs one member to trigger the error.</p>
+<p><strong>Note:</strong> The error seems to not be triggered when the number of group members exceeds the number of required options! If you add a group <code>group_c</code>, the error is fixed. If you then add a required option <code>req_d</code>, the error appears again, but now with the message <code>'index out of bounds: the len is 3 but the index is 3'</code> instead of <code>'index out of bounds: the len is 2 but the index is 2'</code>.</p>
+<p>The minimum example to trigger the error is (with <code>index out of bounds: the len is 1 but the index is 1'</code>):</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate clap;
+
+use clap::{App,Arg,ArgGroup};
+
+fn main() {
+    let matches = App::new(&quot;myapp&quot;)
+        .arg(Arg::with_name(&quot;req_a&quot;).required(true).takes_value(true))
+        .arg(Arg::with_name(&quot;req_b&quot;).required(true).takes_value(true))
+        .arg(Arg::with_name(&quot;group_a&quot;).short(&quot;a&quot;))
+        .group(ArgGroup::with_name(&quot;group&quot;).args(&amp;[&quot;group_a&quot;]))
+    .get_matches();
+}
+</code></pre>
+<p>Here are the log files, cmpiled with <code>feature = [&quot;debug&quot;]</code>, one with `RUST_BACKTRACE=1, and one without: <a href="https://gist.github.com/SuperFluffy/7572c8455627ae6d5c8a8c71fd083aa2">clap error log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/829.html">clap-rs/clap#829</a> on 2017-01-29 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SuperFluffy">@SuperFluffy</a> on 2017-01-29 20:53</div>
+            <div class="timeline-body"><p>I just made a PR, #829. It seems to fix the issue for me.</p>
+<p>@ShadowNinja Can you please check if it fixes it for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ShadowNinja">@ShadowNinja</a> on 2017-01-29 23:38</div>
+            <div class="timeline-body"><p>@SuperFluffy: Yep, that seems to do it.  :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-01-30 02:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:26 UTC
+    </footer>
+</body>
+</html>

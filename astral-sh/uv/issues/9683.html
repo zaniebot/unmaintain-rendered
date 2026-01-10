@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add dedicated error message for dependencies with relative paths - astral-sh/uv #9683</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add dedicated error message for dependencies with relative paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9683">#9683</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-06 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-06 14:29</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = [&quot;foo @ ./scripts/path&quot;]
+</code></pre>
+<p>Running <code>uv pip install -r pyproject.toml</code> gives you:</p>
+<pre><code>error: Failed to parse metadata from built wheel
+  Caused by: relative path without a working directory: ./scripts/path
+foo@ ./scripts/path
+     ^^^^^^^^^^^^^^
+</code></pre>
+<p>I think this is common enough that we should map the error to something that explains that you can't have relative paths here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-12-06 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-07 04:05</div>
+            <div class="timeline-body"><p>Why can't one have a relative package?
+pip  understands it:</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [
+    # Utilities for typeshed infrastructure scripts.
+    &quot;ts_utils @ file:lib&quot;,
+]
+</code></pre>
+<p>Running <code>pip install --group=dev</code>:</p>
+<pre><code>Processing e:\users\avasam\documents\git\typeshed\lib
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: ts_utils
+  Building wheel for ts_utils (pyproject.toml) ... done
+  Created wheel for ts_utils: filename=ts_utils-0.0.0-py3-none-any.whl size=9799 sha256=71500cdf89a1076acc39d0b1230e7eba715e30263fbcc4f761e4365415d1776c
+  Stored in directory: C:\Users\Avasam\AppData\Local\Temp\pip-ephem-wheel-cache-arsvhtxw\wheels\00\2d\32\d7e3a21f208c4a8070a33090d86b7d4485b97c106ecbd54e91
+Successfully built ts_utils
+Installing collected packages: ts_utils
+  Attempting uninstall: ts_utils
+    Found existing installation: ts_utils 0.0.0
+    Uninstalling ts_utils-0.0.0:
+      Successfully uninstalled ts_utils-0.0.0
+Successfully installed ts_utils-0.0.0
+</code></pre>
+<p>One could do this to work on uv:</p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [
+    # Utilities for typeshed infrastructure scripts.
+    &quot;ts_utils @ file:${PROJECT_ROOT}/lib&quot;,
+]
+</code></pre>
+<p>uv sync result:</p>
+<pre><code>Resolved 2 packages in 3ms
+Installed 1 package in 8ms
+ + ts-utils==0.0.0 (from file:///E:/Users/Avasam/Documents/Git/typeshed/lib)
+</code></pre>
+<p>But now that's become incompatible with pip:</p>
+<pre><code>Processing e:\users\avasam\documents\git\typeshed\${project_root}\lib
+ERROR: Could not install packages due to an OSError: [Errno 2] No such file or directory: 'E:\\Users\\Avasam\\Documents\\Git\\typeshed\\${PROJECT_ROOT}\\lib'
+</code></pre>
+<p>Is there a better solution or a config I'm missing ?</p>
+<p><code>uv 0.6.5 (bcbcd0a1e 2025-03-06)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9258.html">astral-sh/uv#9258</a> on 2025-03-07 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/12806.html">python/typeshed#12806</a> on 2025-03-07 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Avasam/typeshed/pulls/40.html">Avasam/typeshed#40</a> on 2025-03-07 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/issues/13974.html">python/typeshed#13974</a> on 2025-05-12 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../python/typeshed/pulls/14085.html">python/typeshed#14085</a> on 2025-05-16 20:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:45 UTC
+    </footer>
+</body>
+</html>

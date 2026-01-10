@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock: regression in handling local version identifiers - astral-sh/uv #5220</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock: regression in handling local version identifiers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/5220">#5220</a>
+        opened by <a href="https://github.com/ewianda">@ewianda</a>
+        on 2024-07-19 14:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ewianda">@ewianda</a> on 2024-07-19 14:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<pre><code class="language-bash">$ cat pyproject.toml 
+[project]
+name = &quot;test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;test&quot;
+dependencies = [
+  &quot;sglang[srt]==0.1.19 ;sys_platform == 'linux'&quot;,
+  &quot;torch==2.3.0+cu118 ;sys_platform == 'linux'&quot;,
+]
+
+</code></pre>
+<pre><code class="language-bash">$ uv --version
+uv 0.2.25
+$ uv lock --extra-index-url https://download.pytorch.org/whl/cu118 --index-strategy=unsafe-first-match 
+warning: `uv lock` is experimental and may change without warning.
+warning: No `requires-python` field found in the workspace. Defaulting to `&gt;=3.11`.
+Resolved 127 packages in 1.14s
+</code></pre>
+<pre><code class="language-bash">$ rm uv.lock 
+$ uv self update 
+info: Checking for updates...
+success: Upgraded `uv` to v0.2.26! https://github.com/astral-sh/uv/releases/tag/0.2.26
+$ uv lock --extra-index-url https://download.pytorch.org/whl/cu118 --index-strategy=unsafe-first-match 
+warning: `uv lock` is experimental and may change without warning.
+warning: No `requires-python` field found in the workspace. Defaulting to `&gt;=3.11`.
+  × No solution found when resolving dependencies:
+  ╰─▶ Because vllm==0.5.1 depends on torch==2.3.0 and sglang[srt]==0.1.19 depends on vllm==0.5.1, we can conclude that sglang[srt]==0.1.19 and torch{sys_platform == 'linux'}==2.3.0+cu118 are
+      incompatible.
+      And because test==0.1.0 depends on sglang[srt]==0.1.19 and torch{sys_platform == 'linux'}==2.3.0+cu118, we can conclude that test==0.1.0 cannot be used.
+      And because only test==0.1.0 is available and you require test, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-07-19 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @zanieb on 2024-07-19 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 14:25</div>
+            <div class="timeline-body"><p>Presumedly #5104. @ibraheemdev, can you take a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @charliermarsh on 2024-07-19 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5232.html">astral-sh/uv#5232</a> on 2024-07-19 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-07-19 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

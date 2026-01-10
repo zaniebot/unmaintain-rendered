@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect F821 raised for list comprehension in `Annotated` - astral-sh/ruff #7879</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect F821 raised for list comprehension in `Annotated`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7879">#7879</a>
+        opened by <a href="https://github.com/Harry-Lees">@Harry-Lees</a>
+        on 2023-10-09 21:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Harry-Lees">@Harry-Lees</a> on 2023-10-09 21:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Using Ruff <code>0.0.292</code> on the following code snippet</p>
+<pre><code class="language-python">from typing import Annotated
+
+foo = [1, 2, 3, 4, 5]
+
+class Bar:
+    baz: Annotated[
+        str,
+        [qux for qux in foo],
+    ]
+</code></pre>
+<p>The following error is raised:</p>
+<pre><code>test.py:8:10: F821 Undefined name `qux`
+Found 1 error.
+</code></pre>
+<p>The minimal reproducable example looks a little bit weird, but I came across this when writing a <a href="https://docs.pydantic.dev/latest/concepts/validators/#annotated-validators">pydantic validator</a> on some (IMO) reasonable pydantic code. A more sensible example can be seen below.</p>
+<pre><code class="language-python">from typing import Annotated
+
+from pydantic import BaseModel
+from pydantic.functional_validators import BeforeValidator
+
+foo = [1, 2, 3, 4, 5]
+
+class Bar(BaseModel):
+    baz: Annotated[
+        list[int], BeforeValidator(lambda values: [value**2 for value in values])
+    ]
+
+qux = Bar(baz=foo)
+</code></pre>
+<pre><code>test.py:10:52: F821 Undefined name `value`
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-09 23:29</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-09 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-09 23:29</div>
+            <div class="timeline-body"><p>The cause here isn't immediately obvious to me, but definitely looks like a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-10-10 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-10 03:34</div>
+            <div class="timeline-body"><p>I see the error here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/7885.html">astral-sh/ruff#7885</a> on 2023-10-10 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-10 03:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:09 UTC
+    </footer>
+</body>
+</html>

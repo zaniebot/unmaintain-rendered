@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>how to change default python version in uv?  - astral-sh/uv #8135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>how to change default python version in uv? </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8135">#8135</a>
+        opened by <a href="https://github.com/aizimuji">@aizimuji</a>
+        on 2024-10-11 23:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aizimuji">@aizimuji</a> on 2024-10-11 23:31</div>
+            <div class="timeline-body"><p>for example, i just install python 3.13</p>
+<p>if i run <code>uv run python</code> , python 3.13 version is used</p>
+<p>How can i change this default version to other</p>
+<p>maybe it shoud add a command like uv python setdeault 3.12 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-12 03:46</div>
+            <div class="timeline-body"><p>You can add <code>.python-version</code> file to the current directory (with <code>3.13</code>) and we'll respect it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-12 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-12 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leodevian">@leodevian</a> on 2024-10-13 15:05</div>
+            <div class="timeline-body"><p>I set the <code>UV_PYTHON</code> environment variable to <code>3.12</code> and uv now defaults to Python 3.12.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-13 19:33</div>
+            <div class="timeline-body"><blockquote>
+<p>You can add .python-version file to the current directory (with 3.13) and we'll respect it!</p>
+</blockquote>
+<p>And you do this with <code>uv python pin 3.13</code></p>
+<p>I plan on adding the ability to change the default globally in the next breaking version — i.e. after https://github.com/astral-sh/uv/pull/6370 is merged I'll add a <code>--global</code> flag to <code>uv python pin</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aizimuji">@aizimuji</a> on 2024-10-14 10:05</div>
+            <div class="timeline-body"><blockquote>
+<p>You can add <code>.python-version</code> file to the current directory (with <code>3.13</code>) and we'll respect it!</p>
+</blockquote>
+<p>sometimes I need to run python interpreter for a specific version , not in a project folder</p>
+<p>for now I need to run uv run -p 3.12 python to run python repl in 3.12 version</p>
+<p>and many command need to attach -p 3.12 to specify the python version</p>
+<p>so it's very useful to specify a global default python version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sb-travelperk">@sb-travelperk</a> on 2024-11-11 15:02</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>You can add .python-version file to the current directory (with 3.13) and we'll respect it!</p>
+</blockquote>
+<p>And you do this with <code>uv python pin 3.13</code></p>
+<p>I plan on adding the ability to change the default globally in the next breaking version — i.e. after #6370 is merged I'll add a <code>--global</code> flag to <code>uv python pin</code>.</p>
+</blockquote>
+<p>Any update on this @zanieb?   #6370 has been merged in and I was expecting to see something new in v0.5. But the changelog doesn't contain any mention of a global flag or default version. 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinrenskers">@kevinrenskers</a> on 2024-11-11 20:56</div>
+            <div class="timeline-body"><p>When I run <code>uv run python</code> in my home folder, it starts Python 3.11.10. Where is this default version coming from? There is no <code>.python-version</code> file in my home folder. Newer Python versions are available, so I don't understand why it picks 3.11?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/glowinthedark">@glowinthedark</a> on 2024-11-28 09:53</div>
+            <div class="timeline-body"><h3>messing with <code>$PATH</code></h3>
+<p>apparently, something like <code>uv python pin 3.12</code> is meant to be used in a venv, and <strong>not</strong> in a system global python context; expecting <code>uv</code> to manage global python versions will overlap with, and, possibly, mess up whatever other mechanisms your OS already has for symlinking the default version to <code>python3</code> and/or <code>python</code>.</p>
+<p>In the simplest scenario it should be doable by adjusting your <code>$PATH</code> — (use <code>echo $PATH</code> to see your current config). Given that you control your own shell configuration  what you can do is to take note of the available pythons on your system with:</p>
+<pre><code class="language-bash">uv python list
+</code></pre>
+<p>let's imagine that the output you get is:</p>
+<pre><code class="language-bash">cpython-3.13.0+freethreaded-linux-aarch64-gnu    &lt;download available&gt;
+cpython-3.12.7-linux-aarch64-gnu                 .local/share/uv/python/cpython-3.12.7-linux-aarch64-gnu/bin/python3.12
+cpython-3.12.7-linux-aarch64-gnu                 .local/share/uv/python/cpython-3.12.7-linux-aarch64-gnu/bin/python3 -&gt; python3.12
+cpython-3.12.7-linux-aarch64-gnu                 .local/share/uv/python/cpython-3.12.7-linux-aarch64-gnu/bin/python -&gt; python3.12
+cpython-3.12.7-linux-aarch64-gnu                 &lt;download available&gt;
+cpython-3.11.10-linux-aarch64-gnu                &lt;download available&gt;
+cpython-3.11.2-linux-aarch64-gnu                 /usr/bin/python3.11
+cpython-3.11.2-linux-aarch64-gnu                 /usr/bin/python3 -&gt; python3.11
+cpython-3.11.2-linux-aarch64-gnu                 /usr/bin/python -&gt; python3
+cpython-3.11.2-linux-aarch64-gnu                 /bin/python3.11
+</code></pre>
+<p>now edit your <code>~/.bashrc</code> or <code>~/.zshrc</code> (depending on the shell you use), and make sure that the folder with your preferred version comes <strong><em>first</em></strong> in your path, for example, for <strong>3.12</strong> you'd use something like <code>export PATH=$HOME/.local/share/uv/python/cpython-3.12.7-linux-aarch64-gnu/bin:....&lt;OTHER/PATHS/HERE&gt;...</code></p>
+<h1>tldr;</h1>
+<p>❗  setting system python must be a task that should normally be delegated to the OS, especially on linux systems which tend to use python for internal things, like system updates via <code>apt</code> — if you do mess with it then don't be surprised that <code>apt</code> stops working or starts throwing cryptic errors.</p>
+<p>On debian/ubuntu-based systems the 'native' way to change the system python is with:</p>
+<pre><code class="language-bash">sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 42
+</code></pre>
+<p>See <code>update-alternatives --help</code> for usage details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/the-citto">@the-citto</a> on 2024-12-08 17:25</div>
+            <div class="timeline-body"><p>I found this issue still open while searching for setting up <code>UV</code> defaults</p>
+<p>it would be nice to have more (most?) <code>CLI</code> settings configurable, perhaps in the <code>uv.toml</code>?</p>
+<p>specifically for the OP issue, the default python version for <code>UV</code> to use - with the higher-precedence files or the <code>CLI</code> able to override the default(s)</p>
+<h1></h1>
+<p>one of the things I was hoping for was being able to automate project's initialization - searching for <code>requires-python</code> I stumbled here, but also for <code>ruff</code> 😉, <code>mypy</code>, <code>pyright</code>, and several more settings</p>
+<p>I naively tried creating a <code>$XDG_CONFIG_HOME/uv/pyproject.toml</code> - of course no joy with that, since</p>
+<blockquote>
+<p>User-and system-level configuration must use the <code>uv.toml</code> format, rather than the <code>pyproject.toml</code> format, as a <code>pyproject.toml</code> is intended to define a Python project. <a href="https://docs.astral.sh/uv/configuration/files/">1</a></p>
+</blockquote>
+<p>I also tried <code>dependency-metadata</code> -&gt; <code>requires-python</code> in <code>$XDG_CONFIG_HOME/uv/uv.toml</code> but no luck there either</p>
+<p><em>Note</em>: I just installed <code>UV</code>, tired of having to continuously having to set up the full <code>pyenv + git + venv + pip + pip-tools + ... + setuptools</code> chain all the times, so please forgive if something will come out too naive, and if something like this has already been discussed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trim21">@trim21</a> on 2025-02-21 11:13</div>
+            <div class="timeline-body"><p>👀 so curretnly no way to set default python version for <code>uv tool install</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bavalpey">@bavalpey</a> on 2025-03-10 16:39</div>
+            <div class="timeline-body"><blockquote>
+<p>👀 so curretnly no way to set default python version for <code>uv tool install</code> ?</p>
+</blockquote>
+<p>Use the <a href="https://docs.astral.sh/uv/configuration/environment/#uv_python">UV_PYTHON environment variable</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-10 16:59</div>
+            <div class="timeline-body"><p>cc @jtfmumm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dantetemplar">@dantetemplar</a> on 2025-04-15 21:56</div>
+            <div class="timeline-body"><p>@zanieb so it will be <code>uv python pin 3.13 --global</code>  in near future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-15 22:06</div>
+            <div class="timeline-body"><p><code>--global</code> is already available, @jtfmumm it doesn't look like it's used for tool installs though? I have a vague recollection of discussion about that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @zanieb on 2025-04-15 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-16 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12920.html">astral-sh/uv#12920</a> on 2025-04-16 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-17 12:01</div>
+            <div class="timeline-body"><p>Closing in favor of #12921.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-17 12:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:07 UTC
+    </footer>
+</body>
+</html>

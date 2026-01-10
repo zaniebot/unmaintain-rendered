@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM102 walrus operator - astral-sh/ruff #2021</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM102 walrus operator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2021">#2021</a>
+        opened by <a href="https://github.com/Kludex">@Kludex</a>
+        on 2023-01-20 10:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Kludex">@Kludex</a> on 2023-01-20 10:53</div>
+            <div class="timeline-body"><h1>Description</h1>
+<p>SIM102 is being raised when using walrus operator.</p>
+<h2>Code</h2>
+<pre><code class="language-python">def something(schema: dict) -&gt; None:
+    if all_of := schema.get(&quot;allOf&quot;):
+        if len(all_of) == 1:
+            schema.update(all_of[0])
+            del schema[&quot;allOf&quot;]
+
+
+something({&quot;allOf&quot;: [{&quot;type&quot;: &quot;string&quot;}]})
+something({})
+</code></pre>
+<h2>Output</h2>
+<pre><code class="language-bash">main.py:2:5: SIM102 Use a single `if` statement instead of nested `if` statements
+</code></pre>
+<h2>Notes</h2>
+<p>An alternative code for the above would be:</p>
+<pre><code class="language-python">def something(schema: dict) -&gt; None:
+    all_of = schema.get(&quot;allOf&quot;)
+    if all_of and len(all_of) == 1:
+        schema.update(all_of[0])
+        del schema[&quot;allOf&quot;]
+
+
+something({&quot;allOf&quot;: [{&quot;type&quot;: &quot;string&quot;}]})
+something({})
+</code></pre>
+<p>Which passes the linter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-20 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-20 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 12:17</div>
+            <div class="timeline-body"><p>Thanks for filing!</p>
+<p>I think this actually does produce valid code -- running <code>ruff --isolated --select SIM102 --fix</code> on that snippet gives me:</p>
+<pre><code class="language-py">def something(schema: dict) -&gt; None:
+    if (all_of := schema.get(&quot;allOf&quot;)) and len(all_of) == 1:
+        schema.update(all_of[0])
+        del schema[&quot;allOf&quot;]
+
+
+something({&quot;allOf&quot;: [{&quot;type&quot;: &quot;string&quot;}]})
+something({})
+</code></pre>
+<p>Which seems to run ok? As long as the walrus is parenthesized. Did you run into another example where this fix produced invalid code? (Or is the issue to suggest that, stylistically, this is worse than before?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-20 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kludex">@Kludex</a> on 2023-01-20 12:18</div>
+            <div class="timeline-body"><p>Ah! This is fine. Thanks 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Kludex on 2023-01-20 12:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:04 UTC
+    </footer>
+</body>
+</html>

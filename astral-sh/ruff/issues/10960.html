@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>extend-immutable-calls doesn't work on Python scripts (as opposed to modules) - astral-sh/ruff #10960</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>extend-immutable-calls doesn't work on Python scripts (as opposed to modules)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10960">#10960</a>
+        opened by <a href="https://github.com/fofoni">@fofoni</a>
+        on 2024-04-15 19:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fofoni">@fofoni</a> on 2024-04-15 19:24</div>
+            <div class="timeline-body"><p>Keywords: extend-immutable-calls, B008, script, module, <code>__main__</code>
+Ruff version: 0.3.7</p>
+<h3>Working MWE</h3>
+<p>In a directory containing just the file <code>test.py</code>:</p>
+<pre><code class="language-python">from other_module import A
+
+def f(a=A()):
+    pass
+</code></pre>
+<p>checking with:</p>
+<pre><code class="language-bash">ruff check --isolated --select=B008 \
+    --config 'lint.flake8-bugbear.extend-immutable-calls=[&quot;other_module.A&quot;]' \
+    test.py
+</code></pre>
+<p>yields no errors.</p>
+<h3>Buggy MWE</h3>
+<p>If I declare <code>A</code> in the script instead of importing it:</p>
+<pre><code class="language-python">class A: pass
+
+def f(a=A()):
+    pass
+</code></pre>
+<p>now ruff will find a B008 error in the <code>def</code> line, no matter what I configure in <code>extend-immutable-calls</code>. I tried <code>A</code>, <code>test.A</code>, <code>__main__.A</code>, and even <code>builtins.A</code> and <code>__builtins__.A</code>. Nothing makes it recognize <code>A()</code> as an immutable call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 01:24</div>
+            <div class="timeline-body"><p>Hmm yeah... We need some way to identify <code>A</code>, and if you pass a script, we probably can't find a module root against which to resolve the path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 01:24</div>
+            <div class="timeline-body"><p><code>__main__.A</code> is kind of interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-04-16 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fofoni">@fofoni</a> on 2024-04-16 02:01</div>
+            <div class="timeline-body"><p>(Updated the OP to note that I also tried with <code>test.A</code>.)</p>
+<blockquote>
+<p><code>__main__.A</code> is kind of interesting.</p>
+</blockquote>
+<p>I tried <code>__main__.A</code> because I didn't know what would work and was exploring possibilities, but I'm not sure if like it: after all, depending on how you invoke Python, <em>any</em> .py file could be the <code>__main__</code> module. In the end, fully-qualified names aren't really well-defined statically -- you need to look them up in <code>sys.path</code> and follow import hooks etc (mypy can sometimes <a href="https://github.com/pypa/setuptools/issues/3518">run into a similar problem</a>).</p>
+<p>Since ruff interprets module paths statically, I think the best thing to do in this case would be to check that <code>test.py</code> is not contained in an import package (i.e. not alongside an <code>__init.__.py</code>) and then accept <code>test.A</code> as <code>A</code>'s fully-qualified name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 02:32</div>
+            <div class="timeline-body"><p>That seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-16 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10965.html">astral-sh/ruff#10965</a> on 2024-04-16 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-18 01:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

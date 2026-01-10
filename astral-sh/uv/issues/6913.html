@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `build-constraints` support to `uv lock` etc. via `pyproject.toml` - astral-sh/uv #6913</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `build-constraints` support to `uv lock` etc. via `pyproject.toml`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6913">#6913</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-01 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:57</div>
+            <div class="timeline-body"><p>Can follow the way we manage <code>constraint-dependencies.</code></p>
+<p>See:  https://github.com/astral-sh/uv/issues/5561#issuecomment-2323330613.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-01 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-09-01 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-09-01 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5561.html">astral-sh/uv#5561</a> on 2024-09-01 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menkotoglou">@menkotoglou</a> on 2024-09-02 10:44</div>
+            <div class="timeline-body"><p>I could have a look to this @charliermarsh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 18:01</div>
+            <div class="timeline-body"><p>Go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 18:32</div>
+            <div class="timeline-body"><p>@menkotoglou -- Just let me know if you're not able or don't plan to get to it (or need some pointers!), so we can prioritize accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/menkotoglou">@menkotoglou</a> on 2024-09-08 20:02</div>
+            <div class="timeline-body"><p>Hey @charliermarsh, sorry for not taking it on this week, some stuff came up and didn't have time to take it on. Was actually planning to start working on it this week, and of course revert back to you if any help needed.</p>
+<p>Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-09-09 19:42</div>
+            <div class="timeline-body"><p>I am trying to understand if this is the feature I need. My problem:</p>
+<ol>
+<li>I have my dependencies and dev dependencies in <code>pyproject.toml</code></li>
+<li>I have a constraint file <code>constraints.txt</code></li>
+<li>I build <code>pip compile pyproject.toml -c constraints.txt -o requirements.txt</code></li>
+<li>I build <code>pip compile pyproject.toml --extra dev -c contraints.txt -c requirements.txt -o requirements-dev.txt</code></li>
+</ol>
+<p>This is the most sane way I could find so both requirements.txt and requirements-dev.txt contain the same libs except for the dev ones and they respect the constraints file which are sub dependencies I need to limit but do not depend myself.</p>
+<p>I want to move to <code>uv lock</code> with a <code>uv export</code> fallback for generating the same files as before.</p>
+<p>From the <a href="https://docs.astral.sh/uv/concepts/resolution/#dependency-constraints">docs</a>:</p>
+<blockquote>
+<p>uv supports constraints files (--constraint constraints.txt), like pip, which narrow the set of acceptable versions for the given packages.</p>
+</blockquote>
+<p>It seems <code>uv lock</code> does not have the constraint mechanism described above.</p>
+<p>I would like to perform 2 things:</p>
+<ol>
+<li><p>Create a first <code>uv.lock</code> constrained by current <code>requirements-dev.txt</code> which will force all current versions on it</p>
+</li>
+<li><p>Have a workflow to run</p>
+<pre><code>uv lock --constraint constrains.txt  # Preferably this being configured in pyproject.toml so it is guaranteed to be true
+uv export &gt; requirements.txt
+uv export --extra dev &gt; requirements-dev.txt
+</code></pre>
+<p>Eventually I will remove the exports, but for validating the process, I will need to make sure the output versions are identical to the original versions</p>
+</li>
+</ol>
+<p>Is this the correct issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-09-09 19:55</div>
+            <div class="timeline-body"><p>Ok, I found a workaround. If I set</p>
+<pre><code>[project.optional-dependencies]
+constraints = [
+    &quot;foo&gt;=2.0&quot;
+]
+</code></pre>
+<p>UV will enforce the optional dependencies when resolving the lock.</p>
+<p>~It still does not solve my whole migration problem, but I think I can hack something together~</p>
+<p>Edit:
+It does work. I temporarily added my whole requirementes-dev.txt to another &quot;optional-dependencies&quot; called &quot;reqs&quot;, ran uv lock, removed the block, ran uv lock again, and the exports now match perfectly the original pip compiled requirements files.</p>
+<p>I leave this here in case anyone else wants to migrate from pip compile to uv lock</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11585.html">astral-sh/uv#11585</a> on 2025-02-17 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-18 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-06-05 04:16</div>
+            <div class="timeline-body"><p>🦄 MAGIC 🦄</p>
+<p>I just came here to complain about smth like pip's constraints.txt and guess what? The feature is already there, just not very discoverable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:36 UTC
+    </footer>
+</body>
+</html>

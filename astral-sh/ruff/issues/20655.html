@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trying to use a non-existent fromfile with a leading special character panics instead of giving nice error  - astral-sh/ruff #20655</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Trying to use a non-existent fromfile with a leading special character panics instead of giving nice error </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20655">#20655</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-10-01 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-01 00:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>For example, trying to use a fromfile named <code>!.txt</code> (a valid file name) that doesn't exist panics instead of giving a nice error message.</p>
+<pre><code class="language-bash">$ uvx ruff check '@!.txt'
+
+thread 'main' panicked at crates/ruff/src/main.rs:42:90:
+called `Result::unwrap()` on an `Err` value: Custom { kind: NotFound, error: Error { kind: OpenFile, source: Os { code: 2, kind: NotFound, message: &quot;No such file or directory&quot; }, path: &quot;!.txt&quot; } }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<details>
+<summary>
+Old issue description
+</summary>
+
+<p>If a file's name starts with <code>@</code> and you try to specify it on the command line, it will fail. Checking works fine if the file is gotten automatically, ie by checking <code>.</code></p>
+<p>If the file name has no special characters after the <code>@</code>, ruff will act like no argument was given on powershell, or act like <code>.</code> was given on WSL
+If the file name has a special character after the <code>@</code>, checking will fail completely.</p>
+<details>
+<summary>
+Powershell demo
+</summary>
+
+<pre><code class="language-powershell">PS ~\...\issue&gt;ls
+
+    Directory: C:\...\issue
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---           9/30/2025  4:44 PM              2 @!.py
+-a---           9/30/2025  4:42 PM              2 @.py
+-a---           9/30/2025  4:41 PM              2 @issue.py
+-a---           9/30/2025  4:40 PM              2 issue.py
+
+PS ~\...\issue&gt;uvx ruff check &quot;issue.py&quot;
+All checks passed!
+PS ~\...\issue&gt;uvx ruff check &quot;@issue.py&quot;
+error: a value is required for '[FILES]...' but none was supplied
+
+For more information, try '--help'.
+PS ~\...\issue&gt;uvx ruff check &quot;@.py&quot;
+
+thread 'main' panicked at crates\ruff\src\main.rs:42:90:
+called `Result::unwrap()` on an `Err` value: Custom { kind: NotFound, error: Error { kind: OpenFile, source: Os { code: 2, kind: NotFound, message: &quot;The system cannot find the file specified.&quot; }, path: &quot;.py&quot; } }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</details>
+
+<details>
+<summary>
+WSL demo
+</summary>
+
+<pre><code class="language-bash">user@DESKTOP-44VGRD0:~/issue$ ls
+@.py  @issue.py  issue.py  issue@.py
+user@DESKTOP-44VGRD0:~/issue$ uvx ruff check issue.py
+All checks passed!
+user@DESKTOP-44VGRD0:~/issue$ uvx ruff check @issue.py -v
+[2025-09-30][17:07:22][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-09-30][17:07:22][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/user/issue/@issue.py&quot;
+[2025-09-30][17:07:22][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/user/issue/issue.py&quot;
+[2025-09-30][17:07:22][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/user/issue/@.py&quot;
+[2025-09-30][17:07:22][ignore::gitignore][DEBUG] opened gitignore file: /home/user/issue/.ruff_cache/.gitignore
+[2025-09-30][17:07:22][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/home/user/issue/issue@.py&quot;
+[2025-09-30][17:07:22][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/user/issue/.ruff_cache&quot;
+[2025-09-30][17:07:22][ruff::commands::check][DEBUG] Identified files to lint in: 4.4311ms
+[2025-09-30][17:07:22][ruff::commands::check][DEBUG] Checked 4 files in: 161.7µs
+All checks passed!
+user@DESKTOP-44VGRD0:~/issue$ uvx ruff check @.py
+
+thread 'main' panicked at crates/ruff/src/main.rs:42:90:
+called `Result::unwrap()` on an `Err` value: Custom { kind: NotFound, error: Error { kind: OpenFile, source: Os { code: 2, kind: NotFound, message: &quot;No such file or directory&quot; }, path: &quot;.py&quot; } }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</details>
+
+</details>
+
+<h3>Version</h3>
+<p>ruff 0.13.2 (b0bdf0334 2025-09-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-01 00:11</div>
+            <div class="timeline-body"><p>Note that <code>@</code> is indicative of a fromfile. Whatever you pass there gets read and expanded as command-line arguments. Similar to https://docs.python.org/3/library/argparse.html#fromfile-prefix-chars.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ty/issues/1291.html">astral-sh/ty#1291</a> on 2025-10-01 00:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-01 00:34</div>
+            <div class="timeline-body"><p>Interesting, I wasn't aware that existed, so I guess you have to do <code>/@&lt;file name&gt;</code> instead. Is that anywhere in the docs?</p>
+<p>So I guess that isn't a problem, but there is still a different one, where you get a panic instead of a nice error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Cannot check files starting with @ by name" to "Trying to use a non-existent fromfile with a leading special character panics instead of giving nice error " by @MeGaGiGaGon on 2025-10-01 00:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-01 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-10-01 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-10-01 11:54</div>
+            <div class="timeline-body"><p>i will take this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @TaKO8Ki by @ntBre on 2025-10-01 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20691.html">astral-sh/ruff#20691</a> on 2025-10-03 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-03 13:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

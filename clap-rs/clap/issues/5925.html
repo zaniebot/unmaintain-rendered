@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for multiple environment variables - clap-rs/clap #5925</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for multiple environment variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5925">#5925</a>
+        opened by <a href="https://github.com/orhun">@orhun</a>
+        on 2025-02-22 21:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/orhun">@orhun</a> on 2025-02-22 21:17</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.5.27</p>
+<h3>Describe your use case</h3>
+<p>I'd like to have support for multiple environment variables for a single argument.</p>
+<p>For example, <code>--foo</code> would both accept <code>FOO_VALUE</code> and <code>FOO_VAL</code> variables for its value.</p>
+<p>I have tried the following via derive:</p>
+<pre><code class="language-rust">	#[arg(
+		long,
+		env = &quot;FOO_VALUE&quot;,
+        env = &quot;FOO_VAL&quot;,
+	)]
+</code></pre>
+<p>But this ends up overriding the previously defined environment variable.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Add a new attribute for accepting a <code>Vec&lt;OsStr&gt;</code> as follows:</p>
+<pre><code class="language-rust">	#[arg(
+		long,
+		envs = [&quot;FOO_VALUE&quot;, &quot;FOO_VAL&quot;],
+	)]
+</code></pre>
+<p>Or support multiple usages of <code>env</code> as described above.</p>
+<h3>Alternatives, if applicable</h3>
+<p>None.</p>
+<h3>Additional Context</h3>
+<p>This was brought up to my attention <a href="https://github.com/orhun/git-cliff/issues/994">in this issue</a>.</p>
+<p>Simply I want to support both <code>GITHUB_REPO</code> and <code>GITHUB_REPOSITORY</code> variables. I cannot just switch to  <code>GITHUB_REPOSITORY</code> since it would be breaking. But I will consider that based on the outcome of this proposal :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @orhun on 2025-02-22 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../orhun/git-cliff/issues/994.html">orhun/git-cliff#994</a> on 2025-02-22 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2025-02-23 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2025-02-23 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-02-23 00:55</div>
+            <div class="timeline-body"><p>Seems reasonable. Let's coordinate on help output before anyone moves forward with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fahri-r">@fahri-r</a> on 2025-03-09 15:18</div>
+            <div class="timeline-body"><p>If you don't mind, I can try to add this feature.
+Just to clarify, I just want to ask:</p>
+<p><code>envs = [&quot;FOO_VALUE&quot;, &quot;FOO_VAL&quot;],</code></p>
+<p>If both &quot;FOO_VALUE&quot; and &quot;FOO_VAL&quot; have values, then &quot;FOO_VALUE&quot; is the valid one, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5946.html">clap-rs/clap#5946</a> on 2025-03-10 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-10 17:29</div>
+            <div class="timeline-body"><p>Layering is a complex topic but since we don't support laying CLI on top of Env, I figure we don't need to layer Env on top of Env.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fahri-r">@fahri-r</a> on 2025-03-11 00:46</div>
+            <div class="timeline-body"><p>Sorry, I don't get it. do you mean that we don't need a complex logic like I said in my prev comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-11 15:44</div>
+            <div class="timeline-body"><p>I was saying that simply only accepting the first one would probably work.</p>
+<p>Laying is the general topic of how to handle when you have multiple sources for configuration.  In some situations, a config needs to be merged while others need overwrite.  Since clap only supports overwrite between cli / env, we can use that excuse to continue to do so for env / env layer.</p>
+<p>Keep in mind that there is another point to resolve in https://github.com/clap-rs/clap/issues/5925#issuecomment-2676479697</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fahri-r">@fahri-r</a> on 2025-03-12 13:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Seems reasonable. Let's coordinate on help output before anyone moves forward with this.</p>
+</blockquote>
+<p>Ah, that was my error. You mean help output like this right?
+<code>[name]  [env: FOO_VALUE=] [default: FOO]</code></p>
+<p>Maybe for envs we can make like this:
+<code>[name]  [envs: [FOO_VALUE, FOO_VAL]] [default: FOO]</code></p>
+<p>but I'm not really sure is it possible or no</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2025-07-03 09:43</div>
+            <div class="timeline-body"><p>I don't think array conveys what this is doing correctly. Wdyt about this?</p>
+<pre><code>name description [envs: FOO_VALUE|FOO_VAL] [default: foo]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-03 14:36</div>
+            <div class="timeline-body"><p>Keep in mind that we can have both</p>
+<pre><code>[env: FOO_NAME]
+[env: FOO_NAME=value]
+</code></pre>
+<p>We also generally use <code>,</code> as a separate for &quot;one of&quot; (see also #6059).</p>
+<p>Hmm, if we are showing values and our approach is &quot;take the first&quot;, should we somehow convey that?  Seems like it could be confusing to show each env var and value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-07-03 14:37</div>
+            <div class="timeline-body"><p>Hmm, <code>hide_env</code> is all-or-nothing.  Would people want some envs to be visible and some to not be visible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2025-07-03 14:52</div>
+            <div class="timeline-body"><p>If it can contain value, having a <code>,</code> as separator might be confusing.</p>
+<pre><code>[env: FOO_VALUE,FOO_VAL=value]
+</code></pre>
+<hr />
+<blockquote>
+<p>Hmm, <code>hide_env</code> is all-or-nothing. Would people want some envs to be visible and some to not be visible?</p>
+</blockquote>
+<p>I would say yes, specifically if someone is trying to support compatibility (either backwards or with other tools)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:43 UTC
+    </footer>
+</body>
+</html>

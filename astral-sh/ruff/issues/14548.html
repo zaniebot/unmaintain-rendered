@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] remove TODO catch-all case in infer_unary_expression - astral-sh/ruff #14548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] remove TODO catch-all case in infer_unary_expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14548">#14548</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-11-22 23:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-11-22 23:30</div>
+            <div class="timeline-body"><p>Currently, the method <code>TypeInferenceBuilder::infer_unary_expression</code> handles some common cases, and has a catch-all arm that simply infers a &quot;todo&quot; type.</p>
+<p>This issue is to remove that todo catch-all case, and replace it with correct handling of all missing cases.</p>
+<p>For many of the unhandled types (e.g. <code>Type::FunctionLiteral</code>, <code>Type::ClassLiteral</code>, <code>Type::SubclassOf</code>) the correct handling will be to treat it as a <code>Type::Instance</code> type (an instance of <code>types.FunctionType</code>, or an instance of the meta-type of a class) and let the normal instance handling from typeshed take care of it.</p>
+<p>(note: edited description for correctness, which will make some comments below look out-of-context)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-11-22 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2024-11-22 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14549.html">astral-sh/ruff#14549</a> on 2024-11-22 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-23 10:35</div>
+            <div class="timeline-body"><blockquote>
+<p>For many of the unhandled types (e.g. <code>Type::FunctionLiteral</code>, <code>Type::ClassLiteral</code>, <code>Type::SubclassOf</code>) the correct handling will simply be an <code>unsupported-operator</code> diagnostic.</p>
+</blockquote>
+<p>Hmm, I don't think that's correct when it comes to <code>Type::ClassLiteral</code> and <code>Type::SubclassOf</code>. We need to treat a class as an instance of its metaclass when determining if a unary operation is supported on that class or not. (Same deal as  #14200.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-23 17:08</div>
+            <div class="timeline-body"><p>Yes, good point! I looked at functions and then thoughtlessly lumped classes in with them.</p>
+<p>Even for functions, we should treat them as an instance of <code>types.FunctionType</code> and defer to typeshed, rather than hardcoding the unsupported-operator diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dcreager by @dcreager on 2024-12-17 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @carljm by @dcreager on 2024-12-17 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15045.html">astral-sh/ruff#15045</a> on 2024-12-18 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2024-12-18 19:37</div>
+            <div class="timeline-body"><p>Closed by #15045</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2024-12-18 19:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

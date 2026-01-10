@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv sync` and `uv run --no-project` end up in different version with same requirements - astral-sh/uv #9514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv sync` and `uv run --no-project` end up in different version with same requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9514">#9514</a>
+        opened by <a href="https://github.com/ThomasHezard">@ThomasHezard</a>
+        on 2024-11-28 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-28 19:27</div>
+            <div class="timeline-body"><p>Hello</p>
+<p>I had an issue with <code>torch</code> dependency. I am pretty sure the problem comes from <code>torch</code> and I opened an issue on that matter: https://github.com/pytorch/pytorch/issues/141781</p>
+<p>However, while investigating my issue I encountered a <code>uv</code> behaviour I do not fully understand.</p>
+<p>The issue can be reproduced with the following very simple <code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;uv-torch-test&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+    &quot;torch&quot;,
+]
+</code></pre>
+<p>If you <code>uv sync</code> with Python 3.8 (either using <code>.python-version</code> or <code>--python 3.8</code> option), it fails with the following error</p>
+<pre><code>error: Distribution `torch==2.5.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+</code></pre>
+<p>I think this is expected given the issue described here: https://github.com/pytorch/pytorch/issues/141781.</p>
+<p>However, the following command succeeds and indicates that uv ends up installing <code>torch</code> 2.4.1 in this case</p>
+<pre><code>uv run --no-project --python 3.8 --with &quot;torch&quot; python -c &quot;import torch; print(torch.__version__)&quot;
+</code></pre>
+<p>In conclusion:</p>
+<ul>
+<li><p>One feature request:</p>
+<ul>
+<li>Having an option to print the package versions in <code>uv run --no-project</code> the same way they are printed in <code>uv sync</code> would have helped me a lot. The only solution to print them today is to use the <code>--verbose</code> option which is extremely verbose. I use a lot the &quot;<code>uv run --no-project</code>&quot; command in my unit testing CI jobs, and adding the <code>--verbose</code> would make the test results and logs difficult to read, whereas I just need the package versions.</li>
+</ul>
+</li>
+<li><p>Two questions:</p>
+<ul>
+<li>Why does <code>uv run --no-project --python 3.8 --with &quot;torch&quot;</code> dependency resolution ends up choosing <code>2.4.1</code> and not <code>2.5.1</code> when <code>2.5.1</code> is identified as compatible with Python 3.8 by <code>uv sync</code>?</li>
+<li>Would #8686 help avoid this behaviour? (really waiting for this one, it would help on several issues I encountered 😉 )</li>
+</ul>
+</li>
+</ul>
+<p>Thank you 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-29 11:53</div>
+            <div class="timeline-body"><p>Hello</p>
+<p>Quick update after some additional testing.</p>
+<p><code>pip install torch</code> in a blank Python 3.8 environment installs 2.4.1, which indeed is the real last Python 3.8 compatible <code>torch</code> release, despite what the metadata of the version says. This leads me to two conclusions:</p>
+<ul>
+<li><code>pip</code> does not respect its own interface, in the sense that it does not fail if a package metadata is not properly written (in that <code>torch</code> 2.5.0/2.5.1 case, the package does not provide the wheels or sdist for all supposedly compatible Python versions), which bugs me a lot as a developer (as well as the fact that this has been pushed on PyPI without any problem) 😱</li>
+<li>I am not sure about that, but I think what <code>pip</code> does under the hood is that it looks at the available wheels or sdist rather than looking at the <code>requires_python</code> specifications (I looked a bit at the <code>pip</code> sources but I did not find where this is done yet).</li>
+</ul>
+<p>On the <code>uv</code> side:</p>
+<ul>
+<li><code>uv sync</code> seems to resolve the dependencies by looking at the packages metadata, which totally makes sense to me, and the error I got definitely comes from a problem in the PyTorch releases and is therefore fully legit I think it is a good think <code>uv</code> reports it as an error.</li>
+<li>I still do not understand why <code>uv run --no-project --python 3.8 --with &quot;torch&quot;</code> does not fail. Does it use <code>pip</code> resolver under the hood?</li>
+</ul>
+<p>In general, I wanted to say that <code>uv sync</code> resolver seems really excellent to me as its rigorous &quot;fail-fast&quot; behaviour helped me spot errors in packages metadata (mine or others) really easily, and write perfectly reliable <code>pyproject.toml</code> and lock files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:44</div>
+            <div class="timeline-body"><p>So, I think <code>uv run --no-project --python 3.8 --with &quot;torch&quot;</code> will look for the first version of <code>torch</code> that has a wheel for Python 3.8, whereas <code>uv sync</code> will look for the first version of <code>torch</code> that's compatible with your project, and attempt to use that for all supported Python versions. In this case, it picks 2.5.1, since it has wheels for <em>some</em> supported Python versions. It's related to #5182.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:45</div>
+            <div class="timeline-body"><p>The difference is that <code>uv sync</code> is doing a &quot;universal&quot; solve, whereas <code>uv run --with</code> only has to solve for your <em>current</em> platform / environment, since it's not creating a universal lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:45</div>
+            <div class="timeline-body"><p>I think https://github.com/astral-sh/uv/pull/8686 would indeed help though it's definitely a tricky case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-29 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:45</div>
+            <div class="timeline-body"><p>(Happy to answer any further questions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-29 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-29 18:04</div>
+            <div class="timeline-body"><blockquote>
+<p>The difference is that <code>uv sync</code> is doing a &quot;universal&quot; solve, whereas <code>uv run --with</code> only has to solve for your <em>current</em> platform / environment, since it's not creating a universal lockfile.</p>
+</blockquote>
+<p>One more question to be sure I understand well :)</p>
+<p>My understanding was that, whether you try to resolve the <code>torch</code> for <code>Python&gt;=3.8</code> (universal) or <code>Python==3.8</code>(current environment), the obvious resolution seems to be</p>
+<ul>
+<li>2.5.1 if you look at the metadata (the <code>requires_python</code> field),</li>
+<li>2.4.1 if you look at the available wheels,</li>
+</ul>
+<p>because <code>torch</code> released the 2.5.0 and 2.5.1 versions with a <code>requires_python</code> at 3.8 while only providing wheels for Python 3.9 to 3.13 (see https://github.com/pytorch/pytorch/issues/141781).</p>
+<p>In a sense my question is: Do <code>uv sync</code> and <code>uv run --no-project</code> look at the <code>requires_python</code> or the available wheels to resolve dependencies?</p>
+<p>If both do look at the available wheels, I do not understand why the universal resolution (with <code>uv sync</code> or <code>uv lock</code>) chooses 2.5.1 (without forking for Python 3.8) and not 2.4.1 because 2.4.1 if the most recent version compatible with Python &gt;= 3.8, not 2.5.1.</p>
+<p>Is there something I misunderstood there in this &quot;universal&quot; resolution concept?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-29 18:07</div>
+            <div class="timeline-body"><p>I'm not fluent enough in <code>rust</code> to look at the <code>uv</code> code, but I tried to interpret the <code>uv</code> verbose logs.<br />
+I'm not sure what to interpret from these 😅</p>
+<p>--</p>
+<p>Here is (part of) the output of <code>uv lock --python 3.8 --verbose</code> with the <code>pyproject.toml</code> of my initial message:</p>
+<pre><code>DEBUG uv 0.5.5 (Homebrew 2024-11-27)
+[...]
+DEBUG Using Python request `3.8` from explicit request
+[...]
+Using CPython 3.8.20
+[...]
+DEBUG Solving with installed Python version: 3.8.20
+DEBUG Solving with target Python version: &gt;=3.8
+[...]
+DEBUG Adding transitive dependency for uv-torch-test==0.1.0: torch*
+DEBUG Found fresh response for: https://pypi.org/simple/torch/
+DEBUG Searching for a compatible version of torch (*)
+DEBUG Selecting: torch==2.5.1 [compatible] (torch-2.5.1-cp310-cp310-manylinux1_x86_64.whl)
+</code></pre>
+<p>--</p>
+<p>Here is (part of) the output of <code>uv run --no-project --verbose --python 3.8 --with &quot;torch&quot; python</code>:</p>
+<pre><code>DEBUG uv 0.5.5 (Homebrew 2024-11-27)
+[...]
+DEBUG No project found; searching for Python interpreter
+DEBUG Searching for Python 3.8 in virtual environments, managed installations, or search path
+[...]
+DEBUG Using Python 3.8.20 interpreter at: [...]/.local/share/uv/python/cpython-3.8.20-macos-aarch64-none/bin/python3.8
+[...]
+DEBUG Solving with installed Python version: 3.8.20
+DEBUG Solving with target Python version: &gt;=3.8.20
+DEBUG Adding direct dependency: torch*
+DEBUG Found fresh response for: https://pypi.org/simple/torch/
+DEBUG Searching for a compatible version of torch (*)
+DEBUG Searching for a compatible version of torch (&lt;2.5.1 | &gt;2.5.1)
+DEBUG Searching for a compatible version of torch (&lt;2.5.0 | &gt;2.5.0, &lt;2.5.1 | &gt;2.5.1)
+DEBUG Selecting: torch==2.4.1 [compatible] (torch-2.4.1-cp38-none-macosx_11_0_arm64.whl)
+</code></pre>
+<p>--</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-29 18:21</div>
+            <div class="timeline-body"><p>One more experiment.</p>
+<p>I compiled the version from https://github.com/astral-sh/uv/pull/8686 and ran</p>
+<pre><code>uv lock --python 3.8 --multi-version lastest
+</code></pre>
+<p>on the <code>pyproject.toml</code> from my initial message.<br />
+=&gt; <code>uv</code> still resolves <code>torch</code> 2.5.1 for all Python versions (3.8 to 3.13)
+=&gt; <code>uv</code> still fails to <code>sync</code> with Python 3.8 as it tries to install <code>torch</code>2.5.1 (same error as my first message).</p>
+<p>So unfortunately, https://github.com/astral-sh/uv/pull/8686 won't help in that case and the mystery of why my two commands do not behave the same way is still bothering me a bit 🙂</p>
+<p>I can provide logs if that can help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 18:57</div>
+            <div class="timeline-body"><p>We look at the <code>requires-python</code>, not the available wheels. We look at the wheels to determine whether there's at least one wheel in the space of supported Python versions. The assumption is that other versions will build from source. PyTorch doesn't ship source, so you end up with a version that may not support (e.g.) Python 3.8. Hence the open issue that I linked earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-11-29 19:13</div>
+            <div class="timeline-body"><p>Thank you, absolutely all clear, now I understand why the two commands end up with different versions 👌</p>
+<p>This totally makes sense and is quite clever to get a fast resolution while taking advantage of PyPI API.</p>
+<p>I must say that the thing that bugs me the most here is that nothing happened in both <code>torch</code> release process and <code>PyPI</code> backend when faced to what seems to me two ill-formed releases, in the sense that the <code>requires-python</code> is not respected by the either wheels or sdists 😮
+But maybe there is something I'm missing here.</p>
+<p>It is quite funny how <code>uv</code> helped me spot several eronous dependency specs in packages really quickly (see https://github.com/astral-sh/uv/issues/9211#issuecomment-2484266926 for another example).<br />
+For me that is a huge advantage of <code>uv</code>, this is the first time I find such an efficiently rigorous (which I love) environment manager in the Python world 👏<br />
+It helps me test my packages on different environment really efficiently and make absolutely reliable releases 🤩</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThomasHezard">@ThomasHezard</a> on 2024-12-04 11:43</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>FYI: the problem on PyTorch side is being taken care of: https://github.com/pytorch/pytorch/issues/141781.</p>
+<p>No sure when, but this (and https://github.com/astral-sh/uv/issues/5182 if I understood well) should be fixed in the near future, without having to specify complex version constraints in order to fix in <code>uv</code> what is in fact a bug on PyTorch side.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:41 UTC
+    </footer>
+</body>
+</html>

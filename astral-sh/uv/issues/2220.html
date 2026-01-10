@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small reads in uv_distribution::distribution_database::download producing v. slow download performance when installing torch - astral-sh/uv #2220</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Small reads in uv_distribution::distribution_database::download producing v. slow download performance when installing torch</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2220">#2220</a>
+        opened by <a href="https://github.com/thundergolfer">@thundergolfer</a>
+        on 2024-03-05 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-05 20:44</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Hey, this is a successor to https://github.com/astral-sh/uv/pull/1978 as I'm still trying to integrate <code>uv</code> with Modal's internal mirror. But this time I don't yet have a solution to this problem 🙂.</p>
+<p>I'm observed extremely degraded install performance when installing pytorch against our mirror. The install command is <code>uv pip install torch</code>.</p>
+<p>On my test machine, installing <strong><em>without</em></strong> our mirror is fast, taking around 7 seconds.</p>
+<img width="691" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/fd7a6c9b-e2c6-45e6-8d5d-eeadafc6eaaa">
+
+<p>But when I get our mirror involved, performance tanks and an install takes over 5 minutes. The command I'm running is this:</p>
+<pre><code class="language-bash">RUST_LOG=&quot;uv=trace,uv_extrace=trace,async_zip=debug&quot; \
+UV_NO_CACHE=true UV_INDEX_URL=&quot;http://172.21.0.1:5555/simple&quot; \
+uv --verbose pip install torch
+</code></pre>
+<h3>Investigating...</h3>
+<p>Using debug logs on our mirror I see that there is a vast (~64x) difference in read sizes between <code>uv pip install</code> and <code>pip install</code>.</p>
+<p>Our mirror serves <code>.whl</code> files off disk like this:</p>
+<pre><code class="language-rust">use hyper::{Body, Response};
+use tokio_util::codec::{BytesCodec, FramedRead};
+
+// ... 
+
+let file tokio::fs::File::open(&amp;filepath).await?;
+debug!(&quot;cache hit: serving {} from disk cache&quot;, filepath.display());
+let size = file.metadata().await.map(|m| Some(m.len())).unwrap_or(None);
+let stream = FramedRead::new(file, BytesCodec::new());
+let body = Body::wrap_stream(stream);
+let mut response = Response::new(body);
+</code></pre>
+<p>By enabling debug logs (<code>RUST_LOG=debug</code>) I can see that when using <strong><code>pip install</code></strong> read chunks are large:</p>
+<kbd>
+<img width="1331" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/8760e92d-e054-48ad-8746-4e5192931aa7">
+</kbd>
+
+<p>We can see in the screenshot of the debug logs that reads up to 128KiB are happening. Performance of the <code>pip install</code> command is good, the whl download takes around 3 seconds.</p>
+<p>The <code>pip</code> command here was</p>
+<pre><code>PIP_TRUSTED_HOST=&quot;172.21.0.1:5555&quot; \
+PIP_NO_CACHE_DIR=off PIP_INDEX_URL=&quot;http://172.21.0.1:5555/simple&quot; \
+pip install torch
+</code></pre>
+<p>and <code>pip --version</code> is <code>pip 23.3.1 from /home/ubuntu/modal/venv/lib/python3.11/site-packages/pip (python 3.11)</code>.</p>
+<p>The read sizes of <code>pip</code> contrast strongly with <strong><code>uv pip install</code></strong>, where I'm seeing read sizes between <code>11</code> and <code>1120</code> bytes.</p>
+<img width="1823" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/622b3f85-cb44-4a4c-a501-9d73c83f0038">
+
+<p>I believe these relatively tiny read sizes when downloading are contributing to the slow download performance on the 720.55MiB torch <code>.whl</code> file.</p>
+<p>Looking at the <code>trace</code> logs this is the region of code I'm in: https://github.com/astral-sh/uv/blob/043d72646d37a5d740edb2c68ebd26a78dc5eb08/crates/uv-distribution/src/distribution_database.rs#L161</p>
+<hr />
+<p><strong><code>uv</code> version</strong></p>
+<pre><code>uv --version
+uv 0.1.14
+</code></pre>
+<p><strong>OS</strong></p>
+<pre><code class="language-bash">uname -a
+Linux ip-10-1-1-198 5.15.0-1052-aws #57~20.04.1-Ubuntu SMP Mon Jan 15 17:04:56 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-05 20:45</div>
+            <div class="timeline-body"><p>I'm happy to look more into what's going on later in the week 🙂. I've read through some of the code in <code>uv</code> and <code>async_zip</code> but haven't figured out what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 20:48</div>
+            <div class="timeline-body"><p>Cool, would definitely welcome more exploration / eyes on it and happy to support. We unzip the wheel to disk directly as we stream the download in-memory, it looks like we're making way too many small reads right now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-05 20:55</div>
+            <div class="timeline-body"><p>Yeah, I added <code>BufReader</code> in a couple places which was ineffectual, and see there's already <code>BufReader</code> used in a couple places (in uv and in async_zip) despite seeing reads &lt;&lt; than the 8KiB default buffer size.</p>
+<p>It'd take me a decent bit more time to unpack why these small reads are being produced and  slap a buffered reader in the right place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 20:57</div>
+            <div class="timeline-body"><p>Is there any way to reproduce this with publicly available indexes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-05 20:59</div>
+            <div class="timeline-body"><p>Yeh I think that's job 1 so that we can collab better on this! We won't open-source our mirror implementation just yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Small reads in uv_distribution::distribution_database::download producing v. slow download performance when install torch" to "Small reads in uv_distribution::distribution_database::download producing v. slow download performance when installing torch" by @thundergolfer on 2024-03-05 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-05 22:45</div>
+            <div class="timeline-body"><p>This behavior seems very similar to one I’m seeing as well. For our internal index, proxied public packages have good performance even when wheel is large (PyTorch), but internal packages with large wheels are much slower with uv then pip.</p>
+<p>The only thing I can add is I know for our index we don’t support range requests/head so maybe the fallback path there is needed to trigger slow behavior here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-03-06 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-03-06 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 06:03</div>
+            <div class="timeline-body"><p>We don't use range requests for the wheel <em>download</em> IIRC, just for fetching wheel metadata, so hopefully not a factor here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 04:56</div>
+            <div class="timeline-body"><p>Adding some details of attempting a repro with an open-source mirror, <a href="https://github.com/EpicWink/proxpi">proxpi</a>: <code>docker run -p 5000:5000 epicwink/proxpi</code>.</p>
+<pre><code>time UV_NO_CACHE=true UV_INDEX_URL=&quot;http://127.0.0.1:5000/index&quot; target/release/uv --verbose pip install torch
+</code></pre>
+<p>Has <code>proxpi</code> log a whl download time of around 7.4s.</p>
+<pre><code>2024-03-09 04:37:34 [    INFO] gunicorn.access: 172.18.0.1 &quot;GET /index/torch/torch-2.2.1-cp311-cp311-manylinux1_x86_64.whl HTTP/1.1&quot; 200 0 7431ms
+</code></pre>
+<p>With just <code>pip</code>:</p>
+<pre><code class="language-bash">PIP_TRUSTED_HOST=&quot;127.0.0.1:5000&quot; PIP_NO_CACHE_DIR=off PIP_INDEX_URL=&quot;http://127.0.0.1:5000/index&quot; pip install torch
+</code></pre>
+<pre><code class="language-bash">2024-03-09 04:39:12 [    INFO] gunicorn.access: 172.18.0.1 &quot;GET /index/torch/ HTTP/1.1&quot; 200 24056 7ms
+2024-03-09 04:39:14 [    INFO] gunicorn.access: 172.18.0.1 &quot;GET /index/torch/torch-2.2.1-cp311-cp311-manylinux1_x86_64.whl HTTP/1.1&quot; 200 0 2080ms
+</code></pre>
+<p>I get around 2s.</p>
+<p>So there's a difference, but nothing like the ~5 minute slowdown seen in our internal mirror. So a negative result on providing an open-source reproduction. I'll keep digging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 13:16</div>
+            <div class="timeline-body"><p>I'd really like to fix this. I'll try to play around with it today. The simplest thing we should try:</p>
+<pre><code class="language-diff">diff --git a/crates/uv-extract/src/stream.rs b/crates/uv-extract/src/stream.rs
+index 8d8dfb11..b9272df5 100644
+--- a/crates/uv-extract/src/stream.rs
++++ b/crates/uv-extract/src/stream.rs
+@@ -18,7 +18,7 @@ pub async fn unzip&lt;R: tokio::io::AsyncRead + Unpin&gt;(
+     target: impl AsRef&lt;Path&gt;,
+ ) -&gt; Result&lt;(), Error&gt; {
+     let target = target.as_ref();
+-    let mut reader = reader.compat();
++    let mut reader = futures::io::BufReader::new( reader.compat());
+     let mut zip = async_zip::base::read::stream::ZipFileReader::new(&amp;mut reader);
+ 
+     let mut directories = FxHashSet::default();
+</code></pre>
+<p>(It looks like the async ZIP reader uses a BufReader internally, but only for the entry <em>bodies</em>, and not the headers.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 15:47</div>
+            <div class="timeline-body"><p>Not seeing any improvement from this change.</p>
+<p>FWIW, on my machine, the difference is much smaller with the open-source proxy.</p>
+<p>pip:</p>
+<pre><code>gunicorn.access: 172.17.0.1 &quot;GET /index/torch/torch-2.2.1-cp312-none-macosx_11_0_arm64.whl HTTP/1.1&quot; 200 0 888ms
+</code></pre>
+<p>uv:</p>
+<pre><code>gunicorn.access: 172.17.0.1 &quot;GET /index/torch/torch-2.2.1-cp312-none-macosx_11_0_arm64.whl HTTP/1.1&quot; 200 0 1374ms
+</code></pre>
+<p>Which is maybe plausible given that we're unzipping and writing to disk -- not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 17:09</div>
+            <div class="timeline-body"><p>We could also try increasing the buffer size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 18:21</div>
+            <div class="timeline-body"><p>Ok from looking at trace logs for our internal mirror I think the encoding strategy difference is key:</p>
+<p><strong><code>pip</code></strong></p>
+<pre><code>2024-03-09T17:41:23.715190Z DEBUG pypi_mirror: cache hit: serving /tmp/pypi-mirror-worker-cache/packages/2c/df/5810707da6f2fd4be57f0cc417987c0fa16a2eecf0b1b71f82ea555dc619/torch-2.2.1-cp311-cp311-manylinux1_x86_64.whl from disk cache
+2024-03-09T17:41:23.715200Z TRACE hyper::proto::h1::conn: flushed({role=server}): State { reading: KeepAlive, writing: Init, keep_alive: Busy }
+2024-03-09T17:41:23.715260Z TRACE encode_headers: hyper::proto::h1::role: Server::encode status=200, body=Some(Unknown), req_method=Some(GET)
+2024-03-09T17:41:23.715329Z DEBUG hyper::proto::h1::io: flushed 83 bytes
+2024-03-09T17:41:23.715336Z TRACE hyper::proto::h1::conn: flushed({role=server}): State { reading: KeepAlive, writing: Body(Encoder { kind: Length(755552143), is_last: false }), keep_alive: Busy }
+2024-03-09T17:41:23.715355Z TRACE hyper::proto::h1::encode: sized write, len = 8192
+2024-03-09T17:41:23.715362Z TRACE hyper::proto::h1::io: buffer.queue self.len=0 buf.len=8192
+</code></pre>
+<p><strong><code>uv</code></strong></p>
+<pre><code>2024-03-09T17:40:37.658227Z DEBUG pypi_mirror: cache hit: serving /tmp/pypi-mirror-worker-cache/packages/2c/df/5810707da6f2fd4be57f0cc417987c0fa16a2eecf0b1b71f82ea555dc619/torch-2.2.1-cp311-cp311-manylinux1_x86_64.whl from disk cache
+2024-03-09T17:40:37.658414Z TRACE hyper::proto::h1::conn: flushed({role=server}): State { reading: KeepAlive, writing: Init, keep_alive: Busy }
+2024-03-09T17:40:37.658530Z TRACE encode_headers: hyper::proto::h1::role: Server::encode status=200, body=Some(Unknown), req_method=Some(GET)
+2024-03-09T17:40:37.658576Z DEBUG hyper::proto::h1::io: flushed 108 bytes
+2024-03-09T17:40:37.658591Z TRACE hyper::proto::h1::conn: flushed({role=server}): State { reading: KeepAlive, writing: Body(Encoder { kind: Chunked, is_last: false }), keep_alive: Busy }
+2024-03-09T17:40:37.658755Z TRACE hyper::proto::h1::encode: encoding chunked 10B
+2024-03-09T17:40:37.658759Z TRACE hyper::proto::h1::io: buffer.queue self.len=0 buf.len=15
+</code></pre>
+<p>Will work out why this difference occurs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 18:33</div>
+            <div class="timeline-body"><p>Ohh nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 20:26</div>
+            <div class="timeline-body"><p>I think this is another <code>content-encoding</code> related issue.</p>
+<p>I added some extra <code>trace!</code> logs into hyper when it was running <code>encode_headers</code> and deciding on the encoding strategy.</p>
+<p><strong>uv</strong></p>
+<pre><code>Server::encode head=MessageHead { version: HTTP/1.1, subject: 200, headers: {&quot;content-encoding&quot;: &quot;gzip&quot;}, extensions: Extensions }, status=200, body=Some(Unknown), req_method=Some(GET)
+</code></pre>
+<p><strong>pip</strong></p>
+<pre><code>Server::encode head=MessageHead { version: HTTP/1.1, subject: 200, headers: {&quot;content-length&quot;: &quot;755552143&quot;}, extensions: Extensions }, status=200, body=Some(Unknown), req_method=Some(GET)
+</code></pre>
+<p>Seeing <code>gzip</code> in the headers cued me to think this was just the same issue as https://github.com/astral-sh/uv/pull/1978 showing up in a different place.</p>
+<p>By doing the same header change that's done in https://github.com/astral-sh/uv/pull/1978 torch installs much, much faster against the mirror!</p>
+<img width="1458" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/815fcc8a-624f-485a-9d18-bbf591e5d1ef">
+
+<p>A 15.64s second download against the mirror is still slower than what <code>uv</code> gets against PyPI (around 10s) so there may be some additional change I can make to get performance of our mirror to parity with PyPi. It really should be faster as it's serving over the local network.</p>
+<p>Checking the <code>pip</code> repository for its history of dealing with <code>content-encoding</code> I see this https://github.com/pypa/pip/pull/1688</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 20:30</div>
+            <div class="timeline-body"><p>Looking at the flushes in our mirror after adding the <code>identity</code> content-encoding header, I can now see they're averaging around 8KiB, much higher than the ~1KiB before:</p>
+<kbd>
+<img width="890" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/7b30f5b3-f14f-4822-852a-b642df097e14">
+</kbd>
+
+<p>Still lower than what <code>pip</code> was producing in our mirror, which went up to 128KiB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 20:30</div>
+            <div class="timeline-body"><p>Can you try tweaking the buffer size on the BufReader? I think 8KiB might be the exact default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 20:31</div>
+            <div class="timeline-body"><p>You mean doing this but with a non-default buffer size? https://github.com/astral-sh/uv/issues/2220#issuecomment-1986854785</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 20:47</div>
+            <div class="timeline-body"><p>Yeah. Alternatively I can change the buffer used inside async-zip-rs, we use a fork anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 20:54</div>
+            <div class="timeline-body"><p>(I don’t have much intuition for how nested BufReaders interact.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 22:34</div>
+            <div class="timeline-body"><p>Yep with this diff I get comparable performance to <code>pip</code> 🙂</p>
+<pre><code class="language-diff">diff --git a/crates/uv-extract/src/stream.rs b/crates/uv-extract/src/stream.rs
+index 8d8dfb11..db3c42fb 100644
+--- a/crates/uv-extract/src/stream.rs
++++ b/crates/uv-extract/src/stream.rs
+@@ -18,7 +18,7 @@ pub async fn unzip&lt;R: tokio::io::AsyncRead + Unpin&gt;(
+     target: impl AsRef&lt;Path&gt;,
+ ) -&gt; Result&lt;(), Error&gt; {
+     let target = target.as_ref();
+-    let mut reader = reader.compat();
++    let mut reader = futures::io::BufReader::with_capacity( 128 * 1024, reader.compat());
+     let mut zip = async_zip::base::read::stream::ZipFileReader::new(&amp;mut reader);
+
+     let mut directories = FxHashSet::default();
+</code></pre>
+<p>Debug logging on <code>hyper</code> shows flushes up-to 128KiB.</p>
+<hr />
+<kbd>
+<img width="1458" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/69fefa38-a7c9-442c-89c5-d6565c275d48">
+</kbd>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 22:37</div>
+            <div class="timeline-body"><p>Think this is a enough to make a PR. It'd be two things:</p>
+<ol>
+<li>setting <code>identity</code>, in the spirit of https://github.com/pypa/pip/pull/1688</li>
+<li>increasing buffer from 8KiB to 128KiB.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 22:42</div>
+            <div class="timeline-body"><p>Sounds great, thank you! The only thing I’ll want to test before merging is whether the buffer size changes benchmarks much / at all against PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-03-09 22:44</div>
+            <div class="timeline-body"><p>Makes sense. Looks like I could even check this myself by reading <code>BENCHMARKS.md</code> and going from there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 22:47</div>
+            <div class="timeline-body"><p>Totally, up to you! I'd just do a release build on main, move it to <code>uv-main</code>, then do a release build on your branch, then run something ike:</p>
+<pre><code>python -m scripts.bench \
+        --uv-path ./target/release/uv \
+        --uv-path ./target/release/uv-main \
+        ./scripts/requirements/compiled/trio.txt --benchmark install-cold
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 22:48</div>
+            <div class="timeline-body"><p>By the way, I can get this released pretty quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2319.html">astral-sh/uv#2319</a> on 2024-03-10 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2323.html">astral-sh/uv#2323</a> on 2024-03-10 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-10 03:28</div>
+            <div class="timeline-body"><p>I tested the fix on my slow large wheel and it works great. Installation time is now fast for that 1 wheel and I guess my index server had same issue here. Thanks to both of you for continuing to improve uv's performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:30</div>
+            <div class="timeline-body"><p>All @thundergolfer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-10 03:30</div>
+            <div class="timeline-body"><p>I'll probably cut a release tomorrow with this in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-10 14:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

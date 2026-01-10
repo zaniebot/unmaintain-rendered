@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting UV_CACHE_DIR on Windows causes &quot;error: The system cannot find the path specified. (os error 3)&quot; - astral-sh/uv #3280</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Setting UV_CACHE_DIR on Windows causes &quot;error: The system cannot find the path specified. (os error 3)&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3280">#3280</a>
+        opened by <a href="https://github.com/gozdal">@gozdal</a>
+        on 2024-04-26 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gozdal">@gozdal</a> on 2024-04-26 16:07</div>
+            <div class="timeline-body"><p>I am trying to work around another issue in <a href="https://github.com/astral-sh/uv/issues/2810">concurrently using the same cache directory</a> by setting <code>UV_CACHE_DIR</code>.
+If I do</p>
+<pre><code>set UV_CACHE_DIR=%LOCALAPPDATA%\uv\cache-foo &amp;&amp; uv venv --help
+</code></pre>
+<p>I correctly see</p>
+<pre><code>      --cache-dir &lt;CACHE_DIR&gt;
+          Path to the cache directory.
+
+          Defaults to `$HOME/Library/Caches/uv` on macOS, `$XDG_CACHE_HOME/uv` or `$HOME/.cache/uv` on Linux, and
+          `$HOME/.cache/&lt;project_path&gt; {FOLDERID_LocalAppData}/&lt;project_path&gt;/cache/uv` on Windows.
+
+          [env: UV_CACHE_DIR=C:\Users\foo\AppData\Local\uv\cache-foo ]
+</code></pre>
+<p>However, if I want to create a venv I get:
+<code>set UV_CACHE_DIR=%LOCALAPPDATA%\uv\cache-foo &amp;&amp; uv venv venv</code></p>
+<pre><code>error: The system cannot find the path specified. (os error 3)
+</code></pre>
+<p><code>uv 0.1.33 (2cee7525c 2024-04-17)</code>, on Windows Server 2016 and 2022</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-04-29 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3304.html">astral-sh/uv#3304</a> on 2024-04-29 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-29 10:33</div>
+            <div class="timeline-body"><p>You've hit an interesting edge case: The path contains a trailing space, where we can create the directory, but writing a file joined to that directory fails.</p>
+<p>#3304 should make this clearer in the error message:</p>
+<pre><code>error: failed to open file `C:\Users\Konstantin\AppData\Local\uv\cache-foo \CACHEDIR.TAG`
+  Caused by: The system cannot find the path specified. (os error 3)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-04-29 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-04-29 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gozdal">@gozdal</a> on 2024-04-29 12:25</div>
+            <div class="timeline-body"><p>That's interesting, wouldn't think that <code>set foo=bar &amp;&amp; cmd</code> would set <code>foo=bar</code> with a space at the end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-04-29 14:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

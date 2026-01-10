@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>egg-info directory keep being created - astral-sh/uv #12467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>egg-info directory keep being created</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12467">#12467</a>
+        opened by <a href="https://github.com/clement-escolano">@clement-escolano</a>
+        on 2025-03-25 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/clement-escolano">@clement-escolano</a> on 2025-03-25 15:23</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hello</p>
+<p>I recently migrated my project to uv (fantastic work, thank you) but there is one thing that is bothering me. From time to time (every time I run <code>uv add ...</code> at least), a directory <code>my_project.egg-info</code> is created inside my project.</p>
+<p>I think uv tries to build my project as a library but this is not a library and I would like to prevent this behaviour (this does not happens on another small project so there may be something specific in this project).</p>
+<p>I tried adding the following setting but it did not change anything:</p>
+<pre><code class="language-toml">[tool.uv]
+package = false
+</code></pre>
+<p>Do you know why it can happen and how to prevent it?</p>
+<p>Thank you</p>
+<h3>Platform</h3>
+<p>macOS 15 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (Homebrew 2025-02-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @clement-escolano on 2025-03-25 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-25 17:27</div>
+            <div class="timeline-body"><p>Can you share the full <code>pyproject.toml</code>? This just happens on <code>uv add</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clement-escolano">@clement-escolano</a> on 2025-03-25 20:06</div>
+            <div class="timeline-body"><p>Thank you for your message.</p>
+<p>Here is a simple file that reproduces the issue in my project:</p>
+<details>
+
+<summary>pyproject.toml file</summary>
+
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+dynamic = [&quot;version&quot;]
+requires-python = &quot;&gt;=3.12,&lt;3.13&quot;
+dependencies = [
+    # ...
+]
+
+[dependency-groups]
+dev = [
+    # ...
+]
+
+[tool.uv]
+package = false
+
+[tool.setuptools]
+py-modules = []
+</code></pre>
+</details>
+
+<p>I tried some commands, it created the directory when using <code>uv add</code>, <code>uv remove</code> and <code>uv build</code>.</p>
+<p>Probably the root cause is that the setting <code>py-modules = []</code> is required in order for the commandes to succeed. If this setting is remove, there is the following error:</p>
+<details>
+
+<summary>Error content</summary>
+
+<pre><code>error: Failed to generate package metadata for `my-project @ virtual+.`
+  Caused by: The build backend returned an error
+  Caused by: Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+[stderr]
+error: Multiple top-level packages discovered in a flat-layout: [&lt;REDACTED&gt;].
+
+To avoid accidental inclusion of unwanted files or directories,
+setuptools will not proceed with this build.
+
+If you are trying to create a single distribution with multiple packages
+on purpose, you should not rely on automatic discovery.
+Instead, consider the following options:
+
+1. set up custom discovery (`find` directive with `include` or `exclude`)
+2. use a `src-layout`
+3. explicitly set `py_modules` or `packages` with a list of names
+
+To find more information, look for &quot;package discovery&quot; on setuptools docs.
+
+hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 01:17</div>
+            <div class="timeline-body"><p>It's because you have <code>dynamic = [&quot;version&quot;]</code>. We have to get the version <em>somehow</em>, and the way to do that (per the standards) is to ask the build backend. Because you don't have a backend defined, we fall back to <code>setuptools</code> (per the standards), which then creates the <code>.egg-info</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clement-escolano">@clement-escolano</a> on 2025-03-26 08:15</div>
+            <div class="timeline-body"><p>OK thank you for the clarification!
+I will set a fixed version then :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @clement-escolano on 2025-03-26 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opensafely-core/job-server/pulls/5472.html">opensafely-core/job-server#5472</a> on 2025-12-17 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../opensafely-core/job-server/issues/5498.html">opensafely-core/job-server#5498</a> on 2025-12-22 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waketzheng">@waketzheng</a> on 2025-12-25 09:21</div>
+            <div class="timeline-body"><p>This worked for me:</p>
+<pre><code class="language-TOML">[project]
+name = &quot;myproject&quot;
+dynamic = [&quot;version&quot;]
+description = &quot;&quot;
+authors = []
+requires-python = &quot;&gt;=3.12&quot;
+readme = &quot;README.md&quot;
+license = {text = &quot;MIT&quot;}
+dependencies = [
+    &quot;kivy[base]&gt;=2.3.1&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;buildozer (&gt;=1.5.0,&lt;2.0.0)&quot;,
+    &quot;cython (&gt;=0.29,&lt;0.30)&quot;,
+    &quot;mypy&gt;=1.19.1&quot;,
+    &quot;setuptools&gt;=80.9.0&quot;,
+]
+
+[tool.mypy]
+pretty = true
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = true
+exclude = ['.*\.bak', &quot;bin/&quot;]
+
+[build-system]
+requires = [&quot;pdm-backend&quot;]
+build-backend = &quot;pdm.backend&quot;
+
+[tool.pdm]
+distribution = false
+version = {source=&quot;file&quot;, path=&quot;main.py&quot;}
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+buildozer = { git = &quot;ssh://git@github.com/kivy/buildozer&quot; }
+
+[tool.setuptools]
+py-modules = []
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

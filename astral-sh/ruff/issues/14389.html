@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Infinite loop] ICN001 conflicts with I002 and F401 if an unused unconventionally aliased import is required - astral-sh/ruff #14389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Infinite loop] ICN001 conflicts with I002 and F401 if an unused unconventionally aliased import is required</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14389">#14389</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-11-16 21:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-11-16 21:25</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/unconventional-import-alias/"><code>unconventional-import-alias</code> (ICN001)</a> conflicts with <a href="https://docs.astral.sh/ruff/rules/missing-required-import/"><code>missing-required-import</code> (I002)</a> in Ruff 0.7.4 when <a href="https://docs.astral.sh/ruff/rules/unused-import/"><code>unused-import</code> (F401)</a> is also enabled, if an import is required without a conventional alias but is unused. ICN001’s fix should be skipped for required imports, even if the required imports lack conventional aliases. It would still be helpful for ICN001 to report a violation without a fix.</p>
+<pre><code class="language-console">$ echo 1 | ruff check --isolated --select I002,ICN001,F401 --config 'lint.isort.required-imports = [&quot;import pandas&quot;]' - --unsafe-fixes --fix
+
+error: Failed to converge after 100 iterations.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+...quoting the contents of `-`, the rule codes ICN001, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+import pandas
+1
+-:1:8: ICN001 `pandas` should be imported as `pd`
+  |
+1 | import pandas
+  |        ^^^^^^ ICN001
+2 | 1
+  |
+  = help: Alias `pandas` to `pd`
+
+Found 101 errors (100 fixed, 1 remaining).
+[*] 1 fixable with the --fix option.
+</code></pre>
+<p>In that example, I002 inserts <code>import pandas</code>, ICN001 changes it to <code>import pandas as pd</code>, I002 inserts <code>import pandas</code> again, F401 removes the unused <code>import pandas as pd</code>, and then back to ICN001 and so on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-16 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-17 02:38</div>
+            <div class="timeline-body"><p>I'm wondering if, unlike the previous infinite-loop fix, this should be fixed by giving an error directly on the user's configuration? Especially in the case where the user has entered in both the required import and the required alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-17 17:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm wondering if, unlike the previous infinite-loop fix, this should be fixed by giving an error directly on the user's configuration? Especially in the case where the user has entered in both the required import and the required alias.</p>
+</blockquote>
+<p>Yes, that makes sense to me! These two configuration options just flatly contradict each other in this case, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2024-11-21 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-10 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-01-14 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15480.html">astral-sh/ruff#15480</a> on 2025-01-14 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-16 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-16 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-01-16 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18729.html">astral-sh/ruff#18729</a> on 2025-06-17 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

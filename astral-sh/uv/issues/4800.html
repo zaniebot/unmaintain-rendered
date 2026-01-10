@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tool: Wrong toolchain platform, arch used - astral-sh/uv #4800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tool: Wrong toolchain platform, arch used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4800">#4800</a>
+        opened by <a href="https://github.com/jooon">@jooon</a>
+        on 2024-07-04 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jooon">@jooon</a> on 2024-07-04 12:26</div>
+            <div class="timeline-body"><p>Looks like macos-aarch64-none is hardcoded somewhere.</p>
+<p>I am playing with uv tool and uv toolchain and noticed that uv tool could also download the toolchain for me if I didn't have it installed. However, if I don't specify the version properly, then a macos-aarch64-none is downloaded. Calling uv toolchain directly detects linux-x86_64-gnu properly.</p>
+<pre><code>$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04.4 LTS
+Release:	22.04
+Codename:	jammy
+
+$ uv --version
+uv 0.2.21
+
+$ ls -la .local/share/uv
+ls: cannot access '.local/share/uv': No such file or directory
+
+$ uv tool install -p 3.12 black
+warning: `uv tool install` is experimental and may change without warning.
+error: Failed to query Python interpreter at `/home/jon/.local/share/uv/toolchains/cpython-3.12.3-macos-aarch64-none/install/bin/python3`
+  Caused by: Exec format error (os error 8)
+</code></pre>
+<p>Furthermore, now that it has installed this version, even uv toolchain thinks this satisfies the constraint.</p>
+<pre><code>$ uv toolchain install 3.12
+warning: `uv toolchain install` is experimental and may change without warning.
+Looking for toolchain Python 3.12 (any-3.12-any-any-any)
+Found installed toolchain `cpython-3.12.3-macos-aarch64-none` that satisfies Python 3.12
+Requested toolchain already installed.
+</code></pre>
+<p>uv toolchain list does not show it</p>
+<pre><code>$ uv toolchain list
+warning: `uv toolchain list` is experimental and may change without warning.
+cpython-3.12.3-linux-x86_64-musl	&lt;download available&gt;
+cpython-3.11.9-linux-x86_64-musl	&lt;download available&gt;
+cpython-3.10.14-linux-x86_64-musl	&lt;download available&gt;
+cpython-3.10.12-linux-x86_64-gnu	/usr/bin/python3
+cpython-3.10.12-linux-x86_64-gnu	/bin/python3
+cpython-3.9.19-linux-x86_64-musl	&lt;download available&gt;
+cpython-3.8.19-linux-x86_64-musl	&lt;download available&gt;
+cpython-3.7.9-linux-x86_64-musl	&lt;download available&gt;
+</code></pre>
+<p>but since it satisfies the constraint, it can be uninstalled and then the proper platform can be installed.</p>
+<pre><code>$ uv toolchain uninstall 3.12
+warning: `uv toolchain uninstall` is experimental and may change without warning.
+Looking for installed toolchains matching Python 3.12 (any-3.12-any-any-any)
+Found toolchain `cpython-3.12.3-macos-aarch64-none` that matches Python 3.12
+Uninstalled toolchain `cpython-3.12.3-macos-aarch64-none`
+Uninstalled 1 toolchain
+
+$ uv toolchain install 3.12
+warning: `uv toolchain install` is experimental and may change without warning.
+Looking for toolchain Python 3.12 (any-3.12-any-any-any)
+Downloading cpython-3.12.3-linux-x86_64-gnu
+Installed Python 3.12.3 to .local/share/uv/toolchains/cpython-3.12.3-linux-x86_64-gnu
+Installed 1 toolchain in 1s
+</code></pre>
+<p>With a correct version installed, uv tool install -p 3.12 also works fine.</p>
+<pre><code>$ uv tool install -p 3.12 black
+warning: `uv tool install` is experimental and may change without warning.
+Resolved 6 packages in 26ms
+Installed 6 packages in 4ms
+ + black==24.4.2
+ + click==8.1.7
+ + mypy-extensions==1.0.0
+ + packaging==24.1
+ + pathspec==0.12.1
+ + platformdirs==4.2.2
+Installed: black, blackd
+
+$ black --version
+black, 24.4.2 (compiled: yes)
+Python (CPython) 3.12.3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Wrong toolchain platform, arch used" to "uv tool: Wrong toolchain platform, arch used" by @jooon on 2024-07-04 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-04 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-07-04 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-04 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4810.html">astral-sh/uv#4810</a> on 2024-07-04 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-07-04 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-04 15:34</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like we weren't filling in platform information for automatic fetches so we were just getting the first matching platform in the download list (which happens to be macOS). I've got a draft fix at https://github.com/astral-sh/uv/pull/4810</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-05 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-05 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4855.html">astral-sh/uv#4855</a> on 2024-07-07 16:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

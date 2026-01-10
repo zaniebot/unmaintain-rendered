@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv init --package` creates invalid pyproject.toml if git username contains quotes - astral-sh/uv #16765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv init --package` creates invalid pyproject.toml if git username contains quotes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16765">#16765</a>
+        opened by <a href="https://github.com/NMertsch">@NMertsch</a>
+        on 2025-11-17 23:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NMertsch">@NMertsch</a> on 2025-11-17 23:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv init</code> does not escape quotes when inserting the git &quot;user.name&quot; config value as &quot;project.author.name&quot;.</p>
+<h4>How to reproduce</h4>
+<p>Steps:</p>
+<pre><code class="language-shell"># create new directory
+mkdir my-new-project
+cd my-new-project
+
+# configure git user
+git init
+git config user.name 'Tony &quot;Iron Man&quot; Stark'
+git config user.email 'ironman@example.com'
+
+# create new uv package
+uv init --package
+</code></pre>
+<p>This creates the following <code>project.authors</code> field in pyproject.toml:</p>
+<pre><code class="language-toml">[project]
+authors = [
+    { name = &quot;Tony &quot;Iron Man&quot; Stark&quot;, email = &quot;ironman@example.com&quot; }
+]
+</code></pre>
+<p>Note the string <code>&quot;Tony &quot;Iron Man&quot; Stark&quot;</code>, which should be <code>&quot;Tony \&quot;Iron Man\&quot; Stark&quot;</code></p>
+<p>(This came up while testing. I don't suggest that quotes in a git username are a good idea.)</p>
+<h3>Platform</h3>
+<p>Linux 6.17.0-6-generic x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.9.10</p>
+<h3>Python version</h3>
+<p>Python 3.13.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @NMertsch on 2025-11-17 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2025-11-17 23:36</div>
+            <div class="timeline-body"><p>The code is in <a href="https://github.com/astral-sh/uv/blob/512c0ca5edc34f4eb932d5dd59cc86f842a8817c/crates/uv/src/commands/project/init.rs#L938-L946">crates/uv/src/commands/project/init.rs</a>:</p>
+<pre><code class="language-rust">impl Author {
+    fn to_toml_string(&amp;self) -&gt; String {
+        match self {
+            Self::NameEmail { name, email } =&gt; {
+                format!(&quot;{{ name = \&quot;{name}\&quot;, email = \&quot;{email}\&quot; }}&quot;)  // &lt;-- here
+            }
+            Self::Name(name) =&gt; format!(&quot;{{ name = \&quot;{name}\&quot; }}&quot;),  // &lt;-- here
+            Self::Email(email) =&gt; format!(&quot;{{ email = \&quot;{email}\&quot; }}&quot;),
+        }
+    }
+}
+</code></pre>
+<p>Using <a href="https://docs.rs/toml/latest/toml/ser/fn.to_string.html"><code>toml::to_string()</code></a> might be a bit much for this case. Maybe <code>name.replace(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)</code> is enough?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-11-18 20:38</div>
+            <div class="timeline-body"><blockquote>
+<p>The code is in <a href="https://github.com/astral-sh/uv/blob/512c0ca5edc34f4eb932d5dd59cc86f842a8817c/crates/uv/src/commands/project/init.rs#L938-L946">crates/uv/src/commands/project/init.rs</a>:</p>
+<p>impl Author {
+fn to_toml_string(&amp;self) -&gt; String {
+match self {
+Self::NameEmail { name, email } =&gt; {
+format!(&quot;{{ name = &quot;{name}&quot;, email = &quot;{email}&quot; }}&quot;)  // &lt;-- here
+}
+Self::Name(name) =&gt; format!(&quot;{{ name = &quot;{name}&quot; }}&quot;),  // &lt;-- here
+Self::Email(email) =&gt; format!(&quot;{{ email = &quot;{email}&quot; }}&quot;),
+}
+}
+}
+Using <a href="https://docs.rs/toml/latest/toml/ser/fn.to_string.html"><code>toml::to_string()</code></a> might be a bit much for this case. Maybe <code>name.replace(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)</code> is enough?</p>
+</blockquote>
+<p>Using <a href="https://docs.rs/toml/latest/toml/ser/fn.to_string.html"><code>to_string</code></a> has the other added benefit of handling other control characters, backslashes, etc (in addition to double quotes). I think this is the 'proper' fix here.</p>
+<p>Something like:</p>
+<pre><code class="language-rust">use toml_edit::InlineTable;
+
+#[derive(Debug)]
+enum Author {
+  Name(String),
+  Email(String),
+  NameEmail { name: String, email: String },
+}
+
+
+impl Author {
+  fn to_toml_string(&amp;self) -&gt; String {
+    let mut inline = InlineTable::new();
+
+    match self {
+      Self::NameEmail { name, email } =&gt; {
+        inline.get_or_insert(&quot;name&quot;, name);
+        inline.get_or_insert(&quot;email&quot;, email);
+      }
+      Self::Name(name) =&gt; {
+        inline.get_or_insert(&quot;name&quot;, name);
+      }
+      Self::Email(email) =&gt; {
+        inline.get_or_insert(&quot;email&quot;, email);
+      }
+    }
+
+    inline.to_string()
+  }
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-19 09:45</div>
+            <div class="timeline-body"><p>It's definitely a better idea to use <code>toml_edit</code> here than trying to use a template that doesn't do toml escaping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16778.html">astral-sh/uv#16778</a> on 2025-11-19 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @woodruffw on 2025-11-20 19:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

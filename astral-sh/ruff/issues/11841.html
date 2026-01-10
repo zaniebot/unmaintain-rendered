@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLR1711 (useless-return) does not check return statements if they are indented. - astral-sh/ruff #11841</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLR1711 (useless-return) does not check return statements if they are indented.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11841">#11841</a>
+        opened by <a href="https://github.com/yuji38kwmt">@yuji38kwmt</a>
+        on 2024-06-12 02:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yuji38kwmt">@yuji38kwmt</a> on 2024-06-12 02:36</div>
+            <div class="timeline-body"><h1>Description</h1>
+<p><a href="https://docs.astral.sh/ruff/rules/useless-return/">PLR1711</a> (<code>useless-return</code>) does not check <code>return</code> statements if they are indented.</p>
+<p>But with Pylint, <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/useless-return.html">R1711</a> checks.</p>
+<p>I expect Ruff to behave in the same way as Pylint.</p>
+<h3>sample.py</h3>
+<pre><code class="language-python">def foo(
+    value_list: list[str],
+) -&gt; None:
+    if len(value_list) == 0:
+        print(f&quot;a&quot;)
+    else:
+        print(&quot;b&quot;)
+        return
+</code></pre>
+<h3>Checks with Ruff</h3>
+<pre><code>$ ruff --version
+ruff 0.4.8
+
+$ ruff check --select PLR1711 sample.py
+All checks passed!
+</code></pre>
+<h3>Checks with Pylint</h3>
+<pre><code>$ pylint --version
+pylint 3.2.3
+astroid 3.2.2
+Python 3.12.1 (main, Feb  7 2024, 10:25:21) [GCC 11.4.0]
+
+$ pylint sample.py --enable R1711 --disable C,W
+************* Module sample
+sample.py:1:0: R1711: Useless return at end of function or method (useless-return)
+
+------------------------------------------------------------------
+Your code has been rated at 8.00/10 (previous run: 6.00/10, +2.00)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-06-12 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-12 06:44</div>
+            <div class="timeline-body"><p>We could possibly use <code>AnyNodeRef::from(node).last_child_in_body</code> https://github.com/astral-sh/ruff/blob/db8f2c2d9fec7cc6722fcfdd825189f14f839b68/crates/ruff_python_ast/src/node.rs#L6972-L6973 to get the last statement although I think there might be other nuances which we need to consider to match Pylint's behavior.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:13 UTC
+    </footer>
+</body>
+</html>

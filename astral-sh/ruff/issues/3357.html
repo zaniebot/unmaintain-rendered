@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should TCH run on pyi files? - astral-sh/ruff #3357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should TCH run on pyi files?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3357">#3357</a>
+        opened by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a>
+        on 2023-03-06 07:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-03-06 07:49</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi,</p>
+<p>See here: https://github.com/pandas-dev/pandas/pull/51794</p>
+<p>The TCH code is reporting lots of errors in typing stub files (<code>.pyi</code>) - is this right? They're only used by the type checker anyway, perhaps <code>TCH</code> shouldn't run for this file type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 12:25</div>
+            <div class="timeline-body"><p>My initial reaction is that you’re right. Let me see what the originating plug-in does (though we may want to change it anyway even if they run on pyi files).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-03-06 12:45</div>
+            <div class="timeline-body"><p>I didn't think flake8 ran on cython files to begin with (or at least, <a href="https://github.com/PyCQA/flake8/issues/1482">wasn't meant to</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 12:51</div>
+            <div class="timeline-body"><p>Sorry, I might be misunderstanding - we’re talking about pyi stub files here, not Cython files, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-03-06 13:01</div>
+            <div class="timeline-body"><p>sorry I'm mixing up things (in pandas I think <code>.pyi</code> files are only used to provide annotations for cython files), but the link makes it look like <code>flake8</code> is only supposed to run on Python files</p>
+<p>running it on a directory doesn't pick up the stub files, but indeed, passing them explicitly, the original plugin would flag them</p>
+<pre><code class="language-console">(.311venv) marcogorelli@DESKTOP-U8OKFP3:~/pandas-dev$ flake8 pandas/_libs --select=TC001
+(.311venv) marcogorelli@DESKTOP-U8OKFP3:~/pandas-dev$ flake8 pandas/_libs/lib.pyi --select=TC001
+pandas/_libs/lib.pyi:16:1: TC001 Move application import 'pandas._typing.DtypeObj' into a type-checking block
+pandas/_libs/lib.pyi:16:1: TC001 Move application import 'pandas._typing.npt' into a type-checking block
+pandas/_libs/lib.pyi:16:1: TC001 Move application import 'pandas._typing.ArrayLike' into a type-checking block
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 13:13</div>
+            <div class="timeline-body"><p>Ahh ok, got it. Well, I think it makes sense to exclude these rules from the TCH checks, I don't see a benefit in enforcing those rules on stub files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 13:23</div>
+            <div class="timeline-body"><p>I can fix this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-06 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3362.html">astral-sh/ruff#3362</a> on 2023-03-06 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-03-06 20:02</div>
+            <div class="timeline-body"><p>using if <code>TYPE_CHECKING</code> in pyi files probably also violates flake8-pyi's Y002</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-06 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 20:19</div>
+            <div class="timeline-body"><p>Oh lol yeah, that sounds bad then!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

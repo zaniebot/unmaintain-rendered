@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;help help&quot; doesn't use color - clap-rs/clap #538</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;help help&quot; doesn't use color</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/538">#538</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2016-06-23 21:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-06-23 21:44</div>
+            <div class="timeline-body"><p>When clap provides a <code>help</code> subcommand, running <code>command help help</code> produces help for the <code>help</code> subcommand:</p>
+<pre><code>help 
+Prints this message or the help of the given subcommand(s)
+
+USAGE:
+    help [FLAGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+</code></pre>
+<p>However, this help doesn't use color, unlike the help for every other subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-24 00:26</div>
+            <div class="timeline-body"><p>That's a bug.</p>
+<p>I used to protect against this, but I think I regressed a few versions back since I didn't add a test for it....thanks for letting me know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: subcommands</span> added by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "2.7.0" by @kbknapp on 2016-06-24 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/533.html">clap-rs/clap#533</a> on 2016-06-24 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-24 00:40</div>
+            <div class="timeline-body"><p>Aaaah, so digging into this, it actually wasn't a regression, but a logic bug I hadn't thought of.</p>
+<p>When the feature to allow both versions <code>help &lt;subcmd&gt;</code> and <code>&lt;subcmd&gt; help</code> was added, it had the side affect of dispatching this strange behavior. Should be fixed quickly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-24 01:52</div>
+            <div class="timeline-body"><p>I have a local branch with this fixed. Once I knock out a few more issues I'll roll up the PR.</p>
+<p>Also, I forgot to address the lack of color. This wasn't a bug per-se, the <code>AppSettings::ColoredHelp</code> isn't propagated through child subcommands unless one uses <code>App::global_setting</code>.</p>
+<p>Either way, the fix I have correctly dispatches <code>&lt;cmd&gt; help help</code> to the <code>&lt;cmd&gt;</code> help message  (same as <code>&lt;cmd&gt; help</code>. And it's colored without <code>global_setting</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-06-24 03:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, I forgot to address the lack of color. This wasn't a bug per-se, the AppSettings::ColoredHelp isn't propagated through child subcommands unless one uses App::global_setting.</p>
+</blockquote>
+<p>I had used global_setting, though, and <code>help help</code> still didn't use color.</p>
+<blockquote>
+<p>Either way, the fix I have correctly dispatches <cmd> help help to the <cmd> help message (same as <cmd> help.</p>
+</blockquote>
+<p>That seems unusual; I think it made sense for <code>cmd help help</code> to show the help for the <code>help</code> subcommand, for consistency with <code>cmd help anothersubcmd</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-24 03:17</div>
+            <div class="timeline-body"><blockquote>
+<p>That seems unusual; I think it made sense for cmd help help to show the help for the help subcommand, for consistency with cmd help anothersubcmd.</p>
+</blockquote>
+<p>I hadn't thought of it like that. Hmmm....let me see if I can make that work before pushing this PR since the more I think about it, the more I like how you stated it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-24 03:49</div>
+            <div class="timeline-body"><p>Ok, I got this working in the way you said, and I'm much happier with it now. Should be able to roll up the PR in a minute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-06-24 05:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-22 14:41</div>
+            <div class="timeline-body"><p>I have a subcommand <code>foo</code>, I run <code>myapp help foo</code>, I still can't see any color, even I have the following codes.</p>
+<pre><code class="language-rust">    let yaml = load_yaml!(&quot;cli.yml&quot;);
+    let app_m = clap::App::from_yaml(yaml)
+        .setting(clap::AppSettings::SubcommandRequired)
+        .global_setting(clap::AppSettings::ColoredHelp)
+        .get_matches();
+</code></pre>
+<p>the clap version is 2.9.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-23 09:26</div>
+            <div class="timeline-body"><p>Any feedback?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/591.html">clap-rs/clap#591</a> on 2016-07-23 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-23 18:25</div>
+            <div class="timeline-body"><p>@chenhouwu this is because the global settings need to be applied prior to the subcommand being added to the parent command. Adding a <code>global_setting: &quot;ColoredHelp&quot;</code> to your top level command in the yaml should fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-23 18:50</div>
+            <div class="timeline-body"><p>Still the same result following your instruction, i.e. help for main command is colored, but help for subcommand is not colored.</p>
+<p>also, I can run if I have the following line in the yml file, what's the correct way to config this?</p>
+<pre><code class="language-yaml">setting: &quot;SubcommandRequired&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-23 19:33</div>
+            <div class="timeline-body"><p>Could you open a new issue for this, it'll be easier to track and fix that way. :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-23 19:36</div>
+            <div class="timeline-body"><p>for the uncolored subcommand, see this issue: https://github.com/kbknapp/clap-rs/issues/591</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laishulu">@laishulu</a> on 2016-07-23 20:05</div>
+            <div class="timeline-body"><p>OK now, with the following lines in the yml file</p>
+<pre><code class="language-yaml">global_settings:
+    - ColoredHelp
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff should notice the noqa settings at the end of wrapped function definitions - astral-sh/ruff #4244</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff should notice the noqa settings at the end of wrapped function definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4244">#4244</a>
+        opened by <a href="https://github.com/retnuh">@retnuh</a>
+        on 2023-05-05 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/retnuh">@retnuh</a> on 2023-05-05 11:37</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Version:  0.0.261 (and below?)</p>
+<p>Hi there, if you have a function that ends up getting wrapped (particularly by black), like this, after adding a new argument:</p>
+<pre><code>    def _create_dxvif(  
+        cls, account, connection, device, iface, name, vgw_or_dxgw, region, dxvif_type, vlan
+    ):  # noqa: PLR0913
+</code></pre>
+<p>Ruff doesn't notice the <code>noqa</code> on the third line, it wants it on the first line.  This is annoying to have to go move the noqa statement, it should be recognized in either place.</p>
+<p>This is especially annoying if running in conjunction with pylint - pylint only recognizes the disable statements on the third line, not the first, so you can end up with this ugliness:</p>
+<pre><code>    def _create_dxvif(   # noqa: PLR0913
+        cls, account, connection, device, iface, name, vgw_or_dxgw, region, dxvif_type, vlan
+    ):   # pylint: disable=too-many-arguments
+</code></pre>
+<p>or other annoying variations thereof.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-05-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-05-05 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2023-05-15 07:52</div>
+            <div class="timeline-body"><p>That is indeed a very annoying bug and I am not even aware on how to avoid it. Ruff is removing the them with auto-fix and requiring them when they are missing, basically no way to disable them in a single place. I guess I am forced to add them as global ignore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-16 00:20</div>
+            <div class="timeline-body"><blockquote>
+<p>...basically no way to disable them in a single place.</p>
+</blockquote>
+<p>Do you mind providing an example of what you mean here? There are errors that you're unable to suppress?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7006.html">astral-sh/ruff#7006</a> on 2023-08-31 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-31 09:45</div>
+            <div class="timeline-body"><p>I closed #7006 a duplicate of this one. It's slightly broader as it also applies to wrapped constructor, function and method calls, but it's the same general issue.</p>
+<p>I also noticed an inconsistency of where the exact noqa comment should go in wrapped definitions, depending on the rule that is violated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-09-05 07:12</div>
+            <div class="timeline-body"><p>Just came across this:</p>
+<pre><code class="language-python">def foo():
+    (  # noqa: N806
+        FooForm,
+        BarForm,
+    ) = get_form_classes()
+</code></pre>
+<p>Which works with <code>flake8</code> (<code>6.1.0</code> and <code>pep8-naming: 0.13.3</code>)</p>
+<p><code>ruff</code> (<code>0.0.287</code>) on the other hand complains about the casing of the variables.</p>
+<p>This does work:</p>
+<pre><code class="language-python">def foo():
+    (
+        FooForm,  # noqa: N806
+        BarForm,  # noqa: N806
+    ) = get_form_classes()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jason-Francis-github">@Jason-Francis-github</a> on 2025-11-10 10:24</div>
+            <div class="timeline-body"><p>This issue is causing a head ache in multiple projects were
+JR devs are ignoring the error in toml etc as they dont understand the root cause.</p>
+<p>Would be great to get this fixed please.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

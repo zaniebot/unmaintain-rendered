@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignored environment variables in powershell - astral-sh/uv #10468</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignored environment variables in powershell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10468">#10468</a>
+        opened by <a href="https://github.com/MYCL94">@MYCL94</a>
+        on 2025-01-10 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MYCL94">@MYCL94</a> on 2025-01-10 12:17</div>
+            <div class="timeline-body"><p><strong>Issue description:</strong></p>
+<p>I'm experiencing issues authenticating with my Nexus repository when using <code>uv pip</code>. The repository is configured in my <code>pyproject.toml</code> file as follows:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = 'nexus-repository'
+url = 'https://my-repo.com/packages/'
+explicit = true
+
+[tool.uv.sources]
+my_package = { index = 'nexus-repository' }
+</code></pre>
+<p>I've set environment variables <code>UV_INDEX_NEXUS_REPOSITORY_USERNAME</code> and <code>UV_INDEX_NEXUS_REPOSITORY_PASSWORD</code> to provide the necessary credentials. However, when running <code>uv pip install -r pyproject.toml</code>, I receive a 401 Unauthorized error due to a lack of valid authentication credentials. (will be necessary in our CI)</p>
+<p>I tried this on windows powershell with <code>set UV_INDEX_NEXUS_REPOSITORY_USERNAME=user</code> ,<code>set UV_INDEX_NEXUS_REPOSITORY_PASSWORD=pw</code>and running <code>uv pip install -r pyproject.toml</code> after that</p>
+<p>But when I provide an .env file the authentication seems to work since the error changes.
+Running <code>uv run --env-file uv.env --verbose</code> results in the following output</p>
+<p><strong>Verbose output:</strong></p>
+<pre><code>error: Received some unexpected HTML from https://my-repo.com/packages/my_package/
+Caused by: Unexpected fragment (expected `#sha256=...` or similar) on URL: browse/browse:python
+</code></pre>
+<p><strong>Environment:</strong></p>
+<ul>
+<li><code>uv</code> version: 0.5.16</li>
+</ul>
+<p><strong>Additional information:</strong></p>
+<p>The path to the <code>.whl</code> file is as follows:</p>
+<pre><code>https://my-repo.com/packages/my_package/&lt;version&gt;/my_package-&lt;version&gt;-py3-none-any.whl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MYCL94">@MYCL94</a> on 2025-01-10 13:34</div>
+            <div class="timeline-body"><p>Ok, my bad, I just realized that I have to call my repo with <strong><code>https://my-repo.com/simple</code></strong> than I won't have an issue with the HTML reponse...
+Now only the issue remains that I am not able to use the:
+<code>UV_INDEX_NEXUS_REPOSITORY_USERNAME </code>and <code>UV_INDEX_NEXUS_REPOSITORY_PASSWORD </code>in my CI Pipeline and also locally on my windows. Without the env file it seems to be ignored from uv per default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 14:56</div>
+            <div class="timeline-body"><p>I don't think <code>uv pip install -r pyproject.toml</code> reads the project indexes. Why not <code>uv sync</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-10 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MYCL94">@MYCL94</a> on 2025-01-13 08:02</div>
+            <div class="timeline-body"><p>The documentation tells:</p>
+<blockquote>
+<p>uv sync: Sync the project's dependencies with the environment.</p>
+</blockquote>
+<p>I wasn't sure if this is the venv or environment variables.</p>
+<p>But <code>uv sync</code> or  <code>uv pip sync</code> didn't work aswell:</p>
+<pre><code>hint: An index URL (https://my-repo.com/simple/) could not be       
+      queried due to a lack of valid authentication credentials (401 Unauthorized).
+</code></pre>
+<p>I did also check with echo $env if the variables are still available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 18:47</div>
+            <div class="timeline-body"><p>Can you share logs with <code>RUST_LOG=uv=trace</code>?</p>
+<p>Make sure to elide your password, if present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MYCL94">@MYCL94</a> on 2025-01-14 09:49</div>
+            <div class="timeline-body"><p>Hi @zanieb,</p>
+<p>well I think I found the reason now.</p>
+<p>While searching for a way to set RUST_LOG=uv=trace in the environment variables. I saw that the documentation for testing on Windows tells to set ENV values by:</p>
+<p><code>$Env:&lt;env_variable&gt; = '&lt;value&gt;'</code></p>
+<blockquote>
+<p>https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md</p>
+</blockquote>
+<p>After setting the values with:</p>
+<pre><code>$Env:UV_INDEX_NEXUS_REPOSITORY_USERNAME= 'my_user'
+$Env:UV_INDEX_NEXUS_REPOSITORY_PASSWORD= 'my_pw'
+</code></pre>
+<p>I was able to get the packages from my repo. It seems like this is necessary if using PowerShell.
+Thank you for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MYCL94 on 2025-01-14 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Using UV with Nexus repository and ignored environment variables for authentication" to "Ignored environment variables in powershell" by @MYCL94 on 2025-01-14 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 18:34</div>
+            <div class="timeline-body"><p>Thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zach-kurtz-dhs">@zach-kurtz-dhs</a> on 2025-03-03 15:18</div>
+            <div class="timeline-body"><p>I struggled a while before finding the solution in this thread as well. Might be worth clarifying the necessity of the <code>$Env:</code> prefix for windows in the docs and/or generalizing things to work without that prefix.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:03 UTC
+    </footer>
+</body>
+</html>

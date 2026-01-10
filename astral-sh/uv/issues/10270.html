@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should cache of `python-build-standalone` downloads be invalidated? - astral-sh/uv #10270</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should cache of `python-build-standalone` downloads be invalidated?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10270">#10270</a>
+        opened by <a href="https://github.com/tpgillam">@tpgillam</a>
+        on 2025-01-02 10:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-01-02 10:07</div>
+            <div class="timeline-body"><p>Context: I was wondering whether https://github.com/astral-sh/python-build-standalone/pull/421 might have helped with https://github.com/astral-sh/uv/issues/6893 (answer: 'no'). This required me knowing which build of python-build-standalone I was using.</p>
+<p>Current <code>uv</code> behaviour seems to be that the version of <code>python-build-standalone</code> isn't included anywhere obvious, and we don't automatically invalidate our cache of downloaded interpreters based on this version.</p>
+<p>e.g. we can update to a newer <code>uv</code> and still get an old python build:</p>
+<pre><code class="language-console">&gt; uv --version
+uv 0.5.13
+&gt; rm -r .venv/
+&gt; uv run python -VV
+Using CPython 3.12.8
+Creating virtual environment at: .venv
+Installed 39 packages in 77ms
+Python 3.12.8 (main, Dec  6 2024, 19:59:28) [Clang 18.1.8 ]
+</code></pre>
+<p>(Perhaps there's a better way (?) but the only way I could think to figure out what build of python-build-standalone we're using is by looking at the build time included in <code>python -VV</code>, so here December 6th 2024. )</p>
+<p>From https://github.com/astral-sh/uv/issues/7036#issuecomment-2557272986, we need to explicitly remove or reinstall all downloaded versions to get the newer build:</p>
+<pre><code class="language-console">&gt; uv python uninstall --all
+Searching for Python installations
+Uninstalled 4 versions in 181ms
+ - cpython-3.11.9-linux-x86_64-gnu
+ - cpython-3.12.5-linux-x86_64-gnu
+ - cpython-3.12.8-linux-x86_64-gnu
+ - cpython-3.13.0-linux-x86_64-gnu
+&gt; uv run python -VV
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: .venv/bin/python3 -&gt; python
+Using CPython 3.12.8
+Removed virtual environment at: .venv
+Creating virtual environment at: .venv
+Installed 39 packages in 70ms
+Python 3.12.8 (main, Dec 19 2024, 14:33:20) [Clang 18.1.8 ]
+</code></pre>
+<p>(NB python now build on December 19th)</p>
+<p>Overall I find the existing behaviour a slightly opaque / unintuitive... but also it's a pretty niche problem! Nonetheless, maybe there's scope for a little improvement?</p>
+<p>Some assorted ideas / thoughts:</p>
+<ul>
+<li>add documentation that we don't invalidate managed python downloads here: https://docs.astral.sh/uv/concepts/python-versions/#managed-python-distributions</li>
+<li>inclusion of python-build-standalone version in <code>uv python list</code> output</li>
+<li>sometimes (probably rarely!) useful to be able to specify the precise version of python-build-standalone?</li>
+<li>automatic switching of interpreter build version based on <code>uv</code> version... but this also feels a little unintuitive.</li>
+<li>if updating a managed python build, what should happen to existing venvs? I'm not too sure.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2025-01-03 15:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:59 UTC
+    </footer>
+</body>
+</html>

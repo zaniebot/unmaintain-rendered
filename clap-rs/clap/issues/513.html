@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Formatting for Multiple Args is Incorrectly Indented - clap-rs/clap #513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help Formatting for Multiple Args is Incorrectly Indented</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/513">#513</a>
+        opened by <a href="https://github.com/mitsuhiko">@mitsuhiko</a>
+        on 2016-05-28 18:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2016-05-28 18:47</div>
+            <div class="timeline-body"><p>Example:</p>
+<pre><code>ARGS:
+    &lt;VERSION&gt;    The version identifier of the release to use
+    &lt;FILES&gt;...      The files to upload
+</code></pre>
+<p>It seems like it adds the three dots to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-30 04:28</div>
+            <div class="timeline-body"><p>Ah yes this was a recent change and I didn't change the formatting thanks for filing this! I'm on vacation, so it may be a few days until I get to this but it'll be a quick fix once I get home.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2016-05-30 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2016-05-30 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @kbknapp on 2016-05-30 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-05-30 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-05-30 04:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-30 10:07</div>
+            <div class="timeline-body"><p>I'm not able to reproduce this one.</p>
+<p>Could you send me either which version of <code>clap</code> this is, or the output of <code>--help</code> when compiled with <code>features = [&quot;debug&quot;]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2016-08-03 23:55</div>
+            <div class="timeline-body"><p>Happens with current version of clap:</p>
+<pre><code class="language-rust">pub fn make_app&lt;'a, 'b: 'a&gt;() -&gt; App&lt;'a, 'b&gt; {
+    App::new(&quot;blah&quot;)
+        .setting(AppSettings::UnifiedHelpMessage)
+        .arg(Arg::with_name(&quot;command&quot;)
+             .value_name(&quot;command&quot;)
+             .help(&quot;Command to execute&quot;))
+        .arg(Arg::with_name(&quot;args&quot;)
+             .value_name(&quot;args&quot;)
+             .multiple(true)
+             .required(false)
+             .help(&quot;Arguments to the command&quot;))
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2016-08-03 23:55</div>
+            <div class="timeline-body"><p>Results in this:</p>
+<pre><code>ARGS:
+    &lt;command&gt;    Command to execute
+    &lt;args&gt;...       Arguments to the command
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2016-08-03 23:56</div>
+            <div class="timeline-body"><p>With debug output:</p>
+<pre><code>**DEBUG** fn=get_matches_with;
+**DEBUG** fn=create_help_and_version;
+**DEBUG** Building --help
+**DEBUG** Building --version
+**DEBUG** Begin parsing '&quot;--help&quot;' ([45, 45, 104, 101, 108, 112])
+**DEBUG** Starts new arg...Yes
+**DEBUG** fn=parse_long_arg;
+**DEBUG** Does it contain '='...No
+**DEBUG** Found valid flag '--help'
+**DEBUG** Checking if --help is help or version...Help
+**DEBUG** fn=Help::write_parser_help;
+**DEBUG** fn=Help::write_parser_help;
+**DEBUG** exec=color;
+**DEBUG** Color setting...Auto
+**DEBUG** fn=Help::new;
+**DEBUG** fn=Help::write_help;
+**DEBUG** fn=write_default_help;
+**DEBUG** fn=create_usage_no_title;
+**DEBUG** args_in_groups=[]
+**DEBUG** exec=needs_flags_tag;
+**DEBUG** iter;f=hclap_help;
+**DEBUG** iter;f=vclap_version;
+**DEBUG** fn=groups_for_arg;
+**DEBUG** No groups defined
+**DEBUG** Arg not required...
+**DEBUG** fn=groups_for_arg;
+**DEBUG** No groups defined
+**DEBUG** Arg not required...
+**DEBUG** fn=write_args;
+**DEBUG** fn=write_arg;
+**DEBUG** fn=short;
+**DEBUG** fn=long;
+**DEBUG** macro=write_spaces!;
+**DEBUG** fn=val;
+**DEBUG** fn=help;
+**DEBUG** fn=spec_vals;
+**DEBUG** Writing values
+**DEBUG** Term width...238
+**DEBUG** Too long...false
+**DEBUG** Too long...No
+**DEBUG** fn=write_arg;
+**DEBUG** fn=short;
+**DEBUG** fn=long;
+**DEBUG** macro=write_spaces!;
+**DEBUG** fn=val;
+**DEBUG** fn=help;
+**DEBUG** fn=spec_vals;
+**DEBUG** Writing values
+**DEBUG** Term width...238
+**DEBUG** Too long...false
+**DEBUG** Too long...No
+**DEBUG** fn=write_arg;
+**DEBUG** fn=short;
+**DEBUG** fn=long;
+**DEBUG** fn=val;
+**DEBUG** macro=write_spaces!;
+**DEBUG** fn=help;
+**DEBUG** fn=spec_vals;
+**DEBUG** Writing values
+**DEBUG** Term width...238
+**DEBUG** Too long...false
+**DEBUG** Too long...No
+**DEBUG** fn=write_arg;
+**DEBUG** fn=short;
+**DEBUG** fn=long;
+**DEBUG** fn=val;
+**DEBUG** macro=write_spaces!;
+**DEBUG** fn=help;
+**DEBUG** fn=spec_vals;
+**DEBUG** Writing values
+**DEBUG** Term width...238
+**DEBUG** Too long...false
+**DEBUG** Too long...No
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/614.html">clap-rs/clap#614</a> on 2016-08-05 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-26 15:51</div>
+            <div class="timeline-body"><p>@mitsuhiko is this still the case with the latest 2.10.4?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-12 18:41</div>
+            <div class="timeline-body"><p>I'm going to close this issue since I can't seem to reproduce in current version. Please let me know if this still an issue and we can re-open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2016-09-12 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

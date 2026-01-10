@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Python used despite global config specifying Python version - astral-sh/uv #13369</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>System Python used despite global config specifying Python version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13369">#13369</a>
+        opened by <a href="https://github.com/liby">@liby</a>
+        on 2025-05-09 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/liby">@liby</a> on 2025-05-09 21:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've encountered unexpected behavior with UV's Python version selection. Despite setting <code>python-version = &quot;3.13&quot;</code> in my global config (<code>~/.config/uv/uv.toml</code>), UV still uses the system Python 3.9 when initializing projects.</p>
+<h3>Reproduction steps</h3>
+<ol>
+<li><p>Configure <code>~/.config/uv/uv.toml</code> with:</p>
+<pre><code class="language-toml">[pip]
+python-version = &quot;3.13&quot;
+</code></pre>
+</li>
+<li><p>Run <code>uv init</code> in a new directory</p>
+</li>
+<li><p>Check the created <code>.python-version</code> file:</p>
+<pre><code>$ cat .python-version
+3.9
+</code></pre>
+</li>
+<li><p>Verify available Python versions:</p>
+<pre><code>$ uv python list
+cpython-3.14.0a6-macos-aarch64-none                 &lt;download available&gt;
+cpython-3.13.3-macos-aarch64-none                   &lt;download available&gt;
+cpython-3.13.3+freethreaded-macos-aarch64-none      &lt;download available&gt;
+...
+cpython-3.9.6-macos-aarch64-none                    /usr/bin/python3
+...
+</code></pre>
+</li>
+</ol>
+<h3>Expected behavior</h3>
+<p>With <code>python-version = &quot;3.13&quot;</code> in my global config, I would expect UV to download and use Python 3.13 for new projects, rather than using the system Python 3.9.</p>
+<h3>Actual behavior</h3>
+<p>UV uses system Python 3.9 despite the global configuration specifying 3.13.</p>
+<p>I understand that <code>python-preference: managed</code> (the default) means system Python installations are preferred over downloading a managed version. However, when there's such a significant version discrepancy (3.9 vs 3.13), I would expect UV to respect the explicitly configured version rather than choosing a system version with a completely different minor version.</p>
+<h3>Platform</h3>
+<p>Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.2 (Homebrew 2025-04-30)</p>
+<h3>Python version</h3>
+<p>Python 3.9.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @liby on 2025-05-09 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-09 21:21</div>
+            <div class="timeline-body"><p>You configured the target Python version under a <code>[pip]</code> heading which only applies to <code>uv pip</code> not top-level commands like <code>uv init</code>.</p>
+<p>I think what you want is <code>uv python pin --global 3.13</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-05-09 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-05-09 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @liby on 2025-05-09 21:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

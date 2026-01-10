@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting &quot;access is denied&quot; in user folder when running &quot;uv tool install&quot; on Windows 10 - astral-sh/uv #10030</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Getting &quot;access is denied&quot; in user folder when running &quot;uv tool install&quot; on Windows 10</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10030">#10030</a>
+        opened by <a href="https://github.com/driscollis">@driscollis</a>
+        on 2024-12-19 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/driscollis">@driscollis</a> on 2024-12-19 14:32</div>
+            <div class="timeline-body"><p>I tried the <a href="https://github.com/darrenburns/posting">posting</a> app with uv on my Windows 10 machine. The author of <code>posting</code> recommends running the following command:</p>
+<p><code>uv tool install --python 3.12 posting</code></p>
+<p>When I run that in a regular Windows Terminal or a Windows Terminal with admin privileges, I get the following error:</p>
+<pre><code>C:\workspace\&gt; uv tool install --python 3.12 posting
+Resolved 35 packages in 5.75s
+   Built pyperclip==1.9.0
+Prepared 34 packages in 4.25s
+error: Failed to install: httpx-0.28.1-py3-none-any.whl (httpx==0.28.1)
+  Caused by: Failed to persist temporary file to C:\Users\Mike\AppData\Roaming\uv\tools\posting\Lib\site-packages\..\..\Scripts\httpx.exe: Access is denied. (os error 5)
+</code></pre>
+<p>I tried this on two different Windows 10 machines with the same result. I tried running <code>uv cache clean</code> and re-ran the above command with the same result.</p>
+<p>I am using uv 0.5.10 (37b11ddb2 2024-12-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-19 15:28</div>
+            <div class="timeline-body"><p>I seem to have seen this issue before. Can you tell me the output of running the following command on powershell?</p>
+<pre><code class="language-powershell">Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled'
+</code></pre>
+<p>It's just a command to read the registry, so it doesn't require administrator privileges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/driscollis">@driscollis</a> on 2024-12-19 15:42</div>
+            <div class="timeline-body"><p>Here's what I get:</p>
+<p>LongPathsEnabled : 0
+PSPath           : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
+PSParentPath     : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control
+PSChildName      : FileSystem
+PSDrive          : HKLM
+PSProvider       : Microsoft.PowerShell.Core\Registry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-12-19 16:13</div>
+            <div class="timeline-body"><p>I'm not sure if this issue is triggered by an overly long path. Perhaps you could try enabling long paths.
+https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#registry-setting-to-enable-long-paths
+But if this is truly the issue, I'm not sure if UV has a way to detect it.</p>
+<p>Edit:
+Even after turning off long paths in my Windows, it still seems to work, so it's probably not the issue.
+Perhaps you could also check if the denied-access folder can be accessed normally without granting additional permissions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/driscollis">@driscollis</a> on 2024-12-19 16:27</div>
+            <div class="timeline-body"><p>I tried enabling long paths, but I still get the same error.</p>
+<p>There are no subfolders in <code>C:\Users\Mike\AppData\Roaming\uv\tools</code> so I am guessing uv is cleaning up when it hits that error. That is unfortunate since I can't inspect that folder to see what the permissions are or if I can access it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-12-21 01:29</div>
+            <div class="timeline-body"><p>~~Hmmm, I actually would expect uv to install it in <code>C:\Users\Mike\.local\bin\posting.exe</code> which is where it does on my Windows system based on my home path. Was this working for you previously?~~ Edit: I think in your case it even fails to get there.</p>
+<p>Could you capture some trace logs?</p>
+<pre><code class="language-powershell">$Env:RUST_LOG = 'uv=trace'
+uv tool uninstall --python 3.12 posting
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @samypr100 on 2024-12-21 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Cogito">@Cogito</a> on 2025-04-16 01:44</div>
+            <div class="timeline-body"><p>Check if windows defender is blocking recently installed executables. Apparently it blocks some 'risky behaviour' like a fresh executable, and may stop blocking it 24 hours later. Adding the relevant folders to an exclusion list should help if this is the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/driscollis">@driscollis</a> on 2025-07-02 14:25</div>
+            <div class="timeline-body"><p>It looks like this got resolved somehow. I was trying to reproduce it again and wasn't able to with that version of uv. I also tried the latest version of uv (0.7.18) and it seems to work on my Windows 10 box now.</p>
+<p>I am still suspicious that this is a Windows Defender issue of some sort, but  that is difficult to prove right now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-08-21 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-08-21 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cleb98">@cleb98</a> on 2025-09-10 17:23</div>
+            <div class="timeline-body"><p>i get the same error on window 10, i can create venv, with numpy for instance, but if i try pyperclip i fall into this error.
+The strange things is that in just one venv i can install pyperclip, in all the other i got the same beaviour.</p>
+<h1>test</h1>
+<h2>i already have one venv with pyperclip installed</h2>
+<p>Cristian.BELLUCCI ~/python_exp/venv-test/venv2
+$ uv pip install pyperclip
+Resolved 1 package in 49ms
+x Failed to download and build <code>pyperclip==1.9.0</code>
+|-&gt; Failed to read from the distribution cache
+<code>-&gt; failed to open file       </code>C:\Users\Cristian.BELLUCCI\AppData\Local\uv\cache\builds-v0.tmpYgNgHP\py
+perclip-1.9.0-py3-none-any.whl`:
+Access is denied. (os error 5)</p>
+<p>this is what i get if i try to install pandas in the same way:</p>
+<p>Cristian.BELLUCCI ~/python_exp/venv-test/venv2
+$ uv pip install pandas
+Resolved 6 packages in 1.22s
+Prepared 5 packages in 4.28s
+Installed 5 packages in 1.84s</p>
+<ul>
+<li>pandas==2.3.2</li>
+<li>python-dateutil==2.9.0.post0</li>
+<li>pytz==2025.2</li>
+<li>six==1.17.0</li>
+<li>tzdata==2025.2</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:53 UTC
+    </footer>
+</body>
+</html>

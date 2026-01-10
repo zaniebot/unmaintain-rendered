@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` empties lockfile when upgrading python - astral-sh/uv #13951</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` empties lockfile when upgrading python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13951">#13951</a>
+        opened by <a href="https://github.com/nrlulz">@nrlulz</a>
+        on 2025-06-10 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nrlulz">@nrlulz</a> on 2025-06-10 15:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I noticed this while migrating a project to uv and testing that the pinned version of python can be updated with renovate. If I have project with a dependency which adds some <code>resolution-markers</code> to uv.lock, update the pinned version of python, and run <code>uv lock --upgrade-package python</code>, all of the <code>package</code>s in uv.lock are removed.</p>
+<p>See <a href="https://github.com/nrlulz/renovate-bug-repro">minimal reproduction repo</a></p>
+<p>Steps to reproduce (in above repo):</p>
+<ol>
+<li>Increment the <code>requires-python = &quot;==3.11.12&quot;</code> constraint in pyproject.toml to <code>&quot;==3.11.13&quot;</code></li>
+<li>Run <code>uv lock --upgrade-package python</code> (this is the command run by renovate)</li>
+<li>Lockfile is emptied</li>
+</ol>
+<p>I'm not sure whether this is:</p>
+<ol>
+<li>A bug in uv?</li>
+<li>Renovate doing something unsupported (i.e. should I be reporting this to renovate instead)?</li>
+<li>An issue with the build configuration of this particular opencv package?</li>
+<li>Me doing it wrong by pinning an exact version of python instead of a range?</li>
+</ol>
+<p>Some other notes:</p>
+<ul>
+<li>uv version is 0.7.12</li>
+<li>Reproduces on macos 15.5 (arm64) environment, github actions' &quot;ubuntu-latest&quot; environment, and whatever environment the hosted renovate bot uses</li>
+<li>It only seems to happen if the project has a dependency which causes uv.lock to contain <code>resolution-markers</code></li>
+<li>Bumping requires-python and running <code>uv lock</code> without the <code>--upgrade-package</code> argument produces the correct results</li>
+<li>Using an inexact constraint like <code>requires-python = &quot;&gt;=3.11.12,&lt;3.12&quot;</code> and bumping it to <code>&quot;&gt;3.11.13,&lt;3.12&quot;</code> also behaves correctly</li>
+<li>It doesn't seem related to the particular version of python. e.g., upgrading from 3.13.3 to 3.13.4 exhibits the same behavior.</li>
+</ul>
+<p>Verbose output:</p>
+<pre><code>$ cat uv.lock
+version = 1
+revision = 2
+requires-python = &quot;==3.11.12&quot;
+resolution-markers = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+]
+
+[[package]]
+name = &quot;numpy&quot;
+...
+</code></pre>
+<pre><code>$ uv run python --version
+Python 3.11.12
+</code></pre>
+<pre><code>$ uv lock --upgrade-package python --verbose
+DEBUG uv 0.7.12 (Homebrew 2025-06-06)
+DEBUG Found workspace root: `/Users/nparker/Projects/renovate-bug-repro`
+DEBUG Adding root workspace member: `/Users/nparker/Projects/renovate-bug-repro`
+DEBUG No Python version file found in workspace: /Users/nparker/Projects/renovate-bug-repro
+DEBUG Using Python request `==3.11.13` from `requires-python` metadata
+DEBUG Checking for Python environment at `.venv`
+DEBUG The project environment's Python version does not satisfy the request: `Python ==3.11.13`
+DEBUG Searching for Python ==3.11.13 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/nparker/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.13.4-macos-aarch64-none`
+DEBUG Found managed installation `cpython-3.11.13-macos-aarch64-none`
+DEBUG Found `cpython-3.11.13-macos-aarch64-none` at `/Users/nparker/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/bin/python3.11` (managed installations)
+Using CPython 3.11.13
+DEBUG Using request timeout of 30s
+DEBUG Ignoring existing lockfile due to `--upgrade-package`
+DEBUG Found static `pyproject.toml` for: renovate-bug-repro @ file:///Users/nparker/Projects/renovate-bug-repro
+DEBUG No workspace root found, using project root
+DEBUG Solving with installed Python version: 3.11.13
+DEBUG Solving with target Python version: ==3.11.13
+DEBUG Narrowed `requires-python` bound to: &lt;=3.11.12, &gt;=3.11.13
+DEBUG Narrowed `requires-python` bound to: &lt;=3.11.12, &gt;=3.11.13
+DEBUG Narrowed `requires-python` bound to: &lt;=3.11.12, &gt;=3.11.13
+DEBUG Solving split (python_full_version == '3.11.12' and sys_platform == 'darwin') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: LessThanEqual, version: &quot;3.11.12&quot; }, VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11.13&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11.13&quot;)), UpperBound(Included(&quot;3.11.12&quot;))) })
+DEBUG Tried 0 versions: 
+DEBUG split `python_full_version == '3.11.12' and sys_platform == 'darwin'` resolution took 0.001s
+DEBUG Solving split (python_full_version == '3.11.12' and platform_machine == 'aarch64' and sys_platform == 'linux') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: LessThanEqual, version: &quot;3.11.12&quot; }, VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11.13&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11.13&quot;)), UpperBound(Included(&quot;3.11.12&quot;))) })
+DEBUG Tried 0 versions: 
+DEBUG split `python_full_version == '3.11.12' and platform_machine == 'aarch64' and sys_platform == 'linux'` resolution took 0.000s
+DEBUG Solving split ((python_full_version == '3.11.12' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.11.12' and sys_platform != 'darwin' and sys_platform != 'linux')) (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: LessThanEqual, version: &quot;3.11.12&quot; }, VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11.13&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11.13&quot;)), UpperBound(Included(&quot;3.11.12&quot;))) })
+DEBUG Tried 0 versions: 
+DEBUG split `(python_full_version == '3.11.12' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.11.12' and sys_platform != 'darwin' and sys_platform != 'linux')` resolution took 0.000s
+INFO Solved your requirements for 3 environments
+DEBUG Distinct solution for split (python_full_version == '3.11.12' and sys_platform == 'darwin') with 0 packages
+DEBUG Distinct solution for split (python_full_version == '3.11.12' and platform_machine == 'aarch64' and sys_platform == 'linux') with 0 packages
+DEBUG Distinct solution for split ((python_full_version == '3.11.12' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.11.12' and sys_platform != 'darwin' and sys_platform != 'linux')) with 0 packages
+Resolved in 9ms
+Removed numpy v2.3.0
+Removed opencv-python-headless v4.11.0.86
+Removed renovate-bug-repro v0.1.0
+</code></pre>
+<pre><code>$ cat uv.lock
+version = 1
+revision = 2
+requires-python = &quot;==3.11.13&quot;
+resolution-markers = [
+    &quot;python_version &lt; '0'&quot;,
+]
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 24.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.12 (Homebrew 2025-06-06)</p>
+<h3>Python version</h3>
+<p>Python 3.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @nrlulz on 2025-06-10 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-10 16:01</div>
+            <div class="timeline-body"><p>Thanks for the report and MRE!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-10 16:14</div>
+            <div class="timeline-body"><p>Maybe the problem is that we're reading the existing exact Python versions markers from the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrlulz">@nrlulz</a> on 2025-06-10 16:34</div>
+            <div class="timeline-body"><p>Not sure. The output from the lock command suggests that it's <code>Ignoring existing lockfile due to `--upgrade-package`</code>, but it must be, because it doesn't happen if I delete the lockfile and run the same command. Somehow it's getting into an impossible situation trying to solve the constraint <code>&lt;=3.11.12, &gt;=3.11.13</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-10 16:41</div>
+            <div class="timeline-body"><p>We will still use the existing lockfile contents as preferences during resolution. That log is a little misleading, that's just about staleness checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @konstin on 2025-06-11 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-13 19:02</div>
+            <div class="timeline-body"><p>So I think I see the problem here. In our validation, we are <a href="https://github.com/astral-sh/uv/blob/49b450109b825ec8fdec7600c2a8f763496f70b7/crates/uv/src/commands/project/lock.rs#L986">returning <code>Preferable</code></a>, which in turn says that we should try to re-use the fork markers in the lock file. But the fork markers have a <code>python_version</code> pinned to <code>3.11.12</code>. So when we go to re-generate the lock file using the new <code>3.11.13</code> version for <code>requires-python</code>, the process of <em>simplifying</em> the fork markers with respect to <code>3.11.13</code> causes them to all become impossible: because <code>==3.11.12</code> is disjoint with <code>==3.11.13</code>.</p>
+<p>I <em>think</em> this <em>should</em> be handled by checking this exact fact with the marker coverage:</p>
+<p>https://github.com/astral-sh/uv/blob/49b450109b825ec8fdec7600c2a8f763496f70b7/crates/uv/src/commands/project/lock.rs#L1022-L1033</p>
+<p>Specifically, this would return <code>Versions</code>, which means we should try to respect locked versions but <em>not</em> the fork markers. Which is what I think we want here.</p>
+<p>The problem is that at validation time, <code>requires-python</code> corresponds to what I believe is in the lock file. However, when we go to re-generate the lock file, <code>requires-python</code> is the new value from <code>pyproject.toml</code>. So validation is in effect making a decision based on old information. I think.</p>
+<p>I'm not 100% on the fix here. I think perhaps validation should incorporate the <em>new</em> <code>requires-python</code> value? If so, then it's just a matter of doing that and moving the check above the <code>--upgrade-package</code> checks. Indeed, if <code>Versions</code> is returned here, then this problem goes away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14076.html">astral-sh/uv#14076</a> on 2025-06-16 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-06-17 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nrlulz">@nrlulz</a> on 2025-06-26 21:51</div>
+            <div class="timeline-body"><p>@BurntSushi just wanted to say thanks for the quick fix on this! I can confirm the issue is resolved in 0.7.15.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marker expressions in lockfile should be simplified - astral-sh/uv #4002</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Marker expressions in lockfile should be simplified</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4002">#4002</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-03 23:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-03 23:28</div>
+            <div class="timeline-body"><p>Not certain on this but in https://github.com/astral-sh/uv/pull/3998, the test I added yields an entry in the lockfile like:</p>
+<pre><code class="language-toml">[[distribution]]
+name = &quot;typing-extensions&quot;
+version = &quot;4.7.1&quot;
+source = &quot;registry+https://pypi.org/simple&quot;
+marker = &quot;python_version &lt; '3.8' or python_version &lt; '3.11'&quot;
+</code></pre>
+<p>The marker can be simplified to <code>python_version &lt; '3.8'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-03 23:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2024-06-04 06:09</div>
+            <div class="timeline-body"><p>Hi, @charliermarsh</p>
+<p>I am not familiar with the marker, but only from the above content</p>
+<blockquote>
+<p>python_version &lt; '3.8' or python_version &lt; '3.11'</p>
+</blockquote>
+<p>==&gt;</p>
+<blockquote>
+<p>python_version &lt; '3.8'</p>
+</blockquote>
+<p>The condition has become <code>more stringent</code>. Now, it only requires that the Python version be less than 3.8.
+Is this what we need?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 13:28</div>
+            <div class="timeline-body"><p>Sorry yes, the final condition should be <code>python_version &lt; '3.11'</code> -- it's <code>python_version &lt; '3.8'</code> that's redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 13:35</div>
+            <div class="timeline-body"><p>It's also possible that this is something that's supposed to be solved during resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-04 14:53</div>
+            <div class="timeline-body"><p>I don't think we need to do this during resolution - the redundant expressions don't get in the way, it only matters when we write the output to the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2024-06-04 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-04 17:24</div>
+            <div class="timeline-body"><p>@ibraheemdev You might consider approaching this using &quot;smart constructors.&quot; That is, you guarantee that a <code>MarkerTree</code> is, by construction, as simple as possible. This approach means there is no separate recursive pass to do simplification. It just happens inductively as part of construction.</p>
+<p>The downside of this is that it generally requires making it impossible to build a <code>MarkerTree</code> using standard enum variants. Instead, well, you have to use the smart constructors. You can still expose a read-only enum for easy case analysis.</p>
+<p>I've used this pattern in <code>regex-syntax::hir</code> and I've been very happy with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4066.html">astral-sh/uv#4066</a> on 2024-06-05 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-06-07 20:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:28 UTC
+    </footer>
+</body>
+</html>

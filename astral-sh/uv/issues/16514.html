@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow cross-platform consistency in local file paths for `pylock.toml` exports - astral-sh/uv #16514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow cross-platform consistency in local file paths for `pylock.toml` exports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16514">#16514</a>
+        opened by <a href="https://github.com/ncoghlan">@ncoghlan</a>
+        on 2025-10-30 15:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-10-30 15:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When exporting to <code>pylock.toml</code>, <code>uv</code> currently emits absolute file URLs on all platforms. The &quot;URLs&quot; emitted on windows dump in the raw Windows path, including the use of backslash separators instead of forward slash ones.</p>
+<p>This is inconvenient when the local files should be located relative to the lock file (e.g. when they're stored in Git LFS).</p>
+<p>Proposed changes:</p>
+<ul>
+<li>always use POSIX path separators in <code>pylock.toml</code>, even on Windows</li>
+<li>emit relative <code>path</code> entries rather than absolute <code>url</code> entries where possible</li>
+<li>emit absolute <code>path</code> entries on Windows if the files referenced are on a different drive from the lock file export location</li>
+</ul>
+<p>There could potentially be a config flag to force the use of absolute paths (that may still be useful for some use cases where the files are in known locations on target systems of interest, but the location of the lock file itself at installation time isn't the same as it's location when being exported)</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @ncoghlan on 2025-10-30 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-30 15:43</div>
+            <div class="timeline-body"><p>I think those changes generally match how we treat paths in <code>uv.lock</code> (normalize to forward slashes, relativize if possible, fallback to absolute). I can't remember if relative paths are &quot;allowed&quot; under the <code>pylock.toml</code> spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-30 15:49</div>
+            <div class="timeline-body"><p>They are, I asked for that to be part of the spec to mirror the <code>uv.lock</code> capability <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-directory-path">https://packaging.python.org/en/latest/specifications/pylock-toml/#packages-directory-path</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-10-30 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-30 19:00</div>
+            <div class="timeline-body"><p>Do you mind providing an example? I think we already do this in some cases so want to understand when we're getting it wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-03 11:23</div>
+            <div class="timeline-body"><p>Adding debug logging to the <code>venvstacks</code> <code>test_local_wheels</code> test case to dump the contents of <code>pyproject.toml</code>, <code>uv.lock</code>, and <code>pylock.toml</code> gives the following for one of the layers that includes two wheels located via <code>--find-links</code>.</p>
+<p>As Charlie expected, <code>uv.lock</code> has a relative POSIX-style path in its <code>registry</code> data, so its specifically <code>uv export</code> that is generating the absolute Windows-style paths.</p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code>[project]
+name = &quot;framework-both-wheels&quot;
+version = &quot;0&quot;
+dependencies = [&quot;venvstacks-testing-dynlib-consumer&quot;, &quot;venvstacks-testing-dynlib-publisher&quot;]
+requires-python = &quot;==3.11.*&quot;
+
+[tool.uv]
+no-index = true
+no-build = true
+find-links = [&quot;C:\\Users\\Alyssa\\AppData\\Local\\Temp\\tmpo1yqij0_\\wheels&quot;]
+constraint-dependencies = []
+</code></pre>
+<p><code>uv.lock</code>:</p>
+<pre><code>version = 1
+revision = 3
+requires-python = &quot;==3.11.*&quot;
+
+[[package]]
+name = &quot;framework-both-wheels&quot;
+version = &quot;0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;venvstacks-testing-dynlib-consumer&quot; },
+    { name = &quot;venvstacks-testing-dynlib-publisher&quot; },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = &quot;venvstacks-testing-dynlib-consumer&quot; },
+    { name = &quot;venvstacks-testing-dynlib-publisher&quot; },
+]
+
+[[package]]
+name = &quot;venvstacks-testing-dynlib-consumer&quot;
+version = &quot;1.0.0&quot;
+source = { registry = &quot;../../../tmpo1yqij0_/wheels&quot; }
+wheels = [
+    { path = &quot;venvstacks_testing_dynlib_consumer-1.0.0-cp311-abi3-win_amd64.whl&quot; },
+]
+
+[[package]]
+name = &quot;venvstacks-testing-dynlib-publisher&quot;
+version = &quot;1.0.0&quot;
+source = { registry = &quot;../../../tmpo1yqij0_/wheels&quot; }
+wheels = [
+    { path = &quot;venvstacks_testing_dynlib_publisher-1.0.0-cp311-abi3-win_amd64.whl&quot; },
+]
+</code></pre>
+<p><code>pylock.toml</code>:</p>
+<pre><code>lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;==3.11.*&quot;
+
+[[packages]]
+name = &quot;venvstacks-testing-dynlib-consumer&quot;
+version = &quot;1.0.0&quot;
+index = &quot;file:///C:/Users/Alyssa/AppData/Local/Temp/tmpu8r76ysx/wheels&quot;
+wheels = [{ url = &quot;file:///C:/Users/Alyssa/AppData/Local/Temp/tmpu8r76ysx/wheels/venvstacks_testing_dynlib_consumer-1.0.0-cp311-abi3-win_amd64.whl&quot;, hashes = {} }]
+
+[[packages]]
+name = &quot;venvstacks-testing-dynlib-publisher&quot;
+version = &quot;1.0.0&quot;
+index = &quot;file:///C:/Users/Alyssa/AppData/Local/Temp/tmpu8r76ysx/wheels&quot;
+wheels = [{ url = &quot;file:///C:/Users/Alyssa/AppData/Local/Temp/tmpu8r76ysx/wheels/venvstacks_testing_dynlib_publisher-1.0.0-cp311-abi3-win_amd64.whl&quot;, hashes = {} }]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-03 14:51</div>
+            <div class="timeline-body"><p>For the find links entry, why are you using an absolute path, and what would you expect <code>uv.lock</code> to cover?</p>
+<blockquote>
+<p>find-links = [&quot;C:\Users\Alyssa\AppData\Local\Temp\tmpo1yqij0_\wheels&quot;]</p>
+</blockquote>
+<p>I don't think we can handle absolute paths in input files properly in lockfile, neither choice seems portable, and e.g. relative paths in the lockfile invalidate it when the project moves relative to the absolute directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-03 15:10</div>
+            <div class="timeline-body"><p>I expect paths relative to the lock file (as <code>uv.lock</code> already includes). It does tightly couple the lock file to the local wheels it is consuming, but that's fine for the two cases that I think are reasonable to support:</p>
+<ul>
+<li>no portability (locking and installation happen on the same system, nothing moves between the two steps)</li>
+<li>lock file + local wheels are transported together (e.g. via an archive or a version control system)</li>
+</ul>
+<p>For the first case, it doesn't matter whether the paths are relative or absolute, but for the second the paths need to be relative</p>
+<p>The case that absolute paths support but relative paths don't is one where the local wheels are stored in a shared cache that's in a fixed location on every potential installation target, but there are better ways of handling that (starting with relying on uv's own cache, and including alternatives like running a local devpi instance so the cached wheel access is via a localhost URL instead of a filesystem path)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-28 16:49</div>
+            <div class="timeline-body"><p>I think it makes sense to emit relative paths here, though not sure what we should do about <code>index</code>. Should we just omit it? I think that <em>has</em> to be a URL and so can't be relative.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

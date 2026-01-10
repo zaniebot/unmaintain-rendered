@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clap doesn't parse correctly a YAML file if 2 spaces are used (for indent) instead of 4. - clap-rs/clap #965</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Clap doesn't parse correctly a YAML file if 2 spaces are used (for indent) instead of 4.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/965">#965</a>
+        opened by <a href="https://github.com/Booteille">@Booteille</a>
+        on 2017-05-21 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Booteille">@Booteille</a> on 2017-05-21 15:27</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<ul>
+<li>1.17.0 (56124baa9 2017-04-24)</li>
+</ul>
+<h3>Affected Version of clap</h3>
+<ul>
+<li>2.24.2</li>
+</ul>
+<h3>Expected Behavior Summary</h3>
+<p>Clap should correctly handle YAML files where indents are made by 2 spaces instead of 4.</p>
+<h3>Actual Behavior Summary</h3>
+<p>Clap actually returns wrong output in this use case.</p>
+<h3>Steps to Reproduce the issue</h3>
+<p>Try to indent your file with 2 spaces instead of 4 and you should get a wrong result</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>Here is the code i've written to test it:</p>
+<pre><code class="language-yaml">name: Test
+version: &quot;v0.1.0&quot;
+author: Booteille
+about: Test
+subcommands:
+  - server:
+    about: server related commands
+</code></pre>
+<p>And the resulted output of <code>cargo run -- -h</code>:</p>
+<pre><code class="language-console">Test v0.1.0
+Booteille
+Test
+
+USAGE:
+    blynkcli [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+SUBCOMMANDS:
+    about    
+    help     Prints this message or the help of the given subcommand(s)
+</code></pre>
+<p>Also, the output of <code>cargo run -- server</code>:</p>
+<pre><code class="language-console">error: Found argument 'server' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    blynkcli [SUBCOMMAND]
+
+For more information try --help
+</code></pre>
+<h3>Debug output</h3>
+<pre><code class="language-console">DEBUG:clap:Parser::add_subcommand: term_w=None, name=about
+DEBUG:clap:Parser::propogate_settings: self=Test, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: sc=about, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+), g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::propogate_settings: self=about, g_settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;server&quot;' ([115, 101, 114, 118, 101, 114])
+DEBUG:clap:Parser::is_new_arg: arg=&quot;server&quot;, Needs Val of=NotFound
+DEBUG:clap:Parser::is_new_arg: Arg::allow_leading_hyphen(false)
+DEBUG:clap:Parser::is_new_arg: probably value
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=false
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;server&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:Parser::get_matches_with: Positional counter...1
+DEBUG:clap:Parser::get_matches_with: Low index multiples...false
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::get_required_usage_from: reqs=[], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::needs_flags_tag;
+DEBUG:clap:usage::needs_flags_tag:iter: f=hclap_help;
+DEBUG:clap:usage::needs_flags_tag:iter: f=vclap_version;
+DEBUG:clap:usage::needs_flags_tag: [FLAGS] not required
+DEBUG:clap:usage::create_help_usage: usage=blynkcli [SUBCOMMAND]
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Auto
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::good;
+DEBUG:clap:is_a_tty: stderr=true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-29 20:56</div>
+            <div class="timeline-body"><p>Thanks for taking the time to report this! This should get fixed &quot;for free&quot; upon the move to using <code>serde</code> which is an active work in progress 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: yaml parser</span> added by @kbknapp on 2017-05-29 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-05-29 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-05-29 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2017-05-29 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2017-08-22 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "serde" by @kbknapp on 2018-02-02 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "serde" by @kbknapp on 2018-02-02 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3-alpha1" by @kbknapp on 2018-02-02 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoodie">@hoodie</a> on 2018-05-28 11:13</div>
+            <div class="timeline-body"><p><strong>TL;DR:</strong> no bug, can be closed</p>
+<ol>
+<li>I don't think a serde-yaml switch would fix this, since this appears to be a parser related problem and serde-yaml also only uses yaml-rust</li>
+<li>this yaml example is quite ambiguous and other yaml parses (both included in ruby) interpret it in the same way</li>
+</ol>
+<p>my comparison script:</p>
+<pre><code class="language-ruby">#!/usr/bin/env ruby
+require &quot;yaml&quot;
+require 'psych'
+require &quot;pp&quot;
+
+puts $FILENAME
+
+content11 =  &quot;%YAML 1.1\n---\n#{ File.read $FILENAME}&quot;
+
+puts content11
+pp YAML.load content11
+pp Psych.load content11
+
+content12 =  &quot;%YAML 1.2\n---\n#{ File.read $FILENAME}&quot;
+
+begin
+    pp YAML.load content12
+rescue Psych::SyntaxError
+    puts &quot;syntax Error&quot;
+    puts $!
+end
+
+begin
+    pp Psych.load content12
+rescue Psych::SyntaxError
+    puts &quot;syntax Error&quot;
+    puts $!
+end
+</code></pre>
+<p>your example + differently indented alternatives:</p>
+<pre><code class="language-yaml">name: Test
+version: &quot;v0.1.0&quot;
+author: Booteille
+about: Test
+subcommands:
+  - server:
+    about: server related commands
+subcommands2:
+  - server:
+      about: server related commands
+subcommands3:
+ - server:
+    about: server related commands
+</code></pre>
+<p>and it's output:</p>
+<pre><code>{&quot;name&quot;=&gt;&quot;Test&quot;,
+ &quot;version&quot;=&gt;&quot;v0.1.0&quot;,
+ &quot;author&quot;=&gt;&quot;Booteille&quot;,
+ &quot;about&quot;=&gt;&quot;Test&quot;,
+ &quot;subcommands&quot;=&gt;[{&quot;server&quot;=&gt;nil, &quot;about&quot;=&gt;&quot;server related commands&quot;}],
+ &quot;subcommands2&quot;=&gt;[{&quot;server&quot;=&gt;{&quot;about&quot;=&gt;&quot;server related commands&quot;}}],
+ &quot;subcommands3&quot;=&gt;[{&quot;server&quot;=&gt;{&quot;about&quot;=&gt;&quot;server related commands&quot;}}]}
+{&quot;name&quot;=&gt;&quot;Test&quot;,
+ &quot;version&quot;=&gt;&quot;v0.1.0&quot;,
+ &quot;author&quot;=&gt;&quot;Booteille&quot;,
+ &quot;about&quot;=&gt;&quot;Test&quot;,
+ &quot;subcommands&quot;=&gt;[{&quot;server&quot;=&gt;nil, &quot;about&quot;=&gt;&quot;server related commands&quot;}],
+ &quot;subcommands2&quot;=&gt;[{&quot;server&quot;=&gt;{&quot;about&quot;=&gt;&quot;server related commands&quot;}}],
+ &quot;subcommands3&quot;=&gt;[{&quot;server&quot;=&gt;{&quot;about&quot;=&gt;&quot;server related commands&quot;}}]}
+...
+</code></pre>
+<p>so I would argue that is is just an issue of yaml being yaml, you are just not supposed to put the child object of <code>server</code> in the same column. I'd advice to just close this as wont-fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../chyh1990/yaml-rust/issues/101.html">chyh1990/yaml-rust#101</a> on 2018-06-22 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-07-22 02:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:33 UTC
+    </footer>
+</body>
+</html>

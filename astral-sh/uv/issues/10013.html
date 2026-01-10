@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --directory` not working when called with a Python subprocess - astral-sh/uv #10013</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --directory` not working when called with a Python subprocess</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10013">#10013</a>
+        opened by <a href="https://github.com/djalan">@djalan</a>
+        on 2024-12-18 23:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/djalan">@djalan</a> on 2024-12-18 23:56</div>
+            <div class="timeline-body"><p>Hello</p>
+<p>Sample repo? Yes! https://github.com/djalan/uv-pip-install-subprocess</p>
+<p>Here is the problem:</p>
+<p>As per your documentation @ https://docs.astral.sh/uv/pip/environments/#discovery-of-python-environments</p>
+<blockquote>
+<p>When running a command that mutates an environment such as <code>uv pip sync</code> or <code>uv pip install</code>, uv will search for a virtual environment in the following order:</p>
+<ul>
+<li>An activated virtual environment based on the VIRTUAL_ENV environment variable.</li>
+<li>An activated Conda environment based on the CONDA_PREFIX environment variable.</li>
+<li>A virtual environment at .venv in the current directory, or in the nearest parent directory.</li>
+</ul>
+</blockquote>
+<p>This becomes a problem when you are calling <code>uv</code> using a <code>subprocess.Popen</code> from a Python project that is using a virtual env.</p>
+<p>It won't take into consideration the <code>--directory</code> switch and changing <code>cwd</code> current working directory for <code>subprocess.Popen</code> does not resolve the issue.</p>
+<pre><code>Using Python 3.11.7 environment at: D:\workspace\project-running-subprocess\.venv
+Audited 166 packages in 53ms
+</code></pre>
+<pre><code class="language-python">print(&quot;Install dependencies with 'uv'&quot;)
+with subprocess.Popen(
+    [
+        definitions.UV_EXE,
+        &quot;pip&quot;,
+        &quot;install&quot;,
+        &quot;--directory&quot;,
+        clone_fullpath.absolute().as_posix(),
+        &quot;--no-progress&quot;,
+        &quot;--color&quot;,
+        &quot;never&quot;,
+        &quot;-r&quot;,
+        requirements_path,
+    ],
+    stdout=subprocess.PIPE,
+    bufsize=1,
+    universal_newlines=True,
+    cwd=clone_fullpath,
+) as proc:
+    for line in proc.stdout:
+        print(line, end=&quot;&quot;)
+</code></pre>
+<p>On the other hand, <code>uv venv</code> honors the <code>--directory</code> switch and creates the .venv at the desired location.</p>
+<pre><code class="language-python">print(&quot;Create venv with 'uv'&quot;)
+with subprocess.Popen(
+    [
+        definitions.UV_EXE,
+        &quot;venv&quot;,
+        &quot;--no-progress&quot;,
+        &quot;--color&quot;,
+        &quot;never&quot;,
+        &quot;--directory&quot;,
+        clone_fullpath.absolute().as_posix(),
+    ],
+    stdout=subprocess.PIPE,
+    bufsize=1,
+    universal_newlines=True,
+    cwd=clone_fullpath,
+) as proc:
+    for line in proc.stdout:
+        print(line, end=&quot;&quot;)
+</code></pre>
+<p>I would fix the problem and amend the documentation and give <code>--directory</code> the biggest priority.</p>
+<ul>
+<li>The <code>--directory</code> switch on the command line</li>
+<li>An activated virtual environment based on the VIRTUAL_ENV environment variable.</li>
+<li>An activated Conda environment based on the CONDA_PREFIX environment variable.</li>
+<li>A virtual environment at .venv in the current directory, or in the nearest parent directory.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-19 00:30</div>
+            <div class="timeline-body"><p>I think you just want <code>uv pip install --python &lt;path-to-venv&gt;</code> instead of using <code>--directory</code>? Changing the working directory via <code>--directory</code> shouldn't change our Python discovery behavior, in my opinion. It should be the same as if you invoked uv from that directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-19 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-19 00:30</div>
+            <div class="timeline-body"><p>(Thank you for all the details and the reproduction!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/djalan">@djalan</a> on 2024-12-19 16:00</div>
+            <div class="timeline-body"><p>Hello</p>
+<p>Your solution works! I pushed it to the repo.</p>
+<p>Maybe consider adding <code>[PATH]</code> at the end of <code>uv pip install</code> just like <code>uv venv</code>.
+That would replace the <code>--python</code> switch.</p>
+<p>Right now it looks like this:</p>
+<p>Usage: <code>uv.exe venv [OPTIONS] [PATH]</code></p>
+<p>Usage: <code>uv.exe pip install [OPTIONS] &lt;PACKAGE|--requirements &lt;REQUIREMENTS&gt;|--editable &lt;EDITABLE&gt;&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-27 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2024-12-27 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2025-01-09 22:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:52 UTC
+    </footer>
+</body>
+</html>

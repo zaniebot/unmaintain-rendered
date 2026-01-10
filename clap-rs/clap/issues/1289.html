@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help doesn't print help for subcommands - clap-rs/clap #1289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help doesn't print help for subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1289">#1289</a>
+        opened by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a>
+        on 2018-06-07 18:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a> on 2018-06-07 18:25</div>
+            <div class="timeline-body"><p>Help message for subcommands doesn't work as expected: despite being provided, <code>version</code>, <code>about</code> and <code>author</code> do not appear upon calling <code>binary subcommand --help</code>. Also, none of the options and flags which can be used with subcommand appear in the subcommand help message.</p>
+<p>As outlined in the <a href="https://github.com/kbknapp/clap-rs/blob/master/examples/08_subcommands.rs#L30">subcommands example</a>, subcommands can have their own <code>author</code>, <code>version</code>, <code>about</code> and options. However, the only thing that actually appears in the <code>binary subcommand --help</code> output is the <code>help</code> of the corresponding subcommand, which is probably incorrect behaviour.</p>
+<h3>Rust Version</h3>
+<p>rustc 1.26.2 (594fb253c 2018-06-01)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.31.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>My understanding is that calling <code>binary subcommand --help</code> would output a message similar to the one generated for upper-level command. However, this is not the case in my setup.</p>
+<h3>Actual Behavior Summary</h3>
+<p>As seen below, the upper-level help message looks valid, but help messages for both subcommands do not have any</p>
+<pre><code>[I] kbobyrev@archlinux ~/d/p/minimal&gt; cargo run -- --help
+minimal 0.0.1
+Kirill Bobyrev &lt;kbobyrev.opensource@gmail.com&gt;
+Minimal project for reproducing clap-rs bug
+USAGE:
+    minimal [SUBCOMMAND]
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+SUBCOMMANDS:
+    code     Minimal project for reproducing clap-rs bug
+    help     Prints this message or the help of the given subcommand(s)
+    sleep    Minimal project for reproducing clap-rs bug
+</code></pre>
+<pre><code>[I] kbobyrev@archlinux ~/d/p/minimal&gt; cargo run -- code --help
+code for a while
+</code></pre>
+<pre><code>[I] kbobyrev@archlinux ~/d/p/minimal&gt; cargo run -- sleep --help
+sleep for a while
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<ul>
+<li>Build the project via <code>cargo build</code></li>
+<li>Run <code>cargo run -- --help</code> to see the upper-level help message</li>
+<li>Run <code>cargo run -- code --help</code> to see first subcommand's help message</li>
+<li>Run <code>cargo run -- sleep --help</code> to see second subcommand's help message</li>
+</ul>
+<h3>Link to minimal code for reproducing the issue and debug output</h3>
+<p>https://gist.github.com/kbobyrev/95ca5697ce602cca4666884090ad8b8b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-10 18:41</div>
+            <div class="timeline-body"><p>I would need to see the code you're using, do you have a link to it? I can't build your project otherwise to test it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a> on 2018-06-11 21:07</div>
+            <div class="timeline-body"><p>Hi @kbknapp!</p>
+<p>There's a link on the bottom, the gist contains both code and debug output:</p>
+<p>https://gist.github.com/kbobyrev/95ca5697ce602cca4666884090ad8b8b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-12 13:10</div>
+            <div class="timeline-body"><p>Ah, sorry! I usually don't look at the debug output unless I'm unsure what's going on :stuck_out_tongue_winking_eye:</p>
+<p>This is <em>extremely</em> strange though. I'm digging in now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-12 13:18</div>
+            <div class="timeline-body"><p>Ok, I found the issue and it's something I overlooked.</p>
+<p>If you use <a href="https://docs.rs/clap/2.31.2/clap/struct.App.html#method.help"><code>App::help</code></a> as you're doing in <a href="https://gist.github.com/kbobyrev/95ca5697ce602cca4666884090ad8b8b#file-main-rs-L10">line 10</a> and <a href="https://gist.github.com/kbobyrev/95ca5697ce602cca4666884090ad8b8b#file-main-rs-L30">line 30</a> it <em>replaces</em> the auto-generated help message with whatever you specify.</p>
+<p>I know this can be confused with <code>Arg::help</code> which sets the help message an argument. However, for subcommands you must use <a href="https://docs.rs/clap/2.31.2/clap/struct.App.html#method.about"><code>App::about</code></a> and <a href="https://docs.rs/clap/2.31.2/clap/struct.App.html#method.long_about"><code>App::long_about</code></a> in order to only set the small &quot;about/help message&quot; and not replace the entire generated message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2018-06-12 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2018-06-12 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-12 13:19</div>
+            <div class="timeline-body"><p>Also, in the v3 branch which is being worked on for release, these methods are more intuitively named :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a> on 2018-06-12 15:54</div>
+            <div class="timeline-body"><p>@kbknapp ah, okay, I see! Thank you very much for looking into this and clarifying!</p>
+<p>I'm so sorry this was my misuse of the library, I spent some time investigating this issue myself but I couldn't figure out what you pointed out.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-12 23:59</div>
+            <div class="timeline-body"><p>No worries, I'm glad I could help :smile: Feel free to ping me any time with a question, or ask in the Gitter chat linked at the top of the readme</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:49 UTC
+    </footer>
+</body>
+</html>

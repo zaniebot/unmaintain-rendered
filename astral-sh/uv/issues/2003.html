@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirement with `--only-binary apache-beam` fails to resolve even though solution exists - astral-sh/uv #2003</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Requirement with `--only-binary apache-beam` fails to resolve even though solution exists</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2003">#2003</a>
+        opened by <a href="https://github.com/notatallshaw">@notatallshaw</a>
+        on 2024-02-27 05:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-02-27 05:09</div>
+            <div class="timeline-body"><p>Python 3.11.6, Linux x64, uv 0.1.11</p>
+<pre><code>$ echo &quot;apache-airflow[all]&quot; | uv pip compile - --only-binary apache-beam
+error: Failed to download and build: apache-beam==2.2.0
+  Caused by: Building source distributions is disabled
+</code></pre>
+<p>But a solution exists because if I put a lower bound on <code>apache-beam</code> so that my environment can always get a wheel it can resolve:</p>
+<pre><code>$ echo -e &quot;apache-airflow[all]\napache-beam&gt;=2.47&quot; | uv pip compile -
+Resolved 546 packages in 6.30s
+...
+apache-beam==2.54.0
+    # via apache-airflow-providers-apache-beam
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1560.html">astral-sh/uv#1560</a> on 2024-02-27 05:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 05:13</div>
+            <div class="timeline-body"><p>IIRC, <code>--only-binary</code> doesn't affect the resolution -- it just disallows building from source. Like, we don't <em>skip</em> versions that lack binaries, we just error if you try to build one. I don't know if this was intentional, @zanieb would know when they're back from vacation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-02-27 05:19</div>
+            <div class="timeline-body"><p>Interesting, pip definitely uses this to determine what is resolved: https://pip.pypa.io/en/stable/development/architecture/upgrade-options/#controlling-what-gets-considered</p>
+<p>I wouldn't of normally tried this but this comment indicated it would work like that with uv but I can't reproduce resolving it: https://github.com/astral-sh/uv/issues/1560#issuecomment-1949626187</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-27 06:50</div>
+            <div class="timeline-body"><p>Yeah this sounds unintentional. I think <code>--no-binary</code> is taken into consideration during resolutions i.e. we mark distributions with only wheels as unusable but I don't think we don't do the same for <code>--only-binary</code> right now? I could take a look at this as part of (or after) #1298</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-27 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-27 15:31</div>
+            <div class="timeline-body"><p>Cool, marking as a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-28 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 21:47</div>
+            <div class="timeline-body"><p>Looking into this, I think I see the path forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2066.html">astral-sh/uv#2066</a> on 2024-02-29 00:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2024-02-29 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-02-29 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 20:55</div>
+            <div class="timeline-body"><p>I believe this is closed by https://github.com/astral-sh/uv/pull/1298 (merged but not yet released).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

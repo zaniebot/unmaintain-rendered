@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to convince uv that a pyenv Python instance is a venv? - astral-sh/uv #7907</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to convince uv that a pyenv Python instance is a venv?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7907">#7907</a>
+        opened by <a href="https://github.com/MichaIng">@MichaIng</a>
+        on 2024-10-03 19:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaIng">@MichaIng</a> on 2024-10-03 19:14</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>We are a Debian-based distribution which offers a bare-metal Home Assistant Core installation option. Home Assistant does not only have a lot of specific dependencies, but also a relatively strict Python version requirement, so that oldstable and at the end of release cycle even stable Debian version do not natively support it anymore. We hence use <code>pyenv</code> to compile a specific compatible Python version, to install Home Assistant into. And we do not use a <code>virtualenv</code>, since the whole <code>pyenv</code> instance is exclusive for Home Assistant already.</p>
+<p>Home Assistant installs further Python modules internally, based on the smart home integrations installed with its UI. Its last version switched from <code>pip</code> to <code>uv pip</code> for this, which broke our instances with</p>
+<pre><code>error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+</code></pre>
+<p>Since the <code>uv</code> calls are done within HA code, we have no way to pass <code>--system</code>. From #1374, https://github.com/astral-sh/uv/issues/1374#issuecomment-1950266614 in particular, I got that setting <code>VIRTUAL_ENV</code> should work, however, for the <code>pyenv</code> Python instance it somehow does not seem to work. I checked that that variable is passed through, but it seems to be ignored.</p>
+<p>https://github.com/astral-sh/uv/blob/main/docs/pip/environments.md mentions that it is ignored if the directory does not comply with <a href="https://peps.python.org/pep-0405/#specification">PEP-405</a>. But I am not sure in how for this is the case, as <code>pyenv</code> basically provides complete functional Python instances, just like <code>/usr/local</code> in the linked issue where setting the variable worked for a container setup:</p>
+<pre><code class="language-console">homeassistant@VM-Bookworm:~$ l /mnt/dietpi_userdata/homeassistant/deps/
+total 16K
+drwxr-xr-x 3 homeassistant homeassistant 4.0K Oct  3 19:24 bin
+drwxr-xr-x 3 homeassistant homeassistant 4.0K Oct  3 19:22 include
+drwxr-xr-x 4 homeassistant homeassistant 4.0K Oct  3 19:22 lib
+drwxr-xr-x 3 homeassistant homeassistant 4.0K Oct  3 19:22 share
+homeassistant@VM-Bookworm:~$ l /mnt/dietpi_userdata/homeassistant/deps/bin/python*
+lrwxrwxrwx 1 homeassistant homeassistant   10 Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python -&gt; python3.12
+lrwxrwxrwx 1 homeassistant homeassistant   17 Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python-config -&gt; python3.12-config
+lrwxrwxrwx 1 homeassistant homeassistant   10 Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python3 -&gt; python3.12
+lrwxrwxrwx 1 homeassistant homeassistant   17 Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python3-config -&gt; python3.12-config
+-rwxr-xr-x 1 homeassistant homeassistant  18K Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python3.12
+-rwxr-xr-x 1 homeassistant homeassistant 3.3K Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python3.12-config
+-rwxr-xr-x 1 homeassistant homeassistant  70K Oct  3 19:22 /mnt/dietpi_userdata/homeassistant/deps/bin/python3.12-gdb.py
+homeassistant@VM-Bookworm:~$ l -d /mnt/dietpi_userdata/homeassistant/deps/lib/python3.12/site-packages/
+drwxr-xr-x 188 homeassistant homeassistant 12K Oct  3 20:00 /mnt/dietpi_userdata/homeassistant/deps/lib/python3.12/site-packages/
+</code></pre>
+<p>Is there a way to convince <code>uv</code> that this is a virtualenv, without adding the actual unnecessary (in our case) virtualenv layer on top of the pyenv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../MichaIng/DietPi/issues/7231.html">MichaIng/DietPi#7231</a> on 2024-10-03 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 19:35</div>
+            <div class="timeline-body"><p>Hi! You can set <code>UV_SYSTEM_PYTHON=1</code> as an equivalent to <code>--system</code>.</p>
+<p>We check if a given interpreter is a compliant virtual environment with</p>
+<p>https://github.com/astral-sh/uv/blob/f0659e76cf215480d30d554118961c7c59ab3e2b/crates/uv-python/src/interpreter.rs#L201-L207</p>
+<p>And the filtering of discovered interpreters happens at</p>
+<p>https://github.com/astral-sh/uv/blob/891c91dd3a0141f05adea20674f3ea7f4477c510/crates/uv-python/src/discovery.rs#L609-L657</p>
+<p>You can also set <code>UV_PYTHON</code> to the full path to the Python interpreter, i.e., <code>which python</code>, and we'll allow mutating a system environment without opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-10-03 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-10-03 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaIng">@MichaIng</a> on 2024-10-03 19:52</div>
+            <div class="timeline-body"><p>Okay, so the path of the virtualenv must differ from the system Python path, which is not the case in our setup, as the <code>pyenv</code> instance is interpreted as system instance. And if they are the same, <code>VIRTUAL_ENV</code> is ignored?</p>
+<p><code>UV_SYSTEM_PYTHON=1</code> works perfectly, many thanks 👍!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 19:58</div>
+            <div class="timeline-body"><p><code>VIRTUAL_ENV</code> isn't ignored, i.e., we'll read it when discovering interpreters but you can't pass an environment that isn't actually a virtual environment using that variable. But yeah, in this case it's &quot;ignored&quot; in the sense that it's not a compliant virtual environment and it is filtered from consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-03 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaIng">@MichaIng</a> on 2024-10-03 20:01</div>
+            <div class="timeline-body"><p>I then wonder how it did work work in case of this container setup: https://github.com/astral-sh/uv/issues/1374#issuecomment-1950266614</p>
+<p>However, generally it makes sense, and <code>UV_SYSTEM_PYTHON=1</code> is the logical explicit solution, when args cannot be passed. I consider this as solved/answered 🙂.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaIng on 2024-10-03 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InnovoDeveloper">@InnovoDeveloper</a> on 2024-10-03 20:08</div>
+            <div class="timeline-body"><p>how do we apply the fix?  or is this coming in a patch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaIng">@MichaIng</a> on 2024-10-03 20:08</div>
+            <div class="timeline-body"><p>@InnovoDeveloper
+Please see my last comment on the issue at our GitHub repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InnovoDeveloper">@InnovoDeveloper</a> on 2024-10-03 20:10</div>
+            <div class="timeline-body"><p>sorry, had multiple windows open and looked at wrong window.  Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-03 21:34</div>
+            <div class="timeline-body"><p>@MichaIng that's before we started enforcing this check in 0.2.0 e.g., here are some discussions following that change:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/3905</li>
+<li>https://github.com/astral-sh/uv/issues/3765</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:00 UTC
+    </footer>
+</body>
+</html>

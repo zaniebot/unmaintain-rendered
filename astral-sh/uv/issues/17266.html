@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0.9.20: DNS failures take ~4x longer due to nested retries - astral-sh/uv #17266</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>0.9.20: DNS failures take ~4x longer due to nested retries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17266">#17266</a>
+        opened by <a href="https://github.com/shayonj">@shayonj</a>
+        on 2025-12-30 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/shayonj">@shayonj</a> on 2025-12-30 14:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>DNS failures that took ~4 seconds in 0.9.18 now take ~17-19 seconds in 0.9.20. Looking at debug logs, it appears the retry logic is running at two layers now (middleware + cached client), causing way more retries than expected I think?</p>
+<p>This was caught from our CI specs because we have a 10 second timeout waiting for a Python harness to start when dealing malformed PyPi clients or similar.</p>
+<h2>Minimal reproduction</h2>
+<pre><code class="language-bash"># Setup
+mkdir -p /tmp/uv-test &amp;&amp; cd /tmp/uv-test
+mkdir -p packages
+pip download six==1.17.0 --dest packages -q
+
+cat &gt; uv.toml &lt;&lt; 'EOF'
+[pip]
+find-links = [&quot;./packages&quot;]
+index-url = &quot;http://invalid-hostname-xyz123&quot;
+EOF
+
+echo &quot;six==1.17.0&quot; &gt; requirements.txt
+uv venv .venv -q
+
+# Time it
+time UV_CONFIG_FILE=./uv.toml uv pip install -r requirements.txt --python .venv/bin/python
+</code></pre>
+<p><strong>0.9.18:</strong> ~4 seconds
+<strong>0.9.20:</strong> ~17-19 seconds</p>
+<h2>What I'm seeing</h2>
+<p>With <code>RUST_LOG=debug</code>, 0.9.18 shows the expected pattern - middleware retries 3 times, then fails:</p>
+<pre><code>WARN Retry attempt #0. Sleeping 494ms before the next attempt
+WARN Retry attempt #1. Sleeping 1.27s before the next attempt
+WARN Retry attempt #2. Sleeping 1.57s before the next attempt
+error: Request failed after 3 retries
+</code></pre>
+<p>But 0.9.20 shows the middleware retrying, then the cached client layer triggers <em>another</em> round:</p>
+<pre><code>WARN Retry attempt #0. Sleeping 897ms before the next attempt
+WARN Retry attempt #1. Sleeping 1.18s before the next attempt
+WARN Retry attempt #2. Sleeping 1.41s before the next attempt
+DEBUG Transient failure while handling response...; retrying after 0.1s...   &lt;-- starts over
+WARN Retry attempt #0. Sleeping 981ms before the next attempt
+...
+DEBUG Transient failure while handling response...; retrying after 0.1s...   &lt;-- and again
+WARN Retry attempt #0. Sleeping 815ms before the next attempt
+...
+DEBUG Transient failure while handling response...; retrying after 2.6s...   &lt;-- and again
+...
+error: Request failed after 3 retries
+</code></pre>
+<p>Ends up doing 16+ attempts instead of 4.</p>
+<h2>Platform</h2>
+<p>macOS 14.3.0 arm64</p>
+<h2>Version</h2>
+<p>Tested on:</p>
+<ul>
+<li>uv 0.9.18 (0cee76417 2025-12-16) - works as expected</li>
+<li>uv 0.9.20 (765a96723 2025-12-29) - regression?</li>
+</ul>
+<h2>Version</h2>
+<p>Tested on:</p>
+<ul>
+<li>uv 0.9.18 (0cee76417 2025-12-16) - works as expected</li>
+<li>uv 0.9.20 (765a96723 2025-12-29) - regression</li>
+</ul>
+<h2>Likely cause</h2>
+<p>The timing lines up with #17104 and #17105 which unified retry handling. It looks like both the middleware (<code>RetryTransientMiddleware</code>) and the cached client (<code>RetryState::should_retry</code>) now independently retry transient errors, creating nested retry loops.</p>
+<h2>Potential fix</h2>
+<p>I've tested locally that having <code>RetryState::should_retry</code> return <code>None</code> for transient errors (since middleware already handles those) fixes the issue while keeping all existing tests passing. Happy to submit a PR if helpful.</p>
+<h3>Platform</h3>
+<p>macOS 14.3.0 arm64, Ubuntu/Debian</p>
+<h3>Version</h3>
+<p>uv 0.9.20</p>
+<h3>Python version</h3>
+<p>Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @shayonj on 2025-12-30 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-30 14:38</div>
+            <div class="timeline-body"><p>Thanks for the report and research!</p>
+<p>I believe @konstin's intent with that refactor was to avoid nested retries, he'll probably have an opinion on the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17267.html">astral-sh/uv#17267</a> on 2025-12-30 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shayonj">@shayonj</a> on 2025-12-30 14:51</div>
+            <div class="timeline-body"><p>sounds good, thank you for the quick response. I was experimenting with something like this - https://github.com/astral-sh/uv/pull/17267 and the replication script above and seems to have fixed. Happy to iterate on the PR with feedback or also close it in favor of a different change. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-30 15:26</div>
+            <div class="timeline-body"><p>For a slightly shorter reproducer:</p>
+<pre><code>uv init test
+cd test
+uv venv
+uv pip install --index-url http://domain.invalid package
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17274.html">astral-sh/uv#17274</a> on 2025-12-30 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-30 17:59</div>
+            <div class="timeline-body"><p>Just wanted to track it down but it was a quick fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @EliteTK on 2026-01-05 20:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:16 UTC
+    </footer>
+</body>
+</html>

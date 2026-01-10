@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLW0108 fix mishandles assignment expressions - astral-sh/ruff #18675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLW0108 fix mishandles assignment expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18675">#18675</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-14 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-14 17:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/unnecessary-lambda/"><code>unnecessary-lambda</code> (PLW0108)</a> introduces a syntax error when the callable in the top level of the lambda expression is an assignment expression. It should be parenthesized.</p>
+<pre><code class="language-console">$ cat &gt;plw0108_1.py &lt;&lt;'# EOF'
+f = lambda x: (string := str)(x)
+print(f(0))
+# EOF
+
+$ python plw0108_1.py
+0
+
+$ ruff --isolated check plw0108_1.py --select PLW0108 --preview --unsafe-fixes --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>The fix can also change behavior when a variable bound by an assignment expression is one of the lambda expression’s parameters. The fix is already documented as unsafe because “the lambda body itself could contain an effect”, but in this case, the body is guaranteed to contain an effect, and there is no straightforward way to refactor it, so I recommend the fix be suppressed.</p>
+<pre><code class="language-console">$ cat &gt;plw0108_2.py &lt;&lt;'# EOF'
+x = None
+f = lambda x: ((x := 1) and str)(x)
+print(f(0))
+print(x)
+# EOF
+
+$ python plw0108_2.py
+1
+None
+
+$ ruff --isolated check plw0108_2.py --select PLW0108 --preview --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat plw0108_2.py
+x = None
+f = (x := 1) and str
+print(f(0))
+print(x)
+
+$ python plw0108_2.py
+0
+1
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-14 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-14 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-14 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18678.html">astral-sh/ruff#18678</a> on 2025-06-14 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/18427.html">astral-sh/ruff#18427</a> on 2025-06-16 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-26 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

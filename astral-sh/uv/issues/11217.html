@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv not detecting system installed Python installations of other architecture on Windows - astral-sh/uv #11217</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv not detecting system installed Python installations of other architecture on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11217">#11217</a>
+        opened by <a href="https://github.com/schlamar">@schlamar</a>
+        on 2025-02-04 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/schlamar">@schlamar</a> on 2025-02-04 15:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Expected:</p>
+<pre><code>&gt; py -0p
+ -V:3.11 *        C:\Program Files\Python311\python.exe
+ -V:3.11-32       C:\Program Files (x86)\Python311-32\python.exe
+ -V:3.10          C:\Program Files\Python310\python.exe
+ -V:3.10-32       C:\Program Files (x86)\Python310-32\python.exe
+ -V:3.9-32        C:\Users\&lt;user&gt;\AppData\Local\Programs\Python\Python39-32\python.exe
+</code></pre>
+<p>Actual (3.11-32 and 3.10-32 is missing):</p>
+<pre><code>&gt; .\uv python list --only-installed --verbose
+←[34mDEBUG←[39m uv 0.5.27 (73e9928d4 2025-02-03)
+←[34mDEBUG←[39m Searching for any Python interpreter in managed installations, search path, or registry
+←[34mDEBUG←[39m Searching for managed installations at `C:\Users\&lt;user&gt;\AppData\Roaming\uv\python`
+←[34mDEBUG←[39m Found `cpython-3.11.9-windows-x86_64-none` at `C:\Program Files\Python311\python.exe` (search path)
+←[34mDEBUG←[39m Found `cpython-3.11.9-windows-x86_64-none` at `C:\Program Files\Python311\python.exe` (registry)
+←[34mDEBUG←[39m Found `cpython-3.10.11-windows-x86_64-none` at `C:\Program Files\Python310\python.exe` (registry)
+←[34mDEBUG←[39m Found `cpython-3.9.13-windows-x86-none` at `C:\Users\&lt;user&gt;\AppData\Local\Programs\Python\Python39-32\python.exe` (registry)
+cpython-3.11.9-windows-x86_64-none     C:\Program Files\Python311\python.exe
+cpython-3.10.11-windows-x86_64-none    C:\Program Files\Python310\python.exe
+cpython-3.9.13-windows-x86-none        C:\Users\&lt;user&gt;\AppData\Local\Programs\Python\Python39-32\python.exe
+</code></pre>
+<h3>Platform</h3>
+<p>Windows Server 2022</p>
+<h3>Version</h3>
+<p>uv 0.5.27 (73e9928d4 2025-02-03)</p>
+<h3>Python version</h3>
+<p>Python 3.11.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @schlamar on 2025-02-04 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv python list` not detecting global 32bit Python installations" to "`uv python list` not detecting global 32bit Python installations on Windows" by @schlamar on 2025-02-04 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 21:37</div>
+            <div class="timeline-body"><p>I presume <code>py</code> finds these from the registry? cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-02-05 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-17 08:47</div>
+            <div class="timeline-body"><p>32-bit pythons show for me locally, can you share the output of <code>Get-ChildItem -Path &quot;HKCU:\Software\Python&quot; -Recurse -Depth 2</code> and <code>Get-ChildItem -Path &quot;HKLM:\Software\Python&quot; -Recurse -Depth 2</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-02-17 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-02-17 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-02-17 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-02-17 13:33</div>
+            <div class="timeline-body"><p>The issue is probably how Microsoft maps 32bit and 64bit data in the registry. To read 32bit processes from 64bit process and vice versa you have to use specific flags - see https://learn.microsoft.com/en-us/windows/win32/winprog64/accessing-an-alternate-registry-view</p>
+<p>So reading <code>&quot;HKLM:\Software\Python&quot;</code> with Powershell depends on which Powershell version you use. Normal (x64) returns the two 64bit Python installations. Reading with Powershell x86 returns the two Python 32bit installations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-02-17 13:58</div>
+            <div class="timeline-body"><p>Running 64bit uv I get 64bit system installed Python versions only and running 32bit uv I get 32bit system installed versions only. So uv ignores how Microsoft maps 32bit / 64bit process data to HKLM and only reads data for the current architecture.</p>
+<p>User installed Python versions work (because HKCU is not affected by the 32bit / 64bit registry mapping).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-02-17 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-02-17 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv python list` not detecting global 32bit Python installations on Windows" to "uv not detecting system installed Python installations of other architecture on Windows" by @schlamar on 2025-02-18 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schlamar">@schlamar</a> on 2025-02-18 08:24</div>
+            <div class="timeline-body"><p>This affects probably all use cases regarding Python discovery, no only <code>python list</code>. For example <code>uv venv -p cpython-3.11-windows-x86-none --no-python-downloads</code> fails with &quot;No interpreter found&quot; running a 64bit uv although it is globally installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-02-25 07:20</div>
+            <div class="timeline-body"><p>Huh, this is weird, from Admin pwsh, I get permission issue:</p>
+<pre><code class="language-powershell"># Get-ChildItem -Path &quot;HKLM:\Software\Python&quot; -Recurse -Depth 2
+
+Get-ChildItem: Requested registry access is not allowed.
+Get-ChildItem: Requested registry access is not allowed.
+Get-ChildItem: Requested registry access is not allowed.
+
+    Hive: HKEY_LOCAL_MACHINE\Software\WOW6432Node
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-02-26 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11799.html">astral-sh/uv#11799</a> on 2025-02-26 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-26 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-26 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/11801.html">astral-sh/uv#11801</a> on 2025-02-26 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @konstin on 2025-02-26 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-03 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:59 UTC
+    </footer>
+</body>
+</html>

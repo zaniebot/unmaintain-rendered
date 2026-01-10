@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempting to use `ruff check` with includes, but without specifying a directory, picks up nested projects - astral-sh/ruff #9019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attempting to use `ruff check` with includes, but without specifying a directory, picks up nested projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9019">#9019</a>
+        opened by <a href="https://github.com/eli-schwartz">@eli-schwartz</a>
+        on 2023-12-06 02:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-06 02:25</div>
+            <div class="timeline-body"><p>... such as git worktree clones.</p>
+<p>Given a .ruff.toml with the contents:</p>
+<pre><code>include = [&quot;mesonbuild/**/*.py&quot;]
+</code></pre>
+<pre><code>$ git worktree add -d bisect/
+$ ruff check
+</code></pre>
+<p>Every possible error is listed twice, once for the mesonbuild/ directory and once for the bisect/mesonbuild/ directory.</p>
+<p>This only seems to happen if the worktree has a .ruff.toml as well (which it will if it is tracked in git).</p>
+<p>Using <code>ruff check mesonbuild/</code> the traditional way continues to work fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-06 02:36</div>
+            <div class="timeline-body"><p>Can you try using <code>include = [&quot;/mesonbuild/**/*.py&quot;] to make it explicit, that the pattern should only match </code>mesonbuild` directories at the root?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-06 02:43</div>
+            <div class="timeline-body"><p>This <em>sort of</em> makes sense given that <code>include</code> is only applied at the file level... So we visit each file within <code>bisect/mesonbuild</code>, and each of those files will resolve to the configuration at <code>bisect/mesonbuild/.ruff.toml</code>, which says that they should be included. (I'm not saying it's the right behavior, but I can at least understand why it's happening.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-06 02:48</div>
+            <div class="timeline-body"><p>That's actually the first thing I tried as a wild guess.</p>
+<pre><code>warning: No Python files found under the given path(s)
+</code></pre>
+<p>Afterwards I realized that it was conditional on the subdirectory also having a .ruff.toml, which made me rethink whether that was related at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12757.html">astral-sh/ruff#12757</a> on 2024-08-08 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AAraKKe">@AAraKKe</a> on 2025-04-16 07:50</div>
+            <div class="timeline-body"><p>I think it would make a lot of sense when ruff navigates the files to format/lint to allow excluding worktrees. Those should be very easily detectable since we just need to check the <code>.git</code> folder or even ask git about them. People use worktrees often to navigate from one state of the project to another one and it seems rather straightforward to have ruff detecting them.</p>
+<p>I cannot think of an usecase where you would like to format every python file in all your worktrees but, in case this is something you might want to do, this could be configurable with the default being to ignore them as they are, in essence, separate projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2025-04-16 10:03</div>
+            <div class="timeline-body"><p>What I do is put my worktrees in a folder that's git-ignored (globally, via <a href="https://git-scm.com/docs/gitignore">excludesfile</a>). But I use worktrees only to peep into other branches, not to work on them.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

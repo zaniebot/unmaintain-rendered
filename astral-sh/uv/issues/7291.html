@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't install `chumpy` - astral-sh/uv #7291</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't install `chumpy`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7291">#7291</a>
+        opened by <a href="https://github.com/YouJiacheng">@YouJiacheng</a>
+        on 2024-09-11 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-11 14:05</div>
+            <div class="timeline-body"><p>uv version</p>
+<pre><code>uv 0.4.7 (a178051e8 2024-09-07)
+</code></pre>
+<p>Reproduce:</p>
+<pre><code>uv add chumpy
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/39974291-bb11-46f0-9d97-a27baefbeae8" alt="image" /></p>
+<p>It's similar to #1551 but the solution don't work:</p>
+<ol>
+<li>Use <code>uv init --lib</code> to create a project that allows <code>[build-system]</code></li>
+<li>Modify the <code>[build-system]</code> to
+<img src="https://github.com/user-attachments/assets/526a64ae-6560-45c1-967b-89803f551666" alt="image" /></li>
+<li>Use <code>uv add chumpy</code>, and get an error
+<img src="https://github.com/user-attachments/assets/19d75c21-95e3-4e76-950f-9d0a48dcafa8" alt="image" /></li>
+</ol>
+<p><code>uv add pip</code>/<code>uv pip install pip</code> then <code>uv add chumpy</code>/<code>uv pip install chumpy</code> don't work.</p>
+<p><code>uv add pip</code>/<code>uv pip install pip</code> then <code>uv run pip install chumpy</code>/<code>uv run python -m pip install chumpy</code> don't work. (NOTE: they work when there is a cached wheel.)</p>
+<p><img src="https://github.com/user-attachments/assets/fa0e709a-7f82-4810-859f-a1bd411486a6" alt="image" /></p>
+<p>But pixi can handle this.</p>
+<pre><code>pixi add python pip
+pixi run pip install chumpy
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/ce437983-71fc-481f-84a4-295fc8bdc973" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-11 15:39</div>
+            <div class="timeline-body"><p>Sadly this is an issue with <code>chumpy</code> itself. The package is not properly structured -- it's documented as such here: https://github.com/astral-sh/uv/issues/2252#issuecomment-1981978204. For example, it also won't work if you run <code>pip install chumpy --use-pep517</code>, which will eventually be the default in pip:</p>
+<pre><code class="language-console">❯ pip install chumpy --use-pep517
+Collecting chumpy
+  Downloading chumpy-0.70.tar.gz (50 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─&gt; [26 lines of output]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 9, in &lt;module&gt;
+      ModuleNotFoundError: No module named 'pip'
+
+      During handling of the above exception, another exception occurred:
+
+      Traceback (most recent call last):
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.3/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 353, in &lt;module&gt;
+          main()
+        File &quot;/Users/crmarsh/.local/share/rtx/installs/python/3.12.3/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py&quot;, line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+       ...
+</code></pre>
+<p>(In the pixi example you included, that's just pixi running <code>pip</code> within an environment, there's no special handling there that differs from <code>pip install</code>.)</p>
+<p>You can either use <code>uv pip install chumpy --no-build-isolation</code>, or see the docs on using <a href="https://docs.astral.sh/uv/concepts/projects/#build-isolation">build isolation</a> with <code>uv add</code> and related APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-11 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-11 17:52</div>
+            <div class="timeline-body"><p>Thanks! I should google &quot;uv can't install chumpy&quot; instead of the error message! Hope this pointer can help others who google the error message!</p>
+<p>Here are verified solutions following <a href="https://docs.astral.sh/uv/concepts/projects/#build-isolation">build isolation</a>:
+Solution 1:</p>
+<pre><code class="language-toml">[project]
+name = &quot;smpl-preprocess&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.11&quot;
+dependencies = [
+    &quot;numpy&lt;1.24&quot;,
+    &quot;scipy&lt;2&quot;,
+    &quot;chumpy&quot;,
+]
+
+[tool.uv]
+no-build-isolation-package = [&quot;chumpy&quot;]
+
+</code></pre>
+<p>Run</p>
+<pre><code class="language-pwsh">uv venv
+uv pip install pip setuptools
+uv sync
+
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/e507a36d-f0a3-43e2-9b96-e820b9754a03" alt="image" /></p>
+<p>Solution 2:</p>
+<pre><code class="language-toml">[project]
+name = &quot;smpl-preprocess&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.11&quot;
+dependencies = [
+    &quot;numpy&lt;1.24&quot;,
+    &quot;scipy&lt;2&quot;,
+]
+
+[project.optional-dependencies]
+build = [&quot;setuptools&quot;, &quot;pip&quot;]
+run = [&quot;chumpy&quot;]
+
+[tool.uv]
+no-build-isolation-package = [&quot;chumpy&quot;]
+
+</code></pre>
+<p>It won't work if we follow <a href="https://docs.astral.sh/uv/concepts/projects/#build-isolation">build isolation</a></p>
+<pre><code class="language-pwsh">uv sync --extra build
+uv sync --extra run
+
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/73d7cd5f-271b-4a30-98bc-7142137ea9c3" alt="image" />
+But I found that it will work if we run <code>uv lock</code> first: (@charliermarsh do you know why?)</p>
+<pre><code>uv lock
+uv sync --extra build
+uv sync --extra run
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/d6fcd127-ddaf-4129-a6d6-f7a29f00b1e5" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @YouJiacheng on 2024-09-11 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @YouJiacheng on 2024-09-11 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-12 01:31</div>
+            <div class="timeline-body"><p>Does it work if you use <code>uv sync --extra run --extra build</code> for the second command, instead of <code>uv sync --extra run</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-13 01:38</div>
+            <div class="timeline-body"><p>the screen shot showed it failed at the first command, i.e. <code>uv sync --extra build</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 01:46</div>
+            <div class="timeline-body"><p>It looks like <code>chumpy</code> doesn't declare any static metadata so you <em>have</em> to build it even just to resolve the project dependencies. In that case, you can't use the strategy you described above (with separate optional groups). You have to pre-install the package with <code>uv pip install</code> unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-13 01:49</div>
+            <div class="timeline-body"><p>but separate optional groups do work, if I run <code>uv lock</code> first, as shown in another screenshot.
+that's why I asked you🧐.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 01:55</div>
+            <div class="timeline-body"><p>My best guess is that the package is cached at some point, and so the build isn't recurring. If you run <code>uv cache clean</code> before each set of commands, do you see more consistent behavior? For example, I still see this locally:</p>
+<pre><code>❯ uv lock
+⠙ chumpy==0.70                                                                                                            error: Failed to download and build `chumpy==0.70`
+  Caused by: Build backend failed to determine metadata through `prepare_metadata_for_build_wheel` with exit status: 1
+--- stdout:
+
+--- stderr:
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;
+ModuleNotFoundError: No module named 'setuptools'
+---
+</code></pre>
+<p>But if I run <code>uv venv &amp;&amp; uv pip install pip setuptools &amp;&amp; uv sync</code> first, the package is now cached, so running <code>uv lock</code> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-13 02:03</div>
+            <div class="timeline-body"><p>I suspected the cache too.
+but I did run <code>uv cache clean</code> before(sorry I should include it in the screenshot), such that <code>uv lock</code> took 2.15s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-13 02:06</div>
+            <div class="timeline-body"><p>I would try to reproduce it in a &quot;fresher&quot; environment…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 15:52</div>
+            <div class="timeline-body"><p>Yeah I think to explore further I'd need a consistent reproduction (I'd suggest running <code>uv cache clean</code> and <code>rm -f uv.lock</code> before any sequence of commands).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-13 19:39</div>
+            <div class="timeline-body"><p>I have written a GitHub Action to create a consistent reproduction.
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10855047631/job/30126795524
+<img src="https://github.com/user-attachments/assets/42af8e1f-c16c-47b8-bcc3-2389ea67e6d5" alt="image" /></p>
+<p>Without <code>uv lock</code>:
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10855149370/job/30127113769
+<img src="https://github.com/user-attachments/assets/317f908b-9af0-4a47-8bb9-d6afa888383b" alt="image" /></p>
+<hr />
+<p>Local Tests:
+Windows:
+<img src="https://github.com/user-attachments/assets/c3f5e01c-1667-4d46-afbe-3fb00a1659b8" alt="image" />
+<img src="https://github.com/user-attachments/assets/2a4f9022-7759-4740-bc2e-e6822b55aed4" alt="image" />
+Ubuntu:
+<img src="https://github.com/user-attachments/assets/4ba74aa5-1ec8-4c5a-ab01-752c6611e017" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 19:48</div>
+            <div class="timeline-body"><p>Thank you, I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 20:07</div>
+            <div class="timeline-body"><p>Can you rerun the Actions with <code>--verbose</code> on every command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-13 21:02</div>
+            <div class="timeline-body"><p>Done.
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10856035081/job/30129895137
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10856035837/job/30129897646</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-13 22:13</div>
+            <div class="timeline-body"><p>I think the difference is that <code>uv lock</code> runs in the system Python interpreter (since we're not doing any install operations), which happens to have <code>setuptools</code> installed in the environment (this isn't true of later versions of Python, like Python 3.12), whereas with <code>uv sync</code>, we run in the project virtual environment, which <em>doesn't</em> include <code>setuptools</code> by default. If the project had a build-time dependency other than <code>setuptools</code> and <code>pip</code>, both versions would fail. So it kind of works by accident.</p>
+<p>You can probably get the <code>uv lock</code> version to fail (I assume) by running <code>uv venv</code> first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 07:20</div>
+            <div class="timeline-body"><p>Run <code>uv venv</code> first -- fail as expected:
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10860593781/job/30141381752
+Run <code>uv venv --python 3.12</code> first -- succeed (<code>uv lock</code> still runs in the system Python interpreter?):
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10860520657/job/30141224028
+Run <code>uv venv --python 3.12</code> first and use <code>uv lock --python-preference only-managed</code> instead of <code>uv lock</code> -- succeed:
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10860542823/job/30141271654
+Run <code>uv python install 3.10</code> first and then <code>uv lock --python-preference only-managed</code> -- succeed:
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10860657431/job/30141522450</p>
+<p>It kind of works by accident. But I think it is also kind of feature: <code>chumpy</code>'s <code>setup.py</code> doesn't directly depend on <code>setuptools</code>, instead, it uses <code>from distutils.core import setup</code>. Strictly speaking, some system Python interpreters are even not shipped with <code>pip</code>, so it won't work because its <code>setup.py</code> depends on <code>pip</code>.
+<code>flash-attn</code>, on the other hand, doesn't have a <code>pyproject.toml</code> thus <code>setup.py</code> must be run to determine the metadata, and its <code>setup.py</code> directly depends on <code>packaging</code>, <code>setuptools</code> etc.</p>
+<hr />
+<p>Specify <code>python==3.9.*</code> to avoid the system Python interpreter -- succeed.
+The behavior is similar to <code>uv lock --python-preference only-managed</code>.
+https://github.com/YouJiacheng/chumpy-uv-test/actions/runs/10861485699/job/30143436427</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 10:05</div>
+            <div class="timeline-body"><p>A more consistent behavior is desirable.
+Even managed Python Interpreters can have an environment inconsistent with the default virtual environment created by <code>uv venv</code>.
+Let <code>uv lock</code> be &quot;polluted&quot; by the system Python Interpreter with an arbitrary environment sounds even worse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 10:26</div>
+            <div class="timeline-body"><p>Moreover, maybe we can add an extra option to skip &quot;Preparing metadata&quot; with a user provided metadata.
+IIUC, only lines like</p>
+<pre><code>Requires-Dist: scipy &gt;=0.13.0
+Requires-Dist: six &gt;=1.11.0
+</code></pre>
+<p>in the <code>METADATA</code> is required by <code>uv lock</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7390.html">astral-sh/uv#7390</a> on 2024-09-14 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 12:24</div>
+            <div class="timeline-body"><p>Closing in favor of the other issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-14 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7393.html">astral-sh/uv#7393</a> on 2024-09-14 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:46 UTC
+    </footer>
+</body>
+</html>

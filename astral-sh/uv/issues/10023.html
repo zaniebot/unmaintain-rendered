@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv tries to create cache dir with --no-cache flag - astral-sh/uv #10023</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv tries to create cache dir with --no-cache flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10023">#10023</a>
+        opened by <a href="https://github.com/ondrados">@ondrados</a>
+        on 2024-12-19 09:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ondrados">@ondrados</a> on 2024-12-19 09:44</div>
+            <div class="timeline-body"><p>I wanna report issue that it seems that <code>uv run ... --no-cache</code> tries to create cache directory. But since I am running it as nonprivileged user inside docker container I get permission denied error.</p>
+<p><code>uv 0.5.10</code></p>
+<p>What I did:</p>
+<ol>
+<li><code>docker init</code> which generates Dockerfile with some best practices in mind for python apps</li>
+<li>i switched pip for uv and this is my dockerfile:</li>
+</ol>
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:1
+
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
+
+# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
+
+ARG PYTHON_VERSION=3.13
+FROM python:${PYTHON_VERSION}-slim as base
+
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:0.5.10 /uv /uvx /bin/
+
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Create a non-privileged user that the app will run under.
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos &quot;&quot; \
+    --home &quot;/nonexistent&quot; \
+    --shell &quot;/sbin/nologin&quot; \
+    --no-create-home \
+    --uid &quot;${UID}&quot; \
+    appuser
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
+
+# Switch to the non-privileged user to run the application.
+USER appuser
+
+# Copy the source code into the container.
+COPY . .
+
+# Expose the port that the application listens on.
+EXPOSE 8000
+
+# Run the application.
+CMD uv run app.py --no-cache
+
+</code></pre>
+<p>It builds fine, but when i try to run it I get this:</p>
+<p><code>error: failed to create directory '/nonexistent/.cache/uv/': Permission denied (os error 13)</code></p>
+<p>I have also tried different flags like <code>--frozen</code>, <code>--no-sync</code> and combination of them, but they all failed with same error</p>
+<p>Based on documentation I have tried to activate environment first an then invoke python directly and this works</p>
+<pre><code class="language-dockerfile"># Activate the virtual environment.
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+CMD python app.py
+</code></pre>
+<p>Is this a bug or am I doing something wrong in the first option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2024-12-19 11:10</div>
+            <div class="timeline-body"><blockquote>
+<p>--no-cache, -n
+Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation</p>
+</blockquote>
+<p>When <code>--no-cache</code> is used, uv uses a temporary directory for caching,  effectively turning it into a one-time, in-process cache. This approach simplifies the cache implementation I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 13:37</div>
+            <div class="timeline-body"><p>That's right -- we always create a temporary directory to serve as the cache for the life of the process. This is both simpler and has the effect that we correctly cache <em>within</em> a process (so, if we download a wheel during resolution, we can correctly reuse it during installation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 13:40</div>
+            <div class="timeline-body"><p>Wait sorry, if you're doing <code>uv run ... --no-cache</code>, that may be a mistake. You need <code>--no-cache</code> to come <em>before</em> the run command, like <code>uv run --no-cache command ...</code>. If you put it last, it will be interpreted as an argument to the command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-19 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-19 13:40</div>
+            <div class="timeline-body"><p>So the last line should be <code>CMD uv run --no-cache app.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ondrados">@ondrados</a> on 2024-12-19 13:50</div>
+            <div class="timeline-body"><p>Thank you for your replies.</p>
+<blockquote>
+<p>So the last line should be <code>CMD uv run --no-cache app.py</code>.</p>
+</blockquote>
+<p>yeah this is it, now its working</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-19 13:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:53 UTC
+    </footer>
+</body>
+</html>

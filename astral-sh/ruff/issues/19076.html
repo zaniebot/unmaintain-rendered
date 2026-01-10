@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB164 fix should validate arguments and should usually be marked unsafe - astral-sh/ruff #19076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB164 fix should validate arguments and should usually be marked unsafe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19076">#19076</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-07-01 17:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-01 17:23</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/unnecessary-from-float/"><code>unnecessary-from-float</code> (FURB164)</a> does not validate argument lists, so it can change the program’s behavior. It should be considered unsafe by default with a few exceptions based on type inference. When the original code is invalid, the fix should be suppressed. When the fixed code is invalid, the fix should be suppressed. When both are valid and the original uses keyword arguments, the fix should remove the keywords, because the recommended constructors do not use the same keywords. <a href="https://docs.python.org/3/library/decimal.html#decimal.Decimal.from_float"><code>Decimal.from_float</code></a> has exactly one positional-only parameter. <a href="https://docs.python.org/3/library/fractions.html#fractions.Fraction.from_decimal"><code>Fraction.from_decimal</code></a> has exactly one positional-or-keyword parameter, <code>dec</code>. <a href="https://docs.python.org/3/library/fractions.html#fractions.Fraction.from_float"><code>Fraction.from_float</code></a> has exactly one positional-or-keyword parameter, <code>f</code>.</p>
+<p><a href="https://play.ruff.rs/553ed43a-9747-4e1f-89fc-9e6f38cfee01">Behavior changes</a>:</p>
+<pre><code class="language-console">$ cat &gt;furb164_1.py &lt;&lt;'# EOF'
+from decimal import Decimal
+from fractions import Fraction
+
+try: print(Fraction.from_decimal(dec=Decimal(&quot;4.2&quot;)))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+
+try: print(Fraction.from_decimal(Decimal(&quot;4.2&quot;), 1))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+
+try: print(Decimal.from_float(4.2, None))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+
+try: print(Fraction.from_decimal(numerator=Decimal(&quot;4.2&quot;)))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+# EOF
+
+$ python furb164_1.py
+21/5
+TypeError: Fraction.from_decimal() takes 2 positional arguments but 3 were given
+TypeError: Decimal.from_float() takes exactly one argument (2 given)
+TypeError: Fraction.from_decimal() got an unexpected keyword argument 'numerator'
+
+$ ruff --isolated check furb164_1.py --select FURB164 --preview --fix
+Found 4 errors (4 fixed, 0 remaining).
+
+$ python furb164_1.py
+TypeError: Fraction.__new__() got an unexpected keyword argument 'dec'
+TypeError: both arguments should be Rational instances
+4.20000000000000017763568394002504646778106689453125
+21/5
+</code></pre>
+<p>If the original expression raises a <code>TypeError</code>, the fix can make it raise a different <code>TypeError</code>. Although that is safe, there is probably a bug in the original code, so it is not clear what the user intended and it would be better to suppress the fix. It is still useful for the rule to raise a diagnostic. <a href="https://play.ruff.rs/c4b89bfe-819c-4864-a2ba-acd668327a5d">Examples</a>:</p>
+<pre><code class="language-console">$ cat &gt;furb164_2.py &lt;&lt;'# EOF'
+from decimal import Decimal
+from fractions import Fraction
+
+try: print(Decimal.from_float(f=4.2))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+
+try: print(Fraction.from_decimal(Decimal(&quot;4.2&quot;), 1))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+# EOF
+
+$ python furb164_2.py
+TypeError: Decimal.from_float() takes no keyword arguments
+TypeError: Fraction.from_decimal() takes 2 positional arguments but 3 were given
+
+$ ruff --isolated check furb164_2.py --select FURB164 --preview --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ python furb164_2.py
+TypeError: 'f' is an invalid keyword argument for this function
+TypeError: both arguments should be Rational instances
+</code></pre>
+<p><code>from_float</code> and <code>from_decimal</code> are not redundant with the constructors: they validate the types of their inputs. The fix removes that validation, which can change behavior. <a href="https://play.ruff.rs/28474b29-12dc-46b4-9811-fcdc52aff528">Examples</a>:</p>
+<pre><code class="language-console">$ cat &gt;furb164_3.py &lt;&lt;'# EOF'
+from decimal import Decimal
+from fractions import Fraction
+
+try: print(Decimal.from_float(&quot;4.2&quot;))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+
+try: print(Fraction.from_decimal(4.2))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+
+try: print(Fraction.from_float(&quot;4.2&quot;))
+except Exception as e: print(f&quot;{type(e).__name__}: {e}&quot;)
+# EOF
+
+$ python furb164_3.py
+TypeError: argument must be int or float
+TypeError: Fraction.from_decimal() only takes Decimals, not 4.2 (float)
+TypeError: Fraction.from_float() only takes floats, not '4.2' (str)
+
+$ ruff --isolated check furb164_3.py --select FURB164 --preview --fix
+Found 3 errors (3 fixed, 0 remaining).
+
+$ python furb164_3.py
+4.2
+4728779608739021/1125899906842624
+21/5
+</code></pre>
+<p>The fix should be marked unsafe except when the argument is known to be of a valid type. <code>Decimal.from_float</code> and <code>Fraction.from_float</code> accept <code>int</code>, <code>bool</code>, and <code>float</code>. <code>Fraction.from_decimal</code> accepts <code>int</code>, <code>bool</code>, and <code>Decimal</code>. The fix is also safe when it simplifies a non-finite float as in <code>Decimal.from_float(float(&quot;inf&quot;))</code> to <code>Decimal(&quot;inf&quot;)</code>. Ruff’s <code>ResolvedPythonType</code>, <code>typing::is_float</code>, and <code>typing::is_int</code> may be useful here.</p>
+<h3>Version</h3>
+<p>ruff 0.12.1 (32c54189c 2025-06-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-01 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-01 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-07-01 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/19136.html">astral-sh/ruff#19136</a> on 2025-07-04 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-16 15:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

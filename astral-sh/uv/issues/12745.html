@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration for --no.dev as a default for &quot;uv run&quot; - astral-sh/uv #12745</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Configuration for --no.dev as a default for &quot;uv run&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12745">#12745</a>
+        opened by <a href="https://github.com/bgschaid">@bgschaid</a>
+        on 2025-04-08 14:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bgschaid">@bgschaid</a> on 2025-04-08 14:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I set up a Docker image with a Flask-project. During development this is tested with py,test and I added pytest to the dev dependency-group</p>
+<p>When building the image the Dockerfile uses
+<code>uv sync --frozen --no-dev</code>
+to install only the things necessary to run the app. But when I start it with
+<code>uv run flask</code>
+it first installs the unnecessary packages before running.</p>
+<p>I am aware that
+<code>uv run --no-dev flask</code>
+allows avoiding it. But it is a bit surprising/annoying</p>
+<h3>Example</h3>
+<p>It would be nice if there was an option that &quot;fixes&quot; the --no-dev (for instance --as-no-dev for &quot;as a non-developer&quot;) where when setting up with
+<code>uv sync --frozen --as-no-dev</code>
+installs without the dev-packages and marks the project in such a way that
+<code>uv run flasks</code>
+runs without installing the dev-packages while
+<code>uv run --with-dev py.test</code>
+makes sure that the development packages are installed</p>
+<p>This would allow &quot;opting in&quot; to the new behaviour</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @bgschaid on 2025-04-08 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-08 14:34</div>
+            <div class="timeline-body"><p>You can configure this by setting <code>tool.uv.default-groups</code> to <code>[]</code> (rather than the default, which is <code>[&quot;dev&quot;]</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-04-08 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @zanieb on 2025-04-08 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bgschaid">@bgschaid</a> on 2025-04-14 07:24</div>
+            <div class="timeline-body"><p>The Problem for me is that pyproject.toml is under version control and I have to change that depending on the purpose of the installation (which makes pulls of updates awkward).
+So I thought &quot;OK. The standard is in pyproject.toml. Local differences I'll put into uv.toml (that is supposed to override pyproject.toml)&quot; but uv says</p>
+<pre><code>warning: Found both a `uv.toml` file and a `[tool.uv]` section in an adjacent `pyproject.toml`. The `[tool.uv]` section will be ignored in favor of the `uv.toml` file.
+error: Failed to parse: `uv.toml`. The `default-groups` field is not allowed in a `uv.toml` file. `default-groups` is only applicable in the context of a project, and should be placed in a `pyproject.toml` file instead.
+</code></pre>
+<p>which means that doesn't work on two levels</p>
+<ul>
+<li>I can not selectively override defaults</li>
+<li>I can not override that setting at all</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-14 07:32</div>
+            <div class="timeline-body"><p>Does <code>uv run --no-sync</code> work for the docker container?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paduszyk">@paduszyk</a> on 2025-07-29 12:03</div>
+            <div class="timeline-body"><p>Don't get me wrong. I'm in love with ruff, but installing <code>dev</code> dependencies by default is the only feature I don't like. IMHO <code>uv sync</code> should just install &quot;production&quot; dependencies only, without any groups nor extras.</p>
+<p>Therefore, <code>default-groups = []</code> is the most reasonable choice. For me this is the most natural approach. When I want to include development (or any other) dependencies I should emphasize that, e.g. by passing a flag <code>--dev</code>. If something in development doesn't work, then... I see, I forgot about the <code>--dev</code> flag. This is an easy fix. On the other hand, if I forget to add <code>--no-dev</code> in production, my environment (e.g. Docker image) is polluted by packages that aren't actually needed...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 12:20</div>
+            <div class="timeline-body"><p>You set up a production image once, you run uv all day while developing. It doesn't really make sense to make the latter more verbose instead of the former by default.</p>
+<p>I don't think we'll be changing this as described here, I'm going to close this issue so it's not on our backlog.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-07-29 12:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

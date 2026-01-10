@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv does not support --platform flag - astral-sh/uv #13104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv does not support --platform flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13104">#13104</a>
+        opened by <a href="https://github.com/rotimi-ajayi">@rotimi-ajayi</a>
+        on 2025-04-25 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rotimi-ajayi">@rotimi-ajayi</a> on 2025-04-25 11:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Trying to pass a <code>--platform</code> flag to a uv command:</p>
+<pre><code>$ uv add faster-whisper --platform=macosx_13_0_universal2 --only-binary=:all: --extra-index-url https://pypi.org/simple
+
+error: unexpected argument '--platform' found
+</code></pre>
+<h3>Platform</h3>
+<p>macOS 12 x86_64</p>
+<h3>Version</h3>
+<p>uv 0.6.12 (e4e03833f 2025-04-02)</p>
+<h3>Python version</h3>
+<p>Python 3.13.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @rotimi-ajayi on 2025-04-25 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-25 11:30</div>
+            <div class="timeline-body"><p><code>uv add</code> always performs a universal resolution, are you looking for https://docs.astral.sh/uv/concepts/projects/config/#limited-resolution-environments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-04-25 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-25 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rotimi-ajayi">@rotimi-ajayi</a> on 2025-04-25 12:33</div>
+            <div class="timeline-body"><p>I'm not sure it does for this
+Here is the terminal output for <code>uv add faster-whisper</code></p>
+<pre><code>$ uv add faster-whisper          
+Resolved 64 packages in 5.85s
+error: Distribution `onnxruntime==1.21.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on macOS (`macosx_12_0_x86_64`), but `onnxruntime` (v1.21.1) only has wheels for the following platforms: `manylinux_2_27_aarch64`, `manylinux_2_27_x86_64`, `manylinux_2_28_aarch64`, `manylinux_2_28_x86_64`, `macosx_13_0_universal2`, `win_amd64`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 12:33</div>
+            <div class="timeline-body"><p>You should read this if you're having trouble with packages that <em>only</em> ship built distributions: https://docs.astral.sh/uv/concepts/resolution/#required-environments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rotimi-ajayi">@rotimi-ajayi</a> on 2025-04-25 12:58</div>
+            <div class="timeline-body"><p>My fear is, won't using the <code>environments</code> or <code>required-environments</code> code block in <code>pyproject.toml</code> affect all other regular packages(that have all the right stuff - Built/source distributions)  I might want to add?
+For example, like <code>uv</code> adding only packages compatible with my machine only</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-25 13:28</div>
+            <div class="timeline-body"><p>No, <code>required-environments</code> will just tell uv to backtrack and ensure it includes versions that are compatible with the given environment (for users running on that environment), even if they're older. But if you're trying to support macOS x86, you don't have much of a choice -- you <em>need</em> to use older versions of <code>onnxruntime</code>, since they don't seem to publish for Intel macOS anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rotimi-ajayi">@rotimi-ajayi</a> on 2025-04-25 14:25</div>
+            <div class="timeline-body"><p>Could I use a marker for &quot;platform tags&quot;(<a href="https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/#:~:text=Basic-,platform,-tags%C2%B6">here</a>) for the required-environments like <code>sys_platform</code> and set the platform explicitly, as hinted here in <code>uv</code> terminal error: &quot;hint: You're on macOS (<code>macosx_12_0_x86_64</code>)&quot;. <code>platform_tags</code> is throwing marker error and can't find any reference of platform tags in docs.</p>
+<pre><code>[tool.uv]
+required-environments = [
+    &quot;sys_platform == 'darwin' and platform_tags == 'macosx_12_0_x86_64'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-26 14:08</div>
+            <div class="timeline-body"><p>Unfortunately no, but that's not a uv limitation -- that's just how the standard works. The &quot;platform tag&quot; is part of the wheel filename and specification, but environment markers use a different schema: https://peps.python.org/pep-0508/#environment-markers. You probably want:</p>
+<pre><code class="language-toml">[tool.uv]
+required-environments = [
+    &quot;sys_platform == 'darwin' and platform_machine == 'x86_64'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-26 14:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

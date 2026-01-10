@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ValueError: Dev mode installations are unsupported with path rewrite - astral-sh/uv #12626</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ValueError: Dev mode installations are unsupported with path rewrite</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12626">#12626</a>
+        opened by <a href="https://github.com/liquidcarbon">@liquidcarbon</a>
+        on 2025-04-02 15:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/liquidcarbon">@liquidcarbon</a> on 2025-04-02 15:37</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>On upgrading from 0.6.6 to 0.6.11 started getting errors coming from hatchling, referencing https://github.com/pfmoore/editables/issues/20</p>
+<p>The section in pyproject.toml aims to package tests together with the package:</p>
+<pre><code>[tool.hatch.build.targets.wheel.sources]
+&quot;tests&quot; = &quot;mypkg/tests&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code>Resolved 102 packages in 280ms
+  × Failed to build `pkg @ file:///data/code/pkg`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `hatchling.build.build_editable` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+        File &quot;/home/a/.cache/uv/builds-v0/.tmpBZkDvI/lib/python3.12/site-packages/hatchling/build.py&quot;, line 83,
+      in build_editable
+          return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File
+      &quot;/home/a/.cache/uv/builds-v0/.tmpBZkDvI/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;,
+      line 155, in build
+          artifact = version_api[version](directory, **build_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/a/.cache/uv/builds-v0/.tmpBZkDvI/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;,
+      line 496, in build_editable
+          return self.build_editable_detection(directory, **build_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/a/.cache/uv/builds-v0/.tmpBZkDvI/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;,
+      line 537, in build_editable_detection
+          raise ValueError(message) from None
+      ValueError: Dev mode installations are unsupported when any path rewrite in the `sources` option changes a
+      prefix rather than removes it, see: https://github.com/pfmoore/editables/issues/20
+
+      hint: This usually indicates a problem with the package or the build environment.
+</code></pre>
+<h3>Platform</h3>
+<p>all</p>
+<h3>Version</h3>
+<p>0.6.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @liquidcarbon on 2025-04-02 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-02 15:40</div>
+            <div class="timeline-body"><p>Apologies, can you add a complete reproduction? Like a Git repo that we can clone and run? Or a clear set of instructions we can copy-paste? There isn't sufficient information here to help out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2025-04-02 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-04-02 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liquidcarbon">@liquidcarbon</a> on 2025-04-02 16:10</div>
+            <div class="timeline-body"><p>different entry, same symptoms:</p>
+<ol>
+<li>init project</li>
+</ol>
+<pre><code>uv init /home/a/pup/uv12626 -p /home/a/pup/.pixi/envs/default/bin/python --no-workspace
+Initialized project `uv12626` at `/home/a/pup/uv12626`
+</code></pre>
+<ol start="2">
+<li><p>add folders and files <code>cd uv12626; mkdir src tests; touch src/__init__.py tests/__init__.py</code></p>
+</li>
+<li><p>edit pyproject.toml</p>
+</li>
+</ol>
+<pre><code>[project]
+name = &quot;uv12626&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;cowsay&gt;=6.1&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build]
+include = [&quot;src/*&quot;, &quot;/tests&quot;]
+
+[tool.hatch.build.targets.wheel.sources]
+&quot;tests&quot; = &quot;src/tests&quot;
+</code></pre>
+<ol start="4">
+<li><code>uv add pytest --group dev</code></li>
+</ol>
+<pre><code>Resolved 6 packages in 158ms
+  × Failed to build `uv12626 @ file:///home/a/pup/uv12626`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `hatchling.build.build_editable` failed (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 11, in &lt;module&gt;
+        File &quot;/home/a/.cache/uv/builds-v0/.tmphJRlU0/lib/python3.12/site-packages/hatchling/build.py&quot;, line 83, in build_editable
+          return os.path.basename(next(builder.build(directory=wheel_directory, versions=['editable'])))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/a/.cache/uv/builds-v0/.tmphJRlU0/lib/python3.12/site-packages/hatchling/builders/plugin/interface.py&quot;, line 155, in build
+          artifact = version_api[version](directory, **build_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/a/.cache/uv/builds-v0/.tmphJRlU0/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 496, in build_editable
+          return self.build_editable_detection(directory, **build_data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File &quot;/home/a/.cache/uv/builds-v0/.tmphJRlU0/lib/python3.12/site-packages/hatchling/builders/wheel.py&quot;, line 537, in build_editable_detection
+          raise ValueError(message) from None
+      ValueError: Dev mode installations are unsupported when any path rewrite in the `sources` option changes a prefix rather than removes it, see: https://github.com/pfmoore/editables/issues/20
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+<p><strong>Unless group &quot;dev&quot; appears in the picture, it builds, adds, syncs without issues.</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liquidcarbon">@liquidcarbon</a> on 2025-04-14 12:36</div>
+            <div class="timeline-body"><p>Have you had a chance to take a look?  Still happening in 0.6.14, must sync with <code>--no-editable</code>, will need to build eventually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-14 12:40</div>
+            <div class="timeline-body"><p>This looks like a problem with your hatchling configuration, not uv (the problem should also occur with <code>pip install -e .</code>). Consider not including the tests in the wheel build, if the problem persists you might want to raise it with hatchling instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-04-14 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-04-14 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pypa/hatch/issues/1956.html">pypa/hatch#1956</a> on 2025-04-14 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liquidcarbon">@liquidcarbon</a> on 2025-04-14 12:49</div>
+            <div class="timeline-body"><p>@konstin thanks.  I've worked out that approach to packaging on uv 0.6.6 (did not keep track of hatch versions) - something seems to have changed in recent versions.  I'm not sure why renaming paths causes problems.</p>
+<p>https://github.com/pypa/hatch/issues/1956</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-04-14 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liquidcarbon">@liquidcarbon</a> on 2025-04-14 19:12</div>
+            <div class="timeline-body"><p>I think the emergence makes sense in light of https://github.com/astral-sh/uv/pull/12137 (not this exact PR but altogether the changes around <code>.pth</code> files?)</p>
+<p>Previously, the package would appear in <code>.venv/lib/python3.1x/site-packages/</code> as if it was pip installed there; now there's only the <code>.pth</code> file pointing to the source dir.  Moving folders around would probably not work if you plan to import as editables?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:03 UTC
+    </footer>
+</body>
+</html>

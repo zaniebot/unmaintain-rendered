@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to install `ujson==5.7.0` - astral-sh/uv #527</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to install `ujson==5.7.0`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/527">#527</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-03 19:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 19:57</div>
+            <div class="timeline-body"><pre><code class="language-text">error: Failed to download distributions
+  Caused by: Failed to build ujson==5.7.0
+  Caused by: Failed building wheel through setup.py:
+--- stdout:
+
+--- stderr:
+/private/var/folders/nt/6gf2v7_s3k13zq_t3944rwz40000gn/T/.tmpoa8oBf/.venv/lib/python3.7/site-packages/setuptools/__init__.py:84: _DeprecatedInstaller: setuptools.installer and fetch_build_eggs are deprecated.
+!!
+
+        ********************************************************************************
+        Requirements should be satisfied by a PEP 517 installer.
+        If you are using pip, you can try `pip install --use-pep517`.
+        ********************************************************************************
+
+!!
+  dist.fetch_build_eggs(dist.setup_requires)
+WARNING: The wheel package is not available.
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: setup.py --help [cmd1 cmd2 ...]
+   or: setup.py --help-commands
+   or: setup.py cmd --help
+
+error: invalid command 'bdist_wheel'
+---
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-03 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 19:59</div>
+            <div class="timeline-body"><p>@konstin - It looks like this package maybe assumes that <code>wheel</code> is included in the environment...? Because it says: <code>Installing build requirements: setuptools==68.0.0, packaging==23.2, setuptools-scm==7.1.0, typing-extensions==4.7.1, importlib-metadata==6.7.0, tomli==2.0.1, zipp==3.15.0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 20:01</div>
+            <div class="timeline-body"><p>(You need to use Python 3.7, since there are no available wheels IIUC.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 21:23</div>
+            <div class="timeline-body"><p>I guess this is about the package having a <code>[build-system]</code> but no <code>build-backend</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 21:25</div>
+            <div class="timeline-body"><p>https://github.com/pypa/pip/blob/a15dd75d98884c94a77d349b800c7c755d8c34e4/src/pip/_internal/pyproject.py#L97</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 21:29</div>
+            <div class="timeline-body"><p>I think that if the user has a <code>build-system</code> but no <code>build-backend</code>, then we're supposed to use PEP 517 with <code>setuptools.build_meta:__legacy__</code> rather than invoking setuptools directly... Unless those are the same?  E.g., we need to call <code>create_pep517_build_environment</code> with <code>setuptools.build_meta:__legacy__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 22:40</div>
+            <div class="timeline-body"><p>Ah okay, I see how to fix. We <em>do</em> we need to use PEP 517 here, but preserve the <code>requires</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-03 22:41</div>
+            <div class="timeline-body"><p>Example from build: https://github.com/pypa/build/blob/de5b44b0c28c598524832dff685a98d5a5148c44/src/build/<strong>init</strong>.py#L116</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-03 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/530.html">astral-sh/uv#530</a> on 2023-12-04 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-04 10:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I think that if the user has a build-system but no build-backend, then we're supposed to use PEP 517 with setuptools.build_meta:<strong>legacy</strong> rather than invoking setuptools directly... Unless those are the same? E.g., we need to call create_pep517_build_environment with <code>setuptools.build_meta:__legacy__</code>.</p>
+</blockquote>
+<p>PEP 517 says either:</p>
+<blockquote>
+<p>If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools should revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the <code>setuptools.build_meta:__legacy__</code> backend).</p>
+</blockquote>
+<p>I.e. PEP 517 is wrong in the sense that in practice only <code>setuptools.build_meta:__legacy__</code> is allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-12-04 10:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

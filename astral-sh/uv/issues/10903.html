@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Providing credentials via env vars for indexes doesn't work for build requirements - astral-sh/uv #10903</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Providing credentials via env vars for indexes doesn't work for build requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10903">#10903</a>
+        opened by <a href="https://github.com/xixixao">@xixixao</a>
+        on 2025-01-23 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/xixixao">@xixixao</a> on 2025-01-23 15:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Repro:</p>
+<ol>
+<li>Use workspaces</li>
+<li>Use private index</li>
+<li>Try to install a workspace package</li>
+</ol>
+<p>While putting credentials in <code>~/.netrc</code> works, providing credentials via</p>
+<pre><code>export UV_INDEX_FOO_USERNAME=foo_user
+export UV_INDEX_FOO_PASSWORD=foo_token
+</code></pre>
+<p>does not work, resulting in this error (from a Dockerfile build):</p>
+<pre><code>INFO[0046] Running: [/bin/sh -c uv sync --frozen --all-packages] 
+  × Failed to build `foo-workspace-member @
+  │ file:///app/foo-workspace-member`
+  ├─▶ Failed to resolve requirements from `build-system.requires`
+  ├─▶ No solution found when resolving: `hatchling`
+  ╰─▶ Because hatchling was not found in the package registry and you require
+      hatchling, we can conclude that your requirements are unsatisfiable.
+      hint: An index URL
+      (http://ourprivateindex.net)
+      could not be queried due to a lack of valid authentication credentials
+      (401 Unauthorized).
+error building image: error building stage: failed to execute command: waiting for process to exit: exit status 1
+</code></pre>
+<p>Note that the environment variable credentials <strong>do work</strong> for <code>uv sync</code>, so <code>uv sync --frozen --no-install-workspace</code> succeeds. It's only the build config and trying to install the workspace package that breaks this:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Probably unrelated, but seemed like a related issue: #7052</p>
+<p>If required I can put together a repro repo when I have some time (although you'll need a package registry).</p>
+<h3>Platform</h3>
+<p>Ubuntu amd64</p>
+<h3>Version</h3>
+<p>uv 0.5.21</p>
+<h3>Python version</h3>
+<p>Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @xixixao on 2025-01-23 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-23 15:58</div>
+            <div class="timeline-body"><p>Do you mind putting together a reproduction? You can use our &quot;fake&quot; private index: https://pypi-proxy.fly.dev/basic-auth/simple. You can grep for the credentials in the codebase (it's intentionally public, for testing auth).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-01-23 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-23 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xixixao">@xixixao</a> on 2025-01-23 18:29</div>
+            <div class="timeline-body"><p>False alarm, this was caused by two misunderstandings:</p>
+<ol>
+<li>There are no good instructions for using docker with workspaces. I didn't realize the first sync should be <code>uv sync --no-install-workspace --all-packages --frozen</code> - without <code>all-packages</code>, nothing was being installed, so auth was not needed. It would be great to add this to https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers</li>
+<li>I was relying on <code>RUN export</code> in the Dockerfile, which doesn't persist across the different docker commands. Instead setting the env var in the same command as sync works: <code>RUN UV_INDEX_INTERNAL_USERNAME=foo uv sync</code>.</li>
+</ol>
+<p>Btw the credentials were not straightforward to grep (they're public+heron atm.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @xixixao on 2025-01-23 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

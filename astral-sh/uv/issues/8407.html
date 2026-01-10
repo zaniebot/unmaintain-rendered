@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync fails for workspace if workspace member is declared to come from a named index - astral-sh/uv #8407</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync fails for workspace if workspace member is declared to come from a named index</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8407">#8407</a>
+        opened by <a href="https://github.com/thorbenk">@thorbenk</a>
+        on 2024-10-21 07:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thorbenk">@thorbenk</a> on 2024-10-21 07:37</div>
+            <div class="timeline-body"><p>I ran into an issue with the new named indexes feature and workspaces.</p>
+<p>Here is a minimal reproducible example (I'm on <code>uv 0.4.24</code>)</p>
+<ul>
+<li>Start with the <code>albatross-virtual-workspace</code> example (https://github.com/thorbenk/uv-workspaces-question/commit/af0e74139f464c625dfe779cbdef0ebdebd8fb81)</li>
+<li>Move the source declarations to the root (https://github.com/thorbenk/uv-workspaces-question/commit/48aad9e8ddd0c3ca5fb723ecf37dd77b3a74b8dc, as discussed in https://github.com/astral-sh/uv/issues/6786 this is OK and indeed, does NOT break <code>uv sync</code>)</li>
+<li>But declaring <code>seeds</code> to come from a named index <em>breaks</em> <code>uv sync</code> (https://github.com/thorbenk/uv-workspaces-question/commit/869f602b75f759a1da3a8c8ee9d8b5c9777fc57b)<ul>
+<li>(It's probably not important if that package actually exists on that index; in my original private repository that was the case)</li>
+</ul>
+</li>
+</ul>
+<p>The error message is:</p>
+<pre><code>error: Failed to generate package metadata for `bird-feeder==1.0.0 @ editable+packages/bird-feeder`
+  Caused by: Failed to parse entry for: `seeds`
+  Caused by: Package is not included as workspace package in `tool.uv.workspace`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-10-21 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 14:55</div>
+            <div class="timeline-body"><p>So you have a workspace member named <code>seeds</code>, but you're trying to define an alternate source for it? I don't think this is &quot;allowed&quot; right now: workspace members have to come from workspace sources.</p>
+<p>(@konstin -- is that right?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 15:00</div>
+            <div class="timeline-body"><p>I actually think this isn't possible to support because we lock the full workspace together, so we'd <em>always</em> be trying to resolve the workspace member and the from-the-index member at the same time, which can't succeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-21 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thorbenk">@thorbenk</a> on 2024-10-21 15:28</div>
+            <div class="timeline-body"><p>OK, it looks like I may have been misusing this behavior for my use-case then.</p>
+<p>The following setup worked for me before I tried to switch to named indexes:</p>
+<ul>
+<li>The workspace members are independent python projects, each with it's own git repository, <code>uv.lock</code> file and associated CI pipeline. They depend on each other through released package versions in their <code>pyproject.toml</code> files.</li>
+<li>These packages are all published to a private index.</li>
+<li>For development purposes, I have created a &quot;meta&quot; repository to tie multiple of these packages together. The workspace members are git submodules.
+When hacking on a feature that spans multiple of these packages, I found the workspace setup very useful: I have <em>overwritten</em> the sources in the meta repository to declare the packages as workspace members, even though they themselves still reference each other through released package versions on some index.
+Everything is installed as editable packages inside a single workspace and it is easy to test that big new feature. Once everything works, I can still publish each workspace member separately as its own independent project.</li>
+<li>Only after I tried porting to the new named indexes, I ran into the above problems</li>
+</ul>
+<p>I guess I was expecting (hoping?) that the declaration of <code>seeds</code> as a workspace source would override if I had <code>&quot;seeds==2.0&quot;</code> in <code>bird-feeder</code>, allowing me to hack with local editable sources.</p>
+<p>Probably I'm missing something, surely there has to be a better way to support such a development workflow?
+(when I was using <code>poetry</code> before I used to constantly switch between path dependencies and released package versions manually in the <code>pyproject.toml</code>, which was a really bad way of doing things).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-22 10:57</div>
+            <div class="timeline-body"><p>Editing dependencies in remote repositories is one of those problems we want to build a dedicated workflow for, but don't have good support yet.</p>
+<p>Workspaces aren't well suited for this: A workspace assumes that it's the only source of truth for all packages it includes, so if the root says all of these packages are local path dependencies, the members can't say they are index dependencies. As a rule of thumb, if a member has it's own lockfile, it's probably not suited as a workspace member.</p>
+<p>For now, using the submodules as editable path dependencies instead of as workspace members is likely the better approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thorbenk">@thorbenk</a> on 2024-10-22 19:23</div>
+            <div class="timeline-body"><p>@konstin Thanks for your explanation. I found the documentation in that regard a bit confusing (https://docs.astral.sh/uv/concepts/dependencies/#path), as it explicitly advises</p>
+<blockquote>
+<p>However, it is recommended to use <a href="https://docs.astral.sh/uv/concepts/workspaces/">workspaces</a> instead of manual path dependencies.</p>
+</blockquote>
+<p>So, is the following setup something you would recommend doing: https://github.com/thorbenk/uv-path-dependencies-test/tree/main (it's a minimal example)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-22 19:32</div>
+            <div class="timeline-body"><p>Yeah we can improve the wording: https://github.com/astral-sh/uv/pull/8478</p>
+<p>Submodules are an odd case because they are kinda part of the repository and kinda not; overall i hope to properly solve your use case with a dedicated workflow.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:14 UTC
+    </footer>
+</body>
+</html>

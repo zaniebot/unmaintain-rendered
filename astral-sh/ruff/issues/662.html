@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore use of globset - astral-sh/ruff #662</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explore use of globset</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/662">#662</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-11-08 21:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 21:23</div>
+            <div class="timeline-body"><p>Can <a href="https://docs.rs/globset/0.4.9/globset/">globset</a> speed up our file-matching code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2022-11-08 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2022-11-08 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LeBoucEtMistere">@LeBoucEtMistere</a> on 2022-11-12 16:56</div>
+            <div class="timeline-body"><p>Quick question on the scope of this issue. I assume you are speaking about https://cs.github.com/charliermarsh/ruff/blob/1d13752eb1e33632c8f83b84004958b1c7c0c99d/src/fs.rs#L29 and more specifically what happens when matching against a <code>complex</code> exclusion rule, is that correct ?</p>
+<p>In that case, I'm just dropping some food for thoughts here, and in particular referencing to this github answer by the author of <code>globset</code> on how it compares to <code>glob</code> (the lib currently used in ruff) https://cs.github.com/charliermarsh/ruff/blob/1d13752eb1e33632c8f83b84004958b1c7c0c99d/src/fs.rs#L29</p>
+<p>I think what's important to notice here is that choosing between libs is a tradeoff, <code>globset</code> was optimized for the specific case of matching a single file against a large set of glob patterns by compiling the set of globs into a set of regexes, moving from O(n) where n is number of globs to O(1), but it adds a fixed overhead when it comes to compiling the regexes compared to <code>glob</code>. However, it might make sense if we have a large list of files to filter since we would be able to compile the regex only once for all of them.</p>
+<p>The tables below roughly sums up my understanding of the performances of each crate.</p>
+<p>| Glob | Few globs in excludes | Lots of globs in excludes |
+|---|---|---|
+| Few files selected | efficient | inefficient, linear in number of globs to match for |
+| Lots of files selected  | not sure, probably linear in number of files | inefficient, quadratic in the two variables |</p>
+<p>| GlobSet | Few globs in excludes | Lots of globs in excludes |
+|---|---|---|
+| Few files selected | probably inefficient if a regex must be compiled, although the author implemented optimisations to avoid it | efficient thanks to regex |
+| Lots of files selected  | probably efficient since regex compilation is offset by number of files to match it on | efficient, and regex compilation is offset as well |</p>
+<p>I think a first step to this task is to define which case(s) out of the 4 defined in these tables we want to optimise for.</p>
+<p>Regarding the second column, my personal understanding is that there are very few (big) projects that have long and complex exclude lists with a lot of globs (If you have some counter examples in mind, please point me to them, I'd be curious to see them, and they could become good testing material for experimenting with <code>globset</code>. I had a glance at <code>pydantic</code> which is the only large python project using <code>ruff</code> that I'm aware of so far, and I don't see an exclude list in their config sadly 😢).</p>
+<p>In the case we want to optimize for the first column, there might be some wins to make if the list of files to evaluate gets longer, thanks to compiling the regex only once, but we will need figures to back this claim, and identify the tipping point in terms of number of files to make <code>globset</code> more efficient than <code>glob</code>. We also need to verify whether the optimisations made by the author to avoid compiling regexes are good enough to match <code>glob</code> perfs when using few files and few globs.</p>
+<p>That being said, I'm curious to see what experimentations with <code>globset</code> could bring. I guess that clarifying expectations and devising a good benchmarking framework should be the first things to do to tackle this issue. Anyway, that was my 2cts on optimizing file matching 😄 Hope it will help whoever gives a shot at this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 17:13</div>
+            <div class="timeline-body"><p>That's really helpful! You're right that this is something we need to evaluate empirically... (And yes, I was referring to the file matching in the <code>Complex</code> case.)</p>
+<p>The way that I'd typically benchmark this would be to clone <code>cpython</code>, then add this <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 88
+extend-exclude = [
+    &quot;Lib/lib2to3/tests/data/bom.py&quot;,
+    &quot;Lib/lib2to3/tests/data/crlf.py&quot;,
+    &quot;Lib/lib2to3/tests/data/different_encoding.py&quot;,
+    &quot;Lib/lib2to3/tests/data/false_encoding.py&quot;,
+    &quot;Lib/lib2to3/tests/data/py2_test_grammar.py&quot;,
+    &quot;Lib/test/bad_coding2.py&quot;,
+    &quot;Lib/test/badsyntax_3131.py&quot;,
+    &quot;Lib/test/badsyntax_pep3120.py&quot;,
+    &quot;Lib/test/encoded_modules/module_iso_8859_1.py&quot;,
+    &quot;Lib/test/encoded_modules/module_koi8_r.py&quot;,
+    &quot;Lib/test/test_fstring.py&quot;,
+    &quot;Lib/test/test_grammar.py&quot;,
+    &quot;Lib/test/test_importlib/test_util.py&quot;,
+    &quot;Lib/test/test_named_expressions.py&quot;,
+    &quot;Lib/test/test_patma.py&quot;,
+    &quot;Lib/test/test_source_encoding.py&quot;,
+    &quot;Tools/c-analyzer/c_parser/parser/_delim.py&quot;,
+    &quot;Tools/i18n/pygettext.py&quot;,
+    &quot;Tools/test2to3/maintest.py&quot;,
+    &quot;Tools/test2to3/setup.py&quot;,
+    &quot;Tools/test2to3/test/test_foo.py&quot;,
+    &quot;Tools/test2to3/test2to3/hello.py&quot;,
+]
+</code></pre>
+<p>(Or maybe add some <code>*</code> or other patterns instead of all these fixed patterns.) That's actually what we <em>currently</em> use for benchmarking all of Ruff against CPython.</p>
+<p>Then I'd change <code>src/linter.rs#lint_path</code> to just <code>return Ok(vec![])</code> or something, so that we're mostly just benchmarking the file collection.</p>
+<p>Then I'd run something like:</p>
+<pre><code>cargo build --release &amp;&amp; hyperfine --warmup 10 --runs 50 -i &quot;./target/release/ruff resources/test/cpython --no-cache&quot;
+</code></pre>
+<p>...and do that for a few different combinations to get a sense for what makes a difference here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CelebrateVC">@CelebrateVC</a> on 2022-11-21 01:33</div>
+            <div class="timeline-body"><p>From what I could tell looking into this - it's looking hopeful</p>
+<p>simply dropping in <code>globset::GlobMatcher</code> instead of <code>glob::Pattern</code> slowed things down (see img 1), but refactoring and basically gutting <code>FilePattern</code> - and having <code>fs::is_excluded</code>  take 1 <code>globset::GlobSet</code> instead of an <code>Iterator&lt;item=FilePattern&gt;</code> then there are performance gains to get gotten (img 2)</p>
+<p>my code is still rather messy (a lot of <code>.expects</code> because <code>globset</code> really likes its Options) but I will take some time and clean it up and give it to yall for review.</p>
+<h2>IMG 1 (drop in)</h2>
+<p><img src="https://user-images.githubusercontent.com/27698263/202929720-97a575db-60a5-4508-be57-2ab8717c0bca.png" alt="image" /></p>
+<h2>IMG 2 (refactor)</h2>
+<p><img src="https://user-images.githubusercontent.com/27698263/202939983-ebcf0c8d-c715-40fa-9e9f-6196d561882a.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 02:11</div>
+            <div class="timeline-body"><p>@CelebrateVC - Awesome! Happy to review whenever it's ready for a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/883.html">astral-sh/ruff#883</a> on 2022-11-23 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 03:32</div>
+            <div class="timeline-body"><p>Done thanks to @CelebrateVC!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-25 03:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:03 UTC
+    </footer>
+</body>
+</html>

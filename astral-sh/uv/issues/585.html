@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running from multiple processes can lead to failure due to stale wheel deletion - astral-sh/uv #585</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Running from multiple processes can lead to failure due to stale wheel deletion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/585">#585</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-07 15:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 15:15</div>
+            <div class="timeline-body"><p>We'd like the installer and resolver to work when run from multiple concurrent processes (with a few exceptions, for example, if the user deletes the cache from one session while running a command from another, that seems okay).</p>
+<p>In general the cache is purely additive, with one exception: we remove &quot;stale&quot; built distributions when we notice that they're no longer fresh. This could, in theory, lead to failures, if one process picks up a cached wheel, and then in-between picking it up and installing it, another process removes it from the cache.</p>
+<p>I've never actually seen this, it's a theoretical concern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-07 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-07 16:44</div>
+            <div class="timeline-body"><p>What's the solution here? Add a file lock for use of wheels?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 16:51</div>
+            <div class="timeline-body"><p>I think the safest thing would be to avoid removing the stale wheels, and always treat the cache as append-only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-08 09:40</div>
+            <div class="timeline-body"><p>The case i can see, still very constructed:</p>
+<p>1 A: See that the source dist cache for foo is stale
+2 B: See that the source dist cache for foo is stale
+3 A: Deletes the cache
+4 A: Builds new wheels
+5 A: Puts new wheels into place
+6 B: Deletes the cache
+7 A: Tries to install from the cache, the cache isn't there</p>
+<p>If we want to prevent this we could put RW locks around the source dist cache dirs or try something around https://stackoverflow.com/a/10886940/3549270 so that the cache dir always exists</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-27 20:17</div>
+            <div class="timeline-body"><p>@charliermarsh resolved by your cache refresh work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-27 20:21</div>
+            <div class="timeline-body"><p>Yup thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-27 20:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

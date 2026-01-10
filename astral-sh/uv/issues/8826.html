@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library under development is not installed into virtual environment in CI - astral-sh/uv #8826</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Library under development is not installed into virtual environment in CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8826">#8826</a>
+        opened by <a href="https://github.com/fleimgruber">@fleimgruber</a>
+        on 2024-11-05 08:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fleimgruber">@fleimgruber</a> on 2024-11-05 08:25</div>
+            <div class="timeline-body"><p>Using a CI setup such as</p>
+<pre><code class="language-yaml">variables:
+  UV_VERSION: 0.4
+  PYTHON_VERSION: 3.9
+  BASE_LAYER: bookworm-slim
+
+image: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
+
+...
+
+doc:
+  stage: build
+  script:
+    - uv sync
+    - uv run sphinx-build -b html docs docs/_build/html
+</code></pre>
+<p>The <code>uv run sphinx-build -b html docs docs/_build/html</code> fails because uv does not install the library under development into the virtual environment in the <code>uv sync</code> step.</p>
+<p>The uv.lock file shows</p>
+<pre><code class="language-lock">[[package]]
+name = &quot;libunderdev&quot;
+version = &quot;2024.1&quot;
+source = { virtual = &quot;.&quot; }
+...
+</code></pre>
+<p>In local dev, <code>uv sync</code> installs the library into the virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-05 13:20</div>
+            <div class="timeline-body"><p>I don't think it does install it locally if it's marked as &quot;virtual&quot;.</p>
+<p>What's your <code>pyproject.toml</code> look like?</p>
+<p>Have you read the <a href="https://docs.astral.sh/uv/concepts/projects/#build-systems">build system documentation</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fleimgruber">@fleimgruber</a> on 2024-11-05 19:28</div>
+            <div class="timeline-body"><p>Thanks for the quick response and pointers. Indeed I was looking at the wrong Terminal and thus pyproject.toml.</p>
+<p>Having</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>in pyproject.toml works as expected. Sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fleimgruber on 2024-11-05 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 19:29</div>
+            <div class="timeline-body"><p>No prob, thank you for following up.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:23 UTC
+    </footer>
+</body>
+</html>

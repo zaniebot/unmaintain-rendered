@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing vllm nightly from S3 path fails but leaves `uv.lock` in a unparseable, bad state - astral-sh/uv #15647</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installing vllm nightly from S3 path fails but leaves `uv.lock` in a unparseable, bad state</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15647">#15647</a>
+        opened by <a href="https://github.com/vadimkantorov">@vadimkantorov</a>
+        on 2025-09-03 00:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-03 00:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Running twice <code>uv sync --active</code> leads to:</p>
+<pre><code>error: Failed to parse `uv.lock`
+  Caused by: The entry for package `vllm` v0.10.1rc2.dev397+g038e9be4e has wheel `vllm-1.0.0.dev0-cp38-abi3-manylinux1_x86_64.whl` with inconsistent version: v1.0.0.dev0
+</code></pre>
+<p>Even if <code>uv sync --active</code> installation fails because of vllm not following filename&lt;&gt;metadata consistency, I think it should not leave <code>uv.lock</code> in unparseable state</p>
+<p>My OP is here:</p>
+<ul>
+<li>https://github.com/vllm-project/vllm/issues/24126</li>
+</ul>
+<pre><code class="language-toml"># pyproject.toml - a single file in curdir
+
+[build-system]
+requires = [&quot;setuptools&gt;=65&quot;, &quot;wheel&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name =  &quot;test_vllm&quot;
+version = &quot;0.0.0.1&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;vllm&quot;,
+    &quot;torch&gt;=2.8&quot;,
+    &quot;flash-attn==2.8.2&quot;,
+]
+
+[tool.uv.sources]
+vllm = { url = &quot;https://vllm-wheels.s3.amazonaws.com/038e9be4eb7a63189c8980845d80cb96957b9919/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl&quot; }
+
+[tool.uv]
+override-dependencies = [&quot;outlines-core==0.2.10&quot;]
+</code></pre>
+<p>Related:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/8082</li>
+<li>https://github.com/vllm-project/vllm/issues/9244</li>
+</ul>
+<h3>Platform</h3>
+<p>Ubuntu-22.04</p>
+<h3>Version</h3>
+<p>uv 0.8.13</p>
+<h3>Python version</h3>
+<p>Python 3.12.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @vadimkantorov on 2025-09-03 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 11:25</div>
+            <div class="timeline-body"><p>We should catch this before writing the lockfile, potentially already in the resolver, and reject entries with a mismatching versions between METADATA and wheel filename.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-05 15:26</div>
+            <div class="timeline-body"><p>(on the root cause about the mismatch - I wish there was a knob to somehow &quot;override&quot; and provide the good metadata, the correct virtual &quot;renamed&quot; file name or tell uv to ignore the mismatch to work around badly packaged wheel files. because of this legacy pip behavior - I guess these packaging bug happen and it would be good to allow end-user to hack around using some explicit knobs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-09-27 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16046.html">astral-sh/uv#16046</a> on 2025-09-28 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-09-29 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-29 23:59</div>
+            <div class="timeline-body"><p>@charliermarsh Does the linked PR fix this issue? The issue here was that if the filename check is on, uv.lock becomes unparseable</p>
+<p>The linked PR just allows to temporarily disable the filename check (the nasty part is that it still requires the user to set an env variable, so if I'm using a direct wheel http link in my pyproject.toml, it is not sufficient). But if the check is on, the bug should still be present?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-30 00:01</div>
+            <div class="timeline-body"><p>Hmm, I don't quite follow. Yes, you need to set the environment variable -- that's intentional. Why is that a problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-30 00:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, I don't quite follow. Yes, you need to set the environment variable -- that's intentional. Why is that a problem?</p>
+</blockquote>
+<p>I meant it's a bit of nuisance that it can't be enabled from <code>pyproject.toml</code> itself for this case</p>
+<hr />
+<p>And for the rest, I wonder if uv.lock still becomes unparseable for the example <code>pyproject.toml</code> in the OP if the env variable is not set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-30 00:06</div>
+            <div class="timeline-body"><p>I think it's appropriate for this to require an explicit environment variable. The lock isn't actually unparseable -- we just reject it because we run this validation, and the environment variable disables the validation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-09-30 00:12</div>
+            <div class="timeline-body"><blockquote>
+<p>The lock isn't actually unparseable</p>
+</blockquote>
+<p><code>error: Failed to parse uv.lock</code>, maybe the error message should be adjusted...</p>
+<hr />
+<p>E.g. consider the following case: <code>UV_SKIP_WHEEL_FILENAME_CHECK=1 uv sync</code> is done, the wheel url gets placed into the <code>uv.lock</code>. And in the next run I forgot to again set the env variable. Likely it will complain again with <code>error: Failed to parse uv.lock</code>... I propose to:</p>
+<ol>
+<li>adjust the error message to not say <code>Failed to parse</code>, use some other wording</li>
+<li>maybe skip validate file names of wheels already in <code>uv.lock</code> - or at least use some other wording...</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-30 00:14</div>
+            <div class="timeline-body"><p>Respectfully, I don't think those are worth doing, the error message already includes a hint to use the environment variable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

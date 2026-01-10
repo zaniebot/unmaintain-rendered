@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter makes code less readable with dict get and function call in conditional - astral-sh/ruff #19907</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter makes code less readable with dict get and function call in conditional</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19907">#19907</a>
+        opened by <a href="https://github.com/pythonweb2">@pythonweb2</a>
+        on 2025-08-13 23:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pythonweb2">@pythonweb2</a> on 2025-08-13 23:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here is some working code that in my opinion is readable:</p>
+<pre><code class="language-python">def this_is_a_long_name_function(s):
+    pass
+
+
+def test(d, long_long_long_long_variable_name):
+    if (
+        d[&quot;this_is_a_long_dict_key_name&quot;].lower() == &quot;some_sort_of_string&quot;
+        and not this_is_a_long_name_function(long_long_long_long_variable_name)
+    ):
+        pass
+</code></pre>
+<p>When I run the ruff formatter on it, I get this:</p>
+<pre><code class="language-python">def this_is_a_long_name_function(s):
+    pass
+
+
+def test(d, long_long_long_long_variable_name):
+    if d[
+        &quot;this_is_a_long_dict_key_name&quot;
+    ].lower() == &quot;some_sort_of_string&quot; and not this_is_a_long_name_function(
+        long_long_long_long_variable_name
+    ):
+        pass
+</code></pre>
+<p>Which in my opinion doesn't look good. I'm wondering if the formatter could be adjusted to not do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 06:09</div>
+            <div class="timeline-body"><p>Thank you. Yeah, I think there's an argument to never break the subscribt when using a single string literal or number key.</p>
+<p>In the meantime, you can help the formatter by parenthesizing the right side expression of <code>and</code>:</p>
+<pre><code class="language-py">def this_is_a_long_name_function(s):
+    pass
+
+
+def test(d, long_long_long_long_variable_name):
+    if d[&quot;this_is_a_long_dict_key_name&quot;].lower() == &quot;some_sort_of_string&quot; and (
+        not this_is_a_long_name_function(long_long_long_long_variable_name)
+    ):
+        pass
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-08-14 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2025-08-14 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pythonweb2">@pythonweb2</a> on 2025-08-14 12:40</div>
+            <div class="timeline-body"><p>Thanks for the clarification!</p>
+<blockquote>
+<p>I think there's an argument to never break the subscribt when using a single string literal or number key.</p>
+</blockquote>
+<p>I might be missing something, but I’m not quite sure what you mean here. I went through the configuration settings listed in <a href="https://docs.astral.sh/ruff/settings/#format">the formatter settings</a> and didn’t see that particular option mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 12:58</div>
+            <div class="timeline-body"><p>There's no such option today. I was only commenting on how Ruff's style could be changed in a future edition</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pythonweb2">@pythonweb2</a> on 2025-08-14 13:42</div>
+            <div class="timeline-body"><p>Oh, got it—thanks for explaining! I’d be in favor of adding that. Although with the workaround you provided my example does become much more readable.</p>
+<p>I'm not sure about the technical challenges involved with this, but I was wondering—could another option be to introduce a config setting that enforces the use of parentheses and places each conditional on its own line, even when there are only two?</p>
+<pre><code class="language-python"># two conditionals, formatter changes it
+def test(d, long_long_long_long_variable_name):
+    if (
+        d[&quot;this_is_a_long_dict_key_name&quot;].lower() == &quot;some_sort_of_string&quot;
+        and not this_is_a_long_name_function(long_long_long_long_variable_name)
+    ):
+        pass
+</code></pre>
+<pre><code class="language-python"># three conditionals, formatter leaves it
+def test(d, long_long_long_long_variable_name):
+    if (
+        d[&quot;this_is_a_long_dict_key_name&quot;].lower() == &quot;some_sort_of_string&quot;
+        and not this_is_a_long_name_function(long_long_long_long_variable_name)
+        and True
+    ):
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 14:15</div>
+            <div class="timeline-body"><p>Our current philosophy is not to introduce such fine-grained options. I personally also prefer to always add parentheses if a clause header breaks over multiple lines but this style is very inherent to black's style guide and changing it is probably too big a change now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppSettings::ColorNever does not works for &quot;Did you mean --flag&quot; - clap-rs/clap #2776</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>AppSettings::ColorNever does not works for &quot;Did you mean --flag&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2776">#2776</a>
+        opened by <a href="https://github.com/leizongmin">@leizongmin</a>
+        on 2021-09-19 03:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/leizongmin">@leizongmin</a> on 2021-09-19 03:36</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.57.0-nightly (9dd4ce80f 2021-09-17)</p>
+<h3>Clap Version</h3>
+<p>2.33.3</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{AppSettings, Arg, SubCommand};
+
+fn main() {
+    let app = clap::App::new(&quot;example&quot;)
+        .global_setting(AppSettings::ColorNever)
+        .arg(Arg::with_name(&quot;aaa&quot;).long(&quot;aaa&quot;).global(true))
+        .subcommand(SubCommand::with_name(&quot;bbb&quot;));
+    let args = std::env::args().collect::&lt;Vec&lt;_&gt;&gt;();
+    match app.get_matches_from_safe(args) {
+        Ok(matches) =&gt; println!(&quot;Ok: {:?}&quot;, matches),
+        Err(e) =&gt; println!(&quot;Err: {}&quot;, e)
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<pre><code class="language-bash">cargo run -- --aa
+</code></pre>
+<h3>Actual Behaviour</h3>
+<p><img src="https://user-images.githubusercontent.com/841625/133914442-ef5e9b8f-d71d-472f-bbe0-33dbec8c1b97.png" alt="image" /></p>
+<h3>Expected Behaviour</h3>
+<p>the text &quot;--aaa&quot; is uncolored</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<pre><code>     Running `target/debug/clap-demo --aa`
+DEBUG:clap:Parser::add_subcommand: term_w=None, name=bbb
+DEBUG:clap:Parser::propagate_settings: self=example, g_settings=AppFlags(
+    COLOR_NEVER,
+)
+DEBUG:clap:Parser::propagate_settings: sc=bbb, settings=AppFlags(
+    NEEDS_LONG_HELP | NEEDS_LONG_VERSION | NEEDS_SC_HELP | UTF8_NONE | COLOR_AUTO,
+), g_settings=AppFlags(
+    (empty),
+)
+DEBUG:clap:Parser::propagate_settings: self=bbb, g_settings=AppFlags(
+    COLOR_NEVER,
+)
+DEBUG:clap:Parser::get_matches_with;
+DEBUG:clap:Parser::create_help_and_version;
+DEBUG:clap:Parser::create_help_and_version: Building --help
+DEBUG:clap:Parser::create_help_and_version: Building --version
+DEBUG:clap:Parser::create_help_and_version: Building help
+DEBUG:clap:Parser::get_matches_with: Begin parsing '&quot;--aa&quot;' ([45, 45, 97, 97])
+DEBUG:clap:Parser::is_new_arg:&quot;--aa&quot;:NotFound
+DEBUG:clap:Parser::is_new_arg: arg_allows_tac=false
+DEBUG:clap:Parser::is_new_arg: -- found
+DEBUG:clap:Parser::is_new_arg: starts_new_arg=true
+DEBUG:clap:Parser::possible_subcommand: arg=&quot;--aa&quot;
+DEBUG:clap:Parser::get_matches_with: possible_sc=false, sc=None
+DEBUG:clap:ArgMatcher::process_arg_overrides:None;
+DEBUG:clap:Parser::parse_long_arg;
+DEBUG:clap:Parser::parse_long_arg: Does it contain '='...No
+DEBUG:clap:Parser::parse_long_arg: Didn't match anything
+DEBUG:clap:Parser::groups_for_arg: name=aaa
+DEBUG:clap:Parser::groups_for_arg: No groups defined
+DEBUG:clap:usage::create_usage_with_title;
+DEBUG:clap:usage::create_usage_no_title;
+DEBUG:clap:usage::smart_usage;
+DEBUG:clap:usage::get_required_usage_from: reqs=[&quot;aaa&quot;], extra=None
+DEBUG:clap:usage::get_required_usage_from: after init desc_reqs=[]
+DEBUG:clap:usage::get_required_usage_from: no more children
+DEBUG:clap:usage::get_required_usage_from: final desc_reqs=[&quot;aaa&quot;]
+DEBUG:clap:usage::get_required_usage_from: args_in_groups=[]
+DEBUG:clap:usage::get_required_usage_from:iter:aaa:
+DEBUG:clap:Parser::color;
+DEBUG:clap:Parser::color: Color setting...Never
+DEBUG:clap:is_a_tty: stderr=true
+DEBUG:clap:Colorizer::error;
+DEBUG:clap:Colorizer::warning;
+DEBUG:clap:Colorizer::good;
+Err: error: Found argument '--aa' which wasn't expected, or isn't valid in this context
+	Did you mean --aaa?
+
+USAGE:
+    clap-demo --aaa
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @leizongmin on 2021-09-19 03:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/issues/12118.html">denoland/deno#12118</a> on 2021-09-19 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-09-19 05:48</div>
+            <div class="timeline-body"><pre><code class="language-rust">use clap::{App, AppSettings, Arg};
+
+fn main() {
+    let app = clap::App::new(&quot;example&quot;)
+        .global_setting(AppSettings::ColorNever)
+        .arg(Arg::new(&quot;aaa&quot;).long(&quot;aaa&quot;).global(true))
+        .subcommand(App::new(&quot;bbb&quot;));
+    let args = std::env::args().collect::&lt;Vec&lt;_&gt;&gt;();
+    match app.try_get_matches_from(args) {
+        Ok(matches) =&gt; println!(&quot;Ok: {:?}&quot;, matches),
+        Err(e) =&gt; println!(&quot;Err: {}&quot;, e),
+    }
+}
+</code></pre>
+<p><img src="https://user-images.githubusercontent.com/31354274/133916950-eb4f1144-7b78-4449-8d85-82a9378b9ad8.png" alt="image" />
+This has already been fixed on current master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ldm0 on 2021-09-19 05:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:37 UTC
+    </footer>
+</body>
+</html>

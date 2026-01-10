@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make A001 warns when method shadows a builtin (or create a new rule for this)? - astral-sh/ruff #4470</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make A001 warns when method shadows a builtin (or create a new rule for this)?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4470">#4470</a>
+        opened by <a href="https://github.com/duongdominhchau">@duongdominhchau</a>
+        on 2023-05-17 13:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/duongdominhchau">@duongdominhchau</a> on 2023-05-17 13:37</div>
+            <div class="timeline-body"><p>Hi, first of all, thank you for building this tool, saved me time integrating tens of similar tools into the project.</p>
+<p>Now, here's the problem I noticed recently: for variables we have <code>A001</code> to warn when it shadows a builtin. However, builtins can also be shadowed by methods, but <code>A001</code> does not catch that. Here's a situation where it can cause trouble:</p>
+<pre><code class="language-python">class C:
+    @staticmethod
+    def list() -&gt; None:
+        pass
+
+    @staticmethod
+    def repeat(value: int, times: int) -&gt; list[int]:
+        return [value] * times
+</code></pre>
+<p>If you pass this to <code>pyright</code> it will warn at the return type of <code>repeat</code>, like this:</p>
+<pre><code class="language-plain">a.py:7:43 - error: Expected type expression but received &quot;() -&gt; None&quot; (reportGeneralTypeIssues)
+</code></pre>
+<p>From the error message, looks like <code>list</code> in the second method signature is understood as the <code>list</code> method we defined above, not the <code>list</code> builtin. This is highly confusing, but I'm not sure if this really belongs to <code>A001</code> though as this problem only happen at type level, you can't refer to that method inside another method.</p>
+<p>Anyway, it costs me almost an hour to realize what's wrong (yep, I'm that noob), so I think I should just write this down in case another poor soul is also facing the same problem 🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-17 16:46</div>
+            <div class="timeline-body"><p>I think we may have done this originally, but it ended up being more confusing than helpful. I think this <em>could</em> be useful though. We'd probably want to flag at the usage site (like <code>list[int]</code>), not the definition site (<code>def list</code>), since it's totally valid for a class to define a function named <code>list</code>. The confusion comes when you reference that function within the class scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-05-17 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 23:29</div>
+            <div class="timeline-body"><p>Ah sorry, I believe this is A003?</p>
+<pre><code>foo.py:3:9: A003 Class attribute `list` is shadowing a Python builtin
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-12 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/duongdominhchau">@duongdominhchau</a> on 2023-06-13 06:43</div>
+            <div class="timeline-body"><p>Ouch, sorry for wasting your time. I looked at the end of my config and see the <code>ignorelist</code> having only <code>id</code> there so I thought <code>A003</code> is being partially enabled, turned out there is another line completely disabled that rule. I tried with <code>A003</code> enabled and it does warn at the definition of <code>list()</code>, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6524.html">astral-sh/ruff#6524</a> on 2023-09-05 11:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

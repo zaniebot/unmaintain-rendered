@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--help` flag straight up not working even after copy-pasting example - clap-rs/clap #4398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--help` flag straight up not working even after copy-pasting example</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4398">#4398</a>
+        opened by <a href="https://github.com/tomaka">@tomaka</a>
+        on 2022-10-18 06:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tomaka">@tomaka</a> on 2022-10-18 06:18</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>v1.64.0</p>
+<h3>Clap Version</h3>
+<p>v4.0.15</p>
+<h3>Minimal reproducible code</h3>
+<p>I copy-pasted the first example of <a href="https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html#configuring-the-parser">this page</a>, however all examples from that page that I've tried exhibit the same problem. I didn't manage to write a code where the <code>--help</code> flag worked.</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser)]
+#[command(name = &quot;MyApp&quot;)]
+#[command(author = &quot;Kevin K. &lt;kbknapp@gmail.com&gt;&quot;)]
+#[command(version = &quot;1.0&quot;)]
+#[command(about = &quot;Does awesome things&quot;, long_about = None)]
+struct Cli {
+    #[arg(long)]
+    two: String,
+    #[arg(long)]
+    one: String,
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    println!(&quot;two: {:?}&quot;, cli.two);
+    println!(&quot;one: {:?}&quot;, cli.one);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- --help</code></p>
+<p>Or <code>cargo build</code> followed with <code>./target/debug/foo --help</code></p>
+<h3>Actual Behaviour</h3>
+<blockquote>
+<p>error: Found argument '--help' which wasn't expected, or isn't valid in this context</p>
+</blockquote>
+<h3>Expected Behaviour</h3>
+<p>It should print some help, like explained in the page:</p>
+<pre><code>Does awesome things
+
+Usage: 02_apps_derive[EXE] --two &lt;TWO&gt; --one &lt;ONE&gt;
+
+Options:
+      --two &lt;TWO&gt;  
+      --one &lt;ONE&gt;  
+  -h, --help       Print help information
+  -V, --version    Print version information
+
+</code></pre>
+<h3>Additional Context</h3>
+<p>I realize that this issue is similar to https://github.com/clap-rs/clap/issues/4392, but in this case, I don't know, it just never works. I also very confused, because the <code>--help</code> is the 101 of what this library does, I wouldn't expect it to straight up not work in all scenarios.
+Interestingly, however, the <code>--version</code> flag works.</p>
+<h3>Debug Output</h3>
+<pre><code>[      clap::builder::command]  Command::_do_parse
+[      clap::builder::command]  Command::_build: name=&quot;MyApp&quot;
+[      clap::builder::command]  Command::_propagate:MyApp
+[      clap::builder::command]  Command::_check_help_and_version:MyApp expand_help_tree=false
+[      clap::builder::command]  Command::long_help_exists
+[      clap::builder::command]  Command::_check_help_and_version: Building default --version
+[      clap::builder::command]  Command::_propagate_global_args:MyApp
+[clap::builder::debug_asserts]  Command::_debug_asserts
+[clap::builder::debug_asserts]  Arg::_debug_asserts:two
+[clap::builder::debug_asserts]  Arg::_debug_asserts:one
+[clap::builder::debug_asserts]  Arg::_debug_asserts:version
+[clap::builder::debug_asserts]  Command::_verify_positionals
+[        clap::parser::parser]  Parser::get_matches_with
+[        clap::parser::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;--help&quot;)' ([45, 45, 104, 101, 108, 112])
+[        clap::parser::parser]  Parser::possible_subcommand: arg=Ok(&quot;--help&quot;)
+[        clap::parser::parser]  Parser::get_matches_with: sc=None
+[        clap::parser::parser]  Parser::parse_long_arg
+[        clap::parser::parser]  Parser::parse_long_arg: Does it contain '='...
+[        clap::parser::parser]  Parser::possible_long_flag_subcommand: arg=&quot;help&quot;
+[        clap::parser::parser]  Parser::get_matches_with: After parse_long_arg NoMatchingArg { arg: &quot;help&quot; }
+[        clap::parser::parser]  Parser::did_you_mean_error: arg=help
+[        clap::parser::parser]  Parser::did_you_mean_error: longs=[&quot;two&quot;, &quot;one&quot;, &quot;version&quot;]
+[         clap::output::usage]  Usage::create_usage_with_title
+[         clap::output::usage]  Usage::create_usage_no_title
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+[      clap::builder::command]  Command::color: Color setting...
+[      clap::builder::command]  Auto
+error: Found argument '--help' which wasn't expected, or isn't valid in this context
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @tomaka on 2022-10-18 06:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../paritytech/smoldot/pulls/2879.html">paritytech/smoldot#2879</a> on 2022-10-18 06:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Peternator7">@Peternator7</a> on 2022-10-19 14:01</div>
+            <div class="timeline-body"><p>*Came to github trying to debug the same issue.</p>
+<p>I ran into this same problem yesterday as well, and I fixed it by enabling the <code>help</code> feature flag on the crate. I think it's surprising that this can be disabled because it is one of the main selling points to using clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-19 14:52</div>
+            <div class="timeline-body"><p>Yes, we broke out help generation into a feature flag.  In the <a href="https://github.com/clap-rs/clap/blob/master/CHANGELOG.md#migrating">migration guide</a>, we have this comment about it</p>
+<blockquote>
+<p>Update feature flags</p>
+<ul>
+<li>If default-features = false, run cargo add clap -F help,usage,error-context</li>
+<li>Run cargo add clap -F wrap_help unless you want to hard code line wraps</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>I think it's surprising that this can be disabled because it is one of the main selling points to using clap.</p>
+</blockquote>
+<p>While a main selling point, it isn't the only selling point and people have been wanting flexibility on this for a while.</p>
+<p>For example, I am considering snapshotting my help in tests and building that in so that I have semi-automated help generation without the costs.</p>
+<p>What I'm really looking forward to is https://github.com/rust-lang/cargo/issues/3126 which will make it easier to piece meal remove features from clap.</p>
+<p>As this was most likely a missing <code>help</code> feature flag, I'm going to go ahead and close this.  If there is something lingering in this, let me know and I can re-open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-10-19 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomaka">@tomaka</a> on 2022-10-19 15:05</div>
+            <div class="timeline-body"><p>Ah, thanks for the hindsight.</p>
+<p>I find it extremely surprising that activating/disabling a feature flag modifies the behavior of the code. For example, if you depend on <code>clap</code> with <code>default-features = false</code>, then add a dependency <code>foo</code> which itself depends on <code>clap</code> but without <code>default-features = false</code>, the behavior of your program will be modified just by adding this <code>foo</code> dependency.</p>
+<p>If I can suggest a way better to do it, the user should explicitly attach the <code>#[command(help)]</code> attribute if they want the auto-generated help, and it would fail to compile if the feature flag is disabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-19 15:30</div>
+            <div class="timeline-body"><blockquote>
+<p>If I can suggest a way better to do it, the user should explicitly attach the #[command(help)] attribute if they want the auto-generated help, and it would fail to compile if the feature flag is disabled.</p>
+</blockquote>
+<p>I think this comes back to the other comment:</p>
+<blockquote>
+<p>I think it's surprising that this can be disabled because it is one of the main selling points to using clap.</p>
+</blockquote>
+<p>I'm more worried about the out-of-box experience than the <code>default-features = false</code> user, especially as I see <code>default-features = false</code> going away in the long term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomaka">@tomaka</a> on 2022-10-19 15:41</div>
+            <div class="timeline-body"><p>(sorry if I sound pushy, I'm not actually opinionated about this, happy to end the discussion at any point)</p>
+<p>Personally I automatically put <code>default-features = false</code> on every single dependency I add. I've wasted so much time fighting with annoying feature flags interactions in the general Rust ecosystem in the past that I've decided to do this as a policy.</p>
+<p>For this reason, I also don't provide feature flags for my (more recent) crates apart from <code>std</code>. I think that the trade-off between &quot;improved compilation time&quot; (having feature flags) and &quot;increased clarity for the user&quot; (not having feature flags) weights heavily on the side of not having feature flags at all.</p>
+<p>I really see feature flags as one of the greatest mistakes of the Rust language in general.</p>
+<blockquote>
+<p>I see default-features = false going away in the long term.</p>
+</blockquote>
+<p>I have the feeling that this is probably a decade away, if ever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-19 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I really see feature flags as one of the greatest mistakes of the Rust language in general.</p>
+</blockquote>
+<p>I wonder how much of this is features themselves vs the UX not being fully developed.  For example, I've found <code>cargo add</code>, especially when crates use the <code>dep:</code> prefix to hide optional dependencies, a big help.</p>
+<p>For a lot of feature uses, I do hope https://github.com/rust-lang/rfcs/pull/3243# goes through as an alternative.</p>
+<blockquote>
+<blockquote>
+<p>I see default-features = false going away in the long term.
+I have the feeling that this is probably a decade away, if ever.</p>
+</blockquote>
+</blockquote>
+<p>Maybe I'm being optimistic but I'm hoping for next edition.  The cargo team is interested in solving the &quot;adding new default features without breaking&quot; problem and several of us on the cargo team are particularly hopeful for this solution.  I don't know about others but I've just not moved down my priority list enough to get to writing an RFC for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4405.html">clap-rs/clap#4405</a> on 2022-10-19 22:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:13 UTC
+    </footer>
+</body>
+</html>

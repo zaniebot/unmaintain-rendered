@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharing torch between different projects - astral-sh/uv #15162</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sharing torch between different projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15162">#15162</a>
+        opened by <a href="https://github.com/classronin">@classronin</a>
+        on 2025-08-08 09:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/classronin">@classronin</a> on 2025-08-08 09:44</div>
+            <div class="timeline-body"><h3>Question</h3>
+<h2>目标实现如下：
+┏━ pytorch (torch2.8.0、nvidia-cudnn...)
+┃ ---------------------------- ⇧
+┣━ A(comfyui)━━━━━┫<br />
+┗━ B(open-webui) ━━━┫</h2>
+<p>设置环境 &quot;PYTHONPATH=E:\pytorch.venv\Lib\site-packages&quot;
+pip install torch 会检测 PYTHONPATH 的存在就可以跳过安装 torch 。
+uv pip install torch 不会检测 PYTHONPATH 。</p>
+<p>这应该如何是好呢？</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @classronin on 2025-08-08 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 12:12</div>
+            <div class="timeline-body"><p>Using Claude to translate...</p>
+<blockquote>
+<p><strong>Question</strong><br />
+<strong>Goal to achieve the following:</strong></p>
+<pre><code>┏━ pytorch (torch2.8.0、nvidia-cudnn...)
+┃ ---------------------------- ⇧
+┣━ A(comfyui)━━━━━┫
+┗━ B(open-webui) ━━━┫
+</code></pre>
+<p>Setting the environment variable &quot;PYTHONPATH=E:\pytorch.venv\Lib\site-packages&quot;, <code>pip install torch</code> will detect the existence of PYTHONPATH and can skip installing torch. However, <code>uv pip install torch</code> does not detect PYTHONPATH.</p>
+<p>What should be done about this?</p>
+</blockquote>
+<p>We don't have a great way to support using a system installation of pytorch right now. Our cache will deduplicate pytorch installations, so you can have them in multiple environments without replicating the files, but you can't skip the installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/classronin">@classronin</a> on 2025-08-08 12:45</div>
+            <div class="timeline-body"><p>@zanieb
+UV_CACHE_DIR 和 UV_LINK_MODE 的确能解决缓存机制，但问题是A和B的目录占用空间，还有能在未来实现避免重复安装torch。</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 12:49</div>
+            <div class="timeline-body"><blockquote>
+<p>UV_CACHE_DIR and UV_LINK_MODE can indeed solve the caching mechanism, but the problem is the directory space occupation of A and B, and whether it's possible to avoid duplicate torch installations in the future.</p>
+</blockquote>
+<p>The default link mode uses hardlinks, which appears to use the space in both directories but does not actually consume additional disk space. Are you getting warnings about a copy fallback?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 12:49</div>
+            <div class="timeline-body"><p>We'd like to support using distributions that are already installed more broadly, e.g., not just in the uv cache — but it's pretty hard to do correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/classronin">@classronin</a> on 2025-08-08 13:02</div>
+            <div class="timeline-body"><p>@zanieb uv为什么不尊重PYTHONPATH?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/classronin">@classronin</a> on 2025-08-08 13:13</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<pre><code>
+(aaa) E:\下载\aaa&gt;set PYTHONPATH=E:\AppData\PyTorch\.venv\Lib\site-packages
+
+(aaa) E:\下载\aaa&gt;pip install torch
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Requirement already satisfied: torch in e:\appdata\pytorch\.venv\lib\site-packages (2.8.0+cu128)
+Requirement already satisfied: filelock in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (3.18.0)
+Requirement already satisfied: typing-extensions&gt;=4.10.0 in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (4.14.1)
+Requirement already satisfied: sympy&gt;=1.13.3 in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (1.14.0)
+Requirement already satisfied: networkx in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (3.5)
+Requirement already satisfied: jinja2 in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (3.1.6)
+Requirement already satisfied: fsspec in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (2025.7.0)
+Requirement already satisfied: setuptools in e:\appdata\pytorch\.venv\lib\site-packages (from torch) (80.9.0)
+Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in e:\appdata\pytorch\.venv\lib\site-packages (from sympy&gt;=1.13.3-&gt;torch) (1.3.0)
+Requirement already satisfied: MarkupSafe&gt;=2.0 in e:\appdata\pytorch\.venv\lib\site-packages (from jinja2-&gt;torch) (3.0.2)
+
+(aaa) E:\下载\aaa&gt;uv pip install torch
+Resolved 10 packages in 2.71s
+⠙ Preparing packages... (0/1)
+torch                ------------------------------ 661.40 KiB/3.22 GiB                                                                     ^C
+(aaa) E:\下载\aaa&gt;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/classronin">@classronin</a> on 2025-08-08 13:22</div>
+            <div class="timeline-body"><p>“UV_PYTHONPATH”这将允许UV尊重PYTHONPATH。这对UV的结构有什么影响？请告知我，尽管我非编程员或者程序员，但至少让新手了解。</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 14:22</div>
+            <div class="timeline-body"><p>I can't really explain why it's hard, it's pretty complicated. You can see an attempt at https://github.com/astral-sh/uv/pull/11670</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-08 16:23</div>
+            <div class="timeline-body"><p><code>PYTHONPATH</code> is unfortunately much more complex than it seems. For example, if uv need to install a different torch version because the version in <code>PYTHONPATH</code> is incompatible with another dependency in the project, do we change the version in <code>PYTHONPATH</code>? What if that <code>PYTHONPATH</code> is also used in another project and it would break that project? This is one example, but there lots of similar case, those make it easy to introduce all sorts of problems. We found that it gives a better user experience to not have packages in a separate directory, even if their are big.</p>
+<p>I highly recommend to not use <code>PYTHONPATH</code>, and to instead install everything in one venv. uv is highly optimized and tries to copy as few data as possible on installation, through the hardlinking trick we use it torch shouldn't take up much space or time during installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "torch 共享多项目的解决问题。" to "Sharing torch between different projects" by @konstin on 2025-08-08 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/classronin">@classronin</a> on 2025-08-08 17:14</div>
+            <div class="timeline-body"><p>@konstin
+明白了，对于团队而言，这的确优先的方案。
+但对于个人而言，追求一个torch共享多个项目。</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-08 17:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Understood, for teams, this is indeed the preferred solution. But for individuals, pursuing one torch shared across multiple projects.</p>
+</blockquote>
+<p>uv will use a single cached torch across multiple projects using uv. I don't know how else we can explain it to you. We can't support what you're asking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-08-19 12:05</div>
+            <div class="timeline-body"><blockquote>
+<p>uv will use a single cached torch across multiple projects using uv.</p>
+</blockquote>
+<p>That is not exactly true though. If a user creates a new venv and installs (say) torch into it, the resolution algorithm by default picks the latest version so in practice it seems impossible to avoid having multiple torch versions lying around?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

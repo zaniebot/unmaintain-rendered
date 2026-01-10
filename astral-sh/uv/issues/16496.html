@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build resolutions need different hints - astral-sh/uv #16496</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build resolutions need different hints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16496">#16496</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-10-29 14:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-29 14:48</div>
+            <div class="timeline-body"><p>When a build resolution fails, we don't go through our <code>NoSolutionError</code> hint generation. e.g., in a case like https://github.com/astral-sh/uv/issues/16494 we don't provide our pre-release hint.</p>
+<p>This doesn't look trivial.</p>
+<p>cc @konstin as you may have the best context on how to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-10-29 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Build resolution errors should include hints" to "Build resolutions have fixed prerelease flexibility" by @konstin on 2025-10-29 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Build resolutions have fixed prerelease flexibility" to "Build resolutions need different hints" by @konstin on 2025-10-29 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-29 15:21</div>
+            <div class="timeline-body"><p>We are generating hints for build resolutions, but but the build resolutions work different wrt to prereleases, their options are fixed:</p>
+<p>https://github.com/astral-sh/uv/blob/accfb488766f02c7c975f32243c82f1eed14b68f/crates/uv-dispatch/src/lib.rs#L256</p>
+<p>This option exists to not recommend setting <code>--prerelease=allow</code>, which source dist builds ignore (https://github.com/astral-sh/uv/pull/8192). We need separate hints for source dist builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-29 15:23</div>
+            <div class="timeline-body"><p>MRE:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+version = &quot;0.0.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+
+[build-system]
+requires = [&quot;transitive-package-only-prereleases-in-range-a&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+</code></pre>
+<pre><code>uv sync --index-url https://astral-sh.github.io/packse/0.3.53/simple-html/ --prerelease=allow
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-31 03:55</div>
+            <div class="timeline-body"><p>Oh, thanks for the correction!</p>
+<p>Alas then my point at https://github.com/astral-sh/uv/issues/16494#issuecomment-3461805250 is incorrect.</p>
+<p>What should we be recommending instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16494.html">astral-sh/uv#16494</a> on 2025-10-31 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-31 09:35</div>
+            <div class="timeline-body"><p>For now I'd just say that indirect prereleases are not supported in build system requires. We do have <code>uv build --build-constraint</code> if you pass e.g. <code>transitive-package-only-prereleases-in-range-b&gt;=0a1</code>, but that's not supported in <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16550.html">astral-sh/uv#16550</a> on 2025-11-02 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-11-02 18:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:14 UTC
+    </footer>
+</body>
+</html>

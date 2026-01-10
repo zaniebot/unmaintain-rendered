@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noob Question: How is it so fast? - astral-sh/uv #4643</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Noob Question: How is it so fast?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4643">#4643</a>
+        opened by <a href="https://github.com/drisspg">@drisspg</a>
+        on 2024-06-29 05:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/drisspg">@drisspg</a> on 2024-06-29 05:20</div>
+            <div class="timeline-body"><p>First of all I wanna say thank you for making such an amazing tool! It has greatly improved my work flow so can't thank you enough!</p>
+<p>I am often astonished by the speed. I was curious if there is any documentation on how uv is able to be so much more performant? I assume a lot of caching but also curious if there are any algorithmic changes that enable the performance?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brianmego">@brianmego</a> on 2024-06-29 16:12</div>
+            <div class="timeline-body"><p>While I'm not the maintainer of this repo, I'll take a stab at answering for the team to use as a baseline.</p>
+<p>As with many improvement stories, there's more than one factor. In the case of UV, here's a few:</p>
+<ol>
+<li>UV is primarily written in Rust, rather than Python, with a little bit of Python sprinkled in to facilitate building it for installation with pip. Rust is fast for lots of reasons, but there's a few big ones that matter the most<ul>
+<li>It's compiled rather than interpreted. There's no program running that interprets a text file (with a .py ending) line by line into commands that are translated on the fly into computer instructions. Instead all those computer instruction calculations are done ahead of time in the compiler step, resulting in a program that can run without &quot;the language&quot; being installed. To run a Rust program, you don't need Rust installed on your system.</li>
+<li>Rust makes it easier to work with lots of simultaneous instructions. With Python it's possible to make 100 simultaneous network calls, but it's a big difficult to manage and takes a fair amount of thought to get right. Rust is optimized for this type of operation.</li>
+<li>Most languages are either &quot;fast&quot; or &quot;safe&quot;. Python is on the &quot;safe&quot; side of things, with a separate piece of the code running called the Garbage Collector (GC) that keeps track of which variables no longer need memory allocated from the operating system and managing that on your behalf. Languages like C and C++ don't have a garbage collector, but require you to keep track of your own memory allocations, otherwise leading to program crashes or other bad side effects. Rust strives for both &quot;fast&quot; and &quot;safe&quot;, and the tradeoff is effort up front when developing to get the program to compile in the first place. This effort is nonzero, and the primary reason why Rust is not just &quot;better&quot; for everything, but certainly when the effort is made the results are stunning.</li>
+</ul>
+</li>
+<li>UV does some aggressive caching on disk, as you pointed out. Though it's also a lot faster on the first run.</li>
+<li>Anytime you take an older project and rework it from the ground up, you know the problem better. You are able to make better calls as to what is required and what is worth forgetting about, what the primary flows are you should optimize for and what are nice to haves that can be built later. You see this with other pip competitors, too. While poetry or pdm are not as fast as uv, and these things are sometimes subjective, I would argue the interfaces of both are more thoughtful and slick than pip, which is evolving rather than starting with a green field.</li>
+<li>uv doesn't do as much as pip, broadly speaking. There's many years of deprecated features that pip continues to support, I'm sure much to the chagrin of the developers. It's not that more features makes something slower necessarily, but I'm certain there's stuff in pip along the lines of &quot;make sure to check all 3 possible places for the data before making a decision&quot;.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shailen-naidoo">@shailen-naidoo</a> on 2024-06-30 16:28</div>
+            <div class="timeline-body"><p>@dineshtrivedi I thought you might be interested in this tool for Python 👍🏾</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 22:59</div>
+            <div class="timeline-body"><p>I'm giving a talk on this topic (or something variant of it) at <a href="https://eurorust.eu/">EuroRust 2024</a>! But @brianmego hit some of the most important ideas:</p>
+<ul>
+<li>Rust.</li>
+<li>Heavy use of parallelism and concurrency.</li>
+<li>A cache design that's optimized for warm installs (it's common to install a package more than once on a given machine, so we bias towards that use-case and make those reinstalls much faster and more efficient).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-30 22:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:29 UTC
+    </footer>
+</body>
+</html>

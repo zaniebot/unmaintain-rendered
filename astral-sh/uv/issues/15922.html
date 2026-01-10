@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>venv does not activate - astral-sh/uv #15922</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>venv does not activate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15922">#15922</a>
+        opened by <a href="https://github.com/ajaxdude">@ajaxdude</a>
+        on 2025-09-17 23:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ajaxdude">@ajaxdude</a> on 2025-09-17 23:40</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>new to UV. When I &quot;source .venv/bin/activate&quot; I get a prompt but the python version does NOT activate and is still my base (3.13) when I type Python --version. But if I type uv run python --version then it says 3.12 which is the venv I want. I don't get it. I check the .venv and it seems fine. Any ideas?</p>
+<h3>Platform</h3>
+<p>fedora 42</p>
+<h3>Version</h3>
+<p>0.7.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ajaxdude on 2025-09-17 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 00:27</div>
+            <div class="timeline-body"><p>After <code>source .venv/bin/activate</code> what's <code>uv python find -v</code>, <code>echo $VIRTUAL_ENV</code> and <code>whence -a python</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 00:31</div>
+            <div class="timeline-body"><p>What shell are you using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ajaxdude">@ajaxdude</a> on 2025-09-18 06:35</div>
+            <div class="timeline-body"><p>I figured it out. Using zsh. In my toml file the order of the blocks matter. Once I put the block with the {{if .venv}} before the block with type=text it worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ajaxdude">@ajaxdude</a> on 2025-09-18 15:45</div>
+            <div class="timeline-body"><p>here is what fixed it for me:</p>
+<p>#:schema https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json</p>
+<p>version = 3
+final_space = true
+console_title_template = '{{ .Shell }} in {{ .Folder }}'</p>
+<p>terminal_background = &quot;p:t-background&quot;</p>
+<p>[palette]
+main-bg = &quot;#24283b&quot;
+terminal-red = &quot;#f7768e&quot;
+pistachio-green = &quot;#9ece6a&quot;
+terminal-green = &quot;#73daca&quot;
+terminal-yellow = &quot;#e0af68&quot;
+terminal-blue = &quot;#7aa2f7&quot;
+celeste-blue = &quot;#b4f9f8&quot;
+light-sky-blue = &quot;#7dcfff&quot;
+terminal-white = &quot;#c0caf5&quot;
+white-blue = &quot;#a9b1d6&quot;
+blue-bell = &quot;#9aa5ce&quot;
+pastal-grey = &quot;#cfc9c2&quot;
+terminal-magenta = &quot;#24BCA8&quot;
+blue-black = &quot;#565f89&quot;
+terminal-black = &quot;#414868&quot;
+t-background = &quot;p:main-bg&quot;</p>
+<p>[[blocks]]
+type = 'prompt'
+alignment = 'left'
+newline = true</p>
+<p>[[blocks.segments]]
+type = &quot;text&quot;
+style = &quot;plain&quot;
+background = &quot;transparent&quot;
+foreground = &quot;p:terminal-blue&quot;
+template = &quot;➜ &quot;</p>
+<p>[[blocks.segments]]
+type = 'path'
+style = 'plain'
+background = 'transparent'
+foreground = 'p:terminal-blue'
+template = '{{ .Path }}'</p>
+<pre><code>[blocks.segments.properties]
+  style = 'full'</code></pre>
+<p>[[blocks.segments]]
+type = 'git'
+style = 'plain'
+foreground = 'p:light-sky-blue'
+background = 'transparent'
+template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} &lt;p:white-blue&gt;{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}&lt;/&gt;'</p>
+<pre><code>[blocks.segments.properties]
+  branch_icon = ''
+  commit_icon = '@'
+  fetch_status = true</code></pre>
+<p>[[blocks]]
+type = 'rprompt'
+overflow = 'hidden'</p>
+<p>[[blocks.segments]]
+type = 'executiontime'
+style = 'plain'
+foreground = 'p:terminal-yellow'
+background = 'transparent'
+template = '{{ .FormattedMs }}'</p>
+<pre><code>[blocks.segments.properties]
+  threshold = 5000</code></pre>
+<p>[[blocks]]
+type = 'prompt'
+alignment = 'left'
+newline = true</p>
+<p>[[blocks.segments]]
+type = 'python'
+style = 'plain'
+foreground = &quot;p:pistachio-green&quot;
+background = 'transparent'
+template = &quot;\ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }}&quot;</p>
+<p>[[blocks.segments]]
+type = 'uv'
+style = 'plain'
+foreground = &quot;p:pistachio-green&quot;
+background = 'transparent'
+template = &quot;\ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }}&quot;</p>
+<p>[[blocks.segments]]
+type = 'text'
+style = 'plain'
+foreground_templates = [
+&quot;{{if gt .Code 0}}p:terminal-red{{end}}&quot;,
+&quot;{{if eq .Code 0}}p:terminal-magenta{{end}}&quot;,
+]
+background = 'transparent'
+template = &quot;❯&quot;
+[transient_prompt]
+foreground_templates = [
+&quot;{{if gt .Code 0}}p:terminal-red{{end}}&quot;,
+&quot;{{if eq .Code 0}}p:terminal-magenta{{end}}&quot;,
+]
+background = 'transparent'
+template = '❯ '</p>
+<pre><code>[secondary_prompt]
+  foreground = 'p:terminal-blue'
+  background = 'transparent'
+  template = '❯❯ '</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 15:47</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-09-18 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

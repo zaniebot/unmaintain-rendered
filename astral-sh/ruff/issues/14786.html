@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding default behavior of `ruff analyze graph` with different layouts - astral-sh/ruff #14786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Understanding default behavior of `ruff analyze graph` with different layouts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14786">#14786</a>
+        opened by <a href="https://github.com/purajit">@purajit</a>
+        on 2024-12-05 10:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/purajit">@purajit</a> on 2024-12-05 10:05</div>
+            <div class="timeline-body"><p>I'm working on a pretty anarchic codebase that I'm slowly wrestling into shape, but for now, the minimized structure is</p>
+<pre><code>my_project
+├── pyproject.toml
+└── src
+    ├── __init__.py
+    ├── foo.py
+    └── ... other modules ...
+</code></pre>
+<p>and all imports are done via <code>PYTHONPATH=src</code> (aka, <code>from foo import ...</code>). We'e been running ruff
+for linting nearly since the start of the project with no issues, and once <code>analyze graph</code> was
+introduced I immediately started using it but couldn't get it to work; I finally got some time to look into it.</p>
+<p>It works perfectly fine on the new src-layout uv projects I've been creating, but not on the main <code>src/</code>
+codebase.</p>
+<p>I created a minimal repro in <a href="https://github.com/purajit/ruff-graph-layout-test">this repo</a> (see results of <code>ruff</code> <a href="https://github.com/purajit/ruff-graph-layout-test/actions/runs/12177280068/job/33964766403">here</a>); it has a few different layouts.</p>
+<ul>
+<li>with the flat layout, notice how package-based imports from <code>flat_layout</code> are picked up in <code>a.py</code>,
+but not the <code>PYTHONPATH</code>-relative import in <code>c.py</code></li>
+<li>with the semi-flat layout (aka, what I have), none of the imports are picked up</li>
+<li>with src-layout, everything works perfectly, as expected</li>
+</ul>
+<p>From https://docs.astral.sh/ruff/settings/#src</p>
+<blockquote>
+<p>These defaults ensure that Ruff supports both flat layouts and src layouts out-of-the-box. (If a configuration file is explicitly provided (e.g., via the --config command-line flag), the current working directory will be considered the project root.)</p>
+</blockquote>
+<h3>What I've tried</h3>
+<p>Hacking around, I was able to get it to work with this patch (that I understand is obviously incorrect):</p>
+<pre><code class="language-diff">git diff -U1
+diff --git a/crates/ruff_graph/src/db.rs b/crates/ruff_graph/src/db.rs
+index 39f74081b..ae9403e18 100644
+--- a/crates/ruff_graph/src/db.rs
++++ b/crates/ruff_graph/src/db.rs
+@@ -31,6 +31,6 @@ impl ModuleDb {
+             // Use the first source root.
+-            let src_root = src_roots
++            let mut src_root = src_roots
+                 .next()
+                 .ok_or_else(|| anyhow::anyhow!(&quot;No source roots provided&quot;))?;
+-
++            src_root.push(&quot;src&quot;);
+             let mut search_paths = SearchPathSettings::new(src_root);
+</code></pre>
+<p>Also, I don't really understand this (I'm rather new to Rust) - but without the patch, the value of
+<code>src_roots.next()</code> doesn't contain the required trailing <code>src/</code>, but the value here:
+https://github.com/astral-sh/ruff/blob/fda8b1f884c8598960b2e3f0c729e17ac62bfe35/crates/ruff/src/commands/analyze_graph.rs#L63-L68
+does contain <code>src/</code> - every single value, so choosing <code>.next()</code> shouldn't matter - so I don't understand
+where that's getting stripped out. If it weren't getting stripped out, this would work out-of-the-box.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-05 10:41</div>
+            <div class="timeline-body"><p>Thanks for the nice reproduction and writeup!</p>
+<p>I'm not quiet sure what's happening. Maybe @charliermarsh has a better idea. I observe that <code>package_roots</code> always pick up the parent directory instead of the file containing the <code>project. tool</code>. I'd expect that the <code>source_root</code> always maps to the <code>lint.src</code> directory instead of just mapping to the package roots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @MichaReiser on 2024-12-05 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-25 20:13</div>
+            <div class="timeline-body"><p>Ah yeah - I spent some time going through, and yeah, that's pretty much what's happening - instead
+of just taking the parent here: https://github.com/astral-sh/ruff/blob/8b9c843c727de463efccafc7e012414b93458dc7/crates/ruff/src/commands/analyze_graph.rs#L62-L68
+should it instead run through the list of <code>linter.src</code>s and check path prefixes, similar to what's done
+here for namespace packages here? https://github.com/astral-sh/ruff/blob/8b9c843c727de463efccafc7e012414b93458dc7/crates/ruff_linter/src/packaging.rs#L29-L32</p>
+<p>Otherwise, it seems like flat packages are <em>explicitly</em> not supported for <code>ruff analyze graph</code>.</p>
+<p>I'm down to PR! Want to make sure this makes sense first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-26 09:24</div>
+            <div class="timeline-body"><p>@charliermarsh what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 14:49</div>
+            <div class="timeline-body"><p>I haven't thought deeply about this, but isn't the import in <code>flat_layout/c.py</code> incorrect? Having the <code>__init__.py</code> in <code>semi_flat_src/src</code> also seems incorrect... The imports would then need to be <code>from src.b import B</code>, etc. I don't know if we should support these layouts, since they seem to be incorrectly structured?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-29 03:04</div>
+            <div class="timeline-body"><p>@charliermarsh yes it is, sadly, that's how our primary codebase is laid out, with imports being
+done based on <code>PYTHONPATH=src</code>, and the application deployed with a plain source code copy (I
+promise I'm actively working on this mess, haha). I guess I was hoping <code>ruff</code> would/could(/should?)
+be able to honor <code>PYTHONPATH</code>, but maybe that's a much larger discussion?</p>
+<p>We can close this issue, since I understand the behavior now, having resolved some misunderstandings
+I had and reading the code, but still curious about your thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-12-30 05:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-31 19:43</div>
+            <div class="timeline-body"><p>Ah ok, I think I was able to narrow down the pathological case we have, so I'm now able to
+boil down this issue to a minimal question:</p>
+<p>Should ruff's package discovery stop trying to detect packages once it discovers anything
+specified in the <code>src</code> config?</p>
+<p>Essentially, because we deploy via code-copy and setting <code>PYTHONPATH=src</code>, meaning that
+<code>src/pkg</code> is imported as <code>pkg</code> rather than <code>src.pkg</code>. However, we have a vestigial <code>src/__init__.py</code>
+(again, I apologize on behalf of the codebase), which caused ruff analyze's package discovery
+to still resolve everything to <code>src</code> rather than the individual modules inside it, and preventing
+any imports from resolving. Deleting the <code>src/__init__.py</code> fixes the issue.</p>
+<p>I'm totally fine if the answer is &quot;no, make sure your Python packaging and organization is
+correctly set up&quot;, but just thought I'd follow up to resolve the confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2025-05-16 01:00</div>
+            <div class="timeline-body"><p>Having fixed our entire packaging and making everything PEPpy, I definitely don't think <code>ruff analyze graph</code> should care about <code>PYTHONPATH</code>. However, a warning might be helpful, consider bad packaging is pretty commonplace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @purajit on 2025-05-16 01:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

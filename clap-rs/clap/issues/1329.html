@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust 2018 support - clap-rs/clap #1329</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rust 2018 support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1329">#1329</a>
+        opened by <a href="https://github.com/royaldark">@royaldark</a>
+        on 2018-08-08 04:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/royaldark">@royaldark</a> on 2018-08-08 04:44</div>
+            <div class="timeline-body"><p>Hey all! I've been using the Rust 2018 preview in recent projects. It isn't out officially for another couple months, but soon it will supplant Rust 2015.</p>
+<p>I've noticed at least one (minor) issue in testing using Clap in Rust 2018.</p>
+<p>In Rust 2018, macro imports can be individually imported via <code>use</code>. However, importing the <code>arg_enum</code> macro seems to require another private macro.</p>
+<pre><code class="language-rust">use clap::arg_enum;
+
+arg_enum!{
+    #[derive(Debug)]
+    pub enum ArgEnum {
+        ThingA,
+        ThingB
+    }
+}
+</code></pre>
+<pre><code>error: cannot find macro `_clap_count_exprs!` in this scope
+ --&gt; src\enums.rs:3:1
+  |
+3 | / arg_enum!{
+4 | |     #[derive(Debug)]
+5 | |     pub enum ArgEnum {
+6 | |         ThingA,
+7 | |         ThingB
+8 | |     }
+9 | | }
+  | |_^
+  |
+  = note: this error originates in a macro outside of the current crate (in Nightly builds, run with -Z external-macro-backtrace for more info)
+</code></pre>
+<p>This can be worked around by additionally importing <code>clap::_clap_count_exprs</code>.</p>
+<h3>Rust Version</h3>
+<p>rustc 1.29.0-nightly (6a1c0637c 2018-07-23)</p>
+<p>all needed <a href="https://rust-lang-nursery.github.io/edition-guide/editions/transitioning.html">Rust 2018 changes</a> applied</p>
+<h3>Affected Version of clap</h3>
+<p>2.23.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1397.html">clap-rs/clap#1397</a> on 2018-12-18 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichDonGubler">@ErichDonGubler</a> on 2018-12-18 23:06</div>
+            <div class="timeline-body"><p>@royaldark: Looks like your Rust 2018 link rotted to this: https://rust-lang-nursery.github.io/edition-guide/editions/transitioning-an-existing-project-to-a-new-edition.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeoLegends">@NeoLegends</a> on 2018-12-28 15:38</div>
+            <div class="timeline-body"><p>The same occurs when trying to use the <code>app_from_crate</code>-macro, which depends on a handful of others that aren't resolved properly at the moment (at least when using Rust 2018).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/killercup">@killercup</a> on 2019-01-03 15:32</div>
+            <div class="timeline-body"><p>Hm, I fear this is not easily fixable while still <a href="https://github.com/clap-rs/clap/blob/3294d18efe5f264d12c9035f404c7d189d4824e1/.travis.yml#L9">supporting</a> Rust 1.21. One workaround I can see is using a build script that detects the Rust version and set a feature dependent on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichDonGubler">@ErichDonGubler</a> on 2019-01-03 15:59</div>
+            <div class="timeline-body"><p>@killercup: The <a href="https://github.com/clap-rs/clap#minimum-version-of-rust">minimum Rust version policy of this crate</a> is to support <code>$latest - 2</code> releases. Why is 1.21 in the scope of the conversation as opposed to Rust 1.29?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/killercup">@killercup</a> on 2019-01-03 16:17</div>
+            <div class="timeline-body"><p>@ErichDonGubler oh, I just looked at the CI config, sorry! Then we should be good to go ahead with #1397. Sorry for the confusion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichDonGubler">@ErichDonGubler</a> on 2019-01-03 22:21</div>
+            <div class="timeline-body"><p>@killercup: No problem! :) I wish I could just use something like a reminder bot here for Monday...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkpankov">@mkpankov</a> on 2019-02-01 12:06</div>
+            <div class="timeline-body"><p>Just stumbled onto this, would appreciate a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErichDonGubler">@ErichDonGubler</a> on 2019-02-01 15:53</div>
+            <div class="timeline-body"><p>Pinging here for somebody to look at https://github.com/clap-rs/clap/pull/1397, please! I'm the author of that PR, and I'm more than happy to do whatever is necessary to get it over the line. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @spacekookie on 2019-03-26 08:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:50 UTC
+    </footer>
+</body>
+</html>

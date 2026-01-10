@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv stubs are 32 bit, when they should be 64 bit, on windows - astral-sh/uv #7379</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv stubs are 32 bit, when they should be 64 bit, on windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7379">#7379</a>
+        opened by <a href="https://github.com/doctorpangloss">@doctorpangloss</a>
+        on 2024-09-13 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/doctorpangloss">@doctorpangloss</a> on 2024-09-13 21:03</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<h3>Issue</h3>
+<p>A Dockerfile copies a <code>.venv</code> from an earlier build stage that contains <code>uv</code> generated stubs, then one of the stubs is executed and errors out with a bug typically associated with 32 bit programs running on 64 bit platforms.</p>
+<p><strong>Dockerfile</strong>:</p>
+<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/windows/server:10.0.20348.1970 AS build
+USER ContainerAdministrator
+
+ARG PIP_DISABLE_PIP_VERSION_CHECK=1
+ARG PIP_NO_CACHE_DIR=1
+
+RUN powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))&quot;
+RUN choco install -y --no-progress python --version=3.11.9
+RUN choco install -y --no-progress git cmake
+
+WORKDIR C:/
+
+RUN powershell -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+RUN uv venv --seed
+RUN C:/.venv/scripts/activate.bat
+ENV UV_LINK_MODE=copy
+RUN git config --system core.longpaths true
+RUN uv pip install --no-build-isolation git+https://github.com/hiddenswitch/ComfyUI.git
+# ...
+
+
+FROM mcr.microsoft.com/windows/server:10.0.20348.1970 AS final
+USER ContainerAdministrator
+
+# Copy our pre-built Python site-packages
+COPY --link --from=build C:/Python311 C:/Python311
+COPY --link --from=build C:/.venv C:/.venv
+
+RUN powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))&quot;
+RUN choco install --no-progress  -y vcredist140 vcredist2015 vcredist2017 directx
+SHELL [&quot;cmd&quot;, &quot;/S&quot;, &quot;/C&quot;]
+RUN powershell -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+RUN setx /M PATH &quot;%PATH%;C:\Users\ContainerAdministrator\.cargo\bin;C:\.venv\bin;C:\Python311;C:\Python311\Scripts&quot;
+RUN &quot;comfyui --quick-test-for-ci --cpu --cwd C:/
+</code></pre>
+<p>This will error out with something like:</p>
+<pre><code>...
+Step 53/56 : RUN &quot;comfyui --quick-test-for-ci --cpu --cwd /comfyui-init-workdir --extra-model-paths /extra_model_paths_in_image.yaml&quot;
+...
+&gt; Could not build image: container 3b12160c8f0f4e72ae971795746823ab846ec8fdd64ae36b05b8841106e9bbfe encountered an error during hcs::System::CreateProcess: failure in a Windows system call: This version of %1 is not compatible with the version of Windows you're running. Check your computer's system information and then contact the software publisher. (0xd8)
+</code></pre>
+<p>which is unexpected</p>
+<p><strong>Notes</strong></p>
+<ul>
+<li><code>uv 0.4.8 (956cadd1a 2024-09-09)</code></li>
+<li>Enabling bytecode compilation will cause a different exception. So there's some kind of sensitivity to the environment.</li>
+<li>This does not reproduce with Docker Desktop on Windows 2022 10.0.20348.2227, Docker version 25.0.3, build f417435.</li>
+<li>This is occurring on Windows 2022 10.0.20348.1787, Docker version 23.0.0. However, this may be a red herring; the platform where this is occurring may have caches that are interacting in an interesting way.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "uv stubs for windows appear to be cursed when run directly by dockerd build daemon for windows containers on windows (investigating)" to "uv stubs are 32 bit, when they should be 64 bit, on windows" by @doctorpangloss on 2024-09-16 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-11-12 17:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:48 UTC
+    </footer>
+</body>
+</html>

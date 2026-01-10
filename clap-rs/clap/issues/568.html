@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>completions: Support adding additional code to complete values - clap-rs/clap #568</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>completions: Support adding additional code to complete values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/568">#568</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2016-07-04 12:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-07-04 12:48</div>
+            <div class="timeline-body"><p><a href="https://github.com/clap-rs/clap/issues/568#issuecomment-992733258">Closing comment</a>:</p>
+<blockquote>
+<p>We currently provide <a href="https://docs.rs/clap/3.0.0-rc.4/clap/enum.ValueHint.html">ValueHint</a> for leveraging shell logic, though it isn't customizable. For that, we have #1232.</p>
+<p>I'm inclined to close this in favor of wrapping up this request with #1232. I'm hesitant for us to have two different solutions (a Rust driven and shell-specific snippets) and doing shell snippets would couple args to completion so they would know what shell they are completing for.</p>
+<p>We can always expand how we are using <code>ValueHint</code> for the common cases and as a short term until we have full customization.</p>
+</blockquote>
+<hr />
+<p>For some argument values, the bash-completions may want to include additional logic for what type of value to complete, rather than allowing arbitrary strings.  For instance, an option might accept a path to a file that exists; bash has a mechanism for that.  Or, an option might accept the name of a git ref that exists; that's something more easily implemented in the program in Rust.  Either way, it makes sense to augment clap's completion logic.</p>
+<p>This also argues for implementing the completions by calling the program at runtime, rather than via shell; that way, arbitrary logic in Rust can determine what to complete, rather than providing a template system to feed in shell code (ick).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-07-04 21:35</div>
+            <div class="timeline-body"><p>Perhaps adding something like was discussed in in #376 where there is a &quot;completer&quot; function? I'm all for this, but figured it's also addable in a backwards compatible way once I had the base implementation complete.</p>
+<p>I'm just not sure which would be the <em>best</em> way to add this so I'm open to all ideas.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-07-04 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-07-04 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-07-04 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-07-04 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: completion gen</span> added by @kbknapp on 2016-07-04 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-07-04 22:38</div>
+            <div class="timeline-body"><p>I'm honestly not sure either.  I'm really hesitant to suggest inlining shell script snippets into Rust code as strings; I'd rather see those written in a separate shell file and included from there (not least of which to get the right filetype and highlighting).  bash (via <code>compgen</code>) and bash-completion (via functions in <code>/usr/share/bash-completion/bash_completion</code>) have some built-in helpers, and it'd be nice to support those for common cases like hostnames, users, and files (with glob patterns).  Someone might also want to write arbitrary shell code to enumerate argument values.  It'd also be nice to support using arbitrary Rust code by invoking the program.</p>
+<p>I think what I'd suggest is that the <code>.completer</code> function should take an enum argument, where that enum has values like <code>User</code>, <code>File</code>, <code>FileGlob(&quot;*.ext&quot;)</code>, <code>BashFunc(&quot;__comp_function_name&quot;)</code>, and <code>RustFunc(...)</code>.  Those would then translate into appropriate calls to compgen, calls to the specified function, or invocations of the program to run Rust code.  (That last one would also require something like a <code>global_setting</code> to enable a <code>--clap-complete</code> option or similar.)</p>
+<p>This is turning out to be a remarkably hairy yak.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../git-series/git-series/issues/20.html">git-series/git-series#20</a> on 2016-09-08 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../git-series/git-series/pulls/26.html">git-series/git-series#26</a> on 2016-09-29 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mathstuf">@mathstuf</a> on 2016-10-02 12:15</div>
+            <div class="timeline-body"><p>In zsh at least, clap could generate completion function calls such as:</p>
+<pre><code class="language-zsh">(( $+functions[_appname_clap_complete_ARG] )) || _appname_clap_complete_ARG () {
+}
+</code></pre>
+<p>Which can then be overridden in a supplemental file included before this one (via <code>source</code> if the file exists). Bash probably has some mechanism that works similarly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-10 15:31</div>
+            <div class="timeline-body"><p>I've just converted <a href="https://github.com/faradayio/cage">cage</a> to use clap, and I'm very happy with the results. Basic completion works under both bash and fish. Great code!</p>
+<p>But cage would benefit enormously from being able to dynamically complete the names of docker services for commands like:</p>
+<pre><code class="language-sh">cage test $SERVICE_NAME
+</code></pre>
+<p>If the project in the current directory has the ervices <code>foo</code> and <code>frontend/bar</code> I would like to be able to do the following:</p>
+<pre><code class="language-sh">&gt; cage test f&lt;TAB&gt;
+foo
+frontend/bar
+</code></pre>
+<p>I would be happy to add an extra argument to the app, something like:</p>
+<pre><code class="language-sh">&gt; cage --_complete-service f
+foo
+frontend/bar
+</code></pre>
+<p>And declare this as:</p>
+<pre><code class="language-yaml">- SERVICE:
+    value_name: &quot;SERVICE&quot;
+    required: true
+    complete_with: &quot;_complete-service&quot;
+    help: &quot;The name of the service in which to run a command&quot;
+</code></pre>
+<p>Obviously the details could vary a bit, but we would ultimately have <code>--_complete-pod</code>, <code>--_complete-service</code>, <code>--_complete-pod-or-service</code> and <code>--_complete-repo-alias</code>, among others. Also note that many different subcommands would share each completion hook, which might mean we want these to be potentially global.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/644.html">clap-rs/clap#644</a> on 2016-10-10 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-10 19:15</div>
+            <div class="timeline-body"><p>@emk Your post has me thinking about this more and more, I'm thinking some sort of hybrid between what @joshtriplett listed above and what you're proposing.</p>
+<p>My schedule is pretty busy this week, but I should be able to at least test some ideas and see the feasibility. Stay tuned to this thread for updates!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-10 23:43</div>
+            <div class="timeline-body"><p>Another approach worth a quick glance might be optcomplete for Python:
+http://furius.ca/optcomplete/ As far as I can tell, this uses one small,
+universal shell script for each supported shell, and offloads all the
+actual completion work to the application's own arg parsing machinery.</p>
+<p>I think another Python library just uses a '--_complete' on the program
+that does all the actual work, but I can't find it right now. I'll keep
+Googling around when I have moment and post anything interesting I find.</p>
+<p>Thank you so much for a great library and for looking into this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-11 10:23</div>
+            <div class="timeline-body"><p>Ah, here we go. <a href="https://github.com/dbarnett/python-selfcompletion">Some docs</a> on how several Python arg parsing libraries handle <code>--_completion</code>.</p>
+<blockquote>
+<p>selfcompletion is a layer on top of argparse to take the fine-grained model
+argparse builds of the arguments your program accepts and automatically
+generate an extra '--_completion' argument that generates all possible
+completions given a partial command line as a string.</p>
+<p>The '--_completion' argument in turn is used by a generic bash programmable
+completion script that tries '--_completion' on any program that doesn't have
+its own completion already available, renders the output of the program's
+built-in completion if available, and otherwise silently falls back to the
+shell default.</p>
+</blockquote>
+<p>Here is the <a href="https://github.com/dbarnett/python-selfcompletion/blob/master/bash_completion.d/_selfcompletion">generic completion function for bash</a>:</p>
+<pre><code class="language-sh">_foo()
+{
+    prog=&quot;$1&quot;
+    while read glob_str; do
+        case $prog in
+        $glob_str)
+            return 1;;
+        esac
+    done &lt; &lt;( echo &quot;$SELFCOMPLETION_EXCLUSIONS&quot; )
+    which &quot;$prog&quot; &gt;/dev/null || return 1
+    _COMP_OUTPUTSTR=&quot;$( $prog --_completion &quot;${COMP_WORDS[*]}&quot; 2&gt;/dev/null )&quot;
+    if test $? -ne 0; then
+        return 1
+    fi
+    readarray -t COMPREPLY &lt; &lt;( echo -n &quot;$_COMP_OUTPUTSTR&quot; )
+}
+
+complete -o default -o nospace -D -F _foo
+</code></pre>
+<p>The advantage of this approach is that the per-shell code can be written only once, and all the hard work can be done directly by the application itself. Obviously, there might be disadvantages as well. But I figured it was worth tracking down all the existing attempts to standardize this to see if any of them had helpful ideas. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-24 21:40</div>
+            <div class="timeline-body"><p>@kbknapp Any updates on this mechanism? I have someone asking after completions, and I'd love to beta-test this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcreekmore">@jcreekmore</a> on 2016-10-25 17:35</div>
+            <div class="timeline-body"><p>@kbknapp I would be interested in this as well. I am currently post-processing my completions to substitute in <code>_filedir</code> for filename completion, but that is less than ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-25 17:53</div>
+            <div class="timeline-body"><p>@joshtriplett @jcreekmore</p>
+<p>Now that the ZSH implementation is complete I've got a better handle on this. The biggest issue I see holding this up is that completions are done differently between all three (so far) supported shells.</p>
+<p>I'm all for some sort of enum with variants that allow things like, <code>Files</code>, <code>Directories</code>, <code>Globs(&amp;str)</code>, <code>Code(&amp;str)</code> or something to that effect. But some shells support those things verbatim, others only in arbitrary ways that clap doesn't use when gen'ing the completion code.</p>
+<p>I'm just unsure of the best way to expose this. Perhaps on an <code>Arg::complete_with(enum)</code>?</p>
+<p>I guess, first what is the shell you're trying to support, and what particular portions are you wanting to inject into the completion code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-25 18:00</div>
+            <div class="timeline-body"><p>@kbknapp For <code>cage</code>, we'd like to be able to complete custom &quot;types&quot; of values, such as Docker container names, &quot;pod&quot; names, target environments, and so on. The legal values can only be determined by asking our executable at runtime, since they vary from project to project.</p>
+<p>This is pretty much how <code>git-completion</code> handles origin names, branch names, etc.</p>
+<p>The problem with an <code>enum</code> is that it would limit us to just a few built-in types such as <code>Files</code>, <code>Directories</code>, etc., right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-25 19:23</div>
+            <div class="timeline-body"><p>@kbknapp I don't think you need to support embedding arbitrary shell code from Rust.  My suggestion would be to support the lowest-common-denominator bits (filenames, usernames, filenames matching one of these patterns, etc), and then have a &quot;call this Rust function&quot; variant that invokes the program itself with some internal hidden --clap-complete option that dispatches to that Rust function.  That makes it easy to do things like &quot;a git ref matching this pattern&quot;, by calling a Rust function implementing that.</p>
+<p>For those common categories like filenames or usernames, use the shell built-in mechanisms if available, or provide and use code implementing those simple completions if the shell doesn't have them.</p>
+<p>If people want &quot;invoke this shell code&quot;, I'd suggest adding a Rust variant to call a named shell function, and then letting people add that shell function to the resulting generated completions for any shell they support.  That seems preferable to embedding many variants of shell code directly.</p>
+<pre><code class="language-rust">enum Completion&lt;F: Fn(...) -&gt; ...&gt; {
+    File,
+    User,
+    Hostname,
+    Strings(&amp;[str]),
+    Globs(&amp;[str]),
+    ShellFunction(&amp;str), // maybe
+    RustFunction(F),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-25 19:36</div>
+            <div class="timeline-body"><p>@emk Yes, and no. It would be extensible, so more variants could be added. But Some of the variants could also take additional parameters, and ultimately (possibly) injecting arbitrary shell script via something like ,<code>Code(&amp;str)</code> which of course isn't <em>super</em> great, but perhaps a fallback if a particular variant doesn't quite fit the bill. (Or perhaps not...it could end up being massively unsafe :stuck_out_tongue_winking_eye: )</p>
+<p>At the same time, I haven't looked into <em>exactly</em> where this code would be injected and ultimately if it's even feasible yet. This is just straight of the top of my head right now.</p>
+<p>Also, if the &quot;types&quot; are know prior to runtime ZSH already supports this just by using the <code>Arg::possible_values</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-25 19:54</div>
+            <div class="timeline-body"><p>That's true, &quot;one of these fixed strings&quot; should be an option as well.  Updating the type in my previous comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../rust-lang/rustup/issues/278.html">rust-lang/rustup#278</a> on 2016-10-26 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/816.html">clap-rs/clap#816</a> on 2017-01-14 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-14 02:25</div>
+            <div class="timeline-body"><p>From @Xion in #816</p>
+<blockquote>
+<p>In Python, there is a package called <a href="https://pypi.python.org/pypi/argcomplete">argcomplete</a> which provides very flexible autocompletion for apps that use the standard argparse module. What it allows is to implement a custom completion provider: essentially a piece of your own code that's executed when the the binary is invoked in a Special Way (tm) by the shell-specific completion script.
+For an example, see <a href="https://github.com/Xion/gisht.py/blob/master/gisht/args/autocomplete.py#L26">here</a>. The code is preparing completions dynamically from the filesystem, or even from a remote API (if certain flag isn't passed (flags are partially parsed at this point)).
+Having something like this in clap would be very nice. I know this is a potentially complex subsystem so it'd be unreasonable to expect it implemented anytime, but I wanted to at least put this feature on the radar.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-14 02:48</div>
+            <div class="timeline-body"><p>After reading through some of the <code>argcomplete</code> python module the hardest part will be figuring out how to call a Rust function from the shell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-14 02:52</div>
+            <div class="timeline-body"><p>I'm guessing what'll end up happening is some sort of double run with hidden args.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/818.html">clap-rs/clap#818</a> on 2017-01-19 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-19 01:30</div>
+            <div class="timeline-body"><p>Expanding on the ideas (from #818)</p>
+<blockquote>
+<p>The problem with implementing this is I just haven't had a good time to sit down and think about how (because of work, holidays, family, etc.). I want a way to specify this that abstracts well enough to work for all shells. The easiest way is to say, &quot;Put your arbitrary completion shell script here inside this <code>Arg::complete_with(&amp;str)</code>&quot; but that feels super hacky to me, and potentially unsafe. What I'd like to do is provide a <code>Arg::complete_with(Fn(&amp;str, &amp;str)-&gt;String)</code> (and a <code>Arg::complete_with_os(Fn(&amp;str,&amp;OsStr)-&gt;OsString)</code> where an arbitrary Rust function is called...but herein lies the problem; shell completions are run before the program executes. This has led to some people using hidden args or something like, <code>$ prog --complete me&lt;tab&gt;</code> calling a shell completer that actually runs <code>$ prog --_complete_arg &quot;complete&quot; --_complete_prefix &quot;me&quot;</code> which generates the possible completions and returns them to the shell. I'm not against doing that, but again feels strange because you're injecting hidden args into a CLI. Although typing this out right now does make me lean towards this solution.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2017-01-19 06:21</div>
+            <div class="timeline-body"><p>@kbknapp I like the idea of using parameters like <code>--_clap-complete</code> and similar, and then calling the program itself to do the completion via Rust code.  That would make it possible to (for instance) use git2-rs from Rust to complete names of things in a git repository.</p>
+<p>Naming the argument/parameter seems sufficient to dispatch to the right function, though I'd also like to have the other arguments available to handle things like <code>prog --repository /path/to/.git --branch someth[tab]</code> (which needs the repository to complete branches from).</p>
+<p>Also, those <code>complete_with</code> functions should return either a <code>Vec&lt;OsString&gt;</code> or in general an implementation of <code>Iterator&lt;OsString&gt;</code>, to return all completions.  (The latter would benefit from but not require <code>-&gt; impl Trait</code> support, since <code>complete_with</code> can declare the return value as a generic while the actual function/closure might use a specific iterator type.)</p>
+<p>And what does the first <code>&amp;str</code> parameter of those functions refer to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mathstuf">@mathstuf</a> on 2017-01-19 14:29</div>
+            <div class="timeline-body"><p>I'd just like to note that for really expensive queries (imagine tab-completion for <code>cargo install &lt;Tab&gt;</code>), at least <code>zsh</code> supports a cache for completions; it would be nice to have a way to leverage that cache via some &quot;can be cached&quot; flag (cache expiry is controlled via <code>zstyle</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2017-01-19 20:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd just like to note that for really expensive queries (imagine tab-completion for <code>cargo install &lt;Tab&gt;</code>)</p>
+</blockquote>
+<p>I'd expect tab-completion for <code>cargo install &lt;Tab&gt;</code> to list all the currently-available crates, without doing a network update first.  That would use entirely local information, and generate completions quickly.</p>
+<p>Rather than attempting to integrate with any particular shell's completion caching, perhaps if an app considers its completions expensive to generate, it could cache the necessary information to make them fast?  Caching policies seem much easier to implement in Rust, since they could use arbitrary freshness metrics (&quot;the underlying data hasn't changed so return the cached list&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-19 21:31</div>
+            <div class="timeline-body"><p>@mathstuf @joshtriplett yeah, I'd prefer not to incorporate shell specific arguments if at all possible and leave that to the Rust function of the implementer.</p>
+<blockquote>
+<p>And what does the first <code>&amp;str</code> parameter of those functions refer to?</p>
+</blockquote>
+<p>It referred to the current arg being parsed (as determined by <code>clap</code>), the second was the prefix being completed (if any). Whether it's a <code>Vec&lt;String&gt;</code> or <code>String</code> (including <code>\n</code>s) (or <code>OsString</code> equivalents) returned will be determined once I'm able look at all four shells and see what they're expecting.</p>
+<blockquote>
+<p>I'd also like to have the other arguments available</p>
+</blockquote>
+<p>I thought about this as well, and I'm torn between providing a simple list of strings (at which point why include them at all because people could just use <code>std::env::args</code>), or some magic about &quot;allowing failed/incomplete parses&quot; to give off a <code>ArgMatches</code> struct which I'd assume is actually the information you'd want but is more complex to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2017-01-19 22:57</div>
+            <div class="timeline-body"><p>@kbknapp Parsing partial arguments (without enforcing all of the argument requirements) seems like a pain, but I'd rather not manually implement argument parsing in order to do completion.  That said, implementing this without support for parsing other arguments at first would still help in many cases.</p>
+<p>Does the &quot;current arg being parsed&quot; exist to allow passing the same completion function for multiple arguments, and distinguishing them via argument?  If so, why not just do that using a closure?  You could pass <code>|arg| complete(&quot;foo&quot;, arg)</code> easily enough.  Completing multiple arguments with the same function but needing to distinguish between them by name seems sufficiently uncommon to not want to complicate the common case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-21 22:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Parsing partial arguments (without enforcing all of the argument requirements) seems like a pain</p>
+</blockquote>
+<p>Actually I don't think it will be. <code>clap</code> enforces all the requirements lazily, so a single branch would allow a failing parse to &quot;pass&quot; and only in that very strict circumstance. Of course this would be it'd have to be well documented that when using the <code>ArgMatches</code> given to the completing function, those requirements haven't been enforced yet and can't be relied on. But it would at least allow one to check for the presence of args, values, etc.</p>
+<blockquote>
+<p>If so, why not just do that using a closure?</p>
+</blockquote>
+<p>Actually I like that idea, I'll have to try this out when I get some time to sit down and try implementing this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/868.html">clap-rs/clap#868</a> on 2017-02-22 03:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/issues/375.html">BurntSushi/ripgrep#375</a> on 2017-02-22 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x blocker</span> added by @kbknapp on 2017-05-09 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @kbknapp on 2017-05-09 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/986.html">clap-rs/clap#986</a> on 2017-06-16 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/droundy">@droundy</a> on 2017-08-11 12:50</div>
+            <div class="timeline-body"><p>I would suggest rather than an enum that multiple methods setting completion possibilities would be a better and more extensible API.  So rather than</p>
+<pre><code>Args::complete_with(enum)</code></pre>
+<p>you would have</p>
+<pre><code>Args::complete_with_files()</code></pre>
+<p>and a whole set of other <code>complete_with_XXX</code> methods.  This removes the requirement that you foresee every possibility on the first version of the API (since you can't add variants to a public enum without breaking backwards compatibility).  I think the most important one is the one that uses an auto-generated flag to call rust code, since this can then implement all the others in a shell-independent way.  Then optimizations could be made to do the others in a shell-dependent way if that seems to help.  So I would focus on something like:</p>
+<pre><code>Args::complete_with_function(|matches_so_far| -&gt; [String] { ... }) </code></pre>
+<p>where it is important to provide the completed flags, since that can affect what is a valid completion for a given flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/droundy">@droundy</a> on 2017-08-11 12:59</div>
+            <div class="timeline-body"><p>Here is an example of a bash completion that simply calls command-line flags that return the possible completions for <a href="https://github.com/kbknapp/clap-rs/files/1217871/darcs.txt">darcs</a>.  darcs does no shell-specific munging in its Haskell code (since it is usable by multiple shells), just outputs a <code>'\n'</code>-delimited list of completions.  Then the bash code handles spaces and colons specially for bash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-06 03:25</div>
+            <div class="timeline-body"><p>I'm copying some comments from @joshtriplett on gitter so the discussion is all in one place.</p>
+<blockquote>
+<p>I see general consensus that we should have a way to call an arbitrary Rust function through a flag like --_clap-complete. We haven't talked about what that should take, but I would suggest that it needs 1) the partial argument being completed, 2) the rest of the arguments minus --_clap-complete (up to it to pass them to clap if desired). Beyond that, since some shells have built-in support for completing specific things and would likely do so faster than launching a program, we should also support files, files matching a glob, list of fixed strings, and maybe usernames/hostnames. Any of those that a shell we're generating completions for doesn't support would be easy enough to support in Rust.</p>
+</blockquote>
+<blockquote>
+<p>As far as I can tell, the only items we don't have consensus on are 1) exactly what common-denominator of built-in completions do we support (e.g. usernames/hostnames?), and 2) how exactly do we support shell code. For the latter, personally I favor the &quot;named shell function&quot; approach, which has the advantage of being shell-independent, but I recognize that there are people who seem to want to embed full shell code. (I don't know how that could be made shell-independent, personally.)</p>
+</blockquote>
+<hr />
+<p>Here's my responses:</p>
+<blockquote>
+<p>I see general consensus that we should have a way to call an arbitrary Rust function through a flag like --_clap-complete. We haven't talked about what that should take, but I would suggest that it needs 1) the partial argument being completed, 2) the rest of the arguments minus --_clap-complete (up to it to pass them to clap if desired).</p>
+</blockquote>
+<p>Agreed. However, I'm willing to &quot;settle&quot; for simply passing in argument to complete sans the argv, since the Rust code could essentially see the same thing by querying <code>std::env::arg[_os]</code> just like clap does. Another option is to allow &quot;incomplete parsing&quot; whenever <code>--_clap-complete</code> is used which would allow sending an <code>ArgMatches</code> struct to the Rust completion code. It would result in a double-parse to be sure, but I can't imagine that'd be a performance issue for anyone except the most critical perhaps &quot;daemon mode&quot; CLIs which I think is at odds with using completions in the first place 😜</p>
+<blockquote>
+<p>Beyond that, since some shells have built-in support for completing specific things and would likely do so faster than launching a program, we should also support files, files matching a glob, list of fixed strings, and maybe usernames/hostnames. Any of those that a shell we're generating completions for doesn't support would be easy enough to support in Rust.</p>
+</blockquote>
+<p>Also agreed. I'm thinking I'd like to expose this as a sort of enum where the implementation allows checking the shell which we're outputting for and either using the shell builtins or augmenting the missing parts with our own code.</p>
+<blockquote>
+<ol>
+<li>exactly what common-denominator of built-in completions do we support (e.g. usernames/hostnames?)</li>
+</ol>
+</blockquote>
+<p>Correct. I don't think this needs to be fully hashed out though, as we can always add. For now, files is a good starting point. List of predetermined values is possible-ish today (in some shells, but we'd need to augment in the lacking shells) via <code>possible_values</code>, however that would probably be another easy win for us to support a list of predefined values determined <em>at completion time</em>. For users/hostnames I'm fine adding it, however I don't have strong feelings about if it should be included as a first implementation or added later.</p>
+<blockquote>
+<ol start="2">
+<li>how exactly do we support shell code. For the latter, personally I favor the &quot;named shell function&quot; approach, which has the advantage of being shell-independent, but I recognize that there are people who seem to want to embed full shell code. (I don't know how that could be made shell-independent, personally.)</li>
+</ol>
+</blockquote>
+<p>The ways I see are allowing the user to send shell specific code up front a la <code>BashShellCode(&quot;blah blah blah&quot;), FishShellCode(&quot;bam bam bam&quot;)</code> etc, or perhaps with a Rust function which we send a <code>clap::Shell</code> variant to and they are responsible for sending back valid code such as <code>ShellCode(Fn(clap::Shell)-&gt;String)</code>.</p>
+<hr />
+<p>More generally, my goal is to pull the completion script generation <em>out</em> of clap proper and into a <code>clap_completions</code> crate at 3.x. I had made quite a few changes on the 3.x branch which would make implementing all this far easier and more correct, but it looks like I'm going to have to <em>partially</em> scrap the current 3.x branch due to some recent changes, and ideas I'd rather incorporate moving forward.</p>
+<p>What that means is I don't want to get too into the weeds <em>implementing</em> ideas we reach here on the current 2.x branch only to have massive changes in 3.x. I <em>do</em> want to reach a consensus though, or agree upon a foundation API which could be implemented on the 3.x branch.</p>
+<p>Having said that, if someone puts time into actual implementation on the 2.x branch I'd be more than happy to include it. I just don't personally have the time to pour into separate 2.x and 3.x implementations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sharkdp/fd/issues/189.html">sharkdp/fd#189</a> on 2018-01-01 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpcyrd">@kpcyrd</a> on 2018-01-03 04:02</div>
+            <div class="timeline-body"><p>I think it's important that the function that is called by <code>.get_matches()</code> needs to act like a 2nd main. There are some usecases where initialization is needed even in this case, for example to make sure the sandbox is active even in those cases. I don't think this is going to be an issue, just my 2 cents. :)</p>
+<p>I'm about to add completion to two of my programs, mostly because the values that the user is usually trying to complete are hard to type and would require looking them up manually.</p>
+<p>I think a minimal invasive 2.0 compatible solution that would already work for most of us would be something along the lines of:</p>
+<pre><code class="language-rust">.arg(Arg::with_name(&quot;foo&quot;)
+    .complete_with_cmd(&amp;[&quot;myprog&quot;, &quot;internal&quot;, &quot;something&quot;])
+)
+</code></pre>
+<p>This would instruct the shell to execute <code>myprog internal something abc</code> when the user types <code>abc&lt;TAB&gt;</code> for that argument. The output would be a <code>\n</code>-delimited list as @droundy suggested.</p>
+<p>For now, this would require writing additional subcommands, but that code can be re-used for a more advanced solution that requires breaking changes to clap.</p>
+<p>If this is acceptable I would try to prepare a patch, completion is crucial for one of those programs and I would either have to maintain the tab completion code on my own or fallback to post-processing as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2018-02-05 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x blocker</span> removed by @kbknapp on 2018-02-05 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1232.html">clap-rs/clap#1232</a> on 2018-03-30 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2018-03-30 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1269.html">clap-rs/clap#1269</a> on 2018-06-05 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/softprops">@softprops</a> on 2018-06-05 03:20</div>
+            <div class="timeline-body"><p>Here's some inspiration from how golang kingpin package handles dynamic tab completion using the bash <a href="https://www.gnu.org/software/bash/manual/html_node/A-Programmable-Completion-Example.html">COMPREPLY bash protocol</a></p>
+<p>Kingpin supports dynamic completions via it's <a href="https://github.com/alecthomas/kingpin/blob/master/README.md#additional-api">HintAction interface</a></p>
+<p>I imagine this should be possible providing a fn interface to clap's Arg type for dynamic completions</p>
+<p>Under the covers kingpin forks program control when in <a href="https://github.com/alecthomas/kingpin/blob/master/app.go#L205">completion mode</a> to invoke that completion func then exits the process.</p>
+<p>It switches modes of operation based on a <a href="https://github.com/alecthomas/kingpin/blob/master/app.go#L66">flag</a> that the completion script <a href="https://github.com/alecthomas/kingpin/blob/master/templates.go#L240">passes</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v3.0" by @kbknapp on 2018-07-22 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../matthias-t/workspace/issues/17.html">matthias-t/workspace#17</a> on 2018-07-31 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtulinius">@adamtulinius</a> on 2018-09-06 09:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Here's some inspiration from how golang kingpin package handles [..]</p>
+</blockquote>
+<p>Please not that kingpin currently can't complete file paths, which need something like https://github.com/alecthomas/kingpin/compare/master...DBCDK:hint-files to fix. I'm just mentioning this, because it required work on the compreply stuff, and might be useful here as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../sharkdp/bat/issues/372.html">sharkdp/bat#372</a> on 2018-10-21 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NotBad4U">@NotBad4U</a> on 2018-11-21 11:51</div>
+            <div class="timeline-body"><p>Hello everyone :smile:
+Any plans to progress on this feature? I could give it a try, but I would need a bit of mentoring / pointing to the right places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2018-11-21 19:46</div>
+            <div class="timeline-body"><p>@NotBad4U
+@kbknapp is interested in seeing that as clap gets closer to 3.0, and we're likely to brainstorm how it'll work in the next few months. We'll ping this bug when doing so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IssueHuntBot">@IssueHuntBot</a> on 2018-12-03 08:21</div>
+            <div class="timeline-body"><p>@issuehuntfest has funded $50.00 to this issue. <a href="https://issuehunt.io/repos/31315121/issues/568">See it on IssueHunt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2019-03-23 23:54</div>
+            <div class="timeline-body"><p>@NotBad4U are you still interested in working on this issue? If yes, then we are happy to mentor you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NotBad4U">@NotBad4U</a> on 2019-03-26 16:26</div>
+            <div class="timeline-body"><p>yes :smile:  I'm still interested @Dylan-DPC</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IssueHuntBot">@IssueHuntBot</a> on 2019-03-27 09:35</div>
+            <div class="timeline-body"><p>@cben has funded $10.00 to this issue.</p>
+<hr />
+<ul>
+<li>Submit pull request via <a href="https://issuehunt.io/repos/31315121/issues/568">IssueHunt</a> to receive this reward.</li>
+<li>Want to contribute? Chip in to this issue via <a href="https://issuehunt.io/repos/31315121/issues/568">IssueHunt</a>.</li>
+<li>Checkout the <a href="https://issuehunt.io/issues">IssueHunt Issue Explorer</a> to see more funded issues.</li>
+<li>Need help from developers? <a href="https://issuehunt.io/users/273688/repositories">Add your repository</a> on IssueHunt to raise funds.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dylan-DPC-zz">@Dylan-DPC-zz</a> on 2019-03-27 10:27</div>
+            <div class="timeline-body"><p>@NotBad4U you can start working on it. if you need any help you can ask us in #wg-cli channel on discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zx8">@zx8</a> on 2019-06-10 16:53</div>
+            <div class="timeline-body"><p>https://github.com/posener/complete is a library dedicated to dynamic completion written in Go, if you're looking for some ideas/inspiration. Despite the repo's description, it supports bash, zsh &amp; fish.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2020-02-14 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-02-14 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @pksunkara on 2020-03-03 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benjumanji">@benjumanji</a> on 2020-04-04 11:20</div>
+            <div class="timeline-body"><p>Here is a proposal that I think would be relatively simple. I haven't checked how zsh completion is done, but it's my understanding that it understands bash so you could just re-use it?</p>
+<p>The generated scripts for both fish and bash <em>already</em> support dynamic completions. Both compgen for bash and complete for fish honor parameter expansion, including shell substitution and word split. That is to say if you throw <code>$(cat words)</code> for bash or <code>(cat words)</code> for <code>possible_value</code> into an arg it totally works! Right up until clap validation kicks in and says it's not a valid value.</p>
+<p>Proposal: add <code>dynamic</code> to arg which adds the shell code and disables value validation. I can't justify working on this <em>right</em> now, but if this is an acceptable proposal I might be able to circle back around to it in a few weeks when I might need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/8573">@8573</a> on 2020-04-04 16:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I haven't checked how zsh completion is done, but it's my understanding that it understands bash so you could just re-use it?</p>
+</blockquote>
+<p>I've forgotten almost all I once knew about the Zsh completion system, but I recall that it's much more powerful/expressive(/fancy) than Bash's such that, if I recall correctly, telling it to use Bash completion, while the easy way out, could provide a needlessly suboptimal user experience. That said, I would think that such a project could start with telling Zsh to use Bash completion and come back and write native Zsh completion later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-09 06:51</div>
+            <div class="timeline-body"><p>#1793 is an attempt at fixing this in zsh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../vn971/rua/issues/121.html">vn971/rua#121</a> on 2020-04-27 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1880.html">clap-rs/clap#1880</a> on 2020-04-29 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1910.html">clap-rs/clap#1910</a> on 2020-05-06 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lsd-rs/lsd/issues/385.html">lsd-rs/lsd#385</a> on 2021-02-05 05:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../pimalaya/himalaya/issues/101.html">pimalaya/himalaya#101</a> on 2021-05-03 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../denoland/deno/issues/10166.html">denoland/deno#10166</a> on 2021-06-08 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-22 14:37</div>
+            <div class="timeline-body"><p>Are #1232 and this now dupes?  Should we close one in favor of the other to make it easier to browse the backlog?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-07-26 22:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-26 22:16</div>
+            <div class="timeline-body"><p>I kept them separate because this issue is more concentrated on leveraging shell completions while the other is for a full fledged solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-08-13 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../tranzystorekk/pakr/issues/1.html">tranzystorekk/pakr#1</a> on 2021-08-23 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Milo123459">@Milo123459</a> on 2021-09-13 21:04</div>
+            <div class="timeline-body"><p>I'm looking to try and implement this. Is there an API in specific that should be used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/65.html">epage/clapng#65</a> on 2021-12-06 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/157.html">epage/clapng#157</a> on 2021-12-06 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> removed by @epage on 2021-12-09 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-09 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> added by @epage on 2021-12-09 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 18:04</div>
+            <div class="timeline-body"><p>We currently provide <a href="https://docs.rs/clap/3.0.0-rc.4/clap/enum.ValueHint.html">ValueHint</a> for leveraging shell logic, though it isn't customizable.  For that, we have #1232.</p>
+<p>I'm inclined to close this in favor of wrapping up this request with #1232.  I'm hesitant for us to have two different solutions (a Rust driven and shell-specific snippets) and doing shell snippets would couple args to completion so they would know what shell they are completing for.</p>
+<p>We can always expand how we are using <code>ValueHint</code> for the common cases and as a short term until we have full customization.</p>
+<p>If there is any concern with closing this, please let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-13 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-blocked</span> removed by @epage on 2022-01-11 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-01-11 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:18 UTC
+    </footer>
+</body>
+</html>

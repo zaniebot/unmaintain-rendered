@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for &quot;manual&quot; package indexes - astral-sh/uv #4907</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for &quot;manual&quot; package indexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/4907">#4907</a>
+        opened by <a href="https://github.com/nblum-mdmi">@nblum-mdmi</a>
+        on 2024-07-08 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nblum-mdmi">@nblum-mdmi</a> on 2024-07-08 20:28</div>
+            <div class="timeline-body"><h2>Overview</h2>
+<p>I have a manual repository running in IIS on Windows server. Installing packages from the repository works fine with <code>pip</code> when specified as an <code>extra-index-url</code>, but when using <code>uv pip</code>, it seems to be unable to determine which versions are available, and thus does not fails to resolve.</p>
+<p>Note that this is a <a href="https://packaging.python.org/en/latest/guides/hosting-your-own-index/#manual-repository">manual repository</a> not a simple repository, which has API endpoints. (Though in my limited experimentation with <code>devpi</code>, <code>uv</code> also was unable to resolve dependencies)</p>
+<p>Is there any way to fix this? I love <code>ruff</code> and would be interested in using <code>uv</code> as well :smile:</p>
+<p>Thanks!</p>
+<h2>Using <code>pip</code></h2>
+<pre><code>&gt;&gt; pip install extabpylish --verbose --dry-run                                                         
+Using pip 24.1 from C:\Users\████████\AppData\Local\Programs\Python\Python311\Lib\site-packages\pip (python 3.11)
+Looking in indexes: https://pypi.org/simple, http://[manual-repository]/packages
+Collecting extabpylish
+  Using cached http://[manual-repository]/packages/extabpylish/extabpylish-0.1.0-py3-none-any.whl (8.5 kB)
+Collecting openpyxl&lt;4.0.0,&gt;=3.1.2 (from extabpylish)
+  Obtaining dependency information for openpyxl&lt;4.0.0,&gt;=3.1.2 from https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl.metadata
+  Using cached openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)
+Collecting ordered-set&lt;5.0.0,&gt;=4.1.0 (from extabpylish)
+  Obtaining dependency information for ordered-set&lt;5.0.0,&gt;=4.1.0 from https://files.pythonhosted.org/packages/33/55/af02708f230eb77084a299d7b08175cff006dea4f2721074b92cdb0296c0/ordered_set-4.1.0-py3-none-any.whl.metadata
+  Using cached ordered_set-4.1.0-py3-none-any.whl.metadata (5.3 kB)
+Collecting et-xmlfile (from openpyxl&lt;4.0.0,&gt;=3.1.2-&gt;extabpylish)
+  Obtaining dependency information for et-xmlfile from https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl.metadata
+  Using cached et_xmlfile-1.1.0-py3-none-any.whl.metadata (1.8 kB)
+Using cached openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)
+Using cached ordered_set-4.1.0-py3-none-any.whl (7.6 kB)
+Using cached et_xmlfile-1.1.0-py3-none-any.whl (4.7 kB)
+Would install ExTabPylish-0.1.0 et-xmlfile-1.1.0 openpyxl-3.1.5 ordered-set-4.1.0
+</code></pre>
+<h2>Using <code>uv pip</code></h2>
+<pre><code>&gt;&gt; uv pip install extabpylish --verbose --dry-run
+DEBUG uv 0.2.23
+DEBUG Searching for Python interpreter in system path or `py` launcher
+TRACE Ignoring stale interpreter markers for: .venv\Scripts\python.exe
+TRACE Querying interpreter executable at C:\Users\███████████████████████████████████████████\.venv\Scripts\python.exe
+DEBUG Found cpython 3.11.9 at `C:\Users\███████████████████████████████████████████\.venv\Scripts\python.exe` (virtual environment)
+DEBUG Using Python 3.11.9 environment at .venv\Scripts\python.exe
+TRACE Checking lock for `.venv`
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: extabpylish
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.11.9
+DEBUG Adding direct dependency: extabpylish*
+TRACE Fetching metadata for extabpylish from http://[manual-repository]/packages/extabpylish/
+TRACE cached request http://[manual-repository]/packages/extabpylish/ is storable because its response has a heuristically cacheable status code 200
+TRACE cached request http://[manual-repository]/packages/extabpylish/ has a cached response that does not allow staleness
+TRACE request http://[manual-repository]/packages/extabpylish/ does not have a fresh cache because its age is 263079 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
+DEBUG Found stale response for: http://[manual-repository]/packages/extabpylish/
+DEBUG Sending revalidation request for: http://[manual-repository]/packages/extabpylish/
+TRACE Handling request for http://[manual-repository]/packages/extabpylish/
+TRACE Request for http://[manual-repository]/packages/extabpylish/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL http://[manual-repository]/packages/extabpylish/
+TRACE Attempting unauthenticated request for http://[manual-repository]/packages/extabpylish/
+TRACE is modified because status is 200 and not 304
+DEBUG Found modified response for: http://[manual-repository]/packages/extabpylish/
+TRACE cached request http://[manual-repository]/packages/extabpylish/ is storable because its response has a heuristically cacheable status code 200
+TRACE Received package metadata for: extabpylish
+TRACE selecting candidate for package extabpylish with range Range { segments: [(Unbounded, Unbounded)] } with 0 remote versions
+DEBUG Searching for a compatible version of extabpylish (*)
+TRACE exhausted all candidates for package PackageName(&quot;extabpylish&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 0 steps
+TRACE selecting candidate for package extabpylish with range Range { segments: [(Unbounded, Unbounded)] } with 0 remote versions
+TRACE exhausted all candidates for package PackageName(&quot;extabpylish&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 0 steps
+DEBUG No compatible version found for: extabpylish
+  × No solution found when resolving dependencies:
+  ╰─▶ Because there are no versions of extabpylish and you require extabpylish, we can conclude that the requirements
+      are unsatisfiable.
+</code></pre>
+<h2><code>uv</code> details</h2>
+<p><strong>Platform:</strong> Windows 10
+<strong>Version:</strong> uv 0.2.23 (4bc36c0cb 2024-07-08)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ffolkes1911">@ffolkes1911</a> on 2024-07-10 05:30</div>
+            <div class="timeline-body"><p>We are using <code>devpi</code> server and having problems as well.<br />
+First problem was that <code>extra-index-url</code> was failing to find package (whereas <code>pip</code> was successful), however using <code>find-links</code> worked, so we did not pay much attention.<br />
+Yesterday we tried to bump minor version 0.0.26 -&gt; 0.1.0 (tried 1.0.0 as well) and as long as that new package (0.1.0) is in <code>devpi</code> we cannot install any version of our package.<br />
+Problems persist with older (0.1.39) and most recent (0.2.22) version of <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 14:58</div>
+            <div class="timeline-body"><p>Can you say more about your setup? Which index is the index-url and which is the extra-index-url? Does the package exist on both? Have you tried using the index-strategy setting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nblum-mdmi">@nblum-mdmi</a> on 2024-07-10 15:21</div>
+            <div class="timeline-body"><p>In my case, we have packages that are only available on the manual repository. We specify the manual repository as the <code>extra-index-url</code>. The <code>index-url</code> is the default, PyPI.</p>
+<p>I believe <code>pip</code> checks the <code>extra-index-url</code> after it is unable to find the package on the <code>index-url</code>, which is desired, since our <code>requirements.txt</code> refers to packages from PyPI, and from the manual repository (no overlap).</p>
+<p>I'm not sure the <code>index-strategy</code> setting applies here, since <code>uv pip</code> <em>is</em> checking the <code>extra-index-url</code>, it's just not finding the packages/versions (where <code>pip</code> finds them without issue)</p>
+<p>Let me know if there's any more information I can provide! 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ffolkes1911">@ffolkes1911</a> on 2024-07-11 05:08</div>
+            <div class="timeline-body"><p>We have our package only in our internal (<code>http</code>) <code>devpi</code> server as well, which is the &quot;extra&quot; index (provided via <code>find-links</code>, because <code>extra-index-url</code> did not work). Have not tried <code>index-strategy</code>, but we tried installing specifically only that package via CLI to no success, and I assume that <code>index-strategy</code> does not influence this scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ziima">@ziima</a> on 2024-07-24 07:58</div>
+            <div class="timeline-body"><p>I can confirm the same problem. <code>uv</code> for some reason doesn't work with non-simple devpi indexes.</p>
+<p>Here's what I tried:</p>
+<pre><code class="language-sh">pip install --index-url 'https://example.cz/me/test' 'coverage' --force-reinstall  # Works
+
+uv pip install --index-url 'https://example.cz/me/test' 'coverage' --force-reinstall  # Doesn't work
+uv pip install --extra-index-url 'https://example.cz/me/test' 'coverage' --force-reinstall  # Doesn't work
+uv pip install --index-url 'https://example.cz/me/test/+simple/' 'coverage' --force-reinstall  # Works
+uv pip install --extra-index-url 'https://example.cz/me/test/+simple/' 'coverage' --force-reinstall  # Works
+uv pip install --find-links 'https://example.cz/me/test' 'coverage' --force-reinstall  # Works
+</code></pre>
+<p>It's not really easy to find out, simple index needs to be used (see also #706).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nblum-mdmi">@nblum-mdmi</a> on 2024-08-20 21:23</div>
+            <div class="timeline-body"><p>Any update on this? Updated to the latest version of <code>uv</code> (0.3.0) and I am still seeing this issue :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 21:25</div>
+            <div class="timeline-body"><p>We don't have support for non-simple indexes. It seems reasonable to add support, but it's not high priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`uv pip` unable to determine versions from manual repositories?" to "Add support for "manual" package indexes" by @zanieb on 2024-08-20 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-08-20 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-08-20 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-08-20 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pnasrat">@pnasrat</a> on 2024-11-27 17:10</div>
+            <div class="timeline-body"><p>Happy to take a look at this as the help wanted label!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pnasrat">@pnasrat</a> on 2024-11-27 17:36</div>
+            <div class="timeline-body"><p>pip doesn't seem to support manual package indexes with file urls</p>
+<pre><code class="language-console">$ uv venv -p python3.12
+$ source .venv/bin/activate
+$ uv pip install pip
+$ pip install -i file://$(pwd)/simple/ --dry-run -vv stevedore --log pip.out
+</code></pre>
+<h3>Log</h3>
+<pre><code class="language-log">2024-11-27T17:31:13,236 Using pip 24.3.1 from /home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip (python 3.12)
+2024-11-27T17:31:13,237 Non-user install because user site-packages disabled
+2024-11-27T17:31:13,386 Created temporary directory: /tmp/pip-build-tracker-tu3xvtyh
+2024-11-27T17:31:13,387 Initialized build tracking at /tmp/pip-build-tracker-tu3xvtyh
+2024-11-27T17:31:13,387 Created build tracker: /tmp/pip-build-tracker-tu3xvtyh
+2024-11-27T17:31:13,387 Entered build tracker: /tmp/pip-build-tracker-tu3xvtyh
+2024-11-27T17:31:13,387 Created temporary directory: /tmp/pip-install-p134digo
+2024-11-27T17:31:13,389 Created temporary directory: /tmp/pip-ephem-wheel-cache-ew91mtha
+2024-11-27T17:31:13,410 Looking in indexes: file:///home/pnasrat/scratch/uv-file-repo/simple/
+2024-11-27T17:31:13,411 1 location(s) to search for versions of stevedore:
+2024-11-27T17:31:13,411 * file:///home/pnasrat/scratch/uv-file-repo/simple/stevedore/
+2024-11-27T17:31:13,412 Fetching project page and analyzing links: file:///home/pnasrat/scratch/uv-file-repo/simple/stevedore/
+2024-11-27T17:31:13,412  file: URL is directory, getting file:///home/pnasrat/scratch/uv-file-repo/simple/stevedore/index.html
+2024-11-27T17:31:13,413 Getting page file:///home/pnasrat/scratch/uv-file-repo/simple/stevedore/index.html
+2024-11-27T17:31:13,414 Found index url file:///home/pnasrat/scratch/uv-file-repo/simple/
+2024-11-27T17:31:13,415 Could not fetch URL file:///home/pnasrat/scratch/uv-file-repo/simple/stevedore/: 404 Client Error: FileNotFoundError for url: file:///home/pnasrat/scratch/uv-file-repo/simple/stevedore/index.html - skipping
+2024-11-27T17:31:13,424 Given no hashes to check 0 links for project 'stevedore': discarding no candidates
+2024-11-27T17:31:13,425 ERROR: Could not find a version that satisfies the requirement stevedore (from versions: none)
+2024-11-27T17:31:13,460 WARNING: Location 'file:///home/pnasrat/scratch/uv-file-repo/simple/pip/' is ignored: it is neither a file nor a directory.
+2024-11-27T17:31:13,460 0 location(s) to search for versions of pip:
+2024-11-27T17:31:13,466 Given no hashes to check 0 links for project 'pip': discarding no candidates
+2024-11-27T17:31:13,466 No remote pip version found
+2024-11-27T17:31:13,467 ERROR: No matching distribution found for stevedore
+2024-11-27T17:31:13,467 Exception information:
+2024-11-27T17:31:13,467 Traceback (most recent call last):
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/resolvers.py&quot;, line 397, in resolve
+2024-11-27T17:31:13,467     self._add_to_criteria(self.state.criteria, r, parent=None)
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/resolvers.py&quot;, line 174, in _add_to_criteria
+2024-11-27T17:31:13,467     raise RequirementsConflicted(criterion)
+2024-11-27T17:31:13,467 pip._vendor.resolvelib.resolvers.RequirementsConflicted: Requirements conflict: SpecifierRequirement('stevedore')
+2024-11-27T17:31:13,467 
+2024-11-27T17:31:13,467 During handling of the above exception, another exception occurred:
+2024-11-27T17:31:13,467 
+2024-11-27T17:31:13,467 Traceback (most recent call last):
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/resolver.py&quot;, line 95, in resolve
+2024-11-27T17:31:13,467     result = self._result = resolver.resolve(
+2024-11-27T17:31:13,467                             ^^^^^^^^^^^^^^^^^
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/resolvers.py&quot;, line 546, in resolve
+2024-11-27T17:31:13,467     state = resolution.resolve(requirements, max_rounds=max_rounds)
+2024-11-27T17:31:13,467             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/resolvers.py&quot;, line 399, in resolve
+2024-11-27T17:31:13,467     raise ResolutionImpossible(e.criterion.information)
+2024-11-27T17:31:13,467 pip._vendor.resolvelib.resolvers.ResolutionImpossible: [RequirementInformation(requirement=SpecifierRequirement('stevedore'), parent=None)]
+2024-11-27T17:31:13,467 
+2024-11-27T17:31:13,467 The above exception was the direct cause of the following exception:
+2024-11-27T17:31:13,467 
+2024-11-27T17:31:13,467 Traceback (most recent call last):
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_internal/cli/base_command.py&quot;, line 105, in _run_wrapper
+2024-11-27T17:31:13,467     status = _inner_run()
+2024-11-27T17:31:13,467              ^^^^^^^^^^^^
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_internal/cli/base_command.py&quot;, line 96, in _inner_run
+2024-11-27T17:31:13,467     return self.run(options, args)
+2024-11-27T17:31:13,467            ^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_internal/cli/req_command.py&quot;, line 67, in wrapper
+2024-11-27T17:31:13,467     return func(self, options, args)
+2024-11-27T17:31:13,467            ^^^^^^^^^^^^^^^^^^^^^^^^^
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_internal/commands/install.py&quot;, line 379, in run
+2024-11-27T17:31:13,467     requirement_set = resolver.resolve(
+2024-11-27T17:31:13,467                       ^^^^^^^^^^^^^^^^^
+2024-11-27T17:31:13,467   File &quot;/home/pnasrat/scratch/uv-file-repo/.venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/resolver.py&quot;, line 104, in resolve
+2024-11-27T17:31:13,467     raise error from e
+2024-11-27T17:31:13,467 pip._internal.exceptions.DistributionNotFound: No matching distribution found for stevedore
+2024-11-27T17:31:13,469 Removed build tracker: '/tmp/pip-build-tracker-tu3xvtyh'
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10567.html">astral-sh/uv#10567</a> on 2025-01-31 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11135.html">astral-sh/uv#11135</a> on 2025-01-31 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11136.html">astral-sh/uv#11136</a> on 2025-01-31 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue using uv with nox: uv insists using `.venv` instead of the nox-managed virtualenv - astral-sh/uv #9125</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue using uv with nox: uv insists using `.venv` instead of the nox-managed virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9125">#9125</a>
+        opened by <a href="https://github.com/sfermigier">@sfermigier</a>
+        on 2024-11-14 17:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sfermigier">@sfermigier</a> on 2024-11-14 17:57</div>
+            <div class="timeline-body"><p>I have trouble integrating uv with nox.</p>
+<p>Here is what I would like to work:</p>
+<pre><code class="language-python">nox.options.default_venv_backend = &quot;uv|virtualenv&quot;
+
+@nox.session
+def lint(session: nox.Session) -&gt; None:
+    session.run(&quot;uv&quot;, &quot;sync&quot;, &quot;--no-dev&quot;)
+    session.run(&quot;uv&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;pyright&quot;)
+    session.run(&quot;uv&quot;, &quot;run&quot;, &quot;pyright&quot;)
+</code></pre>
+<p>If fails, because uv ignores the virtualenv supplied by nox:</p>
+<pre><code>warning: `VIRTUAL_ENV=.nox/lint` does not match the project environment path `.venv` and will be ignored
+</code></pre>
+<p>Here's a workaround:</p>
+<pre><code class="language-python">nox.options.default_venv_backend = &quot;uv|virtualenv&quot;
+
+@nox.session
+def lint(session: nox.Session) -&gt; None:
+    session.run(&quot;rm&quot;, &quot;-rf&quot;, &quot;.venv&quot;, external=True)
+    session.run(&quot;ln&quot;, &quot;-s&quot;, &quot;.nox/lint&quot;, &quot;.venv&quot;, external=True)
+    session.run(&quot;uv&quot;, &quot;sync&quot;, &quot;--no-dev&quot;)
+    session.run(&quot;uv&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;abilian-devtools&quot;)
+    session.run(&quot;just&quot;, &quot;lint&quot;, external=True)
+</code></pre>
+<p>Here's a successful run:</p>
+<pre><code>nox -e lint -r
+nox &gt; Running session lint
+nox &gt; Creating virtual environment (uv) using python in .nox/lint
+nox &gt; rm -rf .venv
+nox &gt; ln -s .nox/lint .venv
+nox &gt; uv sync --no-dev
+...
+</code></pre>
+<p>However, at the end of the run, I have to run <code>uv sync</code> to recreate my <code>.venv</code> to keep working.</p>
+<p>I have eventually found another workaround, but anyway, I still think the use case of running &quot;uv sync&quot; from a virtualenv created by something else (e.g. tox or nox) could be useful.</p>
+<p>Another thing that breaks is if I have a Makefile or Justfile that calls <code>uv run make something</code>, then <code>uv</code> will use <code>.venv</code> and not <code>.nox/whatever</code> and this breaks.</p>
+<p>Version infos:</p>
+<pre><code>❯ nox --version
+2024.10.9
+❯ uv --version
+uv 0.5.1 (Homebrew 2024-11-08)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 18:00</div>
+            <div class="timeline-body"><p>Please see https://github.com/astral-sh/uv/pull/6834 and the discussions linked there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kianmeng">@kianmeng</a> on 2025-06-13 18:33</div>
+            <div class="timeline-body"><p>In case you found this page through search engine result, see the Nox's Cookbook, https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile on how to resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-06-16 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-16 17:29</div>
+            <div class="timeline-body"><p>Closing as answered by the nox docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-16 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:31 UTC
+    </footer>
+</body>
+</html>

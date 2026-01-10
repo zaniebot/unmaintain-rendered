@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv python install --upgrade` - astral-sh/uv #9031</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv python install --upgrade`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9031">#9031</a>
+        opened by <a href="https://github.com/kevinrenskers">@kevinrenskers</a>
+        on 2024-11-11 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kevinrenskers">@kevinrenskers</a> on 2024-11-11 21:10</div>
+            <div class="timeline-body"><pre><code>~ $ uv --version
+uv 0.5.1 (Homebrew 2024-11-08)
+</code></pre>
+<p>When I run <code>uv run --python 3.13 python</code> then Python 3.13.0rc2 is started. Why it is still using the release candidate?</p>
+<pre><code>~ $ uv python list --only-installed
+cpython-3.13.0-macos-aarch64-none       /opt/homebrew/opt/python@3.13/bin/python3.13 -&gt; ../Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.0rc2-macos-aarch64-none    .local/share/uv/python/cpython-3.13.0rc2-macos-aarch64-none/bin/python3.13
+cpython-3.12.7-macos-aarch64-none       /opt/homebrew/opt/python@3.12/bin/python3.12 -&gt; ../Frameworks/Python.framework/Versions/3.12/bin/python3.12
+cpython-3.12.6-macos-aarch64-none       .pyenv/versions/3.12.6/bin/python3.12
+cpython-3.12.6-macos-aarch64-none       .pyenv/versions/3.12.6/bin/python3 -&gt; python3.12
+cpython-3.12.6-macos-aarch64-none       .pyenv/versions/3.12.6/bin/python -&gt; python3.12
+cpython-3.11.10-macos-aarch64-none      .local/share/uv/python/cpython-3.11.10-macos-aarch64-none/bin/python3.11
+cpython-3.10.15-macos-aarch64-none      .local/share/uv/python/cpython-3.10.15-macos-aarch64-none/bin/python3.10
+cpython-3.9.6-macos-aarch64-none        /Library/Developer/CommandLineTools/usr/bin/python3 -&gt; ../../Library/Frameworks/Python3.framework/Versions/3.9/bin/python
+</code></pre>
+<p>I had to run <code>uv python uninstall 3.13</code> to get rid of the release candidate, and only then did <code>uv run --python 3.13 python</code> run the latest version - the one installed by Homebrew.</p>
+<p>Shouldn't uv automatically use the final version over the release candidate? It feels strange that I had to manually install 3.13 for it to use the newer 3.13.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-11 21:12</div>
+            <div class="timeline-body"><p>Was the release candidate already installed? Did <code>uv python install 3.13</code> give you the release candidate after uninstalling?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 21:13</div>
+            <div class="timeline-body"><p>Yeah we'll use a managed versions over system ones (like that homebrew one) and installed versions over available downloads. It looks like you previously used the release candidate — I think it's reasonable we don't switch the version out from under you without some sort of intervention?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-11 21:14</div>
+            <div class="timeline-body"><p>(Arguably, we should automatically upgrade people to the latest patch version of Python somehow, but we do not do that now)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinrenskers">@kevinrenskers</a> on 2024-11-11 21:17</div>
+            <div class="timeline-body"><p>I had the release candidate installed back when that was the newest version, yeah. Since then Homebrew installed 3.13 because one of its packages demands it (I didn't manually brew install python 3.13).</p>
+<p>I expected that uv would pick that version.</p>
+<p>After running <code>uv python uninstall 3.13</code> I then ran <code>uv python install 3.13</code> and yes that gave me the newest version:</p>
+<pre><code>~ $ uv python list --only-installed
+cpython-3.13.0-macos-aarch64-none     /opt/homebrew/opt/python@3.13/bin/python3.13 -&gt; ../Frameworks/Python.framework/Versions/3.13/bin/python3.13
+cpython-3.13.0-macos-aarch64-none     .local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+cpython-3.12.7-macos-aarch64-none     /opt/homebrew/opt/python@3.12/bin/python3.12 -&gt; ../Frameworks/Python.framework/Versions/3.12/bin/python3.12
+cpython-3.12.6-macos-aarch64-none     .pyenv/versions/3.12.6/bin/python3.12
+cpython-3.12.6-macos-aarch64-none     .pyenv/versions/3.12.6/bin/python3 -&gt; python3.12
+cpython-3.12.6-macos-aarch64-none     .pyenv/versions/3.12.6/bin/python -&gt; python3.12
+cpython-3.11.10-macos-aarch64-none    .local/share/uv/python/cpython-3.11.10-macos-aarch64-none/bin/python3.11
+cpython-3.10.15-macos-aarch64-none    .local/share/uv/python/cpython-3.10.15-macos-aarch64-none/bin/python3.10
+cpython-3.9.6-macos-aarch64-none      /Library/Developer/CommandLineTools/usr/bin/python3 -&gt; ../../Library/Frameworks/Python3.framework/Versions/3.9/bin/python3
+</code></pre>
+<p>To me it's weird that I had to do this manually.</p>
+<blockquote>
+<p>I think it's reasonable we don't switch the version out from under you without some sort of intervention</p>
+</blockquote>
+<p>Well, going from a release candidate to a final, when I never explicitly asked for a release candidate install anyway, seems reasonable.</p>
+<blockquote>
+<p>we should automatically upgrade people to the latest patch version of Python somehow</p>
+</blockquote>
+<p>That would make sense to me too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinrenskers">@kevinrenskers</a> on 2024-11-11 21:24</div>
+            <div class="timeline-body"><p>How does one update the installed Python version anyway? Like, I did run <code>uv python install 3.13</code> when the release candidate was still installed, and it did nothing. It didn't upgrade 3.13 to the final version.</p>
+<p>Or let's say 3.13.1 is released, how do I then update to that version? Will running <code>uv python install 3.13</code> at that point update to 3.13.1? Or do I first have to uninstall 3.13? And what about all my Python projects with a <code>.python-version</code> file that says <code>3.13</code>. Will they automatically update to 3.13.1 after I run <code>uv python install 3.13</code>? Do I have to specify the patch version in the <code>.python-version</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-11-11 23:59</div>
+            <div class="timeline-body"><blockquote>
+<p>let's say 3.13.1 is released, how do I then update to that version? Will running uv python install 3.13 at that point update to 3.13.1?</p>
+</blockquote>
+<p>If you already have 3.13.0 downloaded, then if you run <code>uv python install 3.13</code> uv will detect that you already have a compatible Python installation that matches the requirement of 3.13 and therefore do nothing. With verbose mode enabled you can see this:</p>
+<pre><code>$ uv -v python install 3.13
+DEBUG uv 0.5.1 (f399a5271 2024-11-08)
+DEBUG Found `cpython-3.13.0-macos-x86_64-none` for request `Python 3.13`
+</code></pre>
+<p>So no, in this case it won't automatically fetch and download version 3.13.1. You would have to specifically state that you want <code>uv python install 3.13.1</code> or use <code>uv python install 3.13 --reinstall</code>.</p>
+<pre><code>$ uv -v python install 3.13 --reinstall
+DEBUG uv 0.5.1 (f399a5271 2024-11-08)
+DEBUG Ignoring match `cpython-3.13.0-macos-x86_64-none` for request `Python 3.13` due to `--reinstall` flag
+DEBUG Found download `cpython-3.13.1-macos-x86_64-none` for request `Python 3.13`
+</code></pre>
+<p>If you run <code>uv python uninstall 3.13</code> - which would trigger your all downloaded versions matching 3.13 to uninstall - then running <code>uv python install 3.13</code> would the next time install 3.13.1 straight away. Because in this case it wouldn't find a compatible version meeting the requirement and therefore proceed to download the latest version.</p>
+<p>The same goes for your <code>.python-version</code> file. If it states <code>3.13</code>, then uv will look and see what is the latest version of 3.13 you already have downloaded. It won't go and automatically download the latest version. It will just use whatever you already have if that's possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 17:44</div>
+            <div class="timeline-body"><p>I think this looks like it's working correctly -- <code>--reinstall</code> or <code>--upgrade</code> should upgrade, but we shouldn't do it implicitly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinrenskers">@kevinrenskers</a> on 2024-11-12 17:47</div>
+            <div class="timeline-body"><p>It would make sense to add <code>--upgrade</code>, because having to reinstall Python to update it feels pretty unintuitive.</p>
+<p>Personally I do feel that running <code>uv python install 3.13</code> should install the latest patch version when an old version is installed, but I can see the logic in requiring <code>--upgrade</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-11-12 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Python 3.13 is stuck on rc2" to "Add `uv python install --upgrade`" by @charliermarsh on 2024-11-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 17:55</div>
+            <div class="timeline-body"><p>Sounds good. I honestly thought <code>--upgrade</code> existed already, but I was thinking of <code>uv tool install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 18:18</div>
+            <div class="timeline-body"><p>I think we're waiting to add <code>--upgrade</code> until we have better behavior around upgrading Python distributions that are in-use by virtual environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9216.html">astral-sh/uv#9216</a> on 2024-11-19 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7325.html">astral-sh/uv#7325</a> on 2025-02-10 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/angelo-peronio">@angelo-peronio</a> on 2025-02-10 12:06</div>
+            <div class="timeline-body"><p>Possibly a duplicate of #7892</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13954.html">astral-sh/uv#13954</a> on 2025-06-10 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-20 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:29 UTC
+    </footer>
+</body>
+</html>

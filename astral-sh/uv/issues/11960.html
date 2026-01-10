@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv defaults to wrong version on arm macOS - astral-sh/uv #11960</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv defaults to wrong version on arm macOS</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11960">#11960</a>
+        opened by <a href="https://github.com/TomShlomi">@TomShlomi</a>
+        on 2025-03-04 20:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TomShlomi">@TomShlomi</a> on 2025-03-04 20:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv</code> defaults to installing x86_64 Python, which mostly works but is incompatible with some libraries, including <code>jax</code> and <code>polars</code>.</p>
+<pre><code>uv python uninstall 3.12
+Searching for Python versions matching: Python 3.12
+Uninstalled Python 3.12.9 in 183ms
+ - cpython-3.12.9-macos-x86_64-none
+uvx --with jax python@3.12 -c &quot;import jax&quot;
+warning: Failed to patch the install name of the dynamic library for /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none/bin/python3.12. This may cause issues when building Python native extensions.
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/__init__.py&quot;, line 25, in &lt;module&gt;
+    from jax._src.cloud_tpu_init import cloud_tpu_init as _cloud_tpu_init
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/_src/cloud_tpu_init.py&quot;, line 17, in &lt;module&gt;
+    from jax._src import config
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/_src/config.py&quot;, line 26, in &lt;module&gt;
+    from jax._src.lib import guard_lib
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/_src/lib/__init__.py&quot;, line 84, in &lt;module&gt;
+    cpu_feature_guard.check_cpu_features()
+RuntimeError: This version of jaxlib was built using AVX instructions, which your CPU and/or operating system do not support. This error is frequently encountered on macOS when running an x86 Python installation on ARM hardware. In this case, try installing an ARM build of Python. Otherwise, you may be able work around this issue by building jaxlib from source.
+</code></pre>
+<p>To make it work, I have to run <code>uvx --with jax -p cpython-3.12.9-macos-aarch64-none python -c &quot;import jax&quot;</code>.</p>
+<p>Probably relatedly, <code>uv python list</code> only shows x86_64:</p>
+<pre><code>uv python list
+cpython-3.14.0a5+freethreaded-macos-x86_64-none    &lt;download available&gt;
+cpython-3.14.0a5-macos-x86_64-none                 /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.14.0a5-macos-x86_64-none/bin/python3.14
+cpython-3.13.2+freethreaded-macos-x86_64-none      &lt;download available&gt;
+cpython-3.13.2-macos-x86_64-none                   &lt;download available&gt;
+cpython-3.13.1-macos-x86_64-none                   /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.13.1-macos-x86_64-none/bin/python3.13
+cpython-3.13.0+freethreaded-macos-x86_64-none      /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.13.0+freethreaded-macos-x86_64-none/bin/python3.13t
+cpython-3.12.9-macos-x86_64-none                   /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none/bin/python3.12
+cpython-3.11.11-macos-x86_64-none                  &lt;download available&gt;
+cpython-3.11.6-macos-x86_64-none                   /usr/local/bin/python3.11 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+cpython-3.11.6-macos-x86_64-none                   /usr/local/bin/python3 -&gt; ../../../Library/Frameworks/Python.framework/Versions/3.11/bin/python3
+cpython-3.10.16-macos-x86_64-none                  /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.10.16-macos-x86_64-none/bin/python3.10
+cpython-3.9.21-macos-x86_64-none                   &lt;download available&gt;
+cpython-3.9.20-macos-x86_64-none                   /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.9.20-macos-x86_64-none/bin/python3.9
+cpython-3.8.20-macos-x86_64-none                   /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.8.20-macos-x86_64-none/bin/python3.8
+cpython-3.7.9-macos-x86_64-none                    /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.7.9-macos-x86_64-none/bin/python3.7 -&gt; python3.7m
+pypy-3.11.11-macos-x86_64-none                     &lt;download available&gt;
+pypy-3.10.19-macos-x86_64-none                     &lt;download available&gt;
+pypy-3.10.14-macos-x86_64-none                     /Users/tomshlomi/Library/Application Support/uv/python/pypy-3.10.14-macos-x86_64-none/bin/pypy3.10
+pypy-3.9.19-macos-x86_64-none                      &lt;download available&gt;
+pypy-3.8.16-macos-x86_64-none                      &lt;download available&gt;
+pypy-3.7.13-macos-x86_64-none                      &lt;download available&gt;
+</code></pre>
+<details>
+<summary>Verbose outputs</summary>
+
+<pre><code>uv python uninstall 3.12
+Searching for Python versions matching: Python 3.12
+Uninstalled 2 versions in 218ms
+ - cpython-3.12.9-macos-aarch64-none
+ - cpython-3.12.9-macos-x86_64-none
+uvx --with jax --verbose python@3.12 -c &quot;import jax&quot;                          
+DEBUG uv 0.6.3 (a0b9f22a2 2025-02-24)
+DEBUG Searching for Python 3.12 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/tomshlomi/Library/Application Support/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.14.0a5-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.13.1-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.13.0+freethreaded-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.10.16-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.9.20-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.8.20-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `cpython-3.7.9-macos-x86_64-none`
+DEBUG Skipping incompatible managed installation `pypy-3.10.14-macos-x86_64-none`
+DEBUG Found `cpython-3.11.6-macos-x86_64-none` at `/usr/local/bin/python3` (first executable in the search path)
+DEBUG Skipping interpreter at `/usr/local/bin/python3` from first executable in the search path: does not satisfy request `3.12`
+DEBUG Found `cpython-3.11.6-macos-x86_64-none` at `/usr/bin/python3` (search path)
+DEBUG Skipping interpreter at `/usr/local/bin/python3` from search path: does not satisfy request `3.12`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/Users/tomshlomi/Library/Application Support/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+Downloading cpython-3.12.9-macos-x86_64-none (15.1MiB)
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20250212/cpython-3.12.9%2B20250212-x86_64-apple-darwin-install_only_stripped.tar.gz to temporary location: /Users/tomshlomi/Library/Application Support/uv/python/.temp/.tmp5WaE0g
+DEBUG Extracting cpython-3.12.9%2B20250212-x86_64-apple-darwin-install_only_stripped.tar.gz
+ Downloaded cpython-3.12.9-macos-x86_64-none
+DEBUG Moving /Users/tomshlomi/Library/Application Support/uv/python/.temp/.tmp5WaE0g/python to /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none
+warning: Failed to patch the install name of the dynamic library for /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none/bin/python3.12. This may cause issues when building Python native extensions.
+Underlying error: Failed to update the install name of the Python dynamic library located at `/Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none/lib/libpython3.12.dylib`
+DEBUG Released lock at `/Users/tomshlomi/Library/Application Support/uv/python/.lock`
+DEBUG Acquired lock for `/Users/tomshlomi/Library/Application Support/uv/tools`
+DEBUG Released lock at `/Users/tomshlomi/Library/Application Support/uv/tools/.lock`
+DEBUG Assessing Python executable as base candidate: /Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none/bin/python3.12
+DEBUG Caching via base interpreter: `/Users/tomshlomi/Library/Application Support/uv/python/cpython-3.12.9-macos-x86_64-none/bin/python3.12`
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.12.9
+DEBUG Solving with target Python version: &gt;=3.12.9
+DEBUG Adding direct dependency: jax*
+DEBUG Found fresh response for: https://pypi.org/simple/jax/
+DEBUG Searching for a compatible version of jax (*)
+DEBUG Selecting: jax==0.5.1 [compatible] (jax-0.5.1-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/07/98/a507abd78e4a5cacfe8fbf92061853149e6abeaf1b3028fe353ca04cbbee/jax-0.5.1-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for jax==0.5.1: jaxlib&gt;=0.5.1, &lt;=0.5.1+
+DEBUG Adding transitive dependency for jax==0.5.1: ml-dtypes&gt;=0.4.0
+DEBUG Adding transitive dependency for jax==0.5.1: numpy&gt;=1.25
+DEBUG Found fresh response for: https://pypi.org/simple/opt-einsum/
+DEBUG Found fresh response for: https://pypi.org/simple/ml-dtypes/
+DEBUG Found fresh response for: https://pypi.org/simple/jaxlib/
+DEBUG Adding transitive dependency for jax==0.5.1: numpy{python_full_version &gt;= '3.12'}&gt;=1.26.0
+DEBUG Adding transitive dependency for jax==0.5.1: opt-einsum*
+DEBUG Adding transitive dependency for jax==0.5.1: scipy&gt;=1.11.1
+DEBUG Found fresh response for: https://pypi.org/simple/scipy/
+DEBUG Searching for a compatible version of jaxlib (&gt;=0.5.1, &lt;=0.5.1+)
+DEBUG Searching for a compatible version of jaxlib (&gt;0.5.1, &lt;=0.5.1+)
+DEBUG No compatible version found for: jaxlib
+DEBUG Found fresh response for: https://pypi.org/simple/numpy/
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/47/56/1bb21218e1e692506c220ffabd456af9733fba7aa1b14f73899979f4cc20/ml_dtypes-0.5.1-cp312-cp312-macosx_10_9_universal2.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/1d/cd/1dc7371e29195ecbf5222f9afeedb210e0a75057d8afbd942aa6cf8c8eca/scipy-1.15.2-cp312-cp312-macosx_14_0_x86_64.whl.metadata
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/eb/dc/023dad5b268a7895e58e791f28dc1c60eb7b6c06fcbc2af8538ad069d5f3/numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl.metadata
+DEBUG Recording unit propagation conflict of jaxlib from incompatibility of (jax)
+DEBUG Searching for a compatible version of jax (&lt;0.5.1 | &gt;0.5.1)
+DEBUG Selecting: jax==0.5.0 [compatible] (jax-0.5.0-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/f4/58/cc0721a1030fcbab0984beea0bf3c4610ec103f738423cdfa9c4ceb40598/jax-0.5.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for jax==0.5.0: jaxlib&gt;=0.5.0, &lt;=0.5.0+
+DEBUG Adding transitive dependency for jax==0.5.0: ml-dtypes&gt;=0.4.0
+DEBUG Adding transitive dependency for jax==0.5.0: numpy&gt;=1.25
+DEBUG Adding transitive dependency for jax==0.5.0: numpy{python_full_version &gt;= '3.12'}&gt;=1.26.0
+DEBUG Adding transitive dependency for jax==0.5.0: opt-einsum*
+DEBUG Adding transitive dependency for jax==0.5.0: scipy&gt;=1.11.1
+DEBUG Searching for a compatible version of jaxlib (&gt;=0.5.0, &lt;=0.5.0+)
+DEBUG Searching for a compatible version of jaxlib (&gt;0.5.0, &lt;=0.5.0+)
+DEBUG No compatible version found for: jaxlib
+DEBUG Recording unit propagation conflict of jaxlib from incompatibility of (jax)
+DEBUG Searching for a compatible version of jax (&lt;0.5.0 | &gt;0.5.0, &lt;0.5.1 | &gt;0.5.1)
+DEBUG Selecting: jax==0.4.38 [compatible] (jax-0.4.38-py3-none-any.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/22/49/b4418a7a892c0dd64442bbbeef54e1cdfe722dfc5a7bf0d611d3f5f90e99/jax-0.4.38-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for jax==0.4.38: jaxlib&gt;=0.4.38, &lt;=0.4.38+
+DEBUG Adding transitive dependency for jax==0.4.38: ml-dtypes&gt;=0.4.0
+DEBUG Adding transitive dependency for jax==0.4.38: numpy&gt;=1.24
+DEBUG Adding transitive dependency for jax==0.4.38: numpy{python_full_version &gt;= '3.12'}&gt;=1.26.0
+DEBUG Adding transitive dependency for jax==0.4.38: opt-einsum*
+DEBUG Adding transitive dependency for jax==0.4.38: scipy&gt;=1.10
+DEBUG Adding transitive dependency for jax==0.4.38: scipy{python_full_version &gt;= '3.12'}&gt;=1.11.1
+DEBUG Searching for a compatible version of jaxlib (&gt;=0.4.38, &lt;=0.4.38+)
+DEBUG Selecting: jaxlib==0.4.38 [compatible] (jaxlib-0.4.38-cp312-cp312-macosx_10_14_x86_64.whl)
+DEBUG Found fresh response for: https://files.pythonhosted.org/packages/49/df/08b94c593c0867c7eaa334592807ba74495de4be90580f360db8b96221dc/jaxlib-0.4.38-cp312-cp312-macosx_10_14_x86_64.whl.metadata
+DEBUG Adding transitive dependency for jaxlib==0.4.38: scipy&gt;=1.10
+DEBUG Adding transitive dependency for jaxlib==0.4.38: numpy&gt;=1.24
+DEBUG Adding transitive dependency for jaxlib==0.4.38: ml-dtypes&gt;=0.2.0
+DEBUG Adding transitive dependency for jaxlib==0.4.38: scipy{python_full_version &gt;= '3.12'}&gt;=1.11.1
+DEBUG Searching for a compatible version of ml-dtypes (&gt;=0.4.0)
+DEBUG Selecting: ml-dtypes==0.5.1 [compatible] (ml_dtypes-0.5.1-cp312-cp312-macosx_10_9_universal2.whl)
+DEBUG Adding transitive dependency for ml-dtypes==0.5.1: numpy&gt;=1.21
+DEBUG Adding transitive dependency for ml-dtypes==0.5.1: numpy{python_full_version &gt;= '3.10'}&gt;=1.21.2
+DEBUG Adding transitive dependency for ml-dtypes==0.5.1: numpy{python_full_version &gt;= '3.11'}&gt;=1.23.3
+DEBUG Adding transitive dependency for ml-dtypes==0.5.1: numpy{python_full_version &gt;= '3.12'}&gt;=1.26.0
+DEBUG Searching for a compatible version of numpy (&gt;=1.24)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Searching for a compatible version of numpy{python_full_version &gt;= '3.12'} (&gt;=1.26.0)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Adding transitive dependency for numpy==2.2.3: numpy==2.2.3
+DEBUG Adding transitive dependency for numpy==2.2.3: numpy{python_full_version &gt;= '3.12'}==2.2.3
+DEBUG Searching for a compatible version of numpy{python_full_version &gt;= '3.12'} (==2.2.3)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Searching for a compatible version of numpy{python_full_version &gt;= '3.10'} (&gt;=1.21.2)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Adding transitive dependency for numpy==2.2.3: numpy==2.2.3
+DEBUG Adding transitive dependency for numpy==2.2.3: numpy{python_full_version &gt;= '3.10'}==2.2.3
+DEBUG Searching for a compatible version of numpy{python_full_version &gt;= '3.10'} (==2.2.3)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Searching for a compatible version of numpy{python_full_version &gt;= '3.11'} (&gt;=1.23.3)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Adding transitive dependency for numpy==2.2.3: numpy==2.2.3
+DEBUG Adding transitive dependency for numpy==2.2.3: numpy{python_full_version &gt;= '3.11'}==2.2.3
+DEBUG Searching for a compatible version of numpy{python_full_version &gt;= '3.11'} (==2.2.3)
+DEBUG Selecting: numpy==2.2.3 [compatible] (numpy-2.2.3-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Searching for a compatible version of opt-einsum (*)
+DEBUG Selecting: opt-einsum==3.4.0 [compatible] (opt_einsum-3.4.0-py3-none-any.whl)
+DEBUG Searching for a compatible version of scipy (&gt;=1.10)
+DEBUG Selecting: scipy==1.15.2 [compatible] (scipy-1.15.2-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Adding transitive dependency for scipy==1.15.2: numpy&gt;=1.23.5, &lt;2.5
+DEBUG Searching for a compatible version of scipy{python_full_version &gt;= '3.12'} (&gt;=1.11.1)
+DEBUG Selecting: scipy==1.15.2 [compatible] (scipy-1.15.2-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Adding transitive dependency for scipy==1.15.2: scipy==1.15.2
+DEBUG Adding transitive dependency for scipy==1.15.2: scipy{python_full_version &gt;= '3.12'}==1.15.2
+DEBUG Searching for a compatible version of scipy{python_full_version &gt;= '3.12'} (==1.15.2)
+DEBUG Selecting: scipy==1.15.2 [compatible] (scipy-1.15.2-cp312-cp312-macosx_14_0_x86_64.whl)
+DEBUG Adding transitive dependency for scipy==1.15.2: numpy&gt;=1.23.5, &lt;2.5
+DEBUG Tried 8 versions: jax 3, jaxlib 1, ml-dtypes 1, numpy 1, opt-einsum 1, scipy 1
+DEBUG marker environment resolution took 0.064s
+Resolved 6 packages in 81ms
+DEBUG Checking for Python environment at `/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW`
+DEBUG Running `python -c import jax`
+DEBUG Spawned child 69300 in process group 69227
+Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/__init__.py&quot;, line 25, in &lt;module&gt;
+    from jax._src.cloud_tpu_init import cloud_tpu_init as _cloud_tpu_init
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/_src/cloud_tpu_init.py&quot;, line 17, in &lt;module&gt;
+    from jax._src import config
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/_src/config.py&quot;, line 26, in &lt;module&gt;
+    from jax._src.lib import guard_lib
+  File &quot;/Users/tomshlomi/.cache/uv/archive-v0/cg8pyhvZOgr563SiEWKQW/lib/python3.12/site-packages/jax/_src/lib/__init__.py&quot;, line 84, in &lt;module&gt;
+    cpu_feature_guard.check_cpu_features()
+RuntimeError: This version of jaxlib was built using AVX instructions, which your CPU and/or operating system do not support. This error is frequently encountered on macOS when running an x86 Python installation on ARM hardware. In this case, try installing an ARM build of Python. Otherwise, you may be able work around this issue by building jaxlib from source.
+DEBUG Command exited with code: 1
+</code></pre>
+</details>
+
+<h3>Platform</h3>
+<p>Darwin 23.5.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+<h3>Python version</h3>
+<p>3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @TomShlomi on 2025-03-04 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karanravindra">@karanravindra</a> on 2025-03-04 20:20</div>
+            <div class="timeline-body"><p>are you sure you installed the ARM version of uv? maybe try reinstalling it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomShlomi">@TomShlomi</a> on 2025-03-04 20:28</div>
+            <div class="timeline-body"><p>Oops yeah that was it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @TomShlomi on 2025-03-04 20:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.conflicts_with error messages not symmetric - clap-rs/clap #718</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.conflicts_with error messages not symmetric</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/718">#718</a>
+        opened by <a href="https://github.com/joshtriplett">@joshtriplett</a>
+        on 2016-10-29 20:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-29 20:52</div>
+            <div class="timeline-body"><p>The documentation for <code>conflicts_with</code> says:</p>
+<blockquote>
+<p>Conflict rules only need to be set for one of the two arguments, they do not need to be set for each.</p>
+<p><strong>NOTE:</strong> Defining a conflict is two-way, but does <em>not</em> need to defined for both arguments (i.e. if A conflicts with B, defining A.conflicts_with(B) is sufficient. You do not need need to also do B.conflicts_with(A))</p>
+</blockquote>
+<p>However, the error messages for the conflict differ based on whether I provide one <code>conflicts_with</code> or both.</p>
+<p>If I mark the arguments <code>--rfc</code> and <code>--subject-prefix</code> as each conflicting with each other, then passing both will give an error message that treats the second such argument as the error and suggest removing it, which makes sense:</p>
+<pre><code class="language-text">(1) ~/src/git-series$ git series format --rfc --subject-prefix x
+error: The argument '--subject-prefix &lt;Subject-Prefix&gt;' cannot be used with '--rfc'
+
+USAGE:
+    git series format --rfc
+
+For more information try --help
+(1) ~/src/git-series$ git series format --subject-prefix x --rfc 
+error: The argument '--rfc' cannot be used with '--subject-prefix &lt;Subject-Prefix&gt;'
+
+USAGE:
+    git series format --subject-prefix &lt;Subject-Prefix&gt;
+
+For more information try --help
+</code></pre>
+<p>However, if I only call <code>.conflicts_with(&quot;subject-prefix&quot;)</code> on <code>--rfc</code>, but not the other way around, the error message always marks <code>--subject-prefix</code> as the error and always suggests dropping <code>--subject-prefix</code>:</p>
+<pre><code class="language-text">(1) ~/src/git-series$ git series format --rfc --subject-prefix x
+error: The argument '--subject-prefix &lt;Subject-Prefix&gt;' cannot be used with '--rfc'
+
+USAGE:
+    git series format --rfc
+
+For more information try --help
+(1) ~/src/git-series$ git series format --subject-prefix x --rfc 
+error: The argument '--subject-prefix &lt;Subject-Prefix&gt;' cannot be used with '--rfc'
+
+USAGE:
+    git series format --rfc
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-29 21:38</div>
+            <div class="timeline-body"><p>Thanks for posting this. Yeah it has to do with the order in which <code>clap</code> detects the conflict, and then searches for the root cause of the error. I <em>think</em> it's because <code>clap</code> uses an early exit strategy, and returns an error as soon as it comes to it, instead of parsing the whole line.</p>
+<p>For your first example, the way it works is:</p>
+<ul>
+<li>clap detects <code>--rfc</code> and adds <code>--subject-prefix</code> to list of known conflicts</li>
+<li>Then detects <code>--subject-prefix</code> and exits with a known conflict error</li>
+</ul>
+<p>For the second example it goes a little differently:</p>
+<ul>
+<li><code>clap</code> detects <code>--rfc</code></li>
+<li><code>clap</code> detects <code>--subject-prefix</code> and adds <code>--rfc</code> to a list of known conflicts`</li>
+<li><code>clap</code> finishes parsing the rest of the arguments</li>
+<li>Prior to returning a success, it does a once over all the matches, and ensures there are no conflicts</li>
+<li><code>clap</code> finds <code>--rfc</code> is on the known conflict list and searches for the a <em>used</em> argument that conflicts with it</li>
+<li><code>clap</code> finds <code>--subject-prefix</code> and exits with a conflict error, but doesn't actually know which one came first</li>
+</ul>
+<p>But since what you're posing makes 100% sense, I <em>do</em> need to look at a way to make this more symmetric and less confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-10-29 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-10-29 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-10-29 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2016-10-29 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-10-29 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2016-10-29 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-29 21:47</div>
+            <div class="timeline-body"><p>@kbknapp You could store all conflicts symmetrically, manufacturing and adding to a conflict group.  For instance, when you call <code>conflicts_with</code> from one arg to another, it'd look up whether that arg already has a conflict group, add itself to that conflict group if so, or create a new conflict group with both arguments if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-30 22:27</div>
+            <div class="timeline-body"><p>Yeah, I'm going to look at some of those possibilities. I'll first have to get re-aquainted with the code since it's been a while since I looked at that piece :stuck_out_tongue_winking_eye: I know some easy ways to do it, but I'd also like to keep from allocating more than I absolutely need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-31 04:44</div>
+            <div class="timeline-body"><p>@joshtriplett I was able to get this working. Once #720 merges let me know if v2.16.4 is more along the lines of what you're thinking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-10-31 05:22</div>
+            <div class="timeline-body"><p>Looks promising. I look forward to testing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-10-31 12:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:20 UTC
+    </footer>
+</body>
+</html>

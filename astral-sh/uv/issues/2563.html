@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to set username for keyring cli based pip authorization (Azure artifacts)  - astral-sh/uv #2563</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to set username for keyring cli based pip authorization (Azure artifacts) </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2563">#2563</a>
+        opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a>
+        on 2024-03-20 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-03-20 13:20</div>
+            <div class="timeline-body"><p>For keyring authorization to work with Azure artifacts and the keyring CLI I have to supply a default username that must be
+<code>VssSessionToken</code></p>
+<p>Trying to set this for UV in the same way as I would do for<a href="https://pip.pypa.io/en/stable/topics/authentication/#basic-http-authentication"> pip</a> e.g.</p>
+<pre><code>uv pip install --keyring-provider subprocess --index-url https://VssSessionToken@pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/ nameofpackage --verbose
+</code></pre>
+<p>results in no keyring operation probably because UV identifies the username as a password/token</p>
+<pre><code>DEBUG No cache entry for: https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/
+DEBUG Request already has an authorization header: https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/
+error: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/)
+</code></pre>
+<p>It seems that pip supports that the form where only one part is given could be both username and a usernameless token but UV does not.</p>
+<p>Using the default password on the other hand results in no response from keyring (can be confirmed by calling keyring directly)</p>
+<pre><code>uv pip install --keyring-provider subprocess --index-url https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/ nameofpackage --verbose
+</code></pre>
+<pre><code>DEBUG No cache entry for: https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/
+DEBUG Running `keyring get` for `[https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/`](https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/%60) with username `oauth2accesstoken`
+DEBUG No keyring credentials found for https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/
+DEBUG No credentials found for: https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/
+error: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/nameofpackage/)
+</code></pre>
+<p>If I manually rebuild uv with the default username changed from <code>oauth2accesstoken</code> to <code>VssSessionToken</code> everything works correctly.</p>
+<p>Is there a different way I am supposed to embed the username?</p>
+<p>System:
+Windows 11
+Python 3.12 conda env
+uv 1.22</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-20 14:02</div>
+            <div class="timeline-body"><p>I think we just don't support this yet although we probably can!</p>
+<p>Can you share the keyring invocation we are performing and the other you would prefer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-03-20 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-03-20 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-20 14:14</div>
+            <div class="timeline-body"><p>Okay thanks I can take a look into this unless @BakerNet is interested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2024-03-20 14:15</div>
+            <div class="timeline-body"><p>Thanks @zanieb
+In the first example with the username given as part of the url (but no password in the url)
+no keyring invocation is triggered since UV seems to assume that the username provided in the url is a token.</p>
+<p>In the second example you call keyring something like this (which would return None)</p>
+<pre><code>keyring get https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/ oauth2accesstoken
+</code></pre>
+<p>but I would need.</p>
+<pre><code>keyring get https://pkgs.dev.azure.com/nameoforg/_packaging/nameoffeed/pypi/simple/ VssSessionToken 
+</code></pre>
+<p>which correctly returns a token when I call it from the commandline</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-20 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Okay thanks I can take a look into this unless @BakerNet is interested</p>
+</blockquote>
+<p>I know why this is happening and can work on it.  It's because of the early return in the middleware when the header is already added from the URL.  If there is a username in the URL, but no password, it should be checking keyring and replacing the header if found.</p>
+<p><code>pip</code> only relies on URL encoded auth if it includes a password, but <code>uv</code> is currently relying on it even if it only contains username.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BakerNet by @zanieb on 2024-03-20 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2570.html">astral-sh/uv#2570</a> on 2024-03-20 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BakerNet">@BakerNet</a> on 2024-03-25 17:42</div>
+            <div class="timeline-body"><p>The PR for this has been ready for a few days (#2570 )</p>
+<p>I don't mean to rush, just an FYI in case it wasn't clear it's ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2984.html">astral-sh/uv#2984</a> on 2024-04-11 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2976.html">astral-sh/uv#2976</a> on 2024-04-15 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 16:49</div>
+            <div class="timeline-body"><p>Should be resolved by https://github.com/astral-sh/uv/pull/2976 and available in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-16 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../Homebrew/homebrew-core/pulls/169338.html">Homebrew/homebrew-core#169338</a> on 2024-04-17 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

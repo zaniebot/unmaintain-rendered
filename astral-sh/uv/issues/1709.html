@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install resulting in 401 Unauthorized with private index url - astral-sh/uv #1709</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install resulting in 401 Unauthorized with private index url</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1709">#1709</a>
+        opened by <a href="https://github.com/AloizioMacedo">@AloizioMacedo</a>
+        on 2024-02-19 17:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AloizioMacedo">@AloizioMacedo</a> on 2024-02-19 17:09</div>
+            <div class="timeline-body"><p>I am trying to use <code>uv pip install</code> with a private repository, and I am getting (401 Unauthorized errors). The same URL works completely fine with native pip, i.e. if I just remove the &quot;uv&quot;.</p>
+<p>I cannot share the real URL, but there might be characters which might be raising some issues (like '@'), so here is a pseudo-example:</p>
+<p><code>uv pip install privatepackage --index-url https://not_real@fake.com:fake_key@fake.aa.bb/path1/path2/path3/path4/path5</code></p>
+<p>My current uv version is <code>0.1.5</code>, and the Python env is <code>3.8</code>.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 17:10</div>
+            <div class="timeline-body"><p>Are you able to share the hosting provider (or similar) for the private repository? E.g., is it on Azure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">registry</span> added by @zanieb on 2024-02-19 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AloizioMacedo">@AloizioMacedo</a> on 2024-02-19 17:21</div>
+            <div class="timeline-body"><p>Thanks for the (extremely quick!!!) response! I'm sorry, but I can't share more details about the private index.</p>
+<p>If it might be helpful, I explicitly mentioned the @ character because some of our developers had problems in the past due to '@' being converted into '%40' at some point depending on the setup, and I see this happening during the <code>uv_client::html::parse</code> stage in verbose mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hwong557">@hwong557</a> on 2024-02-19 17:25</div>
+            <div class="timeline-body"><p>I have the same problem. I'm using a jfrog repo. The index url looks like:</p>
+<pre><code>https://$USERNAME:$TOKEN@xxx.jfrog.io/yyy/zzz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 17:29</div>
+            <div class="timeline-body"><p>Are you able to share the full output of running with <code>--verbose</code>? You're welcome to remove the domain and obviously the credentials. We're focusing on improving support for private indexes this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hwong557">@hwong557</a> on 2024-02-19 17:37</div>
+            <div class="timeline-body"><p>I ran</p>
+<pre><code> uv pip compile pyproject.toml --extra-index-url https://$USERNAME:$TOKEN@xxx.jfrog.io/yyy/zzz -o requirements.txt
+</code></pre>
+<p>and got:</p>
+<pre><code>error: Failed to download: my_private_package=1.2.3
+  Caused by: The wheel my_private_package1.2.3-py3-none-any.whl is not a valid zip file
+  Caused by: an upstream reader returned an error: io error occurred: Request error: HTTP status client error (401 Unauthorized) for url (https://xxx.jfrog.io/yyy/my_private_package1.2.3/my_private_package1.2.3-py3-none-any.whl#sha256=1111111111111111111111111111111111111111111111111111111111111111)
+  Caused by: io error occurred: Request error: HTTP status client error (401 Unauthorized) for url (https://xxx.jfrog.io/yyy/my_private_package1.2.3/my_private_package1.2.3-py3-none-any.whl#sha256=1111111111111111111111111111111111111111111111111111111111111111)
+  Caused by: Request error: HTTP status client error (401 Unauthorized) for url (https://xxx.jfrog.io/yyy/my_private_package1.2.3/my_private_package1.2.3-py3-none-any.whl#sha256=1111111111111111111111111111111111111111111111111111111111111111)
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://xxx.jfrog.io/yyy/my_private_package1.2.3/my_private_package1.2.3-py3-none-any.whl#sha256=1111111111111111111111111111111111111111111111111111111111111111)
+</code></pre>
+<p>Running the above command with <code>-i</code> instead of <code>--extra-index-url</code> gives similar output, but it fails on a <em>public</em> package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:41</div>
+            <div class="timeline-body"><p>Related</p>
+<ul>
+<li>https://github.com/astral-sh/uv/issues/1458</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpizenberg">@mpizenberg</a> on 2024-02-20 11:06</div>
+            <div class="timeline-body"><p>Same issue for me with a private gitlab index</p>
+<pre><code class="language-sh">&gt; uv pip compile --index-url='https://__token__:$MYTOKEN@gitlab.com/api/v4/projects/$ID/packages/pypi/simple' --output-file=requirements/linux-uv.txt pyproject.toml
+error: Failed to download: my-pkg==0.4.0
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://gitlab.com/api/v4/projects/$ID/packages/pypi/files/.../my_pkg-0.4.0-py3-none-any.whl#sha256=...)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nitlev">@nitlev</a> on 2024-02-20 17:03</div>
+            <div class="timeline-body"><p>Same error here on an GCP Arctifact Registry:</p>
+<pre><code class="language-bash">&gt; uv pip install my-pkg --extra-index-url &quot;https://_json_key_base64:***@europe-west1-python.pkg.dev/project/repo/simple/&quot;
+uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+      0.046054s   0ms INFO pubgrub::internal::partial_solution add_decision: root @ 0a0.dev0
+   uv_resolver::resolver::choose_version package=my-pkg
+     uv_resolver::resolver::package_wait package_name=my-pkg
+ uv_resolver::resolver::process_request request=Versions my-pkg
+   uv_client::registry_client::simple_api package=my-pkg
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/simple-v1/pypi/my-pkg.rkyv
+ uv_resolver::resolver::process_request request=Prefetch my-pkg *
+          0.046664s   0ms WARN uv_client::cached_client Broken cache entry at /root/.cache/uv/simple-v1/pypi/my-pkg.rkyv, removing: failed to open file `/root/.cache/uv/simple-v1/pypi/my-pkg.rkyv`
+       uv_client::cached_client::fresh_request url=&quot;https://pypi.org/simple/my-pkg/&quot;
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/simple-v1/0c1fe98321190311/my-pkg.rkyv
+       uv_client::cached_client::revalidation_request url=&quot;https://europe-west1-python.pkg.dev/project/repo/simple/my-pkg/&quot;
+       uv_client::cached_client::new_cache file=/root/.cache/uv/simple-v1/0c1fe98321190311/my-pkg.rkyv
+       uv_client::registry_client::parse_simple_api package=my-pkg
+         uv_client::html::parse url=https://_json_key_base64:***@europe-west1-python.pkg.dev/project/repo/simple/my-pkg/
+ uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=my-pkg==0.0.1
+     uv_client::registry_client::wheel_metadata built_dist=my-pkg==0.0.1
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v0/index/0c1fe98321190311/my-pkg/my-pkg-0.0.1-py3-none-any.msgpack
+   uv_resolver::resolver::get_dependencies package=my-pkg, version=0.0.1
+     uv_resolver::resolver::distributions_wait package_id=my-pkg-0.0.1
+              0.187447s   0ms WARN uv_client::cached_client Broken cache entry at /root/.cache/uv/wheels-v0/index/0c1fe98321190311/my-pkg/my-pkg-0.0.1-py3-none-any.msgpack, removing: failed to open file `/root/.cache/uv/wheels-v0/index/0c1fe98321190311/my-pkg/my-pkg-0.0.1-py3-none-any.msgpack`
+           uv_client::cached_client::fresh_request url=&quot;https://europe-west1-python.pkg.dev/project/repo/my-pkg/my-pkg-0.0.1-py3-none-any.whl#sha256=5741581bb410a9b09a69871cad4783f7aa84fed6e05e68cb58060ea8d3c994d1&quot;
+error: Failed to download: my-pkg==0.0.1
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://europe-west1-python.pkg.dev/project/repo/my-pkg/my-pkg-0.0.1-py3-none-any.whl#sha256=5741581bb410a9b09a69871cad4783f7aa84fed6e05e68cb58060ea8d3c994d1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlpMimaroglu">@AlpMimaroglu</a> on 2024-02-22 14:35</div>
+            <div class="timeline-body"><p>Same problem here. Using a private azure index with <code>--index-url=https://[personal_access_token]@[private_index_url]</code> using Python 3.9. Strangely it finds the latest package version in the index and when you click on the url in the error message you are able to download the artifact.</p>
+<p>This is a redacted version of the verbose output</p>
+<pre><code>uv::requirements::from_source source=private-package
+    0.001379s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    0.001552s DEBUG uv_interpreter::interpreter Using cached markers for: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    0.001566s DEBUG uv::commands::pip_install Using Python 3.9.5 environment at xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    0.003116s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries 
+ uv_resolver::resolver::solve 
+      0.005239s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.9.5
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.005343s   0ms DEBUG uv_resolver::resolver Adding direct dependency: private-package*
+   uv_resolver::resolver::choose_version package=private-package
+     uv_resolver::resolver::package_wait package_name=private-package
+ uv_resolver::resolver::process_request request=Versions private-package
+   uv_client::registry_client::simple_api package=private-package
+     uv_client::cached_client::get_cacheable 
+       uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/simple-v1/12326308e467ba02/private-package.rkyv
+ uv_resolver::resolver::process_request request=Prefetch private-package *
+          0.005874s   0ms DEBUG uv_client::cached_client No cache entry for: private-index (without token)
+       uv_client::cached_client::fresh_request url=&quot;private-index (without token)&quot;
+       uv_client::cached_client::new_cache file=/root/.cache/uv/simple-v1/12326308e467ba02/private-package.rkyv
+       uv_client::registry_client::parse_simple_api package=private-package
+         uv_client::html::parse url=private-index (without token)
+ uv_resolver::version_map::from_metadata 
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=private-package==1.0.0
+     uv_client::registry_client::wheel_metadata built_dist=private-package==1.0.0
+       uv_client::cached_client::get_serde 
+         uv_client::cached_client::get_cacheable 
+           uv_client::cached_client::read_and_parse_cache file=/root/.cache/uv/wheels-v0/index/12326308e467ba02/private-package/private-package-1.0.0-py3-none-any.msgpack
+        0.648378s 642ms DEBUG uv_resolver::resolver Searching for a compatible version of private-package (*)
+        0.648397s 643ms DEBUG uv_resolver::resolver Selecting: private-package==1.0.0 (private_package-1.0.0-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=private-package, version=1.0.0
+     uv_resolver::resolver::distributions_wait package_id=private-package-1.0.0
+              0.648462s   0ms DEBUG uv_client::cached_client No cache entry for: artifact_url
+           uv_client::cached_client::fresh_request url=artifact_url
+          0.671946s  23ms  WARN uv_client::registry_client Range requests not supported for private_package-1.0.0-py3-none-any.whl; downloading wheel
+error: Failed to download: private-package==1.0.0
+  Caused by: HTTP status client error (401 Unauthorized) for url (artifact_url)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 14:52</div>
+            <div class="timeline-body"><p>We're continuing to investigate this. Unfortunately I had no problems authenticating with an access token with a private AWS CodeArtifact repository and haven't set up alternative private registries for testing yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rth">@rth</a> on 2024-02-22 17:05</div>
+            <div class="timeline-body"><p>@zanieb  Here a standalone setup to  reproduce with simple PEP 503 index and Basic Authentication.</p>
+<p>In  some folder create,</p>
+<p><strong>index.html</strong></p>
+<details>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;a href=&quot;/non-existing-package/&quot;&gt;non-existing-package&lt;/a&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</details>
+
+<p><strong>/non-existing-package/index.html</strong></p>
+<details>
+
+<pre><code class="language-html">&lt;html&gt;&lt;head&gt;
+    &lt;meta name=&quot;pypi:repository-version&quot; content=&quot;1.1&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Links for non-existing-package&lt;/h1&gt;
+&lt;a href=&quot;http://127.0.0.1:8080/non-existing-package/non-existing-package-0.1.0.tar.gz#sha256=fb1aa1f8d35a2e3b7bbc2ce632ece9571bb8093dec79826a54be075f15b11ecd&quot;&gt;non-existing-package-0.1.0.tar.gz&lt;/a&gt;&lt;br&gt;
+
+&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+</details>
+
+<p>and create this fake package with</p>
+<pre><code>touch /non-existing-package/non-existing-package-0.1.0.tar.gz
+</code></pre>
+<p>then run with node,</p>
+<pre><code>npx http-server --username user --password password
+</code></pre>
+<p>to get a server with basic auth.</p>
+<p>Running uv,</p>
+<pre><code>uv pip install non-existing-package==0.1.0 --extra-index-url http://user:password@127.0.0.1:8080/ --refresh -v
+</code></pre>
+<p>fails with,</p>
+<pre><code>error: Failed to download and build: non-existing-package==0.1.0
+  Caused by: HTTP status client error (401 Unauthorized) for url (http://127.0.0.1:8080/non-existing-package/non-existing-package-0.1.0.tar.gz#sha256=fb1aa1f8d35a2e3b7bbc2ce632ece9571bb8093dec79826a54be075f15b11ecd)
+</code></pre>
+<p>So the problem is that this simple API returns absolute URLs for package versions, and the access token is no longer part of the URL hence the 401 error. It works if the URLs are relative.</p>
+<p>I'm not sure for other hosting services but Gitlab packages, does return such absolute URLs and consequently fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 17:07</div>
+            <div class="timeline-body"><p>Thank you! Will report back soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rth">@rth</a> on 2024-02-22 17:13</div>
+            <div class="timeline-body"><p>Unless I'm mistaken, the corresponding logic in pip is here https://github.com/pypa/pip/blob/b647ed5782e1fc5627e5e18a036130fea0b413e6/src/pip/_internal/network/auth.py#L404 to account for the fact that the package URL for a private index may not contain credentials.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 17:15</div>
+            <div class="timeline-body"><p>These are some high-quality comments, thanks @rth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1371.html">astral-sh/uv#1371</a> on 2024-02-22 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-02-22 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1886.html">astral-sh/uv#1886</a> on 2024-02-22 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 22:20</div>
+            <div class="timeline-body"><p>A draft fix is up at #1886 — thanks again for the reproduction!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-23 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AloizioMacedo">@AloizioMacedo</a> on 2024-02-23 00:52</div>
+            <div class="timeline-body"><p>Thanks for the push!</p>
+<p>I installed the package from commit 8a12b2eb and it still isn't working for me, same error.</p>
+<p>After failure, I created a new env and pip installed uv in editable mode, checked <code>pip list</code> and <code>which uv</code> to triple check that I am using the version of that commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hwong557">@hwong557</a> on 2024-02-23 03:09</div>
+            <div class="timeline-body"><p>I am on 0.1.9 and I continue to get a 401.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 03:13</div>
+            <div class="timeline-body"><p>@hwong557 - Do you still see missing credentials on <code>HTTP status client error (401 Unauthorized) for url (https://xxx.jfrog.io/yyy/my_private_package1.2.3/my_private_package1.2.3-py3-none-any.whl#sha256=1111111111111111111111111111111111111111111111111111111111111111)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 03:37</div>
+            <div class="timeline-body"><p>Can you also confirm that you cleared the cache beforehand? (<code>uv cache clean</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hwong557">@hwong557</a> on 2024-02-23 03:40</div>
+            <div class="timeline-body"><p>Yes, I cleared the cache, and I get the same missing credentials error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 03:42</div>
+            <div class="timeline-body"><p>@hwong557 - If you open a page like https://xxx.jfrog.io/yyy/simple/my_private_package, are the distribution URLs relative or absolute?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hwong557">@hwong557</a> on 2024-02-23 03:57</div>
+            <div class="timeline-body"><p>Sorry for being unhelpful but the page asks for credentials and then refuses my creds. I'll have to talk to someone at my company, but I can confirm that <code>pip-tools</code> works fine.</p>
+<pre><code>pip-compile -v pyproject.toml --index-url https://USERNAME:$TOKEN@xxx.jfrog.io/foo/bar --no-emit-index-url
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-02-23 04:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-23 04:45</div>
+            <div class="timeline-body"><p>Trial JFrog account here I come</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-23 05:16</div>
+            <div class="timeline-body"><p>We've identified this as a problem preserving authorization headers in streamed range requests.</p>
+<p>https://github.com/astral-sh/uv/pull/1902 should resolve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../prefix-dev/async_http_range_reader/pulls/9.html">prefix-dev/async_http_range_reader#9</a> on 2024-02-23 05:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1902.html">astral-sh/uv#1902</a> on 2024-02-23 05:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-02-23 07:08</div>
+            <div class="timeline-body"><p>fingers crossed! FWIW same issue on gitlab pypi registry (at uv 0.1.9, after cleaning the cache).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheoBabilon">@TheoBabilon</a> on 2024-02-23 07:25</div>
+            <div class="timeline-body"><p>Was also still getting 401, compiled from <a href="https://github.com/astral-sh/uv/tree/zb/fix-range-auth">zb/fix-range-auth</a> and can confirm that it fixed the issue, thanks a lot @zanieb, can finally see how fast uv is, impressive!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-02-23 08:46</div>
+            <div class="timeline-body"><p>Still getting 401 on JFrog indexes with the recently released 0.1.9:</p>
+<pre><code>(test-uv-private-index) sh-3.2$ which uv
+/Users/juan_cano/.local/bin/uv
+(test-uv-private-index) sh-3.2$ uv -V
+uv 0.1.9
+(test-uv-private-index) sh-3.2$ pip install numpy --index-url $PIP_PRIVATE_INDEX
+Looking in indexes: https://&lt;user&gt;:****@&lt;org&gt;.jfrog.io/artifactory/api/pypi/python/simple
+Collecting numpy
+  Downloading https://&lt;org&gt;.jfrog.io/artifactory/api/pypi/python/packages/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl (14.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.0/14.0 MB 24.3 MB/s eta 0:00:00
+^CERROR: Operation cancelled by user
+(test-uv-private-index) sh-3.2$ uv pip install numpy --index-url $PIP_PRIVATE_INDEX
+error: Failed to download: numpy==1.26.4
+  Caused by: The wheel numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl is not a valid zip file
+  Caused by: an upstream reader returned an error: io error occurred: Request error: HTTP status client error (401 Unauthorized) for url (https://&lt;org&gt;.jfrog.io/artifactory/api/pypi/python/packages/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=edd8b5fe47dab091176d21bb6de568acdd906d1887a4584a15a9a96a1dca06ef)
+  Caused by: io error occurred: Request error: HTTP status client error (401 Unauthorized) for url (https://&lt;org&gt;.jfrog.io/artifactory/api/pypi/python/packages/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=edd8b5fe47dab091176d21bb6de568acdd906d1887a4584a15a9a96a1dca06ef)
+  Caused by: Request error: HTTP status client error (401 Unauthorized) for url (https://&lt;org&gt;.jfrog.io/artifactory/api/pypi/python/packages/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=edd8b5fe47dab091176d21bb6de568acdd906d1887a4584a15a9a96a1dca06ef)
+  Caused by: HTTP status client error (401 Unauthorized) for url (https://&lt;org&gt;.jfrog.io/artifactory/api/pypi/python/packages/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl#sha256=edd8b5fe47dab091176d21bb6de568acdd906d1887a4584a15a9a96a1dca06ef)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpizenberg">@mpizenberg</a> on 2024-02-23 08:50</div>
+            <div class="timeline-body"><p>I just checked out #1902 and I can confirm it now works for GitLab for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-02-23 08:59</div>
+            <div class="timeline-body"><p>I confirm #1902 fixes the issue for JFrog!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-23 15:18</div>
+            <div class="timeline-body"><p>Thanks for testing it everyone!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-23 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1907.html">astral-sh/uv#1907</a> on 2024-02-23 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrienball">@adrienball</a> on 2024-02-23 16:42</div>
+            <div class="timeline-body"><p>After having installed <code>uv 0.1.9</code>, I still have a <code>403 Forbidden</code> issue when trying to <code>uv pip install</code> a package hosted on a private <strong>artifactory</strong> repository.</p>
+<p>[EDIT] My bad, https://github.com/astral-sh/uv/pull/1902 is not part of <code>uv 0.1.9</code>, waiting for the next release 😇</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nitlev">@nitlev</a> on 2024-02-24 12:13</div>
+            <div class="timeline-body"><p>Thanks for fixing it so fast ! Nice to see this projet moving forward as swiftly as it does !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2024-02-24 20:00</div>
+            <div class="timeline-body"><p>awesome, works now for me as well! Your speed is super impressive, thank you so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2025.html">astral-sh/uv#2025</a> on 2024-02-27 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8510.html">astral-sh/uv#8510</a> on 2024-10-23 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11102.html">astral-sh/uv#11102</a> on 2025-01-30 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

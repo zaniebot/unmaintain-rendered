@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea: uv as a self-contained tool wrapper - astral-sh/uv #10465</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Idea: uv as a self-contained tool wrapper</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10465">#10465</a>
+        opened by <a href="https://github.com/ceejatec">@ceejatec</a>
+        on 2025-01-10 10:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ceejatec">@ceejatec</a> on 2025-01-10 10:45</div>
+            <div class="timeline-body"><h2>tl;dr</h2>
+<p>I think it would be really neat if you could save the <code>uv</code> binary as a different filename, and the following automatic command-line argument mappings would occur:</p>
+<pre><code>&lt;name&gt; [args...]                       --&gt;  uv tool run name [args...]
+&lt;name&gt; self &lt;subcommand&gt; [options...]  --&gt;  uv tool &lt;subcommand&gt; [options...] &lt;name&gt;</code></pre>
+<p>I would probably limit <code>&lt;subcommand&gt;</code> to the set <code>upgrade</code>, <code>uninstall</code>, possibly <code>dir</code>, and possibly <code>install</code> (see below).</p>
+<h2>Background</h2>
+<p>There are a number of problems that can best be solved by having a single executable binary download. <code>uv</code> itself is such an example; one of the best things about it is that it's so easy to just stick on <code>$PATH</code>, or in a <code>Dockerfile</code>, etc. and it's fully-functional. For creating such single binary downloads for python programs, there have been a number of approaches, such as PyInstaller, PyApp, and so on.</p>
+<p>I was recently mulling over the fact that <code>uv</code> comes pretty close to being a single executable binary download for a big subset of Python tools, because <code>uv tool run &lt;name&gt;</code> already solves basically all of the problems faced by PyInstaller et al - handling the existence of a Python interpreter, grabbing all necessary dependencies, etc. It shunts them to runtime, similar to PyApp. And since <code>uv</code> is so fast and flexible, this ends up being a quite acceptable tradeoff.</p>
+<p>The remaining missing links are that the single download is named <code>uv</code> rather than <code>&lt;name&gt;</code>, and that the client invocation is <code>uv tool run &lt;name&gt;</code> rather than just <code>&lt;name&gt;</code>. And I was thinking... what if <code>uv</code> behaved differently if it was saved as a binary named something other than <code>uv</code>?</p>
+<p>With the above translations in place, I could distribute <code>uv</code> as, say, <code>cbdep</code> (a Python tool I maintain), and the following things would Just Work(tm) on any platform:</p>
+<pre><code>cbdep --version         # normal invocation of the cbdep command
+cbdep self upgrade      # get the latest version of cbdep
+cbdep self uninstall    # remove all artifacts</code></pre>
+<p>So it could be a drop-in replacement for anything previously done with PyInstaller, with the added benefit of built-in upgrade potential, and the extra benefit of not having to maintain the gnarly scripting to build PyInstaller binaries.</p>
+<h2>Why part of <code>uv</code>?</h2>
+<p>You can get all of the above functionality today with PyApp, and considerably more besides. Indeed, I see this proposal as a limited, runtime-only cousin of PyApp. The main benefits for incorporating this into <code>uv</code> rather than using PyApp would be:</p>
+<ul>
+<li>No need to compile anything, or support any kind of build/deployment infrastructure for your tool</li>
+<li>Lower disk usage, if you're already using <code>uv</code> anyway - currently pyapp binaries can use <code>uv</code> to manage venvs, but they don't share python downloads</li>
+<li>With a bit more thinking, <code>uv self update</code> could be incorporated into the binary (possibly as a side-effect of <code>&lt;name&gt; self upgrade</code>?) so the tool itself could get upgrades &quot;in the field&quot;</li>
+<li>Many different commands could use the same <code>uv</code> via symlinks or hardlinks - pyapp binaries are bespoke for a particular python program</li>
+</ul>
+<p>I grant that those are not <em>massively</em> compelling arguments. On the flip side, though, looking at the implementation of <code>uvx</code>, I think that this could be done in no more than a couple hundred lines of code, because it's literally just re-organizing the command line arguments before passing things off to the existing command-line parser. I think there would need to be very little custom code here aside from the argument remapping.</p>
+<h2>Limitations</h2>
+<p>There are a number of limitations to this approach, most of which come down to the inability to pass arguments to <code>uv tool run</code> such as <code>--default-index</code>, <code>--python</code>, and so on. Many of those limitations could be eased by adding <code>install</code> to the list of <code>uv tool</code> subcommands. That would allow users to download the program and then &quot;bootstrap&quot; it with a single call like <code>cbdep self install --default-index my-private-index</code>. After that, all the normal invocations would work as expected, including <code>cbdep self upgrade</code> and <code>cbdep self uninstall</code>. It's not a fantastic solution, but it's trivial to implement.</p>
+<p>One limitation that it'd be nice to work around is packages that install multiple commands, such as <code>ansible-core</code>. It's great that <code>uv tool install ansible-core</code> works these days and brings in <code>ansible</code>, <code>ansible-playbook</code>, and friends automatically. But you still can't run <code>uv tool run ansible-playbook</code>, and so you couldn't take <code>uv</code> and rename it <code>ansible-playbook</code> and have it work. I can't think of a way around that, other than possibly having some baked-in special cases for common ones like <code>ansible-playbook</code>. I see this proposed feature as primarily useful for self-managed tools, though - things that are written by an employee for use through an enterprise, for instance. So the authors of such tools could design them to ensure that they worked within the limitations of this feature.</p>
+<h2>Alternatives</h2>
+<p>PyApp is obviously one alternative; it does something quite similar to this already, but it bakes the configuration into a bespoke command. It's more comprehensive than this, but requires a separate tool to be built and maintained.</p>
+<p>If this functionality wasn't baked into <code>uv</code> itself, it would be pretty easy to write a new Rust tool that just provided a different CLI, using the <code>uv</code> crates. That would serve nearly the same purpose as my proposal here; the main downside would be there would be no easy way to implement the equivalent of <code>uv self update</code>. But at least it wouldn't require recompiling it for each tool you wanted to support; you'd only need to re-compile it whenever you wanted to pick up a <code>uv</code> upgrade.</p>
+<p>Hmm... that actually suggests a third alternative: all this could be a separate executable built as part of the <code>uv</code> project, which would mean it would be available every time there was a <code>uv</code> update. In that case, something like <code>uv self update</code> would be fairly straightforward. Doing it that way would require a little more work on the part of the <code>uv</code> delivery team, but it would mean that it could live separate from the <code>uv</code> binary and hence imply zero risk for the main <code>uv</code> deliverable.</p>
+<p>Anyway, thank you for coming to my Ted Talk!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5802.html">astral-sh/uv#5802</a> on 2025-01-10 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/10452.html">astral-sh/uv#10452</a> on 2025-01-10 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2025-01-10 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-01-10 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:03 UTC
+    </footer>
+</body>
+</html>

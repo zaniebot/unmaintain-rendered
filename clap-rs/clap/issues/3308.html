@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Arg::require_delimiter` is not enforced with positional arguments - clap-rs/clap #3308</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Arg::require_delimiter` is not enforced with positional arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3308">#3308</a>
+        opened by <a href="https://github.com/cyqsimon">@cyqsimon</a>
+        on 2022-01-18 11:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cyqsimon">@cyqsimon</a> on 2022-01-18 11:48</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.58.0</p>
+<h3>Clap Version</h3>
+<p>3.0.9</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Debug, Parser)]
+struct CliArgs {
+    #[clap(required = true, value_delimiter = ',', require_delimiter = true)]
+    list: Vec&lt;u32&gt;,
+}
+
+fn main() {
+    let CliArgs { list } = CliArgs::parse();
+    println!(&quot;List: {:?}&quot;, list);
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run -- 1 2 3 4 5</code></p>
+<h3>Actual Behaviour</h3>
+<p><code>List: [1, 2, 3, 4, 5]</code></p>
+<h3>Expected Behaviour</h3>
+<p>Parse should fail with <code>ErrorKind::UnknownArgument</code>, as shown in <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.require_delimiter">the example</a>.</p>
+<h3>Additional Context</h3>
+<p>OS is Manjaro and shell is Bash</p>
+<h3>Debug Output</h3>
+<pre><code>[            clap::build::app]  App::_do_parse
+[            clap::build::app]  App::_build
+[            clap::build::app]  App::_propagate:rust_test
+[            clap::build::app]  App::_check_help_and_version
+[            clap::build::app]  App::_check_help_and_version: Removing generated version
+[            clap::build::app]  App::_propagate_global_args:rust_test
+[            clap::build::app]  App::_derive_display_order:rust_test
+[clap::build::app::debug_asserts]       App::_debug_asserts
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:help
+[clap::build::arg::debug_asserts]       Arg::_debug_asserts:list
+[clap::build::app::debug_asserts]       App::_verify_positionals
+[         clap::parse::parser]  Parser::get_matches_with
+[         clap::parse::parser]  Parser::_build
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;1&quot;)' ([49])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::possible_subcommand: arg=RawOsStr(&quot;1&quot;)
+[         clap::parse::parser]  Parser::get_matches_with: sc=None
+[         clap::parse::parser]  Parser::remove_overrides: id=list
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=list
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=list, val=RawOsStr(&quot;1&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;1&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=1
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;2&quot;)' ([50])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::remove_overrides: id=list
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=list
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=list, val=RawOsStr(&quot;2&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;2&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=2
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;3&quot;)' ([51])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::remove_overrides: id=list
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=list
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=list, val=RawOsStr(&quot;3&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;3&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=3
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;4&quot;)' ([52])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::remove_overrides: id=list
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=list
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=list, val=RawOsStr(&quot;4&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;4&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=4
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;5&quot;)' ([53])
+[         clap::parse::parser]  Parser::get_matches_with: Positional counter...1
+[         clap::parse::parser]  Parser::get_matches_with: Low index multiples...false
+[         clap::parse::parser]  Parser::remove_overrides: id=list
+[    clap::parse::arg_matcher]  ArgMatcher::inc_occurrence_of_arg: id=list
+[            clap::build::app]  App::groups_for_arg: id=list
+[         clap::parse::parser]  Parser::add_val_to_arg; arg=list, val=RawOsStr(&quot;5&quot;)
+[         clap::parse::parser]  Parser::add_val_to_arg; trailing_values=false, DontDelimTrailingVals=false
+[         clap::parse::parser]  Parser::add_single_val_to_arg: adding val...&quot;5&quot;
+[         clap::parse::parser]  Parser::add_single_val_to_arg: cur_idx:=5
+[            clap::build::app]  App::groups_for_arg: id=list
+[      clap::parse::validator]  Validator::validate
+[         clap::parse::parser]  Parser::add_defaults
+[         clap::parse::parser]  Parser::add_defaults:iter:list:
+[         clap::parse::parser]  Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser]  Parser::add_value:iter:list: doesn't have default vals
+[         clap::parse::parser]  Parser::add_value:iter:list: doesn't have default missing vals
+[      clap::parse::validator]  Validator::validate_conflicts
+[      clap::parse::validator]  Validator::validate_exclusive
+[      clap::parse::validator]  Validator::validate_exclusive:iter:list
+[      clap::parse::validator]  Validator::validate_conflicts::iter: id=list
+[      clap::parse::validator]  Conflicts::gather_conflicts
+[      clap::parse::validator]  Validator::validate_required: required=ChildGraph([Child { id: list, children: [] }])
+[      clap::parse::validator]  Validator::gather_requirements
+[      clap::parse::validator]  Validator::gather_requirements:iter:list
+[      clap::parse::validator]  Validator::validate_required_unless
+[      clap::parse::validator]  Validator::validate_matched_args
+[      clap::parse::validator]  Validator::validate_matched_args:iter:list: vals=Flatten {
+    inner: FlattenCompat {
+        iter: Fuse {
+            iter: Some(
+                Iter(
+                    [
+                        [
+                            &quot;1&quot;,
+                            &quot;2&quot;,
+                            &quot;3&quot;,
+                            &quot;4&quot;,
+                            &quot;5&quot;,
+                        ],
+                    ],
+                ),
+            ),
+        },
+        frontiter: None,
+        backiter: None,
+    },
+}
+[      clap::parse::validator]  Validator::validate_arg_num_vals
+[      clap::parse::validator]  Validator::validate_arg_values: arg=&quot;list&quot;
+[      clap::parse::validator]  Validator::validate_arg_values: checking validator...
+[      clap::parse::validator]  good
+[      clap::parse::validator]  Validator::validate_arg_values: checking validator...
+[      clap::parse::validator]  good
+[      clap::parse::validator]  Validator::validate_arg_values: checking validator...
+[      clap::parse::validator]  good
+[      clap::parse::validator]  Validator::validate_arg_values: checking validator...
+[      clap::parse::validator]  good
+[      clap::parse::validator]  Validator::validate_arg_values: checking validator...
+[      clap::parse::validator]  good
+[      clap::parse::validator]  Validator::validate_arg_num_occurs: &quot;list&quot;=5
+[    clap::parse::arg_matcher]  ArgMatcher::get_global_values: global_arg_vec=[help]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @cyqsimon on 2022-01-18 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-18 16:41</div>
+            <div class="timeline-body"><p>clap 3's derive uses <code>multiple_occurrences</code> for <code>Vec</code>.  You need to opt-out of that to get the behavior you are wanting</p>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Debug, Parser)]
+struct CliArgs {
+    #[clap(
+        required = true,
+        multiple_occurrences = false,
+        value_delimiter = ',',
+        require_delimiter = true
+    )]
+    list: Vec&lt;u32&gt;,
+}
+
+fn main() {
+    let CliArgs { list } = CliArgs::parse();
+    println!(&quot;List: {:?}&quot;, list);
+}
+</code></pre>
+<p>See #1772 for more context.</p>
+<p>I'm going to go ahead and close this, assuming this resolves the issue.  If not, feel free to let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-01-18 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyqsimon">@cyqsimon</a> on 2022-01-19 08:54</div>
+            <div class="timeline-body"><p>Hmm. This does indeed give me the intended behaviour; thank you for that. However I'm noticing that <code>multiple_occurences</code> and <code>require_delimiter</code> seems to essentially provide the same functionality (semantically speaking), albeit with opposite polarity. And if I'm understanding correctly, these two options are effective for different data types?</p>
+<p>Anyways, this situation is just quite confusing from a user perspective IMO. I would imagine cleaning this up would cause quite a lot of API breakages and isn't ideal. So perhaps we can consider making some notes on this behaviour in the docs in the meanwhile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 15:16</div>
+            <div class="timeline-body"><p>The distinction between occurrences and values is more clear with flags.  <code>--foo 1 2 --bar 3</code> is an occurrence with 2 values followed by an occurrence with 1 value.</p>
+<p>We support both multiple occurrences and values for positional arguments because they can be used in slightly different ways.  We also chose to go with occurrences for the <code>derive</code> so we'd be consistent in how we treat <code>Vec</code>, making it more predictable.</p>
+<p>You can have multiple occurrences <strong>and</strong> require a delimiter.  <code>1,2 3</code> would be a positional version of the earlier example with using delimiters.</p>
+<blockquote>
+<p>Anyways, this situation is just quite confusing from a user perspective IMO. I would imagine cleaning this up would cause quite a lot of API breakages and isn't ideal.</p>
+</blockquote>
+<p>I am unsure what &quot;clean up&quot; there would be at this point.  If you have ideas, feel free to share them.</p>
+<blockquote>
+<p>So perhaps we can consider making some notes on this behaviour in the docs in the meanwhile?</p>
+</blockquote>
+<p>What in particular are you thinking should be documented and where?  In the derive reference we <a href="https://github.com/clap-rs/clap/tree/master/examples/derive_ref#arg-types">call out the meaning of <code>Vec&lt;T&gt;</code></a>.  #3314 has further increased the discoverability of the derive reference.  Past that, its also understanding the underlying builder API.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:52 UTC
+    </footer>
+</body>
+</html>

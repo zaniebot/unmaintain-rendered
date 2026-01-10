@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcommand for dynamic completions seems to be hard coded and blocks use of word 'complete' as actual input - clap-rs/clap #5670</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Subcommand for dynamic completions seems to be hard coded and blocks use of word 'complete' as actual input</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5670">#5670</a>
+        opened by <a href="https://github.com/alerque">@alerque</a>
+        on 2024-08-12 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alerque">@alerque</a> on 2024-08-12 13:34</div>
+            <div class="timeline-body"><p>I have been <a href="https://github.com/alerque/git-warp-time/compare/dynamic-completion">experimenting with a POC on a small project</a> using the <code>features = [ &quot;unstable-dynamic&quot; ]</code> and testing ZSH completions.</p>
+<p>One oddity I ran into is that the top level subcommand seems to be hard coded as <code>complete</code>. The docs mention adding this as a subcommand:</p>
+<p>https://github.com/clap-rs/clap/blob/2d8138a4716fe3b63ef32693211d4cd50531eb81/clap_complete/src/dynamic/shells/command.rs#L28-L30</p>
+<p>I did this at first, but quickly ran into problems because my app needs to be able to accept an argument &quot;complete&quot; that is not hijacked by the completion system. I assumed I could just redo my struct a bit:</p>
+<pre><code class="language-rust">/// Used internally by Clap to generate dynamic completions
+#[command(subcommand)]
+pub _generate_dynamic_completions: Option&lt;CompleteCommand&gt;,
+</code></pre>
+<p>This was accepted, and modifying my <code>main()</code> function to intercept it also compiled:</p>
+<pre><code class="language-rust">let cli = Cli::parse();
+if let Some(completions) = cli._generate_dynamic_completions {
+    completions.complete(&amp;mut Cli::command());
+}
+</code></pre>
+<p>Quite unexpectedly however the <code>mycommand _generate_dynamic_completions</code> is not accepted, it still expects <code>mycommand complete</code> and still outputs a completion definition that relies on a &quot;complete&quot; subcommand.</p>
+<p>It seems like the subcommand used to trigger completion generation needs to be configurable and/or much more abstract and less likely to conflict with other existing possible completions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-08-12 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-12 13:41</div>
+            <div class="timeline-body"><blockquote>
+<p><code>pub _generate_dynamic_completions: Option&lt;CompleteCommand&gt;,</code></p>
+</blockquote>
+<p>That only changed the field.  In clap, subcommand names are pulled from their enum variant.  If we supported this, youd likely need to use <code>CompleteArgs</code> instead.</p>
+<p>#5293 is tracking discussion on a custom subcommand, closing in favor of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2024-08-12 13:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:39 UTC
+    </footer>
+</body>
+</html>

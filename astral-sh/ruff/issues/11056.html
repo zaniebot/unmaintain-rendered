@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve backport friendliness of quotes in Python 3.12 f-string placeholders - astral-sh/ruff #11056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve backport friendliness of quotes in Python 3.12 f-string placeholders</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11056">#11056</a>
+        opened by <a href="https://github.com/achimnol">@achimnol</a>
+        on 2024-04-20 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/achimnol">@achimnol</a> on 2024-04-20 13:01</div>
+            <div class="timeline-body"><p>I'm maintaining a codebase with multiple release branches targeting different Python versions by release. The latest one uses Python 3.12 while prior versions use Python 3.10 or 3.11.</p>
+<p>The recent update of Ruff has introduced Python 3.12 f-string support and the Ruff v0.4 formatter replaces all single-quotes in placeholders to double-quotes.</p>
+<p>Example:
+<code>f&quot;a value from dict: {data['key']}&quot;</code> (the previous way to write string literals in f-string placeholdrs)
+→
+<code>f&quot;a value from dict: {data[&quot;key&quot;]}&quot;</code> (allowed in Python 3.12 but a syntax error in Python 3.11 or older)</p>
+<p>The problem is that when I <strong>backport</strong> this line to a release branch targeting Python 3.11 or older (but using the same Ruff version), Ruff <em>silently ignores</em> the broken syntax. It does not auto-convert the existing codes in Python 3.11, but also does not give errors about the backported codes. Linting will pass, but it will fail when someone executes/imports the code.</p>
+<p>In contrast, Black (24.4) loudly fails because the Python parser reports a syntax error.</p>
+<p>There could be the following options to resolve the issue:</p>
+<ul>
+<li>Let Ruff 0.4 targeting Python 3.11 or older report the syntax error loudly, just like Black.</li>
+<li>Let Ruff 0.4 targeting Python 3.11 or older auto-convert the double-quotes in f-string placeholders back to single-quotes (or vice-versa depending on the quote style).</li>
+<li>Add an option to keep the single-quotes in f-string placholders intact in Python 3.12 or later.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Option to preserve single-quotes in placeholders of f-strings to allow backporting Python 3.12 codes to Python 3.11" to "Improve backport freidliness of quotes in Python 3.12 f-string placeholders" by @achimnol on 2024-04-20 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve backport freidliness of quotes in Python 3.12 f-string placeholders" to "Improve backport friendliness of quotes in Python 3.12 f-string placeholders" by @achimnol on 2024-04-20 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-20 13:38</div>
+            <div class="timeline-body"><p>Thanks for the detailed report and we're sorry that you're experiencing this. I think backward compatibility could actually be the reason for changing the default to use single quotes in nested f-strings (@dhruvmanila).</p>
+<p>We have plans to implement lint rules that allow catching unsupported syntax depending on the configured python version. See https://github.com/astral-sh/ruff/issues/6591</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-22 09:34</div>
+            <div class="timeline-body"><p>Thank you for raising this issue!</p>
+<blockquote>
+<p>I think backward compatibility could actually be the reason for changing the default to use single quotes in nested f-strings (@dhruvmanila).</p>
+</blockquote>
+<p>Yeah, I think that's a strong reason to not change the quotes and it should be the case until the parser supports target version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-04-22 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-22 09:39</div>
+            <div class="timeline-body"><p>Reading through the suggested solutions, (1) would be done by #6591, I don't think (2) is ideal because that could be complicated.</p>
+<p>I think for now it's reasonable to avoid changing the quotes even for 3.12 target version.</p>
+<p>Related: https://github.com/astral-sh/ruff/issues/10273, https://github.com/astral-sh/ruff/issues/10184</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lablup/backend.ai/pulls/2053.html">lablup/backend.ai#2053</a> on 2024-04-23 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/achimnol">@achimnol</a> on 2024-04-23 07:44</div>
+            <div class="timeline-body"><p>(1) should suffice my needs, because developers could be warned explicitly about the breakage.
+(3) (avoiding changing the quotes) would be a good option for us as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-23 08:14</div>
+            <div class="timeline-body"><p>Regarding (1), I'm not sure when it would be picked up but ideally it could be after #1774 and before I start the work on error resilience in the parser.</p>
+<p>Regarding (3), I think I'd like avoid adding a config option before finalizing the <a href="https://github.com/astral-sh/ruff/discussions/9785">f-string formatting style</a>. It's currently in preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mvaled">@mvaled</a> on 2024-05-02 07:08</div>
+            <div class="timeline-body"><p>I consider this a bug if <code>target-python</code> is set to py311 or older.</p>
+<p>For instance:</p>
+<pre><code>$ cat src/ruffformatter/__init__.py 
+def hello() -&gt; str:
+    return f&quot;Hello {&quot;a&quot; + &quot;b&quot;}&quot;
+
+
+$ cat pyproject.toml 
+[project]
+name = &quot;ruffformatter&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+dependencies = []
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;= 3.8&quot;
+license = { text = &quot;MIT&quot; }
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    &quot;ruff==0.4.2&quot;,
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/ruffformatter&quot;]
+
+[tool.ruff]
+target-version = &quot;py311&quot;
+
+$ rye run ruff format src/
+1 file left unchanged
+</code></pre>
+<p>But the file is not syntactically valid in Python 3.11:</p>
+<pre><code>$ rye run python --version
+Python 3.11.7
+
+$ rye run python src/ruffformatter/__init__.py 
+  File &quot;/home/manu/tmp/ruffformatter/src/ruffformatter/__init__.py&quot;, line 2
+    return f&quot;Hello {&quot;a&quot; + &quot;b&quot;}&quot;
+                     ^
+SyntaxError: f-string: expecting '}'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-02 07:17</div>
+            <div class="timeline-body"><p>@mvaled What I see from the output is that the formatter didn't change the file. The formatter won't change the quote style when targeting python 3.11 or older. That means it's up to you to use the right quotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mvaled">@mvaled</a> on 2024-05-02 12:21</div>
+            <div class="timeline-body"><p>@MichaReiser But neither <code>ruff check</code> catches that as an error.</p>
+<p>IMO, either <code>ruff format</code> or <code>ruff check</code> should treat that as error.  Since Python reports that as syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-02 13:16</div>
+            <div class="timeline-body"><p>Agree, that's planned in https://github.com/astral-sh/ruff/issues/6591 that @dhruvmanila mentioned above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-02 17:01</div>
+            <div class="timeline-body"><p>Yeah we don't enforce syntax errors right now -- that's known, and isn't a bug but rather a limitation (we just haven't implemented it). What <em>would</em> be a bug is if we <em>changed</em> your code to use syntax that isn't supported by your target version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lablup/backend.ai/pulls/2826.html">lablup/backend.ai#2826</a> on 2024-09-10 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/achimnol">@achimnol</a> on 2024-09-10 07:54</div>
+            <div class="timeline-body"><blockquote>
+<p>What would be a bug is if we changed your code to use syntax that isn't supported by your target version.</p>
+</blockquote>
+<p>PEP-701 f-string literals are <strong>auto-applied</strong> to the Python 3.12 codes and they breaks up things when backported <em>as-is</em>.  The problem is that Ruff just applies the quotation change without giving any option to skip the change or proactive checks when executed in prior target versions.  For instance, the pattern matching syntax are not auto-applied but the user should deliberately rewrite existing codes, meaning that the user may simply defer introduction of it regardless of the Ruff/Python versions.  But we do not have such freedom of control for f-strings.  If this were a matter of style, it would be fine, but it is a breaking syntax error...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13371.html">astral-sh/ruff#13371</a> on 2024-09-16 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 13:55</div>
+            <div class="timeline-body"><p>@dhruvmanila and I talked about this in our 1:1 and I think there are good reasons to changing our current default:</p>
+<ul>
+<li>alternating quotes eases copying code between projects regardless of the target python version</li>
+<li>Alternating quotes is probably what all projects use today and what the community considers to be the standard. Using alternating quotes reduces the diff size</li>
+<li>I do find alternating quote styles easier to parse. It's easier to match the quotes.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-20 11:30</div>
+            <div class="timeline-body"><p>The exception to the above behavior should be if flipping the quotes reduces the number of necessary escapes:</p>
+<pre><code class="language-python">f&quot;{f&quot;this isn't using single quotes because it contains single quotes that would need escaping&quot;}&quot;}&quot;
+</code></pre>
+<p>Keeping the same quotes here should be fine because this syntax is Python 312 or newer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13860.html">astral-sh/ruff#13860</a> on 2024-10-21 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-23 05:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2024-11-05 19:40</div>
+            <div class="timeline-body"><p>Hi team, I've been using Ruff format with target version 3.12 in preview mode for several months and had converted all of my code to take advantage of Python 3.12's support for nesting double quotes within double-quoted f-strings. After upgrading to the latest Ruff version, I noticed it’s reverting all my nested double quotes to single quotes inside double-quoted f-strings, following the style used in earlier Python versions.</p>
+<p>While I understand the rationale for alternating quotes as the default style, I personally prefer using consistent double quotes throughout, and I enjoyed finally not having to switch quotes inside f-strings. The ability to maintain consistent quotes while writing f-strings was considered an improvement in 3.12, and I find some advantages to be:</p>
+<ul>
+<li>Reduced cognitive load. You don't have to remember to switch quotes, it's one less muscle memory to maintain, it reduces mental burden and cognitive overhead, and it simplifies the syntax and improves readability (in my opinion).</li>
+<li>Seamless copying and pasting: Expressions within f-strings can be cut and pasted freely without needing to adjust quote styles.</li>
+</ul>
+<p>Would it be possible for you to make this quote styling configurable? This flexibility would be very useful for developers who prefer consistent double quotes, especially with Python 3.12+'s new f-string support.</p>
+<p>Re: https://github.com/astral-sh/ruff/pull/13860</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-05 19:54</div>
+            <div class="timeline-body"><p>Hy @matthewlloyd I'm sorry that you experienced this churn.</p>
+<p>I wont argue about readability. What's more readable is very personal.</p>
+<blockquote>
+<p>Seamless copying and pasting: Expressions within f-strings can be cut and pasted freely without needing to adjust quote styles.</p>
+</blockquote>
+<p>I think that should still be given because the formatter will change the quotes for you.</p>
+<blockquote>
+<p>Reduced cognitive load. You don't have to remember to switch quotes, it's one less muscle memory to maintain, i</p>
+</blockquote>
+<p>Is this about using nested quotes? Because you can write the f-string with whatever quotes you prefer without worrying if they're the right quotes. The formatter will change the quotes for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2024-11-05 20:31</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the reply, no worries. There are two separate issues here I think.</p>
+<ol>
+<li>Cognitive burden on the <em>reading</em> side.<ul>
+<li>Consistent quotes within f-strings relieve the burden of mentally parsing and switching between quote types within nested expressions.</li>
+<li>Consistent quotes allow for uniform formatting, making the f-string structure clearer and reducing interruptions to the reader's focus on the logic and content of expressions rather than the syntax, particularly in longer or more intricate strings with nested quotes.</li>
+<li>Codebases benefit from uniform use of quote types, which aligns with stylistic preferences and guidelines in Python without introducing special cases for f-strings.</li>
+</ul>
+</li>
+<li>Cognitive burden on the <em>writing</em> side. Of course, yes, as long as the code will parse (which it will either way), the formatter will fix whatever the developer writes. However, there is still overhead.<ul>
+<li>Avoiding the need to alternate between single and double quotes decreases the risk of syntax errors, especially in complex expressions or multi-layered interpolations, when modifying code that has already been formatted.</li>
+<li>Cognitive overhead from the inconsistency between the quote styles in the newly written code and the rest of the code, between the time the new code is written and the time it gets formatted. This may be a short time if the developer frequently reformats the code, or it may be a longer time if it doesn't get formatted until it gets committed.</li>
+<li>For those using e.g. pre-commit hooks, procedural overhead from the greater likelihood of a diff, and the additional noise generated in a diff, when the formatter does its work. This may require the developer to perform additional steps, e.g. review and stage the formatter's changes.</li>
+</ul>
+</li>
+</ol>
+<p>I think it's unfortunate to have essentially &quot;lost&quot; one of the improvements introduced in Python 3.12 for Ruff-formatted code merely for the sake of maintaining backwards compatibility with older versions of Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-05 20:46</div>
+            <div class="timeline-body"><p>Thanks for the added context.</p>
+<p>I'm hesitant about introducing a new setting to configure f-string quotes unless there's a huge demand for it (not saying that your concerns aren't valid).  And I still think that the current behavior is better. For example, changing quotes also breaks syntax highlighting in many tools. But I'm also happy to revisit the default if that's where the community stands.</p>
+<p>I suggest that we create a new issue for this so that we can track this better. @matthewlloyd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2024-11-05 22:30</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, changing quotes also breaks syntax highlighting in many tools.</p>
+</blockquote>
+<p>I would note that to the extent this is an issue, it is a temporary one. The two most popular Python IDEs, VS Code and PyCharm/IntelliJ, accounting for more than 70%+ of the market share, already support the new syntax.</p>
+<p>Likewise, choosing one style over another for reasons of backwards compatibility with older versions of Python is a decision that won't age well because pre-3.12 versions will be end-of-life after October 2027.</p>
+<blockquote>
+<p>I suggest that we create a new issue for this so that we can track this better. @matthewlloyd</p>
+</blockquote>
+<p>Great, I'll open an issue, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14118.html">astral-sh/ruff#14118</a> on 2024-11-05 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../lablup/backend.ai/issues/3347.html">lablup/backend.ai#3347</a> on 2025-01-02 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/ruff-action/issues/46.html">astral-sh/ruff-action#46</a> on 2025-01-16 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16385.html">astral-sh/ruff#16385</a> on 2025-02-26 16:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:12 UTC
+    </footer>
+</body>
+</html>

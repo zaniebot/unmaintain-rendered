@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>displaying help for subcommands should disable top level argument requirements - clap-rs/clap #789</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>displaying help for subcommands should disable top level argument requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/789">#789</a>
+        opened by <a href="https://github.com/Geal">@Geal</a>
+        on 2016-12-28 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Geal">@Geal</a> on 2016-12-28 13:31</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>rustc 1.15.0-nightly (2217bd771 2016-11-25)</p>
+<h3>Affected Version of clap</h3>
+<p>2.19.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>With an executable taking a top level required argument &quot;foo&quot;, and a subcommand &quot;bar&quot;, displaying bar's help with <code>./clap-test bar --help</code> should display the help like this:</p>
+<pre><code>$ ./target/debug/clap-test bar --help
+clap-test-bar
+bar
+
+USAGE:
+    clap-test bar --baz &lt;baz&gt;
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --baz &lt;baz&gt;    baz
+</code></pre>
+<h3>Actual Behavior Summary</h3>
+<pre><code>$ ./target/debug/clap-test bar --help 
+error: The following required arguments were not provided:
+    --foo &lt;FILE&gt;
+
+USAGE:
+    clap-test --foo &lt;FILE&gt; [SUBCOMMAND]
+
+For more information try --help
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>Build and run the attached code</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<pre><code class="language-rust">#[macro_use] extern crate clap;
+use clap::{App,Arg,SubCommand};
+
+fn main() {
+  let matches = App::new(&quot;test&quot;)
+                        .version(crate_version!())
+                        .arg(Arg::with_name(&quot;foo&quot;)
+                                    .long(&quot;foo&quot;)
+                                    .value_name(&quot;FILE&quot;)
+                                    .help(&quot;Sets a custom config file&quot;)
+                                    .takes_value(true)
+                                    .required(true))
+                        .subcommand(SubCommand::with_name(&quot;bar&quot;)
+                                    .about(&quot;bar&quot;)
+                                    .arg(Arg::with_name(&quot;baz&quot;).long(&quot;baz&quot;)
+                                         .takes_value(true).required(true).help(&quot;baz&quot;)))
+                        .get_matches();
+}
+</code></pre>
+<h3>Debug output</h3>
+<pre><code>$ ./target/debug/clap-test bar --help
+*DEBUG:clap: fn=Parser::add_subcommand;
+*DEBUG:clap: Term width...None
+*DEBUG:clap: Is help...No
+*DEBUG:clap: VersionlessSubcommands set...false
+*DEBUG:clap: GlobalVersion set...false
+*DEBUG:clap: fn=get_matches_with;
+*DEBUG:clap: fn=create_help_and_version;
+*DEBUG:clap: Building --help
+*DEBUG:clap: Building --version
+*DEBUG:clap: Building help
+*DEBUG:clap: Begin parsing '&quot;bar&quot;' ([98, 97, 114])
+*DEBUG:clap: fn=check_is_new_arg;nvo=None
+*DEBUG:clap: Does arg allow leading hyphen...false
+*DEBUG:clap: Starts new arg...Probable value
+*DEBUG:clap: Starts new arg...false
+*DEBUG:clap: fn=possible_subcommand
+*DEBUG:clap: fn=validate_blacklist;blacklist=[]
+*DEBUG:clap: fn=validate_num_args;
+*DEBUG:clap: fn=create_usage;
+*DEBUG:clap: fn=create_usage_no_title;
+*DEBUG:clap: args_in_groups=[]
+*DEBUG:clap: fn=fmt
+*DEBUG:clap: fn=needs_flags_tag;
+*DEBUG:clap: iter;f=hclap_help;
+*DEBUG:clap: iter;f=vclap_version;
+*DEBUG:clap: fn=validate_required;required=[&quot;foo&quot;];
+*DEBUG:clap: iter;name=foo
+*DEBUG:clap: fn=is_missing_required_ok;a=foo
+*DEBUG:clap: args_in_groups=[]
+*DEBUG:clap: fn=fmt
+*DEBUG:clap: fn=create_usage;
+*DEBUG:clap: fn=create_usage_no_title;
+*DEBUG:clap: args_in_groups=[]
+*DEBUG:clap: fn=fmt
+*DEBUG:clap: fn=needs_flags_tag;
+*DEBUG:clap: iter;f=hclap_help;
+*DEBUG:clap: iter;f=vclap_version;
+*DEBUG:clap: fn=color;
+*DEBUG:clap: Color setting...Auto
+*DEBUG:clap: fn=error;
+*DEBUG:clap: fn=is_a_tty;
+*DEBUG:clap: Use stderr...true
+*DEBUG:clap: fn=good;
+*DEBUG:clap: fn=is_a_tty;
+*DEBUG:clap: Use stderr...true
+error: The following required arguments were not provided:
+    --foo &lt;FILE&gt;
+
+USAGE:
+    clap-test --foo &lt;FILE&gt; [SUBCOMMAND]
+
+For more information try --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geal">@Geal</a> on 2016-12-28 13:34</div>
+            <div class="timeline-body"><p>Trying different versions of calling help:</p>
+<p>prog bar --help -&gt; doesn't work
+prog bar -h -&gt; doesn't work
+prog bar help -&gt; doesn't work
+prog help bar -&gt; works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-28 14:21</div>
+            <div class="timeline-body"><p>Thanks for letting me know about this! It's fixed, I'll push 2.19.3 to crates.io 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-28 16:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:24 UTC
+    </footer>
+</body>
+</html>

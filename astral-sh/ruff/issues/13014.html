@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a new rule to warn on implicitly-concatenated strings separated by a comment - astral-sh/ruff #13014</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a new rule to warn on implicitly-concatenated strings separated by a comment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13014">#13014</a>
+        opened by <a href="https://github.com/Zac-HD">@Zac-HD</a>
+        on 2024-08-20 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2024-08-20 16:51</div>
+            <div class="timeline-body"><p>What's wrong with this code?</p>
+<pre><code class="language-python">cmd = [
+    &quot;rsync&quot;,
+    &quot;-avz&quot;,  # archive mode, verbose, compress
+    &quot;-e&quot;,
+    &quot;ssh&quot;,
+    &quot;--exclude=.git&quot;  # equivalent to ignore-vcs
+    &quot;--delete&quot;,
+    &quot;/root/code/api/&quot;,
+    &quot;user@remote:/app/&quot;
+    # Preserve symlinks as-is  (equivalent to --symlink-mode=posix-raw)
+    &quot;--links&quot;,
+]
+subprocess.run(cmd)
+</code></pre>
+<p>It's missing two commas!  However, if you're generally OK with multi-line implicit concatenation (which I am), there's currently no way to get a warning for this case.  I therefore propose adding a new rule, <code>ISC004</code>, which will warn if implicitly-concatenated strings are separated by a comment - which can be fixed by either adding an explicit <code>+</code> or moving the comment.</p>
+<p>See also https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat/issues/55.  I would not add an autofix for this lint rule, as the intended semantics are ambiguous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-21 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 12:09</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/13031</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/13031.html">astral-sh/ruff#13031</a> on 2024-08-21 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../flake8-implicit-str-concat/flake8-implicit-str-concat/issues/55.html">flake8-implicit-str-concat/flake8-implicit-str-concat#55</a> on 2024-08-25 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/16108.html">astral-sh/ruff#16108</a> on 2025-02-12 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/20854.html">astral-sh/ruff#20854</a> on 2025-10-15 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-16 07:30</div>
+            <div class="timeline-body"><p>This has come up again in #20854. I wonder if there's an argument for an ISC rule or option that catches any implicit string concatenation within a set list, or a many-element tuple, instead of detecting in-between comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-10-16 15:38</div>
+            <div class="timeline-body"><p>Yeah, I assume this aligns with OPs intention, but pulling out an example from #20854 I would want this to be alerted on as well as OPs example:</p>
+<pre><code class="language-python">facts = (
+    &quot;Lobsters have blue blood.&quot;,
+    &quot;The liver is the only human organ that can fully regenerate itself.&quot;,
+    &quot;Clarinets are made almost entirely out of wood from the mpingo tree.&quot;
+    &quot;In 1971, astronaut Alan Shepard played golf on the moon.&quot;,
+)
+</code></pre>
+<p>But not this:</p>
+<pre><code class="language-python">facts = (
+    &quot;Lobsters have blue blood.\n&quot;
+    &quot;The liver is the only human organ that can fully regenerate itself.\n&quot;
+    &quot;Clarinets are made almost entirely out of wood from the mpingo tree.\n&quot;
+    &quot;In 1971, astronaut Alan Shepard played golf on the moon.\n&quot;
+)
+</code></pre>
+<p>As parenthesis are often used for multi-line string concatenation, whereas multi-line containers typically used to hold multiple elements and if multi-line concatenation is desired in a multi-line container I think it would be worth explicitly putting it in parenthesis to highlight.</p>
+<p>But I do appreciate there is some subjective choices here, and I would rather have OPs example alerted on than nothing at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/21972.html">astral-sh/ruff#21972</a> on 2025-12-14 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-17 22:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:14 UTC
+    </footer>
+</body>
+</html>

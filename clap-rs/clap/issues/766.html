@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessing subsubcommand matches - clap-rs/clap #766</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Accessing subsubcommand matches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/766">#766</a>
+        opened by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a>
+        on 2016-12-05 21:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a> on 2016-12-05 21:14</div>
+            <div class="timeline-body"><p>From what I have seen it is not clear how a sub-subcommand matches should be accessed.</p>
+<p>What I expect to see is something like</p>
+<pre><code class="language-rust">let matches = App::from_yaml(yml).get_matches();
+let subcommand_matches = matches.subcommand_matches(matches.subcommand_name().unwrap());
+let subsubcommand_matches = subcommand_matches.subcommand_matches(matches.subcommand_name().unwrap());
+</code></pre>
+<p>However, I get</p>
+<pre><code class="language-rust">error: no method named `subcommand_matches` found for type `std::option::Option&lt;&amp;clap::ArgMatches&lt;'_&gt;&gt;` in the current scope
+</code></pre>
+<p>With</p>
+<pre><code>rustc 1.13.0
+clap-rs 2.19.1
+</code></pre>
+<p>Am I just missing something or is such kind of subsubcommand extraction not supported?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-05 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-05 21:44</div>
+            <div class="timeline-body"><p>It's not the typical way to do it, but you can change your code to work below:</p>
+<pre><code class="language-rust">let matches = App::from_yaml(yml).get_matches();
+
+// subcommand_matches returns an option
+let subcommand_matches = matches.subcommand_matches(matches.subcommand_name().unwrap()).unwrap();
+
+let subsubcommand_matches = subcommand_matches.subcommand_matches(matches.subcommand_name().unwrap()).unwrap();
+</code></pre>
+<p>The more common way to do this is:</p>
+<pre><code class="language-rust">
+match matches.subcommand() {
+    (&quot;foo&quot;, Some(foo_matches)) =&gt; {
+        // Handle the myprog foo subcommand
+    },
+    (&quot;bar&quot;, Some(bar_matches)) =&gt; {
+        // Handle myprog bar subcommand
+        match bar_matches.subcommand() {
+            (&quot;baz&quot;, Some(baz_matches)) =&gt; {
+                // handle myprog bar baz subcommand
+             },
+             _ =&gt; unreachabe!()
+        }
+    },
+    _ =&gt; unreachabe!()
+}
+</code></pre>
+<p>etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kirillbobyrev">@kirillbobyrev</a> on 2016-12-05 21:48</div>
+            <div class="timeline-body"><p>Great, thank you once again and apologies for a newbie question.</p>
+<p>Do you think it's worth adding such example to <code>examples/</code>? Even though there are great examples, I would actually love to see even more as a newcomer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-05 22:20</div>
+            <div class="timeline-body"><p>For sure! We can always use more examples. I'll add it on my next doc sweep unless someone else beats me to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @kbknapp on 2016-12-05 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-05 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M: mentored</span> added by @kbknapp on 2016-12-05 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-05 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/768.html">clap-rs/clap#768</a> on 2016-12-07 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @homu on 2016-12-08 02:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:23 UTC
+    </footer>
+</body>
+</html>

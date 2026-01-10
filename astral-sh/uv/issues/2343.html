@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv` behaves differently than `pip` when using `--only-binary=:all:` for editable installs - astral-sh/uv #2343</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv` behaves differently than `pip` when using `--only-binary=:all:` for editable installs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2343">#2343</a>
+        opened by <a href="https://github.com/rrueth">@rrueth</a>
+        on 2024-03-10 17:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rrueth">@rrueth</a> on 2024-03-10 17:48</div>
+            <div class="timeline-body"><p><code>uv</code> version:</p>
+<pre><code>uv --version
+uv 0.1.16 (9f1452cb7 2024-03-07)
+</code></pre>
+<p>I have the following package:</p>
+<ul>
+<li>pkg/<ul>
+<li>src/pkg/<strong>init</strong>.py</li>
+<li>tests</li>
+<li>pyproject.toml</li>
+</ul>
+</li>
+</ul>
+<p>The <code>pyproject.toml</code> contains the following:</p>
+<pre><code>[build-system]
+requires = [&quot;setuptools&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;pkg&quot;
+version = &quot;1.0.0&quot;
+dependencies = []
+</code></pre>
+<p>I create a virtual environment with the following:</p>
+<pre><code>uv venv --python python3.11 --seed env
+</code></pre>
+<p>Then, if I try to install my package as an editable install, while specifying the <code>--only-binary=:all:</code> flag, it fails:</p>
+<pre><code>VIRTUAL_ENV=env uv pip install --only-binary=:all: -e ./
+error: Failed to build editables
+  Caused by: Failed to build editable: file:///Users/ryan/pkg
+  Caused by: Building source distributions is disabled
+</code></pre>
+<p>Running the same command directly with <code>pip</code> succeeds:</p>
+<pre><code>./env/bin/pip install --only-binary=:all: -e ./
+Obtaining file:///Users/ryan/pkg
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Installing backend dependencies ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Building wheels for collected packages: pkg
+  Building editable for pkg (pyproject.toml) ... done
+  Created wheel for pkg: filename=pkg-1.0.0-0.editable-py3-none-any.whl size=1120 sha256=9b3f829a419131d6ec58795d1d4d5fad5c58c50ef24f64fad219d5f01e426fb1
+  Stored in directory: /private/var/folders/qx/q6hdl8rn3x57stn_m6sy3_tm0000gn/T/pip-ephem-wheel-cache-igev1641/wheels/b0/9a/a6/2db658aee67947ede4e7a4e42146f43316514a2f3ec0e5ac7d
+Successfully built pkg
+Installing collected packages: pkg
+Successfully installed pkg-1.0.0
+</code></pre>
+<p>The <code>pip</code> version is:</p>
+<pre><code>./env/bin/pip --version
+pip 24.0 from /Users/ryan/pkg/env/lib/python3.11/site-packages/pip (python 3.11)
+</code></pre>
+<p>Our use case is that we would like to use wheels to install all of our third-party packages, but we would like to install all of our local packages as editable installs for easier development. With <code>pip</code> the <code>--only-binary=:all:</code> worked well for this case since editable packages seemed to be ignored when considering the only-binary requirement. <code>pip</code> behaves the same when editable installs are discovered in <code>requirements.txt</code> files. <code>uv</code> fails the install in the same way when detecting editable installs in the <code>requirements.txt</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 04:13</div>
+            <div class="timeline-body"><p>Hm okay thanks! I think an exception for this makes sense, it might be kind of a pain to implement though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-11 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-03-11 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rrueth">@rrueth</a> on 2024-03-12 18:47</div>
+            <div class="timeline-body"><p>Thank you, @zanieb. It's been great integrating <code>uv</code> into our build system so far. I appreciate all the work you and the team are doing, the rapid responses to questions and issues, and the quick releases as things get fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-03-12 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2393.html">astral-sh/uv#2393</a> on 2024-03-12 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 20:58</div>
+            <div class="timeline-body"><p>Good news, this was just an oversight in a safeguard and this is very simple to fix https://github.com/astral-sh/uv/pull/2393</p>
+<p>And thanks for the kind words &lt;3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-12 23:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

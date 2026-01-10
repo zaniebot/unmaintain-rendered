@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug(?): uv publish fails if unknown files are present in ./dist - astral-sh/uv #8944</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug(?): uv publish fails if unknown files are present in ./dist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8944">#8944</a>
+        opened by <a href="https://github.com/3j14">@3j14</a>
+        on 2024-11-08 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/3j14">@3j14</a> on 2024-11-08 15:03</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>When a file is created in the <code>./dist</code> directory before running <code>uv publish</code>, this file causes <code>uv publish</code> to fail. <a href="https://docs.astral.sh/uv/reference/cli/#:~:text=Selects%20only%20wheels,ignoring%20other%20files">The documentation states</a> that it <strong>ignores</strong> all other files.</p>
+<p>https://github.com/astral-sh/uv/blob/04c445a3dbdefe530ced0228c424b3a6d9827edc/docs/reference/cli.md?plain=1#L7835</p>
+<p>This issue is clearly minor and does not really impact the user much (the error message is quite clear).</p>
+<p>However, I think there is no reason to fail if an unknown file is present – as long as a wheel and/or sdist file is found.</p>
+<p>If this failure is deliberate, then I would recommend change the documentation.</p>
+<h2>Steps to reproduce</h2>
+<ol>
+<li>Build the project (using <code>uv build</code>). The build files will be generated in <code>./dist</code>.</li>
+<li>Create a file in the <code>./dist</code> directory. On macOS, this could happen e.g. when opening the directory in Finder, which might create the <code>.DS_Store</code> file. Example: <code>touch ./dist/.DS_Store</code></li>
+<li>Run <code>uv publish</code>.</li>
+</ol>
+<p>This will fail with the error: <code>error: File is neither a wheel nor a source distribution: 'dist/.DS_Store'</code></p>
+<h2>Where does this error come from</h2>
+<p>The error is raised in <code>uv_publish::files_for_publishing</code>:
+https://github.com/astral-sh/uv/blob/0b4e5cffa6f13a1ddefb6b9cc4751814aa8b469b/crates/uv-publish/src/lib.rs#L257-L258</p>
+<p><code>uv_distribution_filename::DistFilename::try_from_normalized_filename</code> in turn checks if the files are valid wheel or sdist files. Example for wheels:
+https://github.com/astral-sh/uv/blob/0b4e5cffa6f13a1ddefb6b9cc4751814aa8b469b/crates/uv-distribution-filename/src/wheel.rs#L29-L34</p>
+<h2>Meta</h2>
+<p><strong>uv version</strong>:</p>
+<pre><code class="language-text">uv 0.5.0 (Homebrew 2024-11-07)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-11-08 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-09 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:20</div>
+            <div class="timeline-body"><p>Thanks for the report! We'll take a look -- does seem like an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2024-11-10 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8986.html">astral-sh/uv#8986</a> on 2024-11-10 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7839.html">astral-sh/uv#7839</a> on 2024-11-10 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maliayas">@maliayas</a> on 2024-11-12 09:04</div>
+            <div class="timeline-body"><p>I also saw a similar error that may be related when running <code>uv sync</code>. It gave me:</p>
+<pre><code>error: Failed to install: ruff-0.7.3-py3-none-macosx_11_0_arm64.whl (ruff==0.7.3)
+  Caused by: The wheel is invalid: Unknown wheel data type: &quot;.DS_Store&quot;
+</code></pre>
+<p>After doing a <code>find . -name .DS_Store -exec rm -rf {} +</code> in <code>/Users/USER/.cache/uv</code> the error was gone.</p>
+<p>P.S. I'm usin <code>uv 0.5.1 (f399a5271 2024-11-08)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 14:00</div>
+            <div class="timeline-body"><p>Interesting, did you open the uv cache manually at some point?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maliayas">@maliayas</a> on 2024-11-13 00:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, did you open the uv cache manually at some point?</p>
+</blockquote>
+<p>Yes, I inspected it a little bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maliayas">@maliayas</a> on 2024-11-13 00:08</div>
+            <div class="timeline-body"><p>Is the fix https://github.com/astral-sh/uv/commit/ecccfa0ee0cd3ddcb99488e008afafca6c6f8556 only for <code>uv publish</code>? FWIW the bug happened to me with <code>uv sync</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-13 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-13 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-13 12:02</div>
+            <div class="timeline-body"><p>@maliayas your case is unrelated to the <code>uv publish</code> case, it looks like the uv cache got corrupted by adding a <code>.DS_Store</code> entry.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:27 UTC
+    </footer>
+</body>
+</html>

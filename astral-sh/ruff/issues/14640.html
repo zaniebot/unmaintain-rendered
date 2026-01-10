@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pre-commit` Fails to Recognize `per-file-ignores` - astral-sh/ruff #14640</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pre-commit` Fails to Recognize `per-file-ignores`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14640">#14640</a>
+        opened by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a>
+        on 2024-11-27 17:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2024-11-27 17:53</div>
+            <div class="timeline-body"><h3>System</h3>
+<p>OS: Windows 10 22H2
+Python: 3.9.12
+Ruff: 0.8.0
+Pre-Commit; 2.18.1
+VSCode: 1.95.3
+Ruff Extension: v2024.56.0</p>
+<h3><code>.pre-commit-config.yml</code> (<strong>Relevant Portion</strong>)</h3>
+<pre><code class="language-yml">fail_fast: true
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+      - id: ruff-format
+</code></pre>
+<h3><code>pyproject.toml</code> (<strong>Relevant Portion</strong>)</h3>
+<pre><code class="language-toml">[tool.ruff.lint.per-file-ignores]
+&quot;__init__.py&quot; = [&quot;F401&quot;]  # &quot;Imported but unused: happens with packages
+</code></pre>
+<h3>Error</h3>
+<p>When running either of:</p>
+<pre><code>uvx pre-commit run --all
+</code></pre>
+<pre><code>pre-commit run --all
+</code></pre>
+<p>The following error occurs:</p>
+<pre><code>ruff failed
+  Cause: Failed to parse C:\Users\ahendry\Code\qtpygraph\pyproject.toml
+  Cause: TOML parse error at line 177, column 12
+    |
+177 | [tool.ruff.lint.per-file-ignores]
+    |            ^^^^
+unknown field `ignore`, expected one of `convention`, `ignore-decorators`, `property-decorators`
+</code></pre>
+<p>Interestingly, the <code>ruff</code> VSCode extension complains that it runs into an error sporadically, but the Output window only shows <code>info</code> logs, which do not seem to indicate any errors have occurred:</p>
+<p><img src="https://github.com/user-attachments/assets/09dad861-eff4-4abd-8f23-26e100d6c9fe" alt="Image" /></p>
+<p><img src="https://github.com/user-attachments/assets/3a73ea25-a19d-47b4-8393-ae963de74022" alt="Image" /></p>
+<p>I have not configured any settings for <code>ruff</code> in my <code>settings.json</code>.</p>
+<p>Perhaps related, but the <code>Even Better TOML</code> VSCode extension also seems to flag an issue:</p>
+<p><img src="https://github.com/user-attachments/assets/f7656235-e0d1-44d1-92f8-098ce7d42288" alt="Image" /></p>
+<p>I'm not sure what is causing this. I feel like I'm missing something obvious...? Any help would be much appreciated. Please let me know if you need more information.</p>
+<h3>Possibly Relevant Issues</h3>
+<p>#12058 <a href="https://github.com/koxudaxi/ruff-pycharm-plugin/issues/359#issuecomment-2192785432">#359</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 18:05</div>
+            <div class="timeline-body"><p>Hi. The error message suggests that there's an error in your pyproject.toml file. I admit, the error message isn't very helpful because it doesn't point you to the correct line number.</p>
+<p>I think the error is that the <code>ignore</code> setting on line <code>194..197</code> should be under the <code>[tool.ruff.lint]</code> table and not in <code>tool.ruff.lint.pydocstyle</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-27 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2024-11-27 18:07</div>
+            <div class="timeline-body"><p>You beat me to it. I just realized this.</p>
+<p>Yes, the solution is actually that <code>ignore</code> doesn't belong under the table <code>[tool.ruff.lint.pydocstyle]</code> anymore. This should go in the toplevel <code>[tool.ruff.lint]</code> table.</p>
+<p>The error message is &quot;erroneous&quot; (air quotes) in that it appears to refer to the <code>per-file-ignores</code> rule. Could the error message be updated to provide further clarification in this instance, or is that not possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 18:14</div>
+            <div class="timeline-body"><p>I'm glad to hear that!</p>
+<p>Yes, we're tracking the improvement of the error message in https://github.com/astral-sh/ruff/issues/9719</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2024-11-27 18:15</div>
+            <div class="timeline-body"><p>Beautiful, thanks! Closing since this is user error and not a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @adam-grant-hendry on 2024-11-27 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

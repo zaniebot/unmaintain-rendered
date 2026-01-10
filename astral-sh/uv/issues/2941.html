@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>potential breaking change / bug in `uv==0.1.30` - astral-sh/uv #2941</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>potential breaking change / bug in `uv==0.1.30`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2941">#2941</a>
+        opened by <a href="https://github.com/zzstoatzz">@zzstoatzz</a>
+        on 2024-04-09 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zzstoatzz">@zzstoatzz</a> on 2024-04-09 18:28</div>
+            <div class="timeline-body"><p>the following GHA step</p>
+<pre><code>- name: Install packages
+  run: |
+    python -m pip install -U uv
+    uv pip install --upgrade --system -e .[dev]
+</code></pre>
+<p>started failing after the release of <code>0.1.30</code> with</p>
+<pre><code class="language-console">Run python -m pip install -U uv
+Collecting uv
+  Downloading uv-0.1.30-py3-none-manylinux_2_17_x86_64.manylinux20[14](https://github.com/PrefectHQ/prefect/actions/runs/8620086419/job/23626392040?pr=12629#step:6:15)_x86_64.whl.metadata (26 kB)
+Downloading uv-0.1.30-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.5/11.5 MB 125.0 MB/s eta 0:00:00
+Installing collected packages: uv
+Successfully installed uv-0.1.30
+
+Notice:  A new release of pip is available: 23.0.1 -&gt; 24.0
+Notice:  To update, run: pip install --upgrade pip
+Built 1 editable in 1.[17](https://github.com/PrefectHQ/prefect/actions/runs/8620086419/job/23626392040?pr=12629#step:6:18)s
+error: Attempted to wait on an unregistered task
+Error: Process completed with exit code 2.
+</code></pre>
+<p>full CI <a href="https://github.com/PrefectHQ/prefect/actions/runs/8620086419/job/23626392040?pr=12629">run</a> (not much else as far as logs unfortunately)</p>
+<p>pinning to <code>0.1.29</code> appeared to resolve the issue</p>
+<hr />
+<h4>more potentially useful context</h4>
+<p>we use the following step before the install step, pending <code>setup-python</code> support</p>
+<pre><code>      - name: UV Cache
+        # Manually cache the uv cache directory
+        # until setup-python supports it:
+        # https://github.com/actions/setup-python/issues/822
+        uses: actions/cache@v4
+        id: cache-uv
+        with:
+          path: ~/.cache/uv
+          key: uvcache-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements-client.txt', 'requirements.txt', 'requirements-dev.txt') }}
+</code></pre>
+<hr />
+<p>I don't have a strong hypothesis for why this error is occurring, sorry. let me know if there's anything useful I can provide</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 18:30</div>
+            <div class="timeline-body"><p>Thanks for the report Nate!</p>
+<p>cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 18:32</div>
+            <div class="timeline-body"><p>Note this doesn't reproduce locally (macOS) with <code>prefect@7f2c69b007c1374ee3cbbd37a6a068fbc7ebd2e5</code> and <code>uv pip install --upgrade -e '.[dev]'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 18:37</div>
+            <div class="timeline-body"><p>It does reproduce in CI though, here are the verbose logs https://github.com/zanieb/prefect/actions/runs/8620667551/job/23627935783</p>
+<p>I tested a couple changes and it fails without <code>--editable</code> and without <code>--system</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 18:47</div>
+            <div class="timeline-body"><p>Presumably we fail at https://github.com/astral-sh/uv/blob/1512e07a2e7c05b7c9fcb457f35c7ef0f25d8d9b/crates/uv-resolver/src/resolver/mod.rs#L615</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hsheth2">@hsheth2</a> on 2024-04-09 18:48</div>
+            <div class="timeline-body"><p>We're seeing this in CI for the datahub project as well. It doesn't happen reliably though - seems like it impacts ~50% of our CI workflows, despite the matrixes being pretty similar.</p>
+<p>https://github.com/datahub-project/datahub/actions/runs/8620627386/job/23627824491?pr=10256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2942.html">astral-sh/uv#2942</a> on 2024-04-09 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2943.html">astral-sh/uv#2943</a> on 2024-04-09 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 19:03</div>
+            <div class="timeline-body"><p>We've identified this is most likely caused by #2452 and resolved by #2943 though we're still confirming with a reproduction. This wasn't caught by our unit test suite (and you'll only see it in some cases) because the cause is a performance optimization which is only applied when backtracking occurs several times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-04-09 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2024-04-09 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-09 19:10</div>
+            <div class="timeline-body"><p>I'll leave this open until we release:</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/2944</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0x2b3bfa0">@0x2b3bfa0</a> on 2024-04-09 19:18</div>
+            <div class="timeline-body"><p>Almost off-topic remark: on our project (both locally and on GitHub Actions), it fails consistently with Python 3.9 and succeeds consistently with Python 3.12; probably because the dependency resolution is different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-09 20:05</div>
+            <div class="timeline-body"><p>v0.1.31 is out now, which hopefully resolves this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../PrefectHQ/prefect/pulls/12633.html">PrefectHQ/prefect#12633</a> on 2024-04-09 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zzstoatzz">@zzstoatzz</a> on 2024-04-09 20:15</div>
+            <div class="timeline-body"><p>it does indeed appear to be resolved for us on v0.1.31 ✨</p>
+<p>thanks for the quick fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zzstoatzz on 2024-04-09 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-09 20:33</div>
+            <div class="timeline-body"><p>Awesome, thanks for reporting, glad we could resolve!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../huggingface/datasets/pulls/6794.html">huggingface/datasets#6794</a> on 2024-04-12 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../aiidateam/aiida-core/pulls/6363.html">aiidateam/aiida-core#6363</a> on 2024-04-22 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3184.html">astral-sh/uv#3184</a> on 2024-04-22 13:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

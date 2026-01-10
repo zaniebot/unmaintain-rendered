@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run, add, remove removes installed non-default groups when there are conflicts - astral-sh/uv #13319</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run, add, remove removes installed non-default groups when there are conflicts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13319">#13319</a>
+        opened by <a href="https://github.com/lendle">@lendle</a>
+        on 2025-05-06 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lendle">@lendle</a> on 2025-05-06 19:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example:</p>
+<pre><code class="language-pyproject.toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;torch&quot;,
+]
+
+[dependency-groups]
+torch1 = [&quot;torch&lt;2&quot;]
+torch2 = [&quot;torch&gt;=2&quot;]
+
+[tool.uv]
+
+conflicts = [[{ &quot;group&quot; = &quot;torch1&quot; }, { &quot;group&quot; = &quot;torch2&quot; }]]
+
+</code></pre>
+<p>Then:</p>
+<pre><code class="language-{bash}">❯ uv sync --python 3.10 --group torch1
+Resolved 32 packages in 6ms
+Audited 2 packages in 0.04ms
+❯ uv add rich
+Resolved 36 packages in 117ms
+Uninstalled 1 package in 535ms
+Installed 12 packages in 383ms
+ + filelock==3.18.0
+ + fsspec==2025.3.2
+ + jinja2==3.1.6
+ + markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + mdurl==0.1.2
+ + mpmath==1.3.0
+ + networkx==3.4.2
+ + pygments==2.19.1
+ + rich==14.0.0
+ + sympy==1.14.0
+ - torch==1.13.1
+ + torch==2.7.0
+</code></pre>
+<p>The <code>torch1</code> group is removed from the environment, and I have to re-sync with <code>--group torch1</code> to repair the environment.</p>
+<p>I thought it may have to do with torch1 not supporting python &gt;3.10, but the same happens if the groups are torch 2.2 vs torch 2.3</p>
+<h3>Platform</h3>
+<p>Debian 11, Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.7.2</p>
+<h3>Python version</h3>
+<p>Python 3.10, 3.11, ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @lendle on 2025-05-06 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lendle">@lendle</a> on 2025-05-06 19:20</div>
+            <div class="timeline-body"><p>For posterity, as a workaround I've been adding <code>torch1</code> to the default-groups config. Which works fine when I want torch1, but when working with torch 2, <code>uv sync --no-group torch1 --group torch2</code> fails. <code>uv-sync --no-default-groups --group dev --group torch2</code> works.</p>
+<p>Running <code>uv run</code> with <code>--no-sync</code> also works, but using <code>--no-sync</code> with <code>add</code> or <code>remove</code> doesn't help since the env needs to be synced anyway with appropriate groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 22:38</div>
+            <div class="timeline-body"><p>CC @BurntSushi for conflict and @Gankra for dependency group selection</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lendle">@lendle</a> on 2025-05-15 22:45</div>
+            <div class="timeline-body"><p>The same issue happens with extras</p>
+<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;rich&gt;=14.0.0&quot;,
+    &quot;torch&quot;,
+]
+
+[project.optional-dependencies]
+torch1 = [&quot;torch&lt;2&quot;]
+torch2 = [&quot;torch&gt;=2&quot;]
+
+[tool.uv]
+
+conflicts = [[{ &quot;extra&quot; = &quot;torch1&quot; }, { &quot;extra&quot; = &quot;torch2&quot; }]]
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-20 13:14</div>
+            <div class="timeline-body"><p>This can be merged into #9012. The behavior around extras and groups with <code>uv remove</code> is confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-20 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lendle">@lendle</a> on 2025-05-20 16:30</div>
+            <div class="timeline-body"><p>@charliermarsh it looks like #9012 is specifically about <code>remove</code>? This issue also affects <code>add</code>, so I'm not sure it's a dupe</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

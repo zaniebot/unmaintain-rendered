@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to use `uv pip compile &lt;path to pyproject.toml&gt; -o requirements.txt` to generate a requirements.txt for a package member - astral-sh/uv #9115</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to use `uv pip compile &lt;path to pyproject.toml&gt; -o requirements.txt` to generate a requirements.txt for a package member</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9115">#9115</a>
+        opened by <a href="https://github.com/rushwing">@rushwing</a>
+        on 2024-11-14 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rushwing">@rushwing</a> on 2024-11-14 08:07</div>
+            <div class="timeline-body"><p>[Background]:
+Amazon AWS Greengrass doesn't support to install third party tools to manage python virtual env, but it's good to manage local development environment using uv.
+So when I try to deploy multiple components to Greengrass devices, I need to convert dependencies list to a <code>requirements.txt</code>.</p>
+<p>I was struggling to manage multiple greengrass components in one workspace.</p>
+<p>Suggest we had two package members (<code>bird-feeder</code> and <code>seeds</code>) in one project, and the structure is like this:</p>
+<pre><code class="language-text">albatross
+├── packages
+│   ├── bird-feeder
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       └── bird_feeder
+│   │           ├── __init__.py
+│   │           └── foo.py
+│   └── seeds
+│       ├── pyproject.toml
+│       └── src
+│           └── seeds
+│               ├── __init__.py
+│               └── bar.py
+├── pyproject.toml
+├── README.md
+├── uv.lock
+└── src
+    └── albatross
+        └── main.py
+</code></pre>
+<p>According to the docs, there were two ways to manage multiple package members in one project:</p>
+<ol>
+<li>Using workspace and package method.</li>
+</ol>
+<pre><code class="language-toml">[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;bird-feeder&quot;, &quot;seeds&quot;, &quot;tqdm&gt;=4,&lt;5&quot;]
+
+[tool.uv.sources]
+bird-feeder = { workspace = true }
+seeds = { workspace = true }
+tqdm = { git = &quot;https://github.com/tqdm/tqdm&quot; }
+
+[tool.uv.workspace]
+members = [&quot;packages/*&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<ol start="2">
+<li>Using path dependencies for member packages.</li>
+</ol>
+<pre><code class="language-toml">[project]
+name = &quot;albatross&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;bird-feeder&quot;, &quot;seeds&quot;, &quot;tqdm&gt;=4,&lt;5&quot;]
+
+[tool.uv.sources]
+bird-feeder = { path = &quot;packages/bird-feeder&quot; }
+seeds = { path = &quot;packages/seeds&quot; }
+tqdm = { git = &quot;https://github.com/tqdm/tqdm&quot; }
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    &quot;packages/bird-feeder&quot;,
+    &quot;packages/seeds&quot;,
+]
+</code></pre>
+<p>Suggest there is no additional dependencies in <code>bird-feeder</code>, so in the pyproject.toml under <code>bird-feeder</code> folder, we will not write dependencies section and assume that it would reuse the dependencies from workspace.</p>
+<p>Then when I was using the second solution, I try to build a requirements.txt under <code>bird-feeder</code> using command <code>uv pip compile pyproject.toml -o requirements.txt</code>, but it seemed not creating any packages dependencies in the generated requirements.txt.
+(It didn't try to get the dependencies list from parent <code>pyproject.toml</code>).</p>
+<p>What's the best practice for my usage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 03:51</div>
+            <div class="timeline-body"><p>Did you try <code>uv export --package bird-feeder</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-16 03:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-06 22:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:31 UTC
+    </footer>
+</body>
+</html>

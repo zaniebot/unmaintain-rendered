@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider feature to vendor-in distributions in workspace - astral-sh/uv #14445</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider feature to vendor-in distributions in workspace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14445">#14445</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2025-07-03 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-03 16:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>We have an interesting discussions in Airlfow about sharing some code between different distributions in the same workspace and we have a particular need that might be useful to consider as uv workspace feature - vendored-in distributions.</p>
+<p>Basically what we want to achieve is to eat-cake and have it too when it comes to shared code. I.e.</p>
+<ul>
+<li>we would like to have a shared code that is not duplicated in the monorepo and can be used by different distributions</li>
+<li>but we want this code to be distriibuted &quot;embedded&quot; in the distribution that uses it, but in the way that you can install two distributions - each of them with a different version of that shared code embedded (basicallly the version that was present in the repo at the moment the using distribution was released</li>
+</ul>
+<p>This resembles a bit npm/javascript ecosystem where different packages can use different versions of shared libraries - but we would like to do it without having such &quot;generic&quot; capability in Python - and only focus on shared code from our monorepo, rather than external distributions.</p>
+<p>We want it to be available for coding and changing it and using it in our distributions when you just check-out &quot;main&quot; from the repo - it should not require any manual synchronisation - it should <strong>just work</strong> that when you modify the code in one place, then change should be automatically picked by the other distribution.</p>
+<p>It boils down to having the same code available in different packages in different distributions. Say.</p>
+<ol>
+<li>Package airflow-core uses &quot;airflow.shared.logging&quot;.</li>
+<li>Package airflow-task-sdk uses the exact same code (maybe with modified imports) but it is in `airflow.sdk.shared.logging&quot;</li>
+</ol>
+<p>We have several options we can follow now:</p>
+<ul>
+<li>symlinking the code from one distribution to the other in a - this has a number of limitations - only relative imports can be used for such a shared code</li>
+<li>we have a POC where we use https://pypi.org/project/vendoring/ to automatically vendor in the code between distributions (which needs a bit of tweaking to work in uv)</li>
+<li>we can have regular &quot;common&quot; library, but that introduces a whole host compatiblity, versioning, fixing API etc.</li>
+</ul>
+<p>Maybe that would be possible / good idea to have a feature in <code>uv workspace</code> to mark a workspace as &quot;shared&quot; - and while localy you could refer to it as a dependency (say in &quot;shared&quot; dependency group), it would end up as actual code embedded in a designated package inside the distribution.</p>
+<p>Have you ever considered such feature? Would that be feasible to implement/ useful for others as well ?</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @potiuk on 2025-07-03 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-03 18:47</div>
+            <div class="timeline-body"><p>Could you elaborate why you want to vendor the code, instead of use using a package and re-exports?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-03 19:17</div>
+            <div class="timeline-body"><p>Sure:</p>
+<p>imagine we have <code>logging</code> package with several modules:</p>
+<ul>
+<li>airflow.shared.logging/main.py</li>
+<li>airflow.shared.logging/communicate.py</li>
+</ul>
+<p>And main.py does &quot;from airflow.shared.logging.communicate import something&quot;</p>
+<p>And imagine we want to install two distributions:</p>
+<ul>
+<li>airflow-core</li>
+<li>airflow-task-sdk</li>
+</ul>
+<p>One of those distributions (airlfow-core) is relased 3 months ago and the otther (airflow-sdk)  is released today. Between 3 months ago and now there were some changes in <code>airflow.shared.logging</code>  - and &quot;airflow-sdk&quot; wants to use some new features from this new code - so it wants to use &quot;latest&quot; version of &quot;airflow.shared.logging&quot;.</p>
+<p>At the same time the &quot;airflow-core&quot; package used version of &quot;airflow.shared.logging&quot; that was there 3 months ago - and potentially it means that the latest version of the &quot;airflow.shared.logging&quot; code that &quot;airflow-task-sdk&quot; uses might be incompatible with the &quot;airflow-core&quot; released 3 months ago (accidentally or intentionally).</p>
+<p>AND (here the complexity is) we want to install &quot;airflow-core&quot; from 3 months ago with &quot;airflow-task-sdk&quot; today - in the same virtualenv.</p>
+<p>Solution 1) make sure that there is no backwards compatiblity issues and turn &quot;airflow.shared.logging&quot; into a new distribution - and let it be used by both &quot;airlfow-core&quot; and &quot;airflow-sdk&quot; and do all the harness and testing to make sure that &quot;airflow-core&quot; released 3 months ago works with the latest version of the &quot;shared.logging&quot; library.</p>
+<p>This is the &quot;typical&quot; way of solving the problem but it has many traps and issues and is just complex to orchestrate, validate , run back-compatibility tests etc.</p>
+<p>Solution 2) - the one we envision is to change dynamically on-the-flight the package where the shared code is imported from and use a different version effectively in different distributions:</p>
+<ul>
+<li>airflow-core -&gt; import from airflow.shared.logging</li>
+<li>airflow-task-skd -&gt; import from airflow.sdk.shared.logging</li>
+</ul>
+<p>If the python files in &quot;logging&quot; package are identical - we could just symlink them between the two distributions in our monorepo and be &quot;done with it&quot; - but that has a &quot;hard&quot; requirement that &quot;main.py&quot; (and other inter-dependencies in that shared code) use only relative imports (<code>from .commmunicate import ...</code>)  - which we don't particularly like for some good reasons that I could explain separately. And yes we could relax it and allow it and have symlinks, add pre-commits to make sure no-one adds absolute imports for those intra-shared-code references and be done with it.</p>
+<p>But it would have been quite a bit more &quot;proper&quot; if we could say &quot;this shared distribution should appear as if the code is in this package in the distribution that wants to use it&quot; - and have all the heavy-lifting for replacing the imports etc. done by the workspace mechanism.</p>
+<p>I hope it can shed some light and maybe @ashb might add more - because he is working on a hatchling plugin to do essentially something like this in his quest to avoid symlinking and relative imports and to have somethihing more &quot;explicit&quot; than symbolic links in a monorepo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/53506.html">apache/airflow#53506</a> on 2025-07-21 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-07-23 08:17</div>
+            <div class="timeline-body"><p>Some follow up hare.</p>
+<p>In Airflow we have just a final set of discussions in https://github.com/apache/airflow/pull/53149 where we settled on the way how we are going to implement this &quot;internal code vendoring&quot; and I think we came up with a really, really nice (and rather simple) way of doing it - by utilsing relative imports and symlinking the code (and adding a number of safeguards, in the near feature some pre-commits to make sure dependencies, pyproject.toml and facade imports are synchronized) between &quot;shared&quot; distributions, and &quot;using distributions&quot; that are in the same <code>uv workspace</code>,</p>
+<p>You might want to take a look there @charliermarsh @konstin @zanieb -&gt; to see what kind of need I am talking about in this issue.</p>
+<p>With all the discussions we had internally with @ashb @amoghrajesh @uranusjr and others in Airflow community I personally come to one analogy that is very easy to grasp. I think using &quot;vendoring&quot; in this context is a bit wrong (because it implies 3rd-party vendor). But this is really equivalent of &quot;static libraries linking&quot; from C and other libraries - or what javascript node dependnecy does - where effectively different projects can use different versions of shared libraries (our approach is much closer to C static linking as it does not even expect that the shared libraries used are actually released - we ship them as part of the &quot;using&quot; distribution).</p>
+<p>Eventually what we came up is an  interesting &quot;worskpace&quot; scheme, that I think might be worth to consider by <code>astral</code> team to support natively (we will still have to do quite a number of custom code, pre-commits, ruff rules preventing misuse and some conventions that we will follow to achieve what we want).</p>
+<p>But essentially what we are heading towards is:</p>
+<ul>
+<li><p>having a &quot;shared&quot; distribution that has a code that can be shared between different &quot;using&quot; distributions.</p>
+</li>
+<li><p>while theorethically (and even practically) we could make such library a dependency of all the &quot;using' distributions - we do not want to do it, because it introduces coupling between multiple &quot;using&quot; distributions - they (that's how Python dependencies work) - all distributions using the shared code must use the exact same version that is installed as separate distribution. This has multiple advantage and disadvantages of course.</p>
+</li>
+<li><p>so what we do instead is a scheme where distributions using the shared code might opt (or even currently in our case this is the default) to use them in &quot;statically linked&quot; way - i.e. the library code is part of the distribution using it and all the usage of the shared code is from there</p>
+</li>
+</ul>
+<p>Basically what we do - we &quot;statically link&quot; shared library in distributions using the shared code.</p>
+<p>I think this is a nice example of:</p>
+<ul>
+<li>actual need for it in big projects</li>
+<li>working implementation</li>
+<li>and eventually - call to <code>Astral</code> / <code>uv</code> team to make it a &quot;feature&quot; of uv workspaces</li>
+</ul>
+<p>BTW. Not that I am suggesting it but I know @charliermarsh that you are looking for some ways of monetizing and building value of astral on top of the open-source uv, ruff, ty.... That might be a good &quot;enterprise&quot; feature of something else on top of uv - that does not have to be <code>uv</code> feature on it's own. It's a very niche need of open-source projects like ours - and probably many enterprise projects might have a similar need.</p>
+<p>Just to clarify about the recent stuff about python-requires, limits and Astral's role in setting standards as compared to Pypa, because it could be misunderstood.</p>
+<p>I personally would LOVE for Astral to eventually find good and sustainable model that would allow to support uv, ruff, ty for a long time, but I will always oppose <code>uv</code> driving standards an bypassing <code>PyPa</code> which is the right body (even if slow and difficult to get consensus on a number of things).</p>
+<p>But we make a great use in the community from all the improved workflows, speed and philosophy of development that Astral and <code>uv</code> brought to the community and I would love to help in finding a good long-term sustainable model that would help Astral to be a fantastic steward of the Open-Source tools you build :).</p>
+<p>This might be one such idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bersace">@bersace</a> on 2025-11-20 15:08</div>
+            <div class="timeline-body"><p>Interested for this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vollkornaffe">@Vollkornaffe</a> on 2025-12-19 13:50</div>
+            <div class="timeline-body"><p>Possibly related: https://pypi.org/project/vendorize/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-12-20 20:54</div>
+            <div class="timeline-body"><p>Yep. We actually considerd &quot;vendorize&quot; in airflow - but it was rather complex as part of the &quot;build&quot; pipeline. I wrote about it in a series of articles recently - https://medium.com/apache-airflow/modern-python-monorepo-for-apache-airflow-part-4-c9d9393a696a has all the details of the way we've ended-up with. And Symbolic links solution with relative imports turned out (for us) way, way more simpler than using &quot;vendorize&quot; - which we actually tried and it turned out to be far too complex</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

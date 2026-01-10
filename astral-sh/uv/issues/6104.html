@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv lock is extremely slow with google artifact registry - astral-sh/uv #6104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv lock is extremely slow with google artifact registry</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6104">#6104</a>
+        opened by <a href="https://github.com/ewianda">@ewianda</a>
+        on 2024-08-15 04:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ewianda">@ewianda</a> on 2024-08-15 04:02</div>
+            <div class="timeline-body"><p>Before the merge of PR #5089, using uv lock with Google Artifact Registry was quite efficient. However, post-merge, the locking process for a project with around 200 requirements has drastically slowed down, now taking up to an hour. Additionally, the cache size has escalated to approximately 300 GB, which seems excessive.</p>
+<p>As a comparison, reconfiguring the repository to use <a href="https://pypi.org/simple/">PyPI</a> reduces the lock time to under 3 minutes without utilizing the cache.</p>
+<p>Thank you for looking into this matter. I appreciate your efforts in maintaining and improving this tool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 11:55</div>
+            <div class="timeline-body"><p>Wow, interesting that it was so much faster before! Hmm, ok. We'll likely need to revert then. Is there any chance you could share <code>--verbose</code> logs of a lock step on Google Artifact Registry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-15 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-08-15 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-08-15 12:25</div>
+            <div class="timeline-body"><p>Sure I can share the logs. Do you want me to run the lock to completion, or just for a while and stop</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 12:27</div>
+            <div class="timeline-body"><p>A run to completion would be great, but it doesn't need to be the entire set of 200 requirements. Just a representative sample would be great. Ideally with <code>-vv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-08-15 12:42</div>
+            <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/16625226/uv.log">uv.log</a></p>
+<p>I ran it for just 1 package (apache-beam[gcs]) and it took almost a minute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 13:06</div>
+            <div class="timeline-body"><p>Thanks. It's such a shame that the registry doesn't support <a href="https://peps.python.org/pep-0658/">PEP 658</a> <em>or</em> range requests. I'm amazed by how many commercial registries don't at least support the standard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-08-15 16:03</div>
+            <div class="timeline-body"><p>(not a uv dev)</p>
+<p>In my experience, I've found that apache-beam and many google libraries have the issue of pinning highly specific versions of dependencies, notably <code>protobuf</code>. I often see pip running into troubles trying to resolve the massive dependency tree with deep conflicts.</p>
+<p>it may be worth trying to install your package by forcing a specific version of protobuf. does that get the installation to resolve faster?
+<code>manuv pip install yourpackage protobuf==4.25.4</code>
+<code>manuv pip install yourpackage protobuf==3.20.3</code>
+<code>manuv pip install yourpackage protobuf==5.27.3</code></p>
+<p>from the logs:</p>
+<pre><code>4.831562s   4s  DEBUG uv_resolver::resolver Adding transitive dependency for apache-beam==2.58.0: protobuf&gt;=3.20.3, &lt;4.0.dev0 | &gt;=4.1.dev0, &lt;4.21.dev0 | &gt;=4.22.dev0, &lt;4.22.0 | &gt;4.22.0, &lt;4.23.dev0 | &gt;=4.25.dev0, &lt;4.26.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-08-15 16:05</div>
+            <div class="timeline-body"><p>I did do that, basically, I exported my requirment.txt with all the pinned version into pyproject.toml to see if that will limit the resolution but that didn't make a difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I did do that, basically, I exported my requirment.txt with all the pinned version into pyproject.toml to see if that will limit the resolution but that didn't make a difference.</p>
+</blockquote>
+<p>Is this materially slower than when you <code>uv pip sync</code> those specific versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-08-15 16:13</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I did do that, basically, I exported my requirment.txt with all the pinned version into pyproject.toml to see if that will limit the resolution but that didn't make a difference.</p>
+</blockquote>
+<p>Is this materially slower than when you <code>uv pip sync</code> those specific versions?</p>
+</blockquote>
+<p>Not it is not. Though I am getting a hash mis match error</p>
+<pre><code>warning: `uv sync` is experimental and may change without warning
+Resolved 83 packages in 14ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: httplib2==0.22.0
+  Caused by: Hash mismatch for `httplib2==0.22.0`
+
+Expected:
+  sha256:d7a10bc5ef5ab08322488bde8c726eeee5c8618723fdb399597ec58f3d82df81
+
+Computed:
+  sha256:0f3338153b99b37ab0cdff4613b2b4f391e7b4cf9daa07a59f40c88a39b87d5a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 16:14</div>
+            <div class="timeline-body"><p>Does your package have an invalid hash? Have you checked what the registry provides vs. the true hash of the distribution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-08-15 16:31</div>
+            <div class="timeline-body"><p>Hmm, acutally it is due to the way are setting up  google artifact registry</p>
+<p>We have a Virtual repository that points to a standard repository ( internal packages) and to  pypi as a remote repository</p>
+<p>It seems the virtual repository only provides the distribution (  sha256:d7a10bc5ef5ab08322488bde8c726eeee5c8618723fdb399597ec58f3d82df81) , while the remote repository has both wheel and sdist files.</p>
+<p>TL;DR
+The sync fails with virtual repositories and works with a remote repository on google artifact.</p>
+<p>Note: Changing the lock process to use the remote-repository doesn't change the lock time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5073.html">astral-sh/uv#5073</a> on 2024-08-22 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6470.html">astral-sh/uv#6470</a> on 2024-08-22 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-22 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-22 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpal-lilt">@kpal-lilt</a> on 2025-08-22 11:16</div>
+            <div class="timeline-body"><p>Regarding PEP 658 support for Python packages in Google Artifact Registry, there is already a long-standing issue: https://issuetracker.google.com/issues/300035693. Is there any way to increase pressure on Google to implement this?</p>
+<p>It’s a pity that we have such improved tools like uv and cannot fully exploit them in enterprise environments. Perhaps uv could also display a warning when it encounters repositories that don’t support expected features, to better inform users.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:32 UTC
+    </footer>
+</body>
+</html>

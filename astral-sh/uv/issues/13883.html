@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stronger locking for parallel operations - astral-sh/uv #13883</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stronger locking for parallel operations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13883">#13883</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-06-06 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-06-06 11:58</div>
+            <div class="timeline-body"><p>We need to ensure that there a no race conditions when two uv subcommands in parallel. This includes:</p>
+<ul>
+<li>Parallel filesystem modifications in interpreters/venvs</li>
+<li>TOCTOU differences between determining packages and performing changes</li>
+<li>Installing as well as parallel editing of <code>pyproject.toml</code>, including TOCTOU errors with</li>
+</ul>
+<p>We already enforce these guarantees with locks for most subcommands. (Follow-up to #12751.)</p>
+<p>The required locking generally applies to operations of the same kind, such as <code>uv sync</code>, but it can also be cross-operation, e.g. <code>uv pip list</code> could fail reading the installed packages if <code>uv sync</code> removes some mid-operation.</p>
+<p>An exception is the cache, where we use symlinks for atomic operations to allow safe parallel modification. If we need multiple locks, e.g. <code>pyproject.toml</code> and the interpreter, we should define and document an order for the locks and use it globally to prevent deadlocks.</p>
+<h3>Important</h3>
+<ul>
+<li>[x] Ensure that <code>uv run</code> locks when syncing the envirnoment.
+<code>uv run</code> calls the same logic as <code>uv sync</code> internally, so we can use the same locking pattern
+https://github.com/astral-sh/uv/pull/14153</li>
+<li>[ ] Ensure that <code>uv version --bump</code> locks when syncing the environment.</li>
+<li>[x] Lock build directories for setuptools (https://github.com/astral-sh/uv/issues/13703)
+https://github.com/astral-sh/uv/pull/14174</li>
+<li>[ ] Ensure that all other subcommands already use the correct locking.</li>
+<li>[x] <code>uv cache</code> operations don't clash with other uv operations https://github.com/astral-sh/uv/pull/15888</li>
+</ul>
+<h3>Less Important</h3>
+<ul>
+<li>[ ] Determine if there are reliable testing strategies, when uv testing currently uses subprocesses.
+Integrating shuttle is not feasible with several uv processes, but maybe a script that locally runs all modifying uv subcommands in a loop in parallel and verifies that we en in a sound state?</li>
+<li>[ ] <code>uv add</code>, <code>uv remove</code> and <code>uv version --bump</code> should lock <code>pyproject.toml</code> before computing edits.
+The use case here is that these operations may be started by an IDE/LSP while another operation is e.g. still in its sync phase and/or may roll back in the end.
+We can likely test this by having a build we control in the sync phase.</li>
+<li>[ ] <code>uv add</code> and <code>uv remove</code> should not lock a global interpreter path when they're not actually going to sync anything (e.g. inline script metadata without an existing cached or locked venv)</li>
+</ul>
+<h3>Nice to have</h3>
+<ul>
+<li>[ ] Are there portable filesystem read-write locks to allow e.g. blocking <code>uv pip list</code> from reading while <code>uv sync</code> is editing?</li>
+<li>[ ] Does <code>uv init</code>/<code>uv venv</code> and venv creation in general need to lock?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-06-06 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-06 12:03</div>
+            <div class="timeline-body"><p>To clarify, we already lock where it's known to matter and it's considered safe to run uv concurrently, barring oversights like #13869. This issue is about improving those guarantees, and making it easier and more rigorous for us to enforce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-06-06 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-06-06 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-06 12:10</div>
+            <div class="timeline-body"><p>I don't know if we should lock for read operations like <code>uv pip list</code>. Locking at the operation level is pretty coarse and I'd prefer to avoid it where we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13869.html">astral-sh/uv#13869</a> on 2025-06-06 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petamas">@petamas</a> on 2025-06-06 15:17</div>
+            <div class="timeline-body"><p>@konstin</p>
+<blockquote>
+<p>An exception is the cache, where we use symlinks for atomic operations to allow safe parallel modification.</p>
+</blockquote>
+<p>@charliermarsh</p>
+<blockquote>
+<p>To clarify, we already lock where it's known to matter and it's considered safe to run uv concurrently, barring oversights like https://github.com/astral-sh/uv/pull/13869.</p>
+</blockquote>
+<p>I'm not sure how relevant it is for this issue, but I want to point out that concurrent cache writes are still not safe on Windows using <code>uv</code> 0.7.11: https://github.com/astral-sh/uv/issues/11002</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leviska">@leviska</a> on 2025-06-06 18:05</div>
+            <div class="timeline-body"><blockquote>
+<p>uv run calls the same logic as uv sync internally, so we can use the same locking pattern</p>
+</blockquote>
+<p>I just want to clarify, the language of this phrase can be misleading in a way that <code>run</code> and <code>sync</code> &quot;use the same locking pattern&quot; but &quot;different locks (or something)&quot;.
+From my user perspective, they <em>must</em> be the same, because for me <code>uv run</code> is the same as <code>uv sync &amp;&amp; uv just_run</code>, so any combination of <code>sync</code> and <code>run</code> should not race with each other. I.e., <code>uv sync | uv run</code> should block one of the commands (for the syncing part)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-06 18:57</div>
+            <div class="timeline-body"><p>The issue is written for guiding the internal development process, as a user you won't observe any of this and <code>uv sync</code> and <code>uv run</code> will work the same and lock the same, even if their implementations have slightly different code paths due to internal complexities that the subcommands are abstracting over.</p>
+<p>The circumstances you need to hit one of those case where something fails are already rare, as we're already very defensive in our filesystem operations, for example using temp dirs and symlinks for atomic operations and we already have locks in many places (which is also why it took so long for https://github.com/astral-sh/uv/issues/12751 to surface compare to many way obscurer bugs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-06-06 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/b-phi">@b-phi</a> on 2025-06-18 18:36</div>
+            <div class="timeline-body"><p>I think we're also getting bit by this. Similar to this <a href="https://github.com/astral-sh/uv/issues/13870">issue</a>, we use uv to synchronize Python environments across large ray clusters. In our case, we mount a shared uv cache volume to all workers and run something like <code>uv run --all-packages --link-mode symlink</code> to create the environments and start our jobs. We experienced errors like</p>
+<pre><code>Failed to install: ... Caused by: failed to remove file ... No such file or directory (os error 2)
+</code></pre>
+<p>And other times more serious things like missing modules after the environment has been setup</p>
+<pre><code>ModuleNotFoundError: No module named 'botocore.session'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-20 07:11</div>
+            <div class="timeline-body"><p>Does this happen with <code>--link-mode copy</code> too, or only with <code>--link-mode symlink</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/14153.html">astral-sh/uv#14153</a> on 2025-06-20 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/b-phi">@b-phi</a> on 2025-06-24 22:51</div>
+            <div class="timeline-body"><p><code>--link-mode copy</code> was prohibitively slow in our case, but I don't remember seeing such issues there. I've checked with version 0.7.14 and no longer see these issues. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15888.html">astral-sh/uv#15888</a> on 2025-09-16 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15813.html">astral-sh/uv#15813</a> on 2025-09-17 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ainthek">@ainthek</a> on 2025-11-27 22:35</div>
+            <div class="timeline-body"><p>On OSX, two parralel processes fail</p>
+<pre><code>$ uv --version
+uv 0.9.13 (Homebrew 2025-11-26)
+
+</code></pre>
+<pre><code>uv run --verbose --project &quot;$c/..&quot; &quot;$c/../main.py&quot; &quot;$@&quot; 
+
+uv run --verbose --project &quot;$c/..&quot; &quot;$c/../main.py&quot; &quot;$@&quot; 
+
+</code></pre>
+<p>second will fail with: ImportError: cannot import name 'packet_creator' from 'mediapipe.python' (unknown location)</p>
+<p>This is happening when uv sync (npm run) encounters problem with
+package installation , and performs uninstall and install, in my case:
+each run prints</p>
+<pre><code>Uninstalled 1 package in 64ms
+Installed 1 package in 21ms
+</code></pre>
+<p>This is caused by mediapipes and my OS &quot;incompatibility&quot;. Which I ignore since it works. but those uninstalls cause second process to run (not synced) and fail (on import).</p>
+<p>Machine:</p>
+<pre><code>ProductName:		macOS
+ProductVersion:		14.6.1
+BuildVersion:		23G93
+
+Model Name: MacBook Pro
+      Model Identifier: Mac15,11
+      Chip: Apple M3 Max
+      Total Number of Cores: 14 (10 performance and 4 efficiency)
+      Memory: 96 GB
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

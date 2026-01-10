@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM108: autofix crashes due to introduced syntax error - astral-sh/ruff #2631</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM108: autofix crashes due to introduced syntax error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2631">#2631</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-07 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-07 18:42</div>
+            <div class="timeline-body"><p><code>ruff --select SIM108 --fix</code></p>
+<pre><code class="language-python">class JSONRPC(BaseComponent):
+
+    def _on_request(self, event, req, res):
+        if isinstance(params, dict):
+            value = yield self.call(rpc.create(method, **params), self.rpc_channel)
+        else:
+            value = yield self.call(rpc.create(method, *params), self.rpc_channel)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-07 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-02-07 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 18:53</div>
+            <div class="timeline-body"><p>Oho!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-07 19:34</div>
+            <div class="timeline-body"><p>with <code>await</code> it seems not to be a syntax error (but looks strange):</p>
+<pre><code class="language-diff">$ ruff --select SIM108 --fix --diff foo.py
+--- foo.py
++++ foo.py
+@@ -1,7 +1,4 @@
+ class JSONRPC(BaseComponent):
+ 
+     async def _on_request(self, event, req, res):
+-        if isinstance(params, dict):
+-            value = await self.call(rpc.create(method, **params), self.rpc_channel)
+-        else:
+-            value = await self.call(rpc.create(method, *params), self.rpc_channel)
++        value = await self.call(rpc.create(method, **params), self.rpc_channel) if isinstance(params, dict) else await self.call(rpc.create(method, *params), self.rpc_channel)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 20:16</div>
+            <div class="timeline-body"><p>Disabling for now, for yield and awaits. Need to fix the underlying bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2637.html">astral-sh/ruff#2637</a> on 2023-02-07 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-07 20:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

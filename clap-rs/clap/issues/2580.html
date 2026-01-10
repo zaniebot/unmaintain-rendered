@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect usage output if default_value is used - clap-rs/clap #2580</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect usage output if default_value is used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2580">#2580</a>
+        opened by <a href="https://github.com/fgsch">@fgsch</a>
+        on 2021-07-13 12:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fgsch">@fgsch</a> on 2021-07-13 12:22</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.53.0 (53cb7b09b 2021-06-17)</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{App, Arg};
+
+fn main() {
+    let _ = App::new(&quot;bug&quot;)
+        .arg(
+            Arg::new(&quot;foo&quot;)
+                .long(&quot;config&quot;)
+                .takes_value(true)
+                .default_value(&quot;bar&quot;),
+        )
+        .arg(Arg::new(&quot;input&quot;).required(true))
+        .get_matches();
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>cargo run</p>
+<h3>Actual Behaviour</h3>
+<p>Current code displays:</p>
+<pre><code>error: The following required arguments were not provided:
+    &lt;input&gt;
+
+USAGE:
+    baz &lt;input&gt; --config &lt;foo&gt;
+
+For more information try --help
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>It should display:</p>
+<pre><code>error: The following required arguments were not provided:
+    &lt;input&gt;
+
+USAGE:
+    baz [OPTIONS] &lt;input&gt;
+
+For more information try --help
+</code></pre>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p>[            clap::build::app] 	App::_do_parse
+[            clap::build::app] 	App::_build
+[            clap::build::app] 	App::_propagate:bug
+[            clap::build::app] 	App::_derive_display_order:bug
+[            clap::build::app] 	App::_create_help_and_version
+[            clap::build::app] 	App::_create_help_and_version: Building --help
+[            clap::build::app] 	App::_create_help_and_version: Building --version
+[clap::build::app::debug_asserts] 	App::_debug_asserts
+[            clap::build::arg] 	Arg::_debug_asserts:foo
+[            clap::build::arg] 	Arg::_debug_asserts:input
+[            clap::build::arg] 	Arg::_debug_asserts:help
+[            clap::build::arg] 	Arg::_debug_asserts:version
+[         clap::parse::parser] 	Parser::get_matches_with
+[         clap::parse::parser] 	Parser::_build
+[         clap::parse::parser] 	Parser::_verify_positionals
+[         clap::parse::parser] 	Parser::remove_overrides
+[      clap::parse::validator] 	Validator::validate
+[         clap::parse::parser] 	Parser::add_defaults
+[         clap::parse::parser] 	Parser::add_defaults:iter:foo:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:foo: has default vals
+[         clap::parse::parser] 	Parser::add_value:iter:foo: wasn't used
+[         clap::parse::parser] 	Parser::add_val_to_arg; arg=foo, val=&quot;bar&quot;
+[         clap::parse::parser] 	Parser::add_val_to_arg; trailing_vals=false, DontDelimTrailingVals=false
+[         clap::parse::parser] 	Parser::add_single_val_to_arg: adding val...&quot;bar&quot;
+[            clap::build::app] 	App::groups_for_arg: id=foo
+[    clap::parse::arg_matcher] 	ArgMatcher::needs_more_vals: o=foo
+[         clap::parse::parser] 	Parser::add_defaults:iter:input:
+[         clap::parse::parser] 	Parser::add_value: doesn't have conditional defaults
+[         clap::parse::parser] 	Parser::add_value:iter:input: doesn't have default vals
+[      clap::parse::validator] 	Validator::validate_conflicts
+[      clap::parse::validator] 	Validator::validate_exclusive
+[      clap::parse::validator] 	Validator::validate_exclusive:iter:foo
+[      clap::parse::validator] 	Validator::gather_conflicts
+[      clap::parse::validator] 	Validator::gather_conflicts:iter: id=foo
+[      clap::parse::validator] 	Validator::gather_conflicts:iter: This is default value, skipping.
+[      clap::parse::validator] 	Validator::validate_required: required=ChildGraph([Child { id: input, children: [] }])
+[      clap::parse::validator] 	Validator::gather_requirements
+[      clap::parse::validator] 	Validator::gather_requirements:iter:foo
+[      clap::parse::validator] 	Validator::validate_required:iter:aog=input
+[      clap::parse::validator] 	Validator::validate_required:iter: This is an arg
+[      clap::parse::validator] 	Validator::is_missing_required_ok: input
+[      clap::parse::validator] 	Validator::validate_arg_conflicts: a=&quot;input&quot;
+[      clap::parse::validator] 	Validator::missing_required_error; incl=None
+[      clap::parse::validator] 	Validator::missing_required_error: reqs=ChildGraph([Child { id: input, children: [] }])
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[], matcher=true, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=[input]
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:input
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[&quot;<input>&quot;]
+[      clap::parse::validator] 	Validator::missing_required_error: req_args=[
+&quot;<input>&quot;,
+]
+[         clap::output::usage] 	Usage::create_usage_with_title
+[         clap::output::usage] 	Usage::create_usage_no_title
+[         clap::output::usage] 	Usage::create_smart_usage
+[         clap::output::usage] 	Usage::get_required_usage_from: incls=[foo], matcher=false, incl_last=true
+[         clap::output::usage] 	Usage::get_required_usage_from: unrolled_reqs=[input]
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:input
+[         clap::output::usage] 	Usage::get_required_usage_from:iter:foo
+[         clap::output::usage] 	Usage::get_required_usage_from: ret_val=[&quot;<input>&quot;, &quot;--config <foo>&quot;]
+[            clap::build::app] 	App::color: Color setting...
+[            clap::build::app] 	Auto
+[           clap::output::fmt] 	is_a_tty: stderr=true</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @fgsch on 2021-07-13 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2021-07-13 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $10</span> added by @pksunkara on 2021-07-14 20:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-07-20 18:51</div>
+            <div class="timeline-body"><p>Nice catch! 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2609.html">clap-rs/clap#2609</a> on 2021-07-20 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-07-25 13:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:31 UTC
+    </footer>
+</body>
+</html>

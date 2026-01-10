@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>default-groups are not scoped to their package - astral-sh/uv #14005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>default-groups are not scoped to their package</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14005">#14005</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-06-12 20:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-12 20:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In a workspace if I have the root project with:</p>
+<pre><code class="language-toml">[dependency-groups]
+alpha = [&quot;pytest&quot;]
+beta = [&quot;iniconfig&quot;]
+
+[tool.uv]
+default-groups = [&quot;alpha&quot;]
+</code></pre>
+<p>and a child with</p>
+<pre><code class="language-toml">[dependency-groups]
+alpha = [&quot;sniffio&quot;]
+beta = [&quot;sortedcontainers&quot;]
+
+[tool.uv]
+default-groups = [&quot;beta&quot;]
+</code></pre>
+<p><code>uv sync --all-packages</code> will install sniffio (child.alpha)
+<code>uv sync --package child</code> will install sortedcontainers (child.beta)</p>
+<p>This is because we only ever read default groups <em>once</em> from <em>a single pyproject.toml</em> (whichever we consider &quot;the main one&quot; for the operation) and then apply those <em>group names</em> to every single package the operation selects.</p>
+<h3>Platform</h3>
+<p>all</p>
+<h3>Version</h3>
+<p>all</p>
+<h3>Python version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-06-12 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-06-12 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-12 20:26</div>
+            <div class="timeline-body"><p>Fixing this is a ton of work, unfortunately, and also a breaking change since people could accidentally be relying on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-12 20:27</div>
+            <div class="timeline-body"><p>Thankfully the happy path of just using <code>dev</code> as your default-group for all packages is fine here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-13 13:09</div>
+            <div class="timeline-body"><p>I think maybe the abstraction is fine we just need to lookup default-groups as late as possible -- i.e. when we're specifically applying them to a package, grab the package's default groups and apply them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-13 13:10</div>
+            <div class="timeline-body"><p>Although this will require passing down whether defaults are enabled by the interface we're using, so maybe the abstraction needs to change a bit in that regard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/14377.html">astral-sh/uv#14377</a> on 2025-06-30 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:07 UTC
+    </footer>
+</body>
+</html>

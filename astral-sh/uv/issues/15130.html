@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv run --package not working as expected with workspaces - astral-sh/uv #15130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv run --package not working as expected with workspaces</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15130">#15130</a>
+        opened by <a href="https://github.com/sebadevo">@sebadevo</a>
+        on 2025-08-07 11:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-07 11:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Context</h1>
+<p>When executing the command <code>uv run</code> inside a project, the project environment will be created and updated before invoking the command (<a href="https://docs.astral.sh/uv/reference/cli/#uv-run:~:text=When%20used%20in%20a%20project%2C%20the%20project%20environment%20will%20be%20created%20and%20updated%20before%20invoking%20the%20command.">docs</a>). as per your documentation. I understand this as the equivalent of running a uv sync if it wasn't synced before.</p>
+<p>When doing it with a packages in a workspace, you have the possibility of running the same command if you are at the root and want to execute the root project. For example:</p>
+<pre><code class="language-bash">uv init --package albatros
+uv run albatros # syncs the project because it wansn't done before
+</code></pre>
+<p>When defining workspace members inside a package project (such as albatros):</p>
+<pre><code class="language-bash">uv init --package packages/bird-feeder
+uv init --package packages/seeds
+</code></pre>
+<p>you can then run a package by</p>
+<pre><code class="language-bash">uv sync --package seeds
+</code></pre>
+<p>which will sync the seeds environment from its pyproject.toml and run it using</p>
+<pre><code class="language-bash">uv run seeds
+</code></pre>
+<p>However, seeing the <a href="https://docs.astral.sh/uv/reference/cli/#uv-run--package:~:text=default%2Dgroups.-,%2D%2Dpackage%20package,workspace%20member%20does%20not%20exist%2C%20uv%20will%20exit%20with%20an%20error.,-%2D%2Dprerelease%20prerelease">docs</a>, I would have expected to be able to directly run the command:</p>
+<pre><code class="language-bash">uv run --package seeds
+</code></pre>
+<p>which would sync the environment and run the script. But this doesn't work. Instead it returns the error:</p>
+<pre><code class="language-txt">Installed 1 package in 3ms
+Provide a command or script to invoke with `uv run &lt;command&gt;` or `uv run &lt;script&gt;.py`.
+
+The following commands are available in the environment:
+
+- albatros
+- python
+- python3
+- python3.11
+- seeds
+
+See `uv run --help` for more information.
+</code></pre>
+<p>Even though the command failed we can see that it still installed the environment.
+I thus assume that the error comes from --package that doesn't work well with defined scripts in the pyproject.toml.</p>
+<p>For example, in the albatros pyproject.toml we have the following script defined:</p>
+<pre><code class="language-toml">[project.scripts]
+albatros = &quot;albatros:main&quot;
+</code></pre>
+<p>and running <code>uv run --package albatros</code> returns the same error mentionned above.</p>
+<h1>How to reproduce</h1>
+<pre><code class="language-bash">uv init --package albatros
+</code></pre>
+<pre><code class="language-bash">cd albatros
+</code></pre>
+<pre><code class="language-bash">uv init --package packages/bird-feeder
+uv init --package packages/seeds
+</code></pre>
+<pre><code class="language-bash">uv run --package seeds
+</code></pre>
+<h3>Platform</h3>
+<p>Linux 6.8.0-1029-azure x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.8.5</p>
+<h3>Python version</h3>
+<p>Python 3.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sebadevo on 2025-08-07 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-07 20:48</div>
+            <div class="timeline-body"><p>I realised later on that the reason the command wasn't working is simply because it was missing the command to be executed. meaning that in the above example the fix is just to add a &quot;second&quot; seeds to the command.</p>
+<pre><code class="language-bash">uv run --package seeds seeds
+</code></pre>
+<p>The environment corresponding to the seeds package is first built, and then the seeds command is ran. So the initial issue I had is Solved.</p>
+<p>Do you think it would be an expected feature that if no script command is passed it would try and find a script with the same name as the environment and try to run it? Or do you want this to still continue returning an error of missing script command ?</p>
+<p>This would mean that in the above example, it would not be necessary to pass the second seeds argument to run its script, but if one would want to run the another script in that environment, they would be expected to pass that script name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 20:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think it would be an expected feature that if no script command is passed it would try and find a script with the same</p>
+</blockquote>
+<p>This is intentionally not supported today.</p>
+<p>I think it's possible we should have <code>uv run</code> execute a command with the same name as the package by default, but I'm not sure if it's worth the confusion it might add. e.g., then <code>uv run</code> might run <code>foo</code> but then should <code>uv run bar</code> run <code>foo bar</code> or <code>bar</code>? For example, the cargo ecosystem would run <code>foo bar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-07 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-07 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-09 13:58</div>
+            <div class="timeline-body"><p>Thank you for your response. Indeed, the confusion it might bring to behave like cargo might outweigh the benefits.</p>
+<p>I will then close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sebadevo on 2025-08-09 13:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:10 UTC
+    </footer>
+</body>
+</html>

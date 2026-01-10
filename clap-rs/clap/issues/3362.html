@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`clap_man` should respect the configured display order for args and subcommands - clap-rs/clap #3362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`clap_man` should respect the configured display order for args and subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3362">#3362</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2022-01-28 21:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2022-01-28 21:28</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.57.0 (f1edd0429 2021-11-29)</p>
+<h3>Clap Version</h3>
+<p>v3.0.6</p>
+<h3>Minimal reproducible code</h3>
+<p>TBD</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>TBD</p>
+<h3>Actual Behaviour</h3>
+<p>Arguments come back in whatever order the <code>App</code> provides rather than what is configured</p>
+<h3>Expected Behaviour</h3>
+<p>Arguments show up in the configured order</p>
+<h3>Additional Context</h3>
+<p>Split out of #3174</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2022-01-28 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-01-28 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-man</span> added by @epage on 2022-01-28 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3373.html">clap-rs/clap#3373</a> on 2022-01-31 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-06-16 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../nextest-rs/nextest/pulls/312.html">nextest-rs/nextest#312</a> on 2022-06-25 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericgumba">@ericgumba</a> on 2025-07-16 07:20</div>
+            <div class="timeline-body"><p>Hi @epage is this issue still relevant? I tried to reproduce this via</p>
+<p>`
+// build.rs
+use clap::{arg, Command};
+use clap_mangen::Man;
+use std::fs;
+use std::io;
+use std::path::PathBuf;</p>
+<p>fn main() -&gt; io::Result&lt;()&gt; {
+let out_dir = PathBuf::from(std::env::var_os(&quot;OUT_DIR&quot;).ok_or(io::ErrorKind::NotFound)?);</p>
+<pre><code>let cmd = Command::new(&quot;myapp&quot;)
+    .version(&quot;0.1.0&quot;)
+    .about(&quot;Does cool things&quot;)
+    .arg(arg!(-b --beta &lt;VALUE&gt; &quot;Beta option&quot;))
+    .arg(arg!(-a --alpha &lt;VALUE&gt; &quot;Alpha option&quot;))
+    .subcommand(
+        Command::new(&quot;zulu&quot;).about(&quot;Zulu command&quot;)
+    )
+    .subcommand(
+        Command::new(&quot;alpha&quot;).about(&quot;Alpha command&quot;)
+    );
+
+let man = Man::new(cmd);
+
+let mut buffer = Vec::new();
+man.render(&amp;mut buffer)?;
+
+fs::write(out_dir.join(&quot;myapp.1&quot;), buffer)?;
+
+Ok(())</code></pre>
+<p>}`</p>
+<p>After that I tried examining the man page that was generated via</p>
+<p><code>groff -man -Tutf8 target/debug/build/fuck-*/out/myapp.1 | less -R</code></p>
+<p>and the resulting output is the same order that was configured in the code block (beta, alpha for the args and zulu alpha in the subcommands.</p>
+<p><img width="649" height="519" alt="Image" src="https://github.com/user-attachments/assets/f873f5f9-41c5-4d6f-b76d-96411a691262" /></p>
+<p>Unless im misunderstanding this issue? Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericgumba">@ericgumba</a> on 2025-07-16 08:52</div>
+            <div class="timeline-body"><p>@epage Actually nevermind, I took a look at</p>
+<p>https://github.com/clap-rs/clap/pull/3373</p>
+<p>and I think I get it now, clap_man should take into consideration the function <code>display_order</code> when organizing the man page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6072.html">clap-rs/clap#6072</a> on 2025-07-19 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6141.html">clap-rs/clap#6141</a> on 2025-09-26 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6142.html">clap-rs/clap#6142</a> on 2025-09-26 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-10-22 15:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quoted annotations should be parsed as if parenthesized - astral-sh/ruff #9467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Quoted annotations should be parsed as if parenthesized</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9467">#9467</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-11 13:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 13:50</div>
+            <div class="timeline-body"><p>It was recently agreed that quoted annotations should be parsed as if they were implicitly wrapped in parentheses. So, e.g., they can contain otherwise-invalid indentation, newlines within binary operators, etc.</p>
+<p>See: https://github.com/microsoft/pyright/issues/6940#issuecomment-1886272420</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @charliermarsh on 2024-01-11 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-29 03:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-02-01 19:31</div>
+            <div class="timeline-body"><p>Should this be implemented in the parser layer or <a href="https://github.com/astral-sh/ruff/blob/master/crates/ruff_linter/src/checkers/ast/mod.rs#L1860">here</a> where we emit the warning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-29 02:55</div>
+            <div class="timeline-body"><p>I think it should be implemented in the <code>parse_type_annotation</code> function which is used by the AST checker to report an error if found:</p>
+<p>https://github.com/astral-sh/ruff/blob/a0263ab472f824b0673a46f6923abe012ba3b374/crates/ruff_python_parser/src/typing.rs#L22-L44</p>
+<p>I would also suggest to look at other references of <code>parse_type_annotation</code> function to make sure they aren't affected in any way with this change. They shouldn't be but just to make sure :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-03-29 16:23</div>
+            <div class="timeline-body"><p>Nice, I can work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10742.html">astral-sh/ruff#10742</a> on 2024-04-02 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-08 17:06</div>
+            <div class="timeline-body"><p>An easy fix here would probably be adding new <code>parse_parenthesized_expression</code> methods or to extend <code>parse_expression</code> with an argument whether it is parenthesized and then funneling that information to the lexer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-08 17:07</div>
+            <div class="timeline-body"><p>At this point, we'll want the fix here to apply to both ruff and red-knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-01-08 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-09 04:56</div>
+            <div class="timeline-body"><blockquote>
+<p>At this point, we'll want the fix here to apply to both ruff and red-knot.</p>
+</blockquote>
+<p>Agreed. Both ruff and red knot utilizes the <code>parse_expression_range</code> function from the parser:</p>
+<p>https://github.com/astral-sh/ruff/blob/21aa12a073091e31fd9ca5fc47a869a257e40df2/crates/ruff_python_parser/src/lib.rs#L157-L167</p>
+<p>So, as Micha suggested, we could add a <code>parse_parenthesized_expression_range</code> function. I'd suggest adding a new <code>Mode::ParenthesizedExpression</code> and initiating the <code>Lexer</code> with a <code>nesting</code> value of 1 which I think should solve this. It might require some testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15387.html">astral-sh/ruff#15387</a> on 2025-01-09 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-16 06:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-16 06:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:11 UTC
+    </footer>
+</body>
+</html>

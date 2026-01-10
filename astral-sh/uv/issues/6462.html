@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problems with using `setuptools` as a default build-backend for projects - astral-sh/uv #6462</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Problems with using `setuptools` as a default build-backend for projects</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/6462">#6462</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-22 21:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 21:08</div>
+            <div class="timeline-body"><p>This would be a violation of the spec, sort of:</p>
+<blockquote>
+<p>If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools should revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the setuptools.buildmeta:_legacy backend).</p>
+</blockquote>
+<p>Using <code>setuptools.buildmeta:_legacy</code> for a project is problematic as a default:</p>
+<ul>
+<li>#6456</li>
+<li>https://github.com/astral-sh/uv/issues/6443</li>
+<li>https://github.com/astral-sh/uv/issues/6460</li>
+</ul>
+<p>We have a few options here, e.g.:</p>
+<ol>
+<li>Use a different build backend as a default</li>
+<li>Avoid building and installing the project at all if there's not a build backend</li>
+<li>Special-case situations that would cause setuptools to fail or complain, warn the user before then? Fix the problem for them somehow?</li>
+</ol>
+<p>Maybe there are other options?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 21:09</div>
+            <div class="timeline-body"><p>The third one is sort of interesting. We could definitely check if there are obvious problems, and do something different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6460.html">astral-sh/uv#6460</a> on 2024-08-22 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-08-22 22:28</div>
+            <div class="timeline-body"><p><code>setuptools.build_meta:__legacy__</code>* right?</p>
+<p>Sadly, I still feel <a href="https://github.com/pypa/setuptools/blob/v73.0.1/setuptools/build_meta.py#L473">_BuildMetaLegacyBackend</a> will stay around for many more years given what happened with the temporary removal of <code>test</code> on <a href="https://github.com/pypa/setuptools/blob/main/NEWS.rst#v7200">v72.0.0</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 22:34</div>
+            <div class="timeline-body"><p>Yep, the legacy one. I don't mind using it for builds in general, but I think we need to provide a better experience than it delivers to people who just try to <code>uv sync</code> or <code>uv run</code> in their project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-23 10:53</div>
+            <div class="timeline-body"><p>I like (2) for projects that are managed by uv. We obviously need to continue to use the setuptools fallback for published source distributions and outside-of-workspace dependencies, but if the user doesn't specify a build backend, we can leave them in a manually mode. There's a large number of python projects that's just a number of scripts that aren't targeted at redistribution. I've seen a number of scientic/ML projects that were just a collection of jupyter notebooks. These greatly profit from dependency management, but don't need any management of their project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-08-23 23:50</div>
+            <div class="timeline-body"><blockquote>
+<p>If the pyproject.toml file is absent, or the build-backend key is missing, the source tree is not using this specification, and tools <strong>should</strong> revert to the legacy behaviour of running setup.py (either directly, or by implicitly invoking the setuptools.buildmeta:_legacy backend).</p>
+</blockquote>
+<p>Perhaps <a href="https://datatracker.ietf.org/doc/html/rfc2119.html">RFC 2119</a> keyword SHOULD <em>should</em> have been capitalized here?</p>
+<p>Since shoulds are recommendations (rather than requirements like shalls/musts), I see no violation of the spec here 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-23 23:52</div>
+            <div class="timeline-body"><p>Yes it's not quite a specification violation, but we strive to conform with &quot;SHOULD&quot; too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edmorley">@edmorley</a> on 2024-08-24 12:53</div>
+            <div class="timeline-body"><blockquote>
+<p>This would be a violation of the spec, sort of:</p>
+</blockquote>
+<p>(At the risk of being slightly pedantic) Surely the spec only comes into play when actually building a package though? The root issue here is that uv currently assumes that all projects should be built as a package - which in my experience is more the exception than the norm for your typical end-user Python app.</p>
+<p>ie: This issue is more about uv needing a heuristic for &quot;should this project be packaged&quot; (xref #6511), and if that heuristic determined the answer was &quot;no&quot;, then it's not a violation of the spec to skip packaging using the setuptools backend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 18:08</div>
+            <div class="timeline-body"><p>As of <a href="https://github.com/astral-sh/uv/releases/tag/0.4.0">uv 0.4.0</a>, we no longer build the package if a build system is not defined unless the user opts-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-28 18:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:34 UTC
+    </footer>
+</body>
+</html>

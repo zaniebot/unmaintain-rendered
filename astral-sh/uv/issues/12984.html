@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspaces Break `uv sync --locked` During Docker Build - astral-sh/uv #12984</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Workspaces Break `uv sync --locked` During Docker Build</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12984">#12984</a>
+        opened by <a href="https://github.com/Samk13">@Samk13</a>
+        on 2025-04-20 03:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Samk13">@Samk13</a> on 2025-04-20 03:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Description</h2>
+<p>When a nested package is declared as a workspace member:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+foo = { workspace = true } 
+[tool.uv.workspace] 
+members = [&quot;site&quot;]
+</code></pre>
+<p>running <code>uv sync --locked</code> within <a href="https://github.com/Samk13/v12-sandbox/blob/uv-setup-workspaces/Dockerfile#L55">Dockerfile</a>  fails with <code>error: The lockfile at uv.lock needs to be updated</code>
+Note that this error does not occur when running the same command from the CLI, only within the Dockerfile.</p>
+<p>Now, if I remove the workspaces sections in pyproject.toml and set the package source to:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+foo = [{ path = &quot;./site&quot;, editable = true }]
+</code></pre>
+<p>I will be able to <a href="https://github.com/Samk13/v12-sandbox/blob/uv-setup/site/pyproject.toml">lock site/package</a> and manually generate another uv.lock within the nested site package with uv lock. It works around the issue but defeats the purpose of a unified workspace workflow with one uv.lock file.</p>
+<p>Here is a reproduction of the issue. I think it's better to explain the issue than my poor explanation:
+This repro is an <a href="https://inveniordm.docs.cern.ch">Invenio instance</a>#2658 where we have an <a href="https://github.com/Samk13/v12-sandbox/tree/uv-setup-workspaces/site">editable package</a> within the instance.</p>
+<h2>Reproduction</h2>
+<p>Clone the reproduction that fails:</p>
+<ul>
+<li><a href="https://github.com/Samk13/v12-sandbox/blob/uv-setup-workspaces/pyproject.toml#L29-L33">repro branch that doesn't</a></li>
+<li><a href="https://github.com/Samk13/v12-sandbox/blob/uv-setup/pyproject.toml#L27">repro branch that works</a></li>
+</ul>
+<p>To trigger the error, run the full container script: <code>./scripts/run_full_container.sh</code>.
+The error shows on <a href="https://github.com/Samk13/v12-sandbox/blob/uv-setup-workspaces/Dockerfile#L55">this step</a></p>
+<p><code>error: The lockfile at </code>uv.lock<code>needs to be updated, but</code>--locked<code>was provided. To update the lockfile, run</code>uv lock<code>.</code></p>
+<p>Note that I tested by removing the --lock flag and the build ran successfully, so I <code>diff</code> the uv.lock in the app and docker image after the build, also there was no second uv.lock file within the nested package, which led me to believe this might be an issue rather than a misconfiguration.</p>
+<p>Similar issues I found:
+https://github.com/astral-sh/uv/issues/8334</p>
+<p>Please let me know if I’ve misconfigured anything or if there’s another recommended approach to this setup.
+Thanks!</p>
+<h3>Platform</h3>
+<p>mac m4 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.14 (Homebrew 2025-04-09)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Samk13 on 2025-04-20 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Samk13">@Samk13</a> on 2025-04-20 14:27</div>
+            <div class="timeline-body"><p>Fixed: copying the entire project (COPY . .) before running uv sync --locked ensures the on‑disk tree exactly matches what’s in uv.lock, so the locked sync now succeeds. Closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Samk13 on 2025-04-20 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

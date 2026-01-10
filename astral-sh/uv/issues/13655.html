@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for Dual Git/Editable Dependencies Configuration - astral-sh/uv #13655</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for Dual Git/Editable Dependencies Configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13655">#13655</a>
+        opened by <a href="https://github.com/heelee-amitai-hs">@heelee-amitai-hs</a>
+        on 2025-05-26 10:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/heelee-amitai-hs">@heelee-amitai-hs</a> on 2025-05-26 10:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We're looking for a way to support both Git dependencies and local editable dependencies for the same packages in UV, which would be essential for multi-package development workflows.</p>
+<h2>Current Challenge</h2>
+<p>In development environments with multiple interconnected packages, developers need to switch between:</p>
+<ol>
+<li><strong>Git dependencies</strong> for normal development (using specific tags/branches)</li>
+<li><strong>Local editable dependencies</strong> when actively developing multiple packages simultaneously</li>
+</ol>
+<p>We're looking for a way to configure both options and choose between them at runtime rather than configuration time.</p>
+<h2>Current Workflow in PDM</h2>
+<p>PDM allows us to work around this with separate dependency groups, though it's not the most elegant solution:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+inner = [
+    &quot;package-a @ git+ssh://git@github.com/org/package-a.git@1.2.3&quot;,
+    &quot;package-b @ git+ssh://git@github.com/org/package-b.git@4.5.6&quot;,
+]
+
+[dependency-groups]
+editable-inner = [
+    &quot;-e file:///${PROJECT_ROOT}/../package-a#egg=package-a&quot;,
+    &quot;-e file:///${PROJECT_ROOT}/../package-b#egg=package-b&quot;,
+]
+</code></pre>
+<p>We can switch modes with different commands:</p>
+<pre><code class="language-bash">pdm sync -G inner           # Use Git dependencies
+pdm sync -G editable-inner  # Use local editable dependencies
+</code></pre>
+<p>While this works, it requires maintaining the same packages in two different places.</p>
+<h2>Current Approach in UV</h2>
+<p>We understand that <code>tool.uv.sources</code> defines one source per package. We can configure either:</p>
+<p>Git source:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+&quot;package-a&quot; = { git = &quot;ssh://git@github.com/org/package-a.git&quot;, tag = &quot;1.2.3&quot; }
+</code></pre>
+<p>Or editable path:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+&quot;package-a&quot; = { path = &quot;../package-a&quot;, editable = true }
+</code></pre>
+<p>But not both simultaneously.</p>
+<p>For editable dependencies, we've tried these approaches:</p>
+<h3>Workaround 1: Runtime Configuration Modification</h3>
+<pre><code class="language-bash">cp pyproject.toml pyproject.toml.backup
+uv add --editable ../package-a --frozen
+# ... work with editable
+mv pyproject.toml.backup pyproject.toml
+</code></pre>
+<h3>Workaround 2: Bypass UV's Dependency Management</h3>
+<pre><code class="language-bash">uv sync --group dev  # Install core dependencies
+uv pip install -e ../package-a  # Bypass UV for editables
+</code></pre>
+<p>Both approaches are problematic:</p>
+<ul>
+<li>Option 1 is hacky and error-prone</li>
+<li>Option 2 breaks UV's dependency tracking</li>
+</ul>
+<h2>Proposed Solutions</h2>
+<h3>Option A: Group-Based Sources</h3>
+<p>Allow sources to be associated with dependency groups:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+&quot;package-a&quot; = { git = &quot;ssh://git@github.com/org/package-a.git&quot;, tag = &quot;1.2.3&quot; }
+
+[tool.uv.sources.editable-group]
+&quot;package-a&quot; = { path = &quot;../package-a&quot;, editable = true }
+
+[dependency-groups]
+editable-group = [&quot;package-a&quot;]
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-bash">uv sync --extra inner           # Use Git sources
+uv sync --group editable-group  # Use editable sources
+</code></pre>
+<h3>Option B: Multi-Source Support with Mode Selection</h3>
+<p>Allow multiple sources per package with runtime selection:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+&quot;package-a&quot; = [
+    { git = &quot;ssh://git@github.com/org/package-a.git&quot;, tag = &quot;1.2.3&quot;, mode = &quot;default&quot; },
+    { path = &quot;../package-a&quot;, editable = true, mode = &quot;editable&quot; }
+]
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-bash">uv sync --extra inner                    # Use default mode (Git)
+uv sync --extra inner --editable-mode   # Use editable mode
+</code></pre>
+<h2>Use Cases</h2>
+<p>This feature is particularly valuable for:</p>
+<ul>
+<li>Organizations with multiple interdependent packages</li>
+<li>Development teams that frequently work across package boundaries</li>
+<li>CI/CD pipelines that need both modes for different stages</li>
+<li>Maintaining consistency between development and production dependencies</li>
+</ul>
+<h2>Impact</h2>
+<p>Supporting this workflow would:</p>
+<ul>
+<li>Enable easier migration from PDM to UV for complex projects</li>
+<li>Improve developer experience in multi-package environments</li>
+<li>Maintain UV's dependency tracking benefits</li>
+<li>Reduce the need for hacky workarounds</li>
+</ul>
+<h2>Additional Context</h2>
+<p>We're currently evaluating UV for migration from PDM across multiple projects, and this is our primary concern preventing adoption. The performance improvements UV offers are compelling, but losing this workflow capability is a significant consideration.</p>
+<p>Would the UV team be open to implementing one of these approaches or discussing alternative solutions?</p>
+<h3>Example</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @heelee-amitai-hs on 2025-05-26 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AvnerCohen">@AvnerCohen</a> on 2025-05-27 06:55</div>
+            <div class="timeline-body"><p>Another approach to consider here maybe is similar to yarn <code>link</code> and <code>unlink</code> features:
+https://classic.yarnpkg.com/lang/en/docs/cli/link/</p>
+<p>This might not work as a &quot;group&quot; but will cover individual package development needs, obviously, this can be scripted from the outside to cover the &quot;group&quot; concept.</p>
+<p>Will this work @heelee-amitai-hs ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

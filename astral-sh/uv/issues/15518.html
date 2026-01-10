@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv run` with `--isolated --package [package] --with [otherpackage]` leaks workspace virtualenv - astral-sh/uv #15518</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv run` with `--isolated --package [package] --with [otherpackage]` leaks workspace virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15518">#15518</a>
+        opened by <a href="https://github.com/bryab">@bryab</a>
+        on 2025-08-25 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bryab">@bryab</a> on 2025-08-25 16:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>UV version: 0.8.7 to Current (0.8.13)</p>
+<p>This issue relates to using a UV workspace.  When running with the <code>--isolated</code> flag in combination with <code>--package [workspace member]</code> and <code>--with [any other package]</code>, the project virtualenv is leaked into the &quot;isolated&quot; uv run environment.  If running without the <code>--with</code> command, the <code>uv run</code> environment is correctly isolated.  This problem was introduced in 0.8.7.</p>
+<p>For example if your main workspace <code>pyproject.toml</code> has a dependency (e.g. <code>requests</code>) and you have a workspace member called <code>mypackage1</code> with no dependencies:</p>
+<p>First run <code>uv sync</code> so that <code>requests</code> is installed in the workspace virtualenv.</p>
+<p>Without <code>--with</code>, the command works as expected, with <code>requests</code> not present because it's not a dependency of <code>mypackage1</code>:</p>
+<p><code>uv run --isolated --package mypackage1 python -c &quot;import requests&quot;</code></p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'requests'
+</code></pre>
+<p>Now add <code>--with</code> with any arbitrary package:</p>
+<p><code>uv run --isolated --package mypackage1 --with six python -c &quot;import requests&quot;</code></p>
+<p>The command will run successfully, indicating that requests was successfully imported.</p>
+<p>Run the same command in <code>uv 0.8.6</code> and it fails as expected:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+ModuleNotFoundError: No module named 'requests'
+</code></pre>
+<h3>Platform</h3>
+<p>Darwin 23.6.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.8.13 (ede75fe62 2025-08-21)</p>
+<h3>Python version</h3>
+<p>Python 3.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bryab on 2025-08-25 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-25 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/15522.html">astral-sh/uv#15522</a> on 2025-08-25 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-08-26 00:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:11 UTC
+    </footer>
+</body>
+</html>

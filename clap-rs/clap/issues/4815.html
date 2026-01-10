@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambiguous inferred args picks one, rather than errors - clap-rs/clap #4815</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ambiguous inferred args picks one, rather than errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4815">#4815</a>
+        opened by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a>
+        on 2023-03-31 18:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2023-03-31 18:35</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">#!/usr/bin/env rust-script
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4.2.0&quot;, features = [&quot;derive&quot;] }
+//! ```
+
+use clap::*;
+
+#[derive(Parser, Debug)]
+#[command(infer_subcommands = true, infer_long_args = true)]
+struct Infer {
+    // Try ./clap.rs --a delete. This should fail since there's ambiguity.
+    #[arg(long, alias = &quot;abc&quot;)]
+    first: bool,
+    #[arg(long, alias = &quot;aaa&quot;)]
+    second: bool,
+
+    #[command(subcommand)]
+    cmd: Cmd,
+}
+
+#[derive(Subcommand, Debug)]
+enum Cmd {
+    // Try ./clap.rs d. This should work since the ambiguity is within the command.
+    #[command(alias = &quot;destroy&quot;)]
+    Delete
+}
+
+fn main() {
+    dbg!(Infer::parse());
+}
+</code></pre>
+<h3>Actual Behaviour</h3>
+<ul>
+<li>Long args pick the first arg upon conflict.</li>
+<li>Subcommands fail to infer if the conflicts occurred within aliases.</li>
+</ul>
+<h3>Expected Behaviour</h3>
+<ul>
+<li>Long args fail on conflicts</li>
+<li>Subcommands works with inner conflicts</li>
+</ul>
+<h3>Additional Context</h3>
+<p>Re-filing https://github.com/clap-rs/clap/issues/4603#issuecomment-1487892976 since it seems to have been missed.</p>
+<p>See also</p>
+<ul>
+<li>#4584</li>
+<li>#4583</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-12 19:45</div>
+            <div class="timeline-body"><p>It was not missed; I just didn't have the focus time to give to this.  Re-filing issues like this feels a bit spammy.  The main reason I'm keeping this version is because it is actually using the template.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2023-04-12 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2023-04-12 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-12 20:06</div>
+            <div class="timeline-body"><p>Enumerating more conditions</p>
+<pre><code class="language-rust">#!/usr/bin/env rust-script
+//! ```cargo
+//! [dependencies]
+//! clap = { version = &quot;4.2.0&quot;, features = [&quot;derive&quot;] }
+//! ```
+
+use clap::*;
+
+#[derive(Parser, Debug)]
+#[command(infer_subcommands = true, infer_long_args = true)]
+struct Infer {
+    // `--z` is ambiguous within an arg
+    #[arg(long, alias = &quot;zoo&quot;)]
+    zany: bool,
+
+    // `--a` is ambiguous alias between args
+    #[arg(long, alias = &quot;abc&quot;)]
+    first: bool,
+    #[arg(long, alias = &quot;aaa&quot;)]
+    second: bool,
+
+    // `--b` is ambiguous flag between args
+    #[arg(long)]
+    bar: bool,
+    #[arg(long)]
+    baz: bool,
+
+    #[command(subcommand)]
+    cmd: Option&lt;Cmd&gt;,
+}
+
+#[derive(Subcommand, Debug)]
+enum Cmd {
+    // `z` is ambiguous within the command
+    #[command(alias = &quot;zoo&quot;)]
+    Zany,
+
+    // `a` is ambiguous alias between commands
+    #[command(alias = &quot;Abc&quot;)]
+    First,
+    #[command(alias = &quot;Aaa&quot;)]
+    Second,
+
+    // `b` is ambiguous name between commands
+    Bar,
+    Baz,
+}
+
+fn main() {
+    dbg!(Infer::parse());
+}
+</code></pre>
+<pre><code class="language-console">$  ./clap-4815.rs --z
+[/home/epage/src/personal/dump/clap-4815.rs:50] Infer::parse() = Infer {
+    zany: true,
+    first: false,
+    second: false,
+    bar: false,
+    baz: false,
+    cmd: None,
+}
+$  ./clap-4815.rs --a
+[/home/epage/src/personal/dump/clap-4815.rs:50] Infer::parse() = Infer {
+    zany: false,
+    first: true,
+    second: false,
+    bar: false,
+    baz: false,
+    cmd: None,
+}
+$  ./clap-4815.rs --b
+[/home/epage/src/personal/dump/clap-4815.rs:50] Infer::parse() = Infer {
+    zany: false,
+    first: false,
+    second: false,
+    bar: true,
+    baz: false,
+    cmd: None,
+}
+$ ./clap-4815.rs z
+error: unrecognized subcommand 'z'
+
+  tip: some similar subcommands exist: 'zany', 'zoo'
+  tip: to pass 'z' as a value, use 'clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a -- z'
+
+Usage: clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+
+$ ./clap-4815.rs a
+error: unrecognized subcommand 'a'
+
+  tip: a similar subcommand exists: 'zany'
+  tip: to pass 'a' as a value, use 'clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a -- a'
+
+Usage: clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+
+$ ./clap-4815.rs b
+error: unrecognized subcommand 'b'
+
+  tip: some similar subcommands exist: 'bar', 'baz'
+  tip: to pass 'b' as a value, use 'clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a -- b'
+
+Usage: clap-4815_8d4d9566b6c6dc04224453e6a8dc9ecbbd563f1000d93e7f663897fa9d108c3a [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-12 20:22</div>
+            <div class="timeline-body"><p>So the behavior is independent of <code>alias</code>.</p>
+<p>it sounds like there are two requests here</p>
+<ul>
+<li>Args should error like commands</li>
+<li>Args and commands should not error if the options point to the same arg/command via aliases</li>
+</ul>
+<p>For me, I see this as separate and would likely want separate issues for deciding them.  I am willing to wait on that for now until we have further information.</p>
+<p>Next steps I see for this</p>
+<ul>
+<li>Digging into the history to find related issues / PRs (the ones that introduced it, any significant changes to ambiguity) to get any context for what led to the current behavior</li>
+<li>Identifying prior art for <code>infer_subcommands = true, infer_long_args = true</code> and see how they handle these cases (note: this doesn't have to be super exhaustive as it might not be clear and its not worth digging into the implementation to find out)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2023-04-12 21:31</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Args should error like commands</li>
+<li>Args and commands should not error if the options point to the same arg/command via aliases</li>
+</ul>
+</blockquote>
+<p>Yes, that was clear months ago and is repeated in the issue description.</p>
+<blockquote>
+<p>Digging into the history to find related issues / PRs (the ones that introduced it, any significant changes to ambiguity) to get any context for what led to the current behavior</p>
+</blockquote>
+<p>The current behavior for args is to pick an effectively random argument on a conflict. That's so obviously a bug. Similarly, not accepting conflicting aliases is also an extremely obvious bug.</p>
+<p>Here's the history: https://github.com/clap-rs/clap/issues/863.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-14 15:01</div>
+            <div class="timeline-body"><p>Interesting that #863 requested subcommands and long args (with the erroring behavior described in this issue) but only the subcommand side of it was implemented.  The flag side of this was re-raised in #1786 to mirror <code>getopt_long</code> behavior.  It was implemented in #2525 for the uutils project and was released in v3.0.0 (just over a year ago).   <code>getopt_long</code>  is documented as allowing unique abbreviations.</p>
+<p>Looking at the discussion for the two features, I'm not seeing anything that would demonstrate that this was intentional and to be compatible with one of the intended use cases, we should change this.</p>
+<p>Currently, long arg ambiguity is resolved roughly by argument definition order.  Looking at the <a href="https://docs.rs/clap/latest/clap/struct.Command.html#method.infer_long_args">docs</a>, they say arguments should not be ambiguous to succeed, so we aren't even matching the documented behavior.</p>
+<p>Due to the deviation from documentation and the two requesters, deviation from precedence, the lower usage of this feature, and the likely user-unpredictability of the current behavior, I'm leaning towards the chance of changing this during the 4.x.y series to be relatively low that we could do it now.</p>
+<p>At this time, I would ask that not erroring between the main item and their alias be split out as a separate issue for doing its own consideration.</p>
+<blockquote>
+<p>Yes, that was clear months ago and is repeated in the issue description.</p>
+</blockquote>
+<p>No, it wasn't.  Very little information was communicated and instead you were putting the burden on us to figure out what all was left out.</p>
+<blockquote>
+<p>The current behavior for args is to pick an effectively random argument on a conflict. That's so obviously a bug. Similarly, not accepting conflicting aliases is also an extremely obvious bug.</p>
+</blockquote>
+<p>I hope the above analysis gives you an idea of why I was wanting that information.  Its not just a matter of whether it is a bug but trying to find out the original intent and determining the impact of changing behavior on breaking people.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> removed by @epage on 2023-04-14 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2023-04-14 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Argument and command inference are buggy" to "Ambiguous inferred args picks one, rather than errors" by @epage on 2023-04-14 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4914.html">clap-rs/clap#4914</a> on 2023-05-18 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SUPERCILEX">@SUPERCILEX</a> on 2023-06-17 20:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I hope the above analysis gives you an idea of why I was wanting that information. Its not just a matter of whether it is a bug but trying to find out the original intent and determining the impact of changing behavior on breaking people.</p>
+</blockquote>
+<p>Yes, this is extremely helpful, thank you! Sorry for getting pissed off, I genuinely thought you were trying to stall/waste time.</p>
+<hr />
+<p>I re-opened the long args PR: https://github.com/clap-rs/clap/pull/4971 and then in a while I'll do the research to figure out why the command name aliases were written to error out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-19 14:51</div>
+            <div class="timeline-body"><p>Since args and subcommands are separate problems, let's keep the issues isolated.</p>
+<p>The title for this is already about args and args is fixed, so I think I'll close this.  We can further discuss subcommands in #5021</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2023-07-19 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5021.html">clap-rs/clap#5021</a> on 2023-07-19 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:22 UTC
+    </footer>
+</body>
+</html>

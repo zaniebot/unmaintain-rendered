@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom sources for python distribution binaries - astral-sh/uv #8015</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom sources for python distribution binaries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8015">#8015</a>
+        opened by <a href="https://github.com/brendan-morin">@brendan-morin</a>
+        on 2024-10-08 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-10-08 19:08</div>
+            <div class="timeline-body"><p>Many companies have policies around sourcing artifacts from internal sources only. I'm seeing in the docs that uv uses pre-built third-party distributions from the <a href="https://github.com/indygreg/python-build-standalone">python-build-standalone</a> project. Is it possible to configure uv to point to an alternate private index for python version distributions?</p>
+<p>I imagine as long as there's a well-defined API for how uv queries and returns binaries, the actual source from which these are downloaded should probably not matter much?</p>
+<p>Apologies if this is a duplicate, I searched around but didn't spot an existing issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 19:11</div>
+            <div class="timeline-body"><p>Timing is wild, I was <em>just</em> about to submit an issue with this same request. I would love support for changing the URL that <code>uv</code> uses for it's request to the python-build-standalone project as well. (also due to a corporate environment)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 19:15</div>
+            <div class="timeline-body"><p>Yep! <code>UV_PYTHON_INSTALL_MIRROR</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 19:16</div>
+            <div class="timeline-body"><p>Described at https://docs.astral.sh/uv/configuration/environment/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-08 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-10-08 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 19:18</div>
+            <div class="timeline-body"><p>Thank you for the quick response!</p>
+<p>Additionally, is there support for providing <code>uv</code> a filepath instead of a URL to the <code>.tar.gz</code> that's downloaded from the python-build-standalone project (<code>cpython-3.X.X+&lt;date&gt;-&lt;target&gt;-install_only_stripped.tar.gz</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 19:21</div>
+            <div class="timeline-body"><p>You can use <code>file://</code> in the install mirror.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 21:15</div>
+            <div class="timeline-body"><p>so I'm currently trying to install https://github.com/indygreg/python-build-standalone/releases/download/20241008/cpython-3.12.7+20241008-x86_64_v3-unknown-linux-gnu-pgo+lto-full.tar.zst with <code>uv</code>.</p>
+<p>I have it downloaded in <code>$HOME/downloads/python_standalone/20241008/cpython-3.12.7+20241008-x86_64_v3-unknown-linux-gnu-pgo+lto-full.tar.zst</code></p>
+<p>I set <code>UV_PYTHON_INSTALL_MIRROR='file:///home/&lt;user&gt;/downloads/python_standalone'</code></p>
+<p>When I attempt to run <code>uv python install 3.12.7</code>, it fails with</p>
+<pre><code>Searching for Python versions matching: Python 3.12.7
+error: No download found for request: cpython-3.12.7-linux-x86_64-gnu
+</code></pre>
+<pre><code class="language-bash">&gt; echo $UV_PYTHON_INSTALL_MIRROR
+file:///home/&lt;user&gt;/downloads/python_standalone
+</code></pre>
+<p>Could you provide help/guidance as to how I should proceed? Thanks for your help</p>
+<p>I also tried with <code>UV_PYTHON_INSTALL_MIRROR='file://home/&lt;user&gt;/downloads/python_standalone'</code> just incase I had too many slashes after the <code>file:</code>, still didn't work</p>
+<p>I'm on Ubuntu 22.04 LTS (jammy) if that matters</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 21:19</div>
+            <div class="timeline-body"><p>Can you share verbose logs? i.e. <code>RUST_LOG=uv=trace uv python install -v 3.12.7</code></p>
+<p>Your uv version needs to support that managed download, so you might just be on a uv version that only has metadata for 3.12.6 and not 3.12.7 yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 21:29</div>
+            <div class="timeline-body"><pre><code class="language-bash">&gt; RUST_LOG=uv-trace uv python install -v 3.12.7
+DEBUG uv 0.4.18
+TRACE Checking lock for `/home/&lt;user&gt;/.local/share/uv/python` at `/home/&lt;user&gt;/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/home/&lt;user&gt;/.local/share/uv/python`
+Searching for Python versions matching: Python 3.12.7
+TRACE ld path: /lib64/ld-linux-x86-64.so.2
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help for more information.\n&quot;
+TRACE stdout ouput from `ldd --version`: ld.so (Ubuntu GLIBC 2.35-0ubuntu3.8) stable release version 2.35.\nCopyright ...
+TRACE Found manylinux 2.35 in stdout of `ldd --version`
+DEBUG Released lock at `/home/&lt;user&gt;/.local/share/uv/python/.lock`
+error: No download found for request: cpython-3.12.7-linux-x86_64-gnu
+</code></pre>
+<p><code>uv 0.4.18</code> is the latest version of <code>uv</code> I'm able to grab off of the pypi mirror in my corporate environment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 21:36</div>
+            <div class="timeline-body"><p>3.12.7 was added in https://github.com/astral-sh/uv/pull/7880 which is in uv 0.4.19</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 21:47</div>
+            <div class="timeline-body"><p>Tried again with https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-pgo+lto-full.tar.zst instead this time.</p>
+<pre><code class="language-bash">&gt; uv python install 3.12.6
+Searching for Python versions matching: Python 3.12.6
+cpython-3.12.6-linux-x86_64-gnu
+error: Failed to install cpython-3.12.6-linux-x86_64-gnu
+  Caused by: Failed to extract archive: cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: Invalid gzip header
+cpython-3.12.6-linux-x86_64-gnu
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 21:50</div>
+            <div class="timeline-body"><p>does <code>uv</code> <em><strong>only</strong></em> install the <code>x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code>?
+Why can't I install the <code>x86_64-unknown-linux-gnu-pgo+lto-full.tar.zst</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 21:51</div>
+            <div class="timeline-body"><p>Sorry this isn't well documented — yes, we only support the target defined in our <a href="https://github.com/astral-sh/uv/blob/f6fd849f2c63e3b319ab03c936beab866dc303ba/crates/uv-python/download-metadata.json">download metadata</a>.</p>
+<p>We could probably support more in the future, it's just more complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 21:54</div>
+            <div class="timeline-body"><p>Basically the reason you can't, is that we generate JSON metadata from GitHub release</p>
+<p>https://github.com/astral-sh/uv/blob/f6fd849f2c63e3b319ab03c936beab866dc303ba/crates/uv-python/download-metadata.json#L398-L409</p>
+<p>then encode it as static Rust code for performance</p>
+<p>https://github.com/astral-sh/uv/blob/f6fd849f2c63e3b319ab03c936beab866dc303ba/crates/uv-python/src/downloads.inc#L471-L484</p>
+<p>then when you ask for a custom mirror we transform the static URL</p>
+<p>https://github.com/astral-sh/uv/blob/891c91dd3a0141f05adea20674f3ea7f4477c510/crates/uv-python/src/downloads.rs#L577-L585</p>
+<p>This is quite a naive implementation, but it's intended to unblock core functionality not be fully feature complete.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 21:59</div>
+            <div class="timeline-body"><p>Is there any specific reason why the generated json only includes the <code>install_only_stripped.tar.gz</code> and none of the other python standalone builds? I'm willing to work on a PR to support the other builds if you're open to accepting it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 22:05</div>
+            <div class="timeline-body"><p>I think we just adopted the &quot;choose a single build&quot; behavior from Rye's code. I'd love to support other builds (see #8019), though it's probably non-trivial. If you want to work on it, I'd appreciate it. Otherwise I'll probably work on #8019 in the near future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 22:49</div>
+            <div class="timeline-body"><p>something weird is happening still, it looks like <code>uv</code> is attempting to download from github directly still which won't be possible in my environment.</p>
+<p><code>cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code> is currently in <code>/home/&lt;user&gt;/downloads/python_standalone</code></p>
+<pre><code class="language-bash">&gt; echo $UV_PYTHON_INSTALL_MIRROR
+file:///home/&lt;user&gt;/downloads/python_standalone
+</code></pre>
+<pre><code class="language-bash">&gt; RUST_LOG=uv-trace uv python install -v 3.12.6
+DEBUG uv 0.4.18
+TRACE Checking lock for `/home/&lt;user&gt;/.local/share/uv/python` at `/home/&lt;user&gt;/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/home/&lt;user&gt;/.local/share/uv/python`
+Searching for Python versions matching: Python 3.12.6
+TRACE ld path: /lib64/ld-linux-x86-64.so.2
+TRACE stdout output from `ld`: &quot;&quot;
+TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help for more information.\n&quot;
+TRACE Tried to find musl version by running `&quot;/lib64/ld-linux-x86-64.so.2&quot;`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
+TRACE Tried to find libc version from possible symlink at &quot;/lib64/ld-linux-x86-64.so.2&quot;, but failed: Failed to find glibc version in the filename of linker: `/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2`
+TRACE stdout ouput from `ldd --version`: ld.so (Ubuntu GLIBC 2.35-0ubuntu3.8) stable release version 2.35.\nCopyright ...
+TRACE Found manylinux 2.35 in stdout of `ldd --version`
+DEBUG Using request timeout of 30s
+TRACE Handling request for https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Request for https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+TRACE Attempting unauthenticated request for https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+DEBUG Downloading https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz to temporary location: /home/&lt;user&gt;/.local/share/uv/python/.cache/.tmpYs2Aii
+DEBUG Extracting cpython-3.12.6%2B20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+error: Failed to install cpython-3.12.6-linux-x86_64-gnu
+  Caused by: Failed to extract archive: cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+  Caused by: Invalid gzip header
+DEBUG Released lock at `/home/&lt;user&gt;/.local/share/uv/python/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 23:19</div>
+            <div class="timeline-body"><p>On my machine, I get something like this if I specify an arbitrary directory:</p>
+<pre><code>❯ UV_PYTHON_INSTALL_MIRROR=&quot;file:///Users/zb/test&quot; RUST_LOG=uv=trace uv python install -v 3.12.6
+DEBUG uv 0.4.18
+TRACE Checking lock for `/Users/zb/.local/share/uv/python` at `/Users/zb/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/Users/zb/.local/share/uv/python`
+Searching for Python versions matching: Python 3.12.6
+DEBUG Using request timeout of 30s
+error: Failed to install cpython-3.12.6-macos-aarch64-none
+  Caused by: failed to query metadata of file `/Users/zb/test/20240909/cpython-3.12.6+20240909-aarch64-apple-darwin-install_only_stripped.tar.gz`
+  Caused by: No such file or directory (os error 2)
+DEBUG Released lock at `/Users/zb/.local/share/uv/python/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 23:21</div>
+            <div class="timeline-body"><p>Similarly:</p>
+<pre><code>❯ wget https://github.com/indygreg/python-build-standalone/releases/download/20240909/cpython-3.12.6%2B20240909-aarch64-apple-darwin-install_only_stripped.tar.gz
+❯ mkdir 20240909
+❯ mv cpython-3.12.6+20240909-aarch64-apple-darwin-install_only_stripped.tar.gz 20240909
+❯ UV_PYTHON_INSTALL_MIRROR=&quot;file:///Users/zb/workspace/uv&quot; RUST_LOG=uv=trace uv python install -v 3.12.6
+DEBUG uv 0.4.18
+TRACE Checking lock for `/Users/zb/.local/share/uv/python` at `/Users/zb/.local/share/uv/python/.lock`
+DEBUG Acquired lock for `/Users/zb/.local/share/uv/python`
+Searching for Python versions matching: Python 3.12.6
+DEBUG Using request timeout of 30s
+DEBUG Downloading file:///Users/zb/workspace/uv/20240909/cpython-3.12.6%2B20240909-aarch64-apple-darwin-install_only_stripped.tar.gz to temporary location: /Users/zb/.local/share/uv/python/.cache/.tmpvg3LcW
+DEBUG Extracting cpython-3.12.6%2B20240909-aarch64-apple-darwin-install_only_stripped.tar.gz
+DEBUG Moving /Users/zb/.local/share/uv/python/.cache/.tmpvg3LcW/python to /Users/zb/.local/share/uv/python/cpython-3.12.6-macos-aarch64-none
+Installed Python 3.12.6 in 380ms
+ + cpython-3.12.6-macos-aarch64-none
+DEBUG Released lock at `/Users/zb/.local/share/uv/python/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2024-10-08 23:36</div>
+            <div class="timeline-body"><p>Figured it out</p>
+<p>my filename was urlencoded so was actually <code>cpython-3.12.6%2B20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code>
+instead of <code>cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code>
+(<code>%2B</code> vs <code>+</code>)</p>
+<p>Thanks for all of your help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-08 23:44</div>
+            <div class="timeline-body"><p>That makes sense. We can add more documentation around this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guillemc23">@guillemc23</a> on 2024-10-09 09:17</div>
+            <div class="timeline-body"><p>I'm a bit confused. We're currently migrating to <code>uv</code> and we need to install python packages from private sources.</p>
+<p>Currently, I'm just adding the following to my <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.uv]
+index-url = &quot;https://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;&quot;
+</code></pre>
+<p>Which is working properly.</p>
+<p>I have been unable to find a way to configure this authentication in order to avoid just hardcoding the credentials for obvious reasons. Is this somehow related to this issue? Also, is this the way I should be doing this?</p>
+<p>EDIT: I believe what I'm referring to is this PR https://github.com/astral-sh/uv/pull/7741</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8046.html">astral-sh/uv#8046</a> on 2024-10-09 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-10-10 21:35</div>
+            <div class="timeline-body"><p>Just took a look at #7741 and I am wondering why the environment variables can't be specified in the <code>pyproject.toml</code> for the index URLs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-11 02:14</div>
+            <div class="timeline-body"><p>@guillemc23 sorry this issue is about downloading Python distributions — not index URLs for packages. Could you open a new issue for your question instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/8186.html">astral-sh/uv#8186</a> on 2024-10-14 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2024-10-24 22:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Figured it out</p>
+<p>my filename was urlencoded so was actually <code>cpython-3.12.6%2B20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code> instead of <code>cpython-3.12.6+20240909-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz</code> (<code>%2B</code> vs <code>+</code>)</p>
+<p>Thanks for all of your help</p>
+</blockquote>
+<p>Opened PR with a create mirror script to make it easier https://github.com/astral-sh/uv/pull/8548</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2024-12-27 17:19</div>
+            <div class="timeline-body"><p>maybe relevant #10203</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leifwalsh">@leifwalsh</a> on 2025-01-14 20:54</div>
+            <div class="timeline-body"><p>I'd be interested in something slightly different: rather than just hosting indygreg's tarballs internally, I'd like to use my own builds of python, but I'm content to host those builds with whatever URL pattern <code>uv</code> wants, and to provide a config file (say, <code>https://not-indygregs-trustworthy-snakes.example.com/download-metadata.json</code>) I'd construct myself, with checksums of my preferred tarballs. (Then, presumably, set <code>python-install-mirror = &quot;https://not-indygregs-trustworthy-snakes.example.com&quot;</code>, or maybe more likely set something to the path to <code>download-metadata.json</code> in <code>/etc/uv/uv.toml</code>)</p>
+<p>Would something like that be in scope for this issue, or should I file a separate one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leifwalsh">@leifwalsh</a> on 2025-01-16 02:15</div>
+            <div class="timeline-body"><p>@zanieb I can probably work on this or find someone who can, if you all can bounce some design ideas with us. If you'd rather we just pitch something that works too, I just want to make sure you're open to the idea first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-16 03:33</div>
+            <div class="timeline-body"><p>I'm a little hesitant since we don't have a well-defined or stable format for the <code>python-build-standalone</code> distributions and we're pretty tightly integrated with them.</p>
+<p>We also store all the metadata statically via templated Rust right now so it's a bit of a larger change to be able to read that from a file.</p>
+<p>I'm sort of into adding support for reading that metadata dynamically, e.g., it's also useful for updating Python without updating uv — but we'll need to have some sort of versioning scheme and I think if you're rolling your own distributions there's no guarantee they'll work well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leifwalsh">@leifwalsh</a> on 2025-01-16 19:13</div>
+            <div class="timeline-body"><p>Yeah, I've been looking at how that gets included statically. I can patch uv with my own json and get it to use our builds, but reading from a file and getting that configured from settings or environment variables is a bit more plumbing.</p>
+<p>What's been changing about the format for distributions? Is that something we could help define/standardize? I also noticed there's no room in the schema for extra version numbers after patch, which we do use (build numbers, in case we rebuild a version), but could probably get by without if that's weird to add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-16 19:21</div>
+            <div class="timeline-body"><blockquote>
+<p>What's been changing about the format for distributions? Is that something we could help define/standardize?</p>
+</blockquote>
+<p>The most recent example I can think of is https://github.com/astral-sh/python-build-standalone/pull/373</p>
+<p>It's less that they're changing a lot, and more that I'm hesitant to promise they won't :) the <code>python-build-standalone</code> project is pretty young still and we're investing increasing resources into it. I expect things to change more in the future.</p>
+<p>Another concern is that we need to apply patches to the distribution at install time. These may or may not be relevant for custom distributions?</p>
+<p>I think the best place to start is experimental support for dynamic metadata in uv without stability promises. Then we can iterate on standardization or versioning of the format?</p>
+<blockquote>
+<p>I also noticed there's no room in the schema for extra version numbers after patch, which we do use (build numbers, in case we rebuild a version), but could probably get by without if that's weird to add.</p>
+</blockquote>
+<p>Like, you want to be able to have multiple builds of versions side-by-side in your metadata? I'm not particularly opposed, but it may complicate our Python request logic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-01-16 20:08</div>
+            <div class="timeline-body"><p>@leifwalsh That is exactly what I'm requesting at #10203</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-16 20:15</div>
+            <div class="timeline-body"><p>I think there's a bit of a difference between a local metadata file and a remote one — then we start having to deal with caching and network overheads. I agree in the long-run we'd want both though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leifwalsh">@leifwalsh</a> on 2025-01-16 20:35</div>
+            <div class="timeline-body"><blockquote>
+<p>It's less that they're changing a lot, and more that I'm hesitant to promise they won't :) the <code>python-build-standalone</code> project is pretty young still and we're investing increasing resources into it. I expect things to change more in the future.</p>
+</blockquote>
+<p>Fair!</p>
+<blockquote>
+<p>Another concern is that we need to apply patches to the distribution at install time. These may or may not be relevant for custom distributions?</p>
+</blockquote>
+<p>Oh, I didn't realize that. Can you point me toward those patches? The builds we produce work (well enough for our purposes, in a somewhat constrained environment e.g. Linux only) after untarring.</p>
+<blockquote>
+<p>I think the best place to start is experimental support for dynamic metadata in uv without stability promises. Then we can iterate on standardization or versioning of the format?</p>
+</blockquote>
+<p>That sounds like a good plan to me. I'd be happy to live without stability promises for a bit. Should we move discussion to #10203 and start planning it there? (@MeitarR thanks! Sorry I couldn't find that as easily as this one.)</p>
+<blockquote>
+<p>Like, you want to be able to have multiple builds of versions side-by-side in your metadata? I'm not particularly opposed, but it may complicate our Python request logic?</p>
+</blockquote>
+<p>Yeah, I admit this is odd and probably not worth considering as a real requirement, but we produce builds like 3.13.1.40 and 3.13.1.45 - they're just distinct build events for 3.13.1, but as a simple way to not worry about reproducibility, we keep them both and let projects stick with whichever was the latest build last time they updated things. This nearly fits in the Prerelease struct, but not quite because all of those variants (alpha, beta, RC) sort earlier than None.</p>
+<blockquote>
+<p>I think there's a bit of a difference between a local metadata file and a remote one — then we start having to deal with caching and network overheads. I agree in the long-run we'd want both though.</p>
+</blockquote>
+<p>Either way you have to await something, right? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-16 20:43</div>
+            <div class="timeline-body"><p>The patches are invoked at https://github.com/astral-sh/uv/blob/11f2882211b4b15a347718ab865590540805090e/crates/uv/src/commands/python/install.rs#L312-L317</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leifwalsh">@leifwalsh</a> on 2025-01-16 21:21</div>
+            <div class="timeline-body"><p>Thanks! Ok yeah, we do some stuff to sysconfig before uploading our builds, and we have some other things that do the externally managed stuff. That makes sense, thanks.</p>
+<p>And, @MeitarR now I see that's literally the issue you linked to before I joined this issue, I think I just misread what you were asking for the first time. Sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10939.html">astral-sh/uv#10939</a> on 2025-01-24 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11746.html">astral-sh/uv#11746</a> on 2025-03-07 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-03-14 18:07</div>
+            <div class="timeline-body"><p>Another uv user was asking if one could set the python mirror in <code>pyproject.toml</code> (https://github.com/astral-sh/uv/issues/11746#issuecomment-2706614478).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2025-03-14 18:27</div>
+            <div class="timeline-body"><p>Would it be worth adding another release asset that includes uv for each <code>python-build-standalone</code> platform (i.e. <code>cpython-3.12.9+20250311-x86_64-pc-windows-msvc-install_only_uv.tar.gz</code>)? Might need to alter uv to look for Python interpreter in the current directory (similar to <code>uv.toml</code> discovery).</p>
+<p>Just an idea 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12808.html">astral-sh/uv#12808</a> on 2025-04-10 14:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:03 UTC
+    </footer>
+</body>
+</html>

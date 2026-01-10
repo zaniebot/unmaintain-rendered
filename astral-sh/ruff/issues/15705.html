@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allowed-unused-imports doesn't work with relative imports - astral-sh/ruff #15705</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>allowed-unused-imports doesn't work with relative imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15705">#15705</a>
+        opened by <a href="https://github.com/dhduvall">@dhduvall</a>
+        on 2025-01-24 00:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhduvall">@dhduvall</a> on 2025-01-24 00:57</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>If an &quot;unused&quot; import is done with a relative path, <code>allowed-unused-imports</code> can't be configured to to allow it:</p>
+<pre><code class="language-shell">$ uv init --lib --name mod
+$ cat &gt;&gt; pyproject.toml &lt;&lt;EOF
+
+[tool.ruff]
+lint.pyflakes.allowed-unused-imports = [
+  &quot;mod.foo.bar&quot;,
+]
+EOF
+$ echo &quot;from .foo import bar&quot; &gt; src/mod/junk.py
+$ echo &quot;bar = None&quot; &gt; src/mod/foo.py
+$ uvx ruff check src
+src/mod/junk.py:1:18: F401 [*] `.foo.bar` imported but unused
+  |
+1 | from .foo import bar
+  |                  ^^^ F401
+  |
+  = help: Remove unused import: `.foo.bar`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+$ uvx ruff version
+ruff 0.9.3 (90589372d 2025-01-23)
+</code></pre>
+<p>I was unable to find a spelling of <code>mod.foo.bar</code> that would work—none of <code>.foo.bar</code>, <code>foo.bar</code>, <code>foo</code> work.
+If <code>junk.py</code> contains <code>from mod.foo import bar</code> (i.e., absolute path for the import), <code>ruff</code> allows the import as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-24 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-01-24 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 08:15</div>
+            <div class="timeline-body"><p>Thanks for opening this issue.</p>
+<p>I'm not very familiar with that part of Ruff but it does seem that we don't support resolving relative imports in bindings? There's a comment here that suggest we would</p>
+<p>https://github.com/astral-sh/ruff/blob/555b3a6a2c8120c405719cabf7444f32136775e1/crates/ruff_linter/src/checkers/ast/mod.rs#L646-L658</p>
+<p>but we never prepend <code>self.module</code>. So I don't think we actually do. @charliermarsh might know more about the why.</p>
+<p>(Note, you may have to add a <code>__init__.py</code> to <code>mod</code> or add it to <code>namespace-packages</code> even after ruff recognizes relative imports to make <code>mod</code> a proper package)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/20115.html">astral-sh/ruff#20115</a> on 2025-08-27 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-29 09:46</div>
+            <div class="timeline-body"><p>@ntBre I have confirmed that my PR #20115 does not solve this issue, so I will work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @TaKO8Ki by @ntBre on 2025-08-29 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mhammond/pywin32/pulls/2676.html">mhammond/pywin32#2676</a> on 2025-11-09 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:16 UTC
+    </footer>
+</body>
+</html>

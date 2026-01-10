@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for index without `simple` API - astral-sh/uv #705</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for index without `simple` API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/705">#705</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-12-19 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-19 18:08</div>
+            <div class="timeline-body"><p>With <code>devpi</code>, when we make a request for a project at <code>/&lt;project&gt;</code> instead of <code>/+simple/&lt;project&gt;</code> we get a HTTP 404 because we only accept <code>application/vnd.pypi.simple.v1+json</code> and their API returns <code>application/json</code> or <code>text/html</code> for those endpoints. <code>pip</code> will happily install from here, but <code>puffin pip-install</code> fails.</p>
+<p>This may be solved by adding support for the <code>text/html</code> API? as in #412? but I believe that is specific to the HTML responses from the <code>simple</code> API not this format.</p>
+<p>For posterity, if we accept <code>application/json</code> the server responds with e.g.</p>
+<pre><code>{
+  &quot;result&quot;: {
+    &quot;0.0.0&quot;: {
+      &quot;name&quot;: &quot;requires-direct-incompatible-versions-3a64108d&quot;,
+      &quot;version&quot;: &quot;0.0.0&quot;,
+      &quot;summary&quot;: &quot;The user requires two incompatible, existing versions of package `a`&quot;,
+      &quot;home_page&quot;: &quot;&quot;,
+      &quot;author&quot;: &quot;&quot;,
+      &quot;author_email&quot;: &quot;&quot;,
+      &quot;maintainer&quot;: &quot;&quot;,
+      &quot;maintainer_email&quot;: &quot;&quot;,
+      &quot;license&quot;: &quot;&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;keywords&quot;: &quot;&quot;,
+      &quot;platform&quot;: [],
+      &quot;classifiers&quot;: [],
+      &quot;download_url&quot;: &quot;&quot;,
+      &quot;supported_platform&quot;: [],
+      &quot;comment&quot;: &quot;&quot;,
+      &quot;provides&quot;: [],
+      &quot;requires&quot;: [],
+      &quot;obsoletes&quot;: [],
+      &quot;project_urls&quot;: [],
+      &quot;provides_dist&quot;: [],
+      &quot;obsoletes_dist&quot;: [],
+      &quot;requires_dist&quot;: [
+        &quot;requires-direct-incompatible-versions-3a64108d-a==1.0.0&quot;,
+        &quot;requires-direct-incompatible-versions-3a64108d-a==2.0.0&quot;
+      ],
+      &quot;requires_external&quot;: [],
+      &quot;requires_python&quot;: &quot;&gt;=3.7&quot;,
+      &quot;description_content_type&quot;: &quot;&quot;,
+      &quot;provides_extras&quot;: &quot;&quot;,
+      &quot;+links&quot;: [
+        {
+          &quot;rel&quot;: &quot;releasefile&quot;,
+          &quot;hash_spec&quot;: &quot;sha256=fe998dba25fb844fb1c3399f11fcd93642b40be7166f1db46ca5ae1bfa8f5017&quot;,
+          &quot;href&quot;: &quot;http://localhost:3141/packages/local/+f/fe9/98dba25fb844f/requires_direct_incompatible_versions_3a64108d-0.0.0.tar.gz&quot;,
+          &quot;log&quot;: [
+            {
+              &quot;what&quot;: &quot;upload&quot;,
+              &quot;who&quot;: null,
+              &quot;when&quot;: [
+                2023,
+                12,
+                19,
+                16,
+                27,
+                9
+              ],
+              &quot;dst&quot;: &quot;packages/local&quot;
+            }
+          ]
+        }
+      ]
+    }
+  },
+  &quot;type&quot;: &quot;projectconfig&quot;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-19 18:09</div>
+            <div class="timeline-body"><p>xrefs</p>
+<ul>
+<li>https://github.com/devpi/devpi/issues/986</li>
+<li>https://github.com/devpi/devpi/issues/801</li>
+<li>https://github.com/dependabot/dependabot-core/issues/7680</li>
+<li>https://github.com/devpi/devpi/issues/1020</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-21 03:17</div>
+            <div class="timeline-body"><p>@konstin or @zanieb - Can you help me understand what the <code>/&lt;project&gt;</code> URL is vs. the <code>/simple</code> version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-21 09:47</div>
+            <div class="timeline-body"><p>For pypi for example, it's <code>https://pypi.org/simple/</code> (list of all projects) vs <code>https://pypi.org/simple/&lt;project&gt;</code> (files for a single project)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-21 14:38</div>
+            <div class="timeline-body"><p>Hm that's not what I'm referring to. There's the Simple API which provides <code>/simple</code> and <code>/simple/&lt;project&gt;</code> but as shown for <code>devpi</code> there's also just <code>/&lt;project&gt;</code> which has a different response. I cannot find a standard for that page.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-21 14:43</div>
+            <div class="timeline-body"><p>(Not sure that I want to support this but still curious what it is and if it follows a spec.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-21 16:45</div>
+            <div class="timeline-body"><p>I'll try to see if there are other indexes that provide the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-21 16:53</div>
+            <div class="timeline-body"><p>I see the torch and jax indexes (https://download.pytorch.org/whl/cu118 and https://storage.googleapis.com/jax-releases/jax_cuda_releases.html) as important targets, they are foundational machine learning libraries with both having only limited pypi support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-24 21:49</div>
+            <div class="timeline-body"><p>I wonder if this is just something internal to devpi. Tempted to close until we see it elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-25 00:26</div>
+            <div class="timeline-body"><p>Sounds good to me in conjunction with #706</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-12-25 00:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation fails for statsforecast due to llvmlite Python version constraint - astral-sh/uv #9413</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Installation fails for statsforecast due to llvmlite Python version constraint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9413">#9413</a>
+        opened by <a href="https://github.com/asdf8601">@asdf8601</a>
+        on 2024-11-25 10:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/asdf8601">@asdf8601</a> on 2024-11-25 10:08</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p><strong>Description</strong></p>
+<p>When trying to install <code>statsforecast</code> using uv, the installation fails due to
+a Python version constraint in <code>llvmlite==0.36.0</code>.</p>
+<pre><code class="language-bash">  RuntimeError: Cannot install on Python version 3.10.15; only versions &gt;=3.6,&lt;3.10
+  are supported.
+</code></pre>
+<p><strong>Environment</strong></p>
+<ul>
+<li>Python version: 3.10.15</li>
+<li>uv version: 0.5.4 (c62c83c37 2024-11-20)</li>
+<li>Operating System: macOS</li>
+</ul>
+<p><strong>Steps to Reproduce</strong></p>
+<ol>
+<li>Create a new virtual environment with uv</li>
+<li>Install <code>numpy</code> and <code>statsforecast</code><ul>
+<li><code>uv pip install numpy statsforecast</code></li>
+<li><code>uv add numpy statsforecast</code></li>
+</ul>
+</li>
+</ol>
+<h2>Workarounds</h2>
+<p>Adding dependencies one by one:</p>
+<pre><code class="language-bash"># In this order, the opposite results in the same error.
+uv add statsforecast
+uv add numpy
+</code></pre>
+<p>Using <code>python-venv</code> and <code>pip</code> works fine:</p>
+<pre><code class="language-bash">$ python -m venv .venv-pip
+
+$ ./.venv-pip/bin/pip install numpy statsforecast -q -I
+
+[notice] A new release of pip is available: 23.0.1 -&gt; 24.3.1
+[notice] To update, run: python -m pip install --upgrade pip
+</code></pre>
+<h2>Log</h2>
+<pre><code class="language-bash">$ python -V
+Python 3.10.15
+
+$ uv version
+uv 0.5.4 (c62c83c37 2024-11-20)
+
+</code></pre>
+<p>Installing <code>numpy</code> and <code>statsforecast</code></p>
+<pre><code class="language-bash">$ uv python pin 3.10
+
+$ uv venv
+
+$ . .venv/bin/activate
+
+$ uv pip install numpy statsforecast
+Resolved 14 packages in 17ms
+  × Failed to download and build `llvmlite==0.36.0`
+  ╰─▶ Build backend failed to determine requirements with `build_wheel()` (exit status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
+        File
+      &quot;/Users/asdf8601/.cache/uv/builds-v0/.tmppKvNui/lib/python3.10/site-packages/setuptools/
+build_meta.py&quot;,
+      line 334, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File
+      &quot;/Users/asdf8601/.cache/uv/builds-v0/.tmppKvNui/lib/python3.10/site-packages/setuptools/
+build_meta.py&quot;,
+      line 304, in _get_build_requires
+          self.run_setup()
+        File
+      &quot;/Users/asdf8601/.cache/uv/builds-v0/.tmppKvNui/lib/python3.10/site-packages/setuptools/
+build_meta.py&quot;,
+      line 522, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      &quot;/Users/asdf8601/.cache/uv/builds-v0/.tmppKvNui/lib/python3.10/site-packages/setuptools/
+build_meta.py&quot;,
+      line 320, in run_setup
+          exec(code, locals())
+        File &quot;&lt;string&gt;&quot;, line 55, in &lt;module&gt;
+        File &quot;&lt;string&gt;&quot;, line 52, in _guard_py_ver
+      RuntimeError: Cannot install on Python version 3.10.15; only versions &gt;=3.6,&lt;3.10
+      are supported.
+
+  help: `llvmlite` (v0.36.0) was included because `statsforecast` (v0.7.1) depends on
+        `numba` (v0.53.1) which depends on `llvmlite`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 13:44</div>
+            <div class="timeline-body"><p>Thanks for the write-up. This is a case of #8157 and is explained in there. We'll improve it soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-25 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asdf8601">@asdf8601</a> on 2024-11-25 15:02</div>
+            <div class="timeline-body"><p>Nice, thank you! I've opened this issue for two main reasons: the first one is that I wasn't 100% sure that #8157 was the same issue, and second, to provide an alternative for other devs as #8157 didn't help me in that way :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2024-12-22 16:35</div>
+            <div class="timeline-body"><p>Just to clarify for anyone else landing on this, in case the workaround is unclear; a working solution is to just pip install then grep <code>pip list</code> for the offending package's version + then pin that (in this case <code>llvmlite==0.43.0</code>).</p>
+<ul>
+<li>Problem: cannot <code>uv run --with jupyter jupyter lab</code> because <code>llvmlite</code> gets set to 0.36.0</li>
+</ul>
+<pre><code>  × Failed to build `llvmlite==0.36.0`                                                                                                                                               
+</code></pre>
+<ul>
+<li>Cheat: run <code>pip install </code>llvmlite<code>in your venv, then</code>pip list | grep llvmlite` which shows the version 0.43.0 gets installed</li>
+<li>Solution: run <code>uv add llvmlite&gt;=0.43.0</code> to your project, then either <code>uv add jupyter</code> or <code>uv run --with jupyter jupyter lab</code> work</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11636.html">astral-sh/uv#11636</a> on 2025-02-19 20:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:38 UTC
+    </footer>
+</body>
+</html>

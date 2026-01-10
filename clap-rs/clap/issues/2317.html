@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get which arg of mutually exclusive ArgGroup was passed - clap-rs/clap #2317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Get which arg of mutually exclusive ArgGroup was passed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2317">#2317</a>
+        opened by <a href="https://github.com/Qyriad">@Qyriad</a>
+        on 2021-01-28 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Qyriad">@Qyriad</a> on 2021-01-28 20:44</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closed issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p>One of the use cases the documentation lists for <code>ArgGroup</code> is to have a set of mutually exclusive arguments (with <code>.multiple(false)</code>), but the only way to get which of those arguments was passed is to call <code>matches.is_present(name)</code> for every argument in that group. It would be really nice if I could just get which argument of a mutually exclusive argument group was passed. Currently, to do this you have to check each argument individually, doing something like:</p>
+<pre><code class="language-rust">let directions = &amp;[&quot;left&quot;, &quot;right&quot;, &quot;forward&quot;];
+
+let matches = App::new(&quot;ArgGroup test&quot;)
+    .arg(Arg::with_name(&quot;left&quot;)
+        .short(&quot;-l&quot;)
+        .long(&quot;--left&quot;))
+    .arg(Arg::with_name(&quot;right&quot;)
+        .short(&quot;-r&quot;)
+        .long(&quot;--right&quot;))
+    .arg(Arg::with_name(&quot;forward&quot;)
+        .short(&quot;-f&quot;)
+        .long(&quot;--forward&quot;))
+    .group(ArgGroup::with_name(&quot;direction&quot;)
+        .required(true)
+        .multiple(false)
+        .args(directions))
+    .get_matches();
+
+let mut passed_direction = None;
+for direction in directions {
+    if matches.is_present(direction) {
+        passed_direction = Some(direction);
+    }
+}
+let passed_direction = passed_direction.unwrap();
+</code></pre>
+<p>Which is kind of tedious, and not very clean.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Being able to write something like:</p>
+<pre><code class="language-rust">let matches = App::new(&quot;ArgGroup test&quot;)
+    .arg(Arg::with_name(&quot;left&quot;)
+        .short(&quot;-l&quot;)
+        .long(&quot;--left&quot;))
+    .arg(Arg::with_name(&quot;right&quot;)
+        .short(&quot;-r&quot;)
+        .long(&quot;--right&quot;))
+    .arg(Arg::with_name(&quot;forward&quot;)
+        .short(&quot;-f&quot;)
+        .long(&quot;--forward&quot;))
+    .group(ArgGroup::with_name(&quot;direction&quot;)
+        .required(true)
+        .multiple(false)
+        .args(&amp;[&quot;left&quot;, &quot;right&quot;, &quot;forward&quot;]))
+    .get_matches();
+
+let passed_direction = matches.value_of(&quot;direction&quot;);
+</code></pre>
+<p>would be really nice. <code>value_of()</code> is just an example, there — I'm not particular about the exact API is to get this :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @Qyriad on 2021-01-28 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg groups</span> added by @pksunkara on 2021-01-29 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-01-29 16:44</div>
+            <div class="timeline-body"><p>I think <a href="https://docs.rs/clap/3.0.0-beta.2/clap/struct.Arg.html#method.conflicts_with_all"><code>conflicts_with_all</code></a> might matches your use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-01-29 18:05</div>
+            <div class="timeline-body"><p>But that's not the thing he is asking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Qyriad">@Qyriad</a> on 2021-01-29 18:39</div>
+            <div class="timeline-body"><p>she<em>, but I believe you're correct. <code>ArgGroup::multiple()</code> already sets the mutual exclusivity. I'm looking for a way to get *which</em> argument in an <code>ArgGroup</code> was passed, from an <code>ArgMatches</code>. I don't see how <code>conflicts_with_all()</code> helps me there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2021-01-30 04:21</div>
+            <div class="timeline-body"><p>Sorry for disturbing, haven't slept much yesterday and my mind isn't clear.</p>
+<p>So we need to design a new api specifically for fetching the triggered argument and also the value? @pksunkara .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-01-30 10:30</div>
+            <div class="timeline-body"><p>Yes, but this is not a priority for 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-01-30 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Qyriad">@Qyriad</a> on 2021-01-30 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>So we need to design a new api specifically for fetching the triggered argument and also the value?</p>
+</blockquote>
+<p>Ideally, though I would also be fine with an API just for fetching the triggered argument — which would mean that getting the value of that argument would be a separate step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DocKDE">@DocKDE</a> on 2021-10-26 18:15</div>
+            <div class="timeline-body"><p>I'd like this as well but I'll be patient :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/177.html">epage/clapng#177</a> on 2021-12-06 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: arg groups</span> removed by @epage on 2021-12-08 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-08 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-builder</span> removed by @epage on 2021-12-13 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> removed by @epage on 2021-12-13 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2021-12-13 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-13 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> removed by @epage on 2021-12-13 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-13 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3748.html">clap-rs/clap#3748</a> on 2022-05-25 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-25 12:27</div>
+            <div class="timeline-body"><p>Currently, when we parse an argument and store its value in ArgMatches, we also store that value under the ArgGroup's name,, as was previously mentioned.</p>
+<p>With #3732, we've changed some things related to storing the value which is having me re-think it.  In #3405, we are looking at defining actions to allow users to describe how a value should be written to the ArgMatches.  #3748 is considering doing the same for arg groups which could include writing out which argument in an arg group was active.  This doesn't let you access both the name and value but, as was mentioned, the user can look up the value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4072.html">clap-rs/clap#4072</a> on 2022-08-12 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-08-12 22:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:25 UTC
+    </footer>
+</body>
+</html>

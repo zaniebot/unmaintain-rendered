@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`conflicts_with` on `global` options not honored when used across a subcommand - clap-rs/clap #5899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`conflicts_with` on `global` options not honored when used across a subcommand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5899">#5899</a>
+        opened by <a href="https://github.com/jwodder">@jwodder</a>
+        on 2025-02-03 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jwodder">@jwodder</a> on 2025-02-03 12:51</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.84.1 (e71f9a9a9 2025-01-27)</p>
+<h3>Clap Version</h3>
+<p>v4.5.27</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::{Parser, Subcommand};
+
+#[derive(Clone, Copy, Debug, Eq, Parser, PartialEq)]
+struct Arguments {
+    #[arg(short, long, global = true)]
+    quiet: bool,
+
+    #[arg(short, long, global = true, conflicts_with = &quot;quiet&quot;)]
+    verbose: bool,
+
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Subcommand)]
+enum Command {
+    List,
+}
+
+fn main() {
+    println!(&quot;{:#?}&quot;, Arguments::parse());
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<ul>
+<li><code>cargo add clap --features derive</code></li>
+<li><code>cargo run -- -q list -v</code></li>
+</ul>
+<h3>Actual Behaviour</h3>
+<pre><code>Arguments {
+    quiet: true,
+    verbose: true,
+    command: List,
+}
+</code></pre>
+<h3>Expected Behaviour</h3>
+<pre><code>error: the argument '--quiet' cannot be used with '--verbose'
+</code></pre>
+<h3>Additional Context</h3>
+<p>Clap correctly emits an error for <code>-q -v list</code> and <code>list -q -v</code>.</p>
+<p>Possibly related issue: #1204</p>
+<h3>Debug Output</h3>
+<pre><code>[clap_builder::builder::command]Command::_do_parse
+[clap_builder::builder::command]Command::_build: name=&quot;clap-bug-20250203&quot;
+[clap_builder::builder::command]Command::_propagate:clap-bug-20250203
+[clap_builder::builder::command]Command::_check_help_and_version:clap-bug-20250203 expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_check_help_and_version: Building help subcommand
+[clap_builder::builder::command]Command::_propagate_global_args:clap-bug-20250203
+[clap_builder::builder::command]Command::_propagate pushing &quot;quiet&quot; to list
+[clap_builder::builder::command]Command::_propagate pushing &quot;verbose&quot; to list
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:quiet
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-q&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-q&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;q&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['q']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:q
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:q: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;quiet&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;quiet&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;quiet&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;Arguments&quot;, source=CommandLine
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;list&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;list&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;list&quot;)
+[clap_builder::parser::parser]Parser::parse_subcommand
+[ clap_builder::output::usage]Usage::get_required_usage_from: incls=[], matcher=false, incl_last=true
+[ clap_builder::output::usage]Usage::get_required_usage_from: unrolled_reqs=[]
+[ clap_builder::output::usage]Usage::get_required_usage_from: ret_val=[]
+[clap_builder::builder::command]Command::_build_subcommand Setting bin_name of list to &quot;clap-bug-20250203 list&quot;
+[clap_builder::builder::command]Command::_build_subcommand Setting display_name of list to &quot;clap-bug-20250203-list&quot;
+[clap_builder::builder::command]Command::_build: name=&quot;list&quot;
+[clap_builder::builder::command]Command::_propagate:list
+[clap_builder::builder::command]Command::_check_help_and_version:list expand_help_tree=false
+[clap_builder::builder::command]Command::long_help_exists
+[clap_builder::builder::command]Command::_check_help_and_version: Building default --help
+[clap_builder::builder::command]Command::_propagate_global_args:list
+[clap_builder::builder::debug_asserts]Command::_debug_asserts
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:quiet
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:verbose
+[clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
+[clap_builder::builder::debug_asserts]Command::_verify_positionals
+[clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=list
+[clap_builder::parser::parser]Parser::get_matches_with
+[clap_builder::parser::parser]Parser::parse
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-v&quot;'
+[clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-v&quot;)
+[clap_builder::parser::parser]Parser::get_matches_with: sc=None
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;v&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['v']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v
+[clap_builder::parser::parser]Parser::parse_short_arg:iter:v: Found valid opt or flag
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
+[clap_builder::parser::parser]Parser::react: has default_missing_vals
+[clap_builder::parser::parser]Parser::remove_overrides: id=&quot;verbose&quot;
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=CommandLine
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;true&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
+[clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:quiet:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:quiet: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:quiet: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;quiet&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:verbose:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;verbose&quot;, conflicts=[&quot;quiet&quot;]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;verbose&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;verbose&quot;
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::parser]Parser::add_defaults
+[clap_builder::parser::parser]Parser::add_defaults:iter:quiet:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:quiet: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:quiet: was used
+[clap_builder::parser::parser]Parser::add_defaults:iter:verbose:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: has default vals
+[clap_builder::parser::parser]Parser::add_default_value:iter:verbose: wasn't used
+[clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
+[clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;verbose&quot;, source=DefaultValue
+[clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
+[clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=2
+[clap_builder::parser::parser]Parser::add_defaults:iter:help:
+[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::validator]Validator::validate
+[clap_builder::builder::command]Command::groups_for_arg: id=&quot;quiet&quot;
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;quiet&quot;, conflicts=[]
+[clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;Arguments&quot;, conflicts=[]
+[clap_builder::parser::validator]Validator::validate_conflicts
+[clap_builder::parser::validator]Validator::validate_exclusive
+[clap_builder::parser::validator]Validator::validate_conflicts::iter: id=&quot;quiet&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: arg=&quot;quiet&quot;
+[clap_builder::parser::validator]Conflicts::gather_conflicts: conflicts=[]
+[clap_builder::parser::validator]Validator::validate_required: required=ChildGraph([])
+[clap_builder::parser::validator]Validator::gather_requires
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;quiet&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Arguments&quot;
+[clap_builder::parser::validator]Validator::gather_requires:iter:&quot;Arguments&quot;:group
+[clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
+[clap_builder::parser::arg_matcher]ArgMatcher::get_global_values: global_arg_vec=[&quot;quiet&quot;, &quot;verbose&quot;, &quot;quiet&quot;, &quot;verbose&quot;]
+Arguments {
+    quiet: true,
+    verbose: true,
+    command: List,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @jwodder on 2025-02-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-02-03 17:27</div>
+            <div class="timeline-body"><p>We have a more general issue for this problem at #1546, closing in favor of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2025-02-03 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:43 UTC
+    </footer>
+</body>
+</html>

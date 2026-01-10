@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>question about Python version priority - astral-sh/uv #13662</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>question about Python version priority</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13662">#13662</a>
+        opened by <a href="https://github.com/dotysan">@dotysan</a>
+        on 2025-05-26 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dotysan">@dotysan</a> on 2025-05-26 17:37</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>So I'm using uv to test a script with different Python versions using this shebang:
+<code>#! /usr/bin/env -S uv run --verbose --script --managed-python --python=3.13</code></p>
+<p>I bumped it to 3.14 and tested. All went well. So I then set this:
+<code>#! /usr/bin/env -S uv run --verbose --script --managed-python --python=&quot;&gt;=3.13&quot;</code></p>
+<p>However upon next exec, it still used 3.14. Since 3.13 is current/stable and 3.14 is still preview, shouldn't it prefer 3.13?</p>
+<p>It appears uv is just using whatever version ran last.</p>
+<p>Also, while testing, I set this shebang:
+<code>#! /usr/bin/env -S uv run --verbose --script --managed-python --python=3.12</code></p>
+<p>But had a newer requires-python in the PEP 723 section.</p>
+<pre><code># /// script
+# requires-python = &quot;&gt;=3.13&quot;
+# dependencies = []
+# ///
+</code></pre>
+<p>And got no error! Am I misunderstanding something about the priorities here. Setting requires-python seems to have no effect if uv is called with a newer --python version.</p>
+<h3>Platform</h3>
+<p>Linux 6.10.2-x86_64-linode165 x86_64 GNU/Linux</p>
+<h3>Version</h3>
+<p>uv 0.7.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dotysan on 2025-05-26 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dotysan">@dotysan</a> on 2025-05-26 17:43</div>
+            <div class="timeline-body"><p>Nevermind on my second question about conflicting --python and requires-python.</p>
+<p>Looking closer, I do see a warning. Which is prolly sufficient.</p>
+<pre><code>warning: The requested interpreter resolved to Python 3.12.10, which is incompatible with the script's Python requirement: `&gt;=3.13`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 20:30</div>
+            <div class="timeline-body"><blockquote>
+<p>However upon next exec, it still used 3.14. Since 3.13 is current/stable and 3.14 is still preview, shouldn't it prefer 3.13?</p>
+<p>It appears uv is just using whatever version ran last.</p>
+</blockquote>
+<p>From uv's perspective, the 3.14 preview fulfills <code>&gt;=3.13</code>, so it prefers to reuse the existing environment over reinstalling everything. It does not pick a 3.14 prerelease unless prompted, as prereleases are opt-in. By switching to 3.14 and creating the 3.14 environment for the script, you did an implicit opt-in to that prerelease series, and uv will continue to use it while compatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dotysan">@dotysan</a> on 2025-05-27 00:16</div>
+            <div class="timeline-body"><p>Thank you for the explanation @konstin.</p>
+<p>But here's my situation...</p>
+<p>I have a script that should be self-defining. It needs to say &quot;Hi, I'm a script. I need <em>these</em> dependencies. I'm compatible with <em>these</em> versions. And I want to run on the latest <em>stable</em> Python release. Not experimental.&quot;</p>
+<p>Here's the script in question: https://gist.github.com/dotysan/b5ad0b8296293590fc969236b50dd910</p>
+<p>How to tell it to run on the latest stable instead of the oldest compatible Python 3.10 without adding --python to the shebang?</p>
+<p>Of course, never default to Python 3.14--until it is considered current/stable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-27 08:34</div>
+            <div class="timeline-body"><p>There is currently no setting to explicitly select for stable versions.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:06 UTC
+    </footer>
+</body>
+</html>

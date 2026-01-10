@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP007 false negative with quoted type - astral-sh/ruff #5706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP007 false negative with quoted type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5706">#5706</a>
+        opened by <a href="https://github.com/dorschw">@dorschw</a>
+        on 2023-07-12 10:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dorschw">@dorschw</a> on 2023-07-12 10:15</div>
+            <div class="timeline-body"><p>UP007 won't recognize cases like</p>
+<pre><code class="language-python">from typing import Optional
+
+
+def foo(_: Optional[&quot;myclass&quot;]):
+    pass
+</code></pre>
+<p>While it recognizes</p>
+<pre><code class="language-python">from typing import Optional
+
+
+def foo(_: Optional[myclass]):
+    pass
+</code></pre>
+<p>reproduces with 0.0.277 and on the playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-12 12:47</div>
+            <div class="timeline-body"><p>I think this follows pyupgrade’s behavior, but I need to look into if that’s true, and why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-12 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-12 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-12 13:30</div>
+            <div class="timeline-body"><p>I think this is the correct behavior (in some cases). E.g., this fails for me on 3.11:</p>
+<pre><code class="language-python">from typing import Optional
+
+
+def foo(_:  &quot;myclass&quot; | None):
+    pass
+</code></pre>
+<p>With:</p>
+<pre><code class="language-console">Traceback (most recent call last):
+  File &quot;/Users/crmarsh/workspace/ruff/foo.py&quot;, line 4, in &lt;module&gt;
+    def foo(_:  &quot;myclass&quot; | None):
+                ~~~~~~~~~~^~~~~~
+TypeError: unsupported operand type(s) for |: 'str' and 'NoneType'
+</code></pre>
+<p>However, it's <em>sometimes</em> okay, e.g. this is fine:</p>
+<pre><code class="language-python">from typing import Optional
+
+class MyClass:
+    pass
+
+
+def foo():
+    x: &quot;MyClass&quot; | None = MyClass()
+
+foo()
+</code></pre>
+<p>But this is not:</p>
+<pre><code class="language-python">from typing import Optional
+
+class MyClass:
+    pass
+
+
+def foo():
+    x: &quot;MyClass&quot; | None = MyClass()
+
+    def bar(x: &quot;MyClass&quot; | None):
+        pass
+
+foo()
+</code></pre>
+<p>It has to do with when Python evaluates annotations at runtime (e.g., any parameters to functions need to be evaluated at runtime because they get added to <code>__annotations__</code>). We can support this in more cases but it's not safe to do everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-12 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-07-12 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5725.html">astral-sh/ruff#5725</a> on 2023-07-13 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-13 11:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:07 UTC
+    </footer>
+</body>
+</html>

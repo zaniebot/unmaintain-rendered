@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy to accidentally use `setting` when `global_setting` is intended - clap-rs/clap #3028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Easy to accidentally use `setting` when `global_setting` is intended</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3028">#3028</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2021-11-15 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2021-11-15 18:08</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.55.0 (c8dfcfe04 2021-09-06)</p>
+<h3>Clap Version</h3>
+<p>2.33</p>
+<h3>Minimal reproducible code</h3>
+<p>When supporting a user on https://github.com/TeXitoi/structopt/issues/129, I accidentally gave the following non-functional code, confused as to why it wasn't working:</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(about = &quot;Sum one or more lists of ints.&quot;)]
+#[structopt(settings = &amp;[structopt::clap::AppSettings::AllowNegativeNumbers])]
+enum Cli {
+    SumOne {
+        #[structopt(short, required = true)]
+        a: Vec&lt;isize&gt;,
+    },
+    SumTwo {
+        #[structopt(short, required = true)]
+        a: Vec&lt;isize&gt;,
+        #[structopt(short, required = true)]
+        b: Vec&lt;isize&gt;,
+    },
+}
+
+fn main() {
+    fn sum(l: &amp;[isize]) -&gt; isize {
+        l.iter().sum()
+    }
+    match Cli::from_args() {
+        Cli::SumOne { a } =&gt; println!(&quot;{}&quot;, sum(&amp;a)),
+        Cli::SumTwo { a, b } =&gt; println!(&quot;{} {}&quot;, sum(&amp;a), sum(&amp;b)),
+    }
+}
+</code></pre>
+<p>when I should have done</p>
+<pre><code class="language-rust">use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(about = &quot;Sum one or more lists of ints.&quot;)]
+#[structopt(global_setting = structopt::clap::AppSettings::AllowNegativeNumbers)]
+enum Cli {
+    SumOne {
+        #[structopt(short, required = true)]
+        a: Vec&lt;isize&gt;,
+    },
+    SumTwo {
+        #[structopt(short, required = true)]
+        a: Vec&lt;isize&gt;,
+        #[structopt(short, required = true)]
+        b: Vec&lt;isize&gt;,
+    },
+}
+
+fn main() {
+    fn sum(l: &amp;[isize]) -&gt; isize {
+        l.iter().sum()
+    }
+    match Cli::from_args() {
+        Cli::SumOne { a } =&gt; println!(&quot;{}&quot;, sum(&amp;a)),
+        Cli::SumTwo { a, b } =&gt; println!(&quot;{} {}&quot;, sum(&amp;a), sum(&amp;b)),
+    }
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Run it: <code>cargo run -- sum-one -a 1 2 -3</code></p>
+<h3>Actual Behaviour</h3>
+<p>Fails with unknown <code>-3</code> arg</p>
+<h3>Expected Behaviour</h3>
+<p>Prints <code>0</code></p>
+<h3>Additional Context</h3>
+<p>I think every place I use an <code>AppSettings</code> in my programs, I've done this wrong.</p>
+<p>The problem with this is that clap mixes subcommand logic  (e.g. SubcommandRequiredElseHelp) with command logic (e.g. DisabledColoredHelp). Using the command logic without <code>global_setting</code> is likely a bug but conversely, using subcommand logic with <code>global_setting</code> is likely a bug.  I have not looked through all of the settings to see if there are any middle ground cases.</p>
+<p>EDIT: There is a third category, command display logic, like <code>help_heading</code>.  This should not be treated with <code>global</code>.</p>
+<p>At minimum, all examples should be updated to use <code>global_setting</code> for command-related settings, even if subcommands aren't used.  People will take these examples and apply them to their subcommands or could later extend their command to have subcommands, so we should treat this as the de facto approach.</p>
+<p>However, this still requires a lot of communication to the user so they know which to use when.  Alternatively</p>
+<ol>
+<li>#2717</li>
+<li>Group command functions separate from subcommand functions (or find an API design to have them on separate types)</li>
+<li>Layer each App's command config below its subcommands, ie propagate all command configuration to subcommands, recursively, if the subcommand does not have an explicit value set (instead that will then get propagated when recursing)</li>
+</ol>
+<ul>
+<li>For regular values, we just wrap them in <code>Option</code> and provide accessor functions that <code>unwrap_or(...)</code> so we can track whether it is explicitly set while being ergonomic.  I've found this pattern fairly successful when dealing with layered config (<a href="https://github.com/crate-ci/cargo-release/blob/master/src/config.rs#L138">example 1</a>, <a href="https://github.com/epage/git-stack/blob/main/src/config.rs#L319">example 2</a>) and args (<a href="https://github.com/epage/git-stack/blob/main/src/bin/git-stack/args.rs#L100">example</a>).</li>
+<li>For Settings, we can have a parallel bitflags that tracks whether the value is explicitly set or not.</li>
+</ul>
+<p>This approach provides the behavior users expect while giving them the control to do something we didn't predict.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @epage on 2021-11-15 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/129.html">TeXitoi/structopt#129</a> on 2021-11-15 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @epage on 2021-11-15 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: app</span> added by @epage on 2021-11-15 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: docs</span> added by @epage on 2021-11-15 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3034.html">clap-rs/clap#3034</a> on 2021-11-18 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/240.html">epage/clapng#240</a> on 2021-12-06 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-12-08 01:18</div>
+            <div class="timeline-body"><p>Would the recent doc changes of giving more visibility to <code>global_setting</code> close this issue? I assume not, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-08 01:26</div>
+            <div class="timeline-body"><p>Yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-08 01:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to work with OpenCV 4 different installation methods? - astral-sh/uv #10708</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to work with OpenCV 4 different installation methods?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10708">#10708</a>
+        opened by <a href="https://github.com/kevinsimper">@kevinsimper</a>
+        on 2025-01-17 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kevinsimper">@kevinsimper</a> on 2025-01-17 12:41</div>
+            <div class="timeline-body"><p>Hi UV, really like the work ✌️</p>
+<p>We are using OpenCV and we use the <code>opencv-python-headless</code></p>
+<p>The docs are very explicit that you only install one of the packages and you can't have multiple since that gives problems.</p>
+<p>https://github.com/opencv/opencv-python#installation-and-usage</p>
+<p>Have anybody some tips and tricks on how to use it inside and outside containers while developing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-17 12:57</div>
+            <div class="timeline-body"><p>Can you describe the specific problem you're encountering, e.g. which commands you run and what error message you get?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-01-17 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kesitrifork">@kesitrifork</a> on 2025-01-20 11:47</div>
+            <div class="timeline-body"><p>Hi @konstin</p>
+<p>Yeah, the problem is that there is 2 groups:</p>
+<blockquote>
+<ul>
+<li>Packages for standard desktop environments (Windows, macOS, almost any GNU/Linux distribution)</li>
+<li>Packages for server (headless) environments (such as Docker, cloud environments etc.), no GUI library dependencies</li>
+</ul>
+</blockquote>
+<p>For development we want to be able to run in the standard desktop environments.
+For deployment we want to use the headless environments.</p>
+<p>And opencv will complain about missing deps if you try to trigger a Gui for debugging, if you have the headless installed.
+https://github.com/ultralytics/ultralytics/issues/1270#issuecomment-1695904298</p>
+<p>And you can not have multiple installed, that also gives errors. https://github.com/ltdrdata/ComfyUI-Impact-Pack/issues/395</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-20 14:11</div>
+            <div class="timeline-body"><p>Can you share a minimal reproducible examples as described in #9452? Without the commands as well as the logs and error messages you got we cannot diagnose the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rknitrifork">@rknitrifork</a> on 2025-01-21 12:37</div>
+            <div class="timeline-body"><p>The commands used is:
+uv run path/to/main.py</p>
+<p>The error:
+Import &quot;cv2&quot; could not be resolved</p>
+<p>Traceback (most recent call last):
+File , line 4, in <module>
+from  import output
+File x
+import cv2
+ModuleNotFoundError: No module named 'cv2'</p>
+<p>pyproject dependencies:
+dependencies = [
+&quot;huggingface-hub&gt;=0.27.0&quot;,
+&quot;matplotlib&gt;=3.10.0&quot;,
+&quot;numpy&gt;=2.2.1&quot;,
+&quot;opencv-python-headless&gt;=4.10.0.84&quot;,
+&quot;pillow&gt;=11.1.0&quot;,
+&quot;pydantic&gt;=2.10.4&quot;,
+&quot;sam2&gt;=1.1.0&quot;,
+&quot;torch&gt;=2.5.1&quot;,
+&quot;torchvision&gt;=0.20.1&quot;,
+&quot;transformers&gt;=4.48.0&quot;,
+]</p>
+<p>regardless of how we run it seems to continue with the same error.</p>
+<p>i did discover a wierd fix.
+if i install opencv-python with
+uv add opencv-python</p>
+<p>then i am able to run it. and if just remove the change from the pyproject.toml it will not break the cloud build that requires headless</p>
+<p>i hope this is sufficient reproduceable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11806.html">astral-sh/uv#11806</a> on 2025-02-26 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomasgareau">@tomasgareau</a> on 2025-04-23 20:49</div>
+            <div class="timeline-body"><p>Chiming in real quick since I bumped into similar issues in having mixed <code>opencv-python</code> and <code>opencv-python-headless</code> in the same workspace. I was able to get my <code>venv</code> into a state where <code>uv</code> thought it was synced, but I was missing the <code>cv2</code> package.</p>
+<p>This Dockerfile provides an MRE illustrating how I did so -- it might be a good starting point or playground for this issue so I thought I'd share.[^1] It may not be a perfect reflection of the original posters' issue though!</p>
+<pre><code class="language-dockerfile">FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.6.16-debian-slim
+
+# Install libgl1 deps so we don't get &quot;failed to import libGL.so&quot; errors, which
+# aren't what we're trying to repro
+RUN apt-get update -y &amp;&amp; apt-get install -y --no-install-recommends \
+		libgl1-mesa-glx \
+		libglib2.0-0
+
+## Create a workspace
+COPY &lt;&lt;EOF /mre/pyproject.toml
+[project]
+name = &quot;mre&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13&quot;
+
+[tool.uv.workspace]
+members = []
+EOF
+
+WORKDIR /mre
+
+## Add some --lib package with a dependency on opencv-python-headless
+RUN uv init --lib packages/some-lib
+RUN uv add --package some-lib &quot;opencv-python-headless&gt;=4.11.0.86&quot;
+
+## Add some example that imports cv2 to some-lib
+COPY &lt;&lt;EOF /mre/packages/some-lib/src/some_lib/__init__.py
+import cv2
+
+def hello() -&gt; str:
+    return f&quot;hello from some-lib! I imported cv2 version {cv2.__version__}&quot;
+EOF
+
+## Add another package that depends on some-lib
+RUN uv init --package apps/my-app
+RUN uv add --package my-app some-lib
+RUN uv add --package my-app --group dev pytest
+
+## Create a test that uses cv2 via some_lib
+COPY &lt;&lt;EOF /mre/apps/my-app/tests/test_my_app.py
+from some_lib import hello
+
+def test_hello_from_lib():
+    print(hello())
+EOF
+
+## Run pytest in `my-app` to show that everything worked so far
+#
+# This demonstrates that we've successfully resolved the transitive dependency
+# and that `sync`ing `my-app` does indeed pull in `cv2`
+RUN cd /mre/apps/my-app &amp;&amp; \
+		uv sync &amp;&amp; \
+		uv run pytest &amp;&amp; echo &quot;pytest succeeds here: we pulled in the transitive opencv-python-headless dep&quot;
+
+## Create some other application that requires `opencv-python` (not headless)
+#
+# `uv` creates a single root .venv for the workspace we're in, so installing
+# both opencv-python and opencv-python-headless will cause issues. 
+RUN uv init --package apps/other-app
+RUN uv add --package other-app &quot;opencv-python&gt;=4.11.0.86&quot;
+
+## Run pytest in `my-app` to demonstrate the failure from conflicting opencv
+#
+# When we ran `uv add ... opencv-python` above, uv added it to our root .venv
+#
+# I'm assuming this means it overwrote the existing `cv2` package that was
+# formerly provided by `opencv-python-headless`.
+#
+# When we run `uv sync` in `my-app` here, `uv` will &quot;remove&quot; `opencv-python`, but
+# it doesn't ensure that `opencv-python-headless` is reinstalled? In either
+# case: uv thinks we're synced, but we can't `import cv2`
+RUN cd /mre/apps/my-app &amp;&amp; \
+		uv sync &amp;&amp; \
+		uv run pytest || echo &quot;pytest fails here: uv sync removed opencv-python -- fair enough&quot;
+
+## Replace `opencv-python` with `opencv-python-headless`
+#
+# The error above is fair enough: we shouldn't be mixing opencv-python-*** in
+# one environment and uv workspaces have a root venv. So really, we shouldn't
+# have both packages in the workspace. Let's say `other-app` can use other
+# libraries for its GUI components and replace opencv-python with the headless
+# variant.
+#
+# If we manually edit pyproject.toml like so, uv will just remove `opencv-python`
+# (it won't re-add `opencv-python-headless`). Since `opencv-python` and
+# `opencv-python-headless` provide the same package (i.e., `cv2`), this means
+# we'll delete `cv2` without replacing it. Oops:
+RUN sed -i 's/opencv-python/opencv-python-headless/g' /mre/apps/other-app/pyproject.toml
+RUN uv lock
+
+
+# Note that if instead of the above, you used `uv` to remove &amp; add the dependencies:
+#		```
+# 	uv remove --package other-app opencv-python
+# 	uv add --package other-app &quot;opencv-python-headless&gt;=4.11.0.86&quot;
+# 	```
+# You _would_ be able to `import cv2` in the pytest run below. I'm assuming
+# this is because `uv add` forces it to re-add the missing `cv2` package?
+
+
+## Finally, try syncing my-app and running pytest again
+#
+# This fails again: I'm assuming `uv` can't determine that removing
+# `opencv-python` had a side effect on the files provided by
+# `opencv-python-headless` or something.
+RUN cd /mre/apps/my-app &amp;&amp; \
+		uv sync &amp;&amp; \
+		uv run pytest || echo &quot;pytest still doesn't succeed here&quot;
+
+## We can fully recreate the venv to fix this
+RUN rm -rf /mre/.venv &amp;&amp; \
+		cd /mre/apps/my-app &amp;&amp; \
+		uv sync &amp;&amp; \
+		uv run pytest &amp;&amp; echo &quot;pytest succeeds now that we fully recreated the venv&quot;
+</code></pre>
+<p>[^1]: Just to be clear -- I don't think my use case above is necessarily an issue with uv. I'm not looking to jump onto another issue for support 😅 No need to dive into the specifics of what I ran here if it's not relevant/useful: just thought the Dockerfile above might be a good starting point!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-24 07:39</div>
+            <div class="timeline-body"><p>Installing different opencv disitributions is indeed a problem, unfortunately I don't think there's a good solution on the uv side since packages are allowed to overwrite each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robmarkcole">@robmarkcole</a> on 2025-04-25 13:42</div>
+            <div class="timeline-body"><p>I'm getting <code>Import &quot;cv2&quot; could not be resolved</code> even after just <code>uv add opencv-python</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-25 13:45</div>
+            <div class="timeline-body"><p>@robmarkcole Can you share a minimal reproducible example (https://github.com/astral-sh/uv/issues/9452) with all input files, commands, platform information and logs that reproduces your problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robmarkcole">@robmarkcole</a> on 2025-04-25 13:58</div>
+            <div class="timeline-body"><p>@konstin I created the example below, but it succeeds. The odd thing is that I also had no issue importing cv2 for a few runs, and then the import error appeared. Note this is using a notebook in vscode, so not sure if that could be a factor. I appreciate this is not reproducible simply. For reference, the flow below does succeed:</p>
+<pre><code class="language-md"># 1. Create and enter a fresh folder
+mkdir uv-opencv-repro
+cd uv-opencv-repro
+
+# 2. Create pyproject.toml as above
+echo '[project]
+name = &quot;uv-opencv-repro&quot;
+version = &quot;0.1.0&quot;
+dependencies = [&quot;opencv-python&quot;]' &gt; pyproject.toml
+
+# Create venv
+uv venv .venv
+source .venv/bin/activate
+
+# 4. Install dependencies with uv
+uv pip install -r pyproject.toml
+
+# 5. Create test script
+echo 'import cv2
+print(cv2.__version__)' &gt; main.py
+
+# 6. Run the script
+python main.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 10:12</div>
+            <div class="timeline-body"><p>Thanks for the script! Unfortunately, it always passes on my machine. Can you check that in VS Code, it uses the correct environment <code>print(sys.prefix)</code>? If the error occurs again, can you the contents of <code>.venv/lib/[platform dependent]/site-packages</code> and check if there is a <code>cv2</code> folder and what it contains?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13437.html">astral-sh/uv#13437</a> on 2025-05-13 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/15357.html">astral-sh/uv#15357</a> on 2025-08-18 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:58 UTC
+    </footer>
+</body>
+</html>

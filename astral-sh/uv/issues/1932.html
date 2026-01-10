@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private dependency in pyproject.toml does not resolve - astral-sh/uv #1932</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Private dependency in pyproject.toml does not resolve</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1932">#1932</a>
+        opened by <a href="https://github.com/meridionaljet">@meridionaljet</a>
+        on 2024-02-23 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-02-23 19:07</div>
+            <div class="timeline-body"><p>Platform: Linux
+uv version: 0.1.10</p>
+<p>I can't seem to get <code>uv</code> to resolve private dependencies listed in a package's <code>pyproject.toml</code> file. For example:</p>
+<pre><code class="language-bash">$ uv pip install '&lt;package&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;package&gt;.git'
+ Updated https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;package&gt;.git (3386a82)       
+error: Package `&lt;dependency&gt;` attempted to resolve via URL: git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git. 
+URL dependencies must be expressed as direct requirements or constraints. Consider adding `&lt;dependency&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git` to your dependencies or constraints file.
+</code></pre>
+<p>However, this is <code>package</code>'s <code>pyproject.toml</code>, which does indeed list the dependency in the format requested by <code>uv</code>:</p>
+<pre><code class="language-toml">[project]
+name = 'package'
+dependencies = [
+  '...',
+  '...',
+  '&lt;dependency&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git',
+]
+
+[build-system]
+requires = ['setuptools', 'wheel']
+</code></pre>
+<p>I confirmed that the <code>pyproject.toml</code> content in the <code>uv</code> cache directory is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 19:10</div>
+            <div class="timeline-body"><p>I think you'd need to include <code>'&lt;dependency&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git'</code> in the install command, like:</p>
+<pre><code>uv pip install \
+  '&lt;package&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;package&gt;.git' \
+  '&lt;dependency&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git'
+</code></pre>
+<p>We don't allow transitive dependencies to introduce additional URLs right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meridionaljet">@meridionaljet</a> on 2024-02-23 19:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you'd need to include <code>'&lt;dependency&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git'</code> in the install command, like:</p>
+<pre><code>uv pip install \
+  '&lt;package&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;package&gt;.git' \
+  '&lt;dependency&gt; @ git+https://&lt;username&gt;@github.com/&lt;organization&gt;/&lt;dependency&gt;.git'
+</code></pre>
+<p>We don't allow transitive dependencies to introduce additional URLs right now.</p>
+</blockquote>
+<p>I see. Is it your intent to facilitate this in the future? Current behavior would make private Github package ecosystems difficult to deal with, and it's obviously a case that <code>pip</code> can handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 19:38</div>
+            <div class="timeline-body"><p>Possibly... It's both a security issue (arbitrary dependencies in your tree can now introduce packages from arbitrary locations) and a correctness issue. For example:</p>
+<ul>
+<li>You depend on <code>package_a==1.0.0</code></li>
+<li>You depend on <code>package_b @ some_url</code></li>
+<li><code>package_b @ some_url</code> depends on <code>package_a @ some_other_url</code> (where <code>package_a @ some_other_url</code> happens to build to a version called 1.0.0)</li>
+</ul>
+<p>What should happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-02-23 21:25</div>
+            <div class="timeline-body"><blockquote>
+<p>What should happen?</p>
+</blockquote>
+<p>IMO, then in that scenario, uv should fail with dependency conflict error.
+But when that scenario didn't happen, I think it's valid to handle <code>package_b @ some_url</code> in lock file.
+is it makes sense? WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/simoncozens">@simoncozens</a> on 2024-02-27 13:17</div>
+            <div class="timeline-body"><p>&quot;⚖️ Drop-in replacement for common pip, pip-tools, and virtualenv commands.&quot;</p>
+<blockquote>
+<p>What should happen?</p>
+</blockquote>
+<p>Whatever pip does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 00:13</div>
+            <div class="timeline-body"><p>Tracking here: https://github.com/astral-sh/uv/issues/1808</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-04 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ringohoffman">@ringohoffman</a> on 2024-06-07 22:40</div>
+            <div class="timeline-body"><p>@charliermarsh it seems like you closed this as a duplicate of #1808, which was closed by #2684, but the behavior reported in this issue still remains in <code>v0.2.9</code>. Is the intention still to require changes to the install command in order to allow URL installations? I too am finding the divergent behavior from <code>pip</code> to be a surprise, though you list reasons for this decision.</p>
+<p>As an anecdote, I am having to track the latest commit for a repo that won't cut a release for some time. I have a few different <code>uv pip install</code> commands throughout my build process that I find undesirable to have to update in order to allow for this URL installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 22:42</div>
+            <div class="timeline-body"><p>Yeah, we support transitive URL dependencies now. Please feel free to file a new issue with a minimal reproduction if you're having trouble.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4152.html">astral-sh/uv#4152</a> on 2024-06-07 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7996.html">astral-sh/uv#7996</a> on 2024-10-08 07:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

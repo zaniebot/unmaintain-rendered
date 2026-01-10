@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index strategies are ignored with [required-]environments - astral-sh/uv #17068</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Index strategies are ignored with [required-]environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17068">#17068</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-12-10 11:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2025-12-10 11:16</div>
+            <div class="timeline-body"><p>Continuing from https://github.com/astral-sh/uv/issues/17067: Adding <code>index-strategy = &quot;unsafe-best-match&quot;</code> or `index-strategy = &quot;unsafe-first-match&quot; doesn't help in the example below and don't pick up the source distribution.</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-reproducer&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.13.*&quot;
+dependencies = [
+    &quot;charset-normalizer==3.4.4&quot;,
+]
+
+[[tool.uv.index]]
+url = &quot;./platform-mismatch&quot;
+format = &quot;flat&quot;
+
+[[tool.uv.index]]
+url = &quot;./default&quot;
+format = &quot;flat&quot;
+
+[tool.uv]
+environments = [&quot;sys_platform == 'linux'&quot;]
+</code></pre>
+<p>Neither does combining index strategies and required environments, depending on the index order, we either fail or use the source distribution, while we should consistently pick the source distribution.</p>
+<pre><code class="language-toml">[tool.uv]
+index-strategy = &quot;unsafe-first-match&quot;
+required-environments = [&quot;sys_platform == 'linux'&quot;]
+</code></pre>
+<p>To reproduce:</p>
+<pre><code>pushd default/
+# Source file for charset-normalizer
+curl -O https://files.pythonhosted.org/packages/13/69/33ddede1939fdd074bce5434295f38fae7136463422fe4fd3e0e89b98062/charset_normalizer-3.4.4.tar.gz
+# And of course we need setuptools
+curl -O https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl
+popd
+
+# Works so long as you're not on a Windows on ARM host
+pushd platform-mismatch/
+curl -O https://files.pythonhosted.org/packages/af/8f/3ed4bfa0c0c72a7ca17f0380cd9e4dd842b09f664e780c13cff1dcf2ef1b/charset_normalizer-3.4.4-cp313-cp313-win_arm64.whl
+popd
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12721.html">astral-sh/uv#12721</a> on 2025-12-10 11:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:15 UTC
+    </footer>
+</body>
+</html>

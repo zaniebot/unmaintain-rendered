@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt not showed correctly. - astral-sh/uv #2668</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prompt not showed correctly.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2668">#2668</a>
+        opened by <a href="https://github.com/hodeinavarro">@hodeinavarro</a>
+        on 2024-03-26 10:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hodeinavarro">@hodeinavarro</a> on 2024-03-26 10:19</div>
+            <div class="timeline-body"><p><strong>Description</strong>
+When using <code>--prompt</code> the given text it is not showed on the terminal, but the environment directory name instead.</p>
+<p><strong>System</strong>
+macOS Sonoma 14.4 M1 Max
+iTerm2
+zsh &amp; oh-my-zsh with powerlevel10k plugin</p>
+<p><strong>Snippet</strong></p>
+<p>uv</p>
+<pre><code class="language-bash">uv venv with-uv --prompt &quot;Prompt with uv&quot;
+</code></pre>
+<img width="492" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/c166f93d-3c4f-4a1f-97fa-1f18b7bd358e">
+
+<p>venv</p>
+<pre><code class="language-bash">python -m venv with-venv --prompt &quot;Prompt with venv&quot;
+</code></pre>
+<img width="491" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/18fe8bfb-b902-465e-9311-24aac8397473">
+
+<p><strong>Issue/Solution?</strong>
+So far doing some try/failure testing, it seems that the main difference is how <code>uv</code> sets the <code>VIRTUAL_ENV_PROMPT</code> variable.
+It appears to be important that the text inside of this is inside parentheses.</p>
+<p>uv</p>
+<pre><code class="language-bash">if [ &quot;xPrompt with uv&quot; != x ] ; then
+    VIRTUAL_ENV_PROMPT=&quot;Prompt with uv&quot;
+else
+    VIRTUAL_ENV_PROMPT=$(basename &quot;$VIRTUAL_ENV&quot;)
+fi
+export VIRTUAL_ENV_PROMPT
+</code></pre>
+<p>venv</p>
+<pre><code class="language-bash">if [ -z &quot;${VIRTUAL_ENV_DISABLE_PROMPT:-}&quot; ] ; then
+    _OLD_VIRTUAL_PS1=&quot;${PS1:-}&quot;
+    PS1=&quot;(Prompt with venv) ${PS1:-}&quot;
+    export PS1
+    VIRTUAL_ENV_PROMPT=&quot;(Prompt with venv) &quot;
+    export VIRTUAL_ENV_PROMPT
+fi
+</code></pre>
+<p>If we add these parentheses I mentioned, it works perfectly.
+<img width="494" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/67afb44e-2693-471a-9e07-fbd997a2068f"></p>
+<pre><code class="language-bash">if [ &quot;xPrompt with uv&quot; != x ] ; then
+    VIRTUAL_ENV_PROMPT=&quot;(Prompt with uv) &quot;
+else
+    VIRTUAL_ENV_PROMPT=$(basename &quot;$VIRTUAL_ENV&quot;)
+fi
+export VIRTUAL_ENV_PROMPT
+</code></pre>
+<p>Maybe is too specific to my terminal configuration, and I didn't have the time to go in depth about how VIRTUAL_ENV_PROMPT works with/without parentheses and zsh/ohmyzsh/powerlevel10k compatibility, but just in case this happens to someone else, there you go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 13:14</div>
+            <div class="timeline-body"><p>Do you experience the same thing with the <code>virtualenv</code> library?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 13:16</div>
+            <div class="timeline-body"><p>I can't find that exact activation snippet in CPython, maybe it changed at some point: https://github.com/python/cpython/blob/4abca7e1e7e2764faf20c7e677ea5c9ea9dbffe2/Lib/venv/scripts/common/activate#L21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hodeinavarro">@hodeinavarro</a> on 2024-03-26 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you experience the same thing with the <code>virtualenv</code> library?</p>
+</blockquote>
+<p>Yes.</p>
+<img width="852" alt="image" src="https://github.com/astral-sh/uv/assets/73967816/71f45d5d-3396-4952-b226-6d2534a92854">
+
+<p>virtualenv</p>
+<pre><code class="language-bash">if [ &quot;xPrompt with virtualenv&quot; != x ] ; then
+    VIRTUAL_ENV_PROMPT=&quot;Prompt with virtualenv&quot;
+else
+    VIRTUAL_ENV_PROMPT=$(basename &quot;$VIRTUAL_ENV&quot;)
+fi
+export VIRTUAL_ENV_PROMPT
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-26 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-03-26 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 21:03</div>
+            <div class="timeline-body"><p>We'll need to look into why the CPython activator and the virtualenv activator differ.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-03-26 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-04-01 04:03</div>
+            <div class="timeline-body"><pre><code>$ zsh
+Restored session: Mon Apr  1 00:02:06 EDT 2024
+chankang@chans-Air uv % echo $0
+zsh
+chankang@chans-Air uv % uv --version
+uv 0.1.26 (7b685a815 2024-03-28)
+chankang@chans-Air uv % uv venv --prompt &quot;Prompt with uv&quot;
+Using Python 3.12.2 interpreter at: /Users/chankang/.pyenv/versions/3.12.2/bin/python3
+Creating virtualenv at: .venv
+Activate with: source .venv/bin/activate
+chankang@chans-Air uv % source .venv/bin/activate
+(Prompt with uv) chankang@chans-Air uv % echo 'test'
+test
+(Prompt with uv) chankang@chans-Air uv % 
+</code></pre>
+<p>it seems to work on my machine?</p>
+<pre><code>$ zsh --version
+zsh 5.9 (x86_64-apple-darwin23.0)
+</code></pre>
+<p>can you try reproducing it with the oh-my-zsh plugin turned off?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hodeinavarro">@hodeinavarro</a> on 2024-04-03 07:51</div>
+            <div class="timeline-body"><blockquote>
+<p>it seems to work on my machine?
+can you try reproducing it with the oh-my-zsh plugin turned off?</p>
+</blockquote>
+<p>Certainly, it seems it comes from the powerlevel10k theme and not UV.
+I've used pure zsh and got the same result as you, then I activated oh-my-zsh with no theme and the result was still correct.</p>
+<p>When activating the theme, the issue appears.</p>
+<p>Thank you for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hodeinavarro on 2024-04-03 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../romkatv/powerlevel10k/issues/2628.html">romkatv/powerlevel10k#2628</a> on 2024-04-03 16:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:25 UTC
+    </footer>
+</body>
+</html>

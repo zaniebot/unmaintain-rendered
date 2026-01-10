@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dedupe editable installs before building - astral-sh/uv #2819</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Dedupe editable installs before building</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2819">#2819</a>
+        opened by <a href="https://github.com/jaap3">@jaap3</a>
+        on 2024-04-04 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaap3">@jaap3</a> on 2024-04-04 14:47</div>
+            <div class="timeline-body"><p>I'm trying <code>uv</code> in a monorepo setup that has a few apps and many shared (interdependent) packages. When installing an application all it's dependencies (and their sub-dependencies etc.) that live in this monorepo are installed in editable mode. This is done by chaining <code>requirements-dev.txt</code> files. i.e. given the following directory structure:</p>
+<pre><code>.
+├── apps
+│   └── frobulator
+│       ├── pyproject.toml
+│       └── requirements-dev.txt
+└── packages
+    ├── bar
+    │   ├── pyproject.toml
+    │   └── requirements-dev.txt
+    ├── foo
+    │   ├── pyproject.toml
+    │   └── requirements-dev.txt
+    ├── foobar
+    │   ├── pyproject.toml
+    │   └── requirements-dev.txt
+    └── qa
+        └── pyproject.toml
+
+</code></pre>
+<p><code>frobulator/requirements-dev.txt</code> might look like:</p>
+<pre><code># This project
+-e ../../apps/frobulator
+
+# Local packages
+-r ../../packages/foo/requirements-dev.txt
+-r ../../packages/foobar/requirements-dev.txt
+
+# QA
+-e ../../packages/qa
+</code></pre>
+<p>and <code>foobar/requirements-dev.txt</code> might look like:</p>
+<pre><code># This project
+-e ../../packages/foobar
+
+# Local packages
+-r ../../packages/foo/requirements-dev.txt
+-r ../../packages/bar/requirements-dev.txt
+
+# QA
+-e ../../packages/qa
+</code></pre>
+<p>Now when I run <code>uv pip install -r requirements-dev.txt</code> in the <code>apps/frobulator</code> directory <code>uv</code> will show something like this:</p>
+<pre><code>   Built file:///code/apps/frobulator
+   Built file:///code/packages/foo
+   Built file:///code/packages/qa
+   Built file:///code/packages/foobar
+   Built file:///code/packages/foo
+   Built file:///code/packages/qa
+   Built file:///code/packages/bar
+   Built file:///code/packages/qa
+   Built file:///code/packages/qa
+   Built file:///code/packages/qa       
+Built 10 editables in 793ms
+Resolved 6 packages in 7ms
+Downloaded 1 package in 665ms
+Installed 6 packages in 246ms
+</code></pre>
+<p>As you can see, some packages are built multiple times. In this example this is still reasonably fast, but in our real world repository this step takes a long time.</p>
+<p>Am I right in concluding that these packages are really built multiple times in the same step? Is it possible to dedupe the list of editable installs <em>before</em> building?</p>
+<p>I was also able to reproduce this by repeating the <code>-e</code> flag multiple times with the same paths, i.e.:</p>
+<pre><code>uv pip install -e . -e . -e ../../packages/qa/ -e ../../packages/qa/ -e ../../packages/foo -e ../../packages/bar ../../packages/bar ../../packages/foo ../../packages/foobar
+   Built file:///code/apps/frobulator
+   Built file:///code/apps/frobulator
+   Built file:///code/packages/qa
+   Built file:///code/packages/qa
+   Built file:///code/packages/foo
+   Built file:///code/packages/bar
+Built 6 editables in 1.01s
+Resolved 6 packages in 120ms
+   Built foobar @ file:///code/packages/foobar
+Downloaded 2 packages in 501ms
+Installed 6 packages in 237ms
+ + bar==0.1.0 (from file:///code/packages/bar)
+ + foo==0.1.0 (from file:///code/packages/foo)
+ + foobar==0.1.0 (from file:///code/packages/foobar)
+ + frobulator==0.1.0 (from file:///code/apps/frobulator)
+ + qa==0.1.0 (from file:///code/packages/qa)
+ + ruff==0.3.5
+</code></pre>
+<p>Here it seems some repeated packages are not built multiple time, not sure why?</p>
+<pre><code>uv --version
+uv 0.1.28
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-04 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-04 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 14:54</div>
+            <div class="timeline-body"><p>Makes sense, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2820.html">astral-sh/uv#2820</a> on 2024-04-04 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-04 17:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

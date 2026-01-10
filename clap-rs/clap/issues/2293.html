@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flatten with prefix - clap-rs/clap #2293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flatten with prefix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2293">#2293</a>
+        opened by <a href="https://github.com/stevefan1999-personal">@stevefan1999-personal</a>
+        on 2021-01-15 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stevefan1999-personal">@stevefan1999-personal</a> on 2021-01-15 15:12</div>
+            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+<ul>
+<li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[x] Searched the closed issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p>Add prefixes to a struct so that we can separate them nice and clean.</p>
+<p>Not only that, if we have logically separated the option structure well, we can integrate serde to load config file seamlessly.</p>
+<p>For example, we can use a Clap console option <code>log_console_enabled</code> for the equivalent of <code>log.console.enabled</code> in YAML/JSON variable form or <code>[[log]] [console] enabled</code> in TOML. This of course is not limited to just these three languages (happy HCL noises). This can be seen as an analogy of what <a href="https://github.com/spf13/viper">spf13/viper</a> already capable of doing on the Go land.</p>
+<h3>Describe the solution you'd like</h3>
+<p>Let us do this:</p>
+<pre><code class="language-rust">#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[clap(name = &quot;untitled&quot;, author, about, version)]
+#[get = &quot;pub&quot;]
+pub struct GlobalOption {
+    #[clap(flatten, prefix = &quot;log&quot;)]
+    log: LogOptions,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = &quot;pub&quot;]
+pub struct LogOptions {
+    // 1. prefix should be recursive
+    #[clap(flatten, prefix = &quot;console&quot;)]
+    console: LogConsoleOptions,
+    #[clap(flatten, prefix = &quot;file&quot;)]
+    file: LogFileOptions,
+}
+
+// 2. so for each of the variables in this struct, in CLI options it should have a prefix of &quot;log-console&quot;, e.g. &quot;log-console-enabled&quot;
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = &quot;pub&quot;]
+pub struct LogConsole {
+    #[clap(long, parse(try_from_str), default_value = &quot;true&quot;, env)]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(arg_enum, short = 'v', long, default_value = &quot;info&quot;, env)]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = &quot;pub&quot;]
+pub struct LogFile {
+    #[clap(long, parse(try_from_str), default_value = &quot;true&quot;, env)]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(arg_enum, long, default_value = &quot;trace&quot;, env)]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+    #[clap(long, default_value = &quot;log/application.log&quot;, env, parse(from_os_str))]
+    /// (optional) where will the log file be stored
+    name: PathBuf,
+}
+</code></pre>
+<p>But each of the substructure will have their command line option name prepending with the corresponding prefix, hence promoting a much cleaner code structure, as a side effect, it can also be separated into different crate for better reusing/modularization.</p>
+<h3>Alternatives, if applicable</h3>
+<p>This is the current workaround:</p>
+<pre><code class="language-rust">
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[clap(name = &quot;untitled&quot;, author, about, version)]
+#[get = &quot;pub&quot;]
+pub struct GlobalOption {
+    #[clap(flatten)]
+    log: LogOptions,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = &quot;pub&quot;]
+pub struct LogOptions {
+    #[clap(flatten)]
+    console: LogConsoleOptions,
+    #[clap(flatten)]
+    file: LogFileOptions,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = &quot;pub&quot;]
+pub struct LogConsoleOptions {
+    #[clap(
+        default_value = &quot;true&quot;,
+        env = &quot;LOG_CONSOLE_ENABLED&quot;,
+        long = &quot;log-console-enabled&quot;,
+        name = &quot;log_console_enabled&quot;,
+        parse(try_from_str)
+    )]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(
+        arg_enum,
+        default_value = &quot;info&quot;,
+        env = &quot;LOG_CONSOLE_LEVEL&quot;,
+        long = &quot;log-console-level&quot;,
+        name = &quot;log_console_level&quot;,
+        short = 'v'
+    )]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+}
+
+#[derive(Clap, Derivative, Getters)]
+#[derivative(Debug, Clone)]
+#[get = &quot;pub&quot;]
+pub struct LogFileOptions {
+    #[clap(
+        default_value = &quot;true&quot;,
+        env = &quot;LOG_FILE_ENABLED&quot;,
+        long = &quot;log-file-enabled&quot;,
+        name = &quot;log_file_enabled&quot;,
+        parse(try_from_str)
+    )]
+    /// (optional) should write the log to console
+    enabled: bool,
+    #[clap(
+        arg_enum,
+        default_value = &quot;trace&quot;,
+        env = &quot;LOG_FILE_LEVEL&quot;,
+        long = &quot;log-file-level&quot;,
+        name = &quot;log_file_level&quot;
+    )]
+    /// (optional) what level/verbosity should the console logger accepts
+    level: LevelFilter,
+    #[clap(
+        default_value = &quot;log/application.log&quot;,
+        env = &quot;LOG_FILE_NAME&quot;,
+        long = &quot;log-file-name&quot;,
+        name = &quot;log_file_name&quot;,
+        parse(from_os_str)
+    )]
+    /// (optional) where will the log file be stored
+    name: PathBuf,
+}
+</code></pre>
+<p>Repetitive, painful, and oftentimes prone to miss referentially (e.g. name and struct name not in sync). Also needs to rely on using String Manipulation plugin so much.</p>
+<p>Also please look at the additional comment, I have extra reason why I need to specify both name and long together. I have expanded the option file to see what does clap-derive generates in cases like this.</p>
+<p>As it turns out, we did found something like this:</p>
+<pre><code>let app = app.arg(
+                    clap::Arg::new(&quot;&lt;insert name here&gt;&quot;)
+</code></pre>
+<p>and it Is influenced by name option, which by default is the struct item identifier itself, so by exploiting <code>name</code> and <code>long</code> derive option we can manipulating it to change name while still look like a command line option.</p>
+<p>I have also gave an updated look of what the workaround is, and put some precursors to what should be generated.</p>
+<h3>Additional context</h3>
+<p>Prior issue in structopt: https://github.com/TeXitoi/structopt/issues/114</p>
+<h3>Issues</h3>
+<p>However, it does not come without issue. Short option is now getting confusing, as should it get the prefix prepended or not as well. Using verbose &quot;-v&quot; for example, if there is another struct that also use &quot;-v&quot; for version, they will get in conflict and we can't just do both, yet adding prefix to short options is also an unsound solution, so I suggest to delete short option for flattened substructures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @stevefan1999-personal on 2021-01-15 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stevefan1999-personal">@stevefan1999-personal</a> on 2021-01-15 15:17</div>
+            <div class="timeline-body"><p>~~Also, it seems like you cannot recursively flatten from struct, as I tried to nest the log prefix into its own struct and try to contain <code>file</code> and <code>console</code> in them, the macro generated shows the name assignment is gone.~~ It's because Clap can't flatten the same name of other struct, for example we have two <code>enabled</code> here and it is not gonna work.</p>
+<p>So this is also a blocker for the prefix feature to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-01-15 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-01-15 17:00</div>
+            <div class="timeline-body"><blockquote>
+<p>so I suggest to delete short option for flattened substructures.</p>
+</blockquote>
+<p>Dude, that is anarchy.</p>
+<p><code>short</code> flags are not generated if you don't add <code>short</code> attribute. That is enough. So, I don't actually see any issue with proposal. Obviously this would only be supported on flatten.</p>
+<p>Marking it for 3.1 since it is not priority for 3.0 (unless someone submits a PR).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2021-06-09 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/173.html">epage/clapng#173</a> on 2021-12-06 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 15:19</div>
+            <div class="timeline-body"><p>This appears to be a duplicate of #3117.  I'd recommend further discussion happening there.  If there is something unique about this that we should keep it open, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-13 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-duplicate</span> added by @epage on 2022-01-11 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3443.html">clap-rs/clap#3443</a> on 2022-02-11 01:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:24 UTC
+    </footer>
+</body>
+</html>

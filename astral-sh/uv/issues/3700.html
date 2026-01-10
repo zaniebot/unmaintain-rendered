@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>universal-lock: Lock with all extras, trim down on installation - astral-sh/uv #3700</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>universal-lock: Lock with all extras, trim down on installation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3700">#3700</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-05-21 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2024-05-21 15:34</div>
+            <div class="timeline-body"><p>The lockfile needs to be built on a resolution with all extras of the root project and workspace requirements, but when installing we only want the extras and workspace packages the user requested. The need to trim the resolution, probably by a DAG traversal. This includes mapping unnamed requirements to their named counterpart in the resolution map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-05-21 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-21 15:37</div>
+            <div class="timeline-body"><blockquote>
+<p>The lockfile needs to be built on a resolution with all extras and workspace requirements</p>
+</blockquote>
+<p>I think there is a hitch here right? Because some packages will have &quot;dev&quot; extras, and we specifically don't want to bring those into the lock file right? Basically that a package shouldn't inherit the dev dependencies of its dependencies. How do we deal with that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-21 15:44</div>
+            <div class="timeline-body"><p>Development dependencies are separate from extras, technically. They can be placed in an extra, but generally they are separate and not a part of the standard metadata (i.e. it's project management tool specific).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-21 15:44</div>
+            <div class="timeline-body"><p>There's a bigger problem here though... extras can conflict with each other. Are we going to solve with them all turned on and ban conflicts? Are we going to lock all combinations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-21 15:49</div>
+            <div class="timeline-body"><p>If we want to support conflicting extras, the user needs to specify which those are and we apply the same split-resolve-merge as for conflicting disjoint markers. The ensures that extras are generally unified and conflict free and avoids combinatorial explosion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-21 16:04</div>
+            <div class="timeline-body"><p>Do we know how they're going to express the conflict? Can you just do it with <code>&lt;self-name&gt;[extra]</code> markers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-21 16:09</div>
+            <div class="timeline-body"><p>We need additional <code>tool.uv</code> metadata for this, i don't think any other tool covers this yet. I've heard that some large complex frameworks had trouble adopting poetry due to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 22:21</div>
+            <div class="timeline-body"><p>I can take this if we want to start by &quot;including all extras, then trimming at install time&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3705.html">astral-sh/uv#3705</a> on 2024-05-22 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-22 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olivier-lacroix">@olivier-lacroix</a> on 2024-05-24 15:22</div>
+            <div class="timeline-body"><p>You may want to take inspiration from pixi, which handles this via features (equivalent to a group of extra), that are included in environment(s).
+Environments are included in the lock-file, and sometimes solved together when requested.
+This avoids combinatorial explosion and is pretty flexible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3404.html">astral-sh/uv#3404</a> on 2024-05-26 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3913.html">astral-sh/uv#3913</a> on 2024-05-29 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-29 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support control flow in Ruff - astral-sh/ruff #17065</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support control flow in Ruff</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17065">#17065</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-03-30 22:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-30 22:03</div>
+            <div class="timeline-body"><p>This is a tracking issue for the re-implementation/re-packaging of the control flow graph in Ruff. The hope is that may eventually power some finer analyses and improve the correctness of some of our lint rules.</p>
+<p>Thanks goes to @augustelalande for completing the implementation of the control flow graph that currently exists in Ruff! Many of the ideas present there have survived to the new specification and implementation.</p>
+<h1>Task list</h1>
+<p>Control flow graph</p>
+<ul>
+<li>[x] Setup: <code>CFG</code> struct, builder (skeleton), visualization, and snapshot testing #17064</li>
+<li>[x] Basic jumps: <code>return</code> and <code>raise</code> #17121</li>
+<li>[ ] Loops: <code>for</code> and <code>while</code> along with <code>continue</code> and <code>break</code>: #17175</li>
+<li>[ ] Switch statements: <code>if</code> and <code>match</code>: #17268</li>
+<li>[ ] Exception handlers: <code>try</code> and <code>with</code></li>
+<li>[ ] <code>assert</code></li>
+</ul>
+<p>Statically known branches</p>
+<ul>
+<li>[ ] <code>if</code>/<code>elif</code> conditions</li>
+<li>[ ] <code>match</code> conditions</li>
+</ul>
+<p>Optional</p>
+<ul>
+<li>[ ] Benchmark alternative graph designs, e.g. the arena approach <a href="https://docs.rs/petgraph/latest/petgraph/graph/struct.Graph.html">used here</a> or returning to the bivalent approach from the original implementation</li>
+</ul>
+<p>A detailed specification for what we're attempting to implement can be found below.</p>
+<details>
+<summary> Specification </summary>
+
+<h1>Overview</h1>
+<p>A control flow graph is a grouping of statements into <em>basic blocks</em>
+and edges indicating possible paths that a program may take through
+those statements. In general, this is an <em>over</em> approximation to the
+actual paths that could be taken in a program. The restrictions placed
+on which edges we draw are essentially purely syntactical. Finer analyses,
+such as pruning based on statically known branches, are deferred.
+To build a control-flow graph, we step through each statement in order.
+By default, statements are added to the current basic block until we
+reach a statement that invokes control flow. These are exactly the following:
+| Switch | Loops | Jumps | Exception Handling |
+|---------|---------|------------|--------------------|
+| <code>if</code> | <code>for</code> | <code>break</code> | <code>try</code> |
+| <code>match</code> | <code>while</code> | <code>continue</code> | |
+| | | <code>raise</code> | |
+| | | <code>return</code> | |</p>
+<p>There are also <code>assert</code> and <code>with</code> statements, which are syntactic sugar
+for a combination of the above.</p>
+<p>We now discuss how each kind of control flow is handled.</p>
+<h2>Switch Statements</h2>
+<p>Upon reaching a switch statement, the statement
+itself terminates the basic block, and several outgoing
+edges are added, labeled by the condition that needs to
+be satisfied in order to traverse that edge. For example:</p>
+<pre><code class="language-python">if cond:
+  f()
+else:
+  g()
+</code></pre>
+<p>Produces:</p>
+<pre><code class="language-text">         +--------+
+         |  Start |
+         +--------+
+             |
+             v
+          +--------+
+  +-------| SWITCH |
+  |       +--------+
+  |          |
+  | cond     | not cond
+  |          |
+  v          v
++-----+     +-----+
+| f() |     | g() |
++-----+     +-----+
+  |          |
+  +-----+----+
+        |
+      +--------+
+      |  End   |
+      +--------+
+</code></pre>
+<h2>Loops</h2>
+<p>A loop consists of a <em>loop guard</em>, a <em>body</em>, and an optional
+<em>else</em> clause. The <em>loop guard</em> is a condition we check to
+determine whether to re-enter the loop body, the <em>body</em> is again
+a list of statements, and the <em>else</em> clause is a possible
+exit from the loop body or guard (depending). For simplicity,
+let's ignore the else clause for a moment and specialize to the
+case of <code>while</code> loops.</p>
+<p>When we reach a <code>while</code> loop, we begin by creating a new
+basic block that is comprised entirely of the <code>loop</code> guard,
+and which unconditionally follows the preceding basic block.
+The loop guard consists of the test clause for the <code>while</code> statement.
+This loop guard will have an outgoing node to the <em>loop exit</em>
+and another to the loop body; the edge followed corresponds to the
+veracity of the test clause.</p>
+<p>The loop body will almost always have two outgoing edges: one
+which points back to the loop guard, and another that goes to the
+loop exit. An exception would be the case of a jump statement, like
+<code>continue</code> or <code>return</code>.</p>
+<p>For example,</p>
+<pre><code class="language-python">while cond:
+  continue
+</code></pre>
+<p>would create</p>
+<pre><code class="language-text">         +--------+
+         |  Start |
+         +--------+
+             |
+             v
+          +-----------+
+  +-------| LOOP GUARD|&lt;+
+  |       +-----------+ |
+  |          |          |
+  | else     | cond     |
+  |          |          |
+  |          v          |
+  |      +----------+   |
+  |      | continue |---+
+  |      +----------+
+  |         
+  |         
+  |   +--------+
+  +-&gt; |  End   |
+      +--------+
+</code></pre>
+<h2>Exception Handling</h2>
+<p>Before discussing jumps, which ought to have been
+relatively straightforward, we must introduce a wrinkle:
+exception handling. Control flow would be much simpler
+if it weren't for <code>try</code> statements!</p>
+<p>First, we have to alter our interpretation of what
+the control flow graph actually represents when we
+are inside of a <code>try</code> statement. Basic blocks within
+a <code>try</code> statement no longer indicate sequences of statements
+that are unconditionally executed one after the next.
+Instead, we are to interpret these blocks as statements
+that may or may not be aborted early due to an exception.</p>
+<p>We then introduce two &quot;virtual&quot; blocks which are tasked
+with cleaning up the program state and resuming ordinary
+control flow. They are <code>EXCEPTION DISPATCH</code> and <code>RECOVERY</code>
+blocks, which we use in the presence of <code>except</code> and <code>finally</code>
+clauses, respectively.</p>
+<p>For example:</p>
+<pre><code class="language-python">try:
+  maybe_raise()
+except ValueError:
+  this()
+except TypeError:
+  that()
+finally:
+  cleanup()
+</code></pre>
+<p>results in:</p>
+<pre><code class="language-text">        +-------+
+        | START |
+        +-------+
+            |
+            v
+        +---------------+
+        | maybe_raise() |
+        +---------------+
+            |
+            v
+        +-----------+
+        | DISPATCH  |-------------+
+        +-----------+             |
+ValueError|        | TypeError    | else
+  +---------+  +--------+         |
+  | this()  |  | that() |         |
+  +---------+  +--------+         |
+          |        |              |
+          v        v              |
+        +-----------+             |
+        | cleanup() |&lt;------------+
+        +-----------+
+              |
+              v
+        +-----------+
+        | RECOVERY  |
+        +-----------+       
+</code></pre>
+<p>The recovery block is especially useful in the handling
+of deferred jumps, which we now discuss.</p>
+<h2>Jumps</h2>
+<p>Upon reaching a jump statement, we must first examine
+the stack of _try context_s. That is, we need to know whether we
+are in certain clauses of a (nested) <code>try</code> statement,
+in which case we must account for exceptions or defer
+the jump until after executing a <code>finally</code> clause.</p>
+<p>More specifically, a <code>TryContext</code> consists of:</p>
+<ul>
+<li>one of the five possible subsets of <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> that can occur</li>
+<li>the current state: in <code>try</code>, <code>except</code>, <code>else</code>, or <code>finally</code></li>
+<li>a list of deferred jump statements</li>
+</ul>
+<p>To determine whether we should continue to defer jump statements,
+we ask whether any of the <code>TryContext</code> members are in a <code>try</code> state,
+or in an <code>except</code>/<code>else</code> state with an upcoming <code>finally</code> clause.
+If so, we pop the last <code>TryContext</code>, append its deferred jumps to the
+new last <code>TryContext</code>, and proceed to the next block.
+Outside of these conditions, in the ordinary course of things,
+we terminate the basic block
+and add an outgoing edge. The target of the edge is:</p>
+<ul>
+<li>the innermost loop guard, in the case of <code>continue</code></li>
+<li>the innermost loop exit, in the case of <code>break</code></li>
+<li>the terminal node, in the case of <code>return</code> or <code>raise</code></li>
+</ul>
+<p>Finally, when we are in the <code>RECOVERY</code> block after a <code>finally</code> clause,
+and we have checked that we do not need to further defer jumps,
+we then resolve all deferred jumps and pop a <code>TryContext</code>.
+Resolving the jumps just means that we add edges to the corresponding
+targets out of the <code>RECOVERY</code> block.</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dylwil3 on 2025-03-30 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-03-30 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17064.html">astral-sh/ruff#17064</a> on 2025-03-31 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/17292.html">astral-sh/ruff#17292</a> on 2025-04-08 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/17281.html">astral-sh/ruff#17281</a> on 2025-04-14 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/16949.html">astral-sh/ruff#16949</a> on 2025-04-19 22:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

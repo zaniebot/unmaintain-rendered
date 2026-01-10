@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip install --require-hashes` fails when (transitive) dependencies aren't pinned to latest version - astral-sh/uv #10425</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip install --require-hashes` fails when (transitive) dependencies aren't pinned to latest version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10425">#10425</a>
+        opened by <a href="https://github.com/cpswan">@cpswan</a>
+        on 2025-01-09 13:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cpswan">@cpswan</a> on 2025-01-09 13:32</div>
+            <div class="timeline-body"><p>uv version 0.5.16</p>
+<h2>Description</h2>
+<p>When I <code>uv pip install --require-hashes -r requirements.txt</code> I get:</p>
+<pre><code class="language-log">⠙ urllib3==2.3.0
+error: In `--require-hashes` mode, all requirements must be pinned upfront with `==`, but found: `urllib3`
+</code></pre>
+<p>But my <code>requirements.txt</code> does specify a version and hashes for <code>urllib3</code>:</p>
+<pre><code class="language-txt">urllib3==2.2.3 ; python_version &gt;= &quot;3.8&quot; \
+    --hash=sha256:ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac \
+    --hash=sha256:e7d814a81dad81e6caf2ec9fdedb284ecc9c73076b62654547cc64ccdcae26e9
+</code></pre>
+<p>This doesn't happen if I have a <code>requirements.txt</code> that pins to <code>urllib3==2.3.0</code>, which is the latest version.</p>
+<h2>Hypothesis</h2>
+<p>The dependency solver is trying to pull in the latest version of <code>urllib3</code> rather than the version pinned in <code>requirements.txt</code>, and (obviously) not finding pinning (or hashes) for that version.</p>
+<h2>How I got here (reproduction)</h2>
+<p>I start out with a <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;test-require-hashes&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.8&quot;
+dependencies = [
+    &quot;requests&gt;=2.32.3&quot;,
+]
+</code></pre>
+<p>Then generate a <a href="https://gist.github.com/cpswan/bed14d6fe28a0aef29698e23cb3d43d8#file-poetry-lock">poetry.lock</a> file with <code>poetry lock</code>. Inside that I can see:</p>
+<pre><code class="language-txt">[[package]]
+name = &quot;requests&quot;
+version = &quot;2.32.3&quot;
+description = &quot;Python HTTP for Humans.&quot;
+optional = false
+python-versions = &quot;&gt;=3.8&quot;
+groups = [&quot;main&quot;]
+files = [
+    {file = &quot;requests-2.32.3-py3-none-any.whl&quot;, hash = &quot;sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6&quot;},
+    {file = &quot;requests-2.32.3.tar.gz&quot;, hash = &quot;sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760&quot;},
+]
+</code></pre>
+<p>NB I'm using poetry 2.0.0 here as it respects PEP 621. I've also recreated this with poetry 1.8.2, but the pyproject.toml needs to use the old style [tool.poetry] rather than [project].</p>
+<p>Then generate a <a href="https://gist.github.com/cpswan/bed14d6fe28a0aef29698e23cb3d43d8#file-requirements-txt">requirements.txt</a> from the poetry.lock with <code>poetry export --output requirements.txt</code>, which contains:</p>
+<pre><code class="language-txt">urllib3==2.2.3 ; python_version &gt;= &quot;3.8&quot; \
+    --hash=sha256:ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac \
+    --hash=sha256:e7d814a81dad81e6caf2ec9fdedb284ecc9c73076b62654547cc64ccdcae26e9
+</code></pre>
+<p>Finally ask uv to install from that requirements.txt with --require-hashes <code>uv pip install --require-hashes -r requirements.txt</code></p>
+<h3>Python 3.8 is deprecated</h3>
+<p>Yes, I know, if I specify <code>requires-python = &quot;&gt;=3.9&quot;</code> then I get a poetry.lock and requirements.txt that use urllib3==2.3.0</p>
+<p>Whilst using 3.8 seems to be what surfaced this issue for me I don't think it's the fundamental cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../atsign-foundation/at_python/pulls/310.html">atsign-foundation/at_python#310</a> on 2025-01-09 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpswan">@cpswan</a> on 2025-01-09 14:10</div>
+            <div class="timeline-body"><p>I meant to also add the <a href="https://gist.github.com/cpswan/bed14d6fe28a0aef29698e23cb3d43d8#file-verbose-log"><code>--verbose</code> logs</a>, which ends:</p>
+<pre><code class="language-log">&lt;snip lines 1-76&gt;
+DEBUG Searching for a compatible version of urllib3 (&gt;=1.21.1, &lt;3)
+DEBUG Found installed version of urllib3==2.3.0 that satisfies &gt;=1.21.1, &lt;3
+DEBUG Selecting: urllib3==2.3.0 [installed] (installed)
+DEBUG Released lock at `/home/chris/testing/uv_require_hashes/test_require_hashes/.venv/.lock`
+error: In `--require-hashes` mode, all requirements must be pinned upfront with `==`, but found: `urllib3`
+</code></pre>
+<p>Other mentions of urllib3:</p>
+<pre><code class="language-log">&lt;snip lines 1-5&gt;
+DEBUG At least one requirement is not satisfied: urllib3==2.2.3 ; python_full_version &gt;= '3.8'
+&lt;snip lines 7-13&gt;
+DEBUG Adding direct dependency: urllib3{python_full_version &gt;= '3.8'}&gt;=2.2.3, &lt;2.2.3+
+&lt;snip lines 15-55&gt;
+DEBUG Found fresh response for: https://pypi.org/simple/urllib3/
+&lt;snip lines 57-66&gt;
+DEBUG Adding transitive dependency for requests==2.32.3: urllib3&gt;=1.21.1, &lt;3
+&lt;snip lines 68-71&gt;
+DEBUG Found installed version of urllib3==2.3.0 that satisfies &gt;=1.21.1, &lt;3
+&lt;snip lines 73-74&gt;
+DEBUG Adding transitive dependency for requests==2.32.3: urllib3&gt;=1.21.1, &lt;3
+&lt;snip lines 76-81
+</code></pre>
+<p>So the puzzle here is how <code>Adding direct dependency: urllib3{python_full_version &gt;= '3.8'}&gt;=2.2.3, &lt;2.2.3+</code> isn't used to satisfy <code>Adding transitive dependency for requests==2.32.3: urllib3&gt;=1.21.1, &lt;3</code> and instead it goes off on a search that ends with <code>Found installed version of urllib3==2.3.0 that satisfies &gt;=1.21.1, &lt;3</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-09 14:12</div>
+            <div class="timeline-body"><p>Is this the entire <code>requirements.txt</code> file?</p>
+<pre><code>urllib3==2.2.3 ; python_version &gt;= &quot;3.8&quot; \
+    --hash=sha256:ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac \
+    --hash=sha256:e7d814a81dad81e6caf2ec9fdedb284ecc9c73076b62654547cc64ccdcae26e9
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpswan">@cpswan</a> on 2025-01-09 14:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this the entire requirements.txt file?</p>
+</blockquote>
+<p>No, I linked to a <a href="https://gist.github.com/cpswan/bed14d6fe28a0aef29698e23cb3d43d8#file-requirements-txt">gist with the entire requirements.txt</a> file as pasting huge blobs of text into issues distracts from the narrative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-09 14:27</div>
+            <div class="timeline-body"><p>Thanks! Missed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-09 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-09 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10441.html">astral-sh/uv#10441</a> on 2025-01-09 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-09 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-09 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cpswan">@cpswan</a> on 2025-01-13 10:18</div>
+            <div class="timeline-body"><p>Thanks for the quick resolution on this @charliermarsh :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../atsign-foundation/at_python/pulls/313.html">atsign-foundation/at_python#313</a> on 2025-01-13 10:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/10833.html">astral-sh/uv#10833</a> on 2025-01-21 23:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:02 UTC
+    </footer>
+</body>
+</html>

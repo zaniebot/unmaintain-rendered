@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uv stalls when using pyproject.toml, but not when using installing using cli - astral-sh/uv #10320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Uv stalls when using pyproject.toml, but not when using installing using cli</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10320">#10320</a>
+        opened by <a href="https://github.com/vedantroy">@vedantroy</a>
+        on 2025-01-06 06:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vedantroy">@vedantroy</a> on 2025-01-06 06:21</div>
+            <div class="timeline-body"><p>This works:</p>
+<pre><code>FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends build-essential curl ca-certificates git imagemagick libgl1-mesa-glx
+
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh &amp;&amp; rm /uv-installer.sh
+ENV PATH=&quot;/root/.local/bin/:$PATH&quot;
+RUN uv python install 3.11
+
+RUN uv venv /venv
+ENV VIRTUAL_ENV=/venv
+ENV PATH=&quot;$VIRTUAL_ENV/bin:$PATH&quot;
+
+# COPY pyproject.toml .
+RUN uv pip install --verbose boto3==1.35.91 boto3-stubs[s3]==1.35.91 anthropic==0.42.0 tenacity==9.0.0 &quot;redis[hiredis]&gt;=5.2.1&quot; &quot;rollbar&gt;=1.1.0&quot; &quot;python-dotenv&gt;=1.0.0&quot; &quot;py3nvml&gt;=0.2.7&quot;
+</code></pre>
+<p>But, if I switch up the Dockerfile, I get stuck at the following:</p>
+<pre><code> =&gt; [ 8/14] RUN uv pip install .[local] --verbose                                                                                                                                                                         4.6s
+ =&gt; =&gt; # DEBUG Identified uncached distribution: setuptools==75.7.0                                                                                                                                                           
+ =&gt; =&gt; # DEBUG Downloading and building requirement for build: setuptools==75.7.0                                                                                                                                             
+ =&gt; =&gt; # DEBUG No cache entry for: https://files.pythonhosted.org/packages/4e/6e/abdfaaf5c294c553e7a81cf5d801fbb4f53f5c5b6646de651f92a2667547/setuptools-75.7.0-py3-none-any.whl                                              
+ =&gt; =&gt; # DEBUG Installing build requirement: setuptools==75.7.0                                                                                                                                                               
+ =&gt; =&gt; # DEBUG Creating PEP 517 build environment                                                                                                                                                                             
+ =&gt; =&gt; # DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`  
+</code></pre>
+<p>Here's the new Dockerfile:</p>
+<pre><code>FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends build-essential curl ca-certificates git imagemagick libgl1-mesa-glx
+
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh &amp;&amp; rm /uv-installer.sh
+ENV PATH=&quot;/root/.local/bin/:$PATH&quot;
+RUN uv python install 3.11
+
+RUN uv venv /venv
+ENV VIRTUAL_ENV=/venv
+ENV PATH=&quot;$VIRTUAL_ENV/bin:$PATH&quot;
+
+COPY pyproject.toml .
+RUN uv pip install .[local] --verbose
+# RUN uv pip install --verbose boto3==1.35.91 boto3-stubs[s3]==1.35.91 anthropic==0.42.0 tenacity==9.0.0 &quot;redis[hiredis]&gt;=5.2.1&quot; &quot;rollbar&gt;=1.1.0&quot; &quot;python-dotenv&gt;=1.0.0&quot; &quot;py3nvml&gt;=0.2.7&quot;
+</code></pre>
+<p>And here's the pyproject.toml:</p>
+<pre><code>[project]
+name = &quot;ml-stuff&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Server&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;boto3==1.35.91&quot;,
+    &quot;boto3-stubs[s3]==1.35.91&quot;,
+    &quot;anthropic==0.42.0&quot;,
+    &quot;tenacity==9.0.0&quot;,
+    &quot;redis[hiredis]&gt;=5.2.1&quot;,
+    &quot;rollbar&gt;=1.1.0&quot;,
+]
+
+# Install with uv pip install .[local]
+[project.optional-dependencies]
+local = [
+    # &quot;uvicorn==0.34.0&quot;,
+    # &quot;click==8.1.7&quot;,
+    # &quot;ngrok&gt;=0.9.0&quot;,
+    &quot;python-dotenv&gt;=1.0.0&quot;,
+    &quot;py3nvml&gt;=0.2.7&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Getting stuck when installing using pyproject.tomlT" to "Uv stalls when using pyproject.toml, but not when using installing using cli" by @vedantroy on 2025-01-06 06:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 14:51</div>
+            <div class="timeline-body"><p>I think there's something strange going on in the image itself. If you run <code>uv pip install .[local] --verbose</code>, we have to build the project at <code>.</code> from source to install it. And there must be content at the repo root that <code>setuptools</code> is then trying to include.</p>
+<p>Here are two alternatives that work.</p>
+<p>First, if you just want the dependencies, and not the code in <code>ml-stuff</code> itself, change it to:</p>
+<pre><code class="language-dockerfile">RUN uv pip install &quot;pyproject.toml[local]&quot; --verbose
+</code></pre>
+<p>Second, you can copy the <code>pyproject.toml</code> into a dedicated directory, to avoid building whatever is in the image root:</p>
+<pre><code class="language-dockerfile">COPY pyproject.toml /app/pyproject.toml
+RUN uv pip install /app[local] --verbose
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-06 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 14:51</div>
+            <div class="timeline-body"><p>(Thanks for the clear reproduction.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-01-06 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:00 UTC
+    </footer>
+</body>
+</html>

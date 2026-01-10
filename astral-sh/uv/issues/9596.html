@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong platform tag? Or is test.pypi.org confused? Or is my system weird? - astral-sh/uv #9596</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong platform tag? Or is test.pypi.org confused? Or is my system weird?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9596">#9596</a>
+        opened by <a href="https://github.com/dimaqq">@dimaqq</a>
+        on 2024-12-03 05:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-12-03 05:10</div>
+            <div class="timeline-body"><p>I've upgraded my old project to uv, and here's what I get when I <code>uv build</code> it:</p>
+<ul>
+<li>linux architecture is <code>aarch64</code> ⛔</li>
+<li>macos architecture is <code>arm64</code> ✅</li>
+</ul>
+<p>Here are the built artefacts from Linux and macOS:</p>
+<pre><code class="language-command">&gt; ls -lt dist/
+total 88
+-rw-r--r-- 1 dima dima 12446 Dec  3 14:04 awaitwhat-24.11rc1.tar.gz
+-rw-r--r-- 1 dima dima 19554 Dec  3 14:04 awaitwhat-24.11rc1-cp39-cp39-linux_aarch64.whl
+-rw-r--r-- 1 dima dima 19936 Dec  3 14:04 awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl
+-rw-r--r-- 1 dima dima 12812 Dec  3 13:54 awaitwhat-24.11rc1-cp38-cp38-macosx_11_0_arm64.whl
+-rw-r--r-- 1 dima dima 13987 Dec  3 13:54 awaitwhat-24.11rc1-cp39-cp39-macosx_10_9_universal2.whl
+</code></pre>
+<p>When I try to push these to test.pypi.org, <code>linux_aarch64</code> wheels are rejected:</p>
+<pre><code class="language-command">&gt; uv publish --publish-url https://test.pypi.org/legacy/ dist/*
+warning: `uv publish` is experimental and may change without warning
+Publishing 5 files https://test.pypi.org/legacy/
+Enter username ('__token__' if using a token): __token__
+Enter password:
+Uploading awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl (19.5KiB)
+error: Failed to publish `dist/awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl` to https://test.pypi.org/legacy/
+  Caused by: Upload failed with status code 400 Bad Request. Server says: 400 Binary wheel 'awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl' has an unsup  Caused by: Upload failed with status code 400 Bad Request. Server says: 400 Binary wheel 'awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl' has an unsup
+
+
+&gt; uvx twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+Uploading distributions to https://test.pypi.org/legacy/
+INFO     dist/awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl (19.5 KB)
+INFO     dist/awaitwhat-24.11rc1-cp38-cp38-macosx_11_0_arm64.whl (12.5 KB)
+INFO     dist/awaitwhat-24.11rc1-cp39-cp39-linux_aarch64.whl (19.1 KB)
+INFO     dist/awaitwhat-24.11rc1-cp39-cp39-macosx_10_9_universal2.whl (13.7 KB)
+INFO     dist/awaitwhat-24.11rc1.tar.gz (12.1 KB)
+INFO     username set by command options
+INFO     Querying keyring for password
+Enter your API token:
+INFO     username: __token__
+INFO     password: &lt;hidden&gt;
+Uploading awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 30.8/30.8 kB • 00:00 • 134.0 MB/s
+INFO     Response from https://test.pypi.org/legacy/:
+         400 Binary wheel 'awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl' has an unsupported platform tag 'linux_aarch64'.
+INFO     &lt;html&gt;
+          &lt;head&gt;
+           &lt;title&gt;400 Binary wheel 'awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl' has an unsupported platform tag 'linux_aarch64'.&lt;/title&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+           &lt;h1&gt;400 Binary wheel 'awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl' has an unsupported platform tag 'linux_aarch64'.&lt;/h1&gt;
+           The server could not comply with the request since it is either malformed or otherwise incorrect.&lt;br/&gt;&lt;br/&gt;
+         Binary wheel &amp;#x27;awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl&amp;#x27; has an unsupported platform tag &amp;#x27;linux_aarch64&amp;#x27;.
+
+
+          &lt;/body&gt;
+         &lt;/html&gt;
+ERROR    HTTPError: 400 Bad Request from https://test.pypi.org/legacy/
+         Binary wheel 'awaitwhat-24.11rc1-cp38-cp38-linux_aarch64.whl' has an unsupported platform tag 'linux_aarch64'.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-12-03 05:15</div>
+            <div class="timeline-body"><p>P.S. I've installed python using uv; I can only build this library with oldish pythons, &lt;3.10, meanwhile uv only provides &gt;3.7, thus I'm limited to 2 Python versions I can experiment with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:30</div>
+            <div class="timeline-body"><p>Thanks for the report. cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-12-03 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2024-12-04 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-04 17:09</div>
+            <div class="timeline-body"><p>PyPI only accepts manylinux (or musllinux) wheels that are compatible with a wide range of linux systems, but not the plain <code>linux_*</code> tag, you need to run <a href="https://github.com/pypa/auditwheel">audithwheel</a> on the built wheels. The tag of the wheel is something that's not decided by uv, but the build backend. Most build backends expect the user to run auditwheels themselves before publishing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-12-04 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2024-12-06 00:28</div>
+            <div class="timeline-body"><p>FWIW, here's my entire setup</p>
+<pre><code class="language-toml">[project]
+name = &quot;awaitwhat&quot;
+version = &quot;24.11-rc1&quot;
+description = &quot;async/await introspection&quot;
+authors = [{name=&quot;Dima Tisnek&quot;, email=&quot;dimaqq@gmail.com&quot;}]
+license = { file = &quot;LICENSE&quot; }
+readme = &quot;readme.md&quot;
+keywords = [&quot;asyncio&quot;]
+classifiers = [
+  &quot;Development Status :: 3 - Alpha&quot;,
+  &quot;Programming Language :: Python :: Implementation :: CPython&quot;,
+  &quot;Framework :: AsyncIO&quot;,
+  &quot;Topic :: Software Development :: Debuggers&quot;,
+  &quot;Programming Language :: Python :: 3.6&quot;,
+  &quot;Programming Language :: Python :: 3.7&quot;,
+  &quot;Programming Language :: Python :: 3.8&quot;,
+  &quot;Programming Language :: Python :: 3.9&quot;,
+  &quot;Operating System :: POSIX :: Linux&quot;,
+  &quot;Operating System :: MacOS :: MacOS X&quot;,
+  &quot;Operating System :: Microsoft :: Windows&quot;,
+]
+
+[project.urls]
+homepage = &quot;https://github.com/dimaqq/awaitwhat&quot;
+repository = &quot;https://github.com/dimaqq/awaitwhat&quot;
+documentation = &quot;https://github.com/dimaqq/awaitwhat&quot;
+
+[build-system]
+requires = [&quot;setuptools&gt;=42&quot;, &quot;wheel&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools]
+packages = [&quot;awaitwhat&quot;]
+ext-modules = [
+    { name = &quot;awaitwhat._what&quot;, sources = [&quot;awaitwhat/what.c&quot;] }
+]
+</code></pre>
+<p>I'm very open to suggestions if there's something more modern that I should be using over setuptools.</p>
+<p>I figure that would be useful for other who migrate their legacy projects to <code>uv</code> 🦀 🌈 🦄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-06 13:01</div>
+            <div class="timeline-body"><p>For C extensions, I recommend running <code>auditwheel</code> over your linux wheels before uploading them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-26 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../biocircuits/bioscrape/pulls/180.html">biocircuits/bioscrape#180</a> on 2025-02-16 02:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:43 UTC
+    </footer>
+</body>
+</html>

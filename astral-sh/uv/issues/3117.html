@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add environment variable for require-hashes - astral-sh/uv #3117</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add environment variable for require-hashes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3117">#3117</a>
+        opened by <a href="https://github.com/sspans-sbp">@sspans-sbp</a>
+        on 2024-04-18 07:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sspans-sbp">@sspans-sbp</a> on 2024-04-18 07:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>Similar to <code>UV_SYSTEM_PYTHON=true</code> it would be quite helpful to also have <code>UV_REQUIRE_HASHES=true</code>
+That would make it easier to ensure hash checking is always enabled when building containers, especially when stacking images.</p>
+<p>My scenario is:</p>
+<p>python_3.12_base/Dockerfile:</p>
+<pre><code class="language-dockerfile">FROM python:3.12.3-alpine3.19
+
+ENV UV_SYSTEM_PYTHON=true
+ENV UV_NO_CACHE=true
+ENV UV_REQUIRE_HASHES=true
+
+# We know we're running in a docker container as root
+# Unlike the rest of the world, we never run privileged
+ENV PIP_ROOT_USER_ACTION=ignore
+
+RUN apk upgrade --no-cache &amp;&amp; \
+    apk add --no-cache git gnupg openssh-client curl jq unzip &amp;&amp; \
+    # renovate: datasource=pypi versioning=pep440
+    pip install --no-cache-dir uv==0.1.32
+</code></pre>
+<p>infrastructure_ci/Dockerfile:</p>
+<pre><code class="language-dockerfile">FROM python_3.12_slim
+
+SHELL [&quot;/bin/ash&quot;, &quot;-eo&quot;, &quot;pipefail&quot;, &quot;-c&quot;]
+
+# Add Python packages
+RUN apk add --no-cache build-base libffi-dev &amp;&amp; \
+    uv pip install -r requirements.txt &amp;&amp; \
+    apk del build-base libffi-dev
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2024-04-18 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-18 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 19:59</div>
+            <div class="timeline-body"><p>I can do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3125.html">astral-sh/uv#3125</a> on 2024-04-18 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-18 21:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

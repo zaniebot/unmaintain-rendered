@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support PyTorch CPU and GPU dependency - astral-sh/uv #9734</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support PyTorch CPU and GPU dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9734">#9734</a>
+        opened by <a href="https://github.com/jbcdnr">@jbcdnr</a>
+        on 2024-12-09 09:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-09 09:40</div>
+            <div class="timeline-body"><p>I followed the guide for supporting <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">PyTorch CPU and GPU dependency</a>. It works well until I added a package <code>accelerate</code> that depends on torch, then this package would depend on both version and both <code>cpu</code> and <code>gpu</code> version are installed.</p>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+name = &quot;test-torch&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [&quot;torch&gt;=2.5.1&quot;, &quot;accelerate==0.26.1&quot;]
+cu124 = [&quot;torch&gt;=2.5.1&quot;, &quot;accelerate==0.26.1&quot;]
+
+[tool.uv]
+conflicts = [[{ extra = &quot;cpu&quot; }, { extra = &quot;cu124&quot; }]]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+    { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p><code>uv tree</code></p>
+<pre><code>
+uv tree
+warning: `VIRTUAL_ENV=/opt/venv` does not match the project environment path `.venv` and will be ignored
+Resolved 39 packages in 2ms
+test-torch v0.1.0
+├── accelerate v0.26.1 (extra: cpu)
+│   ├── huggingface-hub v0.26.3
+│   │   ├── filelock v3.16.1
+│   │   ├── fsspec v2024.10.0
+│   │   ├── packaging v24.2
+│   │   ├── pyyaml v6.0.2
+│   │   ├── requests v2.32.3
+│   │   │   ├── certifi v2024.8.30
+│   │   │   ├── charset-normalizer v3.4.0
+│   │   │   ├── idna v3.10
+│   │   │   └── urllib3 v2.2.3
+│   │   ├── tqdm v4.67.1
+│   │   └── typing-extensions v4.12.2
+│   ├── numpy v2.1.3
+│   ├── packaging v24.2
+│   ├── psutil v6.1.0
+│   ├── pyyaml v6.0.2
+│   ├── safetensors v0.4.5
+│   ├── torch v2.5.1+cpu
+│   │   ├── filelock v3.16.1
+│   │   ├── fsspec v2024.10.0
+│   │   ├── jinja2 v3.1.4
+│   │   │   └── markupsafe v3.0.2
+│   │   ├── networkx v3.4.2
+│   │   ├── setuptools v75.6.0
+│   │   ├── sympy v1.13.1
+│   │   │   └── mpmath v1.3.0
+│   │   └── typing-extensions v4.12.2
+│   └── torch v2.5.1+cu124
+│       ├── filelock v3.16.1
+│       ├── fsspec v2024.10.0
+│       ├── jinja2 v3.1.4 (*)
+│       ├── networkx v3.4.2
+│       ├── nvidia-cublas-cu12 v12.4.5.8
+│       ├── nvidia-cuda-cupti-cu12 v12.4.127
+│       ├── nvidia-cuda-nvrtc-cu12 v12.4.127
+│       ├── nvidia-cuda-runtime-cu12 v12.4.127
+│       ├── nvidia-cudnn-cu12 v9.1.0.70
+│       │   └── nvidia-cublas-cu12 v12.4.5.8
+│       ├── nvidia-cufft-cu12 v11.2.1.3
+│       │   └── nvidia-nvjitlink-cu12 v12.4.127
+│       ├── nvidia-curand-cu12 v10.3.5.147
+│       ├── nvidia-cusolver-cu12 v11.6.1.9
+│       │   ├── nvidia-cublas-cu12 v12.4.5.8
+│       │   ├── nvidia-cusparse-cu12 v12.3.1.170
+│       │   │   └── nvidia-nvjitlink-cu12 v12.4.127
+│       │   └── nvidia-nvjitlink-cu12 v12.4.127
+│       ├── nvidia-cusparse-cu12 v12.3.1.170 (*)
+│       ├── nvidia-nccl-cu12 v2.21.5
+│       ├── nvidia-nvjitlink-cu12 v12.4.127
+│       ├── nvidia-nvtx-cu12 v12.4.127
+│       ├── setuptools v75.6.0
+│       ├── sympy v1.13.1 (*)
+│       ├── triton v3.1.0
+│       │   └── filelock v3.16.1
+│       └── typing-extensions v4.12.2
+├── torch v2.5.1+cpu (extra: cpu) (*)
+├── accelerate v0.26.1 (extra: cu124) (*)
+└── torch v2.5.1+cu124 (extra: cu124) (*)
+(*) Package tree already displayed
+</code></pre>
+<p>We found a hack to pretend that there are 2 distinct packages <code>accelerate</code> for CPU and GPU by defining a separatte (but identic source):</p>
+<pre><code class="language-toml">accelerate = [
+    { git = &quot;https://github.com/huggingface/accelerate&quot;, tag = &quot;v0.26.1&quot;, extra = &quot;torch-cpu&quot; },
+]
+</code></pre>
+<p>Is it the expected behavior of the resolver? Or are we handling something incorrectly?</p>
+<p>Thanks a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harteros">@harteros</a> on 2024-12-09 09:56</div>
+            <div class="timeline-body"><p>I think what you are looking at is https://github.com/astral-sh/uv/issues/9289 which is currently being developed at https://github.com/astral-sh/uv/pull/9370</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbcdnr">@jbcdnr</a> on 2024-12-09 11:46</div>
+            <div class="timeline-body"><p>Thank you @harteros for the pointer :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jbcdnr on 2024-12-09 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9370.html">astral-sh/uv#9370</a> on 2024-12-09 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/9735.html">astral-sh/uv#9735</a> on 2024-12-12 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lordsoffallen">@lordsoffallen</a> on 2024-12-27 16:43</div>
+            <div class="timeline-body"><p>@harteros Is this solved? Cuz i'm having the same problems with it. Here is what I had to put in the configuration:</p>
+<pre><code>requires-python = &quot;&gt;=3.10&quot;
+dependencies = [
+    &quot;anthropic&gt;=0.42.0&quot;,
+    &quot;datasets&gt;=3.2.0&quot;,
+    &quot;diffusers&gt;=0.32.1&quot;,
+    &quot;elevenlabs&gt;=1.50.3&quot;,
+    &quot;google-cloud-aiplatform&gt;=1.75.0&quot;,
+    &quot;kedro&gt;=0.19.10&quot;,
+    &quot;kedro-datasets&gt;=6.0.0&quot;,
+    &quot;lxml&gt;=5.3.0&quot;,
+    &quot;markdownify&gt;=0.14.1&quot;,
+    &quot;matplotlib&gt;=3.10.0&quot;,
+    &quot;numpy&gt;=2.2.1&quot;,
+    &quot;openai&gt;=1.58.1&quot;,
+    &quot;pandas&gt;=2.2.3&quot;,
+    &quot;python-dotenv&gt;=1.0.1&quot;,
+    &quot;replicate&gt;=1.0.4&quot;,
+    &quot;sentencepiece&gt;=0.2.0&quot;,
+    &quot;structlog&gt;=24.4.0&quot;,
+    &quot;tenacity&gt;=9.0.0&quot;,
+    &quot;transformers&gt;=4.47.1&quot;,
+]
+
+[project.optional-dependencies]
+cpu = [
+    &quot;torch&gt;=2.5.1&quot;,
+    &quot;torchvision&gt;=0.20.1&quot;,
+    &quot;accelerate&gt;=1.2.1&quot;,
+    &quot;peft&gt;=0.14.0&quot;,
+    &quot;xformers&gt;=0.0.28&quot;,
+]
+gpu = [
+    &quot;torch&gt;=2.5.1&quot;,
+    &quot;torchvision&gt;=0.20.1&quot;,
+    &quot;accelerate&gt;=1.2.1&quot;,
+    &quot;peft&gt;=0.14.0&quot;,
+    &quot;xformers&gt;=0.0.28&quot;,
+]
+
+[dependency-groups]
+dev = [
+    &quot;ipywidgets&gt;=8.1.5&quot;,
+    &quot;jupyter&gt;=1.1.1&quot;,
+    &quot;jupyter-archive&gt;=3.4.0&quot;,
+    &quot;jupyterlab&gt;=4.3.4&quot;,
+    &quot;notebook&gt;=7.3.2&quot;,
+    &quot;pytest&gt;=8.3.4&quot;,
+]
+
+
+# UV
+[[tool.uv.index]]
+name = &quot;pytorch-cu124&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = &quot;cpu&quot; },
+        { extra = &quot;gpu&quot; },
+    ],
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;pytorch-cu124&quot;, extra = &quot;gpu&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+    { index = &quot;pytorch&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system == 'Linux'&quot; }
+]
+torchvision = [
+    { index = &quot;pytorch-cu124&quot;, extra = &quot;gpu&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+    { index = &quot;pytorch&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system == 'Linux'&quot; }
+]
+</code></pre>
+<p>Every torch dependent package is now being listed under certain extras to make sure we don't install CUDA libs on cpu env.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:46 UTC
+    </footer>
+</body>
+</html>

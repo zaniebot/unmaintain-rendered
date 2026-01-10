@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E722: not reported when raising original exception - astral-sh/ruff #17827</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E722: not reported when raising original exception</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17827">#17827</a>
+        opened by <a href="https://github.com/matejsp">@matejsp</a>
+        on 2025-05-04 05:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matejsp">@matejsp</a> on 2025-05-04 05:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When raising the original exception the ruff does not report the use of bare except. However flake8 does.</p>
+<pre><code>try:
+    pass
+except:
+    raise
+</code></pre>
+<pre><code>ruff check test.py
+All checks passed!
+</code></pre>
+<pre><code>flake8 test.py
+test.py:4:1: E722 do not use bare 'except'
+</code></pre>
+<p>https://play.ruff.rs/fb125639-d561-407e-afca-16b2fd1240cd</p>
+<p>In our case it was error prone because in our except we were handling errors in except block:</p>
+<pre><code>except:
+   if input == 1:
+     return x
+   raise
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-05 17:48</div>
+            <div class="timeline-body"><p>It looks like this was changed in #1124 to address #1119 with the logic that re-raising the exception solves the problems described in the rule <a href="https://docs.astral.sh/ruff/rules/bare-except/">docs</a>. So I would say your playground example is working as intended, but this still seems like a potential problem when the exception is only <em>conditionally</em> re-raised, as in your example here. This is discussed a  bit <a href="https://github.com/PyCQA/flake8-bugbear/issues/174">here</a> too.</p>
+<p>@dylwil3 is currently working on better control-flow analysis that could help to check conditional branches here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-05-05 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:17 UTC
+    </footer>
+</body>
+</html>

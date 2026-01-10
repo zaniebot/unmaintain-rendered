@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Method on App to return unknown args - clap-rs/clap #873</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Method on App to return unknown args</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/873">#873</a>
+        opened by <a href="https://github.com/jsgf">@jsgf</a>
+        on 2017-02-24 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsgf">@jsgf</a> on 2017-02-24 17:00</div>
+            <div class="timeline-body"><h3>Rust Version</h3>
+<p>1.15</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.20.5</p>
+<hr />
+<p>It would be useful to have a method that parses the command line args and returns the matches, but also a vector of all args which don't match, in the order they appear in. This vector can then be passed on to a secondary command line parser (in my case I'm trying to integrate with C++ libraries which use Google gflags).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-24 19:06</div>
+            <div class="timeline-body"><p>@jsgf I edited your comment just to pull out the unused template :wink:</p>
+<p>This is already supported via what clap calls &quot;External SubCommands.&quot; Due to a work proxy I can't get to the <a href="https://docs.rs/clap">docs.rs page</a> but if you search for <code>AppSettings::AllowExternalSubcommands</code> it should pop up with an example. Please let me know if the documentation is unclear or you even if you just have questions on how to use this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-02-24 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-24 19:11</div>
+            <div class="timeline-body"><p>I was able to find a cache of the docs page:</p>
+<blockquote>
+<p>Specifies that an unexpected positional argument, which would otherwise cause a <code>ErrorKind::UnknownArgument</code> error, should instead be treated as a <code>SubCommand</code> within the <code>ArgMatches</code> struct.</p>
+<p>NOTE: Use this setting with caution, as a truly unexpected argument (i.e. one that is NOT an external subcommand) will not cause an error and instead be treated as a potential subcommand. One should check for such cases manually and inform the user appropriately.</p>
+</blockquote>
+<h3>Examples</h3>
+<pre><code class="language-rust">// Assume there is an external subcommand named &quot;subcmd&quot;
+let m = App::new(&quot;myprog&quot;)
+    .setting(AppSettings::AllowExternalSubcommands)
+    .get_matches_from(vec![
+        &quot;myprog&quot;, &quot;subcmd&quot;, &quot;--option&quot;, &quot;value&quot;, &quot;-fff&quot;, &quot;--flag&quot;
+    ]);
+
+// All trailing arguments will be stored under the subcommand's sub-matches using an empty
+// string argument name
+match m.subcommand() {
+    (external, Some(ext_m)) =&gt; {
+         let ext_args: Vec&lt;&amp;str&gt; = ext_m.values_of(&quot;&quot;).unwrap().collect();
+         assert_eq!(external, &quot;subcmd&quot;);
+         assert_eq!(ext_args, [&quot;--option&quot;, &quot;value&quot;, &quot;-fff&quot;, &quot;--flag&quot;]);
+    },
+    _ =&gt; {},
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsgf">@jsgf</a> on 2017-02-24 19:15</div>
+            <div class="timeline-body"><p>Thanks - it would have taken a while to find that.</p>
+<p>One question though - does it require I have a subcommand to capture those flags, or can I use them as global flags on the main command?  (I guess having something like <code>mycmd --foo --bar gflags --gflag1 --gflag2 othersubcmd</code> would be OK - would that work as I'm thinking?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-25 05:35</div>
+            <div class="timeline-body"><p>No worries, I welcome all questions and know the docs are big and it can be impossible to know what to search for!</p>
+<p>I see what you're trying to do better now. You actually have a few options for this scenario.</p>
+<ul>
+<li>Use <code>--</code> to separate all args for this other CLI</li>
+<li>Use <code>AppSettings::TrailingVarArg</code> to do the same as the above, without the need for <code>--</code></li>
+<li>Use <code>AppSettings::AllowExternalSubcommands</code> like the above (which doesn't require a <code>clap::SubCommand</code> be defined, but <em>does</em> require a &quot;subcommand&quot; be used at runtime, i.e. something unrecognized to kick off this setting)</li>
+</ul>
+<p>There's pros and cons to each case. But all of them require the external arguments to be in sequence and not intermixed with your actual arguments. I'll try to elaborate a little.</p>
+<h3>Using --</h3>
+<p>You could tell users, pass <code>--</code> and all following args will be passed on to this other CLI. I'll use <code>rustc</code> as my &quot;other CLI&quot; for the example.</p>
+<pre><code class="language-rust">let m = App::new(&quot;prog&quot;)
+    .arg(Arg::with_name(&quot;rustc&quot;)
+        .multiple(true)
+        .allow_hyphen_values(true))   // This setting may not be needed...
+                                      // it's been a while since I've used this :P 
+    .get_matches();
+
+let rustc_args: Vec&lt;_&gt; = m.values_of(&quot;rustc&quot;).unwrap().collect(); // unwrap just for brevity here
+</code></pre>
+<p>This would be invoked like:</p>
+<pre><code>$ prog -- -C opt-level=3 -g some_file.rs
+</code></pre>
+<h3>Using AppSettings::TrailingVarArg</h3>
+<p>It's literally the same as above, but you don't need to use <code>--</code>. The way it works is it just uses the first unknown arg to start parsing all following args as values</p>
+<pre><code class="language-rust">let m = App::new(&quot;prog&quot;)
+    .setting(AppSettings::TrailingVarArg)
+    .arg(Arg::with_name(&quot;rustc&quot;)
+        .multiple(true)
+        .allow_hyphen_values(true))   // This setting may not be needed...
+                                      // it's been a while since I've used this :P 
+    .get_matches();
+
+let rustc_args: Vec&lt;_&gt; = m.values_of(&quot;rustc&quot;).unwrap().collect(); // unwrap just for brevity here
+</code></pre>
+<p>This would be invoked like:</p>
+<pre><code>$ prog -C opt-level=3 -g some_file.rs
+</code></pre>
+<h3>Using AppSettings::AllowExternalSubcommand</h3>
+<p>In this version, you <em>do</em> have to tell your users to use some word to kick off the parsing of values. If it's a single CLI I'd recommend just using that binary name as the word, although anything unknown would work.</p>
+<p>The benefit of this method is you could support multiple &quot;external CLIs&quot;.</p>
+<pre><code class="language-rust">let m = App::new(&quot;prog&quot;)
+    .setting(AppSettings::AllowExternalSubcommands)
+    .get_matches();
+
+match m.subcommand() {
+    (external, Some(ext_m)) =&gt; {
+         let rustc_args: Vec&lt;&amp;str&gt; = ext_m.values_of(&quot;&quot;).unwrap().collect();
+     },
+    _ =&gt; {},
+}
+</code></pre>
+<p>This would be invoked:</p>
+<pre><code>$ prog rustc -C opt-level=3 -g some_file.rs
+</code></pre>
+<p>For example if we added <code>cargo</code> and <code>rustc</code> support it'd look like:</p>
+<pre><code class="language-rust">let m = App::new(&quot;prog&quot;)
+    .setting(AppSettings::AllowExternalSubcommands)
+    .get_matches();
+
+match m.subcommand() {
+    (&quot;rustc&quot;, Some(ext_m)) =&gt; {
+        let rustc_args: Vec&lt;&amp;str&gt; = ext_m.values_of(&quot;&quot;).unwrap().collect();
+        println!(&quot;running rustc {:?}&quot;, rustc_args);
+    (&quot;cargo&quot;, Some(ext_m)) =&gt; {
+        let cargo_args: Vec&lt;&amp;str&gt; = ext_m.values_of(&quot;&quot;).unwrap().collect();
+        println!(&quot;running cargo {:?}&quot;, cargo_args);
+     },
+    (unk, Some(ext_m)) =&gt; println!(&quot;error: {} isn't a supported CLI&quot;, unk),
+    _ =&gt; {},
+}
+</code></pre>
+<p>But notice I didn't define any actual subcommands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-04-05 04:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/breezewish">@breezewish</a> on 2018-11-07 08:40</div>
+            <div class="timeline-body"><p>Seems that the solution shown in &quot;Using AppSettings::TrailingVarArg&quot; no longer works?</p>
+<pre><code>$ prog --abc
+error: Found argument '--abc' which wasn't expected, or isn't valid in this context
+</code></pre>
+<p>But this is fine:</p>
+<pre><code>$ prog abc --abc
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../oasislabs/oasis-cli/pulls/90.html">oasislabs/oasis-cli#90</a> on 2019-08-06 06:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gmjosack">@gmjosack</a> on 2021-04-06 18:31</div>
+            <div class="timeline-body"><p>If anyone comes across this issue later (as it's basically the only useful result when searching for this issue) if you want to be able to propagate unknown args to another program the following worked for me</p>
+<pre><code class="language-rust">    let launcher_matches = App::new(&quot;some-prog&quot;)
+        .setting(AppSettings::TrailingVarArg)
+        .setting(AppSettings::DontDelimitTrailingValues)
+        .setting(AppSettings::AllowLeadingHyphen)
+        .setting(AppSettings::DisableVersion)
+        .setting(AppSettings::DisableHelpFlags)
+        .setting(AppSettings::DisableHelpSubcommand)
+        .arg(
+            Arg::with_name(&quot;some-flag&quot;)
+                .long(&quot;some-flag&quot;)
+                .required(false)
+                .takes_value(false),
+        )
+        .arg(
+            Arg::with_name(&quot;remainder&quot;)
+                .multiple(true)
+                .allow_hyphen_values(true),
+        )
+        .get_matches();
+
+    let some_flag: bool = launcher_matches.is_present(&quot;some-flag&quot;);
+    let remainder: Vec&lt;_&gt; = launcher_matches
+        .values_of(&quot;remainder&quot;)
+        .map_or_else(|| vec![], |v| v.collect());
+</code></pre>
+<p>Specifically missing from the previous example to propagate flags without the <code>--</code> delimiter</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:27 UTC
+    </footer>
+</body>
+</html>

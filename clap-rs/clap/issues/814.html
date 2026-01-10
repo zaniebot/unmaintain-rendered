@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Values from environment variables - clap-rs/clap #814</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Values from environment variables</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/814">#814</a>
+        opened by <a href="https://github.com/Mange">@Mange</a>
+        on 2017-01-10 20:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Mange">@Mange</a> on 2017-01-10 20:09</div>
+            <div class="timeline-body"><p>I suggest an option to <code>Arg</code> where one can specify a default value to be read from an environment variable. This would of course be visible in the <code>--help</code>, and any type conversions should still take place.</p>
+<p>Here's how it would look like (simplified):</p>
+<pre><code class="language-rust">Arg::with_name(&quot;redis-url&quot;)
+  .long(&quot;redis-url&quot;)
+  .value_name(&quot;URL&quot;)
+  .help(&quot;The URL to the Redis server to use.&quot;)
+  // .default_from_env(&quot;REDIS_URL&quot;)
+  .default_from_env_or(&quot;REDIS_URL&quot;, &quot;redis://localhost:6379/0&quot;)
+  .required(true);
+
+// --redis-url=URL   The URL to the Redis server to use.
+//                   Defaults to the value of the REDIS_URL environment variable, or &quot;redis://localhost:6379/0&quot;.
+
+// Without hardcoded default:
+// --redis-url=URL   The URL to the Redis server to use.
+//                   Defaults to the value of the REDIS_URL environment variable.
+</code></pre>
+<p>If we had a <code>validator</code> attached, it would be run on the value of the environment variable just like if the user provided the string (it's what they <em>are</em> doing, after all).</p>
+<p>Note how I'm not advocating automatically determining environment variables to use, or loading any <code>.env</code> files or such. There's no filesystem logic here. It's just to let the user assign the name of an environment variable to read from if the argument isn't part of the <code>argv</code>.</p>
+<h2>Background</h2>
+<p>With the advent of 12-factor apps that are commonly configured using environment variables, there's a lot of patterns and support for setting environment variables outside of a process and then reading them inside the program.</p>
+<p>I've always felt that command line options are more discoverable and more usable from workstations, so I usually want them as well. Having to hook environment variables up with the command-line argument parser means a lot of work.</p>
+<h2>Gains</h2>
+<p>By adding this feature, it'll be much easier to have apps that can be configured with both environment variables and from the command line with just a single source of truth and parsing. I don't need to validate values in two different places, and I can model required values and conflicting values in one place.</p>
+<p>This would motivate people to add a list of environment variables to their <code>--help</code> output as well.</p>
+<p>It'll now be trivial to load a <code>.env</code> before parsing with Clap and get the best of both worlds.</p>
+<h2>Alternatives</h2>
+<p>There's #712, which seems to be the same suggestion, but larger in that it'll automatically determine and format certain things. Maybe I'm misunderstanding that issue's description. I apologize in that case.</p>
+<p>One can also manually deal with this by reading the values and assigning them as defaults at runtime. Help messages can also be manually enhanced with such references. This still complicates the argument definitions a lot, however.</p>
+<hr />
+<p>I'm a Rust beginner, but I'd be willing to come up with a proof of concept PR if that would be welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-11 02:10</div>
+            <div class="timeline-body"><p>I love the detailed write up! You're correct, this relates to #712 (env vars) and also to #748 (config files). #712 is proposing allowing use env vars to act as an external argv where <code>SOME_VAR=&quot;--option val -f --other&quot;</code> or the like.</p>
+<p>I don't see any reason why your proposal shouldn't land, as it's a simple addition and something I've been wanting to add anyways. I do have a few questions first though.</p>
+<blockquote>
+<p>This would of course be visible in the --help</p>
+</blockquote>
+<p>How so? I could potentially see, <code>[env: SOME_VAR]</code> listed in the help string? But I'd worry about there becoming too many &quot;additional details.&quot; So my initial inclination is to leave this up to the consumer and use something like, <code>This arg does X, and the value may be optionally specified in SOME_VAR</code> But if someone is planning on having many, most, or all of their options allow corresponding env vars, the <code>[env: SOME_VAR]</code> is obviously easier.</p>
+<hr />
+<p>I don't think I'd want to add <code>default_from_env</code> as that could allow <code>SOME_VAR</code> to <em>not</em> be used, <em>and</em> nothing provided on the command line. I'd prefer the <code>default_from_env_or</code> which garuntees a value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2017-01-11 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2017-01-11 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2017-01-11 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2017-01-11 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-01-11 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mange">@Mange</a> on 2017-01-11 19:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I love the detailed write up!</p>
+</blockquote>
+<p>Oh, thank you. ❤️</p>
+<blockquote>
+<blockquote>
+<p>This would of course be visible in the --help</p>
+</blockquote>
+<p>How so?</p>
+</blockquote>
+<p>I wrote an example of how it could look like in the issue description:</p>
+<pre><code>// --redis-url=URL   The URL to the Redis server to use.
+//                   Defaults to the value of the REDIS_URL environment variable, or &quot;redis://localhost:6379/0&quot;.
+</code></pre>
+<p>I'm not interested in bike shedding this, but your suggestion with just <code>[env: SOME_VAR]</code> would most likely be enough for almost everyone. I like it as well. :-)</p>
+<blockquote>
+<p>I don't think I'd want to add <code>default_from_env</code> as that could allow <code>SOME_VAR</code> to not be used, and nothing provided on the command line.</p>
+</blockquote>
+<p>Isn't that just like it is today, when the value isn't provided? (<code>foo --bar=baz</code> vs <code>foo</code>)
+Then <code>required</code> would fail the parsing if set to <code>true</code> or just move along if set to <code>false</code>, right?</p>
+<p>I'm not very experienced in this library yet, so I think I might've misunderstood the different options.
+Maybe what I'm suggesting shouldn't be called <code>default</code>, but rather a <code>fallback</code>? The point of the <code>_or</code> variant in my example was for fields that should also have a default, but mixing <code>default_value</code> together with this <code>env</code> &quot;fallback&quot; might be the wrong way to go.</p>
+<blockquote>
+<p>But I'd worry about there becoming too many &quot;additional details.&quot; [in the <code>--help</code>]</p>
+</blockquote>
+<p>Maybe this should be a different approach, then. Just like with <code>visible_alias</code> / <code>alias</code>, maybe this should be <code>visible_env_fallback</code> / <code>env_fallback</code>?</p>
+<p><strong>Suggestion 2:</strong></p>
+<pre><code class="language-rust">Arg::with_name(&quot;redis-url&quot;)
+  .long(&quot;redis-url&quot;)
+  .value_name(&quot;URL&quot;)
+  .help(&quot;The URL to the Redis server to use.&quot;)
+  .env_fallback(&quot;REDIS_URL&quot;) // Read this env variable when not provided in ARGV
+  .default_value(&quot;redis://localhost:6379/0&quot;) // Then use this default value if no env variable is set
+  .required(true);
+
+Arg::with_name(&quot;email&quot;)
+  .long(&quot;email&quot;)
+  .value_name(&quot;EMAIL&quot;)
+  .help(&quot;The author's email. Skip if you want to stay anonymous.&quot;)
+  .env_fallback(&quot;USER_EMAIL&quot;)
+  .required(false); // Not required, no default value. If it's not set in ARGV or ENV, it's just not set.
+
+// I'm not sure this can be more contrived now...
+// This just adds an option to &quot;opt-out&quot; of the ENV reading of --email, so to speak.
+Arg::with_name(&quot;no-email&quot;)
+  .long(&quot;anonymous&quot;)
+  .help(&quot;Force anonymous authorship.&quot;)
+  .overrides_with(&quot;email&quot;);
+</code></pre>
+<p>[EDIT: I see now that I might've misunderstood <code>required</code>. Just setting <code>default_value</code> probably does what I thought this did as I'd always get a value when reading then. <code>required</code> seem to say that it must be explicitly given by the user. Is this correct?]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: Default value from environment variable" to "Values from environment variables" by @kbknapp on 2017-01-30 05:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x blocker</span> added by @kbknapp on 2017-05-09 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 2.x</span> removed by @kbknapp on 2017-05-09 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bachp">@bachp</a> on 2017-06-25 10:15</div>
+            <div class="timeline-body"><p>@Mange I like your suggestion 2 as it would allow to make a parameter required and make sure it is either set as a parameter or as an environment variable. I'm looking for something like this to pass the authentication token via env variable for my <a href="https://github.com/bachp/gitlab-mirror">gitlab-mirror</a> project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluejekyll">@bluejekyll</a> on 2017-09-28 17:58</div>
+            <div class="timeline-body"><p>Is anyone working on this? I've implemented annoying work arounds for this enough that I'd be willing to put together a PR, my preference being for Suggestion 2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mange">@Mange</a> on 2017-09-29 14:16</div>
+            <div class="timeline-body"><p>I, for one, is not working on it. I opened this issue when I didn't feel confident enough in Rust to even try to implement it.</p>
+<p>I feel different about it now, and could <em>also</em> take a stab if required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bachp">@bachp</a> on 2017-09-29 16:23</div>
+            <div class="timeline-body"><p>I'm currently not working on this but a PR would be welcome 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1057.html">clap-rs/clap#1057</a> on 2017-09-29 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluejekyll">@bluejekyll</a> on 2017-09-29 19:04</div>
+            <div class="timeline-body"><p>I decided on from_env, but if people like the env_fallback terminology I can change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-09-30 17:27</div>
+            <div class="timeline-body"><p>Some important comments from #1057</p>
+<blockquote>
+<p>My biggest concern for testing is to ensure correct order (from highest to lowest):</p>
+<ul>
+<li>Args from command line</li>
+<li>ENV vars</li>
+<li>Default Values</li>
+</ul>
+<p>Also a test to confirm something along the lines of:</p>
+<p><code>$ MYVAR='some' program --option</code></p>
+<p>Where <code>--option</code> accepts 0 or one value. In this case, <code>matches.value_of(&quot;option&quot;) == None</code> because the empty value was specified at the command line (same for <code>--option=</code> and <code>--option &quot;&quot;</code>).</p>
+<p>The only one I'm a little unsure about is:</p>
+<p><code>$ MYVAR='some' program --option</code></p>
+<p>Where <code>--option</code> accepts 0 or <strong>more</strong> values (i.e. multiples). Should the result be <code>[&quot;&quot;, &quot;some&quot;]</code> for the values, or <code>None</code>? The same goes for <code>$ MYVAR='some' program --option=other</code>. Should it be <code>[&quot;other&quot;, &quot;some&quot;]</code> or <code>[&quot;other&quot;]</code>?</p>
+<p>I'm actually fine with either way, so long as it's documented which way it'll happen. I'm inclined to lean specified args (at the command line) override env vars entirely, so the examples above would result in <code>None</code> and <code>[&quot;other&quot;]</code> respectively. Otherwise there is no way to &quot;override&quot; ENV vars without manually resetting them <code>$ MYVAR=&quot;&quot; program --option</code> which would be a pain.</p>
+<p>The case for &quot;merging&quot; env vars and command line options would be more in line with allowing external argv's as in <code>$ MYARGV=&quot;--option some&quot; program --option other</code>. But that's a whole other issue :stuck_out_tongue_winking_eye: so let's not worry about it here.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-09-30 17:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I decided on from_env, but if people like the env_fallback terminology I can change it.</p>
+</blockquote>
+<p>I made the appropriate comments in #1057 but I'll copy them here too, so everyone is tracking:</p>
+<blockquote>
+<p>It's nitpicky [or rather bikeshedable], but I'd rather use a name such as simply env or env_var so as not to confuse anyone. Typically, from_* are constructors which create the Arg from something, in a similar manner to From<T> traits.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1062.html">clap-rs/clap#1062</a> on 2017-10-07 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kbknapp on 2017-10-08 00:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../spruceid/didkit/pulls/11.html">spruceid/didkit#11</a> on 2020-11-27 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../use-ink/ink-playground/pulls/25.html">use-ink/ink-playground#25</a> on 2021-10-08 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doivosevic">@doivosevic</a> on 2022-08-29 11:54</div>
+            <div class="timeline-body"><p>How would this work with derive approach? I'm looking at the docs but there is nothing there regarding derive https://docs.rs/clap/2.32.0/clap/struct.Arg.html#method.env</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-29 12:45</div>
+            <div class="timeline-body"><p>@doivosevic please use discussions for getting support when using the API.</p>
+<p>btw you linked to the clap 2 documentation which only works with structopt.  To use the built-in derive API that replaced structopt, be sure to look at the clap 3 documentation.</p>
+<p>In the clap 3 derive reference it <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-attributes">describes raw attributes</a> which is what you want to read for how to use this.  There has been a lot of confusion over this, so we have <a href="https://github.com/clap-rs/clap/discussions/4090">a discussion trying to find ways to improve the situation</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../synchronal/dyd/issues/8.html">synchronal/dyd#8</a> on 2023-02-13 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2025-01-29 15:34</div>
+            <div class="timeline-body"><p>For anyone landing on this issue -- this is now supported as an optional <code>env</code> Clap feature:</p>
+<pre><code class="language-rust">#[derive(Parser, Debug)]
+struct Args {
+    /// API key
+    #[arg(short = 't', long = &quot;apikey&quot;, env = &quot;MLN_API_KEY&quot;)]
+    apikey: Option&lt;String&gt;,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../QuantumFusion-network/faucet/pulls/2.html">QuantumFusion-network/faucet#2</a> on 2025-02-25 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../mfontanini/presenterm/pulls/663.html">mfontanini/presenterm#663</a> on 2025-07-02 22:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:25 UTC
+    </footer>
+</body>
+</html>

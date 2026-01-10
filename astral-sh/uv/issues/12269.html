@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv sync fails when python-requires of a dependency is higher than that of the dependent package, how to address? - astral-sh/uv #12269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv sync fails when python-requires of a dependency is higher than that of the dependent package, how to address?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12269">#12269</a>
+        opened by <a href="https://github.com/astafan8">@astafan8</a>
+        on 2025-03-18 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/astafan8">@astafan8</a> on 2025-03-18 10:03</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I am working on a package A that has python-requires in pyproject.toml set to <code>&gt;=3.10.1</code>. Package A depends on package B, and is mentioned in the dependencies section in the pyproject.toml, and for the sake of this questions let's assume that it's pinned to be <code>&gt;=some-very-old-version</code>. However, the recent versions of package B happened to drop python 3.10 support, and now have <code>&gt;=3.11</code> in their pyproject.toml.</p>
+<p>Moreover, I tell uv to set up an environment in such a way that project B is installed in editable mode from a local clone like this in pyproject.toml of package A:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+B = { path = &quot;../B&quot;, editable = true }
+</code></pre>
+<p>Then, when i run <code>uv sync --all-extras --upgrade</code> in package A repo to do some development on it, i get the following error from uv:</p>
+<pre><code>  × No solution found when resolving dependencies:
+  ╰─▶ Because the requested Python version (&gt;=3.10.1) does not satisfy Python&gt;=3.11 and B==2025.4.0.dev16 depends on Python&gt;=3.11, we can conclude that
+      B==2025.4.0.dev16 cannot be used.
+      And because only B==2025.4.0.dev16 is available and your project depends on B, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: The `requires-python` value (&gt;=3.10.1) includes Python versions that are not supported by your dependencies (e.g., B==2025.4.0.dev16 only supports &gt;=3.11). Consider using a     
+      more restrictive `requires-python` value (like &gt;=3.11).
+</code></pre>
+<p>So, how can I work with <code>uv sync</code> on the package A before it drops support of python 3.10? For now I temporarily change the python-requires of A to be <code>&gt;=3.11</code>, but i don't want to remember to do this hack all the time. There must be a better way, or I might need to learn something about <code>uv sync</code> and <code>python</code> and life :) So looking forward to your answers and perspectives on this issue.</p>
+<p>And an exatra question - can't <code>uv sync</code> be asked to focus on resolving python depednencies and prepare an environment that's just focus on the intended python version, in my case python 3.12? I do have <code>.python-version</code> file with <code>3.12</code> created via <code>uv python pin 3.12</code> and i get confused by the uv's response above because i didn't ask it explicitly to do anything with python 3.10. But again, maybe i don't understand something.</p>
+<p>I did my google/copilot/github/etc search but could not find a duplicate, so apologies if it's still a duplicate.</p>
+<h3>Platform</h3>
+<p><code>Windows 11</code></p>
+<h3>Version</h3>
+<p><code>uv 0.6.5 (bcbcd0a1e 2025-03-06)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @astafan8 on 2025-03-18 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 13:43</div>
+            <div class="timeline-body"><p>I think what you can do is add <code>B; python_version &gt;= &quot;3.11&quot;</code> to note that it should only be installed on that version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-03-18 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astafan8">@astafan8</a> on 2025-03-18 15:43</div>
+            <div class="timeline-body"><p>@charliermarsh thanks! Where would I add this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 15:58</div>
+            <div class="timeline-body"><p>In <code>project.dependencies</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;...&quot;
+version = &quot;...&quot;
+dependencies = [&quot;B; python_version &gt;= '3.11'&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astafan8">@astafan8</a> on 2025-03-18 16:52</div>
+            <div class="timeline-body"><p>@charliermarsh this worked!</p>
+<p>Now, is there a way that could work on command-line and without changing the dependencies entry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 17:22</div>
+            <div class="timeline-body"><p>No, the dependency entry needs to be &quot;correct&quot; otherwise the project metadata is unsolvable — i.e., if you have a dependency that only supports a subset of your project's Python range, it needs to be limited to that subset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-18 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astafan8">@astafan8</a> on 2025-03-19 08:06</div>
+            <div class="timeline-body"><p>Thank you for explaining!</p>
+<p>And how should one than go about dropping python version support in a collection of interdependent packages? Seems like it's not possible to do it package-by-package relatively independenty in time since uv won't allow to install things, and adding <code>B; python_vesion &gt;= 3.11</code> would technically mean that package A does not depend on package B on python 3.10 while it could be totally find for install an older version of B that still supports python 3.10.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

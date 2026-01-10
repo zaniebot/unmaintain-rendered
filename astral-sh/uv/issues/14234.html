@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best practice to install Python packages when developing on container with watch mode - astral-sh/uv #14234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Best practice to install Python packages when developing on container with watch mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/14234">#14234</a>
+        opened by <a href="https://github.com/jsulopzs">@jsulopzs</a>
+        on 2025-06-24 09:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jsulopzs">@jsulopzs</a> on 2025-06-24 09:25</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p><strong>Issue Summary</strong></p>
+<p>When adding new packages to <code>pyproject.toml</code> and rebuilding the Docker container, the new library (e.g., <code>seaborn</code>) is not found at runtime:
+<code>ModuleNotFoundError: No module named 'seaborn'</code>.</p>
+<p>However, when running <code>uv add seaborn</code> locally, it updates <code>uv.lock</code> and creates a <code>.venv</code>, which is redundant in this Docker-based workflow since the container builds its own isolated environment.</p>
+<p><strong>Expected Behavior</strong></p>
+<p>I'd like to:</p>
+<ul>
+<li>Add a dependency to <code>pyproject.toml</code>.</li>
+<li>Rebuild the container.</li>
+<li>Have <code>uv.lock</code> reflect the new dependency.</li>
+<li>Avoid creating a <code>.venv</code> locally, since the container will manage its own environment.</li>
+</ul>
+<p><strong>Repro Details</strong></p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;esios-client&quot;
+version = &quot;0.1.0&quot;
+dependencies = [
+    ...
+    &quot;seaborn&quot;,
+]
+
+[project.optional-dependencies]
+dev = [&quot;ruff&quot;, &quot;pytest&quot;]
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src&quot;]
+
+[tool.ruff]
+line-length = 100
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>Entry point:</p>
+<pre><code class="language-python">import seaborn as sns
+import streamlit as st
+st.write('whatever')
+</code></pre>
+<p>Dockerfile:</p>
+<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+
+ENV UV_PYTHON_DOWNLOADS=0
+
+ARG ENV
+ENV ENV=${ENV}
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    if [ &quot;${ENV}&quot; = &quot;production&quot; ]; then \
+    uv sync --frozen --no-install-project --no-dev --no-editable; \
+    elif [ &quot;${ENV}&quot; = &quot;development&quot; ]; then \
+    uv sync --frozen --no-install-project --no-dev; \
+    fi
+
+# Copy the project into the intermediate image
+ADD . /app
+
+# Sync the project with bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+RUN --mount=type=cache,target=/root/.cache/uv \
+    if [ &quot;${ENV}&quot; = &quot;production&quot; ]; then \
+    uv sync --frozen --no-dev --no-editable; \
+    elif [ &quot;${ENV}&quot; = &quot;development&quot; ]; then \
+    uv sync --frozen --no-dev; \
+    fi
+
+# Final stage
+FROM python:3.13-slim-bookworm
+
+# Copy the application from the builder
+COPY --from=builder --chown=app:app /app /app
+
+# Place executables in the environment at the front of the path
+ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
+
+# Set working directory to the frontend app
+WORKDIR /app/src/frontend
+
+# Expose the port Streamlit runs on
+EXPOSE 8501
+
+# Command to run the Streamlit app
+CMD [&quot;streamlit&quot;, &quot;run&quot;, &quot;main.py&quot;, &quot;--server.port=8501&quot;, &quot;--server.address=0.0.0.0&quot;] 
+</code></pre>
+<p><strong>What works but causes a side effect</strong></p>
+<p>Using <code>uv add seaborn</code> locally:</p>
+<ul>
+<li>Adds <code>seaborn</code> to <code>uv.lock</code>.</li>
+<li>Creates <code>.venv</code>, which is not used by the container.</li>
+</ul>
+<p><strong>Question</strong></p>
+<p>What’s the best way to update <code>uv.lock</code> (for Docker builds) when adding a new dependency—<strong>without creating a local <code>.venv</code></strong>?</p>
+<p>Docs reviewed: <a href="https://docs.astral.sh/uv">https://docs.astral.sh/uv</a></p>
+<h3>Platform</h3>
+<p>Linux 6.10.14-linuxkit aarch64 GNU/Linux</p>
+<h3>Version</h3>
+<p>Can't access uv inside the container, I'm using: FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jsulopzs on 2025-06-24 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-24 09:31</div>
+            <div class="timeline-body"><p>Does</p>
+<pre><code>uv lock
+</code></pre>
+<p>work for this? It updates the lockfile and doesn't create a venv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsulopzs">@jsulopzs</a> on 2025-06-24 09:38</div>
+            <div class="timeline-body"><p>Yes, thank you. Also, is it possible to have it done automatically based on file change? I forgot to attach the compose:</p>
+<pre><code class="language-yml">services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        ENV: development
+    ports:
+      - &quot;8501:8501&quot;
+    env_file:
+      - .env
+      - .env.dev
+    develop:
+      watch:
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: ../
+          target: /app
+          ignore:
+            - .venv/
+
+        # Rebuild the image on changes to the pyproject.toml
+        - action: rebuild
+          path: ../pyproject.toml
+        - action: rebuild
+          path: ../uv.lock
+    restart: unless-stopped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../bgreenawald/bananagrams/pulls/75.html">bgreenawald/bananagrams#75</a> on 2025-08-03 18:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`printf-style-formatting` ignores direct-string interpolation - astral-sh/ruff #3549</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`printf-style-formatting` ignores direct-string interpolation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3549">#3549</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-15 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-15 19:59</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-py">&quot;%s&quot; % &quot;foo&quot;
+&quot;%s&quot; % (&quot;foo&quot;,)
+</code></pre>
+<p>Ruff will raise UP031 for the latter, but not the former.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-03-15 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-03-16 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3554.html">astral-sh/ruff#3554</a> on 2023-03-16 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-18 02:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3600.html">astral-sh/ruff#3600</a> on 2023-03-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-21 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/globau">@globau</a> on 2023-03-21 03:43</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 03:48</div>
+            <div class="timeline-body"><p>Sadly the most common case isn't safely fixable right now. I want to improve it... Sort of a long story, but if you have:</p>
+<pre><code class="language-py">print(&quot;%s&quot; % x)
+</code></pre>
+<p>It turns out we <em>can't</em> safely convert that to:</p>
+<pre><code class="language-py">print(&quot;{}&quot;.format(x))
+</code></pre>
+<p>Because <code>x</code> <em>could</em> be a single-element tuple, like so:</p>
+<pre><code class="language-py">x = (1,)
+print(&quot;%s&quot; % x)
+print(&quot;{}&quot;.format(x))
+</code></pre>
+<p>So for now, we can only convert these for cases in which the placeholder has more than one positional argument, or at least one keyword argument (in which case, we <em>know</em> it's a tuple or a mapping respectively).</p>
+<p>Though we do now fix cases like:</p>
+<pre><code class="language-py">&quot;%d&quot; % 1
+&quot;%s&quot; % &quot;foo&quot;
+&quot;%s&quot; % f&quot;foo{bar}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6796.html">astral-sh/ruff#6796</a> on 2023-08-22 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/7579.html">astral-sh/ruff#7579</a> on 2023-09-21 19:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

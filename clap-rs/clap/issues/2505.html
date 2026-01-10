@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>value_of_t() is difficult to use with optional arguments  - clap-rs/clap #2505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>value_of_t() is difficult to use with optional arguments </h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2505">#2505</a>
+        opened by <a href="https://github.com/dimo414">@dimo414</a>
+        on 2021-05-28 07:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dimo414">@dimo414</a> on 2021-05-28 07:23</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Describe your use case</h3>
+<p><strong>See https://github.com/clap-rs/clap/discussions/2453 for earlier discussion</strong></p>
+<p>The <code>value_of_t()</code> function <a href="https://github.com/clap-rs/clap/blob/ecd60b69a3afbad7e77dbc083038abafbcae6aad/src/parse/matches/arg_matches.rs#L308">notes</a> &quot;there are two types of errors, parse failures and those where the argument wasn't present&quot;, and suggests callers differentiate between the two by inspecting the <code>ErrorKind</code> in the <code>Result</code>.</p>
+<p>Note these two cases reflect two different types of issues. Parse failures occur when the user passes an invalid string on the command line, and typically an application would <code>e.exit()</code> in response. Absent arguments occur when the user simply didn't pass anything at all, which for optional arguments* is expected and typical applications should proceed.</p>
+<p>While it is possible to inspect the <code>ErrorKind</code>, doing so is not very ergonomic or intuitive. Here's one such implementation:</p>
+<pre><code class="language-rust">let arg: Option&lt;Duration&gt; = match value_t!(matches.value_of(&quot;arg&quot;), humantime::Duration) {
+    Ok(t) =&gt; Ok(Some(t.into())),
+    Err(e) =&gt; {
+        match e.kind {
+            ::clap::ErrorKind::ArgumentNotFound =&gt; Ok(None),
+            _ =&gt; Err(e),
+        }
+    }
+}.unwrap_or_else(|e| e.exit());
+</code></pre>
+<p>It would be nice if Clap made parsing optional arguments easier, or at a minimum improved the documentation of <code>value_of_t()</code> to describe how callers are intended to work with optional arguments and <code>ErrorKind</code>.</p>
+<p><em>\</em> Note that Clap handles missing <code>required()</code> arguments before control reaches a <code>value_of_t()</code> call, so there's little reason for the application to reject an absent argument at this step.*</p>
+<h3>Describe the solution you'd like</h3>
+<p>Ideally, I'd like to see <code>value_of_t()</code> handle these two cases more distinctly, such as by changing the return type to <code>Result&lt;Option&lt;R&gt;, Error&gt;</code>. This would better align with the return type of <code>value_of()</code> and allow callers to cleanly and clearly handle these two separate situations, e.g.:</p>
+<pre><code class="language-rust">let len: Option&lt;u32&gt; = matches.value_of_t(&quot;length&quot;).unwrap_or_else(|e| e.exit());
+</code></pre>
+<p>I don't know if this sort of breaking change would still be possible for Clap 3.0, but if you're open to it I'd gladly send a PR.</p>
+<h3>Alternatives, if applicable</h3>
+<ul>
+<li>Add a wrapper function that converts a <code>Result&lt;R, Error&gt;</code> into a <code>Result&lt;Option&lt;R&gt;, Error&gt;</code> if the <code>ErrorKind</code> is <code>ArgumentNotFound</code>; this would be less user-friendly than above but would be safe to add.</li>
+<li>Clarify in the documentation of <code>value_of_t()</code> and siblings how callers are intended to handle these separate situations.</li>
+</ul>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @dimo414 on 2021-05-28 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @pksunkara on 2021-05-28 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> added by @pksunkara on 2021-05-28 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> added by @pksunkara on 2021-05-28 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @pksunkara on 2021-05-28 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2021-05-28 07:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-05-30 07:33</div>
+            <div class="timeline-body"><p>@pksunkara I see you added this to the 3.0 milestone, would you welcome a PR changing this to <code>Result&lt;Option&lt;R&gt;, Error&gt;</code>? Or do you have a different fix in mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-30 08:27</div>
+            <div class="timeline-body"><p>Not sure yet. Because it seems to be tied into other issues for 3.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-05-30 09:02</div>
+            <div class="timeline-body"><p>Ok, happy to help whenever makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/751.html">clap-rs/clap#751</a> on 2021-07-21 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-22 14:24</div>
+            <div class="timeline-body"><p>A workaround: for this would be to calll <a href="https://docs.rs/clap/2.33.3/clap/struct.ArgMatches.html#method.is_present"><code>is_present</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-07-22 17:47</div>
+            <div class="timeline-body"><p>Sure, but that's not what's documented :) Personally I'd prefer to avoid duplicating the flag name too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-22 17:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Sure, but that's not what's documented</p>
+</blockquote>
+<p>As in there is behavior contrary to documentation or it would help if documentation talked about it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-07-22 19:15</div>
+            <div class="timeline-body"><p>The documentation recommends inspecting the <code>ErrorKind</code>, and makes no mention of <code>is_present</code>. IMO the API of <code>value_of_t()</code> should be changed (e.g. to return <code>Result&lt;Option&lt;R&gt;, Error&gt;</code>) but the root of the issue is that the documented way of handling this situation is unclear and cumbersome. If the expectation is actually to use <code>is_present</code> that should be documented. See https://github.com/clap-rs/clap/discussions/2453 if you haven't already, which has a bit more detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-22 19:19</div>
+            <div class="timeline-body"><p>Like I said, I was giving a workaround and not making a determination and what the proper fix is for this.</p>
+<p>If we add an Option, I'm mixed on whether it should go on the inside or outside.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/2683.html">clap-rs/clap#2683</a> on 2021-08-13 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-10-13 17:47</div>
+            <div class="timeline-body"><p>@epage @pksunkara is it still possible to contribute a fix here before 3.0 is cut? It really seems unfortunate that the value_of functionality was redesigned from 2-&gt;3 but still carries this limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-13 17:50</div>
+            <div class="timeline-body"><p>As you can see from #2683, it is in the plan to rework this a little bit. Just focussing on other things first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-10-14 01:04</div>
+            <div class="timeline-body"><p>Ah great thanks! I just wasn't clear whether it was a release blocker. Again, very happy to draft a PR if it would be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-10-14 01:07</div>
+            <div class="timeline-body"><p>It's not a confirmed release blocker. I planned it to be a few months ago but with the other 2 maintainers being active, we need to discuss and see if we want to keep it like that or not.</p>
+<p>First step of the discussion is for me to summarize the issues surrounding this in #2683.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-10-16 18:20</div>
+            <div class="timeline-body"><p>I'm sorry but this won't be making it in the 3.0 release.</p>
+<p>People have been waiting for clap3 for years and people are wanting access to the improvements that are already out there <a href="https://github.com/clap-rs/clap/discussions/2616#discussioncomment-1440924">to the point that some have talked about forking it</a>.  We need to narrow of focus for this release and come up with a plan for how we want to address these larger issues before making a further commitment on when for something like this.</p>
+<p>Short term and long term opportunities:</p>
+<ul>
+<li>While I know its not for everyone, <code>clap_derive</code> (fork of <code>structopt</code>) takes care of problems like this.</li>
+<li>I have <a href="https://github.com/clap-rs/clap/discussions/2832">floated the idea of baking the expected types into <code>ArgMatches</code></a>, which would remove the need for these functions and would instead behave like the regular ones</li>
+<li>We flesh out and implement @pksunkara idea in #2683</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @epage on 2021-10-16 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2021-10-16 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E: breaking change</span> added by @pksunkara on 2021-10-16 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "4.0" by @pksunkara on 2021-10-16 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2021-10-17 16:58</div>
+            <div class="timeline-body"><p>That's too bad, especially since this functionality was already reimplemented for 3.0 so everyone upgrading will have to swap to the new behavior, only to (presumably) have to do so again at some future date.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/188.html">epage/clapng#188</a> on 2021-12-06 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: matches</span> removed by @epage on 2021-12-08 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2021-12-08 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-13 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3459.html">clap-rs/clap#3459</a> on 2022-02-13 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3732.html">clap-rs/clap#3732</a> on 2022-05-17 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-05-18 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimo414">@dimo414</a> on 2022-05-29 17:01</div>
+            <div class="timeline-body"><p>I haven't played with the new parser yet but looking at the PR description it sounds great! Thanks :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:29 UTC
+    </footer>
+</body>
+</html>

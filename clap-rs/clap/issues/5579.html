@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicated &quot;error:&quot; prefix - clap-rs/clap #5579</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicated &quot;error:&quot; prefix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/5579">#5579</a>
+        opened by <a href="https://github.com/d-e-s-o">@d-e-s-o</a>
+        on 2024-07-10 15:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/d-e-s-o">@d-e-s-o</a> on 2024-07-10 15:47</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>rustc 1.79.0-nightly (129f3b996 2024-06-10) (gentoo)</p>
+<h3>Clap Version</h3>
+<p>4.5.4</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use std::env::args_os;
+use anyhow::Result;
+use clap::Parser;
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Name of the person to greet
+    #[arg(short, long)]
+    name: String,
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let _args = Args::try_parse_from(args_os())?;
+    Ok(())
+}
+</code></pre>
+<p>https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=6221486eaf814c633157f1c9fdf27c12</p>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p><code>cargo run</code></p>
+<h3>Actual Behaviour</h3>
+<p>Prints:</p>
+<pre><code>Error: error: the following required arguments were not provided:
+  --name &lt;NAME&gt;
+
+Usage: playground --name &lt;NAME&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Expected Behaviour</h3>
+<p>Prints:</p>
+<pre><code>Error: the following required arguments were not provided:
+  --name &lt;NAME&gt;
+
+Usage: playground --name &lt;NAME&gt;
+
+For more information, try '--help'.
+</code></pre>
+<h3>Additional Context</h3>
+<p>The &quot;error:&quot; prefix is duplicated. I find this behavior irritating. One prefix seems to be added by the standard library, the other <a href="https://github.com/clap-rs/clap/blob/43e73682835653ac48f32cc786514553d697c693/clap_builder/src/error/format.rs#L135">by <code>clap</code></a> (I don't believe <code>clap</code> is alone with such behavior)</p>
+<p>In my opinion the standard library's behavior is questionable -- it's just way too opinionated and this is a good example -- but I wanted to get your guys' take and have an issue to reference to make the case for changing it (which I suppose may be a hard sell irrespectively).</p>
+<p>In general, though, it also feels as if just the typical wording of &quot;failed to [...]&quot; or similar would be sufficient for convey the issue. Meaning that there is no need for an &quot;error:&quot; at all, even from the <code>clap</code> side. It just depends too much on the context how the error is reported whether it makes sense to include such a prefix or not.</p>
+<p>Any opinions/comments/thoughts?</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @d-e-s-o on 2024-07-10 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-07-10 17:00</div>
+            <div class="timeline-body"><p>Is there a reason you are using <code>try_parse_from</code>, rather than <code>parse</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/d-e-s-o">@d-e-s-o</a> on 2024-07-10 21:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a reason you are using <code>try_parse_from</code>, rather than <code>parse</code>?</p>
+</blockquote>
+<p>Yep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-13 20:18</div>
+            <div class="timeline-body"><p>This isn't the only peculiarity about claps' error reporting that doesn't make it work well with policies like <code>anyhow</code>.  For example, you likely should condition your exit code based on <code>er.use_stderr()</code> (not a great name) or else <code>--help</code> is considered an error when its generally recognized as not one.</p>
+<p>We need more information to better understand your use case to determine what, if anything, we should be done about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/d-e-s-o">@d-e-s-o</a> on 2024-08-18 17:01</div>
+            <div class="timeline-body"><p>This has very little if not nothing to do with <code>anyhow</code> from what I can tell.</p>
+<p>My use case is using regular error reporting paths as every other crate does and have a single program exit path. If every crate thinks it knows best when to exit then I have no control over or idea of what is going on. The same is true (and, to the best I can tell, accepted practice) for panics: you can unwrap or panic on invariants and everything else (certainly everything controllable by a user) shouldn't panic, but report a handleable error.</p>
+<p>I assume that is the reason why the <code>try_parse_from</code> API exist in the first place, right?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:37 UTC
+    </footer>
+</body>
+</html>

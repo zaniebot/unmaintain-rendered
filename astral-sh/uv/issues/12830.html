@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected behavior when handling signals - astral-sh/uv #12830</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected behavior when handling signals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12830">#12830</a>
+        opened by <a href="https://github.com/bustbr">@bustbr</a>
+        on 2025-04-11 09:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bustbr">@bustbr</a> on 2025-04-11 09:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello,</p>
+<p>first off, I wasn't sure how to tag this; this is a bug report about unexpected behavior, with a feature request latched on as a solution proposal.</p>
+<p>We recently switched our projects to use <code>uv</code> and ran into issues where on our servers <strong>Python processes would stay alive in the background</strong> after deploying new versions of our software onto our production servers.
+It turned out this was the result of a chain of unexpected behaviors, the last one being how <code>uv</code> behaves when using <code>uv run</code> and how <code>uv</code> handles signals.</p>
+<p>A quick <strong>summary</strong> of what I understand is happening:
+When using <code>uv run</code> <code>uv</code> will run Python as a subprocess and stick around until Python quits, <strong>or</strong> until it receives any of a whole bunch of signals: <code>SIGKILL</code> (of course), but also <code>SIGHUP</code>, <code>SIGQUIT</code>, <code>SIGILL</code>, <code>SIGTRAP</code>, <code>SIGABRT</code>, ...
+and for all of these <code>uv</code> simply quits, without passing the signal on to the underlying Python process, which leaves the Python process orphaned.
+When <code>uv</code> receives <code>SIGINT</code> it will swallow the first signal it receives (#12108), which there might be good reasons for, but is also unexpected.
+<a href="https://github.com/astral-sh/uv/issues?q=is%3Aissue%20signal">All of this has been brought up in issues here before</a>.</p>
+<p>The best way that I found to avoid any of these issues seems to be to not use <code>uv run</code> and instead have <code>uv</code> only create the environment and then use the venv yourself, like</p>
+<pre><code class="language-bash">export VIRTUAL_ENV=.venv  # optional, but to be sure we know where the venv will end up
+uv sync --frozen
+&quot;$VIRTUAL_ENV&quot;/bin/python myscript.py
+</code></pre>
+<p>This seems like a complicated solution to me – the opposite of why I came to love <code>uv</code>. ;)</p>
+<p>As mentioned before, this has been discussed in multiple issues already, and there seems to be no consensus how <code>uv</code> should handle signals better.
+<strong>Why does <code>uv</code> have to keep running</strong> though? If <code>uv</code> simply replaced its own process with the Python process (<code>man 3 exec</code>), none of this would be an issue.
+The <a href="https://docs.astral.sh/uv/concepts/projects/run/#signal-handling">documentation</a> says</p>
+<blockquote>
+<p>uv does not cede control of the process to the spawned command in order to provide better error messages on failure.</p>
+</blockquote>
+<p>which I'm not even sure about what that means.</p>
+<p>Could we <strong>add a new option</strong> to <code>uv run</code> to in fact have <code>uv</code> do all its magic, and then quit when it spawns the Python process?
+Something like</p>
+<pre><code class="language-bash">uv run --exec --frozen myscript.py
+</code></pre>
+<p>Of course a better name than <code>--exec</code> could be found, maybe <code>--no-subprocess</code>, or <code>--cede-control</code>.</p>
+<h3>Platform</h3>
+<p>Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.6.12 (Homebrew 2025-04-02)</p>
+<h3>Python version</h3>
+<p>Python 3.13.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @bustbr on 2025-04-11 09:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdtsmith">@jdtsmith</a> on 2025-04-21 00:45</div>
+            <div class="timeline-body"><p>I came here to report the same thing and found this related issue.</p>
+<p>I have a tool which sends <code>SIGUSR2</code> to <code>ipython</code> for a special type of interrupt handling.  uvx looks like a fantastic way to &quot;drop in&quot; on a project and run <code>ipython</code> there with all its packages, without adding a dependency.  But as mentioned, sending <code>SIGUSR2</code> to the process simply quits <code>uv</code> and leaves the child process as a zombie.</p>
+<p>Reproducer:</p>
+<pre><code>% uvx ipython           
+Python 3.13.3 (main, Apr  9 2025, 03:47:57) [Clang 20.1.0 ]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 9.1.0 -- An enhanced Interactive Python. Type '?' for help.
+Tip: Use `F2` or %edit with no arguments to open an empty editor with a temporary file.
+
+In [1]: def handle(*args):
+   ...:     print(&quot;Handled!&quot;)
+   ...: 
+
+In [2]: import signal; signal.signal(signal.SIGUSR2, handle)
+Out[2]: &lt;Handlers.SIG_DFL: 0&gt;
+
+In [3]: 
+[in other terminal window:  % killall -SIGUSR2 uv]
+zsh: user-defined signal 2  uvx ipython
+# &lt;ipython closes&gt;
+
+% ps auxw | grep ipython  # but is not dead!  Zombie's are real.
+__          12881   0.1  0.3 411005824  64928 s001  S     8:34PM   0:00.48 /Users/__/.cache/uv/archive-v0/xWuDZgj8cLGx5N8exlyTU/bin/python /Users/__/.cache/uv/archive-v0/xWuDZgj8cLGx5N8exlyTU/bin/ipython
+</code></pre>
+<p>I echo the need for an <code>--exec</code> option to <code>uv run</code> and <code>uv tool run</code> (possibly used as the default).  Once it has installed/located the tool with all its dependencies, is there any reason to keep the <code>uv</code> process around, vs. just <code>exec</code>ing the child process?</p>
+<p><em>All sorts</em> of python tools (e.g. coverage tools) use signals for various purposes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-04-21 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13017.html">astral-sh/uv#13017</a> on 2025-04-21 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-21 15:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Why does uv have to keep running though? If uv simply replaced its own process with the Python process (man 3 exec), none of this would be an issue.</p>
+</blockquote>
+<p>We need to be able to clean up resources, such as temporary virtual environments. We could consider changing our strategy there, but it's complicated. Discussed previously at https://github.com/astral-sh/uv/issues/3095</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-21 15:50</div>
+            <div class="timeline-body"><blockquote>
+<p>We recently switched our projects to use uv and ran into issues where on our servers Python processes would stay alive in the background after deploying new versions of our software onto our production servers.</p>
+</blockquote>
+<p>How were you terminating your processes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-21 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-21 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bustbr">@bustbr</a> on 2025-04-22 10:10</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>We recently switched our projects to use uv and ran into issues where on our servers Python processes would stay alive in the background after deploying new versions of our software onto our production servers.</p>
+</blockquote>
+<p>How were you terminating your processes?</p>
+</blockquote>
+<p>This is a bit complicated. 😬
+We use <a href="https://www.fabfile.org/">Fabric</a> and <a href="https://supervisord.org/">Supervisor</a>.
+Using Fabric we copy the new code to the production machine(s), tell supervisor to stop all processes (which should send <code>SIGTERM</code> I think) and shut down completely, then start supervisord again loading the fresh configuration and starting the processes using supervisor. In our case we now have a supervisor config file that contains <code>uv run ...</code> as <code>command</code>.
+So far so good.
+But it turns out when Fabric disconnects it'll send <code>SIGHUP</code> to the last process it spawned, which in our case is Supervisor. And when Supervisord receives <code>SIGHUP</code> it will in turn forward that to all of its managed processes, so in our case <code>uv</code>.
+... you know the rest.</p>
+<p>We also found some work arounds, for example doing something else before we disconnect in Fabric, like <code>supervisord; :</code>, to avoid having SIGHUP being sent to supervisor.
+Or by configuring <code>stopasgroup=true</code> in the supervisor.conf, so that any <code>SIGTERM</code> from supervisor would be sent to the whole process group – so not only <code>uv</code> but also it's <code>python</code> child. Of course that would also include any subprocesses our Python process spawns then. 😕
+All of these would only fix our current very specific circumstances though, and I'm afraid the issue could pop back up again very easily.</p>
+<p>Thank you for taking care of this! (#13017)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-22 14:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Or by configuring stopasgroup=true in the supervisor.conf, so that any SIGTERM from supervisor would be sent to the whole process group</p>
+</blockquote>
+<p>I think this is the proper configuration, fwiw. If you don't want other children to receive the signal, you can change their PGID with <code>setpgid</code>.</p>
+<p>But yeah, it's complicated. Hopefully forwarding the signals solves most of these problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdtsmith">@jdtsmith</a> on 2025-04-23 23:42</div>
+            <div class="timeline-body"><p>Just wanted to mention that signals are now flowing correctly via <code>uv</code> v0.6.16 for my application mentioned above.  Thanks very much for the quick work here!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:04 UTC
+    </footer>
+</body>
+</html>

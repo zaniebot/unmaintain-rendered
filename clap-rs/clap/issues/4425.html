@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create `arg_required_else` method for `clap::builder::Command` API - clap-rs/clap #4425</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create `arg_required_else` method for `clap::builder::Command` API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4425">#4425</a>
+        opened by <a href="https://github.com/badjr13">@badjr13</a>
+        on 2022-10-26 13:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/badjr13">@badjr13</a> on 2022-10-26 13:55</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>4.0.18</p>
+<h3>Describe your use case</h3>
+<p>Currently, I have a &quot;non-DRY&quot; solution for what happens when my Clap CLI executable is run without anything passed to it. I noticed there is an <code>arg_required_else_help</code> method on the <code>clap::builder::Command</code> API which is great if you want to display the <code>help</code> message when nothing is passed. If the <code>arg_required_else_help</code> option is not set to <code>true</code>, then nothing happens when you run your Clap CLI app. My problem is that I want something to happen when nothing is passed but I don't want to display the <code>help</code> message in this instance.</p>
+<h3>Describe the solution you'd like</h3>
+<p>I'd like to create an <code>arg_required_else</code> method on the <code>clap::builder::Command</code> API that takes a function that defines the functionality the user wants to run when nothing is passed to their Clap CLI app.</p>
+<pre><code class="language-rust">fn main() {
+    fn testaroo() {
+        println!(&quot;A custom message would go here.&quot;);
+    }
+    
+    fn arg_required_else(f: fn()) {
+        f();
+    }
+    
+    arg_required_else(testaroo);
+}
+</code></pre>
+<p>Output:</p>
+<pre><code>A custom message would go here.
+</code></pre>
+<h3>Alternatives, if applicable</h3>
+<p><em>No response</em></p>
+<h3>Additional Context</h3>
+<p>I'm relatively new to Rust and am using Clap for one of my applications. I am looking to DRY up <a href="https://github.com/badjr13/laydown/blob/main/src/lib.rs#L169">this part</a> of one of my apps, but before I wrote something custom, I thought <code>arg_required_else</code> would be an excellent addition to the <code>clap::builder::Command</code> API. It would solve my problem and seems like an API that would be useful to users of Clap.</p>
+<p>I'm reaching out not only for this request for a feature but also for input on the best way to implement this. I'm happy to write the code, but I want to do so in a way that is idiomatic Rust and fits the Clap codebase too. Should it be a method that takes a function? A method that takes a closure? Should it be done another way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @badjr13 on 2022-10-26 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 15:00</div>
+            <div class="timeline-body"><p>Generally, people use <code>ArgMatches::args_present()</code> for this.</p>
+<p>At the moment, clap doesn't do callbacks for application logic and we'll need to consider the wider needs for that if we go down that road (for example, what <a href="https://crates.io/crates/clap-nested">clap-nested</a> provides for subcommands)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-26 15:01</div>
+            <div class="timeline-body"><p>btw one improvement that could be made is to have the docs for <code>arg_required_else_help</code> suggest using <code>ArgMatches::args_present</code> if custom behavior is needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/badjr13">@badjr13</a> on 2022-10-26 15:11</div>
+            <div class="timeline-body"><p>I will look into utilizing <code>ArgMatches::args_present</code> for my problem as well as updating the docs mentioned above. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2022-11-08 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-11-08 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:26</div>
+            <div class="timeline-body"><p>As we provide the building blocks for this, I lean towards closing this.  If someone wants to make the case for this, they are welcome to and we can consider re-opening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-11-08 04:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:14 UTC
+    </footer>
+</body>
+</html>

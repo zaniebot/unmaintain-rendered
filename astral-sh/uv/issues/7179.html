@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incomplete installation of libraries from git - astral-sh/uv #7179</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incomplete installation of libraries from git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7179">#7179</a>
+        opened by <a href="https://github.com/bheemaguli">@bheemaguli</a>
+        on 2024-09-07 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bheemaguli">@bheemaguli</a> on 2024-09-07 19:55</div>
+            <div class="timeline-body"><p>I have a remote git repository dependency and have been installing as
+<code>pip install -e git+https://repo@commithash#egg=foorepo</code>
+and the locally installed package had all files similar to the remote repo.</p>
+<pre><code>├── repo
+│   ├── foorepo
+│          │── subfolder
+│          │    │─ file.py
+│          │── setup.py
+</code></pre>
+<p>At the end of installatio, I was able to import function from file.py as
+<code>from foorepo.subfolder.file import function</code></p>
+<p>But in uv, the equivalent installs like
+<code>uv add --editable &quot;git+https://repo@commithash&quot;</code> or <code>uv pip install &quot;git+https://repo@commithash&quot;</code>
+are cloning the repo but the subdirectories seems to be missing</p>
+<pre><code>├── repo
+│   ├── foorepo
+│          │── setup.py
+</code></pre>
+<p>and importing is raising <code>ModuleNotFoundError: No module named 'foorepo'</code></p>
+<p>I assumed the issue to be similar to https://github.com/astral-sh/uv/issues/1708 but none of the solutions discussed there seem to be working. Document has not been helpful in this regards.</p>
+<p>Any idea on what the issue might be. I have tested on current (0.4.7) and few older versions of uv and issue is same across all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Installing incomplete Git modules" to "Incomplete installation of libraries from git" by @bheemaguli on 2024-09-07 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bheemaguli">@bheemaguli</a> on 2024-09-08 04:50</div>
+            <div class="timeline-body"><p>I have found the issue. In the remote repo, the setup file to build the package has code as</p>
+<pre><code>setup(
+    name=&quot;repo&quot;,
+    version=repo.__version__,
+    packages=[&quot;foorepo&quot;],
+    include_package_data=True,
+    license=&quot;MIT&quot;,
+    ...
+ )
+</code></pre>
+<p>but uv's implementation of build or maybe setuptools is not able to recognise <code>packages=[&quot;foorepo&quot;]</code>
+The issue can be fixed by</p>
+<pre><code>from setuptools import setup, find_packages
+
+setup(
+    name=&quot;repo&quot;,
+    version=repo.__version__,
+    packages=find_packages(),
+    include_package_data=True,
+    license=&quot;MIT&quot;,
+    ...
+ )
+</code></pre>
+<p>Will keep this issue open to see if this is actual issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notarealuseralcemy">@notarealuseralcemy</a> on 2024-09-19 17:41</div>
+            <div class="timeline-body"><p>i'm having the same issue. the project i'm trying to install from uses no <code>setup.py</code>, only a <code>pyproject.toml</code> containing some irrelevant stuff and</p>
+<pre><code>[tool.setuptools]
+packages = [&quot;project_module&quot;]
+</code></pre>
+<p>i guess something more is needed? i'm porting from pipenv and it previously worked fine with just this minimal declaration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 17:43</div>
+            <div class="timeline-body"><p>Unfortunately I probably won't be able to help here unless there's a reproduction that I can use.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-09-19 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notarealuseralcemy">@notarealuseralcemy</a> on 2024-09-19 17:44</div>
+            <div class="timeline-body"><p>okay, thanks! i'll create an mre next week</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 18:07</div>
+            <div class="timeline-body"><p>Awesome thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notarealuseralcemy">@notarealuseralcemy</a> on 2024-09-19 18:46</div>
+            <div class="timeline-body"><p>or... now.</p>
+<pre><code class="language-shell">mkdir new_project &amp;&amp; cd new_project
+uv init
+uv add &quot;git+https://github.com/notarealuseralcemy/uv-package-mre.git&quot;
+ls .venv/lib/python*/site-packages/some_module
+# &gt; __init__.py	main.py
+ls ../uv-package-mre/example_module  # or see https://github.com/notarealuseralcemy/uv-package-mre/example_module
+__init__.py		main.py			some_nested_module
+</code></pre>
+<p>contents of <code>uv-package-mre/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;uv-package-mre&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+
+[tool.setuptools]
+packages = [&quot;some_module&quot;]
+</code></pre>
+<p>so you can see that <code>some_nested_module</code> is being omitted from the install.
+this isn't my forte so i dunno if i'm doing something totally wrong, but as i said, there doesn't seem to be this issue with pipenv and the same setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notarealuseralcemy">@notarealuseralcemy</a> on 2024-09-20 09:27</div>
+            <div class="timeline-body"><p>actually i think this issue is just caused by my misunderstanding of how the packages declaration works for setuptools, in fact it's not recursive, and each submodule should be declared explicitly? so here it should be</p>
+<pre><code>packages = [&quot;some_module&quot;, &quot;some_module.some_nested_module&quot;]
+</code></pre>
+<p>but i'm not sure.</p>
+<p>i also tried</p>
+<pre><code>[tool.setuptools.packages.find]
+where = [&quot;some_module&quot;]
+</code></pre>
+<p>which is explicitly stated <a href="https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#finding-namespace-packages">here</a> to include submodules, but that also doesn't work.</p>
+<p>i could eventually get it to work by adding a glob operator like:</p>
+<pre><code>[tool.setuptools.packages.find]
+where = [&quot;some_module*&quot;]
+</code></pre>
+<p>but i don't think this should be required according to the setuptools docs, so i think it is an issue with uv?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-09-20 12:31</div>
+            <div class="timeline-body"><p>@notarealuseralcemy I saw that python -m build also excludes the files in the same way, so that confirms it is not /just/ an uv issue if it was a bug. I.e the &quot;missing&quot; files can be reproduced without involving uv.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:43 UTC
+    </footer>
+</body>
+</html>

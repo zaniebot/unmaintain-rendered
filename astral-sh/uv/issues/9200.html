@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git operation failed cannot find binary path for git dependencies while doing `uv sync` in dockerfile - astral-sh/uv #9200</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Git operation failed cannot find binary path for git dependencies while doing `uv sync` in dockerfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/9200">#9200</a>
+        opened by <a href="https://github.com/fortminors">@fortminors</a>
+        on 2024-11-18 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-18 15:14</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>I am unable to use uv to install dependencies inside dockerfile during build, while having git dependencies.
+I've created a fork of uv-docker-example repo at https://github.com/fortminors/uv-docker-example that reproduces the issue.
+In particular, I've added httpx package as a source:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;httpx&quot;,
+    &quot;fastapi[standard]&gt;=0.112.2&quot;,
+]
+
+[tool.uv.sources]
+httpx = { git = &quot;https://github.com/encode/httpx&quot; }
+</code></pre>
+<p>Then I do <code>uv sync</code> to install the project locally and create the .lock file, followed by <code>docker build --progress plain -t uvex .</code>
+I get the following output</p>
+<pre><code class="language-bash">#0 building with &quot;default&quot; instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.26kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+#2 DONE 0.6s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 106B done
+#3 DONE 0.0s
+
+#4 [stage-0 1/5] FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim@sha256:0329d3af09651d5fc7b7cce76844a2292ad1299d7972e3ceb8bc1d4f82485c63
+#4 DONE 0.0s
+
+#5 [stage-0 2/5] WORKDIR /app
+#5 CACHED
+
+#6 [internal] load build context
+#6 transferring context: 4.31kB done
+#6 DONE 0.0s
+
+#7 [stage-0 3/5] RUN --mount=type=cache,target=/root/.cache/uv     --mount=type=bind,source=uv.lock,target=uv.lock     --mount=type=bind,source=pyproject.toml,target=pyproject.toml     uv sync --verbose --frozen --no-install-project --no-dev
+#7 0.110 DEBUG uv 0.5.2
+#7 0.110 DEBUG Found project root: `/app`
+#7 0.110 DEBUG No workspace root found, using project root
+#7 0.110 DEBUG Using Python request `&gt;=3.11` from `requires-python` metadata
+#7 0.110 DEBUG Searching for Python &gt;=3.11 in managed installations or search path
+#7 0.110 DEBUG Searching for managed installations at `/root/.local/share/uv/python`
+#7 0.112 DEBUG Found `cpython-3.11.10-linux-x86_64-gnu` at `/usr/local/bin/python3` (search path)
+#7 0.112 Using CPython 3.11.10 interpreter at: /usr/local/bin/python3
+#7 0.112 Creating virtual environment at: .venv
+#7 0.116 DEBUG Omitting `uv-docker-example` from resolution due to `--no-install-project`
+#7 0.117 DEBUG Using request timeout of 30s
+#7 0.117 DEBUG Requirement already cached: fastapi==0.115.5
+#7 0.117 DEBUG Identified uncached distribution: httpx @ git+https://github.com/encode/httpx@7b19cd5f4b749064c6452892a5e58a3758da1d1b
+#7 0.117 DEBUG Requirement already cached: pydantic==2.8.2
+#7 0.117 DEBUG Requirement already cached: starlette==0.41.2
+#7 0.117 DEBUG Requirement already cached: typing-extensions==4.12.2
+#7 0.117 DEBUG Requirement already cached: email-validator==2.2.0
+#7 0.117 DEBUG Requirement already cached: fastapi-cli==0.0.5
+#7 0.117 DEBUG Requirement already cached: jinja2==3.1.4
+#7 0.117 DEBUG Requirement already cached: python-multipart==0.0.9
+#7 0.117 DEBUG Requirement already cached: uvicorn==0.32.0
+#7 0.117 DEBUG Requirement already cached: anyio==4.4.0
+#7 0.117 DEBUG Requirement already cached: certifi==2024.8.30
+#7 0.117 DEBUG Requirement already cached: httpcore==1.0.5
+#7 0.117 DEBUG Requirement already cached: idna==3.8
+#7 0.117 DEBUG Requirement already cached: annotated-types==0.7.0
+#7 0.117 DEBUG Requirement already cached: pydantic-core==2.20.1
+#7 0.117 DEBUG Requirement already cached: dnspython==2.6.1
+#7 0.117 DEBUG Requirement already cached: typer==0.12.5
+#7 0.117 DEBUG Requirement already cached: markupsafe==2.1.5
+#7 0.117 DEBUG Requirement already cached: click==8.1.7
+#7 0.117 DEBUG Requirement already cached: h11==0.14.0
+#7 0.118 DEBUG Requirement already cached: httptools==0.6.1
+#7 0.118 DEBUG Requirement already cached: python-dotenv==1.0.1
+#7 0.118 DEBUG Requirement already cached: pyyaml==6.0.2
+#7 0.118 DEBUG Requirement already cached: uvloop==0.20.0
+#7 0.118 DEBUG Requirement already cached: watchfiles==0.23.0
+#7 0.118 DEBUG Requirement already cached: websockets==13.0
+#7 0.118 DEBUG Requirement already cached: sniffio==1.3.1
+#7 0.118 DEBUG Requirement already cached: rich==13.8.0
+#7 0.118 DEBUG Requirement already cached: shellingham==1.5.4
+#7 0.118 DEBUG Requirement already cached: markdown-it-py==3.0.0
+#7 0.118 DEBUG Requirement already cached: pygments==2.18.0
+#7 0.118 DEBUG Requirement already cached: mdurl==0.1.2
+#7 0.118 DEBUG Fetching source distribution from Git: https://github.com/encode/httpx
+#7 0.118 DEBUG Acquired lock for `https://github.com/encode/httpx`
+#7 0.118 DEBUG Updating Git source `https://github.com/encode/httpx`
+#7 0.118 DEBUG Released lock at `/root/.cache/uv/git-v0/locks/4c0b1441d92956e1`
+#7 0.119   × Failed to download and build `httpx @
+#7 0.119   │ git+https://github.com/encode/httpx@7b19cd5f4b749064c6452892a5e58a3758da1d1b`
+#7 0.119   ├─▶ Git operation failed
+#7 0.119   ╰─▶ cannot find binary path
+#7 0.119   help: `httpx` was included because `uv-docker-example==0.1.0` depends
+#7 0.119         on `httpx`
+#7 ERROR: process &quot;/bin/sh -c uv sync --verbose --frozen --no-install-project --no-dev&quot; did not complete successfully: exit code: 1
+------
+ &gt; [stage-0 3/5] RUN --mount=type=cache,target=/root/.cache/uv     --mount=type=bind,source=uv.lock,target=uv.lock     --mount=type=bind,source=pyproject.toml,target=pyproject.toml     uv sync --verbose --frozen --no-install-project --no-dev:
+0.118 DEBUG Fetching source distribution from Git: https://github.com/encode/httpx
+0.118 DEBUG Acquired lock for `https://github.com/encode/httpx`
+0.118 DEBUG Updating Git source `https://github.com/encode/httpx`
+0.118 DEBUG Released lock at `/root/.cache/uv/git-v0/locks/4c0b1441d92956e1`
+0.119   × Failed to download and build `httpx @
+0.119   │ git+https://github.com/encode/httpx@7b19cd5f4b749064c6452892a5e58a3758da1d1b`
+0.119   ├─▶ Git operation failed
+0.119   ╰─▶ cannot find binary path
+0.119   help: `httpx` was included because `uv-docker-example==0.1.0` depends
+0.119         on `httpx`
+------
+Dockerfile:14
+--------------------
+  13 |     # Install the project's dependencies using the lockfile and settings
+  14 | &gt;&gt;&gt; RUN --mount=type=cache,target=/root/.cache/uv \
+  15 | &gt;&gt;&gt;     --mount=type=bind,source=uv.lock,target=uv.lock \
+  16 | &gt;&gt;&gt;     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+  17 | &gt;&gt;&gt;     uv sync --verbose --frozen --no-install-project --no-dev
+  18 |     
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c uv sync --verbose --frozen --no-install-project --no-dev&quot; did not complete successfully: exit code: 1
+</code></pre>
+<p>I've checked it produces the same error no matter what package I put there with a link to repository. The logs above indicate that the package is uncached, even though uv cache is mounted in dockerfile, which seems weird.</p>
+<pre><code class="language-bash">user:~/uv-docker-example$ uv --version
+uv 0.5.2
+user:~/uv-docker-example$ whereis uv
+uv: /home/user/.cargo/bin/uv /home/user/.local/bin/uv
+</code></pre>
+<pre><code class="language-bash">user:~/uv-docker-example$ cat /etc/*-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=22.04
+DISTRIB_CODENAME=jammy
+DISTRIB_DESCRIPTION=&quot;Ubuntu 22.04.5 LTS&quot;
+PRETTY_NAME=&quot;Ubuntu 22.04.5 LTS&quot;
+NAME=&quot;Ubuntu&quot;
+VERSION_ID=&quot;22.04&quot;
+VERSION=&quot;22.04.5 LTS (Jammy Jellyfish)&quot;
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL=&quot;https://www.ubuntu.com/&quot;
+SUPPORT_URL=&quot;https://help.ubuntu.com/&quot;
+BUG_REPORT_URL=&quot;https://bugs.launchpad.net/ubuntu/&quot;
+PRIVACY_POLICY_URL=&quot;https://www.ubuntu.com/legal/terms-and-policies/privacy-policy&quot;
+UBUNTU_CODENAME=jammy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:16</div>
+            <div class="timeline-body"><p>I think it's struggling to find the <code>git</code> binary. Is Git installed in the container?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-18 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-18 15:25</div>
+            <div class="timeline-body"><p>@charliermarsh You're right, thank you! Missed that, thought it was installed in the base image</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @fortminors on 2024-11-18 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:27</div>
+            <div class="timeline-body"><p>That &quot;cannot find binary path&quot; error message is pretty bad. I wonder if we can do better (it might be an &quot;opaque&quot; error that we can't detect).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-18 15:33</div>
+            <div class="timeline-body"><p>It would be great if you could improve it, I initially thought it was looking for some binary inside the package and couldn't find it.
+I've had this line in my original Dockerfile:</p>
+<pre><code class="language-Dockerfile">RUN apt-get update --quiet &amp;&amp; apt-get install --quiet --no-install-recommends --assume-yes build-essential git ca-certificates
+</code></pre>
+<p>So I thought I was installing git, but I missed apt-get upgrade and -y options, so it should be that:</p>
+<pre><code class="language-Dockerfile">RUN apt-get update --quiet &amp;&amp; apt-get upgrade -y &amp;&amp; apt-get install --quiet --no-install-recommends --assume-yes -y build-essential git ca-certificates
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
+            <div class="timeline-body"><p>Yeah that's a very reasonable thing to think given the error message. I'll re-open and we can take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2024-11-18 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-11-18 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-11-18 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-11-18 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
+            <div class="timeline-body"><p>The action item here is: give a better error message when <code>git</code> isn't installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/9206.html">astral-sh/uv#9206</a> on 2024-11-18 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 17:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:32 UTC
+    </footer>
+</body>
+</html>

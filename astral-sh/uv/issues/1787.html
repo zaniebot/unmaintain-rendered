@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression on installing multiple editable dependencies - astral-sh/uv #1787</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression on installing multiple editable dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1787">#1787</a>
+        opened by <a href="https://github.com/hsheth2">@hsheth2</a>
+        on 2024-02-20 23:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hsheth2">@hsheth2</a> on 2024-02-20 23:30</div>
+            <div class="timeline-body"><p>Installing multiple editable versions causes a panic. This used to work with uv 0.1.5, and works with <code>pip</code>.</p>
+<pre><code class="language-shell">$ uv --version
+uv 0.1.6
+$ uname -mo
+Darwin x86_64
+$ RUST_BACKTRACE=1 uv pip install -e '/Users/hsheth/projects/datahub/metadata-ingestion/' -e '/Users/hsheth/projects/datahub/metadata-ingestion-modules/airflow-plugin/[plugin-v2]'
+   Built file:///Users/hsheth/projects/datahub/metadata-ingestion
+   Built file:///Users/hsheth/projects/datahub/metadata-ingestion-modules/airflow-plugin                                                                                              
+Built 2 editables in 4.54s
+⠹ pycparser==2.21                                                                                                                                                                     
+thread 'main' panicked at crates/uv-resolver/src/resolution.rs:125:37:
+Every package should be pinned: PackageName(&quot;acryl-datahub-airflow-plugin&quot;)
+stack backtrace:
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+<p>See https://github.com/datahub-project/datahub/pull/9885 for a live example, or you can also repro by cloning the https://github.com/datahub-project/datahub repo and installing these two paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../datahub-project/datahub/pulls/9885.html">datahub-project/datahub#9885</a> on 2024-02-20 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-20 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 23:36</div>
+            <div class="timeline-body"><p>I believe I know the problem — thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-20 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 23:45</div>
+            <div class="timeline-body"><p>Is there any relationship between the two? Do they depend on one another? Are there any extras involved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hsheth2">@hsheth2</a> on 2024-02-21 00:02</div>
+            <div class="timeline-body"><p>The base <code>acryl-datahub-airflow-plugin</code> package depends on <code>acryl-datahub</code>. The extra is only adding a few other dependencies, but doesn't impact the relationship between the two editable packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 00:03</div>
+            <div class="timeline-body"><p>Perfect, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 00:03</div>
+            <div class="timeline-body"><p>I’ll make sure it’s fixed by the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 00:16</div>
+            <div class="timeline-body"><p>Ugh, sadly the comment you pasted above works for me on <code>main</code> when run on that repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 00:18</div>
+            <div class="timeline-body"><p>I'm trying to reproduce. What exact commit did you run this against, in the datahub repo?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hsheth2">@hsheth2</a> on 2024-02-21 00:34</div>
+            <div class="timeline-body"><p>The CI failure is here https://github.com/datahub-project/datahub/actions/runs/7981141634/job/21792271496?pr=9885. Because we're using the default checkout action, CI ran on a commit that merged that PR into master</p>
+<p>That said, I am trying the same commands again locally and it also seems to work for me. I might need to keep digging here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hsheth2">@hsheth2</a> on 2024-02-21 00:59</div>
+            <div class="timeline-body"><p>This seems to reproduce the problem:</p>
+<pre><code class="language-sh">git clone https://github.com/datahub-project/datahub
+cd datahub/metadata-ingestion-modules/airflow-plugin
+uv venv venv
+source venv/bin/activate
+uv pip install --upgrade pip uv wheel 'setuptools&gt;=63.0.0'
+VIRTUAL_ENV=venv venv/bin/uv pip install -e ../../metadata-ingestion -e '.[ignore]'
+</code></pre>
+<p>Note that <code>VIRTUAL_ENV=venv venv/bin/uv pip install -e ../../metadata-ingestion -e '.'</code> works, and once that's completed, the original <code>VIRTUAL_ENV=venv venv/bin/uv pip install -e ../../metadata-ingestion -e '.[ignore]'</code> command works fine too, but installing new extras e.g. <code>plugin-v2</code> fails again.</p>
+<p>The <code>ignore</code> extra doesn't actually exist, and is only used to make it easy to append things without needing to conditionally add a comma e.g. <code>ignore,plugin-v2</code>.</p>
+<p>The other thing that I didn't mention - the <code>plugin-v2</code> extra of <code>acryl-datahub-airflow-plugin</code> depends on <code>acryl-datahub[sql-parser]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hsheth2">@hsheth2</a> on 2024-02-21 19:44</div>
+            <div class="timeline-body"><p>Seems like the issue shows up when using <code>-e</code> in conjunction with an extra that doesn't exist. I don't think the fact that there's multiple <code>-e</code> directives is related.</p>
+<p>I've been able to work around it for now by declaring the <code>ignore</code> extra.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 19:47</div>
+            <div class="timeline-body"><p>Thanks -- I'll try to get back to this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 02:26</div>
+            <div class="timeline-body"><p>Thanks, this was my mistake. Just a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 02:27</div>
+            <div class="timeline-body"><p>(The bug was in the error reporting path for editable installs with non-existent extras.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1847.html">astral-sh/uv#1847</a> on 2024-02-22 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 05:00</div>
+            <div class="timeline-body"><p>Should be fixed in v0.1.7 (out now).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

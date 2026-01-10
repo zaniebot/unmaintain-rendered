@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Add a way to get tool venv specific information when using `uv tool` - astral-sh/uv #7311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Add a way to get tool venv specific information when using `uv tool`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7311">#7311</a>
+        opened by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a>
+        on 2024-09-11 21:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-09-11 21:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<p>It would be very helpful to have the following additional functionality as flags for <code>uv tool list</code>:</p>
+<ul>
+<li><code>--show-full-dep-tree</code>: show all of the deps installed into the tool venvs.</li>
+<li><code>--show-tool-install-command</code>: show the original command used to install the tool (sometimes the package name does not match what is on pypi, e.g. <code>p4python</code> installs the <code>P4</code> package).</li>
+</ul>
+<p>To help differentiate tools installed with a more complicated setup, it is really helpful to have an additional suffix that gets appended to all installed script entry points (<code>pipx</code> does this via the <code>--suffix</code> flag).</p>
+<p>Use case:</p>
+<ul>
+<li>I install <code>coverage</code> with additional <code>pytest</code> deps like this: <code>uv tool install coverage --with pytest --with pytest-spec --with pytest-sugar</code>.</li>
+<li>This lets me use <code>uvx coverage run -m pytest</code> to run tests with my desired plugins on any project.</li>
+<li>Depending on how long it has been since I used a tool, it may be hard to recall exactly what is installed in the tool environment (or how it was initially installed).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-11 21:17</div>
+            <div class="timeline-body"><p>I think this may be a <code>uv tool show</code> command instead?</p>
+<p>We're adding suffix support (https://github.com/astral-sh/uv/pull/7095)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-11 21:17</div>
+            <div class="timeline-body"><p>Thanks for sharing your use-cases!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-09-11 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-09-11 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">uv tool</span> added by @zanieb on 2024-09-11 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taranlu-houzz">@taranlu-houzz</a> on 2024-09-11 21:22</div>
+            <div class="timeline-body"><p>@zanieb Good to hear! Is <code>uv tool show</code> a new development? I am using <code>uv 0.4.9 (77d278f68 2024-09-10)</code> and that does not appear to be a subcommand yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-11 21:25</div>
+            <div class="timeline-body"><p>Oh sorry no it doesn't exist but I think it should — I think it'd be a better experience for your use-cases than adding these flags to <code>tool list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KyleKing">@KyleKing</a> on 2024-10-10 11:55</div>
+            <div class="timeline-body"><p>I would also like to see something like &quot;show install command&quot;. <code>mdformat</code> and <code>poetry</code> have similar plugin behavior to <code>pytest</code>. Comparing pipx and uv:</p>
+<pre><code>&gt; pipx install mdformat
+&gt; pipx inject mdformat 'mdformat-obsidian[recommended]'
+&gt; pipx install poetry
+&gt; pipx inject poetry poetry-plugin-sort poetry-relax
+&gt; pipx list --include-injected
+venvs are in ~/.local/pipx/venvs
+apps are exposed on your $PATH at ~/.local/bin
+manual pages are exposed at ~/.local/share/man
+   package mdformat 0.7.17, installed using Python 3.12.7
+    - mdformat
+    Injected Packages:
+      - mdformat-obsidian 0.1.0
+   package poetry 1.8.3, installed using Python 3.12.5
+    - poetry
+    Injected Packages:
+      - poetry-plugin-sort 0.2.1
+      - poetry-relax 1.1.0
+
+&gt; uv tool install --with 'mdformat-obsidian[recommended]' mdformat
+&gt; uv tool install poetry --with=poetry-plugin-sort --with=poetry-relax
+&gt; uv tool list
+mdformat v0.7.17
+- mdformat
+poetry v1.8.3
+- poetry
+</code></pre>
+<p>Being able to see this information across all installed tools at once would be really helpful. As a third option to the ones proposed in the original post, maybe there could be a <code>--show-with</code> flag to <code>uv tool list</code>?</p>
+<pre><code>&gt; uv tool list --show-version-specifiers --show-with
+mdformat v0.7.17 [required: ]
+- mdformat
+  With:
+  - mdformat-obsidian 0.1.0
+</code></pre>
+<p>Or a fourth option of <code>--show-install-options</code></p>
+<pre><code>&gt; uv tool list --show-version-specifiers --show-install-options
+mdformat v0.7.17 [required: ]
+- mdformat
+  Install options:
+  --with 'mdformat-obsidian[recommended]'
+  &lt;additional `--with`, `--editable`, etc.&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KyleKing">@KyleKing</a> on 2024-10-10 11:58</div>
+            <div class="timeline-body"><p>~~One hackish workaround for <code>uv</code> might be to use:~~ (<strong>correction</strong>: this only worked because I had separately experimented with <code>uv tool run</code>. Tested with <code>uv tool install --with pytest-sugar pytest</code> where where <code>which pytest</code> outputs <code>~/.local/bin/pytest</code>)</p>
+<pre><code>&gt; which mdformat
+uv tool run --with 'mdformat-obsidian[recommended]' mdformat
+</code></pre>
+<hr />
+<p>Alternatively, <code>mdformat</code> supports logging the found plugins and respetive versions. However, for <code>pytest</code>, I'm not sure if the plugins can be printed without running <code>pytest</code>.</p>
+<pre><code>&gt; mdformat --version
+mdformat 0.7.17 (mdformat_frontmatter: 2.0.8, mdformat_simple_breaks: 0.0.1, mdformat_tables: 1.0.0, mdformat_gfm: 0.3.6, mdformat_obsidian: 0.1.0, mdformat_wikilink: 0.2.0, mdformat_web: 0.1.0,
+mdformat_beautysh: 0.1.1, mdformat_ruff: 0.1.3, mdformat_config: 0.1.3)
+</code></pre>
+<hr />
+<p>Related to #8028 where uv may not currently remember how a tool was installed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/r-richmond">@r-richmond</a> on 2024-11-28 05:23</div>
+            <div class="timeline-body"><p>I'm also replacing my pipx usage with UV and I was explicitly looking for UV's equivalent of <code>pipx list --include-injected</code></p>
+<p>FWIW I think @KyleKing 's <a href="https://github.com/astral-sh/uv/issues/7311#issuecomment-2404889024">suggestion</a> of <code>uv tool list --show-with</code> would be perfect but I also see the value in the more complete/verbose <code>--show-install-options</code>.</p>
+<p>@zanieb 's since just the <code>--show-with</code> request/suggestion has diverged a little from the OP should a separate issue be made for it or would like to keep it centralized here?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:46 UTC
+    </footer>
+</body>
+</html>

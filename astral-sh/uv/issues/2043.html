@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv pip install error: No such host is known. (os error 11001) - astral-sh/uv #2043</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv pip install error: No such host is known. (os error 11001)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/2043">#2043</a>
+        opened by <a href="https://github.com/contang0">@contang0</a>
+        on 2024-02-28 13:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/contang0">@contang0</a> on 2024-02-28 13:30</div>
+            <div class="timeline-body"><p>I am trying to use uv in a corporate environment and unfortunately packages fail to install. I get the following error:</p>
+<pre><code>error: error sending request for url (https://pypi.org/simple/networkx/): error trying to connect: dns error: No such host is known. (os error 11001)
+  Caused by: error trying to connect: dns error: No such host is known. (os error 11001)
+  Caused by: dns error: No such host is known. (os error 11001)
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>uv pip sync requirements.txt</code>), ideally including the <code>--verbose</code> flag.</li>
+</ul>
+<p>uv pip install networkx</p>
+<ul>
+<li>The current uv platform.</li>
+</ul>
+<p>Windows 11</p>
+<ul>
+<li>The current uv version (<code>uv --version</code>).</li>
+</ul>
+<p>uv 0.1.11 (32e5cacdd 2024-02-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-28 15:09</div>
+            <div class="timeline-body"><p>Do you know some details about your proxy setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/contang0">@contang0</a> on 2024-02-28 15:18</div>
+            <div class="timeline-body"><p>Hardly.. we're a big organisation. I know that we're using certificates to bypass a proxy, but not much more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-28 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @zanieb on 2024-02-28 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-02-28 23:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I know that we're using certificates to bypass a proxy</p>
+</blockquote>
+<p>What's you pip.conf file like?</p>
+<p>Do you configure a custom CA certificate like <code>pip config set global.cert /path/to/your/ca-bundle.crt</code>
+or do you set some environment variables like <code>REQUESTS_CA_BUNDLE</code> or anything like described in https://pip.pypa.io/en/stable/topics/https-certificates/#using-a-specific-certificate-store</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-02-28 23:51</div>
+            <div class="timeline-body"><p>@konstin we can probably add support to allow users to specify their own CA bundles for <code>uv-client</code> like pip allows?</p>
+<p>Maybe <code>UV_CERT</code> or <code>UV_CA_BUNDLE</code> to be similar to of <code>PIP_CERT</code>? Which would mean it reads it in and adds it to the <a href="https://docs.rs/reqwest/latest/reqwest/struct.ClientBuilder.html#method.add_root_certificate">reqwest client</a>.</p>
+<p>Also worth considering supporting pip.conf eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-29 02:37</div>
+            <div class="timeline-body"><p>You can use <code>SSL_CERT_FILE</code> since we're using <a href="https://github.com/rustls/rustls-native-certs"><code>rustls-native-certs</code></a></p>
+<p>There's a <code>pip.conf</code> issue at #1404</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/contang0">@contang0</a> on 2024-02-29 10:25</div>
+            <div class="timeline-body"><p>I had a look at my pip.ini (which is, I believe, the Windows alternative of pip.conf). It actually doesn't have any configuration for certs, just URLs to our Artifactory server that I think hosts a copy of pypi. We use our own copy for security reasons.</p>
+<p>So I believe I would need a way to point uv to our local artifactory server rather than looking up pypi.</p>
+<pre><code>[global]
+# pypi-remote is a local mirror of https://files.pythonhosted.org
+index-url = https://artifactory.url/api/pypi/pypi-remote/simple
+# pypi-local is a repository for packages developed at our organisation
+extra-index-url = https:///artifactory.url/artifactory/api/pypi/pypi-local/simple
+
+[search]
+index = https://artifactory.url/artifactory/api/pypi/pypi-remote/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-29 16:25</div>
+            <div class="timeline-body"><p>You can set the <code>UV_INDEX_URL</code> and <code>UV_EXTRA_INDEX_URL</code> environment variables or use the corresponding CLI flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/2124.html">astral-sh/uv#2124</a> on 2024-03-01 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 02:41</div>
+            <div class="timeline-body"><p>Gonna tentatively close this out, since the thread suggests this is solved by the env vars.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-12 02:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`requires` is bypassed when using `conflicts_with` a certain way - clap-rs/clap #4520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`requires` is bypassed when using `conflicts_with` a certain way</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/4520">#4520</a>
+        opened by <a href="https://github.com/pierrechevalier83">@pierrechevalier83</a>
+        on 2022-11-29 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pierrechevalier83">@pierrechevalier83</a> on 2022-11-29 11:07</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.65.0</p>
+<h3>Clap Version</h3>
+<p>4.0.26</p>
+<h3>Minimal reproducible code</h3>
+<pre><code class="language-rust">use clap::Parser;
+
+#[derive(Parser, Debug)]
+struct Cli {
+    #[clap(long)]
+    destroy: bool,
+    #[clap(long, conflicts_with = &quot;destroy&quot; )]
+    enhance: bool,
+    /// Let's assume, `--dry_run` is only implemented for the `--enhance`
+    /// functionality for some reason
+    /// Attempting to use `--dry-run --destroy` should fail and inform the user
+    /// that these arguments conflict.
+    /// The last thing we would want would be to go ahead and destroy their
+    /// system when they're thinking only a dry run is going to happen.
+    /// This fiction is inspired by real events :p
+    #[clap(long, requires = &quot;enhance&quot; )]
+    dry_run: bool,
+}
+
+fn main() {
+    let res = Cli::try_parse_from(vec![&quot;cli&quot;, &quot;--destroy&quot;, &quot;--dry-run&quot;]);
+    // *Unexpectedly*, this assertion fails.
+    // One would think that because `--dry-run` requires `--enhance`, the result
+    // would be an error complaining that this combination cannot be used
+    // together.
+    // In actuality, clap will happily parse this.
+    assert!(res.is_err());
+}
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>See <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=63c32cc6b859b83898ad0f196c09bb8a">the surprising code</a> in the rust playground.</p>
+<h3>Actual Behaviour</h3>
+<p>The last assertion fails: clap is happy to let the user pass the <code>--dry-run</code> flag with the <code>--destroy</code> flag and without the <code>--enhance</code> flag, bypassing the fact that <code>--dry-run</code> should require <code>--enhance</code>.</p>
+<h3>Expected Behaviour</h3>
+<p>The last assertion should pass: clap should report to the user that <code>--dry-run</code> can only be used in combination with the <code>--enhance</code> flag.</p>
+<h3>Additional Context</h3>
+<p>This issue can be worked around by adding an explicit <code>conflicts_with</code> configuration like so:</p>
+<pre><code class="language-rust">    #[clap(long, requires = &quot;enhance&quot;, conflicts_with = &quot;destroy&quot;)]
+    dry_run: bool,
+</code></pre>
+<p>but I find it surprising that this is needed to obtain the expected behaviour.</p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-bug</span> added by @pierrechevalier83 on 2022-11-29 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-validators</span> added by @epage on 2022-11-29 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-11-29 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-11-29 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-29 12:54</div>
+            <div class="timeline-body"><p>Generally, conflicts override required arguments.  However, I do agree that we should evaluate these rules to make sure correctly apply for required relationships like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4523.html">clap-rs/clap#4523</a> on 2022-11-29 22:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pierrechevalier83">@pierrechevalier83</a> on 2022-11-29 22:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Generally, conflicts override required arguments. However, I do agree that we should evaluate these rules to make sure correctly apply for required relationships like this.</p>
+</blockquote>
+<p>I've had a look at the code, and I think I understand why things are done how they are and how to keep the desired properties while fixing this particular bug. See the PR #5423 which introduces and fixes a new unit test, but doesn't break existing unit tests that rely on groups overriding required relationships.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4707.html">clap-rs/clap#4707</a> on 2023-02-13 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5041.html">clap-rs/clap#5041</a> on 2023-07-22 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "5.0" by @epage on 2024-07-10 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5604.html">clap-rs/clap#5604</a> on 2024-07-29 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6050.html">clap-rs/clap#6050</a> on 2025-07-03 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:16 UTC
+    </footer>
+</body>
+</html>

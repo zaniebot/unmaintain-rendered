@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip list` output does not match `pip list`: distribution package names instead of import package names - astral-sh/uv #13209</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv pip list` output does not match `pip list`: distribution package names instead of import package names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/13209">#13209</a>
+        opened by <a href="https://github.com/gjoseph92">@gjoseph92</a>
+        on 2025-04-30 02:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gjoseph92">@gjoseph92</a> on 2025-04-30 02:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>uv pip list</code> and <code>pip list</code>'s outputs seem to refer to package names differently. I believe uv is using <a href="https://packaging.python.org/en/latest/discussions/distribution-package-vs-import-package/#what-s-a-distribution-package">distribution package names</a>, whereas pip is using <a href="https://packaging.python.org/en/latest/discussions/distribution-package-vs-import-package/#what-s-an-import-package">import package names</a>.</p>
+<pre><code class="language-shell">uv init uv-pip-list
+cd uv-pip-list
+uv add docstring-parser jaraco-classes pymupdfb pypdf2 pip
+diff --side-by-side  &lt;(uv run pip list) &lt;(uv pip list)
+</code></pre>
+<pre><code>Package          Version					Package          Version
+---------------- -------					---------------- -------
+docstring_parser 0.16					      |	docstring-parser 0.16
+jaraco.classes   3.4.0					      |	jaraco-classes   3.4.0
+more-itertools   10.7.0						more-itertools   10.7.0
+pip              25.1						pip              25.1
+PyMuPDFb         1.24.10				      |	pymupdfb         1.24.10
+PyPDF2           3.0.1					      |	pypdf2           3.0.1
+</code></pre>
+<p>Notice that the <code>_</code> in <code>docstring_parser</code> (pip) becomes <code>-</code> in <code>docstring-parser</code> (uv), case in <code>PyMuPDFb</code> is lost, etc.</p>
+<p>Not sure this is a big deal. When I switched a system over to uv, it broke some old code that parses the output of <code>pip list</code>. Honestly, I might prefer uv's choice, since it matches with what you'd <code>uv pip uninstall/install</code>. But given how widely <code>pip list</code> is probably parsed, being consistent might be preferable.</p>
+<h3>Platform</h3>
+<p>Darwin 24.4.0 arm64</p>
+<h3>Version</h3>
+<p>uv 0.4.30</p>
+<h3>Python version</h3>
+<p>Python 3.12.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @gjoseph92 on 2025-04-30 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:12</div>
+            <div class="timeline-body"><p>We always display normalized package names. pip isn't showing the import package name, I think it's just showing the non-canonicalized published package name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-04-30 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-04-30 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2025-04-30 02:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-30 02:13</div>
+            <div class="timeline-body"><p>If you have a use-case, we're happy to hear it — but generally we've been firm on showing normalized names throughout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gjoseph92">@gjoseph92</a> on 2025-04-30 02:33</div>
+            <div class="timeline-body"><p>Makes sense—the normalization would tend to produce something that looks like an import package name. By normalization, you mean specifically https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization?</p>
+<blockquote>
+<p>If you have a use-case, we're happy to hear it — but generally we've been firm on showing normalized names throughout.</p>
+</blockquote>
+<p>I think that's a good move for uv, and I appreciate the consistency.</p>
+<p>I guess it's a tradeoff in the <code>uv pip</code> interface, though. Matching pip and all its oddities can be unpleasant, and isn't something you claim to do anyway. On the other hand, matching pip and all its oddities makes drop-in replacement easier, which helps with adoption.</p>
+<p>For me, this is fine either way; I'm going to update the integration test this took down to be more robust and not parse the output of <code>pip list</code>. I more opened this for others to find. I imagine plenty of CI code somewhere is diffing <code>pip list</code>; I was honestly a bit surprised nobody had opened this yet—maybe that's a good sign it doesn't come up that much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/13210.html">astral-sh/uv#13210</a> on 2025-04-30 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-30 08:49</div>
+            <div class="timeline-body"><p>Have you seen <code>uv pip list --format json</code>? The text output is subject to change for stylistic reasons, so we recommend parsing the JSON output. I can also recommend https://packaging.pypa.io/en/stable/utils.html#packaging.utils.NormalizedName for this, which allows operating on normalized package names in Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-02 14:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:05 UTC
+    </footer>
+</body>
+</html>

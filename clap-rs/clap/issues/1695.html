@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specify default text for optional arguments in help - clap-rs/clap #1695</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Specify default text for optional arguments in help</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1695">#1695</a>
+        opened by <a href="https://github.com/emilazy">@emilazy</a>
+        on 2020-02-14 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/emilazy">@emilazy</a> on 2020-02-14 17:05</div>
+            <div class="timeline-body"><h3>Describe your use case</h3>
+<p>Often, the default values of arguments are determined based on runtime computation, e.g. a <code>--threads</code> parameter defaulting to the number of available threads on the system, or a <code>--config</code> option defaulting to an OS-specific path in the user's home directory (e.g. <code>$XDG_CONFIG_HOME/app-name/config.ron</code> on Linux). It's beneficial for usability to be able to summarize the default arguments, e.g. <code>Number of threads to use [default: # of threads on system]</code> or <code>Path to configuration [default: $XDG_CONFIG_HOME/app-name/config.ron]</code>.</p>
+<p>At present, there's no API to give a (purely cosmetic) default option text for an optional argument.</p>
+<p>Currently, I just do:</p>
+<pre><code class="language-rust">#[derive(Clap)]
+struct Opts {
+    /// Option description [default: $XDG_DATA_HOME/...]
+    pub path: Option&lt;PathBuf&gt;,
+}
+</code></pre>
+<p>but this isn't quite correct (e.g. it doesn't format the default with <code>Colorizer::good</code>).</p>
+<p>Arguably this is an X-Y problem and the real feature request is for &quot;computed defaults&quot; (related to #1694), but I think even with such a mechanism there's value in being able to summarize the default path (rather than e.g. inlining volatile variables like <code>$XDG_RUNTIME_DIR</code> in the help text).</p>
+<h3>Describe the solution you'd like</h3>
+<pre><code class="language-rust">#[derive(Clap)]
+struct Opts {
+    /// Option description
+    #[clap(default_help = &quot;$XDG_DATA_HOME/...&quot;)]
+    pub path: Option&lt;PathBuf&gt;,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> added by @emilazy on 2020-02-14 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> added by @pksunkara on 2020-02-14 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2020-02-14 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-02-14 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-04-14 22:01</div>
+            <div class="timeline-body"><p>I actually removed the colorizing for default values in #1824. I wanted to rethink quite a bit on how to display all kinds of things like these. But, it's for v3.1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1456.html">clap-rs/clap#1456</a> on 2020-04-14 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/139.html">epage/clapng#139</a> on 2021-12-06 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-08 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: args</span> removed by @epage on 2021-12-08 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> added by @epage on 2021-12-09 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3321.html">clap-rs/clap#3321</a> on 2022-01-20 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-mentor</span> removed by @epage on 2022-01-20 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-01-20 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-20 15:36</div>
+            <div class="timeline-body"><p>One proposal for https://github.com/clap-rs/clap/issues/2389 includes exposing some level of styling to the user.</p>
+<p>https://github.com/clap-rs/clap/issues/3008 explores pulling defaulting logic out of the core of clap into helpers that you can pass into <code>App</code> and <code>Arg</code>.  https://github.com/clap-rs/clap/issues/3321 then brings up the idea of those traits offering a <code>hint(&amp;self, app: &amp;App) -&gt; Option&lt;&amp;str&gt;</code> function.  This would allow creating a no-op default trait impl that just adds information to the help.</p>
+<p>Since both of these are not solid enough as alternatives yet, still keeping this open to ensure the use case gets covered by <em>something</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3008.html">clap-rs/clap#3008</a> on 2022-01-24 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/4643.html">clap-rs/clap#4643</a> on 2023-01-16 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9999years">@9999years</a> on 2023-10-25 03:03</div>
+            <div class="timeline-body"><p>It sounds like there's interest for this, so I might prepare a PR.</p>
+<p>Related issues:</p>
+<ul>
+<li>#4976 (default text could be used to work around bad quoting for values like the empty string)</li>
+<li>#4558 (default text could be supplied to support non-<code>Display</code> default values)</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:07 UTC
+    </footer>
+</body>
+</html>

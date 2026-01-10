@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Question] Resolving imports in IDE with uv for `package=False` - astral-sh/uv #16147</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Question] Resolving imports in IDE with uv for `package=False`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/16147">#16147</a>
+        opened by <a href="https://github.com/vaibhavmano">@vaibhavmano</a>
+        on 2025-10-07 07:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vaibhavmano">@vaibhavmano</a> on 2025-10-07 07:13</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm in the process of migrating all my services to uv. We follow a monorepo in my org. While I haven't explicitly followed the src folder structure, I have managed to use various uv settings to get it to work. I'm now facing an issue with the IDE (Pycharm) not being able to recognize local imports.</p>
+<pre><code>[project]
+name = &quot;batchuser&quot;
+version = &quot;1.0.0&quot;
+description = &quot;batch user service&quot;
+authors = [{ email = &quot;&quot; }]
+requires-python = &quot;==3.12.*&quot;
+dependencies = [
+    &quot;baselib==0.1.0&quot;,
+    &quot;scim2-filter-parser==0.7.0&quot;
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+batchuser = { path = &quot;.&quot; }
+baselib = { workspace = true }
+
+
+[dependency-groups]
+dev = [
+    &quot;ruff==0.13.0&quot;,
+    &quot;bandit&gt;=1.8.6&quot;,
+    &quot;pytest&gt;=8.4.2&quot;,
+    &quot;pytest-cov&gt;=7.0.0&quot;,
+]
+
+[tool.pytest.ini_options]
+pythonpath = [&quot;.&quot;]
+addopts = &quot;--cov=. --cov-report=xml&quot;
+testpaths = [&quot;test&quot;]
+
+</code></pre>
+<p>This is the <code>pyproject.toml</code> for one of the service which doesn't follow src folder structure.</p>
+<pre><code>├── uv.lock
+├── pyproject.toml
+├── baselib/
+│       ├── pyproject.toml
+│       ├── Dockerfile
+│       ├── base/
+│       │     ├── constants
+│       │     ├── common
+│       │     └── ..
+│       .
+│
+│
+├── batchuser/
+│   │   ├── __init__.py
+│   │   ├── pyproject.toml
+│   │   ├── Dockerfile
+│   .   ├── constants/
+│       ├── services/
+│       ├── server/
+│       └── ..
+.
+</code></pre>
+<p>Inside the <code>batchuser/service/app_service.py</code>,</p>
+<pre><code>from base.server.db.doc_session import DocumentSession. # Works perfectly fine since baselib is built as a package
+from base.util import validate_email
+
+from constant import RequestConstants, SyncConstants # Throws error in IDE for import
+</code></pre>
+<p>I have to mention though that the <code>uv run</code> and <code>pytest</code> commands work perfectly fine when triggered from the terminal. I understand this is expected since <code>batchuser</code> is not built as a package but I intent to keep it that way.</p>
+<p>This is only an issue during development since I won't be able to (CMD+click) to navigate to the import or find usages. Should I convert the folder to src structure even though it's not a package?</p>
+<h3>Platform</h3>
+<p>macOS 14 intel</p>
+<h3>Version</h3>
+<p>uv 0.8.17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @vaibhavmano on 2025-10-07 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vaibhavmano on 2025-10-07 09:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:13 UTC
+    </footer>
+</body>
+</html>

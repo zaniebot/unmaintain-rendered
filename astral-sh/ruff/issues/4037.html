@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLR0913 excludes kwargs - astral-sh/ruff #4037</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLR0913 excludes kwargs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4037">#4037</a>
+        opened by <a href="https://github.com/trag1c">@trag1c</a>
+        on 2023-04-20 02:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/trag1c">@trag1c</a> on 2023-04-20 02:50</div>
+            <div class="timeline-body"><p>...unless this is expected behavior (both Ruff and Pylint's docs never specify if this check is for positional args only).</p>
+<pre><code class="language-py">def f(a, b, c, d, e, *, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t):
+    ...
+
+
+def g(a, b, c, d, e, f):
+    ...
+</code></pre>
+<pre><code>test.py:5:5: PLR0913 Too many arguments to function call (6 &gt; 5)
+</code></pre>
+<p>If this is to be expected then I think it would be good to specify this rule is posargs only :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-20 03:39</div>
+            <div class="timeline-body"><p>In testing, it seems like Pylint has the same behavior. I wonder if it's intentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-20 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-20 03:43</div>
+            <div class="timeline-body"><p>I think we should change it to include positional-only and keyword-only arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2023-04-20 03:44</div>
+            <div class="timeline-body"><p>In that case I'd consider bumping the limit a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-20 03:46</div>
+            <div class="timeline-body"><p>You can configure the limit using https://beta.ruff.rs/docs/settings/#max-args</p>
+<pre><code class="language-toml">[tool.ruff.pylint]
+max-args = 5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2023-04-20 03:47</div>
+            <div class="timeline-body"><p>I was referring to the default 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-20 03:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I was referring to the default 😅</p>
+</blockquote>
+<p>Oh ok, my bad :)</p>
+<blockquote>
+<p>I think we should change it to include positional-only and keyword-only arguments.</p>
+</blockquote>
+<p>Do you mean to split the rule into positional-only and keyword-only or include both types in the same rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-20 04:04</div>
+            <div class="timeline-body"><p>Ah yeah, I was suggesting that we retain a single rule, and just change the logic to include positional-only and keyword-only arguments in the &quot;argument count&quot; total.</p>
+<p>I would probably err on the side of retaining the default, as long as its the same as Pylint's default, since <em>most</em> functions don't have keyword- or positional-only arguments, and so in most cases we'll retain compatibility. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-20 04:40</div>
+            <div class="timeline-body"><p>If you're going for compatibility, then yes the total count should be good to maintain it in most cases. But, in a few rules we've diverged from the default implementation in terms of avoiding false positive/negative.</p>
+<p>We could also open this issue in Pylint to make them aware, it might be that this was unintended from their side as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 22:24</div>
+            <div class="timeline-body"><p>Created an issue here: https://github.com/pylint-dev/pylint/issues/8667</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4329.html">astral-sh/ruff#4329</a> on 2023-05-09 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-09 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/basnijholt">@basnijholt</a> on 2023-05-22 23:32</div>
+            <div class="timeline-body"><p>I much preferred the old implementation.</p>
+<p>5 arguments seems unrealistically low.</p>
+<p>Perhaps we should have a rule that implements the old behavior? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-23 07:35</div>
+            <div class="timeline-body"><p>https://beta.ruff.rs/docs/settings/#max-args</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:06 UTC
+    </footer>
+</body>
+</html>

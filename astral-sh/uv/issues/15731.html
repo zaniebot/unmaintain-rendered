@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building the package when artifacts present - astral-sh/uv #15731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Building the package when artifacts present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/15731">#15731</a>
+        opened by <a href="https://github.com/GOGKI">@GOGKI</a>
+        on 2025-09-08 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-08 08:07</div>
+            <div class="timeline-body"><h1>Description</h1>
+<p>Currently, there is no way to install from GH releases, as pointing to the rev on the repository results in building the package from the commit at this tag, and pointing directly to the artifact cannot be resolved on private repositories as the necessary GitHub API headers are not used (<code>Accept: application/octet-stream</code>).</p>
+<p>Example:</p>
+<pre><code class="language-toml">[tool.uv.sources]
+internal-package = { git = &quot;https://github.com/org/internal-package.git&quot;, rev = &quot;v0.1.12&quot; }
+another-not-working = { url = &quot;https://github.com/org/another-not-working/releases/download/v0.1.12/another_not_working-0.1.12.tar.gz&quot; }
+</code></pre>
+<p>The first example will install from the source code, instead of the released package available on that tag. The second option will fail on authorization, and will return a 404 (which look like the package would not exist, but in fact it is not accessible).</p>
+<h1>Expected outcome</h1>
+<p>A way to install the package from a private repo from the released artifact on Github is available.</p>
+<h1>Why important</h1>
+<p>We have one scenario which will affect all our internal distribution of packages&quot;
+On dynamic versioning the version of the package will be set to 0.0.0 on the source code, whereas only the artifact will have the correct version propagated throughout all the necessary files. Without being able to access the released artifact, we will need to upload to PyPI, etc.</p>
+<h3>Platform</h3>
+<p>all</p>
+<h3>Version</h3>
+<p>uv 0.8.3 (7e78f54e7 2025-07-24)</p>
+<h3>Python version</h3>
+<p>all</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @GOGKI on 2025-09-08 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-08 12:47</div>
+            <div class="timeline-body"><p>Is the problem with GitHub releases the <code>Accept</code> header, or the lack of authorization credentials? Are you setting any auth credentials with which you could authenticate against GitHub?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-09 14:35</div>
+            <div class="timeline-body"><p>@konstin that depends on which route we are talking. Is there a suggested way which would enable the users to us the artifact from the GH release?</p>
+<p>Both ways that I have shown in there did not work. First one builds package from code ignoring the artifact, second one because of the lack of authorization of proper authorization fails. Currently GH_TOKEN is ignored, and setting credentials as an index would be set is not working either (through e.g. UV_INDEX_... env variables).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-09-09 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-09-09 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-09 19:00</div>
+            <div class="timeline-body"><p>GitHub Releases aren't well-suited as package index. GitHub doesn't implement a Python package registry, so we're limited in what we can do with GitHub alone. The options we can currently support are installing from GitHub from source, e.g. from a tag, or installing from a service that implements the index API (PEP 503). Another alternative is vendoring wheels in the repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-10 07:27</div>
+            <div class="timeline-body"><p>@konstin I fully agree that Github release is not a package index. I understand the difference, I was saying that I was trying to authorize uv to access the private GH repo in different ways. None of them are currently working. Of course I might be missing some of the details as uv is a great and broad tool, that's why I created this issue.</p>
+<p>Now, trying to be a bit more specific, if we are using an additional source, pointing explicitly to git repo as the source, specifying the tag as the revision, and for this tag an artifact is already present on the repository, I don't think that building that from the source is the correct order, and this might be confusing for the other users as well. While pointing to the source and rev/tag, I don't expect any of the functionalities from the PEP503 to be applied (indexing, version resolution etc.). Does this makes more sense?</p>
+<p>P.S. Vendoring packages on the repo leads to a fast inflation of the source code, which none of the developers would like to go for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-23 21:51</div>
+            <div class="timeline-body"><p>@konstin any comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-23 21:57</div>
+            <div class="timeline-body"><p>We don't support reading artifacts from GitHub Releases associated with a tag. We could do so, but I'd say it's out of scope for uv at this time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-23 21:57</div>
+            <div class="timeline-body"><blockquote>
+<p>pointing directly to the artifact cannot be resolved on private repositories</p>
+</blockquote>
+<p>I'm fine with making this work, fwiw.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-23 21:59</div>
+            <div class="timeline-body"><p>Did you try providing the HTTP credentials via one of the methods outlined at https://docs.astral.sh/uv/concepts/authentication/http/ ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-26 07:23</div>
+            <div class="timeline-body"><blockquote>
+<p>We don't support reading artifacts from GitHub Releases associated with a tag. We could do so, but I'd say it's out of scope for uv at this time.</p>
+</blockquote>
+<p>That's totally fair. We find ways to currently workaround the issue, but I would say it would be beneficial in terms of having the correct/intuitive resolution order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-26 07:24</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>pointing directly to the artifact cannot be resolved on private repositories</p>
+</blockquote>
+<p>I'm fine with making this work, fwiw.
+That would be greatly appreciated.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GOGKI">@GOGKI</a> on 2025-09-26 07:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you try providing the HTTP credentials via one of the methods outlined at https://docs.astral.sh/uv/concepts/authentication/http/ ?</p>
+</blockquote>
+<p>Yes, and unluckily it did not work.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:12 UTC
+    </footer>
+</body>
+</html>

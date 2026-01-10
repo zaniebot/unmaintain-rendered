@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv python install &lt;x.y.z&gt;` disregards the versions in `uv python list` installed by other tools - astral-sh/uv #7340</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv python install &lt;x.y.z&gt;` disregards the versions in `uv python list` installed by other tools</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7340">#7340</a>
+        opened by <a href="https://github.com/jond01">@jond01</a>
+        on 2024-09-12 20:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jond01">@jond01</a> on 2024-09-12 20:12</div>
+            <div class="timeline-body"><p>The case is as follows:</p>
+<ol>
+<li>A specific Python version is already installed by another tool, e.g. pyenv or cached Python on a GitHub runner. Let's say it's 3.10.12, and <code>python -V</code> outputs this exact version.</li>
+<li><code>uv python list</code> seems to discover it, as it's listed in the command's output.</li>
+<li>Now I want to verify the exact version installation - e.g. just be sure or as a part of some automated workflow.
+I run <code>uv python install 3.10.12 --no-python-downloads</code>.</li>
+<li>The command fails with:<pre><code class="language-txt">Searching for Python versions matching: Python 3.10.12
+Python downloads are not allowed (`python-downloads = &quot;never&quot;`). Change to `python-downloads = &quot;manual&quot;` to allow explicit installs.
+</code></pre>
+</li>
+</ol>
+<p>The same happens with the <code>--offline</code> flag, although the error is different.</p>
+<p>I do not expect this behavior, and after reading <a href="https://docs.astral.sh/uv/guides/install-python/#using-an-existing-python-installation">the docs</a> - I guess it's a bug:</p>
+<blockquote>
+<p>uv will use existing Python installations if present on your system. There is no configuration necessary for this behavior: uv will use the system Python if it satisfies the requirements of the command invocation.</p>
+</blockquote>
+<ul>
+<li>A minimal GitHub workflow that reproduces the bug:<ul>
+<li>Workflow: https://github.com/jond01/uv-python-cache/blob/main/.github/workflows/test.yml</li>
+<li>Run: https://github.com/jond01/uv-python-cache/actions/runs/10837938598/job/30075040681#step:7:32</li>
+</ul>
+</li>
+<li>The main commands are:<ul>
+<li><code>uv python list</code>, which discovers Python 3.10.12,</li>
+<li><code>uv python install 3.10.12 --offline</code> / <code>--no-python-downloads</code>.</li>
+</ul>
+</li>
+<li>The uv platform: Linux. I reproduced it also locally on macOS.</li>
+<li>uv version: 0.4.8</li>
+</ul>
+<p>This issue is somewhat related to another one I opened: https://github.com/astral-sh/setup-uv/issues/66</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jond01/xil/pulls/229.html">jond01/xil#229</a> on 2024-09-12 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-13 01:53</div>
+            <div class="timeline-body"><p>Sorry if you're using <code>uv python install</code> we will always attempt to install a managed version even if you have an existing unmanaged version. If you use <code>uv run --python 3.10.12 python -V</code> you can verify that the correct version is installed?</p>
+<p>(The existing behavior is intended)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-13 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/setup-uv/issues/66.html">astral-sh/setup-uv#66</a> on 2024-09-13 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jond01">@jond01</a> on 2024-09-13 10:22</div>
+            <div class="timeline-body"><p>Right, jumping straight to <code>uv run --python 3.10.12 python -V</code> worked :)
+I think it can be mentioned here as an alternative:
+https://docs.astral.sh/uv/guides/integration/github/#setting-up-python
+I found the <code>UV_PYTHON</code> env var handy.
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jond01 on 2024-09-13 10:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:47 UTC
+    </footer>
+</body>
+</html>

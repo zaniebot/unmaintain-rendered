@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D402: Discrepancy with pycodestyle behavior with `noqa` annotation - astral-sh/ruff #2444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>D402: Discrepancy with pycodestyle behavior with `noqa` annotation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2444">#2444</a>
+        opened by <a href="https://github.com/dalcinl">@dalcinl</a>
+        on 2023-02-01 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dalcinl">@dalcinl</a> on 2023-02-01 16:03</div>
+            <div class="timeline-body"><p>Here you have a minimal reproducer</p>
+<pre><code class="language-py"># file: code.py
+
+def starmap(*args):  # noqa: D402
+    &quot;&quot;&quot;Equivalent to `itertools.starmap(...)`.
+
+    Blah Blah Blah.
+    &quot;&quot;&quot;
+    return True
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.0.239
+
+$ ruff --select=D402 code.py 
+code.py:2:5: D402 First line should not be the function's signature
+Found 1 error.
+
+$ pycodestyle --version
+2.10.0
+$ pycodestyle --select=D402 code.py 
+
+</code></pre>
+<p>As the issue happens in a multiline docstring, I cannot just place the <code>noqa</code> annotation in the actual offending line. Therefore, I guess the pycodestyle behavior is kind of sensible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 16:38</div>
+            <div class="timeline-body"><p>Ruff associates the error with the docstring, not the function, and so wants it at the end of the docstring, like this:</p>
+<pre><code class="language-py">def starmap(*args):
+    &quot;&quot;&quot;Equivalent to `itertools.starmap(...)`.
+
+    Blah Blah Blah.
+    &quot;&quot;&quot;  # noqa: D402
+    return True
+</code></pre>
+<p>Flake8 respects this too (just tested it!), so hopefully that works for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-01 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-02-01 16:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:05 UTC
+    </footer>
+</body>
+</html>

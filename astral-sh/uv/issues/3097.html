@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add strict command mode to `uv run` - astral-sh/uv #3097</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add strict command mode to `uv run`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3097">#3097</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-04-17 16:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 16:44</div>
+            <div class="timeline-body"><p>This would only allow you to run a command provided by a package in the current environment.</p>
+<p>Maybe we'd want to use a new flag <code>--strict</code> or re-use the <code>--isolated</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-04-17 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-04-17 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-17 22:48</div>
+            <div class="timeline-body"><p>We could also enable this by default and consider a relaxed mode to allow targets outside the requirements.</p>
+<p>Poetry's cool with running something else:</p>
+<pre><code>❯ poetry run echo test
+test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2024-04-18 08:56</div>
+            <div class="timeline-body"><p>If you'll permit me to, I would like to jump in here with a suggestion.</p>
+<p>I would <strong>like</strong> to think of <code>poetry run</code> as meaning &quot;please act exactly like the shell I am used to, but in addition with the Python venv activated.&quot;</p>
+<p>First of all, I think this is by far the most intuitive CLI experience. Second, it would also be consistent with the user experience of<code>source .venv/bin/activate</code></p>
+<p><em>Unfortunately</em>, poetry doesn't do this: it doesn't use my current shell (either the login <code>$SHELL</code> or the one that I am currently using), and it necessarily also doesn't offer any of the aliases I have set up! (Super inconvenient.)</p>
+<p>For this reason I actually have my own CLI tool to fix this. Extracting the relevant code, it basically looks like this:</p>
+<pre><code class="language-python">def run(commands: list[str]):  # e.g. running `mytool run foo bar` on the CLI will produce `commands = [&quot;foo&quot;, &quot;bar&quot;]`
+    shell_path = os.environ.get(&quot;SHELL&quot;, &quot;/bin/sh&quot;)
+    shell_name = pathlib.Path(shell_path).stem
+    command, *args = commands
+    if shell_name in {&quot;sh&quot;, &quot;bash&quot;, &quot;zsh&quot;}:
+        # This `&amp;&amp; echo` is quite a subtle point.
+        #
+        # bash and zsh have some optimizations (and different optimizations to each other!) in which if they detect that
+        # you're running something sufficiently simple, then they will skip creating a subshell and directly execute the
+        # provided command. (Here's a reference: https://stackoverflow.com/a/56620122)
+        #
+        # In practice the speed difference is going to be small, and this optimization sometimes makes our `bash`
+        # instance below (created in `subprocess.run`) visible to the end user. That is, their preferred shell might
+        # *not* be the PPID of the command they run, if that shell optimizes itself out!
+        #
+        # We would prefer that this not happen: things occuring inside `mytool run` should feel the same as if you were
+        # on your existing command line.
+        command = command + ' &quot;$@&quot; &amp;&amp; echo'
+    elif shell_name == &quot;fish&quot;:
+        command = command + &quot; $argv&quot;
+    else:
+        raise Exception(f&quot;Unsupported shell {shell_name} at {shell_path}&quot;)
+    process = subprocess.run(
+        [
+            &quot;bash&quot;,
+            &quot;-c&quot;,
+            'source &quot;$1&quot; &amp;&amp; shift &amp;&amp; &quot;$@&quot;',
+            &quot;--&quot;,
+            f&quot;{_get_venv_path()}/bin/activate&quot;,
+            shell_path,
+            &quot;-c&quot;,
+            command,
+            &quot;--&quot;,
+            *args,
+        ],
+        cwd=pathlib.Path.cwd(),
+        check=False,
+    )
+    sys.exit(process.returncode)
+</code></pre>
+<p>I expect that probably still takes a bit of work to get portable across Windows, non-{zsh,bash,fish} shells, etc, but you see the essence of it.</p>
+<p>This is now much more useful. For example, this means that I can now easily start my <code>$EDITOR</code> inside the correct venv, which is what is needed for the LSP to operate correctly.</p>
+<p>Do you think it would make sense for <code>uv run</code> to operate under this model instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-04-24 01:25</div>
+            <div class="timeline-body"><p>@patrick-kidger That aligns with your statement here https://github.com/astral-sh/uv/issues/1910#issuecomment-2060719717. What I'm not entirely sure if it simplies implementation to do this on <code>uv run</code> or <code>uv shell</code> either way. One can argue <code>uv shell</code> is an alias to <code>uv run $SHELL</code> from this perspective and you'd end up spawning a new shell, and having to do the same level of plumbing <code>uv shell</code> would need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 13:04</div>
+            <div class="timeline-body"><p>Very interesting, looks <em>hard</em> . We might want to track that separately from this issue as it's a very different idea. I could see a flag to enable / disable that behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2024-04-24 18:59</div>
+            <div class="timeline-body"><p>I'm glad it seems interesting!</p>
+<p>Which bit would be tricky -- the handling of shells that aren't on the blessed list?</p>
+<p>IIUC this is already a limitation of <code>uv</code> when <code>activate</code>ing -- c.f. the need for a separate <code>activate.fish</code> -- so I don't think this would impose any new restriction on compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-05-25 10:48</div>
+            <div class="timeline-body"><p>I am expecting <code>uv run</code> to work more like <code>conda run</code>, just as what @patrick-kidger describes:</p>
+<blockquote>
+<p>I would like to think of poetry run as meaning &quot;please act exactly like the shell I am used to, but in addition with the Python venv activated.&quot;</p>
+<p>First of all, I think this is by far the most intuitive CLI experience. Second, it would also be consistent with the user experience ofsource .venv/bin/activate</p>
+</blockquote>
+<p>The ability to use aliases does not matter much to me.</p>
+<p>Currently, <code>uv run</code> forcibly requires <code>pyproject.toml</code> to exist:</p>
+<pre><code>$ uv run ls
+warning: `uv run` is experimental and may change without warning.
+error: No `pyproject.toml` found in current directory or any parent directory
+</code></pre>
+<p>Where I have a <code>.venv</code> folder in the same directory, and <code>uv pip install</code> just works. It is very counter-intuitive that a <code>pyproject.toml</code> is required to run <code>uv run</code>: I want to run command as in the specified venv, why do I need a project for it?</p>
+<p>E.g. A virtual env may be created for a collection of user-wide terminal cli binaries, and I want to use <code>uv run</code> in the folder containing <code>.venv</code> to manage in the venv. Here the concept of <code>project</code> is naturally absent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-25 12:52</div>
+            <div class="timeline-body"><blockquote>
+<p>It is very counter-intuitive that a pyproject.toml is required to run uv run: I want to run command as in the specified venv, why do I need a project for it?</p>
+</blockquote>
+<p>Not speaking to what we'll eventually ship here, but just to be clear, <code>uv run</code> isn't intended to be used with <code>uv pip install</code>. It's part of a totally distinct set of APIs that are actively being worked on, and those APIs are <em>all</em> oriented around the concept of a project and workspace. In that context, it is a lot more intuitive that a project is required -- <em>none</em> of the APIs make sense outside of a project.</p>
+<p>The initial thinking behind this issue was that we might want to provide something that's separate from that project API, to let users run a command in an existing virtual environment without activating it. Conceptually, that could be thought of as <code>uv venv run</code> or something, though I'm not actually proposing that as the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-25 12:54</div>
+            <div class="timeline-body"><p>To be clear, I <em>do</em> actually think we should have some form of <code>uv run</code> that works with the <code>uv pip</code> APIs (I don't know whether it's a flag, or a separate command, or just ignoring the project if there's no <code>pyproject.toml</code>), but <code>uv run</code> itself in its current form is not intended to be used alongside the <code>uv pip</code> APIs, which is where that confusion is coming from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-05-25 13:11</div>
+            <div class="timeline-body"><blockquote>
+<p>In that context, it is a lot more intuitive that a project is required -- none of the APIs make sense outside of a project.</p>
+</blockquote>
+<p>So, now we have following venv managers:</p>
+<ul>
+<li>conda: <code>conda run</code></li>
+<li>pyenv: <code>pyenv exec</code></li>
+<li><a href="https://github.com/nvm-sh/nvm">nvm</a> (nodejs): <code>nvm run</code> / <code>nvm exec</code></li>
+<li><a href="https://github.com/go-nv/goenv">goenv</a> (golang): <code>goenv exec</code></li>
+</ul>
+<p>They're all capable of:</p>
+<ul>
+<li>Install specified version of python/nodejs/go</li>
+<li>Have first-class <code>run</code>/<code>exec</code> that runs a command in specified environment without requirement for a project</li>
+</ul>
+<p>And here we have <code>poetry</code> and <code>uv</code> where they:</p>
+<ul>
+<li>Can only work with a pre-existing installation of python</li>
+<li>Requires a project to use <code>run</code> command</li>
+</ul>
+<p>For people who thought <code>uv</code> to be a venv manager analog to <code>conda</code>, <code>pyenv</code>, <code>nvm</code> and <code>goenv</code>, now they should actually regard <code>uv</code> as alternative for <code>poetry</code> as project manager and shall not expect a first-class <code>run</code> command that works like all above venv managers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-25 13:24</div>
+            <div class="timeline-body"><blockquote>
+<p>For people who thought uv to be a venv manager analog to conda, pyenv, nvm and goenv, now they should actually regard uv as alternative for poetry as project manager and shall not expect a first-class run command that works like all above venv managers?</p>
+</blockquote>
+<p>No, this isn't quite the right framing. We plan to support <em>both</em> workflows -- that's why we shipped <code>uv venv</code> and <code>uv pip</code>. <code>uv</code> will be capable of installing specified versions of Python, and we'll probably also add a first-class <code>run</code> or <code>exec</code> command that works with an existing environment without <em>managing</em> it. You'll have all the tools you need to install Python, manage Python versions, create virtual environments, manipulate them, etc., just as you would with <code>virtualenv</code>, <code>pip</code>, <code>pyenv</code>, etc. You can and will be able to use <code>uv</code> as an alternative to those other tools you mentioned.</p>
+<p>Separately, though, we want to ship higher-level APIs (at a similar level of abstraction to Poetry) with a more opinionated interface, for users and projects that don't want to operate at that low-level of environment management. The existing <code>uv run</code> was implemented as part of that API. So if we want a first-class <code>run</code> or <code>exec</code> command to execute in an environment without a project (i.e., as an alternative to <code>source .venv/bin/activate</code>), that's totally fine, I'm just explaining that the existing <code>uv run</code> (which is genuinely work-in-progress) was not intended for that use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-25 13:33</div>
+            <div class="timeline-body"><p>For now though I'll take a look at enabling <code>uv run</code> to work outside of an environment. I think it used to do that and I changed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vigilans">@Vigilans</a> on 2024-05-25 13:46</div>
+            <div class="timeline-body"><blockquote>
+<p>You'll have all the tools you need to install Python, manage Python versions, create virtual environments, manipulate them, etc., just as you would with virtualenv, pip, pyenv, etc. You can and will be able to use uv as an alternative to those other tools you mentioned.</p>
+</blockquote>
+<p>That is what I initially thought <code>uv</code> would be and why opt-in it. By comparing the behavior of <code>run</code> in <code>conda</code> and <code>poetry</code>, I was trying to model the user's expectation towards a manager, because <code>uv run</code> is a top-level command. Unlike <code>uv venv run</code>, the behavior of <code>uv run</code> may impose a stronger implication of what this tool focuses.</p>
+<p>Personally I think <code>uv run</code> can work in both scope (project or venv).</p>
+<ul>
+<li>It can accept a venv folder to run in a specified environment.</li>
+<li>When executing without venv, it may keep the current behavior to search for a python project and works the project way (<code>--strict</code> or <code>isolated</code> can apply).</li>
+<li>Or furthermore, if no <code>pyproject.toml</code> found but <code>.venv</code> folder exists in current directory, use it as specified venv, just like <code>uv pip</code> does.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-25 14:08</div>
+            <div class="timeline-body"><p>I appreciate the conversation, but could you describe the behavior you're looking for in a separate issue please? This issue is supposed to be focused quite narrowly on a <code>uv run</code> mode in which commands that are not in the environment are not allowed.</p>
+<p>For what it's worth: I think you're suggesting things that we're already planning on doing (and have done previously), but, as Charlie mentioned, <code>uv run</code> is in the middle of being built and is changing all the time as we explore the best way to implement things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3836.html">astral-sh/uv#3836</a> on 2024-05-25 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/6711.html">astral-sh/uv#6711</a> on 2024-08-28 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2025-02-18 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-02-18 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2025-02-18 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:26 UTC
+    </footer>
+</body>
+</html>

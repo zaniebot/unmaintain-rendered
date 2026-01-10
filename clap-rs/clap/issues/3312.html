@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to show possible value help in --help - clap-rs/clap #3312</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to show possible value help in --help</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3312">#3312</a>
+        opened by <a href="https://github.com/kpreid">@kpreid</a>
+        on 2022-01-19 01:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kpreid">@kpreid</a> on 2022-01-19 01:12</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Clap Version</h3>
+<p>3.0.8</p>
+<h3>Describe your use case</h3>
+<p>I have options which take one of several possible values and which would benefit from explaining what each of the values do. I am currently putting this text in the option's <code>help</code> but I could easily forget to update that, and a list inside the help text doesn't wrap nicely.</p>
+<h3>Describe the solution you'd like</h3>
+<p>A setting which causes each possible value's <a href="https://docs.rs/clap/3.0.10/clap/struct.PossibleValue.html#method.help">PossibleValue::help</a> to be displayed as part of the help for the option (instead of just listing the possible values without any help, which is the current default behavior).</p>
+<p>(Perhaps it should not be an additional setting, but be the default behavior whenever the possible values have help strings. I don't know what typical use cases look like to say whether this would be undesirable verbosity.)</p>
+<h3>Alternatives, if applicable</h3>
+<p>I currently have hardcoded option help text listing the values, which is what I was hoping <code>PossibleValue::help</code> would replace before I tried it and found that it didn't. Another alternative would be to implement this using existing facilities by iterating over the possible values and building a help string. However, clap could do this better than the application can, by formatting the list of values and help in a text-wrapping-aware way.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @kpreid on 2022-01-19 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 01:19</div>
+            <div class="timeline-body"><p>@ModProg as the person who implemented this, I assume you use this and would have thoughts / perspective on whether we should show this in <code>--help</code>, whether always or behind a flag.</p>
+<p>If we do show the <code>PossibleValue::help</code>, we would probably limit it to <code>--help</code> (long help) and not show it in <code>-h</code> (short help)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-01-19 08:23</div>
+            <div class="timeline-body"><blockquote>
+<p>If we do show the PossibleValue::help, we would probably limit it to --help (long help) and not show it in -h (short help)</p>
+</blockquote>
+<p>Yeah, that makes sense I'd say, should probably be configurable, but the current behavior of only showing the help in the completions seams a bit strange in retrospect. Should have been in the help as well, is my gut reaction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-01-19 08:35</div>
+            <div class="timeline-body"><p>But I'm not sure on what would be the best way of displaying this:</p>
+<pre><code>    -p, --pos &lt;VAL&gt;      Some vals [possible values: fast, slow]
+    -p, --pos &lt;VAL&gt;      Some vals
+                         possible values: 
+                            fast 
+                            slow (not as fast)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 15:21</div>
+            <div class="timeline-body"><p>Yes, I was thinking a bulleted list would probably be how we show this.  iirc I brought up showing them this way in the PR for <code>clap_man</code>.</p>
+<p>The next question is if this would be considered a &quot;breaking change&quot;, meaning that people have crafted their CLIs around the current behavior and it would egregiously impact the UI to change this without a more explicit acknowledgement of breaking behavior.</p>
+<p>For builder users, it depends on if they've discovered and started to use this new feature while manually documenting the value meanings.</p>
+<p>For derive users, the situation is different because we are picking up the doc comments and users are most likely not using <code>clap_complete</code> and if they are, they are unlikely to notice the value descriptions.  We could start showing to users comments meant for developers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-01-19 16:20</div>
+            <div class="timeline-body"><p>Well not if it was off by default, but I see your point.</p>
+<p>As I would like this to be the default behaviour as that seams like the natural effect of the <code>help()</code> IMO.</p>
+<p>This could be done in a two step prosses I guess (first opt in, then opt out)? Not sure, what the best way is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 16:25</div>
+            <div class="timeline-body"><p>My preference is to avoid configuration long term.  Clap's API is so bloated, it makes it difficult to know whats there or not.  If we can make a policy that can reasonably apply to nearly all programs, we have issues like #2914 for the rest.</p>
+<p>If we are concerned about the transition, we could use either a manifest feature flag or a setting as we transition to the new behavior.  maybe we even toggle it for the major release after that but the following would see the option removed ideally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-01-19 17:00</div>
+            <div class="timeline-body"><p>yeah, I think this is the expected behavior, I just did not think about it when I first started looking into this.</p>
+<p>IMO as the doc comments are relevant on all other clap derives, it is reasonable to have them <em>just</em> appear in the help message.</p>
+<p>We can put a warning in the change log (tho I understand that most people won't look there).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 17:05</div>
+            <div class="timeline-body"><blockquote>
+<p>We can put a warning in the change log (tho I understand that most people won't look there).</p>
+</blockquote>
+<p>Yeah, another option I was considering was waiting for 3.1 and having a &quot;Backwards Compatibility&quot; section in the changelog, like Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-01-19 17:10</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>We can put a warning in the change log (tho I understand that most people won't look there).</p>
+</blockquote>
+<p>Yeah, another option I was considering was waiting for 3.1 and having a &quot;Backwards Compatibility&quot; section in the changelog, like Rust.</p>
+</blockquote>
+<p>Sounds reasonable, if there are more features like this that are kind of unstable/breaking changes we could put them behind a feature flag until 3.1 or just have an off by default setting till then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpreid">@kpreid</a> on 2022-01-19 17:36</div>
+            <div class="timeline-body"><p>Some thoughts as the requester:</p>
+<p>I hadn't thought of the documentation not being suitable to be shown, but I was thinking that it might be <em>too long.</em> However, long possible value lists are likely to be <code>hide_possible_values</code> already, and the documentation for <code>PossibleValue::help</code> already says it should be concise, so that shouldn't be a problem.</p>
+<p>Some command line tools offer dedicated options to list possible values when there are lots of them (to name a couple of examples I've seen, lists of compatible hardware, or file formats/codecs); it might be interesting to offer help implementing that, but on the other hand it's easy to do and might want customization.</p>
+<p>As to specifics of formatting, here is the result of what I picked for my application-specific implementation:</p>
+<pre><code class="language-text">    -g, --graphics &lt;MODE&gt;        Graphics/UI mode; one of the following keywords:
+                                 • window   — Open a window (uses OpenGL)
+                                 • terminal — Colored text in this terminal (uses raytracing)
+                                 • headless — Non-interactive; don't draw anything but only
+                                 simulates
+                                 • record   — Non-interactive; save an image or video (uses
+                                 raytracing)
+                                 • print    — Non-interactive; print one frame like 'terminal'
+                                 mode then exit
+                                  [default: window]
+</code></pre>
+<p>I don't entirely recommend exactly this: the bullets are a bit noisy, but I added them because from the outside I can't get clap to indented-wrap the entries for visual clarity (that is, indent the wrapped lines &quot;<code>simulates</code>&quot; and &quot;<code>mode then exit</code>&quot; so they are visibly part of the preceding item rather than their own items), and even if I did my own text wrapping I wouldn't know how long the left option-name column is.</p>
+<p>I do think the columnar alignment is a good idea given enough available width. Here's my implementation:</p>
+<pre><code class="language-rust">static GRAPHICS_HELP: Lazy&lt;String&gt; = Lazy::new(|| {
+    let pv_iter = GraphicsType::value_variants()
+        .iter()
+        .filter_map(|v| v.to_possible_value());
+
+    let max_width = pv_iter
+        .clone()
+        .filter_map(|pv| pv.get_visible_name())
+        .map(str::len)
+        .max()
+        .unwrap_or(0);
+
+    let mut text = String::from(&quot;Graphics/UI mode; one of the following keywords:\n&quot;);
+    for pv in pv_iter {
+        // Note: There's a final newline so that clap's default value text is put on a new line.
+        writeln!(
+            text,
+            &quot;• {:max_width$} — {}&quot;,
+            pv.get_name(),
+            pv.get_help().unwrap()
+        )
+        .unwrap();
+    }
+    text
+});
+</code></pre>
+<p>(This isn't quite fully general: it doesn't handle hidden items or ones without documentation, which didn't matter since it's hardcoded to this one enum.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-19 18:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I hadn't thought of the documentation not being suitable to be shown,</p>
+</blockquote>
+<p>In case it wasn't clear, the concern is more with people who have already written rustdoc comments who might be surprised to see those starting to show up in the help</p>
+<blockquote>
+<p>I hadn't thought of the documentation not being suitable to be shown, but I was thinking that it might be too long. However, long possible value lists are likely to be hide_possible_values already, and the documentation for PossibleValue::help already says it should be concise, so that shouldn't be a problem.</p>
+</blockquote>
+<p>Yes, that is a concern.  One thing that helps is that clap has distinct <code>-h</code> and <code>--help</code>.  <code>-h</code> is meant to be brief and <code>--help</code> is meant to go into all of the gory details.  <code>-h</code> would still just show the list of possible values and we'd only be changing <code>--help</code>.</p>
+<blockquote>
+<p>Some command line tools offer dedicated options to list possible values when there are lots of them (to name a couple of examples I've seen, lists of compatible hardware, or file formats/codecs); it might be interesting to offer help implementing that, but on the other hand it's easy to do and might want customization.</p>
+</blockquote>
+<p>A good example of this (though its more dynamic)</p>
+<pre><code class="language-console">$ cargo test --test    
+error: &quot;--test&quot; takes one argument.                                      
+Available tests:                    
+    builder     
+    derive                                                               
+    derive_ui                       
+    examples                                                             
+    macros                                                                                                                                         
+    yaml                                                                 
+</code></pre>
+<p>I feel like we could model our errors off of this.  Right now, we don't use possible values in the errors:</p>
+<pre><code class="language-console">$ git-stack --color
+    Finished dev [unoptimized + debuginfo] target(s) in 0.04s
+     Running `/home/epage/src/personal/git-stack/target/debug/git-stack --color`
+error: The argument '--color &lt;WHEN&gt;' requires a value but none was supplied
+
+USAGE:
+    git-stack [OPTIONS]
+
+For more information try --help
+
+$ git-stack --color lklk
+    Finished dev [unoptimized + debuginfo] target(s) in 0.04s
+     Running `/home/epage/src/personal/git-stack/target/debug/git-stack --color lklk`
+error: Invalid value for '--color &lt;WHEN&gt;': Unknown color choice 'lklk'
+
+For more information try --help
+</code></pre>
+<blockquote>
+<p>As to specifics of formatting, here is the result of what I picked for my application-specific implementation:</p>
+</blockquote>
+<p>If we only do this for <code>--help</code>, we'll also be using <code>NextLineHelp</code> which will buy us some space (you can do this today with <code>long_help()</code>).</p>
+<p>It is a good point that we should indent any wrapped lines for the bullets.</p>
+<p>As for the exact bullet symbol, we can determine that later.</p>
+<p>Using coloring will also help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3320.html">clap-rs/clap#3320</a> on 2022-01-19 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-01-27 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2022-01-27 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3360.html">clap-rs/clap#3360</a> on 2022-01-28 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @epage on 2022-02-02 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2022-02-08 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "4.0" by @epage on 2022-02-08 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3451.html">clap-rs/clap#3451</a> on 2022-02-11 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-02-16 07:40</div>
+            <div class="timeline-body"><p>Just ran into this exact issue.</p>
+<p>I now needed to specify separate help messages for long and short, because I wanted to have <code>[possible values ...]</code> in short help but</p>
+<pre><code>- a help message
+- b help message
+</code></pre>
+<p>in long help.</p>
+<p>I thought about adding an aditional <code>hide_on_short/long_help</code> to <a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.hide_possible_values">hide_possible_values</a>, but that would only treat the symptom of not being able to have help messages on possible values.</p>
+<p>If you have a plan on how this should be implemented @epage I would go ahead and look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-16 14:47</div>
+            <div class="timeline-body"><blockquote>
+<p>If you have a plan on how this should be implemented @epage I would go ahead and look into it.</p>
+</blockquote>
+<p>I've not done this yet because I keep oscillating on whether this would be considered a breaking change or not, with the biggest concern being for derive users.</p>
+<p>What we can do is add a <code>unstable-v4</code> feature flag and guard the logic switch and tests with that flag.</p>
+<p>Steps</p>
+<ul>
+<li>Add <code>unstable-v4</code> feature flag to <code>Cargo.toml</code> and document it in the README</li>
+<li>Add a <code>_FEATURES_next</code> to the <code>Makefile</code> which is <code>_FEATURES_full</code> + <code>unstable-v4</code></li>
+<li>When outputting possible values, use the bulleted list when if printing long and <code>possible.any(|p| p.get_about().is_some())</code></li>
+</ul>
+<p>Rough template</p>
+<pre><code>&lt;arg.get_long_about()&gt;
+
+Possible values:
+&lt;for possible in possibles&gt;
+- {GOOD}&lt;possible.get_name()&gt;{/GOOD}: &lt;possible.get_help()&gt;
+&lt;/for&gt;
+</code></pre>
+<p><strong>(of course, willing to hear other ideas on any of this)</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-02-19 20:01</div>
+            <div class="timeline-body"><p>Makes sense, if I see correctly, the new possible value display would need to go here: https://github.com/clap-rs/clap/blob/bc2be89f4649fbccdc259952e8c4db72a6224c8b/src/output/help.rs#L436 as the other possible_values are contained in a str and cannot have formatting.</p>
+<p>Should extract the logic whether to use the long possible value help in a helper function so that hiding the old help and showing the new help use the same code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-20 00:39</div>
+            <div class="timeline-body"><p>Yes, we'll have possible-value printing in two different places, depending on if its long or short.</p>
+<p>That is the place for doing it for long.  The <a href="https://github.com/clap-rs/clap/blob/bc2be89f4649fbccdc259952e8c4db72a6224c8b/src/output/help.rs#L575">current place we print possible values</a> is exclusively for the <code>[]</code> hints and so it wouldn't quite fit for us to output a long list in there, so we should specialize that for short possible values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-02-20 12:14</div>
+            <div class="timeline-body"><p>After some more investigation, a few questions:</p>
+<ol>
+<li>Is there a case where long help is printed without <code>next-line</code>?</li>
+<li>Should possible value help wrap like the normal help does?
+a. Print behind the <code>PossibleValue::name</code> as long as they fit in line, aligned by the longest possible value.
+b. Wrap when they are too long.
+c. When one of the <code>PossibelValue::name</code>s surpasses a threshold, they are displayed in the next line. Indented by one <code>TAB</code>.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-21 14:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a case where long help is printed without next-line?</p>
+</blockquote>
+<p>Most likely not but unsure why this is relevant.  We should be basing what we do off of <code>self.use_long</code>.</p>
+<blockquote>
+<p>Should possible value help wrap like the normal help does?</p>
+</blockquote>
+<p>Ideally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-02-22 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Most likely not but unsure why this is relevant.</p>
+</blockquote>
+<p>It is relevant because it means that the indenting logic needs to support it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ModProg">@ModProg</a> on 2022-02-22 20:17</div>
+            <div class="timeline-body"><p>The possible value name will not be wrapped (when using <code>wrap_help</code>), this is the same as for too long argument flags. This is porbably not relevant for a normal usecase, but I thought I'd mention it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3503.html">clap-rs/clap#3503</a> on 2022-02-23 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2022-03-02 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-03-02 15:21</div>
+            <div class="timeline-body"><p>This is now available in v3.1.4 behind the <code>unstable-v4</code> feature flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3784.html">clap-rs/clap#3784</a> on 2022-06-03 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../ducaale/xh/issues/272.html">ducaale/xh#272</a> on 2022-08-28 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:52 UTC
+    </footer>
+</body>
+</html>

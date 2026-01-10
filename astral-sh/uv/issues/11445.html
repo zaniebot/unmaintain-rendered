@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow providing a uv.lock file to uv sync for clarity? - astral-sh/uv #11445</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow providing a uv.lock file to uv sync for clarity?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11445">#11445</a>
+        opened by <a href="https://github.com/nbelakovski">@nbelakovski</a>
+        on 2025-02-12 14:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nbelakovski">@nbelakovski</a> on 2025-02-12 14:18</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I'm new to uv, and one thing I'm struggling with is the nomenclature with sync, frozen, and locked.</p>
+<p>uv sync seems to pull double/triple duty in that it can either sync my uv.lock to my venv, or it can sync my pyproject.toml+updates to my uv.lock (which is also done by <code>uv lock</code>) and to my venv.</p>
+<p>The documentation for uv sync isn't great, since the &quot;locking and syncing&quot; page barely mentions uv sync, and the CLI reference clarifies things when it says &quot;The project is re-locked before syncing unless the --locked or --frozen flag is provided.&quot;, but this phrase is a bit deep into the documentation and not too easy to find.</p>
+<p>I think it would be clearer if uv sync could be provided uv.lock or pyproject.toml, so instead of <code>uv sync --frozen</code> you would do <code>uv sync uv.lock</code>, and you could also do <code>uv sync pyproject.toml</code> to disambiguate what uv sync is doing (and maybe by default <code>uv sync</code> looks for pyproject.toml, i.e. the existing behavior).</p>
+<p>I think there are maybe other ways to solve this problem but the point is that <code>uv sync --frozen</code> is rather confusing for newcomers who want to install what's in uv.lock to replicate their coworker's environment.</p>
+<h3>Platform</h3>
+<p><em>No response</em></p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @nbelakovski on 2025-02-12 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nbelakovski">@nbelakovski</a> on 2025-02-12 14:23</div>
+            <div class="timeline-body"><p>Here's another suggestion, although this would be a breaking change unfortunately:</p>
+<p>Have the default behavior of <code>uv sync</code> be <code>uv sync --frozen</code> and introduce <code>--relock</code> to have uv sync update the lockfile. <code>--relock</code> makes it clear that uv sync will invoke uv lock before running, and it separates the two tools. It's definitely super confusing for new people when uv sync results in an updated lockfile, which is presumably what uv lock is for, in addition to updating the env.</p>
+<p>I hope you find these useful, I'm just trying to provide feedback as a newcomer to the tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-04 14:24</div>
+            <div class="timeline-body"><p>We consider <code>uv run</code> the main starter entrypoint to uv: This subcommand reads your requirements (from pyproject.toml) and runs your code with them, creating a venv, locking and syncing all in the background, with the lockfile more a side effect to keep things stable and reproducible.</p>
+<p><code>uv sync</code> will keep the lockfile unchanged if possible, but it updates the lockfile if the requirements changed to avoid a mismatch between <code>pyproject.toml</code> and <code>.venv</code>. The locked and frozen options were mainly designed for CI and deployment, where someone may have forgotten to re-lock (or re-sync) after changing <code>pyproject.toml</code> or wants to add only a single file to an image respectively.</p>
+<p>I hope this sheds more light onto why uv sets these defaults to how they currently are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-04 14:53</div>
+            <div class="timeline-body"><p>I've updated the &quot;Locking and syncing&quot; page</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-04 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there are maybe other ways to solve this problem but the point is that uv sync --frozen is rather confusing for newcomers who want to install what's in uv.lock to replicate their coworker's environment.</p>
+</blockquote>
+<p>The only reason this would not replicate the environment, is if the <code>pyproject.toml</code> has changed and the lockfile has not been updated. In this case, many people would be surprised if the <code>pyproject.toml</code> changes were ignored.</p>
+<p>I don't think we're likely to change anything here. These are fundamental behaviors of uv. Hopefully we can clarify things through documentation and establishing new norms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-04 14:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:00 UTC
+    </footer>
+</body>
+</html>

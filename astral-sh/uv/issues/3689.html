@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>incorrect use of data-dist-info-metadata (PEP-714) - astral-sh/uv #3689</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>incorrect use of data-dist-info-metadata (PEP-714)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/3689">#3689</a>
+        opened by <a href="https://github.com/bazzargh">@bazzargh</a>
+        on 2024-05-21 10:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bazzargh">@bazzargh</a> on 2024-05-21 10:57</div>
+            <div class="timeline-body"><p>This is a driveby observation from code inspection at the current time</p>
+<p>https://github.com/astral-sh/uv/blob/906f65306288407774bcd155ae20f5247b6fe6aa/crates/uv-client/src/registry_client.rs#L366
+https://github.com/astral-sh/uv/blob/906f65306288407774bcd155ae20f5247b6fe6aa/crates/uv-client/src/html.rs#L190-L191
+https://github.com/astral-sh/uv/blob/906f65306288407774bcd155ae20f5247b6fe6aa/crates/pypi-types/src/simple_json.rs#L40-L42</p>
+<p>I was curious about the mechanism used to fetch metadata because dependabot is doing the Wrong Thing when calling artifactory, so I'm reading the codebases of other python registry clients. Reading the code here I noticed it's using the PEP 658 name of &quot;dist-info-metadata&quot; to find out if metadata is present, and an alias of &quot;data-dist-info-metadata&quot; to replicate a pip bug.</p>
+<p>The problem is those were superceded by https://peps.python.org/pep-0714/ - because getting pip to use the correct PEP 658 name caused it to crash. uv is using what are now optional aliases for backwards compatibility in the api, and may not exist in other registries.</p>
+<p>So I think:</p>
+<pre><code>    // Non-PEP 691-compliant alias used by PyPI.
+    #[serde(alias = &quot;data-dist-info-metadata&quot;)]
+    pub dist_info_metadata: Option&lt;DistInfoMetadata&gt;,
+</code></pre>
+<p>should be (avoiding renaming the field internally but supporting the rename):</p>
+<pre><code>    // Non-PEP 691-compliant alias used by PyPI, and PEP-714 renamed field
+    #[serde(alias = &quot;data-dist-info-metadata&quot;, alias = &quot;core-metadata&quot;)]
+    pub dist_info_metadata: Option&lt;DistInfoMetadata&gt;,
+</code></pre>
+<p>Similarly this:</p>
+<pre><code>        // Extract the `data-dist-info-metadata` field, which should be set on
+        // the `data-dist-info-metadata` attribute.
+        let dist_info_metadata = if let Some(dist_info_metadata) =
+            link.attributes().get(&quot;data-dist-info-metadata&quot;).flatten()
+        {
+            let dist_info_metadata = std::str::from_utf8(dist_info_metadata.as_bytes())?;
+            let dist_info_metadata = html_escape::decode_html_entities(dist_info_metadata);
+            match dist_info_metadata.as_ref() {
+                &quot;true&quot; =&gt; Some(DistInfoMetadata::Bool(true)),
+                &quot;false&quot; =&gt; Some(DistInfoMetadata::Bool(false)),
+                fragment =&gt; Some(DistInfoMetadata::Hashes(Self::parse_hash(fragment)?)),
+            }
+        } else {
+            None
+        };
+</code></pre>
+<p>needs to be something more like (correcting first line of comment and adding fallback):</p>
+<pre><code>        // Extract the `dist_info_metadata` field, which should be set on
+        // the `data-core-metadata` attribute (see PEP-714)
+        let dist_info_metadata = if let Some(dist_info_metadata) =
+            link.attributes().get(&quot;data-core-metadata&quot;).flatten()
+        {
+            let dist_info_metadata = std::str::from_utf8(dist_info_metadata.as_bytes())?;
+            let dist_info_metadata = html_escape::decode_html_entities(dist_info_metadata);
+            match dist_info_metadata.as_ref() {
+                &quot;true&quot; =&gt; Some(DistInfoMetadata::Bool(true)),
+                &quot;false&quot; =&gt; Some(DistInfoMetadata::Bool(false)),
+                fragment =&gt; Some(DistInfoMetadata::Hashes(Self::parse_hash(fragment)?)),
+            }
+        // fallback to pre PEP-714 name from PEP-658
+        } else if let Some(dist_info_metadata) =
+            link.attributes().get(&quot;data-dist-info-metadata&quot;).flatten()
+        {
+            let dist_info_metadata = std::str::from_utf8(dist_info_metadata.as_bytes())?;
+            let dist_info_metadata = html_escape::decode_html_entities(dist_info_metadata);
+            match dist_info_metadata.as_ref() {
+                &quot;true&quot; =&gt; Some(DistInfoMetadata::Bool(true)),
+                &quot;false&quot; =&gt; Some(DistInfoMetadata::Bool(false)),
+                fragment =&gt; Some(DistInfoMetadata::Hashes(Self::parse_hash(fragment)?)),
+            }
+        } else {
+            None
+        };
+</code></pre>
+<p>(I don't really speak rust, I'm sure there's a better way to dedupe that code)</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "incorrect use of data-dist-info-metadata" to "incorrect use of data-dist-info-metadata (PEP-714)" by @bazzargh on 2024-05-21 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-21 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 11:45</div>
+            <div class="timeline-body"><p>I can take a look, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-05-21 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3697.html">astral-sh/uv#3697</a> on 2024-05-21 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3698.html">astral-sh/uv#3698</a> on 2024-05-21 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 14:13</div>
+            <div class="timeline-body"><p>Do you know of any registry that actually implements <code>data-core-metadata</code>? Does Artifactory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 14:14</div>
+            <div class="timeline-body"><p>Oh I see, PyPI adds it now in addition to <code>data-dist-info-metadata</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bewinsnw">@bewinsnw</a> on 2024-05-21 14:39</div>
+            <div class="timeline-body"><p>Artifactory does not implement that. Its support is unfortunately <em>very</em> basic: over here https://jfrog.atlassian.net/browse/RTFACT-16101 you can see people asking for simple-json to be implemented and it was closed without comment.</p>
+<p>Looking at our own instance, I can see that <em>none</em> of the metadata attributes are exposed in the simple index pages it publishes. For libraries in our pull-through cache (like say, poetry, django) I can see that despite the attribute not being there adding <code>.metadata</code> to the wheel url does pull the correct metadata. For internal libraries published to the private simple index, no metadata is available at all.</p>
+<p>It was headscratching at this and wondering how the heck dependabot was supposed to be working that led me to reading the spec and this code.</p>
+<p>I don't know the status of the other non-warehouse servers, but I'd assume they're just as bad. Sonatype Nexus doesn't list its pep compatibility, but the examples in their docs are only of simple (not simple-json), and AWS Codeartifact says it only supports simple https://docs.aws.amazon.com/codeartifact/latest/ug/python-compatibility.html so really - PEP 714 more a theoretical concern with the specs, as far as I'm aware everything else lags pypi by several years and hasn't even got to PEP-658.</p>
+<p>(oops, I am @bazzargh too - this is my work account)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-21 14:40</div>
+            <div class="timeline-body"><p>The lack of support for this stuff (among other features) in non-PyPI registries is such a shame.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-21 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../simple-repository/simple-repository-server/issues/3.html">simple-repository/simple-repository-server#3</a> on 2024-05-24 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:27 UTC
+    </footer>
+</body>
+</html>

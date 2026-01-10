@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File restructuring needs a manual sync --reinstall? - astral-sh/uv #10390</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>File restructuring needs a manual sync --reinstall?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/10390">#10390</a>
+        opened by <a href="https://github.com/cgravill">@cgravill</a>
+        on 2025-01-08 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cgravill">@cgravill</a> on 2025-01-08 12:25</div>
+            <div class="timeline-body"><p>We're restructuring some of our packages with a <code>src/</code> layout and we've had some friction with moving modules not being found unless we do a manual <code>uv sync --resinstall</code>. I wondered if that's expected or might be something that can be handled?</p>
+<p>Minimal reproduction:</p>
+<p><code>uv init --lib</code></p>
+<p>Then add some files</p>
+<p><code>one.py</code></p>
+<pre><code class="language-python">def function_in_one():
+    print(&quot;I am in one.py&quot;)
+</code></pre>
+<p><code>two.py</code></p>
+<pre><code class="language-python">from moving_module.one import function_in_one
+
+function_in_one()
+</code></pre>
+<p>(this shows the opposite move, out of <code>src/</code> but the same happens either way)</p>
+<pre><code class="language-console">$ uv run src/moving_module/two.py
+I am in one.py
+$ mv src/moving_module moving_module
+$ rm -r src
+$ uv run moving_module/two.py
+Traceback (most recent call last):
+  File &quot;/home//BLAH/BLAh/moving_module/moving_module/two.py&quot;, line 1, in &lt;module&gt;
+    from moving_module.one import function_in_one
+ModuleNotFoundError: No module named 'moving_module'
+$ uv sync
+Resolved 1 package in 1ms
+Audited 1 package in 0.09ms
+$ uv run moving_module/two.py
+Traceback (most recent call last):
+  File &quot;/home//BLAH/BLAh/moving_module/moving_module/two.py&quot;, line 1, in &lt;module&gt;
+    from moving_module.one import function_in_one
+ModuleNotFoundError: No module named 'moving_module'
+$ uv sync --reinstall
+Resolved 1 package in 0.86ms
+   Built moving-module @ file:///home//BLAH/BLAh/moving_module
+Prepared 1 package in 282ms
+Uninstalled 1 package in 0.33ms
+Installed 1 package in 0.46ms
+ ~ moving-module==0.1.0 (from file:///home//BLAH/BLAh/moving_module)
+$ uv run moving_module/two.py
+I am in one.py
+$ uv --version
+uv 0.5.15
+</code></pre>
+<p>It's easily fixed, just causes confusion when multiplied over lots of people and repositories being updated at different times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roteiro">@roteiro</a> on 2025-01-08 12:44</div>
+            <div class="timeline-body"><p>You could add</p>
+<pre><code>[tool.uv]
+reinstall-package = [&quot;moving_module&quot;]
+</code></pre>
+<p>to your <code>pyproject.toml</code> to enforce reinstallation before every <code>uv run</code> invocation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 14:44</div>
+            <div class="timeline-body"><p>I think this is &quot;working as intended&quot; even though it's somewhat confusing... We don't re-build the package on every invocation, only when certain paths change (see, e.g., https://docs.astral.sh/uv/concepts/cache/). In this case, the package is installed as editable, so that mostly &quot;just works&quot; -- like, if you change the print in <code>function_in_one</code>, you should see that reflected immediately when you <code>uv run</code>.</p>
+<p>However, in this case, when you built the first time, <code>hatchling</code> considered <code>src/moving_module</code> to be the top-level module, so it points there when it builds the editable. If you move files out of that directory, it won't see them anymore, and you have to re-build. When you re-build, <code>hatchling</code> presumedly identifies that <code>moving_module</code> is now the top-level module, and changes the included <code>.pth</code> files in the environment to point to that directory.</p>
+<p>In short, you need to tell uv to re-build the module, because we don't &quot;always rebuild&quot;, and you've changed something that we don't detect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-01-08 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cgravill">@cgravill</a> on 2025-01-08 21:31</div>
+            <div class="timeline-body"><p>That totally makes sense, and avoiding rebuilds is great. I hoped you might have enough information to cheaply know the cache needs invalidating.</p>
+<p>Is this something that the uv build system (#3957) might be able to catch? We were waiting while that stabilises a little but could try that out too?</p>
+<p>No problem if not, it's just a bit messy for folks on my team less into <code>uv</code>, but I can tell them to <code>uv sync --reinstall</code> when they get pull the changes on the different repos.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cgravill">@cgravill</a> on 2025-01-08 21:36</div>
+            <div class="timeline-body"><p>Actually looking at your link on caching more (thanks for that), we're likely to change the <code>pyproject.toml</code> anyway but I can ensure any migration PR has a change to that file which will invalidate and force a rebuild for other folks. I've checked and even a <code>touch pyproject.toml</code> is enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 16:24</div>
+            <div class="timeline-body"><p>Yeah <code>touch pyproject.toml</code> should be fine, since the caching is based on the file's ctime. I think it's plausible that the uv build backend could do a better job here... It's worth thinking about. (Though it likely doesn't do a better job <em>today</em>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-29 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cgravill">@cgravill</a> on 2025-01-29 16:38</div>
+            <div class="timeline-body"><p>Excellent. The workaround is good enough for our purposes. Thanks for pointers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/12047.html">astral-sh/uv#12047</a> on 2025-03-14 23:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:32:01 UTC
+    </footer>
+</body>
+</html>

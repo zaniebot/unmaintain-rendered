@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to add a validator to an arg from a subcommand using YAML - clap-rs/clap #968</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to add a validator to an arg from a subcommand using YAML</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/968">#968</a>
+        opened by <a href="https://github.com/craigzour">@craigzour</a>
+        on 2017-05-25 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/craigzour">@craigzour</a> on 2017-05-25 14:08</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I am not able to make my validator work with an argument attached to a subcommand. I would like to attach a validator to something I declared in my YAML file.</p>
+<h3>Rust Version</h3>
+<p>rustc 1.17.0 (56124baa9 2017-04-24)</p>
+<h3>Affected Version of clap</h3>
+<p>clap 2.23.2</p>
+<h3>Expected Behavior Summary</h3>
+<p>Validator error should be thrown when my argument is not valid</p>
+<h3>Actual Behavior Summary</h3>
+<p>When I run the code my argument is treated as valid even though it is not</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>My cli.yml file:</p>
+<pre><code>name: blabla
+version: &quot;0.0.4&quot;
+author: blabla
+about: blabla
+
+settings:
+    - ColorAlways
+    - ColoredHelp
+    - VersionlessSubcommands
+    - DisableHelpSubcommand
+    - DeriveDisplayOrder
+    - SubcommandRequiredElseHelp
+
+args:
+    - format:
+        help: blabla
+        global: true
+        possible_values: [json, csv]
+        short: f
+        long: format
+        takes_value: true
+
+subcommands:
+    - info:
+        about: blabla
+    - firmware-update:
+        about: blabla
+        args:
+          - firmware-file-path:
+              help: blala
+              required: true
+              takes_value: true
+</code></pre>
+<p>My main.rs file:</p>
+<pre><code>let yaml = load_yaml!(&quot;cli.yml&quot;);
+let cli = App::from_yaml(yaml);
+let cli_with_validators = cli.subcommand(SubCommand::with_name(&quot;firmware-update&quot;).arg(Arg::with_name(&quot;firmware-file-path&quot;).validator(validate_firmware_file_path)));
+let matches = cli_with_validators.get_matches();
+
+fn validate_firmware_file_path(file_path: String) -&gt; Result&lt;(), String&gt; {
+  let path = Path::new(&amp;file_path);
+
+  if path.starts_with(&quot;bla&quot;) &amp;&amp; path.ends_with(&quot;.bla&quot;) {
+    return Ok(());
+  } else {
+    return Err(String::from(&quot;Firmware file name is not valid.&quot;));
+  }
+}
+</code></pre>
+<p>Thanks !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-29 21:01</div>
+            <div class="timeline-body"><p>Thanks for the details and taking the time to file this! This is a known issue, but the workaround is decently simply. Any args which contain validators, will need to be defined in the Rust source.</p>
+<p>I'm actively working on a solution to allow mutating args once they've been added which will solve this particular issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @kbknapp on 2017-05-29 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-05-29 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-05-29 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-05-29 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2017-05-29 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/craigzour">@craigzour</a> on 2017-05-30 13:29</div>
+            <div class="timeline-body"><p>@kbknapp Great ! Thank you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @craigzour on 2017-05-30 13:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:33 UTC
+    </footer>
+</body>
+</html>

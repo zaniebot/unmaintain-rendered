@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv lock` Improvement: a consistent environment for `prepare_metadata_for_build_wheel`. - astral-sh/uv #7390</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`uv lock` Improvement: a consistent environment for `prepare_metadata_for_build_wheel`.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/7390">#7390</a>
+        opened by <a href="https://github.com/YouJiacheng">@YouJiacheng</a>
+        on 2024-09-14 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 11:07</div>
+            <div class="timeline-body"><p>Currently, <code>uv lock</code> runs in the Python interpreter specified by &quot;Python options&quot; (shown by <code>uv lock --help</code>).
+<img src="https://github.com/user-attachments/assets/0013c39f-f366-44f9-8dc6-bb41cd95c85e" alt="image" /></p>
+<p>However, as discussed in #7291 , even managed Python Interpreters can have an environment inconsistent with the default virtual environment created by <code>uv venv</code>.
+Let <code>uv lock</code> be &quot;polluted&quot; by the system Python Interpreter with an arbitrary environment sounds even worse.</p>
+<p>[deleted]
+~~Ideally we can specify this in <code>pyproject.toml</code> with a default to an environment <strong>equivalent</strong> to the one created by <code>uv venv</code>.
+And we can also specify <code>index-url</code>.
+Expectation by example:~~</p>
+<pre><code class="language-toml">[tool.uv]
+lock-dependencies-default = []
+
+[tool.uv.lock-index-url]
+torch = &quot;https://download.pytorch.org/whl/cu124&quot;
+
+[tool.uv.lock-dependencies]
+flash-attn = [&quot;setuptools&quot;, &quot;packaging&quot;]
+chumpy = [&quot;setuptools&quot;, &quot;pip&quot;]
+</code></pre>
+<p>~~OR~~</p>
+<pre><code class="language-toml">[[tool.uv.lock-resolution]]
+name = &quot;torch&quot;
+index-url = &quot;https://download.pytorch.org/whl/cu124&quot;
+dependencies = [&quot;setuptools&quot;]
+
+[[tool.uv.lock-resolution]]
+name = &quot;flash-attn&quot;
+dependencies = [&quot;setuptools&quot;, &quot;packaging&quot;]
+
+[[tool.uv.lock-resolution]]
+name = &quot;chumpy&quot;
+dependencies = [&quot;setuptools&quot;, &quot;pip&quot;]
+</code></pre>
+<p>[deleted]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 12:27</div>
+            <div class="timeline-body"><p>There's a significant downside to this, which is that it would require that we create a virtual environment to perform <code>uv lock</code> (despite the fact that we never modify it). I'm hesitant to make that change, given that (1) build isolation is relatively rare, and (2) we want to redesign it anyway.</p>
+<p>Can you file the second suggestion here as its own issue? I think it's separate.</p>
+<p>\cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-09-14 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 13:45</div>
+            <div class="timeline-body"><p>~~&quot;the second suggestion here&quot; -- did you mean index-url stuffs or the whole &quot;lock resolution config&quot; thing?~~</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 13:47</div>
+            <div class="timeline-body"><p>IIUC all package that have a dynamic metadata or without a pyproject.toml will need an environment to run <code>prepare_metadata_for_build_wheel</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p>we want to redesign it anyway.</p>
+</blockquote>
+<p>is there any roadmap for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:27</div>
+            <div class="timeline-body"><p>I misread your second suggestion. I thought you were suggesting something like https://github.com/astral-sh/uv/issues/7393 which would also fix this by allowing you to define the Chumpy requirements upfront rather than requiring that we build it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:28</div>
+            <div class="timeline-body"><p>The <code>[tool.uv.lock-index-url]</code> is unlikely to happen as we're adding an entirely separate API for indexes (#171).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:30</div>
+            <div class="timeline-body"><p>If a user said:</p>
+<pre><code class="language-toml">[[tool.uv.lock-resolution]]
+name = &quot;flash-attn&quot;
+dependencies = [&quot;setuptools&quot;, &quot;packaging&quot;, &quot;torch&quot;]
+</code></pre>
+<p>Then we would install setuptools, packaging, and torch in an isolated environment -- is that the suggestion?</p>
+<p>I don't know that this would solve the general case. It's typically <em>not</em> the case that users disable build isolation because a package fails to declare the right build dependencies -- that is <em>sometimes</em> true, like for Chumpy, but typically, build isolation is disabled because you need to build against a specific version of an installed dependency, like for PyTorch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 14:34</div>
+            <div class="timeline-body"><p>Okay that sounds bad.
+Useful cases are too rare.
+And this can confuse the users -- &quot;is it the dependencies for setup.py of the package or the whole package?&quot; -- even you misread my example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-14 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>is there any roadmap for this?</p>
+</blockquote>
+<p>Let me look... The main idea was that we wanted to add a new build isolation API for <code>uv sync</code> and <code>uv lock</code>, but we didn't have time so we decided to support <code>--no-build-isolation</code> like in pip to start. I have some unformed ideas around allowing packages to declare the dependencies that they need to pull in from the existing environment, kind of like what you had above... E.g.:</p>
+<pre><code class="language-toml">name = &quot;flash-attn&quot;
+dependencies = [&quot;setuptools&quot;, &quot;packaging&quot;, &quot;torch&quot;]
+</code></pre>
+<p>...could create a virtual environment, and then give it access to the already-installed <code>torch</code> from another virtual environment. So it'd be a sort of hybrid form of isolation: the build happens in a new, isolated environment, but we link in packages that are installed in a separate environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 14:48</div>
+            <div class="timeline-body"><p>I think <code>flash-attn</code> can be solved by #7393 + switching between two optional dependencies groups?
+But yeah &quot;hybrid form of isolation&quot; is not bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YouJiacheng">@YouJiacheng</a> on 2024-09-14 15:00</div>
+            <div class="timeline-body"><p>Can we provide a first-class support for &quot;switching between two (or more) optional dependencies groups&quot;?
+Just standardize it with inspiration from Docker multi-stage builds -- the outputs of build stages are wheels.</p>
+<pre><code class="language-toml">[[tool.uv.build-stage]]
+# environment variables etc. can also be set.
+dependencies = [&quot;setuptools&quot;, &quot;packaging&quot;, &quot;psutil&quot;, &quot;ninja&quot;, &quot;torch&quot;]
+outputs = [&quot;flash-attn&quot;, &quot;some-other-packages&quot;]
+[[tool.uv.build-stage]]
+dependencies = [&quot;setuptools&quot;, &quot;torch&quot;, &quot;flash-attn&quot;]
+outputs = [&quot;some-packages&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/11675.html">astral-sh/uv#11675</a> on 2025-02-20 19:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:49 UTC
+    </footer>
+</body>
+</html>

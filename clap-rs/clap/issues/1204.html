@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflicts don't propagate from the global level to the subcommand - clap-rs/clap #1204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conflicts don't propagate from the global level to the subcommand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/1204">#1204</a>
+        opened by <a href="https://github.com/larsrh">@larsrh</a>
+        on 2018-03-06 21:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/larsrh">@larsrh</a> on 2018-03-06 21:25</div>
+            <div class="timeline-body"><p>As discussed on Gitter: https://gitter.im/kbknapp/clap-rs?at=5a9f003af3f6d24c68450335</p>
+<h3>Affected Version of clap</h3>
+<p>2.31.1</p>
+<h3>Expected Behavior Summary</h3>
+<p>When declaring that a subcommand argument is in conflict with a global argument, clap should produce an error no matter whether the global argument comes after or before the subcommand.</p>
+<h3>Actual Behavior Summary</h3>
+<p>global argument comes after: conflict
+global argument comes before: no conflict</p>
+<h3>Sample Code or Link to Sample Code</h3>
+<p>(by @kbknapp)</p>
+<pre><code class="language-rust">extern crate clap;
+use clap::{Arg, App, SubCommand};
+
+fn main(){
+    let _ = App::new(&quot;fake&quot;)
+        .arg(Arg::with_name(&quot;glob&quot;)
+            .short(&quot;g&quot;)
+            .global(true))
+        .subcommand(SubCommand::with_name(&quot;foo&quot;)
+            .arg(Arg::with_name(&quot;conf&quot;)
+                .short(&quot;c&quot;)
+                .conflicts_with(&quot;glob&quot;)))
+        .get_matches_from(vec![&quot;fake&quot;, &quot;foo&quot;, &quot;-g&quot;, &quot;-c&quot;]);
+}
+</code></pre>
+<h3>Steps to Reproduce the issue</h3>
+<p>Run the above code with <code>fake foo -g -c</code> and <code>fake -g foo -c</code> and observe the difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2018-03-07 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2018-03-07 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: parsing</span> added by @kbknapp on 2018-03-07 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2018-03-07 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-03-07 01:25</div>
+            <div class="timeline-body"><p>Thanks for submitting!</p>
+<p>For my own notes and from the gitter chat</p>
+<ul>
+<li>The flag is actually propagated down to the subcommand correctly, but the conflict doesn't register</li>
+<li>The same happens if we use options instead of flags (so it's not flag specific)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mainrs">@mainrs</a> on 2018-08-25 10:26</div>
+            <div class="timeline-body"><p>Just a side note, shouldn't the help also not display the global arg if the subcommand arg is in conflict and the subcommand arg is required? This case wouldn't allow the global arg anyway to be passed down.</p>
+<pre><code class="language-rust">extern crate clap;
+use clap::{Arg, App, SubCommand};
+
+fn main() {
+	let _ = App::new(&quot;fake&quot;)
+		.arg(Arg::with_name(&quot;glob&quot;)
+			.short(&quot;g&quot;)
+			.global(true))
+		.subcommand(SubCommand::with_name(&quot;foo&quot;)
+			.arg(Arg::with_name(&quot;conf&quot;)
+				.short(&quot;c&quot;)
+				.takes_value(true)
+				.required(true)
+				.conflicts_with(&quot;glob&quot;)))
+		.get_matches_from(vec![&quot;fake&quot;, &quot;foo&quot;, &quot;-g&quot;, &quot;-c&quot;]);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-04-09 07:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ldm0 by @ldm0 on 2021-03-13 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-05-26 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "3.1" by @pksunkara on 2021-05-26 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/89.html">epage/clapng#89</a> on 2021-12-06 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: errors</span> removed by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: validators</span> added by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-08 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @ldm0 by @epage on 2021-12-09 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">P3: want to have</span> removed by @epage on 2021-12-09 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2021-12-09 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3135.html">clap-rs/clap#3135</a> on 2021-12-13 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../jj-vcs/jj/issues/101.html">jj-vcs/jj#101</a> on 2022-03-02 18:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/3767.html">clap-rs/clap#3767</a> on 2022-05-30 05:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../paritytech/subxt/pulls/805.html">paritytech/subxt#805</a> on 2023-01-27 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5588.html">clap-rs/clap#5588</a> on 2024-07-19 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5899.html">clap-rs/clap#5899</a> on 2025-02-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/5977.html">clap-rs/clap#5977</a> on 2025-04-24 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/6049.html">clap-rs/clap#6049</a> on 2025-06-27 15:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot install JupyterLab - astral-sh/uv #8161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot install JupyterLab</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8161">#8161</a>
+        opened by <a href="https://github.com/pollow">@pollow</a>
+        on 2024-10-13 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pollow">@pollow</a> on 2024-10-13 21:24</div>
+            <div class="timeline-body"><p>I am having trouble setting up the a JupyterLab environment. I would expect to simply <code>uv add jupyterlab</code> and it will set up the dependencies and ready to run, which is my expectation of a package management.</p>
+<p>But I run in the following error, and after some research, i only found posts suggesting try <code>conda-forge</code>, which is another project management tool that I beileve is conflicting with uv?</p>
+<p>I wonder what's the preferred practice here. Thanks.</p>
+<pre><code>PS D:\Workplace\simple-toy&gt; uv add jupyterlab
+Resolved 106 packages in 26ms
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: pywinpty==2.0.13
+  Caused by: Build backend failed to build wheel through `build_wheel` (exit code: 1)
+
+[stdout]
+Running `maturin pep517 build-wheel -i C:\Users\%USERNAME%\AppData\Local\uv\cache\builds-v0\.tmpHNo1lN\Scripts\python.exe --compatibility off`
+
+[stderr]
+💥 maturin failed
+  Caused by: Cargo metadata failed. Do you have cargo in your PATH?
+  Caused by: program not found
+Error: command ['maturin', 'pep517', 'build-wheel', '-i', 'C:\\Users\\%USERNAME%\\AppData\\Local\\uv\\cache\\builds-v0\\.tmpHNo1lN\\Scripts\\python.exe', '--compatibility', 'off'] returned non-zero exit status 1
+</code></pre>
+<p><code>uv</code> version is <code>uv 0.4.20 (0e1b25a53 2024-10-08)</code>.
+Platform: Windows 11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-13 21:47</div>
+            <div class="timeline-body"><p>Which python version are you using? I see that pywinpty doesn't have binary wheels for py 3.13 yet. So I would suggest trying with python 3.12 instead, it might be more compatible because 3.13 is very newly released. Maybe try <code>uv python pin 3.12</code> in the project and try again? (Or 3.11, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pollow">@pollow</a> on 2024-10-14 00:42</div>
+            <div class="timeline-body"><p>@bluss Yes it is 3.13. Wasn't expecting this beeing the reason. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-14 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-14 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LxYuan0420">@LxYuan0420</a> on 2024-11-07 09:00</div>
+            <div class="timeline-body"><p>The issue still seems to persist even after upgrading to Python 3.12</p>
+<pre><code>(playgrounds) ╭─$ ~/works/playgrounds
+╰─➤  cat .python-version
+3.12
+(playgrounds) ╭─$ ~/works/playgrounds
+╰─➤  bat requirements.txt
+───────┬─────────────────────────────────────────────────────────────────────────
+       │ File: requirements.txt
+───────┼─────────────────────────────────────────────────────────────────────────
+   1   │ jupyterlab
+   2   │ jupyterlab-vim
+───────┴─────────────────────────────────────────────────────────────────────────
+(playgrounds) ╭─$ ~/works/playgrounds
+╰─➤  uv pip install -r requirements.txt
+⠇ Resolving dependencies...
+error: Failed to fetch: `https://pypi.org/simple/jupyterlab/`
+  Caused by: Request failed after 3 retries
+  Caused by: error sending request for url (https://pypi.org/simple/jupyterlab/)
+  Caused by: client error (Connect)
+  Caused by: invalid peer certificate: UnknownIssuer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 09:09</div>
+            <div class="timeline-body"><p>@LxYuan0420 your problem seems to be about SSL certificates, unrelated to the original problem. Can you <code>curl https://pypi.org/simple/jupyterlab/</code> or <code>wget https://pypi.org/simple/jupyterlab/</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LxYuan0420">@LxYuan0420</a> on 2024-11-07 09:25</div>
+            <div class="timeline-body"><p>Thanks for the quick reply.</p>
+<p>I tested with the curl command and received this output, so I don’t think it’s an SSL certificate issue?</p>
+<pre><code class="language-bash">... truncated output ...
+&lt;a href=&quot;https://files.pythonhosted.org/packages/e2/53/3d513eaf8f45c0d3bbb648f95e400cd85b4d0a4c449c9a21f662da4b5190/jupyterlab-4.3.0rc1.tar.gz#sha256=711135838fdf33eed70b1440803763cd0210212b04dfd381c335a4968f77ade5&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; &gt;jupyterlab-4.3.0rc1.tar.gz&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://files.pythonhosted.org/packages/2c/61/e87b188e224c040ff5a30fd63ea61d1767e419d23abb9c731693d6de0a64/jupyterlab-4.3.0-py3-none-any.whl#sha256=f67e1095ad61ae04349024f0b40345062ab108a0c6998d9810fec6a3c1a70cd5&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; data-dist-info-metadata=&quot;sha256
+0ff4f7aaa9b3fed68adc83&quot;&gt;jupyterlab-4.3.0-py3-none-any.whl&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://files.pythonhosted.org/packages/1b/19/67c3dd19789337396f2e43d9d8373d5e59b4ce6ad8df51edde83bf2156fd/jupyterlab-4.3.0.tar.gz#sha256=7c6835cbf8df0af0ec8a39332e85ff11693fb9a468205343b4fc0bfbc74817e5&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; &gt;jupyterlab-4.3.0.tar.gz&lt;/a&gt;&lt;br /&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+* Connection #0 to host pypi.org left intact
+&lt;!--SERIAL 25747349--&gt;%
+
+</code></pre>
+<p>Also, I tried installing those packages using Python’s venv, and it is working fine.</p>
+<pre><code class="language-bash">╭─$ ~/works
+╰─➤  mkdir test-jupyter-lab
+╭─$ ~/works
+╰─➤  cd test-jupyter-lab
+╭─$ ~/works/test-jupyter-lab
+╰─➤  cp ../requirements.txt .
+╭─$ ~/works/test-jupyter-lab
+╰─➤  bat requirements.txt
+───────┬────────────────────────────────────────────────────────────
+       │ File: requirements.txt
+───────┼────────────────────────────────────────────────────────────
+   1   │ jupyterlab
+   2   │ jupyterlab-vim
+───────┴────────────────────────────────────────────────────────────
+╭─$ ~/works/test-jupyter-lab
+╰─➤  python3 -m venv .venv
+╭─$ ~/works/test-jupyter-lab
+╰─➤  source .venv/bin/activate
+(.venv) ╭─$ ~/works/test-jupyter-lab
+╰─➤  pip install -r requirements.txt
+(.venv) ╭─$ ~/works/test-jupyter-lab
+╰─➤  pip freeze | grep -E &quot;jupyterlab|vim&quot;
+jupyterlab==4.3.0
+jupyterlab-vim==4.1.4
+jupyterlab_pygments==0.3.0
+jupyterlab_server==2.27.3
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LxYuan0420">@LxYuan0420</a> on 2024-11-07 10:27</div>
+            <div class="timeline-body"><p>Fixed! The issue was caused by the corporate proxy certificates. The workaround is:</p>
+<pre><code class="language-bash">$ uv pip install -r requirements.txt --native-tls
+</code></pre>
+<p>References:</p>
+<ul>
+<li><a href="https://docs.astral.sh/uv/reference/settings/#native-tls">Setting native-tls = true</a></li>
+<li>#8832</li>
+</ul>
+<p>Thanks</p>
+<p>CC: @konstin</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:08 UTC
+    </footer>
+</body>
+</html>

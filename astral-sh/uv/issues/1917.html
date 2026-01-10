@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `std` for `uv-trampoline` - astral-sh/uv #1917</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use `std` for `uv-trampoline`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/1917">#1917</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-23 15:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 15:29</div>
+            <div class="timeline-body"><p>The <code>uv-trampoline</code> is used by <code>uv</code> to generate exe binaries for python entrypoint scripts (launcher scripts).</p>
+<p>Our current implementation is a fork of <a href="https://github.com/njsmith/posy/tree/dda22e6f90f5fefa339b869dd2bbe107f5b48448/src/trampolines/windows-trampolines/posy-trampoline">posy's trampoline</a> and one of the author's primary goal is to generate binaries with a minimal size. They achieve that by not using Rust's <code>std</code> and only use <code>win32</code> APIs. Our current launcher has a size of a little less than 20KB.</p>
+<p>We agree that it's important that the launcher is small because we include it twice into the <code>uv</code> binary and append it to every launcher script. However, not using <code>std</code> means that we must use unsafe <code>win32</code> API almost exclusively, which requires extra care and comes at the risk of UB and potential security vulnerabilities.</p>
+<p>Only using <code>non_std</code> is also no guarantee for a small binary. It requires extra care that no implicit panics &quot;bloat&quot; the binary size.</p>
+<p>That's why we think it's worth exploring using <code>std</code> for the trampoline. I created https://github.com/astral-sh/uv/pull/1864 and documented my initial findings. It seems that using <code>std</code> with <code>panic=abort</code> increases the binary size to roughly 90KB, which seems acceptable. It's also possible that the size can be reduced further. I haven't spent a lot of time trying.</p>
+<p>The goal is to explore using <code>std</code> for <code>uv-trampoline</code> while keeping the binary size minimal (by e.g. avoiding calling into <code>panic</code> handlers etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-02-23 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @MichaReiser on 2024-02-23 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/1864.html">astral-sh/uv#1864</a> on 2024-02-23 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/1126.html">astral-sh/uv#1126</a> on 2024-02-23 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/4722.html">astral-sh/uv#4722</a> on 2024-07-02 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-06 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-07-06 20:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:23 UTC
+    </footer>
+</body>
+</html>

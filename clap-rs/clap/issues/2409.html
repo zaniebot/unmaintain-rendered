@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflicting arguments in group only work for first group in YAML file - clap-rs/clap #2409</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conflicting arguments in group only work for first group in YAML file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/clap-rs/clap/issues/2409">#2409</a>
+        opened by <a href="https://github.com/DocKDE">@DocKDE</a>
+        on 2021-03-12 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DocKDE">@DocKDE</a> on 2021-03-12 16:01</div>
+            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+<ul>
+<li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
+<li>[X] I have searched the existing issues</li>
+</ul>
+<h3>Rust Version</h3>
+<p>1.50.0</p>
+<h3>Clap Version</h3>
+<p>3.0.0-beta.2</p>
+<h3>Minimal reproducible code</h3>
+<pre><code>name: pdbman
+version: &quot;0.1&quot;
+author: Me
+about: Does stuff
+
+settings: [DeriveDisplayOrder, ArgRequiredElseHelp, ColoredHelp, ColorAlways]
+    # - UnifiedHelpMessage
+    # - DeriveDisplayOrder
+
+args:
+    - INPUT:
+        about: Name of PDB file
+        required: true
+    - Query:
+        about: Query mode
+        long: query
+        short: Q
+    - Analyze:
+        about: Analysis mode
+        long: analyze
+        short: Y
+    - Add:
+        about: Add mode
+        long: add
+        short: A
+    - Remove:
+        about: Remove mode
+        long: remove
+        short: R
+    - Residues:
+        about: Residue mode
+        long: residues
+        short: r
+    - Atoms:
+        about: Atom mode
+        long: atoms
+        short: t
+    - Sidechain:
+        about: Use only sidechains of protein
+        long: sidechain
+        short: d
+        requires:
+            - Residues
+    - Backbone:
+        about: Use only backbones of protein
+        long: backbone
+        short: b
+        requires:
+            - Residues
+    - QM1:
+        about: QM1 region
+        long: qm1
+        short: q
+    - QM2:
+        about: QM1 region
+        long: qm2
+        short: o
+    - Active:
+        about: Active revion
+        long: active
+        short: a
+    - Infile:
+        about: File for list input
+        long: file
+        short: f
+        takes_value: true
+    - List:
+        about: Command line list
+        long: list
+        short: l
+        takes_value: true
+        multiple: true
+        use_delimiter: true
+    - Sphere:
+        about: Calculate sphere around atom. Requires Atom ID and radius in A as arguments.
+        long: sphere
+        short: s
+        takes_value: true
+        min_values: 2
+        max_values: 2
+        conflicts_with:
+            - Sidechain
+            - Backbone
+    - Outfile:
+        about: Name of PDB output file
+        long: outfile
+        short: e
+        takes_value: true
+    - Overwrite:
+        about: Overwrite input PDB file
+        long: overwrite
+        short: w
+  
+groups:
+    - mode:
+        args: [Query, Analyze, Add, Remove]
+        required: true
+    - partial:
+        args: [Sidechain, Backbone]
+    - target:
+        args: [Atoms, Residues]
+    - region:
+        args: [QM1, QM2, Active]
+    - source:
+        args: [File, List, Sphere]
+    - output:
+        args: [Outfile, Overwrite]
+</code></pre>
+<h3>Steps to reproduce the bug with the above code</h3>
+<p>Use this .yaml for any command line parsing.</p>
+<h3>Actual Behaviour</h3>
+<p>When calling the binary like <code>pdbman -QY</code> it fails with <code>error: The argument '--query' cannot be used with '--analyze'</code>. However the same is not true if I call multiple arguments from other groups like so: <code>pdbman -Aqo</code> or <code>pdbman -Qrt</code>. These commands run without error. It appears that only the args from the topmost group in the YAML file are recognized as being mutally exclusive. I verified this by changing their order.</p>
+<h3>Expected Behaviour</h3>
+<p>I would expect a command calling arguments from the same group to also fail with this: <code>error: The argument '--residues' cannot be used with '--atoms'</code> if they belong to the same group.</p>
+<h3>Additional Context</h3>
+<p><em>No response</em></p>
+<h3>Debug Output</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">T: bug</span> added by @DocKDE on 2021-03-12 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-12 20:04</div>
+            <div class="timeline-body"><p>Need the command which is failing and the debug output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pksunkara on 2021-03-12 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @pksunkara on 2021-03-12 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-12 20:05</div>
+            <div class="timeline-body"><p>Basically, the &quot;actual behaviour&quot; sections need actual command runs and their outputs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DocKDE">@DocKDE</a> on 2021-03-12 20:37</div>
+            <div class="timeline-body"><p>I updated the section for expected and actual behaviour. Although I must add I'm not sure what you mean by failing commands and debug output. My issue is precisely that there is no failing command when I expected it so there's no debug output I can post.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-03-13 05:32</div>
+            <div class="timeline-body"><p>What you wrote now is good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $5</span> added by @pksunkara on 2021-03-13 05:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C: yaml parser</span> added by @pksunkara on 2021-03-13 05:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">D: easy</span> added by @pksunkara on 2021-03-13 05:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-31 23:40</div>
+            <div class="timeline-body"><p>@DocKDE Can you please try with the latest master now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../epage/clapng/issues/182.html">epage/clapng#182</a> on 2021-12-06 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-08 20:01</div>
+            <div class="timeline-body"><p>We have decided to deprecate the YAML API.  For more details, see https://github.com/clap-rs/clap/issues/3087.  If there is interest in a YAML API, it will likely be broken out into a <code>clap_yaml</code> and developed independent from the core of clap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @epage on 2021-12-08 20:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:34:26 UTC
+    </footer>
+</body>
+</html>

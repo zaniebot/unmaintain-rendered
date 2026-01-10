@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zsh support for native completions - clap-rs/clap #3916</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>zsh support for native completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/clap-rs/clap/issues/3916">#3916</a>
+        opened by <a href="https://github.com/epage">@epage</a>
+        on 2022-07-13 14:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/epage">@epage</a> on 2022-07-13 14:15</div>
+            <div class="timeline-body"><p>See #3166 for more context</p>
+<ul>
+<li><a href="https://github.com/clap-rs/clap/blob/master/clap_complete/src/env/shells.rs">code</a></li>
+<li><a href="https://github.com/clap-rs/clap/blob/master/clap_complete/tests/testsuite/zsh.rs">tests</a></li>
+<li>tools that do similar<ul>
+<li><a href="https://pypi.org/project/argcomplete/">argcomplete</a></li>
+<li><a href="https://github.com/spf13/cobra">cobra</a></li>
+<li><a href="https://github.com/pacak/bpaf/blob/master/src/complete_run.rs">bpaf</a></li>
+<li><a href="https://carapace.sh/">carapace</a></li>
+<li><a href="https://github.com/sigoden/argc-completions">argc-completions</a></li>
+<li><a href="https://github.com/microsoft/inshellisense">inshellisense</a></li>
+</ul>
+</li>
+</ul>
+<p>Tasks</p>
+<ul>
+<li>[x] #5545</li>
+<li>[ ] Identify and resolve gaps with static completions</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2022-07-13 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2022-07-13 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-easy</span> added by @epage on 2022-07-13 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3166.html">clap-rs/clap#3166</a> on 2022-07-13 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/happenslol">@happenslol</a> on 2022-07-30 22:50</div>
+            <div class="timeline-body"><p>Had a few busy weeks but I'm back to working on this now.</p>
+<p>After trying to fit zsh support into the existing code, I realized that different shells might need to support a very different set of command line options for their completions and registration commands. This prompted me to split <a href="https://github.com/happenslol/clap/blob/implement-dynamic-zsh-completion/clap_complete/src/dynamic/mod.rs#L16">the complete command and the register command into different subcommands</a>, with the shell as either a value (for registration) or as a subcommand that can define its own options for each shell. Following cobra's example, I've also prefixed the complete command with underscores to mark it as an internal command not for use by the consumer.</p>
+<p>Here's how usage would look now:</p>
+<pre><code class="language-bash"># Write the bash completion script to stdout
+dynamic completions bash -
+
+# Process completions for bash (called from the completion script)
+dynamic __complete bash --index=0 --type=9 -- a b c
+
+# Write the zsh completion script to completions.zsh
+dynamic completions zsh completions.zsh
+</code></pre>
+<p>This results in a much better layout, where generic completion code can live inside <code>clap_complete/src/dynamic/complete.rs</code>, and the shell specific code in <code>clap_complete/src/dynamic/{zsh,bash,...}.rs</code> calls out to it after parsing options. <code>dynamic/mod.rs</code> pretty much just defines the subcommand and then delegates to the shell specific code.</p>
+<p>Are you alright with changing the subcommand like this, or is there a strong requirement to keep the existing structure? (e.g. a single <code>complete</code> command with a <code>--register</code> switch and all options defined in one place)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-01 15:08</div>
+            <div class="timeline-body"><p>Could you go into more detail for as to why zsh needs something different?</p>
+<p>My biggest concern with splitting things out is ensuring users can add support for shells we don't officially support.  The second is that the interface can have some complications to it and would prefer to have as much unified as possible to avoid duplicating problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/happenslol">@happenslol</a> on 2022-08-02 21:38</div>
+            <div class="timeline-body"><p>Sure thing! When trying to adapt the cobra zsh completion script, I noticed that no <code>IFS</code> argument is used, <code>COMP_CWORD</code> is not offered by zsh, and <code>COMP_TYPE</code> is not expressed as an integer. In the case of <code>COMP_TYPE</code> for example, we would either need to convert the int (e.g. 9, 33, etc.) in the bash script (<a href="https://github.com/spf13/cobra/blob/main/bash_completionsV2.go#L193">which is what cobra does</a>), or convert to the respective bash int for other shells. Both solutions don't feel good to me, but I could understand going with the first one.</p>
+<p>My solution would definitely lead to some code duplication. However, I feel like it would actually make it easier to implement support for new shells, since there's no chance of implementation details of one shell leaking out into others. When implementing a new shell, you get functions that will complete a given input, a framework for how to call the completion function, and you would just have to &quot;fill in the middle part&quot; that links the two.</p>
+<p>I could understand if you would prefer an abstraction that covers the largest amount of space to keep duplication to a minimum, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-02 21:53</div>
+            <div class="timeline-body"><blockquote>
+<p>COMP_CWORD is not offered by zsh</p>
+</blockquote>
+<p>Looks like <code>CURRENT</code> is used.  How is it different than <code>COMP_CWORD</code>?</p>
+<blockquote>
+<p>COMP_TYPE is not expressed as an integer</p>
+</blockquote>
+<p>I'm fine changing how we express it or moving it into the bash layer.  My overall hope was that the core completion logic would be shell agnostic and the registration code would bridge between clap and the shell as needed.</p>
+<blockquote>
+<p>However, I feel like it would actually make it easier to implement support for new shells</p>
+</blockquote>
+<p>My concern for supporting other shells is the composability of the API.  Since we don't have alternative shells, we don't have much for that today but its something we need to be able to handle as we do support more shells.</p>
+<blockquote>
+<p>However, I feel like it would actually make it easier to implement support for new shells, since there's no chance of implementation details of one shell leaking out into others. When implementing a new shell, you get functions that will complete a given input, a framework for how to call the completion function, and you would just have to &quot;fill in the middle part&quot; that links the two.</p>
+</blockquote>
+<p>Isn't the function you described the <code>complete</code> function today?   My hope is that the rest on top can work in the 99% case to not require a lot of boiler plate for users and developers.  It does shift some responsibility to the bridge code in the script..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/happenslol">@happenslol</a> on 2022-08-02 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks like CURRENT is used. How is it different than COMP_CWORD?</p>
+</blockquote>
+<p>Yes, my bad. I overlooked that, you're correct on that one.</p>
+<blockquote>
+<p>I'm fine changing how we express it or moving it into the bash layer. My overall hope was that the core completion logic would be shell agnostic and the registration code would bridge between clap and the shell as needed.</p>
+</blockquote>
+<p>Moving that into the completion registration script is absolutely an option. I'm just wary of a future where two sets of flags used by two different shells are completely disjunct. But I also concede that most shells we would implement right now have a large enough overlap to justify trying to make the code agnostic.</p>
+<blockquote>
+<p>Isn't the function you described the complete function today? My hope is that the rest on top can work in the 99% case to not require a lot of boiler plate for users and developers. It does shift some responsibility to the bridge code in the script..</p>
+</blockquote>
+<p>Yes, it is. The thing I was advocating for is essentially allowing each shell to define:</p>
+<ul>
+<li>A set of CLI flags (which could also draw from a common set of flags that are <code>flatten</code>ed), and</li>
+<li>A very short function that transforms the CLI flags and passes them to the underlying <code>complete</code> function.</li>
+</ul>
+<p>My hope would be that this would keep quirks of specific shells from leaking out to the completion code.</p>
+<p>Maybe I'm not doing a good job of describing what I'm proposing. I'll try to improve the model implementation I was working on and see how much duplication that would actually result in and what the resulting API would look like. That wouldn't be much work and then we'll actually have something tangible to discuss.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">:money_with_wings: $20</span> added by @epage on 2022-09-13 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">E-help-wanted</span> added by @epage on 2022-09-20 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-06-19 11:10</div>
+            <div class="timeline-body"><p>I don't quite understand the role of <code>COMP_TYPE</code>, is it used to set the triggering way of completion? Maybe we can ignore it and focus more on what the <code>complete</code> function needs, like <code>COMP_WORDS</code> and <code>COMP_CWORD</code> in bash.rs. Also I don't seem to find any built-in variables similar to <code>COMP_TYPE</code> in <a href="https://zsh.sourceforge.io/Doc/Release/Completion-Widgets.html#Completion-Widgets">zsh</a>. I think that I could work on this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shannmu">@shannmu</a> on 2024-06-19 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Following cobra's example, I've also prefixed the complete command with underscores to mark it as an internal command not for use by the consumer.</p>
+</blockquote>
+<p>I think that this could be a thing, because users may need the <code>complete</code> subcommand.
+Also in https://github.com/clap-rs/clap/blob/70e84174a72f766020f5f65f354e16f1e1a49bed/clap_complete/src/dynamic/shells/bash.rs#L30, we should export <code>_CLAP_IFS</code> rather than <code>IFS</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/3919.html">clap-rs/clap#3919</a> on 2024-06-20 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5545.html">clap-rs/clap#5545</a> on 2024-06-21 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/5791.html">clap-rs/clap#5791</a> on 2024-10-29 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakobhellermann">@jakobhellermann</a> on 2025-02-07 14:56</div>
+            <div class="timeline-body"><p>This can be closed since https://github.com/clap-rs/clap/pull/5545 has been merged, right? Same as https://github.com/clap-rs/clap/issues/3917 with https://github.com/clap-rs/clap/issues/3917</p>
+<p>Otherwise it's really hard to get a good overview of what's done from looking at the dynamic completion tracking issue https://github.com/clap-rs/clap/issues/3166</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-02-07 15:40</div>
+            <div class="timeline-body"><p>An initial implementation was merged.  What is lacking is an audit for missing features compared to the existing completions.  We could either track those in this issue or fully delegate to individual issues for whats left and close this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/titaniumtraveler">@titaniumtraveler</a> on 2025-02-07 15:49</div>
+            <div class="timeline-body"><blockquote>
+<p>What is lacking is an audit for missing features compared to the existing completions. We could either track those in this issue or fully delegate to individual issues for whats left and close this out.</p>
+</blockquote>
+<p>Is there some automated method to determine what features are missing/would it be viable to build one?</p>
+<p>I could imagine something like a conformance test suit that could be used to test how good a shell platform is supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-02-07 16:21</div>
+            <div class="timeline-body"><p>That has a couple of challenges</p>
+<p>We'd have to hand review each of the old completion scripts to see what to validate, which is the work we'd need to do for these issues anyways.</p>
+<p>Automated testing of the completions is very slow and has some hiccups.  We try to limit how much we do.  With the new completions, are focus as much testing as possible on the shell-agnostic completion engine which doesn't carry over from testing the old completion scripts .</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:35:05 UTC
+    </footer>
+</body>
+</html>

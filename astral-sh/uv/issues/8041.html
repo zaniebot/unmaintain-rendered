@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv pip install --exact` - astral-sh/uv #8041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv pip install --exact`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8041">#8041</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-09 09:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 09:33</div>
+            <div class="timeline-body"><p>To remove extraneous packages, similar to <code>uv sync --inexact</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-10-09 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-10-09 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-10-09 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-10-09 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @charliermarsh on 2024-10-09 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8044.html">astral-sh/uv#8044</a> on 2024-10-09 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-09 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-09 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2024-10-15 12:54</div>
+            <div class="timeline-body"><p>@charliermarsh I don't think this is 100% working. Or at least it's not working how I expected to be able to use it:</p>
+<p>In the apache/airflow repo:</p>
+<ol>
+<li><code>uv venv build/.k8s-env</code></li>
+<li><code>VIRTUAL_ENV=$PWD/build/.k8s-env uv pip install --exact -r scripts/ci/kubernetes/k8s_requirements.txt</code></li>
+<li><code>VIRTUAL_ENV=$PWD/build/.k8s-env uv pip install kgb</code> (Or any module not currently installed)</li>
+<li>Run <code>VIRTUAL_ENV=$PWD/build/.k8s-env uv pip install --exact -r scripts/ci/kubernetes/k8s_requirements.txt</code> and expect it to remove the <code>kgb</code> module I've just installed manually, but it doesn't.</li>
+</ol>
+<p>Sorry, I should have thought to check the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:00</div>
+            <div class="timeline-body"><p>Thanks Ash, let me give it a try today. It should be working as you expect based on the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2024-10-15 13:03</div>
+            <div class="timeline-body"><p>If <code>uv pip sync</code> is a better command for this workflow I'd be happy to use that, but using it on that same requirments file I end up with a venv with only these three</p>
+<pre><code>-e file:///Users/ash/code/airflow/airflow
+-e file:///Users/ash/code/airflow/airflow/task_sdk
+-e file:///Users/ash/code/airflow/airflow/providers
+</code></pre>
+<p>And non of the deps or extras.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-10-15 13:09</div>
+            <div class="timeline-body"><p>It works as expected for me 🤔</p>
+<img width="645" alt="Screenshot 2024-10-15 at 15 09 45" src="https://github.com/user-attachments/assets/6d07f02d-e6cd-4122-a54a-936a2c2125d0">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2024-10-15 13:24</div>
+            <div class="timeline-body"><p>Stange, it doesn't for me:</p>
+<pre><code>❯ VIRTUAL_ENV=$PWD/build/.k8s-env uv pip install kgb
+Using Python 3.12.5 environment at build/.k8s-env
+Resolved 1 package in 25ms
+Installed 1 package in 2ms
+ + kgb==7.1.1
+
+❯ VIRTUAL_ENV=$PWD/build/.k8s-env uv pip install --exact -r scripts/ci/kubernetes/k8s_requirements.txt
+Using Python 3.12.5 environment at build/.k8s-env
+Audited 3 packages in 74ms
+
+❯ uv version 
+uv 0.4.21 (0c5d05d9e 2024-10-14)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:39</div>
+            <div class="timeline-body"><p>@ashb -- Do you want to send me the <code>--verbose</code> logs from the second command? You can email if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:39</div>
+            <div class="timeline-body"><p>Oh you know what, I can imagine why this might be happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:40</div>
+            <div class="timeline-body"><p>If you pass <code>--reinstall</code>, does it do what you expect?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-10-15 13:41</div>
+            <div class="timeline-body"><p>I think it's the perf optimisation that checks if the env satisfies the requirements, I can reproduce it now by running the command a few times</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:42</div>
+            <div class="timeline-body"><p>Yeah exactly. We should check the <code>modifications</code> flag there and skip it if <code>--exact</code> is provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-10-15 13:45</div>
+            <div class="timeline-body"><p>I'll create a PR in a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2024-10-15 13:53</div>
+            <div class="timeline-body"><p>Oh yes, passing <code>--reinstall</code> does fix it, and also there was def a timing element as you expected. I came back to it and just ran the <code>install --exact</code> and that time it did uninstall kgb.</p>
+<p>Sounds like you don't need logs, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 13:54</div>
+            <div class="timeline-body"><p>Yeah no need -- we'll get it fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/8219.html">astral-sh/uv#8219</a> on 2024-10-15 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/43056.html">apache/airflow#43056</a> on 2024-10-15 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2024-10-16 00:10</div>
+            <div class="timeline-body"><p>Thanks for the speedy fix! All working now. On step closer to my goal of the complete uv-ification of Airflow's CI!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:04 UTC
+    </footer>
+</body>
+</html>

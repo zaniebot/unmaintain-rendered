@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[tool.ruff.lint.flake8-tidy-imports] rules in pyproject.toml parent are ignore pyproject.toml child file - astral-sh/ruff #14822</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[tool.ruff.lint.flake8-tidy-imports] rules in pyproject.toml parent are ignore pyproject.toml child file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14822">#14822</a>
+        opened by <a href="https://github.com/FrancoisMasson1990">@FrancoisMasson1990</a>
+        on 2024-12-06 16:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/FrancoisMasson1990">@FrancoisMasson1990</a> on 2024-12-06 16:14</div>
+            <div class="timeline-body"><p>Rules present in pyproject.toml parent file are ignored in the child file one.</p>
+<p>Example given</p>
+<p>./pyproject.toml</p>
+<pre><code>[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;typing.List&quot;.msg = &quot;Use list instead of typing.List&quot;
+&quot;typing.Dict&quot;.msg = &quot;Use dict instead of typing.Dict&quot;
+</code></pre>
+<p>./folder_a/pyproject.toml</p>
+<pre><code>[tool.ruff]
+# Extend the `pyproject.toml` file in the parent directory.
+extend = &quot;../pyproject.toml&quot;
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;B&quot;.msg = &quot;Don't import B in A&quot;
+</code></pre>
+<p>Typing check are not considered when running <code>poetry ruff check .</code>  in the folder_a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-06 16:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Typing check are not considered when running poetry ruff check . in the folder_a</p>
+</blockquote>
+<p>Can you expand on what you mean and maybe share an example python file? That would help me reproduce the issue and, in turn, help you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-12-06 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2024-12-06 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FrancoisMasson1990">@FrancoisMasson1990</a> on 2024-12-08 07:40</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Typing check are not considered when running poetry ruff check . in the folder_a</p>
+</blockquote>
+<p>Can you expand on what you mean and maybe share an example python file? That would help me reproduce the issue and, in turn, help you.</p>
+</blockquote>
+<p>Sure.</p>
+<p>in the following folder structure</p>
+<pre><code>|
+|
+pyproject.toml
+folder-a
+    |-folder_a
+        |--- __init__.py
+        |--- test.py
+   |-pyproject.toml
+</code></pre>
+<p>test.py</p>
+<pre><code class="language-python">from typing import List
+</code></pre>
+<p>Using the following configuration</p>
+<p>./pyproject.toml</p>
+<pre><code>[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;typing.List&quot;.msg = &quot;Use list instead of typing.List&quot;
+&quot;typing.Dict&quot;.msg = &quot;Use dict instead of typing.Dict&quot;
+</code></pre>
+<p>And</p>
+<p>./folder_a/pyproject.toml</p>
+<pre><code>[tool.ruff]
+# Extend the `pyproject.toml` file in the parent directory.
+extend = &quot;../pyproject.toml&quot;
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;B&quot;.msg = &quot;Don't import B in A&quot;
+</code></pre>
+<p>The error on importing <code>List</code> is ignored.</p>
+<p>Note that if <code>[tool.ruff.lint.flake8-tidy-imports.banned-api]</code> rules are missing in ./folder_a/pyproject.toml. (No &quot;B&quot;.msg = &quot;Don't import B in A&quot; for example) The error is flagged.</p>
+<p>Let me know if it's clearer with the following explanation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-09 06:39</div>
+            <div class="timeline-body"><p>I think this is an expected behavior because the <code>banned-api</code> value in the nested <code>pyproject.toml</code> will <em>override</em> the one in the parent <code>pyproject.toml</code>. The <code>extend</code> option is to merge the properties from different configuration files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FrancoisMasson1990">@FrancoisMasson1990</a> on 2024-12-09 10:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is an expected behavior because the <code>banned-api</code> value in the nested <code>pyproject.toml</code> will <em>override</em> the one in the parent <code>pyproject.toml</code>. The <code>extend</code> option is to merge the properties from different configuration files.</p>
+</blockquote>
+<p>Ok but is there a way in that case to merge the <code>banned-api</code> from different configuration file ?</p>
+<p>We want to avoid duplicated rules accross different configuration files.
+Example given:
+<code>&quot;typing.List&quot;.msg = &quot;Use list instead of typing.List&quot;</code></p>
+<p>Should be present in only config file and spread accross various sub_folder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-12-09 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-12-09 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @MichaReiser on 2024-12-09 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-09 11:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok but is there a way in that case to merge the banned-api from different configuration file ?</p>
+</blockquote>
+<p>I don't think that's currently possible, and we're aware of this limitation in Ruff's current configuration schema. The problem is that merging the options now makes it impossible to override the <code>banned-api</code>s if there's a need for it.</p>
+<p>The solution to this is that we introduce a new sentinel value: &quot;unset&quot; or add a &quot;level&quot; setting to it that can be &quot;ignore&quot;, &quot;warn&quot; or &quot;error&quot; so that a sub-configuration can remove (disable) a previous banned api override</p>
+<p>This is related to https://github.com/astral-sh/ruff/issues/9872</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../issues/18723.html">astral-sh/ruff#18723</a> on 2025-06-17 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../apache/airflow/pulls/53700.html">apache/airflow#53700</a> on 2025-07-24 08:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:30:15 UTC
+    </footer>
+</body>
+</html>

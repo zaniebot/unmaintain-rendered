@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv `0.6.6` fails to build arm64 packages in the CI? - astral-sh/uv #12207</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv `0.6.6` fails to build arm64 packages in the CI?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/12207">#12207</a>
+        opened by <a href="https://github.com/harshil21">@harshil21</a>
+        on 2025-03-16 23:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harshil21">@harshil21</a> on 2025-03-16 23:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>My github CI action failed for the github arm64 runner after updating from uv 0.6.5 to uv 0.6.6, with no changes in the lockfile between the two versions.</p>
+<p>Here's the associated PR - https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/pull/179</p>
+<p>Example of a passing job, prior to that PR - https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13743565044/job/38435717408</p>
+<p>Example of a failing job, in that PR - https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13888432712/job/38856321885?pr=179</p>
+<p>Notice how the project successfully builds on x86_64, but doesn't on arm64, and the only thing which changed was updating <code>uv</code> to 0.6.6. If I pin the uv version to 0.6.5, the build and the job pass.</p>
+<p>I thought it could be a problem with <code>faster-fifo</code>, even though there is no new version released since then, so I tried debugging via a new job:</p>
+<pre><code>  name: Test arm64 failure
+
+  on:
+    pull_request:
+      branches:
+        - '**'  # Matches all branch names, for PRs
+    push:
+      branches:
+        - 'main'  # Run tests on main branch
+
+  jobs:
+    pytest:
+      name: pytest
+      runs-on: ${{ matrix.os }}
+      timeout-minutes: 5
+      strategy:
+        matrix:
+          os: [ubuntu-24.04-arm]
+        fail-fast: False
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Install uv
+          uses: astral-sh/setup-uv@v5
+          with:
+            enable-cache: true
+        - name: Set up Python
+          uses: actions/setup-python@v5
+          with:
+            python-version-file: &quot;pyproject.toml&quot;
+
+        - name: Install the project
+          run: uv pip -v install --system faster-fifo
+
+        - name: Run python and import faster_fifo
+          run: |
+            PYTHON_JIT=1 uvx --with faster_fifo python -c &quot;import faster_fifo; print(faster_fifo.Queue)&quot;
+</code></pre>
+<p>but this passes successfully, so I'm not sure what the underlying issue is. Do I need to install gcc/g++ for the arm64 runner separately? Why does it work for uv 0.6.5 then?</p>
+<h3>Platform</h3>
+<p>Linux x86_64 and arm64 on github CI</p>
+<h3>Version</h3>
+<p>uv 0.6.6</p>
+<h3>Python version</h3>
+<p>Python 3.13.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @harshil21 on 2025-03-16 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 00:04</div>
+            <div class="timeline-body"><p>It looks like in the successful run faster-fifo is not built, perhaps because there's a cached build somewhere? I don't see logs showing it pulled from the cache. In the failing run, it looks like quite a few packages are being built from source. I'm not sure why yet. Does it pass with the cache disabled?</p>
+<p>It looks like there isn't an <code>aarch64</code> wheel, so... in that regard it makes sense it's building from source. https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/blob/cb8d6436aa8e6103211ea3ff214f8ba6a9c485b7/uv.lock#L297-L304</p>
+<p>Regarding getting past the build error: it depends how <code>faster-fifo</code> needs to be built. You could try setting environment variables to change the compiler, symlink that path to an existing compiler, or install the compiler it's looking for. It's hard to say without looking into their build requirements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 00:07</div>
+            <div class="timeline-body"><p>The wheel cache version was last bumped in 0.6.4 https://github.com/astral-sh/uv/pull/11738</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-03-17 00:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Does it pass with the cache disabled?</p>
+</blockquote>
+<p>Yes. <code>faster-fifo</code> installs fine with uv 0.6.6 with cache disabled in a separate environment (https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13888848807/job/38857347797?pr=179). Though from the logs it looks like it's still not building it?</p>
+<p>On uv 0.6.5, with cache disabled, it seems to actually build and install faster-fifo just fine: https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13888848816/job/38857347791?pr=179</p>
+<blockquote>
+<p>Regarding getting past the build error: it depends how <code>faster-fifo</code> needs to be built. You could try setting environment variables to change the compiler, symlink that path to an existing compiler, or install the compiler it's looking for. It's hard to say without looking into their build requirements.</p>
+</blockquote>
+<p>In <a href="https://github.com/alex-petrenko/faster-fifo?tab=readme-ov-file#installation">their readme</a>, they only mention needing the basic gcc/g++/build-essential toolchain which should be available in the CI by default. I'm more confused on why the build is trying to use the x86_64 g++ in an arm64 environment (<code>error: command '/usr/bin/x86_64-linux-gnu-g++' failed: No such file or directory</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 00:39</div>
+            <div class="timeline-body"><p>The first link looks like the cache is used?</p>
+<pre><code>Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-aarch64-unknown-linux-gnu-unknown-046cbe19717b42ce14a0754a4da6e874b9017d16152598845f404cd91d9c9b39
+Cache hit for: setup-uv-1-aarch64-unknown-linux-gnu-unknown-046cbe19717b42ce14a0754a4da6e874b9017d16152598845f404cd91d9c9b39
+Received 1050585 of 1050585 (100.0%), 1.5 MBs/sec
+Cache Size: ~1 MB (1050585 B)
+/usr/bin/tar -xf /home/runner/work/_temp/5e5ac2a8-3b37-4067-ba4e-88c0565df9ed/cache.tzst -P -C /home/runner/work/AirbrakesV2/AirbrakesV2 --use-compress-program unzstd
+Cache restored successfully
+uv cache restored from GitHub Actions cache with key: setup-uv-1-aarch64-unknown-linux-gnu-unknown-046cbe19717b42ce14a0754a4da6e874b9017d1615[25](https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13888848807/job/38857347797?pr=179#step:3:26)98845f404cd91d9c9b39
+</code></pre>
+<p>It might be clearer to run with <code>--no-cache</code>.</p>
+<p>It's interesting that the second succeeds. It looks like it's using <code>/usr/bin/aarch64-linux-gnu-gcc</code> instead of the <code>g++</code> compiler. My best guess is that https://github.com/astral-sh/python-build-standalone/pull/545 broke something? I'd be surprised, but I can dig into that idea next. The best way to confirm it's a problem with the Python distributions would be to install Python with 0.6.6 then use <code>uvx uv@0.6.5 pip install faster-fifo</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-03-17 01:36</div>
+            <div class="timeline-body"><blockquote>
+<p>The first link looks like the cache is used?</p>
+</blockquote>
+<p>I guess uv will still use leftover cache's even if I remove <code>enable-cache: true</code>. I deleted the cache from the repository, and added <code>--no-cache</code>, so it shouldn't happen now.</p>
+<p><code>uv 0.6.6</code> - installing only faster-fifo with <code>--no-cache</code>, looks like it now successfully builds faster-fifo, with <code>g++</code>: https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13889222900/job/38858305088?pr=179</p>
+<p><code>uv 0.6.5</code> - installing whole project, with <code>--no-cache</code>, also successfully builds faster-fifo, but with <code>aarch64-linux-gnu-gcc</code>: https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13889222898/job/38858305037?pr=179</p>
+<p>So it's not a problem with the python with uv 0.6.6? The failing builds on 0.6.6 are trying to use <code>/usr/bin/x86_64-linux-gnu-g++</code> instead.</p>
+<p>Looks like <code>uvx --no-cache -v uv@0.6.5 pip install faster-fifo</code> also worked?</p>
+<pre><code>Installed 1 package in 1ms
+ + uv==0.6.5
+DEBUG Checking for Python environment at `/tmp/.tmpZ2prS6/archive-v0/bWDl6Lh_XG_z1riDDiy-G`
+DEBUG Running `uv pip install faster-fifo`
+DEBUG Looking at `.dist-info` at: /tmp/.tmpZ2prS6/archive-v0/bWDl6Lh_XG_z1riDDiy-G/lib/python3.13/site-packages/uv-0.6.5.dist-info
+DEBUG Spawned child 2077 in process group 883
+Using Python 3.13.2 environment at: /tmp/.tmpZ2prS6/archive-v0/bWDl6Lh_XG_z1riDDiy-G
+Resolved 1 package in 56ms
+   Building faster-fifo==1.5.2
+      Built faster-fifo==1.5.2
+Prepared 1 package in 19.37s
+Installed 1 package in 0.56ms
+ + faster-fifo==1.5.2
+</code></pre>
+<p>(from https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13889589123/job/38859254490?pr=179)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 02:10</div>
+            <div class="timeline-body"><p>Confusing. Thanks for trying all those. So.. what's the failing case now? 0.6.6 when installing the whole project?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-03-17 02:12</div>
+            <div class="timeline-body"><blockquote>
+<p>0.6.6 when installing the whole project?</p>
+</blockquote>
+<p>Yep</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 02:16</div>
+            <div class="timeline-body"><p>It looks like your original failing example is using a managed Python distribution</p>
+<p><code>/home/runner/.local/share/uv/python/cpython-3.13.2-linux-aarch64-gnu</code></p>
+<p>while the successful run you just shared is using</p>
+<p><code>/opt/hostedtoolcache/Python/3.13.2/arm64/bin/python</code></p>
+<p>We won't be testing if there's a bug in the managed Python distributions if it's not being used. You can use <code>--python-preference only-managed</code> to require it.</p>
+<p>Packages will pull the C compiler to use from the CPython build flags in <code>sysconfig</code>. Presumably that's what's going on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-03-17 02:38</div>
+            <div class="timeline-body"><p>Good catch! So the command <code>uvx --python-preference only-managed --no-cache -v uv@0.6.5 pip install faster-fifo</code> does now indeed fail to build <code>faster_fifo</code> with that same error (https://github.com/NCSU-High-Powered-Rocketry-Club/AirbrakesV2/actions/runs/13890214613/job/38860985770?pr=179)</p>
+<p>So as I understand it, that command is using the latest python-build-standalone, but with uv 0.6.5?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 02:53</div>
+            <div class="timeline-body"><blockquote>
+<p>So as I understand it, that command is using the latest python-build-standalone, but with uv 0.6.5?</p>
+</blockquote>
+<p>Yeah, that's the intent (and the logs seem to corroborate it)</p>
+<p>This looks like a regression upstream — I'll look into the exact cause and try to fix it on Monday.</p>
+<p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-03-17 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 13:55</div>
+            <div class="timeline-body"><p>Okay I've confirmed this is in <code>sys.config</code></p>
+<pre><code>❯ docker run -it --rm --platform linux/arm64 ghcr.io/astral-sh/uv:0.6.6-bookworm-slim /bin/bash -c &quot;uv run -p 3.13 -m sysconfig | grep CXX&quot;
+	CXX = &quot;/usr/bin/x86_64-linux-gnu-g++&quot;
+	LDCXXSHARED = &quot;/usr/bin/x86_64-linux-gnu-g++ -shared -Wl,--exclude-libs,ALL -LModules/_hacl&quot;
+</code></pre>
+<p>but not for the <code>x86-64</code> version</p>
+<pre><code>❯ docker run -it --rm --platform linux/amd64 ghcr.io/astral-sh/uv:0.6.6-bookworm-slim /bin/bash -c &quot;uv run -p 3.13 -m sysconfig | grep CXX&quot;
+	CXX = &quot;c++ -pthread&quot;
+	LDCXXSHARED = &quot;c++ -pthread -shared -Wl,--exclude-libs,ALL -LModules/_hacl&quot;
+</code></pre>
+<p>or in 0.6.5</p>
+<pre><code>❯ docker run -it --rm ghcr.io/astral-sh/uv:0.6.5-bookworm-slim /bin/bash -c &quot;uv run -p 3.13 -m sysconfig | grep CXX&quot;
+	CXX = &quot;c++&quot;
+	LDCXXSHARED = &quot;c++ -shared -Wl,--exclude-libs,ALL -LModules/_hacl&quot;
+</code></pre>
+<p>This is because it's not in our expected replacements</p>
+<p>https://github.com/astral-sh/uv/blob/25e7209a33024e0776b73b8168440b2280f44a9b/crates/uv-python/src/sysconfig/mod.rs#L83-L91</p>
+<p>And this indeed was caused by my pull request upstream</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12239.html">astral-sh/uv#12239</a> on 2025-03-17 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../../astral-sh/python-build-standalone/pulls/563.html">astral-sh/python-build-standalone#563</a> on 2025-03-17 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harshil21">@harshil21</a> on 2025-03-18 01:12</div>
+            <div class="timeline-body"><p>Can confirm that the latest uv <code>0.6.7</code> with the upstream fix fixes this for me! Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @harshil21 on 2025-03-18 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 01:13</div>
+            <div class="timeline-body"><p>Wonderful, thank you for following up.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:02 UTC
+    </footer>
+</body>
+</html>

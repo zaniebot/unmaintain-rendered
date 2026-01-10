@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuJoCo `mjpython` fails with uvx - astral-sh/uv #8953</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>MuJoCo `mjpython` fails with uvx</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/issues/8953">#8953</a>
+        opened by <a href="https://github.com/kevinzakka">@kevinzakka</a>
+        on 2024-11-08 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kevinzakka">@kevinzakka</a> on 2024-11-08 19:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
+* The current uv platform.
+* The current uv version (`uv --version`).
+-->
+
+<ul>
+<li>uv 0.5.0 (8d665267c 2024-11-07)</li>
+</ul>
+<p><a href="https://github.com/google-deepmind/mujoco">MuJoCo</a> ships with an <code>mjpython</code> executable that is only needed on MacOS (related to launching UI on main thread). Unfortunately, running <code>uvx --from mujoco mjpython</code> on macOS fails with the following error message:</p>
+<pre><code class="language-bash">failed to dlopen path '/Users/kevin/Library/Caches/uv/archive-v0/FwmQkZOQj7kyCUmF_WcgC/bin/python': dlopen(/Users/kevin/Library/Caches/uv/archive-v0/FwmQkZOQj7kyCUmF_WcgC/bin/python, 0x000A): Library not loaded: @executable_path/../lib/libpython3.11.dylib
+  Referenced from: &lt;4C4C4423-5555-3144-A177-11E83484F9AC&gt; /Users/kevin/.local/share/uv/python/cpython-3.11.10-macos-aarch64-none/bin/python3.11
+  Reason: tried: '/Users/kevin/Library/Caches/uv/archive-v0/FwmQkZOQj7kyCUmF_WcgC/lib/python3.11/site-packages/mujoco/MuJoCo_(mjpython).app/Contents/lib/libpython3.11.dylib' (no such file), '/Users/kevin/Library/Caches/uv/archive-v0/FwmQkZOQj7kyCUmF_WcgC/bin/../lib/libpython3.11.dylib' (no such file), '/libpython3.11.dylib' (no such file)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-09 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 02:19</div>
+            <div class="timeline-body"><p>Interesting. Does this only happen with uv-installed Pythons?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinzakka">@kevinzakka</a> on 2024-11-09 02:24</div>
+            <div class="timeline-body"><p>Hey @charliermarsh, thanks for getting back so quick!</p>
+<p>It happens both with uvx, and if I install uv with pip then do <code>uv pip install mujoco</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-09 14:49</div>
+            <div class="timeline-body"><p>Does it happen with <code>uvx --python-preference only-system --from mujoco mjpython</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevinzakka">@kevinzakka</a> on 2024-11-09 19:10</div>
+            <div class="timeline-body"><p>Hi @zanieb, that actually works! Should I just run that all the time? Could you explain what's going on if possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-09 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Should I just run that all the time?</p>
+</blockquote>
+<p>You could. Though using our managed distributions has various benefits, there are some short-coming for situations like this.</p>
+<blockquote>
+<p>Could you explain what's going on if possible?</p>
+</blockquote>
+<p>The distributions we include are &quot;standalone&quot; which means they're easy to distribute for a wide range of systems, but this means they have some quirks since it's a relatively new paradigm for Python distributions.</p>
+<p>MuJoCo is looking for <code>@executable_path/../lib/libpython3.11.dylib</code> but it's using the wrong base path for the executable. It looks in a path relative to the virtual environment, e.g.: '/Users/kevin/Library/Caches/uv/archive-v0/FwmQkZOQj7kyCUmF_WcgC/bin/../lib/libpython3.11.dylib' but the file is actually at <code>~/.local/share/uv/python/cpython-3.11.10-macos-aarch64-none/lib/libpython3.11.dylib</code>. There are various reasons this could be, e.g., if we are setting <code>home</code> to the wrong value in the <code>pyvenv.cfg</code> (though I thought we special-cased our own distributions).</p>
+<p>There's sort of a similar issue in https://github.com/astral-sh/uv/issues/8879</p>
+<p>We're looking at fixing this behavior but it's a pretty hard problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonzamora">@jonzamora</a> on 2024-11-11 00:58</div>
+            <div class="timeline-body"><p>Related issue, I encountered this a while back: https://github.com/google-deepmind/mujoco/issues/1923</p>
+<p>I didn't spend time finding a solution to this, and reverted back to using <code>mamba</code> for package management w/ MuJoCo in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moorage">@moorage</a> on 2025-07-07 04:55</div>
+            <div class="timeline-body"><p>My workaround was just to copy or link the expected dylib:</p>
+<pre><code class="language-sh">cp ~/.local/share/uv/python/cpython-3.11.11-macos-aarch64-none/lib/libpython3.11.dylib /PATH_TO_PROJECT/.venv/bin/../lib/libpython3.11.dylib
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:31:27 UTC
+    </footer>
+</body>
+</html>

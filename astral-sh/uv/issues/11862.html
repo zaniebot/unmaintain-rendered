@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>can't publish to private pypiserver - astral-sh/uv #11862</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>can't publish to private pypiserver</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/11862">#11862</a>
+        opened by <a href="https://github.com/jmrouet">@jmrouet</a>
+        on 2025-02-28 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-02-28 18:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When I try to upload a wheel to a private pypiserver (pypiserver v2.3.2), I get the following error:</p>
+<p>uv  publish --no-progress --native-tls --publish-url %MYURL% --password ... --username ... .\dist\mypackage-1.2.3.4.dev0* -vvv
+0.000045s DEBUG uv uv 0.6.3 (a0b9f22a2 2025-02-24)
+Publishing 2 files https://{removed MYURL}
+0.002920s DEBUG uv_client::base_client Using request timeout of 900s
+Uploading mypackage-1.2.3.4.dev0-py3-none-any.whl (2.7MiB)
+0.014107s DEBUG uv_publish Hashing dist\mypackage-1.2.3.4.dev0-py3-none-any.whl
+Downloading mypackage-1.2.3.4.dev0-py3-none-any.whl (2.7MiB)
+0.051056s DEBUG uv_publish Using username/password basic auth
+0.100613s DEBUG uv_publish Response code for https://{removed MYURL}: 411 Length Required
+0.100948s DEBUG uv_publish Upload error response: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"></p>
+ <html><head>
+ <title>411 Length Required</title>
+ </head><body>
+ <h1>Length Required</h1>
+ <p>A request of the requested method POST requires a valid Content-length.<br />
+ </p>
+ <hr>
+ <address>Apache/2.4.62 (Debian) SVN/1.14.1 OpenSSL/1.1.1w mod_wsgi/4.7.1 Python/3.9 mod_perl/2.0.11 Perl/v5.32.1 Server at {MYURL} Port 443</address>
+ </body></html>
+error: Failed to publish `dist\mypackage-1.2.3.4.dev0-py3-none-any.whl` to https://{removed MYURL}
+  Caused by: Upload failed with status code 411 Length Required. Server says: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>411 Length Required</title>
+</head><body>
+<h1>Length Required</h1>
+<p>A request of the requested method POST requires a valid Content-length.<br />
+</p>
+<hr>
+<address>Apache/2.4.62 (Debian) SVN/1.14.1 OpenSSL/1.1.1w mod_wsgi/4.7.1 Python/3.9 mod_perl/2.0.11 Perl/v5.32.1 Server at {MYURL} Port 443</address>
+</body></html>
+
+<p>Is there a way to avoid this by changing the way &quot;uv publish&quot; communicates with the pip server ?</p>
+<p>Running on windows
+uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+<h3>Platform</h3>
+<p>Windows 11 x64</p>
+<h3>Version</h3>
+<p>uv 0.6.3 (a0b9f22a2 2025-02-24)</p>
+<h3>Python version</h3>
+<p>Python 3.12.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jmrouet on 2025-02-28 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-04 13:22</div>
+            <div class="timeline-body"><p>Unfortunately i can't reproduce this with a local pypiserver:</p>
+<p>Running in one terminal</p>
+<pre><code>pypi-server run -p 8080 packages -P htpasswd.txt
+</code></pre>
+<p>and in the other</p>
+<pre><code>uv publish --publish-url http://localhost:8080 -u example -p example
+</code></pre>
+<p>successfully uploads for me.</p>
+<p>Could this be a setting with the apache server as reverse proxy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-03-04 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-03-04 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-04 20:10</div>
+            <div class="timeline-body"><p>That's right. Using standalone pypiserver instance works for me too.</p>
+<p>It fails when set as a wsgi process in Apache (linux)</p>
+<p>Using wsgi is convenient because processes are respawned automatically on crash or on server restart.</p>
+<p>Also using twine to publish works in this configuration.</p>
+<p>Is there something I can do to help reproduce or even debug the client side ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-05 08:49</div>
+            <div class="timeline-body"><p>@konstin I have created a minimalistic reproducing environment in a docker file.
+you can have a look to my repo here:</p>
+<p>https://github.com/jmrouet/pypiserver-wsgi-docker</p>
+<p>Let me know if you run into issues with testing it. This environemnt exhibits a 400 error code instead of 411. I haven't checked why.</p>
+<p>It works with &quot;twine upload&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-03-06 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-06 08:24</div>
+            <div class="timeline-body"><p>The difference seems to be the <code>LimitRequestBody</code> that requires a <code>Content-Length</code>. twine sets that content length, while uv currently streams the upload without computing the content length ahead of time. There's an option in reqwest that we can use to set the filesize manually ahead of time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-03-06 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-06 15:47</div>
+            <div class="timeline-body"><p>Great to see you were able to reproduce ;) thanks.</p>
+<p>I tried to remove/change the <code>LimitRequestBody</code> but it does not change much.
+If I set the <code>WSGIChunkedRequest</code> to <code>Off</code>, it exhibits Error 411, and I think it's worse ?!</p>
+<p>As you can see from https://modwsgi.readthedocs.io/en/latest/configuration-directives/WSGIChunkedRequest.html this is indeed a limitation of WSGI that requires <code>Content-Length</code> to be known in advance.</p>
+<p>Will you check into reqwest how to enable enable the option you're talking about? I don't know enough Rust to try by myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2025-03-07 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-07 14:30</div>
+            <div class="timeline-body"><p>It should be relatively straightforward to change our upload logic to use <a href="https://docs.rs/reqwest/latest/reqwest/blocking/struct.Body.html#method.sized">sized</a> bodies and check that the request has a content-length before we send it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-11 10:43</div>
+            <div class="timeline-body"><p>I found a minimalistic change that seem to work on my minimalistic reproducing example.</p>
+<p>Basically, I just replaced <code>Part::stream</code> with <code>Part::stream_with_length</code></p>
+<pre><code>diff --git a/crates/uv-publish/src/lib.rs b/crates/uv-publish/src/lib.rs
+index 6cd51cbd8..59eb4367f 100644
+--- a/crates/uv-publish/src/lib.rs
++++ b/crates/uv-publish/src/lib.rs
+@@ -754,7 +754,8 @@ async fn build_request(
+     }
+
+     let file = File::open(file).await?;
+-    let idx = reporter.on_upload_start(&amp;filename.to_string(), Some(file.metadata().await?.len()));
++    let file_size = file.metadata().await?.len();
++    let idx = reporter.on_upload_start(&amp;filename.to_string(), Some(file_size));
+     let reader = ProgressReader::new(file, move |read| {
+         reporter.on_upload_progress(idx, read as u64);
+     });
+@@ -762,7 +763,7 @@ async fn build_request(
+     // a lifetime) -&gt; callback needs to be static -&gt; reporter reference needs to be Arc'd.
+     let file_reader = Body::wrap_stream(ReaderStream::new(reader));
+     // See [`files_for_publishing`] on `raw_filename`
+-    let part = Part::stream(file_reader).file_name(raw_filename.to_string());
++    let part = Part::stream_with_length(file_reader, file_size).file_name(raw_filename.to_string());
+     form = form.part(&quot;content&quot;, part);
+
+     let url = if let Some(username) = username {
+</code></pre>
+<p>How do I create a pull request for that ? do I have permissions to create a pull request ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 10:47</div>
+            <div class="timeline-body"><p>You can create a fork on GitHub (in the UI), push the commit to the fork and then create the pull request from the fork, https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo and https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork should have information about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Referenced in <a href="../pulls/12111.html">astral-sh/uv#12111</a> on 2025-03-11 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-11 10:49</div>
+            <div class="timeline-body"><p>Ok I've created pull request #12111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 11:03</div>
+            <div class="timeline-body"><p>Thanks! Will review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-11 12:32</div>
+            <div class="timeline-body"><p>@konstin
+One of the tests is still failing (https://github.com/astral-sh/uv/actions/runs/13787765100/job/38559950147?pr=12111) but I think it is not related to my change.
+Is that ok ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 13:55</div>
+            <div class="timeline-body"><p>The failure looks like it's part of the PyPI outage unrelated to the PR (https://status.python.org/incidents/2zf08fkp0nd1), we can retry the job and it should pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmrouet">@jmrouet</a> on 2025-03-11 14:53</div>
+            <div class="timeline-body"><p>Indeed tests are ok now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 14:54</div>
+            <div class="timeline-body"><p>Fixed through #12111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-11 14:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:33:01 UTC
+    </footer>
+</body>
+</html>
